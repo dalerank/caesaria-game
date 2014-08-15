@@ -87,13 +87,13 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       overlay->deleteLater();
       rPos = overlay->pos();
       size = overlay->size();
-    }
+    }    
 
     switch( _type )
     {
     case DisasterEvent::collapse:
     {
-      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 100 );
+      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 100 );      
       e->dispatch();
     }
     break;
@@ -105,7 +105,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
     TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( tile, clearedTiles )
     {
-      bool needBuildRuins = !( _type == DisasterEvent::rift && (*tile)->pos() == _pos );
+      bool needBuildRuins = !( _type == DisasterEvent::rift && (*tile)->pos() == _pos );      
 
       TileOverlayPtr ov;
       if( needBuildRuins )
@@ -123,7 +123,8 @@ void DisasterEvent::_exec( Game& game, unsigned int )
             std::string typev = _infoType > 1000
                                   ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
                                   : MetaDataHolder::findTypename( _infoType );
-            ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
+            ruins->setInfo( StringHelper::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
+            ruins->afterBuild();
           }
         }
       }
@@ -131,7 +132,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       {
         ov = TileOverlayFactory::instance().create( building::rift );
 
-        TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::EdgeNeighbors);
+        TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 
         /*foreach( it, tiles )
         {
@@ -148,7 +149,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
 
     std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",
                                   "##alarm_plague_in_city##", "##alarm_earthquake##" };
-    game.city()->onDisasterEvent().emit( _pos, _( dstr2string[_type] ) );
+    oc3_emit game.city()->onDisasterEvent()( _pos, _( dstr2string[_type] ) );
   }
 }
 

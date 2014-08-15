@@ -59,13 +59,13 @@ Fortification::~Fortification()
 {
 }
 
-void Fortification::build(PlayerCityPtr city, const TilePos& pos )
+bool Fortification::build(PlayerCityPtr city, const TilePos& pos )
 {
   // we can't build if already have wall here
   WallPtr wall = ptr_cast<Wall>( city->getOverlay( pos ) );
   if( wall.isValid() )
   {
-    return;
+    return false;
   }
 
   Building::build( city, pos );
@@ -79,6 +79,8 @@ void Fortification::build(PlayerCityPtr city, const TilePos& pos )
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( city );
+
+  return true;
 }
 
 void Fortification::destroy()
@@ -173,7 +175,7 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   // if we have a TMP array with wall, calculate them
   if( !tmp.empty())
   {
-    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+    foreach( it, tmp )
     {
       if( (*it)->overlay().isNull()
           || (*it)->overlay()->type() != building::fortification )
@@ -434,30 +436,16 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   return _d->tmpPicture;
 }
 
-int Fortification::getDirection() const
-{
-  return _d->direction;
-}
+int Fortification::getDirection() const {  return _d->direction;}
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
   setPicture( picture( city, pos(), TilesArray() ) );
 }
 
-bool Fortification::isTowerEnter() const
-{
-  return _d->isTowerEnter;
-}
-
-bool Fortification::mayPatrol() const
-{
-  return _d->mayPatrol;
-}
-
-bool Fortification::isFlat() const
-{
-  return false;
-}
+bool Fortification::isTowerEnter() const {  return _d->isTowerEnter;}
+bool Fortification::mayPatrol() const{  return _d->mayPatrol;}
+bool Fortification::isFlat() const{  return false;}
 
 void Fortification::save(VariantMap& stream) const
 {

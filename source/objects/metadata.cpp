@@ -33,6 +33,7 @@ using namespace gfx;
 
 const char* MetaDataOptions::cost = "cost";
 const char* MetaDataOptions::requestDestroy = "requestDestroy";
+const char* MetaDataOptions::employers = "employers";
 
 MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
 
@@ -42,14 +43,15 @@ public:
   BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( building::unknown )
   {
 #define __REG_TOTYPE(a) append(building::a, CAESARIA_STR_EXT(a) );
+#define __REG_ALTTYPE(a, b) append(building::a, b );
     __REG_TOTYPE( amphitheater )
     __REG_TOTYPE( theater )
     __REG_TOTYPE( hippodrome )
     __REG_TOTYPE( colloseum )
     __REG_TOTYPE( actorColony )
-    append( building::gladiatorSchool,"gladiator_pit" );
-    append( building::lionsNursery,   "lion_pit" );
-    append( building::chariotSchool,  "chatioteer_school" );
+    __REG_TOTYPE( gladiatorSchool ) __REG_ALTTYPE( gladiatorSchool, "gladiator_pit" )
+    __REG_TOTYPE( lionsNursery )    __REG_ALTTYPE( lionsNursery,   "lion_pit" )
+    __REG_TOTYPE( chariotSchool )   __REG_ALTTYPE( chariotSchool,  "chatioteer_school" )
     __REG_TOTYPE( house )
     append( construction::road,       "road" );
     append( construction::plaza,      "plaza" );
@@ -72,7 +74,7 @@ public:
     __REG_TOTYPE( school )
     __REG_TOTYPE( academy );
     __REG_TOTYPE( library )
-    append( building::missionaryPost, "mission_post" );
+    __REG_TOTYPE( missionaryPost )
     append( building::templeCeres,    "small_ceres_temple" );
     append( building::templeNeptune,  "small_neptune_temple" );
     append( building::templeMars,     "small_mars_temple" );
@@ -131,6 +133,7 @@ public:
     __REG_TOTYPE( fortification )
     __REG_TOTYPE( elevation )
     __REG_TOTYPE( rift )
+    __REG_TOTYPE( river )
 
     append( building::unknown,        "" );
 #undef __REG_TOTYPE
@@ -177,14 +180,17 @@ public:
   TileOverlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
-  std::string picture;
   StringArray desc;
   VariantMap options;
+  std::string prettyName;
+
+  std::map< int, StringArray > pictures;
 };
 
 MetaData::MetaData(const gfx::TileOverlay::Type buildingType, const std::string& name )
-  : _prettyName( "##" + name + "##" ), _d( new Impl )
+  : _d( new Impl )
 {
+  _d->prettyName = "##" + name + "##";
   _d->tileovType = buildingType;
   _d->group = building::unknownGroup;
   _d->name = name;  
@@ -196,11 +202,11 @@ MetaData::MetaData(const MetaData &a) : _d( new Impl )
 }
 
 MetaData::~MetaData(){}
-std::string MetaData::getName() const{  return _d->name;}
-std::string MetaData::getSound() const{  return _d->sound;}
-std::string MetaData::prettyName() const {  return _prettyName;}
+std::string MetaData::name() const{  return _d->name;}
+std::string MetaData::sound() const{  return _d->sound;}
+std::string MetaData::prettyName() const {  return _d->prettyName;}
 
-std::string MetaData::getDescription() const
+std::string MetaData::description() const
 {
   if( _d->desc.empty() )
     return "##" + _d->name + "_info##";
@@ -209,8 +215,13 @@ std::string MetaData::getDescription() const
 }
 
 TileOverlay::Type MetaData::type() const {  return _d->tileovType;}
-Picture MetaData::basePicture() const{  return Picture::load( _d->picture ); }
 Desirability MetaData::desirability() const{  return _d->desirability;}
+
+Picture MetaData::picture(int size) const
+{
+  StringArray& array = _d->pictures[ size ];
+  return Picture::load( array.random() );
+}
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 {
@@ -222,9 +233,9 @@ MetaData& MetaData::operator=(const MetaData &a)
 {
   _d->tileovType = a._d->tileovType;
   _d->name = a._d->name;
-  _prettyName = a._prettyName;
+  _d->prettyName = a._d->prettyName;
   _d->sound = a._d->sound;
-  _d->picture = a._d->picture;
+  _d->pictures = a._d->pictures;
   _d->group = a._d->group;
   _d->desirability = a._d->desirability;
   _d->desc = a._d->desc;
@@ -304,7 +315,7 @@ void MetaDataHolder::addData(const MetaData &data)
 
   if (hasData(buildingType))
   {
-    Logger::warning( "MetaDataHolder: Info is already set for " + data.getName() );
+    Logger::warning( "MetaDataHolder: Info is already set for " + data.name() );
     return;
   }
 
@@ -316,7 +327,7 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 {
 }
 
-void MetaDataHolder::initialize( const vfs::Path& filename )
+void MetaDataHolder::initialize( vfs::Path filename )
 {
   // populate _mapBuildingByInGood
   _d->mapBuildingByInGood[Good::iron  ] = building::weaponsWorkshop;
@@ -349,17 +360,12 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
 
     bData._d->options = options;
     VariantMap desMap = options[ "desirability" ].toMap();
-    bData._d->desirability.base = (int)desMap[ "base" ];
-    bData._d->desirability.range = (int)desMap[ "range" ];
-    bData._d->desirability.step  = (int)desMap[ "step" ];
+    bData._d->desirability.VARIANT_LOAD_ANY(base, desMap );
+    bData._d->desirability.VARIANT_LOAD_ANY(range, desMap);
+    bData._d->desirability.VARIANT_LOAD_ANY(step, desMap );
 
     bData._d->desc = options.get( "desc" ).toStringArray();
-
-    Variant prettyName = options.get( "prettyName" );
-    if( prettyName.isValid() )
-    {
-      bData._prettyName = prettyName.toString();
-    }
+    bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();
 
     bData._d->group = findGroup( options[ "class" ].toString() );
 
@@ -375,13 +381,31 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
       }
 
       Picture pic = Picture::load( groupName, imageIndex );
-      bData._d->picture = pic.name();     
+      bData._d->pictures[ 0 ] << pic.name();
+    }
+
+    VariantMap extPics = options[ "image.ext" ].toMap();
+    foreach( it, extPics )
+    {
+      VariantMap info = it->second.toMap();
+      VARIANT_INIT_ANY( int, size, info )
+      VARIANT_INIT_ANY( int, start, info );
+      VARIANT_INIT_ANY( int, count, info );
+      VARIANT_INIT_STR( rc, info );
+      for( int i=0; i < count; i++ )
+      {
+        Picture pic = Picture::load( rc, start + i );
+        if( pic.isValid() )
+        {
+          bData._d->pictures[ size ] << pic.name();
+        }
+      }
     }
 
     VariantList soundVl = options[ "sound" ].toList();
     if( !soundVl.empty() )
     {
-      bData._d->sound = StringHelper::format( 0xff, "%s_%05d.wav",
+      bData._d->sound = StringHelper::format( 0xff, "%s_%05d",
                                               soundVl.get( 0 ).toString().c_str(), soundVl.get( 1 ).toInt() );
     }
 
@@ -429,5 +453,11 @@ std::string MetaDataHolder::findPrettyName(TileOverlay::Type type)
 
 std::string MetaDataHolder::findDescription(TileOverlay::Type type)
 {
-  return instance().getData( type ).getDescription();
+  return instance().getData( type ).description();
+}
+
+Picture MetaDataHolder::randomPicture(TileOverlay::Type type, Size size)
+{
+  const MetaData& md = getData( type );
+  return md.picture( size.width() );
 }

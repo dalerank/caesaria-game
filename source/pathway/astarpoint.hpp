@@ -61,7 +61,7 @@ public:
   int getGScore(AStarPoint* p, bool useRoad )
   { 
     int offset = (p->tile
-                  ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +50)
+                  ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +10)
                   : (+100) ) * ( useRoad ? 1 : 0 );
     TilePos pos = tile ? tile->pos() : TilePos( 0, 0 );
     TilePos otherPos = p->tile ? p->tile->pos() : getPos();

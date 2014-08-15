@@ -79,7 +79,7 @@ void Propagator::init(const TilesArray& origin)
   _d->completedBranches.clear();
 
   // init propagation
-  for( TilesArray::const_iterator it=origin.begin(); it != origin.end(); ++it )
+  foreach( it, origin )
   {
     // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
     Tile* tile = *it;
@@ -109,7 +109,7 @@ void Propagator::propagate(const unsigned int maxDistance)
       firstBranch = _d->activeBranches.begin();
 
       PathwayPtr pathWay = *firstBranch;
-      const Tile& tile = pathWay->destination();
+      const Tile& tile = pathWay->back();
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
       unsigned int tileLength = 1;
@@ -121,7 +121,7 @@ void Propagator::propagate(const unsigned int maxDistance)
       }
 
       // propagate to neighbour tiles
-      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::EdgeNeighbors);
+      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::FourNeighbors);
       foreach( itr, accessTiles )
       {
         Tile* tile2 = *itr;
@@ -215,11 +215,11 @@ PathwayList Propagator::getWays(const unsigned int maxDistance)
          return PathwayList();
        }
 
-       const Tile& tile = pathWay->destination();
+       const Tile& tile = pathWay->back();
        // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
        // propagate to neighbour tiles
-      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::EdgeNeighbors);
+      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::FourNeighbors);
 
        // nextTiles = accessTiles - alreadyProcessedTiles
        TilesArray nextTiles;

@@ -12,11 +12,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "minimap_colours.hpp"
 
 MinimapColors::MinimapColors(ClimateType climate) {
-	if (climate == C_CENTRAL) {
+	if (climate == climateCentral) {
 		int colours[][8] = {
 			{0x000000}, // background
 			{0x6b8a31, 0x738231, 0x6b7129, 0x527929, 0x6b8231, 0x6b7931, 0x636918, 0x737931}, // empty 1
@@ -43,7 +45,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 				map[i][j] = colours[i][j];
 			}
 		}
-	} else if (climate == C_NORTHERN) {
+	} else if (climate == climateNorthen) {
 		int colours[][8] = {{0x000000}, // background
 			{0x4A8231, 0x527929, 0x526929, 0x397121, 0x527931, 0x4A7129, 0x4A6918, 0x527929}, // empty 1
 			{0x4A7129, 0x4A7129, 0x5A8239, 0x4A6921, 0x5A7131, 0x5A7129, 0x316921, 0x527129}, // empty 2
@@ -69,7 +71,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 				map[i][j] = colours[i][j];
 			}
 		}
-	} else if (climate == C_DESERT) {
+	} else if (climate == climateDesert) {
 		int colours[][8] = {{0x000000}, // background
 			{0xBDBA9C, 0xC6BAA5, 0xBDBA9C, 0xD6CBAD, 0xA59A7B, 0xCECBAD, 0xC6C3A5, 0xCECBAD}, // empty 1
 			{0xB5B294, 0xBDBAA5, 0xC6C3AD, 0xC6BA9C, 0xBDB294, 0xB5AA94, 0xDEDBBD, 0xD6D3B5}, // empty 2

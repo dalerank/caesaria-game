@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layerdamage.hpp"
 #include "objects/constants.hpp"
@@ -31,24 +31,15 @@ namespace gfx
 {
 
 static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
+                                         "##little_damage_risk##",
                                          "##some_damage_risk##", "##very_high_damage_risk##",
                                          "##extreme_damage_risk##" };
 
-int LayerDamage::type() const
-{
-  return citylayer::damage;
-}
-
-std::set<int> LayerDamage::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::engineer );
-  return ret;
-}
+int LayerDamage::type() const {  return citylayer::damage; }
 
 void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
@@ -84,11 +75,14 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
-        damageLevel = (int)house->getState( Construction::damage );
+        damageLevel = (int)house->state( Construction::damage );
         needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        if( !needDrawAnimations )
+        {
+          city::Helper helper( _city() );
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        }
       }
       break;
 
@@ -98,7 +92,7 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
         BuildingPtr building = ptr_cast<Building>( overlay );
         if( building.isValid() )
         {
-          damageLevel = (int)building->getState( Construction::damage );
+          damageLevel = (int)building->state( Construction::damage );
         }
 
         city::Helper helper( _city() );
@@ -144,11 +138,8 @@ void LayerDamage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( (int) construction->getState( Construction::damage ), 0, 100 );
-          if( damageLevel > 0 )
-          {
-            text = damageLevelName[ damageLevel / 20 ];
-          }
+          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 16, 0, 5 );
+          text = damageLevelName[ damageLevel ];
         }
       }
 
@@ -167,6 +158,7 @@ LayerDamage::LayerDamage( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 15 );
+  _addWalkerType( walker::engineer );
 }
 
 }//end namespace gfx

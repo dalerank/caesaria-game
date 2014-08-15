@@ -2351,8 +2351,8 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	int dx, dy;
 	int ax, ay;
 	int sx, sy;
-	int swaptmp;
-	Uint8 *pixel;
+  int swaptmp;
+  Uint8 *pixel;
 	Uint8 *colorptr;
 
 	/*
@@ -2391,11 +2391,11 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	sy = (dy >= 0) ? 1 : -1;
 
 	/* Lock surface */
-	if (SDL_MUSTLOCK(dst)) {
-		if (SDL_LockSurface(dst) < 0) {
-			return (-1);
-		}
-	}
+  if (SDL_MUSTLOCK(dst)) {
+    if (SDL_LockSurface(dst) < 0) {
+      return (-1);
+    }
+  }
 
 	/*
 	* Check for alpha blending 
@@ -2410,20 +2410,20 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 		* Setup color 
 		*/
 		colorptr = (Uint8 *) & color;
-		if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+    if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 			color = SDL_MapRGBA(dst->format, colorptr[0], colorptr[1], colorptr[2], colorptr[3]);
 		} else {
 			color = SDL_MapRGBA(dst->format, colorptr[3], colorptr[2], colorptr[1], colorptr[0]);
-		}
+    }
 
 		/*
 		* More variable setup 
 		*/
 		dx = sx * dx + 1;
-		dy = sy * dy + 1;
-		pixx = dst->format->BytesPerPixel;
-		pixy = dst->pitch;
-		pixel = ((Uint8 *) dst->pixels) + pixx * (int) x1 + pixy * (int) y1;
+    dy = sy * dy + 1;
+    pixx = dst->format->BytesPerPixel;
+    pixy = dst->pitch;
+    pixel = ((Uint8 *) dst->pixels) + pixx * (int) x1 + pixy * (int) y1;
 		pixx *= sx;
 		pixy *= sy;
 		if (dx < dy) {
@@ -2440,7 +2440,7 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 		*/
 		x = 0;
 		y = 0;
-		switch (dst->format->BytesPerPixel) {
+    switch (dst->format->BytesPerPixel) {
 		case 1:
 			for (; x < dx; x++, pixel += pixx) {
 				*pixel = color;
@@ -5980,7 +5980,7 @@ int characterColor(SDL_Surface * dst, Sint16 x, Sint16 y, char c, Uint32 color)
 	*/
 	if (gfxPrimitivesFont[ci] == NULL) {
 		gfxPrimitivesFont[ci] =
-			SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_HWSURFACE | SDL_SRCALPHA,
+			SDL_CreateRGBSurface(0,
 			charWidth, charHeight, 32,
 			0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
 		/*
@@ -6004,7 +6004,10 @@ int characterColor(SDL_Surface * dst, Sint16 x, Sint16 y, char c, Uint32 color)
 		/*
 		* Redraw character 
 		*/
-		SDL_SetAlpha(gfxPrimitivesFont[ci], SDL_SRCALPHA, 255);
+		SDL_SetSurfaceBlendMode(gfxPrimitivesFont[ci], SDL_BLENDMODE_ADD);
+		SDL_SetSurfaceAlphaMod(gfxPrimitivesFont[ci], 255);
+		//SDL_SetAlpha(gfxPrimitivesFont[ci], SDL_SRCALPHA, 255);
+
 		gfxPrimitivesFontColor[ci] = color;
 
 		/* Lock font-surface */

@@ -52,7 +52,7 @@ public:
       return SmartPtr<T>();
 
     typename SmartList<T>::iterator it = this->begin();
-    std::advance( it, math::random( this->size() - 1 ) );
+    std::advance( it, math::random( this->size() ) );
     return *it;
   }
 

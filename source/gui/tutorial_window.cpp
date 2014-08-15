@@ -13,14 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "tutorial_window.hpp"
 #include "core/saveadapter.hpp"
 #include "listbox.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "game/settings.hpp"
 #include "events/playsound.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
@@ -33,11 +32,11 @@ namespace gui
 {
 
 TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
-  : Widget( p, -1, Rect( 0, 0, 590, 450 ))
+  : Window( p, Rect( 0, 0, 590, 450 ), "" )
 {
   _locker.activate();
 
-  setupUI( GameSettings::rcpath( "/gui/tutorial_window.gui" ) );
+  setupUI( ":/gui/tutorial_window.gui" );
   Size pSize = parent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
@@ -50,7 +49,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   if( !lbx )
     return;
 
-  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( tutorial.toString() ) );
+  VariantMap vm = SaveAdapter::load( tutorial );
   Logger::warningIf( vm.empty(), "Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();

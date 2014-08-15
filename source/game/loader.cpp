@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "loader.hpp"
 
@@ -50,6 +51,10 @@ public:
   void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit );
   void initWaterTileAnimation( Tilemap& tmap );
   void finalize( Game& game );
+  bool maySetSign( const Tile& tile )
+  {
+    return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
+  }
 };
 
 GameLoader::GameLoader() : _d( new Impl )
@@ -64,24 +69,40 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
   unsigned int idOffset = 0;
   TilePos tlOffset;
   if( tlPos.i() == 0 || tlPos.i() == tileMap.size() - 1 )
-  {
+  {    
     tlOffset = TilePos( 0, 1 );
     idOffset = (tlPos.i() == 0 ? 1 : 3 );
-
   }
+
   else if( tlPos.j() == 0 || tlPos.j() == tileMap.size() - 1 )
   {
     tlOffset = TilePos( 1, 0 );
     idOffset = (tlPos.j() == 0 ? 2 : 0 );
   }
 
-  Tile& signTile = tileMap.at( tlPos + tlOffset );
+  Tile& tmpTile = tileMap.at( tlPos + tlOffset );
+  if( !maySetSign( tmpTile ) )
+  {
+    tlOffset = -tlOffset;
+  }
+
+  Tile& signTile = tileMap.at( tlPos + tlOffset );  
 
   Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
   Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
 
-  signTile.setPicture( ResourceGroup::land3a, picIdStart + idOffset );
-  signTile.setFlag( Tile::tlRock, true );
+  if( maySetSign( signTile ) )
+  {
+    signTile.setPicture( ResourceGroup::land3a, picIdStart + idOffset );
+    signTile.setFlag( Tile::clearAll, true );
+    signTile.setFlag( Tile::tlRock, true );
+
+    if( signTile.overlay().isValid() )
+    {
+      signTile.overlay()->deleteLater();
+      signTile.setOverlay( 0 );
+    }
+  }
 }
 
 void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
@@ -113,6 +134,7 @@ void GameLoader::Impl::finalize( Game& game )
 
   initEntryExitTile( border.roadEntry, tileMap, 89, false );
   initEntryExitTile( border.roadExit,  tileMap, 85, true  );
+
   initWaterTileAnimation( tileMap );
 }
 

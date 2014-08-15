@@ -29,6 +29,7 @@ public:
   virtual void getPictures( gfx::Pictures& oPics);
   virtual void timeStep(const unsigned long time);
   virtual FortPtr base() const;
+  virtual void save(VariantMap &stream) const;
 
   void acceptPosition();
 

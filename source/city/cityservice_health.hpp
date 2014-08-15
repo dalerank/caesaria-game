@@ -32,6 +32,7 @@ public:
   static std::string defaultName();
 
   virtual void update( const unsigned int time );
+  unsigned int value() const;
   std::string reason() const;
 private:
   HealthCare( PlayerCityPtr city );

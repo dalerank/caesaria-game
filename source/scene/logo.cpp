@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerank@gmail.com
+// Copyright 2012-2014 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerank@gmail.com
 
 #include "logo.hpp"
 
@@ -34,9 +34,13 @@ namespace scene
 class SplashScreen::Impl
 {
 public:
-  Picture bgPicture;
-  PictureRef textPicture;
+  Picture background;
+  PictureRef textPic;
   std::string text, prefix;
+  PictureRef fadetx;
+
+public:
+  void fade(Engine &engine, Picture &pic, bool out, int offset);
 };
 
 SplashScreen::SplashScreen() : _d( new Impl ) {}
@@ -47,59 +51,100 @@ void SplashScreen::initialize()
 {
   Engine& engine = Engine::instance();
 
-  _d->bgPicture = Picture::load("logo", 1);
+  _d->background = Picture::load("logo", 1);
 
-  // center the bgPicture on the screen
-  Size s = (engine.screenSize() - _d->bgPicture.size()) / 2;
-  _d->bgPicture.setOffset( Point( s.width(), -s.height() ) );
-  _d->textPicture.init( Size( _d->bgPicture.width(), 30 ) );
-  _d->textPicture->setOffset( Point( (engine.screenSize().width() - _d->textPicture->width()) / 2,
-                                      _d->bgPicture.offset().y() - _d->bgPicture.height() - 5 ) );
+  // center the background on the screen
+  Size s = (engine.screenSize() - _d->background.size()) / 2;
+  _d->background.setOffset( Point( s.width(), -s.height() ) );
+
+  _d->textPic.init( Size( _d->background.width(), 30 ) );
+  _d->textPic->setOffset( Point( (engine.screenSize().width() - _d->textPic->width()) / 2,
+                                  _d->background.offset().y() - _d->background.height() - 5 ) );
+
+  _d->fadetx.init( engine.screenSize() );
+  _d->fadetx->fill( NColor(0xff, 0, 0, 0), Rect() );
 }
 
 void SplashScreen::draw()
 {
   Engine& engine = Engine::instance();
 
-  engine.draw( _d->bgPicture, 0, 0);
+  engine.draw( _d->background, 0, 0);
 
   if( !_d->text.empty() )
   {
     Font textFont = Font::create( FONT_2_WHITE ) ;
 
-    Rect textRect = textFont.calculateTextRect( _d->text, Rect( Point(), _d->textPicture->size() ), align::center, align::center );
+    Rect textRect = textFont.getTextRect( _d->text, Rect( Point(), _d->textPic->size() ), align::center, align::center );
 
-    _d->textPicture->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPicture->size() ) );
-    //_d->textPicture->fill( 0xffffffff, Rect( Point( 1, 1 ), _d->textPicture->size() - Size( 2, 2 ) ) );
+    _d->textPic->fill( 0xff000000 );
 
-    textFont.draw( *_d->textPicture, _d->text, textRect.left(), textRect.top(), false );
+    textFont.draw( *_d->textPic, _d->text, textRect.left(), textRect.top(), false, true );
 
-    engine.draw( *_d->textPicture, 0, 0 );
+    engine.draw( *_d->textPic, 0, 0 );
   }
 }
 
-void SplashScreen::fadeOut()
+void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offset )
 {
-  Engine& engine = Engine::instance();
-  engine.loadPicture( _d->bgPicture );
+  int start = out ? 0 : 0xff;
+  int stop = out ? 0xff : 0;
+  offset *= (out ? 1 : -1);
 
-  PictureRef pf;
-  pf.init( engine.screenSize() );
+  for( int k=start; out ? k < stop : k > stop ; k+=offset )
+  {
+    engine.startRenderFrame();
+    fadetx->setAlpha( k );
+    fadetx->update();
+    engine.draw( pic, 0, 0);
+    engine.draw( *fadetx, 0, 0);
+    engine.endRenderFrame();
+  }
+}
+
+void SplashScreen::exitScene()
+{
+#ifndef DEBUG
+  Engine& engine = Engine::instance();
+
   int offset = 3;
+
+  Font textFont = Font::create( FONT_3 ) ;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   offset = 12;
+  textFont = Font::create( FONT_4 );
 #endif
 
-  for( int k=0; k < 0xff; k+=offset )
+  _d->fade( engine, _d->background, true, offset );
+
+  _d->textPic.init( engine.screenSize() );
+  _d->textPic->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic->size() ) );
+
+  std::string text[7] = { 
+                          "This is an developer's version of CaesarIA!",
+                          "therefore this game still has bugs and some features  is not complete!",
+                          "It will be updated and fixed for a basis stage.",
+			  "Also, this game is not tested with every device, be aware of that if you choose this version for play",
+			  "You can support the development of this game at",
+                          "www.bitbucket.org/dalerank/caesaria",
+                          "If you encounter bugs or crashes please send us a description about"
+			};
+  for( int i=0; i<7; i++ )
   {
-    engine.startRenderFrame();
-    pf->fill( NColor(k, 0, 0, 0), Rect() );
-    engine.draw( _d->bgPicture, 0, 0);
-    engine.draw( *pf, 0, 0);
-    //engine.delay( 1 );
-    engine.endRenderFrame();
+    Rect textRect = textFont.getTextRect( text[i], Rect( Point(), _d->textPic->size() ), align::center, align::center );
+    bool defaultColor = i == 5;
+#ifdef CAESARIA_PLATFORM_ANDROID
+    defaultColor = !defaultColor;
+#endif    
+    textFont.setColor( defaultColor ? DefaultColors::indianRed : DefaultColors::dodgerBlue );
+    textFont.draw( *_d->textPic, text[i], textRect.left(), textRect.top() + 20 * i, false, true );
   }
+
+  _d->fade( engine, *_d->textPic, false, offset );
+  engine.delay( 3000 );
+  _d->fade( engine, *_d->textPic, true, offset );
+#endif
 }
 
 void SplashScreen::setText(std::string text)
@@ -110,11 +155,7 @@ void SplashScreen::setText(std::string text)
   update( engine );
 }
 
-void SplashScreen::setPrefix(std::string prefix)
-{
-  _d->prefix = _( prefix );
-}
-
+void SplashScreen::setPrefix(std::string prefix) { _d->prefix = _( prefix ); }
 int SplashScreen::result() const { return 0; }
 
 }//end namespace scene

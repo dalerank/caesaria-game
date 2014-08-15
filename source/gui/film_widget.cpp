@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "film_widget.hpp"
-#include "game/settings.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "core/stringhelper.hpp"
@@ -47,12 +46,12 @@ public oc3_signals:
 };
 
 FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
   _d->lbMessage = 0;
 
-  setupUI( GameSettings::rcpath( "/gui/filmwidget.gui" ) );
+  setupUI( ":/gui/filmwidget.gui" );
   setCenter( parent->center() );
 
   _d->smkViewer = new SmkViewer( this, Rect( 10, 10, width() - 10, 10 + 292 ) );
@@ -61,7 +60,7 @@ FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
   _d->lbTime = findChildA<Label*>( "lbTime", true, this );
   _d->lbReceiver = findChildA<Label*>( "lbReceiver", true, this );
   _d->lbMessage = findChildA<Label*>( "lbMessage", true, this );
-  _d->videoFile = GameSettings::rcpath( film.toString() ); //"/smk/Emmigrate.smk"
+  _d->videoFile = film; //"/smk/Emmigrate.smk"
 
   _d->smkViewer->setFilename( _d->videoFile );
 

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layertroubles.hpp"
 #include "layerconstants.hpp"
@@ -35,11 +35,10 @@ namespace gfx
 {
 
 int LayerTroubles::type() const{  return _type;}
-Layer::VisibleWalkers LayerTroubles::visibleWalkers() const{  return std::set<int>();}
 
 void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
@@ -122,6 +121,27 @@ void LayerTroubles::handleEvent(NEvent& event)
         if( constr.isValid() )
         {
           text = constr->troubleDesc();
+
+          if( text.empty() )
+          {
+            WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( constr );
+            if( wb.isValid() )
+            {
+              int laborAccess = wb->laborAccessPercent();
+              if( wb->getAccessRoads().empty() || laborAccess == 0 )
+              {
+                text = "##working_have_no_labor_access##";
+              }
+              else
+              {
+                if( laborAccess < 20 ) { text = "##working_have_bad_labor_access##"; }
+                else if( laborAccess < 40 ) { text = "##working_have_very_little_labor_access##"; }
+                else if( laborAccess < 60 ) { text = "##working_have_some_labor_access##"; }
+                else if( laborAccess < 80 ) { text = "##working_have_good_labor_access##"; }
+                else if( laborAccess <= 100 ) { text = "##working_have_awsesome_labor_access##"; }
+              }
+            }
+          }
         }
       }
 

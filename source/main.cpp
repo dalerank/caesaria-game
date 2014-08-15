@@ -15,12 +15,12 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "game/game.hpp"
-#include "game/settings.hpp"
-#include "core/exception.hpp"
 #include "core/stringhelper.hpp"
-#include "core/logger.hpp"
+#include "core/exception.hpp"
 #include "vfs/directory.hpp"
+#include "game/settings.hpp"
+#include "game/game.hpp"
+#include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
 

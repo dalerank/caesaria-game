@@ -21,6 +21,7 @@
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 #include "vfs/path.hpp"
+#include "vfs/directory.hpp"
 
 class ResourceLoader
 {
@@ -28,7 +29,7 @@ public:
   ResourceLoader();
   ~ResourceLoader();
 
-  void loadFromModel( vfs::Path path2model );
+  void loadFromModel( vfs::Path path2model, const vfs::Directory altDir=vfs::Directory() );
 
 public oc3_signals:
   Signal1<std::string> &onStartLoading();

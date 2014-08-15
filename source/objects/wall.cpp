@@ -35,7 +35,7 @@ Wall::Wall() : Building( building::wall, Size(1) )
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }
 
-void Wall::build(PlayerCityPtr city, const TilePos& pos )
+bool Wall::build(PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->tilemap();
   Tile& terrain = tilemap.at( pos );
@@ -44,7 +44,7 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
   WallPtr wall = ptr_cast<Wall>( terrain.overlay() );
   if( wall.isValid() )
   {
-    return;
+    return false;
   }
 
   Construction::build( city, pos );
@@ -55,6 +55,8 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
   foreach( wall, walls ) { (*wall)->updatePicture( city ); }
 
   updatePicture( city );
+
+  return true;
 }
 
 void Wall::destroy()

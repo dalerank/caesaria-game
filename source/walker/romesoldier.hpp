@@ -45,11 +45,12 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual bool _tryAttack();
   virtual void _back2base();
+  virtual void _duckout();
 
   void _init( constants::walker::Type type);
 
   virtual WalkerList _findEnemiesInRange(unsigned int range);
-  virtual BuildingList _findBuildingsInRange(unsigned int range);
+  virtual ConstructionList _findContructionsInRange(unsigned int range);
 
   Pathway _findPathway2NearestEnemy(unsigned int range);
   RomeSoldier(PlayerCityPtr city, constants::walker::Type type);

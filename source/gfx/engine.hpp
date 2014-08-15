@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GFX_ENGINE_H_INCLUDE__
 #define __CAESARIA_GFX_ENGINE_H_INCLUDE__
@@ -33,7 +34,7 @@ public:
   typedef Size Mode;
   typedef std::vector<Size> Modes;
 
-  typedef enum { fullscreen=0, debugInfo } Flags;
+  typedef enum { fullscreen=0, debugInfo, effects } Flags;
   static Engine& instance();
 
   Engine();
@@ -57,17 +58,19 @@ public:
 
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
+  virtual unsigned int format() const = 0;
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect=0 ) = 0;
   virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
 
-  virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
-  virtual void resetTileDrawMask() = 0;
+  virtual void drawLine( const NColor& color, const Point& p1, const Point& p2 ) = 0;
+
+  virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
+  virtual void resetColorMask() = 0;
   
   virtual void deletePicture( Picture* pic ) = 0;
-  // creates a picture with the given size, it will need to be loaded by the graphic engine
-  virtual Picture* createPicture(const Size& size ) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;

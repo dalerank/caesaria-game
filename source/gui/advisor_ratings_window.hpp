@@ -18,24 +18,29 @@
 #ifndef __CAESARIA_ADVISOR_RATINGS_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_RATINGS_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui
 {
 
-class AdvisorRatingsWindow : public Widget
+namespace advisorwnd
+{
+
+class Ratings : public Window
 {
 public:
-  AdvisorRatingsWindow( Widget* parent, int id, const PlayerCityPtr city );
+  Ratings( Widget* parent, int id, const PlayerCityPtr city );
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_RATINGS_WINDOW_H_INCLUDED__

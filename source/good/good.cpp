@@ -22,23 +22,20 @@
 #include "core/exception.hpp"
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
-
-#include <iostream>
-#include <algorithm>
 #include "core/logger.hpp"
 
 GoodStock::GoodStock()
 {
-   _type = none;
-   _capacity = 0;
-   _qty = 0;
+  _type = none;
+  _capacity = 0;
+  _qty = 0;
 }
 
 GoodStock::GoodStock(const Good::Type &goodType, const int maxQty, const int currentQty)
 {
-   _type = goodType;
-   _capacity = maxQty;
-   _qty = currentQty;
+  _type = goodType;
+  _capacity = maxQty;
+  _qty = currentQty;
 }
 
 GoodStock::~GoodStock() {}
@@ -78,11 +75,6 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   _type = stock._type;  // in case goodType was Good::none
   _qty += amount;
   stock._qty -= amount;
-  
-  if( stock._qty == 0 )
-  {
-     stock._type = none;
-  }
 }
 
 VariantList GoodStock::save() const
@@ -115,3 +107,8 @@ bool GoodStock::empty() const {  return _qty == 0; }
 void GoodStock::setType(Type goodType ) {  _type = goodType;}
 void GoodStock::setCapacity( const int maxQty ){  _capacity = maxQty;}
 int GoodStock::freeQty() const{  return std::max( _capacity - _qty, 0 );}
+
+void GoodStock::pop(const int qty)
+{
+  _qty -= math::clamp( qty, 0, _qty );
+}

@@ -27,12 +27,14 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
+using namespace constants;
+
 namespace gfx
 {
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 
-class TileRow : public std::vector< Tile* >
+class TileRow : public TilesArray
 {
 public:
   ~TileRow()
@@ -51,65 +53,26 @@ class TileGrid : public std::vector< TileRow >
 class Tilemap::Impl : public TileGrid
 {
 public:
-  Tile* ate( const int i, const int j )
-  {
-    if( isInside( TilePos( i, j ) ) )
-    {
-      return (*this)[i][j];
-    }
-
-    return 0;
-  }
-
-  Tile& at( const int i, const int j )
-  {
-    if( isInside( TilePos( i, j ) ) )
-    {
-      return *(*this)[i][j];
-    }
-
-    //Logger::warning( "Need inside point current=[%d, %d]", i, j );
-    return invalidTile;
-  }
-
-  bool isInside( const TilePos& pos )
-  {
-    return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size && pos.j() < size);
-  }
-
-  void resize( const int s )
-  {
-    size = s;
-
-    // resize the tile array
-    TileGrid::resize( size );
-
-    for( int i = 0; i < size; ++i )
-    {
-      (*this)[i].reserve( size );
-
-      for (int j = 0; j < size; ++j)
-      {
-        (*this)[i].push_back( new Tile( TilePos( i, j ) ));
-      }
-    }
-  }
-
-  void set( int i, int j, Tile* v )
-  {
-    v->setEPos( TilePos( i, j ) );
-    (*this)[i][j] = v;
-  }
-
   int size;
+  Direction direction;
+
+  Tile* ate(const TilePos& pos);
+  Tile* ate( const int i, const int j );
+
+  Tile& at( const int i, const int j );
+
+  bool isInside( const TilePos& pos );
+  void resize( const int s );
+  void set( int i, int j, Tile* v );
 };
 
 Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
+  _d->direction = north;
 }
 
-void Tilemap::resize( const int size )
+void Tilemap::resize( const unsigned int size )
 {
   _d->resize( size );
 }
@@ -127,7 +90,7 @@ TilePos Tilemap::fit( const TilePos& pos ) const
   return ret;
 }
 
-Tile* Tilemap::at(Point pos, bool overborder)
+Tile* Tilemap::at( const Point& pos, bool overborder)
 {
   // x relative to the left most pixel of the tilemap
   int i = (pos.x() + 2 * pos.y()) / 60;
@@ -147,23 +110,30 @@ Tile* Tilemap::at(Point pos, bool overborder)
   }
   else // the pixel is outside the tilemap => no tile here
   {
-     return NULL;
+    return NULL;
   }
 }
 
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
-
-const Tile& Tilemap::at(const int i, const int j) const
-{
-  return const_cast< Tilemap* >( this )->at( i, j );
-}
-
-Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() );}
+const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
+Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }
 
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
   return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
+}
+
+TilesArray Tilemap::allTiles() const
+{
+  TilesArray ret;
+  TileGrid& tg = *_d;
+  for( int row=0; row < _d->size; row++ )
+  {
+    ret.append( tg[row] );
+  }
+
+  return ret;
 }
 
 int Tilemap::size() const {  return _d->size; }
@@ -175,7 +145,7 @@ TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
   switch (type){
     case AllNeighbors:
       return getRectangle(pos - offset, pos + offset, checkCorners);
-    case EdgeNeighbors:
+    case FourNeighbors:
       return getRectangle(pos - offset, pos + offset, !checkCorners);
   }
   //_CAESARIA_DEBUG_BREAK_IF("Unexpected type")
@@ -194,7 +164,7 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   start = TilePos( mini, minj );
   stop = TilePos( maxi, maxj );
 
-  size_t expected = 2 * (maxi - mini) + 2 * (maxj - minj) + corners ? 4 : 0;
+  size_t expected = (2 * (maxi - mini) + 2 * (maxj - minj) + corners) ? 4 : 0;
   res.reserve(expected);
 
   int delta_corners = 0;
@@ -247,19 +217,22 @@ TilesArray Tilemap::getRectangle(unsigned int range, TilePos center)
 }
 
 // Get tiles inside of rectangle
-TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
+TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
 {
   TilesArray res;
   int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
   res.reserve(expected);
 
-  for (int i = start.i(); i <= stop.i(); ++i)
+  Rect r( start.i(), start.j(), stop.i(), stop.j() );
+  r.repair();
+
+  for (int i = r.left(); i <= r.right(); ++i)
   {
-    for (int j = start.j(); j <= stop.j(); ++j)
+    for (int j = r.top(); j <= r.bottom(); ++j)
     {
       if( isInside( TilePos( i, j ) ))
       {
-        res.push_back( &at( TilePos( i, j ) ) );
+        res.push_back( &( const_cast<Tilemap*>( this )->at( TilePos( i, j ) )) );
       }
     }
   }
@@ -267,12 +240,12 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
   return res;
 }
 
-TilesArray Tilemap::getArea(const TilePos& start, const Size& size )
+TilesArray Tilemap::getArea(const TilePos& start, const Size& size ) const
 {
   return getArea( start, start + TilePos( size.width()-1, size.height()-1 ) );
 }
 
-TilesArray Tilemap::getArea(int range, const TilePos& center)
+TilesArray Tilemap::getArea(int range, const TilePos& center) const
 {
   TilePos offset(range,range);
   return getArea( center - offset, center + offset );
@@ -281,49 +254,71 @@ TilesArray Tilemap::getArea(int range, const TilePos& center)
 void Tilemap::save( VariantMap& stream ) const
 {
   // saves the graphics map
-  VariantList bitsetInfo;
-  VariantList desInfo;
-  VariantList idInfo;
+  std::vector<int> bitsetInfo;
+  std::vector<short> desInfo;
+  std::vector<short> idInfo;
 
-  TilesArray tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
   foreach( it, tiles )
   {
-    Tile* tile = *it;
+    Tile* tile = *it;    
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
-    desInfo.push_back( tile->desirability() );
+    desInfo.push_back( tile->param( Tile::pDesirability ) );
     idInfo.push_back( tile->originalImgId() );
   }
 
-  stream[ "bitset" ]       = bitsetInfo;
-  stream[ "desirability" ] = desInfo;
-  stream[ "imgId" ]        = idInfo;
-  stream[ "size" ]         = _d->size;
+  ByteArray baBitset;
+  ByteArray baDes;
+  ByteArray baId;
+  baBitset.resize( bitsetInfo.size() * sizeof(int) );
+  baDes.resize( desInfo.size() * sizeof(short) );
+  baId.resize( idInfo.size() * sizeof(short) );
+
+  memcpy( baBitset.data(), &bitsetInfo[0], baBitset.size() );
+  memcpy( baDes.data(), &desInfo[0], baDes.size() );
+  memcpy( baId.data(), &idInfo[0], baId.size() );
+
+  stream[ "bitset" ]       = Variant( baBitset.base64() );
+  stream[ "desirability" ] = Variant( baDes.base64() );
+  stream[ "imgId" ]        = Variant( baId.base64() );
+  VARIANT_SAVE_ANY_D( stream, _d, size );
 }
 
 void Tilemap::load( const VariantMap& stream )
 {
-  VariantList bitsetInfo = stream.get( "bitset" ).toList();
-  VariantList desInfo    = stream.get( "desirability" ).toList();
-  VariantList idInfo     = stream.get( "imgId" ).toList();
+  std::string bitsetInfo = stream.get( "bitset" ).toString();
+  std::string desInfo    = stream.get( "desirability" ).toString();
+  std::string idInfo     = stream.get( "imgId" ).toString();
 
-  int size = stream.get( "size" ).toInt();
+  int size;
+  VARIANT_LOAD_ANY( size, stream );
 
   resize( size );
 
-  VariantList::iterator imgIdIt        = idInfo.begin();
-  VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
-  VariantList::iterator desirabilityIt = desInfo.begin();
+  ByteArray baImgId = ByteArray::fromBase64( idInfo );
+  ByteArray baBitset = ByteArray::fromBase64( bitsetInfo );
+  ByteArray baDes = ByteArray::fromBase64( desInfo );
+
+  const int* bitsetAr = (int*)baBitset.data();
+  const short* imgIdAr = (short*)baImgId.data();
+  const short* desAr = (short*)baDes.data();
+
+  if( baBitset.empty() || baImgId.empty() || baDes.empty() )
+  {
+    Logger::warning( "!!! Tilemap::load data's array is null %d/%d/%d", baBitset.size(), baImgId.size(), baDes.size() );
+    return;
+  }
 
   TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
-  for( TilesArray::iterator it = tiles.begin(); it != tiles.end();
-       ++it, ++imgIdIt, ++bitsetInfoIt, ++desirabilityIt )
+  int index = 0;
+  foreach( it, tiles )
   {
     Tile* tile = *it;
 
-    TileHelper::decode( *tile, (*bitsetInfoIt).toInt() );
-    tile->appendDesirability( (*desirabilityIt).toInt() );
+    TileHelper::decode( *tile, bitsetAr[index] );
+    tile->setParam( Tile::pDesirability, desAr[index] );
 
-    int imgId = (*imgIdIt).toInt();
+    int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
       std::string picName = TileHelper::convId2PicName( imgId );
@@ -348,13 +343,53 @@ void Tilemap::load( const VariantMap& stream )
         }
       }
     }
+    index++;
   }
 }
 
 void Tilemap::turnRight()
 {
+  switch( _d->direction )
+  {
+  case north: _d->direction = west; break;
+  case west: _d->direction = south; break;
+  case south: _d->direction = east; break;
+  case east: _d->direction = north; break;
+
+  default:
+    Logger::warning( "Tilemap::turnRight wrong direction %d", _d->direction );
+  }
+
+  std::map<Tile*,Picture> masterTiles;
+
   Tile* tmp;
   unsigned int size = _d->size;
+
+  for( unsigned int i=0; i < size; i++ )
+  {
+    for( unsigned int j=0; j < size; j++ )
+    {
+      tmp = _d->ate( i, j );
+      if( tmp->masterTile() )
+      {
+        Tile* mTile = tmp->masterTile();
+        Picture pic = mTile->picture();
+        int pSize = (pic.width() + 2) / 60;
+
+        masterTiles[ tmp->masterTile() ] = pic;
+        for( int i=0; i < pSize; i++ )
+        {
+          for( int j=0; j < pSize; j++ )
+          {
+            Tile* apTile = _d->ate( mTile->pos() + TilePos( i, j ) );
+            apTile->setMasterTile( 0 );
+            apTile->setPicture( Picture::getInvalid() );
+          }
+        }
+      }
+    }
+  }
+
   for( unsigned int i=0;i< size/2;i++)
   {
     for( unsigned int j=i; j< size-1-i;j++)
@@ -365,11 +400,53 @@ void Tilemap::turnRight()
       _d->set( size-i-1, size-j-1, _d->ate( j, size-i-1 ) );
       _d->set( j, size-i-1, tmp );
     }
+  }  
+
+  foreach( it, masterTiles )
+  {
+    Picture pic = it->second;
+    int pSize = (pic.width() + 2) / 60;
+
+    switch( _d->direction )
+    {
+    case west:
+    {
+      TilePos mTilePos = it->first->epos() - TilePos( 0, pSize - 1 );
+      Tile* mTile = _d->ate( mTilePos );
+      for( int i=0; i < pSize; i++ )
+      {
+        for( int j=0; j < pSize; j++ )
+        {
+          Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
+          apTile->setMasterTile( mTile );
+        }
+      }
+      mTile->setPicture( pic );
+    }
+    break;
+
+    default:
+      break;
+    }
+
   }
+
+  //tmp->changeDirection( _d->direction );
 }
 
 void Tilemap::turnLeft()
 {
+  switch( _d->direction )
+  {
+  case north: _d->direction = east; break;
+  case east: _d->direction = south; break;
+  case south: _d->direction = west; break;
+  case west: _d->direction = north; break;
+
+  default:
+    Logger::warning( "Tilemap::turnLeft wrong direction %d", _d->direction );
+  }
+
   Tile* tmp;
   unsigned int size = _d->size;
   for( unsigned int i=0;i<size/2;i++)
@@ -381,10 +458,69 @@ void Tilemap::turnLeft()
       _d->set( j, size-1-i, _d->ate( size-1-i, size-1-j ) );
       _d->set( size-1-i, size-1-j, _d->ate( size-1-j, i ) );
       _d->set( size-1-j, i, tmp );
+
+      tmp->changeDirection( _d->direction );
     }
   }
 }
 
+Direction Tilemap::direction() const { return _d->direction; }
+
 Tilemap::~Tilemap(){}
+
+Tile* Tilemap::Impl::ate(const TilePos& pos )
+{
+  return ate( pos.i(), pos.j() );
+}
+
+Tile* Tilemap::Impl::ate(const int i, const int j)
+{
+  if( isInside( TilePos( i, j ) ) )
+  {
+    return (*this)[i][j];
+  }
+
+  return 0;
+}
+
+Tile& Tilemap::Impl::at(const int i, const int j)
+{
+  if( isInside( TilePos( i, j ) ) )
+  {
+    return *(*this)[i][j];
+  }
+
+  //Logger::warning( "Need inside point current=[%d, %d]", i, j );
+  return invalidTile;
+}
+
+bool Tilemap::Impl::isInside(const TilePos& pos)
+{
+  return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size && pos.j() < size);
+}
+
+void Tilemap::Impl::resize(const int s)
+{
+  size = s;
+
+  // resize the tile array
+  TileGrid::resize( size );
+
+  for( int i = 0; i < size; ++i )
+  {
+    (*this)[i].reserve( size );
+
+    for (int j = 0; j < size; ++j)
+    {
+      (*this)[i].push_back( new Tile( TilePos( i, j ) ));
+    }
+  }
+}
+
+void Tilemap::Impl::set(int i, int j, Tile* v)
+{
+  v->setEPos( TilePos( i, j ) );
+  (*this)[i][j] = v;
+}
 
 }//end namespace gfx

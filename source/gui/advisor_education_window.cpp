@@ -28,7 +28,6 @@
 #include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/foreach.hpp"
-#include "game/settings.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
@@ -38,6 +37,9 @@ using namespace constants;
 using namespace gfx;
 
 namespace gui
+{
+
+namespace advisorwnd
 {
 
 namespace {
@@ -77,23 +79,23 @@ public:
     default: break;
     }
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
     std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
-    font.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( *texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = StringHelper::format( 0xff, "%d", _info.buildingWork );
-    font.draw( *texture, buildingWorkT, 165, 0 );
+    rfont.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
-    font.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( *texture, peoplesStrT, 255, 0 );
 
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
                                   "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
     const char* coverageStr = _info.coverage > 0
                                   ? coverages[ math::clamp( _info.coverage / 10, 0, 9 ) ]
                                   : "##non_cvrg##";
-    font.draw( *texture, _( coverageStr ), 440, 0 );
+    rfont.draw( *texture, _( coverageStr ), 440, 0 );
   }
 
 private:
@@ -101,7 +103,7 @@ private:
   InfrastructureInfo _info;
 };
 
-class AdvisorEducationWindow::Impl
+class Education::Impl
 {
 public:
   Label* lbCityInfo;
@@ -116,16 +118,14 @@ public:
   StringArray getTrouble( PlayerCityPtr city );
 };
 
-AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ),
-  __INIT_IMPL(AdvisorEducationWindow)
+Education::Education(PlayerCityPtr city, Widget* parent, int id )
+: Window( parent, Rect( 0, 0, 640, 256 ), "", id ),
+  __INIT_IMPL(Education)
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 256 ) ) );
-
-  setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
+  setupUI( ":/gui/educationadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
   
-  __D_IMPL(_d,AdvisorEducationWindow)
+  __D_IMPL(_d,Education)
   _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
   _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
   _d->lbCityTrouble = findChildA<Label*>( "lbTroubleInfo", true, this);
@@ -158,18 +158,18 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
   StringArray troubles = _d->getTrouble( city );
-  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.rand() ) ); }
+  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.random() ) ); }
 }
 
-void AdvisorEducationWindow::draw( gfx::Engine& painter )
+void Education::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
-InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
+InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
 {
   city::Helper helper( city );
 
@@ -219,14 +219,11 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
     ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
   }
 
-  ret.coverage = ret.need > 0
-                  ? ret.peoplesStuding * 100 / ret.need
-                  : 0;
-
+  ret.coverage = math::percentage( ret.peoplesStuding, ret.need );
   return ret;
 }
 
-StringArray AdvisorEducationWindow::Impl::getTrouble(PlayerCityPtr city)
+StringArray Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray ret;
   const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
@@ -253,6 +250,8 @@ StringArray AdvisorEducationWindow::Impl::getTrouble(PlayerCityPtr city)
   if( ret.empty() ) { ret.push_back( "##education_awesome##" ); }
 
   return ret;
+}
+
 }
 
 } //end namespace gui

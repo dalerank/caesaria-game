@@ -116,9 +116,14 @@ void Migration::update( const unsigned int time )
                             ? params.tax * 2
                             : (possibleTaxLevel-params.tax) );
 
+  int warInfluence = ( params.monthWithourWar < DateTime::monthsInYear
+                          ? params.monthWithourWar * 5
+                          : -std::min( params.monthWithourWar, 10 ) );
+
   _d->emigrantsIndesirability += worklessInfluence;
   _d->emigrantsIndesirability += params.crimeLevel;
   _d->emigrantsIndesirability += taxLevelInfluence;
+  _d->emigrantsIndesirability += warInfluence;
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
@@ -162,6 +167,11 @@ std::string Migration::reason() const
   if( _d->emigrantsIndesirability > defaultEmIndesirability )
   {
     Info::Parameters params = _d->lastMonthParams( _city );
+    if( params.monthWithourWar < DateTime::monthsInYear )
+    {
+      return "##migration_war_deterring##";
+    }
+
     if( params.monthWithFood < (int)GameSettings::get( GameSettings::minMonthWithFood ) )
     {
       if( params.monthWithFood == 0 )
@@ -284,7 +294,8 @@ float Migration::Impl::getMigrationKoeff( PlayerCity& city )
 
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCity& city )
 {
-  InfoPtr info = ptr_cast<Info>( city.findService( Info::defaultName() ) );
+  InfoPtr info;
+  info << ptr_cast<Info>( city.findService( Info::defaultName() ) );
 
   Info::Parameters params;
   if( info.isValid() )

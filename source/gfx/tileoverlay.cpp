@@ -67,33 +67,22 @@ void TileOverlay::setType(const Type type)
 
    _d->overlayType = type;
    _d->overlayClass = bd.group();
-   _d->name = bd.getName();
+   _d->name = bd.name();
 }
 
 void TileOverlay::timeStep(const unsigned long) {}
 
+void TileOverlay::changeDirection(constants::Direction direction)
+{
+
+}
+
 void TileOverlay::setPicture(Picture picture)
 {
   _d->picture = picture;
-
-  /*if (_d->masterTile != NULL)
-  {
-    Tilemap &tilemap = _city()->tilemap();
-    // _master_tile == NULL is cloneable buildings
-    TilePos pos = _d->masterTile->pos();
-
-    for (int dj = 0; dj<_d->size.width(); ++dj)
-    {
-      for (int di = 0; di<_d->size.height(); ++di)
-      {
-        Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
-        //tile.setPicture( &_d->picture );
-      }
-    }
-  }*/
 }
 
-void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
+bool TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap &tilemap = city->tilemap();
 
@@ -106,7 +95,6 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.setMasterTile( _d->masterTile );
-      //tile.setPicture( &_d->picture );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
       {
@@ -117,6 +105,8 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
       initTerrain( tile );
     }
   }
+
+  return true;
 }
 
 Tile& TileOverlay::tile() const
@@ -148,7 +138,7 @@ void TileOverlay::save( VariantMap& stream ) const
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
-                      ? Variant( md.getData( _d->overlayType ).getName() )
+                      ? Variant( md.getData( _d->overlayType ).name() )
                       : Variant( getDebugName() ) );
 
   config.push_back( tile().pos() );
@@ -188,7 +178,7 @@ TilePos TileOverlay::pos() const
 std::string TileOverlay::sound() const
 {
   const MetaData& md = MetaDataHolder::instance().getData( type() );
-  return md.getSound();
+  return md.sound();
 }
 
 void TileOverlay::setName( const std::string& name ){  _d->name = name;}

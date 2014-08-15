@@ -28,6 +28,7 @@
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "city/statistic.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
@@ -67,10 +68,9 @@ void Building::timeStep(const unsigned long time)
 {
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    city::Helper helper( _city() );
-    float popkoeff = helper.getBalanceKoeff();
-    updateState( Construction::damage, popkoeff * getState( Construction::collapsibility ) );
-    updateState( Construction::fire, popkoeff * getState( Construction::inflammability ) );
+    float popkoeff = std::max<float>( city::Statistic::getBalanceKoeff( _city() ), 0.1f );
+    updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
+    updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
   }
 
   Construction::timeStep(time);
@@ -103,11 +103,25 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 
    switch(service)
    {
-   case Service::engineer: res = getState( Construction::damage ); break;
-   case Service::prefect: res = getState( Construction::fire ); break;
+   case Service::engineer: res = state( Construction::damage ); break;
+   case Service::prefect: res = state( Construction::fire ); break;
    default: break;
    }
    return res;
+}
+
+bool Building::build(PlayerCityPtr city, const TilePos &pos)
+{
+  Construction::build( city, pos );
+
+  switch( city->climate() )
+  {
+  case climateNorthen: setState( Construction::inflammability, 0.5 ); break;
+  case climateDesert: setState( Construction::inflammability, 2 ); break;
+  default: break;
+  }
+
+  return true;
 }
 
 void Building::reserveService(const Service::Type service) { _d->reservedServices.insert(service);}

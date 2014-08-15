@@ -26,9 +26,10 @@ namespace gui
 class GroupBox : public Widget
 {
 public:
-  typedef enum { whiteFrame=0, blackFrame, whiteWindow } Style;
+  typedef enum { whiteFrame=0, blackFrame, none, count } Style;
 
   //! constructor
+  GroupBox( Widget* parent );
 	GroupBox( Widget* parent, const Rect& rectangle, int id, Style style );
 
   //! destructor
@@ -38,7 +39,7 @@ public:
   virtual void setBackgroundImage( const gfx::Picture& image);
 
   //! Gets the background image
-  virtual const gfx::Picture& getBackgroundImage() const;
+  virtual const gfx::Picture& backgroundImage() const;
 
   //! sets if the image should scale to fit the element
   virtual void setScaleBackgroundImage(bool alignScale);
@@ -51,12 +52,7 @@ public:
 
   virtual void beforeDraw( gfx::Engine& painter );
 
-  //! Writes attributes of the element.
-  //virtual void save(VariantArray* out) const;
-
-  //! Reads attributes of the element
-  //virtual void load(VariantArray* in);
-
+  virtual void setupUI(const VariantMap &ui);
 private:
 	class Impl;
 	ScopedPtr< Impl > _d;

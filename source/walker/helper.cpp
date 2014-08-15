@@ -89,12 +89,14 @@ public:
     __REG_WTYPE( balista )
     __REG_WTYPE( mugger )
     __REG_WTYPE( rioter )
-    __REG_WTYPE( wolf )
+    __REG_WTYPE( wolf )        
     __REG_WTYPE( dustCloud )
-    __REG_WTYPE( romeChasternerSoldier )
+    __REG_WTYPE( romeChastenerSoldier )
     __REG_WTYPE( indigeneRioter )
     __REG_WTYPE( missioner )
     __REG_WTYPE( indigene )
+    __REG_WTYPE( romeChastenerElephant )
+    __REG_WTYPE( zebra )
   }
 #undef __REG_WTYPE
 };
@@ -112,7 +114,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   return mapIt->second.toMap();
 }
 
-void WalkerHelper::initialize( const vfs::Path& filename )
+void WalkerHelper::load( const vfs::Path& filename )
 {
   _d->options = SaveAdapter::load( filename );
 }

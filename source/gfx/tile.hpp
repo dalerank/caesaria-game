@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_TILE_H_INCLUDED__
 #define __CAESARIA_TILE_H_INCLUDED__
@@ -21,6 +23,7 @@
 #include "game/enums.hpp"
 #include "tileoverlay.hpp"
 #include "predefinitions.hpp"
+#include "core/direction.hpp"
 
 namespace gfx
 {
@@ -30,37 +33,14 @@ class Picture;
 // a Tile in the Tilemap
 class Tile
 {
-  struct Terrain
-  {
-    bool water;
-    bool rock;
-    bool tree;
-    bool road;
-    bool garden;
-    bool meadow;
-    bool elevation;
-    bool rubble;
-    bool wall;
-    bool deepWater;
-    int  desirability;
-    int  watersrvc;
-
-    /*
-     * original tile information
-     */
-    unsigned short int imgid;
-    unsigned short int terraininfo;
-
-    void reset();
-    void clearFlags();
-  };
-
 public:
+  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pBasicCount } Param;
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
-                 isConstructible, isDestructible, tlRift, clearAll,
+                 isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
                  wasDrawn } Type;
 
+public:
   explicit Tile(const TilePos& pos);
 
   // tile coordinates
@@ -72,7 +52,7 @@ public:
   void setEPos( const TilePos& epos );
 
   Point center() const;
-  Point mapPos() const;
+  Point mappos() const;
 
   // displayed picture
   void setPicture( const Picture& picture );
@@ -86,6 +66,8 @@ public:
   Tile* masterTile() const;
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
+
+  void changeDirection(constants::Direction newDirection);
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
@@ -101,24 +83,52 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
-  void appendDesirability( int value );
-  int desirability() const;
   TileOverlayPtr overlay() const;
   void setOverlay( TileOverlayPtr overlay );
   unsigned int originalImgId() const;
   void setOriginalImgId( unsigned short int id );
 
-  void fillWaterService( WaterService type, int value=1 );
-  void decreaseWaterService( WaterService type, int value=1);
-  int waterService( WaterService type ) const;
+  inline int height() const { return _height; }
+  void setHeight( int value ) { _height = value; }
+
+  void setParam( Param param, int value );
+  void changeParam( Param param, int value );
+  int param( Param param ) const;
 
 private:
+  struct Terrain
+  {
+    bool water;
+    bool rock;
+    bool tree;
+    bool road;
+    bool garden;
+    bool meadow;
+    bool elevation;
+    bool rubble;
+    bool wall;
+    bool coast;
+    bool deepWater;
+
+    /*
+     * original tile information
+     */
+    unsigned short int imgid;
+    unsigned short int terraininfo;
+
+    void reset();
+    void clearFlags();
+
+    std::map<Param, int> params;
+  };
+
   TilePos _pos; // absolute coordinates
   TilePos _epos; // effective coordinates
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
   Terrain _terrain; // infos about the tile (building, tree, road, water, rock...)
   Picture _picture; // main picture
   bool _wasDrawn;
+  int _height;
   gfx::Animation _animation;
   TileOverlayPtr _overlay;
 };

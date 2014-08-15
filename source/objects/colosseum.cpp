@@ -80,7 +80,7 @@ Service::Type Colosseum::serviceType() const
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 
-void Colosseum::build(PlayerCityPtr city, const TilePos& pos)
+bool Colosseum::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
 
@@ -100,6 +100,8 @@ void Colosseum::build(PlayerCityPtr city, const TilePos& pos)
   {
     _setError( "##need_gladiator_school##" );
   }
+
+  return true;
 }
 
 std::string Colosseum::troubleDesc() const

@@ -1,0 +1,43 @@
+{
+  geometry : [ 0, 0, 625, 320 ]
+  bgtype : "whiteFrame"
+    
+  lbTitle#Label : {
+    geometry : [ 16, 16, "pw-16", 46  ]
+    font : "FONT_5"
+    text : "##title##"
+    text.align : [ "center", "center" ]
+  }  
+
+  lbFestivalName#Label : {
+    geometry : [ 145, "ph-52", 345, "ph-22" ]
+    text : "##small_festival##"
+    font : "FONT_2"
+    text.align : [ "center", "center" ]
+  }
+
+  btnSmallFestival#PushButton : {
+    geometry : [ 95, 170, "pw-95", 195 ]
+    text.align : [ "upperLeft", "center" ]
+    pushbutton : true
+    bgtype : "whiteBorderUp"
+    text.align : [ "center", "center" ]
+  }
+
+  btnMiddleFestival#PushButton : {
+    geometry : [ 95, 200, "pw-95", 225 ]
+    text.align : [ "upperLeft", "center" ]
+    pushbutton : true
+    bgtype : "whiteBorderUp"
+    text.align : [ "center", "center" ]
+  }
+
+  btnGreatFestival#PushButton : {
+    geometry : [ 95, 230, "pw-95", 255 ]
+    text.align : [ "upperLeft", "center" ]
+    pushbutton : true
+    bgtype : "whiteBorderUp"
+    text.align : [ "center", "center" ]
+  }
+}
+

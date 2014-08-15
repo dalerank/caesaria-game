@@ -133,7 +133,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   if( finalPath.isValid() )
   {
     // some building needs that trainee!!!
-    setPos( finalPath.getStartPos() );
+    setPos( finalPath.startPos() );
     setPathway( finalPath );
   }
   else

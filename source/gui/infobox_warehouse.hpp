@@ -21,11 +21,14 @@
 namespace gui
 {
 
-class InfoboxWarehouse : public InfoboxConstruction
+namespace infobox
+{
+
+class AboutWarehouse : public AboutConstruction
 {
 public:
-  InfoboxWarehouse( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxWarehouse();
+  AboutWarehouse( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutWarehouse();
 
   void drawGood( const Good::Type &goodType, int col, int paintY);
   void showSpecialOrdersWindow();
@@ -33,6 +36,8 @@ public:
 private:
   WarehousePtr _warehouse;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_WAREHOUSE_INFOBOX_H_INCLUDE_

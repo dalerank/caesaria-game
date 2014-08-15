@@ -18,7 +18,7 @@
 #include "gatehouse.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/road.hpp"
 #include "core/direction.hpp"
@@ -125,7 +125,6 @@ void Gatehouse::load(const VariantMap& stream)
 }
 
 bool Gatehouse::isWalkable() const {  return true; }
-bool Gatehouse::isRoad() const {  return true; }
 Renderer::PassQueue Gatehouse::passQueue() const{  return gatehousePass;}
 
 const Pictures& Gatehouse::pictures(Renderer::Pass pass) const
@@ -141,18 +140,25 @@ const Pictures& Gatehouse::pictures(Renderer::Pass pass) const
 
 void Gatehouse::initTerrain(Tile& terrain)
 {
-  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-void Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
+void Gatehouse::destroy()
+{
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getArea( this );
+
+  foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
+}
+
+bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
 {
   _update( city, pos );
 
   _d->gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, _d->direction == north ? 224 : 225 );
   _d->gatehouseSprite[ 0 ].setOffset( _d->direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
 
-  Building::build( city, pos );
+  return Building::build( city, pos );
 }
 
 bool Gatehouse::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const

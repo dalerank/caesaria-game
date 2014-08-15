@@ -48,7 +48,7 @@ struct BorderInfo
 class PlayerCity : public world::City
 {
 public:
-  typedef enum { adviserEnabled=0 } OptionType;
+  typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads } OptionType;
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 
@@ -61,6 +61,7 @@ public:
 
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
+  city::SrvcList services() const;
 
   gfx::TileOverlayList& overlays();
 
@@ -116,8 +117,6 @@ public:
   void setOption( OptionType opt, int value );
   int getOption( OptionType opt ) const;
 
-  void updateRoads();
-
   void clean();
    
 oc3_signals public:
@@ -129,6 +128,7 @@ oc3_signals public:
 
 private:
   PlayerCity( world::EmpirePtr empire );
+  void _initAnimation();
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -28,19 +28,20 @@ public:
   ~Dock();
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  virtual std::string workersProblemDesc() const;
 
   bool isBusy() const;
 
   const gfx::Tile& landingTile() const;
-  const gfx::Tile& getQueueTile() const;
+  const gfx::Tile& queueTile() const;
 
-  int getQueueSize() const;
+  int queueSize() const;
 
   void requestGoods( GoodStock& stock );
 

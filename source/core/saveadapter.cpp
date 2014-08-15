@@ -19,26 +19,17 @@
 #include "scopedptr.hpp"
 #include "json.hpp"
 #include "logger.hpp"
+#include "vfs/file.hpp"
 
-#include <fstream>
+using namespace vfs;
 
-VariantMap SaveAdapter::load( const vfs::Path& fileName )
+VariantMap SaveAdapter::load( const vfs::Path& filename )
 {
-  std::fstream f( fileName.toString().c_str(), std::ios::in | std::ios::binary);
+  NFile f = NFile::open( filename );
 
-  f.seekg( 0, std::ios::end);
-  //std::ios::pos_type lastPos = f.tellp();
-  int lastPos = f.tellp();
-
-  if( lastPos > 0 )
+  if( f.isOpen() )
   {
-    f.seekg( 0, std::ios::beg );
-    ByteArray data;
-    data.resize( lastPos );
-
-    f.read( &data[0], lastPos );
-
-    f.close();
+    ByteArray data = f.readAll();
 
     bool jsonParsingOk;
     Variant ret = Json::parse( data.data(), jsonParsingOk );
@@ -48,12 +39,13 @@ VariantMap SaveAdapter::load( const vfs::Path& fileName )
     }
     else
     {
-     Logger::warning( "Can't parse file %s: %s", fileName.toString().c_str(), ret.toString().c_str() );
+     Logger::warning( "Can't parse file %s: %s", filename.toString().c_str(), ret.toString().c_str() );
+     Logger::warning( "Last parsed object is %s", Json::lastParsedObject().c_str() );
     }
   }
   else
   {
-    Logger::warning( "Can't find file %s", fileName.toString().c_str() );
+    Logger::warning( "Can't find file %s", filename.toString().c_str() );
   }
 
   return VariantMap();
@@ -69,9 +61,9 @@ bool SaveAdapter::save( const VariantMap& options, const vfs::Path& filename )
   std::string data = Json::serialize( options.toVariant(), " " );
   if( !data.empty() )
   {
-    std::fstream f( filename.toString().c_str(), std::ios::out | std::ios::binary);
-    f.write( data.c_str(), data.size() ); 
-    f.close();
+    NFile f = NFile::open( filename, Entity::fmWrite );
+    f.write( data.c_str(), data.size() );
+    f.flush();
   }
 
   return true;

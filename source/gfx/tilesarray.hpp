@@ -45,6 +45,38 @@ public:
     *this = a;
   }
 
+  TilePos leftUpCorner() const
+  {
+    if( empty() )
+      return TilePos( -1, -1 );
+
+    TilePos ret( 9999, 0 );
+    foreach( it, *this )
+    {
+      const TilePos& cpos = (*it)->pos();
+      if( cpos.i() < ret.i() ) { ret.setI( cpos.i() ); }
+      if( cpos.j() > ret.j() ) { ret.setJ( cpos.j() ); }
+    }
+
+    return ret;
+  }
+
+  TilePos rightDownCorner() const
+  {
+    if( empty() )
+      return TilePos( -1, -1 );
+
+    TilePos ret( 0, 9999 );
+    foreach( it, *this )
+    {
+      const TilePos& cpos = (*it)->pos();
+      if( cpos.j() < ret.j() ) { ret.setJ( cpos.j() ); }
+      if( cpos.i() > ret.i() ) { ret.setI( cpos.i() ); }
+    }
+
+    return ret;
+  }
+
   TilesArray& operator=(const TilesArray& a)
   {
     resize( a.size() );
@@ -70,6 +102,20 @@ public:
     }
 
     return ret;
+  }
+
+  TilesArray& remove( TilePos pos )
+  {
+    foreach( it, *this )
+    {
+      if( (*it)->pos() == pos )
+      {
+        erase( it );
+        break;
+      }
+    }
+
+    return *this;
   }
 
   TileOverlayList overlays() const

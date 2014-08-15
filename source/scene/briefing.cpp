@@ -48,7 +48,7 @@ public:
 protected:
   virtual void _btnClicked()
   {
-    Widgets widgets = parent()->getChildren();
+    Widgets widgets = parent()->children();
     foreach( it, widgets)
     {
       MissionButton* btn = safety_cast<MissionButton*>( *it );
@@ -146,7 +146,7 @@ void Briefing::initialize()
 
     std::string missionTt = vm.get( "title" ).toString();
     _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 500, 600 ), missionTt );
-    _d->missionTitle->setFont( Font::create( FONT_3 ));
+    _d->missionTitle->setFont( Font::create( FONT_5 ));
     _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 500, 630 ) );
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
 

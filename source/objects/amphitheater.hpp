@@ -25,7 +25,7 @@ class Amphitheater : public EntertainmentBuilding
 public:
   Amphitheater();
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);

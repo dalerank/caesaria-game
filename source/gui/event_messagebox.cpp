@@ -26,7 +26,7 @@ namespace gui
 
 EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
                                   const std::string& message, DateTime time, Good::Type gtype)
-  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
+  : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
   setAutoPosition( false );

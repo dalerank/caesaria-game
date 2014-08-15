@@ -127,7 +127,7 @@ Trading::~Trading()
 }
 
 void Trading::sendMerchant( const std::string& begin, const std::string& end,
-                                  GoodStore& sell, GoodStore& buy )
+                            GoodStore& sell, GoodStore& buy )
 {
   TraderoutePtr route = findRoute( begin, end );
   if( route != 0 )
@@ -208,7 +208,7 @@ TraderouteList Trading::routes( const std::string& begin )
 
   foreach( it, _d->routes )
   {
-    if( it->second->getBeginCity() == city || it->second->getEndCity() == city )
+    if( it->second->beginCity() == city || it->second->endCity() == city )
     {
       ret.push_back( it->second );
     }

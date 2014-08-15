@@ -22,7 +22,7 @@
   #include <wspiapi.h>
 #endif
 
-#include "core/mutex.hpp"
+#include "thread/mutex.hpp"
 #include <curl/curl.h>
 #include "vfs/path.hpp"
 

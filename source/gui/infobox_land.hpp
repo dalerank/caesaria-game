@@ -23,21 +23,25 @@
 namespace gui
 {
 
-class InfoboxLand : public InfoboxSimple
+namespace infobox
+{
+
+class AboutLand : public Simple
 {
   static const int lbTextId=2;
 public:
-  InfoboxLand( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  AboutLand( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 
   virtual void setText( const std::string& text );
 };
 
-class InfoboxFreeHouse : public InfoboxLand
+class AboutFreeHouse : public AboutLand
 {
 public:
-  InfoboxFreeHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  AboutFreeHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 };
 
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXLAND_H_INCLUDE_

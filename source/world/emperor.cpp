@@ -143,6 +143,10 @@ void Emperor::timeStep(unsigned int time)
         int decrease = math::clamp( 3 + monthWithoutTax / DateTime::monthsInYear * 2, 0, 8 );
         ref.value -= decrease;
       }
+
+      CityPtr cityp = d->empire->findCity( it->first );
+      bool greaterSalary = EmpireHelper::isGreaterSalary( cityp );
+      ref.value += greaterSalary ? -2 : 1;
     }
   }
 

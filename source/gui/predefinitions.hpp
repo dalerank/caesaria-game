@@ -23,7 +23,7 @@
 namespace gui
 {
   class Widget;
-  class GuiEnv;
+  class Ui;
 }
 
 #endif //__CAESARIA_GUI_PREDEFINITIONS_H_INCLUDED__

@@ -24,9 +24,9 @@
 using namespace constants;
 using namespace gfx;
 
-WalkerPtr WaterGarbage::create(PlayerCityPtr city)
+WaterGarbagePtr WaterGarbage::create(PlayerCityPtr city)
 {
-  WalkerPtr ret( new WaterGarbage( city ) );
+  WaterGarbagePtr ret( new WaterGarbage( city ) );
   ret->drop();
 
   return ret;
@@ -38,7 +38,8 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
   _setType( walker::waterGarbage );
   _animation.load( ResourceGroup::sprites, 93, 6 );
   _animation.setDelay( 2 );
-  _animation.setOffset( Point( 5, 7 ) );
+  _animation.setOffset( Point( -15, 0 ) );
+  setSpeedMultiplier( 0.5 + math::random( 10 ) / 10.f );
 
   setName( _("##water_garbage##") );
 }

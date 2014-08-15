@@ -30,8 +30,8 @@ CAESARIA_LITERALCONST(notifications)
 class Military::Impl
 {
 public:
-  PlayerCityPtr city;  
-  NotificationArray notifications;
+  Military::NotificationArray notifications;
+  DateTime lastEnemyAttack;
 };
 
 city::SrvcPtr Military::create(PlayerCityPtr city )
@@ -45,7 +45,6 @@ city::SrvcPtr Military::create(PlayerCityPtr city )
 Military::Military(PlayerCityPtr city )
   : city::Srvc( *city.object(), "military" ), _d( new Impl )
 {
-  _d->city = city;
 }
 
 void Military::update( const unsigned int time )
@@ -75,7 +74,7 @@ void Military::addNotification(const std::string& text, const Point& location)
   _d->notifications.push_back( n );
 }
 
-Military::Notification Military::getPriorityNotification() const
+Military::Notification Military::priorityNotification() const
 {
   return Notification();
 }
@@ -100,12 +99,14 @@ VariantMap Military::save() const
   }
 
   ret[ lc_notifications ] = vlNts;
+  ret[ "lastEnemyAttack" ] = _d->lastEnemyAttack;
 
   return ret;
 }
 
 void Military::load(const VariantMap& stream)
 {
+  _d->lastEnemyAttack = stream.get( "lastEnemyAttack" ).toDateTime();
   VariantMap vlNts = stream.get( lc_notifications ).toMap();
   foreach( it, vlNts )
   {
@@ -118,6 +119,9 @@ void Military::load(const VariantMap& stream)
     _d->notifications.push_back( n );
   }
 }
+
+int Military::month2lastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
+void Military::enemyAttack(){  _d->lastEnemyAttack = GameDate::current(); }
 
 std::string Military::defaultName()
 {

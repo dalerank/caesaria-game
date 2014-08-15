@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_FORUM_H_INCLUDED__
 #define __CAESARIA_FORUM_H_INCLUDED__
@@ -24,10 +26,13 @@ class Forum : public ServiceBuilding
 public:
   Forum();
 
-  int collectTaxes();
+  float collectTaxes();
   
   virtual void deliverService();
+  virtual unsigned int walkerDistance() const;
   virtual void applyService(ServiceWalkerPtr walker);
+  virtual void burn();
+  virtual void collapse();
 
 private:
   class Impl;

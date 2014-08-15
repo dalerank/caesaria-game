@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_ARCHIVE_SG2_HPP_INCLUDE_
 #define _CAESARIA_ARCHIVE_SG2_HPP_INCLUDE_
@@ -156,7 +158,7 @@ private:
   ByteArray _readData( const SgFileEntry& rec );
   void _loadIsometricImage( gfx::Picture& pic, const SgFileEntry& rec);
   void _loadPlainImage( gfx::Picture& pic, const SgFileEntry& rec);
-  void _set555Pixel( gfx::Picture& img, int x, int y, unsigned short color);
+  unsigned int _555toRGBA( unsigned short color);
   std::string _findFilenameCaseInsensitive(const std::string& directory, std::string filename);
   std::string _find555File(const SgFileEntry& rec);
 }; // class Sg2ArchiveReader

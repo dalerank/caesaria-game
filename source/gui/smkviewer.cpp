@@ -153,26 +153,26 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   if( !background )
   {
-    background.reset( Picture::create( imageSize ) );
+    background.reset( Picture::create( imageSize, 0, true ) );
   }
 
-  // draw button background
-  //background->fill( 0x0000000, Rect() );
-  background->lock();
-
+  unsigned int* pixels = background->lock();
+  unsigned int bw = background->width();
   if( s )
   {
-    for( unsigned int i = videoHeight - 1; i >= 0; i--)
+    for( int i = videoHeight - 1; i >= 0; i--)
     {
       for( unsigned int j = 0; j < videoWidth; j++ )
       {
         unsigned char index = image_data[i * videoWidth + j];
-        background->setPixel( Point( j, i ), colors[ index ] );
+        unsigned int* bufp32;
+        bufp32 = pixels + i * bw + j;
+        *bufp32 = colors[ index ];
       }
     }
   }
-
   background->unlock();
+  background->update();
 }
 
 void SmkViewer::Impl::updatePallete()
@@ -200,7 +200,7 @@ void SmkViewer::Impl::nextFrame()
   if( currentFrame+1 == frameCount )
   {
     currentFrame++;
-    onFinishSignal.emit();
+    oc3_emit onFinishSignal();
   }
 
   Logger::warning( " -> Frame %d...", currentFrame );
@@ -231,7 +231,7 @@ SmkViewer::~SmkViewer()
 //! draws the element and its children
 void SmkViewer::draw(gfx::Engine& painter )
 {
-  if ( !isVisible() )
+  if ( !visible() )
     return;
 
   // draw background

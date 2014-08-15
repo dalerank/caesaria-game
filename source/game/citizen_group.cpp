@@ -24,22 +24,34 @@ unsigned int CitizenGroup::count() const
   return ret;
 }
 
-unsigned int CitizenGroup::count( Age group ) const
+static std::pair<unsigned int, unsigned int> __getGroupRange( CitizenGroup::Age group )
 {
-  unsigned int tmin=0, tmax=0;
+  std::pair<unsigned int, unsigned int> ret(0, 0);
   switch( group )
   {
-  case newborn: tmax=1; break;
-  case child: tmin=childMin; tmax=8; break;
-  case scholar: tmin=9; tmax=15; break;
-  case student: tmin=16; tmax=20; break;
-  case mature: tmin=matureMin; tmax=50; break;
-  case aged: tmin=51; tmax=99; break;
-  case longliver: tmin=99; tmax=99; break;
+  case CitizenGroup::newborn: ret.second=1; break;
+  case CitizenGroup::child: ret.first=CitizenGroup::childMin; ret.second=8; break;
+  case CitizenGroup::scholar: ret.first=9; ret.second=15; break;
+  case CitizenGroup::student: ret.first=16; ret.second=20; break;
+  case CitizenGroup::mature: ret.first=CitizenGroup::matureMin; ret.second=50; break;
+  case CitizenGroup::aged: ret.first=51; ret.second=99; break;
+  case CitizenGroup::longliver: ret.second=99; ret.second=99; break;
   }
 
+  return ret;
+}
+
+unsigned int CitizenGroup::count( Age group ) const
+{
+  std::pair<unsigned int, unsigned int> range = __getGroupRange( group );
+
+  return count( range.first, range.second );
+}
+
+unsigned int CitizenGroup::count(unsigned int beginAge, unsigned int endAge) const
+{
   unsigned int ret=0;
-  for( unsigned int i=tmin; i<=tmax; i++)
+  for( unsigned int i=beginAge; i<=endAge; i++)
   {
     ret += _peoples[ i ];
   }
@@ -79,7 +91,33 @@ CitizenGroup CitizenGroup::retrieve(unsigned int rcount)
   return ret;
 }
 
-unsigned int& CitizenGroup::operator [](unsigned int age)
+CitizenGroup CitizenGroup::retrieve( Age group, unsigned int rcount)
+{
+  CitizenGroup ret;
+  std::pair<unsigned int, unsigned int> range = __getGroupRange( group );
+
+  while( rcount > 0 )
+  {
+    for( unsigned int age=range.first; age <= range.second; age++ )
+    {
+      unsigned int n = std::min( _peoples[ age ], 1u );
+
+      ret[ age ] += n;
+      _peoples[ age ] -= n;
+      rcount -= n;
+
+      if( rcount == 0 )
+        break;
+    }
+
+    if( count( group ) == 0 )
+      break;
+  }
+
+  return ret;
+}
+
+unsigned int& CitizenGroup::operator[](unsigned int age)
 {
   return _peoples[ age ];
 }

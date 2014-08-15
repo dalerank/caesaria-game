@@ -32,11 +32,15 @@
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "city/cityservice_health.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace gui
+{
+
+namespace advisorwnd
 {
 
 class HealthInfoLabel : public Label
@@ -68,16 +72,16 @@ public:
     default: break;
     }
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
     std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
-    font.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( *texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
-    font.draw( *texture, buildingWorkT, 165, 0 );
+    rfont.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
-    font.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( *texture, peoplesStrT, 255, 0 );
   }
 
 private:
@@ -87,15 +91,14 @@ private:
   int _peoplesCount;
 };
 
-class AdvisorHealthWindow::Impl
+class Health::Impl
 {
 public:
-  PictureRef background;
-
   HealthInfoLabel* lbBathsInfo;
   HealthInfoLabel* lbBarbersInfo;
   HealthInfoLabel* lbDoctorInfo;
   HealthInfoLabel* lbHospitalInfo;
+  Label* lbAdvice;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -105,53 +108,18 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service )
-  {
-    city::Helper helper( city );
-
-    InfrastructureInfo ret;
-
-    ret.buildingWork = 0;
-    ret.peoplesServed = 0;
-    ret.buildingCount = 0;
-
-    ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
-    foreach( b, srvBuildings )
-    {
-      ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
-      ret.buildingCount++;
-    }
-
-    return ret;
-  }
+  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  void updateAdvice( PlayerCityPtr city );
 };
 
 
-AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+Health::Health(PlayerCityPtr city, Widget* parent, int id )
+: Window( parent, Rect( 0, 0, 640, 290 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 290 ) ) );
+  setupUI( ":/gui/healthadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* title = new Label( this, Rect( 60, 10, width() - 10, 10 + 40) );
-  title->setText( _("##health_advisor##") );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( align::upperLeft, align::center );
-
-  _d->background.reset( Picture::create( size() ) );
-
-  //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
-  Picture& icon = Picture::load( ResourceGroup::panelBackground, 261 );
-  _d->background->draw( icon, Point( 11, 11 ) );
-
-  //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 35, 110, width() - 35, 110 + 85 ), PictureDecorator::blackFrame );
-
-  Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 92, false );
-  font.draw( *_d->background, _("##max_available##"), 290, 92, false );
-  font.draw( *_d->background, _("##coverage##"), 480, 92, false );
+  _d->lbAdvice = findChildA<Label*>( "lbAvice", true, this );
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );
@@ -165,23 +133,93 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
 
   info = _d->getInfo( city, building::doctor );
   _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), building::doctor,
-                                              info.buildingWork, info.buildingCount, info.peoplesServed );
+                                          info.buildingWork, info.buildingCount, info.peoplesServed );
 
   info = _d->getInfo( city, building::hospital );
   _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), building::hospital,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+
+  _d->updateAdvice( city );
 }
 
-void AdvisorHealthWindow::draw( gfx::Engine& painter )
+void Health::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
+  Window::draw( painter );
+}
 
-  Widget::draw( painter );
+Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
+{
+  city::Helper helper( city );
+
+  InfrastructureInfo ret;
+
+  ret.buildingWork = 0;
+  ret.peoplesServed = 0;
+  ret.buildingCount = 0;
+
+  ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
+  foreach( b, srvBuildings )
+  {
+    ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
+    ret.buildingCount++;
+  }
+
+  return ret;
+}
+
+void Health::Impl::updateAdvice(PlayerCityPtr c)
+{
+  if( !lbAdvice )
+    return;
+
+  city::HealthCarePtr hc;
+  hc << c->findService( city::HealthCare::defaultName() );
+
+  StringArray outText;
+
+  if( c->population() < 100 )
+  {
+    outText << "##healthadv_not_need_health_service_now##";
+  }
+  else
+  {
+    if( c->population() < 300 )
+    {
+      if( hc.isValid() && hc->value() > 85 )
+      {
+        outText << "##healthadv_noproblem_small_city##";
+      }
+    }
+    else
+    {
+      city::Helper helper( c );
+      HouseList houses =  helper.find<House>( building::house );
+
+      unsigned int needBath = 0;
+      foreach( it, houses )
+      {
+        HousePtr house = *it;
+        needBath += house->isHealthNeed( Service::baths );
+      }
+
+      if( needBath > 0 )
+      {
+        outText << "##healthadv_some_regions_need_bath##";
+      }
+    }
+  }
+
+  std::string text = outText.empty()
+                        ? "##healthadv_unknown_reason##"
+                        : outText.random();
+  lbAdvice->setText( text );
+}
+
 }
 
 }//end namespace gui

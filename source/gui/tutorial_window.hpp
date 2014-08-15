@@ -13,18 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_TUTORIAL_WINDOW_H_INCLUDE_
 #define _CAESARIA_TUTORIAL_WINDOW_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "gameautopause.hpp"
 
 namespace gui
 {
 
-class TutorialWindow : public Widget
+class TutorialWindow : public Window
 {
 public:
   TutorialWindow(Widget* parent, vfs::Path tutorial );

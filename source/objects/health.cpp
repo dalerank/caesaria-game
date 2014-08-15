@@ -50,11 +50,9 @@ Baths::Baths() : ServiceBuilding(Service::baths, building::baths, Size(2) )
 
 unsigned int Baths::walkerDistance() const {  return 35;}
 
-void Baths::build(PlayerCityPtr city, const TilePos& pos)
+bool Baths::build(PlayerCityPtr city, const TilePos& pos)
 {
-  ServiceBuilding::build( city, pos );
-
-  //CityHelper helper( city );
+  return ServiceBuilding::build( city, pos );
 }
 
 bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
@@ -67,7 +65,7 @@ void Baths::timeStep(const unsigned long time)
 
     bool haveWater = false;
     TilesArray tiles = helper.getArea( this );
-    foreach( tile, tiles ) { haveWater |= (*tile)->waterService( WTR_RESERVOIR ) > 0; }
+    foreach( tile, tiles ) { haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0; }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
   }
 

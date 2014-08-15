@@ -21,12 +21,17 @@
 namespace gui
 {
 
-class InfoboxRuins : public InfoboxSimple
+namespace infobox
+{
+
+class AboutRuins : public Simple
 {
 public:
-  InfoboxRuins( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxRuins();
+  AboutRuins( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutRuins();
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXRUINS_H_INCLUDE_

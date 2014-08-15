@@ -30,6 +30,7 @@ public:
 
   bool isNeedWeapons() const;
   virtual void storeGoods(GoodStock &stock, const int amount);
+  virtual std::string workersProblemDesc() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

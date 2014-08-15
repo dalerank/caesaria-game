@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include <cstdio>
 
 #include "info_box.hpp"
@@ -51,7 +50,6 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "events/event.hpp"
-#include "game/settings.hpp"
 #include "objects/well.hpp"
 #include "image.hpp"
 #include "core/foreach.hpp"
@@ -65,7 +63,10 @@ using namespace gfx;
 namespace gui
 {
 
-class InfoboxSimple::Impl
+namespace infobox
+{
+
+class Simple::Impl
 {
 public:
   Label* lbBackground;
@@ -77,7 +78,6 @@ public:
   bool isAutoPosition;
   GameAutoPause autopause;
 
-
   Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
     lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)
   {
@@ -85,14 +85,14 @@ public:
   }
 };
 
-InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
-: Widget( parent, id, rect ), _d( new Impl )
+Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
+: Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->autopause.activate();
   WidgetEscapeCloser::insertTo( this );
 
   // create the title
-  Widget::setupUI( GameSettings::rcpath( "/gui/infobox.gui" ) );
+  setupUI( ":/gui/infobox.gui" );
 
   _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
   _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
@@ -113,8 +113,8 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
     _d->btnHelp->bringToFront();
   }
 
-  CONNECT( _d->btnExit, onClicked(), this, InfoboxSimple::deleteLater );
-  CONNECT( _d->btnHelp, onClicked(), this, InfoboxSimple::showDescription );
+  CONNECT( _d->btnExit, onClicked(), this, Simple::deleteLater );
+  CONNECT( _d->btnHelp, onClicked(), this, Simple::showDescription );
 
   // black box
   Point lastPos( width() - 32, height() - 48 );
@@ -128,32 +128,32 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   if( _d->lbText && blackArea.width() == 0 )
   {
     Rect r = _d->lbText->relativeRect();
-    r.LowerRightCorner = _d->btnExit->rightupCorner();
+    r.LowerRightCorner = _d->btnExit->righttop();
     _d->lbText->setGeometry( r );
   }
 
   _afterCreate();
 }
 
-void InfoboxSimple::setText( const std::string& text )
+void Simple::setText( const std::string& text )
 {
   if( _d->lbText ) { _d->lbText->setText( text ); }
 }
 
-InfoboxSimple::~InfoboxSimple() {}
+Simple::~Simple() {}
 
-void InfoboxSimple::draw(gfx::Engine& engine )
+void Simple::draw(gfx::Engine& engine )
 {
-  Widget::draw( engine );
+  Window::draw( engine );
 }
 
-bool InfoboxSimple::isPointInside( const Point& point ) const
+bool Simple::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
   return parent()->absoluteRect().isPointInside( point );
 }
 
-bool InfoboxSimple::onEvent( const NEvent& event)
+bool Simple::onEvent( const NEvent& event)
 {
   switch( event.EventType )
   {
@@ -176,28 +176,33 @@ bool InfoboxSimple::onEvent( const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void InfoboxSimple::setTitle( const std::string& title )
+void Simple::setTitle( const std::string& title )
 {
   if( _d->lbTitle ) { _d->lbTitle->setText( title ); }
 }
 
-bool InfoboxSimple::isAutoPosition() const{  return _d->isAutoPosition;}
-void InfoboxSimple::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
+bool Simple::isAutoPosition() const{  return _d->isAutoPosition;}
+void Simple::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
 
-void InfoboxSimple::setupUI(const VariantMap& ui)
+void Simple::setupUI(const VariantMap& ui)
 {
-  Widget::setupUI( ui );
+  Window::setupUI( ui );
 
   _d->isAutoPosition = ui.get( "autoPosition", true );
 }
 
-Label* InfoboxSimple::_lbTitleRef(){  return _d->lbTitle;}
+void Simple::setupUI(const vfs::Path& filename)
+{
+  Window::setupUI( filename );
+}
 
-Label* InfoboxSimple::_lbTextRef(){ return _d->lbText; }
-Label* InfoboxSimple::_lbBlackFrameRef(){  return _d->lbBlackFrame; }
-PushButton*InfoboxSimple::_btnExitRef() { return _d->btnExit; }
+Label* Simple::_lbTitleRef(){  return _d->lbTitle;}
 
-void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
+Label* Simple::_lbTextRef(){ return _d->lbText; }
+Label* Simple::_lbBlackFrameRef(){  return _d->lbBlackFrame; }
+PushButton*Simple::_btnExitRef() { return _d->btnExit; }
+
+void Simple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
   _d->lbBlackFrame->setVisible( need > 0 );
   if( !_d->lbBlackFrame || 0 == need)
@@ -207,17 +212,18 @@ void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
   std::string text = StringHelper::format( 0xff, "%d %s (%d %s)",
                                            have, _("##employers##"),
                                            need, _("##requierd##") );
-  _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), pos );
+  _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
   _d->lbBlackFrame->setText( text );
-  _d->lbBlackFrame->setTextOffset( Point( pos.x() + 30, 0 ) );
 }
 
 
 InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
+  : Simple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
   BuildingPtr building = ptr_cast<Building>( tile.overlay() );
   setTitle( MetaDataHolder::findPrettyName( building->type() ) );
+}
+
 }
 
 }//end namespace gui

@@ -1,6 +1,6 @@
 {  
  title : "##tutorial_fire##"
- sound : "fanfare.wav"
+ sound : "fanfare"
  items : [ "##tutorial_prefecture_info##",
            "@img=picture2_00005", 
            "##tutorial_prefect_detect_fire##",

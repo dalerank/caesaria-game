@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
 #define _CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
@@ -30,13 +32,15 @@ class Dispatcher : public StaticSingleton<Dispatcher>
 {
 public:
   Dispatcher();
-  ~Dispatcher();
+  virtual ~Dispatcher();
 
   void append( GameEventPtr event );
   void update( Game& game, unsigned int time );
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+  void reset();
 
 private:
   class Impl;

@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
+#include "house.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
 
@@ -44,13 +45,46 @@ void Well::deliverService()
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
-  foreach( it, reachedBuildings) { (*it)->applyService( walker ); }
+  unsigned int lowHealth = 100;
+  HouseList houses;
+  foreach( it, reachedBuildings)
+  {
+    (*it)->applyService( walker );
+    HousePtr house = ptr_cast<House>( *it );
+    if( house.isValid() )
+    {
+      lowHealth = std::min<unsigned int>( lowHealth, house->state( (Construction::Param)House::health ) );
+      houses << house;
+    }
+  }
+
+  if( lowHealth < 30 )
+  {
+    lowHealth = (100 - lowHealth) / 10;
+    foreach( it, houses)
+    {
+      if( (*it)->state( (Construction::Param)House::health ) > 10 )
+      {
+        (*it)->updateState( (Construction::Param)House::health, -lowHealth );
+      }
+    }
+  }
 }
 
 bool Well::isNeedRoadAccess() const {  return false; }
+void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
-TilesArray Well::getCoverageArea() const
+bool Well::build(PlayerCityPtr city, const TilePos &pos)
+{
+  ServiceBuilding::build( city, pos );
+
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  return true;
+}
+
+
+TilesArray Well::coverageArea() const
 {
   TilesArray ret;
 

@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "scribemessage.hpp"
+#include "core/gettext.hpp"
 #include "gui/film_widget.hpp"
 #include "gui/event_messagebox.hpp"
 #include "good/goodhelper.hpp"
@@ -28,7 +29,6 @@
 using namespace constants;
 
 namespace {
-CAESARIA_LITERALCONST(send2scribe)
 CAESARIA_LITERALCONST(title)
 CAESARIA_LITERALCONST(text)
 CAESARIA_LITERALCONST(video)
@@ -38,6 +38,16 @@ CAESARIA_LITERALCONST(position)
 
 namespace events
 {
+
+class ShowInfobox::Impl
+{
+public:
+  std::string title, text;
+  bool send2scribe;
+  vfs::Path video;
+  Point position;
+  Good::Type gtype;
+};
 
 GameEventPtr ShowInfobox::create()
 {
@@ -49,10 +59,10 @@ GameEventPtr ShowInfobox::create()
 GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, Good::Type type, bool send2scribe)
 {
   ShowInfobox* ev = new ShowInfobox();
-  ev->_title = title;
-  ev->_text = text;
-  ev->_gtype = type;
-  ev->_send2scribe = send2scribe;
+  ev->_d->title = title;
+  ev->_d->text = text;
+  ev->_d->gtype = type;
+  ev->_d->send2scribe = send2scribe;
 
   GameEventPtr ret( ev );
   ret->drop();
@@ -63,11 +73,11 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
 GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, bool send2scribe, const vfs::Path &video)
 {
   ShowInfobox* ev = new ShowInfobox();
-  ev->_title = title;
-  ev->_text = text;
-  ev->_video = video;
-  ev->_gtype = Good::none;
-  ev->_send2scribe = send2scribe;
+  ev->_d->title = title;
+  ev->_d->text = text;
+  ev->_d->video = video;
+  ev->_d->gtype = Good::none;
+  ev->_d->send2scribe = send2scribe;
 
   GameEventPtr ret( ev );
   ret->drop();
@@ -77,40 +87,45 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
 
 void ShowInfobox::load(const VariantMap& stream)
 {
-  _title = stream.get( lc_title ).toString();
-  _text = stream.get( lc_text ).toString();
-  _send2scribe = stream.get( lc_send2scribe );
-  _gtype = GoodHelper::getType( stream.get( lc_good ).toString() );
-  _position = stream.get( lc_position ).toPoint();
-  _video = stream.get( lc_video ).toString();
+  _d->title = stream.get( lc_title ).toString();
+  _d->text = stream.get( lc_text ).toString();
+  _d->gtype = GoodHelper::getType( stream.get( lc_good ).toString() );
+  _d->position = stream.get( lc_position ).toPoint();
+  _d->video = stream.get( lc_video ).toString();
+  VARIANT_LOAD_ANY_D(_d,send2scribe,stream);
+}
+
+VariantMap ShowInfobox::save() const
+{
+  return VariantMap();
 }
 
 bool ShowInfobox::_mayExec(Game& game, unsigned int time) const{  return true;}
 
-ShowInfobox::ShowInfobox()
+ShowInfobox::ShowInfobox() : _d( new Impl )
 {
 
 }
 
 void ShowInfobox::_exec( Game& game, unsigned int )
 {
-  if( _video.toString().empty() )
+  if( _d->video.toString().empty() )
   {
-    gui::EventMessageBox* msgWnd = new gui::EventMessageBox( game.gui()->rootWidget(), _title, _text,
-                                                             GameDate::current(), _gtype );
+    gui::EventMessageBox* msgWnd = new gui::EventMessageBox( game.gui()->rootWidget(), _d->title, _d->text,
+                                                             GameDate::current(), _d->gtype );
     msgWnd->show();
   }
   else
   {
-    gui::FilmWidget* wnd = new gui::FilmWidget( game.gui()->rootWidget(), _video );
-    wnd->setTitle( _title );
-    wnd->setText( _text );
+    gui::FilmWidget* wnd = new gui::FilmWidget( game.gui()->rootWidget(), _d->video );
+    wnd->setTitle( _( _d->title ) );
+    wnd->setText( _( _d->text ) );
     wnd->show();
   }
 
-  if( _send2scribe )
+  if( _d->send2scribe )
   {
-    GameEventPtr e = ScribeMessage::create( _title, _text, _gtype, _position );
+    GameEventPtr e = ScribeMessage::create( _d->title, _d->text, _d->gtype, _d->position );
     e->dispatch();
   }
 }

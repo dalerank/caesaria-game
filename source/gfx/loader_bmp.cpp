@@ -1,7 +1,23 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 #include "loader_bmp.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
-#include "gfx/engine.hpp"
 
 #include <SDL.h>
 
@@ -30,7 +46,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
 {
   //Get the bitmap's buffer and size from the resource file
   if( !file.isOpen() )
-        return Picture::getInvalid();
+    return Picture::getInvalid();
 
   int filesize = file.size();
   ByteArray data = file.readAll();
@@ -43,22 +59,20 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
   //Were we able to load the bitmap?
   if (temp == NULL)
   {
-        Logger::warning( "Unable to load bitmap: %s", SDL_GetError());
-        return Picture::getInvalid();
+    Logger::warning( "Unable to load bitmap: %s", SDL_GetError());
+    return Picture::getInvalid();
   }
 
-  Picture pic;
-  pic.init( temp, Point(0, 0) );
-  Engine::instance().loadPicture( pic );
+  Picture* pic = Picture::create( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
 
-  if( pic.size().area() == 0 )
+  if( pic->size().area() == 0 )
   {
     Logger::warning( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 
 	//Return our loaded image
-	return pic;
+  return *pic;
 }
 
 

@@ -26,12 +26,15 @@
 namespace gui
 {
 
+namespace infobox
+{
+
 // info box about a service building
-class InfoboxWorkingBuilding : public InfoboxConstruction
+class AboutWorkingBuilding : public AboutConstruction
 {
   static const int lbHelpId=2;
 public:
-  InfoboxWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
+  AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
   
   void drawWorkers( int );
   virtual void setText(const std::string& text);
@@ -44,6 +47,8 @@ protected:
 private:
   WorkingBuildingPtr _working;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_WORKING_H_INCLUDE_

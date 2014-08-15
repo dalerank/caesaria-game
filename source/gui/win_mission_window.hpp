@@ -12,18 +12,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
 #define _CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "gameautopause.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class WinMissionWindow : public Widget
+class WinMissionWindow : public Window
 {
 public:
   WinMissionWindow(Widget* parent, std::string newTitle,

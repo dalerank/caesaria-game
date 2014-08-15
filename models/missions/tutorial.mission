@@ -1,10 +1,13 @@
 {
   version : 1
-  map : "/maps/Tutorial1.sav"
+  map : ":/maps/Tutorial1.sav"
   funds : 8000
+  city.name : "Brundisium"
+  player.rank : 0
   date : "-350.01.01"
   finish : "-300.01.01"
   adviserEnabled : false
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -13,7 +16,7 @@
     prosperity : 0
     peace : 0
     favour : 0
-    next : "/missions/tutorial2.mission"
+    next : ":/missions/tutorial2.mission"
     title : "##clerk##"
     may_continue : false
     short : "##build_some_houses##"
@@ -36,11 +39,11 @@
         "step_1.video#messagebox" : {
           title : "##city_fire_title##"
           text : "##city_fire_text##"
-          video : "/smk/city_fire.smk"
+          video : ":/smk/city_fire.smk"
         }
 
         "step_2.fire#tutorial_window" : {
-          tutorial : "/tutorial/first_fire.tutorial"
+          tutorial : ":/tutorial/first_fire.tutorial"
         }
 
         "step_3.prefecture#building_options" :  {
@@ -54,7 +57,7 @@
       strong : 25
       exec : {
         "first_collapse#tutorial_window" : {
-          tutorial : "/tutorial/first_collapse.tutorial"
+          tutorial : ":/tutorial/first_collapse.tutorial"
         }
 
         "enable_engineer#building_options" : {
@@ -65,7 +68,7 @@
 
     "tutorial#tutorial_window" : {
       population : 80
-      tutorial : "/tutorial/religion.tutorial"
+      tutorial : ":/tutorial/religion.tutorial"
     }
 
     "enable_religion#building_options" : {

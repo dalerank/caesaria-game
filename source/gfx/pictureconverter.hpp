@@ -28,10 +28,10 @@ namespace gfx
 class PictureConverter
 {
 public:
-  static void convToGrayscale( Picture& dst, const Picture& src );
-  static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
-  static void maskColor( Picture& dst, const Picture& src, int rmask=0x00ff0000, int gmask=0x0000ff00,
-                         int bmask=0x000000ff, int amask=0xff000000 );
+  static void convToGrayscale( Picture& dst, Picture& src );
+  static void rgbBalance(Picture& dst, Picture& src, int lROffset, int lGOffset, int lBOffset );
+  static void maskColor( const Picture& dst, const Picture& src, unsigned char r=0xff, unsigned char g=0xff, unsigned char b=0xff, unsigned char a=0xff);
+  static void flipVertical( Picture& pic );
   static ByteArray save( Picture& pic, const std::string& type );
   static void save(Picture& pic, const std::string& filename , const std::string& type);
 

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_IMMIGRANT_H_INCLUDED__
 #define __CAESARIA_IMMIGRANT_H_INCLUDED__
@@ -43,6 +43,7 @@ public:
   virtual bool die();
 
 protected:
+  virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
@@ -55,8 +56,9 @@ protected:
   HousePtr _findBlankHouse();
   Pathway _findSomeWay(TilePos startPoint );
 
-protected:
   const CitizenGroup& _getPeoples() const;
+  bool _checkNearestHouse();
+  void _append2house(HousePtr house);
 
 private:
   class Impl;

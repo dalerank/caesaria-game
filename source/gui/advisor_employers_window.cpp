@@ -28,7 +28,6 @@
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "city/funds.hpp"
-#include "game/settings.hpp"
 #include "world/empire.hpp"
 #include "objects/constants.hpp"
 #include "objects/working.hpp"
@@ -44,6 +43,9 @@ using namespace gfx;
 using namespace city;
 
 namespace gui
+{
+
+namespace advisorwnd
 {
 
 namespace {
@@ -62,8 +64,16 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
+    _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
 
-    setTooltipText( _("##empbutton_tooltip##") );
+    int percentage = math::percentage( have, need );
+    std::string tooltip;
+    if( percentage > 90 ) tooltip = "##empbutton_tooltip##";
+    else if( percentage > 75 ) tooltip = "##empbutton_simple_work##";
+    else if( percentage > 50 ) tooltip = "##empbutton_low_work##";
+    else tooltip = "##empbutton_tooltip##";
+
+    setTooltipText( _(tooltip) );
   }
 
   void setPriority( int priority )
@@ -76,46 +86,58 @@ oc3_signals public:
   Signal1<Industry::Type> onClickedSignal;
 
 protected:
-  virtual void _updateTexture( ElementState state )
-  {
-    PushButton::_updateTexture( state );
 
-    PictureRef& pic = _textPictureRef( state );
+  virtual void _updateTextPic()
+  {
+    PushButton::_updateTextPic();
+
+    PictureRef& pic = _textPictureRef();
 
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( *pic, _title, 130, 2 );
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2 );
+    font.draw( *pic, _title, 130, 2, true, false );
+    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2 );
+    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
 
     if( _priority > 0 )
     {
-      Picture lock = Picture::load( ResourceGroup::panelBackground, 238 );
-      pic->draw( lock, Point( 45, 4), false );
       font.setColor( DefaultColors::black );
-      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 4 ) );
+      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 3 ), true, false );
+    }
+
+    pic->update();
+  }
+
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    if( _priority > 0 )
+    {
+      painter.draw( _lockPick, absoluteRect().lefttop() + Point( 45, 4), &absoluteClippingRectRef() );
     }
   }
 
   virtual void _btnClicked()
   {
     PushButton::_btnClicked();
-    oc3_emit onClickedSignal( (Industry::Type)getID() );
+    oc3_emit onClickedSignal( (Industry::Type)ID() );
   }
 
 private:
   std::string _title;
+  Picture _lockPick;
   int _priority;
   int _needWorkers;
   int _haveWorkers;
 };
 
-class AdvisorEmployerWindow::Impl
+class Employer::Impl
 {
 public:
   typedef std::vector< TileOverlay::Type > BldTypes;
@@ -145,13 +167,13 @@ public:
   void update();
   EmployersInfo getEmployersInfo( Industry::Type type );
 
-  EmployerButton* addButton( AdvisorEmployerWindow* parent, const Point& startPos, Industry::Type priority, const std::string& title );
+  EmployerButton* addButton( Employer* parent, const Point& startPos, Industry::Type priority, const std::string& title );
 };
 
-void AdvisorEmployerWindow::Impl::increaseSalary() { changeSalary( +1 );}
-void AdvisorEmployerWindow::Impl::decreaseSalary() { changeSalary( -1 );}
+void Employer::Impl::increaseSalary() { changeSalary( +1 );}
+void Employer::Impl::decreaseSalary() { changeSalary( -1 );}
 
-void AdvisorEmployerWindow::Impl::updateWorkersState()
+void Employer::Impl::updateWorkersState()
 {
   int workers = city::Statistic::getAvailableWorkersNumber( city );
   int worklessPercent = city::Statistic::getWorklessPercent( city );
@@ -167,18 +189,18 @@ void AdvisorEmployerWindow::Impl::updateWorkersState()
   }
 }
 
-void AdvisorEmployerWindow::Impl::updateYearlyWages()
+void Employer::Impl::updateYearlyWages()
 {
   if( lbYearlyWages )
   {
-    int wages = city::Statistic::getMontlyWorkersWages( city ) * DateTime::monthsInYear;
+    int wages = city::Statistic::getMonthlyWorkersWages( city ) * DateTime::monthsInYear;
     std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
     lbYearlyWages->setText( wagesStr );
   }
 }
 
-void AdvisorEmployerWindow::Impl::changeSalary(int relative)
+void Employer::Impl::changeSalary(int relative)
 {
   int currentSalary = city->funds().workerSalary();
   city->funds().setWorkerSalary( currentSalary+relative );
@@ -186,36 +208,46 @@ void AdvisorEmployerWindow::Impl::changeSalary(int relative)
   updateYearlyWages();
 }
 
-void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
+void Employer::Impl::showPriorityWindow( Industry::Type industry )
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
+  city::WorkersHirePtr wh;
+  wh << city->findService( city::WorkersHire::defaultName() );
+
   int priority = wh->getPriority( industry );
-  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->getEnvironment()->rootWidget(), industry, priority );
+  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->ui()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
-void AdvisorEmployerWindow::Impl::setIndustryPriority(Industry::Type industry, int priority)
+void Employer::Impl::setIndustryPriority(Industry::Type industry, int priority)
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
-  wh->setIndustryPriority( industry, priority );
+  city::WorkersHirePtr wh;
+  wh << city->findService( city::WorkersHire::defaultName() );
 
-  empButtons[ industry ]->setPriority( priority );
+  if( wh.isValid() )
+  {
+    wh->setIndustryPriority( industry, priority );
+    empButtons[ industry ]->setPriority( priority );
+  }
 
   update();
 }
 
-void AdvisorEmployerWindow::Impl::update()
+void Employer::Impl::update()
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
+  city::WorkersHirePtr wh;
+  wh << city->findService( city::WorkersHire::defaultName() );
+
+  if( wh.isNull() )
+    return;
 
   foreach( i, empButtons )
   {
-    int priority = wh->getPriority( (Industry::Type)(*i)->getID() );
+    int priority = wh->getPriority( (Industry::Type)(*i)->ID() );
     (*i)->setPriority( priority );
   }
 }
 
-void AdvisorEmployerWindow::Impl::updateSalaryLabel()
+void Employer::Impl::updateSalaryLabel()
 {
   int pay = city->funds().workerSalary();
   int romePay = city->empire()->workerSalary();
@@ -229,7 +261,7 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
   }
 }
 
-AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo(Industry::Type type )
+Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type type )
 {
   std::vector<building::Group> bldGroups = city::Industry::toGroups( type );
 
@@ -251,12 +283,13 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   return ret;
 }
 
-EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* parent, const Point& startPos,
-                                                        Industry::Type priority, const std::string& title )
+EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startPos,
+                                           Industry::Type priority, const std::string& title )
 {
   EmployersInfo info = getEmployersInfo( priority );
 
   EmployerButton* btn = new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
+  btn->setTooltipText( _("##empbutton_tooltip##") );
   btn->setText( "" );
   empButtons[ priority ] = btn;
 
@@ -265,10 +298,10 @@ EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* p
   return btn;
 }
 
-AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
-  setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );
+  Widget::setupUI( ":/gui/employersadv.gui" );
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
@@ -301,15 +334,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   _d->update();
 }
 
-void AdvisorEmployerWindow::draw(Engine& painter )
+void Employer::draw(Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
-bool AdvisorEmployerWindow::onEvent(const NEvent& event)
+bool Employer::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -317,6 +350,8 @@ bool AdvisorEmployerWindow::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
 }
 
 }//end namespace gui

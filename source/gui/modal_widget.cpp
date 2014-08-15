@@ -54,36 +54,35 @@ bool ModalScreen::_canTakeFocus(Widget* target) const
             ;
 }
 
-bool ModalScreen::isVisible() const
+bool ModalScreen::visible() const
 {
-    // any parent invisible?
-    Widget* parentElement = parent();
-    while ( parentElement )
-    {
-        if ( !parentElement->isVisible() )
-            return false;
+  // any parent invisible?
+  Widget* parentElement = parent();
+  while ( parentElement )
+  {
+    if ( !parentElement->visible() )
+      return false;
 
-        parentElement = parentElement->parent();
-    }
+    parentElement = parentElement->parent();
+  }
 
-    // if we have no children then the modal is probably abused as a way to block input
-    if( getChildren().empty() )
-    {
-        return Widget::isVisible();
-    }
+  // if we have no children then the modal is probably abused as a way to block input
+  if( children().empty() )
+  {
+    return Widget::visible();
+  }
 
-    // any child visible?
-    bool visible = false;
-    ConstChildIterator it = getChildren().begin();
-    for (; it != getChildren().end(); ++it)
+  // any child visible?
+  bool visible = false;
+  foreach( it, children() )
+  {
+    if ( (*it)->visible() )
     {
-        if ( (*it)->isVisible() )
-        {
-            visible = true;
-            break;
-        }
+      visible = true;
+      break;
     }
-    return visible;
+  }
+  return visible;
 }
 
 bool ModalScreen::isPointInside(const Point& point) const
@@ -94,7 +93,7 @@ bool ModalScreen::isPointInside(const Point& point) const
 //! called if an event happened.
 bool ModalScreen::onEvent(const NEvent& event)
 {
-  if (!isEnabled() || !isVisible() )
+  if (!enabled() || !visible() )
     return Widget::onEvent(event);
 
 	switch(event.EventType)
@@ -105,8 +104,8 @@ bool ModalScreen::onEvent(const NEvent& event)
 		case guiElementFocused:
 			if ( !_canTakeFocus(event.gui.caller))
 			{
-				if ( !getChildren().empty() )
-					(*getChildren().begin())->setFocus();
+				if ( !children().empty() )
+					(*children().begin())->setFocus();
 				else
 					setFocus();
 			}
@@ -118,8 +117,8 @@ bool ModalScreen::onEvent(const NEvent& event)
 			{
 				if ( isMyChild(event.gui.caller) )
 				{
-					if ( !getChildren().empty() )
-						(*getChildren().begin())->setFocus();
+					if ( !children().empty() )
+						(*children().begin())->setFocus();
 					else
 						setFocus();
 				}
@@ -167,10 +166,10 @@ void ModalScreen::draw(gfx::Engine& painter )
 	{
 		Rect r;
 
-		Widget::Widgets children = getChildren();
-		foreach( w, children )
+		Widget::Widgets rchildren = children();
+		foreach( w, rchildren )
 		{
-			if( (*w)->isVisible())
+			if( (*w)->visible())
 			{
 				r = (*w)->absoluteRect();
 				r.LowerRightCorner += Point( 1, 1 );
@@ -189,7 +188,7 @@ void ModalScreen::removeChild(Widget* child)
 {
 	Widget::removeChild(child);
 
-	if (getChildren().empty())
+	if (children().empty())
 	{
 		deleteLater();
 	}

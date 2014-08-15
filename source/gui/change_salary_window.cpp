@@ -18,7 +18,6 @@
 #include "change_salary_window.hpp"
 #include "pushbutton.hpp"
 #include "listbox.hpp"
-#include "game/settings.hpp"
 #include "core/logger.hpp"
 #include "world/empire.hpp"
 #include "core/gettext.hpp"
@@ -40,9 +39,9 @@ public oc3_signals:
 };
 
 ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
-  : Widget( p, -1, Rect() ), __INIT_IMPL(ChangeSalaryWindow)
+  : Window( p, Rect(), "" ), __INIT_IMPL(ChangeSalaryWindow)
 {
-  setupUI( GameSettings::rcpath( "/gui/changesalary.gui") );
+  setupUI( ":/gui/changesalary.gui");
   setCenter( parent()->center() );
 
   _dfunc()->newSalary = salary;
@@ -50,10 +49,10 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
   ListBox* lbx = findChildA<ListBox*>( "lbxTitles", true, this );
   if( lbx )
   {
-    world::GovernorRanks ranks = world::EmpireHelper::getRanks();
+    world::GovernorRanks ranks = world::EmpireHelper::ranks();
     foreach( i, ranks )
     {
-      ListBoxItem& item = lbx->addItem( _( (*i).prettyName ) );
+      ListBoxItem& item = lbx->addItem( _( (*i).pretty ) );
       item.setTag( (*i).salary );
       if( (*i).salary == salary )
       {

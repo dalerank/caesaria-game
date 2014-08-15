@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOX_GRANARY_H_INCLUDE_
 #define _CAESARIA_INFOBOX_GRANARY_H_INCLUDE_
@@ -21,12 +23,15 @@
 namespace gui
 {
 
+namespace infobox
+{
+
 // info box about a granary
-class InfoboxGranary : public InfoboxConstruction
+class AboutGranary : public AboutConstruction
 {
 public:
-  InfoboxGranary( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxGranary();
+  AboutGranary( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutGranary();
   
   void drawGood(Good::Type goodType, int, int);
   void showSpecialOrdersWindow();
@@ -34,6 +39,8 @@ public:
 private:
   GranaryPtr _granary;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_GRANARY_H_INCLUDE_

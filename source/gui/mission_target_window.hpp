@@ -20,12 +20,12 @@
 
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "widget.hpp"
+#include "window.hpp"
 
 namespace gui
 {
 
-class MissionTargetsWindow : public Widget  
+class MissionTargetsWindow : public Window
 {
 public:
   static MissionTargetsWindow* create( Widget* parent, PlayerCityPtr city , int id=-1 );

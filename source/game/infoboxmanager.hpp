@@ -25,31 +25,40 @@
 #include "enums.hpp"
 #include "gui/info_box.hpp"
 
-class InfoboxManager;
-typedef SmartPtr< InfoboxManager > InfoBoxManagerPtr;
+namespace gui
+{
+
+namespace infobox
+{
+
+class Manager;
+typedef SmartPtr< Manager > InfoBoxManagerPtr;
 
 class InfoboxCreator
 {
 public:
-  virtual gui::InfoboxSimple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
+  virtual gui::infobox::Simple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
-class InfoboxManager : public ReferenceCounted
+class Manager : public ReferenceCounted
 {
 public:
-  static InfoboxManager& getInstance();
+  static Manager& getInstance();
 
-  void showHelp( PlayerCityPtr city, gui::GuiEnv* gui, TilePos tile );
+  void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
   void addInfobox( const gfx::TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
   bool canCreate( const gfx::TileOverlay::Type type ) const;
 private:
-  InfoboxManager();
-  virtual ~InfoboxManager();
+  Manager();
+  virtual ~Manager();
    
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
+}
+
+}
 #endif //__CAESARIA_INFOBOX_MANAGER_H_INCLUDE_

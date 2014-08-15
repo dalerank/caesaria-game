@@ -25,7 +25,7 @@ class PlaySound : public GameEvent
 {
 public:
   static GameEventPtr create(std::string rc, int index, int volume );
-  static GameEventPtr create(std::string filename, int volume );
+  static GameEventPtr create(std::string filename, int volume, bool theme=false );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -36,6 +36,7 @@ private:
 
   std::string _sound;
   int _volume;
+  bool _theme;
 };
 
 }

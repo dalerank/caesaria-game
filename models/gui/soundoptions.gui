@@ -1,129 +1,124 @@
 {  
   geometry : [ 0, 0, 350, 225 ]
+  bgtype : "whiteFrame"
   
   lbTitle#Label :
   {
-    font : "FONT_3"
+    font : "FONT_5"
     geometryf : [ 0.05, 0.05, 0.95, 0.2 ]
     text : "##game_sound_options##"
     textAlign : [ "center", "center" ]
   }
 
-	lbBackground#Label : 
+  lbGameSound#Label :
   {
-    geometryf : [ 0.0, 0.0, 1, 1 ]
-    bgtype : "whiteFrame"
-       
-    lbGameSound#Label :
-    {
-      geometry : [ 28, 60, 200, 84 ]
-      text : "##gmsndwnd_game_volume##"
-      textAlign : [ "center", "center" ]
-      font : "FONT_2"
-    }
+    geometry : [ 28, 60, 200, 84 ]
+    text : "##gmsndwnd_game_volume##"
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+  }
     
-    lbGameSoundPercent#Label :
-    {
-      geometry : [ 260, 60, 310, 84 ]
-      font : "FONT_2"
-    }
+  lbGameSoundPercent#Label :
+  {
+    geometry : [ 260, 60, 310, 84 ]
+    font : "FONT_2"
+  }
      
-    btnIncreaseGameSound#TexturedButton : {
-      geometry : [ 206, 60, 230, 84 ]
-      normal :   [ "paneling", 601 ]
-      hovered :  [ "paneling", 602 ]
-      pressed :  [ "paneling", 603 ]
-      disabled : [ "paneling", 304 ]
-      id : 1
-    } 
+  btnIncreaseGameSound#TexturedButton : {
+    geometry : [ 206, 60, 230, 84 ]
+    normal :   [ "paneling", 601 ]
+    hovered :  [ "paneling", 602 ]
+    pressed :  [ "paneling", 603 ]
+    disabled : [ "paneling", 304 ]
+    id : 1
+  } 
     
-    btnDeccreaseGameSound#TexturedButton : {
-      geometry : [ 230, 60, 254, 84 ]
-      normal :   [ "paneling", 605 ]
-      hovered :  [ "paneling", 606 ]
-      pressed :  [ "paneling", 607 ]
-      disabled : [ "paneling", 305 ]
-      id : 2
-    } 
+  btnDeccreaseGameSound#TexturedButton : {
+    geometry : [ 230, 60, 254, 84 ]
+    normal :   [ "paneling", 605 ]
+    hovered :  [ "paneling", 606 ]
+    pressed :  [ "paneling", 607 ]
+    disabled : [ "paneling", 305 ]
+    id : 2
+  } 
     
-    lbAmbientSound#Label :
-    {
-      geometry : [ 28, 96, 200, 120 ]
-      text : "##gmsndwnd_ambient_sound##"
-      textAlign : [ "center", "center" ]
-      font : "FONT_2"
-    }
+  lbAmbientSound#Label :
+  {
+    geometry : [ 28, 96, 200, 120 ]
+    text : "##gmsndwnd_ambient_sound##"
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+  }
     
-    lbAmbientSoundPercent#Label :
-    {
-      geometry : [ 260, 96, 310, 120 ]
-      font : "FONT_2"
-    }
+  lbAmbientSoundPercent#Label :
+  {
+    geometry : [ 260, 96, 310, 120 ]
+    font : "FONT_2"
+  }
      
-    btnIncreaseAmbientSound#TexturedButton : {
-      geometry : [ 206, 96, 230, 120 ]
-      normal :   [ "paneling", 601 ]
-      hovered :  [ "paneling", 602 ]
-      pressed :  [ "paneling", 603 ]
-      disabled : [ "paneling", 304 ]
-      id : 11
-    } 
+  btnIncreaseAmbientSound#TexturedButton : {
+    geometry : [ 206, 96, 230, 120 ]
+    normal :   [ "paneling", 601 ]
+    hovered :  [ "paneling", 602 ]
+    pressed :  [ "paneling", 603 ]
+    disabled : [ "paneling", 304 ]
+    id : 11
+  } 
     
-    btnDecreaseAmbientSound#TexturedButton : {
-      geometry : [ 230, 96, 254, 120 ]
-      normal :   [ "paneling", 605 ]
-      hovered :  [ "paneling", 606 ]
-      pressed :  [ "paneling", 607 ]
-      disabled : [ "paneling", 305 ]
-      id : 12
-    }
+  btnDecreaseAmbientSound#TexturedButton : {
+    geometry : [ 230, 96, 254, 120 ]
+    normal :   [ "paneling", 605 ]
+    hovered :  [ "paneling", 606 ]
+    pressed :  [ "paneling", 607 ]
+    disabled : [ "paneling", 305 ]
+    id : 12
+  }
 
-    lbThemeSound#Label :
-    {
-      geometry : [ 28, 132, 200, 156 ]
-      text : "##gmsndwnd_theme_sound##"
-      textAlign : [ "center", "center" ]
-      font : "FONT_2"
-    }
+  lbThemeSound#Label :
+  {
+    geometry : [ 28, 132, 200, 156 ]
+    text : "##gmsndwnd_theme_sound##"
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+  }
 
-    lbThemeSoundPercent#Label :
-    {
-      geometry : [ 260, 132, 310, 156 ]
-      font : "FONT_2"
-    }
+  lbThemeSoundPercent#Label :
+  {
+    geometry : [ 260, 132, 310, 156 ]
+    font : "FONT_2"
+  }
 
-    btnIncreaseThemeSoundd#TexturedButton : {
-      geometry : [ 206, 132, 230, 156 ]
-      normal :   [ "paneling", 601 ]
-      hovered :  [ "paneling", 602 ]
-      pressed :  [ "paneling", 603 ]
-      disabled : [ "paneling", 304 ]
-      id : 21
-    }
+  btnIncreaseThemeSoundd#TexturedButton : {
+    geometry : [ 206, 132, 230, 156 ]
+    normal :   [ "paneling", 601 ]
+    hovered :  [ "paneling", 602 ]
+    pressed :  [ "paneling", 603 ]
+    disabled : [ "paneling", 304 ]
+    id : 21
+  }
 
-    btnDeccreaseThemeSound#TexturedButton : {
-      geometry : [ 230, 132, 254, 156 ]
-      normal :   [ "paneling", 605 ]
-      hovered :  [ "paneling", 606 ]
-      pressed :  [ "paneling", 607 ]
-      disabled : [ "paneling", 305 ]
-      id : 22
-    }
+  btnDeccreaseThemeSound#TexturedButton : {
+    geometry : [ 230, 132, 254, 156 ]
+    normal :   [ "paneling", 605 ]
+    hovered :  [ "paneling", 606 ]
+    pressed :  [ "paneling", 607 ]
+    disabled : [ "paneling", 305 ]
+    id : 22
+  }
     
-    btnOk#PushButton :
-    {
-      geometryf : [ 0.25, 0.70, 0.75, 0.79 ]
-      bgtype : "smallGrayBorderLine"
-      text : "##ok##"
-      id : 1001
-    }
+  btnOk#PushButton :
+  {
+    geometryf : [ 0.25, 0.70, 0.75, 0.79 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##ok##"
+    id : 1001
+  }
     
-    btnCancel#PushButton :
-    {
-      geometryf : [ 0.25, 0.82, 0.75, 0.91 ]
-      bgtype : "smallGrayBorderLine"
-      text : "##cancel##"
-      id : 1002
-    }
+  btnCancel#PushButton :
+  {
+    geometryf : [ 0.25, 0.82, 0.75, 0.91 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##cancel##"
+    id : 1002
   }
 }

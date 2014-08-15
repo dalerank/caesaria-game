@@ -26,14 +26,18 @@
 class CartPusher : public Walker
 {
 public:
-  static const int defaultCartCapacity = 100;
-  static CartPusherPtr create( PlayerCityPtr city );
+  typedef enum { simpleCart = 100,
+                 bigCart = 200,
+                 megaCart = 400
+               } CartCapacity;
+
+  static CartPusherPtr create( PlayerCityPtr city, CartCapacity cap=simpleCart );
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
-  BuildingPtr getProducerBuilding();
-  BuildingPtr getConsumerBuilding();
-  GoodStock& getStock();
+  BuildingPtr producerBuilding();
+  BuildingPtr consumerBuilding();
+  GoodStock& stock();
 
   gfx::Picture& getCartPicture();
   virtual void getPictures( gfx::Pictures& oPics);
@@ -47,13 +51,14 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual bool die();
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
 
 protected:
   CartPusher( PlayerCityPtr city );
 
   virtual void _changeDirection();
   virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
 
 private:
   class Impl;

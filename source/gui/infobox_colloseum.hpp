@@ -21,12 +21,17 @@
 namespace gui
 {
 
-class InfoboxColosseum : public InfoboxConstruction
+namespace infobox
+{
+
+class AboutColosseum : public AboutConstruction
 {
 public:
-  InfoboxColosseum( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxColosseum();
+  AboutColosseum( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutColosseum();
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_COLLOSEUM_H_INCLUDE_

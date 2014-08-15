@@ -58,7 +58,7 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
   ret->drop();
 
   ret->_d->route = route;
-  bool startCity = (route->getBeginCity()->name() == start);
+  bool startCity = (route->beginCity()->name() == start);
   
   ret->_d->sells.resize( sell );
   ret->_d->sells.storeAll( sell );
@@ -66,8 +66,8 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
   ret->_d->buys.resize( buy );
   ret->_d->buys.storeAll( buy );
 
-  CityPtr baseCity = startCity ? route->getBeginCity() : route->getEndCity();
-  CityPtr destCity = startCity ? route->getEndCity() : route->getBeginCity();
+  CityPtr baseCity = startCity ? route->beginCity() : route->endCity();
+  CityPtr destCity = startCity ? route->endCity() : route->beginCity();
 
   ret->_d->baseCity = baseCity->name();
   ret->_d->destCity = destCity->name();

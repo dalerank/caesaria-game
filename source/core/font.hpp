@@ -25,19 +25,22 @@
 #include "core/scopedptr.hpp"
 #include "core/stringarray.hpp"
 #include "core/color.hpp"
+#include "vfs/path.hpp"
 
 namespace gfx
 {
  class Picture;
+ class PictureRef;
 }
 
 enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
                 FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, 
-                FONT_3, 
-                FONT_4, 
-                FONT_5, 
-                FONT_6, 
-                FONT_7 };
+                FONT_3, FONT_4,
+                FONT_5,
+                FONT_6,
+                FONT_7,
+                FONT_8,
+                FONT_9 };
 class Font
 {
   friend class FontCollection;
@@ -46,7 +49,7 @@ public:
   Font();
   static Font create( const std::string& family, const int size );
   static Font create( FontType type );
-  static Font create( const std::string& type );
+  static Font create( const std::string& type );  
   
   ~Font();
 
@@ -59,19 +62,19 @@ public:
 
   bool isValid() const;
 
-  Size getSize( const std::string& text ) const;
-
   bool operator!=(const Font& other) const;
 
-  Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
-                          align::Type horizontalAlign, align::Type verticalAlign );
+  Size getTextSize( const std::string& text ) const;
+  Rect getTextRect( const std::string& text, const Rect& baseRect,
+                    align::Type horizontalAlign, align::Type verticalAlign );
 
-  void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
-  void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );
+  void draw(gfx::Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
+  void draw(gfx::Picture& dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
+  void draw(gfx::PictureRef& refpic, const std::string &text, bool mayChange=false);
 
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;
-  unsigned int getKerningHeight() const;
+  unsigned int kerningHeight() const;
   StringArray breakText( const std::string& text, int pixelLength );
 private:
   class Impl;
@@ -89,7 +92,7 @@ public:
   Font& getFont_(const std::string& name );  // get a saved font
 
   void setFont(const int key, const std::string& name, Font font);  // save a font
-  void addFont(const int key, const std::string& name, const std::string& pathFont, const int size, const NColor& color);
+  void addFont(const int key, const std::string& name, vfs::Path filename, const int size, const NColor& color);
 
 private:
   FontCollection();

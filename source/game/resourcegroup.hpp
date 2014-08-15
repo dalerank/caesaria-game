@@ -12,7 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_RESOURCENAMES_H_INCLUDE_
 #define __CAESARIA_RESOURCENAMES_H_INCLUDE_
@@ -34,7 +35,6 @@ public:
   __RCG_NAME security;
   __RCG_NAME transport;
   __RCG_NAME aqueduct;
-  __RCG_NAME waterbuildings;
   __RCG_NAME road;
   __RCG_NAME land1a;
   __RCG_NAME entertaiment;
@@ -95,12 +95,16 @@ public:
     landTradeRoute = 70,
     romeCity=8,
     distantCity=22,
-    otherCity=15
+    rightPanelTx=14,
+    otherCity=15,
+    grassPic=62,
+    coastNE=144, coastSE=148
   };
 
   static const int empireStamp = 543;
   static const int baseLocalGoodId = 316;
   static const int baseEmpireGoodId = 10;
+  static const int grassPicsNumber = 57;
 };
 
 class OverlayPic

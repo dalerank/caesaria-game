@@ -74,6 +74,7 @@
 #include "weaponsworkshop.hpp"
 #include "missionarypost.hpp"
 #include "ironmine.hpp"
+#include "river.hpp"
 #include <map>
 
 using namespace constants;
@@ -110,9 +111,9 @@ public:
     if( construction == 0 )
       return;
 
-    if( info.basePicture().isValid() )
+    if( info.picture().isValid() )
     {
-      construction->setPicture( info.basePicture() );  // default picture for build tool
+      construction->setPicture( info.picture() );  // default picture for build tool
     }
 
     VariantMap anMap = info.getOption( "animation" ).toMap();
@@ -225,7 +226,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::middleStatue,    CAESARIA_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
   addCreator(building::bigStatue,    CAESARIA_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
   addCreator(construction::garden, CAESARIA_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
-  addCreator(construction::plaza,  CAESARIA_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
+  ADD_CREATOR(construction::plaza,  Plaza, ConstructionCreator );
 
   // water
   ADD_CREATOR(building::well,       Well, WorkingBuildingCreator );
@@ -320,6 +321,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   //places
   ADD_CREATOR( building::elevation, Elevation, BaseCreator );
   ADD_CREATOR( building::rift, Rift, BaseCreator );
+  ADD_CREATOR( building::river, River, BaseCreator );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

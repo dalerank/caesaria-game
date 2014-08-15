@@ -196,6 +196,7 @@ enum Type
   senate2,
   elevation,
   rift,//90
+  river,
   typeCount,
   userType=1000
 }; //end Type

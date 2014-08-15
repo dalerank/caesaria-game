@@ -21,6 +21,9 @@
 #include "core/gettext.hpp"
 #include "good/goodstore.hpp"
 #include "walker/enemysoldier.hpp"
+#include "events/postpone.hpp"
+#include "core/saveadapter.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -41,23 +44,29 @@ DivinityPtr Mars::create()
 }
 
 void Mars::updateRelation(float income, PlayerCityPtr city)
-{
+{  
   RomeDivinity::updateRelation( income, city );
 }
 
 void Mars::_doWrath(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
+  events::GameEventPtr message = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
                                                             _("##wrath_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe );
-  event->dispatch();
+                                                            events::ShowInfobox::send2scribe );  
+  message->dispatch();
 
 
+  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( "mars_wrath.model" ) );
+  events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
+  barb_attack->dispatch();
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {
-
+  events::GameEventPtr message = events::ShowInfobox::create( _("##smallcurse_of_mars_title##"),
+                                                            _("##smallcurse_of_mars_text##"),
+                                                            events::ShowInfobox::send2scribe );
+  message->dispatch();
 }
 
 void Mars::_doBlessing(PlayerCityPtr city)

@@ -24,7 +24,7 @@ class MarketKid : public Walker
 {
 public:
   static MarketKidPtr create( PlayerCityPtr city );
-  static MarketKidPtr create( PlayerCityPtr city, MarketLadyPtr lady );
+  static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
 
   GoodStock& getBasket();
   void setDelay( int delay );

@@ -23,6 +23,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "walker/enemysoldier.hpp"
+#include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
 #include "walker/helper.hpp"
 
@@ -46,6 +47,7 @@ public:
     append( EnemySoldier::attackAll, "attack_all" );
     append( EnemySoldier::attackBestBuilding, "best_building" );
     append( EnemySoldier::attackCitizen, "citizen" );
+    append( EnemySoldier::attackSenate, "gold" );
     append( EnemySoldier::attackIndustry, "industry" );
     append( EnemySoldier::attackFood, "food" );
   }
@@ -81,6 +83,13 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 
     std::string soldierType = soldiers.get( lc_type ).toString();
     int soldierNumber = soldiers.get( "count" );
+
+    Variant vCityPop = soldiers.get( "city.pop" );
+    if( vCityPop.isValid() )
+    {
+      soldierNumber = game.city()->population() * vCityPop.toFloat();
+    }
+
     TilePos location( -1, -1 );
     Variant vLocation = soldiers.get( "location" );
 
@@ -116,6 +125,17 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
         enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
       }
     }
+
+    if( soldierNumber > 0 )
+    {
+      city::MilitaryPtr ml;
+      ml << game.city()->findService( city::Military::defaultName() );
+
+      if( ml.isValid() )
+      {
+        ml->enemyAttack();
+      }
+    }
   }
 }
 
@@ -130,7 +150,14 @@ void EnemyAttack::load(const VariantMap& stream)
   std::string targetStr = stream.get( lc_target ).toString();
 
   AttackPriorityHelper helper;
-  _d->attackPriority = helper.findType( targetStr );
+  if( targetStr == "random" )
+  {
+    _d->attackPriority = (EnemySoldier::AttackPriority)math::random( EnemySoldier::attackCount );
+  }
+  else
+  {
+    _d->attackPriority = helper.findType( targetStr );
+  }
 }
 
 VariantMap EnemyAttack::save() const

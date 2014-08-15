@@ -8,15 +8,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODUL
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
-find_package(SDL REQUIRED)
-find_package(SDL_mixer REQUIRED)
-find_package(SDL_ttf REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${SDL_INCLUDE_DIR}
-  ${SDL_MIXER_INCLUDE_DIR}
-  ${SDL_TTF_INCLUDE_DIR}
+  ${SDL2_INCLUDE_DIR}
+  ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
 )
 
@@ -38,6 +36,7 @@ file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/game/*.model")
 file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.gui")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
+file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 
@@ -47,19 +46,13 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${OBJECTS_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
-               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST})
+               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST})
 
 target_link_libraries(${PROJECT_NAME}
-  ${SDL_LIBRARY}
-  ${SDL_MIXER_LIBRARY}
-  ${SDL_TTF_LIBRARY}
+  ${SDL2_LIBRARY}
+  ${SDL2_MIXER_LIBRARY}
 )
 
-#find_package( ZLIB )
-#if( ZLIB_FOUND )
-#  include_directories(${ZLIB_INCLUDE_DIRS})
-#  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
-#else
 if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
   include_directories(${ZLIB_HOME})
@@ -71,11 +64,6 @@ if( BUILD_AES )
   target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
 endif()
 
-#find_package( BZIP2 )
-#if ( BZIP2_FOUND )
-#  include_directories(${BZIP2_INCLUDE_DIRS})
-#  target_link_libraries(${PROJECT_NAME} ${BZIP2_LIBRARIES})
-#else
 if( BUILD_BZIP )
   link_directories(${BZIPLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
@@ -91,22 +79,27 @@ if( BUILD_SMK )
   target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
 endif()
 
-#find_package( PNG )
-#if (PNG_FOUND)
-#  include_directories(${PNG_INCLUDE_DIRS})
-#  target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARIES})
-#else
+if( BUILD_TTF )
+  link_directories(${TTFLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${TTFLIB_NAME})
+endif()
+
 if( BUILD_PNG )
   link_directories(${PNGLIB_HOME})
   include_directories(${PNGLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
 endif()
 
-#if(OPENGL_RENDER)
-#  target_link_libraries(${PROJECT_NAME} "GL")
-#endif(OPENGL_RENDER)
+if(BUILD_GL_FRAMEBUFFER)
+add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
+endif(BUILD_GL_FRAMEBUFFER)
+
+if(BUILD_GL_SHADERS)
+add_definitions( -DCAESARIA_USE_SHADERS )
+endif(BUILD_GL_SHADERS)
 
 if(WIN32)
+  target_link_libraries(${PROJECT_NAME} "opengl32")
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
@@ -115,6 +108,8 @@ if(UNIX)
 
   if(APPLE)
     set(EXECUTABLE_FILENAME "caesaria.macos")
+  else(APPLE)
+    target_link_libraries(${PROJECT_NAME} "GL")
   endif(APPLE)
 endif(UNIX)
 
@@ -130,7 +125,24 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  add_definitions( -DDEBUG )
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # using Clang
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")  
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  # using GCC
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"gcc\"")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  # using Intel C++
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"icc\"" )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # using Visual Studio C++
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"msvc\"")
+endif()
+
+message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -140,6 +152,15 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
   endif(HAIKU)
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+# tests for C++11 suport
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+endif()
 
 if(WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
@@ -188,6 +209,12 @@ ADD_CUSTOM_COMMAND(
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/locale" "${WORK_DIR}/resources/locale"
 )
 
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/shaders" "${WORK_DIR}/resources/shaders"
+)
+
 if(EXT_BINDIR)
   message( "game: ext bindir=${CMAKE_SOURCE_DIR}/${EXT_BINDIR}")
   ADD_CUSTOM_COMMAND(
@@ -202,9 +229,9 @@ endif(EXT_BINDIR)
 # Copy DLL to build output directory
 if(WIN32)
   set(_LIBS_FOR_DLL_SOURCE
-    ${SDL_LIBRARY}
-    ${SDL_MIXER_LIBRARY}
-    ${SDL_TTF_LIBRARY}    
+    ${SDL2_LIBRARY}
+    ${SDL2_MIXER_LIBRARY}
+    ${SDL2_TTF_LIBRARY}
   )
 
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})

@@ -31,6 +31,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "game/resourcegroup.hpp"
 
 #include <string>
 #include <map>
@@ -75,12 +76,7 @@ int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitants
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
 int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
-//
-// int HouseLevelSpec::getMinHealthLevel()
-// {
-//    return _minHealthLevel;
-// }
-//
+int HouseSpecification::minHealthLevel() const {  return _d->minHealthLevel; }
 int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
 //
 // int HouseLevelSpec::getMinWaterLevel()
@@ -168,9 +164,10 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
 
     switch( value )
     {
-    case 0: case 1: needBuilding = building::baths; break;
-    case 2: needBuilding = building::doctor; break;
-    case 3: needBuilding = building::hospital; break;
+    case 1: needBuilding = building::baths; break;
+    case 2: needBuilding = building::barber; break;
+    case 3: needBuilding = building::doctor; break;
+    case 4: needBuilding = building::hospital; break;
     }
 
     return false;
@@ -328,7 +325,7 @@ int HouseSpecification::computeEntertainmentLevel(HousePtr house) const
 }
 
 
-int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeHealthLevel(HousePtr house, std::string &oMissingRequirement)
 {
    // no health=0, bath=1, bath+doctor/hospital=2, bath+doctor/hospital+barber=3, bath+doctor+hospital+barber=4
    int res = 0;
@@ -342,37 +339,37 @@ int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissin
 
          if (house->hasServiceAccess(Service::barber))
          {
-            res = 3;
+           res = 3;
 
-            if (house->hasServiceAccess(Service::doctor) && house->hasServiceAccess(Service::hospital))
-            {
-               res = 4;
-            }
-            else
-            {
-               if (house->hasServiceAccess(Service::doctor))
-               {
-                  oMissingRequirement = "##missing_hospital##";
-               }
-               else
-               {
-                  oMissingRequirement = "##missing_doctor##";
-               }
-            }
+           if (house->hasServiceAccess(Service::doctor) && house->hasServiceAccess(Service::hospital))
+           {
+              res = 4;
+           }
+           else
+           {
+             if (house->hasServiceAccess(Service::doctor))
+             {
+               oMissingRequirement = "##missing_hospital##";
+             }
+             else
+             {
+               oMissingRequirement = "##missing_doctor##";
+             }
+           }
          }
          else
          {
-            oMissingRequirement = "##missing_barber##";
+           oMissingRequirement = "##missing_barber##";
          }
       }
       else
       {
-         oMissingRequirement = "##missing_doctor_or_hospital##";
+        oMissingRequirement = "##missing_doctor_or_hospital##";
       }
    }
    else
    {
-      oMissingRequirement = "##missing_bath##";
+     oMissingRequirement = "##missing_bath##";
    }
    return res;
 }
@@ -381,13 +378,16 @@ int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissin
 int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
 {
   int res = 0;
-  if( house->hasServiceAccess(Service::school) )
+  bool haveSchool = house->hasServiceAccess(Service::school);
+  bool haveAcademy = house->hasServiceAccess(Service::academy);
+  bool haveLibrary = house->hasServiceAccess(Service::library);
+  if( haveSchool )
   {
     res = 1;   
-    if( house->hasServiceAccess(Service::academy) )
+    if( haveAcademy )
     {
       res = 2;      
-      if( house->hasServiceAccess(Service::library) )
+      if( haveLibrary )
       {
         res = 3;
       }
@@ -403,7 +403,9 @@ int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMiss
   }
   else
   {
-    oMissingRequirement = "##missing_school##";
+     oMissingRequirement = haveLibrary
+                             ? "##missing_school##"
+                             : "##missing_school_or_library##";
   }
 
   return res;
@@ -524,7 +526,7 @@ float HouseSpecification::evaluateHealthNeed(HousePtr house, const Service::Type
       res = (float)( 100 - house->getServiceValue(service) );
    }
 
-   return std::max<float>( res, 100 - house->getState( (Construction::Param)House::health ) );
+   return std::max<float>( res, 100 - house->state( (Construction::Param)House::health ) );
 }
 
 float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Type service)
@@ -613,9 +615,15 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 
   TilesArray area = city->tilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
 
-  float middleDesirbl = (float)area.front()->desirability();
+  float middleDesirbl = 0;;
 
-  foreach( tile, area ) { middleDesirbl = (middleDesirbl + (float)(*tile)->desirability() )/2.f; }
+  foreach( tile, area )
+  {
+    middleDesirbl += (float)(*tile)->param( Tile::pDesirability );
+  }
+
+  if( !area.empty() )
+   middleDesirbl /= area.size();
 
   return (int)middleDesirbl;
 }
@@ -648,11 +656,11 @@ HouseSpecification& HouseSpecification::operator=( const HouseSpecification& oth
 class HouseSpecHelper::Impl
 {
 public:
-  typedef std::map<int, int> HouseLevelSpecsEqMap;
   typedef std::map<int, HouseSpecification > HouseLevels;
+  typedef std::map<std::string, StringArray > HouseTextures;
 
-  HouseLevels spec_by_level;  // key=houseLevel, value=houseLevelSpec
-  HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
+  HouseLevels levels;
+  HouseTextures houseTextures;
 };
 
 HouseSpecHelper& HouseSpecHelper::instance()
@@ -664,67 +672,17 @@ HouseSpecHelper& HouseSpecHelper::instance()
 HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
 {
   Logger::warning( "HouseLevelSpec INIT" );
-
-  _d->level_by_id.clear();
-  _d->level_by_id[0] = 0;
-  _d->level_by_id[1] = 1;
-  _d->level_by_id[2] = 1;
-  _d->level_by_id[3] = 2;
-  _d->level_by_id[4] = 2;
-  _d->level_by_id[5] = 1; // 2x2
-  _d->level_by_id[6] = 2; // 2x2
-  _d->level_by_id[7] = 3;
-  _d->level_by_id[8] = 3;
-  _d->level_by_id[9] = 4;
-  _d->level_by_id[10] = 4;
-  _d->level_by_id[11] = 3; // 2x2
-  _d->level_by_id[12] = 4; // 2x2
-  _d->level_by_id[13] = 5;
-  _d->level_by_id[14] = 5;
-  _d->level_by_id[15] = 6;
-  _d->level_by_id[16] = 6;
-  _d->level_by_id[17] = 5; // 2x2
-  _d->level_by_id[18] = 6; // 2x2
-  _d->level_by_id[19] = 7;
-  _d->level_by_id[20] = 7;
-  _d->level_by_id[21] = 8;
-  _d->level_by_id[22] = 8;
-  _d->level_by_id[23] = 7; // 2x2
-  _d->level_by_id[24] = 8; // 2x2
-  _d->level_by_id[25] = 9;
-  _d->level_by_id[26] = 9;
-  _d->level_by_id[27] = 10;
-  _d->level_by_id[28] = 10;
-  _d->level_by_id[29] = 9; // 2x2
-  _d->level_by_id[30] = 10; // 2x2
-  _d->level_by_id[31] = 11; // 2x2
-  _d->level_by_id[32] = 11; // 2x2
-  _d->level_by_id[33] = 12; // 2x2
-  _d->level_by_id[34] = 12; // 2x2
-  _d->level_by_id[35] = 13; // 2x2
-  _d->level_by_id[36] = 13; // 2x2
-  _d->level_by_id[37] = 14; // 2x2
-  _d->level_by_id[38] = 14; // 2x2
-  _d->level_by_id[39] = 15; // 3x3
-  _d->level_by_id[40] = 15; // 3x3
-  _d->level_by_id[41] = 16; // 3x3
-  _d->level_by_id[42] = 16; // 3x3
-  _d->level_by_id[43] = 17; // 4x4
-  _d->level_by_id[44] = 17; // 4x4
-  _d->level_by_id[45] = 0;
 }
 
 HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
 {
-  int level = (math::clamp)(houseLevel, 0, 17);
-  return _d->spec_by_level[level];
+  int level = math::clamp<int>(houseLevel, 0, 20);
+  return _d->levels[level];
 }
 
-int HouseSpecHelper::geLevel(const int houseId){  return _d->level_by_id[houseId];}
-
-int HouseSpecHelper::geLevel( const std::string& name )
+int HouseSpecHelper::getLevel( const std::string& name )
 {
-  foreach( item, _d->spec_by_level )
+  foreach( item, _d->levels )
   {
     if( item->second.internalName() == name )
     {
@@ -739,11 +697,11 @@ HouseSpecHelper::~HouseSpecHelper(){}
 
 void HouseSpecHelper::initialize( const vfs::Path& filename )
 {
-  VariantMap houseSpecs = SaveAdapter::load( filename.toString() );
+  VariantMap houseSpecs = SaveAdapter::load( filename );
 
   if( houseSpecs.empty() )
   {
-    Logger::warning( "Can't load house model from %s", filename.toString().c_str() );
+    Logger::warning( "Can't load house model from " + filename.toString() );
     return;
   }
 
@@ -754,7 +712,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap hSpec = item->second.toMap();
 
     HouseSpecification spec;
-    spec._d->houseLevel = hSpec[ "level" ].toInt();
+    spec._d->houseLevel = hSpec[ "level" ];
     spec._d->internalName = item->first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
@@ -792,6 +750,32 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
       spec._d->consumptionMuls[ GoodHelper::getType( v->first ) ] = (float)v->second;
     }
 
-    _d->spec_by_level[ spec._d->houseLevel ] = spec;
+    VariantMap vmTextures = hSpec.get( "txs" ).toMap();
+    foreach( it, vmTextures )
+    {
+      std::string arName = StringHelper::format( 0xff, "h%d_%s", spec._d->houseLevel, it->first.c_str() );
+      StringArray txNames = it->second.toStringArray();
+
+      StringArray& hSizeTxs = _d->houseTextures[ arName ];
+      foreach( tx, txNames )
+      {
+        hSizeTxs.push_back( *tx );
+      }
+    }
+
+    _d->levels[ spec._d->houseLevel ] = spec;
   }
+}
+
+Picture HouseSpecHelper::getPicture( int houseLevel, int size ) const
+{
+  std::string arName = StringHelper::format( 0xff, "h%d_s%d", houseLevel, size );
+  StringArray& array = _d->houseTextures[ arName ];
+
+  if( !array.empty() )
+  {
+    return Picture::load( array.random() );
+  }
+
+  return Picture::getInvalid();
 }

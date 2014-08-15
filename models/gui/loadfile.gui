@@ -1,40 +1,51 @@
 {  
   geometry : [ 0, 0, 512, 384 ]
 
-  lbBackground#Label : {
-    geometryf : [ 0.0, 0.0, 1, 1 ]
-    bgtype : "whiteFrame"
+  lbTitle#Label : {
+    font : "FONT_5"
+    geometry : [ 16, 10, "pw-16", 40 ]
+    text : "##title##"
+    textAlign : [ "center", "center" ]
+  }
 
-    lbTitle#Label : {
-      font : "FONT_3"
-      geometry : [ 16, 10, "pw-16", 40 ]
-      text : "##title##"
-      textAlign : [ "center", "center" ]
-    }    
+  lbxFiles#FileListBox : {
+    geometry : [ 10, 50, "pw-10", "ph-45" ]
+    items.font : "FONT_2_WHITE"
+    items.simple.color : "0xffffffff"
+    items.hovered.color : "0xff000000"
+  }
 
-    btnExit#TexturedButton : {
-      geometry : [ 472, "ph-39", 496, "ph-15" ]
-      normal : [ "paneling", 532 ]
-      hovered : [ "paneling", 533 ]
-      pressed : [ "paneling", 534 ]
-      disabled : [ "paneling", 535 ]
-      tooltip : "##fileload_exit_tlp##"
-    }
+  btnExit#TexturedButton : {
+    geometry : [ 472, "ph-39", 496, "ph-15" ]
+    normal : [ "paneling", 532 ]
+    hovered : [ "paneling", 533 ]
+    pressed : [ "paneling", 534 ]
+    disabled : [ "paneling", 535 ]
+    tooltip : "##fileload_exit_tlp##"
+  }
 
-    btnLoad#PushButton : {
-      geometry : [ 50, "ph-39", "pw-50", "ph-15" ]
-      text : "##continue##"
-      tooltip : "##fileload_load_tlp##"
-      bgtype : "whiteBorderUp"
-    }
+  btnLoad#PushButton : {
+    geometry : [ 50, "ph-39", 250, "ph-15" ]
+    text : "##continue##"
+    tooltip : "##fileload_load_tlp##"
+    bgtype : "whiteBorderUp"
+    enabled : false
+  }
 
-    btnHelp#TexturedButton : {
-      geometry : [ 14, "ph-39", 38, "ph-15" ]
-      normal : [ "paneling", 528 ]
-      hovered : [ "paneling", 529 ]
-      pressed : [ "paneling", 530 ]
-      disabled : [ "paneling", 531 ]
-      tooltip : "##fileload_help_tlp##"
-    }
+  btnDelete#PushButton : {
+    geometry : [ 250, "ph-39", "pw-50", "ph-15" ]
+    text : "##delete##"
+    tooltip : "##fileload_delete_tlp##"
+    bgtype : "whiteBorderUp"
+    enabled : false
+  }
+
+  btnHelp#TexturedButton : {
+    geometry : [ 14, "ph-39", 38, "ph-15" ]
+    normal : [ "paneling", 528 ]
+    hovered : [ "paneling", 529 ]
+    pressed : [ "paneling", 530 ]
+    disabled : [ "paneling", 531 ]
+    tooltip : "##fileload_help_tlp##"
   }
 }

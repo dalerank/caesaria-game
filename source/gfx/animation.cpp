@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "animation.hpp"
 #include "core/position.hpp"
@@ -163,7 +165,7 @@ void Animation::load(const VariantMap &stream)
 void Animation::clear() { _pictures.clear();}
 bool Animation::isRunning() const{  return _dfunc()->animIndex >= 0;}
 bool Animation::isStopped() const{  return _dfunc()->animIndex == -1;}
-void Animation::stop(){ _dfunc()->animIndex = -1;}
+void Animation::stop(){ _dfunc()->animIndex = -1; }
 
 Animation& Animation::operator=( const Animation& other )
 {

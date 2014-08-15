@@ -31,13 +31,10 @@ class Image::Impl
 {
 public:
   Picture bgPicture;
-  PictureRef background;
   Image::Mode mode;
-  bool needUpdateTexture;
 
   ~Impl()
   {
-    background.reset();
   }
 
 public oc3_signals:
@@ -53,16 +50,15 @@ Image::Image( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( ne
 Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int id)
 : Widget( parent, id, rectangle),
 	_d( new Impl )
-{
-  if( mode == Image::image )
-  {
-    mode = Image::fit;
-    setWidth( pic.width() );
-    setHeight( pic.height() );
-  }
+{ 
+	_d->mode = mode;
+	if( mode == image )
+	{
+		setWidth( pic.width() );
+		setHeight( pic.height() );
+	}
 
   _d->bgPicture = pic;
-  _d->needUpdateTexture = true;
   #ifdef _DEBUG
     setDebugName( "Image");
 #endif
@@ -73,48 +69,11 @@ Image::Image(Widget* parent, Point pos, const Picture& pic, int id)
 		_d( new Impl )
 {
   _d->mode = Image::image;
+
+  setWidth( pic.width() );
+  setHeight( pic.height() );
+
   _d->bgPicture = pic;
-  _d->needUpdateTexture = true;
-}
-
-void Image::_updateTexture(gfx::Engine& painter )
-{
-  Size imageSize = size();
-
-  if( _d->background && _d->background->size() != imageSize )
-  {
-    _d->background.reset();  
-  }
-
-  if( !_d->background )
-  {
-    _d->background.reset( Picture::create( imageSize ) );
-  }
-
-  // draw button background
-  if( _d->bgPicture.isValid() )
-  {    
-    _d->background->fill( 0x0000000, Rect() );
-    switch( _d->mode )
-    {
-    case Image::native: _d->background->draw( _d->bgPicture, Point( 0, 0 ), true ); break;
-
-    case Image::fit:
-      _d->background->draw( _d->bgPicture, Point( width() - _d->bgPicture.width(),
-                                                  height() - _d->bgPicture.height() ) / 2, false );
-    break;
-
-    case Image::image:
-      _d->background->draw( _d->bgPicture,
-                            Rect( Point(0, 0), _d->bgPicture.size()),
-                            Rect( Point( 0, 0 ), size() ), false );
-    break;
-    }
-  }    
-  else
-  {
-    _d->background->fill( 0xff000000, Rect() );
-  }
 }
 
 //! destructor
@@ -123,53 +82,61 @@ Image::~Image() {}
 //! draws the element and its children
 void Image::draw(gfx::Engine& painter )
 {
-  if ( !isVisible() )
+  if ( !visible() )
     return;
 
   // draw background
-  if( _d->background )
+  if( _d->bgPicture.isValid() )
   {
-    painter.draw( *_d->background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    switch( _d->mode )
+    {
+    case Image::image:
+    case Image::native:
+      painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    break;
+
+
+    case Image::fit:
+      painter.draw( _d->bgPicture, Rect( Point(), _d->bgPicture.size() ), absoluteRect(), &absoluteClippingRectRef() );
+    break;
+
+    case Image::center:
+      painter.draw( _d->bgPicture, Point( width() - _d->bgPicture.width(),
+                                          height() - _d->bgPicture.height() ) / 2, &absoluteClippingRectRef() );
+    break;
+
+    }
   }
 
   Widget::draw( painter );
 }
 
-
 Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
-
-void Image::beforeDraw(gfx::Engine& painter )
-{
-  if( _d->needUpdateTexture )
-  {
-    _updateTexture( painter );
-
-    _d->needUpdateTexture = false;
-  }
-
-  Widget::beforeDraw( painter );
-}
 
 void Image::setPicture( Picture picture )
 {
   _d->bgPicture = picture;
-  _d->needUpdateTexture = true;
 }
-
-void Image::_resizeEvent() {  _d->needUpdateTexture = true;}
 
 void Image::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
   setPicture( Picture::load( ui.get( "image" ).toString() ) );
-  std::string mode = ui.get( "mode", "fit" ).toString();
+  std::string mode = ui.get( "mode" ).toString();
   if( mode == "fit" ) { _d->mode = Image::fit; }
   else if( mode == "image" ) { _d->mode = Image::image; }
   else if( mode == "native" ) { _d->mode = Image::native; }
-  else { _d->mode = Image::fit; }
+  else if( mode == "center" ) { _d->mode = Image::center; }
+  else { _d->mode = Image::image; }
+
+  if( _d->mode == Image::image )
+  {
+    setWidth( picture().width() );
+    setHeight( picture().height() );
+  }
 }
 
-PictureRef& Image::getPicture() {  return _d->background;}
+Picture Image::picture() const {  return _d->bgPicture;}
 
 }//end namespace gui

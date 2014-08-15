@@ -74,7 +74,7 @@ void Mugger::_updateThinks()
   StringArray ret;
   ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
 
-  setThinks( ret.rand() );
+  setThinks( ret.random() );
 }
 
 void Mugger::timeStep(const unsigned long time)
@@ -108,7 +108,7 @@ void Mugger::timeStep(const unsigned long time)
         //find path to most expensive house, fire this!!!
         if( pathway.isValid() )
         {
-          setPos( pathway.getStartPos() );
+          setPos( pathway.startPos() );
           setPathway( pathway );
           go();
           _d->state = Impl::go2destination;

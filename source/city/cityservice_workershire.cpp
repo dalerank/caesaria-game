@@ -25,10 +25,10 @@
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
-#include "game/settings.hpp"
 #include "objects/metadata.hpp"
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
+#include "core/saveadapter.hpp"
 #include <map>
 
 using namespace constants;
@@ -41,6 +41,7 @@ namespace city
 namespace {
 CAESARIA_LITERALCONST(priorities)
 CAESARIA_LITERALCONST(employers)
+const unsigned int defaultHireDistance = 36;
 }
 
 class WorkersHire::Impl
@@ -77,10 +78,10 @@ WorkersHire::WorkersHire(PlayerCityPtr city )
 {
   _d->lastMessageDate = GameDate::current();
   _d->excludeTypes.insert( building::fountain );
-
   _d->fillIndustryMap();
+  _d->distance = defaultHireDistance;
 
-  _d->distance = GameSettings::get( GameSettings::rectuterDistance ).toUInt();
+  load( SaveAdapter::load( ":workershire.model" ) );
 }
 
 void WorkersHire::Impl::fillIndustryMap()
@@ -217,11 +218,12 @@ int WorkersHire::getPriority(Industry::Type industry)
   return 0;
 }
 
-const HirePriorities&WorkersHire::priorities() const {  return _d->priorities; }
+const HirePriorities& WorkersHire::priorities() const {  return _d->priorities; }
 
 VariantMap WorkersHire::save() const
 {
   VariantMap ret;
+  VARIANT_SAVE_ANY_D( ret, _d, distance );
   ret[ lc_priorities ] = _d->priorities.toVariantList();
 
   return ret;
@@ -229,6 +231,9 @@ VariantMap WorkersHire::save() const
 
 void WorkersHire::load(const VariantMap& stream)
 {
+  VARIANT_LOAD_ANY_D( _d, distance, stream );
+  if( _d->distance == 0 ) _d->distance = defaultHireDistance;
+
   VariantList priorVl = stream.get( lc_priorities ).toList();
 
   if( !priorVl.empty() )

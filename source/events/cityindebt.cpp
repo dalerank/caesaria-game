@@ -78,7 +78,7 @@ CityIndebt::CityIndebt() : _text( "##city_indebt_text##" )
 
 void CityIndebt::_exec(Game& game, unsigned int)
 {
-  gui::GuiEnv* env = game.gui();
+  gui::Ui* env = game.gui();
 
   _isDeleted = true;
   gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Emp_2nd_chance.smk" );

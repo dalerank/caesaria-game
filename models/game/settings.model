@@ -2,5 +2,6 @@
  fullscreen : false
  resolution : [ 1280, 800 ]
  language : "en"
+ render : "sdl"
  /*c3gfx : "./resources/gfx"*/
 }

@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "player.hpp"
 #include "core/variant.hpp"
@@ -25,6 +26,7 @@ public:
   int funds;  // amount of money
   std::string name;
   int salary;
+  int rank;
   unsigned int color;
 };
 
@@ -32,6 +34,7 @@ Player::Player() : _d( new Impl )
 {
   _d->funds = 0;
   _d->salary = 0;
+  _d->rank = 0;
 }
 
 PlayerPtr Player::create()
@@ -44,18 +47,20 @@ PlayerPtr Player::create()
 
 void Player::save( VariantMap& stream ) const
 {
-  stream[ "money"  ] = _d->funds;
-  stream[ "name"   ] = Variant( _d->name );
-  stream[ "salary" ] = _d->salary;
-  stream[ "color"  ] = _d->color;
+  VARIANT_SAVE_ANY_D( stream, _d, funds );
+  VARIANT_SAVE_STR_D( stream, _d, name );
+  VARIANT_SAVE_ANY_D( stream, _d, salary );
+  VARIANT_SAVE_ANY_D( stream, _d, color );
+  VARIANT_SAVE_ANY_D( stream, _d, rank );
 }
 
 void Player::load( const VariantMap& stream )
 {
-  _d->funds = (int)stream.get( "money" );
-  _d->name = stream.get( "name" ).toString();
-  _d->salary = (int)stream.get( "salary" );
-  _d->color = (int)stream.get( "color" );
+  VARIANT_LOAD_ANY_D( _d, funds, stream );
+  VARIANT_LOAD_STR_D( _d, name, stream );
+  VARIANT_LOAD_ANY_D( _d, salary, stream );
+  VARIANT_LOAD_ANY_D( _d, color, stream );
+  VARIANT_LOAD_ANY_D( _d, rank, stream );
 }
 
 void Player::appendMoney( int money ){  _d->funds += money;}
@@ -65,5 +70,7 @@ unsigned int Player::color() const{ return _d->color; }
 Player::~Player(){}
 void Player::setName( const std::string& name ){  _d->name = name;}
 std::string Player::name() const{  return _d->name;}
+void Player::setRank(int rank) { _d->rank = rank; }
+int Player::rank() const{ return _d->rank; }
 int Player::salary() const{  return _d->salary;}
 void Player::setSalary(  int value ){  _d->salary = value;}

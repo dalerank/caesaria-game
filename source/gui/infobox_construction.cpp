@@ -17,6 +17,7 @@
 
 #include "infobox_construction.hpp"
 #include "core/event.hpp"
+#include "game/settings.hpp"
 #include "events/showtileinfo.hpp"
 
 using namespace constants;
@@ -24,42 +25,56 @@ using namespace constants;
 namespace gui
 {
 
-InfoboxConstruction::InfoboxConstruction( Widget* parent, Rect rect, Rect blackArea )
-  : InfoboxSimple( parent, rect, blackArea )
+namespace infobox
 {
+
+AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea )
+  : Simple( parent, rect, blackArea )
+{
+  setupUI( ":/gui/infoboxconstr.gui" );
 }
 
-InfoboxConstruction::~InfoboxConstruction() {}
+AboutConstruction::~AboutConstruction() {}
 
-bool InfoboxConstruction::onEvent(const NEvent& event)
+bool AboutConstruction::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventKeyboard )
+  switch( event.EventType )
   {
-    switch( event.keyboard.key )
+  case sEventKeyboard:
+    if( event.keyboard.key == KEY_COMMA || event.keyboard.key == KEY_PERIOD )
     {
-    case KEY_COMMA:
-    case KEY_PERIOD:
-    {
-      if( _construction.isValid() )
-      {
-        events::GameEventPtr e = events::ShowTileInfo::create( getConstruction()->pos(), event.keyboard.key == KEY_PERIOD
-                                                                                           ? events::ShowTileInfo::next
-                                                                                           : events::ShowTileInfo::prew );
-        deleteLater();
-        e->dispatch();
-      }
+      _switch( event.keyboard.key );
     }
-    break;
+  break;
 
-    default:
-    break;
+  case sEventGui:
+    if( event.gui.type == guiButtonClicked && ( event.gui.caller->ID() == KEY_COMMA || event.gui.caller->ID() == KEY_PERIOD ) )
+    {
+      _switch( event.keyboard.key );
     }
+  break;
+
+  default: break;
   }
 
-  return InfoboxSimple::onEvent( event );
+  return Simple::onEvent( event );
 }
 
-ConstructionPtr InfoboxConstruction::getConstruction() const { return _construction; }
-void InfoboxConstruction::setConstruction(ConstructionPtr construction) { _construction = construction; }
+ConstructionPtr AboutConstruction::getConstruction() const { return _construction; }
+void AboutConstruction::setConstruction(ConstructionPtr construction) { _construction = construction; }
+
+void AboutConstruction::_switch(int flag)
+{
+  if( _construction.isValid() )
+  {
+    events::GameEventPtr e = events::ShowTileInfo::create( getConstruction()->pos(), flag == KEY_PERIOD
+                                                                                       ? events::ShowTileInfo::next
+                                                                                       : events::ShowTileInfo::prew );
+    deleteLater();
+    e->dispatch();
+  }
+}
+
+}
 
 }//end namespace gui

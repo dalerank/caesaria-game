@@ -28,10 +28,18 @@
       geometry : [ 55, 60, 612, 271 ]
       image : "panelwindows_00015"
 
+      lbNextChartArea#Label : {
+        geometry : [448, 3, 548, 53]
+      }
+
       lbNextChart#Label : {
         geometry : [ 445, 0, 550, 80 ]
         text : "next"
         textAlign : [ "center", "lowerRight" ]
+      }
+
+      lbPrevChartArea#Label : {
+        geometry : [448, 103, 548, 153]
       }
 
       lbPrevChart#Label : {
@@ -45,7 +53,7 @@
       geometryf : [ 0.05, 0.05, 0.95, 0.1 ]
       minimumSize : [ 0, 30 ]
       maximumSize : [ 0, 60 ]
-      font : "FONT_3"
+      font : "FONT_5"
       text : "##advpopulation_title_census##"
       textAlign : [ "center", "center" ]
     }  

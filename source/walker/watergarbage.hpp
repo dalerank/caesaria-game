@@ -19,13 +19,12 @@
 #define __CAESARIA_WATERGARBAGE_H_INCLUDED__
 
 #include "walker.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
 
 class WaterGarbage : public Walker
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-  WaterGarbage( PlayerCityPtr city );
+  static WaterGarbagePtr create( PlayerCityPtr city );
   virtual ~WaterGarbage();
 
   virtual void send2City(const TilePos& start );
@@ -38,6 +37,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
+  WaterGarbage( PlayerCityPtr city );
   gfx::Animation _animation;
 };
 

@@ -326,7 +326,7 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
 
   for( DockList::const_iterator it=docks.begin(); it != docks.end(); ++it )
   {
-    int currentQueueSize = (*it)->getQueueSize();
+    int currentQueueSize = (*it)->queueSize();
     if( currentQueueSize < minQueue )
     {
       minQueue = currentQueueSize;
@@ -337,7 +337,7 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
   Pathway ret;
   if( minQueueDock.isValid() )
   {
-    ret = PathwayHelper::create( position, (*i)->getQueueTile().pos(), PathwayHelper::deepWater );
+    ret = PathwayHelper::create( position, (*i)->queueTile().pos(), PathwayHelper::deepWater );
   }
 
   return ret;
@@ -452,7 +452,7 @@ void SeaMerchant::timeStep(const unsigned long time)
 
 bool SeaMerchant::isWaitFreeDock() const {  return Impl::stWaitFreeDock == _d->nextState; }
 
-std::string SeaMerchant::getThinks() const
+std::string SeaMerchant::currentThinks() const
 {
   switch( _d->nextState )
   {
@@ -462,7 +462,7 @@ std::string SeaMerchant::getThinks() const
   default: break;
   }
 
-  return Walker::getThinks();
+  return Walker::currentThinks();
 }
 
 WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }

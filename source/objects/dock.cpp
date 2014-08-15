@@ -82,7 +82,7 @@ bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return (is_constructible && direction != noneDirection );
 }
 
-void Dock::build(PlayerCityPtr city, const TilePos& pos)
+bool Dock::build(PlayerCityPtr city, const TilePos& pos)
 {
   _setDirection( _d->getDirection( city, pos, size() ) );
 
@@ -98,6 +98,8 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
   {
     _setError( "##inland_lake_has_no_access_to_sea##" );
   }
+
+  return true;
 }
 
 void Dock::destroy()
@@ -133,11 +135,12 @@ void Dock::save(VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "direction" ] = (int)_d->direction;
+  VARIANT_SAVE_ANY_D( stream, _d, direction );
+  VARIANT_SAVE_ANY_D( stream, _d, dateSendGoods );
+
   stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
   stream[ "exportGoods" ] = _d->exportGoods.save();
   stream[ "importGoods" ] = _d->importGoods.save();
-  stream[ "dateSendGoods"] = _d->dateSendGoods;
   stream[ "requestGoods" ] = _d->requestGoods.save();
 }
 
@@ -145,7 +148,7 @@ void Dock::load(const VariantMap& stream)
 {
   Building::load( stream );
 
-  _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
+  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), (int)southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
 
   Variant tmp = stream.get( "exportGoods" );
@@ -157,9 +160,14 @@ void Dock::load(const VariantMap& stream)
   tmp = stream.get( "requestGoods" );
   if( tmp.isValid() ) _d->requestGoods.load( tmp.toMap() );
 
-  _d->dateSendGoods = stream.get( "dateSendGoods" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, dateSendGoods, stream );
 
   _updatePicture( _d->direction );
+}
+
+std::string Dock::workersProblemDesc() const
+{
+  return WorkingBuildingHelper::productivity2desc( const_cast<Dock*>( this ), isBusy() ? "busy" : "" );
 }
 
 bool Dock::isBusy() const
@@ -187,7 +195,7 @@ const Tile& Dock::landingTile() const
   return tmap.at( pos() + offset );
 }
 
-int Dock::getQueueSize() const
+int Dock::queueSize() const
 {
   city::Helper helper( _city() );
   TilePos offset( 3, 3 );
@@ -203,7 +211,7 @@ int Dock::getQueueSize() const
   return merchants.size();
 }
 
-const Tile& Dock::getQueueTile() const
+const Tile& Dock::queueTile() const
 {
   city::Helper helper( _city() );
   TilePos offset( 3, 3 );
@@ -296,7 +304,6 @@ void Dock::_updatePicture(Direction direction)
   _animationRef().setOffset( offset );
 }
 
-
 void Dock::_setDirection(Direction direction)
 {
   _d->direction = direction;
@@ -344,7 +351,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 {
   bool ret = true;
-  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); ++i )
+  foreach( i, tiles )
   {
     ret &= (*i)->getFlag( Tile::isConstructible );
   }
@@ -355,7 +362,7 @@ bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 {
   bool ret = true;
-  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); ++i )
+  foreach( i, tiles )
   {
     ret &= (*i)->getFlag( Tile::tlWater ) && isFlatCoast( *(*i) );
   }
@@ -396,7 +403,7 @@ void Dock::_tryDeliverGoods()
       //success to send cartpusher
       if( !walker->isDeleted() )
       {
-        if( walker->getPathway().isValid() )
+        if( walker->pathway().isValid() )
         {
           addWalker( walker.object() );
         }

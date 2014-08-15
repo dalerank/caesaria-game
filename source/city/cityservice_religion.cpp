@@ -68,7 +68,7 @@ SrvcPtr Religion::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Religion::defaultName() { return "religion"; }
+std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
 
 Religion::Religion(PlayerCityPtr city )
   : Srvc( *city.object(), Religion::defaultName() ), _d( new Impl )
@@ -79,6 +79,9 @@ void Religion::update( const unsigned int time )
 {  
   if( GameDate::isWeekChanged() )
   {
+    if( _city.getOption( PlayerCity::godEnabled ) == 0 )
+      return;
+
     Logger::warning( "Religion: start update relations" );
     DivinityList divinities = rome::Pantheon::instance().all();
 
@@ -157,6 +160,9 @@ void Religion::update( const unsigned int time )
 
   if( GameDate::isMonthChanged() )
   {
+    if( _city.getOption( PlayerCity::godEnabled ) == 0 )
+      return;
+
     int goddesRandom = math::random( 20 );
     //only for trird, seven, ace event
     if( !(goddesRandom == 3 || goddesRandom == 7 || goddesRandom == 11) )
@@ -202,7 +208,6 @@ void Religion::update( const unsigned int time )
       randomGod = *it;
     }
 
-
     if( randomGod.isValid() )
     {
       randomGod->checkAction( &_city );
@@ -235,7 +240,7 @@ void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )
     faithValue = math::clamp( 100 * myTemples.parishionerNumber / city.population(), 0u, 100u );
   }
 
-  Logger::warning( "Religion: set faith income for %s is %f[r=%f]", divn->name().c_str(), faithValue, divn->relation() );
+  Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
   divn->updateRelation( faithValue, &city );
 
   if( divn->relation() < 30 && lastMessageDate.monthsTo( GameDate::current() ) > 6 )

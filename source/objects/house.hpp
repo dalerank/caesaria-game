@@ -29,38 +29,27 @@ class GoodStore;
 class HouseLevel
 {
 public:
-  typedef enum { smallHovel=1, bigTent,
+  typedef enum { vacantLot=0,
+                 smallHovel=1, bigTent,
                  smallHut, bigHut,
                  smallDomus, bigDomus,
                  smallMansion, bigMansion, //8
                  smallInsula, middleInsula, //10
                  bigInsula, beatyfullInsula, //12
                  smallVilla,  middleVilla,  bigVilla,  greatVilla,
-                 smallPalace, middlePalace, bigPalace, greatPalace } ID;
-  typedef enum { smallHovelSmlPic=1, smallHovelBigPic=5,
-                 bigTentSmlPic=3, bigTentBigPic=6,
-                 smallHutSmlPic=7, smallHutBigPic=11,
-                 bigHutSmlPic=9, bigHutBigPic=12,
-                 smallDomusSmlPic=13, smallDomusBigPic=17,
-                 bigDomusSmlPic=15, bigDomusBigPic=18,
-                 smallMansionSmlPic=19, smallMansionBigPic=23,
-                 bigMansionSmlPic=21, bigMansionBigPic=24,
-                 smallInsulaSmlPic=25, smallInsulaBigPic=29,
-                 middleInsulaSmlPic=27, middleInsulaBigPic=30,
-                 bigInsulaPic=31, beatyfullInsulaPic=33,
-                 smallVillaPic=35, middleVillaPic=36,
-                 bigVillaPic=37, greatVillaPic=38,
-                 smallPalacePic=39, middlePalacePic=41,
-                 bigPalacePic=43, greatPalacePic=44 } PicIndex;
+                 smallPalace, middlePalace, bigPalace, greatPalace,
+                 count } ID;
+
+  typedef enum { maxSize2=2, maxSize3, maxSize4 } HouseMaxSize;
 };
 
 class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::count, health, unemployed, happiness };
+  enum { food=Construction::paramCount, health, happiness };
 
-  House( const int houseId=HouseLevel::smallHovel );
+  House( HouseLevel::ID level=HouseLevel::smallHovel );
 
   virtual void timeStep(const unsigned long time);
 
@@ -79,30 +68,35 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
 
-  virtual double getState( ParameterType param) const;
+  virtual double state( ParameterType param) const;
 
   unsigned int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
+  bool isHealthNeed( Service::Type type ) const;
 
-  Desirability getDesirability() const;
+  Desirability desirability() const;
 
   virtual void destroy();
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  virtual void collapse();
+  virtual void burn();
+
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
-  CitizenGroup remHabitants( int count );
+  CitizenGroup remHabitants( int paramCount );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();
   float taxesThisYear() const;
+  void appendMoney( float money );
   DateTime lastTaxationDate() const;
 
-  std::string getEvolveInfo() const;
+  std::string evolveInfo() const;
 
   virtual int roadAccessDistance() const;
 
@@ -114,16 +108,17 @@ public:
 
   bool isCheckedDesirability() const;
 
-private:
+  void __debugChangeLevel( int change );
 
+private:
   void _levelUp();
   void _levelDown();
-
-  void _update();
-  void _tryEvolve_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
-  void _tryEvolve_12_to_20_lvl(int level4grow, int startPic, int minSize, const char desirability);
-  void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
-  void _tryDegrade_20_to_12_lvl(int startPicId, int size, const char desirability);
+  void _disaster();
+  void _update(bool needChangeTexture);
+  void _tryEvolve_1_to_11_lvl(int level, int growSize, const char desirability );
+  void _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
+  void _tryDegrage_11_to_2_lvl( const char desirability );
+  void _tryDegrade_20_to_12_lvl(int size, const char desirability);
   void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);
   void _checkEvolve();

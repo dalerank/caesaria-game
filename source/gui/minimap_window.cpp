@@ -24,7 +24,10 @@
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
+#include "city/city.hpp"
 #include "objects/constants.hpp"
+#include "gfx/camera.hpp"
+#include "walker/walker.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -36,10 +39,9 @@ class Minimap::Impl
 {
 public:
   PictureRef minimap;
-  PictureRef fullmap;
 
-  Tilemap const* tilemap;
-  int climate;
+  PlayerCityPtr city;
+  Camera const* camera;
 
   MinimapColors* colors;
 
@@ -50,21 +52,18 @@ public:
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
-  Point getOffset() { return Point( 146/2 - center.x(), 112/2 + center.y() - tilemap->size()*2); }
-
 public oc3_signals:
   Signal1<TilePos> onCenterChangeSignal;
 };
 
-Minimap::Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, int climate)
+Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera)
   : Widget( parent, -1, rect ), _d( new Impl )
 {
-  _d->tilemap = &tilemap;
-  _d->climate = climate;
+  _d->city = city;
+  _d->camera = &camera;
   _d->lastTimeUpdate = 0;
-  _d->fullmap.reset( Picture::create( Size( _d->tilemap->size() * 2 ) ) );
-  _d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
-  _d->colors = new MinimapColors( (ClimateType)climate );
+  _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
+  _d->colors = new MinimapColors( (ClimateType)city->climate() );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -80,6 +79,12 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   TileOverlay::Type ovType = construction::unknown;
   if( tile.overlay().isValid() )
     ovType = tile.overlay()->type();
+
+  if( tile.i() < 0 || tile.j() < 0 )
+  {
+    c1 = c2 = 0xff000000;
+    return;
+  }
 
   if (tile.getFlag( Tile::tlTree ))
   {
@@ -195,31 +200,60 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::updateImage()
 {
-  int mapsize = tilemap->size();
+  Tilemap& tilemap = city->tilemap();
+  int mapsize = tilemap.size();
 
-  fullmap->lock();
   // here we can draw anything
+  mapsize = std::min( mapsize, 42 );
+  TilePos tpos = camera->center();
+  TilePos offset = TilePos( 80, 80 );
+  TilePos startPos = tpos - offset;
+  TilePos stopPos = tpos + offset;
 
-  int border = (162 - mapsize) / 2;
-  int max = border + mapsize;
+  int w = minimap->width()-1;
+  int h = minimap->height();
+  unsigned int* pixels = minimap->lock();
 
-  for (int y = border; y < max; y++)
+  if( pixels != 0)
   {
-    for (int x = border; x < max; x++)
+    minimap->fill( 0xff000000, Rect() );
+    for( int i = startPos.i(); i < stopPos.i(); i++)
     {
-      const Tile& tile = tilemap->at(x - border, y - border);
+      for (int j = startPos.j(); j < stopPos.j(); j++)
+      {
+        const Tile& tile = tilemap.at(i, j);
 
-      Point pnt = getBitmapCoordinates(x - border, y - border, mapsize);
-      int c1, c2;
-      getTerrainColours( tile, c1, c2);
+        Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
+        int c1, c2;
+        getTerrainColours( tile, c1, c2);
 
-      if( pnt.x() >= fullmap->width()-1 || pnt.y() >= fullmap->height() )
-        continue;
+        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= w || pnt.y() >= h )
+          continue;
 
-      fullmap->setPixel( pnt, c1);
-      fullmap->setPixel( pnt + Point( 1, 0 ), c2);
+        unsigned int* bufp32;
+        bufp32 = pixels + pnt.y() * minimap->width() + pnt.x();
+        *bufp32 = c1;
+        *(bufp32+1) = c2;
+      }
+    }
+
+
+    WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
+    foreach( it, walkers )
+    {
+      WalkerPtr wlk = *it;
+      if( wlk->agressive() != 0 )
+      {
+        NColor c1 = wlk->agressive() > 0 ? DefaultColors::red : DefaultColors::blue;
+
+        Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
+        minimap->fill( c1, Rect( pnt, Size(2) ) );
+      }
     }
   }
+
+  minimap->unlock();
+  minimap->update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
@@ -242,11 +276,9 @@ void Minimap::Impl::updateImage()
   }
   */
 
-  fullmap->unlock();
+  //fullmap->unlock();
 
   // this is window where minimap is displayed
-  minimap->fill( 0xff000000, Rect() );
-  minimap->draw( *fullmap, getOffset() );
 }
 
 /* end of helper functions */
@@ -258,7 +290,7 @@ namespace {
 
 void Minimap::draw(Engine& painter)
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   if( DateTime::elapsedTime() - _d->lastTimeUpdate > 250 )
@@ -281,14 +313,16 @@ bool Minimap::onEvent(const NEvent& event)
   {
     Point clickPosition = event.mouse.pos() - absoluteRect().UpperLeftCorner;
 
-    int mapsize = _d->tilemap->size();
+    int mapsize = _d->city->tilemap().size();
+    Size minimapSize = _d->minimap->size();
 
-    clickPosition -= _d->getOffset();
+    Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
+    clickPosition -= offset;
     TilePos tpos;
     tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
     tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
-    _d->onCenterChangeSignal.emit( tpos );
+    oc3_emit _d->onCenterChangeSignal( tpos );
   }
 
   return Widget::onEvent( event );

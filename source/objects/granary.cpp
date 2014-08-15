@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "granary.hpp"
 #include "game/resourcegroup.hpp"
@@ -52,7 +52,7 @@ public:
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual long reserveStorage( GoodStock &stock, DateTime time )
+  virtual int reserveStorage( GoodStock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
               ? SimpleGoodStore::reserveStorage( stock, time )
@@ -69,14 +69,14 @@ public:
     SimpleGoodStore::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID)
+  virtual void applyStorageReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
 
     granary->computePictures();
   }
 
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID)
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
 
@@ -148,7 +148,7 @@ GoodStore& Granary::store() {  return _d->goodStore; }
 void Granary::initTerrain(Tile& terrain)
 {
   WorkingBuilding::initTerrain( terrain );
-  TilePos offset = terrain.pos() - pos();
+  //TilePos offset = terrain.pos() - pos();
   //TilePos av[5] = { TilePos( 0, 1 ), TilePos( 1, 1 ), TilePos( 1, 2 ), TilePos( 2, 1 ), TilePos( 1, 0 ) };
   //bool walkable = offset == av[0] || offset == av[1] || offset == av[2] || offset == av[3] || offset == av[4];
 
@@ -157,9 +157,11 @@ void Granary::initTerrain(Tile& terrain)
   //strt(0,0)N    (1,1)Y    (2,2)N
   //         (1,0)Y    (2,1)Y
   //              (2,0)N
-  bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
+
+ /* bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
   terrain.setFlag( Tile::tlRoad, walkable );
   terrain.setFlag( Tile::tlRock, !walkable ); // el muleta
+  */
 }
 
 void Granary::computePictures()
@@ -174,7 +176,7 @@ void Granary::computePictures()
   }
 
   if (allQty > 0){ _fgPicturesRef()[1] = Picture::load( ResourceGroup::commerce, 142); }
-  if( allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
+  if (allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
   if (allQty > maxQty * 0.5){ _fgPicturesRef()[3] = Picture::load( ResourceGroup::commerce, 144); }
   if (allQty > maxQty * 0.9){ _fgPicturesRef()[4] = Picture::load( ResourceGroup::commerce, 145); }
 }
@@ -209,11 +211,23 @@ void Granary::destroy()
   }
 }
 
+std::string Granary::troubleDesc() const
+{
+  std::string error = WorkingBuilding::troubleDesc();
+
+  if( error.empty() && _d->goodStore.isDevastation() )
+  {
+    error = "##granary_devastation_mode_text##";
+  }
+
+  return error;
+}
+
 const Pictures& Granary::pictures(Renderer::Pass pass) const
 {
   switch( pass )
   {
-  case Renderer::overWalker: return _d->granarySprite;
+  //case Renderer::overWalker: return _d->granarySprite;
   default: break;
   }
 
@@ -223,6 +237,7 @@ const Pictures& Granary::pictures(Renderer::Pass pass) const
 void Granary::_updateAnimation(const unsigned long time)
 {
   WorkingBuilding::_updateAnimation( time );
+
   _d->granarySprite[ 1 ] = _fgPicture( 5 );
 }
 
@@ -255,25 +270,39 @@ void Granary::_resolveDeliverMode()
   }
 }
 
+bool Granary::_trySendGoods( Good::Type gtype, int qty )
+{
+  GoodStock stock( gtype, qty, qty);
+  CartPusherPtr walker = CartPusher::create( _city() );
+  walker->send2city( BuildingPtr( this ), stock );
+
+  if( !walker->isDeleted() )
+  {
+    stock.setQty( 0 );
+    _d->goodStore.retrieve( stock, qty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
+    addWalker( walker.object() );
+    return true;
+  }
+
+  return false;
+}
+
 void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
+  const int maxSentTry = 3;
   for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
-    int goodQty = math::clamp( _d->goodStore.qty( (Good::Type)goodType ), 0, 400);
+    int trySentQty[maxSentTry] = { 400, 200, 100 };
 
-    if( goodQty > 0 )
+    int goodQty = _d->goodStore.qty( (Good::Type)goodType );
+    for( int i=0; i < maxSentTry; ++i )
     {
-      GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
-      CartPusherPtr walker = CartPusher::create( _city() );
-      walker->send2city( BuildingPtr( this ), stock );
-
-      if( !walker->isDeleted() )
+      if( goodQty >= trySentQty[i] )
       {
-        stock.setQty( 0 );
-        _d->goodStore.retrieve( stock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
-        addWalker( walker.object() );
-        break;
+        bool goodSended = _trySendGoods( (Good::Type)goodType, trySentQty[i] );
+        if( goodSended )
+          return;
       }
     }
   }   

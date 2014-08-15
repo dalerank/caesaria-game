@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "romearcher.hpp"
 #include "city/helper.hpp"
@@ -75,11 +75,11 @@ void RomeArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    BuildingList buildings = _findBuildingsInRange( attackDistance() );
+    ConstructionList constructions = _findContructionsInRange( attackDistance() );
 
-    if( !buildings.empty() )
+    if( !constructions.empty() )
     {
-      BuildingPtr b = buildings.front();
+      ConstructionPtr b = constructions.front();
       turn( b->pos() );
 
       if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )

@@ -12,14 +12,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_PICTURE_INFO_BANK_H_INCLUDED__
 #define __CAESARIA_PICTURE_INFO_BANK_H_INCLUDED__
 
 #include "core/position.hpp"
 #include "core/scopedptr.hpp"
-
-#include <string>
+#include "vfs/path.hpp"
 
 // contains data needed for loading pictures
 class PictureInfoBank
@@ -29,6 +30,7 @@ public:
   static PictureInfoBank& instance();
   ~PictureInfoBank();
 
+  void initialize( vfs::Path filename );
   Point getDefaultOffset( OffsetType type ) const;
   Point getOffset(const std::string &resource_name);
   void setOffset(const std::string &preffix, const int index, const Point& data);

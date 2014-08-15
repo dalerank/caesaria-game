@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "garden.hpp"
 #include "game/resourcegroup.hpp"
@@ -32,23 +34,18 @@ Garden::Garden() : Construction(constants::construction::garden, Size(1) )
 
 void Garden::initTerrain(Tile& terrain)
 {
-  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
-  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlGarden, true);
-  terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
 bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
 bool Garden::isNeedRoadAccess() const{  return false;}
 
-void Garden::build(PlayerCityPtr city, const TilePos& p )
+bool Garden::build(PlayerCityPtr city, const TilePos& p )
 {
   // this is the same arrangement of garden tiles as existed in C3
-  int theGrid[2][2] = {{113, 110}, {112, 111}};
-
   Construction::build( city, p );
-  setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[p.i() % 2][p.j() % 2]) );
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
 
   if( size().area() == 1 )
   {
@@ -62,6 +59,8 @@ void Garden::build(PlayerCityPtr city, const TilePos& p )
       }
     }
   }
+
+  return true;
 }
 
 void Garden::load(const VariantMap& stream)
@@ -74,6 +73,15 @@ void Garden::load(const VariantMap& stream)
   {
     Construction::build( _city(), pos() );
   }
+
+  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+}
+
+void Garden::save(VariantMap& stream) const
+{
+  Construction::save( stream );
+
+  stream[ "picture" ] = Variant( picture().name() );
 }
 
 Desirability Garden::desirability() const
@@ -88,13 +96,20 @@ Desirability Garden::desirability() const
 
 std::string Garden::sound() const
 {
-  return StringHelper::format( 0xff, "garden_%05d.wav", size().area() );
+  return StringHelper::format( 0xff, "garden_%05d", size().area() );
+}
+
+void Garden::destroy()
+{
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getArea( this );
+  foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
 }
 
 void Garden::setPicture(Picture picture)
 {
   Construction::setPicture( picture );
-  _flat = picture.height()/ (float)picture.width() >= 2.f;
+  _flat = picture.width()/ (float)picture.height() >= 1.7f;
 }
 
 void Garden::update()
@@ -122,10 +137,10 @@ void Garden::update()
     }
 
     city::Helper helper( _city() );
-    helper.updateDesirability( this, false );
+    helper.updateDesirability( this, city::Helper::offDesirability );
     setSize( 2 );
     Construction::build( _city(), pos() );
-    setPicture( Picture::load( ResourceGroup::entertaiment, 114 + rand() % 3 ) );
-    helper.updateDesirability( this, true );
+    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    helper.updateDesirability( this, city::Helper::onDesirability );
   }
 }

@@ -36,7 +36,7 @@ public:
   static const char* secondEntry;
 
   Path( const char* nPath );
-  Path();
+  Path( );
   Path( const std::string& nPath );
   Path( const Path& );
   virtual ~Path();
@@ -55,6 +55,7 @@ public:
   Path removeBeginSlash() const;
   Path removeEndSlash() const;
   char lastChar() const;
+  char firstChar() const;
  
   const std::string& toString() const;
   std::string removeExtension() const;

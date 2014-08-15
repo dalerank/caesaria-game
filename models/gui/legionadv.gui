@@ -1,0 +1,57 @@
+{
+  geometry : [ 0, 0, 640, 416 ]
+  bgtype : "whiteFrame"
+    
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00256"
+    font : "FONT_3"
+    text.align : [ "center", "center" ]
+    multiline : true
+  }
+
+  lbBlackframe#Label : {
+    geometry : [ 32, 70, "pw-32", 340 ]
+    bgtype : "blackFrame"
+  }
+
+  lbMorale#Label : {
+    geometry : [ 290, 50, 340, 80 ]
+    text : "##advlegion_morale##"
+  }
+
+  lbGotoLegion#Label : {
+    geometry : [ 380, 50, 435, 80 ]
+    text : "##advlegion_gotolegion##"
+  }
+
+  lbReturn2Fort#Label : {
+    geometry : [ 465, 50, 520, 80 ]
+    text : "##advlegion_return2fort##"
+  }
+
+  lbServEmpire#Label : {
+    geometry : [ 550, 50, 600, 80]
+    text : "##advlegion_empireservice##"
+  }
+
+  alarm#Label : {
+    geometry : [ 60, "ph-60", "pw-0", "ph-40" ]
+    text : "##advlegion_noalarm##"
+    font : "FONT_2"
+  }
+
+  helpRequest#Label : {
+    geometry : [ 60, "ph-40", "pw-0", "ph-20" ]
+    text : "##advlegion_norequest##"
+    font : "FONT_2"
+  }
+  
+  lbTitle#Label : {
+    geometry : [ 10, 10, "pw-10", 50 ]
+    font : "FONT_5"
+    text : "##advlegion_window_title##"
+    textAlign : [ "center", "center" ]
+  }
+}
+

@@ -18,19 +18,22 @@
 #ifndef __CAESARIA_ADVISOR_ENTERTAINMENT_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_ENTERTAINMENT_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui
 {
 
-class AdvisorEntertainmentWindow : public Widget
+namespace advisorwnd
+{
+
+class Entertainment : public Window
 {
 public:
-  AdvisorEntertainmentWindow( PlayerCityPtr city, Widget* parent, int id );
+  Entertainment( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 private:
   void _showFestivalWindow();
@@ -38,6 +41,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}
 
 }// end namespace gui
 

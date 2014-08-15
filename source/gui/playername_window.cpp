@@ -34,14 +34,13 @@ public oc3_signals:
 };
 
 WindowPlayerName::WindowPlayerName(Widget* parent)
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 10, 10 ), "", -1 ), _d( new Impl )
 {
-  setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
+  Widget::setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
 
   WidgetEscapeCloser::insertTo( this );
 
-  Point offset( width(), height() );
-  setPosition( parent->relativeRect().getCenter() - offset / 2 );
+  setCenter( parent->center() );
 
   const bool searchRecursive = true;
   EditBox* ed = findChildA<EditBox*>( "edPlayerName", searchRecursive, this );
@@ -49,6 +48,9 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
   PushButton* btn = findChildA<PushButton*>( "btnContinue", searchRecursive, this );
   CONNECT( btn, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+
+  if( ed )
+    ed->setFocus();
 }
 
 WindowPlayerName::~WindowPlayerName(){}

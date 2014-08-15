@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 
 #include "senate.hpp"
 #include "gfx/picture.hpp"
@@ -34,7 +37,7 @@ using namespace gfx;
 class Senate::Impl
 {
 public:
-  int taxValue;
+  float taxValue;
   std::string errorStr;
 };
 
@@ -81,7 +84,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = txcl->getMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money %f. All money %d", tax, _d->taxValue );
+      Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
     }
   }
   break;
@@ -93,21 +96,23 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-void Senate::build(PlayerCityPtr city, const TilePos& pos)
+bool Senate::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
   _updateUnemployers();
   _updateRatings();
+
+  return true;
 }
 
 unsigned int Senate::walkerDistance() const {  return 26; }
 
 void Senate::_updateRatings()
 {
-  _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
-  _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
-  _fgPicturesRef()[ 2 ].setOffset( 200, -15 + getStatus( Senate::peace ) / 2 );
-  _fgPicturesRef()[ 3 ].setOffset( 230, -10 + getStatus( Senate::favour ) / 2 );
+  _fgPicturesRef()[ 0 ].setOffset( 140, -30 + status( Senate::culture ) / 2 );
+  _fgPicturesRef()[ 1 ].setOffset( 170, -25 + status( Senate::prosperity ) / 2 );
+  _fgPicturesRef()[ 2 ].setOffset( 200, -15 + status( Senate::peace ) / 2 );
+  _fgPicturesRef()[ 3 ].setOffset( 230, -10 + status( Senate::favour ) / 2 );
 }
 
 void Senate::timeStep(const unsigned long time)
@@ -124,7 +129,7 @@ void Senate::timeStep(const unsigned long time)
 void Senate::_updateUnemployers()
 {
   Point offsets[] = { Point( 80, -15), Point( 90, -20), Point( 110, -30 ), Point( 120, -10 ) };
-  int workless = getStatus( Senate::workless );
+  int workless = status( Senate::workless );
   for( int k=0; k < 4; k++ )
   {
     Picture pic;
@@ -137,17 +142,17 @@ void Senate::_updateUnemployers()
   }
 }
 
-int Senate::collectTaxes()
+float Senate::collectTaxes()
 {
-  int save = _d->taxValue;
+  float save = _d->taxValue;
   _d->taxValue = 0;
   return save;
 }
 
-unsigned int Senate::getFunds() const {  return _city()->funds().treasury(); }
+unsigned int Senate::funds() const {  return _city()->funds().treasury(); }
 std::string Senate::errorDesc() const {  return _d->errorStr; }
 
-int Senate::getStatus(Senate::Status status) const
+int Senate::status(Senate::Status status) const
 {
   switch(status)
   {

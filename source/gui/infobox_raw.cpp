@@ -32,8 +32,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
+namespace infobox
+{
+
+AboutRawMaterial::AboutRawMaterial( Widget* parent, const Tile& tile )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
@@ -57,8 +60,8 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   if( lbDamage != NULL )
   {
     std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->getState( Construction::damage ),
-                                            (int)rawmb->getState( Construction::fire ) );
+                                            (int)rawmb->state( Construction::damage ),
+                                            (int)rawmb->state( Construction::fire ) );
     lbDamage->setText( text );
   }
 
@@ -81,13 +84,15 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   }
 }
 
-InfoboxRawMaterial::~InfoboxRawMaterial()
+AboutRawMaterial::~AboutRawMaterial()
 {
 }
 
-void InfoboxRawMaterial::showDescription()
+void AboutRawMaterial::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->rootWidget(), _type );
+  DictionaryWindow::show( ui()->rootWidget(), _type );
+}
+
 }
 
 }//end namespace gui

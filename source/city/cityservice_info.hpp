@@ -48,6 +48,7 @@ public:
     int lifeValue;
     int education;
     int payDiff;
+    int monthWithourWar;
     int cityWages;
     int romeWages;
     int maxWorkers;

@@ -1,11 +1,14 @@
 {
   version : 1
-  map : "/maps/Mediolanum.sav"
+  map : ":/maps/Mediolanum.sav"
   funds : 8000
+  city.name : "Mediolanum"
   date : "-220.01.01"
+  player.rank : 4
   finish : "-100.01.01"
   climate : 1
   adviserEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -14,7 +17,7 @@
     prosperity : 25
     peace : 40
     favour : 30
-    next : "/missions/tutorial6.briefing"
+    next : ":/missions/tutorial6.briefing"
     title : "##win_procurator_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -24,56 +27,6 @@
 	
   empire : {
     enabled : true
-
-    objects : {
-      ship : {
-        location : [ 709, 604 ]
-        name : "ship"
-        picture : "empire_bits_00112"
-      }
-
-      aqueduct : {
-        location : [ 170, 630 ]
-        name : "aqueduct"
-        picture : "empire_bits_00107"
-      }
-
-      palms : {
-        location : [ 490, 790 ]
-        name : "palms"
-        picture : "empire_bits_00111"
-      }
-
-      colosseum : {
-        location : [ 735, 495 ]
-        name : "colosseum"
-        picture : "empire_bits_00114"
-      }
-
-      rocks : {
-        location : [ 240, 440 ]
-        name : "rocks"
-        picture : "empire_bits_00106"
-      }
-
-      rocks2 : {
-        location : [ 530, 290 ]
-        name : "rocks2"
-        picture : "empire_bits_00115"
-      }
-
-      rocks3 : {
-        location : [ 1010, 440 ]
-        name : "rocks3"
-        picture : "empire_bits_00117"
-      }
-
-      palms2 : {
-        location : [ 1350, 630 ]
-        name : "palms2"
-        picture : "empire_bits_00121"
-      }
-    }
 
     cities :
     {    
@@ -153,9 +106,10 @@
       }
     }
 
-    random_wolves#random_wolves : {
+    random_wolves#random_animals : {
       count : 10
-      maxWolves : 6
+      maxAnimals : 6
+      animalType : "wolf"
     }
 
     city_indebt#city_indebt : {
@@ -805,6 +759,10 @@
         }
       }
     }
+  }
+
+  fishpoints : {
+   fp1 : [ 32, 126 ]
   }
 	
   buildoptions :

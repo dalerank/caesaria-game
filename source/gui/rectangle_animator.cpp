@@ -66,7 +66,7 @@ void RectangleAnimator::Impl::restart( Widget* parent )
 
 void RectangleAnimator::beforeDraw( Engine& painter)
 {
-	if( isEnabled() && parent() && isFlag( isActive ) )
+	if( enabled() && parent() && isFlag( isActive ) )
 	{
 		bool mayRemove = true;
 
@@ -115,7 +115,7 @@ void RectangleAnimator::updateFinished_()
     {
         parent()->setVisible( isFlag( showParent ) );
 
-        afterFinished_();
+        _afterFinished();
     }
     else
     {

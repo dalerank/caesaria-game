@@ -31,6 +31,7 @@ public:
                  fightEnemy,
                  destroyBuilding,
                  back2base,
+                 duckout,
                  patrol,
                  doNothing } SldrAction;
 
@@ -45,6 +46,7 @@ public:
   void setStrike( float value );
 
   int morale() const;
+  void updateMorale( int value );
 
   virtual void wait(int ticks);
   virtual void initialize(const VariantMap &options);
@@ -61,7 +63,7 @@ protected:
   void _setSubAction( SldrAction action );
 
   virtual bool _move2freePos(TilePos target);
-  virtual BuildingList _findBuildingsInRange(unsigned int range) = 0;
+  virtual ConstructionList _findContructionsInRange(unsigned int range) = 0;
   virtual WalkerList _findEnemiesInRange(unsigned int range) = 0;
 private:
   __DECLARE_IMPL(Soldier)

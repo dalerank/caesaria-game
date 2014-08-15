@@ -1,11 +1,14 @@
 {
   version : 1
-  map : "/maps/Brundisium.sav"
+  map : ":/maps/Brundisium.sav"
   funds : 8000
+  city.name : "Brundisium"
+  player.rank : 1
   date : "-350.01.01"
   finish : "-300.01.01"
   climate : 0
   adviserEnabled : false
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -14,7 +17,7 @@
     prosperity : 0
     peace : 0
     favour : 0
-    next : "/missions/mission3.briefing"
+    next : ":/missions/mission3.briefing"
     title : "##win_clerk_title##"
     may_continue : false
     short : "##tt2_caption##"
@@ -43,7 +46,7 @@
 
     "reservoir#tutorial_window" : {
       population : 200
-      tutorial : "/tutorial/reservoir.tutorial"
+      tutorial : ":/tutorial/reservoir.tutorial"
     }
 
     "enable_reservoir#building_options" : {
@@ -53,7 +56,7 @@
 
     "gardens#tutorial_window" : {
       population : 250
-      tutorial : "/tutorial/gardens.tutorial"
+      tutorial : ":/tutorial/gardens.tutorial"
     }
 
     "enable_gardens#building_options" : {
@@ -63,12 +66,12 @@
 
     "taxes_and_industry#tutorial_window" : {
       population : 450
-      tutorial : "/tutorial/taxes_and_industry.tutorial"
+      tutorial : ":/tutorial/taxes_and_industry.tutorial"
     }
 
     "enable_industry#building_options" : {
       population : 450
-      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true }
+      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true, weapons_workshop : true }
     }
 
     "enable_advisors#empire_options" : {
@@ -78,12 +81,27 @@
 
     "enable_empire#empire_options" : {
       population : 600
-      empire : { enabled : true }
+      empire : {
+       enabled : true
+       cities : {
+          Capua : {
+            location : [ 820, 560 ]
+
+            land : true
+            sea : true
+            available : true
+
+            sells : { iron : 25 }
+            buys : { wheat: 25, weapon: 15, pottery : 15 }
+          }
+        }
+      }
+
     }
 
     "empire_trade#tutorial_window" : {
       population : 600
-      tutorial : "/tutorial/tt2_trade.tutorial"
+      tutorial : ":/tutorial/tt2_trade.tutorial"
     }
 
 

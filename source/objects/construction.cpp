@@ -14,8 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012 Dalerank, dalerankn7@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "construction.hpp"
 
@@ -72,33 +71,32 @@ std::string Construction::troubleDesc() const
   }
 
   int lvlTrouble = 0;
-  int damage = getState( Construction::fire );
-  int fire = getState( Construction::damage );
+  int damage = state( Construction::fire );
+  int fire = state( Construction::damage );
 
   if( fire > 50 || damage > 50 )
   {
     const char* troubleName[] = { "some", "have", "most" };
     lvlTrouble = std::max( fire, damage );
     const char* typelvl = ( fire > damage ) ? "fire" : "damage";
-    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)floor((lvlTrouble-50) / 25) ], typelvl );
+    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)((lvlTrouble-50) / 25) ], typelvl );
   }
 
   return "";
 }
 
 std::string Construction::errorDesc() const { return ""; }
-TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
-bool Construction::canDestroy() const {  return true; }
+TilesArray Construction::getAccessRoads() const { return _d->accessRoads; }
+bool Construction::canDestroy() const { return true; }
 void Construction::destroy() { TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{ return true; }
-const Picture& Construction::picture() const {  return TileOverlay::picture(); }
 Construction::~Construction() {}
 
-void Construction::build(PlayerCityPtr city, const TilePos& pos )
+bool Construction::build(PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
-
   computeAccessRoads();
+  return true;
 }
 
 // here the problem lays: if we remove road, it is left in _accessRoads array
@@ -150,6 +148,8 @@ void Construction::collapse()
   Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
+const Picture& Construction::picture() const { return TileOverlay::picture(); }
+
 void Construction::setState( ParameterType param, double value)
 {
   _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );
@@ -157,7 +157,7 @@ void Construction::setState( ParameterType param, double value)
 
 void Construction::updateState(Construction::ParameterType name, double value)
 {
-  setState( name, getState( name ) + value );
+  setState( name, state( name ) + value );
 }
 
 void Construction::save( VariantMap& stream) const
@@ -188,7 +188,7 @@ void Construction::addExtension(ConstructionExtensionPtr ext)
   _d->extensions.push_back( ext );
 }
 
-double Construction::getState( ParameterType param) const { return _d->params[ param ]; }
+double Construction::state( ParameterType param) const { return _d->params[ param ]; }
 
 TilesArray Construction::enterArea() const
 {
@@ -202,11 +202,11 @@ TilesArray Construction::enterArea() const
 
 void Construction::timeStep(const unsigned long time)
 {
-  if( getState( Construction::damage ) >= 100 )
+  if( state( Construction::damage ) >= 100 )
   {    
     collapse();
   }
-  else if( getState( Construction::fire ) >= 100 )
+  else if( state( Construction::fire ) >= 100 )
   {
     burn();
   }
@@ -225,6 +225,6 @@ void Construction::timeStep(const unsigned long time)
 
 const Picture& Construction::picture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  return picture();
+  return TileOverlay::picture();
 }
 

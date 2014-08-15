@@ -55,13 +55,13 @@ public:
     return SimpleGoodStore::getMaxStore( goodType );
   }
 
-  virtual void applyStorageReservation( GoodStock &stock, const long reservationID )
+  virtual void applyStorageReservation( GoodStock &stock, const int reservationID )
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
     oc3_emit onChangeState();
   }
 
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID)
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
     oc3_emit onChangeState();
@@ -184,10 +184,9 @@ void Factory::timeStep(const unsigned long time)
     if( _d->produceGood )
     {
       //ok... factory is work, produce goods
-
-      float workersRatio = (float)numberWorkers() / (float)maximumWorkers();  // work drops if not enough workers
       float timeKoeff = _d->productionRate / (float)GameDate::days2ticks( 365 );
-      float work = 100.f * timeKoeff * workersRatio;  // work is proportional to time and factory speed
+      float laborAccessKoeff = laborAccessPercent() / 100.f;
+      float work = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
 
       _d->progress += work;
     }
@@ -195,7 +194,7 @@ void Factory::timeStep(const unsigned long time)
 
   if( !_d->produceGood )
   {
-    unsigned int consumeQty = getConsumeQty();
+    int consumeQty = (int)getConsumeQty();
     if( _d->inGoodType == Good::none ) //raw material
     {
       _d->produceGood = true;
@@ -230,7 +229,7 @@ void Factory::deliverGood()
     }
     else
     {
-      _d->store.store( walker->getStock(), walker->getStock().qty() );
+      _d->store.store( walker->stock(), walker->stock().qty() );
     }
   }
 }
@@ -290,9 +289,9 @@ std::string Factory::cartStateDesc() const
     CartPusherPtr cart = ptr_cast<CartPusher>( walkers().front() );
     if( cart.isValid() )
     {
-      if( cart->getPathway().isValid() )
+      if( cart->pathway().isValid() )
       {
-        return cart->getPathway().isReverse()
+        return cart->pathway().isReverse()
                  ? "##factory_cart_returning_from_delivery##"
                  : "##factory_cart_taking_goods##";
       }
@@ -370,14 +369,16 @@ bool Winery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundT
   return Factory::canBuild( city, pos, aroundTiles );
 }
 
-void Winery::build(PlayerCityPtr city, const TilePos& pos)
+bool Winery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
   city::Helper helper( city );
   bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
 
-  const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : "##need_grape##" );
+  _setError( haveVinegrad ? "" : "##need_grape##" );
+
+  return true;
 }
 
 void Winery::_storeChanged()
@@ -400,7 +401,7 @@ bool Creamery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return Factory::canBuild( city, pos, aroundTiles );
 }
 
-void Creamery::build(PlayerCityPtr city, const TilePos& pos)
+bool Creamery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
@@ -408,6 +409,8 @@ void Creamery::build(PlayerCityPtr city, const TilePos& pos)
   bool haveOliveFarm = !helper.find<Building>( building::oliveFarm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
+
+  return true;
 }
 
 void Creamery::_storeChanged()

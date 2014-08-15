@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "thinks.hpp"
 #include "city/cityservice_info.hpp"
@@ -26,7 +28,8 @@ using namespace constants;
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)
 {
-  SmartPtr< city::Info > info = ptr_cast< city::Info>( city->findService( city::Info::defaultName() ) );
+  city::InfoPtr info;
+  info << city->findService( city::Info::defaultName() );
 
   if( info.isNull() )
   {
@@ -90,7 +93,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   if( !troubles.empty() )
   {
-    return troubles.rand();
+    return troubles.random();
   }
 
   StringArray positiveIdeas = own;
@@ -115,11 +118,11 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   std::string ret;
   if( !positiveIdeas.empty() )
   {
-    ret = positiveIdeas.rand();
+    ret = positiveIdeas.random();
   }
   else
   {
-    ret = positiveIdeas.rand();
+    ret = positiveIdeas.random();
   }
 
   return ret.empty() ? "##unknown_reason##" : ret;

@@ -22,29 +22,35 @@
 namespace gui
 {
 
+namespace infobox
+{
+
 // info box about a factory building
-class InfoboxFactory : public InfoboxConstruction
+class AboutFactory : public AboutConstruction
 {
 public:
-  InfoboxFactory( Widget* parent, const gfx::Tile& tile );
+  AboutFactory( Widget* parent, const gfx::Tile& tile );
 
   virtual void showDescription();
-private:
+
+protected:
   gfx::TileOverlay::Type _type;
+  Label* _lbProduction;
 };
 
-class InfoboxShipyard : public InfoboxFactory
+class AboutShipyard : public AboutFactory
 {
 public:
-  InfoboxShipyard( Widget* parent, const gfx::Tile& tile );
+  AboutShipyard( Widget* parent, const gfx::Tile& tile );
 };
 
-class InfoboxWharf : public InfoboxFactory
+class AboutWharf : public AboutFactory
 {
 public:
-  InfoboxWharf( Widget* parent, const gfx::Tile& tile );
+  AboutWharf( Widget* parent, const gfx::Tile& tile );
 };
 
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXFACTORY_H_INCLUDE_

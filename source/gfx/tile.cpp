@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "tile.hpp"
 #include "core/exception.hpp"
@@ -22,11 +24,12 @@
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 
+using namespace constants;
+
 namespace gfx
 {
 
 namespace {
-  const int waterDecreaseInterval = GameDate::days2ticks( 15 );
   const int x_tileBase = 30;
   const int y_tileBase = x_tileBase / 2;
   Animation invalidAnimation;
@@ -35,8 +38,10 @@ namespace {
 void Tile::Terrain::reset()
 {
   clearFlags();
-  desirability = 0;
-  watersrvc = 0;
+  params[ Tile::pDesirability ] = 0;
+  params[ Tile::pWellWater ] = 0;
+  params[ Tile::pFountainWater ] = 0;
+  params[ Tile::pReservoirWater ] = 0;
 }
 
 void Tile::Terrain::clearFlags()
@@ -45,7 +50,7 @@ void Tile::Terrain::clearFlags()
   rock       = false;
   tree       = false;
   road       = false;
-  //aqueduct   = false;
+  coast      = false;
   elevation  = false;
   garden     = false;
   meadow     = false;
@@ -63,6 +68,7 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   _overlay = NULL;
   _terrain.reset();
   _terrain.imgid = 0;
+  _height = 0;
 }
 
 int Tile::i() const    {   return _pos.i();   }
@@ -91,19 +97,23 @@ const TilePos& Tile::pos() const{ return _pos; }
 void Tile::setEPos(const TilePos& epos) { _epos = epos; }
 Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
-Point Tile::mapPos() const{  return Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) );}
+
+void Tile::changeDirection(constants::Direction newDirection)
+{
+  if( _overlay.isValid() )
+    _overlay->changeDirection(newDirection);
+}
+
+Point Tile::mappos() const
+{
+  return Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) - _height * y_tileBase );
+}
 
 void Tile::animate(unsigned int time)
 {
   if( _overlay.isNull() && _animation.isValid() )
   {
     _animation.update( time );
-  }
-
-  if( time % waterDecreaseInterval == 0)
-  {
-    decreaseWaterService( WTR_FONTAIN );
-    decreaseWaterService( WTR_WELL );
   }
 }
 
@@ -112,8 +122,7 @@ void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
 {
-  // TODO: test building to allow garden, gatehouse, granary, ...
-  bool walkable = (_terrain.road || (alllands && !_terrain.water && !_terrain.tree && !_terrain.rock));
+  bool walkable = (_terrain.road || (alllands && !_terrain.deepWater && !_terrain.water && !_terrain.tree && !_terrain.rock));
   if( _overlay.isValid() )
   {
     walkable &= _overlay->isWalkable();
@@ -129,14 +138,16 @@ bool Tile::getFlag(Tile::Type type) const
   case tlRoad: return _terrain.road;
   case tlWater: return _terrain.water;
   case tlTree: return _terrain.tree;
+  case tlGrass: return (!_terrain.road && !_terrain.deepWater && !_terrain.water && !_terrain.tree && !_terrain.rock && _overlay.isNull());
+
   case isConstructible:
   {
-    return !(_terrain.water || _terrain.rock || _terrain.tree || _overlay.isValid() || _terrain.road);
+    return !(_terrain.water || _terrain.deepWater || _terrain.rock || _terrain.tree || _overlay.isValid() || _terrain.road);
   }
   case tlMeadow: return _terrain.meadow;
   case tlRock: return _terrain.rock;
   case tlBuilding: return _overlay.isValid();
-  //case tlAqueduct: return _terrain.aqueduct;
+  case tlCoast: return _terrain.coast;
   case tlRubble: return _terrain.rubble;
   case isDestructible:
   {
@@ -164,40 +175,30 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlTree: _terrain.tree = value; break;
   case tlMeadow: _terrain.meadow = value; break;
   case tlRock: _terrain.rock = value; break;
-  //case tlAqueduct: _terrain.aqueduct = value; break;
+  case tlCoast: _terrain.coast = value; break;
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
   case tlRubble: _terrain.rubble = value; break;
   case clearAll: _terrain.clearFlags(); break;
   case tlWall: _terrain.wall = value; break;
   case wasDrawn: _wasDrawn = value; break;
-  case tlDeepWater: _terrain.deepWater = value;
+  case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
   }
 }
 
-void Tile::appendDesirability(int value){ _terrain.desirability += value; }
-int Tile::desirability() const{  return _terrain.desirability;}
 TileOverlayPtr Tile::overlay() const{ return _overlay;}
 void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::originalImgId() const{  return _terrain.imgid;}
+unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
+void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
+void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }
 
-void Tile::fillWaterService(WaterService type, int value)
+int Tile::param( Param param) const
 {
-  int vl = math::clamp( waterService( type )+value, 0, 0xf );
-  _terrain.watersrvc |= ( vl << (type*4));
+  std::map<Param, int>::const_iterator it = _terrain.params.find( param );
+  return it != _terrain.params.end() ? it->second : 0;
 }
-
-void Tile::decreaseWaterService(WaterService type, int value)
-{
-  int tmpSrvValue = math::clamp( waterService( type )-value, 0, 0xf);
-
-  _terrain.watersrvc &= ~(0xf<<(type*4));
-  _terrain.watersrvc |= tmpSrvValue << (type*4);
-}
-
-int Tile::waterService(WaterService type) const{  return (_terrain.watersrvc >> (type*4)) & 0xf;}
 
 std::string TileHelper::convId2PicName( const unsigned int imgId )
 {
@@ -228,7 +229,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
   else
   {
     res_pfx = ResourceGroup::land1a;
-    res_id = 1;
+    res_id = 0;
 
     // std::cout.setf(std::ios::hex, std::ios::basefield);
     // std::cout << "Unknown image Id " << imgId << std::endl;
@@ -240,7 +241,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
       res_id = 51;
     } // TERRIBLE HACK!
 
-    // THROW("Unknown image Id " << imgId);
+    Logger::warning( "TileHelper: unknown image Id=%d ", imgId );
   }
 
   std::string ret_str = StringHelper::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
@@ -278,6 +279,7 @@ int TileHelper::encode(const Tile& tt)
   res += tt.getFlag( Tile::tlWater )     ? 0x00004 : 0;
   res += tt.getFlag( Tile::tlBuilding )  ? 0x00008 : 0;
   res += tt.getFlag( Tile::tlRoad )      ? 0x00040 : 0;
+  res += tt.getFlag( Tile::tlCoast )     ? 0x00100 : 0;
   res += tt.getFlag( Tile::tlElevation ) ? 0x00200 : 0;
   res += tt.getFlag( Tile::tlMeadow )    ? 0x00800 : 0;
   res += tt.getFlag( Tile::tlRubble )    ? 0x01000 : 0;
@@ -308,7 +310,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x00010) { tile.setFlag( Tile::tlTree, true);      }
   if(bitset & 0x00020) { tile.setFlag( Tile::tlGarden, true);    }
   if(bitset & 0x00040) { tile.setFlag( Tile::tlRoad, true);      }
-  //if(bitset & 0x00100) { tile.setFlag( Tile::tlAqueduct, true);  }
+  if(bitset & 0x00100) { tile.setFlag( Tile::tlCoast, true);     }
   if(bitset & 0x00200) { tile.setFlag( Tile::tlElevation, true); }
   if(bitset & 0x00400) { tile.setFlag( Tile::tlRock, true );     }
   if(bitset & 0x00800) { tile.setFlag( Tile::tlMeadow, true);    }

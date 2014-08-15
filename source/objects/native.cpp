@@ -46,10 +46,10 @@ void NativeBuilding::save( VariantMap& stream) const
 
 void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
 
-void NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
+bool NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
 {
-  Building::build( city, pos );
   tile().setFlag( Tile::tlRock, true );
+  return Building::build( city, pos );
 }
 
 bool NativeBuilding::canDestroy() const { return false; }
@@ -97,7 +97,7 @@ void NativeHut::timeStep(const unsigned long time)
 
 void NativeHut::applyService(ServiceWalkerPtr walker)
 {
-  if( walker->serviceType() == Service::native )
+  if( walker->serviceType() == Service::missionary )
   {
     _discontent -= walker->serviceValue();
   }
@@ -111,7 +111,7 @@ float NativeHut::evaluateService(ServiceWalkerPtr walker)
 
   switch( walker->serviceType() )
   {
-  case Service::native: res = math::clamp( 100.f - _discontent, 0.f, 100.f ); break;
+  case Service::missionary: res = math::clamp( 100.f - _discontent, 0.f, 100.f ); break;
   default: break;
   }
   return res;

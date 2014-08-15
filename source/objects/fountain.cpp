@@ -44,11 +44,12 @@ static const unsigned int fillDistance = 4;
 }
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
-               awesomeFountain=18, patricianFountain=26 } FontainConstant;
+               awesomeFountain=18, patricianFountain=26, testFountain=50 } FontainConstant;
 
 Fountain::Fountain()
   : ServiceBuilding(Service::fountain, building::fountain, Size(1))
 {  
+  setPicture( ResourceGroup::utilitya, 10 );
   _haveReservoirWater = false;
   _waterIncreaseInterval = GameDate::days2ticks( 7 );
   _lastPicId = simpleFountain;
@@ -77,21 +78,25 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % _waterIncreaseInterval == 1 )
   {
-    _haveReservoirWater = tile().waterService( WTR_RESERVOIR ) > 0;
+    _haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
 
     if( mayWork() )
     {
       Tilemap& tmap = _city()->tilemap();
       TilesArray reachedTiles = tmap.getArea( fillDistance, pos() );
 
-      foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
+      foreach( tile, reachedTiles )
+      {
+        int value = (*tile)->param( Tile::pFountainWater );
+        (*tile)->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
+      }
     }
   }
 
   if( GameDate::isWeekChanged() )
   {
-    int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
-    int currentId = desPic[ math::clamp<int>( tile().desirability() / 25, 0, 3 ) ];
+    int desPic[] = { simpleFountain, testFountain, prettyFountain, awesomeFountain, patricianFountain };
+    int currentId = desPic[ math::clamp<int>( tile().param( Tile::pDesirability ) / 20, 0, 4 ) ];
     if( currentId != _lastPicId )
     {
       _lastPicId = currentId;
@@ -115,19 +120,28 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
 
   Tilemap& tmap = city->tilemap();
   const Tile& tile = tmap.at( pos );
-  int picid = (tile.waterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
-  const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
+  Fountain* thisp = const_cast< Fountain* >( this );
+  thisp->_fgPicturesRef().clear();
+  thisp->setPicture( ResourceGroup::utilitya, 10 );
+
+  if( tile.param( Tile::pReservoirWater ) )
+  {
+    thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 11 ) );
+    thisp->_fgPicturesRef().back().setOffset( 12, 8 + picture().offset().y() );
+  }
 
   return ret;
 }
 
-void Fountain::build(PlayerCityPtr city, const TilePos& pos )
+bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 
-  setPicture( ResourceGroup::waterbuildings, fontainEmpty );
+  setPicture( ResourceGroup::utilitya, 10 );
   _lastPicId = simpleFountain;
   _initAnimation();
+
+  return true;
 }
 
 bool Fountain::isNeedRoadAccess() const { return false; }
@@ -154,7 +168,7 @@ void Fountain::destroy()
   Tilemap& tmap = _city()->tilemap();
   TilesArray reachedTiles = tmap.getArea( fillDistance, pos() );
 
-  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }
+  foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pFountainWater, 0 ); }
 
   if( numberWorkers() > 0 )
   {
@@ -197,6 +211,7 @@ void Fountain::_initAnimation()
   switch ( _lastPicId )
   {
   case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
+  //case testFountain: _animationRef().setOffset( Point( 0, 31 ) ); break;
   case prettyFountain: _animationRef().setOffset( Point( 9, 41 ) ); break;
   case awesomeFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   case patricianFountain: _animationRef().setOffset( Point( 14, 26 ) ); break;

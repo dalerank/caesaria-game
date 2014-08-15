@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOX_HOUSE_H_INCLUDE_
 #define _CAESARIA_INFOBOX_HOUSE_H_INCLUDE_
@@ -24,15 +26,25 @@
 namespace gui
 {
 
-class InfoboxHouse : public InfoboxSimple
+namespace infobox
+{
+
+class AboutHouse : public Simple
 {
 public:
-   InfoboxHouse( Widget* parent, const gfx::Tile& tile);
-   virtual ~InfoboxHouse();
+   AboutHouse( Widget* parent, const gfx::Tile& tile);
+   virtual ~AboutHouse();
 
    void drawHabitants(HousePtr house);
    void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );
+
+   virtual bool onEvent(const NEvent &event);
+
+private:
+   HousePtr _house;
 };
+
+}
 
 }//end namespace gui
 

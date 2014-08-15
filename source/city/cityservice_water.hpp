@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
@@ -20,17 +22,22 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceWater : public city::Srvc
+namespace city
+{
+
+class Water : public city::Srvc
 {
 public:
   static city::SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
 private:
-  CityServiceWater( PlayerCityPtr city );
+  Water( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_WATER_H_INCLUDED__

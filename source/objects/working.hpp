@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WORKINGBUILDING_H_INCLUDED__
 #define __CAESARIA_WORKINGBUILDING_H_INCLUDED__
@@ -29,10 +31,12 @@ public:
   unsigned int maximumWorkers() const;
   unsigned int numberWorkers() const;
   unsigned int needWorkers() const;
+  unsigned int productivity() const;
+  unsigned int laborAccessPercent() const;
 
   void setWorkers( const unsigned int currentWorkers );
-  void addWorkers( const unsigned int workers );
-  void removeWorkers( const unsigned int workers );
+  unsigned int addWorkers( const unsigned int workers );
+  unsigned int removeWorkers( const unsigned int workers );
 
   virtual bool mayWork() const;
 
@@ -40,6 +44,8 @@ public:
   virtual bool isActive() const;
 
   virtual void destroy();
+  virtual void collapse();
+  virtual void burn();
 
   virtual void timeStep(const unsigned long time);
 
@@ -58,6 +64,7 @@ protected:
   void _setError(const std::string& err);
   void _fireWorkers();
   void _setClearAnimationOnStop( bool value );
+  void _disaster();
 
   virtual void _updateAnimation( const unsigned long time );
 
@@ -65,6 +72,13 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class WorkingBuildingHelper
+{
+public:
+  static std::string productivity2desc( WorkingBuildingPtr w, const std::string& prefix="" );
+  static std::string productivity2str( WorkingBuildingPtr w );
 };
 
 #endif //__CAESARIA_WORKINGBUILDING_H_INCLUDED__

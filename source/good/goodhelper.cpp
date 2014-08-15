@@ -86,7 +86,7 @@ public:
     __REG_GTYPE(fish ) // append( Good::fish, "fish", "##fish##" );
     __REG_GTYPE(meat ) // append( Good::meat, "meat", "##meat##" );
     __REG_GTYPE(fruit) // append( Good::fruit, "fruit", "##fruit##");
-    __REG_GTYPE( vegetable ) //append( Good::vegetable, "vegetable", "##vegetable##" );
+    __REG_GTYPE(vegetable) //append( Good::vegetable, "vegetable", "##vegetable##" );
     __REG_GTYPE(olive) // append( Good::olive, "olive", "##olive##" );
     __REG_GTYPE(oil  ) // append( Good::oil, "oil", "##oil##" );
     __REG_GTYPE(grape) // append( Good::grape, "grape", "##grape##" );
@@ -165,5 +165,5 @@ std::string GoodHelper::getTypeName( Good::Type type )
 
 Picture GoodHelper::getCartPicture(const GoodStock& stock, constants::Direction direction)
 {
-  return AnimationBank::getCart( stock.empty() ? Good::none : stock.type(), direction );
+  return AnimationBank::getCart( stock.empty() ? Good::none : stock.type(), stock.capacity(), direction );
 }

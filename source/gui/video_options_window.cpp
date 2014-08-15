@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "video_options_window.hpp"
-#include "game/settings.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "listbox.hpp"
@@ -44,10 +43,10 @@ public:
 };
 
 VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
-  setupUI( GameSettings::rcpath( "/gui/videooptions.gui" ) );
+  setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
   _d->btnSwitchMode = findChildA<PushButton*>( "btnSwitchMode", true, this );
@@ -78,7 +77,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
   {
   case guiButtonClicked:
   {
-    switch( event.gui.caller->getID() )
+    switch( event.gui.caller->ID() )
     {
     case 1:
     {
@@ -92,7 +91,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     default:
       if( _d->haveChanges )
       {
-        Widget* parent = getEnvironment()->rootWidget();
+        Widget* parent = ui()->rootWidget();
         DialogBox* dlg = new DialogBox( parent, Rect(), "",
                                         _("##need_restart_for_apply_changes##"), DialogBox::btnOk );
         CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
@@ -112,7 +111,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
 
     int tag = lbx->selectedItem().tag();
 
-    _d->onScreenSizeChangeSignal.emit( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
+    oc3_emit _d->onScreenSizeChangeSignal( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
   }
   break;
 

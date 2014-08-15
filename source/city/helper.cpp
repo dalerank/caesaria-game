@@ -39,7 +39,7 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
   TilesArray area = tilemap.getArea( overlay->pos(), overlay->size() );
   foreach( tile, area )
   {
-    (*tile)->appendDesirability( mul * dsrbl.base );
+    (*tile)->changeParam( Tile::pDesirability, mul * dsrbl.base );
   }
 
   //change deisirability around
@@ -50,7 +50,7 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
                                                  overlay->size() + Size( 2 * curRange ) );
     foreach( tile, perimetr )
     {
-      (*tile)->appendDesirability( current );
+      (*tile)->changeParam( Tile::pDesirability, current );
     }
 
     current += mul * dsrbl.step;
@@ -74,15 +74,9 @@ TilesArray Helper::getArea(TilePos start, TilePos stop)
 
 HirePriorities Helper::getHirePriorities() const
 {
-  SmartPtr<WorkersHire> wh = ptr_cast<WorkersHire>( _city->findService( WorkersHire::defaultName() ) );
+  WorkersHirePtr wh;
+  wh << _city->findService( WorkersHire::defaultName() );
   return wh.isValid() ? wh->priorities() : HirePriorities();
-}
-
-float Helper::getBalanceKoeff()
-{
-  int pop = _city->population();
-
-  return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
 }
 
 void Helper::updateTilePics()

@@ -32,11 +32,6 @@ inline T safety_cast( B object ) throw()
     //LOGIT(pfEmerg, "cast(0x%p): __non_rtti_object exception has caught: '%s'\n", object, e.what());
     return 0;
   }
-#else
-  catch(std::bad_cast)
-  {
-    return 0;
-  }
 #endif
   catch(...)
   {

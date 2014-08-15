@@ -29,12 +29,11 @@ public:
   void updatePicture();
   RiftList neighbors() const;
 
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual void destroy();
-  virtual void timeStep(const unsigned long time);
   virtual bool isDestructible() const;
 
   virtual void load(const VariantMap &stream);

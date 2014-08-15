@@ -14,12 +14,12 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "menu.hpp"
 
 #include "core/gettext.hpp"
-#include "gui/loadmapwindow.hpp"
+#include "gui/loadfiledialog.hpp"
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "gui/startmenu.hpp"
@@ -42,8 +42,13 @@
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
+#include "events/setvideooptions.hpp"
+#include "events/setsoundoptions.hpp"
+#include "gui/widgetpositionanimator.hpp"
+#include "core/event.hpp"
 
 using namespace gfx;
+using namespace gui;
 
 namespace scene
 {
@@ -63,47 +68,41 @@ public:
   std::string fileMap;
   std::string playerName;
 
-  void resolveNewGame();
+  void handleNewGame();
   void resolveCredits();
-  
+  void showLoadMenu();
+  void showOptionsMenu();
+  void resolveLoadRandommap();
+  void showMainMenu();
+  void showSoundOptions();
+  void showVideoOptions();
   void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
-
-  void resolveSelectFile( std::string fileName )
-  {
-    fileMap = fileName;
-    isStopped = true;
-  }
-
-  void setPlayerName( std::string name )
-  {
-    playerName = name;
-  }
-
+  void resolveSelectFile( std::string fileName );
+  void setPlayerName( std::string name );
   void openGreenlightPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
   void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
-  void resolveChangePlayerName();
+  void handleStartCareer();
   void resolveShowChangeLanguageWindow();
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
-  void reload()
-  {
-    result = StartMenu::reloadScreen;
-    isStopped = true;
-  }
+  void playMenuSoundTheme();
+  void reload();
 };
 
 void StartMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->gui()->rootWidget();
 
-  vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
-  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
+  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
+  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
   result = StartMenu::loadSavedGame;
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  wnd->setCenter( parent->center() );
+  wnd->setMayDelete( true );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
@@ -112,9 +111,26 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 void StartMenu::Impl::fitScreenResolution()
 {
   gfx::Engine::Modes modes = game->engine()->modes();
-  GameSettings::set( GameSettings::resolution, Variant( modes.front() ) );
-  GameSettings::set( GameSettings::screenFitted, true );
+  SETTINGS_SET_VALUE( resolution, modes.front() );
+  SETTINGS_SET_VALUE( screenFitted, true );
   GameSettings::save();
+}
+
+void StartMenu::Impl::playMenuSoundTheme()
+{
+  audio::Engine::instance().play( "rome6", 50, audio::themeSound );
+}
+
+void StartMenu::Impl::reload()
+{
+  result = StartMenu::reloadScreen;
+  isStopped = true;
+}
+
+void StartMenu::Impl::showSoundOptions()
+{
+  events::GameEventPtr e = events::SetSoundOptions::create();
+  e->dispatch();
 }
 
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
@@ -132,11 +148,18 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
-  VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
+  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  std::string currentLang = SETTINGS_VALUE( language ).toString();
+  int currentIndex = -1;
   foreach( it, languages )
   {
     lbx->addItem( it->first );
+    std::string ext = it->second.toMap().get( "ext" ).toString();
+    if( ext == currentLang )
+      currentIndex = std::distance( languages.begin(), it );
   }
+
+  lbx->setSelected( currentIndex );
 
   CONNECT( lbx, onItemSelected(), this, Impl::resolveChangeLanguage );
   CONNECT( btn, onClicked(), this, Impl::reload );
@@ -146,7 +169,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   std::string talksArchive;
-  VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
+  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )
@@ -158,102 +181,199 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
     }
   }
 
-  GameSettings::set( GameSettings::language, Variant( lang ) );
-  GameSettings::set( GameSettings::talksArchive, Variant( talksArchive ) );
+  SETTINGS_SET_VALUE( language, Variant( lang ) );
+  SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
 
-  Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
+  Locale::setLanguage( lang );
   audio::Helper::initTalksArchive( GameSettings::rcpath( talksArchive ) );
 }
 
-void StartMenu::Impl::resolveChangePlayerName()
+void StartMenu::Impl::handleStartCareer()
 {
   gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->gui()->rootWidget() );
 
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onClose(), this, Impl::resolveNewGame );
+  CONNECT( dlg, onClose(), this, Impl::handleNewGame );
 }
 
-void StartMenu::Impl::resolveNewGame()
+void StartMenu::Impl::handleNewGame()
 {  
   result=startNewGame; isStopped=true;
 }
 
 void StartMenu::Impl::resolveCredits()
 {
+  audio::Engine::instance().play( "combat_long", 50, audio::themeSound );
   gui::Widget* parent = game->gui()->rootWidget();
 
-  gui::Label* frame = new gui::Label( parent, Rect( 0, 0, 512, 384 ), "", false, gui::Label::bgWhiteFrame );
-  frame->setCenter( parent->center() );
+  Size size = engine->screenSize();
+  std::string strs[] = { _("##developers##"),
+                         " ",
+                         "dalerank (dalerankn8@gmail.com)",
+                         "gathanase (gathanase@gmail.com) render, game mechanics ",
+                         "gecube (gb12335@gmail.com)",
+                         "pecunia (pecunia@heavengames.com) game mechanics",
+                         "tracertong",
+                         "VladRassokhin",
+                         "hellium",
+                         "pufik6666",
+                         "andreibranescu",
+                         "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
+                         "akuskis (?) aqueduct system",
+                         "rovanion",
+                         "nickers (2nickers@gmail.com)",
+                         "ImperatorPrime",
+                         "veprbl",
+                         "ramMASTER",
+                         "greg kennedy(kennedy.greg@gmail.com) smk decoder",
+                         " ",
+                         _("##testers##"),
+                         " ",
+                         "radek liška",
+                         "dimitrius (caesar-iii.ru)",
+                         "shibanirm",
+                         " ",
+                         _("##graphics##"),
+                         " ",
+                         "dimitrius (caesar-iii.ru)",
+                         "aneurysm (4pda.ru)",
+                         " ",
+                         _("##thanks_to##"),
+                         " ",
+                         "doc (doc@nnm.me)",
+                         "Juan Font Alonso ",
+                         "Mephistopheles",
+                         "" };
 
-  gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), _("##close##") );
+  gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
+  frame->setAlpha( 0xa0 );
+  int h = size.height();
+  for( int i=0; !strs[i].empty(); i++ )
+  {
+    Label* lb = new gui::Label( frame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
+    lb->setTextAlignment( align::center, align::center );
+    lb->setFont( Font::create( FONT_2_WHITE ) );
+    PositionAnimator* anim = new PositionAnimator( lb, WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
+    anim->setSpeed( PointF( 0, -0.5 ) );
+  }
 
-  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
-
-  gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
-  item.setTextAlignment( align::center, align::center );
-  lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
-  lbx->addItem( "gathanase (gathanase@gmail.com) render, game mechanics " );
-  lbx->addItem( "gecube (gb12335@gmail.com)" );
-  lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
-  lbx->addItem( "tracertong" );
-  lbx->addItem( "VladRassokhin" );
-  lbx->addItem( "hellium" );
-  lbx->addItem( "pufik6666" );
-  lbx->addItem( "andreibranescu" );
-  lbx->addItem( "amdmi3 (amdmi3@amdmi3.ru) bsd fixes" );
-  lbx->addItem( "akuskis (?) aqueduct system" );
-  lbx->addItem( "rovanion" );
-  lbx->addItem( "nickers (2nickers@gmail.com)" );
-  lbx->addItem( "ImperatorPrime" );
-  lbx->addItem( "veprbl" );
-  lbx->addItem( "ramMASTER" );
-  lbx->addItem( "greg kennedy(kennedy.greg@gmail.com) smk decoder" );
-
-  gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
-  testers.setTextAlignment( align::center, align::center );
-  lbx->addItem( "radek liška" );
-  lbx->addItem( "dimitrius (caesar-iii.ru)" );
-  lbx->addItem( "shibanirm" );
-
-  gui::ListBoxItem& gfx = lbx->addItem( _("##graphics##") );
-  gfx.setTextAlignment( align::center, align::center );
-  lbx->addItem( "dimitrius (caesar-iii.ru)" );
-
-  gui::ListBoxItem& thanks_to = lbx->addItem( _("##thanks_to##") );
-  thanks_to.setTextAlignment( align::center, align::center );
-  lbx->addItem( "doc (doc@nnm.me)");
-  lbx->addItem( "Juan Font Alonso ");
-
+  gui::PushButton* btn = new gui::PushButton( frame,
+                                              Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
+                                              _("##close##") );
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
+  CONNECT( btn, onClicked(), this, Impl::playMenuSoundTheme );
+}
+
+void StartMenu::Impl::showLoadMenu()
+{
+  menu->clear();
+
+  gui::PushButton* btn = menu->addButton( _("##mainmenu_playmission##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolvePlayMission );
+
+  btn = menu->addButton( _("##mainmenu_loadgame##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowLoadGameWnd );
+
+  btn = menu->addButton( _("##mainmenu_loadmap##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
+
+  btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
+  //CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
+
+  btn = menu->addButton( _("##mainmenu_randommap##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveLoadRandommap );
+
+  btn = menu->addButton( _("##cancel##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showMainMenu );
+}
+
+void StartMenu::Impl::resolveLoadRandommap()
+{
+  result = StartMenu::loadMission;
+  fileMap = GameSettings::rcpath( "/missions/random.mission" ).toString();
+  isStopped = true;
+}
+
+void StartMenu::Impl::showOptionsMenu()
+{
+  menu->clear();
+
+  gui::PushButton* btn = menu->addButton( _("##mainmenu_language##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##mainmenu_video##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showVideoOptions );
+
+  btn = menu->addButton( _("##mainmenu_sound##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showSoundOptions );
+
+  //btn = menu->addButton( _("##mainmenu_game##"), -1 );
+  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##cancel##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showMainMenu );
+}
+
+void StartMenu::Impl::showMainMenu()
+{
+  menu->clear();
+
+  gui::PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
+
+  btn = menu->addButton( _("##mainmenu_load##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
+
+  btn = menu->addButton( _("##mainmenu_options##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showOptionsMenu );
+
+  btn = menu->addButton( _("##mainmenu_credits##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveCredits );
+
+  btn = menu->addButton( _("##mainmenu_quit##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveQuitGame );
+}
+
+void StartMenu::Impl::showVideoOptions()
+{
+  events::GameEventPtr event = events::SetVideoSettings::create();
+  event->dispatch();
 }
 
 void StartMenu::Impl::resolvePlayMission()
 {
   gui::Widget* parent = game->gui()->rootWidget();
-  Size rootSize = parent->size();
-  Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
+  Rect rect( Point(), Size( 512, 384 ) );
 
   result = StartMenu::loadMission;
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect,
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, rect,
                                                     GameSettings::rcpath( "/missions/" ), ".mission", -1 );
+  wnd->setCenter( parent->center() );
+  wnd->setMayDelete( false );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_playmission##") );
 }
 
+void StartMenu::Impl::resolveSelectFile(std::string fileName)
+{
+  fileMap = fileName;
+  isStopped = true;
+}
+
+void StartMenu::Impl::setPlayerName(std::string name) {  playerName = name; }
+
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
   gui::Widget* parent = game->gui()->rootWidget();
 
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent,
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
                                                     Rect(),
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );
+  wnd->setCenter( parent->center() );
+  wnd->setMayDelete( false );
 
   result = StartMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
@@ -279,7 +399,15 @@ void StartMenu::draw()
   _d->game->gui()->draw();
 }
 
-void StartMenu::handleEvent( NEvent& event ){  _d->game->gui()->handleEvent( event );}
+void StartMenu::handleEvent( NEvent& event )
+{
+  if (event.EventType == sEventQuit)
+  {
+    _d->resolveQuitGame();
+  }
+
+  _d->game->gui()->handleEvent( event );
+}
 
 void StartMenu::initialize()
 {
@@ -304,26 +432,7 @@ void StartMenu::initialize()
                                                               "logo_rdt", 1, 2, 2, 2 );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
-  gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveChangePlayerName );
-
-  btn = _d->menu->addButton( _("##mainmenu_playmission##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolvePlayMission );
-
-  btn = _d->menu->addButton( _("##mainmenu_loadgame##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadGameWnd );
-
-  btn = _d->menu->addButton( _("##mainmenu_loadmap##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
-
-  btn = _d->menu->addButton( _("Language"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowChangeLanguageWindow );
-
-  btn = _d->menu->addButton( _("Credits"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveCredits );
-
-  btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
+  _d->showMainMenu();
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   bool screenFitted = GameSettings::get( GameSettings::screenFitted );
@@ -338,11 +447,13 @@ void StartMenu::initialize()
     dialog->show();
   }
 #endif
+
+  _d->playMenuSoundTheme();
 }
 
 int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
-std::string StartMenu::getMapName() const{  return _d->fileMap;}
-std::string StartMenu::getPlayerName() const { return _d->playerName; }
+std::string StartMenu::mapName() const{  return _d->fileMap;}
+std::string StartMenu::playerName() const { return _d->playerName; }
 
 }//end namespace scene

@@ -24,9 +24,22 @@ void Pictures::load(const std::string& rc, int startIndex, int number, int multi
 {
   for( int i = 0; i < number; ++i)
   {
-    push_back( Picture::load(rc, startIndex + i*multiplier) );
+    this->push_back( Picture::load(rc, startIndex + i*multiplier) );
   }
 }
+
+Pictures& Pictures::operator<<(const Picture& pic)
+{
+  this->push_back( pic );
+  return *this;
+}
+
+void Pictures::append(const Picture &pic, const Point &offset)
+{
+  this->push_back( pic );
+  this->back().setOffset( offset );
+}
+
 
 }//end namespace gfx
 

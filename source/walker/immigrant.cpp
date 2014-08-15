@@ -42,7 +42,7 @@ const Picture& Immigrant::_cartPicture()
 {
   if( !Emigrant::_cartPicture().isValid() )
   {
-    _setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, getDirection()) );
+    _setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, 0, direction()) );
   }
 
   return Emigrant::_cartPicture();
@@ -53,7 +53,7 @@ void Immigrant::getPictures( Pictures& oPics)
   oPics.clear();
 
   // depending on the walker direction, the cart is ahead or behind
-  switch (getDirection())
+  switch (direction())
   {
   case constants::west:
   case constants::northWest:
@@ -99,7 +99,7 @@ void Immigrant::_updateThinks()
     thinks << "##immigrant_much_food_here##";
   }
 
-  setThinks( thinks.rand() );
+  setThinks( thinks.random() );
 }
 
 void Immigrant::timeStep(const unsigned long time)

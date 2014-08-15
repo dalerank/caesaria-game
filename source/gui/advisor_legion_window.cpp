@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_legion_window.hpp"
 #include "gfx/decorator.hpp"
@@ -25,14 +27,18 @@
 #include "objects/military.hpp"
 #include "walker/soldier.hpp"
 #include "core/logger.hpp"
+#include "events/movecamera.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 namespace {
-  Point legionButtonOffset = Point( 0, 50 );
+  Point legionButtonOffset = Point( 4, 4 );
   Size legionButtonSize = Size( 565, 42 );
 }
 
@@ -60,11 +66,11 @@ public:
     CONNECT( empireService, onClicked(), this, LegionButton::_resolveEmpireService );
   }
 
-  virtual void _updateTexture( ElementState state )
+  virtual void _updateTextPic()
   {
-    PushButton::_updateTexture( state );
+    PushButton::_textPictureRef();
 
-    PictureRef& pic = _textPictureRef( state );
+    PictureRef& pic = _textPictureRef();
 
     Font fontW = Font::create( FONT_1_WHITE );
     Font fontB = Font::create( FONT_1 );
@@ -90,63 +96,61 @@ public oc3_signals:
   Signal1<FortPtr> onEmpireServiceSignal;
 
 private oc3_slots:
-  void _resolveMove2Legion() { onShowLegionSignal.emit( _fort ); }
-  void _resolveReturnLegion2Fort() { onLegionRetreatSignal.emit( _fort ); }
-  void _resolveEmpireService() { onEmpireServiceSignal.emit( _fort ); }
+  void _resolveMove2Legion() { oc3_emit onShowLegionSignal( _fort ); }
+  void _resolveReturnLegion2Fort() { oc3_emit onLegionRetreatSignal( _fort ); }
+  void _resolveEmpireService() { oc3_emit onEmpireServiceSignal( _fort ); }
 
 private:
   FortPtr _fort;
 };
 
-class AdvisorLegionWindow::Impl
+class Legion::Impl
 {
 public:
-  PictureRef background;
   gui::Label* alarm;
   gui::Label* helpRequest;
+  gui::Label* lbBlackframe;
 };
 
-AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+Legion::Legion( Widget* parent, int id, FortList forts )
+: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-                     Size( 640, 416 ) ) );
-
-  _d->background.reset( Picture::create( size() ) );
-  //main background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Widget::setupUI( ":/gui/legionadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   //buttons background
-  PictureDecorator::draw( *_d->background, Rect( Point( 32, 70 ), Size( 574, 270 )), PictureDecorator::blackFrame );
+  Point startLegionArea( 32, 70 );
 
-  gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( _("##advlegion_window_title##") );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( align::center, align::center );
-
-  _d->alarm = new gui::Label( this, Rect( 60, height()-60, width() - 60, height() - 40 ), _("##advlegion_noalarm##") );
-  _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );
-
-  new gui::Label( this, Rect( 290, 60, 340, 80 ), _("##advlegion_morale##") );
-  new gui::Label( this, Rect( 380, 50, 435, 80 ), _("##advlegion_gotolegion##") );
-  new gui::Label( this, Rect( 465, 50, 520, 80 ), _("##advlegion_return2fort##") );
-  new gui::Label( this, Rect( 550, 50, 600, 80 ), _("##advlegion_empireservice##") );
+  _d->alarm = findChildA<Label*>( "alarm", true, this );
+  _d->helpRequest = findChildA<Label*>( "helpRequest", true, this );
+  _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
 
   int index=0;
   foreach( it, forts )
   {
-    LegionButton* btn = new LegionButton( this, legionButtonOffset, index++, *it );
+    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
+    CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
   }
+
+  if( _d->lbBlackframe && forts.empty() )
+    _d->lbBlackframe->setText( "##legionadv_no_legions##" );
 }
 
-void AdvisorLegionWindow::draw( Engine& painter )
+void Legion::draw( Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
+  Window::draw( painter );
+}
 
-  Widget::draw( painter );
+void Legion::_handleMove2Legion(FortPtr fort)
+{
+  parent()->deleteLater();
+  events::GameEventPtr e = events::MoveCamera::create( fort->patrolLocation() );
+  e->dispatch();
+}
+
 }
 
 }//end namespace gui

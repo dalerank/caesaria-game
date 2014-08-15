@@ -32,6 +32,7 @@ class MetaDataOptions
 public:
   static const char* cost;
   static const char* requestDestroy;
+  static const char* employers;
 };
 
 class MetaData
@@ -45,13 +46,13 @@ public:
 
   ~MetaData();
 
-  std::string getName() const;
-  std::string getSound() const;
+  std::string name() const;
+  std::string sound() const;
   std::string prettyName() const;
-  std::string getDescription() const;
+  std::string description() const;
   gfx::TileOverlay::Type type() const;
   gfx::TileOverlay::Group group() const;
-  gfx::Picture basePicture() const;
+  gfx::Picture picture( int size=0 ) const;
   Desirability desirability() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
@@ -59,8 +60,6 @@ public:
   MetaData& operator=( const MetaData& a );
 
 private:
-  std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
@@ -86,8 +85,9 @@ public:
 
   static std::string findPrettyName( gfx::TileOverlay::Type type );
   static std::string findDescription( gfx::TileOverlay::Type type );
+  static gfx::Picture randomPicture( gfx::TileOverlay::Type type, Size size );
 
-  void initialize( const vfs::Path& filename );
+  void initialize(vfs::Path filename );
   ~MetaDataHolder();
 private:
   MetaDataHolder();

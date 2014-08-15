@@ -23,11 +23,14 @@
 namespace gui
 {
 
-class InfoboxLegion : public InfoboxSimple
+namespace infobox
+{
+
+class AboutLegion : public Simple
 {
 public:
-  InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos );
-  virtual ~InfoboxLegion();
+  AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos );
+  virtual ~AboutLegion();
 
   virtual bool onEvent(const NEvent &event);
 private:
@@ -39,6 +42,8 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_LEGION_H_INCLUDE_

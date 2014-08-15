@@ -243,7 +243,7 @@ bool WallGuard::_tryAttack()
         PathwayList wayList = _d->base->getWays( pos(), nearestWall );
         foreach( way, wayList )
         {
-          double tmpDistance = (*way)->destination().pos().distanceFrom( enemy->pos() );
+          double tmpDistance = (*way)->stopPos().distanceFrom( enemy->pos() );
           if( tmpDistance < minDistance )
           {
             shortestWay = *way;
@@ -381,7 +381,7 @@ void WallGuard::_centerTile()
 
 void WallGuard::send2city( TowerPtr tower, Pathway pathway )
 {
-  setPos( pathway.getStartPos() );
+  setPos( pathway.startPos() );
   setBase( tower );
 
   setPathway( pathway );

@@ -73,7 +73,7 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     }
 
     //calculate next point
-    TilesArray nextPoints = tmap.getNeighbors(_d->currentPoint, Tilemap::EdgeNeighbors);
+    TilesArray nextPoints = tmap.getNeighbors(_d->currentPoint, Tilemap::FourNeighbors);
 
     int lastDst = _d->currentPoint.getDistanceFromSQ(_d->endPoint);
     for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )

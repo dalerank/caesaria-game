@@ -25,6 +25,7 @@
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
+#include "core/direction.hpp"
 #include "game/predefinitions.hpp"
 
 struct Desirability
@@ -61,11 +62,12 @@ public:
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
 
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
   virtual Point offset(const Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
+  virtual void changeDirection(constants::Direction direction);
 
   // graphic
   virtual void setPicture(Picture picture);
@@ -79,7 +81,7 @@ public:
   const gfx::Animation& animation() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
-  Desirability desirability() const;
+  virtual Desirability desirability() const;
 
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );

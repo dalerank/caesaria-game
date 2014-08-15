@@ -1,10 +1,13 @@
 {
   version : 1
-  map : "/maps/Syracusae.sav"
+  map : ":/maps/Syracusae.sav"
   funds : 8000
+  city.name : "Syracusae"
   date : "-270.01.01"
+  player.rank : 3
   finish : "-100.01.01"
   adviserEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -13,7 +16,7 @@
     prosperity : 20
     peace : 25
     favour : 20
-    next : "/missions/tutorial5.briefing"
+    next : ":/missions/tutorial5.briefing"
     title : "##win_engineer_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -23,44 +26,6 @@
 	
   empire : {
     enabled : true
-
-    objects : {
-      ship : {
-        location : [ 709, 604 ]
-        name : "ship"
-        picture : "empire_bits_00112"
-      }
-
-      aqueduct : {
-        location : [ 170, 630 ]
-        name : "aqueduct"
-        picture : "empire_bits_00107"
-      }
-
-      palms : {
-        location : [ 490, 790 ]
-        name : "palms"
-        picture : "empire_bits_00111"
-      }
-
-      colosseum : {
-        location : [ 735, 495 ]
-        name : "colosseum"
-        picture : "empire_bits_00114"
-      }
-
-      rocks : {
-        location : [ 240, 440 ]
-        name : "rocks"
-        picture : "empire_bits_00106"
-      }
-
-      rocks2 : {
-        location : [ 530, 290 ]
-        name : "rocks2"
-        picture : "empire_bits_00115"
-      }
-    }
 
     cities :
     {
@@ -219,7 +184,7 @@
     oil_price_rising#trading_options : {
       date : "-267.04.01"
       goods : {
-        oil : { buy : 40, sell : 30 }
+        oil : { relative : true, buy : 40, sell : 30 }
       }
 
       exec : {
@@ -251,13 +216,13 @@
       }
 
       exec : {
-		greeck_attack#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
-		  send2scribe : true
-		}
- 	  }
+        greeck_attack#messagebox : {
+          title : "##greeck_attack_title##"
+          text : "##greeck_attack_text##"
+          video : "/smk/spy_army.smk"
+          send2scribe : true
+        }
+      }
     }    
     
     capua_increase_weapons_trading#trading_options : {

@@ -80,10 +80,13 @@ enum Type{
   rioter,
   wolf,
   dustCloud,
-  romeChasternerSoldier,
+  romeChastenerSoldier,
+  romeChastenerElephant,
   indigeneRioter,
   indigene,
   missioner,
+  zebra,
+  riverWave,
   all = 0xff,
   any = all
 };

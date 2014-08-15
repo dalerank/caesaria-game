@@ -7,12 +7,12 @@
     tarraco : {
       title : "Tarraco: a peaceful province"
       location : [ 120, 210 ]
-      mission : "/missions/tarraco.mission"
+      mission : ":/missions/tarraco.mission"
     }
 
     syracusae : {
       title : "Tarentum: somewhat dangerous province"
-      mission : "/missions/syracusae.mission"
+      mission : ":/missions/syracusae.mission"
       location : [ 330, 280 ]
     }
   }

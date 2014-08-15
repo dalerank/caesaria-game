@@ -28,8 +28,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxLand::InfoboxLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
+namespace infobox
+{
+
+AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
+  : Simple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
   Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
   lbText->setFont( Font::create( FONT_2 ) );
@@ -93,14 +96,14 @@ InfoboxLand::InfoboxLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   setText( text );
 }
 
-void InfoboxLand::setText( const std::string& text )
+void AboutLand::setText( const std::string& text )
 {
   if( Widget* lb = findChild( lbTextId ) )
     lb->setText( text );
 }
 
-InfoboxFreeHouse::InfoboxFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
-    : InfoboxLand( parent, city, tile )
+AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
+    : AboutLand( parent, city, tile )
 {
   setTitle( _("##freehouse_caption##") );
 
@@ -113,6 +116,8 @@ InfoboxFreeHouse::InfoboxFreeHouse( Widget* parent, PlayerCityPtr city, const Ti
   {
     setText( _("##freehouse_text##") );
   }
+}
+
 }
 
 }//end namespace gui

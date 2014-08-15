@@ -34,7 +34,7 @@ WalkerPtr Engineer::create(PlayerCityPtr city)
 
 Engineer::~Engineer() {}
 
-std::string Engineer::getThinks() const
+std::string Engineer::currentThinks() const
 {
   if( _d->averageLevel > 70 )
   {
@@ -46,7 +46,7 @@ std::string Engineer::getThinks() const
     return "##engineer_no_trouble_buildings##";
   }
 
-  return ServiceWalker::getThinks();
+  return ServiceWalker::currentThinks();
 }
 
 void Engineer::_centerTile()
@@ -58,7 +58,7 @@ void Engineer::_centerTile()
   {
     if( !_d->_reachedBuildings.count( *b ) )
     {
-      int damageLvl = (*b)->getState( Construction::damage );
+      int damageLvl = (*b)->state( Construction::damage );
       _d->averageLevel = ( _d->averageLevel + damageLvl ) / 2;
       _d->_reachedBuildings.insert( *b );
     }

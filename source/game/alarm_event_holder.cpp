@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "alarm_event_holder.hpp"
 #include "core/timer.hpp"
@@ -47,7 +48,7 @@ public:
 
     alarms.erase( alarms.begin() );
     currentIndex = math::clamp<int>( currentIndex, 0, alarms.size() - 1 );
-    onAlarmChangeSignal.emit( alarms.size() > 0 );
+    oc3_emit onAlarmChangeSignal( alarms.size() > 0 );
   }
 
 public oc3_signals:
@@ -73,7 +74,7 @@ void AlarmEventHolder::add( TilePos pos, std::string message )
   alarm.position = pos;
   
   _d->alarms.push_back( alarm );
-  _d->onAlarmChangeSignal.emit( _d->alarms.size() > 0 );
+  oc3_emit _d->onAlarmChangeSignal( _d->alarms.size() > 0 );
 }
 
 void AlarmEventHolder::next()
@@ -82,7 +83,7 @@ void AlarmEventHolder::next()
     return;
 
   _d->currentIndex = (_d->currentIndex+1) % _d->alarms.size();
-  _d->onMoveToAlarmSignal.emit( _d->alarms[ _d->currentIndex ].position );
+  oc3_emit _d->onMoveToAlarmSignal( _d->alarms[ _d->currentIndex ].position );
 }
 
 TilePos AlarmEventHolder::getCurrentPos() const

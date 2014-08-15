@@ -1,11 +1,14 @@
 {
   version : 1
-  map : "/maps/Lugdunum.sav"
+  map : ":/maps/Lugdunum.sav"
   funds : 8000
-  date : "-220.01.01"
+  city.name : "Lugdunum"
+  player.rank : 5
+  date : "-170.01.01"
   finish : "-100.01.01"
   climate : 1
   adviserEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -14,7 +17,7 @@
     prosperity : 25
     peace : 40
     favour : 30
-    next : "/missions/tutorial6.briefing"
+    next : ":/missions/tutorial7.briefing"
     title : "##win_procurator_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -24,56 +27,6 @@
 	
   empire : {
     enabled : true
-
-    objects : {
-      ship : {
-        location : [ 709, 604 ]
-        name : "ship"
-        picture : "empire_bits_00112"
-      }
-
-      aqueduct : {
-        location : [ 170, 630 ]
-        name : "aqueduct"
-        picture : "empire_bits_00107"
-      }
-
-      palms : {
-        location : [ 490, 790 ]
-        name : "palms"
-        picture : "empire_bits_00111"
-      }
-
-      colosseum : {
-        location : [ 735, 495 ]
-        name : "colosseum"
-        picture : "empire_bits_00114"
-      }
-
-      rocks : {
-        location : [ 240, 440 ]
-        name : "rocks"
-        picture : "empire_bits_00106"
-      }
-
-      rocks2 : {
-        location : [ 530, 290 ]
-        name : "rocks2"
-        picture : "empire_bits_00115"
-      }
-
-      rocks3 : {
-        location : [ 1010, 440 ]
-        name : "rocks3"
-        picture : "empire_bits_00117"
-      }
-
-      palms2 : {
-        location : [ 1350, 630 ]
-        name : "palms2"
-        picture : "empire_bits_00121"
-      }
-    }
 
     cities :
     {    
@@ -153,9 +106,10 @@
       }
     }
 
-    random_wolves#random_wolves : {
+    random_wolves#random_animals : {
       count : 10
-      maxWolves : 6
+      maxAnimals : 6
+      animalType : "wolf"
     }
 
     city_indebt#city_indebt : {
@@ -168,7 +122,7 @@
     }
        
     cursed_water#contaminated_water : {
-      date : "-219.01.01"
+      date : "-169.01.01"
       type : "contaminated_water"
       population : 500
       value : 20
@@ -182,7 +136,7 @@
     }
 
     emperor_request_weapon#city_request : {
-      date : "-217.09.01"
+      date : "-167.09.01"
       reqtype : "good_request"
       month : 24
       good : { weapon : 10 }
@@ -191,7 +145,7 @@
     }
 
     fire_1#random_fire : {
-      date : "-216.09.01"
+      date : "-166.09.01"
       strong : 10
       exec : {
         "step_1.video#messagebox" : {
@@ -203,7 +157,7 @@
     }
 
     emperor_request_furniture#city_request : {
-      date : "-215.08.01"
+      date : "-165.08.01"
       reqtype : "good_request"
       month : 24
       good : { furniture : 10 }
@@ -212,7 +166,7 @@
     }
 
     emperor_request_3#city_request : {
-      date : "-210.07.01"
+      date : "-160.07.01"
       reqtype : "good_request"
       month : 24
       good : { timber : 15 }
@@ -221,7 +175,7 @@
     }
 
     emperor_request_4#city_request : {
-      date : "-205.07.01"
+      date : "-155.07.01"
       reqtype : "good_request"
       month : 24
       good : { weapon : 20 }
@@ -230,7 +184,7 @@
     }
 
     emperor_request_5#city_request : {
-      date : "-200.08.01"
+      date : "-150.08.01"
       reqtype : "good_request"
       month : 24
       good : { timber : 30 }
@@ -239,7 +193,7 @@
     }
 
     emperor_request_6#city_request : {
-      date : "-195.05.01"
+      date : "-145.05.01"
       reqtype : "good_request"
       month : 24
       good : { weapon : 30 }
@@ -248,7 +202,7 @@
     }
 
     emperor_request_7#city_request : {
-      date : "-190.04.01"
+      date : "-140.04.01"
       reqtype : "good_request"
       month : 24
       good : { weapon : 20 }
@@ -257,7 +211,7 @@
     }
 
     emperor_request_8#city_request : {
-      date : "-185.05.01"
+      date : "-135.05.01"
       reqtype : "good_request"
       month : 24
       good : { timber : 50 }
@@ -266,7 +220,7 @@
     }
 
     emperor_request_9#city_request : {
-      date : "-180.08.01"
+      date : "-130.08.01"
       reqtype : "good_request"
       month : 24
       good : { timber : 50 }
@@ -275,7 +229,7 @@
     }
 
     fire_1#random_fire : {
-      date : "-215.09.01"
+      date : "-165.09.01"
       strong : 8
       exec : {
         "step_1.video#messagebox" : {
@@ -287,7 +241,7 @@
     }
 
     barbarian_invasion#enemy_attack : {
-      date : "-217.10.01"
+      date : "-167.10.01"
       type : "enemy_attack"
       target : "food"
       items : {
@@ -315,7 +269,7 @@
     }
 
     barbarian_invasion_2#enemy_attack : {
-      date : "-216.06.01"
+      date : "-166.06.01"
       type : "enemy_attack"
       target : "food"
       items : {
@@ -348,7 +302,7 @@
     }
 
     barbarian_invasion_3#enemy_attack : {
-      date : "-215.04.01"
+      date : "-165.04.01"
       type : "enemy_attack"
       target : "citizen"
       items : {
@@ -375,7 +329,7 @@
     }
 
     barbarian_invasion_4#enemy_attack : {
-      date : "-214.04.01"
+      date : "-164.04.01"
       type : "enemy_attack"
       target : "citizen"
       items : {
@@ -402,7 +356,7 @@
     }
 
     barbarian_invasion_5#enemy_attack : {
-      date : "-211.04.01"
+      date : "-161.04.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -429,7 +383,7 @@
     }
 
     barbarian_invasion_5#enemy_attack : {
-      date : "-210.08.01"
+      date : "-160.08.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -456,7 +410,7 @@
     }
 
     barbarian_invasion_6#enemy_attack : {
-      date : "-205.05.01"
+      date : "-155.05.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -483,7 +437,7 @@
     }
 
     barbarian_invasion_7#enemy_attack : {
-      date : "-204.04.01"
+      date : "-154.04.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -510,7 +464,7 @@
     }
 
     barbarian_invasion_8#enemy_attack : {
-      date : "-202.02.01"
+      date : "-152.02.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -537,7 +491,7 @@
     }
 
     barbarian_invasion_9#enemy_attack : {
-      date : "-199.08.01"
+      date : "-149.08.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -564,7 +518,7 @@
     }
 
     barbarian_invasion_10#enemy_attack : {
-      date : "-195.09.01"
+      date : "-145.09.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -591,7 +545,7 @@
     }
 
     barbarian_invasion_11#enemy_attack : {
-      date : "-190.04.01"
+      date : "-140.04.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -618,7 +572,7 @@
     }
 
     barbarian_invasion_12#enemy_attack : {
-      date : "-185.08.01"
+      date : "-135.08.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -645,7 +599,7 @@
     }
 
     barbarian_invasion_13#enemy_attack : {
-      date : "-180.06.01"
+      date : "-130.06.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -672,7 +626,7 @@
     }
 
     barbarian_invasion_14#enemy_attack : {
-      date : "-175.06.01"
+      date : "-125.06.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -699,7 +653,7 @@
     }
 
     barbarian_invasion_15#enemy_attack : {
-      date : "-170.05.01"
+      date : "-120.05.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -726,7 +680,7 @@
     }
 
     barbarian_invasion_16#enemy_attack : {
-      date : "-165.04.01"
+      date : "-115.04.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -753,7 +707,7 @@
     }
 
     barbarian_invasion_17#enemy_attack : {
-      date : "-160.04.01"
+      date : "-110.04.01"
       type : "enemy_attack"
       target : "best_building"
       items : {
@@ -780,7 +734,7 @@
     }
 
     barbarian_invasion_18#enemy_attack : {
-      date : "-155.04.01"
+      date : "-105.04.01"
       type : "enemy_attack"
       target : "best_building"
       items : {

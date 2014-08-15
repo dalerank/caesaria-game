@@ -101,20 +101,20 @@ void ContextMenuItem::setHovered( bool hover )
 
 bool ContextMenuItem::isSeparator() const {  return _d->isSeparator; }
 void ContextMenuItem::setCommandId( int cmdId ){	_d->commandId = cmdId;}
-int ContextMenuItem::getCommandId() const{  return _d->commandId;}
+int ContextMenuItem::commandId() const{  return _d->commandId;}
 bool ContextMenuItem::isHovered() const {  return _d->isHovered;}
 void ContextMenuItem::setAutoChecking( bool autoChecking ){  _d->isAutoChecking = autoChecking;}
 bool ContextMenuItem::isPointInside( const Point& point ) const{  return false;}
-int ContextMenuItem::getOffset() const{  return _d->offset;}
+int ContextMenuItem::offset() const{  return _d->offset;}
 void ContextMenuItem::setChecked( bool check ){  _d->checked = check;}
 bool ContextMenuItem::isChecked() const{  return _d->checked;}
 void ContextMenuItem::setIsSeparator( bool isSepar ){  _d->isSeparator = isSepar;}
-ContextMenu* ContextMenuItem::getSubMenu() const{  return _d->subMenu;}
+ContextMenu* ContextMenuItem::subMenu() const{  return _d->subMenu;}
 void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align ){  _d->subMenuAlignment = align;}
-ContextMenuItem::SubMenuAlign ContextMenuItem::getSubMenuAlignment() const{  return _d->subMenuAlignment;}
+ContextMenuItem::SubMenuAlign ContextMenuItem::subMenuAlignment() const{  return _d->subMenuAlignment;}
 void ContextMenuItem::setIcon( const Picture& icon ){}
-void ContextMenuItem::setDim( const Size& size ) {  _d->dim = size;}
-const Size& ContextMenuItem::getDim() const{  return _d->dim;}
+void ContextMenuItem::setDimmension( const Size& size ) {  _d->dim = size;}
+const Size& ContextMenuItem::dimmension() const{  return _d->dim;}
 void ContextMenuItem::setOffset( int offset ){  _d->offset = offset;}
 
 }//end namespace gui

@@ -26,18 +26,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerSimple::type() const
-{
-  return citylayer::simple;
-}
-
-std::set<int> LayerSimple::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::all );
-
-  return ret;
-}
+int LayerSimple::type() const { return citylayer::simple; }
 
 LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
 {
@@ -50,6 +39,7 @@ LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
 LayerSimple::LayerSimple( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
+  _addWalkerType( walker::all );
 }
 
 }//end namespace gfx

@@ -14,17 +14,14 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
-
-#include <algorithm>
-
 #include "gfx/engine.hpp"
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
-#include "gui/loadmapwindow.hpp"
+#include "gui/loadfiledialog.hpp"
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
@@ -72,10 +69,15 @@
 #include "walker/walkers_factory.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
-#include "events/random_wolves.hpp"
+#include "events/random_animals.hpp"
 #include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
+#include "religion/pantheon.hpp"
+#include "core/saveadapter.hpp"
+#include "events/postpone.hpp"
+#include "gfx/pictureconverter.hpp"
+#include "gui/city_options_window.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -101,7 +103,6 @@ public:
   std::string mapToLoad;
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
-  bool isPaused;
 
   int result;
 
@@ -114,10 +115,10 @@ public:
   void resolveCreateConstruction( int type );
   void resolveSelectLayer( int type );
   void resolveRemoveTool();
-  void resolveShowLoadGameWnd();
   void makeScreenShot();
   void setVideoOptions();
   void showGameSpeedOptionsDialog();
+  void showCityOptionsDialog();
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
   void showSoundOptionsWindow();
@@ -127,8 +128,10 @@ public:
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
+  void makeFullScreenshot();
 
-  vfs::Path getFastSaveName(const std::string& postfix="");
+  std::string getScreenshotName();
+  vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
 };
 
 Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
@@ -136,7 +139,6 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->topMenu = NULL;
   _d->game = &game;
   _d->engine = &engine;
-  _d->isPaused = false;
 }
 
 Level::~Level() {}
@@ -148,10 +150,10 @@ void Level::initialize()
   _d->game->gui()->clear();
 
   const int topMenuHeight = 23;
-  const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
+  Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
-  gui::GuiEnv& gui = *_d->game->gui();
+  gui::Ui& gui = *_d->game->gui();
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
@@ -165,16 +167,16 @@ void Level::initialize()
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.screenSize().width() - _d->menu->width() - _d->rightPanel->width(),
-                                 _d->topMenu->height() ) );
+  _d->menu->setPosition( Point( engine.screenSize().width() - _d->rightPanel->width(),
+                                _d->topMenu->height() ) );
 
   _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
   _d->extMenu->setPosition( Point( engine.screenSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
-                               city->tilemap(),
-                               city->climate() );
+                               city,
+                               *_d->renderer.camera() );
 
   WindowMessageStack::create( gui.rootWidget() );
 
@@ -205,11 +207,13 @@ void Level::initialize()
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
+  CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
 
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
-  CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
+  CONNECT( _d->menu, onHide(), _d->extMenu, ExtentMenu::maximize );
 
+  CONNECT( _d->extMenu, onHide(), _d->menu, Menu::maximize );
   CONNECT( _d->extMenu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
   CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );
@@ -277,6 +281,13 @@ void Level::Impl::showGameSpeedOptionsDialog()
   CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
 }
 
+void Level::Impl::showCityOptionsDialog()
+{
+  CityOptionsWindow* wnd = new CityOptionsWindow( game->gui()->rootWidget(),
+                                                  game->city() );
+  wnd->show();
+}
+
 void Level::Impl::resolveWarningMessage(std::string text )
 {
   events::GameEventPtr e = events::WarningMessageEvent::create( text );
@@ -310,7 +321,7 @@ void Level::Impl::makeEnemy()
   }
 }
 
-void Level::Impl::makeFastSave() { game->save( getFastSaveName().toString() ); }
+void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
 
 void Level::Impl::showTileHelp()
 {
@@ -338,10 +349,66 @@ void Level::Impl::layerChanged(int layer)
   }
 }
 
+void Level::Impl::makeFullScreenshot()
+{
+  Tilemap& tmap = game->city()->tilemap();
+  int mapSize = tmap.size();
+  Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
+  Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
+  Point lastRightPos = TileHelper::tilepos2screen( lastRightTile.pos() );
+  Point lastBottomPos = TileHelper::tilepos2screen( lastBottomTile.pos() );
+  Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
+
+  TilesArray ret;
+  for( int y=0; y < mapSize; y++ )
+  {
+    for( int t=0; t <= y; t++ )
+    {
+      ret.push_back( &tmap.at( t, mapSize - 1 - ( y - t ) ) );
+    }
+  }
+
+  for( int x=1; x < mapSize; x++ )
+  {
+    for( int t=0; t < mapSize-x; t++ )
+    {
+      ret.push_back( &tmap.at( x + t, t ) );
+    }
+  }
+
+  PictureRef fullPic;
+  fullPic.init( fullPicSize );
+  Point doffset( 0, fullPicSize.height() / 2 );
+  foreach( tile, ret )
+  {
+    Tile* t = *tile;
+    if( t->masterTile() )
+      t = t->masterTile();       
+
+    const Picture& tpic = t->overlay().isValid()
+                            ? t->overlay()->picture()
+                            : t->picture();
+
+    Rect srcRect( 0, 0, tpic.width(), tpic.height() );
+    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+  }
+
+  std::string filename = getScreenshotName();
+  PictureConverter::save( *fullPic, filename, "PNG" );
+}
+
+std::string Level::Impl::getScreenshotName()
+{
+  DateTime time = DateTime::getCurrenTime();
+  return StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
+                               time.year(), time.month(), time.day(),
+                               time.hour(), time.minutes(), time.seconds() );
+}
+
 void Level::_resolveLoadGame( std::string filename )
 {
   _d->mapToLoad = filename.empty()
-                      ? _d->getFastSaveName().toString()
+                      ? _d->createFastSaveName().toString()
                       : filename;
   _resolveSwitchMap();
 }
@@ -377,7 +444,6 @@ void Level::_resolveEnterButton()
 
 void Level::_showIngameMenu()
 {
-#ifdef CAESARIA_PLATFORM_ANDROID
   gui::Widget* p = _d->game->gui()->rootWidget();
   gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
 
@@ -394,20 +460,21 @@ void Level::_showIngameMenu()
 
   CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
   CONNECT( btnExit, onClicked(), this, Level::_resolveExitGame );
-  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog );
-  //CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnSave, onClicked(), this, Level::_resolveShowLoadGameWnd );
+  CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnRestart, onClicked(), this, Level::_resolveRestart );
   CONNECT( btnMainMenu, onClicked(), this, Level::_resolveEndGame );
-#endif
 }
 
-vfs::Path Level::Impl::getFastSaveName( const std::string& postfix )
+vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
 {
+  std::string typesave = type.empty() ? SETTINGS_VALUE( fastsavePostfix ).toString() : type;
   vfs::Path filename = game->city()->name()
-                       + GameSettings::get( GameSettings::fastsavePostfix ).toString()
+                       + typesave
                        + postfix
-                       + GameSettings::get( GameSettings::saveExt ).toString();
+                       + SETTINGS_VALUE( saveExt ).toString();
 
-  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
 
   return saveDir/filename;
 }
@@ -467,7 +534,8 @@ void Level::animate( unsigned int time )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
-      _d->game->save( _d->getFastSaveName( StringHelper::i2str( rotate ) ).toString() );
+      vfs::Path filename = _d->createFastSaveName( "autosave", StringHelper::i2str( rotate ) );
+      _d->game->save( filename.toString() );
     }
   }
 }
@@ -479,7 +547,13 @@ void Level::afterFrame()
 void Level::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
-  GuiEnv& gui = *_d->game->gui();
+  Ui& gui = *_d->game->gui();
+
+  if (event.EventType == sEventQuit)
+  {
+    _resolveExitGame();
+    return;
+  }
 
   static enum _MouseEventTarget
   {
@@ -490,7 +564,7 @@ void Level::handleEvent( NEvent& event )
 
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
-    if( event.keyboard.control )
+    if( event.keyboard.control && !event.keyboard.shift )
     {
       bool handled = true;
       switch( event.keyboard.key )
@@ -519,7 +593,7 @@ void Level::handleEvent( NEvent& event )
       case KEY_F9:    _d->showAdvisorsWindow( advisor::entertainment ); break;
       case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
       case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
-      case KEY_F12:    _d->showAdvisorsWindow( advisor::main ); break;
+      case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
       default:
         handled = false;
       break;
@@ -544,35 +618,44 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_KEY_P:
     {
-      if( event.keyboard.pressed )
-        break;
-
-      _d->isPaused = !_d->isPaused;
-
-      events::GameEventPtr e = events::Pause::create( _d->isPaused
-                                                        ? events::Pause::pause
-                                                        : events::Pause::play );
-      e->dispatch();      
+      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
+      e->dispatch();
     }
     break;
 
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      if( !event.keyboard.pressed )
-      {
-        events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
-        e->dispatch();
-      }
+      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      e->dispatch();
     }
     break;
 
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
-    case KEY_F10:_d->makeScreenShot(); break;
+
+    case KEY_F10:
+      if( !event.keyboard.shift )
+        _d->makeScreenShot();
+      else
+        _d->makeFullScreenshot();
+    break;
+
+    case KEY_KEY_R:
+    {
+      if( event.keyboard.shift )
+      {
+        VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
+        events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
+        e->dispatch();
+        return;
+      }
+    }
+    break;
+
     case KEY_KEY_I:
     {
-      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      if( event.keyboard.shift )
       {
         world::CityPtr rome = _d->game->empire()->rome();
         PlayerCityPtr plCity = _d->game->city();
@@ -584,21 +667,37 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
-    case KEY_F11:
-      if( event.keyboard.pressed )
+    case KEY_KEY_Y:
+    {
+      if( event.keyboard.shift )
       {
-        if( event.keyboard.shift )
-        {
-          events::GameEventPtr e = events::RandomWolves::create( 10 );
-          e->dispatch();
-        }
-        else { _d->makeEnemy(); }
+        _d->game->player()->appendMoney( 1000 );
       }
+    }
+    break;
+
+    case KEY_KEY_M:
+    {
+      if( event.keyboard.shift )
+      {
+        religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
+        return;
+      }
+    }
+    break;
+
+    case KEY_F11:
+      if( event.keyboard.shift )
+      {
+        events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
+        e->dispatch();
+      }
+      else { _d->makeEnemy(); }
     break;    
 
     case KEY_ESCAPE:
     {
-      Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
+      Widget::Widgets children = _d->game->gui()->rootWidget()->children();
       foreach( it, children )
       {
         bool handled = (*it)->onEvent( event );
@@ -673,14 +772,12 @@ void Level::handleEvent( NEvent& event )
 
 void Level::Impl::makeScreenShot()
 {
-  DateTime time = DateTime::getCurrenTime();
-
-  std::string filename = StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png", 
-                                               time.year(), time.month(), time.day(),
-                                               time.hour(), time.minutes(), time.seconds() );
-  Logger::warning( "creating screenshot %s", filename.c_str() );
+  std::string filename = getScreenshotName();
+  Logger::warning( "Level: create screenshot %s", filename.c_str() );
 
   Engine::instance().createScreenshot( filename );
+  events::GameEventPtr e = events::WarningMessageEvent::create( "Screenshot save to " + filename );
+  e->dispatch();
 }
 
 int Level::result() const {  return _d->result; }
@@ -690,11 +787,29 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() ); }
 void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
-void Level::_resolveExitGame(){  _d->result = Level::quitGame;  stop();}
 void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
+void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
+
+void Level::_resolveExitGame()
+{
+  DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
+  CONNECT( dlg, onOk(), this, Level::_exitGame );
+  CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+}
+
+void Level::Impl::showMissionTaretsWindow()
+{
+  int id = StringHelper::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  Widget* wdg = game->gui()->findWidget( id );
+  if( !wdg )
+  {
+    MissionTargetsWindow* wnd = MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() );
+    wnd->show();
+    wnd->setID( id );
+  }
+}
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
@@ -708,7 +823,7 @@ void Level::_resolveShowLoadGameWnd()
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
   wnd->setTitle( _("##mainmenu_loadgame##") );

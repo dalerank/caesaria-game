@@ -17,7 +17,7 @@
 
 #include "walkers_factory.hpp"
 #include "trainee.hpp"
-#include "market_lady.hpp"
+#include "market_buyer.hpp"
 #include "market_kid.hpp"
 #include "cart_pusher.hpp"
 #include "prefect.hpp"
@@ -50,6 +50,9 @@
 #include "mugger.hpp"
 #include "indigene.hpp"
 #include "chastener.hpp"
+#include "chastener_elephant.hpp"
+#include "romearcher.hpp"
+#include "market_lady.hpp"
 #include <map>
 
 using namespace constants;
@@ -108,9 +111,9 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::engineer, new BaseCreator< Engineer >() );
   addCreator( walker::doctor, new ServicemanCreator( Service::doctor ) );
   addCreator( walker::sheep, new BaseCreator< Sheep >() );
-  addCreator( walker::marketBuyer, new BaseCreator< MarketLady >() );
+  addCreator( walker::marketBuyer, new BaseCreator< MarketBuyer >() );
   addCreator( walker::marketKid, new BaseCreator< MarketKid >() );
-  addCreator( walker::marketLady, new ServicemanCreator( Service::market ) );
+  addCreator( walker::marketLady, new BaseCreator< MarketLady >() );
   addCreator( walker::bathlady, new ServicemanCreator( Service::baths ) );
   addCreator( walker::actor, new ServicemanCreator( Service::theater ) );
   addCreator( walker::gladiator, new ServicemanCreator( Service::amphitheater ) );
@@ -140,9 +143,12 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::mugger, new BaseCreator<Mugger>() );
   addCreator( walker::dustCloud, new BaseCreator<DustCloud>() );
   addCreator( walker::wolf, new BaseCreator<Wolf>() );
-  addCreator( walker::missioner, new ServicemanCreator( Service::native ) );
+  addCreator( walker::zebra, new BaseCreator<Zebra>() );
+  addCreator( walker::missioner, new ServicemanCreator( Service::missionary ) );
   addCreator( walker::indigene, new BaseCreator<Indigene>() );
-  addCreator( walker::romeChasternerSoldier, new SoldierCreator<Chastener>( walker::romeChasternerSoldier ) );
+  addCreator( walker::romeSpearman, new SoldierCreator<RomeArcher>( walker::romeSpearman ) );
+  addCreator( walker::romeChastenerSoldier, new SoldierCreator<Chastener>( walker::romeChastenerSoldier ) );
+  addCreator( walker::romeChastenerElephant, new BaseCreator<ChastenerElephant>() );
 }
 
 WalkerManager::~WalkerManager(){}

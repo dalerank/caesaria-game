@@ -32,8 +32,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
+namespace infobox
+{
+
+AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( factory ) );
@@ -43,8 +46,8 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
-  Label* lbPr = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
-  lbPr->setFont( Font::create( FONT_2 ) );
+  _lbProduction = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
+  _lbProduction->setFont( Font::create( FONT_2 ) );
 
   if( factory->produceGoodType() != Good::none )
   {
@@ -54,7 +57,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   // paint picture of in good
   if( factory->inStockRef().type() != Good::none )
   {
-    Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
+    Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
     std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
@@ -66,9 +69,9 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
-  }
 
-  _lbTextRef()->move( Point( 0, 15 ));
+    _lbTextRef()->setPosition( lbStockInfo->leftbottom() + Point( 0, 5 ));
+  }
 
   std::string workInfo = factory->workersProblemDesc();
   std::string cartInfo = factory->cartStateDesc();
@@ -77,38 +80,44 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }
 
-void InfoboxFactory::showDescription()
+void AboutFactory::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->rootWidget(), _type );
+  DictionaryWindow::show( ui()->rootWidget(), _type );
 }
 
-InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
-  : InfoboxFactory( parent, tile )
+AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
+  : AboutFactory( parent, tile )
 {
   ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
 
   int progressCount = shipyard->progress();
   if( progressCount > 1 && progressCount < 100 )
   {
-    new Label( this,
-               Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
-               _("##build_fishing_boat##") );
+    Label* lb = new Label( this,
+                           Rect( _lbProduction->leftbottom() + Point( 0, 5 ), Size( width() - 90, 25 ) ),
+                           _("##build_fishing_boat##") );
+    lb->setTextAlignment( align::upperLeft, align::upperLeft );
+    _lbTextRef()->setPosition( lb->leftbottom() + Point( 0, 5 ) );
   }
 }
 
 
-InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
-  : InfoboxFactory( parent, tile )
+AboutWharf::AboutWharf(Widget* parent, const Tile& tile)
+  : AboutFactory( parent, tile )
 {
   WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
 
   if( wharf->getBoat().isNull() )
   {
-    new Label( this,
-               Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
-               _("##wait_for_fishing_boat##") );
+    Label* lb = new Label( this,
+                           Rect( _lbProduction->leftbottom() + Point( 0, 10 ), Size( width() - 90, 25 ) ),
+                           _("##wait_for_fishing_boat##") );
+    lb->setTextAlignment( align::upperLeft, align::upperLeft );
+    lb->setWordwrap( true );
+    _lbTextRef()->setPosition( lb->leftbottom() + Point( 0, 10 ) );
   }
 }
 
+}
 
 }//end namespace gui

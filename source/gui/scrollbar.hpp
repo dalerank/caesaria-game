@@ -68,13 +68,13 @@ public:
 	virtual void setMinValue(int max);
 
 	//! gets the small step value
-	virtual int getSmallStep() const;
+  virtual int smallStep() const;
 
 	//! sets the small step value
 	virtual void setSmallStep(int step);
 
 	//! gets the large step value
-	virtual int getLargeStep() const;
+  virtual int largeStep() const;
 
 	//! sets the large step value
 	virtual void setLargeStep(int step);
@@ -132,7 +132,6 @@ protected:
 	ScopedPtr< Impl > _d;
 
   void _resolvePositionChanged();
-  std::string _GetFullStyleName();
   PushButton* _createButton( const Rect& rectangle,
                              Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type );
 };

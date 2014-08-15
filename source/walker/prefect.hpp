@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WALKER_PREFECT_H_INCLUDED__
 #define __CAESARIA_WALKER_PREFECT_H_INCLUDED__
@@ -24,6 +24,11 @@
 class Prefect : public ServiceWalker
 {
 public:
+  typedef enum { patrol=0,
+                 findFire, go2fire, fightFire,
+                 go2enemy, fightEnemy,
+                 doNothing } SbAction;
+
   static PrefectPtr create( PlayerCityPtr city );
 
   virtual void timeStep(const unsigned long time);
@@ -36,11 +41,12 @@ public:
   virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
 
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
 
   virtual ~Prefect();
 
 protected:
+  virtual void _noWay();
   virtual void _centerTile();
   virtual void _reachedPathway();
 
@@ -53,6 +59,7 @@ protected:
   void _serveBuildings( ReachedBuildings& reachedBuildings );
   void _back2Prefecture();
   void _back2Patrol();
+  void _setSubAction( SbAction action );
   bool _figthFire();
   bool _findFire();
   virtual void _brokePathway(TilePos pos);

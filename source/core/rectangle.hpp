@@ -226,18 +226,18 @@ public:
 	void repair()
 	{
 		if (LowerRightCorner.x() < UpperLeftCorner.x())
-        {
-            T tmp = LowerRightCorner.x();
+		{
+			T tmp = LowerRightCorner.x();
 			LowerRightCorner.setX( UpperLeftCorner.x() );
-            UpperLeftCorner.setX( tmp );
-        }
+			UpperLeftCorner.setX( tmp );
+		}
 
 		if (LowerRightCorner.y() < UpperLeftCorner.y())
-        {
-            T tmp = LowerRightCorner.y();
+		{
+			T tmp = LowerRightCorner.y();
 			LowerRightCorner.setY( UpperLeftCorner.y() );
-            UpperLeftCorner.setY( tmp );
-        }
+			UpperLeftCorner.setY( tmp );
+		}
 	}
 
 	//! Returns if the rect is valid to draw.
@@ -275,9 +275,18 @@ public:
   }
 
 	T top() const 	{		return UpperLeftCorner.y();	}
+	Vector2<T> righttop() const { return Vector2<T>( LowerRightCorner.x(), UpperLeftCorner.y() ); }
+	Vector2<T> leftbottom() const { return Vector2<T>( UpperLeftCorner.x(), LowerRightCorner.y() ); }
+	Vector2<T> lefttop() const { return UpperLeftCorner; }
+	Vector2<T> rightbottom() const { return LowerRightCorner; }
+
+  T& rtop() {		return UpperLeftCorner.ry();	}
 	T left() const	{		return UpperLeftCorner.x();	}
+  T& rleft() {		return UpperLeftCorner.rx();	}
 	T bottom() const	{		return LowerRightCorner.y();	}
+  T& rbottom() { return LowerRightCorner.ry();	}
 	T right() const	{		return LowerRightCorner.x();	}
+  T& rright() {	return LowerRightCorner.rx();	}
 
 	//! Upper left corner
 	Vector2<T> UpperLeftCorner;

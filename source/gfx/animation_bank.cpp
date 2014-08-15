@@ -33,6 +33,11 @@ using namespace constants;
 namespace gfx
 {
 
+namespace {
+  static const int bigCart = 200;
+  static const int megaCart = 400;
+}
+
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
   static const Point frontCartOffsetWest  = Point( -31, 35 );
@@ -89,25 +94,64 @@ void AnimationBank::Impl::loadCarts()
   //number of animations with goods + emmigrants + immigrants
   bool frontCart = false;
 
-  carts[Good::none] = fillCart(ResourceGroup::carts, noneGoodsPicId, frontCart);
-  carts[Good::wheat] = fillCart(ResourceGroup::carts, 9, frontCart);
-  carts[Good::vegetable] = fillCart(ResourceGroup::carts, 17, frontCart);
-  carts[Good::fruit] = fillCart( ResourceGroup::carts, 25, frontCart);
-  carts[Good::olive] = fillCart( ResourceGroup::carts, 33, frontCart);
-  carts[Good::grape] = fillCart( ResourceGroup::carts, 41, frontCart);
-  carts[Good::meat] = fillCart( ResourceGroup::carts, 49, frontCart);
-  carts[Good::wine] = fillCart( ResourceGroup::carts, 57, frontCart);
-  carts[Good::oil] = fillCart( ResourceGroup::carts, 65, frontCart);
-  carts[Good::iron] = fillCart( ResourceGroup::carts, 73, frontCart);
-  carts[Good::timber] = fillCart( ResourceGroup::carts, 81, frontCart);
-  carts[Good::clay] =  fillCart( ResourceGroup::carts, 89, frontCart);
-  carts[Good::marble] = fillCart( ResourceGroup::carts, 97, frontCart);
-  carts[Good::weapon] = fillCart( ResourceGroup::carts, 105, frontCart);
-  carts[Good::furniture] = fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[Good::pottery] = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[Good::wheat]    = fillCart( ResourceGroup::carts, 9, frontCart);
+  carts[Good::vegetable]= fillCart( ResourceGroup::carts, 17, frontCart);
+  carts[Good::fruit]    = fillCart( ResourceGroup::carts, 25, frontCart);
+  carts[Good::olive]    = fillCart( ResourceGroup::carts, 33, frontCart);
+  carts[Good::grape]    = fillCart( ResourceGroup::carts, 41, frontCart);
+  carts[Good::meat]     = fillCart( ResourceGroup::carts, 49, frontCart);
+  carts[Good::wine]     = fillCart( ResourceGroup::carts, 57, frontCart);
+  carts[Good::oil]      = fillCart( ResourceGroup::carts, 65, frontCart);
+  carts[Good::iron]     = fillCart( ResourceGroup::carts, 73, frontCart);
+  carts[Good::timber]   = fillCart( ResourceGroup::carts, 81, frontCart);
+  carts[Good::clay]     = fillCart( ResourceGroup::carts, 89, frontCart);
+  carts[Good::marble]   = fillCart( ResourceGroup::carts, 97, frontCart);
+  carts[Good::weapon]   = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[Good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[Good::fish]     = fillCart( ResourceGroup::carts, 697, frontCart);
+
+  carts[bigCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[bigCart+Good::wheat]    = fillCart( ResourceGroup::carts, 617, frontCart);
+  carts[bigCart+Good::vegetable]= fillCart( ResourceGroup::carts, 625, frontCart);
+  carts[bigCart+Good::fruit]    = fillCart( ResourceGroup::carts, 633, frontCart);
+  carts[bigCart+Good::meat]     = fillCart( ResourceGroup::carts, 641, frontCart);
+  carts[bigCart+Good::fish]     = fillCart( ResourceGroup::carts, 649, frontCart);
+
+  carts[bigCart+Good::olive]    = fillCart( ResourceGroup::citizen5, 97, frontCart);
+  carts[bigCart+Good::grape]    = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[bigCart+Good::wine]     = fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[bigCart+Good::oil]      = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[bigCart+Good::iron]     = fillCart( ResourceGroup::carts, 129, frontCart);
+  carts[bigCart+Good::timber]   = fillCart( ResourceGroup::carts, 137, frontCart);
+  carts[bigCart+Good::clay]     = fillCart( ResourceGroup::carts, 145, frontCart);
+  carts[bigCart+Good::marble]   = fillCart( ResourceGroup::carts, 153, frontCart);
+  carts[bigCart+Good::weapon]   = fillCart( ResourceGroup::carts, 161, frontCart);
+  carts[bigCart+Good::furniture]= fillCart( ResourceGroup::carts, 169, frontCart);
+  carts[bigCart+Good::pottery]  = fillCart( ResourceGroup::carts, 177, frontCart);
+
+  carts[megaCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[megaCart+Good::wheat]    = fillCart( ResourceGroup::carts, 547, frontCart);
+  carts[megaCart+Good::vegetable]= fillCart( ResourceGroup::carts, 665, frontCart);
+  carts[megaCart+Good::fruit]    = fillCart( ResourceGroup::carts, 673, frontCart);
+  carts[megaCart+Good::meat]     = fillCart( ResourceGroup::carts, 681, frontCart);
+  carts[megaCart+Good::fish]     = fillCart( ResourceGroup::carts, 689, frontCart);
+
+  carts[megaCart+Good::grape]    = fillCart( ResourceGroup::carts, 41, frontCart);
+  carts[megaCart+Good::olive]    = fillCart( ResourceGroup::carts, 33, frontCart);
+  carts[megaCart+Good::wine]     = fillCart( ResourceGroup::carts, 57, frontCart);
+  carts[megaCart+Good::oil]      = fillCart( ResourceGroup::carts, 65, frontCart);
+  carts[megaCart+Good::iron]     = fillCart( ResourceGroup::carts, 73, frontCart);
+  carts[megaCart+Good::timber]   = fillCart( ResourceGroup::carts, 81, frontCart);
+  carts[megaCart+Good::clay]     = fillCart( ResourceGroup::carts, 89, frontCart);
+  carts[megaCart+Good::marble]   = fillCart( ResourceGroup::carts, 97, frontCart);
+  carts[megaCart+Good::weapon]   = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[megaCart+Good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[megaCart+Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
+
   carts[Immigrant::G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
   carts[Immigrant::G_EMIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
-  carts[Good::fish] = fillCart( ResourceGroup::carts, 697, frontCart);
 }
 
 AnimationBank& AnimationBank::instance()
@@ -237,9 +281,14 @@ Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int sta
   return ioCart;
 }
 
-const Picture& AnimationBank::getCart(int cartId, constants::Direction direction)
+const Picture& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
 {
-  return instance()._d->carts[ cartId ][ direction ];
+  int index = 0;
+  if( capacity <= 100 ) index = 100;
+  else if( capacity <= 200 ) index = 200;
+  else if( capacity <= 400 ) index = 400;
+
+  return instance()._d->carts[ good ][ direction ];
 }
 
 }//end namespace gfx

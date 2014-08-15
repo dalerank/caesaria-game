@@ -27,18 +27,28 @@
 namespace gui
 {
 
+namespace infobox
+{
+
+namespace citizen
+{
+
 // Simple info box with static text on plain background
-class InfoboxCitizen : public InfoboxSimple
+class AboutPeople : public Simple
 {
 public:
-  InfoboxCitizen(Widget* parent, PlayerCityPtr city, const TilePos& pos);
-  virtual ~InfoboxCitizen();
+  AboutPeople(Widget* parent, PlayerCityPtr city, const TilePos& pos);
+  virtual ~AboutPeople();
 
 protected:
   void _setWalker(WalkerPtr walker);
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_

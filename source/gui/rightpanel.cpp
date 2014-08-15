@@ -27,7 +27,7 @@ namespace gui
 class MenuRigthPanel::Impl
 {
 public:
-  PictureRef picture;
+  Pictures background;
 };
 
 MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
@@ -36,23 +36,24 @@ MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 
 
 void MenuRigthPanel::draw( gfx::Engine& engine )
 {
-  engine.draw( *_d->picture, screenLeft(), screenTop() );
+  if( !visible() )
+    return;
+
+  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
 }
 
-MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
+MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, Picture& tilePic )
 {
   MenuRigthPanel* ret = new MenuRigthPanel( parent );
 
   ret->setGeometry( rectangle );
+  ret->_d->background.clear();
 
-  ret->_d->picture.reset( Picture::create( rectangle.size() ) );
-  //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
-
-  int y = 0;
-  while( y <  ret->_d->picture->height() )
+  unsigned int y = 0;
+  while( y < ret->height() )
   {
-      ret->_d->picture->draw( tilePic, Point( 0, y ) );
-      y += tilePic.height();
+    ret->_d->background.append( tilePic, Point( 0, -y ) );
+    y += tilePic.height();
   }
 
   return ret;

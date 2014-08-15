@@ -29,24 +29,23 @@ namespace gfx
 namespace gui
 {
 
-class GuiEnv : Widget
+class Ui : Widget
 {
 public:
-  GuiEnv( gfx::Engine& painter );
+  Ui( gfx::Engine& painter );
 
-  ~GuiEnv();
+  virtual ~Ui();
 
   bool hasFocus( const Widget* element) const;
   virtual bool setFocus( Widget* element);
   virtual bool removeFocus( Widget* element);
 
-  double getVersion() const;
-
   Widget* rootWidget();								//  
   Widget* getFocus() const;
-  Point getCursorPos() const;
+  Point cursorPos() const;
 
   virtual bool isHovered( const Widget* element );
+  Widget* findWidget( int id );
   Widget* hovered() const;
 
   virtual void draw();

@@ -33,4 +33,20 @@
       text : "##3000_citzens_in_city##"
     }
   }
+
+  events : {
+    first_colosseum_work#start_work : {
+      building : [ "colloseum" ]
+      no_troubles : true
+      type : "start_work"
+      action : {
+        message#messagebox : {
+          send2scribe : true
+          video : "/smk/1st_Glad.smk"
+          title : "##working_colloseum_title##"
+          text : "##working_colloseum_text##"
+        }
+      }
+    }
+  }
 }

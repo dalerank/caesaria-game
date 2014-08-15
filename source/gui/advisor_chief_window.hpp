@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -26,7 +26,7 @@
 namespace gui
 {
 
-class AdvisorChiefWindow : public Widget
+class AdvisorChiefWindow : public Window
 {
 public:
   AdvisorChiefWindow( PlayerCityPtr city, Widget* parent, int id );

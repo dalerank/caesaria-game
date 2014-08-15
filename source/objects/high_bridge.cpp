@@ -40,7 +40,7 @@ public:
           liftingWestL=173, descentWestL=175,
           liftingNorthL=176, descentNorthL=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
-    : Construction( building::lowBridge, Size( 1 ) )
+    : Construction( building::highBridge, Size( 1 ) )
   {
     _pos = pos;
     _index = index;
@@ -64,14 +64,14 @@ public:
 
   bool canDestroy() const
   {
-    return _parent ? _parent->canDestroy() : false;
+    return _parent ? _parent->canDestroy() : true;
   }
 
-  ~HighBridgeSubTile()   {}
+  virtual ~HighBridgeSubTile()   {}
   bool isWalkable() const   {    return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  void build( PlayerCityPtr city, const TilePos& pos )
+  bool build( PlayerCityPtr city, const TilePos& pos )
   {
     if( _index == descentNorth || _index == liftingNorth )
     {
@@ -84,7 +84,7 @@ public:
     else if( _index == descentNorthL || _index == liftingNorthL ||
              _index == descentWestL || _index == liftingWestL )
     {
-      return;
+      return false;
     }
 
     Construction::build( city, pos );
@@ -118,16 +118,23 @@ public:
     _fgPicturesRef().push_back( _picture );
 
     _pos = pos;
+
+    return true;
+  }
+
+  void setState( ParameterType name, double value )
+  {
+    if( name == Construction::destroyable )
+    {
+      if( _parent )
+         _parent->setState( name, value );
+      value = _parent ? (_parent->canDestroy() ? 1 : 0) : 0;
+    }
+    Construction::setState( name, value );
   }
 
   void initTerrain( Tile& terrain )
   {
-    bool isWater = terrain.getFlag( Tile::tlWater );
-    bool isDeepWater = terrain.getFlag( Tile::tlDeepWater );
-
-    terrain.setFlag( Tile::clearAll, true );
-    terrain.setFlag( Tile::tlWater, isWater );
-    terrain.setFlag( Tile::tlDeepWater, isDeepWater );
     terrain.setFlag( Tile::tlRoad, true );
   }
 
@@ -143,7 +150,8 @@ public:
   {
     if( pos() == _parent->pos() )
     {
-      return _parent->save( stream );
+      if( _parent )
+        _parent->save( stream );
     }
   }
 
@@ -217,13 +225,14 @@ bool HighBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) c
   if( ov.isNull() )
   {
     _d->subtiles.clear();
-    const_cast< HighBridge* >( this )->_fgPicturesRef().clear();
+    HighBridge* thisp = const_cast< HighBridge* >( this );
+    thisp->_fgPicturesRef().clear();
 
     _checkParams( city, _d->direction, startPos, endPos, pos );
 
     if( _d->direction != noneDirection )
     {
-      const_cast< HighBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+      thisp->_computePictures( city, startPos, endPos, _d->direction );
     }
   }
 
@@ -418,7 +427,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   }
 }
 
-void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
+bool HighBridge::build(PlayerCityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
@@ -451,14 +460,17 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
       event->dispatch();
     }    
   }
+
+  return true;
 }
 
 bool HighBridge::canDestroy() const
 {
   city::Helper helper( _city() );
+
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->pos() );
+    WalkerList walkers = helper.find<Walker>( walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -466,26 +478,31 @@ bool HighBridge::canDestroy() const
     }
   }
 
-  return true;
+  return state( Construction::destroyable );
 }
 
 void HighBridge::destroy()
 { 
   PlayerCityPtr city = _city();
+  foreach( it, _d->subtiles )
+  {
+    (*it)->_parent = 0;
+    (*it)->setState( Construction::destroyable, true );
+    (*it)->deleteLater();
+  }
+
   foreach( it,  _d->subtiles )
   {
     HighBridgeSubTilePtr subtile = *it;
-    subtile->_parent = 0;
+
     events::GameEventPtr event = events::ClearLandEvent::create( subtile->_pos );
     event->dispatch();
 
-    std::string picName = TileHelper::convId2PicName( subtile->_imgId );
-
     Tile& mapTile = city->tilemap().at( subtile->_pos );
-    //mapTile.setPicture( &Picture::load( picName ) );
-
-    TileHelper::decode( mapTile, subtile->_info );
+    mapTile.setFlag( Tile::tlRoad, false );
   }
+
+  _d->subtiles.clear();
 }
 
 std::string HighBridge::errorDesc() const {  return _d->error;}

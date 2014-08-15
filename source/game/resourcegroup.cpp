@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "resourcegroup.hpp"
 
@@ -40,7 +42,6 @@ __RCG_NAME_IMP(utilitya        , "utilitya")
 __RCG_NAME_IMP(commerce        , "commerce")
 __RCG_NAME_IMP(security        , "security")
 __RCG_NAME_IMP(aqueduct        , "land2a")
-__RCG_NAME_IMP(waterbuildings  , "waterbuildings")
 __RCG_NAME_IMP(road            , "land2a")
 __RCG_NAME_IMP(entertaiment    , "entertainment")
 __RCG_NAME_IMP(warehouse       , "warehouse")

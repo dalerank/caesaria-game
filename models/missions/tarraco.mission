@@ -1,10 +1,13 @@
 {
   version : 1
-  map : "/maps/Tarraco2.sav"
+  map : ":/maps/Tarraco2.sav"
   funds : 8000
+  city.name : "Tarraco"
   date : "-270.01.01"
+  player.rank : 3
   finish : "-170.01.01"
   adviserEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -13,7 +16,7 @@
     prosperity : 25
     peace : 30
     favour : 70
-    next : "/missions/tutorial5.briefing"
+    next : ":/missions/tutorial5.briefing"
     title : "##win_engineer_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -23,44 +26,6 @@
 	
   empire : {
     enabled : true
-
-    objects : {
-      ship : {
-        location : [ 709, 604 ]
-        name : "ship"
-        picture : "empire_bits_00112"
-      }
-
-      aqueduct : {
-        location : [ 170, 630 ]
-        name : "aqueduct"
-        picture : "empire_bits_00107"
-      }
-
-      palms : {
-        location : [ 490, 790 ]
-        name : "palms"
-        picture : "empire_bits_00111"
-      }
-
-      colosseum : {
-        location : [ 735, 495 ]
-        name : "colosseum"
-        picture : "empire_bits_00114"
-      }
-
-      rocks : {
-        location : [ 240, 460 ]
-        name : "rocks"
-        picture : "empire_bits_00106"
-      }
-
-      rocks2 : {
-        location : [ 530, 380 ]
-        name : "rocks2"
-        picture : "empire_bits_00115"
-      }
-    }
 
     cities :
     {
@@ -268,7 +233,7 @@
 	price_rising1#trading_options : {
       date : "-265.04.01"
       goods : {
-        fruit : { buy : 20, sell : 15 }
+        fruit : { relative : true, buy : 20, sell : 15 }
       }
 
       exec : {
@@ -284,7 +249,7 @@
     price_rising2#trading_options : {
       date : "-262.04.01"
       goods : {
-        marble : { buy : 200, sell : 150 }
+        marble : { relative : true, buy : 200, sell : 150 }
       }
 
       exec : {
@@ -300,7 +265,7 @@
 	price_rising3#trading_options : {
       date : "-255.04.01"
       goods : {
-        furniture : { buy : 120, sell : 80 }
+        furniture : { relative : true, buy : 120, sell : 80 }
       }
 
       exec : {
@@ -316,7 +281,7 @@
 	price_rising4#trading_options : {
       date : "-250.04.01"
       goods : {
-        pottery : { buy : 70, sell : 50 }
+        pottery : { relative : true, buy : 70, sell : 50 }
       }
 
       exec : {

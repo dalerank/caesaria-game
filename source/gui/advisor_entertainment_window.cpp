@@ -30,7 +30,6 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "festival_planing_window.hpp"
-#include "game/settings.hpp"
 #include "objects/house_level.hpp"
 #include "objects/entertainment.hpp"
 #include "city/cityservice_festival.hpp"
@@ -44,6 +43,9 @@ using namespace constants;
 using namespace gfx;
 
 namespace gui
+{
+
+namespace advisorwnd
 {
 
 struct InfrastructureInfo
@@ -87,12 +89,12 @@ public:
     break;
     }
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
-    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
-    font.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
-    font.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
-    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
   }
 
 private:
@@ -100,7 +102,7 @@ private:
   InfrastructureInfo _info;
 };
 
-class AdvisorEntertainmentWindow::Impl
+class Entertainment::Impl
 {
 public:
   PlayerCityPtr city;
@@ -115,7 +117,7 @@ public:
   Label* lbInfoAboutLastFestival;
   TexturedButton* btnHelp;
   Label* lbMonthFromLastFestival;
-  SmartPtr<city::Festival> srvc;
+  city::FestivalPtr srvc;
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
   void assignFestival(int divinityType, int festSize);
@@ -124,13 +126,13 @@ public:
 };
 
 
-AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
+: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
   _d->city = city;
-  _d->srvc = ptr_cast<city::Festival>( city->findService( city::Festival::defaultName() ) );
+  _d->srvc << city->findService( city::Festival::defaultName() );
 
-  setupUI( GameSettings::rcpath( "/gui/entertainmentadv.gui" ) );
+  setupUI( ":/gui/entertainmentadv.gui" );
 
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
@@ -156,27 +158,27 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
   info = _d->getInfo( city, building::hippodrome );
   _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), building::hippodrome, info );
 
-  CONNECT( _d->btnNewFestival, onClicked(), this, AdvisorEntertainmentWindow::_showFestivalWindow );
+  CONNECT( _d->btnNewFestival, onClicked(), this, Entertainment::_showFestivalWindow );
 
   _d->updateInfo();
   _d->updateFestivalInfo();
 }
 
-void AdvisorEntertainmentWindow::draw( Engine& painter )
+void Entertainment::draw( Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
-void AdvisorEntertainmentWindow::_showFestivalWindow()
+void Entertainment::_showFestivalWindow()
 {
   FestivalPlaningWindow* wnd = FestivalPlaningWindow::create( this, _d->city, -1 );
   CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::assignFestival );
 }
 
-InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
+InfrastructureInfo Entertainment::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
 {
   city::Helper helper( city );
 
@@ -215,7 +217,7 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city,
   return ret;
 }
 
-void AdvisorEntertainmentWindow::Impl::assignFestival(int divinityType, int festSize)
+void Entertainment::Impl::assignFestival(int divinityType, int festSize)
 {
   if( srvc.isValid() )
   {
@@ -224,7 +226,7 @@ void AdvisorEntertainmentWindow::Impl::assignFestival(int divinityType, int fest
   }
 }
 
-void AdvisorEntertainmentWindow::Impl::updateInfo()
+void Entertainment::Impl::updateInfo()
 { 
   StringArray troubles;
   if( !lbTroubleInfo )
@@ -278,7 +280,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   int allNeed = theatersNeed + amptNeed + clsNeed + hpdNeed;
   int allServed = theatersServed + amptServed + clsServed + hpdServed;
 
-  int entertCoverage = (allNeed > 0 ? (allServed * 100 / allNeed) : 0);
+  int entertCoverage = math::percentage( allServed, allNeed);
 
   if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles.push_back( "##entertainment_80_100##" ); }
   else if( entertCoverage > 50 && entertCoverage <= 80 ) { troubles.push_back( "##entertainment_50_80##" ); }
@@ -312,7 +314,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   lbTroubleInfo->setText( _( troubles[ (int)(rand() % troubles.size()) ] ) );
 }
 
-void AdvisorEntertainmentWindow::Impl::updateFestivalInfo()
+void Entertainment::Impl::updateFestivalInfo()
 {
   if( srvc.isValid() )
   {
@@ -328,6 +330,8 @@ void AdvisorEntertainmentWindow::Impl::updateFestivalInfo()
     text = StringHelper::format( 0xff, "##more_%d_month_from_festival##", math::clamp( monthFromLastFestival / 4 * 4, 0, 24) );
     if( lbInfoAboutLastFestival ) { lbInfoAboutLastFestival->setText( _( text.c_str() ) ); }
   }
+}
+
 }
 
 }//end namespace gui

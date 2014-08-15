@@ -123,7 +123,7 @@ void ProsperityRating::update( const unsigned int time )
     bool more10PercentIsPatrician = (patricianCount / (float)_city.population()) > 0.1;
     _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
 
-    _d->percentPlebs = plebsCount * 100/ (float)_city.population();
+    _d->percentPlebs = math::percentage( plebsCount, _city.population() );
     _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
     bool haveHippodrome = !helper.find<Hippodrome>( building::hippodrome ).empty();

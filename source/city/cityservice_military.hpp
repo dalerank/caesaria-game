@@ -27,7 +27,7 @@ namespace city
 
 class Military : public city::Srvc
 {
-public:
+public:  
   struct Notification
   {
     DateTime date;
@@ -41,11 +41,14 @@ public:
 
   void update( const unsigned int time );
   void addNotification( const std::string& text, const Point& location );
-  Notification getPriorityNotification() const;
+  Notification priorityNotification() const;
   const NotificationArray& notifications() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
+
+  int month2lastAttack() const;
+  void enemyAttack();
 
   static std::string defaultName();
 private:

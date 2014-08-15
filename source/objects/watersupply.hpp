@@ -29,7 +29,6 @@ public:
   virtual void addWater( const WaterSource& source );
   virtual bool haveWater() const;  
   virtual void timeStep(const unsigned long time);
-  int getId() const;
   int water() const;
 
   virtual void save(VariantMap &stream) const;
@@ -54,7 +53,7 @@ public:
   Reservoir();
   ~Reservoir();
 
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
   virtual bool isNeedRoadAccess() const;
   virtual void initTerrain(gfx::Tile& terrain);

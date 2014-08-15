@@ -21,12 +21,17 @@
 namespace gui
 {
 
-class InfoboxTheater : public InfoboxWorkingBuilding
+namespace infobox
+{
+
+class AboutTheater : public AboutWorkingBuilding
 {
 public:
-  InfoboxTheater( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxTheater();
+  AboutTheater( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutTheater();
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_THEATER_H_INCLUDE_

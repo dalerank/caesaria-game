@@ -37,8 +37,8 @@ namespace city
 class Helper
 {
 public:
-  static const bool offDesirability=false;
-  static const bool onDesirability=true;
+  enum { offDesirability=false,
+         onDesirability=true };
 
   static const TilePos invalidPos;
   Helper( PlayerCityPtr city ) : _city( city ) {}
@@ -195,7 +195,6 @@ public:
   gfx::TilesArray getAroundTiles(gfx::TileOverlayPtr building );
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   HirePriorities getHirePriorities() const;
-  float getBalanceKoeff();
   void updateTilePics();
 
   void updateDesirability(gfx::TileOverlayPtr overlay, bool onBuild );

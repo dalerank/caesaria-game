@@ -49,9 +49,9 @@ public:
 
   virtual void setCommandId( int cmdId);   
 
-  virtual int getCommandId() const;
+  virtual int commandId() const;
 
-  virtual ContextMenu* getSubMenu() const;
+  virtual ContextMenu* subMenu() const;
 
   virtual void setIsSeparator( bool isSepar );
 
@@ -73,13 +73,13 @@ public:
 
   virtual bool isChecked() const;
 
-  virtual int getOffset() const;
+  virtual int offset() const;
 
   virtual void setOffset( int offset );
 
-  virtual void setDim( const Size& size );
+  virtual void setDimmension( const Size& size );
 
-  virtual const Size& getDim() const;
+  virtual const Size& dimmension() const;
 
   //! Adds a sub menu from an element that already exists.
   virtual void setSubMenu( ContextMenu* menu );
@@ -88,7 +88,7 @@ public:
 
   virtual void setSubMenuAlignment( SubMenuAlign align );
 
-  virtual SubMenuAlign getSubMenuAlignment() const;
+  virtual SubMenuAlign subMenuAlignment() const;
 
 oc3_signals public:
   Signal1<bool>& onChecked();

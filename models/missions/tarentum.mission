@@ -1,10 +1,13 @@
 {
   version : 1
-  map : "/maps/Tarentum.sav"
+  map : ":/maps/Tarentum.sav"
   funds : 8000
+  city.name : "Tarentum"
   date : "-350.01.01"
+  player.rank : 2
   finish : "-300.01.01"
   adviserEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -13,7 +16,7 @@
     prosperity : 10
     peace : 10
     favour : 40
-    next : "/missions/tutorial4.briefing"
+    next : ":/missions/tutorial4.briefing"
     title : "##win_engineer_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -25,44 +28,6 @@
 	
   empire : {
     enabled : true
-
-    objects : {
-      ship : {
-        location : [ 709, 604 ]
-        name : "ship"
-        picture : "empire_bits_00112"
-      }
-
-      aqueduct : {
-        location : [ 170, 630 ]
-        name : "aqueduct"
-        picture : "empire_bits_00107"
-      }
-
-      palms : {
-        location : [ 490, 790 ]
-        name : "palms"
-        picture : "empire_bits_00111"
-      }
-
-      colosseum : {
-        location : [ 735, 495 ]
-        name : "colosseum"
-        picture : "empire_bits_00114"
-      }
-
-      rocks : {
-        location : [ 240, 460 ]
-        name : "rocks"
-        picture : "empire_bits_00106"
-      }
-
-      rocks2 : {
-        location : [ 530, 380 ]
-        name : "rocks2"
-        picture : "empire_bits_00115"
-      }
-    }
 
     cities :
     {
@@ -135,7 +100,7 @@
     oil_price_rising#trading_options : {
       date : "-345.04.01"
       goods : {
-        furniture : { buy : 40, sell : 30 }
+        furniture : { relative : true, buy : 40, sell : 30 }
       }
 
       exec : {
@@ -311,31 +276,31 @@
 	  }
     }
 
-	"barbarian_invasion1#enemy_attack" : {
+    barbarian_invasion1#enemy_attack : {
       date : "-347.07.01"
       type : "enemy_attack"
-	  target : "food"
-      items : {
-        troop_soldiers : {
-          type : "etruscanSoldier"
-          count : 6
-          location : "random"
-        }
+      target : "food"
+        items : {
+          troop_soldiers : {
+            type : "etruscanSoldier"
+            count : 6
+            location : "random"
+          }
 
-        troop_archers : {
-          type : "etruscanArcher"
-          count : 3
-          location : "random"
+          troop_archers : {
+            type : "etruscanArcher"
+            count : 3
+            location : "random"
+          }
         }
-      }
 
       exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
-		}
-	  }
+        barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
     }
 
 	"barbarian_invasion2#enemy_attack" : {

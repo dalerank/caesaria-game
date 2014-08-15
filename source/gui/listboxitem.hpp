@@ -11,8 +11,9 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>..
-
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_LISTBOXITEM_H_INCLUDE_
 #define _CAESARIA_LISTBOXITEM_H_INCLUDE_
@@ -58,7 +59,7 @@ public:
   const std::string& text() const;
 	void setTag( int tag );
 	int tag() const;
-	gfx::Picture icon() const;
+	gfx::Picture icon();
 	void setIcon( gfx::Picture pic );
 
   bool isEnabled() const;
@@ -76,8 +77,13 @@ public:
   ElementState state() const;
   void setState( const ElementState& state );
 
-  Point offset() const;
-  void setOffset( Point p );
+  Point textOffset() const;
+  void setTextOffset( Point p );
+
+  Point iconOffset() const;
+  void setIconOffset( Point p );
+
+  const gfx::Picture& picture() const;
 
   void setUrl( const std::string& url );
   const std::string& url() const;
@@ -85,12 +91,18 @@ public:
   Variant data() const;
   void setData( const Variant& value );
 
+  void setTextColor( ColorType type, NColor color);
+
+  void updateText( const Point& p, Font f, const Size& s );
+
+  void draw(const std::string& text, Font f , const Point& p);
+
   struct OverrideColor
   {
     OverrideColor() : Use(false), color( 0 ) {}
     bool Use;
     Font font;
-    int /*Color*/ color;
+    NColor color;
   };
 
 	//!sets the item text alignment
@@ -98,7 +110,7 @@ public:
 
 	OverrideColor OverrideColors[ count ];
 
-	static ListBoxItem& getInvalidItem(); 
+  static ListBoxItem& invalidItem();
 
 private:
   class Impl;

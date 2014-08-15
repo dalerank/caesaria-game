@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISORSWINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISORSWINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "game/enums.hpp"
 #include "game/predefinitions.hpp"
 
@@ -27,17 +27,20 @@ namespace gui
 
 class PushButton;
 
-class AdvisorsWindow : public Widget
+namespace advisorwnd
+{
+
+class AdvisorsWindow : public Window
 {
 public:
   static AdvisorsWindow* create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city  );
 
   // draw on screen
-  void draw( gfx::Engine& engine );
+  virtual void draw( gfx::Engine& engine );
 
   void showAdvisor( const constants::advisor::Type type );
 
-  bool onEvent(const NEvent& event);
+  virtual bool onEvent(const NEvent& event);
 protected:
   class Impl;
   ScopedPtr< Impl > _d;
@@ -45,6 +48,8 @@ protected:
   AdvisorsWindow( Widget* parent, int id );
   PushButton* addButton( const int pos, const int picId, std::string="" );
 };
+
+}
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISORSWINDOW_H_INCLUDED__

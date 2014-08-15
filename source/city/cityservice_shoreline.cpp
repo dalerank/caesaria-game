@@ -24,6 +24,7 @@
 #include "gfx/tileoverlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
+#include "walker/river_wave.hpp"
 
 using namespace gfx;
 
@@ -34,6 +35,8 @@ class Shoreline::Impl
 {
 public:
   TilesArray slTiles;
+  TilesArray dwTiles;
+
   int lastTimeUpdate;
   unsigned int nextWaterGarbage;
 
@@ -48,9 +51,14 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
   foreach( tile, tiles )
   {
     int imgId = (*tile)->originalImgId();
-    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) )
+    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || (*tile)->getFlag( Tile::tlCoast ) )
     {
       slTiles.push_back( *tile );
+    }
+
+    if( (*tile)->getFlag( Tile::tlDeepWater ) )
+    {
+      dwTiles.push_back( *tile );
     }
   }
 }
@@ -77,19 +85,27 @@ void Shoreline::update( const unsigned int time )
   if( !GameDate::isWeekChanged() )
     return;
 
-  if( time > _d->nextWaterGarbage )
-  {
-    WaterGarbage* wg = new WaterGarbage( &_city );
-    wg->send2City( _city.borderInfo().boatEntry );
-    _d->nextWaterGarbage = time + math::random( GameDate::days2ticks( 10 ) );
-  }
-
-  _d->lastTimeUpdate = time;
-
   if( _d->slTiles.empty() )
   {
     _d->checkMap( &_city );
   }
+
+  if( time > _d->nextWaterGarbage )
+  {
+    WaterGarbagePtr wg = WaterGarbage::create( &_city );
+    wg->send2City( _city.borderInfo().boatEntry );
+
+    _d->nextWaterGarbage = time + math::random( GameDate::days2ticks( 10 ) );
+
+    for( int k=0; k < 20; k++ )
+    {
+      Tile* t = _d->dwTiles.random();
+      RiverWavePtr rw = RiverWave::create( &_city );
+      rw->send2City( t->pos() );
+    }
+  }
+
+  _d->lastTimeUpdate = time;
 
   foreach( it, _d->slTiles )
   {
@@ -98,7 +114,7 @@ void Shoreline::update( const unsigned int time )
       continue;
 
     int picId = tile->originalImgId();
-    if( tile->desirability() > 10 )
+    if( tile->param( Tile::pDesirability ) > 10 )
     {
       switch( picId )
       {

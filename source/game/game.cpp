@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "game.hpp"
 #include "scene/logo.hpp"
@@ -57,6 +57,8 @@
 #include "walker/helper.hpp"
 #include "core/osystem.hpp"
 #include "freeplay_finalizer.hpp"
+#include "events/warningmessage.hpp"
+#include "gfx/picture_info_bank.hpp"
 
 #include <list>
 
@@ -69,7 +71,7 @@ public:
   std::string nextFilename;
   scene::Base* currentScreen;
   gfx::Engine* engine;
-  gui::GuiEnv* gui;
+  gui::Ui* gui;
 
   world::EmpirePtr empire;
   PlayerCityPtr city;
@@ -87,7 +89,7 @@ public:
   void initLocale(std::string localePath);
   void initVideo();
   void initSound();
-  void initPictures( vfs::Path resourcePath);
+  void initPictures();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon(vfs::Path filename );
@@ -100,20 +102,27 @@ void Game::Impl::initLocale( std::string localePath)
 {
   //init translator
   Locale::setDirectory( localePath );
-  Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
+  Locale::setLanguage( SETTINGS_VALUE( language ).toString() );
 }
 
 void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
+  //std::string render = GameSettings::get( GameSettings::render ).toString();
+
   engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
+  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
 
-  Logger::warning( "GraficEngine: try set fullscreen mode" );
-  engine->setFlag( gfx::Engine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
+  bool fullscreen = SETTINGS_VALUE( fullscreen );
+  if( fullscreen )
+  {
+    Logger::warning( "GraficEngine: try set fullscreen mode" );
+    engine->setFlag( gfx::Engine::fullscreen, fullscreen ? 1 : 0 );
+  }
+
   engine->init();
 }
 
@@ -127,7 +136,7 @@ void Game::Impl::initSound()
   ae.setVolume( audio::themeSound, GameSettings::get( GameSettings::musicVolume ) );
   ae.setVolume( audio::gameSound, GameSettings::get( GameSettings::soundVolume ) );
 
-  audio::Helper::initTalksArchive( GameSettings::rcpath( GameSettings::talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -135,7 +144,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  Variant c3res = GameSettings::get( GameSettings::c3gfx );
+  Variant c3res = SETTINGS_VALUE( c3gfx );
   if( c3res.isValid() )
   {
     vfs::Directory gfxDir( c3res.toString() );
@@ -149,17 +158,19 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
-    loader.loadFromModel( GameSettings::rcpath( GameSettings::sg2model ) );
+    loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
   }
   else
   {
-    vfs::Path testPics = GameSettings::rcpath( GameSettings::testArchive );
+    vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
     if( !testPics.exist() )
     {
       errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }
+
+    loader.loadFromModel( SETTINGS_RC_PATH( remakeModel ) );
   }
 
   if( !errorStr.empty() )
@@ -169,12 +180,12 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     exit( -1 ); //kill application
   }
 
-  loader.loadFromModel( GameSettings::rcpath( GameSettings::archivesModel ) );
+  loader.loadFromModel( SETTINGS_RC_PATH( archivesModel ) );
 }
 
 void Game::Impl::createSaveDir()
 {
-  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
 
   bool dirCreated = true;
   if( !saveDir.exist() )
@@ -187,7 +198,7 @@ void Game::Impl::createSaveDir()
 
 void Game::Impl::initGuiEnvironment()
 {
-  gui = new gui::GuiEnv( *engine );
+  gui = new gui::Ui( *engine );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -202,18 +213,15 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
   FontCollection::instance().initialize( resourcePath.toString() );
 }
 
-void Game::Impl::initPictures(vfs::Path resourcePath)
+void Game::Impl::initPictures()
 {
   AnimationBank::instance().loadCarts();
-  AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::animationsModel ) );
-
-  Logger::warning( "Game: create runtime pictures" );
-  PictureBank::instance().createResources();
+  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
 }
 
 void Game::setScreenBriefing()
 {
-  scene::Briefing screen( *this, *_d->engine, GameSettings::rcpath( _d->nextFilename ).toString() );
+  scene::Briefing screen( *this, *_d->engine, _d->nextFilename );
   screen.initialize();
   _d->currentScreen = &screen;
 
@@ -260,7 +268,7 @@ void Game::setScreenMenu()
       Logger::warning( "Start new career with mission " + startMission );
 
       load( startMission );
-      _d->player->setName( screen.getPlayerName() );
+      _d->player->setName( screen.playerName() );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
 
       /*_d->nextFilename = "/missions/mission3.briefing";
@@ -275,7 +283,7 @@ void Game::setScreenMenu()
     case scene::StartMenu::loadSavedGame:
     case scene::StartMenu::loadMission:
     {
-      load( screen.getMapName() );
+      load( screen.mapName() );
       Logger::warning( "screen menu: end loading map" );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
@@ -284,12 +292,12 @@ void Game::setScreenMenu()
 
     case scene::StartMenu::loadMap:
     {
-      load( screen.getMapName() );
+      load( screen.mapName() );
       Logger::warning( "screen menu: end loading map" );
 
       FreeplayFinalizer::addPopulationMilestones( _d->city );
       FreeplayFinalizer::initBuildOptions( _d->city );
-
+      FreeplayFinalizer::addEvents( _d->city );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
@@ -351,7 +359,24 @@ void Game::setScreenGame()
   {
     case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
     case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
-    case scene::Level::restart: _d->nextScreen = SCREEN_GAME;  load( _d->restartFile ); break;
+
+    case scene::Level::restart:
+    {
+      Logger::warning( "ScreenGame: restart game " + _d->restartFile );
+      _d->nextScreen = SCREEN_GAME;
+      load( _d->restartFile );
+
+      Logger::warning( "ScreenGame: end loading file " + _d->restartFile );
+      std::string ext = vfs::Path( _d->restartFile ).extension();
+      if( ext == ".map" || ext == ".sav" )
+      {
+        FreeplayFinalizer::addPopulationMilestones( _d->city );
+        FreeplayFinalizer::initBuildOptions( _d->city );
+        FreeplayFinalizer::addEvents( _d->city );
+      }
+    }
+    break;
+
     case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
     case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
     default: _d->nextScreen = SCREEN_QUIT;
@@ -361,7 +386,7 @@ void Game::setScreenGame()
 PlayerPtr Game::player() const { return _d->player; }
 PlayerCityPtr Game::city() const { return _d->city; }
 world::EmpirePtr Game::empire() const { return _d->empire; }
-gui::GuiEnv* Game::gui() const { return _d->gui; }
+gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
@@ -391,7 +416,6 @@ Game::Game() : _d( new Impl )
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
 void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
-
 Game::~Game(){}
 
 void Game::save(std::string filename) const
@@ -399,6 +423,9 @@ void Game::save(std::string filename) const
   GameSaver saver;
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
+
+  events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  e->dispatch();
 }
 
 void Game::load(std::string filename)
@@ -429,8 +456,10 @@ void Game::load(std::string filename)
   reset();
 
   Logger::warning( "Game: init empire start options" );
-  _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
-                          GameSettings::rcpath( GameSettings::worldModel ) );
+  events::Dispatcher::instance().reset();
+  _d->empire->initialize( SETTINGS_RC_PATH( citiesModel ),
+                          SETTINGS_RC_PATH( empireObjectsModel ),
+                          SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
   GameLoader loader;
@@ -480,8 +509,11 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   GameSettings::load();
+  //mount default rcpath folder
+  vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );
+
   _d->initArchiveLoaders();
-  _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
+  _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
   _d->initFontCollection( GameSettings::rcpath() );
   _d->initGuiEnvironment();
@@ -497,31 +529,35 @@ void Game::initialize()
   ResourceLoader rcLoader;
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
 
+  screen.setPrefix( "##loading_offsets##" );
+  PictureInfoBank::instance().initialize( SETTINGS_RC_PATH( pic_offsets ) );
+
   screen.setPrefix( "##loading_resources##" );
   _d->mountArchives( rcLoader );  // init some quick pictures for screenWait
 
   screen.setPrefix( "" );
   screen.setText( "##initialize_animations##" );
-  _d->initPictures( GameSettings::rcpath() );
+  _d->initPictures();
 
   screen.setText( "##initialize_names##" );
-  NameGenerator::instance().initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
+  NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
 
   screen.setText( "##initialize_house_specification##" );
-  HouseSpecHelper::instance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
+  HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
 
   screen.setText( "##initialize_constructions##" );
-  MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
+  MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
 
   screen.setText( "##initialize_walkers##" );
-  WalkerHelper::instance().initialize( GameSettings::rcpath( GameSettings::walkerModel ) );
+  WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
 
   screen.setText( "##initialize_religion##" );
-  _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
+  _d->initPantheon( SETTINGS_RC_PATH( pantheonModel ) );
 
-  screen.setText( "##ready_to_game" );
+  screen.setText( "##ready_to_game##" );
+
   if( GameSettings::get( "no-fade" ).isNull() )
-    screen.fadeOut();
+    screen.exitScene();
 }
 
 void Game::exec()
@@ -529,9 +565,9 @@ void Game::exec()
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
 
-  while(_d->nextScreen != SCREEN_QUIT)
+  while(_d->nextScreen != SCREEN_QUIT )
   {
-    Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+    Logger::warning( "Game: exec switch to screen %d", _d->nextScreen );
     switch(_d->nextScreen)
     {
       case SCREEN_MENU:        setScreenMenu();     break;

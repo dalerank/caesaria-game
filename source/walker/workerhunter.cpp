@@ -33,7 +33,6 @@
 using namespace constants;
 
 namespace {
-CAESARIA_LITERALCONST(needworkers)
 CAESARIA_LITERALCONST(priority)
 static const int noPriority = 999;
 }
@@ -65,8 +64,8 @@ void Recruter::hireWorkers( const int workers )
   WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
-    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0u, 0xffu );
-    wbase->addWorkers( workers );
+    unsigned int reallyHire = wbase->addWorkers( workers );
+    _d->needWorkers -= reallyHire;
   }
 }
 
@@ -110,9 +109,8 @@ void Recruter::_centerTile()
         if( priorityOver )
         {
           WorkingBuildingPtr wbld = *it;
-          int numWorkers = std::min( wbld->numberWorkers(), _d->needWorkers );
-          wbld->removeWorkers( numWorkers );
-          hireWorkers( numWorkers );
+          int removedFromWb = wbld->removeWorkers( _d->needWorkers );
+          hireWorkers( removedFromWb );
         }
       }
     }
@@ -150,19 +148,24 @@ void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed,
   _centerTile();
 }
 
+void Recruter::timeStep(const unsigned long time)
+{
+  ServiceWalker::timeStep( time );
+}
+
 unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 
 void Recruter::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
   stream[ lc_priority ] = _d->priority.toVariantList();
-  stream[ lc_needworkers ] = _d->needWorkers;
+  VARIANT_SAVE_ANY_D( stream, _d, needWorkers );
 }
 
 void Recruter::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
-  _d->needWorkers = stream.get( lc_needworkers );
+  VARIANT_LOAD_ANY_D( _d, needWorkers, stream );
   _d->priority << stream.get( lc_priority ).toList();
 }
 

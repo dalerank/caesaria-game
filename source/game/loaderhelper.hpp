@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LOADER_HELPER_H_INCLUDED__
 #define __CAESARIA_LOADER_HELPER_H_INCLUDED__
@@ -28,7 +30,8 @@ class LoaderHelper
 {
 public:
   static std::string getDefaultCityName( unsigned int location );
-  static void decodeTerrain(gfx::Tile& oTile, PlayerCityPtr city);
+  static void decodeTerrain(gfx::Tile& oTile, PlayerCityPtr city, unsigned int forceId=0 );
+  static unsigned int convImgId2ovrType(unsigned int imgId);
 };
 
 #endif //__CAESARIA_LOADER_HELPER_H_INCLUDED__

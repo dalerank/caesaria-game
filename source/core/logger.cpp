@@ -16,7 +16,6 @@
 #include "logger.hpp"
 #include "requirements.hpp"
 #include "stringhelper.hpp"
-#include "mutex.hpp"
 #include "time.hpp"
 #include "foreach.hpp"
 
@@ -38,9 +37,6 @@ class FileLogWriter : public LogWriter
 {
 private:
 	FILE* _logFile;
-
-	Mutex _mutex;
-
 public:
 	FileLogWriter(const std::string& path)
 	{
@@ -82,8 +78,6 @@ public:
 		// Make sure only one thread is writing to the file at a time
 		if( _logFile )
 		{
-			MutexLocker locker(&_mutex);
-
 			fputs(str.c_str(), _logFile);
 			fputs("\n", _logFile);
 			fflush(_logFile);

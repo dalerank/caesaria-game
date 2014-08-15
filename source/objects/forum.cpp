@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "forum.hpp"
 #include "game/resourcegroup.hpp"
@@ -20,15 +22,21 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
+#include "city/funds.hpp"
 #include "walker/constants.hpp"
+#include "senate.hpp"
 #include "core/logger.hpp"
+#include "events/fundissue.hpp"
+#include "city/helper.hpp"
 
 using namespace constants;
 
 class Forum::Impl
 {
 public:
-  int taxValue;
+  float taxValue;
+
+  void removeMoney( PlayerCityPtr city );
 };
 
 Forum::Forum() : ServiceBuilding(Service::forum, building::forum, Size(2)), _d( new Impl )
@@ -51,6 +59,8 @@ void Forum::deliverService()
   }
 }
 
+unsigned int Forum::walkerDistance() const { return 26; }
+
 void Forum::applyService(ServiceWalkerPtr walker)
 {
   switch( walker->type() )
@@ -62,7 +72,7 @@ void Forum::applyService(ServiceWalkerPtr walker)
     {
       float tax = txcl->getMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Forum: collect money %f. All money %d", tax, _d->taxValue );
+      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
     }
   }
   break;
@@ -74,9 +84,45 @@ void Forum::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-int Forum::collectTaxes()
+void Forum::burn()
 {
-  int taxes = _d->taxValue;
+  _d->removeMoney( _city() );
+  ServiceBuilding::burn();
+}
+
+void Forum::collapse()
+{
+  _d->removeMoney( _city() );
+  ServiceBuilding::collapse();
+}
+
+float Forum::collectTaxes()
+{
+  float taxes = _d->taxValue;
   _d->taxValue = 0;
   return taxes;
+}
+
+void Forum::Impl::removeMoney(PlayerCityPtr city)
+{
+  city::Helper helper( city );
+  SenatePtr senate;
+  SenateList senates = helper.find<Senate>( building::senate );
+  if( !senates.empty() )
+    senate = senates.front();
+
+  int maxMoney = city->funds().treasury();
+  if( maxMoney > 0 )
+  {
+    ForumList forums;
+    forums << city->overlays();
+
+    if( senate.isValid() )
+      maxMoney /= 2;
+
+    maxMoney /= forums.size();
+
+    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::moneyStolen, -maxMoney );
+    e->dispatch();
+  }
 }

@@ -18,13 +18,13 @@
 #ifndef _CAESARIA_EMPERORGIFT_WINDOW_H_INCLUDE_
 #define _CAESARIA_EMPERORGIFT_WINDOW_H_INCLUDE_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class EmperorGiftWindow : public Widget
+class EmperorGiftWindow : public Window
 {
 public:
   EmperorGiftWindow( Widget* parent, int money );

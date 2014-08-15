@@ -28,7 +28,10 @@
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
-#include "city/cityservice_disorder.hpp"
+#include "cityservice_disorder.hpp"
+#include "cityservice_military.hpp"
+#include "core/time.hpp"
+#include "cityservice_health.hpp"
 #include <map>
 
 using namespace constants;
@@ -48,6 +51,11 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
     workersNumber += (*bld)->numberWorkers();
     maxWorkers += (*bld)->maximumWorkers();
   }
+}
+
+float Statistic::getBalanceKoeff(PlayerCityPtr city)
+{
+  return atan( city->population() / 1000.f );
 }
 
 CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
@@ -82,7 +90,7 @@ unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
   return workersNumber;
 }
 
-unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
+unsigned int Statistic::getMonthlyWorkersWages(PlayerCityPtr city)
 {
   int workersNumber, maxWorkers;
   getWorkersNumber( city, workersNumber, maxWorkers );
@@ -92,11 +100,16 @@ unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 
   //wages all worker in year
   //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * city->funds().workerSalary() / 100;
+  int wages = workersNumber * getMonthlyOneWorkerWages( city );
 
   wages = std::max<int>( wages, 1 );
 
   return wages;
+}
+
+float Statistic::getMonthlyOneWorkerWages(PlayerCityPtr city)
+{
+  return city->funds().workerSalary() / (10.f * DateTime::monthsInYear);
 }
 
 unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
@@ -113,12 +126,14 @@ unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 {
-  return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
+  return math::percentage( getWorklessNumber( city ), getAvailableWorkersNumber( city ) );
 }
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
 {
-  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::defaultName() ) );
+  DisorderPtr ds;
+  ds << city->findService( Disorder::defaultName() );
+
   return ds.isValid() ? ds->value() : 0;
 }
 
@@ -179,6 +194,40 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   return taxValue;
 }
 
+unsigned int Statistic::getTaxPayersPercent(PlayerCityPtr city)
+{
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  unsigned int registered = 0;
+  unsigned int population = 0;
+  foreach( house, houses )
+  {
+    unsigned int hbCount = (*house)->habitants().count();
+    population += hbCount;
+    if( (*house)->getServiceValue( Service::forum ) > 25 )
+    {
+      registered += hbCount;
+    }
+  }
+
+  return math::percentage( registered, population );
+}
+
+unsigned int Statistic::getHealth(PlayerCityPtr city)
+{
+  HealthCarePtr hc;
+  hc << city->findService( HealthCare::defaultName() );
+  return hc.isValid() ? hc->value() : 0;
+}
+
+int Statistic::months2lastAttack(PlayerCityPtr city)
+{
+  MilitaryPtr ml;
+  ml << city->findService( Military::defaultName() );
+  return ml.isValid() ? ml->month2lastAttack() : 0;
+}
+
 int Statistic::getWagesDiff(PlayerCityPtr city)
 {
   return city->funds().workerSalary() - city->empire()->workerSalary();
@@ -188,9 +237,9 @@ unsigned int Statistic::getFestivalCost(PlayerCityPtr city, FestivalType type)
 {
   switch( type )
   {
-  case smallFest: return floor( city->population() / 20 ) + 10;
-  case middleFest: return floor( city->population() / 10 ) + 20;
-  case greatFest: return floor( city->population() / 5 ) + 40;
+  case smallFest: return int( city->population() / 20 ) + 10;
+  case middleFest: return int( city->population() / 10 ) + 20;
+  case greatFest: return int( city->population() / 5 ) + 40;
   }
 
   return 0;

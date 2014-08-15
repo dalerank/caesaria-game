@@ -53,6 +53,15 @@ class Path::Impl
 {
 public:
   std::string path;
+
+  void checkRcPrefix()
+  {
+    if( !path.empty() && path[ 0 ] == ':' )
+    {
+      Path tp( path.substr( 1 ) );
+      path = ( FileSystem::instance().rcFolder()/tp ).toString();
+    }
+  }
 };
 
 void Path::splitToDirPathExt( Path* path,
@@ -143,10 +152,8 @@ Path Path::removeEndSlash() const
   return pathTo;
 }
 
-char Path::lastChar() const
-{
-  return _d->path.empty() ? 0 : *_d->path.rbegin();
-}
+char Path::lastChar() const { return _d->path.empty() ? 0 : *_d->path.rbegin(); }
+char Path::firstChar() const { return _d->path.empty() ? 0 : *_d->path.begin(); }
 
 bool Path::exist(SensType sens) const
 {
@@ -201,16 +208,19 @@ std::string Path::suffix() const
 Path::Path( const std::string& nPath ) : _d( new Impl )
 {
   _d->path = StringHelper::replace( nPath, "\\", "/" );
+  _d->checkRcPrefix();
 }
 
 Path::Path( const Path& nPath ) : _d( new Impl )
 {
   _d->path = nPath._d->path;
+  _d->checkRcPrefix();
 }
 
 Path::Path( const char* nPath ) : _d( new Impl )
 {
   _d->path = StringHelper::replace( nPath, "\\", "/" );
+  _d->checkRcPrefix();
 }
 
 Path::Path() : _d( new Impl )

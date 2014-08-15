@@ -49,13 +49,13 @@ public:
   //! Get the font which is used right now for drawing
   /** Currently this is the override font when one is set and the
   font of the active skin otherwise */
-  virtual Font getActiveFont();
+  virtual Font activeFont();
 
   //! Sets another color for the text.
   virtual void setOverrideColor(NColor color );
 
   //! Gets the override color
-  virtual NColor getOverrideColor() const;
+  virtual NColor overrideColor() const;
 
   //! Sets if the text should use the overide color or the
   //! color in the gui skin.
@@ -96,7 +96,7 @@ public:
 
   //! Gets the size area of the text in the edit box
   //! \return Returns the size in pixels of the text
-  virtual Size getTextDimension();
+  virtual Size textDimension();
 
   //! Sets text justification
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
@@ -114,10 +114,10 @@ public:
   //! Sets the maximum amount of characters which may be entered in the box.
   //! \param max: Maximum amount of characters. If 0, the character amount is
   //! infinity.
-  virtual void setMax( unsigned int max );
+  virtual void setMaxCharactersNumber( unsigned int max );
 
   //! Returns maximum amount of characters, previously set by setMax();
-  virtual unsigned int getMax() const;
+  virtual unsigned int maxCharactersNumber() const;
 
   //! Sets whether the edit box is a password box. Setting this to true will
   /** disable MultiLine, WordWrap and the ability to copy with ctrl+c or ctrl+x

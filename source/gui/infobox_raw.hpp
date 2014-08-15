@@ -21,17 +21,22 @@
 namespace gui
 {
 
-class InfoboxRawMaterial : public InfoboxConstruction
+namespace infobox
+{
+
+class AboutRawMaterial : public AboutConstruction
 {
 public:  
-  InfoboxRawMaterial( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxRawMaterial();
+  AboutRawMaterial( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutRawMaterial();
 
   virtual void showDescription();
 
 private:
   int _type;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXRAW_H_INCLUDE_

@@ -183,7 +183,7 @@ std::string Disorder::reason() const
     troubles << "##advchief_low_crime##";
   }
 
-  return troubles.rand();
+  return troubles.random();
 }
 
 unsigned int Disorder::value() const { return _d->currentCrimeLevel; }

@@ -1,56 +1,67 @@
 {
   citizen : {
-    name : "##citizen##"
+    level : 0
+    pretty : "##citizen##"
     salary : 1
   }
 
   clerk : {
-    name : "##clerk##"
+    level : 1
+    pretty : "##clerk##"
     salary : 2
   }
 
   engineer : {
-    name : "##engineer##"
+    level : 2
+    pretty : "##engineer##"
     salary :  5
   }
 
   architect : {
-    name : "##architect##"
+    level : 3
+    pretty : "##architect##"
     salary : 8
   }
 
   questor : {
-    name : "##questor##"
+    level : 4
+    pretty : "##questor##"
     salary : 12
   }
 
   procurate : {
-    name : "##procurate##"
+    level : 5
+    pretty : "##procurate##"
     salary : 20
   }
 
   edil : {
-    name : "##edil##"
-    salaary  : 30
+    level : 6
+    pretty : "##edil##"
+    salary  : 30
   }
 
   pretor : {
-    name : "##pretor##"
+    level : 7
+    pretty : "##pretor##"
     salary : 40
   }
 
   consoul : {
-    name : "##consoul##"
+    level : 8
+    pretty : "##consoul##"
     salary : 60
   }
 
   proconsoul : {
-    name : "##proconsoul##"
+    level : 9
+    pretty : "##proconsoul##"
     salary : 80
   }
 
   caesar : {
-    name : "##caesar##"
+    level : 10
+    pretty : "##caesar##"
     salary : 100
   }
 }

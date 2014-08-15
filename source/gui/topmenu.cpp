@@ -56,7 +56,7 @@ public:
   Label* lbFunds;
   Label* lbDate;
   ContextMenu* langSelect;
-  PictureRef bgPicture;
+  Pictures background;
 
 oc3_slots public:
   void resolveSave();
@@ -64,6 +64,7 @@ oc3_slots public:
   void showAboutInfo();
   void resolveAdvisorShow(int);
   void showShortKeyInfo();
+  void initBackground( const Size& size );
 
 oc3_signals public:
   Signal0<> onExitSignal;
@@ -74,22 +75,18 @@ oc3_signals public:
   Signal0<> onShowVideoOptionsSignal;
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
+  Signal0<> onShowCityOptionsSignal;
   Signal1<advisor::Type> onRequestAdvisorSignal;
 };
 
-/*bool TopMenu::onEvent(const NEvent& event)
-{
-  return MainMenu::onEvent(event);
-}*/
-
 void TopMenu::draw(gfx::Engine& engine )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   _d->updateDate();
 
-  engine.draw( *_d->bgPicture, screenLeft(), screenTop() );
+  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -116,7 +113,7 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showShortKeyInfo()
 {
-  Widget* parent = lbDate->getEnvironment()->rootWidget();
+  Widget* parent = lbDate->ui()->rootWidget();
   Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   bg->setupUI( GameSettings::rcpath( "/gui/shortkeys.gui" ) );
   bg->setCenter( parent->center() );
@@ -127,9 +124,30 @@ void TopMenu::Impl::showShortKeyInfo()
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
+void TopMenu::Impl::initBackground( const Size& size )
+{
+  Pictures p_marble;
+  for (int i = 1; i<=12; ++i)
+  {
+    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
+  }
+
+  background.clear();
+
+  unsigned int i = 0;
+  int x = 0;
+
+  while( x < size.width())
+  {
+    background.append( p_marble[i%10], Point( x, 0 ) );
+    x += p_marble[i%10].width();
+    i++;
+  }
+}
+
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->getEnvironment()->rootWidget();
+  Widget* parent = lbDate->ui()->rootWidget();
   Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   bg->setupUI( GameSettings::rcpath( "/gui/about.gui" ) );
   bg->setCenter( parent->center() );
@@ -147,23 +165,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setupUI( GameSettings::rcpath( "/gui/topmenu.gui" ) );
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
-  Pictures p_marble;
-  for (int i = 1; i<=12; ++i)
-  {
-    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
-  }
+  _d->initBackground( size() );
 
-  _d->bgPicture.reset( Picture::create( size() ) );
-
-  int i = 0;
-  unsigned int x = 0;
-  while (x < width())
-  {
-    const Picture& pic = p_marble[i%10];
-    _d->bgPicture->draw( pic, x, 0);
-    x += pic.width();
-    i++;
-  }
   _d->lbPopulation = findChildA<Label*>( "lbPopulation", false, this );
   if( _d->lbPopulation )
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
@@ -196,10 +199,12 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* screen = options->addItem( _("##screen_settings##"), -1, true, false, false, false );
   ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
+  ContextMenuItem* cityopts = options->addItem( _("##city_settings##"), -1, true, false, false, false );
 
   CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::emit );
   CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
   CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::emit );
+  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
@@ -222,7 +227,10 @@ TopMenu::TopMenu( Widget* parent, const int height )
   advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment );
   advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance );
   advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main );
+
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
+
+  _d->updateDate();
 }
 
 Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
@@ -230,11 +238,11 @@ Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
 Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
 Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
 Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
-
 Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }
 Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
+Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
 void TopMenu::Impl::resolveAdvisorShow(int id) { onRequestAdvisorSignal.emit( (advisor::Type)id ); }
 
 }//end namespace gui

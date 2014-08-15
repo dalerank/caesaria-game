@@ -12,7 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "filesystem.hpp"
 #include "filenative_impl.hpp"
@@ -50,11 +51,14 @@ public:
 	//! currently attached Archives
   std::vector< ArchivePtr > openArchives;
 
+  Directory resourdFolder;
+
   //! WorkingDirectory for Native and Virtual filesystems	
   Path workingDirectory[2];
 
-  Mode fileSystemType;
+  FileSystem::Mode fileSystemType;
 
+public:
   ArchivePtr changeArchivePassword( const Path& filename, const std::string& password );
 };
 
@@ -116,10 +120,11 @@ NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
   {
     return file;
   }
-	
+
   // Create the file using an absolute path so that it matches
   FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
   ptr->drop();
+
   return NFile( ptr );
 }
 
@@ -394,6 +399,9 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
   return ArchivePtr();
 }
 
+Directory FileSystem::rcFolder() const { return _d->resourdFolder; }
+
+void FileSystem::setRcFolder( const Directory &folder) { _d->resourdFolder = folder; }
 
 //! Adds an archive to the file system.
 ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
@@ -402,7 +410,7 @@ ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 	{
 		if( archive == _d->openArchives[i])
 		{
-            return archive;
+			return archive;
 		}
 	}
 
@@ -417,7 +425,6 @@ bool FileSystem::unmountArchive(unsigned int index)
 	bool ret = false;
 	if (index < _d->openArchives.size())
 	{
-		_d->openArchives[index]->drop();
 		_d->openArchives.erase( _d->openArchives.begin() + index );
 		ret = true;
 	}
@@ -676,25 +683,22 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
     if (_d->openArchives[i]->entries()->findFile(filename)!=-1)
       return true;
 
-#if defined(CAESARIA_PLATFORM_WIN)
-  if( sens == Path::nativeCase || sens == Path::ignoreCase )
-  {
-    return ( _access( filename.toString().c_str(), 0) != -1);
-  }
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  if( sens == Path::nativeCase || sens == Path::equaleCase )
-  {
-    return ( access( filename.toString().c_str(), 0 ) != -1);
-  }
-#endif //CAESARIA_PLATFORM_UNIX
+  #if defined(CAESARIA_PLATFORM_WIN)
+    if( sens == Path::nativeCase || sens == Path::ignoreCase )
+    {
+      return ( _access( filename.toString().c_str(), 0) != -1);
+    }
+  #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+    if( sens == Path::nativeCase || sens == Path::equaleCase )
+    {
+      return ( access( filename.toString().c_str(), 0 ) != -1);
+    }
+  #endif //CAESARIA_PLATFORM_UNIX
 
   Entries files = Directory( filename.directory() ).getEntries();
   files.setSensType( sens );
   int index = files.findFile( filename );
   return index != -1;
-
-
-  return false;
 }
 
 DateTime FileSystem::getFileUpdateTime(const Path& filename) const

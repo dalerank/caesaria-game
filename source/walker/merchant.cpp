@@ -169,7 +169,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         // we found a destination!
         nextState = stSellGoods;
         destBuildingPos = route.first->pos();
-        wlk->setPos( route.second.getStartPos() );
+        wlk->setPos( route.second.startPos() );
         wlk->setPathway( route.second );      
         wlk->go();
       }
@@ -205,7 +205,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         // we found a destination!
         nextState = stBuyGoods;
         destBuildingPos = route.first->pos();    
-        wlk->setPos( route.second.getStartPos() );
+        wlk->setPos( route.second.startPos() );
         wlk->setPathway( route.second );
         wlk->go();
       }
@@ -274,7 +274,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         StringArray th;
         th << "##landmerchart_noany_trade2##";
         th << "##landmerchant_noany_trade##";
-        wlk->setThinks( th.rand() );
+        wlk->setThinks( th.random() );
       }
       else
       {
@@ -285,7 +285,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       Pathway pathWay = PathwayHelper::create( position, city->borderInfo().roadExit, PathwayHelper::allTerrain );
       if( pathWay.isValid() )
       {
-        wlk->setPos( pathWay.getStartPos() );
+        wlk->setPos( pathWay.startPos() );
         wlk->setPathway( pathWay );
         wlk->go();
       }

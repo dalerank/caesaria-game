@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_CONSTRUCTION_H_INCLUDE_
 #define _CAESARIA_CONSTRUCTION_H_INCLUDE_
@@ -30,17 +31,17 @@ class Construction : public gfx::TileOverlay
 {
 public:
   typedef int ParameterType;
-  typedef enum { fire=0, damage, inflammability, collapsibility, destroyable, count } Param;
+  typedef enum { fire=0, damage, inflammability, collapsibility, destroyable, paramCount } Param;
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
   virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
   virtual std::string errorDesc() const;
   virtual std::string troubleDesc() const;
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
-
+  virtual const gfx::Picture& picture() const;
   virtual bool isNeedRoadAccess() const;
   virtual gfx::TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
@@ -52,12 +53,11 @@ public:
 
   virtual void updateState( ParameterType name, double value );
   virtual void setState( ParameterType name, double value );
-  virtual double getState( ParameterType name ) const;
+  virtual double state( ParameterType name ) const;
 
   virtual void timeStep(const unsigned long time);
-  virtual const gfx::Picture& picture() const;
   virtual const gfx::Picture& picture( PlayerCityPtr city, TilePos pos,
-                                          const gfx::TilesArray& aroundTiles ) const;
+                                       const gfx::TilesArray& aroundTiles ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

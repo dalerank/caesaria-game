@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _CAESARIA_EXCEPTION_HPp_INCLUDE_
-#define _CAESARIA_EXCEPTION_HPp_INCLUDE_
+#ifndef _CAESARIA_EXCEPTION_H_INCLUDE_
+#define _CAESARIA_EXCEPTION_H_INCLUDE_
 
 #include <sstream>
 
@@ -26,16 +26,16 @@
 class Exception
 {
 public:
-   Exception(std::string aDescription) : _desc( aDescription )
-   {
-   }
+  Exception(std::string aDescription) : _desc( aDescription )
+  {
+  }
 
-   ~Exception() {}
+  ~Exception() {}
 
-   const std::string& getDescription() const { return _desc; }
+  const std::string& getDescription() const { return _desc; }
 
 private:
-   std::string _desc;
+  std::string _desc;
 };
 
-#endif //_CAESARIA_EXCEPTION_HPp_INCLUDE_
+#endif //_CAESARIA_EXCEPTION_H_INCLUDE_

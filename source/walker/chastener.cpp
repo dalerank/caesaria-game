@@ -55,17 +55,3 @@ bool Chastener::die()
 
   return EnemySoldier::die();
 }
-
-/*
-void RomeSoldier::send2city(FortPtr base, TilePos pos )
-{
-  setPos( pos );
-  _d->base = base;
-  _back2fort();
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
-}
-*/

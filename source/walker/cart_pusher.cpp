@@ -36,6 +36,7 @@
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
 #include "events/removecitizen.hpp"
@@ -73,7 +74,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = defaultDeliverDistance;
-  _d->stock.setCapacity( defaultCartCapacity );
+  _d->stock.setCapacity( simpleCart );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -96,7 +97,8 @@ void CartPusher::_reachedPathway()
 
     if( goodStore )
     {
-      goodStore->applyStorageReservation(_d->stock, _d->reservationID);
+      wait( _d->stock.qty() );
+      goodStore->applyStorageReservation(_d->stock, _d->reservationID);      
       _d->reservationID = 0;
     }
   }
@@ -114,18 +116,35 @@ void CartPusher::_reachedPathway()
   }
 }
 
-GoodStock& CartPusher::getStock() {   return _d->stock;}
+void CartPusher::_brokePathway(TilePos pos)
+{
+  if( _pathwayRef().isValid() )
+  {
+    Pathway way = PathwayHelper::create( pos, _pathwayRef().stopPos(), PathwayHelper::roadFirst );
+    if( way.isValid() )
+    {
+      setPathway( way );
+      go();
+      return;
+    }
+  }
+
+  Logger::warning( "CartPusher::_brokePathway now destination point [%d,%d]", pos.i(), pos.j() );
+  deleteLater();
+}
+
+GoodStock& CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
-BuildingPtr CartPusher::getProducerBuilding()
+BuildingPtr CartPusher::producerBuilding()
 {
    if( _d->producerBuilding.isNull() ) 
      THROW("ProducerBuilding is not initialized");
    return _d->producerBuilding;
 }
 
-BuildingPtr CartPusher::getConsumerBuilding()
+BuildingPtr CartPusher::consumerBuilding()
 {
    if( _d->consumerBuilding.isNull() ) 
      THROW("ConsumerBuilding is not initialized");
@@ -137,7 +156,7 @@ Picture& CartPusher::getCartPicture()
 {
    if( !_d->cartPicture.isValid() )
    {
-     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, getDirection());
+     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, direction());
    }
 
    return _d->cartPicture;
@@ -154,7 +173,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    oPics.clear();
    Point offset;
 
-   switch( getDirection() )
+   switch( direction() )
    {
    case constants::west: offset = Point( 10, -5 ); break;
    case constants::east: offset = Point( -10, 5 ); break;
@@ -164,7 +183,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    }
 
    // depending on the walker direction, the cart is ahead or behind
-   switch( getDirection() )
+   switch( direction() )
    {
    case constants::west:
    case constants::northWest:
@@ -230,7 +249,7 @@ void CartPusher::computeWalkerDestination()
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
-     setPos( pathWay.getStartPos() );
+     setPos( pathWay.startPos() );
      setPathway( pathWay );
      go();
    }
@@ -372,9 +391,10 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create(PlayerCityPtr city )
+CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
 {
   CartPusherPtr ret( new CartPusher( city ) );
+  ret->_d->stock.setCapacity( cap );
   ret->drop(); //delete automatically
 
   return ret;
@@ -438,12 +458,12 @@ bool CartPusher::die()
   return created;
 }
 
-std::string CartPusher::getThinks() const
+std::string CartPusher::currentThinks() const
 {
-  if( !getPathway().isValid() )
+  if( !pathway().isValid() )
   {
     return "##cartpusher_cantfind_destination##";
   }
 
-  return Walker::getThinks();
+  return Walker::currentThinks();
 }

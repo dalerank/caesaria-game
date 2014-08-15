@@ -18,15 +18,14 @@
 #ifndef __CAESARIA_FESTIVAL_PLANING_WINDOW_H_INCLUDED__
 #define __CAESARIA_FESTIVAL_PLANING_WINDOW_H_INCLUDED__
 
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class FestivalPlaningWindow : public Widget
+class FestivalPlaningWindow : public Window
 {
 public:
   static FestivalPlaningWindow* create( Widget* parent, PlayerCityPtr city, int id );

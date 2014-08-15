@@ -34,7 +34,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace  {
-CAESARIA_LITERALCONST(base)
+static const int maxDistanceFromBase = 32;
 }
 
 class RomeSoldier::Impl
@@ -79,6 +79,19 @@ void RomeSoldier::timeStep(const unsigned long time)
 {
   Soldier::timeStep( time );
 
+  if( GameDate::isMonthChanged() )
+  {
+    unsigned int dst2base = pos().distanceFrom( _d->basePos );
+    if( dst2base > maxDistanceFromBase )
+    {
+      updateMorale( dst2base * -10 / maxDistanceFromBase );
+      if( morale() == 0 )
+      {
+        _duckout();
+      }
+    }
+  }
+
   switch( _subAction() )
   {
   case fightEnemy:
@@ -117,10 +130,10 @@ void RomeSoldier::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ lc_base ] = _d->basePos;
-  stream[ "strikeForce" ] = _d->strikeForce;
-  stream[ "resistance" ] = _d->resistance;
-  stream[ "patrolPosition" ] = _d->patrolPosition;
+  VARIANT_SAVE_ANY_D( stream, _d, basePos );
+  VARIANT_SAVE_ANY_D( stream, _d, strikeForce );
+  VARIANT_SAVE_ANY_D( stream, _d, resistance );
+  VARIANT_SAVE_ANY_D( stream, _d, patrolPosition );
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
 }
 
@@ -130,10 +143,10 @@ void RomeSoldier::load(const VariantMap& stream)
 {
   Soldier::load( stream );
 
-  _d->strikeForce = stream.get( "strikeForce" );
-  _d->resistance = stream.get( "resistance" );
-  _d->patrolPosition = stream.get( "patrolPosition" );
-  _d->basePos = stream.get( lc_base );
+  VARIANT_LOAD_ANY_D( _d, strikeForce, stream );
+  VARIANT_LOAD_ANY_D( _d, resistance, stream );
+  VARIANT_LOAD_ANY_D( _d, patrolPosition, stream );
+  VARIANT_LOAD_ANY_D( _d, basePos, stream );
 
   FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 
@@ -173,17 +186,17 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   return walkers;
 }
 
-BuildingList RomeSoldier ::_findBuildingsInRange(unsigned int) { return BuildingList(); }
+ConstructionList RomeSoldier::_findContructionsInRange(unsigned int) { return ConstructionList(); }
 
 
 bool RomeSoldier::_tryAttack()
 {
-  BuildingList buildings = _findBuildingsInRange( attackDistance() );
+  ConstructionList constructions = _findContructionsInRange( attackDistance() );
   TilePos targetPos;
-  if( !buildings.empty() )
+  if( !constructions.empty() )
   {
     _setSubAction( Soldier::destroyBuilding );
-    targetPos = buildings.front()->pos();
+    targetPos = constructions.front()->pos();
     fight();
   }
   else
@@ -253,6 +266,26 @@ void RomeSoldier::_back2base()
   }
 }
 
+void RomeSoldier::_duckout()
+{
+  Pathway way = PathwayHelper::way2border( _city(), pos() );
+  if( !way.isValid() )
+  {
+    way = PathwayHelper::randomWay( _city(), pos(), maxDistanceFromBase );
+  }
+
+  if( way.isValid() )
+  {
+    _setSubAction( duckout );
+    setPathway( way );
+    go();
+  }
+  else
+  {
+    die();
+  }
+}
+
 void RomeSoldier::_reachedPathway()
 {
   Soldier::_reachedPathway();
@@ -270,6 +303,12 @@ void RomeSoldier::_reachedPathway()
     {
       _setSubAction( patrol );
     }
+  }
+  break;
+
+  case duckout:
+  {
+    deleteLater();
   }
   break;
 

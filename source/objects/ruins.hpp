@@ -30,9 +30,11 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  void afterBuild() { _alsoBuilt=false; }
 
 protected:
   std::string _parent;
+  bool _alsoBuilt;
 };
 
 class BurningRuins : public Ruins
@@ -42,11 +44,13 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void burn();
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
-  virtual int getMaxWorkers() const;
+  virtual bool isFlat() { return true; }
+  virtual void collapse();
+  virtual bool canDestroy();
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);
@@ -61,7 +65,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
 };
@@ -75,9 +79,11 @@ public:
   CollapsedRuins();
 
   virtual void burn();
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
+  virtual void collapse();
 
   virtual bool isWalkable() const;
+  virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
 };
 
@@ -88,7 +94,8 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void burn();
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool isDestructible() const;
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
   virtual void destroy();
 

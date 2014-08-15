@@ -48,13 +48,13 @@ public:
     _picture.addOffset( TileHelper::tilepos2screen( _pos ) );
   }
 
-  ~LowBridgeSubTile() {}
+  virtual ~LowBridgeSubTile() {}
 
   std::string errorDesc() const { return _parent ? _parent->errorDesc() : "";  }
   bool isWalkable() const { return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  void build( PlayerCityPtr city, const TilePos& pos )
+  bool build( PlayerCityPtr city, const TilePos& pos )
   {
     Construction::build( city, pos );
     _fgPicturesRef().clear();
@@ -62,13 +62,12 @@ public:
     _picture = Picture::load( ResourceGroup::transport, _index );
     _picture.addOffset( Point( 10, -12 ) );
     _fgPicturesRef().push_back( _picture );
+
+    return true;
   }
 
   void initTerrain( Tile& terrain )
   {
-    bool isWater = terrain.getFlag( Tile::tlWater );
-    terrain.setFlag( Tile::clearAll, true );
-    terrain.setFlag( Tile::tlWater, isWater );
     terrain.setFlag( Tile::tlRoad, true );
   }
 
@@ -77,7 +76,7 @@ public:
   void destroy()
   {
     if( _parent )
-    {
+    {     
       _parent->deleteLater();
     }
   }
@@ -143,13 +142,14 @@ bool LowBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) co
   if( bridge.isNull() )
   {
     _d->subtiles.clear();
-    const_cast< LowBridge* >( this )->_fgPicturesRef().clear();
+    LowBridge* thisp = const_cast< LowBridge* >( this );
+    thisp->_fgPicturesRef().clear();
 
     _checkParams( city, _d->direction, startPos, endPos, pos );
 
     if( _d->direction != noneDirection )
     {
-      const_cast< LowBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+      thisp->_computePictures( city, startPos, endPos, _d->direction );
     }
   }
 
@@ -330,7 +330,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
 }
 
-void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
+bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
@@ -392,6 +392,8 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
       index++;
     }    
   }
+
+  return true;
 }
 
 bool LowBridge::canDestroy() const
@@ -399,7 +401,7 @@ bool LowBridge::canDestroy() const
   city::Helper helper( _city() );
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->pos() );
+    WalkerList walkers = helper.find<Walker>( walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -412,7 +414,7 @@ bool LowBridge::canDestroy() const
 
 void LowBridge::destroy()
 { 
-  for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); ++it )
+  foreach( it, _d->subtiles )
   {
     (*it)->_parent = 0;
     events::GameEventPtr event = events::ClearLandEvent::create( (*it)->_pos );
@@ -423,6 +425,18 @@ void LowBridge::destroy()
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
     mapTile.setPicture( Picture::load( picName ) );
     TileHelper::decode( mapTile, (*it)->_info );
+  }
+}
+
+void LowBridge::setState(Construction::ParameterType name, double value)
+{
+  Construction::setState( name, value );
+  if( name == Construction::destroyable )
+  {
+    foreach( it, _d->subtiles )
+    {
+      (*it)->setState( name, value );
+    }
   }
 }
 

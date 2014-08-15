@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "dispatcher.hpp"
 #include "core/stringhelper.hpp"
@@ -75,7 +77,7 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
+  foreach( it, stream )
   {
     GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
 
@@ -83,7 +85,9 @@ void Dispatcher::load(const VariantMap& stream)
     {
       append( e );
     }
-  }
+    }
 }
+
+void Dispatcher::reset() { _d->events.clear(); }
 
 }//end namespace events

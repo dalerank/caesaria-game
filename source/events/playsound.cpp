@@ -24,7 +24,7 @@ namespace events
 GameEventPtr PlaySound::create( std::string rc, int index, int volume )
 {
   PlaySound* e = new PlaySound();
-  e->_sound = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
+  e->_sound = StringHelper::format( 0xff, "%s_%05d", rc.c_str(), index );
   e->_volume = volume;
 
   GameEventPtr ret( e );
@@ -33,11 +33,12 @@ GameEventPtr PlaySound::create( std::string rc, int index, int volume )
   return ret;
 }
 
-GameEventPtr PlaySound::create(std::string filename, int volume)
+GameEventPtr PlaySound::create(std::string filename, int volume, bool theme)
 {
   PlaySound* e = new PlaySound();
   e->_sound = filename;
   e->_volume = volume;
+  e->_theme = theme;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -47,12 +48,12 @@ GameEventPtr PlaySound::create(std::string filename, int volume)
 
 void PlaySound::_exec(Game&, unsigned int)
 {
-  audio::Engine::instance().play( _sound, _volume, audio::ambientSound );
+  audio::Engine::instance().play( _sound, _volume, _theme ? audio::themeSound : audio::ambientSound );
 }
 
 bool PlaySound::_mayExec(Game&, unsigned int) const{  return true; }
 
-PlaySound::PlaySound() : _sound( ""), _volume( 0 )
+PlaySound::PlaySound() : _sound( ""), _volume( 0 ), _theme( false )
 {}
 
 }

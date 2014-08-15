@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_SCENE_STARTMENU_H_INCLUDE_
 #define _CAESARIA_SCENE_STARTMENU_H_INCLUDE_
@@ -49,12 +49,11 @@ public:
 
   virtual void handleEvent( NEvent& event);
 
-  // draws the menu/menubar/etc... on the screen
   virtual void draw();
   virtual void initialize();
 
-  std::string getMapName() const;
-  std::string getPlayerName() const;
+  std::string mapName() const;
+  std::string playerName() const;
 
   int result() const;
   bool isStopped() const;

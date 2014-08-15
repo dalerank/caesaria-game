@@ -21,15 +21,20 @@
 namespace gui
 {
 
+namespace infobox
+{
+
 // info box about a market
-class InfoboxMarket : public InfoboxConstruction
+class AboutMarket : public AboutConstruction
 {
 public:
-   InfoboxMarket( Widget* parent, const gfx::Tile& tile );
-   virtual ~InfoboxMarket();
+   AboutMarket( Widget* parent, const gfx::Tile& tile );
+   virtual ~AboutMarket();
    
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };
+
+}
 
 }//end namespace gui
 #endif //__CAESARIA_INFOBOX_MARKET_H_INCLUDE_

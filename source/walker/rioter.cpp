@@ -80,7 +80,7 @@ void Rioter::_updateThinks()
   StringArray ret;
   ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
 
-  setThinks( ret.rand() );
+  setThinks( ret.random() );
 }
 
 void Rioter::timeStep(const unsigned long time)
@@ -104,7 +104,7 @@ void Rioter::timeStep(const unsigned long time)
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
-      setPos( pathway.getStartPos() );
+      setPos( pathway.startPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
@@ -133,7 +133,7 @@ void Rioter::timeStep(const unsigned long time)
     Pathway pathway = _d->findTarget( _city(), constructions, pos() );
     if( pathway.isValid() )
     {
-      setPos( pathway.getStartPos() );
+      setPos( pathway.startPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;

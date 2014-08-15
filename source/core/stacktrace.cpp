@@ -23,7 +23,7 @@
   #include <execinfo.h>
 #endif
 
-#ifndef CAESARIA_PLATFORM_HAIKU
+#if !defined(CAESARIA_PLATFORM_HAIKU) && !defined(CAESARIA_PLATFORM_ANDROID)
   #include <cxxabi.h>
 #endif
 

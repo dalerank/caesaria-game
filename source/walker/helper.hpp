@@ -35,7 +35,7 @@ public:
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const constants::walker::Type type );
 
-  void initialize( const vfs::Path& filename );
+  void load( const vfs::Path& filename );
 
   virtual ~WalkerHelper();  
 private:

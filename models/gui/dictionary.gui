@@ -1,30 +1,26 @@
 {  
   geometry : [ 0, 0, 415, 450 ]
-  
-	lbBackground#Label : {
-    geometryf : [ 0.0, 0.0, 1, 1 ]
-    bgtype : "whiteFrame"
+  bgtype : "whiteFrame"
     
-    lbTitle#Label : {
-      font : "FONT_2"
-      geometryf : [ 0.05, 0.02, 0.95, 0.08 ]
-      text : "##title##"
-      textAlign : [ "center", "center" ]
-    }
+  lbTitle#Label : {
+    font : "FONT_2"
+    geometryf : [ 0.05, 0.02, 0.95, 0.08 ]
+    text : "##title##"
+    textAlign : [ "center", "center" ]
+  }
     
-    lbText#Label : {
-      font : "FONT_2_WHITE"
-      geometryf : [ 0.05, 0.1, 0.95, 0.9 ]
-      textAlign : [ "center", "center" ]
-      bgtype : "blackFrame"
-    }
+  lbText#Label : {
+    font : "FONT_2_WHITE"
+    geometryf : [ 0.05, 0.1, 0.95, 0.9 ]
+    textAlign : [ "center", "center" ]
+    bgtype : "blackFrame"
+  }
            
-    btnExit#TexturedButton : {
-      geometry : [ 374, 408, 398, 432 ]
-      normal : [ "paneling", 532 ]
-      hovered : [ "paneling", 533 ]
-      pressed : [ "paneling", 534 ]
-      disabled : [ "paneling", 535 ]
-    }
+  btnExit#TexturedButton : {
+    geometry : [ 374, 408, 398, 432 ]
+    normal : [ "paneling", 532 ]
+    hovered : [ "paneling", 533 ]
+    pressed : [ "paneling", 534 ]
+    disabled : [ "paneling", 535 ]
   }
 }

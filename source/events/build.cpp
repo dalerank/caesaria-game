@@ -64,9 +64,13 @@ void BuildEvent::_exec( Game& game, unsigned int )
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-      _overlay->build( game.city(), _pos );
+      bool buildOk = _overlay->build( game.city(), _pos );
+
+      if( !buildOk )
+        return;
+
       city::Helper helper( game.city() );
-      helper.updateDesirability( _overlay, true );
+      helper.updateDesirability( _overlay, city::Helper::onDesirability );
       game.city()->addOverlay( _overlay );
 
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
@@ -76,8 +80,11 @@ void BuildEvent::_exec( Game& game, unsigned int )
         game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                       -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
-        GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
-        e->dispatch();
+        if( construction->group() != building::disasterGroup )
+        {
+          GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
+          e->dispatch();
+        }
 
         if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
         {

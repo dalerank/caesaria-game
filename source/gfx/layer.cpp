@@ -31,6 +31,7 @@
 #include "layerconstants.hpp"
 #include "decorator.hpp"
 #include "core/stringhelper.hpp"
+#include "walker_debuginfo.hpp"
 
 using namespace constants;
 
@@ -51,8 +52,9 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
+  VisibleWalkers vwalkers;
 
-  bool drawGrid, renderOverlay;
+  bool drawGrid, renderOverlay, showPath;
   int posMode;
 
   Picture footColumn;
@@ -173,6 +175,7 @@ void Layer::handleEvent(NEvent& event)
       case KEY_KEY_1: _d->drawGrid = !_d->drawGrid; break;
       case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
       case KEY_KEY_3: _d->renderOverlay = !_d->renderOverlay; break;
+      case KEY_KEY_4: _d->showPath = !_d->showPath; break;
       default: break;
       }
     }
@@ -198,7 +201,7 @@ TilesArray Layer::_getSelectedArea()
 
 void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
   switch( pass )
   {
   case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
@@ -246,7 +249,7 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
   return walkerList;
 }
 
-void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
+void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
   WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
@@ -255,22 +258,22 @@ void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffs
   {
     pics.clear();
     (*w)->getPictures( pics );
-    engine.draw( pics, (*w)->screenpos() + camOffset );
+    engine.draw( pics, (*w)->mappos() + camOffset );
   }
 }
 
-void Layer::_setTooltipText(std::string text)
+void Layer::_setTooltipText(const std::string& text)
 {
   __D_IMPL(_d,Layer)
   if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
   {
     Font font = Font::create( FONT_2 );
     _d->tooltipText = text;
-    Size size = font.getSize( text );
+    Size size = font.getTextSize( text );
 
     if( _d->tooltipPic->size() != size )
     {
-      _d->tooltipPic.reset( Picture::create( size ) );
+      _d->tooltipPic.reset( Picture::create( size, 0, true ) );
     }
 
     _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->size() ) );
@@ -304,7 +307,7 @@ void Layer::render( Engine& engine)
 
   if( !_d->renderOverlay )
   {
-    engine.setTileDrawMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
+    engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }
   // SECOND PART: draw all sprites, impassable land and buildings
   foreach( it, visibleTiles )
@@ -314,12 +317,22 @@ void Layer::render( Engine& engine)
 
     drawTileR( engine, *tile, camOffset, z, false );
 
-    _drawWalkers( engine, *tile, camOffset );
+    drawWalkers( engine, *tile, camOffset );
 
     drawTileW( engine, *tile, camOffset, z );
   }
 
-  engine.resetTileDrawMask();
+  engine.resetColorMask();
+
+  if( _d->showPath )
+  {
+    const WalkerList& walkers = _city()->walkers( walker::all );
+    foreach( it, walkers )
+    {
+      if( (*it)->getFlag( Walker::showDebugInfo ) )
+        WalkerDebugInfo::showPath( *it, engine, _d->camera );
+    }
+  }
 }
 
 void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)
@@ -330,6 +343,11 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
   // single-tile: draw current tile
   // and it is time to draw the master tile
   drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
+}
+
+const Layer::VisibleWalkers& Layer::visibleWalkers() const
+{
+  return _dfunc()->vwalkers;
 }
 
 void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
@@ -382,13 +400,13 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
   TileOverlayPtr overlay = baseTile->overlay();
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay->size().height() - 1 + baseTile->j();
-  for( TilesArray::const_iterator it=area.begin(); it != area.end(); ++it )
+  foreach( it, area )
   {
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.draw( *pic, tile->mapPos() + offset );
+    engine.draw( *pic, tile->mappos() + offset );
   }
 }
 
@@ -445,10 +463,21 @@ void Layer::init( Point cursor )
 void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
+  Point cursorPos = engine.cursorPos();
+  Size screenSize = engine.screenSize();
+  Point moveValue;
+
+  if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
+  else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+  if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
+  else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+
+  _d->camera->move( moveValue.toPointF() );
+
   if( !_d->tooltipText.empty() )
   {
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
-  }
+  }  
 
   if( _d->drawGrid )
   {
@@ -460,11 +489,11 @@ void Layer::afterRender( Engine& engine)
     {
       const Tile& tile = tmap.at( 0, k );
       const Tile& etile = tmap.at( size - 1, k );
-      PictureDecorator::drawLine( screen, tile.mapPos() + offset, etile.mapPos() + offset, 0x80ff0000);
+      engine.drawLine( 0x80ff0000, tile.mappos() + offset, etile.mappos() + offset );
 
       const Tile& rtile = tmap.at( k, 0 );
       const Tile& ertile = tmap.at( k, size - 1 );
-      PictureDecorator::drawLine( screen, rtile.mapPos() + offset, ertile.mapPos() + offset, 0x80ff0000 );
+      engine.drawLine( 0x80ff0000, rtile.mappos() + offset, ertile.mappos() + offset );
     }
 
     std::string text;
@@ -480,7 +509,7 @@ void Layer::afterRender( Engine& engine)
           const Tile& rtile = tmap.at( i, j );
           text = StringHelper::format( 0xff, "(%d,%d)", i, j );
           //PictureDecorator::basicText( screen, rtile.mapPos() + offset + Point( 0, 0),text.c_str(), 0xffffffff );
-          font.draw( screen, text, rtile.mapPos() + offset + Point( 7, -7 ), false );
+          font.draw( screen, text, rtile.mappos() + offset + Point( 7, -7 ), false );
         }
       }
     break;
@@ -495,6 +524,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->camera = camera;
   _d->city = city;
   _d->drawGrid = false;
+  _d->showPath = false;
   _d->posMode = 0;
   _d->renderOverlay = true;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
@@ -508,7 +538,12 @@ void Layer::_loadColumnPicture(int picId)
   _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
 }
 
-int Layer::getNextLayer() const{ return _dfunc()->nextLayer; }
+void Layer::_addWalkerType(walker::Type wtype)
+{
+  _dfunc()->vwalkers.insert( wtype );
+}
+
+int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
 void Layer::_setNextLayer(int layer) { _dfunc()->nextLayer = layer;}

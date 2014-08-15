@@ -26,8 +26,8 @@ class LayerFood : public Layer
 {
 public:
   virtual int type() const;
-  virtual VisibleWalkers visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset);
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);

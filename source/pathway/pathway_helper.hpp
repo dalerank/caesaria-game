@@ -38,6 +38,8 @@ public:
   static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, constants::building::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
+
+  static Pathway way2border( PlayerCityPtr city, TilePos startPos );
 };
 
 #endif

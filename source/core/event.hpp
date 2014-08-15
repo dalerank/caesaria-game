@@ -253,6 +253,7 @@ enum SysEventType
 
     sEventUser,
 
+    sEventQuit = 0x400,
     //! This enum is never used, it only forces the compiler to
     //! compile these enumeration values to 32 bit.
     sEventMax = 0x7fffffff

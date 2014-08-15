@@ -44,7 +44,6 @@ struct MovableOrders
 class TilemapCamera::Impl
 {
 public:
-  TilePos center;
   Size screenSize;
   Size borderSize;
   Point offset;
@@ -68,7 +67,6 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->tilemap = NULL;
   _d->scrollSpeed = 4;
   _d->viewSize = Size( 0 );
-  _d->center = TilePos( 0, 0 );
   _d->screenSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
   _d->borderSize = Size( 90 );
@@ -100,8 +98,6 @@ void TilemapCamera::setViewport(Size newSize)
 
 void TilemapCamera::setCenter(TilePos pos )
 {
-  _d->center = pos;
-
   setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
   oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
@@ -137,13 +133,17 @@ void TilemapCamera::setCenter(Point pos)
   oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
+TilePos TilemapCamera::center() const
+{
+  Tile* tile = centerTile();
+  return tile ? tile->pos() : TilePos( -1, -1 );
+}
+
 int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
 int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }
-TilePos TilemapCamera::center() const  {   return _d->center;   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
 int TilemapCamera::scrollSpeed() const{ return _d->scrollSpeed; }
 Tile* TilemapCamera::at(const Point& pos, bool overborder) const {  return _d->tilemap->at( pos - _d->offset, overborder );}
-
 Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tilemap->at( pos ); }
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
 void TilemapCamera::moveRight(const int amount){  setCenter( Point( centerX() + amount, centerZ() ) );}
@@ -151,11 +151,7 @@ void TilemapCamera::moveLeft(const int amount){  setCenter( Point( centerX() - a
 void TilemapCamera::moveUp(const int amount){  setCenter( Point( centerX(), centerZ() + amount ) );}
 void TilemapCamera::moveDown(const int amount){  setCenter( Point( centerX(), centerZ() - amount ) );}
 void TilemapCamera::startFrame(){  _d->resetDrawn(); }
-
-void TilemapCamera::refresh()
-{
-  _d->tiles.clear();
-}
+void TilemapCamera::refresh(){  _d->tiles.clear(); }
 
 Tile* TilemapCamera::centerTile() const
 {
@@ -203,7 +199,7 @@ const TilesArray& TilemapCamera::tiles() const
         Tile* master = tile->masterTile();
         if( master != NULL )
         {
-          Point pos = master->mapPos() + _d->offset;
+          Point pos = master->mappos() + _d->offset;
           std::set< Tile* >::iterator mIt = overborderTiles.find( master );
           if( pos.x() < 0 && mIt == overborderTiles.end() )
           {
@@ -213,27 +209,10 @@ const TilesArray& TilemapCamera::tiles() const
         }
       }
     }
-
-    /*for( int y=0; y < mapSize; y++ )
-    {
-      for( int t=0; t <= y; t++ )
-      {
-        _d->tiles.push_back( &_d->tilemap->at( t, mapSize - 1 - ( y - t ) ) );
-      }
-    }
-
-    for( int x=1; x < mapSize; x++ )
-    {
-      for( int t=0; t < mapSize-x; t++ )
-      {
-        _d->tiles.push_back( &_d->tilemap->at( x + t, t ) );
-      }
-    }*/
   }
 
   return _d->tiles;
 }
-
 
 MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 {
@@ -243,10 +222,10 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
   Point mapOffset = Point( screenSize.width() / 2 - 30 * (centerMapXZ.x() + 1) + 1,
                            screenSize.height() / 2 + 15 * (centerMapXZ.y()-mapSize + 1) - 30 );
 
-  ret.left = !( (tilemap->at( 0, 0 ).mapPos() + mapOffset ).x() > 0);
-  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mapPos() + mapOffset).x() > screenSize.width();
-  ret.down = ( (tilemap->at( 0, mapSize - 1 ).mapPos() + mapOffset ).y() < 0 );
-  ret.up = (tilemap->at( mapSize - 1, 0 ).mapPos() + mapOffset ).y() > screenSize.height();
+  ret.left = !( (tilemap->at( 0, 0 ).mappos() + mapOffset ).x() > 0);
+  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mappos() + mapOffset).x() > screenSize.width();
+  ret.down = ( (tilemap->at( 0, mapSize - 1 ).mappos() + mapOffset ).y() < 0 );
+  ret.up = (tilemap->at( mapSize - 1, 0 ).mappos() + mapOffset ).y() > screenSize.height();
 
   return ret;
 }

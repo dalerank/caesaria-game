@@ -1,4 +1,4 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
 // openCaesar3 is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -11,7 +11,9 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "widget.hpp"
 #include "widgetprivate.hpp"
@@ -37,7 +39,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
   foreach( widget, d->children ) { (*widget)->beforeDraw( painter ); }
 }
 
-GuiEnv* Widget::getEnvironment() {  return _environment; }
+Ui* Widget::ui() {  return _environment; }
 
 void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
@@ -58,7 +60,7 @@ unsigned int Widget::height() const{    return relativeRect().height(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget),
-  _environment( parent ? parent->getEnvironment() : 0 )
+  _environment( parent ? parent->ui() : 0 )
 {
   __D_IMPL(_d,Widget)
   _d->alignLeft = align::upperLeft;
@@ -227,7 +229,7 @@ void Widget::updateAbsolutePosition()
   const Rect oldRect = _d->absoluteRect;
   recalculateAbsolutePosition(false);
 
-  if( oldRect != _d->absoluteRect )
+  if( oldRect.size() != _d->absoluteRect.size() )
   {
     _resizeEvent();
   }
@@ -245,7 +247,7 @@ Widget* Widget::getElementFromPoint( const Point& point )
 
   ChildIterator it = _d->children.getLast();
 
-  if (isVisible())
+  if (visible())
   {
     while(it != _d->children.end())
     {
@@ -259,7 +261,7 @@ Widget* Widget::getElementFromPoint( const Point& point )
     }
   }
 
-  if( isVisible() && isPointInside(point) )
+  if( visible() && isPointInside(point) )
   {
     target = this;
   }
@@ -297,7 +299,7 @@ void Widget::removeChild( Widget* child )
 
 void Widget::draw(gfx::Engine& painter )
 {
-  if ( isVisible() )
+  if ( visible() )
   {
     Widgets& children = _getChildren();
     foreach( widget, children ) { (*widget)->draw( painter ); }
@@ -322,7 +324,7 @@ void Widget::setTabOrder( int index )
         el->next(-1, true, _d->isTabGroup, first, closest, true);
         if (first)
         {
-            _d->tabOrder = first->getTabOrder() + 1;
+            _d->tabOrder = first->tabOrder() + 1;
         }
     }
   }
@@ -332,7 +334,7 @@ void Widget::setTabOrder( int index )
   }
 }
 
-int Widget::getTabOrder() const{  return _dfunc()->tabOrder;}
+int Widget::tabOrder() const{  return _dfunc()->tabOrder;}
 
 Widget* Widget::tabgroup()
 {
@@ -344,12 +346,12 @@ Widget* Widget::tabgroup()
   return ret;
 }
 
-bool Widget::isEnabled() const
+bool Widget::enabled() const
 {
   __D_IMPL_CONST(_d,Widget)
   if ( isSubElement() && _d->isEnabled && parent() )
   {
-    return parent()->isEnabled();
+    return parent()->enabled();
   }
 
   return _d->isEnabled;
@@ -418,7 +420,7 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
   __D_IMPL_CONST(_d,Widget)
   foreach( widget, _d->children )
   {
-    if( (*widget)->getID() == id)
+    if( (*widget)->ID() == id)
     {
       return *widget;
     }
@@ -452,13 +454,13 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
     while(it != _d->children.end())
     {
         // ignore invisible elements and their children
-        if ( ( (*it)->isVisible() || includeInvisible ) &&
+        if ( ( (*it)->visible() || includeInvisible ) &&
             (group == true || (*it)->hasTabgroup() == false) )
         {
             // only check tab stops and those with the same group status
             if ((*it)->isTabStop() && ((*it)->hasTabgroup() == group))
             {
-                currentOrder = (*it)->getTabOrder();
+                currentOrder = (*it)->tabOrder();
 
                 // is this what we're looking for?
                 if (currentOrder == wanted)
@@ -470,7 +472,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                 // is it closer than the current closest?
                 if (closest)
                 {
-                    closestOrder = closest->getTabOrder();
+                    closestOrder = closest->tabOrder();
                     if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
                         ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
                     {
@@ -486,7 +488,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                     // is it before the current first?
                     if (first)
                     {
-                        closestOrder = first->getTabOrder();
+                        closestOrder = first->tabOrder();
 
                         if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
                         {
@@ -529,13 +531,18 @@ static int __convStr2RelPos( Widget* w, std::string s )
   else { return StringHelper::toInt( s );  }
 }
 
-void Widget::setupUI( const VariantMap& ui )
+void Widget::setupUI( const VariantMap& options )
 {
   __D_IMPL(_d,Widget)
   //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
-  _d->internalName = ui.get( "name" ).toString();
+  _d->internalName = options.get( "name" ).toString();
   align::Helper ahelper;
-  VariantList textAlign = ui.get( "textAlign" ).toList();
+  VariantList textAlign = options.get( "textAlign" ).toList();
+  VariantList altAlign = options.get( "text.align" ).toList();
+  if( !altAlign.empty() )
+  {
+    textAlign = altAlign;
+  }
 
   if( textAlign.size() > 1 )
   {
@@ -544,23 +551,23 @@ void Widget::setupUI( const VariantMap& ui )
   }
 
   Variant tmp;
-  setID( (int)ui.get( "id", -1 ) );
-  setText( _( ui.get( "text" ).toString() ) );
-  setTooltipText( ui.get( "tooltip" ).toString() );
-  setVisible( ui.get( "visible", true ).toBool() );
-  setEnabled( ui.get( "enabled", true ).toBool() );
-  _d->isTabStop = ui.get( "tabStop", false ).toBool();
-  _d->isTabGroup = ui.get( "tabGroup", -1 ).toInt();
-  _d->tabOrder = ui.get( "tabOrder", -1 ).toInt();
-  setMaxSize( ui.get( "maximumSize", Size( 0 ) ).toSize() );
-  setMinSize( ui.get( "minimumSize", Size( 1 ) ).toSize() );
+  setID( (int)options.get( "id", -1 ) );
+  setText( _( options.get( "text" ).toString() ) );
+  setTooltipText( options.get( "tooltip" ).toString() );
+  setVisible( options.get( "visible", true ).toBool() );
+  setEnabled( options.get( "enabled", true ).toBool() );
+  _d->isTabStop = options.get( "tabStop", false ).toBool();
+  _d->isTabGroup = options.get( "tabGroup", -1 ).toInt();
+  _d->tabOrder = options.get( "tabOrder", -1 ).toInt();
+  setMaxSize( options.get( "maximumSize", Size( 0 ) ).toSize() );
+  setMinSize( options.get( "minimumSize", Size( 1 ) ).toSize() );
 
   /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
                 ahelper.findType( ui.get( "rightAlign" ).toString() ),
                 ahelper.findType( ui.get( "topAlign" ).toString() ),
                 ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
 
-  VariantList aRectList = ui.get( "geometry" ).toList();
+  VariantList aRectList = options.get( "geometry" ).toList();
   if( !aRectList.empty() )
   {
     Rect cRect(
@@ -572,7 +579,7 @@ void Widget::setupUI( const VariantMap& ui )
     setGeometry( cRect );
   }
 
-  tmp = ui.get( "geometryf" );
+  tmp = options.get( "geometryf" );
   if( tmp.isValid() )
   {
     RectF r = tmp.toRectf();
@@ -586,9 +593,9 @@ void Widget::setupUI( const VariantMap& ui )
     setGeometry( r );
   }
 
-  setNotClipped( ui.get( "noclipped", false ).toBool() );
+  setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( VariantMap::const_iterator it=ui.begin(); it != ui.end(); ++it )
+  for( VariantMap::const_iterator it=options.begin(); it != options.end(); ++it )
   {
     if( it->second.type() != Variant::Map )
       continue;
@@ -609,11 +616,11 @@ void Widget::setupUI( const VariantMap& ui )
 
     if( !widgetType.empty() )
     {
-      Widget* child = getEnvironment()->createWidget( widgetType, this );
+      Widget* child = ui()->createWidget( widgetType, this );
       if( child )
       {
         child->setupUI( tmp );
-        if( child->getInternalName().empty() )
+        if( child->internalName().empty() )
         {
           child->setInternalName( widgetName );
         }
@@ -749,7 +756,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
 
 void Widget::animate( unsigned int timeMs )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   foreach( widget, _getChildren() ) { (*widget)->animate( timeMs ); }
@@ -806,7 +813,7 @@ void Widget::setHeight( unsigned int height )
 }
 
 void Widget::setEnabled(bool enabled){  _dfunc()->isEnabled = enabled;}
-std::string Widget::getInternalName() const{    return _dfunc()->internalName;}
+std::string Widget::internalName() const{    return _dfunc()->internalName;}
 void Widget::setInternalName( const std::string& name ){    _dfunc()->internalName = name;}
 Widget* Widget::parent() const {    return _dfunc()->parent;}
 Rect Widget::relativeRect() const{  return _dfunc()->relativeRect;}
@@ -818,16 +825,16 @@ void Widget::setText( const std::string& text ){  _dfunc()->text = text;}
 void Widget::setTooltipText( const std::string& text ) {  _dfunc()->toolTipText = text;}
 std::string Widget::text() const{  return _dfunc()->text;}
 std::string Widget::tooltipText() const{  return _dfunc()->toolTipText;}
-int Widget::getID() const{  return _dfunc()->id;}
+int Widget::ID() const{  return _dfunc()->id;}
 void Widget::setID( int id ) {  _dfunc()->id = id; }
-const Widget::Widgets& Widget::getChildren() const{  return _dfunc()->children;}
+const Widget::Widgets& Widget::children() const{  return _dfunc()->children;}
 Size Widget::maxSize() const{    return _dfunc()->maxSize;}
 Size Widget::minSize() const{    return _dfunc()->minSize;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
-Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), height() );}
-void Widget::setFocus(){  getEnvironment()->setFocus( this );}
-void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
+Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
+void Widget::setFocus(){  ui()->setFocus( this );}
+void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const{  return _dfunc()->absoluteClippingRect;}
 unsigned int Widget::width() const{  return relativeRect().width();}
 Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}
@@ -835,17 +842,17 @@ int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
 int Widget::screenBottom() const { return absoluteRect().bottom(); }
 int Widget::screenRight() const { return absoluteRect().right(); }
-Point Widget::leftupCorner() const { return Point( left(), top() ); }
-Point Widget::leftdownCorner() const { return Point( left(), bottom() ); }
-Point Widget::rightupCorner() const { return Point( right(), top() ); }
-Point Widget::rightdownCorner() const { return Point( right(), bottom() ); }
-Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
-Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}
+Point Widget::lefttop() const { return Point( left(), top() ); }
+Point Widget::leftbottom() const { return Point( left(), bottom() ); }
+Point Widget::righttop() const { return Point( right(), top() ); }
+Point Widget::rightbottom() const { return Point( right(), bottom() ); }
+Point Widget::localToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
+Rect Widget::localToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}
 void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->relativeRect + relativeMovement );}
 int Widget::bottom() const{  return _dfunc()->relativeRect.LowerRightCorner.y(); }
 Point Widget::center() const { return (_dfunc()->relativeRect.LowerRightCorner + _dfunc()->relativeRect.UpperLeftCorner) / 2; }
 void Widget::setTabgroup( bool isGroup ) { _dfunc()->isTabGroup = isGroup; }
-bool Widget::isVisible() const{  return _dfunc()->isVisible;}
+bool Widget::visible() const{  return _dfunc()->isVisible;}
 bool Widget::isSubElement() const{  return _dfunc()->isSubElement;}
 void Widget::setSubElement( bool subElement ){  _dfunc()->isSubElement = subElement;}
 void Widget::setTabStop( bool enable ){  _dfunc()->isTabStop = enable;}
@@ -856,9 +863,16 @@ int Widget::left() const { return relativeRect().UpperLeftCorner.x(); }
 int Widget::right() const { return relativeRect().LowerRightCorner.x(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
-Alignment Widget::getHorizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
-Alignment Widget::getVerticalTextAlign() const{  return _dfunc()->textVertAlign;}
+Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
+Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
 void Widget::deleteLater(){  _environment->deleteLater( this ); }
+
+void Widget::setRight( int newRight )
+{
+  Rect r = relativeRect();
+  r.rright() = newRight;
+  setGeometry( r );
+}
 
 void Widget::installEventHandler( Widget* elementHandler )
 {

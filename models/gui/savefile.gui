@@ -1,0 +1,48 @@
+{  
+  geometry : [ 0, 0, 512, 384 ]
+
+  lbTitle#Label : {
+    font : "FONT_5"
+    geometry : [ 10, 10, "pw-10", 40 ]
+    text : "##save_city##"
+    textAlign : [ "center", "center" ]
+  }
+
+  edFilename#EditBox : {
+    geometry : [ 20, 40, "pw-20", 70 ]
+    font : "FONT_2"
+    text.offset : [ 10, 0 ]
+    text : "savecity"
+  }
+
+  lbxSaves#FileListBox : {
+    geometry : [ 20, 75, "pw-15", "ph-45" ]
+    items.font : "FONT_2"
+    items.simple.color : "0xffffffff"
+    items.hovered.color : "0xff000000"
+  }
+
+  lbContinue#Label : {
+    geometry : [ 18, "ph-40", 260, "ph-14" ]
+    font : "FONT_2"
+    text.align : [ "center", "lowerRight" ]
+    text : "##savedlg_continue##"
+  }
+
+  btnOk#TexturedButton : {
+    geometry : [ 265, "ph-40", 304, "ph-14" ]
+    normal : [ "paneling", 239 ]
+    hovered : [ "paneling", 240 ]
+    pressed : [ "paneling", 241 ]
+    disabled : [ "paneling", 242 ]
+    tooltip : "##save_game_here##"
+  }
+
+  btnCancel#TexturedButton : {
+    geometry : [ 306, "ph-40", 345, "ph-14" ]
+    normal : [ "paneling", 243 ]
+    hovered : [ "paneling", 244 ]
+    pressed : [ "paneling", 245 ]
+    disabled : [ "paneling", 246 ]
+  }
+}

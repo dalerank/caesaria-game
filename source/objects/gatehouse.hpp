@@ -29,7 +29,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual bool isWalkable() const;
-  virtual bool isRoad() const;
+  virtual void destroy();
 
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
@@ -38,7 +38,7 @@ public:
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
 
-  virtual void build(PlayerCityPtr city, const TilePos& pos);
+  virtual bool build(PlayerCityPtr city, const TilePos& pos);
 private:
   bool _update( PlayerCityPtr city, TilePos pos );
 

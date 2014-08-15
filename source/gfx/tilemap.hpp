@@ -22,6 +22,7 @@
 #include "core/serializer.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "core/direction.hpp"
 #include "gfx/tilesarray.hpp"
 
 namespace gfx
@@ -35,7 +36,7 @@ public:
 
   Tilemap();
   virtual ~Tilemap();
-  void resize(const int size);
+  void resize(const unsigned int size);
 
   bool isInside( const TilePos& pos ) const;
 
@@ -44,6 +45,7 @@ public:
   
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;
+  TilesArray allTiles() const;
 
   // returns all tiles on a rectangular perimeter
   // (i1, j1) : left corner of the rectangle (minI, minJ)
@@ -55,7 +57,7 @@ public:
 
   enum TileNeighbors
   {
-    EdgeNeighbors,
+    FourNeighbors,
     //Corners,
     AllNeighbors
   };
@@ -65,9 +67,9 @@ public:
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  TilesArray getArea(const TilePos& start, const TilePos& stop );
-  TilesArray getArea(const TilePos& start, const Size& size );
-  TilesArray getArea(int range, const TilePos& center );
+  TilesArray getArea(const TilePos& start, const TilePos& stop ) const;
+  TilesArray getArea(const TilePos& start, const Size& size ) const;
+  TilesArray getArea(int range, const TilePos& center ) const;
 
   int size() const;
 
@@ -77,9 +79,11 @@ public:
   void turnRight();
   void turnLeft();
 
+  constants::Direction direction() const;
+
   TilePos fit( const TilePos& pos ) const;
 
-  Tile* at(Point pos, bool overborder);
+  Tile* at(const Point& pos, bool overborder);
 private: 
   class Impl;
   ScopedPtr< Impl > _d;

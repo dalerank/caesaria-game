@@ -36,14 +36,9 @@ namespace gfx
 
 int LayerWater::type() const{  return citylayer::water;}
 
-std::set<int> LayerWater::visibleWalkers() const
-{
-  return std::set<int>();
-}
-
 void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   bool needDrawAnimations = false;
   Size areaSize(1);
@@ -84,21 +79,28 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     default:
     {
       int tileNumber = 0;
-      bool haveWater = tile.waterService( WTR_FONTAIN ) > 0 || tile.waterService( WTR_WELL ) > 0;
+      bool haveWater = tile.param( Tile::pFountainWater ) > 0 || tile.param( Tile::pWellWater ) > 0;
+      needDrawAnimations = false;
+
       if ( overlay->type() == building::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
+        needDrawAnimations = (h->spec().level() == 1) && h->habitants().empty();
+
         tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);
       }
-      tileNumber += (haveWater ? OverlayPic::haveWater : 0);
-      tileNumber += tile.waterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
+      if( !needDrawAnimations )
+      {
+        tileNumber += (haveWater ? OverlayPic::haveWater : 0);
+        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      areaSize = 0;
-      needDrawAnimations = false;
+        city::Helper helper( _city() );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
+
+        areaSize = 0;
+      }
     }
     break;
     }
@@ -117,6 +119,17 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
           int df = aq->water();
           f.draw( engine.screen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
+
+        int wellValue = tile.param( Tile::pWellWater );
+        int fountainValue = tile.param( Tile::pFountainWater );
+        int reservoirWater = tile.param( Tile::pReservoirWater );
+        if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
+        {
+          std::string text = StringHelper::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
+          Font f = Font::create( FONT_2 );
+          f.setColor( 0xffff0000 );
+          f.draw( engine.screen(), text, screenPos + Point( 20, -80 ), false );
+        }
       }
       registerTileForRendering( tile );
     }
@@ -130,15 +143,15 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     foreach( it, area )
     {
       Tile* rtile = *it;
-      int reservoirWater = rtile->waterService( WTR_RESERVOIR );
-      int fontainWater = rtile->waterService( WTR_FONTAIN );
+      int reservoirWater = rtile->param( Tile::pReservoirWater );
+      int fontainWater = rtile->param( Tile::pFountainWater );
 
       if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
       {
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
+        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
       }
     }
   }
@@ -174,9 +187,9 @@ void LayerWater::handleEvent(NEvent& event)
         bool isWater = tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlDeepWater );
         if( !isWater )
         {
-          int wtrSrvc = (tile->waterService( WTR_WELL ) > 0 ? 1 : 0);
-          wtrSrvc |= (tile->waterService( WTR_FONTAIN ) > 0 ? 2 : 0);
-          wtrSrvc |= (tile->waterService( WTR_RESERVOIR ) > 0 ? 4 : 0);
+          int wtrSrvc = (tile->param( Tile::pWellWater ) > 0 ? 1 : 0);
+          wtrSrvc |= (tile->param( Tile::pFountainWater ) > 0 ? 2 : 0);
+          wtrSrvc |= (tile->param( Tile::pReservoirWater ) > 0 ? 4 : 0);
 
           switch( wtrSrvc )
           {

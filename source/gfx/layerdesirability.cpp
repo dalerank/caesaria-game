@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
+#include "core/font.hpp"
 #include "core/stringhelper.hpp"
 #include "layerconstants.hpp"
 
@@ -27,22 +28,21 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerDesirability::type() const
+class LayerDesirability::Impl
 {
-  return citylayer::desirability;
-}
+public:
+  Font debugFont;
+  std::vector<PictureRef*> debugText;
+};
 
-std::set<int> LayerDesirability::visibleWalkers() const
-{
-  return std::set<int>();
-}
+int LayerDesirability::type() const {  return citylayer::desirability; }
 
 void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   //Tilemap& tilemap = _city->getTilemap();
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
-  int desirability = tile.desirability();
+  int desirability = tile.param( Tile::pDesirability );
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -96,7 +96,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
         foreach( tile, tiles4clear )
         {
-          engine.draw( pic, (*tile)->mapPos() + offset );
+          engine.draw( pic, (*tile)->mappos() + offset );
         }
       }
     break;
@@ -105,10 +105,19 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
   if( desirability != 0 )
   {
-    _debugFont.draw( engine.screen(), StringHelper::format( 0xff, "%d", desirability), screenPos + Point( 20, -15 ), false );
+    _d->debugText.push_back( new PictureRef() );
+    _d->debugFont.draw( *_d->debugText.back(), StringHelper::format( 0xff, "%d", desirability) );
+
+    engine.draw( **_d->debugText.back(), screenPos + Point( 20, -15 ) );
   }
 
   tile.setWasDrawn();
+}
+
+void LayerDesirability::beforeRender()
+{
+  foreach (it, _d->debugText) { delete (*it); }
+  _d->debugText.clear();
 }
 
 LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)
@@ -120,9 +129,9 @@ LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)
 }
 
 LayerDesirability::LayerDesirability( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : Layer( &camera, city ), _d( new Impl )
 {
-  _debugFont = Font::create( "FONT_1" );
+  _d->debugFont = Font::create( "FONT_1" );
 }
 
 }//end namespace gfx

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 
 #ifndef __CAESARIA_APPLICATION_H_INCLUDED__
@@ -50,7 +50,7 @@ public:
   PlayerPtr player() const;
   PlayerCityPtr city() const;
   world::EmpirePtr empire() const;
-  gui::GuiEnv* gui() const;
+  gui::Ui* gui() const;
   gfx::Engine* engine() const;
   scene::Base* scene() const;
 

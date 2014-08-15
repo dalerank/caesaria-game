@@ -1,0 +1,35 @@
+{
+  geometry : [ 0, 0, 640, 432 ]
+  bgtype : "whiteFrame"
+    
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00259"
+  }
+
+  btnEmpireMap#PushButton : {
+    geometry : [ 100, 398, 300, 422 ]
+    text : "##empire_map##"
+    bgtype : "whiteBorderUp"
+  }
+
+  btnPrices#PushButton : {
+    geometry : [ 400, 398, 600, 422 ]
+    text : "##show_prices##"
+    bgtype : "whiteBorderUp"
+    tooltip : "##btn_showprice_tooltip##"
+  }
+
+  gbInfo#GroupBox : {
+    geometry : [ 35, 55, "pw-33", "ph-45" ]
+    bgtype : "blackFrame"
+  }
+  
+  lbTitle#Label : {
+    geometryf : [ 0.05, 0.05, 0.95, 0.1 ]
+    font : "FONT_5"
+    text : "##trade_advisor##"
+    text.align : [ "center", "center" ]
+  }
+}
+

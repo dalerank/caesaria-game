@@ -121,7 +121,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
-        tile->setPicture( overlay->picture() );
+        tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -193,7 +193,35 @@ void LayerBuild::_updatePreviewTiles( bool force )
     TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
                                                      d->roadAssignment, d->kbShift );
+    Tilemap& tmap = _city()->tilemap();
+    TilePos leftUpCorner = pathWay.leftUpCorner();
+    TilePos rigthDownCorner = pathWay.rightDownCorner();
+    TilePos leftDownCorner( leftUpCorner.i(), rigthDownCorner.j() );
+    TilesArray ret;
 
+    int mmapSize = std::max<int>( leftUpCorner.j() - rigthDownCorner.j() + 1,
+                                  rigthDownCorner.i() - leftUpCorner.i() + 1 );
+    for( int y=0; y < mmapSize; y++ )
+    {
+      for( int t=0; t <= y; t++ )
+      {
+        TilePos tpos = leftDownCorner + TilePos( t, mmapSize - 1 - ( y - t ) );
+        if( pathWay.contain( tpos ) )
+          ret.push_back( &tmap.at( tpos ) );
+      }
+    }
+
+    for( int x=1; x < mmapSize; x++ )
+    {
+      for( int t=0; t < mmapSize-x; t++ )
+      {
+        TilePos tpos = leftDownCorner + TilePos( x + t, t );
+        if( pathWay.contain( tpos ) )
+          ret.push_back( &tmap.at( tpos ) );
+      }
+    }
+
+    pathWay = ret;
     foreach( it, pathWay )
     {
       _checkPreviewBuild( (*it)->pos() );
@@ -204,7 +232,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
     TilesArray tiles = _getSelectedArea();
 
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->pos() ); }
-  }
+  }  
 
   d->textPic->fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
@@ -348,14 +376,6 @@ void LayerBuild::_finishBuild()
 
 int LayerBuild::type() const {  return citylayer::build;}
 
-std::set<int> LayerBuild::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::all );
-
-  return ret;
-}
-
 void LayerBuild::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,LayerBuild);
@@ -366,34 +386,36 @@ void LayerBuild::_drawBuildTiles( Engine& engine)
     postTile->resetWasDrawn();
 
     ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->overlay() );
-    engine.resetTileDrawMask();
+    engine.resetColorMask();
 
     if( ptr_construction.isValid()
         && ptr_construction->canBuild( _city(), postTile->pos(), _d->buildTiles ) )
     {
-      engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+      engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
 
     drawTileR( engine, *postTile, offset, postTile->pos().z(), true );
   }
 
-  engine.resetTileDrawMask();
+  engine.resetColorMask();
 }
 
 void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 {
   __D_IMPL(_d,LayerBuild);
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   TileOverlayPtr overlay = tile.overlay();
-  const TilesArray& postTiles = _d->buildTiles;
+  const TilesArray& postTiles = _d->buildTiles;  
 
   if( overlay.isValid() )
   {
     ConstructionPtr cntr = ptr_cast<Construction>( overlay );
     if( cntr.isValid() && postTiles.size() > 0 )
-    {
+    {      
       tile.setWasDrawn();
+      drawPass( engine, tile, offset, Renderer::ground );
+
       const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
       engine.draw( pic, screenPos );
 
@@ -402,13 +424,14 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 
     registerTileForRendering( tile );
 
-    /*if( csCheckCast<Fortification>( tile.getOverlay() ) )
+    /*if( !tile.picture().isValid() )
     {
-      GfxSdlEngine* e = static_cast< GfxSdlEngine* >( &GfxEngine::instance());
-      Font f = Font::create( FONT_2 );
-      f.setColor( 0xffff0000 );
-      int df = tile.getOverlay().as<Fortification>()->getDirection();
-      f.draw( e->getScreen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
+      static Font _debugFont = Font::create( FONT_2 );
+      static Picture* pic = Picture::create( Size( 200, 30 ));
+      pic->fill( 0, Rect() );
+      std::string debugText = StringHelper::format( 0xff, "%x", tile.originalImgId() );
+      _debugFont.draw( *pic, debugText, 0, 0, true );
+      engine.draw( *pic, screenPos + Point( 20, -80 ) );
     }*/
   }
 
@@ -459,8 +482,9 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   __D_IMPL(d,LayerBuild);
   d->renderer = renderer;
   d->frameCount = 0;
-  d->textFont = Font::create( FONT_3 );
+  d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
+  _addWalkerType( walker::all );
 }
 
 }//end namespace gfx

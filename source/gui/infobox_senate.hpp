@@ -22,11 +22,14 @@
 namespace gui
 {
 
-class InfoboxSenate : public InfoboxSimple
+namespace infobox
+{
+
+class AboutSenate : public Simple
 {
 public:
-  InfoboxSenate( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxSenate();
+  AboutSenate( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutSenate();
 
 public oc3_signals:
   Signal0<>& onButtonAdvisorClicked();
@@ -34,6 +37,8 @@ public oc3_signals:
 private oc3_slots:
   void _showRatingAdvisor();
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXSIMPLE_H_INCLUDE_

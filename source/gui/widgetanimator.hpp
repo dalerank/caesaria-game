@@ -12,12 +12,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WIDGETANIMATOR_H_INCLUDE_
 #define __CAESARIA_WIDGETANIMATOR_H_INCLUDE_
 
 #include "gui/widget.hpp"
 #include "core/flagholder.hpp"
+#include "core/signals.hpp"
 
 #define ANIMATOR_UNUSE_VALUE -9999
 
@@ -28,19 +31,23 @@ class WidgetAnimator : public Widget, public FlagHolder<int>
 {
 public:
 	enum { showParent=0x1,
-		   removeSelf=0x2, removeParent=0x4,
-		   debug=0x8,
-		   isActive=0x10 };
+       removeSelf=0x2, removeParent=0x4,
+       debug=0x8,
+       isActive=0x10 };
 
-    WidgetAnimator( Widget* parent, int flags );
+  WidgetAnimator( Widget* parent, int flags );
 
-    //! Деструктор
-    virtual ~WidgetAnimator(void);
+  //! Деструктор
+  virtual ~WidgetAnimator(void);
 
-    void beforeDraw( gfx::Engine& painter );
+  void beforeDraw( gfx::Engine& painter );
+
+oc3_signals public:
+  Signal0<>& onFinish() { return _onFinishSignal; }
 
 protected:
-    virtual void afterFinished_();
+  virtual void _afterFinished();
+  Signal0<> _onFinishSignal;
 };
 
 }//end namespace gui

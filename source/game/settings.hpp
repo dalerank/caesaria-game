@@ -32,6 +32,7 @@ public:
   __GS_PROPERTY(pantheonModel)
   __GS_PROPERTY(houseModel)
   __GS_PROPERTY(citiesModel)
+  __GS_PROPERTY(empireObjectsModel)
   __GS_PROPERTY(constructionModel)
   __GS_PROPERTY(settingsPath)
   __GS_PROPERTY(language)
@@ -55,16 +56,20 @@ public:
   __GS_PROPERTY(musicVolume)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
-  __GS_PROPERTY(giftsModel)
   __GS_PROPERTY(emblemsModel)
-  __GS_PROPERTY(testArchive)
+  __GS_PROPERTY(remakeModel)
   __GS_PROPERTY(screenFitted)
   __GS_PROPERTY(needAcceptBuild)
   __GS_PROPERTY(sg2model)
   __GS_PROPERTY(ranksModel)
   __GS_PROPERTY(autosaveInterval)
   __GS_PROPERTY(talksArchive)
-  __GS_PROPERTY(rectuterDistance)
+  __GS_PROPERTY(render)
+  __GS_PROPERTY(pic_offsets)
+  __GS_PROPERTY(picsArchive)
+  __GS_PROPERTY(opengl_opts)
+  __GS_PROPERTY(font)
+  __GS_PROPERTY(freeplay_opts)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();
@@ -85,5 +90,9 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#define SETTINGS_RC_PATH(a) GameSettings::rcpath( GameSettings::a )
+#define SETTINGS_VALUE(a) GameSettings::get( GameSettings::a )
+#define SETTINGS_SET_VALUE(a, value) GameSettings::set( GameSettings::a, value )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

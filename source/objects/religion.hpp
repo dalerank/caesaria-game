@@ -54,7 +54,7 @@ protected:
   BigTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 };
 
 class TempleCeres : public SmallTemple
@@ -124,7 +124,7 @@ public:
   TempleOracle();
   virtual unsigned int parishionerNumber() const;
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 };
 
 

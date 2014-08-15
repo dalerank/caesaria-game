@@ -18,13 +18,13 @@
 #ifndef _CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
 #define _CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class GameSpeedOptionsWindow : public Widget
+class GameSpeedOptionsWindow : public Window
 {
 public:
   GameSpeedOptionsWindow(Widget* parent,

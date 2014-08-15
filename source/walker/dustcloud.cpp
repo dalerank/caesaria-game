@@ -84,7 +84,8 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
   _d->dstPos = Point( stop.i(), stop.j() ) * 15 + Point( 7, 7 );
   _d->srcPos = Point( start.i(), start.j() ) * 15 + Point( 7, 7 );
 
-  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (stop.distanceFrom( start ) * 10.f);
+  float delim = 6.f + math::random( 8 );
+  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (stop.distanceFrom( start ) * delim);
   _d->currentPos = _d->srcPos.toPointF();
 
   _setWpos( _d->srcPos );

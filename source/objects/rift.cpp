@@ -22,6 +22,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "walker/dustcloud.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -32,15 +33,10 @@ namespace {
 }
 
 Rift::Rift() : TileOverlay( building::rift, Size(1) )
-{
-  _animationRef().load( ResourceGroup::sprites, 1, 8 );
-  _animationRef().setOffset( Point( 14, 26 ) );
-  _animationRef().setDelay( 4 );
-  _animationRef().setLoop( false );
-  _fgPicturesRef().resize(1);
+{  
 }
 
-void Rift::build( PlayerCityPtr city, const TilePos& pos )
+bool Rift::build( PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
   setPicture( computePicture() );
@@ -50,6 +46,10 @@ void Rift::build( PlayerCityPtr city, const TilePos& pos )
   {
     (*it)->updatePicture();
   }
+
+  DustCloud::create( city, pos, 5 );
+
+  return true;
 }
 
 void Rift::initTerrain(Tile& terrain)
@@ -63,7 +63,7 @@ RiftList Rift::neighbors() const
 {
   RiftList ret;
 
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::EdgeNeighbors);
+  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
 
   foreach( it, tiles )
   {
@@ -125,13 +125,6 @@ bool Rift::isFlat() const {  return true;}
 void Rift::destroy() {}
 bool Rift::isDestructible() const {  return false;}
 Renderer::PassQueue Rift::passQueue() const {  return riftPassQueue; }
-
-void Rift::timeStep(const unsigned long time)
-{
-  gfx::TileOverlay::timeStep( time );
-  _animationRef().update( time );
-  _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
-}
 
 void Rift::updatePicture()
 {

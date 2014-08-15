@@ -78,6 +78,7 @@
 #include "cityservice_peace.hpp"
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
+#include "walker/chastener_elephant.hpp"
 #include "walker/chastener.hpp"
 
 #include <set>
@@ -89,9 +90,8 @@ namespace {
 CAESARIA_LITERALCONST(tilemap)
 CAESARIA_LITERALCONST(walkerIdCount)
 CAESARIA_LITERALCONST(adviserEnabled)
+CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
-
-typedef std::vector< city::SrvcPtr > CityServices;
 
 class WGrid
 {
@@ -168,8 +168,7 @@ public:
   WGrid walkersGrid;
   //*********************** !!!
 
-  CityServices services;
-  bool needRecomputeAllRoads;
+  city::SrvcList services;
   BorderInfo borderInfo;
   Tilemap tilemap;
   TilePos cameraStart;
@@ -209,10 +208,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.boatExit = TilePos( 0, 0 );
   _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
-  _d->needRecomputeAllRoads = false;
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
-  _d->climate = C_CENTRAL;
+  _d->climate = climateCentral;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
@@ -235,6 +233,17 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   addService( city::Peace::create( this ) );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
+  _initAnimation();
+
+  setOption( updateRoads, 0 );
+  setOption( godEnabled, 1 );
+  setOption( fishPlaceEnabled, 1 );
+}
+
+void PlayerCity::_initAnimation()
+{
+  _animation().clear();
+
   _animation().load( ResourceGroup::empirebits, 2, 6 );
   _animation().setLoop( true );
   _animation().setOffset( Point( 18, -7 ));
@@ -264,9 +273,9 @@ void PlayerCity::timeStep(unsigned int time)
   _d->updateOverlays( this, time );
   _d->updateServices( time );
 
-  if( _d->needRecomputeAllRoads )
+  if( getOption( updateRoads ) > 0 )
   {
-    _d->needRecomputeAllRoads = false;
+    setOption( updateRoads, 0 );
     // for each overlay
     foreach( it, _d->overlayList )
     {
@@ -371,7 +380,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
   city::Helper hlp( city );
-  int lastMonthTax = 0;
+  float lastMonthTax = 0;
   
   ForumList forums = hlp.find< Forum >( building::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
@@ -384,14 +393,35 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
-  int wages = city::Statistic::getMontlyWorkersWages( city );
-  funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
+  int wages = city::Statistic::getMonthlyWorkersWages( city );
+
+  if( funds.haveMoneyForAction( wages ) )
+  {
+    //funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
+    HouseList houses;
+    houses << city->overlays();
+
+    float salary = city::Statistic::getMonthlyOneWorkerWages( city );
+    float wages = 0;
+    foreach( it, houses )
+    {
+      int workers = (*it)->workersCount();
+      float house_wages = salary * workers;
+      (*it)->appendMoney( house_wages );
+      wages += house_wages;
+    }
+    funds.resolveIssue( FundIssue( city::Funds::workersWages, ceil( -wages ) ) );
+  }
+  else
+  {
+
+  }
 }
 
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
-  long pop = 0; /* population can't be negative - should be unsigned long long*/
-  
+  unsigned int pop = 0;
+
   city::Helper helper( city );
 
   HouseList houseList = helper.find<House>( building::house );
@@ -462,7 +492,7 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 
 void PlayerCity::Impl::updateServices(unsigned int time)
 {
-  CityServices::iterator serviceIt= services.begin();
+  city::SrvcList::iterator serviceIt = services.begin();
   city::Timers::instance().update( time );
   while( serviceIt != services.end() )
   {
@@ -497,6 +527,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = _d->climate;
   stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
+  stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -558,7 +589,9 @@ void PlayerCity::load( const VariantMap& stream )
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
+  Logger::warning( "City: parse options" );
   setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
+  setOption( fishPlaceEnabled, stream.get( lc_fishPlaceEnabled, 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -638,6 +671,8 @@ void PlayerCity::load( const VariantMap& stream )
       Logger::warning( "Can't find service " + item->first );
     }
   }
+
+  _initAnimation();
 }
 
 void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
@@ -648,6 +683,8 @@ void PlayerCity::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
   _d->walkerList.push_back( walker );
+
+  walker->setFlag( Walker::showDebugInfo, true );
 }
 
 city::SrvcPtr PlayerCity::findService( const std::string& name ) const
@@ -660,6 +697,8 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 
   return city::SrvcPtr();
 }
+
+city::SrvcList PlayerCity::services() const { return _d->services; }
 
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {
@@ -684,7 +723,6 @@ const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
-void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
@@ -693,7 +731,8 @@ void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( 
 
 int PlayerCity::prosperity() const
 {
-  SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::defaultName() ) );
+  city::ProsperityRatingPtr csPrsp;
+  csPrsp << findService( city::ProsperityRating::defaultName() );
   return csPrsp.isValid() ? csPrsp->value() : 0;
 }
 
@@ -719,14 +758,16 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::defaultName() ) );
+  city::CultureRatingPtr csClt;
+  csClt << findService( city::CultureRating::defaultName() );
   return csClt.isValid() ? csClt->value() : 0;
 }
 
 int PlayerCity::peace() const
 {
-  SmartPtr<city::Peace> peace = ptr_cast<city::Peace>( findService( city::Peace::getDefaultName() ) );
-  return peace.isValid() ? peace->value() : 0;
+  city::PeacePtr p;
+  p << findService( city::Peace::getDefaultName() );
+  return p.isValid() ? p->value() : 0;
 }
 
 int PlayerCity::sentiment() const
@@ -757,9 +798,15 @@ void PlayerCity::addObject( world::ObjectPtr object )
     world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
     for( unsigned int k=0; k < army->soldiersNumber(); k++ )
     {
-      ChastenerPtr soldier = Chastener::create( this, walker::romeChasternerSoldier );
+      ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
       soldier->send2City( borderInfo().roadEntry );
       soldier->wait( GameDate::days2ticks( k ) );
+      if( (k % 16) == 15 )
+      {
+        ChastenerElephantPtr elephant = ChastenerElephant::create( this );
+        elephant->send2City( borderInfo().roadEntry );
+        soldier->wait( GameDate::days2ticks( k ) );
+      }
     }
   }
 }

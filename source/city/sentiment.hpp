@@ -43,6 +43,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<Sentiment> SentimentPtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_SENTIMENT_H_INCLUDED__

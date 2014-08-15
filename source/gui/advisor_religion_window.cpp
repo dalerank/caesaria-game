@@ -42,6 +42,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 class ReligionInfoLabel : public Label
 {
 public:
@@ -61,19 +64,19 @@ public:
   {
     Label::_updateTexture( painter );
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
 
     if( _divinity.isValid() )
     {
       _lastFestival = _divinity->lastFestivalDate().monthsTo( GameDate::current() );
 
-      font.draw( *texture, _divinity->name(), 0, 0 );
+      rfont.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
       fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
 
       int xOffset = 400, k=0;
       Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
@@ -82,12 +85,12 @@ public:
         texture->draw( pic, Point( xOffset + k * 15, 0), false );
       }
 
-      font.draw( *texture, _( _divinity->moodDescription() ), xOffset + k * 15, 0 );
+      rfont.draw( *texture, _( _divinity->moodDescription() ), xOffset + k * 15, 0 );
     }
     else
     {
-      font.draw( *texture, _("##oracles_in_city##"), 0, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, _("##oracles_in_city##"), 0, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
     }
   }
 
@@ -99,11 +102,9 @@ private:
   int _mood;
 };
 
-class AdvisorReligionWindow::Impl
+class Religion::Impl
 {
 public:
-  PictureRef background;
-
   ReligionInfoLabel* lbCeresInfo;
   ReligionInfoLabel* lbNeptuneInfo;
   ReligionInfoLabel* lbMercuryInfo;
@@ -135,33 +136,11 @@ public:
 };
 
 
-AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
+: Window( parent, Rect( 0, 0, 640, 280 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 280 ) ) );
-
-  Label* title = new Label( this, Rect( 60, 10, 60 + 280, 10 + 40) );
-  title->setText( _("##religion_advisor##") );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( align::upperLeft, align::center );
-
-  _d->background.reset( Picture::create( size() ) );
-
-  //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
-  //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), PictureDecorator::blackFrame );
-
-  Picture icon = Picture::load( ResourceGroup::panelBackground, 264 );
-  _d->background->draw( icon, Point( 11, 11 ) );
-
-  Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##temples##"), 268, 32, false );
-  font.draw( *_d->background, _("##small##"), 240, 47, false );
-  font.draw( *_d->background, _("##large##"), 297, 47, false );
-  font.draw( *_d->background, _("##test_t##"), 370, 47, false );
-  font.draw( *_d->background, _("##rladv_mood##"), 450, 47, false );
+  setupUI( ":/gui/religionadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
@@ -189,23 +168,21 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
-  _d->religionAdvice = new Label( this, Rect( 40, height() - 80, width() - 40, height() - 10 ) );
+  _d->religionAdvice = findChildA<Label*>( "lbReligionAdvice", true, this );
   _d->updateReligionAdvice( city );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
 }
 
-void AdvisorReligionWindow::draw(gfx::Engine& painter )
+void Religion::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
-void AdvisorReligionWindow::Impl::updateReligionAdvice(PlayerCityPtr city)
+void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
   city::Helper helper( city );
@@ -228,7 +205,7 @@ void AdvisorReligionWindow::Impl::updateReligionAdvice(PlayerCityPtr city)
     break;
     }
   }
-
+}
 
 }
 

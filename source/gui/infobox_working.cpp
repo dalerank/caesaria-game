@@ -26,8 +26,11 @@ using namespace constants;
 namespace gui
 {
 
-InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
+namespace infobox
+{
+
+AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
   _working = building;
 
@@ -45,18 +48,19 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
   setText( "" );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->getState( Construction::damage ),
-                                           (int)_working->getState( Construction::fire ));
+                                           (int)_working->state( Construction::damage ),
+                                           (int)_working->state( Construction::fire ));
   if( is_kind_of<ServiceBuilding>( _working ) )
   {
     ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );
     DateTime time = srvc->lastSendService();
     text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
   }
+
   new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
 }
 
-void InfoboxWorkingBuilding::setText(const std::string& text)
+void AboutWorkingBuilding::setText(const std::string& text)
 {  
   if( Widget* lb = findChild( lbHelpId ) )
   {
@@ -69,18 +73,20 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
       messages.push_back( _working->workersProblemDesc() );
     }
 
-    lb->setText( _( messages.rand() ) );
+    lb->setText( _( messages.random() ) );
   }
 }
 
-void InfoboxWorkingBuilding::showDescription()
+void AboutWorkingBuilding::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->rootWidget(), _working->type() );
+  DictionaryWindow::show( ui()->rootWidget(), _working->type() );
 }
 
-WorkingBuildingPtr InfoboxWorkingBuilding::_getBuilding()
+WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()
 {
   return _working;
+}
+
 }
 
 }//end namespace gui

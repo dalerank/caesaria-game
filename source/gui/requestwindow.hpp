@@ -20,14 +20,14 @@
 
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "city/request.hpp"
 
 namespace gui
 {
 
-class EmperrorRequestWindow : public Widget
+class EmperrorRequestWindow : public Window
 {
 public:
   static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request,

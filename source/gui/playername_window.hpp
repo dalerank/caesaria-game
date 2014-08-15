@@ -18,18 +18,18 @@
 #ifndef _CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
 #define _CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 
 namespace gui
 {
 
-class WindowPlayerName : public Widget
+class WindowPlayerName : public Window
 {
 public:
   WindowPlayerName( Widget* parent );
-  ~WindowPlayerName();
+  virtual ~WindowPlayerName();
 
   virtual std::string text() const;
 

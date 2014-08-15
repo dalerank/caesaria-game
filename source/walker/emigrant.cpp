@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "immigrant.hpp"
 #include "core/position.hpp"
@@ -45,6 +45,12 @@ public:
   CitizenGroup peoples;
   int failedWayCount;
   float stamina;
+
+  void mayWalk( const Tile* tile, bool& ret )
+  {
+    HousePtr f = ptr_cast<House>( tile->overlay() );
+    ret = ( tile->isWalkable( true ) || f.isValid() );
+  }
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
@@ -60,7 +66,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
 HousePtr Emigrant::_findBlankHouse()
 {
   city::Helper hlp( _city() );
-  HouseList houses = hlp.find< House >( building::house );
+  HouseList houses = hlp.find<House>( building::house );
   HousePtr blankHouse;
 
   HouseList::iterator itHouse = houses.begin();
@@ -79,9 +85,7 @@ HousePtr Emigrant::_findBlankHouse()
 
   if( houses.size() > 0 )
   {
-    itHouse = houses.begin();
-    std::advance(itHouse, rand() % houses.size() );
-    blankHouse = *itHouse;
+    blankHouse = houses.random();
   }
 
   return blankHouse;
@@ -122,35 +126,14 @@ void Emigrant::_reachedPathway()
   HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
   if( house.isValid() )
   {
-    int freeRoom = house->maxHabitants() - house->habitants().count();
-    if( freeRoom > 0 )
-    {
-      house->addHabitants( _d->peoples );
-      gooutCity = (_d->peoples.count() > 0);
-    }
+    _append2house( house );
+    gooutCity = (_d->peoples.count() > 0);
   }
   else
   {
-    city::Helper helper( _city() );
-    TilePos offset( 1, 1 );
-    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
-    foreach( it, houses )  //have destination
+    if( _checkNearestHouse() )
     {
-      HousePtr house = *it;
-
-      int freeRoom = house->maxHabitants() - house->habitants().count();
-      if( freeRoom > 0 )
-      {
-        Tilemap& tmap = _city()->tilemap();
-        Pathway pathway;
-        pathway.init( tmap, tmap.at( pos() ) );
-        pathway.setNextTile( house->tile() );
-
-        gooutCity = false;
-        _updatePathway( pathway );
-        go();
-        return;
-      }
+      return;
     }
   }
 
@@ -173,8 +156,45 @@ void Emigrant::_reachedPathway()
   }
 }
 
+void Emigrant::_append2house( HousePtr house )
+{
+  int freeRoom = house->maxHabitants() - house->habitants().count();
+  if( freeRoom > 0 )
+  {
+    house->addHabitants( _d->peoples );
+  }
+}
+
+bool Emigrant::_checkNearestHouse()
+{
+  city::Helper helper( _city() );
+  TilePos offset( 2, 2 );
+  HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+  foreach( it, houses )  //have destination
+  {
+    HousePtr house = *it;
+
+    int freeRoom = house->maxHabitants() - house->habitants().count();
+    if( freeRoom > 0 )
+    {
+      Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+
+      _updatePathway( pathway );
+      go();
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void Emigrant::_brokePathway(TilePos p)
 {
+  _reachedPathway();
+
+  if( isDeleted() )
+    return;
+
   Pathway way = _findSomeWay( pos() );
   if( way.isValid() )
   {
@@ -189,7 +209,7 @@ void Emigrant::_brokePathway(TilePos p)
 
 void Emigrant::_noWay()
 {
-  Pathway someway = _findSomeWay( pos() );
+  Pathway someway = PathwayHelper::randomWay( _city(), pos(), 5 );
   if( !someway.isValid() )
   {
     _d->failedWayCount++;
@@ -323,4 +343,22 @@ bool Emigrant::die()
   }
 
   return created;
+}
+
+void Emigrant::_centerTile()
+{
+  Walker::_centerTile();
+
+  HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
+  if( house.isValid() )
+  {
+    _append2house( house );
+    if( _d->peoples.count() == 0 )
+    {
+      deleteLater();
+      return;
+    }
+  }
+
+  _checkNearestHouse();
 }

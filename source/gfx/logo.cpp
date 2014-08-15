@@ -1,3 +1,20 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 #include "logo.hpp"
 #include "picture_bank.hpp"
 
@@ -19221,19 +19238,23 @@ static const char* const data =
 
 void initialize( const std::string& name)
 {
-	gfx::Picture* pic = gfx::Picture::create( Size( width, height ) );
-	char const* ptr = data;
-	for( unsigned int y = 0; y < height; y++ )
-	{
-		for( unsigned int x=0; x < width; x++ )
-		{
-			char pixel[4];
-			PIXEL( ptr, pixel)
-			pic->setPixel( Point( x, y ), *(int*)pixel );
-		}
-	}
+  char const* ptr = data;
+  std::vector<unsigned int> pixels;
+  pixels.resize( width * height );
 
-	gfx::PictureBank::instance().setPicture( name, *pic );
+  for( unsigned int y = 0; y < height; y++ )
+  {
+    for( unsigned int x=0; x < width; x++ )
+    {
+      char pixel[4];
+      PIXEL( ptr, pixel)
+      pixels[ y * width + x ] = *(int*)pixel;
+      //pic->setPixel( Point( x, y ), *(int*)pixel );
+    }
+  }
+
+  gfx::Picture* pic = gfx::Picture::create( Size( width, height ), (unsigned char*)&pixels[0] );
+  gfx::PictureBank::instance().setPicture( name, *pic );
 }
 
 }//end namespace splash

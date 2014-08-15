@@ -30,26 +30,36 @@ namespace gui
 
 const int WindowMessageStack::defaultID = StringHelper::hash( CAESARIA_STR_EXT(WindowMessageStack) );
 
-class WindowMessageStack::Impl
+class WindowMessageStack::LabelA : public Label
 {
 public:
-  PictureRef lbBackgorund;
+  LabelA( Widget* parent, const Rect& rectangle, const std::string& message )
+    : Label( parent, rectangle, message )
+  {
+    setTextAlignment( align::center, align::center );
+    new WidgetDeleter( this, 5000 );
+  }
+
+protected:
+  virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text)
+  {
+    _backgroundRef().clear();
+    Decorator::draw( _backgroundRef(), Rect( Point(), size() ), Decorator::brownPanelSmall );
+
+    Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
+    _backgroundRef().append( emlbPic, Point( 4, -2 ) );
+    _backgroundRef().append( emlbPic, Point( width() - emlbPic.width()-4, -2 ) );
+  }
 };
 
 WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rectangle ) 
-  : Widget( parent, id, rectangle ), _d( new Impl )
+  : Widget( parent, id, rectangle )
 {
-  _d->lbBackgorund.reset( Picture::create( Size( rectangle.width(), 20 ) ) );
-  PictureDecorator::draw( *_d->lbBackgorund, rectangle, PictureDecorator::brownPanelSmall );
-
-  Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
-  _d->lbBackgorund->draw( emlbPic, 4, 2 );
-  _d->lbBackgorund->draw( emlbPic, width() - emlbPic.width()-4, 2 );
 }
 
 void WindowMessageStack::draw(gfx::Engine& painter )
 {
-  if( !isVisible() || getChildren().empty() )
+  if( !visible() || children().empty() )
     return;
 
   Widget::draw( painter );
@@ -59,7 +69,7 @@ void WindowMessageStack::_update()
 {
   Point offsetLb( width() / 2, 12 );
   Point offset( 0, 23 );
-  Widgets wds = getChildren();
+  Widgets wds = children();
   foreach( widget, wds )
   {
     (*widget)->setCenter( offsetLb );
@@ -69,7 +79,7 @@ void WindowMessageStack::_update()
 
 void WindowMessageStack::beforeDraw(gfx::Engine& painter)
 {
-  Widget::Widgets wds = getChildren();
+  Widget::Widgets wds = children();
   unsigned int myWidth = width();
   int speed = std::max<int>( 20, 2 * myWidth / (painter.fps()+1) );
 
@@ -91,15 +101,12 @@ bool WindowMessageStack::onEvent( const NEvent& ) {  return false; }
 
 void WindowMessageStack::addMessage( std::string message )
 {
-  if( getChildren().size() > 3 )
+  if( children().size() > 3 )
   {
-    removeChild( *getChildren().begin() );
+    removeChild( *children().begin() );
   }
 
-  Label* lbMessage = new Label( this, Rect( 0, 0, 2, 20), message );
-  lbMessage->setTextAlignment( align::center, align::center );
-  lbMessage->setBackgroundPicture( *_d->lbBackgorund );
-  new WidgetDeleter( lbMessage, 5000 );
+  new LabelA( this, Rect( 0, 0, 2, 20), message );
 
   _update();
 }

@@ -33,7 +33,6 @@ public:
   static PictureBank& instance();
 
   // set the current picture
-  void setPicture(const std::string &name, SDL_Surface &surface);
   void setPicture(const std::string &name, const Picture& picture);
 
   // show resource
@@ -42,17 +41,10 @@ public:
   // show resource
   Picture& getPicture(const std::string &prefix, const int idx);
 
-  // create runtime resources
-  void createResources();
-
-  // loads all resources of the given archive file
-  //void loadArchive(const std::string &filename, GfxEngine& engine );
   ~PictureBank();
 
 private:
   PictureBank();
-
-  Picture makePicture(SDL_Surface *surface, const std::string& resource_name) const;
 
   class Impl;
   ScopedPtr< Impl > _d;

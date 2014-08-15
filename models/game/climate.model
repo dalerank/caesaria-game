@@ -1,5 +1,5 @@
 {
-  central : "/gfx/pics.zip"
-  north : "/gfx/pics_north.zip"
-  south : "/gfx/pics_south.zip"
+  central : ":/gfx/pics.zip"
+  north : ":/gfx/pics_north.zip"
+  south : ":/gfx/pics_south.zip"
 }

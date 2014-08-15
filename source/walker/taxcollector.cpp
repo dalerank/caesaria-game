@@ -58,7 +58,7 @@ void TaxCollector::_centerTile()
   }
 }
 
-std::string TaxCollector::getThinks() const
+std::string TaxCollector::currentThinks() const
 {
   city::Helper helper( _city() );
   TilePos offset( 2, 2 );
@@ -76,7 +76,7 @@ std::string TaxCollector::getThinks() const
   if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
   if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
 
-  return ServiceWalker::getThinks();
+  return ServiceWalker::currentThinks();
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
@@ -95,10 +95,9 @@ TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-int TaxCollector::getMoney() const
+float TaxCollector::getMoney() const
 {
-  int save = round(_d->money);
-  Logger::warning("TaxCollector %f rounded to %d", _d->money, save);
+  float save = _d->money;
   _d->money = 0;
   return save;
 }

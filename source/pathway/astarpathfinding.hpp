@@ -45,7 +45,8 @@ public:
   void setCondition( const TilePossibleCondition& condition );
   void resetCondition();
   
-  unsigned int getMaxLoopCount() const;
+  unsigned int maxLoopCount() const;
+  void setMaxLoopCount( unsigned int count );
 
   void setVerboseMode( int level );
 

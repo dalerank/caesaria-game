@@ -29,8 +29,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
+namespace infobox
+{
+
+AboutColosseum::AboutColosseum(Widget *parent, const Tile &tile)
+  : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
   setConstruction( ptr_cast<Construction>( coloseum ) );
@@ -63,6 +66,8 @@ InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
   }
 }
 
-InfoboxColosseum::~InfoboxColosseum() {}
+AboutColosseum::~AboutColosseum() {}
+
+}
 
 }//end namespace gui

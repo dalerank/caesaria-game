@@ -51,16 +51,21 @@ __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
 __REG_PROPERTY(animationsModel )
 __REG_PROPERTY(walkerModel)
-__REG_PROPERTY(giftsModel)
 __REG_PROPERTY(emblemsModel )
-__REG_PROPERTY(testArchive )
+__REG_PROPERTY(remakeModel )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
 __REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
-__REG_PROPERTY(rectuterDistance)
+__REG_PROPERTY(render)
+__REG_PROPERTY(empireObjectsModel)
+__REG_PROPERTY(pic_offsets)
+__REG_PROPERTY(picsArchive)
+__REG_PROPERTY(opengl_opts)
+__REG_PROPERTY(font)
+__REG_PROPERTY(freeplay_opts)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -99,11 +104,17 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
   _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
   _d->options[ animationsModel     ] = Variant( std::string( "/animations.model" ) );
-  _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
+  _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
-  _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
+  _d->options[ remakeModel         ] = Variant( std::string( "/remake.model" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
+  _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.model" ) );
+  _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
+  _d->options[ opengl_opts         ] = Variant( std::string( "/opengl.model" ) );
+  _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
+  _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
   _d->options[ needAcceptBuild     ] = false;
+  _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
@@ -115,7 +126,6 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
-  _d->options[ rectuterDistance    ] = 35;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;

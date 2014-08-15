@@ -18,17 +18,20 @@
 #ifndef __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui
 {
 
-class AdvisorEmployerWindow : public Widget
+namespace advisorwnd
+{
+
+class Employer : public Window
 {
 public:
-  AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );
+  Employer( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
   virtual bool onEvent(const NEvent &event);
@@ -37,6 +40,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace advisorwnd
 
 }//end namespace gui
 

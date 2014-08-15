@@ -11,7 +11,9 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// alo  ng with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "core/exception.hpp"
 #include "directory.hpp"
@@ -42,6 +44,8 @@
 namespace vfs
 {
 
+Directory::~Directory() {}
+  
 bool Directory::create( std::string dir )
 {
   Directory rdir( dir );
@@ -154,7 +158,6 @@ Directory::Directory( const std::string& nPath ) : Path( nPath )
 
 Directory::Directory( const Directory& nPath ) : Path( nPath.toString()  )
 {
-
 }
 
 Path Directory::getFilePath( const Path& fileName )
@@ -164,13 +167,13 @@ Path Directory::getFilePath( const Path& fileName )
   return Path( ret );
 }
 
-Directory Directory::operator/(const Directory& dir)
+Directory Directory::operator/(const Directory& dir) const
 {
   std::string dr = addEndSlash().toString();
   return Directory( dr + dir.toString() );
 }
 
-Path Directory::operator/(const Path& filename)
+Path Directory::operator/(const Path& filename) const
 {
   std::string dr = addEndSlash().toString();
   std::string fn = filename.removeBeginSlash().toString();

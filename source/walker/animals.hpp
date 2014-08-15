@@ -40,7 +40,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
 
 protected:
   virtual void _findNewWay(const TilePos &start);
@@ -49,20 +49,38 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class Sheep : public Animal
+class Herbivorous : public Animal
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
   virtual void send2City(const TilePos& start);
-  virtual bool die();
 
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual void _noWay();
+
+  Herbivorous( constants::walker::Type type, PlayerCityPtr city );
+
+private:
+  int _noWayCount;
+};
+
+class Sheep : public Herbivorous
+{
+public:
+  static WalkerPtr create( PlayerCityPtr city );
 
 private:
   Sheep( PlayerCityPtr city );
+};
+
+class Zebra : public Herbivorous
+{
+public:
+  static WalkerPtr create( PlayerCityPtr city );
+
+private:
+  Zebra( PlayerCityPtr city );
 };
 
 class Wolf : public Animal

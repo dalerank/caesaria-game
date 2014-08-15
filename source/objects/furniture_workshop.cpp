@@ -30,7 +30,7 @@ bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArr
   return Factory::canBuild( city, pos, aroundTiles );
 }
 
-void FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
+bool FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
@@ -38,6 +38,8 @@ void FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
   bool haveTimberLogger = !helper.find<TimberLogger>( building::timberLogger ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
+
+  return true;
 }
 
 FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, building::furnitureWorkshop, Size(2) )

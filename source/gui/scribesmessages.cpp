@@ -17,7 +17,6 @@
 
 #include "scribesmessages.hpp"
 #include "gameautopause.hpp"
-#include "game/settings.hpp"
 #include "listbox.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/datetimehelper.hpp"
@@ -32,6 +31,7 @@
 #include "texturedbutton.hpp"
 #include "core/color.hpp"
 #include "event_messagebox.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -102,6 +102,22 @@ protected:
       case mouseLbtnRelease: oc3_emit onShowMessage( selected() ); break;
       case mouseRbtnRelease: oc3_emit onRemoveMessage( selected() ); break;
       default: break;
+
+      case mouseMoved:
+      {
+        int index = itemAt( event.mouse.pos() );
+        if( index >= 0 )
+        {
+          ListBoxItem& itemUnderMouse = item( index );
+
+          VariantMap options = itemUnderMouse.data().toMap();
+          bool opened = options.get( lc_opened, false );
+
+          std::string text = opened ? "" : _("##scribemessages_unread##");
+          setTooltipText( text );
+        }
+      }
+      break;
       }
     }
 
@@ -120,12 +136,12 @@ public:
 ScribesMessagestWindow::~ScribesMessagestWindow() {}
 
 ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
-  : Widget( p, -1, Rect( 0, 0, 480, 320 ) ), _d( new Impl )
+  : Window( p, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
   _d->city = city;
   _d->locker.activate();
 
-  setupUI( GameSettings::rcpath( "/gui/scribesmessages.gui" ) );
+  setupUI( ":/gui/scribesmessages.gui" );
   setCenter( p->center() );
 
   WidgetEscapeCloser::insertTo( this );
@@ -145,7 +161,7 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
 
 void ScribesMessagestWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( painter );
@@ -155,7 +171,9 @@ void ScribesMessagestWindow::_fillMessages()
 {
   _d->lbxMessages->clear();
 
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << _d->city->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     const city::Info::Messages& messages = srvc->messages();
@@ -175,7 +193,9 @@ void ScribesMessagestWindow::_fillMessages()
 
 void ScribesMessagestWindow::_showMessage(int index)
 {
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << _d->city->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     city::Info::ScribeMessage mt = srvc->getMessage( index );
@@ -190,7 +210,9 @@ void ScribesMessagestWindow::_showMessage(int index)
 
 void ScribesMessagestWindow::_removeMessage(int index)
 {
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << _d->city->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     srvc->removeMessage( index );

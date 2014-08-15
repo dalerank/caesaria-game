@@ -30,20 +30,17 @@ using namespace constants;
 namespace gfx
 {
 
-static const char* fireLevelName[] = { "##very_low_fire_risk##", "##very_low_fire_risk##", "##low_fire_risk##",
-                                       "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##" };
+static const char* fireLevelName[] = { "##very_low_fire_risk##", "##some_low_fire_risk##", "##low_fire_risk##",
+                                       "##middle_file_risk##",
+                                       "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##",
+                                       "##moment_fire_risk##" };
 
-namespace {
-  std::set<int> layerFireWalkers;
-}
 
 int LayerFire::type() const {  return citylayer::fire; }
 
-std::set<int> LayerFire::visibleWalkers() const {  return layerFireWalkers; }
-
 void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
@@ -80,7 +77,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
-        fireLevel = (int)house->getState( Construction::fire );
+        fireLevel = (int)house->state( Construction::fire );
         needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         city::Helper helper( _city() );
@@ -94,7 +91,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
         ConstructionPtr constr = ptr_cast<Construction>( overlay );
         if( constr != 0 )
         {
-          fireLevel = (int)constr->getState( Construction::fire );
+          fireLevel = (int)constr->state( Construction::fire );
         }
 
         city::Helper helper( _city() );
@@ -132,8 +129,8 @@ void LayerFire::handleEvent(NEvent& event)
         ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
         if( constr != 0 )
         {
-          int fireLevel = math::clamp<int>( constr->getState( Construction::fire ), 0, 100 );
-          text = fireLevelName[ math::clamp( fireLevel / 16, 0, 5 ) ];
+          int fireLevel = math::clamp<int>( constr->state( Construction::fire ), 0, 100 );
+          text = fireLevelName[ math::clamp<int>( fireLevel / 12.5, 0, 7 ) ];
         }
       }
 
@@ -160,7 +157,7 @@ LayerFire::LayerFire( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 18 );
-  layerFireWalkers.insert( walker::prefect );
+  _addWalkerType( walker::prefect );
 }
 
 }//end namespace gfx

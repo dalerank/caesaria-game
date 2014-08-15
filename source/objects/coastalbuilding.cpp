@@ -61,7 +61,7 @@ bool CoastalFactory::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray
   return (is_constructible && direction != noneDirection );
 }
 
-void CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
+bool CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
 {
   _setDirection( _d->getDirection( city, pos ) );
 
@@ -69,7 +69,7 @@ void CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
-  Factory::build( city, pos );
+  return Factory::build( city, pos );
 }
 
 void CoastalFactory::destroy()

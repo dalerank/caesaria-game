@@ -30,8 +30,7 @@ public:
     Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
 
     int width() const { return _x; }
-    int height
-    () const { return _y; }
+    int height() const { return _y; }
 
     void setWidth( int w ) { _x = w; }
     void setHeight( int h ) { _y = h; }
@@ -43,7 +42,7 @@ public:
     bool operator==(const Size& other) const{ return (_x == other._x) && ( _y == other._y ); }
     bool operator!=(const Size& other) const{ return (_x != other._x ) || ( _y != other._y ); }
     Size& operator+=(const Size& other) { _x += other._x; _y += other._y; return *this; }
-    Size operator-(const Size& other) { return Size( _x - other._x, _y - other._y ); }
+    Size operator-(const Size& other) const { return Size( _x - other._x, _y - other._y ); }
     Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
     Size operator/(float delim) { return Size( int(_x/delim), int(_y/delim) ); }
 };

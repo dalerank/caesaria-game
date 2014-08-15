@@ -42,7 +42,6 @@ class FestivalPlaningWindow::Impl
 {
 public:
   typedef enum { divId=0x200, festId=0x400 } FestID;
-  PictureRef background;
   Label* title;
   Label* festivalName;
   int festivalType;
@@ -105,12 +104,11 @@ FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityP
 FestivalPlaningWindow::~FestivalPlaningWindow(){}
 
 FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
-  : Widget( parent, id, rectangle ), _d( new Impl )
+  : Window( parent, rectangle, "", id ), _d( new Impl )
 {
+  setupUI( ":/gui/festivalplaning.gui" );
+  setCenter( parent->center() );
   _d->city = city;
-  _d->background.reset( Picture::create( size() ) );
-
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   _d->addImage( this, romeDivCeres, 0, 17 );
   _d->addImage( this, romeDivNeptune, 1, 18 );
@@ -121,13 +119,10 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->godBtns.front()->setPressed( true );
   _d->currentDivinity = romeDivCeres;
 
-  _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), _("##title##") );
-  _d->title->setFont( Font::create( FONT_3 ) );
-  _d->title->setTextAlignment( align::center, align::center );
-
+  _d->title = findChildA<Label*>( "lbTitle", true, this );
   _d->updateTitle();
 
-  _d->festivalName = new Label( this, Rect( 145, height() - 52, 145 + 200, height() - 22), "##small_festival##" );
+  _d->festivalName = findChildA<Label*>( "lbFestivalName", true, this );
 
   _d->festivalType = smallFest;
 
@@ -137,25 +132,28 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   /*int money = _d->city->getFunds().getValue();*/
   _d->festivalCost = city::Statistic::getFestivalCost( city, smallFest );
 
-  _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, width() - 95, 170 + 25),
-                                         StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ),
-                                         Impl::festId+smallFest, false, PushButton::whiteBorderUp );
-  _d->btnSmallFestival->setTextAlignment( align::upperLeft, align::center );
-  _d->btnSmallFestival->setIsPushButton( true );
+  _d->btnSmallFestival = findChildA<PushButton*>( "btnSmallFestival", true, this );
+  if( _d->btnSmallFestival )
+  {
+    _d->btnSmallFestival->setID( Impl::festId+smallFest );
+    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
+  }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
-  _d->btnMiddleFestival = new PushButton( this, _d->btnSmallFestival->relativeRect() + Point( 0, 30 ),
-                                          StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ),
-                                          Impl::festId+middleFest, false, PushButton::whiteBorderUp );
-  _d->btnMiddleFestival->setTextAlignment( align::upperLeft, align::center );
-  _d->btnMiddleFestival->setIsPushButton( true );
+  _d->btnMiddleFestival = findChildA<PushButton*>( "btnMiddleFestival", true, this );
+  if( _d->btnMiddleFestival )
+  {
+    _d->btnMiddleFestival->setID( Impl::festId+middleFest );
+    _d->btnMiddleFestival->setText( StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
+  }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
-  _d->btnGreatFestival = new PushButton( this, _d->btnMiddleFestival->relativeRect() + Point( 0, 30 ),
-                                         StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost  ),
-                                         Impl::festId+greatFest, false, PushButton::whiteBorderUp );
-  _d->btnGreatFestival->setTextAlignment( align::upperLeft, align::center );
-  _d->btnGreatFestival->setIsPushButton( true );
+  _d->btnGreatFestival = findChildA<PushButton*>( "btnGreatFestival", true, this );
+  if( _d->btnGreatFestival )
+  {
+    _d->btnGreatFestival->setID( Impl::festId+greatFest );
+    _d->btnGreatFestival->setText( StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
+  }
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
@@ -168,15 +166,10 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
 void FestivalPlaningWindow::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  if( _d->background )
-  {
-    painter.draw( *_d->background, screenLeft(), screenTop() );
-  }
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 bool FestivalPlaningWindow::onEvent(const NEvent& event)
@@ -184,16 +177,16 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
-    if( btn && (btn->getID() & Impl::divId ) )
+    if( btn && (btn->ID() & Impl::divId ) )
     {
       foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
 
       btn->setPressed( true );
-      _d->currentDivinity = _d->divines[ btn->getID() ];
+      _d->currentDivinity = _d->divines[ btn->ID() ];
 
       _d->updateTitle();
     }
-    else if( btn && (btn->getID() & Impl::festId ) )
+    else if( btn && (btn->ID() & Impl::festId ) )
     {
       _d->btnSmallFestival->setPressed( false );
       _d->btnMiddleFestival->setPressed( false );
@@ -201,7 +194,7 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
 
       StringArray titles;
       titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
-      _d->festivalType = (btn->getID() & 0xf);
+      _d->festivalType = (btn->ID() & 0xf);
       _d->festivalName->setText( _( titles[ _d->festivalType ] ) );
 
       btn->setPressed( true );

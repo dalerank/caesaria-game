@@ -36,32 +36,21 @@ static const Picture _invalidPicture = Picture();
 
 class Picture::Impl
 {
-public:
-  // the image is shifted when displayed
-  Point offset;
-
+public:  
+  Point offset;  // the image is shifted when displayed
   Size size;
-
-  // for game save
-  std::string name;
-
-  // for SDL surface
+  std::string name; // for game save
   SDL_Surface* surface;
-
-  // for OPEN_GL surface
-  //unsigned int glTextureID;  // texture ID for openGL
-
-  SDL_Surface* getZoomedSurface(SDL_Surface* src, double zoomx, double zoomy);
-  void zoomSurface(SDL_Surface* src, SDL_Surface* dst);
+  SDL_Texture* texture;  // for SDL surface
 };
 
 Picture::Picture() : _d( new Impl )
 {
-  _d->surface = NULL;
+  _d->texture = NULL;
   _d->offset = Point( 0, 0 );
-  //_d->glTextureID = 0;
   _d->size = Size( 0 );
   _d->name = "";
+  _d->surface = 0;
 }
 
 Picture::Picture( const Picture& other ) : _d( new Impl )
@@ -69,13 +58,15 @@ Picture::Picture( const Picture& other ) : _d( new Impl )
   *this = other;
 }
 
-void Picture::init(SDL_Surface *surface, const Point& offset )
+void Picture::init(SDL_Texture *texture, const Point& offset )
 {
-  _d->surface = surface;
+  _d->texture = texture;
   _d->offset = offset;
-  if( _d->surface != 0 )
+  if( _d->texture != 0 )
   {
-    _d->size = Size( _d->surface->w, _d->surface->h );
+    int w, h;
+    SDL_QueryTexture( texture, 0, 0, &w, &h );
+    _d->size = Size( w, h );
   }
 }
 
@@ -84,62 +75,45 @@ void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
 void Picture::addOffset( Point offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
-SDL_Surface* Picture::surface() const{  return _d->surface;}
-Point Picture::offset() const{  return _d->offset;}
+SDL_Texture* Picture::texture() const{  return _d->texture;}
+SDL_Surface*Picture::surface() const { return _d->surface;  }
+const Point& Picture::offset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
-void Picture::setName(std::string &name){  _d->name = name;}
+int Picture::pitch() const { return width() * 4; }
+void Picture::setName(const std::string &name){  _d->name = name;}
 std::string Picture::name() const{  return _d->name;}
-Size Picture::size() const{  return _d->size; }
-bool Picture::isValid() const{  return _d->surface != 0;}
+const Size& Picture::size() const{  return _d->size; }
+unsigned int Picture::sizeInBytes() const { return size().area() * 4; }
+bool Picture::isValid() const{  return _d->texture != 0; }
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
 
-Picture* Picture::clone() const
-{
-  if( !_d->surface )
-  {
-    Logger::warning( "No surface for clone" );
-    return Engine::instance().createPicture( Size( 100 ) );
-  }
-
-  int width = _d->surface->w;
-  int height = _d->surface->h;
-
-  SDL_Surface* img = SDL_ConvertSurface( _d->surface, _d->surface->format, SDL_SWSURFACE);
-  if (img == NULL) 
-  {
-    THROW("Cannot make surface, size=" << width << "x" << height);
-  }
-
-  Picture* newpic = Engine::instance().createPicture( Size( width, height ) );
-  newpic->init(img, _d->offset );
-
-  return newpic;
-}
-
 void Picture::setAlpha(unsigned char value)
 {
-  SDL_SetAlpha( _d->surface, SDL_SRCALPHA | SDL_RLEACCEL, value );
+  if( _d->texture )
+  {
+    SDL_SetTextureAlphaMod( _d->texture, value );
+  }
+
+  if( _d->surface )
+  {
+
+  }
 }
 
-void Picture::scale(Size size)
-{
- /* Picture scaledPic;
-  scaledPic.init*/
-}
-
-void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
+void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
 {
   draw( srcpic, srcrect, Rect( pos, srcrect.size() ), useAlpha );
 }
 
-void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
+void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
 {
-  SDL_Surface *srcimg = srcpic.surface();
+  SDL_Surface* srcimg = srcpic.surface();
 
-  if( !(srcimg && _d->surface) )
+  if( !(srcimg && _d->texture) )
   {
+    Logger::warning("Picture does not have surface or srcimg is null");
     return;
   }
 
@@ -154,22 +128,10 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
   dstRect.w = dstrect.width();
   dstRect.h = dstrect.height();
 
-  SDL_Surface* surface = _d->surface;
-  if( useAlpha )
-  {
-    SDL_BlitSurface(srcimg, &srcRect, surface, &dstRect);
-  }
-  else
-  {
-    SDL_Surface* tmpSurface = SDL_ConvertSurface( srcimg, surface->format, SDL_SWSURFACE);
-    SDL_SetAlpha( tmpSurface, 0, 0 );
-
-    SDL_BlitSurface(tmpSurface, &srcRect, surface, &dstRect);
-    SDL_FreeSurface( tmpSurface );
-  }
+  SDL_BlitSurface( srcimg, &srcRect, _d->surface, &dstRect );
 }
 
-void Picture::draw( const Picture &srcpic, const Point& pos, bool useAlpha )
+void Picture::draw(const Picture &srcpic, const Point& pos, bool useAlpha )
 {
   const Point& offset = srcpic._d->offset;
   draw( srcpic, Rect( Point( 0, 0 ), srcpic.size() ), 
@@ -177,145 +139,98 @@ void Picture::draw( const Picture &srcpic, const Point& pos, bool useAlpha )
 
 }
 
-void Picture::draw( const Picture &srcpic, int x, int y, bool useAlpha/*=true */ )
+void Picture::draw(const Picture &srcpic, int x, int y, bool useAlpha/*=true */ )
 {
   draw( srcpic, Point( x, y ), useAlpha );
 }
 
-void Picture::lock()
+unsigned int* Picture::lock()
 {
-  if (SDL_MUSTLOCK(_d->surface))
+  if( _d->texture )
   {
-    int rc = SDL_LockSurface(_d->surface);
-    if (rc < 0) THROW("Cannot lock surface: " << SDL_GetError());
+    int a;
+    SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
+    if( a == SDL_TEXTUREACCESS_STREAMING )
+    {
+      unsigned int* pixels;
+      int pitch;
+      int rc = SDL_LockTexture(_d->texture, 0, (void**)&pixels, &pitch );
+      if (rc < 0)
+      {
+        Logger::warning( "Cannot lock texture: %s", SDL_GetError() );
+        return 0;
+      }
+
+      return pixels;
+    }
   }
+
+  if( _d->surface )
+  {
+    if( SDL_MUSTLOCK(_d->surface) )
+    {
+      SDL_LockSurface(_d->surface);      
+    }
+    return (unsigned int*)_d->surface->pixels;
+  }
+
+  return 0;
 }
 
 void Picture::unlock()
 {
-  if (SDL_MUSTLOCK(_d->surface))
+  if( _d->texture )
   {
-    SDL_UnlockSurface(_d->surface);
-  }
-}
-
-int Picture::pixel(Point pos )
-{
-  // validate arguments
-  if( _d->surface == NULL || pos.x() < 0 || pos.y() < 0
-      || pos.x() >= _d->surface->w || pos.y() >= _d->surface->h)
-    return 0;
-
-  Uint32 res = 0;
-  switch (_d->surface->format->BytesPerPixel)
-  {
-  case 1:
-    // 8bpp
-    Uint8 *bufp8;
-    bufp8 = (Uint8 *)_d->surface->pixels + pos.y() *_d->surface->pitch + pos.x();
-    res = *bufp8;
-    break;
-
-  case 2:
-    // 15bpp or 16bpp
-    Uint16 *bufp16;
-    bufp16 = (Uint16 *)_d->surface->pixels + pos.y() *_d->surface->pitch/2 + pos.x();
-    res = *bufp16;
-    break;
-
-  case 3:
-    // 24bpp, very slow!
-    THROW("Unsupported graphic mode 24bpp");
-    break;
-
-  case 4:
-    // 32bpp
-    Uint32 *bufp32;
-    bufp32 = (Uint32 *)_d->surface->pixels + pos.y()*_d->surface->pitch/4 + pos.x();
-    res = *bufp32;
-    break;
+    int a;
+    SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
+    if( a == SDL_TEXTUREACCESS_STREAMING )
+    {
+      SDL_UnlockTexture(_d->texture);
+    }
   }
 
-  return res;
-}
-
-void Picture::setPixel(Point pos, const int color)
-{
-  // validate arguments
-  if (_d->surface == NULL || pos.x() < 0 || pos.y() < 0 || pos.x() >= _d->surface->w || pos.y() >= _d->surface->h)
-    return;
-
-  switch (_d->surface->format->BytesPerPixel)
+  if( _d->surface )
   {
-  case 1:
-    // 8bpp
-    Uint8 *bufp8;
-    bufp8 = (Uint8 *)_d->surface->pixels + pos.y() * _d->surface->pitch + pos.x();
-    *bufp8 = color;
-    break;
-
-  case 2:
-    // 15bpp or 16bpp
-    Uint16 *bufp16;
-    bufp16 = (Uint16 *)_d->surface->pixels + pos.y() * _d->surface->pitch / 2 + pos.x();
-    *bufp16 = color;
-    break;
-
-  case 3:
-    // 24bpp, very slow!
-    THROW("Unsupported graphic mode 24bpp");
-    break;
-
-  case 4:
-    // 32bpp
-    Uint32 *bufp32;
-    bufp32 = (Uint32 *)_d->surface->pixels + pos.y() * _d->surface->pitch/4 + pos.x();
-    *bufp32 = color;
-    break;
+    if( SDL_MUSTLOCK(_d->surface) )
+    {
+      SDL_UnlockSurface(_d->surface);
+    }
   }
 }
 
 Picture& Picture::operator=( const Picture& other )
 {
   _d->size = other._d->size;
-  // for game save
   _d->name = other._d->name;
-
-  // for SDL surface
-  _d->surface = other._d->surface;
-
-  // for OPEN_GL surface
-  //_d->glTextureID = other._d->glTextureID;  // texture ID for openGL
-
+  _d->texture = other._d->texture;
   _d->offset = other._d->offset;
+  _d->surface = other._d->surface;
 
   return *this;
 }
 
 Picture::~Picture(){}
 
-/*unsigned int& Picture::getGlTextureID() const
-{
-  return _d->glTextureID;
-}*/
-
 void Picture::destroy( Picture* ptr )
 {
   Engine::instance().deletePicture( ptr );
 }
 
-void Picture::fill( const NColor& color, const Rect& rect )
+void Picture::update()
 {
-  SDL_Surface* source = _d->surface;
+  if( _d->texture && _d->surface )
+  {
+    SDL_Rect r = { 0, 0, _d->surface->w, _d->surface->h };
+    SDL_UpdateTexture(_d->texture, &r, _d->surface->pixels, _d->surface->pitch );
+  }
+}
 
+void Picture::fill( const NColor& color, Rect rect )
+{
   if( _d->surface )
   {
-    SDL_LockSurface( source );
-    SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.width(), (Uint16)rect.height() };
-
-    SDL_FillRect(source, rect.width() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(),
-                                                                                             color.getBlue(), color.getAlpha() ));
-    SDL_UnlockSurface(source);
+    SDL_Rect r = { rect.left(), rect.top(), rect.width(), rect.height() };
+    SDL_FillRect( _d->surface, rect.width() == 0 ? 0 : &r, color.color );
   }
   else
   {
@@ -323,117 +238,33 @@ void Picture::fill( const NColor& color, const Rect& rect )
   }
 }
 
-Picture* Picture::create( const Size& size )
+Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
 {
-  Picture* ret = Engine::instance().createPicture( size );
-  Engine::instance().loadPicture( *ret );
+  Picture *pic = new Picture();
 
-  return ret;
+  if( data )
+  {
+    pic->_d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
+                                                 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+  }
+  else
+  {
+    pic->_d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
+                                             0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    SDL_FillRect( pic->_d->surface, 0, 0 );
+  }
+
+  Engine::instance().loadPicture( *pic );
+
+  if( !mayChange )
+  {
+    SDL_FreeSurface( pic->_d->surface );
+    pic->_d->surface = 0;
+  }
+
+  return pic;
 }
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
-
-void Picture::Impl::zoomSurface(SDL_Surface* src, SDL_Surface* dst)
-{
-	unsigned int* src_pointer = static_cast<unsigned int*>(src->pixels);
-	unsigned int* src_help_pointer = src_pointer;
-	unsigned int* dst_pointer = static_cast<unsigned int*>(dst->pixels);
-
-	int x, y;
-	unsigned int *sx_ca, *sy_ca;
-	unsigned int sx = static_cast<unsigned int>(0xffff * src->w / dst->w);
-	unsigned int sy = static_cast<unsigned int>(0xffff * src->h / dst->h);
-	unsigned int sx_c = 0;
-	unsigned int sy_c = 0;
-
-	// Allocates memory and calculates row wide&height
-	ScopedArrayPtr< unsigned int > sx_a( new unsigned int[dst->w + 1] );
-	sx_ca = sx_a.data();
-	for(x = 0; x <= dst->w; x++)
-	{
-		*sx_ca = sx_c;
-		sx_ca++;
-		sx_c &= 0xffff;
-		sx_c += sx;
-	}
-
-	ScopedArrayPtr< unsigned int > sy_a( new unsigned int[dst->h + 1] );
-	sy_ca = sy_a.data();
-	for (y = 0; y <= dst->h; y++)
-	{
-		*sy_ca = sy_c;
-		sy_ca++;
-		sy_c &= 0xffff;
-		sy_c += sy;
-	}
-	sy_ca = sy_a.data();
-
-	// Transfers the image data
-
-	if (SDL_MUSTLOCK(src))
-	{
-		SDL_LockSurface(src);
-	}
-	if (SDL_MUSTLOCK(dst))
-	{
-		SDL_LockSurface(dst);
-	}
-
-	for (y = 0; y < dst->h; y++)
-	{
-		src_pointer = src_help_pointer;
-		sx_ca = sx_a.data();
-		for (x = 0; x < dst->w; x++)
-		{
-			*dst_pointer = *src_pointer;
-			sx_ca++;
-			src_pointer += (*sx_ca >> 16);
-			dst_pointer++;
-		}
-		sy_ca++;
-		src_help_pointer = (unsigned int*)((unsigned char*)src_help_pointer + (*sy_ca >> 16) * src->pitch);
-	}
-
-	if (SDL_MUSTLOCK(dst))
-	{
-		SDL_UnlockSurface(dst);
-	}
-	if (SDL_MUSTLOCK(src))
-	{
-		SDL_UnlockSurface(src);
-	}
-}
-
-SDL_Surface* Picture::Impl::getZoomedSurface(SDL_Surface * src, double zoomx, double zoomy)
-{
-	if (src == NULL)
-		return NULL;
-
-	SDL_Surface *zoom_src;
-	SDL_Surface *zoom_dst;
-	int dst_w = std::max( static_cast<int>(round(src->w * zoomx)), 1 );
-	int dst_h = std::max( static_cast<int>(round(src->h * zoomy)), 1 );
-
-	// If source surface has no alpha channel then convert it
-	if (src->format->Amask == 0)
-	{
-		zoom_src = SDL_CreateRGBSurface(SDL_SWSURFACE, src->w, src->h, 32,
-																		0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff );
-		SDL_BlitSurface(src, NULL, zoom_src, NULL);
-	}
-	else
-	{
-		zoom_src = src;
-	}
-	// Create destination surface
-	zoom_dst = SDL_CreateRGBSurface(SDL_SWSURFACE, dst_w, dst_h, 32,
-			zoom_src->format->Rmask, zoom_src->format->Gmask,
-			zoom_src->format->Bmask, zoom_src->format->Amask);
-
-	// Zoom surface
-	zoomSurface(zoom_src, zoom_dst);
-
-	return zoom_dst;
-}
 
 }//end namespace gfx

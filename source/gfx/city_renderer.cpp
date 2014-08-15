@@ -67,7 +67,7 @@ public:
 
   PlayerCityPtr city;     // city to display
   Tilemap* tilemap;
-  gui::GuiEnv* guienv;
+  gui::Ui* guienv;
   Engine* engine;
   TilemapCamera camera;  // visible map area
   Layers layers;
@@ -88,7 +88,7 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::GuiEnv* guienv )
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv )
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();
@@ -164,9 +164,9 @@ void CityRenderer::render()
 
   _d->currentLayer->afterRender( *_d->engine );
 
-  if( _d->currentLayer->type() != _d->currentLayer->getNextLayer() )
+  if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
   {
-    _d->setLayer( _d->currentLayer->getNextLayer() );
+    _d->setLayer( _d->currentLayer->nextLayer() );
   }
 }
 
@@ -200,7 +200,7 @@ void CityRenderer::animate(unsigned int time)
 {
   const TilesArray& visibleTiles = _d->camera.tiles();
 
-  for( TilesArray::const_iterator i=visibleTiles.begin(); i != visibleTiles.end(); ++i )
+  foreach( i, visibleTiles )
   {
     (*i)->animate( time );
   }

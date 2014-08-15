@@ -50,10 +50,9 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
   VariantMap em_opts = _vars.get( "empire" ).toMap();
   VariantMap adv_options = _vars.get( "adviser" ).toMap();
 
-  Variant empire_enabled = em_opts.get( lc_enabled );
-  if( empire_enabled.isValid() )
+  if( !em_opts.empty() )
   {
-    game.empire()->setAvailable( empire_enabled );
+    game.empire()->load( em_opts );
   }
 
   Variant adv_enabled = adv_options.get( lc_enabled );

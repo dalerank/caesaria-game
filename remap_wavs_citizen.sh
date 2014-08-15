@@ -56,17 +56,17 @@ cp $WAV_DIR/*_exact*.wav $TMP_DIR
 # SUGGESTION: _average_life -> _good_life
 #    and _good_life    -> _great_life 
 
-rename _great1 _average_life $TMP_DIR/*.wav
-rename _great2 _good_life $TMP_DIR/*.wav
-rename _nofun1 _low_entairtenment $TMP_DIR/*.wav
-rename _nojob1  _high_workless $TMP_DIR/*.wav
-rename _needjob1 _need_workers $TMP_DIR/*.wav
-rename _relig1 _gods_angry $TMP_DIR/*.wav
-rename _starv1 _so_hungry $TMP_DIR/*.wav
+rename 's/_great1/_average_life/' $TMP_DIR/*.wav
+rename 's/_great2/_good_life/' $TMP_DIR/*.wav
+rename 's/_nofun1/_low_entairtenment/' $TMP_DIR/*.wav
+rename 's/_nojob1/_high_workless/' $TMP_DIR/*.wav
+rename 's/_needjob1/_need_workers/' $TMP_DIR/*.wav
+rename 's/_relig1/_gods_angry/' $TMP_DIR/*.wav
+rename 's/_starv1/_so_hungry/' $TMP_DIR/*.wav
 
 # These are talks for _normal_life and some situations
 # Need individual file name
-rename _exact _say_ $TMP_DIR/*.wav
+rename 's/_exact/_say_/' $TMP_DIR/*.wav
 
 mv $TMP_DIR/prefect_say_1.wav $TMP_DIR/prefect_find_goods.wav
 mv $TMP_DIR/prefect_say_2.wav $TMP_DIR/prefect_return.wav
@@ -79,28 +79,28 @@ mv $TMP_DIR/prefect_say_8.wav $TMP_DIR/prefect_out_goods.wav
 mv $TMP_DIR/prefect_say_9.wav $TMP_DIR/prefect_out_goods.wav
 mv $TMP_DIR/prefect_say_10.wav $TMP_DIR/prefect_out_goods.wav
 
-rename actors_ actor_ $TMP_DIR/*.wav
+rename 's/actors_/actor_/' $TMP_DIR/*.wav
 
-rename crtpsh_ cartPusher_ $TMP_DIR/*.wav
+rename 's/crtpsh_/cartPusher_/' $TMP_DIR/*.wav
 # Normal life action : assess working
 mv $TMP_DIR/cartPusher_say_1.wav $TMP_DIR/cartPusher_no_personnel_here.wav
 mv $TMP_DIR/cartPusher_say_2.wav $TMP_DIR/cartPusher_cantfind_destination.wav
 mv $TMP_DIR/cartPusher_say_3.wav $TMP_DIR/cartPusher_route_too_long.wav
 
-rename charot_ charioteer_ $TMP_DIR/*.wav
-rename emigrate_ emigrant_ $TMP_DIR/*.wav
+rename 's/charot_/charioteer_/' $TMP_DIR/*.wav
+rename 's/emigrate_/emigrant_/' $TMP_DIR/*.wav
 # leave the city, ranting.
 mv $TMP_DIR/emigrant_say_1.wav $TMP_DIR/emigrant_high_workless.wav
 mv $TMP_DIR/emigrant_say_2.wav $TMP_DIR/emigrant_so_hungry.wav
 mv $TMP_DIR/emigrant_say_3.wav $TMP_DIR/emigrant_high_tax.wav
 mv $TMP_DIR/emigrant_say_4.wav $TMP_DIR/emigrant_low_salary.wav
 
-rename engine_ engineer_ $TMP_DIR/*.wav
+rename 's/engine_/engineer_/' $TMP_DIR/*.wav
 # Normal life action : assess building
 mv $TMP_DIR/engineer_say_1.wav $TMP_DIR/engineer_have_trouble_buildings.wav
 mv $TMP_DIR/engineer_say_2.wav $TMP_DIR/engineer_building_allok.wav
 
-rename gladtr_ gladiator_ $TMP_DIR/*.wav
+rename 's/gladtr_/gladiator_/' $TMP_DIR/*.wav
 mv $TMP_DIR/gladiator_say_1.wav $TMP_DIR/gladiator_find_ennemy.wav
 
 # TODO: check if should be emigrant (leaving city)
@@ -117,23 +117,23 @@ rm $TMP_DIR/homles_say_1.wav
 rm $TMP_DIR/homles_say_2.wav 
 rm $TMP_DIR/mission_say_4.wav 
 
-rename liontr_ lionTamer_ $TMP_DIR/*.wav
+rename 's/liontr_/lionTamer_/' $TMP_DIR/*.wav
 mv $TMP_DIR/lionTamer_say_1.wav $TMP_DIR/lionTamer_good_education.wav
 mv $TMP_DIR/lionTamer_say_2.wav $TMP_DIR/lionTamer_normal_life.wav
 mv $TMP_DIR/lionTamer_say_3.wav $TMP_DIR/lionTamer_find_ennemy.wav
 
-rename granboy_ market_kid_ $TMP_DIR/*.wav
+rename 's/granboy_/market_kid_/' $TMP_DIR/*.wav
 # random market_kid_say_1 .. 3
 
 # SUGGESTION: marketTrader instead of marketBuyer
-rename market_ marketBuyer_ $TMP_DIR/*.wav
+rename 's/market_/marketBuyer_/' $TMP_DIR/*.wav
 # marketLady is the marketBuyer
 # Normal life action
 mv $TMP_DIR/marketBuyer_say_1.wav $TMP_DIR/marketLady_find_goods.wav
 mv $TMP_DIR/marketBuyer_say_2.wav $TMP_DIR/marketLady_return.wav
 mv $TMP_DIR/marketBuyer_say_3.wav $TMP_DIR/marketLady_out_goods.wav
 
-rename donkey_ merchant_ $TMP_DIR/*.wav
+rename 's/donkey_/merchant_/' $TMP_DIR/*.wav
 # waiting at warehouse
 # merchant_goto_warehouse -> sell
 # merchant_return_from_warehouse -> buy
@@ -145,9 +145,9 @@ mv $TMP_DIR/merchant_say_2.wav $TMP_DIR/merchant_greeting.wav
 # coming to the city
 mv $TMP_DIR/merchant_say_3.wav $TMP_DIR/merchant_impatientto_sell.wav
 
-rename patric_ patrician_ $TMP_DIR/*.wav
+rename 's/patric_/patrician_/' $TMP_DIR/*.wav
 
-rename vigils_ prefect_ $TMP_DIR/*.wav
+rename 's/vigils_/prefect_/' $TMP_DIR/*.wav
 # Normal life action : assess crime level
 mv $TMP_DIR/prefect_say_1.wav $TMP_DIR/prefect_no_crime.wav
 mv $TMP_DIR/prefect_say_2.wav $TMP_DIR/prefect_some_crime.wav
@@ -162,13 +162,13 @@ mv $TMP_DIR/prefect_say_8.wav $TMP_DIR/prefect_morale_low.wav
 mv $TMP_DIR/prefect_say_9.wav $TMP_DIR/prefect_morale_medium.wav
 mv $TMP_DIR/prefect_say_10.wav $TMP_DIR/prefect_morale_high.wav
 
-rename pleb_ recruter_ $TMP_DIR/*.wav
+rename 's/pleb_/recruter_/' $TMP_DIR/*.wav
 
 # nothing to do for rioter : random say
 
-rename pupils_ scholar_ $TMP_DIR/*.wav
+rename 's/pupils_/scholar_/' $TMP_DIR/*.wav
 
-rename boats_ seaMerchant_ $TMP_DIR/*.wav
+rename 's/boats_/seaMerchant_/' $TMP_DIR/*.wav
 # waiting at dock
 mv $TMP_DIR/seaMerchant_say_1.wav $TMP_DIR/seaMerchant_goto_warehouse.wav
 mv $TMP_DIR/seaMerchant_say_2.wav $TMP_DIR/seaMerchant_return_from_warehouse.wav
@@ -178,15 +178,15 @@ mv $TMP_DIR/seaMerchant_say_5.wav $TMP_DIR/seaMerchant_happy_tohome.wav
 # coming to the city
 mv $TMP_DIR/seaMerchant_say_4.wav $TMP_DIR/seaMerchant_impatientto_sell.wav
 
-rename taxman_ taxCollector_ $TMP_DIR/*.wav
+rename 's/taxman_/taxCollector_/' $TMP_DIR/*.wav
 # taxCollector assesses the tax income of the city
 mv $TMP_DIR/taxCollector_say_1.wav $TMP_DIR/taxCollector_high_tax.wav
 mv $TMP_DIR/taxCollector_say_2.wav $TMP_DIR/taxCollector_normal_life.wav
 mv $TMP_DIR/taxCollector_say_3.wav $TMP_DIR/taxCollector_very_little_tax.wav
 
-rename teach_ teacher_ $TMP_DIR/*.wav
+rename 's/teach_/teacher_/' $TMP_DIR/*.wav
 
-rename wallguard_ romeGuard_ $TMP_DIR/*.wav
+rename 's/wallguard_/romeGuard_/' $TMP_DIR/*.wav
 # Normal life action : assess ennemy
 mv $TMP_DIR/romeGuard_say_1.wav $TMP_DIR/romeGuard_no_barbarians.wav
 mv $TMP_DIR/romeGuard_say_2.wav $TMP_DIR/romeGuard_no_ennemy.wav

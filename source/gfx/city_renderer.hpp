@@ -35,7 +35,7 @@ public:
   CityRenderer();
   ~CityRenderer();
 
-  void initialize(PlayerCityPtr city, gfx::Engine* engine, gui::GuiEnv *guienv);
+  void initialize(PlayerCityPtr city, gfx::Engine* engine, gui::Ui *guienv);
 
   gfx::Camera* camera();
 

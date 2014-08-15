@@ -37,7 +37,6 @@ namespace gui
 class PopupMessageBox::Impl
 {
 public:
-  PictureRef background;
   PushButton* btnExit;
   PushButton* btnHelp; 
   Label* lbText;
@@ -47,41 +46,34 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
                                   const std::string& text,
                                   const DateTime& time,
                                   const std::string& receiver, int id )
-  : Widget( parent, id, Rect( 0, 0, 590, 320 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 590, 320  ), "", id ), _d( new Impl )
 {
-  setPosition( Point( (parent->width() - width())/2, (parent->height() - height()) / 2 ) );
+  setupUI( ":/gui/popupmessage.bui" );
+  setCenter( parent->center() );
   
-  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), title );
-  lbTitle->setFont( Font::create( FONT_3 ) );
-  lbTitle->setTextAlignment( align::center, align::center );
+  Label* lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  lbTitle->setText( title );
 
-  _d->background.reset( Picture::create( size() ) );
-  //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
-  PictureDecorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( width() - 34, 220 ) ), PictureDecorator::blackFrame );
-
-  _d->btnExit = new TexturedButton( this, Point( width() - 40, height() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
+  _d->btnExit = findChildA<PushButton*>( "btnExit", true, this );
   CONNECT( _d->btnExit, onClicked(), this, PopupMessageBox::deleteLater );
 
-  _d->btnHelp = new TexturedButton( this, Point( 18, height() - 40 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
+  _d->btnHelp = findChildA<PushButton*>( "btnHelp", true, this );
 
-  Font font2 = Font::create( FONT_2_WHITE );
-  font2.draw( *_d->background, DateTimeHelper::toStr( time ), 20, 50, false );
-  font2.draw( *_d->background, receiver, 180, 50 );
+  Label* lbTime = findChildA<Label*>( "lbTime", true, this );
+  lbTime->setText( DateTimeHelper::toStr( time ) );
 
-  _d->lbText = new Label( this, Rect( Point( 20, 100 ), Size( 550, 165 )), text );
+  Label* lbReceiver = findChildA<Label*>( "lbReceiver", true, this );
+  lbReceiver->setText( receiver );
+
+  _d->lbText = findChildA<Label*>( "lbText", true, this );
 }
 
 void PopupMessageBox::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 PopupMessageBox* PopupMessageBox::information(Widget* parent, const std::string& title, const std::string& text, const DateTime& time)

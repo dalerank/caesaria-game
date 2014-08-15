@@ -12,27 +12,37 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
+#include "core/signals.hpp"
 #include "objects/predefinitions.hpp"
 
 namespace gui
 {
 
-class AdvisorLegionWindow : public Widget
+namespace advisorwnd
+{
+
+class Legion : public Window
 {
 public:
-  AdvisorLegionWindow(Widget* parent, int id , FortList forts);
+  Legion(Widget* parent, int id , FortList forts);
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 private:
+  void _handleMove2Legion( FortPtr fort );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace advisorwnd
 
 }//end namespace gui
 #endif

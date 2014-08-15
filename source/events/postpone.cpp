@@ -37,7 +37,7 @@ class PostponeEvent::Impl
 {
 public:
   DateTime date;
-  int population;
+  unsigned int population;
   bool mayDelete;
   VariantMap options;
 
@@ -87,8 +87,8 @@ void PostponeEvent::_exec(Game& game, unsigned int)
   Logger::warning( "Start event name=" + _name + " type=" + _type );
 
   Impl::Worker workers[3] = { makeDelegate( _d.data(), &Impl::executeRequest ),
-        				            makeDelegate( _d.data(), &Impl::executeEvent ),
-					            makeDelegate( _d.data(), &Impl::executeCityService ) };
+                              makeDelegate( _d.data(), &Impl::executeEvent ),
+                              makeDelegate( _d.data(), &Impl::executeCityService ) };
 
   for( int i=0; i < 3; i++ )
   {
@@ -134,15 +134,16 @@ VariantMap PostponeEvent::save() const
   ret[ "type" ] = Variant( _type );
   ret[ "name" ] = Variant( _name );
   ret[ "date" ] = _d->date;
-  ret[ "population" ] = _d->population;
+  VARIANT_SAVE_ANY_D( ret, _d, population );
   return ret;
 }
 
 void PostponeEvent::load(const VariantMap& stream)
 {  
   GameEvent::load( stream );
+
   _d->date = stream.get( "date", DateTime( -1000, 1, 1 ) ).toDateTime();
-  _d->population = (int)stream.get( "population", 0 );
+  VARIANT_LOAD_ANY_D( _d, population, stream );
   _d->options = stream;
 }
 

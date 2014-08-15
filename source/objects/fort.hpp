@@ -25,8 +25,8 @@
 class Fort : public WorkingBuilding
 {
 public:
-  typedef enum { frmNorthLine=0, frmSouthLine,
-                 frmNorthDblLine, frmSouthDblLine,
+  typedef enum { frmNorthLine=0, frmWestLine,
+                 frmNorthDblLine, frmWestDblLine,
                  frmRandomLocation, frmSquad,
                  frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;
@@ -35,11 +35,12 @@ public:
   virtual ~Fort();
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
   virtual bool isNeedRoadAccess() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
+  virtual bool canDestroy() const;
 
   virtual TroopsFormation formation() const;
   virtual void setFormation( TroopsFormation formation );
@@ -49,6 +50,7 @@ public:
 
   virtual TilePos freeSlot() const;
   virtual void changePatrolArea();
+  virtual TilePos patrolLocation() const;
 
   virtual gfx::Picture legionEmblem() const;
   virtual std::string legionName() const;

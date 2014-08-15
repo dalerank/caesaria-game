@@ -1,6 +1,6 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "widget_factory.hpp"
 #include "core/stringhelper.hpp"
@@ -24,6 +26,8 @@
 #include "image.hpp"
 #include "smkviewer.hpp"
 #include "core/logger.hpp"
+#include "groupbox.hpp"
+#include "filelistbox.hpp"
 #include <map>
 
 namespace gui
@@ -64,9 +68,11 @@ WidgetFactory::WidgetFactory() : _d( new Impl )
   addCreator( CAESARIA_STR_EXT(EditBox),        new BaseWidgetCreator<EditBox>() );
   addCreator( CAESARIA_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
   addCreator( CAESARIA_STR_EXT(PushButton),     new BaseWidgetCreator<PushButton>() );
+  addCreator( CAESARIA_STR_EXT(GroupBox),       new BaseWidgetCreator<GroupBox>() );
   addCreator( CAESARIA_STR_EXT(ListBox),        new BaseWidgetCreator<ListBox>() );
   addCreator( CAESARIA_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
   addCreator( CAESARIA_STR_EXT(SmkViewer),      new BaseWidgetCreator<SmkViewer>() );
+  addCreator( CAESARIA_STR_EXT(FileListBox),    new BaseWidgetCreator<FileListBox>() );
 }
 
 WidgetFactory::~WidgetFactory() {}

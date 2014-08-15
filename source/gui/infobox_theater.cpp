@@ -26,8 +26,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxTheater::InfoboxTheater(Widget *parent, const Tile &tile)
-  : InfoboxWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
+namespace infobox
+{
+
+AboutTheater::AboutTheater(Widget *parent, const Tile &tile)
+  : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
 {
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
   setTitle( _( theater->name() ) );
@@ -45,6 +48,8 @@ InfoboxTheater::InfoboxTheater(Widget *parent, const Tile &tile)
   }
 }
 
-InfoboxTheater::~InfoboxTheater(){}
+AboutTheater::~AboutTheater(){}
+
+}
 
 }//end namespace gui

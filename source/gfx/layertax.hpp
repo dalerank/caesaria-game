@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LAYERTAX_H_INCLUDED__
 #define __CAESARIA_LAYERTAX_H_INCLUDED__
@@ -25,10 +27,10 @@ class LayerTax : public Layer
 {
 public:
   virtual int type() const;
-  virtual VisibleWalkers visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
+  virtual void handleEvent(NEvent& event);
 private:
   LayerTax( Camera& camera, PlayerCityPtr city );
 };

@@ -41,19 +41,19 @@ public oc3_signals:
 };
 
 HirePriorityWnd::HirePriorityWnd(Widget* p, city::Industry::Type type, int priority)
-  : Widget( p, -1, Rect( 0, 0, 416, 144 )), _d( new Impl )
+  : Window( p,  Rect( 0, 0, 416, 144 ), "" ), _d( new Impl )
 {
   Logger::warning( "HirePriorityWnd: show" );
+
   _d->locker.activate();
   _d->type = type;
   _d->priority = priority;
 
   WidgetEscapeCloser::insertTo( this );
 
-  Label* lbTitle = new Label( this, Rect( 0, 0, width(), height()), _("##priority_level##"), false, Label::bgWhiteFrame );
-  lbTitle->setTextAlignment( align::center, align::upperLeft );
-  lbTitle->setFont( Font::create( FONT_3 ) );
-  lbTitle->setTextOffset( Point( 0, 10 ) );
+  Label* lbTitle = new Label( this, Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
+  lbTitle->setFont( Font::create( FONT_5 ) );
+  lbTitle->setTextAlignment( align::center, align::center );
 
   Label* lbExit = new Label( this, Rect( 0, height() - 30, width(), height() - 10), _("##right_click_to_exit##") );
   lbExit->setFont( Font::create( FONT_1 ) );
@@ -76,6 +76,8 @@ HirePriorityWnd::HirePriorityWnd(Widget* p, city::Industry::Type type, int prior
   noPr->setPressed( priority == 0 );
 
   setCenter( p->center() );
+
+  setModal();
 }
 
 HirePriorityWnd::~HirePriorityWnd(){}
@@ -90,7 +92,7 @@ bool HirePriorityWnd::onEvent(const NEvent& event)
       {
         (*i)->setPressed( *i == event.gui.caller );
       }
-      _d->priority = event.gui.caller->getID();
+      _d->priority = event.gui.caller->ID();
       oc3_emit _d->onAcceptPrioritySignal( _d->type, _d->priority );
 
       deleteLater();

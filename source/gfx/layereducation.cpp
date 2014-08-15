@@ -31,15 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEducation::type() const
-{
-  return _type;
-}
-
-Layer::VisibleWalkers LayerEducation::visibleWalkers() const
-{
-  return _walkers;
-}
+int LayerEducation::type() const {  return _type; }
 
 int LayerEducation::_getLevelValue( HousePtr house ) const
 {
@@ -69,7 +61,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
 
 void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
@@ -188,16 +180,19 @@ void LayerEducation::handleEvent(NEvent& event)
           {
           case citylayer::education:
           {
-            if( house->hasServiceAccess( Service::academy ) )
+            bool schoolAccess = house->hasServiceAccess( Service::school );
+            bool libraryAccess = house->hasServiceAccess( Service::library );
+            bool academyAccess = house->hasServiceAccess( Service::academy );
+
+            if( schoolAccess && libraryAccess && academyAccess )
             {
-              text = "##education_have_academy_access##";
+              text = "##education_full_access##";
             }
             else
             {
-              bool schoolAccess = house->hasServiceAccess( Service::school );
-              bool libraryAccess = house->hasServiceAccess( Service::library );
               if( schoolAccess && libraryAccess ) { text = "##education_have_school_library_access##"; }
               else if( schoolAccess || libraryAccess ) { text = "##education_have_school_or_library_access##"; }
+              else if( academyAccess ) { text = "##education_have_academy_access##"; }
               else { text = "##education_have_no_access##"; }
             }
           }
@@ -235,9 +230,9 @@ LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::education:
-  case citylayer::school: _flags.insert( building::school ); _walkers.insert( walker::scholar ); break;
-  case citylayer::library: _flags.insert( building::library ); _walkers.insert( walker::librarian ); break;
-  case citylayer::academy: _flags.insert( building::academy ); _walkers.insert( walker::teacher ); break;
+  case citylayer::school: _flags.insert( building::school ); _addWalkerType( walker::scholar ); break;
+  case citylayer::library: _flags.insert( building::library ); _addWalkerType( walker::librarian ); break;
+  case citylayer::academy: _flags.insert( building::academy ); _addWalkerType( walker::teacher ); break;
   }
 }
 

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_mission.hpp"
 #include "gfx/tile.hpp"
@@ -35,6 +37,8 @@
 #include "world/emperor.hpp"
 #include "religion/pantheon.hpp"
 #include "core/locale.hpp"
+#include "city/terrain_generator.hpp"
+#include "events/fishplace.hpp"
 #include "climatemanager.hpp"
 
 using namespace religion;
@@ -42,7 +46,9 @@ using namespace religion;
 namespace {
 CAESARIA_LITERALCONST(climate)
 CAESARIA_LITERALCONST(adviserEnabled)
+CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
+CAESARIA_LITERALCONST(random)
 }
 
 class GameLoaderMission::Impl
@@ -71,12 +77,35 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
       ClimateManager::initialize( (ClimateType)climateType );
     }
 
-    GameLoader mapLoader;
-    mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
+    if( mapToLoad == lc_random )
+    {
+      TerrainGenerator targar;
+      VariantMap rndvm = vm[ lc_random ].toMap();
+      int n2size = rndvm.get( "size", 5 );
+      float smooth = rndvm.get( "smooth", 2.6 );
+      float terrain = rndvm.get( "terrain", 4 );
+      targar.create( game, n2size, smooth, terrain );
+    }
+    else
+    {
+      GameLoader mapLoader;
+      mapLoader.load( mapToLoad, game );
+    }
 
     PlayerCityPtr city = game.city();
+
+    Variant vCityName = vm[ "city.name" ];
+    if( vCityName.isValid() )
+    {
+      city->setName( vCityName.toString() );
+    }
+
+    city->player()->setRank( vm.get( "player.rank", 0 ) );
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
-    city->setOption( PlayerCity::adviserEnabled, vm[ lc_adviserEnabled ] );
+
+    Logger::warning( "GameLoaderMission: load city options ");
+    city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, true ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( lc_fishPlaceEnabled, true ) );
 
     GameDate::instance().init( vm[ "date" ].toDateTime() );
 
@@ -88,7 +117,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     }
 
     game.empire()->setCitiesAvailable( false );
-
+    Logger::warning( "GameLoaderMission: load empire state" );
     game.empire()->load( vm[ "empire" ].toMap() );
 
     city::VictoryConditions targets;
@@ -103,6 +132,13 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     city->setBuildOptions( options  );
 
     game.empire()->emperor().updateRelation( city->name(), 50 );
+
+    VariantMap fishpointsVm = vm[ "fishpoints" ].toMap();
+    foreach( it, fishpointsVm )
+    {
+      events::GameEventPtr e = events::FishPlaceEvent::create( it->second.toTilePos(), events::FishPlaceEvent::add );
+      e->dispatch();
+    }
 
     std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );

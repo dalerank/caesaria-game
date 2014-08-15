@@ -35,17 +35,9 @@ int LayerReligion::type() const
   return citylayer::religion;
 }
 
-Layer::VisibleWalkers LayerReligion::visibleWalkers() const
-{
-  VisibleWalkers ret;
-  ret.insert( walker::priest );
-
-  return ret;
-}
-
 void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
@@ -181,6 +173,7 @@ LayerReligion::LayerReligion( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
+  _addWalkerType( walker::priest );
 }
 
 }//end namespace gfx

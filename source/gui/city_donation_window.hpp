@@ -18,13 +18,13 @@
 #ifndef _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
 #define _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class CityDonationWindow : public Widget
+class CityDonationWindow : public Window
 {
 public:
   CityDonationWindow( Widget* parent, int money );

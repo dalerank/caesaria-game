@@ -1,5 +1,5 @@
 {  
-    lbPopulation#Label : {
+  lbPopulation#Label : {
     geometry : [ 0, 0, 120, 23 ]
     image : "paneling_00015"
     font : "FONT_2_WHITE"

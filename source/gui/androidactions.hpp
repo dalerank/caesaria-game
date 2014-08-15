@@ -18,13 +18,13 @@
 #ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
 #define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class AndroidActionsBar : public Widget
+class AndroidActionsBar : public Window
 {
 public:
   virtual void beforeDraw( gfx::Engine& painter);

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GARDEN_H_INCLUDED__
 #define __CAESARIA_GARDEN_H_INCLUDED__
@@ -26,10 +28,12 @@ public:
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual void load(const VariantMap &stream);
+  virtual void save(VariantMap &stream) const;
   virtual Desirability desirability() const;
   virtual std::string sound() const;
+  virtual void destroy();
   virtual void setPicture(gfx::Picture picture);
 
   void update();

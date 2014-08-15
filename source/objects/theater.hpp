@@ -25,10 +25,11 @@ class Theater : public EntertainmentBuilding
 public:
   Theater();
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
   virtual void timeStep(const unsigned long time);
   virtual int visitorsNumber() const;
   virtual void deliverService();
+  virtual bool mayWork() const;
 
 protected:
   virtual WalkerList _specificWorkers() const;

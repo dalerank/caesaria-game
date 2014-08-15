@@ -29,21 +29,13 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerHealth::type() const
-{
-  return _type;
-}
-
-Layer::VisibleWalkers LayerHealth::visibleWalkers() const
-{
-  return _walkers;
-}
+int LayerHealth::type() const {  return _type; }
 
 int LayerHealth::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
-  case citylayer::health: return (int) house->getState( House::health );
+  case citylayer::health: return (int) house->state( House::health );
   case citylayer::hospital: return (int) house->getServiceValue( Service::hospital );
   case citylayer::barber: return (int) house->getServiceValue( Service::barber );
   case citylayer::baths: return (int) house->getServiceValue( Service::baths );
@@ -54,7 +46,7 @@ int LayerHealth::_getLevelValue( HousePtr house )
 
 void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
@@ -206,19 +198,23 @@ LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
   {
   case citylayer::health:
   case citylayer::doctor:
-    _flags.insert( building::doctor ); _walkers.insert( walker::doctor );
+    _flags.insert( building::doctor );
+    _addWalkerType( walker::doctor );
   break;
 
   case citylayer::hospital:
-    _flags.insert( building::hospital ); _walkers.insert( walker::surgeon );
+    _flags.insert( building::hospital );
+    _addWalkerType( walker::surgeon );
   break;
 
   case citylayer::barber:
-    _flags.insert( building::barber ); _walkers.insert( walker::barber );
+    _flags.insert( building::barber );
+    _addWalkerType( walker::barber );
   break;
 
   case citylayer::baths:
-    _flags.insert( building::baths ); _walkers.insert( walker::bathlady );
+    _flags.insert( building::baths );
+    _addWalkerType( walker::bathlady );
   break;
   }
 }

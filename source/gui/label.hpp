@@ -19,7 +19,7 @@
 #define __CAESARIA_GUILABEL_H_INCLUDE_
 
 #include "widget.hpp"
-#include "gfx/picture.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/signals.hpp"
 
 namespace gui
@@ -30,7 +30,7 @@ class Label : public Widget
 public:
   typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone,
                  bgWhiteFrame, bgBlackFrame,
-                 bgWhiteBorderA, bgSimpleWhite } BackgroundMode;
+                 bgWhiteBorderA, bgSimpleWhite, bgSimpleBlack } BackgroundMode;
   //! constructor
   Label( Widget* parent );
 
@@ -46,7 +46,7 @@ public:
   virtual void setPadding( const Rect& margin );
 
   //! Get the font which is used right now for drawing
-  virtual Font getFont() const;
+  virtual Font font() const;
 
   //! Sets whether to draw the background
   virtual void setBackgroundMode( BackgroundMode mode );
@@ -54,7 +54,7 @@ public:
   virtual void beforeDraw( gfx::Engine& painter );
 
   //! Return background draw
-  virtual BackgroundMode getBackgroundMode() const;
+  virtual BackgroundMode backgroundMode() const;
 
   virtual bool onEvent(const NEvent &event);
 
@@ -80,10 +80,10 @@ public:
   virtual void setText(const std::string& text);
 
   //! Returns the height of the text in pixels when it is drawn.
-  virtual int getTextHeight() const;
+  virtual int textHeight() const;
 
   //! Returns the width of the current text, in the current font
-  virtual int getTextWidth() const;
+  virtual int textWidth() const;
 
   //! Set whether the string should be interpreted as right-to-left (RTL) text
   /** \note This component does not implement the Unicode bidi standard, the
@@ -104,6 +104,8 @@ public:
 
   virtual void setFont( const Font& font );
 
+  virtual void setAlpha( unsigned int value );
+
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   virtual void setLineIntervalOffset( const int offset );
@@ -118,9 +120,11 @@ oc3_signals public:
 protected:
   virtual void _resizeEvent();
   virtual void _updateTexture( gfx::Engine& painter );
+  virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text);
   virtual void _handleClick();
-  gfx::PictureRef& getPicture();
-  gfx::PictureRef& getTextPicture();
+
+  gfx::PictureRef& _textPictureRef();
+  gfx::Pictures& _backgroundRef();
 
 private:
 

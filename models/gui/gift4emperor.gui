@@ -1,34 +1,30 @@
 {  
   geometry : [ 0, 0, 510, 240 ]
-      
-  lbBackground#Label : {
-    geometryf : [ 0, 0, 1, 1 ]
-    bgtype : "whiteFrame"
+  bgtype : "whiteFrame"
     
-    lbTitle#Label : {
-      geometry : [ 85, 15, "pw-85", 40 ]
-      text : "##dispatch_gift_title##"   
-      textAlign : [ "center", "center" ]
-      font : "FONT_3"
-    }
+  lbTitle#Label : {
+    geometry : [ 85, 15, "pw-85", 40 ]
+    text : "##dispatch_gift_title##"   
+    textAlign : [ "center", "center" ]
+    font : "FONT_5"
+  }
     
-    lbxGifts#ListBox : {
-      geometry : [ 16, 64, "pw-16", 160 ] 
-      textAlign : [ "cebter", "center" ]
-    }
+  lbxGifts#ListBox : {
+    geometry : [ 16, 64, "pw-16", 160 ] 
+    textAlign : [ "cebter", "center" ]
+  }
     
-    btnSend#PushButton : {
-      geometry : [ 34, 200, 290, 220 ] 
-      font : "FONT_2"
-      text : "##dispatch_gift##"
-      bgtype : "whiteBorderUp"
-    }
+  btnSend#PushButton : {
+    geometry : [ 34, 200, 290, 220 ] 
+    font : "FONT_2"
+    text : "##dispatch_gift##"
+    bgtype : "whiteBorderUp"
+  }
     
-    btnCancel#PushButton : {
-      geometry : [ 340, 200, 496, 220 ] 
-      font : "FONT_2"
-      text : "##cancel##"      
-      bgtype : "whiteBorderUp"
-    }
+  btnCancel#PushButton : {
+    geometry : [ 340, 200, 496, 220 ] 
+    font : "FONT_2"
+    text : "##cancel##"      
+    bgtype : "whiteBorderUp"
   }
 }

@@ -221,39 +221,39 @@ public:
 	//! Returns the alpha component of the color.
 	/** The alpha component defines how opaque a color is.
 	\return The alpha value of the color. 0 is fully transparent, 255 is fully opaque. */
-	unsigned char getAlpha() const { return color>>24; }
+	unsigned char alpha() const { return color>>24; }
 
 	//! Returns the red component of the color.
 	/** \return Value between 0 and 255, specifying how red the color is.
 	0 means no red, 255 means full red. */
-	unsigned char getRed() const { return (color>>16) & 0xff; }
+	unsigned char red() const { return (color>>16) & 0xff; }
 
 	//! Returns the green component of the color.
 	/** \return Value between 0 and 255, specifying how green the color is.
 	0 means no green, 255 means full green. */
-	unsigned char getGreen() const { return (color>>8) & 0xff; }
+	unsigned char green() const { return (color>>8) & 0xff; }
 
 	//! Returns the blue component of the color.
 	/** \return Value between 0 and 255, specifying how blue the color is.
 	0 means no blue, 255 means full blue. */
-	unsigned char getBlue() const { return color & 0xff; }
+	unsigned char blue() const { return color & 0xff; }
 
 	//! Get lightness of the color in the range [0,255]
 	float getLightness() const
 	{
-     return 0.5f*(  (std::max)((std::max)(getRed(),getGreen()),getBlue())+(std::min)((std::min)(getRed(),getGreen()),getBlue()));
+     return 0.5f*(  (std::max)((std::max)(red(),green()),blue())+(std::min)((std::min)(red(),green()),blue()));
 	}
 
 	//! Get luminance of the color in the range [0,255].
 	float getLuminance() const
 	{
-		return 0.3f*getRed() + 0.59f*getGreen() + 0.11f*getBlue();
+		return 0.3f*red() + 0.59f*green() + 0.11f*blue();
 	}
 
 	//! Get average intensity of the color in the range [0,255].
 	unsigned int getAverage() const
 	{
-		return ( getRed() + getGreen() + getBlue() ) / 3;
+		return ( red() + green() + blue() ) / 3;
 	}
 
 	//! Sets the alpha component of the Color.
@@ -282,10 +282,10 @@ public:
 	\param dest: address where the 4x8 bit OpenGL color is stored. */
 	void toOpenGLColor(unsigned char* dest) const
 	{
-		*dest =   (unsigned char)getRed();
-		*++dest = (unsigned char)getGreen();
-		*++dest = (unsigned char)getBlue();
-		*++dest = (unsigned char)getAlpha();
+		*dest =   (unsigned char)red();
+		*++dest = (unsigned char)green();
+		*++dest = (unsigned char)blue();
+		*++dest = (unsigned char)alpha();
 	}
 
 	//! Sets all four components of the color at once.
@@ -326,10 +326,10 @@ public:
 	\return Addition of the two colors, clamped to 0..255 values */
 	NColor operator+(const NColor& other) const
 	{
-    return NColor( (std::min)( getAlpha() + other.getAlpha(), 255 ),
-                                (std::min)(getRed() + other.getRed(), 255),
-                                (std::min)(getGreen() + other.getGreen(), 255),
-                                (std::min)(getBlue() + other.getBlue(), 255));
+    return NColor( (std::min)( alpha() + other.alpha(), 255 ),
+                                (std::min)(red() + other.red(), 255),
+                                (std::min)(green() + other.green(), 255),
+                                (std::min)(blue() + other.blue(), 255));
 	}
 
 	//! Interpolates the color with a float value to another color
@@ -340,15 +340,15 @@ public:
 	{
     d = math::clamp(d, 0.f, 1.f);
 		const float inv = 1.0f - d;
-    return NColor((unsigned int)floor(other.getAlpha()*inv + getAlpha()*d),
-                        (unsigned int)floor(other.getRed()*inv + getRed()*d),
-                        (unsigned int)floor(other.getGreen()*inv + getGreen()*d),
-                        (unsigned int)floor(other.getBlue()*inv + getBlue()*d));
+    return NColor((unsigned int)floor(other.alpha()*inv + alpha()*d),
+                        (unsigned int)floor(other.red()*inv + red()*d),
+                        (unsigned int)floor(other.green()*inv + green()*d),
+                        (unsigned int)floor(other.blue()*inv + blue()*d));
 	}
 
 	int rgba() const
 	{
-		int a = getAlpha();
+		int a = alpha();
 		return ( ((color << 8) & 0xffffff00 ) + a);
 	}
 
@@ -390,10 +390,10 @@ public:
 	NColorf(NColor c)
 	{
 		const float inv = 1.0f / 255.0f;
-		r = c.getRed() * inv;
-		g = c.getGreen() * inv;
-		b = c.getBlue() * inv;
-		a = c.getAlpha() * inv;
+		r = c.red() * inv;
+		g = c.green() * inv;
+		b = c.blue() * inv;
+		a = c.alpha() * inv;
 	}
 
 	//! Converts this color to a Color without floats.

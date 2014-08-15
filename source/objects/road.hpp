@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ROAD_H_INCLUDE__
 #define __CAESARIA_ROAD_H_INCLUDE__
@@ -21,18 +23,20 @@
 class Road : public Construction
 {
 public:
+  typedef enum { lockTerrain=Construction::paramCount+1 } RoadFlag;
   Road();
 
-  virtual gfx::Picture computePicture();
+  virtual const gfx::Picture& picture(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& tmp ) const;
   void updatePicture();
 
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
+  virtual void burn();
   virtual void appendPaved( int value );
   virtual void computeAccessRoads();
   int pavedValue() const;
@@ -49,10 +53,14 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual void initTerrain( gfx::Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
-  virtual gfx::Picture computePicture();
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual const gfx::Picture& picture(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& tmp ) const;
   virtual void appendPaved(int value);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+  virtual const gfx::Picture& picture() const;
+  void updatePicture();
 };
 
 

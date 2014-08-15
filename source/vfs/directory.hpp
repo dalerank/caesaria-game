@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_DIRECTORY_H_INCLUDED__
 #define __CAESARIA_DIRECTORY_H_INCLUDED__
@@ -32,13 +34,13 @@ public:
   Directory( const std::string& nPath );
   Directory( const Directory& nPath );
 
-  virtual ~Directory() {}
+  virtual ~Directory();
 
   //void CopyTo( const NrpDir& pathNew );
   Path getFilePath( const Path& fileName );
 
-  Directory operator/(const Directory& dir );
-  Path operator/(const Path& filename );
+  Directory operator/(const Directory& dir ) const;
+  Path operator/(const Path& filename ) const;
 
   Entries getEntries() const;
   Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;

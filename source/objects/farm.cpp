@@ -172,10 +172,12 @@ void Farm::timeStep(const unsigned long time)
   }
 }
 
-void Farm::build(PlayerCityPtr city, const TilePos& pos)
+bool Farm::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
   computePictures();
+
+  return true;
 }
 
 void Farm::save( VariantMap& stream ) const
@@ -186,6 +188,8 @@ void Farm::save( VariantMap& stream ) const
 void Farm::load( const VariantMap& stream )
 {
   Factory::load( stream );
+
+  computePictures();
 }
 
 unsigned int Farm::getProduceQty() const

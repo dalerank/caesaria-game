@@ -119,7 +119,7 @@ void OverlaysMenu::_addButton(const int ovType, const Point& offset )
 
 bool OverlaysMenu::isPointInside( const Point& point ) const
 {
-  Rect clickedRect = const_cast< OverlaysMenu* >( this )->getEnvironment()->rootWidget()->absoluteRect();
+  Rect clickedRect = const_cast< OverlaysMenu* >( this )->ui()->rootWidget()->absoluteRect();
   return clickedRect.isPointInside( point );
 }
 
@@ -130,7 +130,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
     switch( event.gui.type )
     {
     case guiElementHovered:
-      switch( event.gui.caller->getID() )
+      switch( event.gui.caller->ID() )
       {
       case citylayer::risks:
       case citylayer::entertainments:
@@ -142,7 +142,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
           _d->buttons.clear();
 
-          _addButtons( event.gui.caller->getID() );
+          _addButtons( event.gui.caller->ID() );
           return true;
         }
       break;
@@ -169,7 +169,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
         _d->buttons.clear();
                 
-        oc3_emit _d->onSelectOverlayTypeSignal( event.gui.caller->getID() );
+        oc3_emit _d->onSelectOverlayTypeSignal( event.gui.caller->ID() );
         hide();
       }
     break;

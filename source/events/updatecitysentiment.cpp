@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "updatecitysentiment.hpp"
 #include "game/game.hpp"
@@ -40,7 +40,9 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
 {
   PlayerCityPtr city = game.city();
 
-  SmartPtr<city::Sentiment> srvc = ptr_cast<city::Sentiment>( city->findService( city::Sentiment::getDefaultName() ) );
+  city::SentimentPtr srvc;
+  srvc << city->findService( city::Sentiment::getDefaultName() );
+
   if( srvc.isValid() )
   {
     srvc->update( _value );

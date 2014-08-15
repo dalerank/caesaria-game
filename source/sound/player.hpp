@@ -29,7 +29,7 @@ class Player : public city::Srvc
 {
 public:
   static city::SrvcPtr create( PlayerCityPtr city );
-
+  static std::string defaultName();
   void update( const unsigned int time );
 
   virtual ~Player();

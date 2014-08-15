@@ -117,8 +117,11 @@ void CartSupplier::_reachedPathway()
       _reserveStorage();
     }
 
+    //wait while load cart
+    wait( _d->stock.qty() );
+
     // walker is near the granary/warehouse
-    _pathwayRef().rbegin();
+    _pathwayRef().move( Pathway::reverse );
     _centerTile();
     go();
   }
@@ -129,7 +132,7 @@ const Picture& CartSupplier::getCartPicture()
 {
   if( !_d->cartPicture.isValid() )
   {
-    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, getDirection() );
+    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, direction() );
   }
 
   return _d->cartPicture;
@@ -146,7 +149,7 @@ void CartSupplier::getPictures( Pictures& oPics)
    oPics.clear();
 
    // depending on the walker direction, the cart is ahead or behind
-   switch (getDirection())
+   switch (direction())
    {
    case constants::west:
    case constants::northWest:
@@ -238,7 +241,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   if( _d->storageBuildingPos.i() >= 0 )
   {
     // we found a destination!
-    setPos( pathWay.getStartPos() );
+    setPos( pathWay.startPos() );
     setPathway(pathWay);    
   }
   else

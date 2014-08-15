@@ -36,8 +36,8 @@ public:
   Traderoute(EmpirePtr empire, std::string begin, std::string end );
   ~Traderoute();
 
-  CityPtr getBeginCity() const;
-  CityPtr getEndCity() const;
+  CityPtr beginCity() const;
+  CityPtr endCity() const;
   std::string getName() const;
 
   void update( unsigned int time );

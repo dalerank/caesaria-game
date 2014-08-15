@@ -35,9 +35,6 @@ namespace {
 
 class DialogBox::Impl
 {
-public:
-  PictureRef background;
-
 oc3_signals public:
   Signal1<int> onResultSignal;
   Signal0<> onOkSignal;
@@ -47,19 +44,16 @@ oc3_signals public:
 
 DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
                       const std::string& text, int buttons )
-                      : Widget( parent, -1, rectangle ), _d( new Impl )
+                      : Window( parent, rectangle, "" ), _d( new Impl )
 {
   if( rectangle.size() == Size( 0, 0 ) )
   {
     setGeometry( Rect( 0, 0, 480, 160 ) );
     setCenter( parent->center() );
   }
-
-  _d->background.reset( Picture::create( size() ) );
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
-  lbTitle->setFont( Font::create( FONT_3 ) );
+  lbTitle->setFont( Font::create( FONT_5 ) );
   lbTitle->setTextAlignment( align::center, align::center );
 
   Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
@@ -96,14 +90,14 @@ bool DialogBox::onEvent( const NEvent& event )
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.gui.caller->getID();
-    _d->onResultSignal.emit( id );
+    int id = event.gui.caller->ID();
+    oc3_emit _d->onResultSignal( id );
 
     switch( id )
     {
-    case btnOk: _d->onOkSignal.emit(); break;
-    case btnCancel: _d->onCancelSignal.emit(); break;
-    case btnNever: _d->onNeverSignal.emit(); break;
+    case btnOk: oc3_emit _d->onOkSignal(); break;
+    case btnCancel: oc3_emit _d->onCancelSignal(); break;
+    case btnNever: oc3_emit _d->onNeverSignal(); break;
     }
 
     return true;
@@ -118,17 +112,12 @@ Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
 
 void DialogBox::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
   {
     return;
   }
 
-  if( _d->background )
-  {
-    painter.draw( *_d->background, screenLeft(), screenTop() );
-  }
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 }//end namespace gui

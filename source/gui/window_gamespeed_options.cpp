@@ -17,7 +17,6 @@
 
 #include "window_gamespeed_options.hpp"
 #include "gfx/engine.hpp"
-#include "game/settings.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "label.hpp"
@@ -44,14 +43,14 @@ public:
 
 GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, int scrollSpeed,
                                                int autosaveInterval)
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->speedValue = gameSpeed;
   _d->scrollValue = scrollSpeed;
   _d->autosaveInterval = autosaveInterval;
   _d->locker.activate();
 
-  setupUI( GameSettings::rcpath( "/gui/speedoptions.gui" ) );
+  setupUI( ":/gui/speedoptions.gui" );
 
   setCenter( parent->center() );
 
@@ -64,7 +63,7 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && guiButtonClicked == event.gui.type )
   {
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     switch( id )
     {
     case 1: case 2: _d->speedValue += (id == 1 ? -10 : +10 ); _update(); break;
@@ -73,9 +72,9 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 
     case 1001:
     {
-      _d->onGameSpeedChangeSignal.emit( _d->speedValue );
-      _d->onScrollSpeedChangeSignal.emit( _d->scrollValue );
-      _d->onAutosaveIntervalShangeSignal.emit( _d->autosaveInterval );
+      oc3_emit _d->onGameSpeedChangeSignal( _d->speedValue );
+      oc3_emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
+      oc3_emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
       deleteLater();
     }
     break;
@@ -105,7 +104,7 @@ void GameSpeedOptionsWindow::_update()
 
   if( lbSpeed ) { lbSpeed->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
   if( lbScroll ) { lbScroll->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
-  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " month" ); }
+  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " m." ); }
 }
 
 }//end namespace gui

@@ -18,14 +18,14 @@
 #ifndef __CAESARIA_POPUP_MESSAGEBOX_H_INCLUDED__
 #define __CAESARIA_POPUP_MESSAGEBOX_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class PopupMessageBox : public Widget
+class PopupMessageBox : public Window
 {
 public:
   PopupMessageBox(Widget* parent,

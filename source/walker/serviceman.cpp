@@ -83,7 +83,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::colloseum:  _setType( walker::lionTamer );    break;
   case Service::hippodrome:   _setType( walker::charioteer ); break;
   case Service::market: _setType( walker::marketLady ); nameType = NameGenerator::female; break;
-  case Service::native: _setType( walker::missioner ); break;
+  case Service::missionary: _setType( walker::missioner ); break;
 
   case Service::library:
   case Service::academy: _setType( walker::teacher ); break;
@@ -155,13 +155,13 @@ void ServiceWalker::_computeWalkerPath( int orders )
     return;
   }
 
-  setPos( bestPath->getStartPos() );
+  setPos( bestPath->startPos() );
   setPathway( *bestPath.object() );
 }
 
 void ServiceWalker::_cancelPath()
 {
-  TilesArray pathTileList = getPathway().allTiles();
+  TilesArray pathTileList = pathway().allTiles();
 
   foreach( tile, pathTileList )
   {
@@ -298,7 +298,7 @@ void ServiceWalker::_reachedPathway()
   else
   {
     // walker finished service => get back to service building    
-    _pathwayRef().rbegin();
+    _pathwayRef().move( Pathway::reverse );
     _computeDirection();
     go();
   }
@@ -314,16 +314,23 @@ void ServiceWalker::_brokePathway(TilePos p)
     {
       setPathway( way );
       go();
-    }
-    else
-    {
-      die();
+      return;
     }
   }
-  else
+
+  die();
+}
+
+void ServiceWalker::_noWay()
+{
+  TilesArray area = base()->enterArea();
+  if( area.contain( pos() ) )
   {
-    die();
+    deleteLater();
+    return;
   }
+
+  die();
 }
 
 void ServiceWalker::save( VariantMap& stream ) const

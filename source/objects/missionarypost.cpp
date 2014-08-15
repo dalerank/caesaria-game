@@ -22,10 +22,10 @@
 using namespace constants;
 
 MissionaryPost::MissionaryPost()
-  : ServiceBuilding( Service::native, building::missionaryPost, Size(2) )
+  : ServiceBuilding( Service::missionary, building::missionaryPost, Size(2) )
 {
   setMaximumWorkers(20);
-  setWorkers(0);  
+  setWorkers( 0 );
   setPicture( ResourceGroup::transport, 93 );
 
   setState( inflammability, 0 );

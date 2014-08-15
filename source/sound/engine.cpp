@@ -59,6 +59,9 @@ public:
   typedef std::map< audio::SoundType, int > Volumes;
   Samples samples;
   Volumes volumes;
+  vfs::Path currentTheme;
+
+  void checkFilename( vfs::Path& path );
 };
 
 Engine& Engine::instance()
@@ -156,7 +159,7 @@ bool Engine::_loadSound(vfs::Path filename)
 {
   if(_d->useSound>0 && _d->samples.size()<Impl::maxSamplesNumner)
   {
-    Impl::Samples::iterator i = _d->samples.find( filename.toString() );
+    Impl::Samples::iterator i = _d->samples.find( filename.toString() );    
 
     if( i != _d->samples.end() )
     {
@@ -166,8 +169,8 @@ bool Engine::_loadSound(vfs::Path filename)
     Sample sample;
 
     /* load the sample */
-    vfs::NFile wavFile = vfs::NFile::open( filename );
-    ByteArray data = wavFile.readAll();
+    vfs::NFile soundFile = vfs::NFile::open( filename );
+    ByteArray data = soundFile.readAll();
 
     if( data.empty() )
     {
@@ -179,7 +182,7 @@ bool Engine::_loadSound(vfs::Path filename)
     sample.sound = filename.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "could not load wav (%s)", SDL_GetError() );
+      Logger::warning( "SoundEngine: could not load sound (%s)", SDL_GetError() );
       return false;
     }
 
@@ -194,7 +197,15 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
 {
   if(_d->useSound )
   {
-    bool isLoading = _loadSound( filename );
+    _d->checkFilename( filename );
+
+    if( type == themeSound )
+    {
+      stop( _d->currentTheme );
+      _d->currentTheme = filename;
+    }
+
+    bool isLoading = _loadSound( filename );   
 
     if( isLoading )
     {
@@ -231,12 +242,13 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
 
 int Engine::play(std::string rc, int index, int volume, SoundType type)
 {
-  std::string filename = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
+  std::string filename = StringHelper::format( 0xff, "%s_%05d.ogg", rc.c_str(), index );
   return play( filename, volume, type );
 }
 
 bool Engine::isPlaying(vfs::Path filename) const
 {
+  _d->checkFilename( filename );
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
   if( i == _d->samples.end() )
@@ -298,6 +310,12 @@ void Helper::initTalksArchive(const vfs::Path& filename)
 
   saveFilename = filename;
   vfs::FileSystem::instance().mountArchive( saveFilename );
+}
+
+void Engine::Impl::checkFilename(vfs::Path& path)
+{
+  std::string ext = path.extension().empty() ? ".ogg" : "";
+  path = path + ext;
 }
 
 }//end namespace audio

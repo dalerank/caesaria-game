@@ -20,6 +20,8 @@
 #ifndef _CAESARIA_SDL_ENGINE_H_INCLUDE_
 #define _CAESARIA_SDL_ENGINE_H_INCLUDE_
 
+#include <SDL_surface.h>
+#include <SDL_video.h>
 #include "engine.hpp"
 #include "picture.hpp"
 #include "core/scopedptr.hpp"
@@ -44,19 +46,20 @@ public:
 
   virtual void setFlag( int flag, int value );
 
-  virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
-  virtual void resetTileDrawMask();
+  virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
+  virtual void resetColorMask();
 
   // deletes a picture (deallocate memory)
   virtual void deletePicture(Picture* pic);
   virtual void loadPicture(Picture &ioPicture);
   virtual void unloadPicture(Picture& ioPicture);
 
-  virtual void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
-  virtual void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
-  virtual void draw(const Pictures& pictures, const Point& pos, Rect* clipRect=0 );
-  // creates a picture with the given size, it will need to be loaded by the graphic engine
-  virtual Picture* createPicture(const Size& size);
+  virtual void draw( const Picture& picture, const int dx, const int dy, Rect* clipRect=0);
+  virtual void draw( const Picture& picture, const Point& pos, Rect* clipRect=0 );
+  virtual void draw( const Pictures& pictures, const Point& pos, Rect* clipRect=0 );  
+  virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect=0 );
+
+  virtual void drawLine(const NColor &color, const Point &p1, const Point &p2);
 
   virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );
@@ -65,8 +68,11 @@ public:
   virtual Point cursorPos() const;
 
   virtual Picture& screen();
+  virtual unsigned int format() const;
 
-private:
+  virtual void debug( const std::string& text, const Point& pos );
+
+protected:
   class Impl;
   ScopedPtr< Impl > _d;
 };

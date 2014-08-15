@@ -23,19 +23,25 @@
 namespace gui
 {
 
-class InfoboxConstruction : public InfoboxSimple
+namespace infobox
+{
+
+class AboutConstruction : public Simple
 {
 public:
-  InfoboxConstruction(Widget* parent, Rect rect, Rect blackArea);
-  virtual ~InfoboxConstruction();
+  AboutConstruction(Widget* parent, Rect rect, Rect blackArea);
+  virtual ~AboutConstruction();
 
   virtual bool onEvent(const NEvent &event);
 
   virtual ConstructionPtr getConstruction() const;
   virtual void setConstruction( ConstructionPtr construction );
 private:
+  void _switch( int flag );
   ConstructionPtr _construction;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CONSTRUCTION_H_INCLUDE_
