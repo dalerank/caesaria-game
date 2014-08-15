@@ -4,7 +4,7 @@
 
 ![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
-# CaesarIA 0.3
+# CaesarIA 0.4
 
 CaesarIA is an open-source remake of the popular
 citybuilder and economic sim Caesar III, videogame by
@@ -63,4 +63,3 @@ CaesarIA requires the following developer libraries:
 It's also been tested on a variety of other tools on
 Windows/Mac/Linux. More detailed compiling instructions
 and pre-compiled dependencies are available at the [wiki](https://bitbucket.org/dalerank/caesaria/wiki/Compiling).
-
