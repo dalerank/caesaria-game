@@ -50,7 +50,6 @@ class VariantMap;
 #define VARIANT_LOAD_STR_D(d,param,vm) d->param = vm.get( #param ).toString();
 #define VARIANT_LOAD_TIME_D(d,param,vm) d->param = vm.get( #param ).toDateTime();
 
-
 template <typename T>
 inline Variant createVariant2FromValue(const T &);
 

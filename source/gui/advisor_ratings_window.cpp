@@ -34,6 +34,7 @@
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "city/funds.hpp"
 #include "city/requestdispatcher.hpp"
 
 using namespace gfx;
@@ -177,22 +178,29 @@ void Ratings::Impl::checkProsperityRating()
     }
 
     StringArray troubles;
-    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles.push_back( _("##bad_house_quality##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles.push_back( _("##lost_money_last_year##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles.push_back( _("##high_workless_number##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles.push_back( _("##workers_salary_less_then_rome##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles.push_back( _("##much_plebs##") ); }
+    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles << "##high_workless_number##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles << "##much_plebs##"; }
     if( prosperity->getMark( city::ProsperityRating::cmChange ) == 0 )
     {
-      troubles.push_back( _("##no_prosperity_change##") );
-      troubles.push_back( _("##how_to_grow_prosperity##") );
+      troubles << "##no_prosperity_change##";
+      troubles << "##how_to_grow_prosperity##";
+    }
+
+    unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
+    caesarsHelper += city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
+    if( caesarsHelper > 0 )
+    {
+      troubles << "##emperor_send_money_to_you_nearest_time##";
     }
 
     std::string text = troubles.empty()
-                        ? _("##good_prosperity##")
+                        ? "##good_prosperity##"
                         : troubles.random();
 
-    lbRatingInfo->setText( text );
+    lbRatingInfo->setText( _(text) );
   }
 }
 
