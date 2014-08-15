@@ -28,6 +28,7 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "widget_helper.hpp"
 #include "filelistbox.hpp"
 #include "vfs/file.hpp"
 
@@ -71,7 +72,8 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   setCenter( parent->center() );
 
   // create the title
-  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+
   _d->directory = dir;
   _d->fileExtension = ext;
 

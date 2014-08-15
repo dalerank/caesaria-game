@@ -26,6 +26,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -49,11 +50,13 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes,
   setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
-  _d->btnSwitchMode = findChildA<PushButton*>( "btnSwitchMode", true, this );
+  ListBox* lbxModes;
+  GET_DWIDGET_FROM_UI( _d, btnSwitchMode )
+  GET_WIDGET_FROM_UI( lbxModes )
 
   _d->fullScreen = fullscreen;
   _d->haveChanges = false;
-  if( ListBox* lbxModes = findChildA<ListBox*>( "lbxModes", true, this ) )
+  if( lbxModes )
   {
     std::string modeStr;
     foreach( mode, modes )

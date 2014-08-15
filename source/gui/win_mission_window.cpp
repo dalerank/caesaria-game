@@ -20,6 +20,7 @@
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -44,8 +45,9 @@ WinMissionWindow::WinMissionWindow(Widget* p, std::string newTitle, bool mayCont
 
   setCenter( p->center() );
 
-  Label* lb = findChildA<Label*>( "lbNewTitle", true, this );
-  lb->setText( _( newTitle ) );
+  Label* lbNewTitle;
+  GET_WIDGET_FROM_UI( lbNewTitle )
+  if( lbNewTitle ) lbNewTitle->setText( _( newTitle ) );
 
   PushButton* btn = findChildA<PushButton*>( "btnAccept", true, this );
 

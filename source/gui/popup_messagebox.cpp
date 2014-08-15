@@ -28,6 +28,7 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "game/datetimehelper.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 
@@ -51,21 +52,21 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   setupUI( ":/gui/popupmessage.bui" );
   setCenter( parent->center() );
   
-  Label* lbTitle = findChildA<Label*>( "lbTitle", true, this );
-  lbTitle->setText( title );
+  Label* lbTitle;
+  Label* lbTime;
+  Label* lbReceiver;
+  GET_WIDGET_FROM_UI( lbTitle )
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_WIDGET_FROM_UI( lbTime )
+  GET_WIDGET_FROM_UI( lbReceiver )
+  GET_DWIDGET_FROM_UI( _d, lbText  )
 
-  _d->btnExit = findChildA<PushButton*>( "btnExit", true, this );
+  if( lbTitle ) lbTitle->setText( title );
+  if( lbTime ) lbTime->setText( DateTimeHelper::toStr( time ) );
+  if( lbReceiver ) lbReceiver->setText( receiver );
+
   CONNECT( _d->btnExit, onClicked(), this, PopupMessageBox::deleteLater );
-
-  _d->btnHelp = findChildA<PushButton*>( "btnHelp", true, this );
-
-  Label* lbTime = findChildA<Label*>( "lbTime", true, this );
-  lbTime->setText( DateTimeHelper::toStr( time ) );
-
-  Label* lbReceiver = findChildA<Label*>( "lbReceiver", true, this );
-  lbReceiver->setText( receiver );
-
-  _d->lbText = findChildA<Label*>( "lbText", true, this );
 }
 
 void PopupMessageBox::draw(gfx::Engine& painter )

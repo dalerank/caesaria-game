@@ -44,6 +44,7 @@
 #include "widgetescapecloser.hpp"
 #include "gameautopause.hpp"
 #include "gui/environment.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -68,8 +69,8 @@ public:
   PushButton* btnTrade;
   std::string ourCity;
 
-  Label* lbCityTitle;
-  Widget* tradeInfo;
+  Label* lbTitle;
+  Widget* gbox;
   world::EmpirePtr empire;
 
   void checkCityOnMap( const Point& pos );
@@ -99,9 +100,9 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 void EmpireMapWindow::Impl::updateCityInfo()
 {
   resetInfoPanel();
-  if( currentCity != 0 && lbCityTitle )
+  if( currentCity != 0 && lbTitle )
   {
-    lbCityTitle->setText( currentCity->name() );
+    lbTitle->setText( currentCity->name() );
 
     if( is_kind_of<PlayerCity>( currentCity ) )
     {
@@ -133,7 +134,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
   }
   else
   {
-    lbCityTitle->setText( "" );    
+    lbTitle->setText( "" );
   }
 }
 
@@ -290,7 +291,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
 
 void EmpireMapWindow::Impl::drawCityInfo()
 {
-  Label* lb = new Label( tradeInfo, Rect( Point( 0, tradeInfo->height() - 70), Size( tradeInfo->width(), 30) ) );
+  Label* lb = new Label( gbox, Rect( Point( 0, gbox->height() - 70), Size( gbox->width(), 30) ) );
   lb->setTextAlignment( align::center, align::upperLeft );
   if( is_kind_of<PlayerCity>( currentCity ) )
   {
@@ -317,15 +318,15 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startButton( 0, 40 );
 
 
-  Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 90 );
-  new Label( tradeInfo, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
+  Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 90 );
+  new Label( gbox, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
   const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( sellgoods.capacity( (Good::Type)i ) > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
+      Label* lb = new Label( gbox, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
       lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
@@ -333,21 +334,21 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   }
 
   Point buyPoint = startDraw + Point( 200, 0 );
-  new Label( tradeInfo, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
+  new Label( gbox, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
   const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( buygoods.capacity( (Good::Type)i ) > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
+      Label* lb = new Label( gbox, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
       lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
     }
   }
 
-  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + startButton, Size( 400, 20 ) ),
+  PushButton* btnOpenTrade = new PushButton( gbox, Rect( startDraw + startButton, Size( 400, 20 ) ),
                                              "", -1, false, PushButton::blackBorderUp );
 
   unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->name() );
@@ -359,8 +360,8 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
 void EmpireMapWindow::Impl::drawTradeRouteInfo()
 {
-  Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 80 );
-  new Label( tradeInfo, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
+  Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 80 );
+  new Label( gbox, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
   const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
@@ -369,17 +370,17 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     int cursell = sellgoods.qty( (Good::Type)i ) / 100;
     if( maxsell > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
+      Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
-      new Label( tradeInfo, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
   }
 
   Point buyPoint = startDraw + Point( 0, 30 );
-  new Label( tradeInfo, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
+  new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
   const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
@@ -388,11 +389,11 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     int curbuy = buygoods.qty( (Good::Type)i ) / 100;
     if( maxbuy > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
+      Label* lb = new Label( gbox, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
-      new Label( tradeInfo, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      new Label( gbox, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
   }
@@ -400,13 +401,13 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 
 void EmpireMapWindow::Impl::resetInfoPanel()
 {
-  Widget::Widgets childs = tradeInfo->children();
+  Widget::Widgets childs = gbox->children();
   foreach( widget, childs ) { (*widget)->deleteLater(); }
 }
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( tradeInfo->ui()->rootWidget(), Rect( 0, 0, 0, 0 ),
+  DialogBox* dialog = new DialogBox( gbox->ui()->rootWidget(), Rect( 0, 0, 0, 0 ),
                                      _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
@@ -423,20 +424,20 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->autopause.activate();
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
-  _d->lbCityTitle = findChildA<Label*>( "lbTitle", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+
   _d->offset = GameSettings::get( empMapOffset ).toPoint();
 
   WidgetEscapeCloser::insertTo( this );
 
   _d->initBorder( this );
 
-  _d->tradeInfo = findChildA<Widget*>( "gbox", true, this );
-  if( _d->tradeInfo ) _d->tradeInfo->sendToBack();
+  _d->gbox = findChildA<Widget*>( "gbox", true, this );
+  if( _d->gbox ) _d->gbox->sendToBack();
 
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  _d->btnTrade = findChildA<TexturedButton*>( "btnTrade", true, this);
-
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, btnTrade )
 
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );

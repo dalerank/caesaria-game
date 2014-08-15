@@ -78,6 +78,7 @@
 #include "events/postpone.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "gui/city_options_window.hpp"
+#include "gui/widget_helper.hpp"
 
 using namespace gui;
 using namespace constants;

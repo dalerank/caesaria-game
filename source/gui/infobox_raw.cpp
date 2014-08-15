@@ -25,6 +25,8 @@
 #include "environment.hpp"
 #include "objects/factory.hpp"
 #include "infobox_factory.hpp"
+#include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -44,10 +46,12 @@ AboutRawMaterial::AboutRawMaterial( Widget* parent, const Tile& tile )
 
   setConstruction( ptr_cast<Construction>( rawmb ) );
 
-  Label* lbDamage = findChildA<Label*>( "lbDamage", true, this );
-  Label* lbProgress = findChildA<Label*>( "lbProgress", true, this );
-  //Label* lbAbout = findChildA<Label*>( "lbAbout", true, this );
-  Label* lbProductivity = findChildA<Label*>( "lbProductivity", true, this );
+  Label* lbDamage;
+  Label* lbProgress;
+  Label* lbProductivity;
+  GET_WIDGET_FROM_UI( lbProductivity )
+  GET_WIDGET_FROM_UI( lbProgress )
+  GET_WIDGET_FROM_UI( lbDamage )
 
   if( rawmb->produceGoodType() != Good::none )
   {

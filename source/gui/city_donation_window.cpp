@@ -21,6 +21,7 @@
 #include "core/logger.hpp"
 #include "label.hpp"
 #include "core/stringhelper.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -50,9 +51,11 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
   setupUI( ":/gui/money2city.gui" );
   setCenter( parent()->center() );
 
-  PushButton* btnSend = findChildA<PushButton*>( "btnSend", true, this );
-  PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
-  d->lbDonation = findChildA<Label*>( "lbDonation", true, this );
+  PushButton* btnSend;
+  PushButton* btnCancel;
+  GET_WIDGET_FROM_UI( btnCancel )
+  GET_WIDGET_FROM_UI( btnSend )
+  GET_DWIDGET_FROM_UI( d, lbDonation )
 
   d->updateDonationText();
 

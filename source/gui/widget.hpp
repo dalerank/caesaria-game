@@ -428,25 +428,5 @@ enum ElementState
   StateCount
 };
 
-template< class T >
-inline T findChildA( const std::string& internalName, bool recursiveFind, const Widget* p )
-{
-  Widget::Widgets::const_iterator it = p->children().begin();
-  for( ; it != p->children().end(); ++it )
-  {
-    if( (*it)->internalName() == internalName )
-      return safety_cast< T >( *it );
-
-      if( recursiveFind )
-      {
-        T chElm = findChildA< T >( internalName, recursiveFind, *it );
-        if( chElm )
-           return chElm;
-      }
-  }
-  return 0;
-}
-
-
 }//end namespace gui
 #endif //__CAESARIA_WIDGET_H_INCLUDE_

@@ -127,6 +127,19 @@ void Emperor::sendGift(const std::string& cityname, unsigned int money)
   updateRelation( cityname, favourUpdate );
 }
 
+DateTime Emperor::lastGiftDate(const std::string &cityname)
+{
+  Relation relation;
+  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
+  if( it != _dfunc()->relations.end() )
+  {
+    relation = it->second;
+    return DateTime( -350, 1, 1 );
+  }
+
+  return relation.lastGiftDate;
+}
+
 void Emperor::timeStep(unsigned int time)
 {
   if( GameDate::isYearChanged() )

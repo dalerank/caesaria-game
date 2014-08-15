@@ -23,6 +23,7 @@
 #include "core/logger.hpp"
 #include "objects/metadata.hpp"
 #include "core/event.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 
@@ -44,8 +45,8 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  _d->lbText = findChildA<Label*>( "lbText", true, this );
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, lbText )
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater );
 }

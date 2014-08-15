@@ -33,6 +33,8 @@
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
 #include "city/cityservice_health.hpp"
+#include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -119,7 +121,7 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  _d->lbAdvice = findChildA<Label*>( "lbAvice", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbAdvice )
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );

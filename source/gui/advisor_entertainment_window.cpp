@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "objects/hippodrome.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -136,12 +137,12 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
-  _d->lbTroubleInfo = findChildA<Label*>( "lbTroubleInfo", true, this );
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
-  _d->btnNewFestival = findChildA<PushButton*>( "btnNewFestival", true, this );
-  _d->lbMonthFromLastFestival = findChildA<Label*>( "lbMonthFromLastFestival", true, this );
-  _d->lbInfoAboutLastFestival = findChildA<Label*>( "lbInfoAboutLastFestival", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbBlackframe )
+  GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_DWIDGET_FROM_UI( _d, btnNewFestival )
+  GET_DWIDGET_FROM_UI( _d, lbMonthFromLastFestival )
+  GET_DWIDGET_FROM_UI( _d, lbInfoAboutLastFestival )
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );

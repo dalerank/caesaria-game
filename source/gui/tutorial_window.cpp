@@ -24,6 +24,7 @@
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "texturedbutton.hpp"
+#include "widget_helper.hpp"
 #include "label.hpp"
 
 using namespace gfx;
@@ -40,13 +41,17 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   Size pSize = parent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
-  Label* lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  Label* lbTitle;
+  TexturedButton* btnExit;
+  ListBox* lbxHelp;
 
-  ListBox* lbx = findChildA<ListBox*>( "lbxHelp", true, this );
-  TexturedButton* btn = findChildA<TexturedButton*>( "btnExit", true, this );
-  CONNECT( btn, onClicked(), this, TutorialWindow::deleteLater );
+  GET_WIDGET_FROM_UI( lbTitle )
+  GET_WIDGET_FROM_UI( btnExit )
+  GET_WIDGET_FROM_UI( lbxHelp )
 
-  if( !lbx )
+  CONNECT( btnExit, onClicked(), this, TutorialWindow::deleteLater );
+
+  if( !lbxHelp )
     return;
 
   VariantMap vm = SaveAdapter::load( tutorial );
@@ -70,16 +75,16 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
       Picture pic = Picture::load( text.substr( imgSeparator.length() ) );
-      ListBoxItem& item = lbx->addItem( pic );
+      ListBoxItem& item = lbxHelp->addItem( pic );
       item.setTextAlignment( align::center, align::upperLeft );
-      int lineCount = pic.height() / lbx->itemHeight();
+      int lineCount = pic.height() / lbxHelp->itemHeight();
       StringArray lines;
       lines.resize( lineCount );
-      lbx->addItems( lines );
+      lbxHelp->addItems( lines );
     }
     else
     {
-      lbx->fitText( _( text ) );
+      lbxHelp->fitText( _( text ) );
     }
   }
 }

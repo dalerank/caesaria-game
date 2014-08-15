@@ -37,6 +37,7 @@
 #include "environment.hpp"
 #include "hire_priority_window.hpp"
 #include "city/cityservice_workershire.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -307,10 +308,13 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->empButtons.resize( Industry::count );
 
-  TexturedButton* btnIncrease = findChildA<TexturedButton*>( "btnIncreaseSalary", true, this );
-  TexturedButton* btnDecrease = findChildA<TexturedButton*>( "btnDecreaseSalary", true, this );
-  CONNECT( btnIncrease, onClicked(), _d.data(), Impl::increaseSalary );
-  CONNECT( btnDecrease, onClicked(), _d.data(), Impl::decreaseSalary );
+  TexturedButton* btnIncreaseSalary;
+  TexturedButton* btnDecreaseSalary;
+  GET_WIDGET_FROM_UI( btnIncreaseSalary )
+  GET_WIDGET_FROM_UI( btnDecreaseSalary )
+
+  CONNECT( btnIncreaseSalary, onClicked(), _d.data(), Impl::increaseSalary );
+  CONNECT( btnDecreaseSalary, onClicked(), _d.data(), Impl::decreaseSalary );
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );

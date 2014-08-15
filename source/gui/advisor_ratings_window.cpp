@@ -32,6 +32,7 @@
 #include "city/cityservice_culture.hpp"
 #include "city/cityservice_prosperity.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -204,13 +205,12 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   setupUI( ":/gui/ratingsadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  //buttons _d->_d->background
-  Rect r( Point( 66, 360 ), Size( 510, 60 ) );
-  _d->lbRatingInfo = findChildA<Label*>( "lbRatingInfo", true, this );
+  Label* lbNeedPopulation;
+  GET_WIDGET_FROM_UI( lbNeedPopulation )
+  GET_DWIDGET_FROM_UI( _d, lbRatingInfo )
 
   const city::VictoryConditions& targets = city->victoryConditions();
 
-  Label* lbNeedPopulation = findChildA<Label*>( "lbNeedPopulation", true, this );
   if( lbNeedPopulation ) lbNeedPopulation->setText( StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
 
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );

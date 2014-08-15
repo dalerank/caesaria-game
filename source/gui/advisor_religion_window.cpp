@@ -34,6 +34,8 @@
 #include "religion/pantheon.hpp"
 #include "game/gamedate.hpp"
 #include "objects/constants.hpp"
+#include "widget_helper.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -111,7 +113,7 @@ public:
   ReligionInfoLabel* lbMarsInfo;
   ReligionInfoLabel* lbVenusInfo;
   ReligionInfoLabel* lbOracleInfo;
-  Label* religionAdvice;
+  Label* lbReligionAdvice;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -168,10 +170,10 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
-  _d->religionAdvice = findChildA<Label*>( "lbReligionAdvice", true, this );
-  _d->updateReligionAdvice( city );
+  GET_DWIDGET_FROM_UI( _d, lbReligionAdvice )
+  GET_DWIDGET_FROM_UI( _d, btnHelp );
 
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  _d->updateReligionAdvice( city );
 }
 
 void Religion::draw(gfx::Engine& painter )
