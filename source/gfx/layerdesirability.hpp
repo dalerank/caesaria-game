@@ -19,8 +19,6 @@
 #define __CAESARIA_LAYERDESIRABILITY_H_INCLUDED__
 
 #include "layer.hpp"
-#include "city_renderer.hpp"
-#include "core/font.hpp"
 
 namespace gfx
 {
@@ -30,11 +28,14 @@ class LayerDesirability : public Layer
 public:
   virtual int type() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void beforeRender();
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 private:
   LayerDesirability( Camera& camera, PlayerCityPtr city );
-  Font _debugFont;
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gfx

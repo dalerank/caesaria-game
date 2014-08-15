@@ -195,8 +195,9 @@ void PictureInfoBank::initialize(vfs::Path filename)
       VariantMap vm = v.toMap();
       int startIndex = vm[ "start" ];
       int stopIndex = vm[ "stop" ];
+      std::string rc = vm[ "rc" ].toString();
       Point offset = vm[ "offset" ].toPoint();
-      _d->setRange( it->first, startIndex, stopIndex, offset );
+      _d->setRange( rc.empty() ? it->first : rc, startIndex, stopIndex, offset );
     }
     else if( v.type() == Variant::List )
     {

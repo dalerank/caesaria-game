@@ -44,7 +44,7 @@ static const unsigned int fillDistance = 4;
 }
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
-               awesomeFountain=18, patricianFountain=26 } FontainConstant;
+               awesomeFountain=18, patricianFountain=26, testFountain=50 } FontainConstant;
 
 Fountain::Fountain()
   : ServiceBuilding(Service::fountain, building::fountain, Size(1))
@@ -95,8 +95,8 @@ void Fountain::timeStep(const unsigned long time)
 
   if( GameDate::isWeekChanged() )
   {
-    int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
-    int currentId = desPic[ math::clamp<int>( tile().param( Tile::pDesirability ) / 25, 0, 3 ) ];
+    int desPic[] = { simpleFountain, testFountain, prettyFountain, awesomeFountain, patricianFountain };
+    int currentId = desPic[ math::clamp<int>( tile().param( Tile::pDesirability ) / 20, 0, 4 ) ];
     if( currentId != _lastPicId )
     {
       _lastPicId = currentId;
@@ -211,6 +211,7 @@ void Fountain::_initAnimation()
   switch ( _lastPicId )
   {
   case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
+  //case testFountain: _animationRef().setOffset( Point( 0, 31 ) ); break;
   case prettyFountain: _animationRef().setOffset( Point( 9, 41 ) ); break;
   case awesomeFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   case patricianFountain: _animationRef().setOffset( Point( 14, 26 ) ); break;

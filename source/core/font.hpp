@@ -30,6 +30,7 @@
 namespace gfx
 {
  class Picture;
+ class PictureRef;
 }
 
 enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
@@ -48,7 +49,7 @@ public:
   Font();
   static Font create( const std::string& family, const int size );
   static Font create( FontType type );
-  static Font create( const std::string& type );
+  static Font create( const std::string& type );  
   
   ~Font();
 
@@ -65,10 +66,11 @@ public:
 
   Size getTextSize( const std::string& text ) const;
   Rect getTextRect( const std::string& text, const Rect& baseRect,
-                          align::Type horizontalAlign, align::Type verticalAlign );
+                    align::Type horizontalAlign, align::Type verticalAlign );
 
-  void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
-  void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
+  void draw(gfx::Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
+  void draw(gfx::Picture& dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
+  void draw(gfx::PictureRef& refpic, const std::string &text, bool mayChange=false);
 
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;

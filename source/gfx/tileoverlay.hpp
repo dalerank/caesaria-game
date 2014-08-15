@@ -81,7 +81,7 @@ public:
   const gfx::Animation& animation() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
-  Desirability desirability() const;
+  virtual Desirability desirability() const;
 
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
