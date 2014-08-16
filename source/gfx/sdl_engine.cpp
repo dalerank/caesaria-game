@@ -183,7 +183,7 @@ void SdlEngine::init()
   if (isFullscreen())
   {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
+    //SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
   }
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -209,7 +209,6 @@ void SdlEngine::init()
   _d->window = window;
   _d->renderer = renderer;
   _d->texture = screenTexture;
-
 
   _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
 }

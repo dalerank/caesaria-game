@@ -111,11 +111,9 @@ void EmperrorRequestWindow::draw(gfx::Engine& painter )
 
 void EmperrorRequestWindow::setText(const std::string& text)
 {
-  Label* lb = findChildA<Label*>( "lbText", true, this );
-  if( lb )
-  {
-    lb->setText( text );
-  }
+  Label* lbText;
+  GET_WIDGET_FROM_UI( lbText )
+  if( lbText )   {  lbText->setText( text );  }
 }
 
 bool EmperrorRequestWindow::onEvent(const NEvent& event)

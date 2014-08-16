@@ -77,10 +77,10 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   _d->directory = dir;
   _d->fileExtension = ext;
 
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
-  _d->btnLoad = findChildA<PushButton*>( "btnLoad", true, this );
-  _d->btnDelete = findChildA<PushButton*>( "btnDelete", true, this );
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_DWIDGET_FROM_UI( _d, btnLoad )
+  GET_DWIDGET_FROM_UI( _d, btnDelete )
 
   CONNECT( _d->btnExit, onClicked(), this, LoadFileDialog::deleteLater );
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );

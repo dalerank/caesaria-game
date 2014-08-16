@@ -835,7 +835,7 @@ bool Widget::isFocused() const{  return _environment->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
-Rect& Widget::absoluteClippingRectRef() const{  return _dfunc()->absoluteClippingRect;}
+Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->absoluteClippingRect; }
 unsigned int Widget::width() const{  return relativeRect().width();}
 Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}
 int Widget::screenTop() const { return absoluteRect().top(); }

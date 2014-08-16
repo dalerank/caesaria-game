@@ -432,7 +432,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   _d->initBorder( this );
 
-  _d->gbox = findChildA<Widget*>( "gbox", true, this );
+  GET_DWIDGET_FROM_UI( _d, gbox )
   if( _d->gbox ) _d->gbox->sendToBack();
 
   GET_DWIDGET_FROM_UI( _d, btnHelp )

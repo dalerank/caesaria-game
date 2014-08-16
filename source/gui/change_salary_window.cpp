@@ -63,8 +63,11 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
     }
   }
 
-  PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
-  PushButton* btnOk = findChildA<PushButton*>( "btnOk", true, this );
+  PushButton* btnCancel;
+  PushButton* btnOk;
+  GET_WIDGET_FROM_UI( btnCancel  )
+  GET_WIDGET_FROM_UI( btnOk )
+
   CONNECT( btnCancel, onClicked(), this, ChangeSalaryWindow::deleteLater );
   CONNECT( btnOk, onClicked(), _dfunc().data(), Impl::setNewSalary );
   CONNECT( btnOk, onClicked(), this, ChangeSalaryWindow::deleteLater  );

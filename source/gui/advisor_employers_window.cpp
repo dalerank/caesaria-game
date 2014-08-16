@@ -144,7 +144,7 @@ public:
   typedef std::vector< TileOverlay::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
-  gui::Label* lbSalary;
+  gui::Label* lbSalaries;
   gui::Label* lbYearlyWages;
   gui::Label* lbWorkersState;
 
@@ -215,7 +215,7 @@ void Employer::Impl::showPriorityWindow( Industry::Type industry )
   wh << city->findService( city::WorkersHire::defaultName() );
 
   int priority = wh->getPriority( industry );
-  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->ui()->rootWidget(), industry, priority );
+  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalaries->ui()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
@@ -256,9 +256,9 @@ void Employer::Impl::updateSalaryLabel()
                                                    _("##advemployer_panel_denaries##"), pay,
                                                    _("##advemployer_panel_romepay##"), romePay );
 
-  if( lbSalary )
+  if( lbSalaries )
   {
-    lbSalary->setText( salaryString );
+    lbSalaries->setText( salaryString );
   }
 }
 
@@ -328,9 +328,9 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   _d->addButton( this, startPos, Industry::healthAndEducation, _("##adve_health_education##") );
   _d->addButton( this, startPos, Industry::administrationAndReligion, _("##adve_administration_religion##") );
 
-  _d->lbSalary = findChildA<Label*>( "lbSalaries", true, this );
-  _d->lbWorkersState = findChildA<Label*>( "lbWorkersState", true, this );
-  _d->lbYearlyWages = findChildA<Label*>( "lbYearlyWages", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbSalaries )
+  GET_DWIDGET_FROM_UI( _d, lbWorkersState )
+  GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();

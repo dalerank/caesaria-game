@@ -38,6 +38,11 @@ StartMenu::StartMenu( Widget* parent )
 
 StartMenu::~StartMenu() {}
 
+void StartMenu::draw(gfx::Engine &painter)
+{
+  Widget::draw( painter );
+}
+
 PushButton* StartMenu::addButton( const std::string& caption, int id )
 {
   std::string path2options;

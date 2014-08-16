@@ -75,7 +75,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   GET_WIDGET_FROM_UI( lbCityHave )
   if( lbCityHave ) lbCityHave->setText( StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") ) );
 
-  _d->lbTaxRateNow = findChildA<Label*>( "lbTaxRateNow", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTaxRateNow )
   _d->updateTaxRateNowLabel();
 
   unsigned int regTaxPayers = city::Statistic::getTaxPayersPercent( city );
