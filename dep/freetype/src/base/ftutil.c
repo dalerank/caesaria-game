@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType utility file for memory and list management (body).         */
 /*                                                                         */
-/*  Copyright 2002, 2004-2007, 2013 by                                     */
+/*  Copyright 2002, 2004, 2005, 2006, 2007 by                              */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -75,12 +75,12 @@
     {
       block = memory->alloc( memory, size );
       if ( block == NULL )
-        error = FT_THROW( Out_Of_Memory );
+        error = FT_Err_Out_Of_Memory;
     }
     else if ( size < 0 )
     {
       /* may help catch/prevent security issues */
-      error = FT_THROW( Invalid_Argument );
+      error = FT_Err_Invalid_Argument;
     }
 
     *p_error = error;
@@ -97,7 +97,6 @@
                   FT_Error  *p_error )
   {
     FT_Error  error = FT_Err_Ok;
-
 
     block = ft_mem_qrealloc( memory, item_size,
                              cur_count, new_count, block, &error );
@@ -128,7 +127,7 @@
     if ( cur_count < 0 || new_count < 0 || item_size < 0 )
     {
       /* may help catch/prevent nasty security issues */
-      error = FT_THROW( Invalid_Argument );
+      error = FT_Err_Invalid_Argument;
     }
     else if ( new_count == 0 || item_size == 0 )
     {
@@ -137,7 +136,7 @@
     }
     else if ( new_count > FT_INT_MAX/item_size )
     {
-      error = FT_THROW( Array_Too_Large );
+      error = FT_Err_Array_Too_Large;
     }
     else if ( cur_count == 0 )
     {
@@ -154,7 +153,7 @@
 
       block2 = memory->realloc( memory, cur_size, new_size, block );
       if ( block2 == NULL )
-        error = FT_THROW( Out_Of_Memory );
+        error = FT_Err_Out_Of_Memory;
       else
         block = block2;
     }
@@ -410,5 +409,93 @@
     list->tail = 0;
   }
 
+
+  FT_BASE_DEF( FT_UInt32 )
+  ft_highpow2( FT_UInt32  value )
+  {
+    FT_UInt32  value2;
+
+
+    /*
+     *  We simply clear the lowest bit in each iteration.  When
+     *  we reach 0, we know that the previous value was our result.
+     */
+    for ( ;; )
+    {
+      value2 = value & (value - 1);  /* clear lowest bit */
+      if ( value2 == 0 )
+        break;
+
+      value = value2;
+    }
+    return value;
+  }
+
+
+#ifdef FT_CONFIG_OPTION_OLD_INTERNALS
+
+  FT_BASE_DEF( FT_Error )
+  FT_Alloc( FT_Memory  memory,
+            FT_Long    size,
+            void*     *P )
+  {
+    FT_Error  error;
+
+
+    (void)FT_ALLOC( *P, size );
+    return error;
+  }
+
+
+  FT_BASE_DEF( FT_Error )
+  FT_QAlloc( FT_Memory  memory,
+             FT_Long    size,
+             void*     *p )
+  {
+    FT_Error  error;
+
+
+    (void)FT_QALLOC( *p, size );
+    return error;
+  }
+
+
+  FT_BASE_DEF( FT_Error )
+  FT_Realloc( FT_Memory  memory,
+              FT_Long    current,
+              FT_Long    size,
+              void*     *P )
+  {
+    FT_Error  error;
+
+
+    (void)FT_REALLOC( *P, current, size );
+    return error;
+  }
+
+
+  FT_BASE_DEF( FT_Error )
+  FT_QRealloc( FT_Memory  memory,
+               FT_Long    current,
+               FT_Long    size,
+               void*     *p )
+  {
+    FT_Error  error;
+
+
+    (void)FT_QREALLOC( *p, current, size );
+    return error;
+  }
+
+
+  FT_BASE_DEF( void )
+  FT_Free( FT_Memory  memory,
+           void*     *P )
+  {
+    if ( *P )
+      FT_MEM_FREE( *P );
+  }
+
+#endif /* FT_CONFIG_OPTION_OLD_INTERNALS */
 
 /* END */

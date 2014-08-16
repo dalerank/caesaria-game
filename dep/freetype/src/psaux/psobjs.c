@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Auxiliary functions for PostScript fonts (body).                     */
 /*                                                                         */
-/*  Copyright 1996-2014 by                                                 */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 by */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -113,8 +113,8 @@
 
 
   static FT_Error
-  reallocate_t1_table( PS_Table   table,
-                       FT_Offset  new_size )
+  reallocate_t1_table( PS_Table  table,
+                       FT_Long   new_size )
   {
     FT_Memory  memory   = table->memory;
     FT_Byte*   old_base = table->block;
@@ -138,7 +138,7 @@
 
     table->capacity = new_size;
 
-    return FT_Err_Ok;
+    return PSaux_Err_Ok;
   }
 
 
@@ -173,25 +173,25 @@
     if ( idx < 0 || idx >= table->max_elems )
     {
       FT_ERROR(( "ps_table_add: invalid index\n" ));
-      return FT_THROW( Invalid_Argument );
+      return PSaux_Err_Invalid_Argument;
     }
 
     if ( length < 0 )
     {
       FT_ERROR(( "ps_table_add: invalid length\n" ));
-      return FT_THROW( Invalid_Argument );
+      return PSaux_Err_Invalid_Argument;
     }
 
     /* grow the base block if needed */
     if ( table->cursor + length > table->capacity )
     {
-      FT_Error    error;
-      FT_Offset   new_size = table->capacity;
-      FT_PtrDist  in_offset;
+      FT_Error   error;
+      FT_Offset  new_size = table->capacity;
+      FT_Long    in_offset;
 
 
-      in_offset = (FT_Byte*)object - table->block;
-      if ( in_offset < 0 || (FT_Offset)in_offset >= table->capacity )
+      in_offset = (FT_Long)((FT_Byte*)object - table->block);
+      if ( (FT_ULong)in_offset >= table->capacity )
         in_offset = -1;
 
       while ( new_size < table->cursor + length )
@@ -216,7 +216,7 @@
     FT_MEM_COPY( table->block + table->cursor, object, length );
 
     table->cursor += length;
-    return FT_Err_Ok;
+    return PSaux_Err_Ok;
   }
 
 
@@ -341,7 +341,7 @@
   {
     FT_Byte*      cur   = *acur;
     FT_Int        embed = 0;
-    FT_Error      error = FT_ERR( Invalid_File_Format );
+    FT_Error      error = PSaux_Err_Invalid_File_Format;
     unsigned int  i;
 
 
@@ -397,7 +397,7 @@
         embed--;
         if ( embed == 0 )
         {
-          error = FT_Err_Ok;
+          error = PSaux_Err_Ok;
           break;
         }
       }
@@ -416,7 +416,7 @@
                FT_Byte*   limit )
   {
     FT_Byte*  cur = *acur;
-    FT_Error  err =  FT_Err_Ok;
+    FT_Error  err =  PSaux_Err_Ok;
 
 
     while ( ++cur < limit )
@@ -433,7 +433,7 @@
     if ( cur < limit && *cur != '>' )
     {
       FT_ERROR(( "skip_string: missing closing delimiter `>'\n" ));
-      err = FT_THROW( Invalid_File_Format );
+      err = PSaux_Err_Invalid_File_Format;
     }
     else
       cur++;
@@ -456,12 +456,12 @@
   {
     FT_Byte*  cur;
     FT_Int    embed = 0;
-    FT_Error  error = FT_Err_Ok;
+    FT_Error  error = PSaux_Err_Ok;
 
 
     FT_ASSERT( **acur == '{' );
 
-    for ( cur = *acur; cur < limit && error == FT_Err_Ok; ++cur )
+    for ( cur = *acur; cur < limit && error == PSaux_Err_Ok; ++cur )
     {
       switch ( *cur )
       {
@@ -494,7 +494,7 @@
 
   end:
     if ( embed != 0 )
-      error = FT_THROW( Invalid_File_Format );
+      error = PSaux_Err_Invalid_File_Format;
 
     *acur = cur;
 
@@ -519,7 +519,7 @@
 
     FT_Byte*  cur   = parser->cursor;
     FT_Byte*  limit = parser->limit;
-    FT_Error  error = FT_Err_Ok;
+    FT_Error  error = PSaux_Err_Ok;
 
 
     skip_spaces( &cur, limit );             /* this also skips comments */
@@ -567,7 +567,7 @@
       {
         FT_ERROR(( "ps_parser_skip_PS_token:"
                    " unexpected closing delimiter `>'\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = PSaux_Err_Invalid_File_Format;
         goto Exit;
       }
       cur++;
@@ -589,7 +589,7 @@
     }
 
   Exit:
-    if ( cur < limit && cur == parser->cursor )
+    if ( cur == parser->cursor )
     {
       FT_ERROR(( "ps_parser_skip_PS_token:"
                  " current token is `%c' which is self-delimiting\n"
@@ -597,7 +597,7 @@
                  " but invalid at this point\n",
                  *cur ));
 
-      error = FT_THROW( Invalid_File_Format );
+      error = PSaux_Err_Invalid_File_Format;
     }
 
     parser->error  = error;
@@ -644,7 +644,7 @@
       token->type  = T1_TOKEN_TYPE_STRING;
       token->start = cur;
 
-      if ( skip_literal_string( &cur, limit ) == FT_Err_Ok )
+      if ( skip_literal_string( &cur, limit ) == PSaux_Err_Ok )
         token->limit = cur;
       break;
 
@@ -653,7 +653,7 @@
       token->type  = T1_TOKEN_TYPE_ARRAY;
       token->start = cur;
 
-      if ( skip_procedure( &cur, limit ) == FT_Err_Ok )
+      if ( skip_procedure( &cur, limit ) == PSaux_Err_Ok )
         token->limit = cur;
       break;
 
@@ -847,8 +847,6 @@
   /* first character must be a delimiter or a part of a number */
   /* NB: `values' can be NULL if we just want to skip the      */
   /*     array; in this case we ignore `max_values'            */
-  /*                                                           */
-  /* return number of successfully parsed values               */
 
   static FT_Int
   ps_tofixedarray( FT_Byte*  *acur,
@@ -1029,13 +1027,12 @@
                         FT_UInt         max_objects,
                         FT_ULong*       pflags )
   {
-    T1_TokenRec   token;
-    FT_Byte*      cur;
-    FT_Byte*      limit;
-    FT_UInt       count;
-    FT_UInt       idx;
-    FT_Error      error;
-    T1_FieldType  type;
+    T1_TokenRec  token;
+    FT_Byte*     cur;
+    FT_Byte*     limit;
+    FT_UInt      count;
+    FT_UInt      idx;
+    FT_Error     error;
 
 
     /* this also skips leading whitespace */
@@ -1048,10 +1045,8 @@
     cur   = token.start;
     limit = token.limit;
 
-    type = field->type;
-
     /* we must detect arrays in /FontBBox */
-    if ( type == T1_FIELD_TYPE_BBOX )
+    if ( field->type == T1_FIELD_TYPE_BBOX )
     {
       T1_TokenRec  token2;
       FT_Byte*     old_cur   = parser->cursor;
@@ -1067,21 +1062,17 @@
       parser->limit  = old_limit;
 
       if ( token2.type == T1_TOKEN_TYPE_ARRAY )
-      {
-        type = T1_FIELD_TYPE_MM_BBOX;
         goto FieldArray;
-      }
     }
     else if ( token.type == T1_TOKEN_TYPE_ARRAY )
     {
-      count = max_objects;
-
     FieldArray:
       /* if this is an array and we have no blend, an error occurs */
       if ( max_objects == 0 )
         goto Fail;
 
-      idx = 1;
+      count = max_objects;
+      idx   = 1;
 
       /* don't include delimiters */
       cur++;
@@ -1097,7 +1088,7 @@
 
       skip_spaces( &cur, limit );
 
-      switch ( type )
+      switch ( field->type )
       {
       case T1_FIELD_TYPE_BOOL:
         val = ps_tobool( &cur, limit );
@@ -1169,7 +1160,7 @@
                        "                     "
                        " but found token of type %d instead\n",
                        token.type ));
-            error = FT_THROW( Invalid_File_Format );
+            error = PSaux_Err_Invalid_File_Format;
             goto Exit;
           }
 
@@ -1202,11 +1193,11 @@
 
           result = ps_tofixedarray( &cur, limit, 4, temp, 0 );
 
-          if ( result < 4 )
+          if ( result < 0 )
           {
             FT_ERROR(( "ps_parser_load_field:"
                        " expected four integers in bounding box\n" ));
-            error = FT_THROW( Invalid_File_Format );
+            error = PSaux_Err_Invalid_File_Format;
             goto Exit;
           }
 
@@ -1214,54 +1205,6 @@
           bbox->yMin = FT_RoundFix( temp[1] );
           bbox->xMax = FT_RoundFix( temp[2] );
           bbox->yMax = FT_RoundFix( temp[3] );
-        }
-        break;
-
-      case T1_FIELD_TYPE_MM_BBOX:
-        {
-          FT_Memory  memory = parser->memory;
-          FT_Fixed*  temp;
-          FT_Int     result;
-          FT_UInt    i;
-
-
-          if ( FT_NEW_ARRAY( temp, max_objects * 4 ) )
-            goto Exit;
-
-          for ( i = 0; i < 4; i++ )
-          {
-            result = ps_tofixedarray( &cur, limit, max_objects,
-                                      temp + i * max_objects, 0 );
-            if ( result < 0 || (FT_UInt)result < max_objects )
-            {
-              FT_ERROR(( "ps_parser_load_field:"
-                         " expected %d integers in the %s subarray\n"
-                         "                     "
-                         " of /FontBBox in the /Blend dictionary\n",
-                         max_objects,
-                         i == 0 ? "first"
-                                : ( i == 1 ? "second"
-                                           : ( i == 2 ? "third"
-                                                      : "fourth" ) ) ));
-              error = FT_THROW( Invalid_File_Format );
-              goto Exit;
-            }
-
-            skip_spaces( &cur, limit );
-          }
-
-          for ( i = 0; i < max_objects; i++ )
-          {
-            FT_BBox*  bbox = (FT_BBox*)objects[i];
-
-
-            bbox->xMin = FT_RoundFix( temp[i                  ] );
-            bbox->yMin = FT_RoundFix( temp[i +     max_objects] );
-            bbox->xMax = FT_RoundFix( temp[i + 2 * max_objects] );
-            bbox->yMax = FT_RoundFix( temp[i + 3 * max_objects] );
-          }
-
-          FT_FREE( temp );
         }
         break;
 
@@ -1278,13 +1221,13 @@
     FT_UNUSED( pflags );
 #endif
 
-    error = FT_Err_Ok;
+    error = PSaux_Err_Ok;
 
   Exit:
     return error;
 
   Fail:
-    error = FT_THROW( Invalid_File_Format );
+    error = PSaux_Err_Invalid_File_Format;
     goto Exit;
   }
 
@@ -1302,7 +1245,7 @@
     T1_TokenRec  elements[T1_MAX_TABLE_ELEMENTS];
     T1_Token     token;
     FT_Int       num_elements;
-    FT_Error     error = FT_Err_Ok;
+    FT_Error     error = PSaux_Err_Ok;
     FT_Byte*     old_cursor;
     FT_Byte*     old_limit;
     T1_FieldRec  fieldrec = *(T1_Field)field;
@@ -1317,7 +1260,7 @@
                               T1_MAX_TABLE_ELEMENTS, &num_elements );
     if ( num_elements < 0 )
     {
-      error = FT_ERR( Ignore );
+      error = PSaux_Err_Ignore;
       goto Exit;
     }
     if ( (FT_UInt)num_elements > field->array_max )
@@ -1374,7 +1317,7 @@
                       FT_Long*   pnum_bytes,
                       FT_Bool    delimiters )
   {
-    FT_Error  error = FT_Err_Ok;
+    FT_Error  error = PSaux_Err_Ok;
     FT_Byte*  cur;
 
 
@@ -1389,7 +1332,7 @@
       if ( *cur != '<' )
       {
         FT_ERROR(( "ps_parser_to_bytes: Missing starting delimiter `<'\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = PSaux_Err_Invalid_File_Format;
         goto Exit;
       }
 
@@ -1406,7 +1349,7 @@
       if ( cur < parser->limit && *cur != '>' )
       {
         FT_ERROR(( "ps_parser_to_bytes: Missing closing delimiter `>'\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = PSaux_Err_Invalid_File_Format;
         goto Exit;
       }
 
@@ -1476,7 +1419,7 @@
                   FT_Byte*   limit,
                   FT_Memory  memory )
   {
-    parser->error  = FT_Err_Ok;
+    parser->error  = PSaux_Err_Ok;
     parser->base   = base;
     parser->limit  = limit;
     parser->cursor = base;
@@ -1645,17 +1588,10 @@
     FT_Error     error;
 
 
-    /* this might happen in invalid fonts */
-    if ( !outline )
-    {
-      FT_ERROR(( "t1_builder_add_contour: no outline to add points to\n" ));
-      return FT_THROW( Invalid_File_Format );
-    }
-
     if ( !builder->load_points )
     {
       outline->n_contours++;
-      return FT_Err_Ok;
+      return PSaux_Err_Ok;
     }
 
     error = FT_GLYPHLOADER_CHECK_POINTS( builder->loader, 0, 1 );
@@ -1678,14 +1614,14 @@
                           FT_Pos      x,
                           FT_Pos      y )
   {
-    FT_Error  error = FT_ERR( Invalid_File_Format );
+    FT_Error  error = PSaux_Err_Invalid_File_Format;
 
 
     /* test whether we are building a new contour */
 
     if ( builder->parse_state == T1_Parse_Have_Path )
-      error = FT_Err_Ok;
-    else
+      error = PSaux_Err_Ok;
+    else if ( builder->parse_state == T1_Parse_Have_Moveto )
     {
       builder->parse_state = T1_Parse_Have_Path;
       error = t1_builder_add_contour( builder );

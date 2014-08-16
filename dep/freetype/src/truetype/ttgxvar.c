@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    TrueType GX Font Variation loader                                    */
 /*                                                                         */
-/*  Copyright 2004-2013 by                                                 */
+/*  Copyright 2004, 2005, 2006, 2007, 2008, 2009 by                        */
 /*  David Turner, Robert Wilhelm, Werner Lemberg, and George Williams.     */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -61,9 +61,9 @@
 
 
 #define FT_Stream_FTell( stream )  \
-          (FT_ULong)( (stream)->cursor - (stream)->base )
+          ( (stream)->cursor - (stream)->base )
 #define FT_Stream_SeekSet( stream, off ) \
-          ( (stream)->cursor = (stream)->base + (off) )
+              ( (stream)->cursor = (stream)->base+(off) )
 
 
   /*************************************************************************/
@@ -91,9 +91,7 @@
   /* indicates that there is a delta for every point without needing to    */
   /* enumerate all of them.                                                */
   /*                                                                       */
-
-  /* ensure that value `0' has the same width as a pointer */
-#define ALL_POINTS  (FT_UShort*)~(FT_PtrDist)0
+#define ALL_POINTS  (FT_UShort*)( -1 )
 
 
 #define GX_PT_POINTS_ARE_WORDS      0x80
@@ -125,14 +123,14 @@
   ft_var_readpackedpoints( FT_Stream  stream,
                            FT_UInt   *point_cnt )
   {
-    FT_UShort *points = NULL;
+    FT_UShort *points;
     FT_Int     n;
     FT_Int     runcnt;
     FT_Int     i;
     FT_Int     j;
     FT_Int     first;
     FT_Memory  memory = stream->memory;
-    FT_Error   error  = FT_Err_Ok;
+    FT_Error   error = TT_Err_Ok;
 
     FT_UNUSED( error );
 
@@ -156,7 +154,7 @@
         runcnt = runcnt & GX_PT_POINT_RUN_COUNT_MASK;
         first  = points[i++] = FT_GET_USHORT();
 
-        if ( runcnt < 1 || i + runcnt >= n )
+        if ( runcnt < 1 )
           goto Exit;
 
         /* first point not included in runcount */
@@ -167,7 +165,7 @@
       {
         first = points[i++] = FT_GET_BYTE();
 
-        if ( runcnt < 1 || i + runcnt >= n )
+        if ( runcnt < 1 )
           goto Exit;
 
         for ( j = 0; j < runcnt; ++j )
@@ -212,12 +210,12 @@
   ft_var_readpackeddeltas( FT_Stream  stream,
                            FT_Offset  delta_cnt )
   {
-    FT_Short  *deltas = NULL;
+    FT_Short  *deltas;
     FT_UInt    runcnt;
     FT_Offset  i;
     FT_UInt    j;
     FT_Memory  memory = stream->memory;
-    FT_Error   error  = FT_Err_Ok;
+    FT_Error   error = TT_Err_Ok;
 
     FT_UNUSED( error );
 
@@ -285,7 +283,7 @@
     FT_Memory       memory = stream->memory;
     GX_Blend        blend  = face->blend;
     GX_AVarSegment  segment;
-    FT_Error        error = FT_Err_Ok;
+    FT_Error        error = TT_Err_Ok;
     FT_ULong        version;
     FT_Long         axisCount;
     FT_Int          i, j;
@@ -414,7 +412,7 @@
     if ( gvar_head.version   != (FT_Long)0x00010000L              ||
          gvar_head.axisCount != (FT_UShort)blend->mmvar->num_axis )
     {
-      error = FT_THROW( Invalid_Table );
+      error = TT_Err_Invalid_Table;
       goto Exit;
     }
 
@@ -503,9 +501,11 @@
                       FT_Fixed*  im_end_coords )
   {
     FT_UInt   i;
-    FT_Fixed  apply = 0x10000L;
+    FT_Fixed  apply;
+    FT_Fixed  temp;
 
 
+    apply = 0x10000L;
     for ( i = 0; i < blend->num_axis; ++i )
     {
       if ( tuple_coords[i] == 0 )
@@ -525,10 +525,11 @@
 
       else if ( !( tupleIndex & GX_TI_INTERMEDIATE_TUPLE ) )
         /* not an intermediate tuple */
-        apply = FT_MulFix( apply,
+        apply = FT_MulDiv( apply,
                            blend->normalizedcoords[i] > 0
                              ? blend->normalizedcoords[i]
-                             : -blend->normalizedcoords[i] );
+                             : -blend->normalizedcoords[i],
+                           0x10000L );
 
       else if ( blend->normalizedcoords[i] <= im_start_coords[i] ||
                 blend->normalizedcoords[i] >= im_end_coords[i]   )
@@ -538,14 +539,20 @@
       }
 
       else if ( blend->normalizedcoords[i] < tuple_coords[i] )
-        apply = FT_MulDiv( apply,
-                           blend->normalizedcoords[i] - im_start_coords[i],
-                           tuple_coords[i] - im_start_coords[i] );
+      {
+        temp = FT_MulDiv( blend->normalizedcoords[i] - im_start_coords[i],
+                          0x10000L,
+                          tuple_coords[i] - im_start_coords[i]);
+        apply = FT_MulDiv( apply, temp, 0x10000L );
+      }
 
       else
-        apply = FT_MulDiv( apply,
-                           im_end_coords[i] - blend->normalizedcoords[i],
-                           im_end_coords[i] - tuple_coords[i] );
+      {
+        temp = FT_MulDiv( im_end_coords[i] - blend->normalizedcoords[i],
+                          0x10000L,
+                          im_end_coords[i] - tuple_coords[i] );
+        apply = FT_MulDiv( apply, temp, 0x10000L );
+      }
     }
 
     return apply;
@@ -612,10 +619,10 @@
     FT_Stream            stream = face->root.stream;
     FT_Memory            memory = face->root.memory;
     FT_ULong             table_len;
-    FT_Error             error  = FT_Err_Ok;
+    FT_Error             error  = TT_Err_Ok;
     FT_ULong             fvar_start;
     FT_Int               i, j;
-    FT_MM_Var*           mmvar = NULL;
+    FT_MM_Var*           mmvar;
     FT_Fixed*            next_coords;
     FT_String*           next_name;
     FT_Var_Axis*         a;
@@ -675,22 +682,18 @@
       if ( fvar_head.version != (FT_Long)0x00010000L                      ||
            fvar_head.countSizePairs != 2                                  ||
            fvar_head.axisSize != 20                                       ||
-           /* axisCount limit implied by 16-bit instanceSize */
-           fvar_head.axisCount > 0x3FFE                                   ||
            fvar_head.instanceSize != 4 + 4 * fvar_head.axisCount          ||
-           /* instanceCount limit implied by limited range of name IDs */
-           fvar_head.instanceCount > 0x7EFF                               ||
            fvar_head.offsetToData + fvar_head.axisCount * 20U +
              fvar_head.instanceCount * fvar_head.instanceSize > table_len )
       {
-        error = FT_THROW( Invalid_Table );
+        error = TT_Err_Invalid_Table;
         goto Exit;
       }
 
       if ( FT_NEW( face->blend ) )
         goto Exit;
 
-      /* cannot overflow 32-bit arithmetic because of limits above */
+      /* XXX: TODO - check for overflows */
       face->blend->mmvar_len =
         sizeof ( FT_MM_Var ) +
         fvar_head.axisCount * sizeof ( FT_Var_Axis ) +
@@ -705,7 +708,7 @@
       mmvar->num_axis =
         fvar_head.axisCount;
       mmvar->num_designs =
-        ~0U;                   /* meaningless in this context; each glyph */
+        (FT_UInt)-1;           /* meaningless in this context; each glyph */
                                /* may have a different number of designs  */
                                /* (or tuples, as called by Apple)         */
       mmvar->num_namedstyles =
@@ -849,7 +852,7 @@
                    FT_UInt    num_coords,
                    FT_Fixed*  coords )
   {
-    FT_Error    error = FT_Err_Ok;
+    FT_Error    error = TT_Err_Ok;
     GX_Blend    blend;
     FT_MM_Var*  mmvar;
     FT_UInt     i;
@@ -877,14 +880,14 @@
 
     if ( num_coords != mmvar->num_axis )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = TT_Err_Invalid_Argument;
       goto Exit;
     }
 
     for ( i = 0; i < num_coords; ++i )
       if ( coords[i] < -0x00010000L || coords[i] > 0x00010000L )
       {
-        error = FT_THROW( Invalid_Argument );
+        error = TT_Err_Invalid_Argument;
         goto Exit;
       }
 
@@ -985,7 +988,7 @@
                      FT_UInt    num_coords,
                      FT_Fixed*  coords )
   {
-    FT_Error        error      = FT_Err_Ok;
+    FT_Error        error      = TT_Err_Ok;
     FT_Fixed*       normalized = NULL;
     GX_Blend        blend;
     FT_MM_Var*      mmvar;
@@ -1006,7 +1009,7 @@
 
     if ( num_coords != mmvar->num_axis )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = TT_Err_Invalid_Argument;
       goto Exit;
     }
 
@@ -1022,16 +1025,24 @@
     {
       if ( coords[i] > a->maximum || coords[i] < a->minimum )
       {
-        error = FT_THROW( Invalid_Argument );
+        error = TT_Err_Invalid_Argument;
         goto Exit;
       }
 
       if ( coords[i] < a->def )
-        normalized[i] = -FT_DivFix( coords[i] - a->def, a->minimum - a->def );
+      {
+        normalized[i] = -FT_MulDiv( coords[i] - a->def,
+                                    0x10000L,
+                                    a->minimum - a->def );
+      }
       else if ( a->maximum == a->def )
         normalized[i] = 0;
       else
-        normalized[i] = FT_DivFix( coords[i] - a->def, a->maximum - a->def );
+      {
+        normalized[i] = FT_MulDiv( coords[i] - a->def,
+                                   0x10000L,
+                                   a->maximum - a->def );
+      }
     }
 
     if ( !blend->avar_checked )
@@ -1046,11 +1057,15 @@
           if ( normalized[i] < av->correspondence[j].fromCoord )
           {
             normalized[i] =
-              FT_MulDiv( normalized[i] - av->correspondence[j - 1].fromCoord,
-                         av->correspondence[j].toCoord -
-                           av->correspondence[j - 1].toCoord,
-                         av->correspondence[j].fromCoord -
-                           av->correspondence[j - 1].fromCoord ) +
+              FT_MulDiv(
+                FT_MulDiv(
+                  normalized[i] - av->correspondence[j - 1].fromCoord,
+                  0x10000L,
+                  av->correspondence[j].fromCoord -
+                    av->correspondence[j - 1].fromCoord ),
+                av->correspondence[j].toCoord -
+                  av->correspondence[j - 1].toCoord,
+                0x10000L ) +
               av->correspondence[j - 1].toCoord;
             break;
           }
@@ -1122,7 +1137,7 @@
     {
       FT_TRACE2(( "tt_face_vary_cvt: no blend specified\n" ));
 
-      error = FT_Err_Ok;
+      error = TT_Err_Ok;
       goto Exit;
     }
 
@@ -1130,7 +1145,7 @@
     {
       FT_TRACE2(( "tt_face_vary_cvt: no `cvt ' table\n" ));
 
-      error = FT_Err_Ok;
+      error = TT_Err_Ok;
       goto Exit;
     }
 
@@ -1139,13 +1154,13 @@
     {
       FT_TRACE2(( "is missing\n" ));
 
-      error = FT_Err_Ok;
+      error = TT_Err_Ok;
       goto Exit;
     }
 
     if ( FT_FRAME_ENTER( table_len ) )
     {
-      error = FT_Err_Ok;
+      error = TT_Err_Ok;
       goto Exit;
     }
 
@@ -1154,7 +1169,7 @@
     {
       FT_TRACE2(( "bad table version\n" ));
 
-      error = FT_Err_Ok;
+      error = TT_Err_Ok;
       goto FExit;
     }
 
@@ -1306,7 +1321,7 @@
     FT_Stream   stream = face->root.stream;
     FT_Memory   memory = stream->memory;
     GX_Blend    blend  = face->blend;
-    FT_Vector*  delta_xy = NULL;
+    FT_Vector*  delta_xy;
 
     FT_Error    error;
     FT_ULong    glyph_start;
@@ -1325,7 +1340,7 @@
 
 
     if ( !face->doblend || blend == NULL )
-      return FT_THROW( Invalid_Argument );
+      return TT_Err_Invalid_Argument;
 
     /* to be freed by the caller */
     if ( FT_NEW_ARRAY( delta_xy, n_points ) )
@@ -1335,7 +1350,7 @@
     if ( glyph_index >= blend->gv_glyphcnt      ||
          blend->glyphoffsets[glyph_index] ==
            blend->glyphoffsets[glyph_index + 1] )
-      return FT_Err_Ok;               /* no variation data for this glyph */
+      return TT_Err_Ok;               /* no variation data for this glyph */
 
     if ( FT_STREAM_SEEK( blend->glyphoffsets[glyph_index] )   ||
          FT_FRAME_ENTER( blend->glyphoffsets[glyph_index + 1] -
@@ -1385,7 +1400,7 @@
       }
       else if ( ( tupleIndex & GX_TI_TUPLE_INDEX_MASK ) >= blend->tuplecount )
       {
-        error = FT_THROW( Invalid_Table );
+        error = TT_Err_Invalid_Table;
         goto Fail3;
       }
       else
@@ -1455,9 +1470,6 @@
       {
         for ( j = 0; j < point_count; ++j )
         {
-          if ( localpoints[j] >= n_points )
-            continue;
-
           delta_xy[localpoints[j]].x += FT_MulFix( deltas_x[j], apply );
           delta_xy[localpoints[j]].y += FT_MulFix( deltas_y[j], apply );
         }
