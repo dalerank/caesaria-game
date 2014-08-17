@@ -2,10 +2,9 @@
 /*                                                                         */
 /*  afindic.h                                                              */
 /*                                                                         */
-/*    Auto-fitter hinting routines for Indic writing system                */
-/*    (specification).                                                     */
+/*    Auto-fitter hinting routines for Indic scripts (specification).      */
 /*                                                                         */
-/*  Copyright 2007, 2012, 2013 by                                          */
+/*  Copyright 2007 by                                                      */
 /*  Rahul Bhalerao <rahul.bhalerao@redhat.com>, <b.rahul.pm@gmail.com>.    */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -26,9 +25,9 @@
 FT_BEGIN_HEADER
 
 
-  /* the `indic' writing system */
+  /* the Indic-specific script class */
 
-  AF_DECLARE_WRITING_SYSTEM_CLASS( af_indic_writing_system_class )
+  AF_DECLARE_SCRIPT_CLASS(af_indic_script_class)
 
 
 /* */

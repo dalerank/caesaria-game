@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Arithmetic computations (body).                                      */
 /*                                                                         */
-/*  Copyright 1996-2006, 2008, 2012-2014 by                                */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006, 2008 by             */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -34,19 +34,21 @@
 
 #include <ft2build.h>
 #include FT_GLYPH_H
-#include FT_TRIGONOMETRY_H
 #include FT_INTERNAL_CALC_H
 #include FT_INTERNAL_DEBUG_H
 #include FT_INTERNAL_OBJECTS_H
 
-
-#ifdef FT_MULFIX_ASSEMBLER
+#ifdef FT_MULFIX_INLINED
 #undef FT_MulFix
 #endif
 
-/* we need to emulate a 64-bit data type if a real one isn't available */
+/* we need to define a 64-bits data type here */
 
-#ifndef FT_LONG64
+#ifdef FT_LONG64
+
+  typedef FT_INT64  FT_Int64;
+
+#else
 
   typedef struct  FT_Int64_
   {
@@ -55,7 +57,7 @@
 
   } FT_Int64;
 
-#endif /* !FT_LONG64 */
+#endif /* FT_LONG64 */
 
 
   /*************************************************************************/
@@ -101,64 +103,38 @@
   }
 
 
-  FT_BASE_DEF ( FT_Int )
-  FT_MSB( FT_UInt32 z )
-  {
-#ifdef FT_MSB_BUILTIN
-
-    return FT_MSB_BUILTIN( z );
-
-#else
-
-    FT_Int shift = 0;
-
-    /* determine msb bit index in `shift' */
-    if ( z >= ( 1L << 16 ) )
-    {
-      z     >>= 16;
-      shift  += 16;
-    }
-    if ( z >= ( 1L << 8 ) )
-    {
-      z     >>= 8;
-      shift  += 8;
-    }
-    if ( z >= ( 1L << 4 ) )
-    {
-      z     >>= 4;
-      shift  += 4;
-    }
-    if ( z >= ( 1L << 2 ) )
-    {
-      z     >>= 2;
-      shift  += 2;
-    }
-    if ( z >= ( 1L << 1 ) )
-    {
-   /* z     >>= 1; */
-      shift  += 1;
-    }
-
-    return shift;
-
-#endif /* FT_MSB_BUILTIN */
-  }
-
+#ifdef FT_CONFIG_OPTION_OLD_INTERNALS
 
   /* documentation is in ftcalc.h */
 
-  FT_BASE_DEF( FT_Fixed )
-  FT_Hypot( FT_Fixed  x,
-            FT_Fixed  y )
+  FT_EXPORT_DEF( FT_Int32 )
+  FT_Sqrt32( FT_Int32  x )
   {
-    FT_Vector  v;
+    FT_UInt32  val, root, newroot, mask;
 
 
-    v.x = x;
-    v.y = y;
+    root = 0;
+    mask = (FT_UInt32)0x40000000UL;
+    val  = (FT_UInt32)x;
 
-    return FT_Vector_Length( &v );
+    do
+    {
+      newroot = root + mask;
+      if ( newroot <= val )
+      {
+        val -= newroot;
+        root = newroot + mask;
+      }
+
+      root >>= 1;
+      mask >>= 2;
+
+    } while ( mask != 0 );
+
+    return root;
   }
+
+#endif /* FT_CONFIG_OPTION_OLD_INTERNALS */
 
 
 #ifdef FT_LONG64
@@ -187,6 +163,8 @@
   }
 
 
+#ifdef TT_USE_BYTECODE_INTERPRETER
+
   /* documentation is in ftcalc.h */
 
   FT_BASE_DEF( FT_Long )
@@ -208,6 +186,8 @@
 
     return ( s > 0 ) ? d : -d;
   }
+
+#endif /* TT_USE_BYTECODE_INTERPRETER */
 
 
   /* documentation is in freetype.h */
@@ -255,25 +235,16 @@
     FT_Int32   s;
     FT_UInt32  q;
 
-
     s = 1;
-    if ( a < 0 )
-    {
-      a = -a;
-      s = -1;
-    }
-    if ( b < 0 )
-    {
-      b = -b;
-      s = -s;
-    }
+    if ( a < 0 ) { a = -a; s = -1; }
+    if ( b < 0 ) { b = -b; s = -s; }
 
     if ( b == 0 )
       /* check for division by 0 */
       q = 0x7FFFFFFFL;
     else
       /* compute result directly */
-      q = (FT_UInt32)( ( ( (FT_UInt64)a << 16 ) + ( b >> 1 ) ) / b );
+      q = (FT_UInt32)( ( ( (FT_Int64)a << 16 ) + ( b >> 1 ) ) / b );
 
     return ( s < 0 ? -(FT_Long)q : (FT_Long)q );
   }
@@ -336,7 +307,7 @@
       q <<= 1;
       r  |= lo >> 31;
 
-      if ( r >= y )
+      if ( r >= (FT_UInt32)y )
       {
         r -= y;
         q |= 1;
@@ -367,26 +338,20 @@
   /* documentation is in freetype.h */
 
   /* The FT_MulDiv function has been optimized thanks to ideas from      */
-  /* Graham Asher and Alexei Podtelezhnikov.  The trick is to optimize   */
-  /* a rather common case when everything fits within 32-bits.           */
+  /* Graham Asher.  The trick is to optimize computation when everything */
+  /* fits within 32-bits (a rather common case).                         */
   /*                                                                     */
-  /*  We compute 'a*b+c/2', then divide it by 'c'. (positive values)     */
+  /*  we compute 'a*b+c/2', then divide it by 'c'. (positive values)     */
   /*                                                                     */
-  /*  The product of two positive numbers never exceeds the square of    */
-  /*  their mean.  Therefore, we always avoid the overflow by imposing   */
+  /*  46340 is FLOOR(SQRT(2^31-1)).                                      */
   /*                                                                     */
-  /*  ( a + b ) / 2 <= sqrt( X - c/2 )                                   */
+  /*  if ( a <= 46340 && b <= 46340 ) then ( a*b <= 0x7FFEA810 )         */
   /*                                                                     */
-  /*  where X = 2^31 - 1.  Now we replace sqrt with a linear function    */
-  /*  that is smaller or equal in the entire range of c from 0 to X;     */
-  /*  it should be equal to sqrt(X) and sqrt(X/2) at the range termini.  */
-  /*  Substituting the linear solution and explicit numbers we get       */
+  /*  0x7FFFFFFF - 0x7FFEA810 = 0x157F0                                  */
   /*                                                                     */
-  /*  a + b <= 92681.9 - c / 79108.95                                    */
+  /*  if ( c < 0x157F0*2 ) then ( a*b+c/2 <= 0x7FFFFFFF )                */
   /*                                                                     */
-  /*  In practice we use a faster and even stronger inequality           */
-  /*                                                                     */
-  /*  a + b <= 92681 - (c >> 16)                                         */
+  /*  and 2*0x157F0 = 176096                                             */
   /*                                                                     */
 
   FT_EXPORT_DEF( FT_Long )
@@ -405,10 +370,10 @@
     s ^= b; b = FT_ABS( b );
     s ^= c; c = FT_ABS( c );
 
-    if ( (FT_ULong)a + (FT_ULong)b <= 92681UL - ( c >> 16 ) && c > 0 )
+    if ( a <= 46340L && b <= 46340L && c <= 176095L && c > 0 )
       a = ( a * b + ( c >> 1 ) ) / c;
 
-    else if ( (FT_Int32)c > 0 )
+    else if ( c > 0 )
     {
       FT_Int64  temp, temp2;
 
@@ -427,6 +392,8 @@
   }
 
 
+#ifdef TT_USE_BYTECODE_INTERPRETER
+
   FT_BASE_DEF( FT_Long )
   FT_MulDiv_No_Round( FT_Long  a,
                       FT_Long  b,
@@ -442,10 +409,10 @@
     s ^= b; b = FT_ABS( b );
     s ^= c; c = FT_ABS( c );
 
-    if ( (FT_ULong)a + (FT_ULong)b <= 92681UL && c > 0 )
+    if ( a <= 46340L && b <= 46340L && c > 0 )
       a = a * b / c;
 
-    else if ( (FT_Int32)c > 0 )
+    else if ( c > 0 )
     {
       FT_Int64  temp;
 
@@ -458,6 +425,8 @@
 
     return ( s < 0 ? -a : a );
   }
+
+#endif /* TT_USE_BYTECODE_INTERPRETER */
 
 
   /* documentation is in freetype.h */
@@ -495,7 +464,7 @@
      *  Unfortunately, it doesn't work (at least not portably).
      *
      *  It makes the assumption that right-shift on a negative signed value
-     *  fills the leftmost bits by copying the sign bit.  This is wrong.
+     *  fills the leftmost bits by copying the sign bit.  This is wrong. 
      *  According to K&R 2nd ed, section `A7.8 Shift Operators' on page 206,
      *  the result of right-shift of a negative signed value is
      *  implementation-defined.  At least one implementation fills the
@@ -575,7 +544,7 @@
     s  = (FT_Int32)a; a = FT_ABS( a );
     s ^= (FT_Int32)b; b = FT_ABS( b );
 
-    if ( (FT_UInt32)b == 0 )
+    if ( b == 0 )
     {
       /* check for division by 0 */
       q = (FT_UInt32)0x7FFFFFFFL;
@@ -583,16 +552,15 @@
     else if ( ( a >> 16 ) == 0 )
     {
       /* compute result directly */
-      q = (FT_UInt32)( ( (FT_ULong)a << 16 ) + ( b >> 1 ) ) / (FT_UInt32)b;
+      q = (FT_UInt32)( (a << 16) + (b >> 1) ) / (FT_UInt32)b;
     }
     else
     {
       /* we need more bits; we have to do it by hand */
       FT_Int64  temp, temp2;
 
-
-      temp.hi  = (FT_Int32)( a >> 16 );
-      temp.lo  = (FT_UInt32)a << 16;
+      temp.hi  = (FT_Int32) (a >> 16);
+      temp.lo  = (FT_UInt32)(a << 16);
       temp2.hi = 0;
       temp2.lo = (FT_UInt32)( b >> 1 );
       FT_Add64( &temp, &temp2, &temp );
@@ -758,14 +726,14 @@
 
 
     if ( !matrix )
-      return FT_THROW( Invalid_Argument );
+      return FT_Err_Invalid_Argument;
 
     /* compute discriminant */
     delta = FT_MulFix( matrix->xx, matrix->yy ) -
             FT_MulFix( matrix->xy, matrix->yx );
 
     if ( !delta )
-      return FT_THROW( Invalid_Argument );  /* matrix can't be inverted */
+      return FT_Err_Invalid_Argument;  /* matrix can't be inverted */
 
     matrix->xy = - FT_DivFix( matrix->xy, delta );
     matrix->yx = - FT_DivFix( matrix->yx, delta );
@@ -831,8 +799,6 @@
   }
 
 
-#if 0
-
   /* documentation is in ftcalc.h */
 
   FT_BASE_DEF( FT_Int32 )
@@ -866,8 +832,6 @@
 
     return (FT_Int32)root;
   }
-
-#endif /* 0 */
 
 
   /* documentation is in ftcalc.h */
@@ -964,27 +928,11 @@
     FT_Pos  d_in, d_out, d_corner;
 
 
-    /* We approximate the Euclidean metric (sqrt(x^2 + y^2)) with */
-    /* the Taxicab metric (|x| + |y|), which can be computed much */
-    /* faster.  If one of the two vectors is much longer than the */
-    /* other one, the direction of the shorter vector doesn't     */
-    /* influence the result any more.                             */
-    /*                                                            */
-    /*                 corner                                     */
-    /*       x---------------------------x                        */
-    /*        \                      /                            */
-    /*         \                /                                 */
-    /*      in  \          /  out                                 */
-    /*           \    /                                           */
-    /*            o                                               */
-    /*              Point                                         */
-    /*                                                            */
-
     if ( ax < 0 )
       ax = -ax;
     if ( ay < 0 )
       ay = -ay;
-    d_in = ax + ay;  /* d_in = || in || */
+    d_in = ax + ay;
 
     ax = out_x;
     if ( ax < 0 )
@@ -992,7 +940,7 @@
     ay = out_y;
     if ( ay < 0 )
       ay = -ay;
-    d_out = ax + ay;  /* d_out = || out || */
+    d_out = ax + ay;
 
     ax = out_x + in_x;
     if ( ax < 0 )
@@ -1000,11 +948,7 @@
     ay = out_y + in_y;
     if ( ay < 0 )
       ay = -ay;
-    d_corner = ax + ay;  /* d_corner = || in + out || */
-
-    /* now do a simple length comparison: */
-    /*                                    */
-    /*   d_in + d_out < 17/16 d_corner    */
+    d_corner = ax + ay;
 
     return ( d_in + d_out - d_corner ) < ( d_corner >> 4 );
   }

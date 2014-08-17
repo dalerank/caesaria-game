@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Anti-aliasing renderer interface (body).                             */
 /*                                                                         */
-/*  Copyright 2000-2006, 2009-2013 by                                      */
+/*  Copyright 2000-2001, 2002, 2003, 2004, 2005, 2006, 2009 by             */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -61,12 +61,12 @@
                        const FT_Matrix*  matrix,
                        const FT_Vector*  delta )
   {
-    FT_Error  error = FT_Err_Ok;
+    FT_Error  error = Smooth_Err_Ok;
 
 
     if ( slot->format != render->glyph_format )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = Smooth_Err_Invalid_Argument;
       goto Exit;
     }
 
@@ -105,47 +105,32 @@
     FT_Error     error;
     FT_Outline*  outline = NULL;
     FT_BBox      cbox;
-    FT_Pos       width, height, pitch;
-#ifndef FT_CONFIG_OPTION_SUBPIXEL_RENDERING
-    FT_Pos       height_org, width_org;
-#endif
-    FT_Bitmap*   bitmap  = &slot->bitmap;
-    FT_Memory    memory  = render->root.memory;
-    FT_Int       hmul    = mode == FT_RENDER_MODE_LCD;
-    FT_Int       vmul    = mode == FT_RENDER_MODE_LCD_V;
-    FT_Pos       x_shift = 0;
-    FT_Pos       y_shift = 0;
-    FT_Pos       x_left, y_top;
+    FT_UInt      width, height, height_org, width_org, pitch;
+    FT_Bitmap*   bitmap;
+    FT_Memory    memory;
+    FT_Int       hmul = mode == FT_RENDER_MODE_LCD;
+    FT_Int       vmul = mode == FT_RENDER_MODE_LCD_V;
+    FT_Pos       x_shift, y_shift, x_left, y_top;
 
     FT_Raster_Params  params;
-
-    FT_Bool  have_translated_origin = FALSE;
-    FT_Bool  have_outline_shifted   = FALSE;
-    FT_Bool  have_buffer            = FALSE;
 
 
     /* check glyph image format */
     if ( slot->format != render->glyph_format )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = Smooth_Err_Invalid_Argument;
       goto Exit;
     }
 
     /* check mode */
     if ( mode != required_mode )
-    {
-      error = FT_THROW( Cannot_Render_Glyph );
-      goto Exit;
-    }
+      return Smooth_Err_Cannot_Render_Glyph;
 
     outline = &slot->outline;
 
     /* translate the outline to the new origin if needed */
     if ( origin )
-    {
       FT_Outline_Translate( outline, origin->x, origin->y );
-      have_translated_origin = TRUE;
-    }
 
     /* compute the control box, and grid fit it */
     FT_Outline_Get_CBox( outline, &cbox );
@@ -155,32 +140,13 @@
     cbox.xMax = FT_PIX_CEIL( cbox.xMax );
     cbox.yMax = FT_PIX_CEIL( cbox.yMax );
 
-    if ( cbox.xMin < 0 && cbox.xMax > FT_INT_MAX + cbox.xMin )
-    {
-      FT_ERROR(( "ft_smooth_render_generic: glyph too large:"
-                 " xMin = %d, xMax = %d\n",
-                 cbox.xMin >> 6, cbox.xMax >> 6 ));
-      error = FT_THROW( Raster_Overflow );
-      goto Exit;
-    }
-    else
-      width = ( cbox.xMax - cbox.xMin ) >> 6;
+    width  = (FT_UInt)( ( cbox.xMax - cbox.xMin ) >> 6 );
+    height = (FT_UInt)( ( cbox.yMax - cbox.yMin ) >> 6 );
+    bitmap = &slot->bitmap;
+    memory = render->root.memory;
 
-    if ( cbox.yMin < 0 && cbox.yMax > FT_INT_MAX + cbox.yMin )
-    {
-      FT_ERROR(( "ft_smooth_render_generic: glyph too large:"
-                 " yMin = %d, yMax = %d\n",
-                 cbox.yMin >> 6, cbox.yMax >> 6 ));
-      error = FT_THROW( Raster_Overflow );
-      goto Exit;
-    }
-    else
-      height = ( cbox.yMax - cbox.yMin ) >> 6;
-
-#ifndef FT_CONFIG_OPTION_SUBPIXEL_RENDERING
     width_org  = width;
     height_org = height;
-#endif
 
     /* release old bitmap buffer */
     if ( slot->internal->flags & FT_GLYPH_OWN_BITMAP )
@@ -232,14 +198,13 @@
 
 #if FT_UINT_MAX > 0xFFFFU
 
-    /* Required check is (pitch * height < FT_ULONG_MAX),        */
-    /* but we care realistic cases only.  Always pitch <= width. */
-    if ( width > 0x7FFF || height > 0x7FFF )
+    /* Required check is ( pitch * height < FT_ULONG_MAX ),     */
+    /* but we care realistic cases only. Always pitch <= width. */
+    if ( width > 0xFFFFU || height > 0xFFFFU )
     {
-      FT_ERROR(( "ft_smooth_render_generic: glyph too large: %u x %u\n",
+      FT_ERROR(( "ft_smooth_render_generic: glyph too large: %d x %d\n",
                  width, height ));
-      error = FT_THROW( Raster_Overflow );
-      goto Exit;
+      return Smooth_Err_Raster_Overflow;
     }
 
 #endif
@@ -252,12 +217,9 @@
 
     /* translate outline to render it into the bitmap */
     FT_Outline_Translate( outline, -x_shift, -y_shift );
-    have_outline_shifted = TRUE;
 
     if ( FT_ALLOC( bitmap->buffer, (FT_ULong)pitch * height ) )
       goto Exit;
-    else
-      have_buffer = TRUE;
 
     slot->internal->flags |= FT_GLYPH_OWN_BITMAP;
 
@@ -303,9 +265,6 @@
           vec->y /= 3;
     }
 
-    if ( error )
-      goto Exit;
-
     if ( slot->library->lcd_filter_func )
       slot->library->lcd_filter_func( bitmap, mode, slot->library );
 
@@ -313,8 +272,6 @@
 
     /* render outline into bitmap */
     error = render->raster_render( render->raster, &params );
-    if ( error )
-      goto Exit;
 
     /* expand it horizontally */
     if ( hmul )
@@ -366,35 +323,25 @@
 
 #endif /* !FT_CONFIG_OPTION_SUBPIXEL_RENDERING */
 
+    FT_Outline_Translate( outline, x_shift, y_shift );
+
     /*
      * XXX: on 16bit system, we return an error for huge bitmap
      * to prevent an overflow.
      */
     if ( x_left > FT_INT_MAX || y_top > FT_INT_MAX )
-    {
-      error = FT_THROW( Invalid_Pixel_Size );
+      return Smooth_Err_Invalid_Pixel_Size;
+
+    if ( error )
       goto Exit;
-    }
 
     slot->format      = FT_GLYPH_FORMAT_BITMAP;
     slot->bitmap_left = (FT_Int)x_left;
     slot->bitmap_top  = (FT_Int)y_top;
 
-    /* everything is fine; don't deallocate buffer */
-    have_buffer = FALSE;
-
-    error = FT_Err_Ok;
-
   Exit:
-    if ( have_outline_shifted )
-      FT_Outline_Translate( outline, x_shift, y_shift );
-    if ( have_translated_origin )
+    if ( outline && origin )
       FT_Outline_Translate( outline, -origin->x, -origin->y );
-    if ( have_buffer )
-    {
-      FT_FREE( bitmap->buffer );
-      slot->internal->flags &= ~FT_GLYPH_OWN_BITMAP;
-    }
 
     return error;
   }
@@ -451,10 +398,10 @@
   }
 
 
-  FT_DEFINE_RENDERER( ft_smooth_renderer_class,
+  FT_DEFINE_RENDERER(ft_smooth_renderer_class,
 
       FT_MODULE_RENDERER,
-      sizeof ( FT_RendererRec ),
+      sizeof( FT_RendererRec ),
 
       "smooth",
       0x10000L,
@@ -478,10 +425,10 @@
   )
 
 
-  FT_DEFINE_RENDERER( ft_smooth_lcd_renderer_class,
-
+  FT_DEFINE_RENDERER(ft_smooth_lcd_renderer_class,
+  
       FT_MODULE_RENDERER,
-      sizeof ( FT_RendererRec ),
+      sizeof( FT_RendererRec ),
 
       "smooth-lcd",
       0x10000L,
@@ -504,10 +451,10 @@
     (FT_Raster_Funcs*)    &FT_GRAYS_RASTER_GET
   )
 
-  FT_DEFINE_RENDERER( ft_smooth_lcdv_renderer_class,
+  FT_DEFINE_RENDERER(ft_smooth_lcdv_renderer_class,
 
       FT_MODULE_RENDERER,
-      sizeof ( FT_RendererRec ),
+      sizeof( FT_RendererRec ),
 
       "smooth-lcdv",
       0x10000L,

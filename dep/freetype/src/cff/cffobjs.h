@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    OpenType objects manager (specification).                            */
 /*                                                                         */
-/*  Copyright 1996-2004, 2006-2008, 2013 by                                */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2006, 2007, 2008 by             */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -112,16 +112,12 @@ FT_BEGIN_HEADER
 
   /***********************************************************************/
   /*                                                                     */
-  /* CFF driver class.                                                   */
+  /* TrueType driver class.                                              */
   /*                                                                     */
   typedef struct  CFF_DriverRec_
   {
     FT_DriverRec  root;
-
-    FT_UInt  hinting_engine;
-    FT_Bool  no_stem_darkening;
-
-    FT_Int  darken_params[8];
+    void*         extension_component;
 
   } CFF_DriverRec;
 
@@ -171,10 +167,10 @@ FT_BEGIN_HEADER
   /* Driver functions                                                      */
   /*                                                                       */
   FT_LOCAL( FT_Error )
-  cff_driver_init( FT_Module  module );         /* CFF_Driver */
+  cff_driver_init( FT_Module  module );
 
   FT_LOCAL( void )
-  cff_driver_done( FT_Module  module );         /* CFF_Driver */
+  cff_driver_done( FT_Module  module );
 
 
 FT_END_HEADER

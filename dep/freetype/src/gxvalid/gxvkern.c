@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    TrueTypeGX/AAT kern table validation (body).                         */
 /*                                                                         */
-/*  Copyright 2004-2007, 2013                                              */
+/*  Copyright 2004, 2005, 2006, 2007                                       */
 /*  by suzuki toshiya, Masatake YAMATO, Red Hat K.K.,                      */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
@@ -127,9 +127,7 @@
     {
       FT_UShort  gid_left;
       FT_UShort  gid_right;
-#ifdef GXV_LOAD_UNUSED_VARS
       FT_Short   kernValue;
-#endif
 
 
       /* left */
@@ -158,11 +156,7 @@
         FT_INVALID_DATA;
 
       /* skip the kern value */
-#ifdef GXV_LOAD_UNUSED_VARS
       kernValue = FT_NEXT_SHORT( p );
-#else
-      p += 2;
-#endif
     }
 
     GXV_EXIT;
@@ -267,24 +261,18 @@
     FT_Bytes                        limit,
     GXV_Validator                   valid )
   {
-#ifdef GXV_LOAD_UNUSED_VARS
     FT_UShort  push;
     FT_UShort  dontAdvance;
-#endif
     FT_UShort  valueOffset;
-#ifdef GXV_LOAD_UNUSED_VARS
     FT_UShort  kernAction;
     FT_UShort  kernValue;
-#endif
 
     FT_UNUSED( state );
     FT_UNUSED( glyphOffset_p );
 
 
-#ifdef GXV_LOAD_UNUSED_VARS
     push        = (FT_UShort)( ( flags >> 15 ) & 1      );
     dontAdvance = (FT_UShort)( ( flags >> 14 ) & 1      );
-#endif
     valueOffset = (FT_UShort)(   flags         & 0x3FFF );
 
     {
@@ -300,10 +288,8 @@
       limit = table + vt_rec->valueTable + vt_rec->valueTable_length;
 
       GXV_LIMIT_CHECK( 2 + 2 );
-#ifdef GXV_LOAD_UNUSED_VARS
       kernAction = FT_NEXT_USHORT( p );
       kernValue  = FT_NEXT_USHORT( p );
-#endif
     }
   }
 
@@ -489,12 +475,10 @@
     {
       GXV_TRACE(( "maxGID=%d, but glyphCount=%d\n",
                   valid->face->num_glyphs, glyphCount ));
-      GXV_SET_ERR_IF_PARANOID( FT_INVALID_GLYPH_ID );
+      if ( valid->root->level >= FT_VALIDATE_PARANOID )
+        FT_INVALID_GLYPH_ID;
     }
 
-    if ( flags != 0 )
-      GXV_TRACE(( "kern subtable fmt3 has nonzero value"
-                  " (%d) in unused flag\n", flags ));
     /*
      * just skip kernValue[kernValueCount]
      */
@@ -561,24 +545,20 @@
                                         GXV_Validator  valid )
   {
     /* new Apple-dialect */
-#ifdef GXV_LOAD_TRACE_VARS
     FT_Bool  kernVertical;
     FT_Bool  kernCrossStream;
     FT_Bool  kernVariation;
-#endif
 
     FT_UNUSED( valid );
 
 
     /* reserved bits = 0 */
     if ( coverage & 0x1FFC )
-      return FALSE;
+      return 0;
 
-#ifdef GXV_LOAD_TRACE_VARS
     kernVertical    = FT_BOOL( ( coverage >> 15 ) & 1 );
     kernCrossStream = FT_BOOL( ( coverage >> 14 ) & 1 );
     kernVariation   = FT_BOOL( ( coverage >> 13 ) & 1 );
-#endif
 
     *format = (FT_UShort)( coverage & 0x0003 );
 
@@ -588,7 +568,7 @@
 
     GXV_TRACE(( "kerning values in Apple format subtable are ignored\n" ));
 
-    return TRUE;
+    return 1;
   }
 
 
@@ -598,24 +578,20 @@
                                             GXV_Validator  valid )
   {
     /* classic Apple-dialect */
-#ifdef GXV_LOAD_TRACE_VARS
     FT_Bool  horizontal;
     FT_Bool  cross_stream;
-#endif
 
 
     /* check expected flags, but don't check if MS-dialect is impossible */
     if ( !( coverage & 0xFD00 ) && KERN_ALLOWS_MS( valid ) )
-      return FALSE;
+      return 0;
 
     /* reserved bits = 0 */
     if ( coverage & 0x02FC )
-      return FALSE;
+      return 0;
 
-#ifdef GXV_LOAD_TRACE_VARS
     horizontal   = FT_BOOL( ( coverage >> 15 ) & 1 );
     cross_stream = FT_BOOL( ( coverage >> 13 ) & 1 );
-#endif
 
     *format = (FT_UShort)( coverage & 0x0003 );
 
@@ -625,11 +601,11 @@
 
     /* format 1 requires GX State Machine, too new for classic */
     if ( *format == 1 )
-      return FALSE;
+      return 0;
 
     GXV_TRACE(( "kerning values in Apple format subtable are ignored\n" ));
 
-    return TRUE;
+    return 1;
   }
 
 
@@ -639,26 +615,22 @@
                                                 GXV_Validator  valid )
   {
     /* classic Microsoft-dialect */
-#ifdef GXV_LOAD_TRACE_VARS
     FT_Bool  horizontal;
     FT_Bool  minimum;
     FT_Bool  cross_stream;
     FT_Bool  override;
-#endif
 
     FT_UNUSED( valid );
 
 
     /* reserved bits = 0 */
     if ( coverage & 0xFDF0 )
-      return FALSE;
+      return 0;
 
-#ifdef GXV_LOAD_TRACE_VARS
     horizontal   = FT_BOOL(   coverage        & 1 );
     minimum      = FT_BOOL( ( coverage >> 1 ) & 1 );
     cross_stream = FT_BOOL( ( coverage >> 2 ) & 1 );
     override     = FT_BOOL( ( coverage >> 3 ) & 1 );
-#endif
 
     *format = (FT_UShort)( ( coverage >> 8 ) & 0x0003 );
 
@@ -671,7 +643,7 @@
       GXV_TRACE((
         "kerning values in Microsoft format 2 subtable are ignored\n" ));
 
-    return TRUE;
+    return 1;
   }
 
 
@@ -742,14 +714,10 @@
                               GXV_Validator  valid )
   {
     FT_Bytes   p = table;
-#ifdef GXV_LOAD_TRACE_VARS
     FT_UShort  version = 0;    /* MS only: subtable version, unused */
-#endif
     FT_ULong   length;         /* MS: 16bit, Apple: 32bit*/
     FT_UShort  coverage;
-#ifdef GXV_LOAD_TRACE_VARS
     FT_UShort  tupleIndex = 0; /* Apple only */
-#endif
     FT_UShort  u16[2];
     FT_UShort  format = 255;   /* subtable format */
 
@@ -764,35 +732,23 @@
     switch ( gxv_kern_coverage_validate( coverage, &format, valid ) )
     {
     case KERN_DIALECT_MS:
-#ifdef GXV_LOAD_TRACE_VARS
       version    = u16[0];
-#endif
       length     = u16[1];
-#ifdef GXV_LOAD_TRACE_VARS
       tupleIndex = 0;
-#endif
       GXV_TRACE(( "Subtable version = %d\n", version ));
       GXV_TRACE(( "Subtable length = %d\n", length ));
       break;
 
     case KERN_DIALECT_APPLE:
-#ifdef GXV_LOAD_TRACE_VARS
       version    = 0;
-#endif
       length     = ( u16[0] << 16 ) + u16[1];
-#ifdef GXV_LOAD_TRACE_VARS
       tupleIndex = 0;
-#endif
       GXV_TRACE(( "Subtable length = %d\n", length ));
 
       if ( KERN_IS_NEW( valid ) )
       {
         GXV_LIMIT_CHECK( 2 );
-#ifdef GXV_LOAD_TRACE_VARS
         tupleIndex = FT_NEXT_USHORT( p );
-#else
-        p += 2;
-#endif
         GXV_TRACE(( "Subtable tupleIndex = %d\n", tupleIndex ));
       }
       break;
