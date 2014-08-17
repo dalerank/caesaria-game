@@ -451,7 +451,7 @@ Engine::Modes SdlEngine::modes() const
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
-    if (SDL_GetDisplayMode(0, i, &mode) == 0)
+    if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
       ret.push_back(Size(mode.w, mode.h));
     }
