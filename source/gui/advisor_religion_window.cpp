@@ -190,7 +190,9 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
   city::Helper helper( city );
   HouseList houses = helper.find<House>( building::house );
 
-  bool needBasicReligion = false;
+  int needBasicReligion = 0;
+  int needSecondReligion = 0;
+  int needThirdReligion = 0;
   foreach( it, houses )
   {
     const HouseSpecification& spec = (*it)->spec();
@@ -202,11 +204,40 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
     case 1:
       if( curLevel == 0 )
       {
-        needBasicReligion = true;
+        needBasicReligion++;
+      }
+    break;
+
+    case 2:
+      if( curLevel < 2)
+      {
+        needSecondReligion++;
+      }
+    break;
+
+    case 3:
+      if( curLevel < 3 )
+      {
+        needThirdReligion++;
       }
     break;
     }
   }
+
+  if( needSecondReligion > 0 )
+  {
+    advices << "##religionadv_need_second_relgigion##";
+  }
+
+  if( needThirdReligion > 0 )
+  {
+    advices << "##religionadv_need_third_relgigion##";
+  }
+
+  std::string text = outText.empty()
+                        ? "##religionadv_unknown_reason##"
+                        : outText.random();
+  lbReligionAdvice->setText( _(text) );
 }
 
 }

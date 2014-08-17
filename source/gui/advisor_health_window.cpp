@@ -203,15 +203,22 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
       HouseList houses =  helper.find<House>( building::house );
 
       unsigned int needBath = 0;
+      unsigned int needDoctors = 0;
       foreach( it, houses )
       {
         HousePtr house = *it;
         needBath += house->isHealthNeed( Service::baths );
+        needDoctors += house->isHealthNeed( Service::doctor );
       }
 
       if( needBath > 0 )
       {
         outText << "##healthadv_some_regions_need_bath##";
+      }
+
+      if( needDoctors > 0 )
+      {
+        outText << "##healthadv_some_regions_need_doctors##";
       }
     }
   }
@@ -219,7 +226,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   std::string text = outText.empty()
                         ? "##healthadv_unknown_reason##"
                         : outText.random();
-  lbAdvice->setText( text );
+  lbAdvice->setText( _(text) );
 }
 
 }

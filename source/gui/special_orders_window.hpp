@@ -69,9 +69,8 @@ public:
 private:
   void _updateBtnDevastation();
 
-  WarehousePtr _warehouse;
-  PushButton* _btnToggleDevastation;
-  PushButton* _btnTradeCenter;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namesapce gui

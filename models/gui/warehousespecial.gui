@@ -1,0 +1,17 @@
+{  
+  geometry : [ 0, 0, 510, 360 ]
+
+  btnToggleDevastation#PushButton : {
+    geometry : [ 80, "ph-45", "pw-80", "ph-45" ]
+    bgtype : "whiteBorderUp"
+    font : "FONT_2"
+    text : "##unknown_text##"
+  }
+
+  btnTradeCenter#PushButton : {
+    geometry : [ 80, "ph-70", "pw-80", "ph-50" ]
+    bgtype : "whiteBorderUp"
+    font : "FONT_2"
+    text : "##trade_center##"
+  }
+}
