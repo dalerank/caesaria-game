@@ -94,10 +94,7 @@ public:
 
 FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  Size size( 625, 320 );
-
-  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->height() - size.height())/2 ), size );
-  FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, rectangle, city);
+  FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, Rect( 0, 0, 1, 1 ), city);
 
   return ret;
 }
@@ -108,7 +105,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
   setupUI( ":/gui/festivalplaning.gui" );
-  setCenter( parent->center() );
+  move( Point( 8, 30) );
   _d->city = city;
 
   _d->addImage( this, romeDivCeres, 0, 17 );

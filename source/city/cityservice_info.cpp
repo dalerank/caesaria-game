@@ -120,6 +120,8 @@ void Info::update( const unsigned int time )
     HouseList houses = helper.find<House>( building::house );
 
     last.sentiment = 0;
+    last.houseNumber = 0;
+    last.shackNumber = 0;
     foreach( it, houses )
     {
       HousePtr h = *it;
@@ -132,7 +134,8 @@ void Info::update( const unsigned int time )
       }
     }
 
-    last.sentiment /= last.houseNumber;
+    if( last.houseNumber > 0 )
+      last.sentiment /= last.houseNumber;
 
     if( yearChanged )
     {

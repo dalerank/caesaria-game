@@ -95,9 +95,12 @@ public:
     Label::draw( painter );
 
     Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
-    for( int k=0; k < _divinity->wrathPoints() / 15; k++ )
+    if( _divinity.isValid() )
     {
-      painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), false );
+      for( int k=0; k < _divinity->wrathPoints() / 15; k++ )
+      {
+        painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), false );
+      }
     }
   }
 
