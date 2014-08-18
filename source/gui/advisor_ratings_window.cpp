@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "city/funds.hpp"
+#include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
 
 using namespace gfx;
@@ -169,9 +170,11 @@ void Ratings::Impl::checkProsperityRating()
   city::ProsperityRatingPtr prosperity;
   prosperity << city->findService( city::ProsperityRating::defaultName() );
 
+
   if( prosperity != 0 )
   {
-    if( prosperity->value() == 0 )
+    unsigned int prValue = prosperity->value();
+    if( prValue == 0 )
     {
       lbRatingInfo->setText( _("##cant_calc_prosperity##") );
       return;
@@ -188,6 +191,8 @@ void Ratings::Impl::checkProsperityRating()
       troubles << "##no_prosperity_change##";
       troubles << "##how_to_grow_prosperity##";
     }
+    if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
+
 
     unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
     caesarsHelper += city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
@@ -206,7 +211,27 @@ void Ratings::Impl::checkProsperityRating()
 
 void Ratings::Impl::checkPeaceRating()
 {
-  lbRatingInfo->setText( _("##peace_rating_text##") );
+  StringArray advices;
+  city::MilitaryPtr ml;
+  ml << city->findService( city::Military::defaultName() );
+
+  unsigned int peace = city->peace();
+
+  if( ml->month2lastAttack() < 36 )
+  {
+    advices << "##province_has_peace_a_short_time##";
+  }
+
+  if( peace > 50 )
+  {
+    advices << "##this_lawab_province_become_very_peacefull##";
+  }
+
+  std::string text = advices.empty()
+                      ? "##peace_rating_text##"
+                      : advices.random();
+
+  lbRatingInfo->setText( _(text) );
 }
 
 void Ratings::Impl::checkFavourRating()
@@ -217,10 +242,12 @@ void Ratings::Impl::checkFavourRating()
 
   PlayerPtr player = city->player();
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
-  if( player->salary() / rank.salary >= 2 )
-  {
-    problems << "##high_salary_angers_senate##";
-  }
+  float salaryKoeff = player->salary() / (float)rank.salary;
+
+  if( salaryKoeff >= 3.f )     { problems << "##high_salary_angers_senate##";  }
+  else if( salaryKoeff > 2.f ) { problems << "##more_salary_dispeasure_senate##";  }
+  else if( salaryKoeff > 1.5f ){ problems << "##try_reduce_your_high_salary##"; }
+  else if( salaryKoeff > 1.f ) { problems << "##try_reduce_your_salary##"; }
 
   if( rd.isValid() )
   {

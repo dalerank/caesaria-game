@@ -63,7 +63,7 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
   case Good::grape: picIdx = 33; break;
   case Good::meat: picIdx = 38; break;
   default:
-    Logger::warning( "Unexpected farmType in farm" + GoodHelper::getName( outGood ) );
+    Logger::warning( "Unexpected farmType in farm" + GoodHelper::name( outGood ) );
     _CAESARIA_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
 

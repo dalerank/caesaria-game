@@ -27,7 +27,7 @@
       font : "FONT_1"
     }
 
-    lbDate#Label : {
+    lbSubj#Label : {
       geometry : [ 120, 45, 180, 60 ]
       text : "##scrw_subject##"
       font : "FONT_1"

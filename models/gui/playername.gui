@@ -35,6 +35,7 @@
     hovered : [ "paneling", 180 ]
     pressed : [ "paneling", 181 ]
     disabled : [ "paneling", 179 ]
+    tooltip : "##plname_start_new_game##"
   }
 
   lbExitHelp#Label :

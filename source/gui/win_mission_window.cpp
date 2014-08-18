@@ -21,6 +21,7 @@
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
+#include "widget_deleter.hpp"
 
 namespace gui
 {
@@ -35,7 +36,7 @@ public oc3_signals:
   Signal1<int> onContinueRulesSignal;
 };
 
-WinMissionWindow::WinMissionWindow(Widget* p, std::string newTitle, bool mayContinue )
+WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const std::string& winText, bool mayContinue )
   : Window( p, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/winmission.gui" );
@@ -54,6 +55,14 @@ WinMissionWindow::WinMissionWindow(Widget* p, std::string newTitle, bool mayCont
 
   CONNECT( btnAccept, onClicked(), &_d->onNextMissionSignal, Signal0<>::emit );
   CONNECT( btnAccept, onClicked(), this, WinMissionWindow::deleteLater );
+
+  if( !winText.empty() )
+  {
+    Label* lbWin = new Label( this, Rect( 30, 30, width()-30, height()-30 ), _(winText), false, Label::bgWhiteFrame );
+    lbWin->setTextAlignment( align::center, align::center );
+    lbWin->setWordwrap( true );
+    WidgetDeleter::assignTo( lbWin, 3000 );
+  }
 }
 
 WinMissionWindow::~WinMissionWindow(){}

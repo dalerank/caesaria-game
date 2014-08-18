@@ -223,27 +223,11 @@ void Info::addMessage(const Info::ScribeMessage& message)
 }
 
 namespace {
-CAESARIA_LITERALCONST(population)
-CAESARIA_LITERALCONST(funds)
-CAESARIA_LITERALCONST(tax)
-CAESARIA_LITERALCONST(taxpayes)
-CAESARIA_LITERALCONST(monthWithFood)
-
-CAESARIA_LITERALCONST(foodKoeff)
-CAESARIA_LITERALCONST(godsMood)
-CAESARIA_LITERALCONST(needWorkers)
-CAESARIA_LITERALCONST(colloseumCoverage)
-CAESARIA_LITERALCONST(theaterCoverage)
-CAESARIA_LITERALCONST(workless)
-CAESARIA_LITERALCONST(entertainment)
-CAESARIA_LITERALCONST(lifeValue)
-
 CAESARIA_LITERALCONST(text)
 CAESARIA_LITERALCONST(title)
 CAESARIA_LITERALCONST(gtype)
 CAESARIA_LITERALCONST(position)
 CAESARIA_LITERALCONST(type)
-CAESARIA_LITERALCONST(date)
 CAESARIA_LITERALCONST(opened)
 CAESARIA_LITERALCONST(ext)
 }
@@ -251,40 +235,60 @@ CAESARIA_LITERALCONST(ext)
 VariantMap Info::Parameters::save() const
 {
   VariantMap ret;
-  ret[ lc_date ] = date;
-  ret[ lc_population ] = population;
-  ret[ lc_funds ] = funds;
-  ret[ lc_tax ] = tax;
-  ret[ lc_taxpayes ] = taxpayes;
-  ret[ lc_monthWithFood ] = monthWithFood;
-  ret[ lc_foodKoeff ] = foodKoeff;
-  ret[ lc_godsMood ] = godsMood;
-  ret[ lc_needWorkers ] = needWorkers;
-  ret[ lc_workless ] = workless;
-  ret[ lc_colloseumCoverage ] = colloseumCoverage;
-  ret[ lc_theaterCoverage ] = theaterCoverage;
-  ret[ lc_entertainment ] = entertainment;
-  ret[ lc_lifeValue ] = lifeValue;
+  VARIANT_SAVE_ANY( ret, date )
+  VARIANT_SAVE_ANY( ret, population )
+  VARIANT_SAVE_ANY( ret, funds )
+  VARIANT_SAVE_ANY( ret, tax )
+  VARIANT_SAVE_ANY( ret, taxpayes )
+  VARIANT_SAVE_ANY( ret, monthWithFood )
+  VARIANT_SAVE_ANY( ret, foodKoeff )
+  VARIANT_SAVE_ANY( ret, godsMood )
+  VARIANT_SAVE_ANY( ret, needWorkers )
+  VARIANT_SAVE_ANY( ret, workless )
+  VARIANT_SAVE_ANY( ret, colloseumCoverage )
+  VARIANT_SAVE_ANY( ret, theaterCoverage )
+  VARIANT_SAVE_ANY( ret, entertainment )
+  VARIANT_SAVE_ANY( ret, lifeValue )
+  VARIANT_SAVE_ANY( ret, education)
+  VARIANT_SAVE_ANY( ret, payDiff )
+  VARIANT_SAVE_ANY( ret, monthWithourWar )
+  VARIANT_SAVE_ANY( ret, cityWages )
+  VARIANT_SAVE_ANY( ret, romeWages )
+  VARIANT_SAVE_ANY( ret, maxWorkers )
+  VARIANT_SAVE_ANY( ret, crimeLevel )
+  VARIANT_SAVE_ANY( ret, peace )
+  VARIANT_SAVE_ANY( ret, houseNumber )
+  VARIANT_SAVE_ANY( ret, shackNumber )
 
   return ret;
 }
 
 void Info::Parameters::load(const VariantMap& stream)
 {
-  date = stream.get( lc_date ).toDateTime();
-  population = stream.get( lc_population );
-  funds = stream.get( lc_funds ) ;
-  tax = stream.get( lc_tax );
-  taxpayes = stream.get( lc_taxpayes );
-  monthWithFood = stream.get( lc_monthWithFood );
-  foodKoeff = stream.get( lc_foodKoeff );
-  godsMood = stream.get( lc_godsMood );
-  needWorkers = stream.get( lc_needWorkers );
-  workless = stream.get( lc_workless );
-  colloseumCoverage = stream.get( lc_colloseumCoverage );
-  theaterCoverage = stream.get( lc_theaterCoverage );
-  entertainment = stream.get( lc_entertainment );
-  lifeValue = stream.get( lc_lifeValue );
+  VARIANT_LOAD_TIME( date, stream )
+  VARIANT_LOAD_ANY( population, stream )
+  VARIANT_LOAD_ANY( funds, stream )
+  VARIANT_LOAD_ANY( tax, stream )
+  VARIANT_LOAD_ANY( taxpayes, stream )
+  VARIANT_LOAD_ANY( monthWithFood, stream )
+  VARIANT_LOAD_ANY( foodKoeff, stream )
+  VARIANT_LOAD_ANY( godsMood, stream )
+  VARIANT_LOAD_ANY( needWorkers, stream )
+  VARIANT_LOAD_ANY( workless, stream )
+  VARIANT_LOAD_ANY( colloseumCoverage, stream )
+  VARIANT_LOAD_ANY( theaterCoverage, stream )
+  VARIANT_LOAD_ANY( entertainment, stream )
+  VARIANT_LOAD_ANY( lifeValue, stream )
+  VARIANT_LOAD_ANY( education, stream )
+  VARIANT_LOAD_ANY( payDiff, stream )
+  VARIANT_LOAD_ANY( monthWithourWar, stream )
+  VARIANT_LOAD_ANY( cityWages, stream )
+  VARIANT_LOAD_ANY( romeWages, stream )
+  VARIANT_LOAD_ANY( maxWorkers, stream )
+  VARIANT_LOAD_ANY( crimeLevel, stream )
+  VARIANT_LOAD_ANY( peace, stream )
+  VARIANT_LOAD_ANY( houseNumber, stream )
+  VARIANT_LOAD_ANY( shackNumber, stream )
 }
 
 VariantMap Info::ScribeMessage::save() const
@@ -295,7 +299,7 @@ VariantMap Info::ScribeMessage::save() const
   ret[ lc_gtype ] = Variant( GoodHelper::getTypeName( gtype ) );
   ret[ lc_position ] = position;
   ret[ lc_type ] = type;
-  ret[ lc_date ] = date;
+  VARIANT_SAVE_ANY( ret, date )
   ret[ lc_opened ] = opened;
   ret[ lc_ext ] = ext;
 
@@ -309,7 +313,7 @@ void Info::ScribeMessage::load(const VariantMap& stream)
   gtype = GoodHelper::getType( stream.get( lc_gtype ).toString() );
   position = stream.get( lc_position ).toPoint();
   type = stream.get( lc_type );
-  date = stream.get( lc_date ).toDateTime();
+  VARIANT_LOAD_TIME( date, stream )
   opened = stream.get( lc_opened );
   ext = stream.get( lc_ext );
 }

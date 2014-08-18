@@ -24,6 +24,7 @@
 #include "city/helper.hpp"
 #include "objects/factory.hpp"
 #include "gfx/engine.hpp"
+#include "widget_helper.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -125,22 +126,26 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
 
   setupUI( ":/gui/goodorder.gui" );
 
-  _d->icon = GoodHelper::getPicture( type );
+  _d->icon = GoodHelper::picture( type );
 
-  Label* lbTitle = new Label( this, Rect( 40, 10, width() - 10, 10 + 30), GoodHelper::getName( type ) );
-  lbTitle->setFont( Font::create( FONT_5 ) );
+  Label* lbTitle;
+  Label* lbStackedQty;
+  TexturedButton* btnExit;
+  GET_WIDGET_FROM_UI( lbTitle )
+  GET_WIDGET_FROM_UI( lbStackedQty )
+  GET_WIDGET_FROM_UI( btnExit )
+  GET_DWIDGET_FROM_UI( _d, lbIndustryInfo )
+  GET_DWIDGET_FROM_UI( _d, btnIndustryState )
+  GET_DWIDGET_FROM_UI( _d, btnStackingState )
 
-  _d->lbIndustryInfo = new Label( this, Rect( 40, 40, width() - 10, 40 + 20 ) );
-
-  std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
-  /*Label* lbStacked = */new Label( this, Rect( 40, 60, width() - 10, 60 + 20 ), text );
+  if( lbTitle ) lbTitle->setText( GoodHelper::name( type ) );
+  if( lbStackedQty )
+  {
+    std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
+    lbStackedQty->setText( text );
+  }
 
   _d->btnTradeState = new TradeStateButton( this, Rect( 50, 85, width() - 60, 85 + 30), -1 );
-  _d->btnIndustryState = new PushButton( this, Rect( 50, 125, width() - 60, 125 + 30), "", -1, false, PushButton::whiteBorderUp );
-  _d->btnStackingState = new PushButton( this, Rect( 50, 160, width() - 60, 160 + 50), "", -1, false, PushButton::whiteBorderUp );
-
-  TexturedButton* btnExit = new TexturedButton( this, Point( width() - 34, height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  /*TexturedButton* btnHelp = */new TexturedButton( this, Point( 11, height() - 34 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
   updateTradeState();
   updateIndustryState();
@@ -224,9 +229,9 @@ void GoodOrderManageWindow::updateIndustryState()
 
   FactoryList factories = helper.getProducers<Factory>( _d->type );
   foreach( factory, factories )
-    {
-      ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
-    }
+  {
+    ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
+  }
 
   std::string text = StringHelper::format( 0xff, "%d %s, %d %s", workFactoryCount, _("##work##"),
                                            idleFactoryCount, _("##idle_factory_in_city##") );

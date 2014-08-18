@@ -87,7 +87,7 @@ public:
     {
       font.draw( *pic, StringHelper::format( 0xff, "%d", gr->qty() ), 2, 2 );
 
-      Picture goodPicture = GoodHelper::getPicture( gr->goodType() );
+      Picture goodPicture = GoodHelper::picture( gr->goodType() );
       pic->draw( goodPicture, Point( 40, 2 ), false );
 
       font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
@@ -295,7 +295,8 @@ void Emperor::Impl::changeSalary( int money )
   PlayerPtr pl = city->player();
   pl->setSalary( money );
 
-  if( world::EmpireHelper::isGreaterSalary( ptr_cast<world::City>( city ) ) )
+  float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
+  if( salKoeff > 1.f )
   {
     DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
                                     "##changesalary_warning##", "##changesalary_greater_salary##",

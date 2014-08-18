@@ -99,7 +99,7 @@ void AboutGranary::drawGood( Good::Type goodType, int col, int paintY)
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
 
   // pictures of goods
-  const Picture& pic = GoodHelper::getPicture( goodType );
+  const Picture& pic = GoodHelper::picture( goodType );
   Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( 150, 24 )) );
   lb->setIcon( pic );
   lb->setFont( Font::create( FONT_2 ) );

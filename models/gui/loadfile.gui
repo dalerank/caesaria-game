@@ -26,7 +26,7 @@
 
   btnLoad#PushButton : {
     geometry : [ 50, "ph-39", 250, "ph-15" ]
-    text : "##continue##"
+    text : "##start_this_map##"
     tooltip : "##fileload_load_tlp##"
     bgtype : "whiteBorderUp"
     enabled : false

@@ -83,7 +83,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     GET_WIDGET_FROM_UI( smkViewer )
 
     if( lbQty ) { lbQty->setText( StringHelper::format( 0xff, "%d", gr->qty() ) ); }
-    if( imgIcon ) { imgIcon->setPicture( GoodHelper::getPicture( gr->goodType() )); }
+    if( imgIcon ) { imgIcon->setPicture( GoodHelper::picture( gr->goodType() )); }
 
     int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );
     if( lbInterval ) { lbInterval->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }

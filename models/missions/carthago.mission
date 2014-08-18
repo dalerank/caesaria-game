@@ -19,6 +19,7 @@
     favour : 30
     next : ":/missions/tutorial7.briefing"
     title : "##win_procurator_title##"
+    win.text : "##carthago_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##carthage_6_title##"

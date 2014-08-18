@@ -11,7 +11,7 @@
     }
 
     tarentum : {
-      title : "Tarentum: slightly dangerous province"
+      title : "##tarentum_slightly_dangerous_province##"
       mission : ":/missions/tarentum.mission"
       location : [ 350, 230 ]
     }

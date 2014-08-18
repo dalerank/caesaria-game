@@ -145,7 +145,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   {
     _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
 
-    foreach( it, wint.getOverview() )
+    foreach( it, wint.overview() )
     {
       std::string text = *it;
       if( text.substr( 0, 5 ) == "@img=" )
@@ -164,8 +164,8 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
 
   if( _d->lbShortDesc )
   {
-    _d->lbShortDesc->setText( _(wint.getShortDesc()) );
-    _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
+    _d->lbShortDesc->setText( _(wint.shortDesc()) );
+    _d->lbShortDesc->setVisible( !wint.shortDesc().empty() );
   }
 }
 

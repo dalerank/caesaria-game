@@ -19,6 +19,7 @@
     favour : 0
     next : ":/missions/mission3.briefing"
     title : "##win_clerk_title##"
+    win.text : "##tutorial2_win_text##"
     may_continue : false
     short : "##tt2_caption##"
     maxHouseLevel : "big_villa"

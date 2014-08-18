@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layercrime.hpp"
 #include "tileoverlay.hpp"
@@ -38,7 +38,10 @@ static const std::string crimeDesc[] =
 {
   "##none_crime_risk##",
   "##low_crime_risk##",
+  "##few_crime_risk##"
   "##some_crime_risk##",
+  "##several_crimes_but_area_secure##",
+  "##dangerous_crime_risk##"
   "##averange_crime_risk##",
   "##high_crime_risk##"
 };
@@ -141,7 +144,7 @@ void LayerCrime::handleEvent(NEvent& event)
         if( house != 0 )
         {
           int crime = (int)house->getServiceValue( Service::crime );
-          text = crimeDesc[ math::clamp<int>( crime / 20, 0, 4 ) ];
+          text = crimeDesc[ math::clamp<int>( crime / 12.5, 0, 7 ) ];
         }
       }
 

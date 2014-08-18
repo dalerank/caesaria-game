@@ -55,7 +55,7 @@ AboutRawMaterial::AboutRawMaterial( Widget* parent, const Tile& tile )
 
   if( rawmb->produceGoodType() != Good::none )
   {
-    Picture pic = GoodHelper::getPicture( rawmb->produceGoodType() );
+    Picture pic = GoodHelper::picture( rawmb->produceGoodType() );
     new Image( this, Point( 10, 10 ), pic );
   }
 

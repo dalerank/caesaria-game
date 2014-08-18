@@ -158,8 +158,9 @@ void Emperor::timeStep(unsigned int time)
       }
 
       CityPtr cityp = d->empire->findCity( it->first );
-      bool greaterSalary = EmpireHelper::isGreaterSalary( cityp );
-      ref.value += greaterSalary ? -2 : 1;
+      float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
+      if( salaryKoeff > 1.f ) { ref.value -= (int)salaryKoeff * salaryKoeff; }
+      else if( salaryKoeff < 1.f ) { ref.value += 1; }
     }
   }
 

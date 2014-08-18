@@ -327,7 +327,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( sellgoods.capacity( (Good::Type)i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
+      lb->setBackgroundPicture( GoodHelper::picture( Good::Type(i), true) );
       lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
     }
@@ -342,7 +342,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( buygoods.capacity( (Good::Type)i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
+      lb->setBackgroundPicture(  GoodHelper::picture( Good::Type(i), true) );
       lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
     }
@@ -371,7 +371,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     if( maxsell > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
+      lb->setBackgroundPicture(  GoodHelper::picture( Good::Type(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
@@ -390,7 +390,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     if( maxbuy > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
+      lb->setBackgroundPicture( GoodHelper::picture( Good::Type(i), true) );
 
       std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( gbox, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );

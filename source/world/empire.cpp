@@ -437,18 +437,18 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   return 0;
 }
 
-bool EmpireHelper::isGreaterSalary(CityPtr city)
+float EmpireHelper::governorSalaryKoeff(CityPtr city)
 {
   PlayerPtr pl = city->player();
 
-  bool result = false;
+  float result = 1.f;
   if( pl.isValid() )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
     const world::GovernorRank& curRank = ranks[ math::clamp<int>( pl->rank(), 0, ranks.size() ) ];
     int normalSalary = curRank.salary;
 
-    result = (pl->salary() > normalSalary);
+    result = pl->salary() / (float)normalSalary;
   }
 
   return result;

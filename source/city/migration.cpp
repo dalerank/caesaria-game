@@ -96,14 +96,14 @@ void Migration::update( const unsigned int time )
   Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
 
   _d->emigrantsIndesirability = defaultEmIndesirability; //base indesirability value
-  float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
+  float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
   int diffSalary = _city.empire()->workerSalary() - _city.funds().workerSalary();
   _d->emigrantsIndesirability += diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city
-  int minMonthWithFood = GameSettings::get( GameSettings::minMonthWithFood );
+  int minMonthWithFood = SETTINGS_VALUE( minMonthWithFood );
   _d->emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
                                    ? ((minMonthWithFood - params.monthWithFood) * 3)
                                    : -params.monthWithFood );

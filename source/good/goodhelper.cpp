@@ -115,7 +115,7 @@ GoodHelper::GoodHelper() : _d( new Impl )
 {  
 }
 
-Picture GoodHelper::getPicture( Good::Type type, bool emp )
+Picture GoodHelper::picture( Good::Type type, bool emp )
 {
   int picId = -1;
 
@@ -138,7 +138,7 @@ Picture GoodHelper::getPicture( Good::Type type, bool emp )
 
 GoodHelper::~GoodHelper() {}
 
-std::string GoodHelper::getName( Good::Type type )
+std::string GoodHelper::name( Good::Type type )
 {
   Impl::GoodNames::iterator it = getInstance()._d->goodName.find( type );
   return it != getInstance()._d->goodName.end() ? it->second : "";

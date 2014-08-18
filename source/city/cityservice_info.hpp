@@ -54,6 +54,8 @@ public:
     int maxWorkers;
     int crimeLevel;
     int peace;
+    int houseNumber;
+    int shackNumber;
 
     Parameters()
     {
@@ -77,6 +79,8 @@ public:
       education = 0;
       cityWages = 0;
       romeWages = 0;
+      houseNumber = 0;
+      shackNumber = 0;
     }
 
     VariantMap save() const;

@@ -99,14 +99,15 @@ VariantMap Military::save() const
   }
 
   ret[ lc_notifications ] = vlNts;
-  ret[ "lastEnemyAttack" ] = _d->lastEnemyAttack;
+  VARIANT_SAVE_ANY_D( ret, _d, lastEnemyAttack )
 
   return ret;
 }
 
 void Military::load(const VariantMap& stream)
 {
-  _d->lastEnemyAttack = stream.get( "lastEnemyAttack" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastEnemyAttack, stream );
+
   VariantMap vlNts = stream.get( lc_notifications ).toMap();
   foreach( it, vlNts )
   {
@@ -122,10 +123,6 @@ void Military::load(const VariantMap& stream)
 
 int Military::month2lastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
 void Military::enemyAttack(){  _d->lastEnemyAttack = GameDate::current(); }
-
-std::string Military::defaultName()
-{
-  return CAESARIA_STR_EXT(Military);
-}
+std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
 
 }//end namespace city

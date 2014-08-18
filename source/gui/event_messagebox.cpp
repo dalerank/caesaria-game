@@ -55,7 +55,7 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
     Label* goodLabel = new Label( this, rect, GoodHelper::getTypeName( gtype ) );
     goodLabel->setTextAlignment( align::upperLeft, align::center );
     goodLabel->setTextOffset( Point( 30, 0 ) );
-    goodLabel->setIcon( GoodHelper::getPicture( gtype ), Point( 0, 7 ) );
+    goodLabel->setIcon( GoodHelper::picture( gtype ), Point( 0, 7 ) );
   }
 }
 

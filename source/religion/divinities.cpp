@@ -123,9 +123,7 @@ VariantMap RomeDivinity::save() const
 float RomeDivinity::relation() const { return _relation; }
 float RomeDivinity::monthDecrease() const { return 0.5f; }
 void RomeDivinity::setEffectPoint(int value) { _effectPoints = value; }
-
 int RomeDivinity::wrathPoints() const { return _wrathPoints; }
-
 DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)

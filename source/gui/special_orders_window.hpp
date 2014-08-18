@@ -39,6 +39,7 @@ public:
 
   virtual ~BaseSpecialOrdersWindow();
 protected:
+  Widget* _ordersArea();
   BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
 
   class Impl;
@@ -69,8 +70,7 @@ public:
 private:
   void _updateBtnDevastation();
 
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
 };
 
 }//end namesapce gui

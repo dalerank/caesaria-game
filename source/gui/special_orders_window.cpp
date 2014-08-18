@@ -61,7 +61,7 @@ public:
   {
     Label::_updateTexture( painter );
 
-    Picture goodIcon = GoodHelper::getPicture( _type );
+    Picture goodIcon = GoodHelper::picture( _type );
     std::string goodName = _( "##" + GoodHelper::getTypeName( _type ) + "##" );
 
     if( _textPictureRef() )
@@ -105,15 +105,15 @@ public:
   PushButton* btnExit;
   PushButton* btnHelp;
   PushButton* btnEmpty;
-
-  template< class T >
-  void addOrderWidget( const int index, const Good::Type good, T storageBuiding )
-  {
-    Point offset( 0, 25 );
-    Size wdgSize( gbOrdersInsideArea->width(), 25 );
-    new OrderGoodWidget<T>( gbOrdersInsideArea, Rect( offset * index, wdgSize), good, storageBuiding );
-  }
 };
+
+template< class T >
+void addOrderWidget( const int index, const Good::Type good, Widget* area, T storageBuiding )
+{
+  Point offset( 0, 25 );
+  Size wdgSize( area->width(), 25 );
+  new OrderGoodWidget<T>( area, Rect( offset * index, wdgSize), good, storageBuiding );
+}
 
 BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& pos, int h )
   : Window( parent, Rect( pos, Size( 510, h ) ), "" ), _d( new Impl )
@@ -137,6 +137,11 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
 
 
 BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
+
+Widget*BaseSpecialOrdersWindow::_ordersArea()
+{
+  return _d->gbOrdersInsideArea;
+}
 
 void BaseSpecialOrdersWindow::draw(gfx::Engine& engine )
 {
@@ -186,7 +191,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
     
     if( rule != GoodOrders::none )
     {
-      _d->addOrderWidget<GranaryPtr>( index, (Good::Type)goodType, granary );
+      addOrderWidget<GranaryPtr>( index, (Good::Type)goodType, _ordersArea(), granary );
       index++;
     }
   }
@@ -219,43 +224,47 @@ public:
   PushButton* btnTradeCenter;
 };
 
-
 WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
-: BaseSpecialOrdersWindow( parent, pos, defaultHeight ), _d( new Impl )
+: BaseSpecialOrdersWindow( parent, pos, defaultHeight ), __INIT_IMPL(WarehouseSpecialOrdersWindow)
 {
-  setupUI( ":/gui/warehousespecial.gui");
+  __D_IMPL(d, WarehouseSpecialOrdersWindow)
 
+  setupUI( ":/gui/warehousespecial.gui");
   setTitle( _("##warehouse_orders##") );
 
-  _warehouse = warehouse;
+  d->warehouse = warehouse;
   int index=0;
   for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
   {
-    const GoodOrders::Order rule = _warehouse->store().getOrder( (Good::Type)goodType );
+    const GoodOrders::Order rule = d->warehouse->store().getOrder( (Good::Type)goodType );
 
     if( rule != GoodOrders::none )
     {
-      _d->addOrderWidget<WarehousePtr>( index, (Good::Type)goodType, _warehouse );
+      addOrderWidget<WarehousePtr>( index, (Good::Type)goodType, _ordersArea(), d->warehouse );
       index++;
     }
   }
 
-  GET_DWIDGET_FROM_UI( _d, btnToggleDevastation )
-  GET_DWIDGET_FROM_UI( _d, btnTradeCenter )
+  GET_DWIDGET_FROM_UI( d, btnToggleDevastation )
+  GET_DWIDGET_FROM_UI( d, btnTradeCenter )
 
-  CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
+  CONNECT( d->btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();
 }
 
 void WarehouseSpecialOrdersWindow::toggleDevastation()
 {
-  _warehouse->store().setDevastation( !_warehouse->store().isDevastation() );
+  __D_IMPL(d, WarehouseSpecialOrdersWindow)
+
+  d->warehouse->store().setDevastation( !d->warehouse->store().isDevastation() );
   _updateBtnDevastation();
 }
 
 void WarehouseSpecialOrdersWindow::_updateBtnDevastation()
 {
-  _btnToggleDevastation->setText( _warehouse->store().isDevastation() 
+  __D_IMPL(d, WarehouseSpecialOrdersWindow)
+
+  d->btnToggleDevastation->setText( d->warehouse->store().isDevastation()
                                       ? _("##stop_warehouse_devastation##")
                                       : _("##devastate_warehouse##") );
 }

@@ -104,11 +104,11 @@ void AboutWarehouse::showSpecialOrdersWindow()
 
 void AboutWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
 {
-  std::string goodName = GoodHelper::getName( goodType );
+  std::string goodName = GoodHelper::name( goodType );
   int qty = _warehouse->store().qty(goodType);
 
   // pictures of goods
-  const Picture& pic = GoodHelper::getPicture( goodType );
+  const Picture& pic = GoodHelper::picture( goodType );
   Label* lb = new Label( this, Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setIcon( pic, Point( 0, 4 ) );
