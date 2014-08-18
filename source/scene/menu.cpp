@@ -45,6 +45,7 @@
 #include "events/setvideooptions.hpp"
 #include "events/setsoundoptions.hpp"
 #include "gui/widgetpositionanimator.hpp"
+#include "gui/loadmissiondialog.hpp"
 #include "core/event.hpp"
 
 using namespace gfx;
@@ -76,7 +77,7 @@ public:
   void showMainMenu();
   void showSoundOptions();
   void showVideoOptions();
-  void resolvePlayMission();
+  void showMissionSelector();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
   void resolveSelectFile( std::string fileName );
   void setPlayerName( std::string name );
@@ -270,7 +271,7 @@ void StartMenu::Impl::showLoadMenu()
   menu->clear();
 
   gui::PushButton* btn = menu->addButton( _("##mainmenu_playmission##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolvePlayMission );
+  CONNECT( btn, onClicked(), this, Impl::showMissionSelector );
 
   btn = menu->addButton( _("##mainmenu_loadgame##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::resolveShowLoadGameWnd );
@@ -341,19 +342,14 @@ void StartMenu::Impl::showVideoOptions()
   event->dispatch();
 }
 
-void StartMenu::Impl::resolvePlayMission()
+void StartMenu::Impl::showMissionSelector()
 {
-  gui::Widget* parent = game->gui()->rootWidget();
-  Rect rect( Point(), Size( 512, 384 ) );
+  Widget* parent = game->gui()->rootWidget();
 
   result = StartMenu::loadMission;
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, rect,
-                                                    GameSettings::rcpath( "/missions/" ), ".mission", -1 );
-  wnd->setCenter( parent->center() );
-  wnd->setMayDelete( false );
+  LoadMissionDialog* wnd = LoadMissionDialog::create( parent, vfs::Path( ":/missions/" ) );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( _("##mainmenu_playmission##") );
 }
 
 void StartMenu::Impl::resolveSelectFile(std::string fileName)

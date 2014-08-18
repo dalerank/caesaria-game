@@ -23,6 +23,8 @@
 namespace gui
 {
 
+const Flag showTime= Flag(count+1);
+
 FileListBox::FileListBox(Widget* parent)
   : ListBox( parent, Rect( 0, 0, 1, 1) )
 {
@@ -32,8 +34,10 @@ FileListBox::FileListBox(Widget* parent)
 FileListBox::FileListBox(Widget* parent, const Rect& rectangle, int id)
   : ListBox( parent, rectangle, id )
 {
-
+  setShowTime( true );
 }
+
+void FileListBox::setShowTime(bool show) {  setFlag( showTime, show ); }
 
 ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int color)
 {
@@ -47,17 +51,19 @@ ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int 
   return item;
 }
 
-
 void FileListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect )
 {
   ListBox::_updateItemText( painter, item, textRect, font, frameRect );
 
-  Font f = Font::create( FONT_1 );
+  if( isFlag( showTime ) )
+  {
+    Font f = Font::create( FONT_1 );
 
-  std::string timeStr = item.data().toString();
-  Rect finalRect = f.getTextRect( timeStr, Rect( Point(), frameRect.size() ), align::lowerRight, align::center );
+    std::string timeStr = item.data().toString();
+    Rect finalRect = f.getTextRect( timeStr, Rect( Point(), frameRect.size() ), align::lowerRight, align::center );
 
-  item.draw( timeStr, f, finalRect.lefttop() - Point( 10, 0)  );
+    item.draw( timeStr, f, finalRect.lefttop() - Point( 10, 0)  );
+  }
 }
 
 

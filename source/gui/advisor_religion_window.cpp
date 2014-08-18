@@ -99,7 +99,7 @@ public:
     {
       for( int k=0; k < _divinity->wrathPoints() / 15; k++ )
       {
-        painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), false );
+        painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), &absoluteClippingRectRef() );
       }
     }
   }

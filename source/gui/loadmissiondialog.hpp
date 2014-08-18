@@ -1,6 +1,6 @@
 // This file is part of CaesarIA.
 //
-// CaesarIA is free software: you can redistribute it and/or modify
+// openCaesar3 is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -15,30 +15,33 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_FILELISTBOX_H_INCLUDED__
-#define __CAESARIA_FILELISTBOX_H_INCLUDED__
+#ifndef __CAESARIA_LOADMISSIONDIALOG_H_INCLUDE_
+#define __CAESARIA_LOADMISSIONDIALOG_H_INCLUDE_
 
-#include "listbox.hpp"
-#include "core/scopedptr.hpp"
-#include "vfs/path.hpp"
+#include "widget.hpp"
 #include "core/signals.hpp"
+#include "core/scopedptr.hpp"
 
 namespace gui
 {
 
-class FileListBox : public ListBox
+class LoadMissionDialog : public Widget
 {
 public:
-  FileListBox( Widget* parent );
-  FileListBox( Widget* parent, const Rect& rectangle, int id );
+  static LoadMissionDialog* create(Widget* parent, const vfs::Directory& dir );
+        
+  virtual void draw( gfx::Engine& engine );
 
-  void setShowTime( bool show );
+oc3_signals public:
+  Signal1<std::string>& onSelectFile();
 
-  virtual ListBoxItem& addItem(const std::string &text, Font font, const int color);
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 
-protected:
-  virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
+  LoadMissionDialog( Widget* parent, const vfs::Directory& dir );
 };
 
 }//end namespace gui
-#endif //__CAESARIA_FILELISTBOX_H_INCLUDED__
+
+#endif //__CAESARIA_LOADMISSIONDIALOG_H_INCLUDE_

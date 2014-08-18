@@ -623,7 +623,10 @@ void ListBox::draw(gfx::Engine& painter )
   if ( !visible() )
 		return;
 
-	painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  if( isFlag( drawBackground ) )
+  {
+    painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  }
 
   Point scrollBarOffset( 0, -_d->scrollBar->position() );
   Rect frameRect = _itemsRect();
@@ -875,7 +878,9 @@ void ListBox::setupUI(const VariantMap& ui)
 
   int itemheight = ui.get( "itemheight" );
   if( itemheight != 0 ) setItemHeight( itemheight );
+  bool drawborder = ui.get( "border.visible", true );
 
+  setDrawBackground( drawborder );
   std::string fontname = ui.get( "itemfont" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
 

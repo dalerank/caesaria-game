@@ -34,8 +34,11 @@ namespace gfx
 {
 
 namespace {
-  static const int bigCart = 200;
-  static const int megaCart = 400;
+  typedef enum {
+    simpleCart=100,
+    bigCart = 200,
+    megaCart = 400
+  } CartCapacity;
 }
 
 namespace{
@@ -284,11 +287,10 @@ Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int sta
 const Picture& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
 {
   int index = 0;
-  if( capacity <= 100 ) index = 100;
-  else if( capacity <= 200 ) index = 200;
-  else if( capacity <= 400 ) index = 400;
+  if( capacity > bigCart ) index = megaCart;
+  else if( capacity > simpleCart ) index = bigCart;
 
-  return instance()._d->carts[ good ][ direction ];
+  return instance()._d->carts[ index + good ][ direction ];
 }
 
 }//end namespace gfx

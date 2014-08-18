@@ -81,12 +81,12 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   GET_DWIDGET_FROM_UI( _d, btnHelp )
   GET_DWIDGET_FROM_UI( _d, btnLoad )
   GET_DWIDGET_FROM_UI( _d, btnDelete )
+  GET_DWIDGET_FROM_UI( _d, lbxFiles )
 
   CONNECT( _d->btnExit, onClicked(), this, LoadFileDialog::deleteLater );
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
   CONNECT( _d->btnDelete, onClicked(), _d.data(), Impl::deleteFile );
 
-  _d->lbxFiles = findChildA<FileListBox*>( "lbxFiles", true, this );
   if( _d->lbxFiles )
   {
     _d->lbxFiles->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
@@ -112,7 +112,7 @@ void LoadFileDialog::Impl::fillFiles()
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtension );
 
   StringArray names;
-  for( vfs::Entries::ConstItemIt it=flist.begin(); it != flist.end(); ++it )
+  foreach( it, flist )
   {
     names << (*it).absolutePath().toString();
   }
