@@ -63,6 +63,7 @@ public:
   void createMigrationToCity(PlayerCity& city);
   void createMigrationFromCity(PlayerCity& city);
   unsigned int calcVacantHouse( PlayerCity& city );
+  bool isPoorHousing( int shacks, int houses );
 };
 
 SrvcPtr Migration::create(PlayerCityPtr city)
@@ -89,7 +90,7 @@ void Migration::update( const unsigned int time )
     return;
 
   Logger::warning( "MigrationSrvc: start calculate" );
-  const int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
+  const int worklessCitizenAway = SETTINGS_VALUE( worklessCitizenAway );
 
   float migrationKoeff = _d->getMigrationKoeff( _city );
   Info::Parameters params = _d->lastMonthParams( _city );
@@ -99,14 +100,17 @@ void Migration::update( const unsigned int time )
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
-  int diffSalary = _city.empire()->workerSalary() - _city.funds().workerSalary();
-  _d->emigrantsIndesirability += diffSalary * emDesKoeff;
+  const int diffSalary = _city.empire()->workerSalary() - _city.funds().workerSalary();
+  int diffSalaryInfluence = diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city
-  int minMonthWithFood = SETTINGS_VALUE( minMonthWithFood );
-  _d->emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
+  const int minMonthWithFood = SETTINGS_VALUE( minMonthWithFood );
+  int foodStackInfluence = ( params.monthWithFood < minMonthWithFood
                                    ? ((minMonthWithFood - params.monthWithFood) * 3)
                                    : -params.monthWithFood );
+
+  int sentimentInfluence = (params.sentiment - 50) / 5;
+
   //emigrant need workplaces
   int worklessInfluence = params.workless == 0
                           ? -10
@@ -120,10 +124,16 @@ void Migration::update( const unsigned int time )
                           ? params.monthWithourWar * 5
                           : -std::min( params.monthWithourWar, 10 ) );
 
+  int shacksInfluence = ( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ? 10 : 0 );
+
   _d->emigrantsIndesirability += worklessInfluence;
+  _d->emigrantsIndesirability += diffSalaryInfluence;
+  _d->emigrantsIndesirability += foodStackInfluence;
   _d->emigrantsIndesirability += params.crimeLevel;
   _d->emigrantsIndesirability += taxLevelInfluence;
   _d->emigrantsIndesirability += warInfluence;
+  _d->emigrantsIndesirability += shacksInfluence;
+  _d->emigrantsIndesirability += sentimentInfluence;
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
@@ -164,70 +174,50 @@ std::string Migration::reason() const
   if( vacantHouse == 0 )
     return "##migration_lack_empty_house##";
 
+  StringArray troubles;
   if( _d->emigrantsIndesirability > defaultEmIndesirability )
   {
     Info::Parameters params = _d->lastMonthParams( _city );
     if( params.monthWithourWar < DateTime::monthsInYear )
     {
-      return "##migration_war_deterring##";
+      troubles << "##migration_war_deterring##";
     }
 
-    if( params.monthWithFood < (int)GameSettings::get( GameSettings::minMonthWithFood ) )
+    if( params.monthWithFood < (int)SETTINGS_VALUE( minMonthWithFood ) )
     {
-      if( params.monthWithFood == 0 )
-      {
-        return "##migration_empty_granary##";
-      }
-
-      return "##migration_lessfood_granary##";
+      if( params.monthWithFood == 0 ) { troubles << "##migration_empty_granary##";      }
+      else { troubles << "##migration_lessfood_granary##"; }
     }
 
-    if( params.workless > 5 )
+    if( params.workless > (int)SETTINGS_VALUE( worklessCitizenAway ) )
     {
-      if( params.workless > (int)GameSettings::get( GameSettings::worklessCitizenAway ) )
-        return "##migration_people_away##";
-
-      if( params.workless > 10 )
-      {
-        if( params.workless > 20 )
-        {
-          return "##migration_broke_workless##";
-        }
-
-        return "##migration_middle_lack_workless##";
-      }
-
-      return "##migration_lack_workless##";
+      troubles << "##migration_people_away##";
+    }
+    else
+    {
+      if( params.workless > 20 ) { troubles << "##migration_broke_workless##"; }
+      else if( params.workless > 10 ) { troubles << "##migration_middle_lack_workless##"; }
+      else if( params.workless > 5 ) { troubles << "##migration_lack_workless##"; }
     }
 
     int diffWages = params.romeWages - params.cityWages;
-    if( diffWages > 1 )
-    {
-      if( diffWages > 5 )
-        return "##low_wage_broke_migration##";
+    if( diffWages > 5 ) { troubles << "##low_wage_broke_migration##"; }
+    else if( diffWages > 1 ) { troubles <<  "##low_wage_lack_migration##"; }
 
-      return "##low_wage_lack_migration##";
-    }
+    if( params.crimeLevel > 25 ) { troubles << "##migration_lack_crime##"; }
 
-    if( params.crimeLevel > 25 )
-      return "##migration_lack_crime##";
+    if( params.tax > strongTaxLevel )    { troubles << "##migration_broke_tax##";  }
+    else if( params.tax > simpleTaxLevel ) { troubles <<  "##migration_middle_lack_tax##"; }
+    else if( params.tax > possibleTaxLevel ) { troubles << "##migration_lack_tax##"; }
 
-    if( params.tax > possibleTaxLevel )
-    {
-      if( params.tax > simpleTaxLevel )
-      {
-        if( params.tax > strongTaxLevel )
-        {
-          return "##migration_broke_tax##";
-        }
+    if( params.sentiment < 50 ) { troubles << "##poor_city_mood_lack_migration##";}
 
-        return "##migration_middle_lack_tax##";
-      }
-      return "##migration_lack_tax##";
-    }
+    if( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ) { troubles << "##poor_housing_discourages_migration##";}
   }
 
-  return "##migration_peoples_arrived_in_city##";
+  return troubles.empty()
+           ? "##migration_peoples_arrived_in_city##"
+           : troubles.random();
 }
 
 std::string Migration::leaveCityReason() const
@@ -285,6 +275,11 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCity& city )
   }
 
   return vh;
+}
+
+bool Migration::Impl::isPoorHousing(int shacks, int houses)
+{
+  return math::percentage( shacks, houses ) > 30;
 }
 
 float Migration::Impl::getMigrationKoeff( PlayerCity& city )

@@ -56,6 +56,7 @@ public:
     int peace;
     int houseNumber;
     int shackNumber;
+    int sentiment;
 
     Parameters()
     {

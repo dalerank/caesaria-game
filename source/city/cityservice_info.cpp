@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
+#include "city/helper.hpp"
 #include "good/goodhelper.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
@@ -30,6 +31,8 @@
 #include "core/foreach.hpp"
 #include "cityservice_peace.hpp"
 #include "statistic.hpp"
+
+using namespace constants;
 
 namespace city
 {
@@ -112,6 +115,24 @@ void Info::update( const unsigned int time )
     {
       last.peace = peaceSrvc->value();
     }
+
+    city::Helper helper( &_city );
+    HouseList houses = helper.find<House>( building::house );
+
+    last.sentiment = 0;
+    foreach( it, houses )
+    {
+      HousePtr h = *it;
+
+      if( h->habitants().count() > 0 )
+      {
+        last.shackNumber += (h->spec().level() < HouseLevel::smallDomus ? 1 : 0);
+        last.sentiment += h->state( House::happiness );
+        last.houseNumber++;
+      }
+    }
+
+    last.sentiment /= last.houseNumber;
 
     if( yearChanged )
     {
@@ -259,6 +280,7 @@ VariantMap Info::Parameters::save() const
   VARIANT_SAVE_ANY( ret, peace )
   VARIANT_SAVE_ANY( ret, houseNumber )
   VARIANT_SAVE_ANY( ret, shackNumber )
+  VARIANT_SAVE_ANY( ret, sentiment )
 
   return ret;
 }
@@ -289,6 +311,7 @@ void Info::Parameters::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( peace, stream )
   VARIANT_LOAD_ANY( houseNumber, stream )
   VARIANT_LOAD_ANY( shackNumber, stream )
+  VARIANT_LOAD_ANY( sentiment, stream )
 }
 
 VariantMap Info::ScribeMessage::save() const
