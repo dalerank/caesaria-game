@@ -28,6 +28,7 @@
 #include "gameautopause.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "game/gamedate.hpp"
+#include "widget_helper.hpp"
 #include "smkviewer.hpp"
 
 using namespace constants;
@@ -72,22 +73,29 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
   city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
   if( gr.isValid() )
   {
-    Label* lb = findChildA<Label*>( "lbQty", true, this );
-    if( lb ) { lb->setText( StringHelper::format( 0xff, "%d", gr->qty() ) ); }
+    Label* lbQty;
+    Image* imgIcon;
+    Label* lbInterval;
+    SmkViewer* smkViewer;
+    GET_WIDGET_FROM_UI( lbQty )
+    GET_WIDGET_FROM_UI( imgIcon )
+    GET_WIDGET_FROM_UI( lbInterval )
+    GET_WIDGET_FROM_UI( smkViewer )
 
-    Image* img = findChildA<Image*>( "imgIcon", true, this );
-    if( img ) { img->setPicture( GoodHelper::getPicture( gr->goodType() )); }
+    if( lbQty ) { lbQty->setText( StringHelper::format( 0xff, "%d", gr->qty() ) ); }
+    if( imgIcon ) { imgIcon->setPicture( GoodHelper::getPicture( gr->goodType() )); }
 
-    lb = findChildA<Label*>( "lbInterval", true, this );
     int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );
-    if( lb ) { lb->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
+    if( lbInterval ) { lbInterval->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
 
-    SmkViewer* smkViewer = findChildA<SmkViewer*>( "smkViewer", true, this );
     if( smkViewer ) { smkViewer->setFilename( GameSettings::rcpath( _d->video ) ); }
   }
 
-  TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  TexturedButton* btnAdvisor = findChildA<TexturedButton*>( "btnAdvisor", true, this );
+  TexturedButton* btnExit;
+  TexturedButton* btnAdvisor;
+  GET_WIDGET_FROM_UI( btnExit )
+  GET_WIDGET_FROM_UI( btnAdvisor )
+
   CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
   CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
   CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
@@ -103,11 +111,9 @@ void EmperrorRequestWindow::draw(gfx::Engine& painter )
 
 void EmperrorRequestWindow::setText(const std::string& text)
 {
-  Label* lb = findChildA<Label*>( "lbText", true, this );
-  if( lb )
-  {
-    lb->setText( text );
-  }
+  Label* lbText;
+  GET_WIDGET_FROM_UI( lbText )
+  if( lbText )   {  lbText->setText( text );  }
 }
 
 bool EmperrorRequestWindow::onEvent(const NEvent& event)

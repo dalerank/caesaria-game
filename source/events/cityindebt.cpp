@@ -31,6 +31,14 @@
 namespace events
 {
 
+class CityIndebt::Impl
+{
+public:
+  int emperorMoney;
+  std::string text;
+  bool isDeleted;
+};
+
 GameEventPtr CityIndebt::create()
 {
   GameEventPtr ret( new CityIndebt() );
@@ -39,21 +47,21 @@ GameEventPtr CityIndebt::create()
   return ret;
 }
 
-bool CityIndebt::isDeleted() const { return _isDeleted; }
+bool CityIndebt::isDeleted() const { return _d->isDeleted; }
 
 void CityIndebt::load(const VariantMap& stream)
 {
   GameEvent::load( stream );
-  _emperorMoney = stream.get( "emperorMoney" );
-  _text = stream.get( "text" ).toString();
+  VARIANT_LOAD_ANY_D( _d, emperorMoney, stream )
+  VARIANT_LOAD_STR_D( _d, text, stream )
 }
 
 VariantMap CityIndebt::save() const
 {
   VariantMap ret = GameEvent::save();
 
-  ret[ "emperorMoney" ] = _emperorMoney;
-  ret[ "text" ] = Variant( _text );
+  VARIANT_SAVE_ANY_D( ret, _d, emperorMoney )
+  VARIANT_SAVE_STR_D( ret, _d, text )
   return ret;
 }
 
@@ -70,25 +78,25 @@ bool CityIndebt::_mayExec(Game& game, unsigned int time) const
   return false;
 }
 
-CityIndebt::CityIndebt() : _text( "##city_indebt_text##" )
+CityIndebt::CityIndebt() : _d( new Impl )
 {
-  _emperorMoney = 0;
-  _isDeleted = false;
+  _d->text = "##city_indebt_text##";
+  _d->emperorMoney = 0;
+  _d->isDeleted = false;
 }
 
 void CityIndebt::_exec(Game& game, unsigned int)
 {
   gui::Ui* env = game.gui();
 
-  _isDeleted = true;
+  _d->isDeleted = true;
   gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Emp_2nd_chance.smk" );
-  dlg->setText( _( _text ) );
+  dlg->setText( _( _d->text ) );
   dlg->setTitle( _("##city_indebt_title##") );
-  //dlg->setReceiver( _receiver );
   dlg->setTime( GameDate::current() );
   dlg->show();
 
-  GameEventPtr e = FundIssueEvent::create( city::Funds::donation, _emperorMoney );
+  GameEventPtr e = FundIssueEvent::create( city::Funds::caesarsHelp, _d->emperorMoney );
   e->dispatch();
 }
 

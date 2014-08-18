@@ -75,11 +75,7 @@ Ui::Ui(Engine& painter )
   _d->hoveredNoSubelement = 0;
   _d->lastHoveredMousePos = Point();
   _d->engine = &painter;
-
-  //INITIALIZE_FILESYSTEM_INSTANCE;
-
   _environment = this;
-
   _d->toolTip.element;
   _d->toolTip.LastTime = 0;
   _d->toolTip.EnterTime = 0;

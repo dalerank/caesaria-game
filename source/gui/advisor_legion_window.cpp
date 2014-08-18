@@ -28,6 +28,7 @@
 #include "walker/soldier.hpp"
 #include "core/logger.hpp"
 #include "events/movecamera.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 
@@ -121,9 +122,9 @@ Legion::Legion( Widget* parent, int id, FortList forts )
   //buttons background
   Point startLegionArea( 32, 70 );
 
-  _d->alarm = findChildA<Label*>( "alarm", true, this );
-  _d->helpRequest = findChildA<Label*>( "helpRequest", true, this );
-  _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
+  GET_DWIDGET_FROM_UI( _d, alarm )
+  GET_DWIDGET_FROM_UI( _d, helpRequest )
+  GET_DWIDGET_FROM_UI( _d, lbBlackframe )
 
   int index=0;
   foreach( it, forts )

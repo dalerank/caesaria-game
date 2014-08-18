@@ -32,6 +32,7 @@
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -107,7 +108,7 @@ class Education::Impl
 {
 public:
   Label* lbCityInfo;
-  Label* lbCityTrouble;
+  Label* lbTroubleInfo;
   Label* lbBackframe;
 
   EducationInfoLabel* lbSchoolInfo;
@@ -126,9 +127,9 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
   
   __D_IMPL(_d,Education)
-  _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
-  _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
-  _d->lbCityTrouble = findChildA<Label*>( "lbTroubleInfo", true, this);
+  GET_DWIDGET_FROM_UI( _d, lbBackframe )
+  GET_DWIDGET_FROM_UI( _d, lbCityInfo )
+  GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -158,7 +159,7 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
   StringArray troubles = _d->getTrouble( city );
-  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.random() ) ); }
+  if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _( troubles.random() ) ); }
 }
 
 void Education::draw( gfx::Engine& painter )

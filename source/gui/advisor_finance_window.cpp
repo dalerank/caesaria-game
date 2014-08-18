@@ -36,6 +36,7 @@
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -44,7 +45,7 @@ namespace gui
 {
 
 namespace {
-  Point startPoint( 75, 145 );
+  const Point startPoint( 75, 145 );
   Point offset( 0, 17 );
 }
 
@@ -70,37 +71,40 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
 
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* lb = findChildA<Label*>( "lbCityHave", true, this );
-  if( lb ) lb->setText( StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") ) );
+  Label* lbCityHave;
+  GET_WIDGET_FROM_UI( lbCityHave )
+  if( lbCityHave ) lbCityHave->setText( StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") ) );
 
-  _d->lbTaxRateNow = findChildA<Label*>( "lbTaxRateNow", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTaxRateNow )
   _d->updateTaxRateNowLabel();
 
   unsigned int regTaxPayers = city::Statistic::getTaxPayersPercent( city );
   std::string strRegPaeyrs = StringHelper::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
-  lb = findChildA<Label*>( "lbRegPayers", true, this );
-  if( lb ) lb->setText( strRegPaeyrs );
+  Label* lbRegPayers;
+  GET_WIDGET_FROM_UI( lbRegPayers )
+  if( lbRegPayers ) lbRegPayers->setText( strRegPaeyrs );
 
-  _drawReportRow( startPoint, _("##taxes##"), city::Funds::taxIncome );
-  _drawReportRow( startPoint + offset, _("##trade##"), city::Funds::exportGoods );
-  _drawReportRow( startPoint + offset * 2, _("##donations##"), city::Funds::donation );
-  _drawReportRow( startPoint + offset * 3, _("##debet##"), city::Funds::debet );
+  Point sp = startPoint;
+  _drawReportRow( sp, _("##taxes##"), city::Funds::taxIncome );
+  _drawReportRow( sp + offset, _("##trade##"), city::Funds::exportGoods );
+  _drawReportRow( sp + offset * 2, _("##donations##"), city::Funds::donation );
+  _drawReportRow( sp + offset * 3, _("##debet##"), city::Funds::debet );
   
-  startPoint += Point( 0, 6 );
-  _drawReportRow( startPoint + offset * 4, _("##import_fn##"), city::Funds::importGoods );
-  _drawReportRow( startPoint + offset * 5, _("##wages##"), city::Funds::workersWages );
-  _drawReportRow( startPoint + offset * 6, _("##buildings##"), city::Funds::buildConstruction );
-  _drawReportRow( startPoint + offset * 7, _("##percents##"), city::Funds::creditPercents );
-  _drawReportRow( startPoint + offset * 8, _("##pn_salary##"), city::Funds::playerSalary );
-  _drawReportRow( startPoint + offset * 9, _("##other##"), city::Funds::sundries );
-  _drawReportRow( startPoint + offset * 10, _("##empire_tax##"), city::Funds::empireTax );
-  _drawReportRow( startPoint + offset * 11, _("##credit##"), city::Funds::credit );
+  sp += Point( 0, 6 );
+  _drawReportRow( sp + offset * 4, _("##import_fn##"), city::Funds::importGoods );
+  _drawReportRow( sp + offset * 5, _("##wages##"), city::Funds::workersWages );
+  _drawReportRow( sp + offset * 6, _("##buildings##"), city::Funds::buildConstruction );
+  _drawReportRow( sp + offset * 7, _("##percents##"), city::Funds::creditPercents );
+  _drawReportRow( sp + offset * 8, _("##pn_salary##"), city::Funds::playerSalary );
+  _drawReportRow( sp + offset * 9, _("##other##"), city::Funds::sundries );
+  _drawReportRow( sp + offset * 10, _("##empire_tax##"), city::Funds::empireTax );
+  _drawReportRow( sp + offset * 11, _("##credit##"), city::Funds::credit );
 
-  startPoint += Point( 0, 6 );
-  _drawReportRow( startPoint + offset * 12, _("##profit##"), city::Funds::cityProfit );
+  sp += Point( 0, 6 );
+  _drawReportRow( sp + offset * 12, _("##profit##"), city::Funds::cityProfit );
   
-  startPoint += Point( 0, 6 );
-  _drawReportRow( startPoint + offset * 13, _("##balance##"), city::Funds::balance );
+  sp += Point( 0, 6 );
+  _drawReportRow( sp + offset * 13, _("##balance##"), city::Funds::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 

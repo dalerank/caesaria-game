@@ -40,6 +40,7 @@
 #include "objects/constants.hpp"
 #include "empireprices.hpp"
 #include "goodordermanage.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -237,9 +238,9 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
 
   _d->city = city;
 
-  _d->btnEmpireMap = findChildA<PushButton*>( "btnEmpireMap", true, this );
-  _d->btnPrices = findChildA<PushButton*>( "btnPrices", true, this );
-  _d->gbInfo = findChildA<GroupBox*>( "gbInfo", true, this );
+  GET_DWIDGET_FROM_UI( _d, btnEmpireMap  )
+  GET_DWIDGET_FROM_UI( _d, btnPrices )
+  GET_DWIDGET_FROM_UI( _d, gbInfo )
 
   CONNECT( _d->btnEmpireMap, onClicked(), this, Trade::deleteLater );
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );

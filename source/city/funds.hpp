@@ -46,7 +46,7 @@ public:
                    playerSalary, sundries, moneyStolen,
                    empireTax, debet, credit, cityProfit,
                    overduePayment,
-                   balance,
+                   balance, caesarsHelp,
                    issueTypeCount };
   enum { thisYear=0, lastYear=1 };
 

@@ -32,6 +32,7 @@
 #include "core/color.hpp"
 #include "event_messagebox.hpp"
 #include "core/gettext.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -149,8 +150,11 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   WidgetEscapeCloser::insertTo( this );
   _d->lbxMessages = new ScribesListBox( this, Rect( 16, 60, width() - 16, height() - 50 ) );
 
-  TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  TexturedButton* btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  TexturedButton* btnExit;
+  TexturedButton* btnHelp;
+
+  GET_WIDGET_FROM_UI( btnHelp )
+  GET_WIDGET_FROM_UI( btnExit )
 
   _fillMessages();
 

@@ -27,7 +27,7 @@ namespace gui
 class EmperorGiftWindow : public Window
 {
 public:
-  EmperorGiftWindow( Widget* parent, int money );
+  EmperorGiftWindow( Widget* parent, int money, const DateTime& lastgift );
   virtual ~EmperorGiftWindow();
 
 public oc3_signals:

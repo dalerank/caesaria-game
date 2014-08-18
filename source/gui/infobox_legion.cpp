@@ -31,6 +31,7 @@
 #include "core/event.hpp"
 #include "objects/fort.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 
@@ -44,7 +45,7 @@ class AboutLegion::Impl
 {
 public:
   Label* lbFormationTitle;
-  Label* lbFormationText;  
+  Label* lbFormation;
   Label* lbNumberValue;
   Label* lbHealthValue;
   Label* lbMoraleValue;
@@ -59,14 +60,14 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
 {  
   Widget::setupUI( GameSettings::rcpath( "/gui/legionopts.gui") );
 
-  _d->lbFormationTitle = findChildA<Label*>( "lbFormationTitle", true, this );
-  _d->lbFormationText = findChildA<Label*>( "lbFormation", true, this );
-  _d->btnReturn = findChildA<PushButton*>( "btnReturn", true, this );
-  _d->lbNumberValue = findChildA<Label*>( "lbNumberValue", true, this );
-  _d->lbHealthValue = findChildA<Label*>( "lbHealthValue", true, this );
-  _d->lbMoraleValue = findChildA<Label*>( "lbMoraleValue", true, this );
-  _d->lbTrainedValue = findChildA<Label*>( "lbTrainedValue", true, this );
-  _d->gbLegionParams = findChildA<Label*>( "gbLegionParams", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbFormationTitle )
+  GET_DWIDGET_FROM_UI( _d, lbFormation )
+  GET_DWIDGET_FROM_UI( _d, btnReturn )
+  GET_DWIDGET_FROM_UI( _d, lbNumberValue )
+  GET_DWIDGET_FROM_UI( _d, lbHealthValue )
+  GET_DWIDGET_FROM_UI( _d, lbMoraleValue )
+  GET_DWIDGET_FROM_UI( _d, lbTrainedValue )
+  GET_DWIDGET_FROM_UI( _d, gbLegionParams )
 
   WalkerList walkers = city->walkers( walker::any, pos );
 
@@ -184,10 +185,10 @@ bool AboutLegion::onEvent(const NEvent& event)
       break;
       }
 
-      if( !text.empty() && _d->lbFormationTitle && _d->lbFormationText )
+      if( !text.empty() && _d->lbFormationTitle && _d->lbFormation )
       {
         _d->lbFormationTitle->setText( _(text + "_title##") );
-        _d->lbFormationText->setText( _(text + "_text##") );
+        _d->lbFormation->setText( _(text + "_text##") );
       }
 
       if( _d->fort.isValid() )

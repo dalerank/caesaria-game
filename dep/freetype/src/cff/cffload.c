@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    OpenType and CFF data/program tables loader (body).                  */
 /*                                                                         */
-/*  Copyright 1996-2014 by                                                 */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 by */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -20,6 +20,7 @@
 #include FT_INTERNAL_DEBUG_H
 #include FT_INTERNAL_OBJECTS_H
 #include FT_INTERNAL_STREAM_H
+#include FT_SERVICE_POSTSCRIPT_CMAPS_H
 #include FT_TRUETYPE_TAGS_H
 #include FT_TYPE1_TABLES_H
 
@@ -250,7 +251,7 @@
 
       if ( offsize < 1 || offsize > 4 )
       {
-        error = FT_THROW( Invalid_Table );
+        error = FT_Err_Invalid_Table;
         goto Exit;
       }
 
@@ -269,7 +270,7 @@
 
       if ( size == 0 )
       {
-        error = FT_THROW( Invalid_Table );
+        error = CFF_Err_Invalid_Table;
         goto Exit;
       }
 
@@ -318,7 +319,7 @@
   static FT_Error
   cff_index_load_offsets( CFF_Index  idx )
   {
-    FT_Error   error  = FT_Err_Ok;
+    FT_Error   error  = CFF_Err_Ok;
     FT_Stream  stream = idx->stream;
     FT_Memory  memory = stream->memory;
 
@@ -376,22 +377,18 @@
   }
 
 
-  /* Allocate a table containing pointers to an index's elements. */
-  /* The `pool' argument makes this function convert the index    */
-  /* entries to C-style strings (this is, NULL-terminated).       */
+  /* allocate a table containing pointers to an index's elements */
   static FT_Error
   cff_index_get_pointers( CFF_Index   idx,
-                          FT_Byte***  table,
-                          FT_Byte**   pool )
+                          FT_Byte***  table )
   {
-    FT_Error   error     = FT_Err_Ok;
-    FT_Memory  memory    = idx->stream->memory;
+    FT_Error   error  = CFF_Err_Ok;
+    FT_Memory  memory = idx->stream->memory;
+    FT_ULong   n, offset, old_offset;
+    FT_Byte**  t;
 
-    FT_Byte**  t         = NULL;
-    FT_Byte*   new_bytes = NULL;
 
-
-    *table = NULL;
+    *table = 0;
 
     if ( idx->offsets == NULL )
     {
@@ -400,65 +397,28 @@
         goto Exit;
     }
 
-    if ( idx->count > 0                                        &&
-         !FT_NEW_ARRAY( t, idx->count + 1 )                    &&
-         ( !pool || !FT_ALLOC( new_bytes,
-                               idx->data_size + idx->count ) ) )
+    if ( idx->count > 0 && !FT_NEW_ARRAY( t, idx->count + 1 ) )
     {
-      FT_ULong  n, cur_offset;
-      FT_ULong  extra = 0;
-      FT_Byte*  org_bytes = idx->bytes;
-
-
-      /* at this point, `idx->offsets' can't be NULL */
-      cur_offset = idx->offsets[0] - 1;
-
-      /* sanity check */
-      if ( cur_offset != 0 )
+      old_offset = 1;
+      for ( n = 0; n <= idx->count; n++ )
       {
-        FT_TRACE0(( "cff_index_get_pointers:"
-                    " invalid first offset value %d set to zero\n",
-                    cur_offset ));
-        cur_offset = 0;
-      }
-
-      if ( !pool )
-        t[0] = org_bytes + cur_offset;
-      else
-        t[0] = new_bytes + cur_offset;
-
-      for ( n = 1; n <= idx->count; n++ )
-      {
-        FT_ULong  next_offset = idx->offsets[n] - 1;
-
+        /* at this point, `idx->offsets' can't be NULL */
+        offset = idx->offsets[n];
+        if ( !offset )
+          offset = old_offset;
 
         /* two sanity checks for invalid offset tables */
-        if ( next_offset < cur_offset )
-          next_offset = cur_offset;
-        else if ( next_offset > idx->data_size )
-          next_offset = idx->data_size;
+        else if ( offset < old_offset )
+          offset = old_offset;
 
-        if ( !pool )
-          t[n] = org_bytes + next_offset;
-        else
-        {
-          t[n] = new_bytes + next_offset + extra;
+        else if ( offset - 1 >= idx->data_size && n < idx->count )
+          offset = old_offset;
 
-          if ( next_offset != cur_offset )
-          {
-            FT_MEM_COPY( t[n - 1], org_bytes + cur_offset, t[n] - t[n - 1] );
-            t[n][0] = '\0';
-            t[n]   += 1;
-            extra++;
-          }
-        }
+        t[n] = idx->bytes + offset - 1;
 
-        cur_offset = next_offset;
+        old_offset = offset;
       }
       *table = t;
-
-      if ( pool )
-        *pool = new_bytes;
     }
 
   Exit:
@@ -472,7 +432,7 @@
                             FT_Byte**  pbytes,
                             FT_ULong*  pbyte_len )
   {
-    FT_Error  error = FT_Err_Ok;
+    FT_Error  error = CFF_Err_Ok;
 
 
     if ( idx && idx->count > element )
@@ -519,18 +479,6 @@
         }
       }
 
-      /* XXX: should check off2 does not exceed the end of this entry; */
-      /*      at present, only truncate off2 at the end of this stream */
-      if ( off2 > stream->size + 1                    ||
-           idx->data_offset > stream->size - off2 + 1 )
-      {
-        FT_ERROR(( "cff_index_access_element:"
-                   " offset to next entry (%d)"
-                   " exceeds the end of stream (%d)\n",
-                   off2, stream->size - idx->data_offset + 1 ));
-        off2 = stream->size - idx->data_offset + 1;
-      }
-
       /* access element */
       if ( off1 && off2 > off1 )
       {
@@ -557,7 +505,7 @@
       }
     }
     else
-      error = FT_THROW( Invalid_Argument );
+      error = CFF_Err_Invalid_Argument;
 
   Exit:
     return error;
@@ -578,12 +526,10 @@
   }
 
 
-  /* get an entry from Name INDEX */
   FT_LOCAL_DEF( FT_String* )
-  cff_index_get_name( CFF_Font  font,
-                      FT_UInt   element )
+  cff_index_get_name( CFF_Index  idx,
+                      FT_UInt    element )
   {
-    CFF_Index   idx = &font->name_index;
     FT_Memory   memory = idx->stream->memory;
     FT_Byte*    bytes;
     FT_ULong    byte_len;
@@ -607,35 +553,42 @@
   }
 
 
-  /* get an entry from String INDEX */
   FT_LOCAL_DEF( FT_String* )
-  cff_index_get_string( CFF_Font  font,
-                        FT_UInt   element )
-  {
-    return ( element < font->num_strings )
-             ? (FT_String*)font->strings[element]
-             : NULL;
-  }
-
-
-  FT_LOCAL_DEF( FT_String* )
-  cff_index_get_sid_string( CFF_Font  font,
-                            FT_UInt   sid )
+  cff_index_get_sid_string( CFF_Index           idx,
+                            FT_UInt             sid,
+                            FT_Service_PsCMaps  psnames )
   {
     /* value 0xFFFFU indicates a missing dictionary entry */
     if ( sid == 0xFFFFU )
-      return NULL;
+      return 0;
 
     /* if it is not a standard string, return it */
     if ( sid > 390 )
-      return cff_index_get_string( font, sid - 391 );
+      return cff_index_get_name( idx, sid - 391 );
 
     /* CID-keyed CFF fonts don't have glyph names */
-    if ( !font->psnames )
-      return NULL;
+    if ( !psnames )
+      return 0;
 
-    /* this is a standard string */
-    return (FT_String *)font->psnames->adobe_std_strings( sid );
+    /* that's a standard string, fetch a copy from the PSName module */
+    {
+      FT_String*   name       = 0;
+      const char*  adobe_name = psnames->adobe_std_strings( sid );
+
+
+      if ( adobe_name )
+      {
+        FT_Memory  memory = idx->stream->memory;
+        FT_Error   error;
+
+
+        (void)FT_STRDUP( name, adobe_name );
+
+        FT_UNUSED( error );
+      }
+
+      return name;
+    }
   }
 
 
@@ -689,13 +642,6 @@
       if ( FT_READ_USHORT( num_ranges ) )
         goto Exit;
 
-      if ( !num_ranges )
-      {
-        FT_TRACE0(( "CFF_Load_FD_Select: empty FDSelect array\n" ));
-        error = FT_THROW( Invalid_File_Format );
-        goto Exit;
-      }
-
       fdselect->data_size = num_ranges * 3 + 2;
 
     Load_Data:
@@ -704,7 +650,7 @@
       break;
 
     default:    /* hmm... that's wrong */
-      error = FT_THROW( Invalid_File_Format );
+      error = CFF_Err_Invalid_File_Format;
     }
 
   Exit:
@@ -726,7 +672,7 @@
       break;
 
     case 3:
-      /* first, compare to the cache */
+      /* first, compare to cache */
       if ( (FT_UInt)( glyph_index - fdselect->cache_first ) <
                         fdselect->cache_count )
       {
@@ -734,7 +680,7 @@
         break;
       }
 
-      /* then, look up the ranges array */
+      /* then, lookup the ranges array */
       {
         FT_Byte*  p       = fdselect->data;
         FT_Byte*  p_limit = p + fdselect->data_size;
@@ -757,7 +703,7 @@
 
             /* update cache */
             fdselect->cache_first = first;
-            fdselect->cache_count = limit - first;
+            fdselect->cache_count = limit-first;
             fdselect->cache_fd    = fd2;
             break;
           }
@@ -798,12 +744,11 @@
       goto Exit;
 
     for ( i = 0; i < num_glyphs; i++ )
-    {
       if ( charset->sids[i] > max_cid )
         max_cid = charset->sids[i];
-    }
+    max_cid++;
 
-    if ( FT_NEW_ARRAY( charset->cids, (FT_ULong)max_cid + 1 ) )
+    if ( FT_NEW_ARRAY( charset->cids, max_cid ) )
       goto Exit;
 
     /* When multiple GIDs map to the same CID, we choose the lowest */
@@ -827,7 +772,7 @@
     FT_UInt  result = 0;
 
 
-    if ( cid <= charset->max_cid )
+    if ( cid < charset->max_cid )
       result = charset->cids[cid];
 
     return result;
@@ -867,7 +812,7 @@
                     FT_Bool      invert )
   {
     FT_Memory  memory = stream->memory;
-    FT_Error   error  = FT_Err_Ok;
+    FT_Error   error  = CFF_Err_Ok;
     FT_UShort  glyph_sid;
 
 
@@ -901,7 +846,20 @@
             goto Exit;
 
           for ( j = 1; j < num_glyphs; j++ )
-            charset->sids[j] = FT_GET_USHORT();
+          {
+            FT_UShort sid = FT_GET_USHORT();
+
+
+            /* this constant is given in the CFF specification */
+            if ( sid < 65000L )
+              charset->sids[j] = sid;
+            else
+            {
+              FT_TRACE0(( "cff_charset_load:"
+                          " invalid SID value %d set to zero\n", sid ));
+              charset->sids[j] = 0;
+            }
+          }
 
           FT_FRAME_EXIT();
         }
@@ -934,12 +892,18 @@
                 goto Exit;
             }
 
+            /* check whether the range contains at least one valid glyph; */
+            /* the constant is given in the CFF specification             */
+            if ( glyph_sid >= 65000L ) {
+              FT_ERROR(( "cff_charset_load: invalid SID range\n" ));
+              error = CFF_Err_Invalid_File_Format;
+              goto Exit;
+            }
+
             /* try to rescue some of the SIDs if `nleft' is too large */
-            if ( glyph_sid > 0xFFFFL - nleft )
-            {
-              FT_ERROR(( "cff_charset_load: invalid SID range trimmed"
-                         " nleft=%d -> %d\n", nleft, 0xFFFFL - glyph_sid ));
-              nleft = ( FT_UInt )( 0xFFFFL - glyph_sid );
+            if ( nleft > 65000L - 1L || glyph_sid >= 65000L - nleft ) {
+              FT_ERROR(( "cff_charset_load: invalid SID range trimmed\n" ));
+              nleft = ( FT_UInt )( 65000L - 1L - glyph_sid );
             }
 
             /* Fill in the range of sids -- `nleft + 1' glyphs. */
@@ -951,7 +915,7 @@
 
       default:
         FT_ERROR(( "cff_charset_load: invalid table format\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = CFF_Err_Invalid_File_Format;
         goto Exit;
       }
     }
@@ -974,7 +938,7 @@
         {
           FT_ERROR(( "cff_charset_load: implicit charset larger than\n"
                      "predefined charset (Adobe ISO-Latin)\n" ));
-          error = FT_THROW( Invalid_File_Format );
+          error = CFF_Err_Invalid_File_Format;
           goto Exit;
         }
 
@@ -992,7 +956,7 @@
         {
           FT_ERROR(( "cff_charset_load: implicit charset larger than\n"
                      "predefined charset (Adobe Expert)\n" ));
-          error = FT_THROW( Invalid_File_Format );
+          error = CFF_Err_Invalid_File_Format;
           goto Exit;
         }
 
@@ -1010,7 +974,7 @@
         {
           FT_ERROR(( "cff_charset_load: implicit charset larger than\n"
                      "predefined charset (Adobe Expert Subset)\n" ));
-          error = FT_THROW( Invalid_File_Format );
+          error = CFF_Err_Invalid_File_Format;
           goto Exit;
         }
 
@@ -1024,7 +988,7 @@
         break;
 
       default:
-        error = FT_THROW( Invalid_File_Format );
+        error = CFF_Err_Invalid_File_Format;
         goto Exit;
       }
     }
@@ -1065,7 +1029,7 @@
                      FT_ULong      base_offset,
                      FT_ULong      offset )
   {
-    FT_Error   error = FT_Err_Ok;
+    FT_Error   error = CFF_Err_Ok;
     FT_UInt    count;
     FT_UInt    j;
     FT_UShort  glyph_sid;
@@ -1075,7 +1039,7 @@
     /* Check for charset->sids.  If we do not have this, we fail. */
     if ( !charset->sids )
     {
-      error = FT_THROW( Invalid_File_Format );
+      error = CFF_Err_Invalid_File_Format;
       goto Exit;
     }
 
@@ -1195,7 +1159,7 @@
 
       default:
         FT_ERROR(( "cff_encoding_load: invalid table format\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = CFF_Err_Invalid_File_Format;
         goto Exit;
       }
 
@@ -1276,7 +1240,9 @@
           if ( gid != 0 )
           {
             encoding->codes[j] = (FT_UShort)gid;
-            encoding->count    = j + 1;
+
+            if ( encoding->count < j + 1 )
+              encoding->count = j + 1;
           }
           else
           {
@@ -1288,7 +1254,7 @@
 
       default:
         FT_ERROR(( "cff_encoding_load: invalid table format\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = CFF_Err_Invalid_File_Format;
         goto Exit;
       }
     }
@@ -1321,7 +1287,7 @@
     /* set defaults */
     FT_MEM_ZERO( top, sizeof ( *top ) );
 
-    top->underline_position  = -( 100L << 16 );
+    top->underline_position  = -100L << 16;
     top->underline_thickness = 50L << 16;
     top->charstring_type     = 2;
     top->font_matrix.xx      = 0x10000L;
@@ -1344,10 +1310,7 @@
 
     error = cff_index_access_element( idx, font_index, &dict, &dict_len );
     if ( !error )
-    {
-      FT_TRACE4(( " top dictionary:\n" ));
       error = cff_parser_run( &parser, dict, dict + dict_len );
-    }
 
     cff_index_forget_element( idx, &dict );
 
@@ -1376,7 +1339,6 @@
            FT_FRAME_ENTER( font->font_dict.private_size )                 )
         goto Exit;
 
-      FT_TRACE4(( " private dictionary:\n" ));
       error = cff_parser_run( &parser,
                               (FT_Byte*)stream->cursor,
                               (FT_Byte*)stream->limit );
@@ -1399,8 +1361,9 @@
       if ( error )
         goto Exit;
 
+      font->num_local_subrs = font->local_subrs_index.count;
       error = cff_index_get_pointers( &font->local_subrs_index,
-                                      &font->local_subrs, NULL );
+                                      &font->local_subrs );
       if ( error )
         goto Exit;
     }
@@ -1446,12 +1409,9 @@
     FT_Memory        memory = stream->memory;
     FT_ULong         base_offset;
     CFF_FontRecDict  dict;
-    CFF_IndexRec     string_index;
-    FT_Int           subfont_index;
 
 
     FT_ZERO( font );
-    FT_ZERO( &string_index );
 
     font->stream = stream;
     font->memory = memory;
@@ -1467,8 +1427,8 @@
          font->header_size      < 4 ||
          font->absolute_offsize > 4 )
     {
-      FT_TRACE2(( "  not a CFF font header\n" ));
-      error = FT_THROW( Unknown_File_Format );
+      FT_TRACE2(( "[not a CFF font header]\n" ));
+      error = CFF_Err_Unknown_File_Format;
       goto Exit;
     }
 
@@ -1478,49 +1438,22 @@
 
     /* read the name, top dict, string and global subrs index */
     if ( FT_SET_ERROR( cff_index_init( &font->name_index,
-                                       stream, 0 ) )                  ||
+                                       stream, 0 ) )              ||
          FT_SET_ERROR( cff_index_init( &font->font_dict_index,
-                                       stream, 0 ) )                  ||
-         FT_SET_ERROR( cff_index_init( &string_index,
-                                       stream, 1 ) )                  ||
+                                       stream, 0 ) )              ||
+         FT_SET_ERROR( cff_index_init( &font->string_index,
+                                       stream, 0 ) )              ||
          FT_SET_ERROR( cff_index_init( &font->global_subrs_index,
-                                       stream, 1 ) )                  ||
-         FT_SET_ERROR( cff_index_get_pointers( &string_index,
-                                               &font->strings,
-                                               &font->string_pool ) ) )
+                                       stream, 1 ) )              )
       goto Exit;
 
-    font->num_strings = string_index.count;
-
-    if ( pure_cff )
+    /* well, we don't really forget the `disabled' fonts... */
+    font->num_faces = font->name_index.count;
+    if ( face_index >= (FT_Int)font->num_faces )
     {
-      /* well, we don't really forget the `disabled' fonts... */
-      subfont_index = face_index;
-
-      if ( subfont_index >= (FT_Int)font->name_index.count )
-      {
-        FT_ERROR(( "cff_font_load:"
-                   " invalid subfont index for pure CFF font (%d)\n",
-                   subfont_index ));
-        error = FT_THROW( Invalid_Argument );
-        goto Exit;
-      }
-
-      font->num_faces = font->name_index.count;
-    }
-    else
-    {
-      subfont_index = 0;
-
-      if ( font->name_index.count > 1 )
-      {
-        FT_ERROR(( "cff_font_load:"
-                   " invalid CFF font with multiple subfonts\n"
-                   "              "
-                   " in SFNT wrapper\n" ));
-        error = FT_THROW( Invalid_File_Format );
-        goto Exit;
-      }
+      FT_ERROR(( "cff_font_load: incorrect face index = %d\n",
+                 face_index ));
+      error = CFF_Err_Invalid_Argument;
     }
 
     /* in case of a font format check, simply exit now */
@@ -1528,10 +1461,9 @@
       goto Exit;
 
     /* now, parse the top-level font dictionary */
-    FT_TRACE4(( "parsing top-level\n" ));
     error = cff_subfont_load( &font->top_font,
                               &font->font_dict_index,
-                              subfont_index,
+                              face_index,
                               stream,
                               base_offset,
                               library );
@@ -1549,7 +1481,7 @@
     if ( dict->cid_registry != 0xFFFFU )
     {
       CFF_IndexRec  fd_index;
-      CFF_SubFont   sub = NULL;
+      CFF_SubFont   sub;
       FT_UInt       idx;
 
 
@@ -1581,7 +1513,6 @@
       for ( idx = 0; idx < fd_index.count; idx++ )
       {
         sub = font->subfonts[idx];
-        FT_TRACE4(( "parsing subfont %u\n", idx ));
         error = cff_subfont_load( sub, &fd_index, idx,
                                   stream, base_offset, library );
         if ( error )
@@ -1607,14 +1538,16 @@
     if ( dict->charstrings_offset == 0 )
     {
       FT_ERROR(( "cff_font_load: no charstrings offset\n" ));
-      error = FT_THROW( Invalid_File_Format );
+      error = CFF_Err_Unknown_File_Format;
       goto Exit;
     }
 
-    font->num_glyphs = font->charstrings_index.count;
+    /* explicit the global subrs */
+    font->num_global_subrs = font->global_subrs_index.count;
+    font->num_glyphs       = font->charstrings_index.count;
 
     error = cff_index_get_pointers( &font->global_subrs_index,
-                                    &font->global_subrs, NULL );
+                                    &font->global_subrs ) ;
 
     if ( error )
       goto Exit;
@@ -1646,11 +1579,9 @@
 
     /* get the font name (/CIDFontName for CID-keyed fonts, */
     /* /FontName otherwise)                                 */
-    font->font_name = cff_index_get_name( font, subfont_index );
+    font->font_name = cff_index_get_name( &font->name_index, face_index );
 
   Exit:
-    cff_index_done( &string_index );
-
     return error;
   }
 
@@ -1663,6 +1594,7 @@
 
 
     cff_index_done( &font->global_subrs_index );
+    cff_index_done( &font->string_index );
     cff_index_done( &font->font_dict_index );
     cff_index_done( &font->name_index );
     cff_index_done( &font->charstrings_index );
@@ -1685,18 +1617,21 @@
 
     CFF_Done_FD_Select( &font->fd_select, font->stream );
 
-    FT_FREE( font->font_info );
-
-    FT_FREE( font->font_name );
-    FT_FREE( font->global_subrs );
-    FT_FREE( font->strings );
-    FT_FREE( font->string_pool );
-
-    if ( font->cf2_instance.finalizer )
+    if (font->font_info != NULL)
     {
-      font->cf2_instance.finalizer( font->cf2_instance.data );
-      FT_FREE( font->cf2_instance.data );
+      FT_FREE( font->font_info->version );
+      FT_FREE( font->font_info->notice );
+      FT_FREE( font->font_info->full_name );
+      FT_FREE( font->font_info->family_name );
+      FT_FREE( font->font_info->weight );
+      FT_FREE( font->font_info );
     }
+
+    FT_FREE( font->registry );
+    FT_FREE( font->ordering );
+
+    FT_FREE( font->global_subrs );
+    FT_FREE( font->font_name );
   }
 
 

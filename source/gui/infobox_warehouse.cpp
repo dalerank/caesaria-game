@@ -25,6 +25,7 @@
 #include "good/goodstore.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 
@@ -37,6 +38,7 @@ namespace infobox
 AboutWarehouse::AboutWarehouse( Widget* parent, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
+  setupUI( ":/gui/warehouseinfo.gui" );
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
   setConstruction( ptr_cast<Construction>( _warehouse ) );
@@ -51,10 +53,8 @@ AboutWarehouse::AboutWarehouse( Widget* parent, const Tile& tile )
     lb->setTextAlignment( alignCenter, alignCenter );
   }*/
 
-  Size btnOrdersSize( 350, 20 );
-  PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width()) / 2, height() - 34 ), btnOrdersSize ),
-                                          _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
-
+  PushButton* btnOrders;
+  GET_WIDGET_FROM_UI( btnOrders );
   CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );

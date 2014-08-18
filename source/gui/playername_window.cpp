@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "widgetescapecloser.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -42,15 +43,16 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
   setCenter( parent->center() );
 
-  const bool searchRecursive = true;
-  EditBox* ed = findChildA<EditBox*>( "edPlayerName", searchRecursive, this );
-  CONNECT( ed, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
+  EditBox* edPlayerName;
+  PushButton* btnContinue;
+  GET_WIDGET_FROM_UI( edPlayerName )
+  GET_WIDGET_FROM_UI( btnContinue )
 
-  PushButton* btn = findChildA<PushButton*>( "btnContinue", searchRecursive, this );
-  CONNECT( btn, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+  CONNECT( edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
+  CONNECT( btnContinue, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
 
-  if( ed )
-    ed->setFocus();
+  if( edPlayerName )
+    edPlayerName->setFocus();
 }
 
 WindowPlayerName::~WindowPlayerName(){}

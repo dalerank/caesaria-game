@@ -33,6 +33,8 @@
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
 #include "city/cityservice_health.hpp"
+#include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -119,7 +121,7 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  _d->lbAdvice = findChildA<Label*>( "lbAvice", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbAdvice )
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );
@@ -201,15 +203,22 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
       HouseList houses =  helper.find<House>( building::house );
 
       unsigned int needBath = 0;
+      unsigned int needDoctors = 0;
       foreach( it, houses )
       {
         HousePtr house = *it;
         needBath += house->isHealthNeed( Service::baths );
+        needDoctors += house->isHealthNeed( Service::doctor );
       }
 
       if( needBath > 0 )
       {
         outText << "##healthadv_some_regions_need_bath##";
+      }
+
+      if( needDoctors > 0 )
+      {
+        outText << "##healthadv_some_regions_need_doctors##";
       }
     }
   }
@@ -217,7 +226,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   std::string text = outText.empty()
                         ? "##healthadv_unknown_reason##"
                         : outText.random();
-  lbAdvice->setText( text );
+  lbAdvice->setText( _(text) );
 }
 
 }

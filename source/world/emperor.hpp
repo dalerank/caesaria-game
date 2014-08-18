@@ -35,6 +35,7 @@ public:
   void updateRelation( const std::string& cityname, int value );
 
   void sendGift( const std::string& cityname, unsigned int money );
+  DateTime lastGiftDate( const std::string& cityname );
   void timeStep( unsigned int time );
 
   void soldierDie( const std::string& cityname );

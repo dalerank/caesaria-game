@@ -145,6 +145,11 @@ void ProsperityRating::update( const unsigned int time )
    
     _d->prosperityExtend += (_city.haveOverduePayment() ? -3 : 0);
     _d->prosperityExtend += (_city.isPaysTaxes() ? -3 : 0);
+
+    unsigned int caesarsHelper = _city.funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
+    caesarsHelper += _city.funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
+    if( caesarsHelper > 0 )
+      _d->prosperityExtend += -10;
   }
 }
 

@@ -52,6 +52,7 @@
 #include "widgetescapecloser.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "advisor_population_window.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -96,7 +97,9 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 
   WidgetEscapeCloser::insertTo( this );
 
-  Image* imgBgButtons = findChildA<Image*>( "imgBgButtons", true, this );
+  Image* imgBgButtons;
+  GET_WIDGET_FROM_UI( imgBgButtons )
+
   if( imgBgButtons )
     imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );
 

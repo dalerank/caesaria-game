@@ -27,6 +27,7 @@
 #include "vfs/filesystem.hpp"
 #include "vfs/entries.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 #include "vfs/directory.hpp"
 #include "gameautopause.hpp"
 #include "core/gettext.hpp"
@@ -88,10 +89,10 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
 
   WidgetEscapeCloser::insertTo( this );
   
-  _d->edFilename = findChildA<EditBox*>( "edFilename", true, this );
-  _d->lbxSaves = findChildA<FileListBox*>( "lbxSaves", true, this );
-  _d->btnOk = findChildA<TexturedButton*>( "btnOk", true, this );
-  _d->btnCancel = findChildA<TexturedButton*>( "btnCancel", true, this );
+  GET_DWIDGET_FROM_UI( _d, edFilename )
+  GET_DWIDGET_FROM_UI( _d, lbxSaves )
+  GET_DWIDGET_FROM_UI( _d, btnOk )
+  GET_DWIDGET_FROM_UI( _d, btnCancel )
 
   _d->directory = dir;
   _d->extension = fileExt;

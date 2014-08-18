@@ -23,6 +23,8 @@
 #include "listbox.hpp"
 #include "core/saveadapter.hpp"
 #include "core/gettext.hpp"
+#include "widget_helper.hpp"
+#include "game/gamedate.hpp"
 
 namespace gui
 {
@@ -44,7 +46,7 @@ public oc3_signals:
   Signal1<int> sendGiftSignal;
 };
 
-EmperorGiftWindow::EmperorGiftWindow( Widget* p, int money )
+EmperorGiftWindow::EmperorGiftWindow(Widget* p, int money , const DateTime &lastgift)
   : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(EmperorGiftWindow)
 {
   _dfunc()->maxMoney = money;
@@ -53,9 +55,14 @@ EmperorGiftWindow::EmperorGiftWindow( Widget* p, int money )
   setupUI( ":/gui/gift4emperor.gui" );
   setCenter( parent()->center() );
 
-  PushButton* btnSend = findChildA<PushButton*>( "btnSend", true, this );
-  PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
-  ListBox* lbxGifts = findChildA<ListBox*>( "lbxGifts", true, this );
+  PushButton* btnSend;
+  PushButton* btnCancel;
+  ListBox* lbxGifts;
+  Label* lbLastGiftDate;
+  GET_WIDGET_FROM_UI( lbLastGiftDate )
+  GET_WIDGET_FROM_UI( lbxGifts )
+  GET_WIDGET_FROM_UI( btnCancel )
+  GET_WIDGET_FROM_UI( btnSend )
 
   CONNECT( lbxGifts, onItemSelected(), _dfunc().data(), Impl::selectGift );
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendGift );
@@ -63,6 +70,12 @@ EmperorGiftWindow::EmperorGiftWindow( Widget* p, int money )
   CONNECT( btnCancel, onClicked(), this, EmperorGiftWindow::deleteLater );
 
   _dfunc()->fillGifts( lbxGifts );
+
+  if( lbLastGiftDate )
+  {
+    int monthsLastGift = lastgift.monthsTo( GameDate::current() );
+    lbLastGiftDate->setText( _("##time_since_last_gift##") + StringHelper::i2str( monthsLastGift ) + _("##mo##"));
+  }
 }
 
 EmperorGiftWindow::~EmperorGiftWindow() {}

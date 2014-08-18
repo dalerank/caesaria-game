@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    TrueTypeGX/AAT mort table validation (body).                         */
 /*                                                                         */
-/*  Copyright 2005, 2013 by suzuki toshiya, Masatake YAMATO, Red Hat K.K., */
+/*  Copyright 2005 by suzuki toshiya, Masatake YAMATO, Red Hat K.K.,       */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -47,14 +47,16 @@
       GXV_TRACE(( "featureType %d is out of registered range, "
                   "setting %d is unchecked\n",
                   f->featureType, f->featureSetting ));
-      GXV_SET_ERR_IF_PARANOID( FT_INVALID_DATA );
+      if ( valid->root->level >= FT_VALIDATE_PARANOID )
+        FT_INVALID_DATA;
     }
     else if ( !gxv_feat_registry[f->featureType].existence )
     {
       GXV_TRACE(( "featureType %d is within registered area "
                   "but undefined, setting %d is unchecked\n",
                   f->featureType, f->featureSetting ));
-      GXV_SET_ERR_IF_PARANOID( FT_INVALID_DATA );
+      if ( valid->root->level >= FT_VALIDATE_PARANOID )
+        FT_INVALID_DATA;
     }
     else
     {
@@ -72,7 +74,8 @@
       if ( f->featureSetting > nSettings_max )
       {
         GXV_TRACE(( "out of defined range %d", nSettings_max ));
-        GXV_SET_ERR_IF_PARANOID( FT_INVALID_DATA );
+        if ( valid->root->level >= FT_VALIDATE_PARANOID )
+          FT_INVALID_DATA;
       }
       GXV_TRACE(( "\n" ));
     }
@@ -123,7 +126,6 @@
   {
     FT_UNUSED( valid );
 
-#ifdef FT_DEBUG_LEVEL_TRACE
     if ( coverage & 0x8000U )
       GXV_TRACE(( " this subtable is for vertical text only\n" ));
     else
@@ -142,7 +144,6 @@
 
     if ( coverage & 0x1FF8 )
       GXV_TRACE(( " coverage has non-zero bits in reserved area\n" ));
-#endif
   }
 
 
@@ -165,20 +166,17 @@
 
     };
 
-    FT_UShort  i;
+    GXV_Validate_Func  func;
+    FT_UShort          i;
 
 
     GXV_NAME_ENTER( "subtables in a chain" );
 
     for ( i = 0; i < nSubtables; i++ )
     {
-      GXV_Validate_Func  func;
-
       FT_UShort  length;
       FT_UShort  coverage;
-#ifdef GXV_LOAD_UNUSED_VARS
       FT_ULong   subFeatureFlags;
-#endif
       FT_UInt    type;
       FT_UInt    rest;
 
@@ -186,11 +184,7 @@
       GXV_LIMIT_CHECK( 2 + 2 + 4 );
       length          = FT_NEXT_USHORT( p );
       coverage        = FT_NEXT_USHORT( p );
-#ifdef GXV_LOAD_UNUSED_VARS
       subFeatureFlags = FT_NEXT_ULONG( p );
-#else
-      p += 4;
-#endif
 
       GXV_TRACE(( "validating chain subtable %d/%d (%d bytes)\n",
                   i + 1, nSubtables, length ));
@@ -210,7 +204,6 @@
       func( p, p + rest, valid );
 
       p += rest;
-      /* TODO: validate subFeatureFlags */
     }
 
     valid->subtable_length = p - table;
@@ -225,9 +218,7 @@
                            GXV_Validator  valid )
   {
     FT_Bytes   p = table;
-#ifdef GXV_LOAD_UNUSED_VARS
     FT_ULong   defaultFlags;
-#endif
     FT_ULong   chainLength;
     FT_UShort  nFeatureFlags;
     FT_UShort  nSubtables;
@@ -236,11 +227,7 @@
     GXV_NAME_ENTER( "mort chain header" );
 
     GXV_LIMIT_CHECK( 4 + 4 + 2 + 2 );
-#ifdef GXV_LOAD_UNUSED_VARS
     defaultFlags  = FT_NEXT_ULONG( p );
-#else
-    p += 4;
-#endif
     chainLength   = FT_NEXT_ULONG( p );
     nFeatureFlags = FT_NEXT_USHORT( p );
     nSubtables    = FT_NEXT_USHORT( p );
@@ -251,7 +238,6 @@
     gxv_mort_subtables_validate( p, table + chainLength, nSubtables, valid );
     valid->subtable_length = chainLength;
 
-    /* TODO: validate defaultFlags */
     GXV_EXIT;
   }
 

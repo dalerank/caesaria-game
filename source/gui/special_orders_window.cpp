@@ -32,6 +32,7 @@
 #include "good/goodorders.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 
@@ -210,9 +211,20 @@ void GranarySpecialOrdersWindow::_updateBtnDevastation()
                                     : _("##devastate_granary##") );
 }
 
-WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
-: BaseSpecialOrdersWindow( parent, pos, defaultHeight )
+class WarehouseSpecialOrdersWindow::Impl
 {
+public:
+  WarehousePtr warehouse;
+  PushButton* btnToggleDevastation;
+  PushButton* btnTradeCenter;
+};
+
+
+WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
+: BaseSpecialOrdersWindow( parent, pos, defaultHeight ), _d( new Impl )
+{
+  setupUI( ":/gui/warehousespecial.gui");
+
   setTitle( _("##warehouse_orders##") );
 
   _warehouse = warehouse;
@@ -228,11 +240,8 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
     }
   }
 
-  _btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
-                                          "", -1, false, PushButton::whiteBorderUp );
-
-  _btnTradeCenter = new PushButton( this, Rect( 80, height() - 70, width() - 80, height() - 50 ),
-                                   _("##trade_center##"), -1, false, PushButton::whiteBorderUp );
+  GET_DWIDGET_FROM_UI( _d, btnToggleDevastation )
+  GET_DWIDGET_FROM_UI( _d, btnTradeCenter )
 
   CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();

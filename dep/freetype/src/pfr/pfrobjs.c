@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType PFR object methods (body).                                  */
 /*                                                                         */
-/*  Copyright 2002-2008, 2010-2011, 2013, 2014 by                          */
+/*  Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 by                  */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -23,8 +23,6 @@
 #include "pfrsbit.h"
 #include FT_OUTLINE_H
 #include FT_INTERNAL_DEBUG_H
-#include FT_INTERNAL_CALC_H
-#include FT_TRUETYPE_IDS_H
 
 #include "pfrerror.h"
 
@@ -78,8 +76,6 @@
     FT_UNUSED( params );
 
 
-    FT_TRACE2(( "PFR driver\n" ));
-
     /* load the header and check it */
     error = pfr_header_load( &face->header, stream );
     if ( error )
@@ -87,8 +83,8 @@
 
     if ( !pfr_header_check( &face->header ) )
     {
-      FT_TRACE2(( "  not a PFR font\n" ));
-      error = FT_THROW( Unknown_File_Format );
+      FT_TRACE4(( "pfr_face_init: not a valid PFR font\n" ));
+      error = PFR_Err_Unknown_File_Format;
       goto Exit;
     }
 
@@ -112,7 +108,7 @@
     if ( face_index >= pfrface->num_faces )
     {
       FT_ERROR(( "pfr_face_init: invalid face index\n" ));
-      error = FT_THROW( Invalid_Argument );
+      error = PFR_Err_Invalid_Argument;
       goto Exit;
     }
 
@@ -138,8 +134,7 @@
 
       pfrface->face_index = face_index;
       pfrface->num_glyphs = phy_font->num_chars + 1;
-
-      pfrface->face_flags |= FT_FACE_FLAG_SCALABLE;
+      pfrface->face_flags = FT_FACE_FLAG_SCALABLE;
 
       /* if all characters point to the same gps_offset 0, we */
       /* assume that the font only contains bitmaps           */
@@ -152,16 +147,7 @@
             break;
 
         if ( nn == phy_font->num_chars )
-        {
-          if ( phy_font->num_strikes > 0 )
-            pfrface->face_flags = 0;        /* not scalable */
-          else
-          {
-            FT_ERROR(( "pfr_face_init: font doesn't contain glyphs\n" ));
-            error = FT_THROW( Invalid_File_Format );
-            goto Exit;
-          }
-        }
+          pfrface->face_flags = 0;        /* not scalable */
       }
 
       if ( (phy_font->flags & PFR_PHY_PROPORTIONAL) == 0 )
@@ -257,11 +243,11 @@
 
 
         charmap.face        = pfrface;
-        charmap.platform_id = TT_PLATFORM_MICROSOFT;
-        charmap.encoding_id = TT_MS_ID_UNICODE_CS;
+        charmap.platform_id = 3;
+        charmap.encoding_id = 1;
         charmap.encoding    = FT_ENCODING_UNICODE;
 
-        error = FT_CMap_New( &pfr_cmap_class_rec, NULL, &charmap, NULL );
+        FT_CMap_New( &pfr_cmap_class_rec, NULL, &charmap, NULL );
 
 #if 0
         /* Select default charmap */
@@ -326,14 +312,12 @@
     FT_ULong     gps_offset;
 
 
-    FT_TRACE1(( "pfr_slot_load: glyph index %d\n", gindex ));
-
     if ( gindex > 0 )
       gindex--;
 
     if ( !face || gindex >= face->phy_font.num_chars )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = PFR_Err_Invalid_Argument;
       goto Exit;
     }
 
@@ -347,7 +331,7 @@
 
     if ( load_flags & FT_LOAD_SBITS_ONLY )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = PFR_Err_Invalid_Argument;
       goto Exit;
     }
 
@@ -472,7 +456,7 @@
                         FT_Vector*  kerning )
   {
     PFR_Face     face     = (PFR_Face)pfrface;
-    FT_Error     error    = FT_Err_Ok;
+    FT_Error     error    = PFR_Err_Ok;
     PFR_PhyFont  phy_font = &face->phy_font;
     FT_UInt32    code1, code2, pair;
 
@@ -516,7 +500,7 @@
       {
         FT_UInt    count       = item->pair_count;
         FT_UInt    size        = item->pair_size;
-        FT_UInt    power       = 1 << FT_MSB( count );
+        FT_UInt    power       = (FT_UInt)ft_highpow2( (FT_UInt32)count );
         FT_UInt    probe       = power * size;
         FT_UInt    extra       = count - power;
         FT_Byte*   base        = stream->cursor;

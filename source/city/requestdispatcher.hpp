@@ -42,7 +42,9 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 
-  RequestList getRequests() const;
+  bool haveCanceledRequest() const;
+
+  RequestList requests() const;
 
 private:
   Dispatcher( PlayerCityPtr city );

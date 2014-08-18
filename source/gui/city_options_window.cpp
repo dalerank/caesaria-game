@@ -26,6 +26,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -49,10 +50,12 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   setupUI( ":/gui/cityoptions.gui" );
 
   setCenter( parent->center() );
-  _d->btnGodEnabled = findChildA<PushButton*>( "btnGodEnabled", true, this );
-  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
+  PushButton* btnClose;
 
-  PushButton* btnClose = findChildA<PushButton*>( "btnClose", true, this );
+  GET_WIDGET_FROM_UI( btnClose )
+  GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
+
+  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
 
   _d->update();

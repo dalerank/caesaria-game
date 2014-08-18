@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "special_orders_window.hpp"
 #include "good/goodhelper.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -45,13 +46,16 @@ AboutGranary::AboutGranary( Widget* parent, const Tile& tile )
 
   setConstruction( ptr_cast<Construction>( _granary ) );
 
-  PushButton* btnOrders = findChildA<PushButton*>( "btnOrders", true, this );
+  PushButton* btnOrders;
+  Label* lbUnits;
+  GET_WIDGET_FROM_UI( btnOrders )
+  GET_WIDGET_FROM_UI( lbUnits )
+
   CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::findPrettyName( _granary->type() );
   setTitle( _(title) ); 
 
-  Label* lbUnits = findChildA<Label*>( "lbUnits", true, this );
   if( lbUnits )
   {
     // summary: total stock, free capacity
