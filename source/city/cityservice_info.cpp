@@ -90,7 +90,7 @@ void Info::update( const unsigned int time )
     last.monthWithFood = last.foodMontlyConsumption > 0 ? (last.foodStock / last.foodMontlyConsumption) : 0;
 
     int foodProducing = city::Statistic::getFoodProducing( &_city );
-    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthsInYear;
+    int yearlyFoodConsumption = last.foodMontlyConsumption * DateTime::monthsInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -(yearlyFoodConsumption / (foodProducing+1) );

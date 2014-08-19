@@ -419,7 +419,7 @@ void AdvisorChiefWindow::Impl::drawSentiment()
   city::SentimentPtr st;
   st << city->findService( city::Sentiment::defaultName() );
 
-  std::string text = ds.isValid()
+  std::string text = st.isValid()
                      ? st->reason()
                      : "##unknown_sentiment_reason##";
 
