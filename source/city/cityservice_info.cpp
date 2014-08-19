@@ -85,9 +85,9 @@ void Info::update( const unsigned int time )
     last.funds = _city.funds().treasury();
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
-    int foodStock = city::Statistic::getFoodStock( &_city );
-    int foodMontlyConsumption = city::Statistic::getFoodMonthlyConsumption( &_city );
-    last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
+    last.foodStock = city::Statistic::getFoodStock( &_city );
+    last.foodMontlyConsumption = city::Statistic::getFoodMonthlyConsumption( &_city );
+    last.monthWithFood = last.foodMontlyConsumption > 0 ? (last.foodStock / last.foodMontlyConsumption) : 0;
 
     int foodProducing = city::Statistic::getFoodProducing( &_city );
     int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthsInYear;
@@ -146,6 +146,17 @@ void Info::update( const unsigned int time )
 }
 
 Info::Parameters Info::lastParams() const {  return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
+
+Info::Parameters Info::params(int monthAgo) const
+{
+  if( _d->lastYearHistory.empty() )
+    return Parameters();
+
+  if( monthAgo >= _d->lastYearHistory.size() )
+    return _d->lastYearHistory.front();
+
+  return _d->lastYearHistory[ monthAgo ];
+}
 
 const Info::History& Info ::history() const { return _d->allHistory; }
 
@@ -285,6 +296,8 @@ VariantMap Info::Parameters::save() const
   VARIANT_SAVE_ANY( ret, houseNumber )
   VARIANT_SAVE_ANY( ret, shackNumber )
   VARIANT_SAVE_ANY( ret, sentiment )
+  VARIANT_SAVE_ANY( ret, foodStock )
+  VARIANT_SAVE_ANY( ret, foodMontlyConsumption )
 
   return ret;
 }
@@ -316,6 +329,8 @@ void Info::Parameters::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( houseNumber, stream )
   VARIANT_LOAD_ANY( shackNumber, stream )
   VARIANT_LOAD_ANY( sentiment, stream )
+  VARIANT_LOAD_ANY( foodStock, stream )
+  VARIANT_LOAD_ANY( foodMontlyConsumption, stream )
 }
 
 VariantMap Info::ScribeMessage::save() const

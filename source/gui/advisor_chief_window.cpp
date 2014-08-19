@@ -40,6 +40,7 @@
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
 #include "city/goods_updater.hpp"
+#include "city/sentiment.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -262,16 +263,26 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
 
     if( info.isValid() )
     {
-      int monthWithFood = info->lastParams().monthWithFood;
-      switch( monthWithFood )
-      {
-        case 0: text = "##have_no_food_on_next_month##"; break;
-        case 1: text = "##small_food_on_next_month##"; break;
-        case 2: text = "##some_food_on_next_month##"; break;
-        case 3: text = "##our_foods_level_are_low##"; break;
+      city::Info::Parameters lastMonth = info->lastParams();
+      city::Info::Parameters prevMonth = info->params( 1 );
 
-        default:
-          text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+      if( lastMonth.foodStock < prevMonth.foodStock )
+      {
+        text = "##no_food_stored_last_month##";
+      }
+      else
+      {
+        int monthWithFood = lastMonth.monthWithFood;
+        switch( monthWithFood )
+        {
+          case 0: text = "##have_no_food_on_next_month##"; break;
+          case 1: text = "##small_food_on_next_month##"; break;
+          case 2: text = "##some_food_on_next_month##"; break;
+          case 3: text = "##our_foods_level_are_low##"; break;
+
+          default:
+            text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+        }
       }
     }
   }
@@ -405,7 +416,13 @@ void AdvisorChiefWindow::Impl::drawEntertainment()
 
 void AdvisorChiefWindow::Impl::drawSentiment()
 {
-  std::string text;
+  city::SentimentPtr st;
+  st << city->findService( city::Sentiment::defaultName() );
+
+  std::string text = ds.isValid()
+                     ? st->reason()
+                     : "##unknown_sentiment_reason##";
+
   drawReportRow( atSentiment, text );
 }
 

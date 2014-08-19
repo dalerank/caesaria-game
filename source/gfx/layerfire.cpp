@@ -30,10 +30,12 @@ using namespace constants;
 namespace gfx
 {
 
-static const char* fireLevelName[] = { "##very_low_fire_risk##", "##some_low_fire_risk##", "##low_fire_risk##",
-                                       "##middle_file_risk##",
-                                       "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##",
-                                       "##moment_fire_risk##" };
+static const char* fireLevelName[] = {
+                                       "##no_fire_risk##",
+                                       "##very_low_fire_risk##", "##some_low_fire_risk##", "##low_fire_risk##",
+                                       "##middle_file_risk##", "##some_fire_risk##", "##very_high_fire_risk##",
+                                       "##extreme_fire_risk##", "##moment_fire_risk##"
+                                     };
 
 
 int LayerFire::type() const {  return citylayer::fire; }
@@ -130,7 +132,7 @@ void LayerFire::handleEvent(NEvent& event)
         if( constr != 0 )
         {
           int fireLevel = math::clamp<int>( constr->state( Construction::fire ), 0, 100 );
-          text = fireLevelName[ math::clamp<int>( fireLevel / 12.5, 0, 7 ) ];
+          text = fireLevelName[ math::clamp<int>( fireLevel / 11, 0, 8 ) ];
         }
       }
 
