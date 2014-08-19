@@ -270,7 +270,12 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
     if( rome::Pantheon::neptune()->relation() < 40 )
     {
       advices << "##neptune_despleasure_tip##";
-    }
+
+      if( rome::Pantheon::neptune()->wrathPoints() > 0 )
+      {
+        advices << "##neptune_wrath_of_you##";
+      }
+    }       
 
     text = advices.empty()
             ? "##religionadv_unknown_reason##"
