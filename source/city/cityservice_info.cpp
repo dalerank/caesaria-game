@@ -29,6 +29,7 @@
 #include "world/empire.hpp"
 #include "funds.hpp"
 #include "core/foreach.hpp"
+#include "sentiment.hpp"
 #include "cityservice_peace.hpp"
 #include "statistic.hpp"
 
@@ -116,10 +117,9 @@ void Info::update( const unsigned int time )
       last.peace = peaceSrvc->value();
     }
 
-    city::Helper helper( &_city );
+    Helper helper( &_city );
     HouseList houses = helper.find<House>( building::house );
 
-    last.sentiment = 0;
     last.houseNumber = 0;
     last.shackNumber = 0;
     foreach( it, houses )
@@ -129,13 +129,14 @@ void Info::update( const unsigned int time )
       if( h->habitants().count() > 0 )
       {
         last.shackNumber += (h->spec().level() < HouseLevel::smallDomus ? 1 : 0);
-        last.sentiment += h->state( House::happiness );
         last.houseNumber++;
       }
     }
 
-    if( last.houseNumber > 0 )
-      last.sentiment /= last.houseNumber;
+    SentimentPtr st;
+    st << _city.findService( Sentiment::defaultName() );
+
+    last.sentiment = st->value();
 
     if( yearChanged )
     {
