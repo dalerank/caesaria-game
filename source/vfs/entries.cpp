@@ -17,6 +17,7 @@
 
 #include "entries.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 namespace vfs
 {
@@ -200,7 +201,6 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
   entry.setAbsolutePath( StringHelper::replace( filename.toString(), "\\", "/" ) );
   entry.isDirectory = isDirectory;
 
-  // remove trailing slash
   if( entry.absolutePath().lastChar() == '/' )
   {
     entry.isDirectory = true;
@@ -228,6 +228,7 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
                             ? StringHelper::hash( StringHelper::localeLower( fname ) )
                             : StringHelper::hash( fname )
                         );
+
   foreach( it, _d->files )
   {
     bool equale = false;
@@ -243,7 +244,6 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
       return std::distance( _d->files.begin(), it );
     }
   }
-
   return -1;
 }
 

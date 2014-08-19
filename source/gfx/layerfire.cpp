@@ -33,7 +33,8 @@ namespace gfx
 static const char* fireLevelName[] = {
                                        "##no_fire_risk##",
                                        "##very_low_fire_risk##", "##some_low_fire_risk##", "##low_fire_risk##",
-                                       "##middle_file_risk##", "##some_fire_risk##", "##very_high_fire_risk##",
+                                       "##middle_file_risk##", "##some_fire_risk##", "##high_fire_risk##",
+                                       "##very_high_fire_risk##",
                                        "##extreme_fire_risk##", "##moment_fire_risk##"
                                      };
 
@@ -132,7 +133,7 @@ void LayerFire::handleEvent(NEvent& event)
         if( constr != 0 )
         {
           int fireLevel = math::clamp<int>( constr->state( Construction::fire ), 0, 100 );
-          text = fireLevelName[ math::clamp<int>( fireLevel / 11, 0, 8 ) ];
+          text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
       }
 

@@ -30,6 +30,7 @@
 
 #if defined(CAESARIA_PLATFORM_ANDROID)
 #include <SDL.h>
+#include <SDL_system.h>
 int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
@@ -39,7 +40,7 @@ int main(int argc, char* argv[])
   Logger::registerWriter( Logger::filelog );
 
 #ifdef CAESARIA_PLATFORM_ANDROID
-  vfs::Directory workdir( std::string("/sdcard/Android/data/net.dalerank.caesaria/files") );
+  vfs::Directory workdir = vfs::Path( SDL_AndroidGetExternalStoragePath() );
 #else
   vfs::Directory workdir = vfs::Path( argv[0] ).directory();
 #endif

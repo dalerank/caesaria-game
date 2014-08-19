@@ -87,6 +87,7 @@
     geometry : [ 270, "ph-35", 430, "ph-15" ]
     font : "FONT_2"
     text : "##cancel##"
+    tooltip : "##donationwnd_exit_tip##"
     bgtype : "whiteBorderUp"
   }
 }

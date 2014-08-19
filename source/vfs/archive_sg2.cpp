@@ -50,6 +50,10 @@ enum {
 };
 
 
+namespace {
+static const std::string readerTypename=CAESARIA_STR_EXT(Sg2ArchiveReader);
+}
+
 Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem* fileSystem) :
   _fileSystem(fileSystem)
 {
@@ -183,7 +187,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
 Sg2ArchiveReader::~Sg2ArchiveReader() {}
 
-std::string Sg2ArchiveReader::getTypeName() const {  return "Sg2Reader";}
+const std::string &Sg2ArchiveReader::getTypeName() const { return readerTypename;}
 Archive::Type Sg2ArchiveReader::getType() const{  return Archive::sg2;}
 const Entries* Sg2ArchiveReader::entries() const{  return this;}
 

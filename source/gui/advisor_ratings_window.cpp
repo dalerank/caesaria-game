@@ -34,6 +34,7 @@
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "world/emperor.hpp"
 #include "city/funds.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
@@ -222,10 +223,9 @@ void Ratings::Impl::checkPeaceRating()
     advices << "##province_has_peace_a_short_time##";
   }
 
-  if( peace > 50 )
-  {
-    advices << "##this_lawab_province_become_very_peacefull##";
-  }
+  if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+  else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+  else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
 
   std::string text = advices.empty()
                       ? "##peace_rating_text##"
@@ -248,6 +248,12 @@ void Ratings::Impl::checkFavourRating()
   else if( salaryKoeff > 2.f ) { problems << "##more_salary_dispeasure_senate##";  }
   else if( salaryKoeff > 1.5f ){ problems << "##try_reduce_your_high_salary##"; }
   else if( salaryKoeff > 1.f ) { problems << "##try_reduce_your_salary##"; }
+
+  int relation = city->empire()->emperor().relation( city->name() );
+  if( relation < 30 )
+  {
+    problems << "##your_favor_is_dropping_catch_it##";
+  }
 
   if( rd.isValid() )
   {

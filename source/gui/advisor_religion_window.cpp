@@ -275,7 +275,12 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
       {
         advices << "##neptune_wrath_of_you##";
       }
-    }       
+    }
+
+    if( rome::Pantheon::mars()->relation() < 40 )
+    {
+      advices << "##mars_watches_over_soldiers##";
+    }
 
     text = advices.empty()
             ? "##religionadv_unknown_reason##"

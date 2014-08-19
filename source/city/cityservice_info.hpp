@@ -55,6 +55,7 @@ public:
     int crimeLevel;
     int peace;
     int houseNumber;
+    int slumNumber;
     int shackNumber;
     int sentiment;
     int foodStock;
@@ -83,6 +84,7 @@ public:
       cityWages = 0;
       romeWages = 0;
       houseNumber = 0;
+      slumNumber = 0;
       shackNumber = 0;
       foodStock = 0;
       foodMontlyConsumption = 0;

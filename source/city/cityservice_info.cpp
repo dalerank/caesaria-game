@@ -128,7 +128,9 @@ void Info::update( const unsigned int time )
 
       if( h->habitants().count() > 0 )
       {
-        last.shackNumber += (h->spec().level() < HouseLevel::smallDomus ? 1 : 0);
+        int hLvl = h->spec().level();
+        last.slumNumber += ( hLvl == HouseLevel::smallHovel || hLvl == HouseLevel::bigTent ? 1 : 0);
+        last.shackNumber += ( hLvl >= HouseLevel::smallHut || hLvl < HouseLevel::bigHut ? 1 : 0);
         last.houseNumber++;
       }
     }
@@ -294,6 +296,7 @@ VariantMap Info::Parameters::save() const
   VARIANT_SAVE_ANY( ret, crimeLevel )
   VARIANT_SAVE_ANY( ret, peace )
   VARIANT_SAVE_ANY( ret, houseNumber )
+  VARIANT_SAVE_ANY( ret, slumNumber )
   VARIANT_SAVE_ANY( ret, shackNumber )
   VARIANT_SAVE_ANY( ret, sentiment )
   VARIANT_SAVE_ANY( ret, foodStock )
@@ -328,6 +331,7 @@ void Info::Parameters::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( peace, stream )
   VARIANT_LOAD_ANY( houseNumber, stream )
   VARIANT_LOAD_ANY( shackNumber, stream )
+  VARIANT_LOAD_ANY( slumNumber, stream )
   VARIANT_LOAD_ANY( sentiment, stream )
   VARIANT_LOAD_ANY( foodStock, stream )
   VARIANT_LOAD_ANY( foodMontlyConsumption, stream )
