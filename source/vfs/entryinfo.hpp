@@ -57,7 +57,7 @@ public:
     if (isDirectory != other.isDirectory)
       return isDirectory;
 
-    return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
+    return StringHelper::compare( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
   }
 
   inline bool isFolder() const { return _fullpath.isFolder(); }
