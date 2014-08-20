@@ -53,6 +53,7 @@
 #include "chastener_elephant.hpp"
 #include "romearcher.hpp"
 #include "market_lady.hpp"
+#include "cart_supplier.hpp"
 #include <map>
 
 using namespace constants;
@@ -149,6 +150,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::romeSpearman, new SoldierCreator<RomeArcher>( walker::romeSpearman ) );
   addCreator( walker::romeChastenerSoldier, new SoldierCreator<Chastener>( walker::romeChastenerSoldier ) );
   addCreator( walker::romeChastenerElephant, new BaseCreator<ChastenerElephant>() );
+  addCreator( walker::supplier, new BaseCreator<CartSupplier>() );
 }
 
 WalkerManager::~WalkerManager(){}

@@ -229,7 +229,14 @@ void WorkingBuilding::destroy()
 {
   Building::destroy();
 
-  foreach( walker, _d->walkerList ) { (*walker)->deleteLater(); }
+  foreach( it, _d->walkerList )
+  {
+    walker::Type wt = (*it)->type();
+    if( wt == walker::cartPusher || wt == walker::supplier )
+      continue;
+
+    (*it)->deleteLater();
+  }
 
   if( numberWorkers() > 0 )
   {

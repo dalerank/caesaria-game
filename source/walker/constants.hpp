@@ -87,6 +87,7 @@ enum Type{
   missioner,
   zebra,
   riverWave,
+  supplier,
   all = 0xff,
   any = all
 };

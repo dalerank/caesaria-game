@@ -97,6 +97,7 @@ public:
     __REG_WTYPE( indigene )
     __REG_WTYPE( romeChastenerElephant )
     __REG_WTYPE( zebra )
+    __REG_WTYPE( supplier )
   }
 #undef __REG_WTYPE
 };
