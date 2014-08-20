@@ -232,6 +232,21 @@ bool StringHelper::isEquale( const std::string& a, const std::string& b, equaleM
   }
 }
 
+int StringHelper::compare( const std::string& a, const std::string& b, equaleMode mode )
+{
+  switch( mode )
+  {
+#if defined(_MSC_VER)
+  case equaleIgnoreCase: return _stricmp( a.c_str(), b.c_str() );
+  case equaleCase: return strcmp( a.c_str(), b.c_str() );
+#else
+  case equaleIgnoreCase: return strcasecmp( a.c_str(), b.c_str() );
+  case equaleCase: return strcmp( a.c_str(), b.c_str() );
+#endif
+  default: return 0;
+  }
+}
+
 unsigned int StringHelper::hash( const std::string& text )
 {
   unsigned int nHash = 0;

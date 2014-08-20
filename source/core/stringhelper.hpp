@@ -62,6 +62,8 @@ public:
 
   static bool isEquale( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
 
+  static int compare( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
+
   static std::string replace(std::string text, const std::string& from, const std::string& to);
 
   static StringArray split( std::string str, std::string spl );
