@@ -38,6 +38,7 @@
 #include "city/funds.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
+#include "city/cityservice_info.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -171,9 +172,9 @@ void Ratings::Impl::checkProsperityRating()
   city::ProsperityRatingPtr prosperity;
   prosperity << city->findService( city::ProsperityRating::defaultName() );
 
-
   if( prosperity != 0 )
   {
+    StringArray troubles;
     unsigned int prValue = prosperity->value();
     if( prValue == 0 )
     {
@@ -181,7 +182,14 @@ void Ratings::Impl::checkProsperityRating()
       return;
     }
 
-    StringArray troubles;
+    city::InfoPtr info;
+    info << city->findService( city::Info::defaultName() );
+
+    city::Info::Parameters current = info->lastParams();
+    city::Info::Parameters lastYear = info->yearParams( 0 );
+
+    if( current.prosperity > lastYear.prosperity ) { troubles <<  "##your_prosperity_raising##"; }
+
     if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
     if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
     if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles << "##high_workless_number##"; }
@@ -240,6 +248,12 @@ void Ratings::Impl::checkFavourRating()
   city::request::DispatcherPtr rd;
   rd << city->findService( city::request::Dispatcher::defaultName() );
 
+  city::InfoPtr info;
+  info << city->findService( city::Info::defaultName() );
+
+  city::Info::Parameters current = info->lastParams();
+  city::Info::Parameters lastYear = info->yearParams( 0 );
+
   PlayerPtr player = city->player();
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
   float salaryKoeff = player->salary() / (float)rank.salary;
@@ -249,8 +263,10 @@ void Ratings::Impl::checkFavourRating()
   else if( salaryKoeff > 1.5f ){ problems << "##try_reduce_your_high_salary##"; }
   else if( salaryKoeff > 1.f ) { problems << "##try_reduce_your_salary##"; }
 
-  int relation = city->empire()->emperor().relation( city->name() );
-  if( relation < 30 )
+  if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
+  else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
+
+  if( current.favour < 30 )
   {
     problems << "##your_favor_is_dropping_catch_it##";
   }

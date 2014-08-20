@@ -106,6 +106,8 @@ void Info::update( const unsigned int time )
     last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->workerSalary();
     last.crimeLevel = city::Statistic::getCrimeLevel( &_city );
+    last.favour = _city.favour();
+    last.prosperity = _city.prosperity();
 
     last.monthWithourWar = city::Statistic::months2lastAttack( &_city );
     last.peace = 0;
@@ -158,6 +160,17 @@ Info::Parameters Info::params(int monthAgo) const
     return _d->lastYearHistory.front();
 
   return _d->lastYearHistory[ monthAgo ];
+}
+
+Info::Parameters Info::yearParams(int year) const
+{
+  if( _d->allHistory.empty() )
+    return Parameters();
+
+  if( year >= _d->allHistory.size() )
+    return _d->allHistory.front();
+
+  return _d->allHistory[ year ];
 }
 
 const Info::History& Info ::history() const { return _d->allHistory; }
@@ -301,6 +314,7 @@ VariantMap Info::Parameters::save() const
   VARIANT_SAVE_ANY( ret, sentiment )
   VARIANT_SAVE_ANY( ret, foodStock )
   VARIANT_SAVE_ANY( ret, foodMontlyConsumption )
+  VARIANT_SAVE_ANY( ret, favour )
 
   return ret;
 }
@@ -335,6 +349,7 @@ void Info::Parameters::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( sentiment, stream )
   VARIANT_LOAD_ANY( foodStock, stream )
   VARIANT_LOAD_ANY( foodMontlyConsumption, stream )
+  VARIANT_LOAD_ANY( favour, stream )
 }
 
 VariantMap Info::ScribeMessage::save() const
