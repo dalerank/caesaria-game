@@ -8,7 +8,7 @@ public class CaesarIA extends SDLActivity {
     System.loadLibrary( "aes" );
     System.loadLibrary( "bzip2" );
     System.loadLibrary( "lzma" );
-    System.loadLibrary( "png" );
+    System.loadLibrary( "pnggo" );
     System.loadLibrary( "sdl_ttf" );
     System.loadLibrary( "smk" );
     System.loadLibrary( "application" );
