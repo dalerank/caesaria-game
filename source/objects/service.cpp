@@ -29,6 +29,7 @@
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace gfx;
 

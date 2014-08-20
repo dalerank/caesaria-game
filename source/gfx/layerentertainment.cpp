@@ -25,6 +25,7 @@
 #include "tilemap_camera.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 

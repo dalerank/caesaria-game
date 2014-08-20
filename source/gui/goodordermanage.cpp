@@ -26,6 +26,7 @@
 #include "gfx/engine.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace gfx;

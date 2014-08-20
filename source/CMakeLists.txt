@@ -98,6 +98,11 @@ if(BUILD_GL_SHADERS)
 add_definitions( -DCAESARIA_USE_SHADERS )
 endif(BUILD_GL_SHADERS)
 
+if( DEBUG_TIMERS )
+add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
+endif(DEBUG_TIMERS)
+
+
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
   target_link_libraries(${PROJECT_NAME} "winmm")

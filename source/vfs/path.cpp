@@ -20,6 +20,7 @@
 #include "filesystem.hpp"
 #include "entries.hpp"
 #include "directory.hpp"
+#include "core/stringhelper.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>

@@ -29,6 +29,7 @@
 #include "city/migration.hpp"
 #include "label.hpp"
 #include "widget_helper.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace gfx;

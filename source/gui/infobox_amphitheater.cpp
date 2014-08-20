@@ -22,6 +22,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace gfx;
 using namespace constants;

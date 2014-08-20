@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_TIMER_H_INCLUDED__
 #define __CAESARIA_TIMER_H_INCLUDED__
@@ -32,7 +33,7 @@ public:
   enum { looped=true, singleShot=false };
   static TimerPtr create( unsigned int time, bool loop, int id=-1 );
 
-  ~Timer();
+  virtual ~Timer();
 
   void update( unsigned int time );
 
@@ -52,6 +53,23 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class DebugTimer
+{
+public:
+  static void reset( const std::string& name );
+  static unsigned int take(const std::string& name, bool reset=false);
+  static unsigned int delta( const std::string& name, bool reset=false );
+
+  static void check( const std::string& prefix, const std::string& name );
+
+private:
+  static DebugTimer& instance();
+  DebugTimer();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //__CAESARIA_TIMER_H_INCLUDED__

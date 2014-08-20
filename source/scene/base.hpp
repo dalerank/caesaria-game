@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_SCENE_BASE_H_INCLUDE_
 #define _CAESARIA_SCENE_BASE_H_INCLUDE_
@@ -67,7 +67,6 @@ public:
   virtual int result() const = 0;
 
   virtual bool installEventHandler( EventHandlerPtr );
-
 protected:
   Base();
 

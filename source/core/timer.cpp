@@ -14,9 +14,14 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "timer.hpp"
 #include "city/cityservice_timers.hpp"
+#include "core/stringhelper.hpp"
+#include "core/logger.hpp"
+
+#define CAESARIA_USE_DEBUGTIMERS
 
 class Timer::Impl
 {
@@ -64,8 +69,8 @@ void Timer::update( unsigned int time )
 
   if( _d->isActive && ( time - _d->startTime > _d->time) )
   {
-    _d->onTimeoutASignal.emit( _d->id );
-    _d->onTimeoutSignal.emit();
+    oc3_emit _d->onTimeoutASignal( _d->id );
+    oc3_emit _d->onTimeoutSignal();
 
     _d->isActive = false;
 
@@ -83,3 +88,65 @@ Signal1<int>& Timer::onTimeoutA(){  return _d->onTimeoutASignal;}
 Signal0<>& Timer::onTimeout(){  return _d->onTimeoutSignal;}
 bool Timer::isActive() const{  return _d->isActive;}
 void Timer::destroy(){  _d->isActive = false; }
+
+class DebugTimer::Impl
+{
+public:
+  struct TimerInfo
+  {
+    std::string name;
+    unsigned int time;
+
+    TimerInfo() : time( 0 ) {}
+  };
+
+  std::map<unsigned int, TimerInfo> timers;
+};
+
+void DebugTimer::reset(const std::string &name)
+{
+  unsigned int namehash = StringHelper::hash( name );
+  instance()._d->timers[ namehash ].time = DateTime::elapsedTime();
+}
+
+unsigned int DebugTimer::take(const std::string &name, bool reset)
+{
+  unsigned int namehash = StringHelper::hash( name );
+  Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
+
+  unsigned int ret = tinfo.time;
+  if( reset )
+    tinfo.time = DateTime::elapsedTime();
+
+  return ret;
+}
+
+unsigned int DebugTimer::delta(const std::string &name, bool reset)
+{
+  unsigned int namehash = StringHelper::hash( name );
+  Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
+
+  unsigned int ret = DateTime::elapsedTime() - tinfo.time;
+  if( reset )
+    tinfo.time = DateTime::elapsedTime();
+
+  return ret;
+}
+
+void DebugTimer::check(const std::string& prefix, const std::string &name)
+{
+#ifdef CAESARIA_USE_DEBUGTIMERS
+  unsigned int t = delta( name, true );
+  Logger::warning( "DEBUG_TIMER:%s%s delta:%d", prefix.c_str(), name.c_str(), t );
+#else
+
+#endif
+}
+
+DebugTimer& DebugTimer::instance()
+{
+  static DebugTimer inst;
+  return inst;
+}
+
+DebugTimer::DebugTimer() : _d(new Impl) {}

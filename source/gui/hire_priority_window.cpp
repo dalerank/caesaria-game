@@ -21,6 +21,7 @@
 #include "core/event.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
+#include "core/stringhelper.hpp"
 
 #include <set>
 

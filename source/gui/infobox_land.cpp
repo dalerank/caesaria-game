@@ -19,6 +19,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "core/stringhelper.hpp"
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
 

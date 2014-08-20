@@ -21,6 +21,7 @@
 #include "core/gettext.hpp"
 #include "religion/romedivinity.hpp"
 #include "image.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace religion;

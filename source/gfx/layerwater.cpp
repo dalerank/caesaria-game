@@ -28,6 +28,7 @@
 #include "tilemap_camera.hpp"
 #include "objects/aqueduct.hpp"
 #include "core/font.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 

@@ -25,6 +25,7 @@
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/stringhelper.hpp"
 
 namespace gui
 {

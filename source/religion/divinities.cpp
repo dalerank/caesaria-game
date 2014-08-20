@@ -28,6 +28,7 @@
 #include "walker/fishing_boat.hpp"
 #include "good/goodstore.hpp"
 #include "objects/warehouse.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace gfx;

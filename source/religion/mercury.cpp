@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
 #include "good/goodstore.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace gfx;

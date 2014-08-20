@@ -31,6 +31,7 @@
 #include "core/event.hpp"
 #include "objects/fort.hpp"
 #include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 #include "widget_helper.hpp"
 
 using namespace constants;
