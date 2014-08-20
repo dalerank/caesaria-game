@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
+{" ":""
+"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
 "##1_entertainment_access##":""
 "##2_entertainment_access##":""
 "##3_entertainment_access##":""
@@ -10,6 +11,7 @@
 "##9_entertainment_access##":""
 "##academies##":""
 "##academy_full_work##":"Aceasă academie este operațională. Tinerii din zonă invață despre bunele maniere."
+"##academy_info##":""
 "##academy_no_workers##":"Această academie nu este operațională, și nu aduce nici un folos comunității locale."
 "##academy_trained##":"Studii academice."
 "##academy##":"Academie"
@@ -121,6 +123,7 @@
 "##age_ad##":"d.Hr."
 "##age_bc##":"î.Hr."
 "##also_fountain_in_well_area##":"Aceast puț este redundant, toate casele pe care le servește își iau apa dintr-o fântână din zonă"
+"##amazing_prosperity_this_city##":""
 "##amphitheater_full_work##":"Acest amfiteatru oferă comunității locale atât lupte spectaculoase de gladiatori, cât și piese de teatru jucate de actori."
 "##amphitheater_have_never_show##":"Acest amfiteatru nu are nici un spectacol. Are nevoie de actori sau gladiatori pentru a oferi amuzament"
 "##amphitheater_have_only_battles##":"Acest amfiteatru gâzduiește lupte de gladiatori pentru amuzamentul comunității locale. Se caută actori pentru a pune în scenă piese de teatru"
@@ -142,6 +145,7 @@
 "##architect##":"Arhitect"
 "##army_marker##":"Marcaj militar"
 "##arrow##":"Săgeată"
+"##averange_crime_risk##":""
 "##avesome_amphitheater_access##":"Această casă a fost vizitată recent de un actor sau de un gladiator. Va avea acces la amfiteatru o perioadă lungă de timp."
 "##avesome_clinic_access##":"Această casă a fost vizitată recent de un medic. Va avea acces la clinică o perioadă lungă de timp."
 "##avesome_college_access##":"Această casă a fost vizitată recent de un profesor. Va avea acces la academie o perioadă lungă de timp."
@@ -151,8 +155,15 @@
 "##avesome_library_access##":"Această casă a fost recent vizitată de un bibliotecar. Va avea acces la librarie o perioadă lungă de timp."
 "##avesome_school_access##":"Acesastă casă a fost recent vizitată de un școlar. Va avea acces la școală o perioadă lungă de timp."
 "##avesome_theater_access##":"Acesastă casă a fost recent vizitată de un actor. Va avea acces la teatru o perioadă lungă de timp."
+"##awesome_amphitheater_access##":""
+"##awesome_barber_access##":""
 "##awesome_barber_access##":"Acesastă casă a fost recent vizitată de un frizer. Va avea acces la frizerie o perioadă lungă de timp."
+"##awesome_baths_access##":""
 "##awesome_baths_access##":"Acesastă casă a fost recent vizitată de un angajat al băii publice. Va avea acces la baie publică o perioadă lungă de timp."
+"##awesome_colloseum_access##":""
+"##awesome_doctor_access##":""
+"##awesome_entertainment_access##":""
+"##bad_house_quality##":""
 "##balance##":"Balans"
 "##ballista##":"Balistă"
 "##barbarian_warrior##":"Un războinic barbar"
@@ -171,9 +182,15 @@
 "##barber_so_hungry##":"O tunsoare îți ia mintea de la foame. Și toată lumea este înfometată aici."
 "##barber##":"Frizer"
 "##barbers##":"Frizerii"
+"##barracks_bad_weapons_bad_workers##":""
+"##barracks_bad_weapons_need_some_workers##":""
+"##barracks_bad_weapons_slow_workers##":""
 "##barracks_full_work##":"Antrenăm recuți noi la eficiență maximă și avem armele de care avem nevoie pentru a antrena orice tip de soldat."
+"##barracks_have_weapons_bad_workers##":""
+"##barracks_have_weapons_slow_workers##":""
 "##barracks_info##":"Nimeni nu poate intra în legiunile romane fără a trece întâi pe aici; este școala unde sunt antrenați noii recruți în acest oraș."
 "##barracks_need_some_workers##":"Antrenam recruți la eficiență redusă din cauza lipsei de muncitori, dar avem armele de care avem nevoie pentru a antrena orice tip de soldat."
+"##barracks_no_weapons##":""
 "##barracks##":"Barăci"
 "##bath_1##":"Baie publică"
 "##bath_access##":"Acces la baie publică"
@@ -187,6 +204,8 @@
 "##baths_no_workers##":"Această baie publică nu este operațională. Fără angajați, cine ar putea face baie aici?"
 "##baths##":"Baie publică"
 "##bc##":"î.Hr."
+"##beatifull_villa##":""
+"##beatyfull_insula##":""
 "##become_trade_center##":"Transformă în centru de comerț"
 "##below_average##":"Sub medie"
 "##better_class_road##":"Un tip mai bun de drum"
@@ -198,7 +217,7 @@
 "##bldm_factory##":"Manufactori"
 "##bldm_farm##":"Ferme"
 "##bldm_raw_materials##":"Materii prime"
-"##bldm_raw##":"Material"
+"##bldm_raw##":""
 "##bolt##":"Proiectil"
 "##bridge##":"Pod"
 "##bridges##":"Poduri"
@@ -218,9 +237,11 @@
 "##can_build_only_one_of_building##":""
 "##cancel##":"Anulează"
 "##cancelBtnTooltip##":"Anulează această operație"
+"##cant_calc_prosperity##":""
 "##cant_demolish_bridge_with_people##":"Nu poți demola un pod cu oameni pe el"
 "##captured_city##":"Un oraș capturat"
 "##carthaginian_soldier##":"Un soldat din Cartagina"
+"##carthago_win_text##":""
 "##cartPusher_average_life##":""
 "##cartPusher_cantfind_destination##":"Ar fi mai rapid să împing aceste bunuri până la Roma decât până unde trebuie să le duc!"
 "##cartPusher_gods_angry##":"Nu sunt un om religios, dar nici măcar eu nu aș trata zeii atât de rău!"
@@ -232,6 +253,7 @@
 "##ceres_badmood_info##":"Nemulțumirea lui Ceres este periculoasă, întrucât ea protejază oamenii de recolte proaste și foamete."
 "##ceres_desc##":""
 "##ceres_goodmood_info##":"Ceres aduce fertilitate pământului și face recoltele să crească. Mulțumește-o, sau pregătește-te să fii înfometat."
+"##changesalary_greater_salary##":""
 "##charioteer_school_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, putem produce până la patru care de curse în fiecare lună."
 "##charioteer_school_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem produce cel mult două care de curse pe lună."
 "##charioteer_school_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem produce doar un car de curse în luna ce urmează."
@@ -239,6 +261,7 @@
 "##charioter_so_hungry##":"Dacă îmi e foame? Aș putea mânca un cal, atât de puțină mâncare se găsește!"
 "##chatioteer_school_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot produce un car de curse în trei luni"
 "##chatioteer_school_bad_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să producem un car de curse in următoarele două luni."
+"##chatioteer_school_info##":""
 "##chatioteer_school_no_workers##":"Fără nici un constructor, nici un car de curse nu poate fi produs. Hipodromul, dacă operațional, ar putea suferi ca o consecință."
 "##chatioteer_school##":"Producător de care de curse"
 "##chief_advisor##":"Consilier Principal"
@@ -286,14 +309,13 @@
 "##clay##":"Argilă"
 "##clear_land_caption##":"Teren liber"
 "##clear_land_text##":""
-"##clear_land_text##":""
 "##clear_land##":"Eliberează terenul"
-"##clearBtnTooltip##":""
 "##clerk_salary##":"Salariu de funcționar, în valoare de"
 "##clerk##":"Funcționar"
 "##click_here_that_stacking##":""
 "##click_here_that_use_it##":""
 "##click_item_for_start_trade##":""
+"##click_on_city_for_info##":""
 "##clinic_full_work##":""
 "##clinic_info##":""
 "##clinic_no_workers##":""
@@ -324,8 +346,10 @@
 "##coverage##":""
 "##crack##":""
 "##credit##":""
+"##current_game_speed_is##":""
 "##cursed_by_mars##":""
 "##damage##":""
+"##dangerous_crime_risk##":""
 "##date_tooltip##":""
 "##date##":""
 "##day_longer_in_that_tent##":""
@@ -352,6 +376,8 @@
 "##destroy_bridge##":""
 "##destroy_fort##":""
 "##devastate_granary##":""
+"##devastate_warehouse##":""
+"##developers##":""
 "##difficulty##":""
 "##disasterBtnTooltip##":""
 "##dispatch_force##":""
@@ -365,6 +391,9 @@
 "##dn_per_month##":""
 "##dn's##":""
 "##dn##":""
+"##dock_bad_work##":""
+"##dock_busy_bad_work##":""
+"##dock_busy_patrly_workers##":""
 "##dock_cart_returning_from":""
 "##dock_cart_taking_goods##":""
 "##dock_cart_wait##":""
@@ -388,6 +417,7 @@
 "##east##":""
 "##edil_salary##":""
 "##education_advisor_title##":""
+"##education_full_access##":""
 "##education_have_academy_access##":""
 "##education_have_no_access##":""
 "##education_have_school_library_access##":""
@@ -413,6 +443,8 @@
 "##emigrant_no_work_for_me##":""
 "##emigrant_thrown_from_house##":""
 "##emigrant##":""
+"##empbutton_low_work##":""
+"##empbutton_simple_work##":""
 "##empbutton_tooltip##":""
 "##emperor_favour_00##":""
 "##emperor_favour_01##":""
@@ -436,17 +468,20 @@
 "##emperor_favour_19##":""
 "##emperor_favour_20##":""
 "##emperor_request##":""
+"##emperor_send_money_to_you_nearest_time##":""
 "##emperor##":""
 "##emperror_legion_at_out_gates##":""
 "##empire_map##":""
 "##empire_tax##":""
 "##empireBtnTooltip##":""
+"##empiremap_our_city##":""
 "##employee##":""
 "##employees##":""
 "##employers##":""
 "##emw_bought##":""
 "##emw_buy##":""
 "##emw_sell##":""
+"##emw_sold##":""
 "##enemy_attack_city##":""
 "##engineer_average_life##":""
 "##engineer_building_allok##":""
@@ -479,7 +514,7 @@
 "##exit_point##":""
 "##exit_salary_window##":""
 "##exit_this_panel##":""
-"##exit_without_saving?##":""
+"##exit_without_saving_question##":""
 "##exit##":""
 "##explosion##":""
 "##export_btn_tooltip##":""
@@ -493,6 +528,7 @@
 "##favor_rating##":""
 "##favor##":""
 "##festivals##":""
+"##few_crime_risk##":""
 "##fig_farm_bad_work##":""
 "##fig_farm_full_work##":""
 "##fig_farm_info##":""
@@ -501,6 +537,7 @@
 "##fig_farm_patrly_workers##":""
 "##fig_farm##":""
 "##file##":""
+"##fileload_load_tlp##":""
 "##finance_advisor##":""
 "##finance_advisor##":""
 "##finances##":""
@@ -558,6 +595,7 @@
 "##garden##":""
 "##gardens_info##":""
 "##gatehouse##":""
+"##give_money_tip##":""
 "##give_money##":""
 "##gladiator_gods_angry##":""
 "##gladiator_good_life##":""
@@ -586,6 +624,7 @@
 "##gmsndwnd_ambient_sound##":""
 "##gmsndwnd_game_volume##":""
 "##gmsndwnd_theme_sound##":""
+"##gmspdwnd_autosave_interval##":""
 "##gmspdwnd_game_speed##":""
 "##gmspdwnd_scroll_speed##":""
 "##go_to_problem##":""
@@ -618,13 +657,17 @@
 "##governor_palace_3##":""
 "##governor_salary_title##":""
 "##granaries_holds##":""
+"##granary_devastation_mode_text##":""
 "##granary_holds##":""
 "##granary_info##":""
 "##granary_orders##":""
 "##granery##":""
 "##grape_factory_stock##":""
 "##grape##":""
+"##graphics##":""
 "##grass##":""
+"##great_festival##":""
+"##greatPalace_info##":""
 "##greek_soldier##":""
 "##have_food_for##":""
 "##have_less_academy_in_city_0##":""
@@ -632,16 +675,29 @@
 "##have_less_school_in_city_0##":""
 "##have_less_temple_in_city_0##":""
 "##have_less_theater_in_city_0##":""
+"##have_no_access_school_colege##":""
 "##have_no_food_on_next_month##":""
 "##have_no_legions##":""
 "##have_no_requests##":""
+"##having_some_slums_lack_migration##":""
 "##health_advisor##":"Starea sănătății în oraș"
 "##health_advisor##":""
 "##health##":""
+"##healthadv_noproblem_small_city##":""
+"##healthadv_not_need_health_service_now##":""
+"##healthadv_some_regions_need_barbers##":""
+"##healthadv_some_regions_need_bath##":""
+"##healthadv_some_regions_need_doctors_2##":""
+"##healthadv_some_regions_need_doctors##":""
 "##healthBtnTooltip##":""
 "##help##":""
 "##hide_bigpanel##":""
 "##high_bridge##":""
+"##high_crime_risk##":""
+"##high_crime_risk##":""
+"##high_damage_risk##":""
+"##high_fire_risk##":""
+"##high_salary_angers_senate##":""
 "##hippodrome_full_access##":""
 "##hippodrome_haveno_races##":""
 "##hippodrome_no_access##":""
@@ -665,18 +721,28 @@
 "##house_have_not_food##":""
 "##house_have_some_food##":""
 "##house_no_troubles_with_food##":""
+"##house_not_registered_for_taxes##":""
 "##house_not_report_about_crimes##":""
 "##house_provide_food_themselves##":""
 "##houseBtnTooltip##":""
+"##how_to_grow_prosperity##":""
 "##hun_warrior##":""
 "##immigrant_much_food_here##":""
 "##immigrant_so_hungry##":"Dacă mai stau aici cred că o să mor. Nu se găsește mâncare nicăieri."
 "##immigrant_want_to_be_liontamer##":"Am auzit că se găsesc slujbe aici. Vreau să fiu un îmblanzitor de lei!"
 "##immigrant_where_my_home##":""
+"##imperial_request_cance_badly_affected##":""
 "##import_fn##":""
 "##import##":""
+"##infobox_construction_comma_tip##":""
 "##infobox_tooltip_exit##":""
 "##infobox_tooltip_help##":""
+"##initialize_animations##":""
+"##initialize_constructions##":""
+"##initialize_house_specification##":""
+"##initialize_names##":""
+"##initialize_religion##":""
+"##initialize_walkers##":""
 "##inland_lake_text##":""
 "##iron_factory_stock##":""
 "##iron_mine_bad_work##":""
@@ -707,6 +773,7 @@
 "##legion_haveho_soldiers_and_barracks##":""
 "##legion_haveho_soldiers##":""
 "##legion##":""
+"##legionadv_no_legions##":""
 "##legionary_average_life##":""
 "##legionary_low_salary##":""
 "##legions##":""
@@ -740,9 +807,12 @@
 "##lionTamer_low_entertainment##":""
 "##lionTamer_need_workers##":""
 "##lionTamer_so_hungry##":""
+"##little_damage_risk##":""
 "##Load_save##":""
+"##loading_offsets##":""
 "##loading_resources##":""
 "##low_bridge##":""
+"##low_crime_risk##":""
 "##low_damage_risk##":""
 "##low_desirability_degrade##":""
 "##low_desirability##":""
@@ -750,6 +820,7 @@
 "##low_wage_broke_migration##":""
 "##low_wage_broke_migration##":""
 "##low_wage_lack_migration##":""
+"##lugdunum_win_text##":""
 "##lumber_mill_bad_work##":""
 "##lumber_mill_bad_work##":""
 "##lumber_mill_full_work##":""
@@ -758,12 +829,21 @@
 "##lumber_mill_need_some_workers##":""
 "##lumber_mill_no_workers##":""
 "##lumber_mill##":""
+"##luxury_palace##":""
 "##macedonian_soldier##":""
+"##mainmenu_credits##":""
+"##mainmenu_language##":""
+"##mainmenu_load##":""
+"##mainmenu_loadcampaign##":""
 "##mainmenu_loadgame##":""
 "##mainmenu_loadmap##":""
 "##mainmenu_newgame##":""
+"##mainmenu_options##":""
 "##mainmenu_playmission##":""
 "##mainmenu_quit##":""
+"##mainmenu_randommap##":""
+"##mainmenu_sound##":""
+"##mainmenu_video##":""
 "##marble##":""
 "##market_about##":""
 "##market_full_work##":""
@@ -772,17 +852,19 @@
 "##market_search_food_source##":""
 "##market##":""
 "##marketBuyer_average_life##":""
+"##marketBuyer_find_goods##":""
 "##marketBuyer_gods_angry##":""
 "##marketBuyer_good_life##":""
 "##marketBuyer_high_workless##":"Cu șomajul așa de mare, muncesc din greu să îmi păstrez slujba!"
 "##marketBuyer_low_entertainment##":"Acesta trebuie să fie cel mai plictisitor oraș din Imperiu!"
 "##marketBuyer_need_workers##":""
+"##marketBuyer_return##":""
 "##marketBuyer_so_hungry##":""
 "##marketKid_say_2##":""
 "##marketKid_say_3##":""
-"##marketLady_find_goods##":""
-"##marketLady_return##":""
+"##marketLady_no_food_on_market##":""
 "##mars_desc##":""
+"##mars_watches_over_soldiers##":""
 "##max_available##":""
 "##maximizeBtnTooltip##":""
 "##may_collect_about##":""
@@ -796,12 +878,18 @@
 "##meat_farm_patrly_workers##":""
 "##meat_farm##":""
 "##meat##":""
+"##mediolanum_win_text##":""
 "##mercury_desc##":""
 "##mercury##":""
 "##message##":""
 "##messageBtnTooltip##":""
 "##messageBtnTooltip##":""
 "##messages##":""
+"##middle_festival##":""
+"##middle_file_risk##":""
+"##middle_insula##":""
+"##middle_palace##":""
+"##middle_villa##":""
 "##migration_broke_tax##":""
 "##migration_broke_workless##":""
 "##migration_empty_granary##":""
@@ -814,8 +902,11 @@
 "##migration_middle_lack_workless##":""
 "##migration_middle_lack_workless##":""
 "##migration_people_away##":""
-"##military_academy_no_workers##":""
-"##military_academy##":""
+"##migration_war_deterring##":""
+"##military_academy_patrly_workers##":""
+"##militaryAcademy_full_work##":""
+"##militaryAcademy_no_workers##":""
+"##militaryAcademy##":""
 "##minimap_tooltip##":""
 "##minimizeBtnTooltip##":""
 "##missing_barber_degrade##":""
@@ -828,9 +919,13 @@
 "##missing_doctor_or_hospital_degrade##":""
 "##missing_doctor_or_hospital##":""
 "##missing_doctor##":""
+"##missing_entertainment_also_degrade##":""
 "##missing_entertainment_also##":""
+"##missing_entertainment_amph_degrade##":""
 "##missing_entertainment_amph##":""
+"##missing_entertainment_colloseum_degrade##":""
 "##missing_entertainment_colloseum##":""
+"##missing_entertainment_degrade##":""
 "##missing_entertainment_degrade##":""
 "##missing_entertainment_need_more##":""
 "##missing_entertainment_patrician##":""
@@ -856,7 +951,8 @@
 "##missing_religion_degrade##":""
 "##missing_religion##":""
 "##missing_school_degrade##":""
-"##missing_school##":""
+"##missing_school_or_library_degrade##":""
+"##missing_school_or_library##":""
 "##missing_school##":""
 "##missing_second_food_degrade##":""
 "##missing_second_food##":""
@@ -875,7 +971,10 @@
 "##mission_wnd_population##":""
 "##mission_wnd_targets_title##":""
 "##mission_wnd_tocity##":""
+"##missionaryPost_full_work##":""
+"##missionaryPost##":""
 "##missionBtnTooltip##":""
+"##moment_fire_risk##":""
 "##month_1_short##":""
 "##month_10_short##":""
 "##month_11_short##":""
@@ -894,7 +993,15 @@
 "##months##":""
 "##more_people##":""
 "##more_person##":""
+"##more_salary_dispeasure_senate##":""
+"##much_plebs##":""
 "##my_rome##":""
+"##nativeCenter_info##":""
+"##nativeCenter##":""
+"##nativeField_info##":""
+"##nativeField##":""
+"##nativeHut_info##":""
+"##nativeHut##":""
 "##nearby_building_negative_effect_degrade##":""
 "##nearby_building_negative_effect##":""
 "##need_access_to_full_reservoir##":""
@@ -917,21 +1024,33 @@
 "##need_trainee_charioteer##":""
 "##need_vines_farm##":""
 "##neptune_desc##":""
+"##neptune_despleasure_tip##":""
+"##neptune_wrath_of_you##":""
 "##new_festival##":""
 "##new_governor##":""
 "##new_map##":""
 "##new_trade_route_to##":""
+"##newcomer_this_month##":""
+"##newcomers_this_month##":""
 "##no_academy_access##":""
 "##no_culture_building_in_city##":""
 "##no_dock_for_sea_trade_routes##":""
+"##no_fire_risk##":""
+"##no_food_stored_last_month##":""
 "##no_goods_for_request##":""
 "##no_people_in_city##":""
+"##no_priority##":""
 "##no_space_for_evolve##":""
 "##no_target_population##":""
 "##no_tax_in_this_year##":""
 "##no_visited_by_taxman##":""
+"##no_warning_for_us##":""
+"##nomoney_for_gift_text##":""
+"##none_crime_risk##":""
+"##none_damage_risk##":""
 "##northBtnTooltip##":""
 "##not_available##":""
+"##not_need_education##":""
 "##numidian_warrior##":""
 "##occupants##":""
 "##oil_workshop_bad_work##":""
@@ -964,6 +1083,7 @@
 "##other##":""
 "##our_foods_level_are_low##":""
 "##out_of_credit##":""
+"##overall_city_become_a_sleepy_province##":""
 "##overlays##":""
 "##ovrm_aborigen##":""
 "##ovrm_academy##":""
@@ -1005,13 +1125,20 @@
 "##patrician_low_entertainment##":"Cetățene! Nu este acesta cel mai plictisitor oraș din Imperiu?"
 "##patrician_so_hungry##":""
 "##pay_to_open_trade_route?##":""
+"##peace_rating_text##":""
+"##people_leave_city_insane_tax##":""
+"##people_leave_city_low_wage##":""
+"##people_leave_city_some##":""
 "##people##":""
 "##percents##":""
 "##person##":""
 "##plaza_caption##":""
 "##plaza##":""
 "##plname_continue##":""
+"##plname_start_new_game##":""
 "##pn_salary##":""
+"##poor_city_mood_lack_migration##":""
+"##poor_housing_discourages_migration##":""
 "##pop##":""
 "##population_registered_as_taxpayers##":""
 "##population_tooltip##":""
@@ -1044,6 +1171,7 @@
 "##prefecture_ready_for_work##":""
 "##prefecture_slow_work##":""
 "##prefecture##":""
+"##prepare_to_festival##":""
 "##press_escape_to_exit##":""
 "##priest_gods_angry##":"Suntem în pericol! Acest oraș nu are respect pentru zei!"
 "##priest_good_life##":"Viața e bună în acest oraș."
@@ -1053,9 +1181,11 @@
 "##priest_need_workers##":"Acest oraș chiar are nevoie de mai mulți muncitori"
 "##priest_so_hungry##":""
 "##priority_button_tolltip##":""
+"##priority_level##":""
 "##proconsoul_salary##":""
 "##procurator_salary##":""
 "##profit##":""
+"##province_has_peace_a_short_time##":""
 "##qty_stacked_in_city_warehouse##":""
 "##quaestor_salary##":""
 "##quarry_bad_work##":""
@@ -1069,6 +1199,7 @@
 "##quit##":""
 "##rating##":""
 "##rawm_production_complete_m##":""
+"##ready_to_game##":""
 "##really_destroy_fort##":""
 "##recruter_gods_angry7##":"Suntem în încurcătură! Am enervat zeii!"
 "##recruter_good_life##":""
@@ -1085,14 +1216,18 @@
 "##religion_access_5_temple##":""
 "##religion_access_full##":""
 "##religion_advisor##":""
+"##religion_in_your_city_is_flourishing##":""
 "##religion_no_access##":""
 "##religion##":""
+"##religionadv_need_second_relgigion##":""
+"##religionadv_need_third_relgigion##":""
 "##replay_game##":""
 "##request_btn_tooltip##":""
 "##requierd##":""
 "##reservoir_info##":""
 "##reservoir_no_water##":""
 "##reservoir##":""
+"##return_to_main_map##":""
 "##rift_info##":""
 "##right_click_to_exit##":""
 "##rioter_say_1##":""
@@ -1135,8 +1270,10 @@
 "##school##":""
 "##schools##":""
 "##screen_settings##":""
+"##scribemessages_unread##":""
 "##scribes_messages_title## ":""
 "##scrive_messages_title##":""
+"##scrw_subject##":""
 "##sdlr_bold##":""
 "##seamerchant_noany_trade##":""
 "##select_city_layer##":""
@@ -1146,6 +1283,7 @@
 "##senate_1_info##":""
 "##senate_1##":""
 "##senate_save##":""
+"##senate##":""
 "##senateBtnTooltip##":""
 "##senatepp_clt_rating##":""
 "##senatepp_favour_rating##":""
@@ -1158,7 +1296,19 @@
 "##send_modest_gift##":""
 "##send_money##":""
 "##send_to_city##":""
+"##sentiment_people_angry_you##":""
+"##sentiment_people_annoyed_you##":""
+"##sentiment_people_extr_pleased_you##":""
+"##sentiment_people_idolize_you##":""
+"##sentiment_people_indiffirent_you##":""
+"##sentiment_people_love_you##":""
+"##sentiment_people_pleased_you##":""
+"##sentiment_people_upset_you##":""
+"##sentiment_people_veryangry_you##":""
+"##sentiment_people_verypleased_you##":""
+"##sentiment_people_veryupset_you##":""
 "##set_mayor_salary##":""
+"##several_crimes_but_area_secure##":""
 "##shipyard_info##":""
 "##shipyard_notneed_ours_boat##":""
 "##shipyard##":""
@@ -1180,6 +1330,7 @@
 "##sldr_very_frightened##":""
 "##small_ceres_temple##":""
 "##small_domus##":""
+"##small_festival##":""
 "##small_food_on_next_month##":""
 "##small_hovel##":""
 "##small_hut##":""
@@ -1194,13 +1345,22 @@
 "##small_venus_temple##":""
 "##small_villa##":""
 "##small##":""
+"##smallcurse_of_mars_text##":""
+"##smallcurse_of_mercury_description##":""
 "##smcurse_of_venus_description##":""
+"##smcurse2_of_venus_description##":""
 "##soldier##":""
 "##soldiers_health##":""
 "##soldiers_in_legion##":""
 "##soldiers##":""
+"##some_amphitheaters_no_actors##":""
+"##some_crime_risk##":""
 "##some_fire_risk##":""
 "##some_food_on_next_month##":""
+"##some_houses_inadequate_entertainment##":""
+"##some_houses_need_amph_for_grow##":""
+"##some_houses_need_better_library_access##":""
+"##some_low_fire_risk##":""
 "##sound_settings##":""
 "##spear##":""
 "##special_orders##":""
@@ -1209,10 +1369,20 @@
 "##spirit_of_mars_title##":""
 "##stacking_resource##":""
 "##start_condition##":""
+"##start_this_map##":""
 "##statue_desc##":""
+"##stop_granary_devastation##":""
+"##stop_warehouse_devastation##":""
 "##students##":""
+"##syracusae_somewhat_dangerous_province##":""
 "##tamer_normal_life##":""
+"##tarentum_slightly_dangerous_province##":""
+"##tarentum_win_text##":""
 "##target_population_is##":""
+"##tarraco_peaceful_province##":""
+"##tarraco_win_text##":""
+"##tarsus_largerly_peacefull_province##":""
+"##tarsus_win_text##":""
 "##tax_rate##":""
 "##taxCollector_average_life##":""
 "##taxCollector_gods_angry##":""
@@ -1235,6 +1405,8 @@
 "##teacher_so_hungry##":"Les gens sont mécontents. Ils n'ont pas assez à manger."
 "##templeBtnTooltip##":""
 "##temples##":""
+"##testers##":""
+"##thanks_to##":""
 "##theater_full_access##":""
 "##theater_full_work##":""
 "##theater_need_actors##":""
@@ -1243,14 +1415,22 @@
 "##theater_no_workers##":""
 "##theater##":""
 "##theaters##":""
+"##these_rift_info##":""
+"##this_fire_can_spread##":""
+"##this_lawab_province_become_very_peacefull##":""
+"##this_time_you_city_not_need_religion##":""
 "##this_year##":""
 "##timber_factory_stock##":""
 "##timber_mill_need_trees##":""
 "##timber##":""
+"##time_since_last_gift##":""
+"##tingis_dangerous_province##":""
 "##to_trade_advisor##":""
 "##tooltip_full##":""
 "##tooltip_some##":""
+"##tower_have_workers_no_soldiers##":""
 "##tower_may_build_on_thick_walls##":""
+"##tower_no_workers##":""
 "##tower##":""
 "##trade_advisor_blocked_clay_production##":""
 "##trade_advisor_blocked_fruit_production##":""
@@ -1271,6 +1451,7 @@
 "##trade_btn_notrade_text##":""
 "##trade_caravan_from##":""
 "##trade##":""
+"##tradeadv_industrystate_tip##":""
 "##trees_and_forest_caption##":""
 "##trees_and_forest_text##":""
 "##trouble_colloseum_full_work##":""
@@ -1291,7 +1472,10 @@
 "##trouble_some_damage##":""
 "##trouble_some_fire##":""
 "##trouble_too_far_from_water##":""
+"##try_reduce_your_high_salary##":""
+"##try_reduce_your_salary##":""
 "##tutorial_prefecture_info##":""
+"##tutorial2_win_text##":""
 "##unable_fullfill_request##":""
 "##unit##":""
 "##units_in_stock##":""
@@ -1306,7 +1490,9 @@
 "##vegetable##":""
 "##venus_desc##":""
 "##venus##":""
+"##very_high_damage_risk##":""
 "##very_high_fire_risk##":""
+"##very_low_damage_risk##":""
 "##very_low_fire_risk##":""
 "##vinard_bad_work##":""
 "##vinard_full_work##":""
@@ -1334,6 +1520,7 @@
 "##waiting_for_free_dock##":""
 "##wall_info##":""
 "##wall##":""
+"##warehouse_devastation_mode_text##":""
 "##warehouse_full_warning##":""
 "##warehouse_gettinfull_warning##":""
 "##warehouse_info##":""
@@ -1363,6 +1550,9 @@
 "##water_srvc_reservoir##":""
 "##water_srvc_well##":""
 "##water_supply##":""
+"##we_eat_more_thie_produce##":""
+"##we_eat_much_then_produce##":""
+"##we_eat_some_then_produce##":""
 "##we_produce_less_than_eat##":""
 "##we_produce_more_than_eat##":""
 "##we_produce_much_than_eat##":""
@@ -1395,6 +1585,7 @@
 "##wheat_farm_patrly_workers##":""
 "##wheat_farm##":""
 "##wheat##":""
+"##win_syracusae_text##":""
 "##wine_workshop_bad_work##":""
 "##wine_workshop_full_work##":""
 "##wine_workshop_info##":""
@@ -1415,7 +1606,14 @@
 "##wndrt_prosperity##":""
 "##work##":""
 "##workers_yearly_wages_is##":""
+"##working_build_poor_labor_warning##":""
 "##working_building_need_road##":""
+"##working_have_awesome_labor_access##":""
+"##working_have_bad_labor_access##":""
+"##working_have_good_labor_access##":""
+"##working_have_no_labor_access##":""
+"##working_have_some_labor_access##":""
+"##working_have_very_little_labor_access##":""
 "##wrath_of_neptune_title##":""
 "##wt_cartPusher##":""
 "##wt_criminal##":""
@@ -1425,11 +1623,13 @@
 "##wt_gladiator##":""
 "##wt_homeless##":""
 "##wt_immigrant##":""
+"##wt_indigene##":""
 "##wt_legioanry##":""
 "##wt_librarian##":""
 "##wt_lion_tamer##":""
 "##wt_marketBuyer##":""
 "##wt_marketLady##":""
+"##wt_missionary##":""
 "##wt_prefect##":""
 "##wt_priest##":""
 "##wt_rioter##":""
@@ -1437,206 +1637,14 @@
 "##wt_surgeon##":""
 "##wt_taxCollector##":""
 "##wt_teacher##":""
+"##wt_wolf##":""
 "##year##":""
 "##years##":""
 "##yes##":""
-"Variable":"Romanian(v1.0)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"##your_favor_is_dropping_catch_it##":""
+"##your_province_quiet_and_secure##":""
+"#winning_population##":""
+"Variable":"ROMANIAN(v1.0)"
 
 
 
@@ -2190,3 +2198,12 @@
 
 
 }
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"}

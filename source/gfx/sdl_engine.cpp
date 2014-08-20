@@ -153,7 +153,7 @@ void SdlEngine::init()
   }
 
   Logger::warning("SDLGraficEngine:Android init successfull");
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0 );
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
 #else  
   unsigned int flags = flags = SDL_WINDOW_OPENGL;
