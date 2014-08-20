@@ -29,6 +29,10 @@
 namespace vfs
 {
 
+namespace {
+static const std::string readerTypename = CAESARIA_STR_EXT(ZipArchiveReader);
+}
+
 ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 : _fileSystem(fs)
 {
@@ -41,6 +45,7 @@ ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 bool ZipArchiveLoader::isALoadableFileFormat(const Path& filename) const
 {
     std::string fileExtension = filename.extension();
+    Logger::warning( "ZipArchiveLoader: extension is " + fileExtension );
     return StringHelper::isEquale( fileExtension, ".zip", StringHelper::equaleIgnoreCase )
            || StringHelper::isEquale( fileExtension, ".pk3", StringHelper::equaleIgnoreCase )
            || StringHelper::isEquale( fileExtension, ".gz", StringHelper::equaleIgnoreCase )
@@ -74,26 +79,23 @@ ArchivePtr ZipArchiveLoader::createArchive(const Path& filename, bool ignoreCase
 //! \return Pointer to the created archive. Returns 0 if loading failed.
 ArchivePtr ZipArchiveLoader::createArchive( NFile file, bool ignoreCase, bool ignorePaths) const
 {
-    ArchivePtr archive;
-    if( file.isOpen() )
-    {
-      file.seek(0);
+  if( file.isOpen() )
+  {
+    file.seek(0);
 
-      unsigned short sig;
-      file.read( &sig, 2);
+    unsigned short sig;
+    file.read( &sig, 2);
 
-/*#ifdef __BIG_ENDIAN__
-		sig = os::Byteswap::byteswap(sig);
-#endif*/
+    file.seek(0);
 
-      file.seek(0);
+    bool isGZip = (sig == 0x8b1f);
 
-              bool isGZip = (sig == 0x8b1f);
-
-      archive = new ZipArchiveReader( file, ignoreCase, ignorePaths, isGZip);
-      archive->drop();
-    }
+    ArchivePtr archive( new ZipArchiveReader( file, ignoreCase, ignorePaths, isGZip ) );
+    archive->drop();
     return archive;
+  }
+
+  return ArchivePtr();
 }
 
 //! Check if the file might be loaded by this class
@@ -687,8 +689,6 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     case 99:
     {
-                // If we come here with an encrypted file, decryption support is missing
-            //os::Printer::log("Decryption support not enabled. File cannot be read.", ELL_ERROR);
       return NFile();
     }
 
@@ -703,9 +703,6 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
   return NFile();
 }
 
-std::string ZipArchiveReader::getTypeName() const
-{
-    return "ZipReader";
-}
+const std::string& ZipArchiveReader::getTypeName() const { return readerTypename; }
 
 }

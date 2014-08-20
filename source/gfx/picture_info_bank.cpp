@@ -184,6 +184,7 @@ PictureInfoBank::~PictureInfoBank() {}
 
 void PictureInfoBank::initialize(vfs::Path filename)
 {
+  Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
   VariantMap m = SaveAdapter::load( filename );
 
   foreach( it, m )

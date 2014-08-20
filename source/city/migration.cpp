@@ -124,6 +124,7 @@ void Migration::update( const unsigned int time )
                           ? params.monthWithourWar * 5
                           : -std::min( params.monthWithourWar, 10 ) );
 
+  int slumsInfluence = ( _d->isPoorHousing( params.slumNumber, params.houseNumber ) ? 20 : 0);
   int shacksInfluence = ( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ? 10 : 0 );
 
   _d->emigrantsIndesirability += worklessInfluence;
@@ -133,6 +134,7 @@ void Migration::update( const unsigned int time )
   _d->emigrantsIndesirability += taxLevelInfluence;
   _d->emigrantsIndesirability += warInfluence;
   _d->emigrantsIndesirability += shacksInfluence;
+  _d->emigrantsIndesirability += slumsInfluence;
   _d->emigrantsIndesirability += sentimentInfluence;
 
   _d->emigrantsIndesirability *= migrationKoeff;

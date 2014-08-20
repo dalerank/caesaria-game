@@ -59,7 +59,7 @@ public:
   virtual const Entries* entries() const =0;
 
   //! get the archive type
-  virtual std::string getTypeName() const { return ""; }
+  virtual const std::string& getTypeName() const = 0;
 
   //! An optionally used password string
   /** This variable is publicly accessible from the interface in order to

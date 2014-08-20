@@ -102,8 +102,8 @@ void Engine::init()
      return;        // avoid init twice
   }
 
-  // initialize SDL sound subsystem
-  if (SDL_InitSubSystem(SDL_INIT_AUDIO) != -1)
+  Logger::warning( "Game: initialize SDL sound subsystem" );
+  if(SDL_InitSubSystem(SDL_INIT_AUDIO) != -1)
   {
     // open an audio channel
 
@@ -112,20 +112,23 @@ void Engine::init()
     unsigned short int format = AUDIO_S16SYS;
     int samples = 1024;
 
-    if (Mix_OpenAudio(freq, format, channels, samples) != -1)
+    Logger::warning( "Game: try open audio" );
+    if(Mix_OpenAudio(freq, format, channels, samples) != -1)
     {
+      Logger::warning( "Game: sound check if we got the right audi format" );
       Mix_QuerySpec(&freq, &format, &channels);
-      // check if we got the right audi format
       if (format == AUDIO_S16SYS)
       {
-        // finished initializing
+        Logger::warning( "Game: finished sound initializing" );
         sound_ok = true;
 
-        // allocate 16 mixing channels
+        Logger::warning( "Game: try allocate 16 mixing channels" );
         Mix_AllocateChannels(16);
 
-        // start playing sounds
+        Logger::warning( "Game: start playing sounds" );
         Mix_ResumeMusic();
+
+        Logger::warning( "Game: bind ChannelFinished" );
         Mix_ChannelFinished( &_resolveChannelFinished );
       }
       else
@@ -146,6 +149,7 @@ void Engine::init()
     Logger::warning( "Could not initialize sound system. Muting ");
   }
 
+  Logger::warning( "Game: sound initialization ok" );
   _d->useSound = sound_ok;
 }
 

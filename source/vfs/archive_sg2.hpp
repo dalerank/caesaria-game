@@ -141,7 +141,7 @@ public:
   virtual NFile createAndOpenFile(const Path& filename);
   virtual NFile createAndOpenFile( unsigned int index);
   virtual const Entries* entries() const;
-  virtual std::string getTypeName() const;
+  virtual const std::string& getTypeName() const;
 
   Archive::Type getType() const;
 
