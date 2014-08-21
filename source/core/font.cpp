@@ -152,8 +152,11 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
   return resultRect;
 }
 
-void Font::setColor( const NColor& color )
+void Font::setColor( NColor color )
 {
+#ifdef CAESARIA_PLATFORM_ANDROID
+  color = color.abgr();
+#endif
   _d->color.b = color.blue();
   _d->color.g = color.green();
   _d->color.r = color.red();
