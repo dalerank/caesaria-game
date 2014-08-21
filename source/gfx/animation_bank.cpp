@@ -222,7 +222,7 @@ const AnimationBank::MovementAnimation& AnimationBank::find( int type )
   Impl::Animations::iterator it = inst._d->animations.find( type );
   if( it == inst._d->animations.end() )
   {
-    Logger::warning( "Can't find animation map for type %d", type );
+    Logger::warning( "WARNING !!!: AnimationBank can't find animation map for type %d", type );
     return inst._d->animations[ walker::unknown ].actions;
   }
 

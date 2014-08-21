@@ -19,6 +19,8 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
+#include <map>
+
 namespace vfs
 {
 
@@ -33,6 +35,10 @@ public:
   //! Path to the file list
   Path path;
   Entries::Items files;
+
+  typedef std::map< unsigned int, unsigned int> HashedIndex;
+  HashedIndex hashedIndex;
+  HashedIndex hashedIcIndex;
 
   Path checkCase( Path p )
   {
@@ -76,7 +82,6 @@ Entries& Entries::operator=( const Entries& other )
   _d->sensType = other._d->sensType;
   _d->ignorePaths = other._d->ignorePaths;
   _d->path = other._d->path;
-
   _d->files.clear();
 
   foreach( it, other._d->files )
@@ -84,27 +89,28 @@ Entries& Entries::operator=( const Entries& other )
     _d->files.push_back( *it );
   }
 
+  _updateCache();
+
   return *this;
 }
 
-Entries::ConstItemIt Entries::begin() const
+Entries::ConstItemIt Entries::begin() const {  return _d->files.begin(); }
+Entries::ConstItemIt Entries::end() const{  return _d->files.end(); }
+Entries::Items &Entries::_items(){  return _d->files; }
+
+void Entries::_updateCache()
 {
-  return _d->files.begin();
+  _d->hashedIndex.clear();
+  _d->hashedIcIndex.clear();
+  for( int k=0; k < _d->files.size(); k++ )
+  {
+    const EntryInfo& info = _d->files[ k ];
+    _d->hashedIndex[ info.namehash() ] = k;
+    _d->hashedIcIndex[ info.nameihash() ] = k;
+  }
 }
 
-Entries::ConstItemIt Entries::end() const
-{
-  return _d->files.end();
-}
-
-Entries::Items &Entries::_items()
-{
-  return _d->files;
-}
-
-Entries::~Entries()
-{
-}
+Entries::~Entries(){}
 
 unsigned int Entries::getFileCount() const
 {
@@ -114,6 +120,8 @@ unsigned int Entries::getFileCount() const
 void Entries::sort()
 {
   std::sort( _d->files.begin(), _d->files.end() );
+
+  _updateCache();
 }
 
 const Path& Entries::getFileName(unsigned int index) const
@@ -229,21 +237,46 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
                             : StringHelper::hash( fname )
                         );
 
-  foreach( it, _d->files )
+  if( _d->hashedIndex.empty() )
   {
-    bool equale = false;
-    switch( sType )
+    Logger::warning( "WARNING: Entries::findFile cache not initialized. Used slow linear search" );
+    foreach( it, _d->files )
     {
-    case Path::equaleCase: equale = (*it).namehash() == fnHash; break;
-    case Path::ignoreCase: equale = (*it).nameihash() == fnHash; break;      
-    default: break;
-    }
+      bool equale = false;
+      switch( sType )
+      {
+      case Path::equaleCase: equale = (*it).namehash() == fnHash; break;
+      case Path::ignoreCase: equale = (*it).nameihash() == fnHash; break;
+      default: break;
+      }
 
-    if( equale )
-    {
-      return std::distance( _d->files.begin(), it );
+      if( equale )
+      {
+        return std::distance( _d->files.begin(), it );
+      }
     }
   }
+  else
+  {
+    switch( sType )
+    {
+    case Path::equaleCase:
+    {
+      Impl::HashedIndex::iterator it = _d->hashedIndex.find( fnHash );
+      if( it != _d->hashedIndex.end() ) return it->second;
+    }
+    break;
+    case Path::ignoreCase:
+    {
+      Impl::HashedIndex::iterator it = _d->hashedIcIndex.find( fnHash );
+      if( it != _d->hashedIcIndex.end() ) return it->second;
+    }
+    break;
+
+    default: break;
+    }
+  }
+
   return -1;
 }
 

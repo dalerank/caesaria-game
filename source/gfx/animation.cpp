@@ -19,6 +19,7 @@
 #include "core/position.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 namespace gfx
 {
@@ -114,7 +115,7 @@ bool Animation::isLoop() const { return _dfunc()->loop; }
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )
-{  
+{
   int revMul = reverse ? -1 : 1;
   for( int i = 0; i < number; ++i)
   {

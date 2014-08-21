@@ -81,23 +81,18 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
 Picture& PictureBank::getPicture(const std::string &name)
 {
   const unsigned int hash = StringHelper::hash( name );
+
   Impl::ItPicture it = _d->resources.find( hash );
   if( it == _d->resources.end() )
   {
     //can't find image in valid resources, try load from hdd
     const Picture& pic = _d->tryLoadPicture( name );
 
-    if( pic.isValid() )
-    {
-      setPicture( name, pic );
-    }
-    else
-    {
-      _d->resources[ hash ] = pic;
-    }
+    if( pic.isValid() )     {      setPicture( name, pic );    }
+    else    {      _d->resources[ hash ] = pic;    }
+
     return _d->resources[ hash ];
   }
-
   return it->second;
 }
 
@@ -148,8 +143,8 @@ Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Texture* tex
 
 PictureBank::PictureBank() : _d( new Impl )
 {
-  _d->availableExentions << ".bmp";
   _d->availableExentions << ".png";
+  _d->availableExentions << ".bmp";
 }
 
 PictureBank::~PictureBank(){}
@@ -157,7 +152,9 @@ PictureBank::~PictureBank(){}
 
 Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
 {
-  vfs::Path realPath( name );
+  vfs::Path realPath( name );  
+
+  bool fileExist = false;
   if( realPath.extension().empty() )
   {
     foreach( itExt, availableExentions )
@@ -166,17 +163,19 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
 
       if( realPath.exist() )
       {
+        fileExist = true;
         break;
       }
     }
   }
 
-  if( realPath.exist() )
-  {
+  if( fileExist )
+  {    
     vfs::NFile file = vfs::NFile::open( realPath );
-    if(  file.isOpen() )
+    if( file.isOpen() )
     {
-      return PictureLoader::instance().load( file );
+      Picture ret = PictureLoader::instance().load( file );
+      return ret;
     }
   }
 
