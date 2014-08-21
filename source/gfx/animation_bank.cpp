@@ -74,10 +74,14 @@ class AnimationBank::Impl
 {
 public:
   typedef std::map< int, ActionAnimation > Animations;
+  typedef std::map< int, Pictures > CartPictures;
+  typedef std::map< int, VariantMap > AnimationConfigs;
 
-  std::map< int, Pictures > carts;
+  CartPictures carts;
+  AnimationConfigs animConfigs;
   
   Animations animations;
+
 
   // fills the cart pictures
   // prefix: image prefix
@@ -88,6 +92,7 @@ public:
                      Walker::Action wa=Walker::acMove,
                      const int step = defaultStepInFrame );
   void loadAnimation(int who, const VariantMap& desc );
+  const AnimationBank::MovementAnimation& tryLoadAnimations(int wtype );
 
   void loadCarts();
 };
@@ -215,6 +220,29 @@ void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
   loadAnimation( type, rcGroup, startIndex, frameNumber, (Walker::Action)action, step );
 }
 
+const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(int wtype)
+{
+  AnimationConfigs::iterator configIt = animConfigs.find( wtype );
+
+  if( configIt != animConfigs.end() )
+  {
+    loadAnimation( wtype, configIt->second );
+    animConfigs.erase( configIt );
+  }
+
+  Animations::iterator it = animations.find( wtype );
+  if( it == animations.end() )
+  {
+    Logger::warning( "WARNING !!!: AnimationBank can't find config for type %d", wtype );
+    const AnimationBank::MovementAnimation& elMuleta = animations[ walker::unknown ].actions;
+    animations[ wtype ].ownerType = wtype;
+    animations[ wtype ].actions = elMuleta;
+    return elMuleta;
+  }
+
+  return it->second.actions;
+}
+
 const AnimationBank::MovementAnimation& AnimationBank::find( int type )
 {
   AnimationBank& inst = instance();
@@ -222,8 +250,8 @@ const AnimationBank::MovementAnimation& AnimationBank::find( int type )
   Impl::Animations::iterator it = inst._d->animations.find( type );
   if( it == inst._d->animations.end() )
   {
-    Logger::warning( "Can't find animation map for type %d", type );
-    return inst._d->animations[ walker::unknown ].actions;
+    const AnimationBank::MovementAnimation& ret = inst._d->tryLoadAnimations( type );
+    return ret;
   }
 
   return it->second.actions;
@@ -246,7 +274,8 @@ void AnimationBank::loadAnimation(vfs::Path model)
       if( wtype != walker::unknown )
       {
         Logger::warning( "Load animation for " + i->first + ":" + ac->first );
-        _d->loadAnimation( wtype, ac->second.toMap() );
+        _d->animConfigs[ wtype ] = ac->second.toMap();
+        //_d->loadAnimation( wtype, ac->second.toMap() );
       }
       else
       {

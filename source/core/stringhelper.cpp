@@ -315,7 +315,7 @@ bool StringHelper::isEqualen( const std::string& str1, const std::string& str2, 
   return (i == n) || (str1[i] == 0 && str2[i] == 0);
 }
 
-char StringHelper::localeLower( char x )
+static char __localeLower( char x )
 {
   return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
 }
@@ -323,12 +323,7 @@ char StringHelper::localeLower( char x )
 std::string StringHelper::localeLower( const std::string& str)
 {
   std::string ret = str;
-
-  for( unsigned int i=0; i<str.size(); ++i)
-  {
-    ret[i] = localeLower( ret[ i ] );
-  }
-
+  std::transform( ret.begin(), ret.end(), ret.begin(), __localeLower );
   return ret;
 }
 

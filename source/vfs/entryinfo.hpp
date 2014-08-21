@@ -57,7 +57,11 @@ public:
     if (isDirectory != other.isDirectory)
       return isDirectory;
 
-    return StringHelper::compare( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
+    //return StringHelper::compare( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
+    std::string m = StringHelper::localeLower( _fullpath.toString() );
+    std::string o = StringHelper::localeLower( other._fullpath.toString() );
+
+    return m < o;
   }
 
   inline bool isFolder() const { return _fullpath.isFolder(); }

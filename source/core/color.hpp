@@ -352,6 +352,13 @@ public:
 		return ( ((color << 8) & 0xffffff00 ) + a);
 	}
 
+	int abgr() const
+	{
+		int r = red() ;
+		int b = (blue() << 16);
+		return ( (color & 0xff00ff00 )+ r + b);
+	}
+
 	//! color in A8R8G8B8 Format
 	unsigned int color;
 };

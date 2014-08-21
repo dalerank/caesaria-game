@@ -219,7 +219,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
         archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
         if( archive.isValid() )
         {
-          Logger::warning( "FileSystem: succesful create archive from " + filename.toString() );
+          Logger::warning( "FileSystem: succesful mount archive " + filename.toString() );
           break;
         }
       }

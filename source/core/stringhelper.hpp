@@ -73,8 +73,6 @@ public:
   static bool isEqualen(const std::string& str1, const std::string& str2, unsigned int n);
 
   static std::string localeLower( const std::string& str );
-  static char localeLower( char x );
-
   static int vformat(std::string& str, int max_size, const char* format, va_list argument_list);
   static void useStackTrace( bool enabled );
 

@@ -32,7 +32,7 @@ class LayerDesirability::Impl
 {
 public:
   Font debugFont;
-  std::vector<PictureRef*> debugText;
+  std::vector<Picture*> debugText;
 };
 
 int LayerDesirability::type() const {  return citylayer::desirability; }
@@ -105,18 +105,18 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
   if( desirability != 0 )
   {
-    _d->debugText.push_back( new PictureRef() );
-    _d->debugFont.draw( *_d->debugText.back(), StringHelper::format( 0xff, "%d", desirability) );
+    Picture* tx = _d->debugFont.once( StringHelper::format( 0xff, "%d", desirability) );
+    _d->debugText.push_back( tx );
 
-    engine.draw( **_d->debugText.back(), screenPos + Point( 20, -15 ) );
+    engine.draw( *tx, screenPos + Point( 20, -15 ) );
   }
 
   tile.setWasDrawn();
 }
 
-void LayerDesirability::beforeRender()
+void LayerDesirability::beforeRender( Engine& engine )
 {
-  foreach (it, _d->debugText) { delete (*it); }
+  foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
 }
 

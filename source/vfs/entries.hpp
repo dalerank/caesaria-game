@@ -100,6 +100,7 @@ public:
 
 protected:
   Items& _items();
+  void _updateCache();
 
 private:
   class Impl;
