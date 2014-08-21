@@ -492,5 +492,10 @@ Path Path::operator +(const Path& other)
   return vfs::Path( _d->path + other._d->path );
 }
 
+Path Path::canonical() const
+{
+  return StringHelper::localeLower( _d->path );
+}
+
 } //end namespace vfs
 

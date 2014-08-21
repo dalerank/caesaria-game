@@ -26,16 +26,16 @@ static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePath
   vfs::Entries entries = dir.getEntries();
   foreach( i, entries )
   {
-    if( i->name().isDirectoryEntry() )
+    if( i->name.isDirectoryEntry() )
       continue;
 
-    if( i->isFolder() )
+    if( i->fullpath.isFolder() )
     {
-      __gartherFiles( basedir, i->absolutePath(), files );
+      __gartherFiles( basedir, i->fullpath, files );
     }
     else
     {
-      files.push_back( basedir.getRelativePathTo( i->absolutePath() ) );
+      files.push_back( basedir.getRelativePathTo( i->fullpath ) );
     }
   }
 }

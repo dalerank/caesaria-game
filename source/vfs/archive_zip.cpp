@@ -25,6 +25,7 @@
 #include "lzma/LzmaDec.h"
 #include "bzip2/bzlib.h"
 #include "aes/fileenc.h"
+#include "core/stringhelper.hpp"
 
 namespace vfs
 {
@@ -444,7 +445,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
   //98 - PPMd - Compression Method, WinZip 10
   //99 - AES encryption, WinZip 9
 
-  const SZipFileEntry &e = FileInfo[ _items()[index].iD ];
+  const SZipFileEntry &e = FileInfo[ _items()[index].uid ];
 
   short actualCompressionMethod=e.header.CompressionMethod;
   NFile decrypted;
@@ -508,7 +509,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       return NFile();
     }
 
-    decrypted = MemoryFile::create( decryptedBuf, _items()[ index ].absolutePath() );
+    decrypted = MemoryFile::create( decryptedBuf, item( index ).fullpath );
     actualCompressionMethod = (e.header.Sig & 0xffff);
 #if 0
     if ((e.header.Sig & 0xff000000)==0x01000000)
@@ -535,7 +536,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       {
           File.seek( e.Offset );
           ByteArray data = File.read( decryptedSize );
-          return MemoryFile::create( data, _items()[ index ].absolutePath() );
+          return MemoryFile::create( data, item( index ).fullpath );
       }
     }
     break;
@@ -551,7 +552,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + _items()[ index ].absolutePath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -584,12 +585,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != Z_OK)
       {
-        Logger::warning( "Error decompressing " + _items()[index].absolutePath().toString() );
+        Logger::warning( "Error decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, _items()[index].absolutePath() );
+        return MemoryFile::create( pBuf, item( index ).fullpath );
       }
     }
     break;
@@ -605,7 +606,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + _items()[index].absolutePath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -637,12 +638,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != BZ_OK)
       {
-        Logger::warning( "Error decompressing +" + item( index ).absolutePath().toString() );
+        Logger::warning( "Error decompressing +" + item( index ).fullpath.toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, item( index ).absolutePath() );
+        return MemoryFile::create( pBuf, item( index ).fullpath );
       }
     }
     break;
@@ -656,7 +657,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       pcData.resize( decryptedSize );
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + item( index ).absolutePath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -677,12 +678,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != SZ_OK)
       {
-        Logger::warning( "Error decompressing " + item( index ).absolutePath().toString() );
+        Logger::warning( "Error decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, item( index ).absolutePath() );
+        return MemoryFile::create( pBuf, item( index ).fullpath );
       }
     }
     break;
@@ -694,12 +695,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     default:
     {
-      Logger::warning( "file %s has unsupported compression method", item( index ).absolutePath().toString().c_str() );
+      Logger::warning( "file %s has unsupported compression method", item( index ).fullpath.toString().c_str() );
       return NFile();
     }
   }
 
-  Logger::warning( "Can't read file " + item( index ).absolutePath().toString() );
+  Logger::warning( "Can't read file " + item( index ).fullpath.toString() );
   return NFile();
 }
 

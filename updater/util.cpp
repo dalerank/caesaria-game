@@ -173,7 +173,7 @@ bool Util::caesariaIsRunning()
 
   foreach( i, procs )
   {
-    if( CheckProcessFile( i->name().toString(), caesariaProcessName) ) // grayman - looking for caesaria
+    if( CheckProcessFile( i->name.toString(), caesariaProcessName) ) // grayman - looking for caesaria
     {
       return true;
     }

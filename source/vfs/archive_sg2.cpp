@@ -238,11 +238,10 @@ std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& d
   Entries::Items files = directory.getEntries().items();
   for( unsigned int i = 0; i < files.size(); i++)
   {
-    if( filename == StringHelper::localeLower( files[i].name().toString() ) )
+    if( files[i].name.canonical() == filename )
     {
-      return files[i].absolutePath().toString();
+      return files[i].fullpath.toString();
     }
-    //qDebug() << "No match: " << files[i];
   }
 
   return std::string();

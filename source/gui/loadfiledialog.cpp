@@ -114,7 +114,7 @@ void LoadFileDialog::Impl::fillFiles()
   StringArray names;
   foreach( it, flist )
   {
-    names << (*it).absolutePath().toString();
+    names << (*it).fullpath.toString();
   }
   std::sort( names.begin(), names.end() );
 

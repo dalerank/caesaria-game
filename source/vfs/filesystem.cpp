@@ -22,6 +22,7 @@
 #include "core/foreach.hpp"
 #include "entries.hpp"
 #include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 
 #if defined (CAESARIA_PLATFORM_WIN)
 	#include <direct.h> // for _chdir
