@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "playername_window.hpp"
-#include "game/settings.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"
 #include "core/stringhelper.hpp"
@@ -37,7 +36,7 @@ public oc3_signals:
 WindowPlayerName::WindowPlayerName(Widget* parent)
   : Window( parent, Rect( 0, 0, 10, 10 ), "", -1 ), _d( new Impl )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
+  Widget::setupUI( ":/gui/playername.gui" );
 
   WidgetEscapeCloser::insertTo( this );
 
@@ -50,9 +49,12 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
   CONNECT( edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
   CONNECT( btnContinue, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+  CONNECT( edPlayerName, onEnterPressed(), &_d->onCloseSignal, Signal0<>::emit );
 
   if( edPlayerName )
-    edPlayerName->setFocus();
+  {
+    edPlayerName->moveCursor( 99 );
+  }
 }
 
 WindowPlayerName::~WindowPlayerName(){}
@@ -61,6 +63,16 @@ std::string WindowPlayerName::text() const
 {
   const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
   return ed ? ed->text() : "";
+}
+
+void WindowPlayerName::setModal()
+{
+  Window::setModal();
+
+  EditBox* edPlayerName;
+  GET_WIDGET_FROM_UI( edPlayerName )
+
+  if( edPlayerName ) edPlayerName->setFocus();
 }
 
 Signal0<>& WindowPlayerName::onClose(){  return _d->onCloseSignal;}

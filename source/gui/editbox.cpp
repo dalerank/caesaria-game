@@ -91,6 +91,7 @@ public:
 
 oc3_signals public:
   Signal1<std::string> onTextChangedSignal;
+  Signal0<> onEnterPressedSignal;
 };
 
 std::string __ucs2utf8( const std::wstring& text )
@@ -162,6 +163,7 @@ EditBox::EditBox( Widget* parent, const Rect& rectangle, const std::string& text
 }
 
 Signal1<std::string>& EditBox::onTextChanged() {	return _d->onTextChangedSignal;}
+Signal0<>&EditBox::onEnterPressed(){ return _d->onEnterPressedSignal;	}
 EditBox::~EditBox() {}
 
 //! Sets another skin independent font.
@@ -215,6 +217,11 @@ void EditBox::_resizeEvent()
 bool EditBox::isWordwrapEnabled() const {	return _d->wordWrapEnabled; }   //! Checks if word wrap is enabled
 void EditBox::setMultiline(bool enable) {	_d->multiLine = enable; }       //! Enables or disables newlines.
 bool EditBox::isMultilineEnabled() const {	return _d->multiLine; }       //! Checks if multi line editing is enabled
+
+void EditBox::moveCursor(int index)
+{
+	_d->cursorPos = index;
+}
 
 void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
 {
@@ -502,6 +509,7 @@ bool EditBox::_processKey(const NEvent& event)
 		}
 		else
 		{
+			oc3_emit _d->onEnterPressedSignal();
 			_sendGuiEvent( guiEditboxEnter );
 		}
 		break;
@@ -638,7 +646,7 @@ bool EditBox::_processKey(const NEvent& event)
 
 				s.append( _d->text.substr(_d->cursorPos, _d->text.size()-_d->cursorPos) );
 				_setText( s );
-				//_d->cursorPos -= 1;
+				_d->cursorPos -= 1;
 			}
 
 			if (_d->cursorPos < 0)
@@ -757,10 +765,11 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
   }
 }
 
-void EditBox::beforeDraw(Engine& painter )
+void EditBox::beforeDraw(Engine& painter)
 {
   int startPos = 0;
 
+  bool needUpdateCursor = _d->needUpdateTexture;
   if( _d->needUpdateTexture )
   {
     _d->needUpdateTexture = false;
@@ -785,11 +794,6 @@ void EditBox::beforeDraw(Engine& painter )
     simpleTextColor = 0xff000000;
 
     markTextColor = 0xffffffff;
-
-//         if( _d->lastBreakFont != font )
-//         {
-//             breakText();
-//         }
 
     if( _d->lastBreakFont.isValid() )
     {
@@ -911,7 +915,7 @@ void EditBox::beforeDraw(Engine& painter )
     }
   }
 
-  if( _d->cursorPos != _d->oldCursorPos )
+  if( _d->cursorPos != _d->oldCursorPos || needUpdateCursor )
   {
     int cursorLine = 0;
     int charcursorpos = 0;

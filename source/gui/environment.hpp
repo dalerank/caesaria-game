@@ -65,6 +65,8 @@ private:
   virtual void setFocus();
   virtual void removeFocus();
   virtual void beforeDraw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
+  virtual void isHovered();
 
   void _drawTooltip( unsigned int time );
   void _updateHovered( const Point& mousePos);

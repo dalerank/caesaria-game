@@ -29,13 +29,13 @@ before_script:
 
 script:
 # Build CaesarIA
-- REVISION_NUMBER=`git rev-list HEAD --count`
+- export REVISION_NUMBER=`git rev-list HEAD --count`
 - make
 after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
 # Prepare ZIP archive
 - ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-$REVISION_NUMBER.zip
-- "Compress to ${ZIPNAME}"
+- echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server

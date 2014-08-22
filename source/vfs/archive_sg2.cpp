@@ -54,8 +54,7 @@ namespace {
 static const std::string readerTypename=CAESARIA_STR_EXT(Sg2ArchiveReader);
 }
 
-Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem* fileSystem) :
-  _fileSystem(fileSystem)
+Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem*)
 {
 }
 

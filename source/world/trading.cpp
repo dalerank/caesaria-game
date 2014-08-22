@@ -99,7 +99,7 @@ void Trading::load(const VariantMap& stream)
   foreach( it, routes )
   {
     std::string routeName = it->first;
-    unsigned int delimPos = routeName.find( "<->" );
+    std::string::size_type delimPos = routeName.find( "<->" );
     if( delimPos != std::string::npos )
     {
       std::string beginCity = routeName.substr( 0, delimPos );

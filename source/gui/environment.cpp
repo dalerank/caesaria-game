@@ -88,7 +88,7 @@ Ui::Ui(Engine& painter )
 //! Returns if the element has focus
 bool Ui::hasFocus( const Widget* element) const
 {
-    return ( _d->focusedElement.object() == element );
+  return ( _d->focusedElement.object() == element );
 }
 
 Ui::~Ui() {}
@@ -119,7 +119,9 @@ void Ui::clear()
 
 void Ui::setFocus() {}
 void Ui::removeFocus() {}
- void Ui::beforeDraw(Engine& painter) {}
+void Ui::beforeDraw(Engine& painter) {}
+void Ui::draw(Engine& painter) {}
+void Ui::isHovered() {}
 
 void Ui::draw()
 {

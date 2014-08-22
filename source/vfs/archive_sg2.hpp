@@ -114,16 +114,14 @@ struct SgImageRecord
 class Sg2ArchiveLoader : public ArchiveLoader
 {
 public:
-    Sg2ArchiveLoader(vfs::FileSystem* fs);
+  Sg2ArchiveLoader(vfs::FileSystem* fs);
 
-    virtual bool isALoadableFileFormat(const Path &filename) const;
-    virtual bool isALoadableFileFormat(NFile file) const;
-    virtual bool isALoadableFileFormat(Archive::Type fileType) const;
+  virtual bool isALoadableFileFormat(const Path &filename) const;
+  virtual bool isALoadableFileFormat(NFile file) const;
+  virtual bool isALoadableFileFormat(Archive::Type fileType) const;
 
-    virtual ArchivePtr createArchive(const Path &filename, bool ignoreCase, bool ignorePaths) const;
-    virtual ArchivePtr createArchive(NFile file, bool ignoreCase, bool ignorePaths) const;
-private:
-    vfs::FileSystem* _fileSystem;
+  virtual ArchivePtr createArchive(const Path &filename, bool ignoreCase, bool ignorePaths) const;
+  virtual ArchivePtr createArchive(NFile file, bool ignoreCase, bool ignorePaths) const;
 };
 
 struct SgFileEntry

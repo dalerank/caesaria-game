@@ -92,7 +92,7 @@ private:
 	ThreadID	    m_dwId;          // id of this thread
 	void**        m_lppvQueue;    // task que
 	unsigned int  m_chQueue;       // que depth
-	unsigned int  m_queuePos;      // current que possition
+	int  m_queuePos;      // current que possition
 	void*         m_lpvProcessor;  // data which is currently being processed
 	ThreadState_t m_state;         // current state of thread see thread state data
 																 // structure.

@@ -86,6 +86,8 @@ public:
   //! \return true if mult-line is enabled, false otherwise
   virtual bool isMultilineEnabled() const;
 
+  virtual void moveCursor( int index );
+
   //! Enables or disables automatic scrolling with cursor position
   //! \param enable: If set to true, the text will move around with the cursor position
   virtual void setAutoscroll( bool enable );
@@ -138,6 +140,7 @@ public:
 
 oc3_signals public:
   Signal1<std::string>& onTextChanged();
+  Signal0<>& onEnterPressed();
 
 protected:
   //! Updates the position, splits text if required

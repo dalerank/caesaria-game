@@ -186,7 +186,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
   SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
 
   Locale::setLanguage( lang );
-  audio::Helper::initTalksArchive( GameSettings::rcpath( talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
 }
 
 void StartMenu::Impl::handleStartCareer()
