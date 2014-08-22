@@ -28,8 +28,9 @@ before_install:
 # Get SDL Mixer		
 - wget https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.0-mingw.tar.gz
 - tar xfz SDL2_mixer-devel-2.0.0-mingw.tar.gz
-- sudo cp -r SDL2_mixer-2.0.0/include/* /usr/i686-w64-mingw32/include/
-- sudo cp -r SDL2_mixer-2.0.0/lib/* /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/lib/*.a /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/bin/*.dll /usr/i686-w64-mingw32/lib/
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
