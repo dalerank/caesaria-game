@@ -36,6 +36,8 @@ install:
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=xcompile/win32-cross.cmake
 before_script:
+# Don't ask for confirmation when using scp
+- echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 script:
 # Build CaesarIA
