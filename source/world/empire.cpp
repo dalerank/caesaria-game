@@ -27,6 +27,7 @@
 #include "traderoute.hpp"
 #include "object.hpp"
 #include "rome.hpp"
+#include "events/showinfobox.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
 #include "game/player.hpp"
@@ -536,6 +537,8 @@ void Empire::Impl::takeTaxes()
     }
     else
     {
+      events::GameEventPtr e = events::ShowInfobox::create( "##tribute_broken_title##",
+                                                            "##current_year_notpay_tribute_warning##" );
       city->funds().resolveIssue( FundIssue( city::Funds::overdueEmpireTax, empireTax ) );
     }
   }

@@ -268,9 +268,10 @@ void Ratings::Impl::checkFavourRating()
   }
 
   if( salaryKoeff >= 3.f )     { problems << "##high_salary_angers_senate##";  }
-  else if( salaryKoeff > 2.f ) { problems << "##more_salary_dispeasure_senate##";  }
-  else if( salaryKoeff > 1.5f ){ problems << "##try_reduce_your_high_salary##"; }
-  else if( salaryKoeff > 1.f ) { problems << "##try_reduce_your_salary##"; }
+  else if( salaryKoeff > 2.5f ) { problems << "##more_salary_dispeasure_senate##";  }
+  else if( salaryKoeff > 2.f ){ problems << "##try_reduce_your_high_salary##"; }
+  else if( salaryKoeff > 1.5f ) { problems << "##try_reduce_your_salary##"; }
+  else if( salaryKoeff > 1.f ) { problems << "##your_salary_frowned_senate##"; }
 
   if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
   else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
