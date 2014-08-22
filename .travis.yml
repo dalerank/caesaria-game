@@ -1,4 +1,9 @@
 language: cpp
+
+compiler:
+- clang
+- gcc
+
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
@@ -28,7 +33,9 @@ script:
 after_success:
 - cd $TRAVIS_BUILD_DIR/caesaria-test
 # Prepare ZIP archive
-- ZIPNAME=CTH-`date +"%Y%m%d"`-$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:10}.zip
+- REVISION_NUMBER=`git rev-list HEAD --count`
+- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-$REVISION_NUMBER.zip
+- echo "Compress to $ZIPNAME"
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
