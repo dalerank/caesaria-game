@@ -357,12 +357,12 @@ Path Path::getRelativePathTo( const Directory& directory ) const
 
   if ( prefix1.toString().size() > 1 && prefix1.toString()[1] == ':' )
   {
-    partition1 = StringHelper::localeLower( prefix1.toString()[0] );
+    partition1 = prefix1.canonical().toString()[0];
   }
 
   if ( prefix2.toString().size() > 1 && prefix2.toString()[1] == ':' )
   {
-    partition2 = StringHelper::localeLower( prefix2.toString()[0] );
+    partition2 = prefix2.canonical().toString()[0];
   }
 
   // must have the same prefix or we can't resolve it to a relative filename
