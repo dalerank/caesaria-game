@@ -4,23 +4,33 @@ compiler:
 - clang
 - gcc
 
+branches:
+  only:
+    - master
+    - windows-build
+
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential mingw-w64-dev mingw-w64 gcc-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64-tools sshpass
+- sudo apt-get -qq install cmake p7zip-full build-essential 
+- sudo apt-get -qq install binutils-mingw-w64-i686  
+- sudo apt-get -qq install gcc-mingw-w64-i686
+- sudo apt-get -qq install g++-mingw-w64-i686
+- sudo apt-get -qq install sshpass
 # Get SDL
 - wget https://www.libsdl.org/release/SDL2-devel-2.0.3-mingw.tar.gz
-- tar xfz SDL-devel-2.0.3-mingw32.tar.gz
-- sudo cp SDL-devel-2.0.3/lib/x86/* /usr/i686-w64-mingw32/lib/
-- sudo cp -r SDL-devel-2.0.3/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
-- sudo cp SDL-2.0.3/i686-w64-mingw32/lib/* /usr/i686-w64-mingw32/lib/
+- tar xfz SDL2-devel-2.0.3-mingw.tar.gz
+- sudo cp SDL2-2.0.3/lib/x86/* /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL2-2.0.3/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
+- sudo cp -r SDL2-2.0.3/i686-w64-mingw32/lib/* /usr/i686-w64-mingw32/lib/
 #- sudo chmod +x /usr/i586-mingw32msvc/bin/sdl-config
 # Get SDL Mixer		
 - wget https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.0-mingw.tar.gz
-- unzip SDL2_mixer-devel-2.0.0-mingw.tar.gz
-- sudo cp -r SDL2_mixer-devel-2.0.0-mingw/include/* /usr/i686-w64-mingw32/include/
-- sudo cp SDL2_mixer-devel-2.0.0-mingw/lib/* /usr/i686-w64-mingw32/lib/
+- tar xfz SDL2_mixer-devel-2.0.0-mingw.tar.gz
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/lib/*.a /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/bin/*.dll /usr/i686-w64-mingw32/lib/
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
