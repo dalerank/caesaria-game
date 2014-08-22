@@ -1,9 +1,7 @@
 project(CaesarIA-game)
 
 # Find revision ID and hash of the sourcetree
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/GenerateVersionHPP.cmake")
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
+include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")

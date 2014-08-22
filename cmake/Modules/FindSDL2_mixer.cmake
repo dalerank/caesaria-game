@@ -80,7 +80,7 @@ endif()
 set(SDL2_MIXER_LIBRARIES ${SDL2_MIXER_LIBRARY})
 set(SDL2_MIXER_INCLUDE_DIRS ${SDL2_MIXER_INCLUDE_DIR})
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPackageHandleStandardArgs.cmake)
+include(${CMAKE_MODULE_PATH}/FindPackageHandleStandardArgs.cmake)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_mixer
                                   REQUIRED_VARS SDL2_MIXER_LIBRARIES SDL2_MIXER_INCLUDE_DIRS

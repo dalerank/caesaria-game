@@ -1,4 +1,4 @@
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/EnsureVersion.cmake)
+include(${CMAKE_MODULE_PATH}/EnsureVersion.cmake)
 
 set(_REQUIRED_GIT_VERSION "1.7")
 
@@ -54,7 +54,7 @@ endif()
 # Create the actual revision file from the above params
 if(NOT "${rev_number_cached}" MATCHES "${rev_number}")
   configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/version.hpp.in.cmake"
+    "${CMAKE_MODULE_PATH}/version.hpp.in.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/version.hpp"
     @ONLY
   )
