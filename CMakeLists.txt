@@ -2,7 +2,7 @@ project(CaesarIA)
 
 cmake_minimum_required(VERSION 2.6)
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
 message("CMake module path is ${CMAKE_MODULE_PATH}")
 
 message("System is ${CMAKE_SYSTEM_NAME}")
