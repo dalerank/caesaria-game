@@ -44,7 +44,7 @@ public:
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
-  virtual Font getFont() const;
+  virtual Font font() const;
 
   //! Get the font which is used right now for drawing
   /** Currently this is the override font when one is set and the
@@ -75,7 +75,7 @@ public:
 
   //! Checks if word wrap is enabled
   //! \return true if word wrap is enabled, false otherwise
-  virtual bool isWordWrapEnabled() const;
+  virtual bool isWordwrapEnabled() const;
 
   //! Enables or disables newlines.
   /** \param enable: If set to true, the EGET_EDITBOX_ENTER event will not be fired,
@@ -134,7 +134,7 @@ public:
   //! Reads attributes of the element
   virtual void setupUI(const VariantMap& ui);
 
-  void beforeDraw( gfx::Engine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
 oc3_signals public:
   Signal1<std::string>& onTextChanged();
@@ -144,25 +144,22 @@ protected:
   virtual void _resizeEvent();
 
   //! Breaks the single text line.
-  void breakText();
+  void _breakText();
 
-  //! sets the area of the given line
-  void setTextRect( int line, const std::string& r="");
   //! returns the line number that the cursor is on
-  int getLineFromPos( int pos );
+  int _getLineFromPos( int pos );
   //! adds a letter to the edit box
   void _inputChar( unsigned short c );
   //! calculates the current scroll position
-  void calculateScrollPos();
+  void _calculateScrollPos();
 
   //! send some gui event to parent
-  void sendGuiEvent( unsigned int type );
+  void _sendGuiEvent( unsigned int type );
   //! set text markers
-  void setTextMarkers( int begin, int end );
+  void _setTextMarkers( int begin, int end );
 
   bool _processKey( const NEvent& event );
   bool _processMouse( const NEvent& event );
-  int getCursorPos( int x, int y );
 
   void _drawHolderText( Font font, Rect* clip );
 

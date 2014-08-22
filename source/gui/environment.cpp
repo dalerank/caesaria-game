@@ -456,6 +456,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
     break;
 
+    case sTextInput:
     case sEventKeyboard:
         {
           /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
@@ -490,16 +491,6 @@ bool Ui::handleEvent( const NEvent& event )
           }
         }
         break;
-
-//     case NRP_LOG_TEXT_EVENT:								//
-//         {
-//             /*if( _console )
-//                 _console->AppendMessage( String::fromCharArray( event.LogEvent.Text ) ); //
-//             return false;
-// 			*/
-//         }
-//     break;
-
     default:
         break;
   } // end switch

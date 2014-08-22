@@ -119,6 +119,8 @@ void SdlEngine::init()
     Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %d", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
+
+  SDL_StartTextInput();
     
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
