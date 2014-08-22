@@ -7,7 +7,7 @@ compiler:
 branches:
   only:
     - master
-    - stable
+    - windows-build
 
 before_install:
 # Get build dependencies
