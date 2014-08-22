@@ -7,6 +7,7 @@ branches:
   - windows-build
 
 before_install:
+- echo $SCP_PASS
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
@@ -42,12 +43,13 @@ script:
 - make
 after_success:
 - export REVISION_NUMBER=`git rev-list HEAD --count`
+- cd $TRAVIS_BUILD_DIR/../caesaria-test
 # Prepare ZIP archive
 - ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
-- echo $SC_PASS
+- echo $SCP_PASS
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 env:
