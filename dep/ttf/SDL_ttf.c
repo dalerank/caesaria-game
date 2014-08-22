@@ -1731,12 +1731,12 @@ int TTF_RenderUTF8_Blended_TX( unsigned int* data, int h, int p, TTF_Font *font,
     /* Get the dimensions of the text surface */
     if ( ( TTF_SizeUTF8(font, text, &width, &height) < 0 ) || !width ) {
         TTF_SetError("Text has zero width");
-        return;
+        return -1;
     }
 
     /* Create the target surface */
     if ( data == NULL ) {
-        return;
+        return -1;
     }
 
     /* Adding bound checking to avoid all kinds of memory corruption errors
@@ -1762,7 +1762,7 @@ int TTF_RenderUTF8_Blended_TX( unsigned int* data, int h, int p, TTF_Font *font,
         if ( error ) {
             TTF_SetFTError("Couldn't find glyph", error);
             //SDL_FreeSurface( textbuf );
-            return;
+            return -1;
         }
         glyph = font->current;
         /* Ensure the width of the pixmap is correct. On some cases,
@@ -1826,7 +1826,7 @@ int TTF_RenderUTF8_Blended_TX( unsigned int* data, int h, int p, TTF_Font *font,
         //TTF_drawLine_Blended(font, textbuf, row, pixel);
     }
 
-    return;
+    return 0;
 }
 
 SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font, const char *text, SDL_Color fg)
