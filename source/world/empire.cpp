@@ -534,7 +534,11 @@ void Empire::Impl::takeTaxes()
       treasury += empireTax;
       emperor.cityTax( city->name(), empireTax );
     }
+    else
+    {
+      city->funds().resolveIssue( FundIssue( city::Funds::overdueEmpireTax, empireTax ) );
     }
+  }
 }
 
 void GovernorRank::load( const std::string& name, const VariantMap &vm)

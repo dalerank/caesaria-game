@@ -56,20 +56,20 @@ struct Relation
   VariantMap save() const
   {
     VariantMap ret;
-    ret[ "lastGiftDate" ] = lastGiftDate;
-    ret[ "lastTaxDate" ] = lastTaxDate;
+    VARIANT_SAVE_ANY(ret, lastGiftDate )
+    VARIANT_SAVE_ANY(ret, lastTaxDate )
     VARIANT_SAVE_ANY(ret, value)
-    VARIANT_SAVE_ANY(ret, lastGiftValue );
-    VARIANT_SAVE_ANY(ret, soldiersSent );
-    VARIANT_SAVE_ANY(ret, lastSoldiersSent);
+    VARIANT_SAVE_ANY(ret, lastGiftValue )
+    VARIANT_SAVE_ANY(ret, soldiersSent )
+    VARIANT_SAVE_ANY(ret, lastSoldiersSent)
 
     return ret;
   }
 
   void load( const VariantMap& stream )
   {
-    lastGiftDate = stream.get( "lastGiftDate" ).toDateTime();
-    lastTaxDate = stream.get( "lastTaxDate" ).toDateTime();
+    VARIANT_LOAD_TIME(lastGiftDate, stream )
+    VARIANT_LOAD_TIME(lastTaxDate, stream )
     VARIANT_LOAD_ANY(value, stream)
     VARIANT_LOAD_ANY(lastGiftValue, stream);
     VARIANT_LOAD_ANY(lastSoldiersSent, stream);
@@ -161,6 +161,16 @@ void Emperor::timeStep(unsigned int time)
       float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
       if( salaryKoeff > 1.f ) { ref.value -= (int)salaryKoeff * salaryKoeff; }
       else if( salaryKoeff < 1.f ) { ref.value += 1; }
+
+      int brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+      if( brokenEmpireTax > 0 )
+      {
+        ref.value -= 1;
+
+        brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+        if( brokenEmpireTax > 0 )
+          ref.value -= 2;
+      }
     }
   }
 

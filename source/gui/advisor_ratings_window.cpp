@@ -258,6 +258,15 @@ void Ratings::Impl::checkFavourRating()
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
   float salaryKoeff = player->salary() / (float)rank.salary;
 
+  int brokenEmpireTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+  if( brokenEmpireTax > 0 )
+  {
+    int twoYearsAgoBrokenTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+
+    if( twoYearsAgoBrokenTax > 0 ) { problems << "##broke_empiretax_with2years_warning##"; }
+    else { problems << "##broke_empiretax_warning##"; }
+  }
+
   if( salaryKoeff >= 3.f )     { problems << "##high_salary_angers_senate##";  }
   else if( salaryKoeff > 2.f ) { problems << "##more_salary_dispeasure_senate##";  }
   else if( salaryKoeff > 1.5f ){ problems << "##try_reduce_your_high_salary##"; }
