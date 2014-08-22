@@ -8,23 +8,23 @@ before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential libsdl2-dev libsdl2-mixer-dev sshpass
+- sudo apt-get -qq install cmake p7zip-full build-essential mingw-w64-dev mingw-w64 gcc-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64-tools sshpass
 # Get SDL
-#- wget http://www.libsdl.org/release/SDL-devel-1.2.15-mingw32.tar.gz
-#- tar xfz SDL-devel-1.2.15-mingw32.tar.gz
-#- sudo cp SDL-1.2.15/bin/* /usr/i586-mingw32msvc/bin/
-#- sudo cp -r SDL-1.2.15/include/SDL/* /usr/i586-mingw32msvc/include/
-#- sudo cp SDL-1.2.15/lib/* /usr/i586-mingw32msvc/lib/
+- wget https://www.libsdl.org/release/SDL2-devel-2.0.3-mingw.tar.gz
+- tar xfz SDL-devel-2.0.3-mingw32.tar.gz
+- sudo cp SDL-devel-2.0.3/lib/x86/* /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL-devel-2.0.3/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
+- sudo cp SDL-2.0.3/i686-w64-mingw32/lib/* /usr/i686-w64-mingw32/lib/
 #- sudo chmod +x /usr/i586-mingw32msvc/bin/sdl-config
-# Get SDL Mixer
-#- wget http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-devel-1.2.12-VC.zip
-#- unzip SDL_mixer-devel-1.2.12-VC.zip
-#- sudo cp -r SDL_mixer-1.2.12/include/* /usr/i586-mingw32msvc/include/
-#- sudo cp SDL_mixer-1.2.12/lib/x86/* /usr/i586-mingw32msvc/lib/
+# Get SDL Mixer		
+- wget https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.0-mingw.tar.gz
+- unzip SDL2_mixer-devel-2.0.0-mingw.tar.gz
+- sudo cp -r SDL2_mixer-devel-2.0.0-mingw/include/* /usr/i686-w64-mingw32/include/
+- sudo cp SDL2_mixer-devel-2.0.0-mingw/lib/* /usr/i686-w64-mingw32/lib/
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release
+- cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=xcompile/win32-cross.cmake
 before_script:
 
 script:
@@ -38,7 +38,7 @@ after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
 - ls
 # Prepare ZIP archive
-- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-$REVISION_NUMBER.zip
+- ZIPNAME=caesaria-0.4-windows-$TRAVIS_BRANCH-$REVISION_NUMBER.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
