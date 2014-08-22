@@ -4,11 +4,22 @@ compiler:
 - clang
 - gcc
 
+branches:
+  only:
+    - master
+    - windows-build
+
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential mingw-w64-dev mingw-w64 gcc-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64-tools sshpass
+- sudo apt-get -qq install cmake p7zip-full build-essential 
+- sudo apt-get -qq install mingw-w64-dev 
+- sudo apt-get -qq install mingw-w64
+- sudo apt-get -qq install gcc-mingw-w64-i686 
+- sudo apt-get -qq install g++-mingw-w64-i686
+- sudo apt-get -qq install mingw-w64-tools 
+- sudo apt-get -qq install sshpass
 # Get SDL
 - wget https://www.libsdl.org/release/SDL2-devel-2.0.3-mingw.tar.gz
 - tar xfz SDL-devel-2.0.3-mingw32.tar.gz
