@@ -1,6 +1,7 @@
 {  
   geometry : [ 0, 0, 380, 128 ]
   buttons : "off"
+  static : true
   bgtype : "whiteFrame"
      
   edPlayerName#EditBox :

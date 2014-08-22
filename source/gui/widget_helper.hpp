@@ -1,4 +1,4 @@
-#ifndef _CAESARIA_WIDGET_HELPER_INCLUDE_
+#ifndef _CAESARIA_WIDGET_HELPER_H_INCLUDE_
 #define _CAESARIA_WIDGET_HELPER_H_INCLUDE_
 
 #include "widget.hpp"
@@ -34,4 +34,4 @@ inline T findChildA( const std::string& internalName, bool recursiveFind, const 
                                           if( 0 == d->element ) { Logger::warning( "Cannot fint %s in %s:%d", #element, __FILE__, __LINE__ ); }
 
 
-#endif //_CAESARIA_WIDGET_HELPER_INCLUDE_
+#endif //_CAESARIA_WIDGET_HELPER_H_INCLUDE_

@@ -62,6 +62,10 @@ public:
   void clear();
    
 private:    
+  virtual void setFocus();
+  virtual void removeFocus();
+  virtual void beforeDraw( gfx::Engine& painter );
+
   void _drawTooltip( unsigned int time );
   void _updateHovered( const Point& mousePos);
   Widget* next(bool reverse, bool group);

@@ -117,6 +117,10 @@ void Ui::clear()
     deleteLater( *it );
 }
 
+void Ui::setFocus() {}
+void Ui::removeFocus() {}
+ void Ui::beforeDraw(Engine& painter) {}
+
 void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )

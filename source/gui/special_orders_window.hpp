@@ -51,6 +51,7 @@ class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
 public:
   static const int defaultHeight = 250;
   GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
+  ~GranarySpecialOrdersWindow();
 
   void toggleDevastation();
 private:
@@ -65,6 +66,7 @@ class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
 public:
   static const int defaultHeight = 550;
   WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
+  ~WarehouseSpecialOrdersWindow();
 
   void toggleDevastation();
 private:

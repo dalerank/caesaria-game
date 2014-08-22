@@ -192,7 +192,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 void StartMenu::Impl::handleStartCareer()
 {
   gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->gui()->rootWidget() );
-
+  dlg->setModal();
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
   CONNECT( dlg, onClose(), this, Impl::handleNewGame );

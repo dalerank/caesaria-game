@@ -203,6 +203,8 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   _updateBtnDevastation();
 }
 
+GranarySpecialOrdersWindow::~GranarySpecialOrdersWindow() {}
+
 void GranarySpecialOrdersWindow::toggleDevastation()
 {
   _granary->store().setDevastation( !_granary->store().isDevastation() );
@@ -250,6 +252,11 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   CONNECT( d->btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();
+}
+
+WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow()
+{
+
 }
 
 void WarehouseSpecialOrdersWindow::toggleDevastation()
