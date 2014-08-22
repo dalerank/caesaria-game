@@ -93,9 +93,11 @@ DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 tm _getOsLocalTime( time_t date )
 {
 #if defined(CAESARIA_PLATFORM_WIN)
-  tm ret;
-  localtime_s( &ret, &date );
-  return ret;
+  time_t t;
+  tm timeinfo;
+  time(&t);
+  memcpy( &timeinfo, localtime(&t), sizeof(tm) );
+  return timeinfo;
 #elif defined(CAESARIA_PLATFORM_UNIX)
   //time(&date);
   return *localtime( &date );
