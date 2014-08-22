@@ -7,7 +7,6 @@ branches:
   - windows-build
 
 before_install:
-- echo $SCP_PASS
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
@@ -50,6 +49,5 @@ after_success:
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
-- echo $SCP_PASS
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 env:
