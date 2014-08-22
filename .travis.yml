@@ -20,7 +20,7 @@ before_install:
 - sudo apt-get -qq install sshpass
 # Get SDL
 - wget https://www.libsdl.org/release/SDL2-devel-2.0.3-mingw.tar.gz
-- tar xfz SDL-devel-2.0.3-mingw32.tar.gz
+- tar xfz SDL-devel-2.0.3-mingw.tar.gz
 - sudo cp SDL-devel-2.0.3/lib/x86/* /usr/i686-w64-mingw32/lib/
 - sudo cp -r SDL-devel-2.0.3/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
 - sudo cp SDL-2.0.3/i686-w64-mingw32/lib/* /usr/i686-w64-mingw32/lib/
