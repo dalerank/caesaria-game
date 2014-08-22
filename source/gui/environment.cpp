@@ -121,7 +121,7 @@ void Ui::setFocus() {}
 void Ui::removeFocus() {}
 void Ui::beforeDraw(Engine& painter) {}
 void Ui::draw(Engine& painter) {}
-void Ui::isHovered() {}
+bool Ui::isHovered() const { return false; }
 
 void Ui::draw()
 {

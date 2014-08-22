@@ -1,6 +1,6 @@
 ![CaesarIA](https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Nov/12/caesaria-logo-3368332030-11_avatar.png)
 
-![BuildStatus](https://drone.io/bitbucket.org/dalerank/caesaria/status.png)
+![BuildStatus](https://travis-ci.org/dalerank/caesaria-game.svg)
 
 ![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
