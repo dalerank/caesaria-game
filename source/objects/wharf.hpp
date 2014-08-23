@@ -32,6 +32,7 @@ public:
 
   virtual bool mayWork() const;
   virtual std::string workersProblemDesc() const;
+  virtual std::string troubleDesc() const;
 
 private:
   virtual void _updatePicture( constants::Direction direction );

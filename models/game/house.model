@@ -29,7 +29,7 @@
   small_tent :
     {
       level : 1,
-      title : "##small_tent##",
+      title : "##small_hovel##",
       habitants : 5,
       minDesirability : -99,
       maxDesirability : -10,
@@ -59,7 +59,7 @@
   big_tent :
     {
       level : 2,
-      title : "##big_tent##",
+      title : "##small_tent##",
       habitants : 7,
       minDesirability : -12,
       maxDesirability : -5,
@@ -89,7 +89,7 @@
   small_hut :
     {
       level : 3,
-      title : "##small_hut##",
+      title : "##small_shack##",
       habitants : 9,
       minDesirability : -9,
       maxDesirability : 0,
@@ -119,7 +119,7 @@
   big_hut :
     {
       level : 4,
-      title : "##big_hut##",
+      title : "##small_hut##",
       habitants : 11,
       minDesirability : -2,
       maxDesirability : 4,

@@ -116,6 +116,7 @@ private:
 Menu::Menu( Widget* parent, int id, const Rect& rectangle )
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
+  setupUI( ":/gui/shortmenu.gui" );
   _d->lastPressed = 0;
   _d->overlaysMenu = 0;
 
@@ -411,6 +412,8 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
     : Menu( p, id, rectangle )
 {
+  setupUI( ":/gui/fullmenu.gui" );
+
   _d->minimizeButton->deleteLater();
   _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );

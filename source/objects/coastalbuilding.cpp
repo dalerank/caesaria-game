@@ -105,7 +105,7 @@ void CoastalFactory::assignBoat(ShipPtr)
 
 }
 
-const Tile& CoastalFactory::getLandingTile() const
+const Tile& CoastalFactory::landingTile() const
 {
   Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );

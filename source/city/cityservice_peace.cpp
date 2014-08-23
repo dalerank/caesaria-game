@@ -115,7 +115,7 @@ void Peace::addRioter() { _d->rioterSeen = true; }
 void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay)
 {
   HousePtr house = ptr_cast<House>( overlay );
-  if( house.isValid() && house->spec().level() > HouseLevel::bigTent )
+  if( house.isValid() && house->spec().level() > HouseLevel::tent )
   {
     _d->significantBuildingsDestroyed = true;
   }

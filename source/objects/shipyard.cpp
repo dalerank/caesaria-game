@@ -100,7 +100,7 @@ void Shipyard::timeStep(const unsigned long time)
       updateProgress( -100.f );
 
       _d->boat = FishingBoat::create( _city() );
-      _d->boat->send2city( this, getLandingTile().pos() );
+      _d->boat->send2city( this, landingTile().pos() );
     }
   }
 }

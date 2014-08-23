@@ -187,7 +187,8 @@ std::string Migration::reason() const
 
     if( params.monthWithFood < (int)SETTINGS_VALUE( minMonthWithFood ) )
     {
-      if( params.monthWithFood == 0 ) { troubles << "##migration_empty_granary##";      }
+      if( params.monthWithFood == 0 ) { troubles << "##migration_empty_granary##"; }
+      else if( params.monthWithFood < 2 ) { troubles << "##migration_low_food_stocks##"; }
       else { troubles << "##migration_lessfood_granary##"; }
     }
 

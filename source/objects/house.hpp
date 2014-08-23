@@ -30,8 +30,8 @@ class HouseLevel
 {
 public:
   typedef enum { vacantLot=0,
-                 smallHovel=1, bigTent,
-                 smallHut, bigHut,
+                 hovel=1, tent,
+                 shack, hut,
                  smallDomus, bigDomus,
                  smallMansion, bigMansion, //8
                  smallInsula, middleInsula, //10
@@ -49,7 +49,7 @@ class House : public Building
 public:
   enum { food=Construction::paramCount, health, happiness };
 
-  House( HouseLevel::ID level=HouseLevel::smallHovel );
+  House( HouseLevel::ID level=HouseLevel::hovel );
 
   virtual void timeStep(const unsigned long time);
 
@@ -97,6 +97,7 @@ public:
   DateTime lastTaxationDate() const;
 
   std::string evolveInfo() const;
+  std::string levelName() const;
 
   virtual int roadAccessDistance() const;
 

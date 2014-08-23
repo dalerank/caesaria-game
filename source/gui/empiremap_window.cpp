@@ -534,6 +534,12 @@ std::string EmpireMapWindow::tooltipText() const
 
   if( wCity.isValid() )
   {
+    world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( wCity );
+    if( cCity.isValid() )
+    {
+      if( cCity->isDistantCity() )
+        return "##empmap_distant_romecity_tip##";
+    }
     return "##click_on_city_for_info##";
   }
 

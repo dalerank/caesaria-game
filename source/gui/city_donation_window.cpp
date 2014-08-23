@@ -20,6 +20,7 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "label.hpp"
+#include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "widget_helper.hpp"
 
@@ -101,7 +102,7 @@ Signal1<int>& CityDonationWindow::onSendMoney() { return _dfunc()->sendMoneySign
 
 void CityDonationWindow::Impl::updateDonationText()
 {
-  std::string text = StringHelper::format( 0xff, "%d from %d dn", wantSend, maxMoney );
+  std::string text = StringHelper::format( 0xff, "%s %d from %d dn", _("##donation_is##"), wantSend, maxMoney );
   if( lbDonation ) lbDonation->setText( text );
 }
 

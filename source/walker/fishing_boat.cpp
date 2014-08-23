@@ -123,7 +123,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       if( _d->base != 0 )
       {
-        Pathway way = PathwayHelper::create( pos(), _d->base->getLandingTile().pos(),
+        Pathway way = PathwayHelper::create( pos(), _d->base->landingTile().pos(),
                                              PathwayHelper::deepWater );
 
         if( way.isValid() )

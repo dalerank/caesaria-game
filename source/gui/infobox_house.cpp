@@ -70,7 +70,7 @@ AboutHouse::AboutHouse( Widget* parent, const Tile& tile )
 
   _house = ptr_cast<House>( tile.overlay() );
 
-  setTitle( _(_house->spec().levelName()) );
+  setTitle( _(_house->levelName()) );
 
   _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
 
