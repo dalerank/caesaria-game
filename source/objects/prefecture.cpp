@@ -86,7 +86,7 @@ void Prefecture::deliverService()
       _d->fireDetect = TilePos( -1, -1 );
     }
     
-    prefect->send2City( this, fireDetect ? 200 : 0 );
+    prefect->send2City( this, Prefect::patrol, fireDetect ? 200 : 0 );
 
     addWalker( prefect.object() );
   }
