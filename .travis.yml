@@ -3,6 +3,9 @@ language: objective-c
 os: 
 - osx
 
+compiler:
+- gcc
+
 before_install:
 # Get build dependencies
 - brew install cmake
