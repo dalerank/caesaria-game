@@ -1,14 +1,24 @@
 language: cpp
 
+os: 
+- osx
+
 compiler:
-- clang
 - gcc
 
 before_install:
 # Get build dependencies
-- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
-- sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential libsdl2-dev libsdl2-mixer-dev sshpass
+- brew install cmake
+- brew install wget
+- brew install apple-gcc42
+- LIBDIR=~/Library/Frameworks/
+- wget https://www.libsdl.org/release/SDL2-2.0.3.dmg
+- wget http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.dmg
+- hdiutil mount SDL2_mixer-2.0.0.dmg
+- hdiutil mount SDL2-2.0.3.dmg
+- mkdir -p $LIBDIR
+- cp -r /Volumes/SDL2/SDL2.framework $LIBDIR
+- cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework $LIBDIR
 
 install:
 - cd $TRAVIS_BUILD_DIR

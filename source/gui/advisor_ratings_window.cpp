@@ -261,7 +261,7 @@ void Ratings::Impl::checkFavourRating()
   int brokenEmpireTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
   if( brokenEmpireTax > 0 )
   {
-    int twoYearsAgoBrokenTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+    int twoYearsAgoBrokenTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
 
     if( twoYearsAgoBrokenTax > 0 ) { problems << "##broke_empiretax_with2years_warning##"; }
     else { problems << "##broke_empiretax_warning##"; }
