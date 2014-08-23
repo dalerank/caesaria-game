@@ -17,6 +17,7 @@
 
 #include "emperor.hpp"
 #include "core/foreach.hpp"
+#include "city/funds.hpp"
 #include "game/gamedate.hpp"
 #include "romechastenerarmy.hpp"
 #include "city.hpp"
