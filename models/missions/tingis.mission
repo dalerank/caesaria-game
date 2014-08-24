@@ -19,6 +19,7 @@
     favour : 80
     next : ":/missions/tutorial8.briefing"
     title : "##win_procurator_aedile##"
+    win.text : "##tingis_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tingis_7_title##"

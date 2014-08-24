@@ -10,17 +10,17 @@
 			entertainment : 0,
 			water : 0,
 			religion : 0,
-			"education" : 0,
-			"health" : 0,
-			"food" : 0,
-			"pottery" : 0,
-			"oil" : 0,
-			"furniture" : 0,
-			"wine" : 0,
-			"crime" : 0,
-			"prosperity" : 0,
-			"tax" : 0		
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 0,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 0,
+      prosperity : 0,
+      tax : 0
+      txs : {
         s1: [ "housng1a_00045" ]
       }
     },
@@ -39,17 +39,17 @@
       entertainment : 0,
       water : 0,
       religion : 0,
-      "education" : 0,
-      "health" : 0,
-      "food" : 0,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 3,
-      "prosperity" : 5,
-      "tax" : 1
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 0,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 3,
+      prosperity : 5,
+      tax : 1
+      txs : {
         s1: [ "housng1a_00001", "housng1a_00002", "housng1b_00001", "housng1b_00002" ]
         s2: [ "housng1a_00005", "housng1b_00005" ]
       }
@@ -69,17 +69,17 @@
       desrange : 3,
       water : 1,
       religion : 0,
-      "education" : 0,
-      "health" : 0,
-      "food" : 0,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 3,
-      "prosperity" : 10,
-      "tax" : 1
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 0,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 3,
+      prosperity : 10,
+      tax : 1
+      txs : {
         s1: [ "housng1a_00003", "housng1a_00004", "housng1b_00003", "housng1b_00004" ]
         s2: [ "housng1a_00006", "housng1b_00006" ]
       }
@@ -99,17 +99,17 @@
       desrange : 2,
       water : 1,
       religion : 0,
-      "education" : 0,
-      "health" : 0,
-      "food" : 1,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 3,
-      "prosperity" : 15,
-      "tax" : 1
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 1,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 3,
+      prosperity : 15,
+      tax : 1
+      txs : {
         s1: [ "housng1a_00007", "housng1a_00008", "housng1b_00007", "housng1b_00008" ]
         s2: [ "housng1a_00011", "housng1b_00011" ]
       }
@@ -129,17 +129,17 @@
       desrange : 2,
       water : 1,
       religion : 1,
-      "education" : 0,
-      "health" : 0,
-      "food" : 1,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 3,
-      "prosperity" : 20,
-      "tax" : 1
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 1,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 3,
+      prosperity : 20,
+      tax : 1
+      txs : {
         s1: [ "housng1a_00009", "housng1a_00010", "housng1b_00009", "housng1b_00010" ]
         s2: [ "housng1a_00012", "housng1b_00012" ]
       }
@@ -159,17 +159,17 @@
       desrange : 2,
       water : 2
       religion : 1,
-      "education" : 0,
-      "health" : 0,
-      "food" : 1,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 3,
-      "prosperity" : 25,
-      "tax" : 2
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 1,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 3,
+      prosperity : 25,
+      tax : 2
+      txs : {
         s1: [ "housng1a_00013", "housng1a_00014", "housng1b_00013", "housng1b_00014" ]
         s2: [ "housng1a_00017", "housng1b_00017" ]
       }
@@ -188,17 +188,17 @@
       desrange : 2,
       water : 2
       religion : 1,
-      "education" : 0,
-      "health" : 0,
-      "food" : 1,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 3,
-      "prosperity" : 30,
-      "tax" : 2
-      "txs" : {
+      education : 0,
+      health : 0,
+      food : 1,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 3,
+      prosperity : 30,
+      tax : 2
+      txs : {
        s1: [ "housng1a_00015", "housng1a_00016", "housng1b_00015", "housng1b_00016" ]
        s2: [ "housng1a_00018", "housng1b_00018" ]
       }
@@ -218,17 +218,17 @@
       desrange : 1,
       water : 2,
       religion : 1,
-      "education" :1,
-      "health" : 0,
-      "food" : 1,
-      "pottery" : 0,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 2,
-      "prosperity" : 35,
-      "tax" : 2
-      "txs" : {
+      education :1,
+      health : 0,
+      food : 1,
+      pottery : 0,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 2,
+      prosperity : 35,
+      tax : 2
+      txs : {
         s1: [ "housng1a_00019", "housng1a_00020", "housng1b_00019", "housng1b_00020" ]
         s2: [ "housng1a_00023", "housng1b_00023" ]
       }
@@ -248,17 +248,17 @@
       desrange : 1,
       water : 2,
       religion : 1,
-      "education" :1,
-      "health" : 1,
-      "food" : 1,
-      "pottery" : 1,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 2,
-      "prosperity" : 45,
-      "tax" : 2
-      "txs" : {
+      education :1,
+      health : 1,
+      food : 1,
+      pottery : 1,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 2,
+      prosperity : 45,
+      tax : 2
+      txs : {
         s1: [ "housng1a_00021", "housng1a_00022", "housng1b_00021", "housng1b_00022" ]
         s2: [ "housng1a_00024", "housng1b_00024" ]
       }
@@ -278,17 +278,17 @@
       desrange : 0,
       water : 2,
       religion : 1,
-      "education" :1,
-      "health" : 1,
-      "food" : 1,
-      "pottery" : 1,
-      "oil" : 0,
-      "furniture" : 0,
-      "wine" : 0,
-      "crime" : 2,
-      "prosperity" : 50,
-      "tax" : 3
-      "txs" : {
+      education :1,
+      health : 1,
+      food : 1,
+      pottery : 1,
+      oil : 0,
+      furniture : 0,
+      wine : 0,
+      crime : 2,
+      prosperity : 50,
+      tax : 3
+      txs : {
         s1: [ "housng1a_00025", "housng1a_00026", "housng1b_00025", "housng1b_00026" ]
         s2: [ "housng1a_00029", "housng1b_00029" ]
       }
@@ -308,17 +308,17 @@
       desrange : 0
       water : 2,
       religion : 1,
-      "education" :1,
-      "health" : 2,
-      "food" : 1,
-      "pottery" : 1,
-      "oil" : 0,
-      "furniture" : 1,
-      "wine" : 0,
-      "crime" : 2,
-      "prosperity" : 58,
-      "tax" : 3
-      "txs" : {
+      education :1,
+      health : 2,
+      food : 1,
+      pottery : 1,
+      oil : 0,
+      furniture : 1,
+      wine : 0,
+      crime : 2,
+      prosperity : 58,
+      tax : 3
+      txs : {
         s1: [ "housng1a_00027", "housng1a_00028", "housng1b_00027", "housng1b_00028" ]
         s2: [ "housng1a_00030", "housng1b_00030" ]
       }
@@ -338,17 +338,17 @@
       desrange : 2,
       water : 2,
       religion : 1,
-      "education" :2,
-      "health" : 3,
-      "food" : 1,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 0,
-      "crime" : 2,
-      "prosperity" : 65,
-      "tax" : 3
-      "txs" : {
+      education :2,
+      health : 3,
+      food : 1,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 0,
+      crime : 2,
+      prosperity : 65,
+      tax : 3
+      txs : {
         s2 : [ "housng1a_00031", "housng1a_00032", "housng1b_00031", "housng1b_00032" ]
       }
     },
@@ -367,17 +367,17 @@
       desrange : 2,
       water : 2,
       religion : 1,
-      "education" : 2,
-      "health" : 3,
-      "food" : 2,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 0,
-      "crime" : 2,
-      "prosperity" : 80,
-      "tax" : 4
-      "txs" : {
+      education : 2,
+      health : 3,
+      food : 2,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 0,
+      crime : 2,
+      prosperity : 80,
+      tax : 4
+      txs : {
         s2 : [ "housng1a_00033", "housng1a_00034", "housng1b_00033", "housng1b_00034" ]
       }
     },
@@ -396,17 +396,17 @@
       desrange : 2,
       water : 2,
       religion : 2,
-      "education" : 2,
-      "health" : 3,
-      "food" : 2,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 1,
-      "crime" : 1,
-      "prosperity" : 150,
-      "tax" : 9
-      "txs" : {
+      education : 2,
+      health : 3,
+      food : 2,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 1,
+      crime : 1,
+      prosperity : 150,
+      tax : 9
+      txs : {
         s2 : [ "housng1a_00035", "housng1a_00036", "housng1b_00035", "housng1b_00036" ]
       }
     },
@@ -425,17 +425,17 @@
       desrange : 2,
       water : 2,
       religion : 2,
-      "education" : 2,
-      "health" : 4,
-      "food" : 2,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 1,
-      "crime" : 1,
-      "prosperity" : 180,
-      "tax" : 10
-      "txs" : {
+      education : 2,
+      health : 4,
+      food : 2,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 1,
+      crime : 1,
+      prosperity : 180,
+      tax : 10
+      txs : {
         s2: [ "housng1a_00037", "housng1a_00038", "housng1b_00037", "housng1b_00038" ]
       }
     },
@@ -453,17 +453,17 @@
       desrange : 2,
       water : 2,
       religion : 2,
-      "education" : 2,
-      "health" : 4,
-      "food" : 2,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 1,
-      "crime" : 1,
-      "prosperity" : 400,
-      "tax" : 11
-      "txs" : {
+      education : 2,
+      health : 4,
+      food : 2,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 1,
+      crime : 1,
+      prosperity : 400,
+      tax : 11
+      txs : {
         s3 : [ "housng1a_00039", "housng1b_00039" ]
       }
     },
@@ -481,17 +481,17 @@
       desrange : 2,
       water : 2,
       religion : 3,
-      "education" : 3,
-      "health" : 4,
-      "food" : 3,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 1,
-      "crime" : 1,
-      "prosperity" : 600,
-      "tax" : 11
-      "txs" : {
+      education : 3,
+      health : 4,
+      food : 3,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 1,
+      crime : 1,
+      prosperity : 600,
+      tax : 11
+      txs : {
         s3 : [ "housng1a_00040", "housng1b_00040" ]
       }
     },
@@ -510,17 +510,17 @@
       desrange : 3,
       water : 2,
       religion : 3,
-      "education" : 3,
-      "health" : 4,
-      "food" : 3,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 1,
-      "crime" : 1,
-      "prosperity" : 700,
-      "tax" : 12
-      "txs" : {
+      education : 3,
+      health : 4,
+      food : 3,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 1,
+      crime : 1,
+      prosperity : 700,
+      tax : 12
+      txs : {
         s3: [ "housng1a_00041", "housng1b_00041" ]
       }
     },
@@ -539,17 +539,17 @@
       desrange : 3,
       water : 2,
       religion : 4,
-      "education" : 3,
-      "health" : 4,
-      "food" : 3,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 2,
-      "crime" : 1,
-      "prosperity" : 900,
-      "tax" : 12
-      "txs" : {
+      education : 3,
+      health : 4,
+      food : 3,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 2,
+      crime : 1,
+      prosperity : 900,
+      tax : 12
+      txs : {
         s3 : [ "housng1a_00042", "housng1b_00042" ]
       }
     },
@@ -568,17 +568,17 @@
       desrange : 4,
       water : 2,
       religion : 4,
-      "education" : 3,
-      "health" : 4,
-      "food" : 3,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 2,
-      "crime" : 1,
-      "prosperity" : 1500,
-      "tax" : 15
-      "txs" : {
+      education : 3,
+      health : 4,
+      food : 3,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 2,
+      crime : 1,
+      prosperity : 1500,
+      tax : 15
+      txs : {
         s4 : [ "housng1a_00043", "housng1b_00043" ]
       }
     },
@@ -597,17 +597,17 @@
       desrange : 4,
       water : 2,
       religion : 4,
-      "education" : 3,
-      "health" : 4,
-      "food" : 3,
-      "pottery" : 1,
-      "oil" : 1,
-      "furniture" : 1,
-      "wine" : 2,
-      "crime" : 1,
-      "prosperity" : 1750,
-      "tax" : 16
-      "txs" : {
+      education : 3,
+      health : 4,
+      food : 3,
+      pottery : 1,
+      oil : 1,
+      furniture : 1,
+      wine : 2,
+      crime : 1,
+      prosperity : 1750,
+      tax : 16
+      txs : {
         s4 : [ "housng1a_00044", "housng1b_00044" ]
       }
     },
