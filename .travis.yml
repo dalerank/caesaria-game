@@ -37,8 +37,7 @@ before_script:
 - echo -e "#define CAESARIA_VERSION_MAJOR 0\n" >> source/version.hpp
 - echo -e "#define CAESARIA_VERSION_MINOR 4\n" >> source/version.hpp
 - echo -e "#define CAESARIA_VERSION_REVSN $BUILD_NAME\n" >> source/version.hpp
-- echo -e "#define CAESARIA_STR_EXT(__A) #__A\n" >> source/version.hpp
-- echo -e "#define CAESARIA_STR_A(__A) CAESARIA_STR_EXT(__A)\n" >> source/version.hpp
+- echo -e "#define CAESARIA_STR_EXT(__A) \#__A\n" >> source/version.hpp
 - echo -e "#define CAESARIA_VERSION CaesarIA:android-$BUILD_NAME\n" >> source/version.hpp
 - echo -e "#endif\n" >> source/version.hpp
 
