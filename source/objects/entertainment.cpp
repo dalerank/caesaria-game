@@ -108,13 +108,13 @@ bool EntertainmentBuilding::isShow() const {   return animation().isRunning(); }
 void EntertainmentBuilding::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
-  stream[ "showCounter" ] = _d->showCounter;
+  VARIANT_SAVE_ANY_D( stream, _d, showCounter );
 }
 
 void EntertainmentBuilding::load(const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
-  _d->showCounter = (int)stream.get( "showCounter" );
+  VARIANT_LOAD_ANY_D( _d, showCounter, stream );
 }
 
 std::string EntertainmentBuilding::troubleDesc() const

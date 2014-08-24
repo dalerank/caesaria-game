@@ -12,12 +12,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_theater.hpp"
 #include "gfx/tile.hpp"
 #include "objects/constants.hpp"
 #include "objects/theater.hpp"
 #include "core/gettext.hpp"
+#include "core/saveadapter.hpp"
 #include "label.hpp"
 
 using namespace constants;
@@ -44,7 +47,29 @@ AboutTheater::AboutTheater(Widget *parent, const Tile &tile)
   }
   else
   {
-    setText( theater->isShow() ? "##theater_now_local_show##" : "##theater_need_actors##" );
+    if( theater->isShow() )
+    {
+      VariantMap shows = SaveAdapter::load( ":/theater_shows.model" );
+      VariantMap::iterator currentShowIt = shows.begin();
+
+      std::advance( currentShowIt, theater->showsCount() % shows.size() );
+
+      std::string text;
+      if( currentShowIt != shows.end() )
+      {
+        text = currentShowIt->second.toMap().get( "text" ).toString();
+      }
+
+      if( text.empty() )
+      {
+        text = "##theater_now_local_show##";
+      }
+      setText( _(text) );
+    }
+    else
+    {
+      setText( "##theater_need_actors##" );
+    }
   }
 }
 
