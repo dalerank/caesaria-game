@@ -40,6 +40,7 @@
 #include "objects/constants.hpp"
 #include "empireprices.hpp"
 #include "goodordermanage.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -62,8 +63,8 @@ public:
     _enable = enable;
     _tradeOrder = trade;
     _tradeQty = tradeQty;
-    _goodPicture = GoodHelper::getPicture( _type );
-    _goodName = GoodHelper::getName( _type );    
+    _goodPicture = GoodHelper::picture( _type );
+    _goodName = GoodHelper::name( _type );
     Decorator::draw( _border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
     setFont( Font::create( FONT_2_WHITE ) );
@@ -92,18 +93,18 @@ public:
       f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0, true, false );
       f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
-      std::string ruleName[] = { _("##import##"), "", _("##export##"), _("##stacking##") };
+      std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
       std::string tradeStateText = ruleName[ _tradeOrder ];
       switch( _tradeOrder )
       {
       case city::TradeOptions::noTrade:
       case city::TradeOptions::stacking:
       case city::TradeOptions::importing:
-        tradeStateText = ruleName[ _tradeOrder ];
+        tradeStateText = _( ruleName[ _tradeOrder ] );
       break;
 
       case city::TradeOptions::exporting:
-        tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _tradeOrder ].c_str(), _tradeQty );
+        tradeStateText = StringHelper::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
       break;
 
       default: break;
@@ -152,8 +153,6 @@ public:
   void showGoodOrderManageWindow( Good::Type type );
   void showGoodsPriceWindow();
 };
-
-
 
 void Trade::Impl::updateGoodsInfo()
 {
@@ -237,9 +236,9 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
 
   _d->city = city;
 
-  _d->btnEmpireMap = findChildA<PushButton*>( "btnEmpireMap", true, this );
-  _d->btnPrices = findChildA<PushButton*>( "btnPrices", true, this );
-  _d->gbInfo = findChildA<GroupBox*>( "gbInfo", true, this );
+  GET_DWIDGET_FROM_UI( _d, btnEmpireMap  )
+  GET_DWIDGET_FROM_UI( _d, btnPrices )
+  GET_DWIDGET_FROM_UI( _d, gbInfo )
 
   CONNECT( _d->btnEmpireMap, onClicked(), this, Trade::deleteLater );
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );

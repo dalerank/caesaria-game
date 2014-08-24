@@ -19,6 +19,9 @@
 #include "loader_png.hpp"
 #include "loader_bmp.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
+#include "vfs/path.hpp"
+#include "core/time.hpp"
 
 class PictureLoader::Impl
 {
@@ -37,8 +40,8 @@ PictureLoader::PictureLoader(void) : _d( new Impl )
 
 void PictureLoader::Impl::initLoaders()
 {
-  loaders.push_back( new PictureLoaderBmp() );
   loaders.push_back( new PictureLoaderPng() );
+  loaders.push_back( new PictureLoaderBmp() );
   //_d->loaders.push_back( new PixmapLoaderPsd() );
   //_d->loaders.push_back( new PixmapLoaderJpeg() );
 }
@@ -59,12 +62,22 @@ Picture PictureLoader::load( vfs::NFile file )
   // try to load file based on file extension
   foreach( loader, _d->loaders )
   {
-    if( (*loader)->isALoadableFileExtension(file.path()) ||
-        (*loader)->isALoadableFileFormat(file) )
+    if( (*loader)->isALoadableFileExtension(file.path()) )
     {
       // reset file position which might have changed due to previous loadImage calls
       file.seek(0);
-      return (*loader)->load( file );
+      Picture ret = (*loader)->load( file );
+      return ret;
+    }
+    else
+    {
+      Logger::warning( "WARNING !!!: PictureLoader have unknown extension with " + file.path().absolutePath().toString() );
+      bool isMyFormat = (*loader)->isALoadableFileFormat(file);
+      if( isMyFormat )
+      {
+         file.seek(0);
+        return (*loader)->load( file );
+      }
     }
   }
 

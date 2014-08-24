@@ -101,7 +101,10 @@ public:
 void Game::Impl::initLocale( std::string localePath)
 {
   //init translator
+  Logger::warning( "Game: initialize localization folder" );
   Locale::setDirectory( localePath );
+
+  Logger::warning( "Game: load default language" );
   Locale::setLanguage( SETTINGS_VALUE( language ).toString() );
 }
 
@@ -132,10 +135,12 @@ void Game::Impl::initSound()
   audio::Engine& ae = audio::Engine::instance();
 
   ae.init();
-  ae.setVolume( audio::ambientSound, GameSettings::get( GameSettings::ambientVolume ) );
-  ae.setVolume( audio::themeSound, GameSettings::get( GameSettings::musicVolume ) );
-  ae.setVolume( audio::gameSound, GameSettings::get( GameSettings::soundVolume ) );
+  Logger::warning( "Game: load volumes" );
+  ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
+  ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
+  ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
 
+  Logger::warning( "Game: load talks archive" );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
 }
 
@@ -185,6 +190,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
 
 void Game::Impl::createSaveDir()
 {
+  Logger::warning( "Game: initialize save directory" );
   vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
 
   bool dirCreated = true;
@@ -198,6 +204,7 @@ void Game::Impl::createSaveDir()
 
 void Game::Impl::initGuiEnvironment()
 {
+  Logger::warning( "Game: initialize gui" );
   gui = new gui::Ui( *engine );
 }
 
@@ -500,16 +507,18 @@ void Game::load(std::string filename)
 
 void Game::Impl::initArchiveLoaders()
 {
+  Logger::warning( "Game: initialize sg2/zip archive loaders" );
   vfs::FileSystem& fs = vfs::FileSystem::instance();
-  Logger::warning( "Game: initialize sg2 archive loader" );
   fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
   fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
 }
 
 void Game::initialize()
 {
+  Logger::warning( "Game: load game settings" );
   GameSettings::load();
   //mount default rcpath folder
+  Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );
 
   _d->initArchiveLoaders();
@@ -520,18 +529,22 @@ void Game::initialize()
   _d->initSound();
   _d->createSaveDir();
 
+  Logger::warning( "Game: load splash screen" );
   splash::initialize( "logo_00001" );
 
   scene::SplashScreen screen;
   screen.initialize();
   screen.update( *_d->engine );
 
+  Logger::warning( "Game: initialize resource loader" );
   ResourceLoader rcLoader;
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
 
+  Logger::warning( "Game: initialize offsets" );
   screen.setPrefix( "##loading_offsets##" );
   PictureInfoBank::instance().initialize( SETTINGS_RC_PATH( pic_offsets ) );
 
+  Logger::warning( "Game: initialize resources" );
   screen.setPrefix( "##loading_resources##" );
   _d->mountArchives( rcLoader );  // init some quick pictures for screenWait
 

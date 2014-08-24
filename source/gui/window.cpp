@@ -50,7 +50,7 @@ public:
 	Label* title;
 
 	Picture backgroundImage;
-  Pictures bgStyle;
+	Pictures bgStyle;
 	Point dragStartPosition;
 	Window::BackgroundType backgroundType;
 	bool dragging;
@@ -245,7 +245,7 @@ void Window::draw( Engine& painter )
 			}
 			else
 			{
-        painter.draw( _d->bgStyle, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+				painter.draw( _d->bgStyle, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
 			}
 		}
 	}

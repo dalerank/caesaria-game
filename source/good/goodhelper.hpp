@@ -30,8 +30,8 @@ class GoodHelper
 public:
   static GoodHelper& getInstance();
 
-  static std::string getName( Good::Type type );
-  static gfx::Picture getPicture( Good::Type type, bool emp=false );
+  static std::string name( Good::Type type );
+  static gfx::Picture picture( Good::Type type, bool emp=false );
   static Good::Type getType( const std::string& name );
   static std::string getTypeName( Good::Type type );
   static gfx::Picture getCartPicture( const GoodStock& stock, constants::Direction direction );

@@ -79,6 +79,7 @@
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "walker/chastener_elephant.hpp"
+#include "sentiment.hpp"
 #include "walker/chastener.hpp"
 
 #include <set>
@@ -231,6 +232,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   addService( audio::Player::create( this ) );
   addService( city::HealthCare::create( this ));
   addService( city::Peace::create( this ) );
+  addService( city::Sentiment::create( this ) );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();

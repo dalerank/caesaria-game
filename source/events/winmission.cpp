@@ -42,12 +42,10 @@ void WinMission::_exec(Game& game, unsigned int)
   PlayerCityPtr city = game.city();
 
   const city::VictoryConditions& wt = city->victoryConditions();
-  std::string nextMission = wt.getNextMission();
-  std::string newTitle = wt.getNewTitle();
 
-  /*gui::WinMissionWindow* wnd = */new gui::WinMissionWindow( game.gui()->rootWidget(), newTitle, false );
-
-  //CONNECT( wnd, onNextMission(), &game, Game::load);
+  new gui::WinMissionWindow( game.gui()->rootWidget(),
+                             wt.newTitle(), wt.winText(),
+                             false );
 }
 
 bool WinMission::_mayExec(Game&, unsigned int ) const { return true; }

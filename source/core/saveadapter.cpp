@@ -25,6 +25,7 @@ using namespace vfs;
 
 VariantMap SaveAdapter::load( const vfs::Path& filename )
 {
+  Logger::warning( "SaveAdapter: try load model from " + filename.toString() );
   NFile f = NFile::open( filename );
 
   if( f.isOpen() )

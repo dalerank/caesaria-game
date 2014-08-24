@@ -29,6 +29,7 @@
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
 #include "environment.hpp"
+#include "widget_helper.hpp"
 #include "core/logger.hpp"
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
@@ -167,15 +168,16 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   _d->initBackground( size() );
 
-  _d->lbPopulation = findChildA<Label*>( "lbPopulation", false, this );
+  GET_DWIDGET_FROM_UI( _d, lbPopulation )
+  GET_DWIDGET_FROM_UI( _d, lbFunds )
+  GET_DWIDGET_FROM_UI( _d, lbDate )
+
   if( _d->lbPopulation )
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
 
-  _d->lbFunds = findChildA<Label*>( "lbFunds", false, this  );
   if( _d->lbFunds )
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
 
-  _d->lbDate = findChildA<Label*>( "lbDate", false, this );
   if( _d->lbDate )
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
 

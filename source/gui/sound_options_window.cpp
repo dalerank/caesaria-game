@@ -19,8 +19,10 @@
 #include "gameautopause.hpp"
 #include "core/event.hpp"
 #include "label.hpp"
+#include "widget_helper.hpp"
 #include "core/stringhelper.hpp"
 #include "sound/constants.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -100,17 +102,21 @@ Signal0<>&SoundOptionsWindow::onClose(){  return _d->onCloseSignal;}
 
 void SoundOptionsWindow::_update()
 {
-  Label* lbGameSound = findChildA<Label*>( "lbGameSoundPercent", true, this );
-  Label* lbAmbientSound = findChildA<Label*>( "lbAmbientSoundPercent", true, this );
-  Label* lbThemeSound = findChildA<Label*>( "lbThemeSoundPercent", true, this );
+  Label* lbGameSoundPercent;
+  Label* lbAmbientSoundPercent;
+  Label* lbThemeSoundPercent;
+
+  GET_WIDGET_FROM_UI( lbGameSoundPercent )
+  GET_WIDGET_FROM_UI( lbAmbientSoundPercent )
+  GET_WIDGET_FROM_UI( lbThemeSoundPercent )
 
   _d->current.game = math::clamp( _d->current.game, 0, 100 );
   _d->current.ambient = math::clamp( _d->current.ambient, 0, 100 );
   _d->current.theme = math::clamp( _d->current.theme, 0, 100 );
 
-  if( lbGameSound ) { lbGameSound->setText( StringHelper::format( 0xff, "%d%%", _d->current.game ) ); }
-  if( lbAmbientSound ) { lbAmbientSound->setText( StringHelper::format( 0xff, "%d%%", _d->current.ambient ) ); }
-  if( lbThemeSound ) { lbThemeSound->setText( StringHelper::format( 0xff, "%d%%", _d->current.theme ) ); }
+  if( lbGameSoundPercent ) { lbGameSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.game ) ); }
+  if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.ambient ) ); }
+  if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.theme ) ); }
 
   oc3_emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
   oc3_emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );

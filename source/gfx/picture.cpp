@@ -25,6 +25,7 @@
 #include "core/requirements.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "core/time.hpp"
 #include <SDL.h>
 
 // Picture class functions
@@ -255,7 +256,6 @@ Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
   }
 
   Engine::instance().loadPicture( *pic );
-
   if( !mayChange )
   {
     SDL_FreeSurface( pic->_d->surface );

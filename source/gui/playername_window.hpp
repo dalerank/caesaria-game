@@ -32,6 +32,7 @@ public:
   virtual ~WindowPlayerName();
 
   virtual std::string text() const;
+  virtual void setModal();
 
 public oc3_signals:
   Signal0<>& onClose();

@@ -32,6 +32,8 @@ public:
   FileListBox( Widget* parent );
   FileListBox( Widget* parent, const Rect& rectangle, int id );
 
+  void setShowTime( bool show );
+
   virtual ListBoxItem& addItem(const std::string &text, Font font, const int color);
 
 protected:

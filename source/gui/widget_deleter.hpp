@@ -25,9 +25,11 @@ class WidgetDeleter : public WidgetAnimator
 {
 public:
   WidgetDeleter( Widget* node, size_t time );
-  ~WidgetDeleter(void);
+  virtual ~WidgetDeleter(void);
 
   virtual void draw( gfx::Engine& painter );
+
+  static void assignTo( Widget* parent, size_t time );
 
 private:
   unsigned int _delay;

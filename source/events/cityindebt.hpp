@@ -39,9 +39,8 @@ protected:
 private:
   CityIndebt();
 
-  int _emperorMoney;
-  std::string _text;
-  bool _isDeleted;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }

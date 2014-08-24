@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_STRINGHELPER_H_INCLUDED__
 #define __CAESARIA_STRINGHELPER_H_INCLUDED__
@@ -62,6 +64,8 @@ public:
 
   static bool isEquale( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
 
+  static int compare( const std::string& a, const std::string& b, equaleMode mode=equaleCase );
+
   static std::string replace(std::string text, const std::string& from, const std::string& to);
 
   static StringArray split( std::string str, std::string spl );
@@ -69,8 +73,6 @@ public:
   static bool isEqualen(const std::string& str1, const std::string& str2, unsigned int n);
 
   static std::string localeLower( const std::string& str );
-  static char localeLower( char x );
-
   static int vformat(std::string& str, int max_size, const char* format, va_list argument_list);
   static void useStackTrace( bool enabled );
 

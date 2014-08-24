@@ -152,8 +152,11 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
   return resultRect;
 }
 
-void Font::setColor( const NColor& color )
+void Font::setColor( NColor color )
 {
+#ifdef CAESARIA_PLATFORM_ANDROID
+  color = color.abgr();
+#endif
   _d->color.b = color.blue();
   _d->color.g = color.green();
   _d->color.r = color.red();
@@ -203,12 +206,14 @@ void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool
   draw( dstpic, text, pos.x(), pos.y(), useAlpha, updateTx );
 }
 
-void Font::draw(gfx::PictureRef& refpic, const std::string &text, bool mayChange)
+Picture* Font::once(const std::string &text, bool mayChange)
 {
   SDL_Surface* textSurface = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  refpic.reset( Picture::create( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange ) );
+  Picture* ret = Picture::create( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange );
   SDL_FreeSurface( textSurface );
-  refpic->update();
+  ret->update();
+
+  return ret;
 }
 
 Font::~Font() {}

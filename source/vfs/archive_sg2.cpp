@@ -50,8 +50,11 @@ enum {
 };
 
 
-Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem* fileSystem) :
-  _fileSystem(fileSystem)
+namespace {
+static const std::string readerTypename=CAESARIA_STR_EXT(Sg2ArchiveReader);
+}
+
+Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem*)
 {
 }
 
@@ -183,7 +186,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
 Sg2ArchiveReader::~Sg2ArchiveReader() {}
 
-std::string Sg2ArchiveReader::getTypeName() const {  return "Sg2Reader";}
+const std::string &Sg2ArchiveReader::getTypeName() const { return readerTypename;}
 Archive::Type Sg2ArchiveReader::getType() const{  return Archive::sg2;}
 const Entries* Sg2ArchiveReader::entries() const{  return this;}
 
@@ -234,11 +237,10 @@ std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& d
   Entries::Items files = directory.getEntries().items();
   for( unsigned int i = 0; i < files.size(); i++)
   {
-    if( filename == StringHelper::localeLower( files[i].name().toString() ) )
+    if( files[i].name.canonical() == filename )
     {
-      return files[i].absolutePath().toString();
+      return files[i].fullpath.toString();
     }
-    //qDebug() << "No match: " << files[i];
   }
 
   return std::string();

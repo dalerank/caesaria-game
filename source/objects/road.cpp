@@ -280,6 +280,12 @@ void Plaza::appendPaved(int) {}
 
 bool Plaza::build(PlayerCityPtr city, const TilePos& p)
 {
+  RoadPtr road = ptr_cast<Road>( city->getOverlay( p ) );
+  if( road.isValid() )
+  {
+    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+  }
+
   Construction::build( city, p );
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
 

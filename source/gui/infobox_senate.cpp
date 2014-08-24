@@ -56,7 +56,7 @@ AboutSenate::AboutSenate( Widget* parent, const Tile& tile )
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
 
   Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
-  lb->setIcon( GoodHelper::getPicture( Good::denaries ) );
+  lb->setIcon( GoodHelper::picture( Good::denaries ) );
   lb->setText( denariesStr );
   lb->setTextOffset( Point( 30, 0 ));
 

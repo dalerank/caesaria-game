@@ -34,6 +34,7 @@ class Dispatcher::Impl
 {
 public:
   RequestList requests;
+  DateTime lastRequestCancelDate;
 };
 
 Dispatcher::Dispatcher( PlayerCityPtr city )
@@ -84,6 +85,7 @@ void Dispatcher::update(const unsigned int time)
       if( request->finishedDate() <= GameDate::current() )
       {
         request->fail( &_city );
+        _d->lastRequestCancelDate = GameDate::current();
       }
 
       if( !request->isAnnounced() && request->isReady( &_city ) )
@@ -114,6 +116,7 @@ VariantMap Dispatcher::save() const
   }
 
   ret[ "items" ] = vm_rq;
+  VARIANT_SAVE_ANY_D( ret, _d, lastRequestCancelDate )
   return ret;
 }
 
@@ -124,9 +127,16 @@ void Dispatcher::load(const VariantMap& stream)
   {
     add( it->second.toMap(), false );
   }
+
+  VARIANT_LOAD_TIME_D( _d, lastRequestCancelDate, stream )
 }
 
-RequestList Dispatcher::getRequests() const {  return _d->requests; }
+bool Dispatcher::haveCanceledRequest() const
+{
+  return _d->lastRequestCancelDate.monthsTo( GameDate::current() ) < DateTime::monthsInYear;
+}
+
+RequestList Dispatcher::requests() const {  return _d->requests; }
 
 }//end namespace request
 

@@ -133,10 +133,7 @@ void SplashScreen::exitScene()
   for( int i=0; i<7; i++ )
   {
     Rect textRect = textFont.getTextRect( text[i], Rect( Point(), _d->textPic->size() ), align::center, align::center );
-    bool defaultColor = i == 5;
-#ifdef CAESARIA_PLATFORM_ANDROID
-    defaultColor = !defaultColor;
-#endif    
+    bool defaultColor = i == 5;  
     textFont.setColor( defaultColor ? DefaultColors::indianRed : DefaultColors::dodgerBlue );
     textFont.draw( *_d->textPic, text[i], textRect.left(), textRect.top() + 20 * i, false, true );
   }

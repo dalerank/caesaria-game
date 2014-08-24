@@ -33,6 +33,8 @@
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
 #include "city/cityservice_health.hpp"
+#include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -119,7 +121,7 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  _d->lbAdvice = findChildA<Label*>( "lbAvice", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbAdvice )
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );
@@ -201,23 +203,43 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
       HouseList houses =  helper.find<House>( building::house );
 
       unsigned int needBath = 0;
+      unsigned int needBarbers = 0;
+      unsigned int needDoctors = 0;
+      unsigned int needHospital = 0;
       foreach( it, houses )
       {
         HousePtr house = *it;
-        needBath += house->isHealthNeed( Service::baths );
+        needBath += house->isHealthNeed( Service::baths ) ? 1 : 0;
+        needDoctors += house->isHealthNeed( Service::doctor ) ? 1 : 0;
+        needBarbers += house->isHealthNeed( Service::barber ) ? 1 : 0;
+        needHospital += house->isHealthNeed( Service::hospital ) ? 1 : 0;
       }
 
       if( needBath > 0 )
       {
         outText << "##healthadv_some_regions_need_bath##";
+        outText << "##healthadv_some_regions_need_bath_2##";
       }
+
+      if( needDoctors > 0 )
+      {          
+        outText << "##healthadv_some_regions_need_doctors##";
+        outText << "##healthadv_some_regions_need_doctors_2##";
+      }
+
+      if( needBarbers > 0 )
+      {
+        outText << "##healthadv_some_regions_need_barbers##";
+        outText << "##healthadv_some_regions_need_barbers_2##";
+      }
+      if( needHospital > 0 ) { outText << "##healthadv_some_regions_need_hospital##"; }
     }
   }
 
   std::string text = outText.empty()
                         ? "##healthadv_unknown_reason##"
                         : outText.random();
-  lbAdvice->setText( text );
+  lbAdvice->setText( _(text) );
 }
 
 }

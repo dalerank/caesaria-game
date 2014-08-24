@@ -1,9 +1,7 @@
 project(CaesarIA-game)
 
 # Find revision ID and hash of the sourcetree
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/GenerateVersionHPP.cmake")
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
+include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
@@ -98,8 +96,14 @@ if(BUILD_GL_SHADERS)
 add_definitions( -DCAESARIA_USE_SHADERS )
 endif(BUILD_GL_SHADERS)
 
+if( DEBUG_TIMERS )
+add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
+endif(DEBUG_TIMERS)
+
+
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
+  target_link_libraries(${PROJECT_NAME} "winmm")
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 

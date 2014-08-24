@@ -91,7 +91,6 @@ House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl
   _d->houseLevel = level;
   _d->hid = HouseLevel::vacantLot;
   _d->spec = helper.getSpec( _d->houseLevel );
-  setName( _d->spec.levelName() );
   _d->desirability.base = -3;
   _d->desirability.range = 3;
   _d->desirability.step = 1;
@@ -294,7 +293,7 @@ void House::_updateCrime()
     foodStockInfluence4happines = math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. );
   }
 
-  int poverity4happiness = _d->spec.level() > HouseLevel::bigHut ? -_d->poverity / 2 : 0;
+  int poverity4happiness = _d->spec.level() > HouseLevel::hut ? -_d->poverity / 2 : 0;
 
   int curHappiness = 50
                   + unempInfluence4happiness
@@ -588,20 +587,20 @@ void House::_levelUp()
      
   switch( _d->houseLevel )
   {
-  case HouseLevel::smallHovel:
+  case HouseLevel::hovel:
     _d->desirability.base = -3;
     _d->desirability.step = 1;
   break;
 
-  case HouseLevel::bigTent:  _tryEvolve_1_to_11_lvl( HouseLevel::smallHovel, HouseLevel::maxSize2, -3); break;
-  case HouseLevel::smallHut: _tryEvolve_1_to_11_lvl( HouseLevel::bigTent, HouseLevel::maxSize2, -3 );   break;
-  case HouseLevel::bigHut:   _tryEvolve_1_to_11_lvl( HouseLevel::smallHut, HouseLevel::maxSize2, -2 );  break;
-  case HouseLevel::smallDomus: _tryEvolve_1_to_11_lvl( HouseLevel::bigHut, HouseLevel::maxSize2, -2 );  break;
-  case HouseLevel::bigDomus: _tryEvolve_1_to_11_lvl( HouseLevel::smallDomus, HouseLevel::maxSize2, -2 ); break;
-  case HouseLevel::smallMansion: _tryEvolve_1_to_11_lvl( HouseLevel::bigDomus, HouseLevel::maxSize2, -2 );   break;
-  case HouseLevel::bigMansion:  _tryEvolve_1_to_11_lvl( HouseLevel::smallMansion, HouseLevel::maxSize2, -1 );  break;
-  case HouseLevel::smallInsula: _tryEvolve_1_to_11_lvl( HouseLevel::bigMansion, HouseLevel::maxSize2, -1 );   break;
-  case HouseLevel::middleInsula: _tryEvolve_1_to_11_lvl( HouseLevel::smallInsula, HouseLevel::maxSize2, 0 );   break;
+  case HouseLevel::tent:  _tryEvolve_1_to_11_lvl( HouseLevel::hovel, HouseLevel::maxSize2, -3); break;
+  case HouseLevel::shack: _tryEvolve_1_to_11_lvl( HouseLevel::tent, HouseLevel::maxSize2, -3 );   break;
+  case HouseLevel::hut:   _tryEvolve_1_to_11_lvl( HouseLevel::shack, HouseLevel::maxSize2, -2 );  break;
+  case HouseLevel::domus: _tryEvolve_1_to_11_lvl( HouseLevel::hut, HouseLevel::maxSize2, -2 );  break;
+  case HouseLevel::bigDomus: _tryEvolve_1_to_11_lvl( HouseLevel::domus, HouseLevel::maxSize2, -2 ); break;
+  case HouseLevel::mansion: _tryEvolve_1_to_11_lvl( HouseLevel::bigDomus, HouseLevel::maxSize2, -2 );   break;
+  case HouseLevel::bigMansion:  _tryEvolve_1_to_11_lvl( HouseLevel::mansion, HouseLevel::maxSize2, -1 );  break;
+  case HouseLevel::insula: _tryEvolve_1_to_11_lvl( HouseLevel::bigMansion, HouseLevel::maxSize2, -1 );   break;
+  case HouseLevel::middleInsula: _tryEvolve_1_to_11_lvl( HouseLevel::insula, HouseLevel::maxSize2, 0 );   break;
   case HouseLevel::bigInsula:    _tryEvolve_12_to_20_lvl( HouseLevel::middleInsula, HouseLevel::maxSize2, 0 );  break;
   case HouseLevel::beatyfullInsula: _tryEvolve_12_to_20_lvl( HouseLevel::bigInsula, HouseLevel::maxSize2, 1 ); break;
   case HouseLevel::smallVilla:  _tryEvolve_12_to_20_lvl( HouseLevel::beatyfullInsula, HouseLevel::maxSize2, 2 ); break;
@@ -673,16 +672,16 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
 
 void House::_levelDown()
 {
-  if( _d->houseLevel <= HouseLevel::smallHovel )
+  if( _d->houseLevel <= HouseLevel::hovel )
     return;
 
-  _d->houseLevel = math::clamp<int>( _d->houseLevel-1, HouseLevel::smallHovel, 0xff );
+  _d->houseLevel = math::clamp<int>( _d->houseLevel-1, HouseLevel::hovel, 0xff );
 
   _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel );
 
   switch (_d->houseLevel)
   {
-  case HouseLevel::smallHovel:
+  case HouseLevel::hovel:
   {
     Tilemap& tmap = _city()->tilemap();
 
@@ -707,14 +706,14 @@ void House::_levelDown()
   }
   break;
 
-  case HouseLevel::bigTent: _tryDegrage_11_to_2_lvl( -3 ); break;
-  case HouseLevel::smallHut: _tryDegrage_11_to_2_lvl( -3 ); break;
-  case HouseLevel::bigHut: _tryDegrage_11_to_2_lvl( -2 ); break;
-  case HouseLevel::smallDomus: _tryDegrage_11_to_2_lvl( -2 ); break;
+  case HouseLevel::tent: _tryDegrage_11_to_2_lvl( -3 ); break;
+  case HouseLevel::shack: _tryDegrage_11_to_2_lvl( -3 ); break;
+  case HouseLevel::hut: _tryDegrage_11_to_2_lvl( -2 ); break;
+  case HouseLevel::domus: _tryDegrage_11_to_2_lvl( -2 ); break;
   case HouseLevel::bigDomus: _tryDegrage_11_to_2_lvl( -2 ); break;
-  case HouseLevel::smallMansion: _tryDegrage_11_to_2_lvl( -2 );  break;
+  case HouseLevel::mansion: _tryDegrage_11_to_2_lvl( -2 );  break;
   case HouseLevel::bigMansion: _tryDegrage_11_to_2_lvl( -1 );  break;
-  case HouseLevel::smallInsula: _tryDegrage_11_to_2_lvl( -1 );  break;
+  case HouseLevel::insula: _tryDegrage_11_to_2_lvl( -1 );  break;
   case HouseLevel::middleInsula: _tryDegrage_11_to_2_lvl( 0 );  break;
   case HouseLevel::bigInsula: _tryDegrage_11_to_2_lvl( 0 );  break;
   case HouseLevel::beatyfullInsula: _tryDegrade_20_to_12_lvl( HouseLevel::maxSize2, 1 ); break;
@@ -920,7 +919,7 @@ double House::state( ParameterType param) const
 
 void House::_update( bool needChangeTexture )
 {
-  _d->hid = ( _d->houseLevel == HouseLevel::smallHovel && _d->habitants.count() == 0 )
+  _d->hid = ( _d->houseLevel == HouseLevel::hovel && _d->habitants.count() == 0 )
                                              ? HouseLevel::vacantLot
                                              : (HouseLevel::ID)_d->houseLevel;
   Picture pic = HouseSpecHelper::instance().getPicture( _d->hid, size().width() );
@@ -1206,6 +1205,29 @@ float House::getServiceValue( Service::Type service){  return _d->services[servi
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
 unsigned int House::maxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
+
+std::string House::levelName() const
+{
+  std::string ret = spec().levelName();
+  bool big = false;
+  switch( spec().level() )
+  {
+  case HouseLevel::hovel:
+  case HouseLevel::tent:
+  case HouseLevel::shack:
+  case HouseLevel::hut:
+      big = size().width() > 1; break;
+  default:
+      break;
+  }
+
+  if( big )
+  {
+    ret = StringHelper::replace( ret, "small", "big" );
+  }
+
+  return ret;
+}
 
 void House::Impl::updateHealthLevel( HousePtr house )
 {

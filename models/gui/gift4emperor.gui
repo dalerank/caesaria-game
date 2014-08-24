@@ -11,7 +11,13 @@
     
   lbxGifts#ListBox : {
     geometry : [ 16, 64, "pw-16", 160 ] 
-    textAlign : [ "cebter", "center" ]
+    textAlign : [ "center", "center" ]
+  }
+
+  lbLastGiftDate#Label : {
+    geometry : [ 16, 160, "pw-16", 200 ]
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
   }
     
   btnSend#PushButton : {

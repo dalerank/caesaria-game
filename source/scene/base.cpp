@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "base.hpp"
 
@@ -22,6 +23,7 @@
 #include "core/event.hpp"
 #include "core/eventconverter.hpp"
 #include "core/time.hpp"
+#include "core/timer.hpp"
 
 namespace scene
 {
@@ -54,7 +56,10 @@ void Base::update(gfx::Engine& engine )
 {
   static unsigned int lastTimeUpdate = DateTime::elapsedTime();
 
+  DebugTimer::check( "start-count", "base" );
   drawFrame( engine );
+  DebugTimer::check( "end-count", "base" );
+
   afterFrame();
 
   NEvent nEvent;

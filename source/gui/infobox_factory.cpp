@@ -51,14 +51,14 @@ AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
 
   if( factory->produceGoodType() != Good::none )
   {
-    new Image( this, Point( 10, 10), GoodHelper::getPicture( factory->produceGoodType() ) );
+    new Image( this, Point( 10, 10), GoodHelper::picture( factory->produceGoodType() ) );
   }
 
   // paint picture of in good
   if( factory->inStockRef().type() != Good::none )
   {
     Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
-    lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
+    lbStockInfo->setIcon( GoodHelper::picture( factory->inStockRef().type() ) );
 
     std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
     std::string text = StringHelper::format( 0xff, "%d %s %s %d",

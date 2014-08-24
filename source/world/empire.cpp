@@ -27,6 +27,7 @@
 #include "traderoute.hpp"
 #include "object.hpp"
 #include "rome.hpp"
+#include "events/showinfobox.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
 #include "game/player.hpp"
@@ -48,7 +49,7 @@ public:
   int rateInterest;
   Emperor emperor;
   unsigned int treasury;
-  bool available;
+  bool enabled;
 
   std::string playerCityName;
   int workerSalary;
@@ -63,7 +64,7 @@ Empire::Empire() : _d( new Impl )
 {
   _d->trading.init( this );
   _d->workerSalary = 30;
-  _d->available = true;
+  _d->enabled = true;
   _d->treasury = 0;
   _d->objUid = 0;
   _d->rateInterest = 10;
@@ -209,7 +210,7 @@ void Empire::save( VariantMap& stream ) const
   stream[ "cities"  ] = vm_cities;
   stream[ "objects" ] = vm_objects;
   stream[ "trade"   ] = _d->trading.save();
-  stream[ "enabled" ] = _d->available;
+  stream[ "enabled" ] = _d->enabled;
   stream[ "emperor" ] = _d->emperor.save();
   stream[ "objUid"  ] = _d->objUid;
   stream[ "rateInterest" ] = _d->rateInterest;
@@ -236,7 +237,7 @@ void Empire::load( const VariantMap& stream )
   _d->trading.load( stream.get( "trade").toMap() );
 
   Variant enV = stream.get( "enabled" );;
-  if( enV.isValid() ) _d->available = enV;
+  if( enV.isValid() ) _d->enabled = enV;
 
   VariantMap cities = stream.get( "cities" ).toMap();
   foreach( item, cities )
@@ -258,8 +259,8 @@ void Empire::setCitiesAvailable(bool value)
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
-bool Empire::isAvailable() const{  return _d->available; }
-void Empire::setAvailable(bool value) { _d->available = value; }
+bool Empire::isAvailable() const{  return _d->enabled; }
+void Empire::setAvailable(bool value) { _d->enabled = value; }
 
 void Empire::setPrice(Good::Type gtype, int buy, int sell)
 {
@@ -437,18 +438,18 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   return 0;
 }
 
-bool EmpireHelper::isGreaterSalary(CityPtr city)
+float EmpireHelper::governorSalaryKoeff(CityPtr city)
 {
   PlayerPtr pl = city->player();
 
-  bool result = false;
+  float result = 1.f;
   if( pl.isValid() )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
-    const world::GovernorRank& curRank = ranks[ math::clamp<int>( pl->rank(), 0, ranks.size()-1 ) ];
+    const world::GovernorRank& curRank = ranks[ math::clamp<int>( pl->rank(), 0, ranks.size() ) ];
     int normalSalary = curRank.salary;
 
-    result = (pl->salary() > normalSalary);
+    result = pl->salary() / (float)normalSalary;
   }
 
   return result;
@@ -456,7 +457,7 @@ bool EmpireHelper::isGreaterSalary(CityPtr city)
 
 GovernorRanks EmpireHelper::ranks()
 {
-  std::map<unsigned int, GovernorRank > sortRanks;
+  std::map<unsigned int, GovernorRank> sortRanks;
 
   VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH( ranksModel ) );
   foreach( i, vm )
@@ -471,6 +472,12 @@ GovernorRanks EmpireHelper::ranks()
     ret.push_back( i->second );
 
   return ret;
+}
+
+GovernorRank EmpireHelper::getRank(unsigned int name)
+{
+  GovernorRanks ranks = world::EmpireHelper::ranks();
+  return ranks[ math::clamp<int>( name, 0, ranks.size() ) ];
 }
 
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
@@ -521,14 +528,28 @@ void Empire::Impl::takeTaxes()
       empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
     }
 
-    if( city->funds().treasury() > empireTax )
+    city::Funds& funds = city->funds();
+    if( funds.treasury() > empireTax )
     {
-      city->funds().resolveIssue( FundIssue( city::Funds::empireTax, -empireTax ) );
+      funds.resolveIssue( FundIssue( city::Funds::empireTax, -empireTax ) );
 
       treasury += empireTax;
       emperor.cityTax( city->name(), empireTax );
     }
+    else
+    {
+      int lastYearBrokenTribute = funds.getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+
+      std::string text = lastYearBrokenTribute > 0
+                                ? "##for_second_year_broke_tribute##"
+                                : "##current_year_notpay_tribute_warning##";
+      events::GameEventPtr e = events::ShowInfobox::create( "##tribute_broken_title##",
+                                                            text );
+      e->dispatch();
+
+      city->funds().resolveIssue( FundIssue( city::Funds::overdueEmpireTax, empireTax ) );
     }
+  }
 }
 
 void GovernorRank::load( const std::string& name, const VariantMap &vm)

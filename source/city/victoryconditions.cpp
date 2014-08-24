@@ -35,8 +35,11 @@ public:
   StringArray overview;
   std::string shortDesc,
               caption,
-              nextMission,
-              newTitle;
+              next,
+              title,
+              winText;
+
+
 };
 
 VictoryConditions::VictoryConditions() : _d( new Impl )
@@ -50,10 +53,7 @@ VictoryConditions::VictoryConditions() : _d( new Impl )
   _d->peace = 0;
 }
 
-VictoryConditions::~VictoryConditions()
-{
-
-}
+VictoryConditions::~VictoryConditions(){}
 
 bool VictoryConditions::isSuccess( int culture, int prosperity,
                                 int favour, int peace,
@@ -72,34 +72,35 @@ bool VictoryConditions::isSuccess( int culture, int prosperity,
 void VictoryConditions::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::instance().getLevel( stream.get( "maxHouseLevel" ).toString() );
-  _d->success = stream.get( "success" ).toBool();
-  _d->population = (int)stream.get( "population" );
-  _d->culture = (int)stream.get( "culture" );
-  _d->prosperity = (int)stream.get( "prosperity" );
-  _d->favour = (int)stream.get( "favour" );
-  _d->peace = (int)stream.get( "peace" );
+  VARIANT_LOAD_ANY_D( _d, success, stream )
+  VARIANT_LOAD_ANY_D( _d, population, stream )
+  VARIANT_LOAD_ANY_D( _d, culture, stream )
+  VARIANT_LOAD_ANY_D( _d, prosperity, stream )
+  VARIANT_LOAD_ANY_D( _d, favour, stream )
+  VARIANT_LOAD_ANY_D( _d, peace, stream )
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
-  _d->caption = stream.get( "caption" ).toString();
-  _d->nextMission = stream.get( "next" ).toString();
-  _d->newTitle = stream.get( "title" ).toString();
+  _d->winText = stream.get( "win.text" ).toString();
+  VARIANT_LOAD_STR_D( _d, caption, stream)
+  VARIANT_LOAD_STR_D( _d, next, stream )
+  VARIANT_LOAD_STR_D( _d, title, stream )
 }
 
 VariantMap VictoryConditions::save() const
 {
   VariantMap ret;
-  ret[ "success"    ] = _d->success;
-  ret[ "culture"    ] = _d->culture;
-  ret[ "population" ] = _d->population;
-  ret[ "prosperity" ] = _d->prosperity;
-  ret[ "favour"     ] = _d->favour;
-  ret[ "peace"      ] = _d->peace;
-  ret[ "overview"   ] = Variant( _d->overview );
+  VARIANT_SAVE_ANY_D( ret, _d, success )
+  VARIANT_SAVE_ANY_D( ret, _d, culture )
+  VARIANT_SAVE_ANY_D( ret, _d, population )
+  VARIANT_SAVE_ANY_D( ret, _d, prosperity )
+  VARIANT_SAVE_ANY_D( ret, _d, favour )
+  VARIANT_SAVE_ANY_D( ret, _d, peace )
+  VARIANT_SAVE_STR_D( ret, _d, overview )
   ret[ "short"      ] = Variant( _d->shortDesc );
-  ret[ "caption"    ] = Variant( _d->caption );
-  ret[ "next"       ] = Variant( _d->nextMission );
-  ret[ "title"      ] = Variant( _d->newTitle );
-
+  ret[ "win.text"   ] = Variant( _d->winText );
+  VARIANT_SAVE_STR_D( ret, _d, caption )
+  VARIANT_SAVE_STR_D( ret, _d, next )
+  VARIANT_SAVE_STR_D( ret, _d, title )
   return ret;
 }
 
@@ -115,8 +116,9 @@ VictoryConditions&VictoryConditions::operator=(const VictoryConditions& a)
   _d->overview = a._d->overview;
   _d->shortDesc = a._d->shortDesc;
   _d->caption = a._d->caption;
-  _d->nextMission = a._d->nextMission;
-  _d->newTitle = a._d->newTitle;
+  _d->next = a._d->next;
+  _d->title = a._d->title;
+  _d->winText = a._d->winText;
 
   return *this;
 }
@@ -125,10 +127,11 @@ int VictoryConditions::needCulture() const{  return _d->culture;}
 int VictoryConditions::needProsperity() const{  return _d->prosperity;}
 int VictoryConditions::needFavour() const{  return _d->favour;}
 int VictoryConditions::needPeace() const{  return _d->peace;}
-std::string VictoryConditions::getShortDesc() const {  return _d->shortDesc;}
-std::string VictoryConditions::getNextMission() const { return _d->nextMission; }
-std::string VictoryConditions::getNewTitle() const { return _d->newTitle; }
+std::string VictoryConditions::shortDesc() const {  return _d->shortDesc;}
+std::string VictoryConditions::nextMission() const { return _d->next; }
+std::string VictoryConditions::newTitle() const { return _d->title; }
+std::string VictoryConditions::winText() const{ return _d->winText; }
 int VictoryConditions::needPopulation() const{  return _d->population;}
-const StringArray& VictoryConditions::getOverview() const{  return _d->overview;}
+const StringArray& VictoryConditions::overview() const{  return _d->overview;}
 
 }//end namespace city

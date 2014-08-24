@@ -25,9 +25,14 @@
 #include "lzma/LzmaDec.h"
 #include "bzip2/bzlib.h"
 #include "aes/fileenc.h"
+#include "core/stringhelper.hpp"
 
 namespace vfs
 {
+
+namespace {
+static const std::string readerTypename = CAESARIA_STR_EXT(ZipArchiveReader);
+}
 
 ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 : _fileSystem(fs)
@@ -41,6 +46,7 @@ ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 bool ZipArchiveLoader::isALoadableFileFormat(const Path& filename) const
 {
     std::string fileExtension = filename.extension();
+    Logger::warning( "ZipArchiveLoader: extension is " + fileExtension );
     return StringHelper::isEquale( fileExtension, ".zip", StringHelper::equaleIgnoreCase )
            || StringHelper::isEquale( fileExtension, ".pk3", StringHelper::equaleIgnoreCase )
            || StringHelper::isEquale( fileExtension, ".gz", StringHelper::equaleIgnoreCase )
@@ -74,26 +80,23 @@ ArchivePtr ZipArchiveLoader::createArchive(const Path& filename, bool ignoreCase
 //! \return Pointer to the created archive. Returns 0 if loading failed.
 ArchivePtr ZipArchiveLoader::createArchive( NFile file, bool ignoreCase, bool ignorePaths) const
 {
-    ArchivePtr archive;
-    if( file.isOpen() )
-    {
-      file.seek(0);
+  if( file.isOpen() )
+  {
+    file.seek(0);
 
-      unsigned short sig;
-      file.read( &sig, 2);
+    unsigned short sig;
+    file.read( &sig, 2);
 
-/*#ifdef __BIG_ENDIAN__
-		sig = os::Byteswap::byteswap(sig);
-#endif*/
+    file.seek(0);
 
-      file.seek(0);
+    bool isGZip = (sig == 0x8b1f);
 
-              bool isGZip = (sig == 0x8b1f);
-
-      archive = new ZipArchiveReader( file, ignoreCase, ignorePaths, isGZip);
-      archive->drop();
-    }
+    ArchivePtr archive( new ZipArchiveReader( file, ignoreCase, ignorePaths, isGZip ) );
+    archive->drop();
     return archive;
+  }
+
+  return ArchivePtr();
 }
 
 //! Check if the file might be loaded by this class
@@ -442,7 +445,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
   //98 - PPMd - Compression Method, WinZip 10
   //99 - AES encryption, WinZip 9
 
-  const SZipFileEntry &e = FileInfo[ _items()[index].iD ];
+  const SZipFileEntry &e = FileInfo[ _items()[index].uid ];
 
   short actualCompressionMethod=e.header.CompressionMethod;
   NFile decrypted;
@@ -506,7 +509,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       return NFile();
     }
 
-    decrypted = MemoryFile::create( decryptedBuf, _items()[ index ].absolutePath() );
+    decrypted = MemoryFile::create( decryptedBuf, item( index ).fullpath );
     actualCompressionMethod = (e.header.Sig & 0xffff);
 #if 0
     if ((e.header.Sig & 0xff000000)==0x01000000)
@@ -533,7 +536,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       {
           File.seek( e.Offset );
           ByteArray data = File.read( decryptedSize );
-          return MemoryFile::create( data, _items()[ index ].absolutePath() );
+          return MemoryFile::create( data, item( index ).fullpath );
       }
     }
     break;
@@ -549,7 +552,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + _items()[ index ].absolutePath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -582,12 +585,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != Z_OK)
       {
-        Logger::warning( "Error decompressing " + _items()[index].absolutePath().toString() );
+        Logger::warning( "Error decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, _items()[index].absolutePath() );
+        return MemoryFile::create( pBuf, item( index ).fullpath );
       }
     }
     break;
@@ -603,7 +606,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + _items()[index].absolutePath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -635,12 +638,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != BZ_OK)
       {
-        Logger::warning( "Error decompressing +" + item( index ).absolutePath().toString() );
+        Logger::warning( "Error decompressing +" + item( index ).fullpath.toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, item( index ).absolutePath() );
+        return MemoryFile::create( pBuf, item( index ).fullpath );
       }
     }
     break;
@@ -654,7 +657,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       pcData.resize( decryptedSize );
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + item( index ).absolutePath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -675,37 +678,32 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != SZ_OK)
       {
-        Logger::warning( "Error decompressing " + item( index ).absolutePath().toString() );
+        Logger::warning( "Error decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, item( index ).absolutePath() );
+        return MemoryFile::create( pBuf, item( index ).fullpath );
       }
     }
     break;
 
     case 99:
     {
-                // If we come here with an encrypted file, decryption support is missing
-            //os::Printer::log("Decryption support not enabled. File cannot be read.", ELL_ERROR);
       return NFile();
     }
 
     default:
     {
-      Logger::warning( "file %s has unsupported compression method", item( index ).absolutePath().toString().c_str() );
+      Logger::warning( "file %s has unsupported compression method", item( index ).fullpath.toString().c_str() );
       return NFile();
     }
   }
 
-  Logger::warning( "Can't read file " + item( index ).absolutePath().toString() );
+  Logger::warning( "Can't read file " + item( index ).fullpath.toString() );
   return NFile();
 }
 
-std::string ZipArchiveReader::getTypeName() const
-{
-    return "ZipReader";
-}
+const std::string& ZipArchiveReader::getTypeName() const { return readerTypename; }
 
 }

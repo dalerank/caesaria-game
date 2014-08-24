@@ -56,6 +56,7 @@
 #include "dictionary.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -94,12 +95,12 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
   // create the title
   setupUI( ":/gui/infobox.gui" );
 
-  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
-  _d->lbBackground = findChildA<Label*>( "lbBackground", true, this );
-  _d->lbBlackFrame = findChildA<Label*>( "lbBlackFrame", true, this );
-  _d->lbText = findChildA<Label*>( "lbText", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_DWIDGET_FROM_UI( _d, lbBackground )
+  GET_DWIDGET_FROM_UI( _d, lbBlackFrame )
+  GET_DWIDGET_FROM_UI( _d, lbText  )
 
   if( _d->btnExit )
   {

@@ -108,7 +108,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "Unable to initialize SDL: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %d", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
   
@@ -116,8 +116,11 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %d", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
+
+  SDL_StartTextInput();
     
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
@@ -134,18 +137,13 @@ void SdlEngine::init()
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
   
   window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(), 
-			     SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+           SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
   
-  /*SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-  
-  SDL_GLContext glcontext = SDL_GL_CreateContext(window);*/
+  Logger::warning("SDLGraficEngine:Android init successfull");
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+  SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
 #else  
-  unsigned int flags = flags = SDL_WINDOW_OPENGL;
+  unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
     
   if(isFullscreen())
@@ -165,18 +163,20 @@ void SdlEngine::init()
         _srcSize.width(), _srcSize.height(),
         flags);
   }
-#endif  
 
   if (window == NULL)
   {
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
     THROW("Failed to create window");
   }
 
   Logger::warning("SDLGraficEngine: init successfull");
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+#endif  
 
   if (renderer == NULL)
   {
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create renderer: %d", SDL_GetError() ) );
     THROW("Failed to create renderer");
   }
 
@@ -209,7 +209,6 @@ void SdlEngine::init()
   _d->window = window;
   _d->renderer = renderer;
   _d->texture = screenTexture;
-
 
   _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
 }
@@ -452,7 +451,7 @@ Engine::Modes SdlEngine::modes() const
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
-    if (SDL_GetDisplayMode(0, i, &mode) == 0)
+    if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
       ret.push_back(Size(mode.w, mode.h));
     }

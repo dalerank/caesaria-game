@@ -48,9 +48,9 @@ public:
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
-  virtual bool isFlat() { return true; }
+  virtual bool isFlat() const { return true; }
   virtual void collapse();
-  virtual bool canDestroy();
+  virtual bool canDestroy() const;
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);

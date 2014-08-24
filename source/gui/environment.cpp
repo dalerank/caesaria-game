@@ -75,11 +75,7 @@ Ui::Ui(Engine& painter )
   _d->hoveredNoSubelement = 0;
   _d->lastHoveredMousePos = Point();
   _d->engine = &painter;
-
-  //INITIALIZE_FILESYSTEM_INSTANCE;
-
   _environment = this;
-
   _d->toolTip.element;
   _d->toolTip.LastTime = 0;
   _d->toolTip.EnterTime = 0;
@@ -92,7 +88,7 @@ Ui::Ui(Engine& painter )
 //! Returns if the element has focus
 bool Ui::hasFocus( const Widget* element) const
 {
-    return ( _d->focusedElement.object() == element );
+  return ( _d->focusedElement.object() == element );
 }
 
 Ui::~Ui() {}
@@ -120,6 +116,12 @@ void Ui::clear()
   for( ConstChildIterator it = children().begin(); it != children().end(); it++ )
     deleteLater( *it );
 }
+
+void Ui::setFocus() {}
+void Ui::removeFocus() {}
+void Ui::beforeDraw(Engine& painter) {}
+void Ui::draw(Engine& painter) {}
+bool Ui::isHovered() const { return false; }
 
 void Ui::draw()
 {
@@ -460,6 +462,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
     break;
 
+    case sTextInput:
     case sEventKeyboard:
         {
           /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
@@ -494,16 +497,6 @@ bool Ui::handleEvent( const NEvent& event )
           }
         }
         break;
-
-//     case NRP_LOG_TEXT_EVENT:								//
-//         {
-//             /*if( _console )
-//                 _console->AppendMessage( String::fromCharArray( event.LogEvent.Text ) ); //
-//             return false;
-// 			*/
-//         }
-//     break;
-
     default:
         break;
   } // end switch

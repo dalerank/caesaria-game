@@ -18,6 +18,7 @@
     favour : 40
     next : ":/missions/tutorial4.briefing"
     title : "##win_engineer_title##"
+    win.text : "##tarentum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tarentum_3_title##"

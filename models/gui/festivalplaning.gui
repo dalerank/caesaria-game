@@ -1,6 +1,7 @@
 {
   geometry : [ 0, 0, 625, 320 ]
   bgtype : "whiteFrame"
+  static : true
     
   lbTitle#Label : {
     geometry : [ 16, 16, "pw-16", 46  ]
@@ -18,7 +19,6 @@
 
   btnSmallFestival#PushButton : {
     geometry : [ 95, 170, "pw-95", 195 ]
-    text.align : [ "upperLeft", "center" ]
     pushbutton : true
     bgtype : "whiteBorderUp"
     text.align : [ "center", "center" ]
@@ -26,7 +26,6 @@
 
   btnMiddleFestival#PushButton : {
     geometry : [ 95, 200, "pw-95", 225 ]
-    text.align : [ "upperLeft", "center" ]
     pushbutton : true
     bgtype : "whiteBorderUp"
     text.align : [ "center", "center" ]
@@ -34,7 +33,6 @@
 
   btnGreatFestival#PushButton : {
     geometry : [ 95, 230, "pw-95", 255 ]
-    text.align : [ "upperLeft", "center" ]
     pushbutton : true
     bgtype : "whiteBorderUp"
     text.align : [ "center", "center" ]

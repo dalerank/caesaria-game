@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "stringhelper.hpp"
 #include "requirements.hpp"
@@ -232,6 +234,21 @@ bool StringHelper::isEquale( const std::string& a, const std::string& b, equaleM
   }
 }
 
+int StringHelper::compare( const std::string& a, const std::string& b, equaleMode mode )
+{
+  switch( mode )
+  {
+#if defined(_MSC_VER)
+  case equaleIgnoreCase: return _stricmp( a.c_str(), b.c_str() );
+  case equaleCase: return strcmp( a.c_str(), b.c_str() );
+#else
+  case equaleIgnoreCase: return strcasecmp( a.c_str(), b.c_str() );
+  case equaleCase: return strcmp( a.c_str(), b.c_str() );
+#endif
+  default: return 0;
+  }
+}
+
 unsigned int StringHelper::hash( const std::string& text )
 {
   unsigned int nHash = 0;
@@ -298,7 +315,7 @@ bool StringHelper::isEqualen( const std::string& str1, const std::string& str2, 
   return (i == n) || (str1[i] == 0 && str2[i] == 0);
 }
 
-char StringHelper::localeLower( char x )
+static char __localeLower( char x )
 {
   return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
 }
@@ -306,12 +323,7 @@ char StringHelper::localeLower( char x )
 std::string StringHelper::localeLower( const std::string& str)
 {
   std::string ret = str;
-
-  for( unsigned int i=0; i<str.size(); ++i)
-  {
-    ret[i] = localeLower( ret[ i ] );
-  }
-
+  std::transform( ret.begin(), ret.end(), ret.begin(), __localeLower );
   return ret;
 }
 

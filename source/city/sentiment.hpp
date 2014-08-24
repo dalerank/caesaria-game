@@ -29,10 +29,11 @@ class Sentiment : public city::Srvc
 {
 public:
   static city::SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  static std::string defaultName();
   virtual void update( const unsigned int time );
   int value() const;
   void append( int value );
+  std::string reason() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);

@@ -83,7 +83,7 @@ struct ReleaseFile
 		if (file.toString() != other.file.toString()
 				|| crc != other.crc
 				|| filesize != other.filesize
-				|| isArchive != isArchive)
+				|| isArchive != other.isArchive)
 		{
 			return false;
 		}

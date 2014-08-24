@@ -66,6 +66,7 @@ public:
   Path& operator=(const Path& other );
   Path& operator+=(char c);
   Path operator+(const Path& other );
+  Path canonical() const;
 
   //! flatten a path and file name for example: "/you/me/../." becomes "/you"
   Path flattenFilename( const Path& root = "/" ) const;

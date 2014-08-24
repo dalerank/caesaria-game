@@ -129,7 +129,7 @@ bool BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
 
 bool BurningRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
-bool BurningRuins::canDestroy() { return (state( Construction::fire ) == 0); }
+bool BurningRuins::canDestroy() const { return (state( Construction::fire ) == 0); }
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {

@@ -100,6 +100,7 @@ public:
 
 protected:
   Items& _items();
+  void _updateCache();
 
 private:
   class Impl;
@@ -113,7 +114,7 @@ inline StringArray& operator<<( StringArray& array, const vfs::Entries& flist )
   const vfs::Entries::Items& items = flist.items();
   for( vfs::Entries::ConstItemIt it=items.begin(); it != items.end(); ++it)
   {
-    array.push_back( (*it).name().toString() );
+    array.push_back( (*it).name.toString() );
   }
 
   return array;

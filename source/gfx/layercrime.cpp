@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layercrime.hpp"
 #include "tileoverlay.hpp"
@@ -23,11 +23,31 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "layerconstants.hpp"
+#include "core/gettext.hpp"
+#include "core/event.hpp"
+#include "camera.hpp"
 
 using namespace constants;
 
 namespace gfx
 {
+
+namespace {
+
+static const std::string crimeDesc[] =
+{
+  "##none_crime_risk##",
+  "##very_low_crime_risk##",
+  "##low_crime_risk##",
+  "##few_crime_risk##"
+  "##some_crime_risk##",
+  "##several_crimes_but_area_secure##",
+  "##dangerous_crime_risk##"
+  "##averange_crime_risk##",
+  "##high_crime_risk##"
+};
+
+}
 
 int LayerCrime::type() const {  return citylayer::crime; }
 
@@ -107,6 +127,39 @@ LayerPtr LayerCrime::create(Camera& camera, PlayerCityPtr city)
   ret->drop();
 
   return ret;
+}
+
+void LayerCrime::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        HousePtr house = ptr_cast<House>( tile->overlay() );
+        if( house != 0 )
+        {
+          int crime = (int)house->getServiceValue( Service::crime );
+          text = crimeDesc[ math::clamp<int>( crime / 12.5, 0, 7 ) ];
+        }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default:
+
+    break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerCrime::LayerCrime( Camera& camera, PlayerCityPtr city)

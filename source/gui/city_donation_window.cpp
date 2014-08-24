@@ -20,7 +20,9 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "label.hpp"
+#include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -50,9 +52,11 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
   setupUI( ":/gui/money2city.gui" );
   setCenter( parent()->center() );
 
-  PushButton* btnSend = findChildA<PushButton*>( "btnSend", true, this );
-  PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
-  d->lbDonation = findChildA<Label*>( "lbDonation", true, this );
+  PushButton* btnSend;
+  PushButton* btnCancel;
+  GET_WIDGET_FROM_UI( btnCancel )
+  GET_WIDGET_FROM_UI( btnSend )
+  GET_DWIDGET_FROM_UI( d, lbDonation )
 
   d->updateDonationText();
 
@@ -98,7 +102,7 @@ Signal1<int>& CityDonationWindow::onSendMoney() { return _dfunc()->sendMoneySign
 
 void CityDonationWindow::Impl::updateDonationText()
 {
-  std::string text = StringHelper::format( 0xff, "%d from %d dn", wantSend, maxMoney );
+  std::string text = StringHelper::format( 0xff, "%s %d from %d dn", _("##donation_is##"), wantSend, maxMoney );
   if( lbDonation ) lbDonation->setText( text );
 }
 

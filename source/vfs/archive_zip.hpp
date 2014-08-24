@@ -209,7 +209,7 @@ public:
   virtual const Entries* entries() const;
 
   //! get the archive type
-  virtual std::string getTypeName() const;
+  virtual const std::string& getTypeName() const;
 
   Archive::Type getType() const;
 protected:

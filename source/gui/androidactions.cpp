@@ -19,6 +19,8 @@
 #include "core/event.hpp"
 #include "environment.hpp"
 #include "texturedbutton.hpp"
+#include "widget_helper.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -39,10 +41,10 @@ AndroidActionsBar::AndroidActionsBar( Widget* parent)
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 
-  _d->btnMenu = findChildA<TexturedButton*>( "btnMenu", true, this );
-  _d->btnShowHelp = findChildA<TexturedButton*>( "btnShowHelp", true, this );
-  _d->btnEnter = findChildA<TexturedButton*>( "btnEnter", true, this );
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  GET_DWIDGET_FROM_UI( _d, btnMenu )
+  GET_DWIDGET_FROM_UI( _d, btnShowHelp )
+  GET_DWIDGET_FROM_UI( _d, btnEnter )
+  GET_DWIDGET_FROM_UI( _d, btnExit )
 }
 
 Signal0<>& AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }

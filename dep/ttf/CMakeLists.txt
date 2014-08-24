@@ -1,7 +1,8 @@
 project(ttf)
 
 #find_package(Freetype REQUIRED)
-message("FREETYPE_INCLUDE_DIR is" ${FREETYPELIB_HOME})
+message("FREETYPE_DIR is" ${FREETYPELIB_HOME})
+find_package(SDL2 REQUIRED)
 
 file(GLOB TTF_HEADERS_LIST "*.h")
 file(GLOB TTF_SOURCES_LIST "*.c")

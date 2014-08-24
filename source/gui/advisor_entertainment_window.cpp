@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "objects/hippodrome.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -136,12 +137,12 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
-  _d->lbTroubleInfo = findChildA<Label*>( "lbTroubleInfo", true, this );
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
-  _d->btnNewFestival = findChildA<PushButton*>( "btnNewFestival", true, this );
-  _d->lbMonthFromLastFestival = findChildA<Label*>( "lbMonthFromLastFestival", true, this );
-  _d->lbInfoAboutLastFestival = findChildA<Label*>( "lbInfoAboutLastFestival", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbBlackframe )
+  GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_DWIDGET_FROM_UI( _d, btnNewFestival )
+  GET_DWIDGET_FROM_UI( _d, lbMonthFromLastFestival )
+  GET_DWIDGET_FROM_UI( _d, lbInfoAboutLastFestival )
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -239,21 +240,31 @@ void Entertainment::Impl::updateInfo()
 
   city::Helper helper( city );
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
+  int minTheaterSrvc = 100;
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
-  int nextLevel = 0;
+  int nextLevelMin = 0;
+  int nextLevelAmph = 0;
+  int nextLevelColloseum = 0;
+  int maxHouseLevel = 0;
 
   HouseList houses = helper.find<House>( building::house );
   foreach( it, houses )
   {
     HousePtr house = *it;
+
+    maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
     int habitants = house->habitants().count( CitizenGroup::mature );
 
     const HouseSpecification& lspec = house->spec();
 
     if( house->isEntertainmentNeed( Service::theater ) )
     {
-      theatersNeed +=  habitants;
-      theatersServed += (house->hasServiceAccess( Service::theater ) ? habitants : 0);
+      if( habitants > 0 )
+      {
+        theatersNeed += habitants;
+        theatersServed += house->hasServiceAccess( Service::theater );
+        minTheaterSrvc = std::min<int>( house->getServiceValue( Service::theater), minTheaterSrvc );
+      }
     }
 
     if(house->isEntertainmentNeed( Service::amphitheater ))
@@ -274,7 +285,17 @@ void Entertainment::Impl::updateInfo()
       hpdServed += (house->hasServiceAccess( Service::hippodrome) ? habitants : 0);
     }
 
-    nextLevel += ((lspec.computeEntertainmentLevel( house ) - lspec.minEntertainmentLevel()) < 0 ? 1 : 0);
+    int needEntert = ((lspec.computeEntertainmentLevel( house ) - lspec.minEntertainmentLevel()) < 0 ? 1 : 0);
+
+    if( needEntert )
+    {
+      switch( lspec.minEntertainmentLevel() )
+      {
+      case 1: nextLevelMin++; break;
+      case 2: nextLevelAmph++; break;
+      case 3: nextLevelColloseum++; break;
+      }
+    }
   }
 
   int allNeed = theatersNeed + amptNeed + clsNeed + hpdNeed;
@@ -282,36 +303,40 @@ void Entertainment::Impl::updateInfo()
 
   int entertCoverage = math::percentage( allServed, allNeed);
 
-  if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles.push_back( "##entertainment_80_100##" ); }
-  else if( entertCoverage > 50 && entertCoverage <= 80 ) { troubles.push_back( "##entertainment_50_80##" ); }
-  else if( allNeed > 0 && entertCoverage <= 50 )         { troubles.push_back( "##entertainment_less_50##" ); }
+  if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles << "##entertainment_80_100##"; }
+  else if( entertCoverage > 50 && entertCoverage <= 80 ) { troubles << "##entertainment_50_80##"; }
+  else if( allNeed > 0 && entertCoverage <= 50 )         { troubles << "##entertainment_less_50##"; }
 
-  if( thInfo.partlyWork > 0 ) { troubles.push_back( "" ); }
-  if( amthInfo.partlyWork > 0 ) { troubles.push_back( "##some_amphitheaters_no_actors##" ); }
-  if( clsInfo.partlyWork > 0 ) { troubles.push_back( "##small_colloseum_show##" ); }
+  if( minTheaterSrvc < 30 )   { troubles << "##some_houses_inadequate_entertainment##"; }
+  if( thInfo.partlyWork > 0 ) { troubles << "##some_theaters_need_actors##"; }
+  if( amthInfo.partlyWork > 0){ troubles << "##some_amphitheaters_no_actors##"; }
+  if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
   HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
   foreach( h, hippodromes )
   {
-    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
+    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
   }
 
-  if( nextLevel > 0 )
-  {
-    troubles.push_back( "##entertainment_need_for_upgrade##" );
-  }
+  if( nextLevelMin > 0 )  { troubles << "##entertainment_need_for_upgrade##";  }
+  if( nextLevelAmph > 0 ) { troubles << "##some_houses_need_amph_for_grow##"; }
+  if( theatersNeed == 0 ) { troubles << "##entertainment_not_need##";  }
 
-  if( theatersNeed == 0 )
-  {
-    troubles.push_back( "##entertainment_not_need##" );
-  }
+  std::string text;
 
   if( troubles.empty() )
   {
-    troubles.push_back( "##entertainment_full##" );
+    if( maxHouseLevel < HouseLevel::bigDomus ) { text = "##entadv_small_city_not_need_entert##"; }
+    else if( maxHouseLevel < HouseLevel::mansion ) { text = "##small_city_not_need_entertainment##"; }
+    else if( maxHouseLevel < HouseLevel::insula ) { text = "##etertadv_as_city_grow_you_need_more_entert##"; }
+    else { text = "##entertainment_full##"; }
+  }
+  else
+  {
+    text = troubles.random();
   }
 
-  lbTroubleInfo->setText( _( troubles[ (int)(rand() % troubles.size()) ] ) );
+  lbTroubleInfo->setText( _( text ) );
 }
 
 void Entertainment::Impl::updateFestivalInfo()

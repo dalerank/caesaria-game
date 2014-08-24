@@ -49,7 +49,7 @@ EmpirePricesWindow::EmpirePricesWindow(Widget *parent, int id, const Rect &recta
         }
 
       Good::Type gtype = (Good::Type)i;
-      Picture goodIcon = GoodHelper::getPicture( gtype );
+      Picture goodIcon = GoodHelper::picture( gtype );
       new Image( this, startPos, goodIcon );
 
       std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.buyPrice( gtype ) );

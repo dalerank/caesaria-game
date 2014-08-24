@@ -1,0 +1,23 @@
+{
+  s1 : {
+   text : "##showing_agamemnon_aeschylus##"
+   name : ""
+   author : ""
+  }
+
+  s2 : {
+    text : "##showing_antigone_sophocles##"
+  }
+
+  s3 : {
+    text : "##showing_lisistrata_aristopanes##"
+  }
+
+  s4 : {
+    text : "##showing_lisistrata_aristopanes##"
+  }
+
+  s5 : {
+    text : "##showing_odyssey_homer##"
+  }
+}

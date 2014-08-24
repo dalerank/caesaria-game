@@ -28,6 +28,7 @@
 #include "walker/fishing_boat.hpp"
 #include "good/goodstore.hpp"
 #include "objects/warehouse.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -123,9 +124,7 @@ VariantMap RomeDivinity::save() const
 float RomeDivinity::relation() const { return _relation; }
 float RomeDivinity::monthDecrease() const { return 0.5f; }
 void RomeDivinity::setEffectPoint(int value) { _effectPoints = value; }
-
 int RomeDivinity::wrathPoints() const { return _wrathPoints; }
-
 DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)

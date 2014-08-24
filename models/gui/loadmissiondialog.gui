@@ -1,0 +1,52 @@
+{  
+  geometry : [ 0, 0, 1024, 768 ]
+
+  imgBackground#Image : {
+    geometryf : [ 0, 0, 1, 1 ]
+    image : "ckit_00001"
+    mode : "image"
+
+    lbxFiles#FileListBox : {
+      geometry : [ 210, 350, 510, 610 ]
+      bgtype : "none"
+      border.visible : false
+      items.font : "FONT_2_WHITE"
+      items.simple.color : "0xffffffff"
+      items.hovered.color : "0xff000000"
+    }
+
+    lbTitle#Label : {
+      geometry : [ 255, 150, 455, 175 ]
+      text : "##mainmenu_playmission##"
+      font : "FONT_3"
+      text.align : [ "center", "upperLeft" ]
+    }
+
+    imgPreview#Image : {
+      geometry : [ 280, 175, 430, 325 ]
+      mode : "center"
+    }
+
+    lbDescription#Label : {
+      geometry : [ 525, 165, 805, 560 ]
+      font : "FONT_2"
+      multiline : true
+    }
+
+    btnLoad#PushButton : {
+      geometry : [ 530, 570, 780, 600 ]
+      font : "FONT_2"
+      bgtype : "whiteBorderUp"
+      text.align : [ "center", "center" ]
+      text : "##start_this_map##"
+    }
+
+    lbExitHelp#Label :
+    {
+      geometry : [ 530, 605, 780, 620 ]
+      text : "##press_escape_to_exit##"
+      font : "FONT_1"
+      text.align : [ "center", "center" ]
+    }
+  }
+}

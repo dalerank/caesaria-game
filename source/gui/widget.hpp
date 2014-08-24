@@ -319,13 +319,6 @@ public:
   //!
   void setTop( int newTop );
 
-  //! Sets the relative rectangle of this element as a proportion of its parent's area.
-  /** \note This method used to be 'void setRelativePosition(const core::rect<f32>& r)'
-        \param r  The rectangle to set, interpreted as a proportion of the parent's area.
-	Meaningful values are in the range [0...1], unless you intend this element to spill
-	outside its parent. */
-  //void setRelativeRectProportional(const RectF& r, GeometryType mode=ProportionalGeometry );
-
   //! Gets the absolute rectangle of this element
   Rect absoluteRect() const;
 
@@ -427,26 +420,6 @@ enum ElementState
   stChecked,
   StateCount
 };
-
-template< class T >
-inline T findChildA( const std::string& internalName, bool recursiveFind, const Widget* p )
-{
-  Widget::Widgets::const_iterator it = p->children().begin();
-  for( ; it != p->children().end(); ++it )
-  {
-    if( (*it)->internalName() == internalName )
-      return safety_cast< T >( *it );
-
-      if( recursiveFind )
-      {
-        T chElm = findChildA< T >( internalName, recursiveFind, *it );
-        if( chElm )
-           return chElm;
-      }
-  }
-  return 0;
-}
-
 
 }//end namespace gui
 #endif //__CAESARIA_WIDGET_H_INCLUDE_

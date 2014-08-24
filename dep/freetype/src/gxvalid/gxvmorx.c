@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    TrueTypeGX/AAT morx table validation (body).                         */
 /*                                                                         */
-/*  Copyright 2005, 2008, 2013 by                                          */
+/*  Copyright 2005, 2008 by                                                */
 /*  suzuki toshiya, Masatake YAMATO, Red Hat K.K.,                         */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
@@ -57,6 +57,8 @@
 
     };
 
+    GXV_Validate_Func  func;
+
     FT_UShort  i;
 
 
@@ -64,13 +66,9 @@
 
     for ( i = 0; i < nSubtables; i++ )
     {
-      GXV_Validate_Func  func;
-
       FT_ULong  length;
       FT_ULong  coverage;
-#ifdef GXV_LOAD_UNUSED_VARS
       FT_ULong  subFeatureFlags;
-#endif
       FT_ULong  type;
       FT_ULong  rest;
 
@@ -78,11 +76,7 @@
       GXV_LIMIT_CHECK( 4 + 4 + 4 );
       length          = FT_NEXT_ULONG( p );
       coverage        = FT_NEXT_ULONG( p );
-#ifdef GXV_LOAD_UNUSED_VARS
       subFeatureFlags = FT_NEXT_ULONG( p );
-#else
-      p += 4;
-#endif
 
       GXV_TRACE(( "validating chain subtable %d/%d (%d bytes)\n",
                   i + 1, nSubtables, length ));
@@ -103,7 +97,6 @@
 
       func( p, p + rest, valid );
 
-      /* TODO: subFeatureFlags should be unique in a table? */
       p += rest;
     }
 
@@ -119,9 +112,7 @@
                            GXV_Validator  valid )
   {
     FT_Bytes  p = table;
-#ifdef GXV_LOAD_UNUSED_VARS
     FT_ULong  defaultFlags;
-#endif
     FT_ULong  chainLength;
     FT_ULong  nFeatureFlags;
     FT_ULong  nSubtables;
@@ -130,11 +121,7 @@
     GXV_NAME_ENTER( "morx chain header" );
 
     GXV_LIMIT_CHECK( 4 + 4 + 4 + 4 );
-#ifdef GXV_LOAD_UNUSED_VARS
     defaultFlags  = FT_NEXT_ULONG( p );
-#else
-    p += 4;
-#endif
     chainLength   = FT_NEXT_ULONG( p );
     nFeatureFlags = FT_NEXT_ULONG( p );
     nSubtables    = FT_NEXT_ULONG( p );
@@ -150,8 +137,6 @@
                                  (FT_UShort)nSubtables, valid );
 
     valid->subtable_length = chainLength;
-
-    /* TODO: defaultFlags should be compared with the flags in tables */
 
     GXV_EXIT;
   }

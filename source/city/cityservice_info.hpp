@@ -37,7 +37,7 @@ public:
     int funds;
     int tax;
     int taxpayes;
-    int monthWithFood;
+    int monthWithFood;    
     int foodKoeff;
     int godsMood;
     int needWorkers;
@@ -53,7 +53,15 @@ public:
     int romeWages;
     int maxWorkers;
     int crimeLevel;
-    int peace;
+    int peace;    
+    int houseNumber;
+    int slumNumber;
+    int shackNumber;
+    int sentiment;
+    int foodStock;
+    int foodMontlyConsumption;
+    int favour;
+    int prosperity;
 
     Parameters()
     {
@@ -77,6 +85,13 @@ public:
       education = 0;
       cityWages = 0;
       romeWages = 0;
+      houseNumber = 0;
+      slumNumber = 0;
+      shackNumber = 0;
+      foodStock = 0;
+      foodMontlyConsumption = 0;
+      favour = 0;
+      prosperity = 0;
     }
 
     VariantMap save() const;
@@ -105,6 +120,9 @@ public:
 
   void update( const unsigned int time );
   Parameters lastParams() const;
+  Parameters params( int monthAgo ) const;
+  Parameters yearParams( int year ) const;
+
   const History& history() const;
 
   static std::string defaultName();

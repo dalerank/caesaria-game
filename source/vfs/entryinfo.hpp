@@ -18,7 +18,6 @@
 #ifndef _CAESARIA_FILELIST_ITEM_INCLUDE_H_
 #define _CAESARIA_FILELIST_ITEM_INCLUDE_H_
 
-#include "core/stringhelper.hpp"
 #include "path.hpp"
 
 namespace vfs
@@ -34,64 +33,37 @@ public:
   //! The iD of the file in an archive
   /** This is used to link the FileList entry to extra info held about this
   file in an archive, which can hold things like data offset and CRC. */
-  unsigned int iD;
+  unsigned int uid;
 
   //! FileOffset inside an archive
-  unsigned int Offset;
+  unsigned int offset;
 
   //! True if this is a folder, false if not.
   bool isDirectory;
 
-  //! The == operator is provided so that list can slowly search the list!
-  bool operator == (const EntryInfo& other) const
-  {
-    if (isDirectory != other.isDirectory)
-      return false;
-
-    return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
-  }
-
-  //! The < operator is provided so that list can sort and quickly search the list.
-  bool operator <(const EntryInfo& other) const
-  {
-    if (isDirectory != other.isDirectory)
-      return isDirectory;
-
-    return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
-  }
-
-  inline bool isFolder() const { return _fullpath.isFolder(); }
-  void setAbsolutePath( const Path& p )
-  {
-    _fullpath = p;
-    _fphash = StringHelper::hash( p.toString() );
-  }
-
-  void setName( const Path& name )
-  {
-    _name = name;
-    _nhash = StringHelper::hash( name.toString() );
-    _nihash = StringHelper::hash( StringHelper::localeLower( name.toString() ) );
-  }
-
-  inline const Path& absolutePath() const { return _fullpath; }
-  inline const Path& name() const { return _name; }
-
-  inline unsigned int abspathhash() const { return _fphash; }
-  inline unsigned int nameihash() const { return _nihash; }
-  inline unsigned int namehash() const { return _nhash; }
-private:
   //! The name of the file
   /** If this is a file or folder in the virtual filesystem and the archive
   was created with the ignoreCase flag then the file name will be lower case. */
-  Path _name;
+  Path name;
 
   //! The name of the file including the path
   /** If this is a file or folder in the virtual filesystem and the archive was
   created with the ignoreDirs flag then it will be the same as name. */
-  Path _fullpath;
-  unsigned int _fphash, _nhash, _nihash;
+  Path fullpath;
+  unsigned int fphash, nhash, nihash;
 };
+
+//! The < operator is provided so that list can sort and quickly search the list.
+inline bool operator<(const EntryInfo& a, const EntryInfo& b)
+{
+  if (a.isDirectory != b.isDirectory)
+    return a.isDirectory;
+
+  std::string m = a.fullpath.canonical().toString();
+  std::string o = b.fullpath.canonical().toString();
+
+  return m < o;
+}
 
 } // end namspace vfs
 

@@ -161,8 +161,8 @@ void EventConverter::Impl::createKeyMap()
     init_key( SDLK_RSHIFT,  KEY_RSHIFT);
     init_key( SDLK_LCTRL,   KEY_LCONTROL);
     init_key( SDLK_RCTRL,   KEY_RCONTROL);
-    init_key( SDLK_LALT,    KEY_LMENU);
-    init_key( SDLK_RALT,    KEY_RMENU);
+    init_key( SDLK_LALT,    KEY_LALT);
+    init_key( SDLK_RALT,    KEY_RALT);
 
     init_key( SDLK_PLUS,    KEY_PLUS);
     init_key( SDLK_COMMA,   KEY_COMMA);
@@ -277,6 +277,13 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   }
   break;
 
+  case SDL_TEXTINPUT:
+  {
+    ret.EventType = sTextInput;
+    memcpy( ret.text.text, sdlEvent.text.text, 32 );
+  }
+  break;
+
   case SDL_KEYDOWN:
   case SDL_KEYUP:
   {
@@ -291,9 +298,10 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
     ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-    ret.keyboard.symbol =  sdlEvent.key.keysym.sym;
+    ret.keyboard.symbol = 0;
   }
   break;
+
 
   case SDL_QUIT:
     ret.EventType = sEventQuit;

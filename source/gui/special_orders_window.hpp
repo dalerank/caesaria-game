@@ -39,6 +39,7 @@ public:
 
   virtual ~BaseSpecialOrdersWindow();
 protected:
+  Widget* _ordersArea();
   BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
 
   class Impl;
@@ -50,6 +51,7 @@ class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
 public:
   static const int defaultHeight = 250;
   GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
+  ~GranarySpecialOrdersWindow();
 
   void toggleDevastation();
 private:
@@ -64,14 +66,13 @@ class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
 public:
   static const int defaultHeight = 550;
   WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
+  ~WarehouseSpecialOrdersWindow();
 
   void toggleDevastation();
 private:
   void _updateBtnDevastation();
 
-  WarehousePtr _warehouse;
-  PushButton* _btnToggleDevastation;
-  PushButton* _btnTradeCenter;
+  __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
 };
 
 }//end namesapce gui

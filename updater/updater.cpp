@@ -933,9 +933,9 @@ void Updater::PostUpdateCleanup()
   vfs::Entries dir = pdir.getEntries();
   foreach( i, dir )
   {
-    if( StringHelper::startsWith( i->name().toString(), TEMP_FILE_PREFIX) )
+    if( StringHelper::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
     {
-      vfs::NFile::remove( i->absolutePath() );
+      vfs::NFile::remove( i->fullpath );
     }
   }
 }

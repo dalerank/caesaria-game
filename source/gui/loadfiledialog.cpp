@@ -28,6 +28,7 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "widget_helper.hpp"
 #include "filelistbox.hpp"
 #include "vfs/file.hpp"
 
@@ -71,20 +72,21 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   setCenter( parent->center() );
 
   // create the title
-  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+
   _d->directory = dir;
   _d->fileExtension = ext;
 
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
-  _d->btnLoad = findChildA<PushButton*>( "btnLoad", true, this );
-  _d->btnDelete = findChildA<PushButton*>( "btnDelete", true, this );
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  GET_DWIDGET_FROM_UI( _d, btnLoad )
+  GET_DWIDGET_FROM_UI( _d, btnDelete )
+  GET_DWIDGET_FROM_UI( _d, lbxFiles )
 
   CONNECT( _d->btnExit, onClicked(), this, LoadFileDialog::deleteLater );
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
   CONNECT( _d->btnDelete, onClicked(), _d.data(), Impl::deleteFile );
 
-  _d->lbxFiles = findChildA<FileListBox*>( "lbxFiles", true, this );
   if( _d->lbxFiles )
   {
     _d->lbxFiles->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
@@ -110,9 +112,9 @@ void LoadFileDialog::Impl::fillFiles()
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtension );
 
   StringArray names;
-  for( vfs::Entries::ConstItemIt it=flist.begin(); it != flist.end(); ++it )
+  foreach( it, flist )
   {
-    names << (*it).absolutePath().toString();
+    names << (*it).fullpath.toString();
   }
   std::sort( names.begin(), names.end() );
 

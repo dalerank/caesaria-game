@@ -2,6 +2,9 @@ project(CaesarIA)
 
 cmake_minimum_required(VERSION 2.6)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
+message("CMake module path is ${CMAKE_MODULE_PATH}")
+
 message("System is ${CMAKE_SYSTEM_NAME}")
 option( BUILD_ZLIB  "Static zlib"    ON )
 option( BUILD_AES   "Static aes"     ON )
@@ -10,11 +13,12 @@ option( BUILD_LZMA  "Static lzma"    ON )
 option( BUILD_CURL  "Static curl"    ON )
 option( BUILD_PNG   "Static png"     ON )
 option( BUILD_SMK   "Static smk"     ON )
-option( BUILD_TTF   "Static ttf"     ON )
 option( BUILD_FREETYPE "Static freetype2" ON )
+option( BUILD_TTF   "Static ttf"     ON )
 option( BUILD_GL_FRAMEBUFFER "Opengl framebuffer"     ON )
 option( BUILD_GL_SHADERS "OpenGL shaders"     ON )
 option( BUILD_AUDIO "Use sdl_mixer"  ON )
+option( DEBUG_TIMERS "Show debug timers" ON)
 
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )

@@ -34,6 +34,8 @@
 #include "religion/pantheon.hpp"
 #include "game/gamedate.hpp"
 #include "objects/constants.hpp"
+#include "widget_helper.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -56,6 +58,7 @@ public:
     _smallTempleCount = smallTempleCount;
     _bigTempleCount = bigTempleCount;
     _mood = 0;
+    _xWrathOffset = 400;
 
     setFont( Font::create( FONT_1_WHITE ) );
   }
@@ -78,19 +81,26 @@ public:
       rfont.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
       rfont.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
 
-      int xOffset = 400, k=0;
-      Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
-      for( k; k < _divinity->wrathPoints() / 15; k++ )
-      {
-        texture->draw( pic, Point( xOffset + k * 15, 0), false );
-      }
-
-      rfont.draw( *texture, _( _divinity->moodDescription() ), xOffset + k * 15, 0 );
+      rfont.draw( *texture, _( _divinity->moodDescription() ), _xWrathOffset + _divinity->wrathPoints() / 15 * 15, 0 );
     }
     else
     {
       rfont.draw( *texture, _("##oracles_in_city##"), 0, 0 );
       rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+    }
+  }
+
+  virtual void draw(Engine &painter)
+  {
+    Label::draw( painter );
+
+    Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
+    if( _divinity.isValid() )
+    {
+      for( int k=0; k < _divinity->wrathPoints() / 15; k++ )
+      {
+        painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), &absoluteClippingRectRef() );
+      }
     }
   }
 
@@ -100,6 +110,7 @@ private:
   int _bigTempleCount;
   int _lastFestival;
   int _mood;
+  int _xWrathOffset;
 };
 
 class Religion::Impl
@@ -111,7 +122,7 @@ public:
   ReligionInfoLabel* lbMarsInfo;
   ReligionInfoLabel* lbVenusInfo;
   ReligionInfoLabel* lbOracleInfo;
-  Label* religionAdvice;
+  Label* lbReligionAdvice;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -168,10 +179,10 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
-  _d->religionAdvice = findChildA<Label*>( "lbReligionAdvice", true, this );
-  _d->updateReligionAdvice( city );
+  GET_DWIDGET_FROM_UI( _d, lbReligionAdvice )
+  GET_DWIDGET_FROM_UI( _d, btnHelp );
 
-  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  _d->updateReligionAdvice( city );
 }
 
 void Religion::draw(gfx::Engine& painter )
@@ -188,7 +199,9 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
   city::Helper helper( city );
   HouseList houses = helper.find<House>( building::house );
 
-  bool needBasicReligion = false;
+  int needBasicReligion = 0;
+  int needSecondReligion = 0;
+  int needThirdReligion = 0;
   foreach( it, houses )
   {
     const HouseSpecification& spec = (*it)->spec();
@@ -200,11 +213,76 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
     case 1:
       if( curLevel == 0 )
       {
-        needBasicReligion = true;
+        needBasicReligion++;
+      }
+    break;
+
+    case 2:
+      if( curLevel < 2)
+      {
+        needSecondReligion++;
+      }
+    break;
+
+    case 3:
+      if( curLevel < 3 )
+      {
+        needThirdReligion++;
       }
     break;
     }
   }
+
+  std::string text = "##religionadv_unknown_reason##";
+  if( !needSecondReligion && !needThirdReligion && !needBasicReligion)
+  {
+    text = "##this_time_you_city_not_need_religion##";
+
+    DivinityList gods = rome::Pantheon::instance().all();
+
+    bool haveDispleasengGod = false;
+    foreach( it, gods )
+    {
+      if( (*it)->relation() < 75 )
+      {
+        haveDispleasengGod = true;
+        break;
+      }
+    }
+
+    if( !haveDispleasengGod )
+    {
+      text = "##religion_in_your_city_is_flourishing##";
+    }
+  }
+  else
+  {
+    if( needBasicReligion > 0 ) { advices << "##religionadv_need_basic_religion##";}
+    if( needSecondReligion > 0 ){ advices << "##religionadv_need_second_religion##"; }
+    if( needThirdReligion > 0 ) { advices << "##religionadv_need_third_religion##"; }
+
+    if( rome::Pantheon::neptune()->relation() < 40 )
+    {
+      advices << "##neptune_despleasure_tip##";
+
+      if( rome::Pantheon::neptune()->wrathPoints() > 0 )
+      {
+        advices << "##neptune_wrath_of_you##";
+      }
+    }
+
+    if( rome::Pantheon::mars()->relation() < 40 )
+    {
+      advices << "##mars_watches_over_soldiers##";
+    }
+
+    text = advices.empty()
+            ? "##religionadv_unknown_reason##"
+            : advices.random();
+
+  }
+
+  lbReligionAdvice->setText( _(text) );
 }
 
 }

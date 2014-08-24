@@ -31,6 +31,7 @@
 #include "religion/pantheon.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
+#include "widget_helper.hpp"
 
 using namespace religion;
 using namespace gfx;
@@ -42,8 +43,8 @@ class FestivalPlaningWindow::Impl
 {
 public:
   typedef enum { divId=0x200, festId=0x400 } FestID;
-  Label* title;
-  Label* festivalName;
+  Label* lbTitle;
+  Label* lbFestivalName;
   int festivalType;
   unsigned int festivalCost;
   std::vector<TexturedButton*> godBtns;
@@ -87,16 +88,13 @@ public:
     std::string text = StringHelper::format( 0xff, "##hold_%s_festival##", divinity.isValid()
                                                                               ? divinity->getDebugName().c_str()
                                                                               : "unknown" );
-    title->setText( _(text) );
+    lbTitle->setText( _(text) );
   }
 };
 
 FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  Size size( 625, 320 );
-
-  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->height() - size.height())/2 ), size );
-  FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, rectangle, city);
+  FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, Rect( 0, 0, 1, 1 ), city);
 
   return ret;
 }
@@ -107,7 +105,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
   setupUI( ":/gui/festivalplaning.gui" );
-  setCenter( parent->center() );
+  move( Point( 8, 30) );
   _d->city = city;
 
   _d->addImage( this, romeDivCeres, 0, 17 );
@@ -119,11 +117,13 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->godBtns.front()->setPressed( true );
   _d->currentDivinity = romeDivCeres;
 
-  _d->title = findChildA<Label*>( "lbTitle", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+  GET_DWIDGET_FROM_UI( _d, lbFestivalName )
+  GET_DWIDGET_FROM_UI( _d, btnSmallFestival )
+  GET_DWIDGET_FROM_UI( _d, btnMiddleFestival )
+  GET_DWIDGET_FROM_UI( _d, btnGreatFestival )
+
   _d->updateTitle();
-
-  _d->festivalName = findChildA<Label*>( "lbFestivalName", true, this );
-
   _d->festivalType = smallFest;
 
   _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -132,7 +132,6 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   /*int money = _d->city->getFunds().getValue();*/
   _d->festivalCost = city::Statistic::getFestivalCost( city, smallFest );
 
-  _d->btnSmallFestival = findChildA<PushButton*>( "btnSmallFestival", true, this );
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
@@ -140,7 +139,6 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
-  _d->btnMiddleFestival = findChildA<PushButton*>( "btnMiddleFestival", true, this );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
@@ -148,7 +146,6 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
-  _d->btnGreatFestival = findChildA<PushButton*>( "btnGreatFestival", true, this );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
@@ -157,6 +154,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
+  _d->btnNo->setTooltipText( "##donot_organize_festival##" );
 
   CONNECT( _d->btnExit,onClicked(), this, FestivalPlaningWindow::deleteLater );
   CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaningWindow::deleteLater );
@@ -195,7 +193,7 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
       StringArray titles;
       titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
       _d->festivalType = (btn->ID() & 0xf);
-      _d->festivalName->setText( _( titles[ _d->festivalType ] ) );
+      _d->lbFestivalName->setText( _( titles[ _d->festivalType ] ) );
 
       btn->setPressed( true );
     }

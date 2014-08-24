@@ -23,10 +23,8 @@
 #include "listbox.hpp"
 #include "core/stringhelper.hpp"
 #include "gameautopause.hpp"
-
-CAESARIA_LITERALCONST(lbGameSpeedPercent)
-CAESARIA_LITERALCONST(lbScrollSpeedPercent)
-CAESARIA_LITERALCONST(lbAutosaveInterval)
+#include "widget_helper.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -94,16 +92,19 @@ Signal1<int>&GameSpeedOptionsWindow::onAutosaveIntervalChange(){ return _d->onAu
 
 void GameSpeedOptionsWindow::_update()
 {
-  Label* lbSpeed = findChildA<Label*>( lc_lbGameSpeedPercent, true, this );
-  Label* lbScroll = findChildA<Label*>( lc_lbScrollSpeedPercent, true, this );
-  Label* lbAutosaveInterval = findChildA<Label*>( lc_lbAutosaveInterval, true, this );
+  Label* lbGameSpeedPercent;
+  Label* lbScrollSpeedPercent;
+  Label* lbAutosaveInterval;
+  GET_WIDGET_FROM_UI( lbGameSpeedPercent )
+  GET_WIDGET_FROM_UI( lbScrollSpeedPercent )
+  GET_WIDGET_FROM_UI( lbAutosaveInterval )
 
   _d->speedValue = math::clamp( _d->speedValue, 10, 1000 );
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
   _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
 
-  if( lbSpeed ) { lbSpeed->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
-  if( lbScroll ) { lbScroll->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
+  if( lbGameSpeedPercent ) { lbGameSpeedPercent->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
+  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
   if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " m." ); }
 }
 

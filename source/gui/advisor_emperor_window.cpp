@@ -20,6 +20,7 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
@@ -46,6 +47,7 @@
 #include "emperorgiftwindow.hpp"
 #include "gui/environment.hpp"
 #include "gui/dialogbox.hpp"
+#include "gui/widget_helper.hpp"
 
 using namespace gfx;
 
@@ -85,7 +87,7 @@ public:
     {
       font.draw( *pic, StringHelper::format( 0xff, "%d", gr->qty() ), 2, 2 );
 
-      Picture goodPicture = GoodHelper::getPicture( gr->goodType() );
+      Picture goodPicture = GoodHelper::picture( gr->goodType() );
       pic->draw( goodPicture, Point( 40, 2 ), false );
 
       font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
@@ -160,7 +162,11 @@ void Emperor::_showSend2CityWindow()
 void Emperor::_showGiftWindow()
 {
   PlayerPtr pl = _d->city->player();
-  EmperorGiftWindow* dialog = new EmperorGiftWindow( parent(), pl->money() );
+  world::Emperor& emperor = _d->city->empire()->emperor();
+
+  EmperorGiftWindow* dialog = new EmperorGiftWindow( parent(),
+                                                     pl->money(),
+                                                     emperor.lastGiftDate( _d->city->name() ) );
   dialog->show();
 
   CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );
@@ -182,7 +188,7 @@ void Emperor::_updateRequests()
 
   if( dispatcher.isValid() )
   {
-    reqs = dispatcher->getRequests();
+    reqs = dispatcher->requests();
   }
 
   if( reqs.empty() )
@@ -218,15 +224,16 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   Widget::setupUI( ":/gui/emperoropts.gui" );
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  gui::Label* title = findChildA<Label*>( "lbTitle", true, this );
+  gui::Label* lbTitle;
+  GET_WIDGET_FROM_UI( lbTitle )
 
-  _d->lbEmperorFavour = findChildA<Label*>( "lbEmperorFavour", true, this );
-  _d->lbEmperorFavourDesc = findChildA<Label*>( "lbEmperorFavourDesc", true, this );
-  _d->lbPost = findChildA<Label*>( "lbPost", true, this );
-  _d->lbPrimaryFunds = findChildA<Label*>( "lbPrimaryFunds", true, this );
-  _d->btnSendGift = findChildA<PushButton*>( "btnSendGift", true, this );
-  _d->btnSend2City = findChildA<PushButton*>( "btnSend2City", true, this );
-  _d->btnChangeSalary = findChildA<PushButton*>( "btnChangeSalary", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbEmperorFavour )
+  GET_DWIDGET_FROM_UI( _d, lbEmperorFavourDesc  )
+  GET_DWIDGET_FROM_UI( _d, lbPost )
+  GET_DWIDGET_FROM_UI( _d, lbPrimaryFunds )
+  GET_DWIDGET_FROM_UI( _d, btnSendGift )
+  GET_DWIDGET_FROM_UI( _d, btnSend2City )
+  GET_DWIDGET_FROM_UI( _d, btnChangeSalary )
 
   if( _d->lbEmperorFavour )
     _d->lbEmperorFavour->setText( StringHelper::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
@@ -234,13 +241,13 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   if( _d->lbEmperorFavourDesc )
     _d->lbEmperorFavourDesc->setText( _( _d->getEmperorFavourStr() ) );
 
-  if( title )
+  if( lbTitle )
   {
     std::string text = city->player()->name();
     if( text.empty() )
       text = _("##emperor_advisor_title##");
 
-    title->setText( text );
+    lbTitle->setText( text );
   }
 
   CONNECT( _d->btnChangeSalary, onClicked(), this, Emperor::_showChangeSalaryWindow );
@@ -288,7 +295,8 @@ void Emperor::Impl::changeSalary( int money )
   PlayerPtr pl = city->player();
   pl->setSalary( money );
 
-  if( world::EmpireHelper::isGreaterSalary( ptr_cast<world::City>( city ) ) )
+  float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
+  if( salKoeff > 1.f )
   {
     DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
                                     "##changesalary_warning##", "##changesalary_greater_salary##",

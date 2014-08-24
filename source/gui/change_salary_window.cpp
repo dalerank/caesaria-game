@@ -21,6 +21,7 @@
 #include "core/logger.hpp"
 #include "world/empire.hpp"
 #include "core/gettext.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -46,27 +47,31 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
 
   _dfunc()->newSalary = salary;
 
-  ListBox* lbx = findChildA<ListBox*>( "lbxTitles", true, this );
-  if( lbx )
+  ListBox* lbxTitles;
+  GET_WIDGET_FROM_UI( lbxTitles )
+  if( lbxTitles )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
     foreach( i, ranks )
     {
-      ListBoxItem& item = lbx->addItem( _( (*i).pretty ) );
+      ListBoxItem& item = lbxTitles->addItem( _( (*i).pretty ) );
       item.setTag( (*i).salary );
       if( (*i).salary == salary )
       {
-        lbx->setSelected( std::distance( ranks.begin(), i ) );
+        lbxTitles->setSelected( std::distance( ranks.begin(), i ) );
       }
     }
   }
 
-  PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
-  PushButton* btnOk = findChildA<PushButton*>( "btnOk", true, this );
+  PushButton* btnCancel;
+  PushButton* btnOk;
+  GET_WIDGET_FROM_UI( btnCancel  )
+  GET_WIDGET_FROM_UI( btnOk )
+
   CONNECT( btnCancel, onClicked(), this, ChangeSalaryWindow::deleteLater );
   CONNECT( btnOk, onClicked(), _dfunc().data(), Impl::setNewSalary );
   CONNECT( btnOk, onClicked(), this, ChangeSalaryWindow::deleteLater  );
-  CONNECT( lbx, onItemSelected(), _dfunc().data(), Impl::resolveSalaryChange );
+  CONNECT( lbxTitles, onItemSelected(), _dfunc().data(), Impl::resolveSalaryChange );
 }
 
 ChangeSalaryWindow::~ChangeSalaryWindow(){  }

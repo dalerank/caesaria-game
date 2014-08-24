@@ -73,17 +73,6 @@ bool DateTime::isValid() const
             && (_seconds < 60);
 }
 
-/*DateTime& DateTime::appendHour( int hour )
-{
-    return appendMinutes( 60 * hour );
-}*/
-
-/*DateTime& DateTime::appendMinutes( int minute )
-{
-    *this = (time_t)( to_time_t() + minute * 60 );
-    return *this;
-}*/
-
 DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 {
     *this = _JulDayToDate( _toJd() + dayNumber );
@@ -93,9 +82,11 @@ DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 tm _getOsLocalTime( time_t date )
 {
 #if defined(CAESARIA_PLATFORM_WIN)
-  tm ret;
-  localtime_s( &ret, &date );
-  return ret;
+  time_t t;
+  tm timeinfo;
+  time(&t);
+  memcpy( &timeinfo, localtime(&t), sizeof(tm) );
+  return timeinfo;
 #elif defined(CAESARIA_PLATFORM_UNIX)
   //time(&date);
   return *localtime( &date );
@@ -113,7 +104,7 @@ DateTime& DateTime::appendMonth( int m/*=1 */ )
   return *this;
 }
 
-DateTime&DateTime::appendWeek(int weekNumber){  return appendDay( weekNumber * 7 ); }
+DateTime& DateTime::appendWeek(int weekNumber){  return appendDay( weekNumber * 7 ); }
 
 DateTime DateTime::date() const
 {

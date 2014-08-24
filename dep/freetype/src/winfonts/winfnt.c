@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType font driver for Windows FNT/FON files                       */
 /*                                                                         */
-/*  Copyright 1996-2004, 2006-2014 by                                      */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009 by       */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*  Copyright 2003 Huw D M Davies for Codeweavers                          */
 /*  Copyright 2007 Dmitry Timoshkov for Codeweavers                        */
@@ -23,7 +23,6 @@
 #include FT_INTERNAL_DEBUG_H
 #include FT_INTERNAL_STREAM_H
 #include FT_INTERNAL_OBJECTS_H
-#include FT_TRUETYPE_IDS_H
 
 #include "winfnt.h"
 #include "fnterrs.h"
@@ -224,8 +223,8 @@
     if ( header->version != 0x200 &&
          header->version != 0x300 )
     {
-      FT_TRACE2(( "  not a Windows FNT file\n" ));
-      error = FT_THROW( Unknown_File_Format );
+      FT_TRACE2(( "[not a valid FNT file]\n" ));
+      error = FNT_Err_Unknown_File_Format;
       goto Exit;
     }
 
@@ -234,8 +233,8 @@
 
     if ( header->file_size < size )
     {
-      FT_TRACE2(( "  not a Windows FNT file\n" ));
-      error = FT_THROW( Unknown_File_Format );
+      FT_TRACE2(( "[not a valid FNT file]\n" ));
+      error = FNT_Err_Unknown_File_Format;
       goto Exit;
     }
 
@@ -253,7 +252,7 @@
     if ( header->file_type & 1 )
     {
       FT_TRACE2(( "[can't handle vector FNT fonts]\n" ));
-      error = FT_THROW( Unknown_File_Format );
+      error = FNT_Err_Unknown_File_Format;
       goto Exit;
     }
 
@@ -284,7 +283,7 @@
          FT_STREAM_READ_FIELDS( winmz_header_fields, &mz_header ) )
       goto Exit;
 
-    error = FT_ERR( Unknown_File_Format );
+    error = FNT_Err_Unknown_File_Format;
     if ( mz_header.magic == WINFNT_MZ_MAGIC )
     {
       /* yes, now look for an NE header in the file */
@@ -297,7 +296,7 @@
            FT_STREAM_READ_FIELDS( winne_header_fields, &ne_header ) )
         goto Exit;
 
-      error = FT_ERR( Unknown_File_Format );
+      error = FNT_Err_Unknown_File_Format;
       if ( ne_header.magic == WINFNT_NE_MAGIC )
       {
         /* good, now look into the resource table for each FNT resource */
@@ -344,7 +343,7 @@
         if ( !font_count || !font_offset )
         {
           FT_TRACE2(( "this file doesn't contain any FNT resources\n" ));
-          error = FT_THROW( Invalid_File_Format );
+          error = FNT_Err_Invalid_File_Format;
           goto Exit;
         }
 
@@ -353,7 +352,7 @@
         if ( font_count * 118UL > stream->size )
         {
           FT_TRACE2(( "invalid number of faces\n" ));
-          error = FT_THROW( Invalid_File_Format );
+          error = FNT_Err_Invalid_File_Format;
           goto Exit;
         }
 
@@ -361,7 +360,7 @@
 
         if ( face_index >= font_count )
         {
-          error = FT_THROW( Invalid_Argument );
+          error = FNT_Err_Invalid_Argument;
           goto Exit;
         }
         else if ( face_index < 0 )
@@ -417,7 +416,7 @@
              pe32_header.magic32 != 0x10b                                    )
         {
           FT_TRACE2(( "this file has an invalid PE header\n" ));
-          error = FT_THROW( Invalid_File_Format );
+          error = FNT_Err_Invalid_File_Format;
           goto Exit;
         }
 
@@ -440,7 +439,7 @@
         }
 
         FT_TRACE2(( "this file doesn't contain any resources\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = FNT_Err_Invalid_File_Format;
         goto Exit;
 
       Found_rsrc_section:
@@ -462,7 +461,7 @@
 
           if ( !(dir_entry1.offset & 0x80000000UL ) /* DataIsDirectory */ )
           {
-            error = FT_THROW( Invalid_File_Format );
+            error = FNT_Err_Invalid_File_Format;
             goto Exit;
           }
 
@@ -486,7 +485,7 @@
 
             if ( !(dir_entry2.offset & 0x80000000UL ) /* DataIsDirectory */ )
             {
-              error = FT_THROW( Invalid_File_Format );
+              error = FNT_Err_Invalid_File_Format;
               goto Exit;
             }
 
@@ -510,7 +509,7 @@
 
               if ( dir_entry2.offset & 0x80000000UL /* DataIsDirectory */ )
               {
-                error = FT_THROW( Invalid_File_Format );
+                error = FNT_Err_Invalid_File_Format;
                 goto Exit;
               }
 
@@ -561,13 +560,13 @@
       if ( !face->root.num_faces )
       {
         FT_TRACE2(( "this file doesn't contain any RT_FONT resources\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = FNT_Err_Invalid_File_Format;
         goto Exit;
       }
 
       if ( face_index >= face->root.num_faces )
       {
-        error = FT_THROW( Invalid_Argument );
+        error = FNT_Err_Invalid_Argument;
         goto Exit;
       }
     }
@@ -665,9 +664,8 @@
 
 
   static void
-  FNT_Face_Done( FT_Face  fntface )       /* FNT_Face */
+  FNT_Face_Done( FNT_Face  face )
   {
-    FNT_Face   face = (FNT_Face)fntface;
     FT_Memory  memory;
 
 
@@ -678,19 +676,18 @@
 
     fnt_font_done( face );
 
-    FT_FREE( fntface->available_sizes );
-    fntface->num_fixed_sizes = 0;
+    FT_FREE( face->root.available_sizes );
+    face->root.num_fixed_sizes = 0;
   }
 
 
   static FT_Error
   FNT_Face_Init( FT_Stream      stream,
-                 FT_Face        fntface,        /* FNT_Face */
+                 FNT_Face       face,
                  FT_Int         face_index,
                  FT_Int         num_params,
                  FT_Parameter*  params )
   {
-    FNT_Face   face   = (FNT_Face)fntface;
     FT_Error   error;
     FT_Memory  memory = FT_FACE_MEMORY( face );
 
@@ -698,14 +695,12 @@
     FT_UNUSED( params );
 
 
-    FT_TRACE2(( "Windows FNT driver\n" ));
-
     /* try to load font from a DLL */
     error = fnt_face_get_dll_font( face, face_index );
     if ( !error && face_index < 0 )
       goto Exit;
 
-    if ( FT_ERR_EQ( error, Unknown_File_Format ) )
+    if ( error == FNT_Err_Unknown_File_Format )
     {
       /* this didn't work; try to load a single FNT font */
       FNT_Font  font;
@@ -713,7 +708,7 @@
       if ( FT_NEW( face->font ) )
         goto Exit;
 
-      fntface->num_faces = 1;
+      face->root.num_faces = 1;
 
       font           = face->font;
       font->offset   = 0;
@@ -724,7 +719,7 @@
       if ( !error )
       {
         if ( face_index > 0 )
-          error = FT_THROW( Invalid_Argument );
+          error = FNT_Err_Invalid_Argument;
         else if ( face_index < 0 )
           goto Exit;
       }
@@ -743,8 +738,8 @@
 
       root->face_index = face_index;
 
-      root->face_flags |= FT_FACE_FLAG_FIXED_SIZES |
-                          FT_FACE_FLAG_HORIZONTAL;
+      root->face_flags = FT_FACE_FLAG_FIXED_SIZES |
+                         FT_FACE_FLAG_HORIZONTAL;
 
       if ( font->header.avg_width == font->header.max_width )
         root->face_flags |= FT_FACE_FLAG_FIXED_WIDTH;
@@ -807,16 +802,15 @@
 
 
         charmap.encoding    = FT_ENCODING_NONE;
-        /* initial platform/encoding should indicate unset status? */
-        charmap.platform_id = TT_PLATFORM_APPLE_UNICODE;
-        charmap.encoding_id = TT_APPLE_ID_DEFAULT;
+        charmap.platform_id = 0;
+        charmap.encoding_id = 0;
         charmap.face        = root;
 
         if ( font->header.charset == FT_WinFNT_ID_MAC )
         {
           charmap.encoding    = FT_ENCODING_APPLE_ROMAN;
-          charmap.platform_id = TT_PLATFORM_MACINTOSH;
-/*        charmap.encoding_id = TT_MAC_ID_ROMAN; */
+          charmap.platform_id = 1;
+/*        charmap.encoding_id = 0; */
         }
 
         error = FT_CMap_New( fnt_cmap_class,
@@ -831,14 +825,7 @@
           root->charmap = root->charmaps[0];
       }
 
-      /* set up remaining flags */
-
-      if ( font->header.last_char < font->header.first_char )
-      {
-        FT_TRACE2(( "invalid number of glyphs\n" ));
-        error = FT_THROW( Invalid_File_Format );
-        goto Fail;
-      }
+      /* setup remaining flags */
 
       /* reserve one slot for the .notdef glyph at index 0 */
       root->num_glyphs = font->header.last_char -
@@ -847,7 +834,7 @@
       if ( font->header.face_name_offset >= font->header.file_size )
       {
         FT_TRACE2(( "invalid family name offset\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = FNT_Err_Invalid_File_Format;
         goto Fail;
       }
       family_size = font->header.file_size - font->header.face_name_offset;
@@ -885,7 +872,7 @@
     goto Exit;
 
   Fail:
-    FNT_Face_Done( fntface );
+    FNT_Face_Done( face );
 
   Exit:
     return error;
@@ -893,13 +880,10 @@
 
 
   static FT_Error
-  FNT_Size_Select( FT_Size   size,
-                   FT_ULong  strike_index )
+  FNT_Size_Select( FT_Size  size )
   {
     FNT_Face          face   = (FNT_Face)size->face;
     FT_WinFNT_Header  header = &face->font->header;
-
-    FT_UNUSED( strike_index );
 
 
     FT_Select_Metrics( size->face, 0 );
@@ -909,7 +893,7 @@
                                    header->ascent ) * 64;
     size->metrics.max_advance = header->max_width * 64;
 
-    return FT_Err_Ok;
+    return FNT_Err_Ok;
   }
 
 
@@ -920,7 +904,7 @@
     FNT_Face          face    = (FNT_Face)size->face;
     FT_WinFNT_Header  header  = &face->font->header;
     FT_Bitmap_Size*   bsize   = size->face->available_sizes;
-    FT_Error          error   = FT_ERR( Invalid_Pixel_Size );
+    FT_Error          error   = FNT_Err_Invalid_Pixel_Size;
     FT_Long           height;
 
 
@@ -931,23 +915,23 @@
     {
     case FT_SIZE_REQUEST_TYPE_NOMINAL:
       if ( height == ( ( bsize->y_ppem + 32 ) >> 6 ) )
-        error = FT_Err_Ok;
+        error = FNT_Err_Ok;
       break;
 
     case FT_SIZE_REQUEST_TYPE_REAL_DIM:
       if ( height == header->pixel_height )
-        error = FT_Err_Ok;
+        error = FNT_Err_Ok;
       break;
 
     default:
-      error = FT_THROW( Unimplemented_Feature );
+      error = FNT_Err_Unimplemented_Feature;
       break;
     }
 
     if ( error )
       return error;
     else
-      return FNT_Size_Select( size, 0 );
+      return FNT_Size_Select( size );
   }
 
 
@@ -958,8 +942,8 @@
                   FT_Int32      load_flags )
   {
     FNT_Face    face   = (FNT_Face)FT_SIZE_FACE( size );
-    FNT_Font    font;
-    FT_Error    error  = FT_Err_Ok;
+    FNT_Font    font   = face->font;
+    FT_Error    error  = FNT_Err_Ok;
     FT_Byte*    p;
     FT_Int      len;
     FT_Bitmap*  bitmap = &slot->bitmap;
@@ -969,46 +953,26 @@
     FT_UNUSED( load_flags );
 
 
-    if ( !face )
-    {
-      error = FT_THROW( Invalid_Argument );
-      goto Exit;
-    }
-
-    font = face->font;
-
-    if ( !font                                                   ||
+    if ( !face || !font ||
          glyph_index >= (FT_UInt)( FT_FACE( face )->num_glyphs ) )
     {
-      error = FT_THROW( Invalid_Argument );
+      error = FNT_Err_Invalid_Argument;
       goto Exit;
     }
-
-    FT_TRACE1(( "FNT_Load_Glyph: glyph index %d\n", glyph_index ));
 
     if ( glyph_index > 0 )
       glyph_index--;                           /* revert to real index */
     else
-      glyph_index = font->header.default_char; /* the `.notdef' glyph  */
+      glyph_index = font->header.default_char; /* the .notdef glyph */
 
     new_format = FT_BOOL( font->header.version == 0x300 );
     len        = new_format ? 6 : 4;
 
-    /* get glyph width and offset */
-    offset = ( new_format ? 148 : 118 ) + len * glyph_index;
-
-    if ( offset >= font->header.file_size - 2 - ( new_format ? 4 : 2 ) )
-    {
-      FT_TRACE2(( "invalid FNT offset\n" ));
-      error = FT_THROW( Invalid_File_Format );
-      goto Exit;
-    }
-
-    p = font->fnt_frame + offset;
+    /* jump to glyph entry */
+    p = font->fnt_frame + ( new_format ? 148 : 118 ) + len * glyph_index;
 
     bitmap->width = FT_NEXT_SHORT_LE( p );
 
-    /* jump to glyph entry */
     if ( new_format )
       offset = FT_NEXT_ULONG_LE( p );
     else
@@ -1017,7 +981,7 @@
     if ( offset >= font->header.file_size )
     {
       FT_TRACE2(( "invalid FNT offset\n" ));
-      error = FT_THROW( Invalid_File_Format );
+      error = FNT_Err_Invalid_File_Format;
       goto Exit;
     }
 
@@ -1036,10 +1000,10 @@
       bitmap->rows       = font->header.pixel_height;
       bitmap->pixel_mode = FT_PIXEL_MODE_MONO;
 
-      if ( offset + pitch * bitmap->rows > font->header.file_size )
+      if ( offset + pitch * bitmap->rows >= font->header.file_size )
       {
         FT_TRACE2(( "invalid bitmap width\n" ));
-        error = FT_THROW( Invalid_File_Format );
+        error = FNT_Err_Invalid_File_Format;
         goto Exit;
       }
 
@@ -1112,10 +1076,10 @@
 
 
   static FT_Module_Interface
-  winfnt_get_service( FT_Module         module,
+  winfnt_get_service( FT_Driver         driver,
                       const FT_String*  service_id )
   {
-    FT_UNUSED( module );
+    FT_UNUSED( driver );
 
     return ft_service_list_lookup( winfnt_services, service_id );
   }
@@ -1137,30 +1101,34 @@
 
       0,
 
-      0,                  /* FT_Module_Constructor */
-      0,                  /* FT_Module_Destructor  */
-      winfnt_get_service
+      (FT_Module_Constructor)0,
+      (FT_Module_Destructor) 0,
+      (FT_Module_Requester)  winfnt_get_service
     },
 
-    sizeof ( FNT_FaceRec ),
-    sizeof ( FT_SizeRec ),
-    sizeof ( FT_GlyphSlotRec ),
+    sizeof( FNT_FaceRec ),
+    sizeof( FT_SizeRec ),
+    sizeof( FT_GlyphSlotRec ),
 
-    FNT_Face_Init,
-    FNT_Face_Done,
-    0,                    /* FT_Size_InitFunc */
-    0,                    /* FT_Size_DoneFunc */
-    0,                    /* FT_Slot_InitFunc */
-    0,                    /* FT_Slot_DoneFunc */
+    (FT_Face_InitFunc)        FNT_Face_Init,
+    (FT_Face_DoneFunc)        FNT_Face_Done,
+    (FT_Size_InitFunc)        0,
+    (FT_Size_DoneFunc)        0,
+    (FT_Slot_InitFunc)        0,
+    (FT_Slot_DoneFunc)        0,
 
-    FNT_Load_Glyph,
+#ifdef FT_CONFIG_OPTION_OLD_INTERNALS
+    ft_stub_set_char_sizes,
+    ft_stub_set_pixel_sizes,
+#endif
+    (FT_Slot_LoadFunc)        FNT_Load_Glyph,
 
-    0,                    /* FT_Face_GetKerningFunc  */
-    0,                    /* FT_Face_AttachFunc      */
-    0,                    /* FT_Face_GetAdvancesFunc */
+    (FT_Face_GetKerningFunc)  0,
+    (FT_Face_AttachFunc)      0,
+    (FT_Face_GetAdvancesFunc) 0,
 
-    FNT_Size_Request,
-    FNT_Size_Select
+    (FT_Size_RequestFunc)     FNT_Size_Request,
+    (FT_Size_SelectFunc)      FNT_Size_Select
   };
 
 

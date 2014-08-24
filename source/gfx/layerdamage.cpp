@@ -30,10 +30,13 @@ using namespace constants;
 namespace gfx
 {
 
-static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
-                                         "##little_damage_risk##",
-                                         "##some_damage_risk##", "##very_high_damage_risk##",
-                                         "##extreme_damage_risk##" };
+static const char* damageLevelName[] = {
+                                         "##none_damage_risk##",
+                                         "##very_low_damage_risk##", "##low_damage_risk##",
+                                         "##little_damage_risk##",   "##some_damage_risk##",
+                                         "##high_damage_risk##",
+                                         "##very_high_damage_risk##", "##extreme_damage_risk##"
+                                       };
 
 int LayerDamage::type() const {  return citylayer::damage; }
 
@@ -138,7 +141,7 @@ void LayerDamage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 16, 0, 5 );
+          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 12.5, 0, 7 );
           text = damageLevelName[ damageLevel ];
         }
       }

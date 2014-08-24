@@ -58,6 +58,7 @@ public:
 oc3_signals public:
   Signal0<> &onOrderChanged();
 
+private:
   class Impl;
   ScopedPtr<Impl> _d;
 };

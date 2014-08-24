@@ -190,13 +190,6 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
     png_set_bgr(png_ptr);
   }
 
-  /*if( pic->size().area() == 0 )
-  {
-    Logger::warning( "LOAD PNG: Internal PNG create image struct failure %s", file.path().toString().c_str() );
-    png_destroy_read_struct(&png_ptr, NULL, NULL);
-    return Picture::getInvalid();
-  }*/
-
   if( !Height )
   {
     Logger::warning( "LOAD PNG: Internal PNG create row pointers failure %s", file.path().toString().c_str() );

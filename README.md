@@ -1,6 +1,6 @@
 ![CaesarIA](https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Nov/12/caesaria-logo-3368332030-11_avatar.png)
 
-![BuildStatus](https://drone.io/bitbucket.org/dalerank/caesaria/status.png)
+Linux: [![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=master)](https://travis-ci.org/dalerank/caesaria-game) Windows: [![Master:Windows](https://travis-ci.org/dalerank/caesaria-game.svg?branch=windows-build)](https://travis-ci.org/dalerank/caesaria-game) Android:[![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=android-build)](https://travis-ci.org/dalerank/caesaria-game) Macos: [![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=macos-build)](https://travis-ci.org/dalerank/caesaria-game)
 
 ![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
@@ -36,9 +36,8 @@ The installer not automatically detect a Caesar III installation.
 
 CaesarIA requires the following libraries:
 
-- [SDL](http://www.libsdl.org) (libsdl1.2)
-- [SDL_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl-mixer1.2)
-- [SDL_ttf](http://www.libsdl.org/projects/SDL_ttf/) (libsdl-ttf2)
+- [SDL2](http://www.libsdl.org) (libsdl2)
+- [SDL2_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl2-mixer)
 
 Check your distribution's package manager or the library
 website on how to install them.
@@ -55,9 +54,8 @@ For more details please check the [wiki](https://bitbucket.org/dalerank/caesaria
 
 CaesarIA requires the following developer libraries:
 
-- [SDL](http://www.libsdl.org) (libsdl1.2)
-- [SDL_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl-mixer1.2)
-- [SDL_ttf](http://www.libsdl.org/projects/SDL_ttf/) (libsdl-ttf2)
+- [SDL2](http://www.libsdl.org) (libsdl2)
+- [SDL2_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl2-mixer)
 - Cmake
 
 It's also been tested on a variety of other tools on

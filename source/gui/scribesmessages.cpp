@@ -30,8 +30,10 @@
 #include "popup_messagebox.hpp"
 #include "texturedbutton.hpp"
 #include "core/color.hpp"
+#include "gfx/engine.hpp"
 #include "event_messagebox.hpp"
 #include "core/gettext.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -73,22 +75,22 @@ public oc3_signals:
   Signal1<int> onRemoveMessage;
 
 protected:
-  virtual void _drawItemIcon(gfx::Picture &texture, ListBoxItem &item, const Point &pos)
+  virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect)
   {
     VariantMap options = item.data().toMap();
     bool opened = options.get( lc_opened, false );
     bool critical = options.get( lc_critical, false );
     int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
-    texture.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
+    painter.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
   }
 
-  virtual void _drawItemText(gfx::Picture &texture, Font font, ListBoxItem &item, const Point &pos)
+  virtual void _updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
   {
     VariantMap options = item.data().toMap();
     DateTime time = options[ lc_date ].toDateTime();
 
-    font.draw( texture, DateTimeHelper::toStr( time ), pos + Point( 30, 0 ), false );
-    font.draw( texture, item.text(), Point( width() / 2, pos.y() ), false );
+    item.draw( DateTimeHelper::toStr( time ), font, Point( 30, 0 ) );
+    item.draw( item.text(), font, Point( width() / 2, 0 ));
   }
 
   virtual bool onEvent(const NEvent &event)
@@ -149,8 +151,11 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   WidgetEscapeCloser::insertTo( this );
   _d->lbxMessages = new ScribesListBox( this, Rect( 16, 60, width() - 16, height() - 50 ) );
 
-  TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  TexturedButton* btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  TexturedButton* btnExit;
+  TexturedButton* btnHelp;
+
+  GET_WIDGET_FROM_UI( btnHelp )
+  GET_WIDGET_FROM_UI( btnExit )
 
   _fillMessages();
 

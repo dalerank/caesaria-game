@@ -18,6 +18,7 @@
     favour : 70
     next : ":/missions/tutorial5.briefing"
     title : "##win_engineer_title##"
+    win.text : "##tarraco_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##famine_in_the_empire##"

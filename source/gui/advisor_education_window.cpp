@@ -32,6 +32,7 @@
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -51,6 +52,7 @@ namespace {
     int need;
     int nextLevel;
     int coverage;
+    int minAccessLevel;
   };
 }
 
@@ -107,7 +109,7 @@ class Education::Impl
 {
 public:
   Label* lbCityInfo;
-  Label* lbCityTrouble;
+  Label* lbTroubleInfo;
   Label* lbBackframe;
 
   EducationInfoLabel* lbSchoolInfo;
@@ -115,7 +117,7 @@ public:
   EducationInfoLabel* lbLibraryInfo;
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
-  StringArray getTrouble( PlayerCityPtr city );
+  std::string getTrouble( PlayerCityPtr city );
 };
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
@@ -126,9 +128,9 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
   
   __D_IMPL(_d,Education)
-  _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
-  _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
-  _d->lbCityTrouble = findChildA<Label*>( "lbTroubleInfo", true, this);
+  GET_DWIDGET_FROM_UI( _d, lbBackframe )
+  GET_DWIDGET_FROM_UI( _d, lbCityInfo )
+  GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -157,8 +159,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
-  StringArray troubles = _d->getTrouble( city );
-  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.random() ) ); }
+  std::string advice = _d->getTrouble( city );
+  if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _(advice) ); }
 }
 
 void Education::draw( gfx::Engine& painter )
@@ -212,44 +214,56 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
   }
 
   HouseList houses = helper.find<House>( building::house );
+  int minAccessLevel = 100;
   foreach( it, houses )
   {
     HousePtr house = *it;
-    ret.need += ( house->habitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
-    ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
+    int habitantsCount = house->habitants().count();
+    if( habitantsCount > 0 )
+    {
+      ret.need += ( house->habitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
+      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
+      minAccessLevel = std::min<int>( house->getServiceValue( service ), minAccessLevel );
+    }
   }
 
   ret.coverage = math::percentage( ret.peoplesStuding, ret.need );
   return ret;
 }
 
-StringArray Education::Impl::getTrouble(PlayerCityPtr city)
+std::string Education::Impl::getTrouble(PlayerCityPtr city)
 {
-  StringArray ret;
+  StringArray advices;
   const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
   const InfrastructureInfo& clgInfo = lbCollegeInfo->getInfo();
   const InfrastructureInfo& lbrInfo = lbLibraryInfo->getInfo();
   if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
   {
-    ret.push_back( "##not_need_education##" );
-    return ret;
+    return "##not_need_education##";
   }
 
-  if( schInfo.nextLevel > 0 ) { ret.push_back( "##have_no_access_school_colege##" ); }
-  if( schInfo.coverage < 75 ) { ret.push_back( "##need_more_school_colege##" ); }
-  if( lbrInfo.nextLevel > 0 ) { ret.push_back( "##have_no_access_to_library##" ); }
-  if( lbrInfo.coverage < 75 ) { ret.push_back( "##need_more_access_to_library##"); }
+  if( schInfo.nextLevel > 0 ) { advices << "##have_no_access_school_colege##"; }
+  if( schInfo.coverage < 75 ) { advices << "##need_more_school_colege##"; }
+  if( lbrInfo.nextLevel > 0 ) { advices << "##have_no_access_to_library##"; }
+  if( lbrInfo.coverage < 75 ) { advices << "##need_more_access_to_library##"; }
+  if( schInfo.minAccessLevel < 30 || clgInfo.minAccessLevel < 30 )
+  {
+    advices << "##edadv_need_better_access_school_or_colege##";
+  }
   if( schInfo.coverage < 75 && clgInfo.coverage < 75 && lbrInfo.coverage < 75 )
   {
-    ret.push_back( "##need_more_access_to_lbr_school_colege##" );
+    advices << "##need_more_access_to_lbr_school_colege##";
   }
-  if( schInfo.coverage >= 100 && schInfo.coverage < 115 ) { ret.push_back( "##school_access_perfectly##"); }
-  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { ret.push_back( "##colege_access_perfectly##"); }
-  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { ret.push_back( "##academy_access_perfectly##"); }
+  if( schInfo.coverage >= 100 && schInfo.coverage < 115 ) { advices << "##school_access_perfectly##"; }
+  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { advices << "##colege_access_perfectly##"; }
+  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { advices << "##academy_access_perfectly##"; }
+  if( lbrInfo.minAccessLevel < 30 ) { advices << "##some_houses_need_better_library_access##"; }
+  if( lbrInfo.nextLevel > 0 && clgInfo.nextLevel > 0 )
+  {
+    advices << "##some_houses_need_library_or_colege_access##";
+  }
 
-  if( ret.empty() ) { ret.push_back( "##education_awesome##" ); }
-
-  return ret;
+  return advices.empty() ? "##education_awesome##" : advices.random();
 }
 
 }

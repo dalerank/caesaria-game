@@ -17,6 +17,10 @@
 
 #include "entries.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
+#include "core/stringhelper.hpp"
+
+#include <map>
 
 namespace vfs
 {
@@ -32,6 +36,10 @@ public:
   //! Path to the file list
   Path path;
   Entries::Items files;
+
+  typedef std::map< unsigned int, unsigned int> HashedIndex;
+  HashedIndex hashedIndex;
+  HashedIndex hashedIcIndex;
 
   Path checkCase( Path p )
   {
@@ -75,7 +83,6 @@ Entries& Entries::operator=( const Entries& other )
   _d->sensType = other._d->sensType;
   _d->ignorePaths = other._d->ignorePaths;
   _d->path = other._d->path;
-
   _d->files.clear();
 
   foreach( it, other._d->files )
@@ -83,27 +90,32 @@ Entries& Entries::operator=( const Entries& other )
     _d->files.push_back( *it );
   }
 
+  _updateCache();
+
   return *this;
 }
 
-Entries::ConstItemIt Entries::begin() const
+Entries::ConstItemIt Entries::begin() const {  return _d->files.begin(); }
+Entries::ConstItemIt Entries::end() const{  return _d->files.end(); }
+Entries::Items &Entries::_items(){  return _d->files; }
+
+void Entries::_updateCache()
 {
-  return _d->files.begin();
+  _d->hashedIndex.clear();
+  _d->hashedIcIndex.clear();
+  for( unsigned int k=0; k < _d->files.size(); k++ )
+  {
+    EntryInfo& info = _d->files[ k ];
+    info.fphash = StringHelper::hash( info.fullpath.toString() );
+    info.nhash = StringHelper::hash( info.name.toString() );
+    info.nihash = StringHelper::hash( StringHelper::localeLower( info.name.toString() ) );
+
+    _d->hashedIndex[ info.nhash ] = k;
+    _d->hashedIcIndex[ info.nihash ] = k;
+  }
 }
 
-Entries::ConstItemIt Entries::end() const
-{
-  return _d->files.end();
-}
-
-Entries::Items &Entries::_items()
-{
-  return _d->files;
-}
-
-Entries::~Entries()
-{
-}
+Entries::~Entries(){}
 
 unsigned int Entries::getFileCount() const
 {
@@ -113,6 +125,8 @@ unsigned int Entries::getFileCount() const
 void Entries::sort()
 {
   std::sort( _d->files.begin(), _d->files.end() );
+
+  _updateCache();
 }
 
 const Path& Entries::getFileName(unsigned int index) const
@@ -120,7 +134,7 @@ const Path& Entries::getFileName(unsigned int index) const
   if (index >= _d->files.size())
     return emptyFileListEntry;
 
-  return _d->files[index].name();
+  return _d->files[index].name;
 }
 
 
@@ -130,15 +144,15 @@ const Path& Entries::getFullFileName(unsigned int index) const
   if (index >= _d->files.size())
     return emptyFileListEntry;
 
-  return _d->files[index].absolutePath();
+  return _d->files[index].fullpath;
 }
 
 //! adds a file or folder
 unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsigned int size, bool isDirectory, unsigned int id )
 {
   EntryInfo entry;
-  entry.iD   = id ? id : _d->files.size();
-  entry.Offset = offset;
+  entry.uid   = id ? id : _d->files.size();
+  entry.offset = offset;
   entry.size = size;
   entry.isDirectory = isDirectory;
 
@@ -148,16 +162,16 @@ unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsign
   if( tmpPath.lastChar() == '/')
   {
     entry.isDirectory = true;
-    entry.setName( tmpPath.removeEndSlash() );
+    entry.name = tmpPath.removeEndSlash();
     //entry.name.validate();
   }
 
-  entry.setAbsolutePath( _d->checkCase( tmpPath ) );
-  entry.setName( tmpPath.baseName() );
+  entry.fullpath = _d->checkCase( tmpPath );
+  entry.name = tmpPath.baseName();
 
   if(_d->ignorePaths)
   {
-    entry.setAbsolutePath( entry.name() );
+    entry.fullpath = entry.name;
   }
 
   _d->files.push_back(entry);
@@ -168,7 +182,7 @@ unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsign
 //! Returns the iD of a file in the file list, based on an index.
 unsigned int Entries::getID(unsigned int index) const
 {
-  return index < _d->files.size() ? _d->files[index].iD : 0;
+  return index < _d->files.size() ? _d->files[index].uid : 0;
 }
 
 bool Entries::isDirectory(unsigned int index) const
@@ -189,7 +203,7 @@ unsigned int Entries::getFileSize(unsigned int index) const
 //! Returns the size of a file
 unsigned int Entries::getFileOffset(unsigned int index) const
 {
-  return index < _d->files.size() ? _d->files[index].Offset : 0;
+  return index < _d->files.size() ? _d->files[index].offset : 0;
 }
 
 //! Searches for a file or folder within the list, returns the index
@@ -197,20 +211,19 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 {
   EntryInfo entry;
   // we only need fullName to be set for the search
-  entry.setAbsolutePath( StringHelper::replace( filename.toString(), "\\", "/" ) );
+  entry.fullpath = StringHelper::replace( filename.toString(), "\\", "/" );
   entry.isDirectory = isDirectory;
 
-  // remove trailing slash
-  if( entry.absolutePath().lastChar() == '/' )
+  if( entry.fullpath.lastChar() == '/' )
   {
     entry.isDirectory = true;
   }
-  entry.setAbsolutePath( entry.absolutePath().removeEndSlash() );
-  entry.setAbsolutePath( _d->checkCase( entry.absolutePath() ) );
+  entry.fullpath = entry.fullpath.removeEndSlash();
+  entry.fullpath = _d->checkCase( entry.fullpath );
 
   if( _d->ignorePaths )
   {
-    entry.setAbsolutePath( entry.absolutePath().baseName() );
+    entry.fullpath = entry.fullpath.baseName();
   }
 
   Path::SensType sType = _d->sensType;
@@ -228,19 +241,44 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
                             ? StringHelper::hash( StringHelper::localeLower( fname ) )
                             : StringHelper::hash( fname )
                         );
-  foreach( it, _d->files )
+
+  if( _d->hashedIndex.empty() )
   {
-    bool equale = false;
+    Logger::warning( "WARNING: Entries::findFile cache not initialized. Used slow linear search" );
+    foreach( it, _d->files )
+    {
+      bool equale = false;
+      switch( sType )
+      {
+      case Path::equaleCase: equale = (*it).nhash == fnHash; break;
+      case Path::ignoreCase: equale = (*it).nihash == fnHash; break;
+      default: break;
+      }
+
+      if( equale )
+      {
+        return std::distance( _d->files.begin(), it );
+      }
+    }
+  }
+  else
+  {
     switch( sType )
     {
-    case Path::equaleCase: equale = (*it).namehash() == fnHash; break;
-    case Path::ignoreCase: equale = (*it).nameihash() == fnHash; break;      
-    default: break;
-    }
-
-    if( equale )
+    case Path::equaleCase:
     {
-      return std::distance( _d->files.begin(), it );
+      Impl::HashedIndex::iterator it = _d->hashedIndex.find( fnHash );
+      if( it != _d->hashedIndex.end() ) return it->second;
+    }
+    break;
+    case Path::ignoreCase:
+    {
+      Impl::HashedIndex::iterator it = _d->hashedIcIndex.find( fnHash );
+      if( it != _d->hashedIcIndex.end() ) return it->second;
+    }
+    break;
+
+    default: break;
     }
   }
 
@@ -274,7 +312,7 @@ Entries Entries::filter(int flags, const std::string &options)
 
     if( mayAdd && !(*it).isDirectory && checkFileExt )
     {
-      mayAdd = (*it).absolutePath().isMyExtension( options );
+      mayAdd = (*it).fullpath.isMyExtension( options );
     }
 
     if( mayAdd )

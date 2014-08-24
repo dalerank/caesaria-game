@@ -5,13 +5,13 @@
 	
   items : {
     tarsus : {
-      title : "Tarsus: largely peaceful province"
+      title : "##tarsus_largerly_peacefull_province##"
       location : [ 570, 280 ]
       mission : ":/missions/tarsus.mission"
     }
 
     tingis : {
-      title : "Tingis: a dangerous province"
+      title : "##tingis_dangerous_province##"
       mission : ":/missions/tingis.mission"
       location : [ 20, 320 ]
     }

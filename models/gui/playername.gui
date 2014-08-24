@@ -1,6 +1,7 @@
 {  
   geometry : [ 0, 0, 380, 128 ]
   buttons : "off"
+  static : true
   bgtype : "whiteFrame"
      
   edPlayerName#EditBox :
@@ -35,6 +36,7 @@
     hovered : [ "paneling", 180 ]
     pressed : [ "paneling", 181 ]
     disabled : [ "paneling", 179 ]
+    tooltip : "##plname_start_new_game##"
   }
 
   lbExitHelp#Label :

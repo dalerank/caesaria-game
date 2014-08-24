@@ -116,6 +116,7 @@ private:
 Menu::Menu( Widget* parent, int id, const Rect& rectangle )
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
+  setupUI( ":/gui/shortmenu.gui" );
   _d->lastPressed = 0;
   _d->overlaysMenu = 0;
 
@@ -411,6 +412,8 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
     : Menu( p, id, rectangle )
 {
+  setupUI( ":/gui/fullmenu.gui" );
+
   _d->minimizeButton->deleteLater();
   _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
@@ -455,6 +458,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip##") );
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
+  _d->disasterButton->setTooltipText( "##show_spots_of_city_troubles_tip##");
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
   _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );

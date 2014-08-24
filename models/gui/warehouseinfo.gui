@@ -1,0 +1,10 @@
+{  
+  geometry : [ 0, 0, 510, 360 ]
+
+  btnOrders#PushButton : {
+    geometry : [ 60, "ph-34", "pw-60", "ph-14" ]
+    bgtype : "whiteBorderUp"
+    font : "FONT_2"
+    text : "##special_orders##"
+  }
+}

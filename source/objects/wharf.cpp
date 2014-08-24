@@ -124,6 +124,8 @@ std::string Wharf::workersProblemDesc() const
                                             : "##wharf_our_boat_return##";
       break;
 
+      case FishingBoat::unloadFish: ret = "##restocking_fishing_boat##"; break;
+
       case FishingBoat::go2fishplace: ret = "##wharf_out_boat_ready_fishing##"; break;
 
       default:
@@ -133,6 +135,20 @@ std::string Wharf::workersProblemDesc() const
   }
 
   return ret;
+}
+
+std::string Wharf::troubleDesc() const
+{
+  if( _d->boat.isValid() )
+  {
+    WalkerList places = _city()->walkers( walker::fishPlace );
+    if( places.empty() )
+    {
+      return "##no_fishplace_in_city##";
+    }
+  }
+
+  return CoastalFactory::troubleDesc();
 }
 
 void Wharf::_updatePicture(Direction direction)

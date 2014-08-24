@@ -22,6 +22,7 @@
 #include "core/foreach.hpp"
 #include "entries.hpp"
 #include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 
 #if defined (CAESARIA_PLATFORM_WIN)
 	#include <direct.h> // for _chdir
@@ -64,20 +65,20 @@ public:
 
 ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const std::string& password )
 {
-  for (int idx = 0; idx < (int)openArchives.size(); ++idx)
+  foreach( it, openArchives )
   {
     // TODO: This should go into a path normalization method
     // We need to check for directory names with trailing slash and without
     const Path absPath = filename.absolutePath();
-    const Path arcPath = openArchives[idx]->entries()->getPath();
+    const Path arcPath = (*it)->entries()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
       if( password.size() )
       {
-        openArchives[idx]->Password=password;
+        (*it)->Password=password;
       }
 
-      return openArchives[idx];
+      return *it;
     }
   }
 
@@ -99,9 +100,10 @@ FileSystem::~FileSystem() {}
 
 NFile FileSystem::loadFileFromArchive( const Path& filePath )
 {
-  for( unsigned int i=0; i< _d->openArchives.size(); ++i)
+  foreach( it, _d->openArchives )
   {
-    NFile file = _d->openArchives[i]->createAndOpenFile( filePath );
+    NFile file = (*it)->createAndOpenFile( filePath );
+
     if( file.isOpen() )
     {
       return file;
@@ -121,7 +123,7 @@ NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
     return file;
   }
 
-  // Create the file using an absolute path so that it matches
+  Logger::warning( "FileSystem: create the file using an absolute path " + filename.toString() );
   FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
   ptr->drop();
 
@@ -187,6 +189,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
 				      bool ignorePaths,
 				      const std::string& password)
 {
+  Logger::warning( "FileSystem: mountArchive(path) archive call for " + filename.toString() );
   ArchivePtr archive;
 
   // see if archive is already added
@@ -208,14 +211,16 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   // do we know what type it should be?
   if (archiveType == Archive::unknown || archiveType == Archive::folder)
   {
-    // try to load archive based on file name
+    Logger::warning( "FileSystem: try to load archive based on file name" );
     for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
-    {
-      if (_d->archiveLoaders[i]->isALoadableFileFormat(filename))
+    {        
+      if (_d->archiveLoaders[i]->isALoadableFileFormat(filename) )
       {
+        Logger::warning( "FileSystem: find archive reader by extension " + filename.toString() );
         archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
         if( archive.isValid() )
         {
+          Logger::warning( "FileSystem: succesful mount archive " + filename.toString() );
           break;
         }
       }
@@ -224,6 +229,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
     // try to load archive based on content
     if( archive.isNull() )
     {
+      Logger::warning( "FileSystem: try to load archive based on content" );
       NFile file = createAndOpenFile( filename, Entity::fmRead );
       if( file.isOpen() )
       {
@@ -232,11 +238,13 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
           file.seek(0);
           if (_d->archiveLoaders[i]->isALoadableFileFormat( file ) )
           {
+            Logger::warning( "FileSystem: find archive reader by content " + filename.toString() );
             file.seek(0);
             archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
             if( archive.isValid() )
             {
-                break;
+              Logger::warning( "FileSystem: succesful create archive from " + filename.toString() );
+              break;
             }
           }
         }
@@ -283,17 +291,19 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
 
   if( archive.isValid() )
   {
+    const std::string arcType = archive->getTypeName();
+    Logger::warning( "FileSystem: check archive:type-%s as opened %s", arcType.c_str(), filename.toString().c_str() );
     _d->openArchives.push_back( archive );
     if( password.size() )
     {
-        archive->Password=password;
+      archive->Password=password;
     }
 
     return archive;
   }
   else
   {
-    Logger::warning( "Could not create archive for " + filename.toString() );
+    Logger::warning( "FileSystem: could not archive reader for" + filename.toString() );
   }
 
   return ArchivePtr();
@@ -304,9 +314,10 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
                                     bool ignorePaths,
                                     const std::string& password)
 {
+  Logger::warning( "FileSystem: mountArchive call for " + file.path().absolutePath().toString() );
   if( !file.isOpen() || archiveType == Archive::folder)
   {
-    Logger::warning( "Cannot open archive " + file.path().absolutePath().toString() );
+    Logger::warning( "FileSystem: cannot open archive " + file.path().absolutePath().toString() );
     return ArchivePtr();
   }
 
@@ -406,6 +417,7 @@ void FileSystem::setRcFolder( const Directory &folder) { _d->resourdFolder = fol
 //! Adds an archive to the file system.
 ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 {
+  Logger::warning( "FileSystem: mountArchive call for " + archive->getTypeName() );
 	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
 	{
 		if( archive == _d->openArchives[i])
@@ -415,7 +427,7 @@ ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 	}
 
 	_d->openArchives.push_back(archive);
-    return archive;
+  return archive;
 }
 
 
@@ -425,6 +437,7 @@ bool FileSystem::unmountArchive(unsigned int index)
 	bool ret = false;
 	if (index < _d->openArchives.size())
 	{
+    Logger::warning( "FileSystem: unmountArchive %d", index );
 		_d->openArchives.erase( _d->openArchives.begin() + index );
 		ret = true;
 	}
@@ -439,7 +452,10 @@ bool FileSystem::unmountArchive(const Path& filename)
   for (unsigned int i=0; i < _d->openArchives.size(); ++i)
   {
     if (filename == _d->openArchives[i]->entries()->getPath())
+    {
+      Logger::warning( "FileSystem: unmountArchive " + filename.toString() );
       return unmountArchive(i);
+    }
   }
 
   return false;
@@ -460,19 +476,13 @@ bool FileSystem::unmountArchive( ArchivePtr archive)
 	return false;
 }
 
-
 //! gets an archive
-unsigned int FileSystem::archiveCount() const
-{
-	return _d->openArchives.size();
-}
-
+unsigned int FileSystem::archiveCount() const {	return _d->openArchives.size(); }
 
 ArchivePtr FileSystem::getFileArchive(unsigned int index)
 {
 	return index < archiveCount() ? _d->openArchives[index] : 0;
 }
-
 
 //! Returns the string of the current working directory
 const Path& FileSystem::workingDirectory()

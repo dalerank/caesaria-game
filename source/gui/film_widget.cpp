@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "smkviewer.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -55,11 +56,13 @@ FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
   setCenter( parent->center() );
 
   _d->smkViewer = new SmkViewer( this, Rect( 10, 10, width() - 10, 10 + 292 ) );
-  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
-  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
-  _d->lbTime = findChildA<Label*>( "lbTime", true, this );
-  _d->lbReceiver = findChildA<Label*>( "lbReceiver", true, this );
-  _d->lbMessage = findChildA<Label*>( "lbMessage", true, this );
+
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, lbTime )
+  GET_DWIDGET_FROM_UI( _d, lbReceiver )
+  GET_DWIDGET_FROM_UI( _d, lbMessage )
+
   _d->videoFile = film; //"/smk/Emmigrate.smk"
 
   _d->smkViewer->setFilename( _d->videoFile );

@@ -21,6 +21,7 @@
 #include "entries.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/stringhelper.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
@@ -128,7 +129,7 @@ Path Directory::find(const Path& fileName, SensType sens) const
   int index = files.findFile( fileName.baseName() );
   if( index >= 0 )
   {
-    return files.item( index ).absolutePath();
+    return files.item( index ).fullpath;
   }
 
   return "";

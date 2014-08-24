@@ -28,8 +28,9 @@ namespace gui
 class WinMissionWindow : public Window
 {
 public:
-  WinMissionWindow(Widget* parent, std::string newTitle,
-                    bool mayContinue);
+  WinMissionWindow(Widget* parent, const std::string& newTitle,
+                   const std::string& winText,
+                   bool mayContinue);
   virtual ~WinMissionWindow();
 
 public oc3_signals:

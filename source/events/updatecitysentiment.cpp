@@ -41,7 +41,7 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
   PlayerCityPtr city = game.city();
 
   city::SentimentPtr srvc;
-  srvc << city->findService( city::Sentiment::getDefaultName() );
+  srvc << city->findService( city::Sentiment::defaultName() );
 
   if( srvc.isValid() )
   {

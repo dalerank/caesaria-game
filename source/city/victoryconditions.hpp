@@ -39,11 +39,12 @@ public:
   int needProsperity() const;
   int needFavour() const;
   int needPeace() const;
-  std::string getShortDesc() const;
-  std::string getNextMission() const;
-  std::string getNewTitle() const;
+  std::string shortDesc() const;
+  std::string nextMission() const;
+  std::string newTitle() const;
+  std::string winText() const;
   int needPopulation() const;
-  const StringArray& getOverview() const;
+  const StringArray& overview() const;
 
   bool isSuccess( int culture, int prosperity,
                   int favour, int peace,

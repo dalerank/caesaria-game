@@ -181,7 +181,7 @@ std::string TileOverlay::sound() const
   return md.sound();
 }
 
-void TileOverlay::setName( const std::string& name ){  _d->name = name;}
+void TileOverlay::setName( const std::string& name ){ _d->name = name;}
 void TileOverlay::setSize( const Size& size ){  _d->size = size;}
 Point TileOverlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
 Animation& TileOverlay::_animationRef(){  return _d->animation;}

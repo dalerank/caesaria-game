@@ -58,7 +58,7 @@ public:
 CartSupplier::CartSupplier( PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setType( walker::cartPusher );
+  _setType( walker::supplier );
 
   _d->storageBuildingPos = TilePos( -1, -1 );
   _d->baseBuildingPos = TilePos( -1, -1 );

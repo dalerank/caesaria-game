@@ -9,6 +9,8 @@
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : 0
+  preview.text : "##capua_preview_mission##"
+  preview.image : ""
 	
   win :
   {

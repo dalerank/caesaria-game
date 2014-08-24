@@ -97,10 +97,10 @@
   {
     FT_Bytes   p = table;
 
-    FT_Fixed   track, t;
+    FT_Fixed   track;
     FT_UShort  nameIndex;
     FT_UShort  offset;
-    FT_UShort  i, j;
+    FT_UShort  i;
 
 
     GXV_NAME_ENTER( "trackTable" );
@@ -108,11 +108,9 @@
     GXV_TRAK_DATA( trackValueOffset_min ) = 0xFFFFU;
     GXV_TRAK_DATA( trackValueOffset_max ) = 0x0000;
 
-    GXV_LIMIT_CHECK( nTracks * ( 4 + 2 + 2 ) );
-
     for ( i = 0; i < nTracks; i ++ )
     {
-      p = table + i * ( 4 + 2 + 2 );
+      GXV_LIMIT_CHECK( 4 + 2 + 2 );
       track     = FT_NEXT_LONG( p );
       nameIndex = FT_NEXT_USHORT( p );
       offset    = FT_NEXT_USHORT( p );
@@ -123,15 +121,6 @@
         GXV_TRAK_DATA( trackValueOffset_max ) = offset;
 
       gxv_sfntName_validate( nameIndex, 256, 32767, valid );
-
-      for ( j = i; j < nTracks; j ++ )
-      {
-         p = table + j * ( 4 + 2 + 2 );
-         t = FT_NEXT_LONG( p );
-         if ( t == track )
-           GXV_TRACE(( "duplicated entries found for track value 0x%x\n",
-                        track ));
-      }
     }
 
     valid->subtable_length = p - table;
@@ -209,6 +198,7 @@
   {
     FT_Bytes          p = table;
     FT_Bytes          limit = 0;
+    FT_Offset         table_size;
 
     GXV_ValidatorRec  validrec;
     GXV_Validator     valid = &validrec;
@@ -230,6 +220,7 @@
     valid->face       = face;
 
     limit      = valid->root->limit;
+    table_size = limit - table;
 
     FT_TRACE3(( "validating `trak' table\n" ));
     GXV_INIT;

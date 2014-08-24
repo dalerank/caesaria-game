@@ -17,7 +17,9 @@
 
 #include "emperor.hpp"
 #include "core/foreach.hpp"
+#include "city/funds.hpp"
 #include "game/gamedate.hpp"
+#include "events/showinfobox.hpp"
 #include "romechastenerarmy.hpp"
 #include "city.hpp"
 #include "empire.hpp"
@@ -38,11 +40,13 @@ struct Relation
   DateTime lastGiftDate;
   DateTime lastTaxDate;
   int lastGiftValue;
+  bool debtMessageSent;
 
   Relation()
     : value( 0 ),
       soldiersSent( 0 ), lastSoldiersSent( 0 ),
-      lastGiftDate( DateTime( -351, 1, 1 ) ), lastGiftValue( 0 )
+      lastGiftDate( DateTime( -351, 1, 1 ) ), lastGiftValue( 0 ),
+      debtMessageSent(false)
   {
 
   }
@@ -56,24 +60,26 @@ struct Relation
   VariantMap save() const
   {
     VariantMap ret;
-    ret[ "lastGiftDate" ] = lastGiftDate;
-    ret[ "lastTaxDate" ] = lastTaxDate;
+    VARIANT_SAVE_ANY(ret, lastGiftDate )
+    VARIANT_SAVE_ANY(ret, lastTaxDate )
     VARIANT_SAVE_ANY(ret, value)
-    VARIANT_SAVE_ANY(ret, lastGiftValue );
-    VARIANT_SAVE_ANY(ret, soldiersSent );
-    VARIANT_SAVE_ANY(ret, lastSoldiersSent);
+    VARIANT_SAVE_ANY(ret, lastGiftValue )
+    VARIANT_SAVE_ANY(ret, soldiersSent )
+    VARIANT_SAVE_ANY(ret, lastSoldiersSent)
+    VARIANT_SAVE_ANY(ret, debtMessageSent )
 
     return ret;
   }
 
   void load( const VariantMap& stream )
   {
-    lastGiftDate = stream.get( "lastGiftDate" ).toDateTime();
-    lastTaxDate = stream.get( "lastTaxDate" ).toDateTime();
+    VARIANT_LOAD_TIME(lastGiftDate, stream )
+    VARIANT_LOAD_TIME(lastTaxDate, stream )
     VARIANT_LOAD_ANY(value, stream)
     VARIANT_LOAD_ANY(lastGiftValue, stream);
     VARIANT_LOAD_ANY(lastSoldiersSent, stream);
     VARIANT_LOAD_ANY(soldiersSent, stream)
+    VARIANT_LOAD_ANY(debtMessageSent, stream)
   }
 };
 
@@ -87,7 +93,6 @@ public:
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
 {
-  //__D_IMPL(d,Emperor)
 }
 
 Emperor::~Emperor(){}
@@ -127,6 +132,19 @@ void Emperor::sendGift(const std::string& cityname, unsigned int money)
   updateRelation( cityname, favourUpdate );
 }
 
+DateTime Emperor::lastGiftDate(const std::string &cityname)
+{
+  Relation relation;
+  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
+  if( it != _dfunc()->relations.end() )
+  {
+    relation = it->second;
+    return DateTime( -350, 1, 1 );
+  }
+
+  return relation.lastGiftDate;
+}
+
 void Emperor::timeStep(unsigned int time)
 {
   if( GameDate::isYearChanged() )
@@ -145,8 +163,19 @@ void Emperor::timeStep(unsigned int time)
       }
 
       CityPtr cityp = d->empire->findCity( it->first );
-      bool greaterSalary = EmpireHelper::isGreaterSalary( cityp );
-      ref.value += greaterSalary ? -2 : 1;
+      float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
+      if( salaryKoeff > 1.f ) { ref.value -= (int)salaryKoeff * salaryKoeff; }
+      else if( salaryKoeff < 1.f ) { ref.value += 1; }
+
+      int brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+      if( brokenEmpireTax > 0 )
+      {
+        ref.value -= 1;
+
+        brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+        if( brokenEmpireTax > 0 )
+          ref.value -= 2;
+      }
     }
   }
 
@@ -157,14 +186,27 @@ void Emperor::timeStep(unsigned int time)
     CityList troubleCities;
     foreach( it, d->relations )
     {
-      if( it->second.value < 20 && it->second.soldiersSent == 0 )
+      CityPtr city = d->empire->findCity( it->first );
+      Relation& relation = d->relations[ it->first ];
+
+      if( ( city->funds().treasury() < -5500 || relation.value < 20 )
+          && relation.soldiersSent == 0 )
       {
-        CityPtr city = d->empire->findCity( it->first );
+        if( city->funds().treasury() < -5500 && !relation.debtMessageSent )
+        {
+          relation.debtMessageSent = true;
+          events::GameEventPtr e = events::ShowInfobox::create( "##emperor_wrath_by_debt_title##",
+                                                                "##emperor_wrath_by_debt_text##",
+                                                                true );
+          e->dispatch();
+        }
+
         if( city.isValid() )
         {
           troubleCities << city;
         }
       }
+
     }
 
     foreach( it, troubleCities )

@@ -154,8 +154,8 @@ enum KeyCode
     KEY_RSHIFT           = 0xA1,  // Right SHIFT key
     KEY_LCONTROL         = 0xA2,  // Left CONTROL key
     KEY_RCONTROL         = 0xA3,  // Right CONTROL key
-    KEY_LMENU            = 0xA4,  // Left MENU key
-    KEY_RMENU            = 0xA5,  // Right MENU key
+    KEY_LALT             = 0xA4,  // Left ALT key
+    KEY_RALT             = 0xA5,  // Right ALT key
     KEY_PLUS             = 0xBB,  // Plus Key   (+)
     KEY_COMMA            = 0xBC,  // Comma Key  (,)
     KEY_MINUS            = 0xBD,  // Minus Key  (-)
@@ -250,6 +250,9 @@ enum SysEventType
     /** Like mouse events, keyboard events are created by the device and passed to
     handleEvent. They take the same path as mouse events. */
     sEventKeyboard,
+
+    //! A keyboard symbol input event.
+    sTextInput,
 
     sEventUser,
 
@@ -373,6 +376,11 @@ struct NEvent
     bool control:1; //! True if ctrl was also pressed
   };
 
+  struct _InputEvent
+  {
+    char text[32];
+  };
+
   //! Any kind of user event.
   struct _UserEvent
   {    
@@ -386,6 +394,7 @@ struct NEvent
     struct _GuiEvent gui;
     struct _MouseEvent mouse;
     struct _KeyboardEvent keyboard;
+    struct _InputEvent text;
     struct _UserEvent user;
   };
 

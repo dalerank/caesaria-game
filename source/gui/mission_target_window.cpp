@@ -34,6 +34,7 @@
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
 #include "game/settings.hpp"
+#include "widget_helper.hpp"
 
 using namespace gfx;
 
@@ -75,20 +76,18 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   WidgetEscapeCloser::insertTo( this );
 
-  TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  TexturedButton* btnExit;
+  GET_WIDGET_FROM_UI( btnExit )
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 
-  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
-  //_d->subTitle = new Label( this, Rect( 16, _d->title->getBottom(), getWidth() - 16, _d->title->getBottom() + 20), "##sub_title##" );
-
-  _d->lbPopulation = findChildA<Label*>( "lbPopulation", true, this );
-  _d->lbProsperity = findChildA<Label*>( "lbProsperity", true, this );
-  _d->lbFavour = findChildA<Label*>( "lbFavour", true, this );
-  _d->lbCulture = findChildA<Label*>( "lbCulture", true, this );
-  _d->lbPeace = findChildA<Label*>( "lbPeace", true, this );
-  _d->lbShortDesc = findChildA<Label*>( "lbShortDesc", true, this );
-
-  _d->lbxHelp = findChildA<ListBox*>( "lbxHelp", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+  GET_DWIDGET_FROM_UI( _d, lbPopulation )
+  GET_DWIDGET_FROM_UI( _d, lbProsperity )
+  GET_DWIDGET_FROM_UI( _d, lbFavour )
+  GET_DWIDGET_FROM_UI( _d, lbCulture )
+  GET_DWIDGET_FROM_UI( _d, lbPeace  )
+  GET_DWIDGET_FROM_UI( _d, lbShortDesc )
+  GET_DWIDGET_FROM_UI( _d, lbxHelp )
 }
 
 void MissionTargetsWindow::draw( gfx::Engine& painter )
@@ -146,7 +145,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   {
     _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
 
-    foreach( it, wint.getOverview() )
+    foreach( it, wint.overview() )
     {
       std::string text = *it;
       if( text.substr( 0, 5 ) == "@img=" )
@@ -165,8 +164,8 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
 
   if( _d->lbShortDesc )
   {
-    _d->lbShortDesc->setText( _(wint.getShortDesc()) );
-    _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
+    _d->lbShortDesc->setText( _(wint.shortDesc()) );
+    _d->lbShortDesc->setVisible( !wint.shortDesc().empty() );
   }
 }
 

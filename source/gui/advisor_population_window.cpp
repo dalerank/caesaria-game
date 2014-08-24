@@ -28,6 +28,8 @@
 #include "objects/house_level.hpp"
 #include "city/migration.hpp"
 #include "label.hpp"
+#include "widget_helper.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -131,12 +133,18 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
-  _d->lbNextChart = findChildA<Label*>( "lbNextChart", true, this );
-  _d->lbPrevChart = findChildA<Label*>( "lbPrevChart", true, this );
-  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
-  _d->lbMigrationValue =  findChildA<Label*>( "lbMigrationValue", true, this );
+  GET_DWIDGET_FROM_UI( _d, lbNextChart  );
+  GET_DWIDGET_FROM_UI( _d, lbPrevChart )
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+  GET_DWIDGET_FROM_UI( _d, lbMigrationValue )
 
-  Label* lbNextChartArea = findChildA<Label*>( "lbNextChartArea", true, this );
+  Label* lbNextChartArea;
+  Label* lbChart;
+  Label* lbPrevChartArea;
+  GET_WIDGET_FROM_UI( lbPrevChartArea )
+  GET_WIDGET_FROM_UI( lbNextChartArea )
+  GET_WIDGET_FROM_UI( lbChart )
+
   if( lbNextChartArea )
   {
     _d->chartNext = new CityChart( lbNextChartArea, Rect( 0, 0, 100, 50 ) );
@@ -144,7 +152,6 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
     CONNECT( lbNextChartArea, onClicked(), _d.data(), Impl::showNextChart );
   }
 
-  Label* lbPrevChartArea = findChildA<Label*>( "lbPrevChartArea", true, this );
   if( lbPrevChartArea )
   {
     _d->chartPrev = new CityChart( lbPrevChartArea, Rect( 0, 0, 100, 50 ) );
@@ -152,7 +159,6 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
     CONNECT( lbPrevChartArea, onClicked(), _d.data(), Impl::showPrevChart );
   }
 
-  Label* lbChart = findChildA<Label*>( "lbChart", true, this );
   if( lbChart )
   {
     _d->chartCurrent = new CityChart( lbChart, Rect( 10, 7, 405, 202 ) );

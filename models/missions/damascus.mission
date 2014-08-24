@@ -1,0 +1,5 @@
+{
+  win : {
+    win.text : "##damascus_win_text##"
+  }
+}

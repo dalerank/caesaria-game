@@ -20,6 +20,7 @@
 #include "label.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 

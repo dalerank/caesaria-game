@@ -31,7 +31,14 @@
 #include "texturedbutton.hpp"
 #include "city/cityservice_culture.hpp"
 #include "city/cityservice_prosperity.hpp"
+#include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
+#include "world/emperor.hpp"
+#include "city/funds.hpp"
+#include "city/cityservice_military.hpp"
+#include "city/requestdispatcher.hpp"
+#include "city/cityservice_info.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -103,6 +110,7 @@ public:
   void checkCultureRating();
   void checkProsperityRating();
   void checkPeaceRating();
+  void checkFavourRating();
 
   PlayerCityPtr city;
 };
@@ -166,35 +174,126 @@ void Ratings::Impl::checkProsperityRating()
 
   if( prosperity != 0 )
   {
-    if( prosperity->value() == 0 )
+    StringArray troubles;
+    unsigned int prValue = prosperity->value();
+    if( prValue == 0 )
     {
       lbRatingInfo->setText( _("##cant_calc_prosperity##") );
       return;
     }
 
-    StringArray troubles;
-    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles.push_back( _("##bad_house_quality##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles.push_back( _("##lost_money_last_year##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles.push_back( _("##high_workless_number##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles.push_back( _("##workers_salary_less_then_rome##") ); }
-    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles.push_back( _("##much_plebs##") ); }
+    city::InfoPtr info;
+    info << city->findService( city::Info::defaultName() );
+
+    city::Info::Parameters current = info->lastParams();
+    city::Info::Parameters lastYear = info->yearParams( 0 );
+
+    if( current.prosperity > lastYear.prosperity ) { troubles <<  "##your_prosperity_raising##"; }
+
+    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles << "##high_workless_number##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles << "##much_plebs##"; }
     if( prosperity->getMark( city::ProsperityRating::cmChange ) == 0 )
     {
-      troubles.push_back( _("##no_prosperity_change##") );
-      troubles.push_back( _("##how_to_grow_prosperity##") );
+      troubles << "##no_prosperity_change##";
+      troubles << "##how_to_grow_prosperity##";
+    }
+    if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
+    if( current.payDiff > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
+
+
+    unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
+    caesarsHelper += city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
+    if( caesarsHelper > 0 )
+    {
+      troubles << "##emperor_send_money_to_you_nearest_time##";
     }
 
     std::string text = troubles.empty()
-                        ? _("##good_prosperity##")
-                        : troubles[ (int)(rand() % troubles.size()) ];
+                        ? "##good_prosperity##"
+                        : troubles.random();
 
-    lbRatingInfo->setText( text );
+    lbRatingInfo->setText( _(text) );
   }
 }
 
 void Ratings::Impl::checkPeaceRating()
 {
-  lbRatingInfo->setText( _("##peace_rating_text##") );
+  StringArray advices;
+  city::MilitaryPtr ml;
+  ml << city->findService( city::Military::defaultName() );
+
+  unsigned int peace = city->peace();
+
+  if( ml->month2lastAttack() < 36 )
+  {
+    advices << "##province_has_peace_a_short_time##";
+  }
+
+  if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+  else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+  else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
+  else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+
+  std::string text = advices.empty()
+                      ? "##peace_rating_text##"
+                      : advices.random();
+
+  lbRatingInfo->setText( _(text) );
+}
+
+void Ratings::Impl::checkFavourRating()
+{
+  StringArray problems;
+  city::request::DispatcherPtr rd;
+  rd << city->findService( city::request::Dispatcher::defaultName() );
+
+  city::InfoPtr info;
+  info << city->findService( city::Info::defaultName() );
+
+  city::Info::Parameters current = info->lastParams();
+  city::Info::Parameters lastYear = info->yearParams( 0 );
+
+  PlayerPtr player = city->player();
+  world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
+  float salaryKoeff = player->salary() / (float)rank.salary;
+
+  int brokenEmpireTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+  if( brokenEmpireTax > 0 )
+  {
+    int twoYearsAgoBrokenTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+
+    if( twoYearsAgoBrokenTax > 0 ) { problems << "##broke_empiretax_with2years_warning##"; }
+    else { problems << "##broke_empiretax_warning##"; }
+  }
+
+  if( salaryKoeff >= 3.f )     { problems << "##high_salary_angers_senate##";  }
+  else if( salaryKoeff > 2.5f ) { problems << "##more_salary_dispeasure_senate##";  }
+  else if( salaryKoeff > 2.f ){ problems << "##try_reduce_your_high_salary##"; }
+  else if( salaryKoeff > 1.5f ) { problems << "##try_reduce_your_salary##"; }
+  else if( salaryKoeff > 1.f ) { problems << "##your_salary_frowned_senate##"; }
+
+  if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
+  else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
+
+  if( current.favour < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current.favour > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
+
+  if( rd.isValid() )
+  {
+    if( rd->haveCanceledRequest() )
+    {
+      problems << "##imperial_request_cance_badly_affected##";
+    }
+  }
+
+  std::string text = problems.empty()
+                      ? _("##no_favour_problem##")
+                      : problems.random();
+
+  lbRatingInfo->setText( _(text) );
 }
 
 Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
@@ -204,13 +303,12 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   setupUI( ":/gui/ratingsadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  //buttons _d->_d->background
-  Rect r( Point( 66, 360 ), Size( 510, 60 ) );
-  _d->lbRatingInfo = findChildA<Label*>( "lbRatingInfo", true, this );
+  Label* lbNeedPopulation;
+  GET_WIDGET_FROM_UI( lbNeedPopulation )
+  GET_DWIDGET_FROM_UI( _d, lbRatingInfo )
 
   const city::VictoryConditions& targets = city->victoryConditions();
 
-  Label* lbNeedPopulation = findChildA<Label*>( "lbNeedPopulation", true, this );
   if( lbNeedPopulation ) lbNeedPopulation->setText( StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
 
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );
@@ -235,6 +333,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   _d->btnFavour->setValue( _d->city->favour() );
   _d->btnFavour->setTarget( targets.needFavour() );
   _d->updateColumn( _d->btnFavour->relativeRect().getCenter(), 0 );
+  CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }

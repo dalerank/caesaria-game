@@ -138,6 +138,11 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
   c1 |= 0xff000000;
   c2 |= 0xff000000;
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  c1 = NColor( c1 ).abgr();
+  c2 = NColor( c2 ).abgr();
+#endif
 }
 
 void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
@@ -196,6 +201,11 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 
   c1 |= 0xff000000;
   c2 |= 0xff000000;
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  c1 = NColor( c1 ).abgr();
+  c2 = NColor( c2 ).abgr();
+#endif
 }
 
 void Minimap::Impl::updateImage()

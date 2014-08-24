@@ -78,6 +78,7 @@
 #include "events/postpone.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "gui/city_options_window.hpp"
+#include "gui/widget_helper.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -521,10 +522,11 @@ void Level::animate( unsigned int time )
 
     if( success )
     {
-      std::string newTitle = wt.getNewTitle();
-      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(), newTitle, false );
+      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(),
+                                                              wt.newTitle(), wt.winText(),
+                                                              false );
 
-      _d->mapToLoad = wt.getNextMission();
+      _d->mapToLoad = wt.nextMission();
 
       CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
     }

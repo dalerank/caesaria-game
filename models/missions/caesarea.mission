@@ -1,0 +1,5 @@
+{
+  win : {
+    win.text : "##caesarea_win_text##"
+  }
+}

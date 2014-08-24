@@ -16,12 +16,12 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "playername_window.hpp"
-#include "game/settings.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "widgetescapecloser.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
@@ -36,21 +36,25 @@ public oc3_signals:
 WindowPlayerName::WindowPlayerName(Widget* parent)
   : Window( parent, Rect( 0, 0, 10, 10 ), "", -1 ), _d( new Impl )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
+  Widget::setupUI( ":/gui/playername.gui" );
 
   WidgetEscapeCloser::insertTo( this );
 
   setCenter( parent->center() );
 
-  const bool searchRecursive = true;
-  EditBox* ed = findChildA<EditBox*>( "edPlayerName", searchRecursive, this );
-  CONNECT( ed, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
+  EditBox* edPlayerName;
+  PushButton* btnContinue;
+  GET_WIDGET_FROM_UI( edPlayerName )
+  GET_WIDGET_FROM_UI( btnContinue )
 
-  PushButton* btn = findChildA<PushButton*>( "btnContinue", searchRecursive, this );
-  CONNECT( btn, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+  CONNECT( edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
+  CONNECT( btnContinue, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+  CONNECT( edPlayerName, onEnterPressed(), &_d->onCloseSignal, Signal0<>::emit );
 
-  if( ed )
-    ed->setFocus();
+  if( edPlayerName )
+  {
+    edPlayerName->moveCursor( 99 );
+  }
 }
 
 WindowPlayerName::~WindowPlayerName(){}
@@ -59,6 +63,16 @@ std::string WindowPlayerName::text() const
 {
   const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
   return ed ? ed->text() : "";
+}
+
+void WindowPlayerName::setModal()
+{
+  Window::setModal();
+
+  EditBox* edPlayerName;
+  GET_WIDGET_FROM_UI( edPlayerName )
+
+  if( edPlayerName ) edPlayerName->setFocus();
 }
 
 Signal0<>& WindowPlayerName::onClose(){  return _d->onCloseSignal;}

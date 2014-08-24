@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __OPENCAESAR3_FILE_SYSTEM_H_INCLUDED__
-#define __OPENCAESAR3_FILE_SYSTEM_H_INCLUDED__
+#ifndef __CAESARIA_FILE_SYSTEM_H_INCLUDED__
+#define __CAESARIA_FILE_SYSTEM_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
 #include "vfs/file.hpp"
@@ -127,5 +127,5 @@ private:
 
 }//end namesapce io
 
-#endif
+#endif //__CAESARIA_FILE_SYSTEM_H_INCLUDED__
 
