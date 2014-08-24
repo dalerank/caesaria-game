@@ -46,7 +46,7 @@ public:
   
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
-
+  virtual void buildingsServed( const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker );
   virtual unsigned int walkerDistance() const;
 
   std::string workersStateDesc() const;

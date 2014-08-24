@@ -127,6 +127,7 @@ void ServiceBuilding::load( const VariantMap& stream )
   _d->serviceRange = (int)stream.get( lc_range, defaultMaxServiceRange );
 }
 
+void ServiceBuilding::buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr) {}
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}
 unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; }
