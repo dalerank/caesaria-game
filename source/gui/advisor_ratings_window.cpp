@@ -278,10 +278,8 @@ void Ratings::Impl::checkFavourRating()
   if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
   else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
 
-  if( current.favour < 30 )
-  {
-    problems << "##your_favor_is_dropping_catch_it##";
-  }
+  if( current.favour < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current.favour > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
 
   if( rd.isValid() )
   {

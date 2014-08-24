@@ -32,9 +32,9 @@ public:
   typedef enum { vacantLot=0,
                  hovel=1, tent,
                  shack, hut,
-                 smallDomus, bigDomus,
-                 smallMansion, bigMansion, //8
-                 smallInsula, middleInsula, //10
+                 domus, bigDomus,
+                 mansion, bigMansion, //8
+                 insula, middleInsula, //10
                  bigInsula, beatyfullInsula, //12
                  smallVilla,  middleVilla,  bigVilla,  greatVilla,
                  smallPalace, middlePalace, bigPalace, greatPalace,
