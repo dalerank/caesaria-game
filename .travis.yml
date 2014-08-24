@@ -30,6 +30,18 @@ before_install:
 
 before_script:
 # Don't ask for confirmation when using scp
+- BUILD_NAME=`date +"%Y%m%d"`
+- echo -e "#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_\n" >> source/version.hpp
+- echo -e "#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_\n" >> source/version.hpp
+- echo -e "#include \"core/platform.hpp\"\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION_MAJOR 0\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION_MINOR 4\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION_REVSN $BUILD_NAME\n" >> source/version.hpp
+- echo -e "#define CAESARIA_STR_EXT(__A) #__A\n" >> source/version.hpp
+- echo -e "#define CAESARIA_STR_A(__A) CAESARIA_STR_EXT(__A)\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION CaesarIA:android-$BUILD_NAME\n" >> source/version.hpp
+- echo -e "#endif\n" >> source/version.hpp
+
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 script:
