@@ -11,9 +11,9 @@ before_install:
 - NDK_VERSION=r9
 #SDK_VERSION=20130729; 
 #[ $(TARGET_ARCH) = "i386" ] && ARCH=x86;
-- echo "Downloading the ndk..."; \
+- echo "Downloading the ndk..."; 
 - wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$$NDK_VERSION-linux-$$ARCH.tar.bz2
-- echo "Extracting the ndk..."; \
+- echo "Extracting the ndk..."; 
 - tar -xjf android-ndk-$$NDK_VERSION-linux-$$ARCH.tar.bz2 -C ~/
 #echo "Downloading the sdk..."; \
 #wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
