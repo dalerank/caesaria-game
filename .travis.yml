@@ -1,47 +1,58 @@
-language: cpp
+language: android
 
-compiler:
-- clang
-- gcc
+android:
+  components:
+    - build-tools-19.1.0
+    - android-19
 
 before_install:
-# Get build dependencies
-- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
-- sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential libsdl2-dev libsdl2-mixer-dev sshpass
-# Get SDL
-#- wget http://www.libsdl.org/release/SDL-devel-1.2.15-mingw32.tar.gz
-#- tar xfz SDL-devel-1.2.15-mingw32.tar.gz
-#- sudo cp SDL-1.2.15/bin/* /usr/i586-mingw32msvc/bin/
-#- sudo cp -r SDL-1.2.15/include/SDL/* /usr/i586-mingw32msvc/include/
-#- sudo cp SDL-1.2.15/lib/* /usr/i586-mingw32msvc/lib/
-#- sudo chmod +x /usr/i586-mingw32msvc/bin/sdl-config
-# Get SDL Mixer
-#- wget http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-devel-1.2.12-VC.zip
-#- unzip SDL_mixer-devel-1.2.12-VC.zip
-#- sudo cp -r SDL_mixer-1.2.12/include/* /usr/i586-mingw32msvc/include/
-#- sudo cp SDL_mixer-1.2.12/lib/x86/* /usr/i586-mingw32msvc/lib/
-install:
-- cd $TRAVIS_BUILD_DIR
-# Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release
+- sudo apt-get install -qq wget
+- ARCH=x86_64
+- NDK_VERSION=r9
+#SDK_VERSION=20130729; 
+#[ $(TARGET_ARCH) = "i386" ] && ARCH=x86;
+- echo "Downloading the ndk..."; 
+- wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2
+- echo "Extracting the ndk..."; 
+- tar -xjf android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2 -C ~/
+#echo "Downloading the sdk..."; \
+#wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
+#echo "Extracting the sdk..."; \
+#ARCHIVE=`readlink -f adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip`; \
+#cd ~; \
+#unzip -o -qq $$ARCHIVE; \
+- echo "Configure paths..."; 
+#- export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk
+- export ANDROID_NDK=~/android-ndk-$NDK_VERSION
+- export NDK_ROOT=$ANDROID_NDK
+#- export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools
+- export PATH=$PATH:$ANDROID_NDK
+
 before_script:
+# Don't ask for confirmation when using scp
+- BUILD_NAME=`date +"%Y%m%d"`
+- echo -e "#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_\n" >> source/version.hpp
+- echo -e "#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_\n" >> source/version.hpp
+- echo -e "#include \"core/platform.hpp\"\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION_MAJOR 0\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION_MINOR 4\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION_REVSN $BUILD_NAME\n" >> source/version.hpp
+- echo -e "#define CAESARIA_STR_EXT(__A) ##__A\n" >> source/version.hpp
+- echo -e "#define CAESARIA_VERSION CaesarIA:android-$BUILD_NAME\n" >> source/version.hpp
+- echo -e "#endif\n" >> source/version.hpp
+
+- echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 script:
 # Build CaesarIA
-- make
+- cd android
+- make DEBUG=0
+
 after_success:
-- export REVISION_NUMBER=`git rev-list HEAD --count`
-- ls
-- cd $TRAVIS_BUILD_DIR/
-- ls
-- cd $TRAVIS_BUILD_DIR/../caesaria-test
+- cd $TRAVIS_BUILD_DIR/android/android-project/bin
 - ls
 # Prepare ZIP archive
-- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-$REVISION_NUMBER.zip
-- echo Compress to $ZIPNAME
-- zip -r $ZIPNAME *
-- chmod 666 $ZIPNAME
+- APKNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.apk
+- mv CaesarIA-release.apk $APKNAME
 # Upload to server
-- sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
-env:
+- sshpass -p "$SCP_PASS" scp -v $APKNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
