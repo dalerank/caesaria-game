@@ -13,7 +13,7 @@ before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential libsdl2-dev libsdl2-mixer-dev sshpass
+- sudo apt-get -qq install cmake p7zip-full build-essential libsdl2-dev libsdl2-mixer-dev sshpass wget
 
 install:
 - cd $TRAVIS_BUILD_DIR
@@ -23,6 +23,9 @@ install:
 before_script:
 # Don't ask for confirmation when using scp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip?dl=1
+- mkdir $TRAVIS_BUILD_DIR/../caesaria-test
+- unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 
 script:
 # Build CaesarIA
