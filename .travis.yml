@@ -37,7 +37,7 @@ before_script:
 script:
 # Build CaesarIA
 - cd android
-- make DEBUG=0
+- make build-and-pack DEBUG=0
 
 after_success:
 - cd $TRAVIS_BUILD_DIR/android/android-project/bin
