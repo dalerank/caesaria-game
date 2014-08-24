@@ -37,7 +37,7 @@ build-and-pack: android-update-project android-copy-assets android-uninstall
 	@echo "===> NDK [native build]"
 	$(Q)cd $(ANDROID_PROJECT) && ndk-build $(NDK_VERBOSE)
 	@echo "===> ANT [java build]"
-	$(Q)cd $(ANDROID_PROJECT) && ant $(ANT_TARGET)
+	$(Q)cd $(ANDROID_PROJECT) && ant release
 	
 .PHONY: android-clean
 android-clean:
