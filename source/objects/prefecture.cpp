@@ -61,7 +61,7 @@ void Prefecture::deliverService()
   {
     bool fireDetect = _d->fireDetect.i() >= 0;
     PrefectPtr prefect = Prefect::create( _city() );
-    prefect->setMaxDistance( 26 );
+    prefect->setMaxDistance( walkerDistance() );
 
     if( fireDetect )
     {
@@ -91,5 +91,7 @@ void Prefecture::deliverService()
     addWalker( prefect.object() );
   }
 }
+
+unsigned int Prefecture::walkerDistance() const { return 26; }
 
 void Prefecture::fireDetect( const TilePos& pos ) {  _d->fireDetect = pos; }

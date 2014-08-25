@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_TAXCOLLECTOR_H_INCLUDED__
 #define __CAESARIA_TAXCOLLECTOR_H_INCLUDED__
@@ -26,11 +28,11 @@ class TaxCollector : public ServiceWalker
 public:
   static TaxCollectorPtr create( PlayerCityPtr city );
 
-  float getMoney() const;
+  float takeMoney() const;
 
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
-  virtual std::string currentThinks() const;
+  virtual std::string currentThinks() const;  
 
 protected:
   virtual void _centerTile();

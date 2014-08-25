@@ -32,6 +32,7 @@
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
 #include "cityservice_health.hpp"
+#include "core/logger.hpp"
 #include <map>
 
 using namespace constants;
@@ -55,6 +56,12 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
 
 float Statistic::getBalanceKoeff(PlayerCityPtr city)
 {
+  if( city.isNull() )
+  {
+    Logger::warning( "Statistic::getBalanceKoeff cityptr is null");
+    return 1.f;
+  }
+
   return atan( city->population() / 1000.f );
 }
 

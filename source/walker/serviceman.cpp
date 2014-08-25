@@ -33,6 +33,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+  const unsigned int defaultServiceDistance = 5;
+}
+
 class ServiceWalker::Impl
 {
 public:
@@ -46,7 +50,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
-  _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
+  _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
 
@@ -265,8 +269,19 @@ void ServiceWalker::_updatePathway( const Pathway& pathway)
   _reservePath( pathway );
 }
 
-void ServiceWalker::send2City(BuildingPtr base , int orders)
+void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
+  ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( base );
+
+  if( servBuilding.isValid() && _d->maxDistance == defaultServiceDistance )
+  {
+    setMaxDistance( servBuilding->walkerDistance() );
+  }
+  else
+  {
+    Logger::warning( "WARNING !!!: ServiceWalker sender not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+  }
+
   setBase( base );
   _computeWalkerPath( orders );
 

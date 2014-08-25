@@ -82,7 +82,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
     if( txcl.isValid() )
     {
-      float tax = txcl->getMoney();;
+      float tax = txcl->takeMoney();;
       _d->taxValue += tax;
       Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
     }
@@ -105,7 +105,7 @@ bool Senate::build(PlayerCityPtr city, const TilePos& pos)
   return true;
 }
 
-unsigned int Senate::walkerDistance() const {  return 26; }
+unsigned int Senate::walkerDistance() const { return 26; }
 
 void Senate::_updateRatings()
 {
@@ -171,8 +171,7 @@ void Senate::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _city() );
-    walker->setMaxDistance( walkerDistance() );
-    walker->send2City( this );
+    walker->send2City( this, TaxCollector::goLowerService|TaxCollector::anywayWhenFailed );
 
     if( !walker->isDeleted() )
     {
