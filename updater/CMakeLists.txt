@@ -50,21 +50,22 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
+if(HAIKU)
+  target_link_libraries( ${PROJECT_NAME} root network )
+  set(EXECUTABLE_FILENAME "updater.haiku")
+endif(HAIKU)
+
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
-
-  if(HAIKU)
-    target_link_libraries( ${PROJECT_NAME} root network )
-    set(EXECUTABLE_FILENAME "updater.haiku") 
-  else(HAIKU)
-    target_link_libraries( ${PROJECT_NAME} pthread )
-    set(EXECUTABLE_FILENAME "updater.linux")
-  endif(HAIKU)
+  target_link_libraries( ${PROJECT_NAME} pthread )
+  set(EXECUTABLE_FILENAME "updater.linux")
 endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "updater.macos")
 endif(APPLE)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-updater: building in release mode")
