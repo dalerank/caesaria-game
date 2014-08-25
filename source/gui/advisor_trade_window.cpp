@@ -127,7 +127,6 @@ protected:
 private:
   int _qty;
   bool _enable;
-  bool _stacking;
   city::TradeOptions::Order _tradeOrder;
   int _tradeQty;
   Good::Type _type;
