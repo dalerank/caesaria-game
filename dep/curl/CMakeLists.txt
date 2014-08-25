@@ -285,6 +285,15 @@ endif(HAVE_SIZEOF_LONG_LONG)
 
 SET(CMAKE_EXTRA_INCLUDE_FILES)
 
+if( BUILD_32_BIT_APP )
+  message( "Curl build in 32bit mode" )
+  set( CMAKE_CXX_FLAGS_INIT "-m32" CACHE STRING "C++ flag which generates 32 bit code." )
+  set( CMAKE_C_FLAGS_INIT "-m32" CACHE STRING "C flag which generates 32 bit code." )
+  set( CMAKE_SHARED_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+  set( CMAKE_MODULE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+  set( CMAKE_EXE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+endif()
+
 include_directories( ${DEP_SOURCE_DIR} )
 
 add_definitions( -DCURL_STATICLIB )

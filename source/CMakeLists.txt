@@ -51,9 +51,14 @@ target_link_libraries(${PROJECT_NAME}
   ${SDL2_MIXER_LIBRARY}
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32")
+if( BUILD_32_BIT_APP )
+  message( "Game build in 32bit mode" )
+  set( CMAKE_CXX_FLAGS_INIT "-m32" CACHE STRING "C++ flag which generates 32 bit code." )
+  set( CMAKE_C_FLAGS_INIT "-m32" CACHE STRING "C flag which generates 32 bit code." )
+  set( CMAKE_SHARED_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+  set( CMAKE_MODULE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+  set( CMAKE_EXE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+endif()
 
 if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
