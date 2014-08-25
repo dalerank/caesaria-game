@@ -17,7 +17,7 @@ install:
 - cd $TRAVIS_BUILD_DIR
 - mkdir ../caeasaria-test
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=xcompile/linux32.cmake
+- cmake -DCMAKE_BUILD_TYPE=Release
 
 script:
 # Build CaesarIA
