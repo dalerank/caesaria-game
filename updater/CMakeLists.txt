@@ -51,6 +51,9 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
 
