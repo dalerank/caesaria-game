@@ -44,7 +44,7 @@ before_script:
 
 script:
 # Build CaesarIA
-- make
+- make -j4
 after_success:
 - export REVISION_NUMBER=`git rev-list HEAD --count`
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
