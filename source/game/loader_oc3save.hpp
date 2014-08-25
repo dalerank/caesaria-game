@@ -11,10 +11,11 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.7//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_SCENARIO_OC3SAVE_LOADER_H_INCLUDED__
-#define __CAESARIA_SCENARIO_OC3SAVE_LOADER_H_INCLUDED__
+#ifndef __CAESARIA_OC3SAVE_LOADER_H_INCLUDED__
+#define __CAESARIA_OC3SAVE_LOADER_H_INCLUDED__
 
 #include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
@@ -36,4 +37,4 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-#endif
+#endif //__CAESARIA_OC3SAVE_LOADER_H_INCLUDED__

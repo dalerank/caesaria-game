@@ -42,7 +42,7 @@ Temple::Temple( DivinityPtr divinity, TileOverlay::Type type, int imgId, const S
   _fgPicturesRef().resize( 1 );
 }
 
-DivinityPtr Temple::getDivinity() const {  return _td->divinity; }
+DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
 void Temple::deliverService()
 {
@@ -52,7 +52,7 @@ void Temple::deliverService()
   }
 }
 
-unsigned int Temple::walkerDistance() const {  return 26;}
+unsigned int Temple::walkerDistance() const { return 26;}
 
 Temple::~Temple(){}
 
@@ -88,7 +88,7 @@ BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), building:
 {
 }
 
-TempleMercure::TempleMercure() : SmallTemple( rome::Pantheon::mercury(), building::templeMercury, 49 )
+TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), building::templeMercury, 49 )
 {
 }
 
@@ -96,10 +96,7 @@ BigTempleMercure::BigTempleMercure() : BigTemple( rome::Pantheon::mercury(), bui
 {
 }
 
-unsigned int BigTempleMercure::parishionerNumber() const
-{
-  return 300;
-}
+unsigned int BigTempleMercure::parishionerNumber() const {  return 300; }
 
 TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
 {
@@ -141,7 +138,13 @@ BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
 unsigned int BigTemple::parishionerNumber() const {  return 300;}
 
 bool BigTemple::build(PlayerCityPtr city, const TilePos& pos)
-{
+{  
+  if( city->getOption( PlayerCity::forceBuild ) > 0 )  //load from savefiles
+  {
+    Temple::build( city, pos );
+    return true;
+  }
+
   city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city );
   if( goods[ Good::marble ] >= 2 )
   {
