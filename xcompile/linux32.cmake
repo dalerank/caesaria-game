@@ -1,5 +1,5 @@
 set( CMAKE_SYSTEM_NAME Linux )
-set( CMAKE_SYSTEM_PROCESSOR i686 )
+set( CMAKE_SYSTEM_PROCESSOR i386 )
 #-----<configuration>-----------------------------------------------
 
 # One compiler generates either 32 bit or 64 bit code, -m32 says generate 32 bit:
