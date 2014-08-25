@@ -51,6 +51,10 @@ target_link_libraries(${PROJECT_NAME}
   ${SDL2_MIXER_LIBRARY}
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32")
+
 if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
   include_directories(${ZLIB_HOME})
@@ -99,7 +103,6 @@ endif(BUILD_GL_SHADERS)
 if( DEBUG_TIMERS )
 add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
 endif(DEBUG_TIMERS)
-
 
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
@@ -155,7 +158,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   else(HAIKU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
   endif(HAIKU)
-endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+endif()
 
 # tests for C++11 suport
 include(CheckCXXCompilerFlag)

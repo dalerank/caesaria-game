@@ -37,7 +37,6 @@ add_executable(${PROJECT_NAME}
                ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
 
-
 if( BUILD_CURL )
   add_definitions( -DCURL_STATICLIB )
   add_definitions( -DCURL_DISABLE_POP3 )
@@ -50,6 +49,9 @@ if(WIN32)
   target_link_libraries( ${PROJECT_NAME} psapi ${CURLLIB_NAME} ws2_32 )
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
 
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
@@ -68,6 +70,8 @@ if(APPLE)
 endif(APPLE)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "-m32")
+set_property(TARGET ${PROJECT_NAME} PROPERTY LINK_FLAGS "-m32")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-updater: building in release mode")
