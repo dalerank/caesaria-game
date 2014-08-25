@@ -9,13 +9,10 @@ before_install:
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
 #- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
-- sudo apt-cache search sdl2
 - sudo apt-get install -qq cmake build-essential libsdl2-dev libsdl2-mixer-dev
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 
 install:
-- cd $TRAVIS_BUILD_DIR
-- mkdir ../caeasaria-test
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release .
 
