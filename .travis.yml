@@ -4,11 +4,6 @@ compiler:
 - clang
 - gcc
 
-branches:
-  only:
-    - master
-    - windows-build
-
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
@@ -17,6 +12,7 @@ before_install:
 
 install:
 - cd $TRAVIS_BUILD_DIR
+- mkdir ../caeasari-test
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release
 
