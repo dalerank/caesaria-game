@@ -161,7 +161,7 @@
   }
 
   sheep : {
-    move : { rc : "citizen04", start : 153, frames : 5, action : 1, step : 8 }
+    move : { rc : "citizen04", start : 153, frames : 6, action : 1, step : 8, delay : 2 }
     sit : { rc : "citizen04", start : 249, frames : 1, action : 0, step : 8 }
     die : { rc : "citizen04", start : 257, frames : 1, action : 3, step : 0 }
   }

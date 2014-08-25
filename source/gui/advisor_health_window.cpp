@@ -205,21 +205,34 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;
       unsigned int needDoctors = 0;
+      unsigned int needHospital = 0;
       foreach( it, houses )
       {
         HousePtr house = *it;
         needBath += house->isHealthNeed( Service::baths ) ? 1 : 0;
         needDoctors += house->isHealthNeed( Service::doctor ) ? 1 : 0;
         needBarbers += house->isHealthNeed( Service::barber ) ? 1 : 0;
+        needHospital += house->isHealthNeed( Service::hospital ) ? 1 : 0;
       }
 
-      if( needBath > 0 )    { outText << "##healthadv_some_regions_need_bath##";    }
-      if( needDoctors > 0 )
+      if( needBath > 0 )
       {
+        outText << "##healthadv_some_regions_need_bath##";
+        outText << "##healthadv_some_regions_need_bath_2##";
+      }
+
+      if( needDoctors > 0 )
+      {          
         outText << "##healthadv_some_regions_need_doctors##";
         outText << "##healthadv_some_regions_need_doctors_2##";
       }
-      if( needBarbers > 0 ) { outText << "##healthadv_some_regions_need_barbers##"; }
+
+      if( needBarbers > 0 )
+      {
+        outText << "##healthadv_some_regions_need_barbers##";
+        outText << "##healthadv_some_regions_need_barbers_2##";
+      }
+      if( needHospital > 0 ) { outText << "##healthadv_some_regions_need_hospital##"; }
     }
   }
 

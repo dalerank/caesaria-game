@@ -19,6 +19,7 @@
     next : ":/missions/tutorial2.mission"
     title : "##clerk##"
     may_continue : false
+    win.text : "##tutorial_win_text##"
     short : "##build_some_houses##"
     maxHouseLevel : "big_villa"
     caption : "##new_village##"

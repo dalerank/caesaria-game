@@ -154,6 +154,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
+  _d->btnNo->setTooltipText( "##donot_organize_festival##" );
 
   CONNECT( _d->btnExit,onClicked(), this, FestivalPlaningWindow::deleteLater );
   CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaningWindow::deleteLater );

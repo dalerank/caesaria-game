@@ -99,8 +99,9 @@ std::string Sentiment::reason() const
   else if( v > 30 ) { ret = "##sentiment_people_annoyed_you##"; }
   else if( v > 22 ) { ret = "##sentiment_people_upset_you##"; }
   else if( v > 15 ) { ret = "##sentiment_people_veryupset_you##"; }
-  else if( v > 7 ) { ret = "##sentiment_people_angry_you##"; }
-  else if( v >=0 ) { ret = "##sentiment_people_veryangry_you##"; }
+  else if( v > 10 ) { ret = "##sentiment_people_angry_you##"; }
+  else if( v > 5 ) { ret = "##sentiment_people_veryangry_you##"; }
+  else if( v > 0 ) { ret = "##city_loathed_you##"; }
 
   return ret;
 }

@@ -4,6 +4,7 @@ CMakeLists.txt.user
 \#*#
 stdout.txt
 caesar3
+.travis.yml
 
 #coredump files
 core.*
@@ -27,6 +28,7 @@ en/*
 
 # Compiled translation files
 *.mo
+.gitattributes
 
 /*.7pre1
 /source/gfx/*.autosave

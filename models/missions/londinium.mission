@@ -1,0 +1,5 @@
+{
+  win : {
+    win.text : "##londinium_win_text##"
+  }
+}

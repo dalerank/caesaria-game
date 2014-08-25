@@ -59,9 +59,9 @@ SrvcPtr Festival::create(PlayerCityPtr city )
   return ret;
 }
 
-std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival);}
-DateTime Festival::lastFestivalDate() const{  return _d->lastFestivalDate;}
-DateTime Festival::nextFestivalDate() const{  return _d->festivalDate; }
+std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
+DateTime Festival::lastFestivalDate() const { return _d->lastFestivalDate; }
+DateTime Festival::nextFestivalDate() const { return _d->festivalDate; }
 
 void Festival::assignFestival( RomeDivinityType name, int size )
 {
@@ -123,22 +123,22 @@ void Festival::update( const unsigned int time )
 VariantMap Festival::save() const
 {
   VariantMap ret;
-  VARIANT_SAVE_ANY_D( ret, _d, lastFestivalDate );
-  VARIANT_SAVE_ANY_D( ret, _d, prevFestivalDate );
-  VARIANT_SAVE_ANY_D( ret, _d, festivalDate );
-  ret[ "divinity" ] = (int)_d->divinity;
-  VARIANT_SAVE_ANY_D( ret, _d, festivalType );
+  VARIANT_SAVE_ANY_D( ret, _d, lastFestivalDate )
+  VARIANT_SAVE_ANY_D( ret, _d, prevFestivalDate )
+  VARIANT_SAVE_ANY_D( ret, _d, festivalDate )
+  VARIANT_SAVE_ENUM_D( ret, _d, divinity )
+  VARIANT_SAVE_ANY_D( ret, _d, festivalType )
 
   return ret;
 }
 
 void Festival::load( const VariantMap& stream)
 {
-  VARIANT_LOAD_TIME_D( _d, lastFestivalDate, stream );
-  VARIANT_LOAD_TIME_D( _d, prevFestivalDate, stream );
-  VARIANT_LOAD_TIME_D( _d, festivalDate, stream );
-  _d->divinity = (RomeDivinityType)stream.get( "divinity" ).toInt();
-  VARIANT_LOAD_ANY_D( _d, festivalType, stream );
+  VARIANT_LOAD_TIME_D( _d, lastFestivalDate, stream )
+  VARIANT_LOAD_TIME_D( _d, prevFestivalDate, stream )
+  VARIANT_LOAD_TIME_D( _d, festivalDate, stream )
+  VARIANT_LOAD_ENUM_D( _d, divinity, stream )
+  VARIANT_LOAD_ANY_D( _d, festivalType, stream )
 }
 
 }//end namespace city

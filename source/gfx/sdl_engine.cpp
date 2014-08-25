@@ -141,8 +141,9 @@ void SdlEngine::init()
   
   Logger::warning("SDLGraficEngine:Android init successfull");
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+  SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
 #else  
-  unsigned int flags = flags = SDL_WINDOW_OPENGL;
+  unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
     
   if(isFullscreen())

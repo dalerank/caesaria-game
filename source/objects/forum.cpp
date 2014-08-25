@@ -50,7 +50,7 @@ void Forum::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _city() );
-    walker->send2City( this );
+    walker->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
 
     if( !walker->isDeleted() )
     {
@@ -70,7 +70,7 @@ void Forum::applyService(ServiceWalkerPtr walker)
     TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
     if( txcl.isValid() )
     {
-      float tax = txcl->getMoney();;
+      float tax = txcl->takeMoney();;
       _d->taxValue += tax;
       Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
     }

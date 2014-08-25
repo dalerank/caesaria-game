@@ -36,9 +36,9 @@ public:
 
   virtual void assignBoat( ShipPtr ship );
 
-  const gfx::Tile& getLandingTile() const;
+  const gfx::Tile& landingTile() const;
 
-  ~CoastalFactory();
+  virtual ~CoastalFactory();
 private:
   void _setDirection( constants::Direction direction );
   virtual void _updatePicture( constants::Direction direction ) = 0;

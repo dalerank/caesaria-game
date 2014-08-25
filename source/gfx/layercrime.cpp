@@ -37,6 +37,7 @@ namespace {
 static const std::string crimeDesc[] =
 {
   "##none_crime_risk##",
+  "##very_low_crime_risk##",
   "##low_crime_risk##",
   "##few_crime_risk##"
   "##some_crime_risk##",

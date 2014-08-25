@@ -516,7 +516,7 @@ PrefectPtr Prefect::create(PlayerCityPtr city )
   return ret;
 }
 
-void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
+void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int water/*=0 */ )
 {
   _setSubAction( water > 0 ? findFire : patrol );
   _d->water = water;
@@ -536,6 +536,21 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   if( _pathwayRef().isValid() )
   {
     _d->endPatrolPoint = _pathwayRef().stopPos();
+  }
+}
+
+void Prefect::send2City(BuildingPtr base, int orders)
+{
+  PrefecturePtr prefecture = ptr_cast<Prefecture>( base );
+
+  if( prefecture.isValid() )
+  {
+    send2City( prefecture, Prefect::patrol );
+  }
+  else
+  {
+    Logger::warning( "WARNING !!!: Prefect try send from non prefecture building. Delete prefect.");
+    deleteLater();
   }
 }
 

@@ -131,8 +131,8 @@ void Info::update( const unsigned int time )
       if( h->habitants().count() > 0 )
       {
         int hLvl = h->spec().level();
-        last.slumNumber += ( hLvl == HouseLevel::smallHovel || hLvl == HouseLevel::bigTent ? 1 : 0);
-        last.shackNumber += ( hLvl >= HouseLevel::smallHut || hLvl < HouseLevel::bigHut ? 1 : 0);
+        last.slumNumber += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
+        last.shackNumber += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
         last.houseNumber++;
       }
     }

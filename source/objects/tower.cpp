@@ -37,6 +37,7 @@ public:
   typedef std::set< Pathway > PatrolWays;
   PatrolWays patrolWays;
   unsigned int areaHash;
+  bool noEntry;
   Point offset;
   BalistaPtr catapult;
   bool needResetWays;
@@ -51,6 +52,7 @@ public:
 Tower::Tower()
   : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
 {
+  _d->noEntry = false;
   setMaximumWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
 
@@ -99,6 +101,11 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
 
 std::string Tower::workersProblemDesc() const
 {
+  if( _d->patrolWays.empty() )
+  {
+    return "##tower_need_wall_for_patrol##";
+  }
+
   if( productivity() > 50 )
   {
     if( traineeValue( walker::soldier ) == 0 )
