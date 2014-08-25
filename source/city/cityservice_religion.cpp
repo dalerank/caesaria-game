@@ -93,9 +93,9 @@ void Religion::update( const unsigned int time )
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( it, temples)
     {
-      if( (*it)->getDivinity().isValid() )
+      if( (*it)->divinity().isValid() )
       {
-        Impl::CoverageInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
+        Impl::CoverageInfo& info = _d->templesCoverity[ (*it)->divinity() ];
 
         if( is_kind_of<BigTemple>( *it ) ) { info.bigTempleNum++; }
         else { info.smallTempleNum++; }
