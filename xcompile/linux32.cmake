@@ -1,6 +1,4 @@
 set( CMAKE_SYSTEM_NAME Linux )
-set( CMAKE_SYSTEM_PROCESSOR i386 )
-#-----<configuration>-----------------------------------------------
 
 # One compiler generates either 32 bit or 64 bit code, -m32 says generate 32 bit:
 set( CMAKE_CXX_FLAGS_INIT "-m32" CACHE STRING "C++ flag which generates 32 bit code." )
