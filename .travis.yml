@@ -7,8 +7,10 @@ compiler:
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
+- sudo dpkg --add-architecture i386
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake build-essential libsdl2-dev:i386 libsdl2-mixer-dev
+- sudi apt-get -qq install ia32-libs
+- sudo apt-get -qq install cmake build-essential libsdl2-dev libsdl2-mixer-dev
 - sudo apt-get -qq install gcc-multilib g++-multilib
 
 install:
