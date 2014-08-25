@@ -80,10 +80,10 @@ public:
 	virtual void setLargeStep(int step);
 
 	//! gets the current position of the scrollbar
-	virtual int position() const;
+  virtual int value() const;
 
 	//! sets the position of the scrollbar
-	virtual void setPosition(int pos);
+  virtual void setValue(int pos);
 
 	//! sets the texture which draw
 	virtual void setBackgroundImage( const gfx::Picture& pixmap );

@@ -59,7 +59,7 @@ public:
 
   virtual void setFlag( DrawFlag flagName, bool set=true );
 
-  virtual void setIcon( const gfx::Picture& icon );
+  virtual void setIcon( const gfx::Picture& icon, Point offset );
 
   virtual bool isHovered() const;
 
