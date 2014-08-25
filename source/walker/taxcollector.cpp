@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "taxcollector.hpp"
 #include "city/helper.hpp"
@@ -33,6 +35,7 @@ class TaxCollector::Impl
 {
 public:
   float money;
+  bool return2base;
 
   std::map< std::string, float > history;
 };
@@ -90,12 +93,13 @@ TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
 TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;
+  _d->return2base = false;
   _setType( walker::taxCollector );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-float TaxCollector::getMoney() const
+float TaxCollector::takeMoney() const
 {
   float save = _d->money;
   _d->money = 0;
@@ -104,7 +108,7 @@ float TaxCollector::getMoney() const
 
 void TaxCollector::_reachedPathway()
 {
-  if( _pathwayRef().isReverse() )
+  if( _d->return2base )
   {
     if( base().isValid() )
     {
@@ -115,6 +119,20 @@ void TaxCollector::_reachedPathway()
     foreach( it, _d->history )
     {
       Logger::warning( "       [%s]:%f", it->first.c_str(), it->second );
+    }
+    deleteLater();
+    return;
+  }
+  else
+  {
+    _d->return2base = true;
+
+    Pathway way = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ), PathwayHelper::roadFirst );
+    if( way.isValid() )
+    {
+      _updatePathway( way );
+      go();
+      return;
     }
   }
 
@@ -127,11 +145,13 @@ void TaxCollector::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
 
-  _d->money = stream.get( "money" );
+  VARIANT_LOAD_ANY_D( _d, money, stream )
+  VARIANT_LOAD_ANY_D( _d, return2base, stream )
 }
 
 void TaxCollector::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
-  stream[ "money" ] = _d->money;
+  VARIANT_SAVE_ANY_D( stream, _d, money )
+  VARIANT_SAVE_ANY_D( stream, _d, return2base )
 }

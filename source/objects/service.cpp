@@ -99,8 +99,7 @@ void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
-  serviceman->setMaxDistance( walkerDistance() );
-  serviceman->send2City( BuildingPtr( this ) );
+  serviceman->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
 
   if( !serviceman->isDeleted() )
   {
