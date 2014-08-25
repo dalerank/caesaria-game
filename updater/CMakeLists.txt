@@ -50,6 +50,18 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
+<<<<<<< HEAD
+=======
+if( BUILD_32_BIT_APP )
+  message( "Updater build in 32bit mode" )
+  set( CMAKE_CXX_FLAGS_INIT "-m32" CACHE STRING "C++ flag which generates 32 bit code." )
+  set( CMAKE_C_FLAGS_INIT "-m32" CACHE STRING "C flag which generates 32 bit code." )
+  set( CMAKE_SHARED_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+  set( CMAKE_MODULE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+  set( CMAKE_EXE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
+endif()
+
+>>>>>>> 05d95b42dccf7b9864733284b7fc1c4f5b961637
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
 
@@ -73,6 +85,9 @@ else()
   message("CaesarIA-updater: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
 
 if(WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
