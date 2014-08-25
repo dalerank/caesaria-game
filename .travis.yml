@@ -24,7 +24,7 @@ before_script:
 
 script:
 # Build CaesarIA
-- make
+- make -j4
 after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
 # Prepare ZIP archive
