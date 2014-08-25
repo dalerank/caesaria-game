@@ -1,8 +1,10 @@
 language: android
+
 android:
-components:
-- build-tools-19.1.0
-- android-19
+  components:
+    - build-tools-19.1.0
+    - android-19
+    
 before_install:
 - sudo apt-get install -qq wget sshpass
 - ARCH=x86_64
@@ -25,14 +27,17 @@ before_install:
 - export NDK_ROOT=$ANDROID_NDK
 #- export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools
 - export PATH=$PATH:$ANDROID_NDK
+
 before_script:
 # Don't ask for confirmation when using scp
 - cp xcompile/android-version.hpp source/version.hpp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
 script:
 # Build CaesarIA
 - cd android
 - make build-and-pack DEBUG=0
+
 after_success:
 - cd $TRAVIS_BUILD_DIR/android/android-project/bin
 - ls
