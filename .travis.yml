@@ -11,6 +11,7 @@ before_install:
 #- sudo apt-get -qq install g++-multilib libc6-dev-i386 
 
 install:
+- cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release .
 
@@ -22,6 +23,7 @@ before_script:
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 
 script:
+- cd $TRAVIS_BUILD_DIR
 # Build CaesarIA
 - make
 after_success:
