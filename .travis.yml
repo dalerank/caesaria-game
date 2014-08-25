@@ -13,7 +13,7 @@ before_install:
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_32_BIT_APP
+- cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_32_BIT_APP=1
 
 before_script:
 # Don't ask for confirmation when using scp
