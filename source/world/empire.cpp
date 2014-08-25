@@ -515,9 +515,17 @@ void Empire::Impl::takeTaxes()
   {
     CityPtr city = *it;
 
+    int empireTax = 0;
+    ComputerCityPtr ccity = ptr_cast<ComputerCity>( city );
+    if( ccity.isValid() )
+    {
+      empireTax = (ccity->population() / 1000) * 100;
+      treasury += empireTax;
+      continue;
+    }
+
     int profit = city->funds().getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
 
-    int empireTax = 0;
     if( profit <= 0 )
     {
       empireTax = (city->population() / 1000) * 100;
