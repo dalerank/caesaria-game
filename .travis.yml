@@ -43,6 +43,9 @@ after_success:
 - ls
 # Prepare ZIP archive
 - APKNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.apk
+- RESNAME=caesaria-0.4-cache-`date +"%Y%m%d"`.zip
 - mv CaesarIA-release.apk $APKNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $APKNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
+- sshpass -p "$SCP_PASS" scp -v caesaria_latest_resources.zip dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/$RESNAME
