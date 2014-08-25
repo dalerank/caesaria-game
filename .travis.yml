@@ -21,6 +21,15 @@ before_script:
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 
 script:
-# Build CaesarIA
 - make -j4
+after_success:
+- cd $TRAVIS_BUILD_DIR/../caesaria-test
+# Prepare ZIP archive
+- ZIPNAME=caesaria-0.4-linux-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- echo Compress to $ZIPNAME
+- zip -r $ZIPNAME *
+- chmod 666 $ZIPNAME
+# Upload to server
+- sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+env:
 
