@@ -23,9 +23,10 @@ before_script:
 
 script:
 # Build CaesarIA
-- make -j4
+- make
 after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
+- ls
 # Prepare ZIP archive
 - ZIPNAME=caesaria-0.4-linux64-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
