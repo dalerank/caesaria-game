@@ -37,7 +37,6 @@ add_executable(${PROJECT_NAME}
                ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
 
-
 if( BUILD_CURL )
   add_definitions( -DCURL_STATICLIB )
   add_definitions( -DCURL_DISABLE_POP3 )
@@ -51,16 +50,15 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
+if(HAIKU)
+  target_link_libraries( ${PROJECT_NAME} root network )
+  set(EXECUTABLE_FILENAME "updater.haiku")
+endif(HAIKU)
+
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
-
-  if(HAIKU)
-    target_link_libraries( ${PROJECT_NAME} root network )
-    set(EXECUTABLE_FILENAME "updater.haiku") 
-  else(HAIKU)
-    target_link_libraries( ${PROJECT_NAME} pthread )
-    set(EXECUTABLE_FILENAME "updater.linux")
-  endif(HAIKU)
+  target_link_libraries( ${PROJECT_NAME} pthread )
+  set(EXECUTABLE_FILENAME "updater.linux")
 endif(UNIX)
 
 if(APPLE)

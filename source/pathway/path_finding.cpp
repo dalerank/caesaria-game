@@ -45,7 +45,7 @@ public:
   bool allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 };
 
-Propagator::Propagator(PlayerCityPtr city ) : _d( new Impl )
+Propagator::Propagator(PlayerCityPtr city) : _d( new Impl )
 {
    _d->city = city;
    _d->tilemap = &city->tilemap();

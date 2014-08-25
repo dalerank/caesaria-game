@@ -95,6 +95,12 @@ Construction::~Construction() {}
 bool Construction::build(PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
+
+  std::string name =  StringHelper::format( 0xff, "%s_%d_%d",
+                                            MetaDataHolder::findTypename( type() ).c_str(),
+                                            pos.i(), pos.j() );
+  setName( name );
+
   computeAccessRoads();
   return true;
 }

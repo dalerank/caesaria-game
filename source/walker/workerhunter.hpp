@@ -33,7 +33,8 @@ public:
 
   void hireWorkers( const int workers );  
   void setPriority( const city::HirePriorities& priority );
-  void send2City( WorkingBuildingPtr building, const int workersNeeded );
+  virtual void send2City( WorkingBuildingPtr building, const int workersNeeded );
+  virtual void send2City( BuildingPtr base, int orders=goLowerService );
   void once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance);
   void timeStep(const unsigned long time);
 

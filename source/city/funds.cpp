@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 #include <map>
 
 using namespace constants;
@@ -64,27 +65,32 @@ void Funds::resolveIssue( FundIssue issue )
   bool needUpdateTreasury = true;
   switch( issue.type )
   {
-  case unknown: _CAESARIA_DEBUG_BREAK_IF( "wrong issue" ); break;
+  case unknown:
+    //_CAESARIA_DEBUG_BREAK_IF( "wrong issue" );
+    Logger::warning( "Funds: wrong issue type %d", issue.type );
+    return;
+  break;
 
   case overduePayment:
+  case overdueEmpireTax:
     needUpdateTreasury = false;
   break;
 
   default:
+  {
+    Impl::IssuesValue& step = _d->history.front();
+    if( step.find( (IssueType)issue.type ) == step.end() )
     {
-      Impl::IssuesValue& step = _d->history.front();
-      if( step.find( (IssueType)issue.type ) == step.end() )
-      {
-        step[ (IssueType)issue.type ] = 0;
-      }
-
-      step[ (IssueType)issue.type ] += abs( issue.money );
-
-      if( needUpdateTreasury )
-      {
-        _d->money += issue.money;
-      }
+      step[ (IssueType)issue.type ] = 0;
     }
+
+    step[ (IssueType)issue.type ] += abs( issue.money );
+
+    if( needUpdateTreasury )
+    {
+      _d->money += issue.money;
+    }
+  }
   break;
   }
 

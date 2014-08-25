@@ -45,10 +45,10 @@ public:
                    buildConstruction, creditPercents, 
                    playerSalary, sundries, moneyStolen,
                    empireTax, debet, credit, cityProfit,
-                   overduePayment,
+                   overduePayment, overdueEmpireTax,
                    balance, caesarsHelp,
                    issueTypeCount };
-  enum { thisYear=0, lastYear=1 };
+  enum { thisYear=0, lastYear=1, twoYearAgo=2 };
 
   Funds();
   ~Funds();

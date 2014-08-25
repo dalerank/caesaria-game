@@ -30,7 +30,7 @@ class Factory : public WorkingBuilding
 public:
   Factory( const Good::Type inGood, const Good::Type outGood,
            const TileOverlay::Type type, const Size& size );
-  ~Factory();
+  virtual ~Factory();
 
   GoodStock& inStockRef();
   const GoodStock& inStockRef() const;

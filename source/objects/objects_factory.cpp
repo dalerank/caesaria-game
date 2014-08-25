@@ -287,13 +287,13 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::templeNeptune, TempleNeptune, WorkingBuildingCreator );
   ADD_CREATOR(building::templeMars, TempleMars, WorkingBuildingCreator );
   ADD_CREATOR(building::templeVenus, TempleVenus, WorkingBuildingCreator );
-  addCreator(building::templeMercury, CAESARIA_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
-  addCreator(building::cathedralCeres, CAESARIA_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
-  addCreator(building::cathedralNeptune, CAESARIA_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );
-  addCreator(building::cathedralMars, CAESARIA_STR_EXT(BigTempleMars)   , new WorkingBuildingCreator<BigTempleMars>() );
-  addCreator(building::cathedralVenus, CAESARIA_STR_EXT(BigTempleVenus)  , new WorkingBuildingCreator<BigTempleVenus>() );
-  addCreator(building::cathedralMercury, CAESARIA_STR_EXT(BigTempleMercure), new WorkingBuildingCreator<BigTempleMercure>() );
-  addCreator(building::oracle, CAESARIA_STR_EXT(TempleOracle) , new WorkingBuildingCreator<TempleOracle>() );
+  ADD_CREATOR(building::templeMercury, TempleMercury, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralCeres, BigTempleCeres, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralNeptune, BigTempleNeptune, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralMars, BigTempleMars, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralVenus, BigTempleVenus, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralMercury, BigTempleMercure, WorkingBuildingCreator );
+  ADD_CREATOR(building::oracle, TempleOracle, WorkingBuildingCreator );
 
   // health
   addCreator(building::baths,      CAESARIA_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );

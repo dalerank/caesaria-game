@@ -37,42 +37,42 @@
       geometry : [ 16, 32, 256, 52 ]
       text : "##mission_wnd_population##"
       bgtype : "smallBrown"
-      font : "FONT_1_WHITE"
+      font : "FONT_1_RED"
     }
 
     lbProsperity#Label : {
       geometry : [ 16, 54, 256, 74 ]
       text : "##mission_wnd_prosperity##"
       bgtype : "smallBrown"
-      font : "FONT_1_WHITE"
+      font : "FONT_1_RED"
     }
 
     lbFavour#Label : {
       geometry : [ 270, 10, "pw-16", 30 ]
       text : "##mission_wnd_favour##"
       bgtype : "smallBrown"
-      font : "FONT_1_WHITE"
+      font : "FONT_1_RED"
     }
 
     lbCulture#Label : {
       geometry : [ 270, 32, "pw-16", 52 ]
       text : "##mission_wnd_culture##"
       bgtype : "smallBrown"
-      font : "FONT_1_WHITE"
+      font : "FONT_1_RED"
     }
 
     lbPeace#Label : {
       geometry : [ 270, 54, "pw-16", 74 ]
       text : "##mission_wnd_peace##"
       bgtype : "smallBrown"
-      font : "FONT_1_WHITE"
+      font : "FONT_1_RED"
     }
 
     lbShortDesc#Label : {
       geometry : [ 16, 54, "pw-16", 74 ]
       text : "##mission_wnd_short##"
       bgtype : "smallBrown"
-      font : "FONT_1_WHITE"
+      font : "FONT_1_RED"
     }
   }
 

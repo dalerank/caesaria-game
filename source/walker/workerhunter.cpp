@@ -25,6 +25,7 @@
 #include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/path_finding.hpp"
+#include "core/logger.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
 #include "core/foreach.hpp"
@@ -137,6 +138,20 @@ void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _d->needWorkers = workersNeeded;
   ServiceWalker::send2City( building.object(), ServiceWalker::goLowerService | ServiceWalker::anywayWhenFailed );
+}
+
+void Recruter::send2City(BuildingPtr base, int orders)
+{
+  WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( base );
+  if( wb.isValid() )
+  {
+    send2City( wb, wb->needWorkers() );
+  }
+  else
+  {
+    Logger::warning( "WARNING !!!: Recruter try hire workers for non working buildng. Delete rectuter.");
+    deleteLater();
+  }
 }
 
 void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance )

@@ -201,6 +201,7 @@ void Ratings::Impl::checkProsperityRating()
       troubles << "##how_to_grow_prosperity##";
     }
     if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
+    if( current.payDiff > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
     unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
@@ -233,6 +234,7 @@ void Ratings::Impl::checkPeaceRating()
 
   if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
   else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+  else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
   else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
 
   std::string text = advices.empty()
@@ -258,18 +260,26 @@ void Ratings::Impl::checkFavourRating()
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
   float salaryKoeff = player->salary() / (float)rank.salary;
 
+  int brokenEmpireTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+  if( brokenEmpireTax > 0 )
+  {
+    int twoYearsAgoBrokenTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+
+    if( twoYearsAgoBrokenTax > 0 ) { problems << "##broke_empiretax_with2years_warning##"; }
+    else { problems << "##broke_empiretax_warning##"; }
+  }
+
   if( salaryKoeff >= 3.f )     { problems << "##high_salary_angers_senate##";  }
-  else if( salaryKoeff > 2.f ) { problems << "##more_salary_dispeasure_senate##";  }
-  else if( salaryKoeff > 1.5f ){ problems << "##try_reduce_your_high_salary##"; }
-  else if( salaryKoeff > 1.f ) { problems << "##try_reduce_your_salary##"; }
+  else if( salaryKoeff > 2.5f ) { problems << "##more_salary_dispeasure_senate##";  }
+  else if( salaryKoeff > 2.f ){ problems << "##try_reduce_your_high_salary##"; }
+  else if( salaryKoeff > 1.5f ) { problems << "##try_reduce_your_salary##"; }
+  else if( salaryKoeff > 1.f ) { problems << "##your_salary_frowned_senate##"; }
 
   if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
   else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
 
-  if( current.favour < 30 )
-  {
-    problems << "##your_favor_is_dropping_catch_it##";
-  }
+  if( current.favour < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current.favour > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
 
   if( rd.isValid() )
   {

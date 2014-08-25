@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "fortification.hpp"
 
@@ -23,6 +25,7 @@
 #include "constants.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "events/warningmessage.hpp"
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
@@ -55,9 +58,7 @@ Fortification::Fortification() : Wall(), _d( new Impl )
   setState( Construction::collapsibility, 0 );
 }
 
-Fortification::~Fortification()
-{
-}
+Fortification::~Fortification() {}
 
 bool Fortification::build(PlayerCityPtr city, const TilePos& pos )
 {
@@ -68,10 +69,17 @@ bool Fortification::build(PlayerCityPtr city, const TilePos& pos )
     return false;
   }
 
+  Pathway way2border = PathwayHelper::create( pos, city->borderInfo().roadEntry, PathwayHelper::allTerrain );
+  if( !way2border.isValid() )
+  {
+    events::GameEventPtr event = events::WarningMessageEvent::create( "##walls_need_a_gatehouse##" );
+    event->dispatch();
+  }
+
   Building::build( city, pos );
 
   city::Helper helper( city );
-  FortificationList fortifications = helper.find<Fortification>( building::fortification );
+  FortificationList fortifications = helper.find<Fortification>( building::fortification );  
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( city ); }
 

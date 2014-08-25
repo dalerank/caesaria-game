@@ -99,8 +99,7 @@ void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
-  serviceman->setMaxDistance( walkerDistance() );
-  serviceman->send2City( BuildingPtr( this ) );
+  serviceman->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
 
   if( !serviceman->isDeleted() )
   {
@@ -127,6 +126,7 @@ void ServiceBuilding::load( const VariantMap& stream )
   _d->serviceRange = (int)stream.get( lc_range, defaultMaxServiceRange );
 }
 
+void ServiceBuilding::buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr) {}
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}
 unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; }

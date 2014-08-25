@@ -58,7 +58,7 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	setTabStop(true);
 	setTabOrder(-1);
 
-	setPosition(0);
+  setValue(0);
 }
 
 Signal1<int>& ScrollBar::onPositionChanged() {	return _d->onPositionChanged; }
@@ -69,7 +69,7 @@ ScrollBar::~ScrollBar(){}
 void ScrollBar::_resolvePositionChanged()
 {
   parent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
-  _d->onPositionChanged.emit( _value );
+  oc3_emit _d->onPositionChanged( _value );
 }
 
 //! called if an event happened
@@ -86,12 +86,12 @@ bool ScrollBar::onEvent(const NEvent& event)
 				bool absorb = true;
 				switch (event.keyboard.key)
 				{
-				case KEY_LEFT: case KEY_UP: setPosition(_value-_smallStep); break;
-				case KEY_RIGHT:	case KEY_DOWN: setPosition(_value+_smallStep); break;
-				case KEY_HOME: setPosition(_minValue);	break;
-				case KEY_PRIOR: setPosition(_value-_largeStep); break;
-				case KEY_END: setPosition(_maxVallue);	break;
-				case KEY_NEXT: setPosition(_value+_largeStep); break;
+        case KEY_LEFT: case KEY_UP: setValue(_value-_smallStep); break;
+        case KEY_RIGHT:	case KEY_DOWN: setValue(_value+_smallStep); break;
+        case KEY_HOME: setValue(_minValue);	break;
+        case KEY_PRIOR: setValue(_value-_largeStep); break;
+        case KEY_END: setValue(_maxVallue);	break;
+        case KEY_NEXT: setValue(_value+_largeStep); break;
 				default:absorb = false;
 				}
 
@@ -108,11 +108,11 @@ bool ScrollBar::onEvent(const NEvent& event)
 			{
 				if (event.gui.caller == _d->upButton)
         {
-          setPosition(_value-_smallStep);
+          setValue(_value-_smallStep);
         }
 				else if (event.gui.caller == _d->downButton)
         {
-          setPosition(_value+_smallStep);
+          setValue(_value+_smallStep);
         }
 				
         _resolvePositionChanged();
@@ -135,7 +135,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 				case mouseWheel:
 					if( isFocused() )
 					{
-						setPosition(	position() +
+            setValue(	value() +
 										( (int)event.mouse.wheel * _smallStep * (_horizontal ? 1 : -1 ) )	);
 
 						_resolvePositionChanged();
@@ -182,7 +182,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 
               if( _draggedBySlider )
 							{
-								setPosition(newPos);
+                setValue(newPos);
 							}
 							else
 							{
@@ -196,7 +196,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 
 						if (_draggedBySlider)
 						{
-							setPosition(newPos);
+              setValue(newPos);
 						}
 						else
 						{
@@ -241,15 +241,15 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 
     if (_desiredPos >= _value + _largeStep)
     {
-      setPosition(_value + _largeStep);
+      setValue(_value + _largeStep);
     }
 		else if (_desiredPos <= _value - _largeStep)
     {
-      setPosition(_value - _largeStep);
+      setValue(_value - _largeStep);
     }
 		else if (_desiredPos >= _value - _largeStep && _desiredPos <= _value + _largeStep)
     {
-      setPosition(_desiredPos);
+      setValue(_desiredPos);
     }
 
     if (_value != oldPos )
@@ -372,7 +372,7 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
 
 
 //! sets the position of the scrollbar
-void ScrollBar::setPosition(int pos)
+void ScrollBar::setValue(int pos)
 {
   _value = math::clamp( pos, _minValue, _maxVallue );
 
@@ -427,7 +427,7 @@ void ScrollBar::setMaxValue(int max)
 	if( _d->downButton )
 		_d->downButton->setEnabled(enable);
 
-	setPosition(_value);
+  setValue(_value);
 }
 
 //! gets the maximum value of the scrollbar.
@@ -446,12 +446,12 @@ void ScrollBar::setMinValue(int min)
 	if( _d->downButton)
 		_d->downButton->setEnabled(enable);
 
-	setPosition(_value);
+  setValue(_value);
 }
 
 
 //! gets the current position of the scrollbar
-int ScrollBar::position() const {    return _value;}
+int ScrollBar::value() const { return _value;}
 
 PushButton* ScrollBar::_createButton( const Rect& rectangle,
                                       Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type )

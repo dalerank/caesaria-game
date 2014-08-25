@@ -132,6 +132,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
     RecruterPtr hr = Recruter::create( city );
     hr->setPriority( priorities );
     hr->setMaxDistance( distance );
+
     hr->send2City( bld, bld->needWorkers() );
   }
 }

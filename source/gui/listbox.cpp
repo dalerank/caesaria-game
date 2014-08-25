@@ -78,7 +78,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->scrollBar->setTabStop(false);
   _d->scrollBar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
   _d->scrollBar->setVisible(false);
-  _d->scrollBar->setPosition(0);
+  _d->scrollBar->setValue(0);
 
   setNotClipped(!clip);
 
@@ -147,7 +147,7 @@ int ListBox::itemAt(Point pos ) const
 	  return -1;
   }
 
-  int item = ((pos.y() - screenTop() - 1) + _d->scrollBar->position()) / _d->itemHeight;
+  int item = ((pos.y() - screenTop() - 1) + _d->scrollBar->value()) / _d->itemHeight;
   
   if ( item < 0 || item >= (int)_d->items.size())
   {
@@ -166,7 +166,7 @@ void ListBox::clear()
 
   if (_d->scrollBar)
   {
-    _d->scrollBar->setPosition(0);
+    _d->scrollBar->setValue(0);
   }
 
   _d->recalculateItemHeight( _d->font, height() );
@@ -400,7 +400,7 @@ bool ListBox::onEvent(const NEvent& event)
 				{
 				case mouseWheel:
 				{
-					_d->scrollBar->setPosition(_d->scrollBar->position() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
+          _d->scrollBar->setValue(_d->scrollBar->value() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
 					_d->needItemsRepackTextures = true;
 					return true;
 				}
@@ -588,8 +588,8 @@ void ListBox::beforeDraw(gfx::Engine& painter)
         refItem.setIconOffset( offset );
       }
 
-      int mnY = frameRect.bottom() - _d->scrollBar->position();
-      int mxY = frameRect.top() - _d->scrollBar->position();
+      int mnY = frameRect.bottom() - _d->scrollBar->value();
+      int mxY = frameRect.top() - _d->scrollBar->value();
       if( !refItem.text().empty() && mnY >= 0 && mxY <= (int)height() )
       {
         refItem.setState( _getCurrentItemState( i, hl ) );
@@ -628,7 +628,7 @@ void ListBox::draw(gfx::Engine& painter )
     painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
-  Point scrollBarOffset( 0, -_d->scrollBar->position() );
+  Point scrollBarOffset( 0, -_d->scrollBar->value() );
   Rect frameRect = _itemsRect();
   frameRect.rbottom() = frameRect.top() + _d->itemHeight;
   const Point& widgetLeftup = absoluteRect().UpperLeftCorner;
@@ -641,8 +641,8 @@ void ListBox::draw(gfx::Engine& painter )
   {
     ListBoxItem& refItem = _d->items[ i ];
 
-    int mnY = frameRect.bottom() - _d->scrollBar->position();
-    int mxY = frameRect.top() - _d->scrollBar->position();
+    int mnY = frameRect.bottom() - _d->scrollBar->value();
+    int mxY = frameRect.top() - _d->scrollBar->value();
 
     mnY += std::max( 0, refItem.icon().height() - frameRect.height() );
 
@@ -662,7 +662,7 @@ void ListBox::draw(gfx::Engine& painter )
       if( !refItem.url().empty() )
       {
         Point r = frameRect.LowerRightCorner;
-        r += Point( 0, -_d->scrollBar->position() ) + refItem.textOffset();
+        r += Point( 0, -_d->scrollBar->value() ) + refItem.textOffset();
         //_d->background->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
         painter.drawLine( 0xff00ff00, r - Point( frameRect.width(), 0 ), r );
       }
@@ -679,15 +679,15 @@ void ListBox::_recalculateScrollPos()
 	if (!isFlag( autoscroll ))
 		return;
 
-  const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->position();
+  const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->value();
 
 	if (selPos < 0)
 	{
-    _d->scrollBar->setPosition( _d->scrollBar->position() + selPos );
+    _d->scrollBar->setValue( _d->scrollBar->value() + selPos );
 	}
 	else if (selPos > (int)height() - _d->itemHeight)
 	{
-    _d->scrollBar->setPosition( _d->scrollBar->position() + selPos - height() + _d->itemHeight );
+    _d->scrollBar->setValue( _d->scrollBar->value() + selPos - height() + _d->itemHeight );
 	}
 }
 

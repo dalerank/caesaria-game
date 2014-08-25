@@ -4,9 +4,7 @@ compiler:
 - gcc
 
 branches:
-  only:
-    - master
-    - windows-build
+  - windows-build
 
 before_install:
 # Get build dependencies
@@ -38,22 +36,24 @@ install:
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=xcompile/win32-cross.cmake
 before_script:
+# Don't ask for confirmation when using scp
+- echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
+- mkdir $TRAVIS_BUILD_DIR/../caesaria-test
+- unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 
 script:
 # Build CaesarIA
 - make
 after_success:
 - export REVISION_NUMBER=`git rev-list HEAD --count`
-- ls
-- cd $TRAVIS_BUILD_DIR/
-- ls
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
-- ls
 # Prepare ZIP archive
-- ZIPNAME=caesaria-0.4-windows-$TRAVIS_BRANCH-$REVISION_NUMBER.zip
+- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 env:
+

@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe02_00001"
+  title : "50 AD - Nineth assignment"
+	
+  items : {
+    damascus : {
+      title : "##damascus_somewhat_dangerous_province##"
+      location : [ 570, 280 ]
+      mission : ":/missions/damascus.mission"
+    }
+
+    caesarea : {
+      title : "##massilia_peace_province##"
+      mission : ":/missions/caesarea.mission"
+      location : [ 20, 320 ]
+    }
+  }
+}

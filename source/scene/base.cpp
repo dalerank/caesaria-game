@@ -56,9 +56,9 @@ void Base::update(gfx::Engine& engine )
 {
   static unsigned int lastTimeUpdate = DateTime::elapsedTime();
 
-  DebugTimer::check( "start-count", "base" );
+  //DebugTimer::check( "start-count", "base" );
   drawFrame( engine );
-  DebugTimer::check( "end-count", "base" );
+  //DebugTimer::check( "end-count", "base" );
 
   afterFrame();
 

@@ -1,0 +1,5 @@
+{
+  win : {
+    win.text : "##lutetia_win_text##"
+  }
+}

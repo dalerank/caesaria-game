@@ -26,7 +26,7 @@ class Temple : public ServiceBuilding
 public:
   virtual ~Temple();
 
-  religion::DivinityPtr getDivinity() const;
+  religion::DivinityPtr divinity() const;
 
   virtual unsigned int parishionerNumber() const = 0;
   virtual void deliverService();
@@ -81,10 +81,10 @@ public:
   TempleVenus();
 };
 
-class TempleMercure : public SmallTemple
+class TempleMercury : public SmallTemple
 {
 public:
-  TempleMercure();
+  TempleMercury();
 };
 
 class BigTempleCeres : public BigTemple
