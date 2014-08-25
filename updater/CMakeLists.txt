@@ -37,7 +37,6 @@ add_executable(${PROJECT_NAME}
                ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
 
-
 if( BUILD_CURL )
   add_definitions( -DCURL_STATICLIB )
   add_definitions( -DCURL_DISABLE_POP3 )
@@ -66,8 +65,6 @@ endif(UNIX)
 if(APPLE)
   set(EXECUTABLE_FILENAME "updater.macos")
 endif(APPLE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-updater: building in release mode")

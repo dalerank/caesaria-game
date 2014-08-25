@@ -40,12 +40,14 @@ class VariantMap;
 
 #define VARIANT_SAVE_ANY(vm,param) vm[ #param ] = param;
 #define VARIANT_LOAD_ANY(param,vm) param = vm.get( #param );
+#define VARIANT_LOAD_ANYDEF(param, vm, defvalue) param = vm.get( #param, defvalue );
 #define VARIANT_LOAD_STR(param,vm) param = vm.get( #param ).toString();
 #define VARIANT_LOAD_TIME(param,vm) param = vm.get( #param ).toDateTime();
 
 #define VARIANT_SAVE_ANY_D(vm,d,param) vm[ #param ] = d->param;
 #define VARIANT_SAVE_STR_D(vm,d,param) vm[ #param ] = Variant( d->param );
 #define VARIANT_LOAD_ANY_D(d,param,vm) d->param = vm.get( #param );
+#define VARIANT_LOAD_ANYDEF_D(d,param,def,vm) d->param = vm.get( #param, (def) );
 
 #define VARIANT_SAVE_ENUM_D(vm,d,param) vm[ #param ] = (int)d->param;
 #define VARIANT_LOAD_ENUM_D(d,param,vm) d->param = (__typeof__(d->param))vm.get( #param ).toInt();

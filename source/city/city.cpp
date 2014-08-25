@@ -576,11 +576,12 @@ void PlayerCity::save( VariantMap& stream) const
 }
 
 void PlayerCity::load( const VariantMap& stream )
-{
+{  
   Logger::warning( "City: start parse savemap" );
   City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
   _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
+  setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
@@ -673,6 +674,8 @@ void PlayerCity::load( const VariantMap& stream )
       Logger::warning( "Can't find service " + item->first );
     }
   }
+
+  setOption( PlayerCity::forceBuild, 0 );
 
   _initAnimation();
 }

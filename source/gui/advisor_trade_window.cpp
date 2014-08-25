@@ -93,18 +93,18 @@ public:
       f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0, true, false );
       f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
-      std::string ruleName[] = { _("##import##"), "", _("##export##"), _("##stacking##") };
+      std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
       std::string tradeStateText = ruleName[ _tradeOrder ];
       switch( _tradeOrder )
       {
       case city::TradeOptions::noTrade:
       case city::TradeOptions::stacking:
       case city::TradeOptions::importing:
-        tradeStateText = ruleName[ _tradeOrder ];
+        tradeStateText = _( ruleName[ _tradeOrder ] );
       break;
 
       case city::TradeOptions::exporting:
-        tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _tradeOrder ].c_str(), _tradeQty );
+        tradeStateText = StringHelper::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
       break;
 
       default: break;
@@ -153,8 +153,6 @@ public:
   void showGoodOrderManageWindow( Good::Type type );
   void showGoodsPriceWindow();
 };
-
-
 
 void Trade::Impl::updateGoodsInfo()
 {

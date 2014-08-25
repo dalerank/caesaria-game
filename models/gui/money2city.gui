@@ -19,6 +19,7 @@
       text : "0"
       pushbutton : false
       id : 3840  /*0x0F00*/
+      tooltip : "##set_amount_to_donate##"
       bgtype : "blackBorderUp"
     }
 
@@ -28,6 +29,7 @@
       text : "500"
       pushbutton : false
       id : 3841  /*0x0F01*/
+      tooltip : "##set_amount_to_donate##"
       bgtype : "blackBorderUp"
     }
 
@@ -37,6 +39,7 @@
       text : "2000"
       pushbutton : false
       id : 3844  /*0x0F03*/
+      tooltip : "##set_amount_to_donate##"
       bgtype : "blackBorderUp"
     }
 
@@ -46,12 +49,13 @@
       pushbutton : false
       text : "##send_all##"
       id : 4095  /*0xfff*/
+      tooltip : "##set_amount_to_donate##"
       bgtype : "blackBorderUp"
     }
 
     lbDonation#Label : {
       geometry : [ 25, 32, 250, 56 ]
-      text : "##send_money_to_city##"
+      text : "##donation_is##"
       textAlign : [ "center", "center" ]
       font : "FONT_2"
     }

@@ -88,9 +88,7 @@ AboutRawMaterial::AboutRawMaterial( Widget* parent, const Tile& tile )
   }
 }
 
-AboutRawMaterial::~AboutRawMaterial()
-{
-}
+AboutRawMaterial::~AboutRawMaterial() {}
 
 void AboutRawMaterial::showDescription()
 {

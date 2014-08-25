@@ -27,17 +27,17 @@ namespace gfx
 class Animation::Impl
 {
 public:
-  unsigned int frameDelay;
+  unsigned int delay;
   bool loop;
   unsigned int lastTimeUpdate;
   Point offset;
-  int animIndex;  // index of the current frame
+  int index;  // index of the current frame
 };
 
 void Animation::start(bool loop)
 {
   __D_IMPL(d, Animation)
-  d->animIndex = 0;
+  d->index = 0;
   d->lastTimeUpdate = 0;
   d->loop = loop;
 }
@@ -63,41 +63,41 @@ Point Animation::offset() const
 
 bool Animation::atEnd() const
 {
-  return _dfunc()->animIndex == (int)( _pictures.size()-1 );
+  return _dfunc()->index == (int)( _pictures.size()-1 );
 }
 
 void Animation::update( unsigned int time )
 {  
   __D_IMPL(_d,Animation)
 
-  if( _d->animIndex < 0 )
+  if( _d->index < 0 )
     return;
 
-  if( _d->frameDelay > 0 )
+  if( _d->delay > 0 )
   {
-    if( time - _d->lastTimeUpdate < _d->frameDelay )
+    if( time - _d->lastTimeUpdate < _d->delay )
       return;
   }
 
-  _d->animIndex += 1;
+  _d->index += 1;
   _d->lastTimeUpdate = time;
 
-  if( _d->animIndex >= (int)_pictures.size() )
+  if( _d->index >= (int)_pictures.size() )
   {
-    _d->animIndex = isLoop() ? 0 : -1;
+    _d->index = isLoop() ? 0 : -1;
   }
 }
 
 const Picture& Animation::currentFrame() const
 {
   __D_IMPL_CONST(d,Animation)
-  return ( d->animIndex >= 0 && d->animIndex < (int)_pictures.size())
-                  ? _pictures[d->animIndex]
+  return ( d->index >= 0 && d->index < (int)_pictures.size())
+                  ? _pictures[d->index]
                   : Picture::getInvalid();
 }
 
-int Animation::index() const { return _dfunc()->animIndex;}
-void Animation::setIndex(int index){  _dfunc()->animIndex = math::clamp<int>( index, -1, _pictures.size()-1 );}
+int Animation::index() const { return _dfunc()->index;}
+void Animation::setIndex(int index){  _dfunc()->index = math::clamp<int>( index, -1, _pictures.size()-1 );}
 
 Animation::Animation() : __INIT_IMPL(Animation)
 {
@@ -108,8 +108,8 @@ Animation::Animation() : __INIT_IMPL(Animation)
 Animation::~Animation() {}
 Animation::Animation(const Animation& other) : __INIT_IMPL(Animation){  *this = other;}
 
-void Animation::setDelay( const unsigned int delay ){ _dfunc()->frameDelay = delay;}
-unsigned int Animation::delay() const{  return _dfunc()->frameDelay; }
+void Animation::setDelay( const unsigned int delay ){ _dfunc()->delay = delay;}
+unsigned int Animation::delay() const{  return _dfunc()->delay; }
 void Animation::setLoop( bool loop ){ _dfunc()->loop = loop;}
 bool Animation::isLoop() const { return _dfunc()->loop; }
 
@@ -128,9 +128,9 @@ VariantMap Animation::save() const
 {
   __D_IMPL_CONST(d,Animation)
   VariantMap ret;
-  ret[ "index" ] = d->animIndex;
-  ret[ "delay" ] = d->frameDelay;
-  ret[ "loop"  ] = d->loop;
+  VARIANT_SAVE_ANY_D( ret, d, index )
+  VARIANT_SAVE_ANY_D( ret, d, delay )
+  VARIANT_SAVE_ANY_D( ret, d, loop )
 
   VariantList pics;
   foreach( i, _pictures)
@@ -144,9 +144,9 @@ VariantMap Animation::save() const
 void Animation::load(const VariantMap &stream)
 {
   __D_IMPL(d,Animation)
-  d->animIndex = stream.get( "index" );
-  d->frameDelay = (int)stream.get( "delay" );
-  d->loop = stream.get( "loop" );
+  VARIANT_LOAD_ANY_D( d, index, stream )
+  VARIANT_LOAD_ANY_D( d, delay, stream )
+  VARIANT_LOAD_ANY_D( d, loop, stream );
 
   VariantMap range = stream.get( "range" ).toMap();
   if( !range.empty() )
@@ -164,16 +164,16 @@ void Animation::load(const VariantMap &stream)
 }
 
 void Animation::clear() { _pictures.clear();}
-bool Animation::isRunning() const{  return _dfunc()->animIndex >= 0;}
-bool Animation::isStopped() const{  return _dfunc()->animIndex == -1;}
-void Animation::stop(){ _dfunc()->animIndex = -1; }
+bool Animation::isRunning() const{  return _dfunc()->index >= 0;}
+bool Animation::isStopped() const{  return _dfunc()->index == -1;}
+void Animation::stop(){ _dfunc()->index = -1; }
 
 Animation& Animation::operator=( const Animation& other )
 {
   __D_IMPL(_d,Animation)
   _pictures = other._pictures;
-  _dfunc()->animIndex = other._dfunc()->animIndex;  // index of the current frame
-  _d->frameDelay = other.delay();
+  _dfunc()->index = other._dfunc()->index;  // index of the current frame
+  _d->delay = other.delay();
   _d->lastTimeUpdate = other._dfunc()->lastTimeUpdate;
   _d->loop = other.isLoop();
 

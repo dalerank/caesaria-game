@@ -245,11 +245,14 @@ void Entertainment::Impl::updateInfo()
   int nextLevelMin = 0;
   int nextLevelAmph = 0;
   int nextLevelColloseum = 0;
+  int maxHouseLevel = 0;
 
   HouseList houses = helper.find<House>( building::house );
   foreach( it, houses )
   {
     HousePtr house = *it;
+
+    maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
     int habitants = house->habitants().count( CitizenGroup::mature );
 
     const HouseSpecification& lspec = house->spec();
@@ -319,9 +322,19 @@ void Entertainment::Impl::updateInfo()
   if( nextLevelAmph > 0 ) { troubles << "##some_houses_need_amph_for_grow##"; }
   if( theatersNeed == 0 ) { troubles << "##entertainment_not_need##";  }
 
-  std::string text = troubles.empty()
-                        ? "##entertainment_full##"
-                        : troubles.random();
+  std::string text;
+
+  if( troubles.empty() )
+  {
+    if( maxHouseLevel < HouseLevel::bigDomus ) { text = "##entadv_small_city_not_need_entert##"; }
+    else if( maxHouseLevel < HouseLevel::mansion ) { text = "##small_city_not_need_entertainment##"; }
+    else if( maxHouseLevel < HouseLevel::insula ) { text = "##etertadv_as_city_grow_you_need_more_entert##"; }
+    else { text = "##entertainment_full##"; }
+  }
+  else
+  {
+    text = troubles.random();
+  }
 
   lbTroubleInfo->setText( _( text ) );
 }

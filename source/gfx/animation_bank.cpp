@@ -90,7 +90,7 @@ public:
   void loadAnimation(int who, const std::string& prefix,
                      const int start, const int size,
                      Walker::Action wa=Walker::acMove,
-                     const int step = defaultStepInFrame );
+                     const int step = defaultStepInFrame, int delay=0);
   void loadAnimation(int who, const VariantMap& desc );
   const AnimationBank::MovementAnimation& tryLoadAnimations(int wtype );
 
@@ -174,14 +174,15 @@ AnimationBank::AnimationBank() : _d( new Impl )
 
 void AnimationBank::loadCarts()
 {
-  Logger::warning( "Loading cart graphics" );
+  Logger::warning( "AnimationBank: loading cart graphics" );
 
   _d->loadCarts();
 }
 
 void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
-                                                                     const int start, const int size,
-                                                                     Walker::Action wa, const int step )
+                                         const int start, const int size,
+                                         Walker::Action wa, const int step,
+                                         int delay )
 {
   MovementAnimation& ioMap = animations[ who ].actions;
   DirectedAction action= { wa, noneDirection };
@@ -192,32 +193,41 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
   }
   else
   {
-    action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, step);
-    action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, step);
-    action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, step);
-    action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, step);
-    action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, step);
-    action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, step);
-    action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, step);
-    action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, step);
+    action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, step); ioMap[action].setDelay( delay );
+    action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, step); ioMap[action].setDelay( delay );
   }
 }
 
 void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
 {
-  PictureInfoBank& pib = PictureInfoBank::instance();
-  std::string rcGroup = desc.get( "rc" ).toString();
-  int startIndex = desc.get( "start" );
-  int frameNumber = desc.get( "frames" );
-  int action = desc.get( "action" );
-  int step = desc.get( "step", defaultStepInFrame );
+  std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
+  foreach( ac, desc )
+  {
+    Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
 
-  //creating information about animation offset
-  Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
-  offset = desc.get( "offset", offset ).toPoint();
-  pib.setOffset( rcGroup, startIndex, frameNumber * (step == 0 ? 1 : step), offset );
+    VariantMap actionInfo = ac->second.toMap();
 
-  loadAnimation( type, rcGroup, startIndex, frameNumber, (Walker::Action)action, step );
+    PictureInfoBank& pib = PictureInfoBank::instance();
+    VARIANT_INIT_STR( rc, actionInfo )
+    VARIANT_INIT_ANY( int, start, actionInfo )
+    VARIANT_INIT_ANY( int, frames, actionInfo )
+    VARIANT_INIT_ANY( int, action, actionInfo )
+    VARIANT_INIT_ANY( int, delay, actionInfo )
+    VARIANT_INIT_ANY( int, step, actionInfo )
+
+    //creating information about animation offset
+    Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
+    VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
+    pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
+
+    loadAnimation( type, rc, start, frames, (Walker::Action)action, step, delay );
+  }
 }
 
 const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(int wtype)
@@ -266,21 +276,15 @@ void AnimationBank::loadAnimation(vfs::Path model)
 
   foreach( i, items )
   {
-    VariantMap actions = i->second.toMap();
-
-    foreach( ac, actions )
+    walker::Type wtype = WalkerHelper::getType( i->first );
+    if( wtype != walker::unknown )
     {
-      walker::Type wtype = WalkerHelper::getType( i->first );
-      if( wtype != walker::unknown )
-      {
-        Logger::warning( "Load animation for " + i->first + ":" + ac->first );
-        _d->animConfigs[ wtype ] = ac->second.toMap();
-        //_d->loadAnimation( wtype, ac->second.toMap() );
-      }
-      else
-      {
-        Logger::warning( "AnimationBank: cannot find type " + i->first );
-      }
+      Logger::warning( "Load config animations for " + i->first );
+      _d->animConfigs[ wtype ] = i->second.toMap();
+    }
+    else
+    {
+      Logger::warning( "AnimationBank: cannot find type " + i->first );
     }
   }
 }

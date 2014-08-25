@@ -257,15 +257,9 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
   }
   else
   {
-    if( needSecondReligion > 0 )
-    {
-      advices << "##religionadv_need_second_relgigion##";
-    }
-
-    if( needThirdReligion > 0 )
-    {
-      advices << "##religionadv_need_third_relgigion##";
-    }
+    if( needBasicReligion > 0 ) { advices << "##religionadv_need_basic_religion##";}
+    if( needSecondReligion > 0 ){ advices << "##religionadv_need_second_religion##"; }
+    if( needThirdReligion > 0 ) { advices << "##religionadv_need_third_religion##"; }
 
     if( rome::Pantheon::neptune()->relation() < 40 )
     {

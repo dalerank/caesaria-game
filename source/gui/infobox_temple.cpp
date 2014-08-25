@@ -37,7 +37,7 @@ AboutTemple::AboutTemple( Widget* parent, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
   TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
-  DivinityPtr divn = temple->getDivinity();
+  DivinityPtr divn = temple->divinity();
 
   setConstruction( ptr_cast<Construction>( temple ) );
 

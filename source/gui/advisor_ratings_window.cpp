@@ -201,6 +201,7 @@ void Ratings::Impl::checkProsperityRating()
       troubles << "##how_to_grow_prosperity##";
     }
     if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
+    if( current.payDiff > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
     unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
@@ -233,6 +234,7 @@ void Ratings::Impl::checkPeaceRating()
 
   if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
   else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+  else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
   else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
 
   std::string text = advices.empty()
@@ -276,10 +278,8 @@ void Ratings::Impl::checkFavourRating()
   if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
   else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
 
-  if( current.favour < 30 )
-  {
-    problems << "##your_favor_is_dropping_catch_it##";
-  }
+  if( current.favour < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current.favour > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
 
   if( rd.isValid() )
   {

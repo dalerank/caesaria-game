@@ -12,32 +12,80 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "education.hpp"
 #include "game/resourcegroup.hpp"
+#include "walker/serviceman.hpp"
+#include "pathway/pathway.hpp"
 #include "objects/constants.hpp"
+#include "objects/house.hpp"
+#include "gfx/tile.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
-School::School() : ServiceBuilding(Service::school, building::school, Size(2))
+class School::Impl
+{
+public:
+  typedef std::map<unsigned int, unsigned int> ServedBuildings;
+  ServedBuildings srvBuidings;
+  unsigned int currentPeopleServed;
+  unsigned int maxMonthVisitors;
+};
+
+School::School() : ServiceBuilding(Service::school, building::school, Size(2)), _d( new Impl )
 {
   setPicture( ResourceGroup::commerce, 83 );
+  _d->maxMonthVisitors = 75;
 }
 
-int School::getVisitorsNumber() const {  return 75; }
+int School::getVisitorsNumber() const { return _d->currentPeopleServed; }
 
 void School::deliverService()
 {
   if( numberWorkers() <= 0 )
     return;
 
-  if( walkers().size() < 3 )
+  if( lastSendService().month() != GameDate::current().month() )
+  {
+    _d->currentPeopleServed = 0;
+    _d->srvBuidings.clear();
+  }
+
+  if( walkers().size() < 3 && _d->currentPeopleServed < _d->maxMonthVisitors )
   {
     ServiceBuilding::deliverService();
   }
 }
 
 unsigned int School::walkerDistance() const {  return 26; }
+
+void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker)
+{
+  if( walker->pathway().isReverse() )
+    return;
+
+  foreach( it, buildings )
+  {
+    HousePtr house = ptr_cast<House>( *it );
+    if( house.isValid() )
+    {
+      unsigned int posHash = gfx::TileHelper::hash( house->pos() );
+      _d->srvBuidings[ posHash ] = house->habitants().count( CitizenGroup::scholar );
+    }
+  }
+
+  _d->currentPeopleServed = 0;
+  foreach( it, _d->srvBuidings )
+  {
+    _d->currentPeopleServed += it->second;
+  }
+
+  if( _d->currentPeopleServed > _d->maxMonthVisitors )
+    walker->return2Base();
+}
 
 Library::Library() : ServiceBuilding(Service::library, building::library, Size(2))
 {

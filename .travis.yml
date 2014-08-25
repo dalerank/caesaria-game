@@ -1,11 +1,8 @@
 language: objective-c
-
-os: 
+os:
 - osx
-
 compiler:
 - gcc
-
 before_install:
 # Get build dependencies
 - brew install cmake
@@ -19,19 +16,16 @@ before_install:
 - mkdir -p $LIBDIR
 - cp -r /Volumes/SDL2/SDL2.framework $LIBDIR
 - cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework $LIBDIR
-
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release
-
 before_script:
 # Don't ask for confirmation when using scp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
 - mkdir $TRAVIS_BUILD_DIR/../caesaria-test
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
-
 script:
 # Build CaesarIA
 - make

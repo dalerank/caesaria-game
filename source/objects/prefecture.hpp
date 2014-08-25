@@ -28,6 +28,7 @@ public:
   virtual ~Prefecture();
   virtual void timeStep(const unsigned long time);
   virtual void deliverService();
+  virtual unsigned int walkerDistance() const;
 
   void fireDetect( const TilePos& pos );
 

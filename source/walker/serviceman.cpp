@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "serviceman.hpp"
 #include "gfx/tile.hpp"
@@ -31,6 +33,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+  const unsigned int defaultServiceDistance = 5;
+}
+
 class ServiceWalker::Impl
 {
 public:
@@ -44,7 +50,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
-  _d->maxDistance = 5;  // TODO: _building.getMaxDistance() ?
+  _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
 
@@ -174,8 +180,8 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-unsigned int ServiceWalker::reachDistance() const {  return _d->reachDistance;}
-void ServiceWalker::setReachDistance(unsigned int value){  _d->reachDistance = value;}
+unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
+void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
 void ServiceWalker::return2Base()
 {
@@ -211,7 +217,7 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
 
   int distance = 0;
   float res = 0.0;
-  for( TilesArray::const_iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  foreach( itTile, pathTileList )
   {
     ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
     foreach( it, reachedBuildings )
@@ -226,10 +232,6 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
     distance++;
   }
 
-  // std::cout << "evaluate path ";
-  // pathWay.prettyPrint();
-  // std::cout << " = " << res << std::endl;
-
   return res;
 }
 
@@ -239,7 +241,7 @@ void ServiceWalker::_reservePath( const Pathway& pathWay)
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
   const TilesArray& pathTileList = pathWay.allTiles();
 
-  for( TilesArray::const_iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
+  foreach( itTile, pathTileList )
   {
     ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
     foreach( it, reachedBuildings )
@@ -267,8 +269,19 @@ void ServiceWalker::_updatePathway( const Pathway& pathway)
   _reservePath( pathway );
 }
 
-void ServiceWalker::send2City(BuildingPtr base , int orders)
+void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
+  ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( base );
+
+  if( servBuilding.isValid() && _d->maxDistance == defaultServiceDistance )
+  {
+    setMaxDistance( servBuilding->walkerDistance() );
+  }
+  else
+  {
+    Logger::warning( "WARNING !!!: ServiceWalker sender not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+  }
+
   setBase( base );
   _computeWalkerPath( orders );
 
@@ -284,7 +297,13 @@ void ServiceWalker::_centerTile()
 
   ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
-  foreach( b, reachedBuildings ) { (*b)->applyService( ServiceWalkerPtr( this ) ); }
+  foreach( b, reachedBuildings ) { (*b)->applyService( this ); }
+
+  ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( _d->base );
+  if( servBuilding.isValid() )
+  {
+    servBuilding->buildingsServed( reachedBuildings, this );
+  }
 }
 
 void ServiceWalker::_reachedPathway()
