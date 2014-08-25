@@ -12,7 +12,7 @@ before_install:
 
 install:
 - cd $TRAVIS_BUILD_DIR
-- mkdir ../caeasari-test
+- mkdir ../caeasaria-test
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release
 
