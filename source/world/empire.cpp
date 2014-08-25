@@ -516,10 +516,15 @@ void Empire::Impl::takeTaxes()
     CityPtr city = *it;
 
     int empireTax = 0;
-    ComputerCityPtr ccity = ptr_cast<ComputerCity>( city );
-    if( ccity.isValid() )
+
+    if( is_kind_of<Rome>( city ) )
     {
-      empireTax = (ccity->population() / 1000) * 100;
+      continue;
+    }
+
+    if( is_kind_of<ComputerCity>( city ) )
+    {
+      empireTax = (city->population() / 1000) * 100;
       treasury += empireTax;
       continue;
     }

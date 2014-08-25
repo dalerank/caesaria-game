@@ -209,7 +209,7 @@ void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
   std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
   foreach( ac, desc )
   {
-    Logger::warning( "Load animations for " + typeName + ":" + ac->first );
+    Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
 
     VariantMap actionInfo = ac->second.toMap();
 

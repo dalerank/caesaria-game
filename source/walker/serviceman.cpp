@@ -265,7 +265,7 @@ void ServiceWalker::_updatePathway( const Pathway& pathway)
   _reservePath( pathway );
 }
 
-void ServiceWalker::send2City(BuildingPtr base , int orders)
+void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   setBase( base );
   _computeWalkerPath( orders );
