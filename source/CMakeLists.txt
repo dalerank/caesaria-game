@@ -45,13 +45,15 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST})
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "-m32")
-set_property(TARGET ${PROJECT_NAME} PROPERTY LINK_FLAGS "-m32")
 
 target_link_libraries(${PROJECT_NAME}
   ${SDL2_LIBRARY}
   ${SDL2_MIXER_LIBRARY}
 )
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32")
 
 if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
@@ -101,7 +103,6 @@ endif(BUILD_GL_SHADERS)
 if( DEBUG_TIMERS )
 add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
 endif(DEBUG_TIMERS)
-
 
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
@@ -157,9 +158,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   else(HAIKU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
   endif(HAIKU)
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
 endif()
 
 # tests for C++11 suport
