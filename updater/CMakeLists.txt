@@ -59,7 +59,6 @@ if( BUILD_32_BIT_APP )
   set( CMAKE_EXE_LINKER_FLAGS "-m32" CACHE STRING "Linker flag which finds 32 bit code." )
 endif()
 
-
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
 
@@ -75,10 +74,6 @@ endif(UNIX)
 if(APPLE)
   set(EXECUTABLE_FILENAME "updater.macos")
 endif(APPLE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "-m32")
-set_property(TARGET ${PROJECT_NAME} PROPERTY LINK_FLAGS "-m32")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-updater: building in release mode")
