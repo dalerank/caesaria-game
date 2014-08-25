@@ -107,14 +107,13 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
+  target_link_libraries(${PROJECT_NAME} "GL")
   set(EXECUTABLE_FILENAME "caesaria.linux")
-
-  if(APPLE)
-    set(EXECUTABLE_FILENAME "caesaria.macos")
-  else(APPLE)
-    target_link_libraries(${PROJECT_NAME} "GL")
-  endif(APPLE)
 endif(UNIX)
+
+if(APPLE)
+  set(EXECUTABLE_FILENAME "caesaria.macos")
+endif(APPLE)
 
 if(HAIKU)
   set(EXECUTABLE_FILENAME "caesaria.haiku")
@@ -133,7 +132,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")  
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
   add_definitions("-DCAESARIA_COMPILER_NAME=\"gcc\"")

@@ -78,7 +78,7 @@ void ContextMenuItem::toggleCheck()
   if( _d->isAutoChecking )
   {
     _d->checked = !_d->checked;
-    _d->onCheckedSignal.emit( _d->checked );
+    oc3_emit _d->onCheckedSignal( _d->checked );
   }
 }
 
@@ -112,7 +112,7 @@ void ContextMenuItem::setIsSeparator( bool isSepar ){  _d->isSeparator = isSepar
 ContextMenu* ContextMenuItem::subMenu() const{  return _d->subMenu;}
 void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align ){  _d->subMenuAlignment = align;}
 ContextMenuItem::SubMenuAlign ContextMenuItem::subMenuAlignment() const{  return _d->subMenuAlignment;}
-void ContextMenuItem::setIcon( const Picture& icon ){}
+void ContextMenuItem::setIcon(const Picture& icon , Point offset){}
 void ContextMenuItem::setDimmension( const Size& size ) {  _d->dim = size;}
 const Size& ContextMenuItem::dimmension() const{  return _d->dim;}
 void ContextMenuItem::setOffset( int offset ){  _d->offset = offset;}
