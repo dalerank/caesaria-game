@@ -36,5 +36,6 @@ after_success:
 - chmod 666 $ZIPNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- sshpass -p "$SCP_PASS" scp -v *.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
 
