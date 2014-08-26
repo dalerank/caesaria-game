@@ -43,6 +43,10 @@
 #include <dlfcn.h>
 #endif
 
+#ifdef CAESARIA_PLATFORM_ANDROID
+#include "game/settings.hpp"
+#endif
+
 namespace gfx
 {
 
@@ -65,7 +69,7 @@ public:
   SDL_Texture *texture;
 
   MaskInfo mask;
-  unsigned int fps, lastFps;  
+  unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
   unsigned int drawCall;
   Font debugFont;
@@ -111,7 +115,7 @@ void SdlEngine::init()
     Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %d", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
-  
+
   Logger::warning( "SDLGraficEngine: ttf init");
   rc = TTF_Init();
   if (rc != 0)
@@ -121,7 +125,7 @@ void SdlEngine::init()
   }
 
   SDL_StartTextInput();
-    
+
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
   cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
@@ -131,21 +135,48 @@ void SdlEngine::init()
 #endif
 
   SDL_Window *window;
-  
+
 #ifdef CAESARIA_PLATFORM_ANDROID
   //_srcSize = Size( mode.w, mode.h );
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
-  
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(), 
-           SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
-  
+
+  int gl_version = GameSettings::get( "android_glv" );
+  if( gl_version > 0 )
+  {
+    Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: android set gl_version %d", gl_version ) );
+    switch( gl_version )
+    {
+    case 1:
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    break;
+
+    case 2:
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    break;
+
+    case 3:
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    break;
+    }
+
+    // turn on double buffering set the depth buffer to 24 bits
+    // you may need to change this to 16 or 32 for your system
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  }
+
+  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
+           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+
   Logger::warning("SDLGraficEngine:Android init successfull");
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-  SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
-#else  
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+#else
   unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
-    
+
   if(isFullscreen())
   {
     window = SDL_CreateWindow("CaesariA",
@@ -172,7 +203,7 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine: init successfull");
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
-#endif  
+#endif
 
   if (renderer == NULL)
   {
@@ -197,8 +228,8 @@ void SdlEngine::init()
 
   Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( screenTexture, Point(0, 0));
-  
-  if( !_d->screen.isValid() ) 
+
+  if( !_d->screen.isValid() )
   {
     THROW("Unable to set video mode: " << SDL_GetError());
   }
@@ -408,7 +439,7 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
 }
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
-{  
+{
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
 

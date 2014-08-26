@@ -3,5 +3,6 @@
  resolution : [ 1280, 800 ]
  language : "en"
  render : "sdl"
+ android_glv : 2
  /*c3gfx : "./resources/gfx"*/
 }

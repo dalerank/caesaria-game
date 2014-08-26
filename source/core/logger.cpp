@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "logger.hpp"
 #include "requirements.hpp"
@@ -28,9 +30,11 @@
 #include <stdint.h>
 #include <fstream>
 #include <map>
+#include "vfs/directory.hpp"
 
 #ifdef CAESARIA_PLATFORM_ANDROID
 #include <android/log.h>
+#include <SDL_system.h>
 #endif
 
 class FileLogWriter : public LogWriter
@@ -140,7 +144,7 @@ void Logger::warning(const std::string& text) {  instance()._d->write( text );}
 void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
 void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
 
-void Logger::registerWriter(Logger::Type type)
+void Logger::registerWriter(Logger::Type type, const std::string& param )
 {
   switch( type )
   {
@@ -154,7 +158,9 @@ void Logger::registerWriter(Logger::Type type)
 
   case filelog:
   {
-    LogWriterPtr wr( new FileLogWriter( "stdout.txt" ) );
+    vfs::Directory workdir( param );
+    vfs::Path fullname = workdir/"stdout.txt";
+    LogWriterPtr wr( new FileLogWriter( fullname.toString() ) );
     wr->drop();
     registerWriter( "__log", wr );
   }
