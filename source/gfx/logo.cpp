@@ -19248,7 +19248,7 @@ void initialize( const std::string& name)
     {
       char pixel[4];
       PIXEL( ptr, pixel)
-      pixels[ y * width + x ] = *(int*)pixel;
+      pixels[ y * width + x ] = *(long*)pixel;
       //pic->setPixel( Point( x, y ), *(int*)pixel );
     }
   }
