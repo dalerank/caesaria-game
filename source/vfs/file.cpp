@@ -168,7 +168,7 @@ bool NFile::remove( Path filename )
   if( !result )
   {
     int error = GetLastError();
-    Logger::warning( "Error[%d] on removed file %s", error, filename.toString().c_str() );
+    //Logger::warning( "Error[%d] on removed file %s", error, filename.toString().c_str() );
   }
   return result;
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
@@ -185,7 +185,7 @@ bool NFile::rename(Path oldpath, Path newpath)
   if( !result )
   {
     int error = GetLastError();
-    Logger::warning( "Error[%d] on renamed file %s to %s", error, oldpath.toString().c_str(), newpath.toString().c_str() );
+    //Logger::warning( "Error[%d] on renamed file %s to %s", error, oldpath.toString().c_str(), newpath.toString().c_str() );
   }
   return result;
 #else
