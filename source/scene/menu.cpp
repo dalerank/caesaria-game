@@ -235,6 +235,7 @@ void StartMenu::Impl::resolveCredits()
                          "radek liška",
                          "dimitrius (caesar-iii.ru)",
                          "shibanirm",
+                         "Pavel Aleksandrov (krabanek@gmail.com)",
                          " ",
                          _("##graphics##"),
                          " ",

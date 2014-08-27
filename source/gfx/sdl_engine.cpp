@@ -72,7 +72,6 @@ public:
 
   SDL_Window *window;
   SDL_Renderer *renderer;
-  SDL_Texture *texture;
 
   MaskInfo mask;
   unsigned int fps, lastFps;
@@ -231,12 +230,12 @@ void SdlEngine::init()
   SDL_RenderPresent(renderer);
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
-      SDL_PIXELFORMAT_ARGB8888,
-      SDL_TEXTUREACCESS_STREAMING,
-      _srcSize.width(), _srcSize.height());
+                                                 SDL_PIXELFORMAT_ARGB8888,
+                                                 SDL_TEXTUREACCESS_STREAMING,
+                                                 _srcSize.width(), _srcSize.height());
 
   Logger::warning( "GrafixEngine: init successfull");
-  _d->screen.init( screenTexture, Point(0, 0));
+  _d->screen.init( screenTexture, 0 );
 
   if( !_d->screen.isValid() )
   {
@@ -248,7 +247,6 @@ void SdlEngine::init()
 
   _d->window = window;
   _d->renderer = renderer;
-  _d->texture = screenTexture;
 
   _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
 }
@@ -264,7 +262,11 @@ void SdlEngine::loadPicture( Picture& ioPicture )
   if( ioPicture.surface() )
   {
     SDL_Texture* tx = SDL_CreateTextureFromSurface(_d->renderer, ioPicture.surface());
-    ioPicture.init( tx, ioPicture.offset() );
+    if( !tx )
+    {
+      Logger::warning( "SdlEngine: cannot create texture from surface" + ioPicture.name() );
+    }
+    ioPicture.init( tx, ioPicture.surface() );
   }
   else
   {
