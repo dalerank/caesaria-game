@@ -161,7 +161,7 @@ void Engine::exit()
 
 bool Engine::_loadSound(vfs::Path filename)
 {
-  if(_d->useSound>0 && _d->samples.size()<Impl::maxSamplesNumner)
+  if(_d->useSound && _d->samples.size()<Impl::maxSamplesNumner)
   {
     Impl::Samples::iterator i = _d->samples.find( filename.toString() );    
 
@@ -252,6 +252,9 @@ int Engine::play(std::string rc, int index, int volume, SoundType type)
 
 bool Engine::isPlaying(vfs::Path filename) const
 {
+  if( !_d->useSound )
+    return false;
+
   _d->checkFilename( filename );
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
@@ -265,6 +268,9 @@ bool Engine::isPlaying(vfs::Path filename) const
 
 void Engine::stop( vfs::Path filename )
 {
+  if( !_d->useSound )
+    return;
+
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
   if( i == _d->samples.end() )
@@ -277,6 +283,9 @@ void Engine::stop( vfs::Path filename )
 
 void Engine::stop(int channel)
 {
+  if( !_d->useSound )
+    return;
+
   foreach( it,_d->samples )
   {
     if( it->second.channel == channel )
@@ -291,6 +300,9 @@ void Engine::stop(int channel)
 
 void Engine::_updateSamplesVolume()
 {
+  if( !_d->useSound )
+    return;
+
   foreach( it, _d->samples )
   {
     const Sample& sample = it->second;
@@ -307,7 +319,7 @@ void Engine::_updateSamplesVolume()
 }
 
 void Helper::initTalksArchive(const vfs::Path& filename)
-{
+{ 
   static vfs::Path saveFilename;
 
   vfs::FileSystem::instance().unmountArchive( saveFilename );

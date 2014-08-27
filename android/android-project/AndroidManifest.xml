@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="net.dalerank.caesaria"
     xmlns:android="http://schemas.android.com/apk/res/android"    
-    android:versionCode="1941"
-    android:versionName="04-b1941" 
+    android:versionCode="40827"
+    android:versionName="2014.08.27" 
     android:installLocation="auto">
 
     <uses-sdk android:minSdkVersion="10" 
@@ -14,6 +14,7 @@
     <!-- Allow writing to external storage -->
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- Network and ads -->
     <uses-permission android:name="android.permission.INTERNET" />

@@ -54,6 +54,7 @@
 #include "city/city.hpp"
 #include "layertroubles.hpp"
 #include "layerindigene.hpp"
+#include "core/timer.hpp"
 
 using namespace constants;
 
@@ -158,7 +159,9 @@ void CityRenderer::render()
 
   _d->currentLayer->beforeRender( *_d->engine );
 
+  //DebugTimer::reset( "currentLayer:render" );
   _d->currentLayer->render( *_d->engine );
+  //DebugTimer::check( "", "currentLayer:render" );
 
   _d->currentLayer->renderPass( *_d->engine, Renderer::animations );
 

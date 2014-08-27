@@ -32,6 +32,8 @@
 #include "decorator.hpp"
 #include "core/stringhelper.hpp"
 #include "walker_debuginfo.hpp"
+#include "core/timer.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -65,9 +67,9 @@ public:
 void Layer::registerTileForRendering(Tile& tile)
 {
   __D_IMPL(_d,Layer)
-  if( tile.overlay() != 0 )
+  if( tile.rov() != 0 )
   {
-    Renderer::PassQueue passQueue = tile.overlay()->passQueue();
+    Renderer::PassQueue passQueue = tile.rov()->passQueue();
     foreach( pass, passQueue )
     {
       _d->renderQueue[ *pass ].push_back( &tile );
@@ -199,7 +201,7 @@ TilesArray Layer::_getSelectedArea()
   return _city()->tilemap().getArea( outStartPos, outStopPos );
 }
 
-void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
+void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
 {
   Point screenPos = tile.mappos() + offset;
   switch( pass )
@@ -217,19 +219,19 @@ void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass p
 
   case Renderer::overlay:
   {
-    if( tile.overlay().isNull() )
+    if( tile.rov().isNull() )
       return;
 
-    engine.draw( tile.overlay()->picture(), screenPos );
+    engine.draw( tile.rov()->picture(), screenPos );
   }
   break;
 
   default:
   {
-    if( tile.overlay().isNull() )
+    if( tile.rov().isNull() )
       return;
 
-    engine.draw( tile.overlay()->pictures( pass ), screenPos );
+    engine.draw( tile.rov()->pictures( pass ), screenPos );
   }
   break;
   }
@@ -286,16 +288,18 @@ void Layer::_setTooltipText(const std::string& text)
 void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
-  // center the map on the screen
+  DebugTimer::reset( "render:start" );
   const TilesArray& visibleTiles = _d->camera->tiles();
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
+  DebugTimer::reset( "render:draw_flat" );
+  Tile* tile;
   foreach( it, visibleTiles )
   {
-    Tile* tile = (*it)->masterTile();
+    tile = (*it)->masterTile();
     if( !tile )
       tile = *it;
 
@@ -304,23 +308,32 @@ void Layer::render( Engine& engine)
       drawTile( engine, *tile, camOffset );
     }
   }
+  DebugTimer::check( "", "render:draw_flat" );
 
   if( !_d->renderOverlay )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }
   // SECOND PART: draw all sprites, impassable land and buildings
+  //int r0=0, r1=0, r2=0;
   foreach( it, visibleTiles )
   {
-    Tile* tile = *it;
+    tile = *it;
     int z = tile->epos().z();
 
+    //int t = DateTime::elapsedTime();
     drawTileR( engine, *tile, camOffset, z, false );
+    //r0 += DateTime::elapsedTime() - t;
 
+    //t = DateTime::elapsedTime();
     drawWalkers( engine, *tile, camOffset );
+    //r1 += DateTime::elapsedTime() - t;
 
+    //t = DateTime::elapsedTime();
     drawTileW( engine, *tile, camOffset, z );
+    //r2 += DateTime::elapsedTime() - t;
   }
+  //Logger::warning( "r0=%d r1=%d r2=%d", r0, r1, r2 );
 
   engine.resetColorMask();
 
@@ -367,31 +380,30 @@ void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const in
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->epos().z() == depth && !master->getFlag( Tile::wasDrawn ) )
+  if( master->epos().z() == depth && !master->rwd() )
   {
     drawTile( engine, *master, offset );
   }
 }
 
-void Layer::drawTile(Engine& engine, Tile& tile, Point offset)
+void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
-  if( !tile.getFlag( Tile::wasDrawn ) )
+  if( !tile.rwd() )
   {
     tile.setWasDrawn();
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
 
-    if( tile.overlay().isValid() )
+    if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
-
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }
   }
 }
 
-void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std::string resourceGroup, int tileId)
+void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset, const std::string &resourceGroup, int tileId)
 {
   if( area.empty() )
     return;

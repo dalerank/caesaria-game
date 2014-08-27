@@ -50,6 +50,11 @@
 namespace gfx
 {
 
+namespace {
+  unsigned int drawTime;
+  unsigned int drawTimeBatch;
+}
+
 class SdlEngine::Impl
 {
 public:
@@ -59,6 +64,7 @@ public:
     int green;
     int blue;
     int alpha;
+    bool enabled;
   }MaskInfo;
 
   Picture screen;
@@ -143,7 +149,10 @@ void SdlEngine::init()
   int gl_version = GameSettings::get( "android_glv" );
   if( gl_version > 0 )
   {
+    int gl_depth = GameSettings::get( "android_gl_depth" );
+    int gl_doublebuf = GameSettings::get( "android_gl_dbuf" );
     Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: android set gl_version %d", gl_version ) );
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     switch( gl_version )
     {
     case 1:
@@ -164,8 +173,8 @@ void SdlEngine::init()
 
     // turn on double buffering set the depth buffer to 24 bits
     // you may need to change this to 16 or 32 for your system
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, gl_doublebuf);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, gl_depth ? gl_depth : 32 );
   }
 
   window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
@@ -277,6 +286,8 @@ void SdlEngine::unloadPicture( Picture& ioPicture )
 
 void SdlEngine::startRenderFrame()
 {
+  drawTime =0;
+  drawTimeBatch = 0;
   SDL_RenderClear(_d->renderer);  // black background for a complete redraw
 }
 
@@ -304,6 +315,8 @@ void SdlEngine::endRenderFrame()
   }
 
   _d->drawCall = 0;
+
+  //Logger::warning( "dt=%d  dtb=%d", drawTime, drawTimeBatch );
 }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
@@ -311,6 +324,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   if( !picture.isValid() )
       return;
 
+  int t = DateTime::elapsedTime();
   _d->drawCall++;
 
   if( clipRect != 0 )
@@ -320,31 +334,32 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   }
 
   const Impl::MaskInfo& mask = _d->mask;
-  bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
-  if( masked )
-  {
-    SDL_SetTextureColorMod( picture.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
-    SDL_SetTextureAlphaMod( picture.texture(), mask.alpha >> 24 );
-  }
-
+  SDL_Texture* ptx = picture.texture();
   const Size& picSize = picture.size();
   const Point& offset = picture.offset();
+
+  if( mask.enabled )
+  {
+    SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+  }
 
   SDL_Rect srcRect = { 0, 0, picSize.width(), picSize.height() };
   SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
 
-  SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
+  SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
 
-  if( masked )
+  if( mask.enabled )
   {
-    SDL_SetTextureColorMod( picture.texture(), 0xff, 0xff, 0xff );
-    SDL_SetTextureAlphaMod( picture.texture(), 0xff );
+    SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+    SDL_SetTextureAlphaMod( ptx, 0xff );
   }
 
   if( clipRect != 0 )
   {
     SDL_RenderSetClipRect( _d->renderer, 0 );
   }
+  drawTime += DateTime::elapsedTime() - t;
 }
 
 void SdlEngine::draw( const Picture& picture, const Point& pos, Rect* clipRect )
@@ -357,6 +372,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   if( pictures.empty() )
       return;
 
+  int t = DateTime::elapsedTime();
   _d->drawCall++;
 
   if( clipRect != 0 )
@@ -366,29 +382,28 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   }
 
   const Impl::MaskInfo& mask = _d->mask;
-  bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
-
   foreach( it, pictures )
   {
     const Picture& picture = *it;
+    SDL_Texture* ptx = picture.texture();
     const Size& size = picture.size();
     const Point& offset = picture.offset();
 
-    if( masked )
+    if( mask.enabled )
     {
-      SDL_SetTextureColorMod( picture.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
-      SDL_SetTextureAlphaMod( picture.texture(), mask.alpha >> 24 );
+      SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+      SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
     }
 
     SDL_Rect srcRect = { 0, 0, size.width(), size.height() };
     SDL_Rect dstRect = { pos.x() + offset.x(), pos.y() - offset.y(), size.width(), size.height() };
 
-    SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
+    SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
 
-    if( masked )
+    if( mask.enabled )
     {
-      SDL_SetTextureColorMod( picture.texture(), 0xff, 0xff, 0xff );
-      SDL_SetTextureAlphaMod( picture.texture(), 0xff );
+      SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+      SDL_SetTextureAlphaMod( ptx, 0xff );
     }
   }
 
@@ -396,6 +411,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   {
     SDL_RenderSetClipRect( _d->renderer, 0 );
   }
+  drawTimeBatch += DateTime::elapsedTime() - t;
 }
 
 void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect)
@@ -403,7 +419,10 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   if( !pic.isValid() )
       return;
 
+  int t = DateTime::elapsedTime();
+
   _d->drawCall++;
+  SDL_Texture* ptx = pic.texture();
 
   if( clipRect != 0 )
   {
@@ -412,11 +431,10 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   }
 
   const Impl::MaskInfo& mask = _d->mask;
-  bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
-  if( masked )
+  if( mask.enabled )
   {
-    SDL_SetTextureColorMod( pic.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
-    SDL_SetTextureAlphaMod( pic.texture(), mask.alpha >> 24 );
+    SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
   }
 
   const Point& offset = pic.offset();
@@ -424,18 +442,20 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
   SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
 
-  SDL_RenderCopy( _d->renderer, pic.texture(), &srcr, &dstr );
+  SDL_RenderCopy( _d->renderer, ptx, &srcr, &dstr );
 
-  if( masked )
+  if( mask.enabled )
   {
-    SDL_SetTextureColorMod( pic.texture(), 0xff, 0xff, 0xff );
-    SDL_SetTextureAlphaMod( pic.texture(), 0xff );
+    SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+    SDL_SetTextureAlphaMod( ptx, 0xff );
   }
 
   if( clipRect != 0 )
   {
     SDL_RenderSetClipRect( _d->renderer, 0 );
   }
+
+  drawTime += DateTime::elapsedTime() - t;
 }
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
@@ -453,11 +473,12 @@ void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
   mask.green = gmask;
   mask.blue = bmask;
   mask.alpha = amask;
+  mask.enabled = true;
 }
 
 void SdlEngine::resetColorMask()
 {
-  _d->mask = Impl::MaskInfo();
+  memset( &_d->mask, 0, sizeof(Impl::MaskInfo) );
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )

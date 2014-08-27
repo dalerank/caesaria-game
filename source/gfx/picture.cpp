@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "picture.hpp"
 
@@ -26,6 +27,7 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "core/time.hpp"
+#include "core/timer.hpp"
 #include <SDL.h>
 
 // Picture class functions
@@ -150,7 +152,6 @@ unsigned int* Picture::lock()
   if( _d->texture )
   {
     int a;
-    SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
     if( a == SDL_TEXTUREACCESS_STREAMING )
     {
       unsigned int* pixels;
@@ -158,7 +159,7 @@ unsigned int* Picture::lock()
       int rc = SDL_LockTexture(_d->texture, 0, (void**)&pixels, &pitch );
       if (rc < 0)
       {
-        Logger::warning( "Cannot lock texture: %s", SDL_GetError() );
+        Logger::warning( "Picture: cannot lock texture: %s", SDL_GetError() );
         return 0;
       }
 
@@ -173,7 +174,7 @@ unsigned int* Picture::lock()
       SDL_LockSurface(_d->surface);      
     }
     return (unsigned int*)_d->surface->pixels;
-  }
+  }  
 
   return 0;
 }

@@ -40,18 +40,18 @@ public:
   virtual const VisibleWalkers& visibleWalkers() const;
 
   //draw gfx before walkers
-  virtual void drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
+  virtual void drawTileR(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
 
   //draw gfx active tile
-  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void drawTile(Engine& engine, Tile& tile, const Point& offset );
 
   //draw gfx after walkers
-  virtual void drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth );
+  virtual void drawTileW(Engine& engine, Tile& tile, const Point& offset, const int depth );
 
   virtual void handleEvent( NEvent& event );
-  virtual void drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass );
-  virtual void drawArea( Engine& engine, const TilesArray& area, Point offset,
-                         std::string resourceGroup, int tileId );
+  virtual void drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass );
+  virtual void drawArea(Engine& engine, const TilesArray& area, const Point& offset,
+                        const std::string& resourceGroup, int tileId );
 
   virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
   virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
