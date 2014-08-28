@@ -43,6 +43,7 @@ private:
   void _initAnimation();
   int _waterIncreaseInterval;
   int _lastPicId;
+  int _fillDistance;
 };
 
 #endif //__CAESARIA_FOUNTAIN_INCLUDED__
