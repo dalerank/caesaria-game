@@ -115,7 +115,6 @@ class BigTempleMercure : public BigTemple
 {
 public:
   BigTempleMercure();
-  virtual unsigned int parishionerNumber() const;
 };
 
 class TempleOracle : public BigTemple
