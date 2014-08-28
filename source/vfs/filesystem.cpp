@@ -123,7 +123,7 @@ NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
     return file;
   }
 
-  Logger::warning( "FileSystem: create the file using an absolute path " + filename.toString() );
+  //Logger::warning( "FileSystem: create the file using an absolute path " + filename.toString() );
   FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
   ptr->drop();
 

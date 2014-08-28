@@ -75,7 +75,7 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
     }
 
     // multi-tile: draw the master tile.
-    if( !master->getFlag( Tile::wasDrawn ) )
+    if( !master->rwd() )
       drawTile( engine, *master, offset );
 
     engine.resetColorMask();
