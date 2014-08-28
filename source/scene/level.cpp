@@ -79,6 +79,7 @@
 #include "gfx/pictureconverter.hpp"
 #include "gui/city_options_window.hpp"
 #include "gui/widget_helper.hpp"
+#include "core/timer.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -498,10 +499,17 @@ void Level::Impl::showEmpireMapWindow()
 
 void Level::draw()
 { 
+  //DebugTimer::reset( "render" );
   _d->renderer.render();
+  //DebugTimer::check( "", "render" );
 
+  //DebugTimer::reset( "beforeDraw" );
   _d->game->gui()->beforeDraw();
+  //DebugTimer::check( "", "beforeDraw" );
+
+  //DebugTimer::reset( "draw" );
   _d->game->gui()->draw();
+  //DebugTimer::check( "",  "draw" );
 }
 
 void Level::animate( unsigned int time )

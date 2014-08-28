@@ -62,13 +62,13 @@ void Tile::Terrain::clearFlags()
 Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
   _pos = pos;
-  _epos = pos;
   _master = NULL;
   _wasDrawn = false;
   _overlay = NULL;
   _terrain.reset();
   _terrain.imgid = 0;
   _height = 0;
+  setEPos( pos );
 }
 
 int Tile::i() const    {   return _pos.i();   }
@@ -94,9 +94,13 @@ bool Tile::isFlat() const
 }
 
 const TilePos& Tile::pos() const{ return _pos; }
-void Tile::setEPos(const TilePos& epos) { _epos = epos; }
 Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
+void Tile::setEPos(const TilePos& epos)
+{
+  _epos = epos;
+  _mappos = Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) - _height * y_tileBase );
+}
 
 void Tile::changeDirection(constants::Direction newDirection)
 {
@@ -104,10 +108,6 @@ void Tile::changeDirection(constants::Direction newDirection)
     _overlay->changeDirection(newDirection);
 }
 
-Point Tile::mappos() const
-{
-  return Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) - _height * y_tileBase );
-}
 
 void Tile::animate(unsigned int time)
 {

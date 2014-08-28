@@ -47,6 +47,7 @@
 #include "gui/widgetpositionanimator.hpp"
 #include "gui/loadmissiondialog.hpp"
 #include "core/event.hpp"
+#include "core/timer.hpp"
 
 using namespace gfx;
 using namespace gui;
@@ -234,6 +235,7 @@ void StartMenu::Impl::resolveCredits()
                          "radek liška",
                          "dimitrius (caesar-iii.ru)",
                          "shibanirm",
+                         "Pavel Aleksandrov (krabanek@gmail.com)",
                          " ",
                          _("##graphics##"),
                          " ",
@@ -320,8 +322,10 @@ void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
 
+  DebugTimer::reset( "init_b" );
   gui::PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
+  DebugTimer::check( "", "init_b" );
 
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
@@ -410,6 +414,7 @@ void StartMenu::initialize()
   Logger::warning( "ScreenMenu: initialize start");
   _d->bgPicture = Picture::load("title", 1);
 
+
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
   _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
@@ -431,7 +436,7 @@ void StartMenu::initialize()
   _d->showMainMenu();
 
 #ifdef CAESARIA_PLATFORM_ANDROID
-  bool screenFitted = GameSettings::get( GameSettings::screenFitted );
+  bool screenFitted = SETTINGS_VALUE( screenFitted );
   if( !screenFitted )
   {
     gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
@@ -442,9 +447,9 @@ void StartMenu::initialize()
     CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
     dialog->show();
   }
-#endif
-
+#else
   _d->playMenuSoundTheme();
+#endif
 }
 
 int StartMenu::result() const{  return _d->result;}
