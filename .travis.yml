@@ -1,47 +1,50 @@
 language: android
 android:
-components:
-- build-tools-19.1.0
-- android-19
+ components:
+  - build-tools-19.1.0
+  - android-19
+
 before_install:
-- sudo apt-get install -qq wget sshpass
-- ARCH=x86_64
-- NDK_VERSION=r9
+ - sudo apt-get install -qq wget sshpass
+ - ARCH=x86_64
+ - NDK_VERSION=r9
 #SDK_VERSION=20130729;
 #[ $(TARGET_ARCH) = "i386" ] && ARCH=x86;
-- echo "Downloading the ndk...";
-- wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2
-- echo "Extracting the ndk...";
-- tar -xjf android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2 -C ~/
+ - echo "Downloading the ndk...";
+ - wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2
+ - echo "Extracting the ndk...";
+ - tar -xjf android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2 -C ~/
 #echo "Downloading the sdk..."; \
 #wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
 #echo "Extracting the sdk..."; \
 #ARCHIVE=`readlink -f adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip`; \
 #cd ~; \
 #unzip -o -qq $$ARCHIVE; \
-- echo "Configure paths...";
+ - echo "Configure paths...";
 #- export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk
-- export ANDROID_NDK=~/android-ndk-$NDK_VERSION
-- export NDK_ROOT=$ANDROID_NDK
+ - export ANDROID_NDK=~/android-ndk-$NDK_VERSION
+ - export NDK_ROOT=$ANDROID_NDK
 #- export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools
-- export PATH=$PATH:$ANDROID_NDK
+ - export PATH=$PATH:$ANDROID_NDK
 before_script:
 # Don't ask for confirmation when using scp
-- cp xcompile/android-version.hpp source/version.hpp
-- echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+ - cp xcompile/android-version.hpp source/version.hpp
+ - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 script:
 # Build CaesarIA
-- cd android
-- make build-and-pack DEBUG=0
-after_success:
-- cd $TRAVIS_BUILD_DIR/android/android-project/bin
-- ls
-# Prepare ZIP archive
-- APKNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.apk
-- RESNAME=caesaria-0.4-cache-`date +"%Y%m%d"`.zip
-- mv CaesarIA-release.apk $APKNAME
-# Upload to server
-- sshpass -p "$SCP_PASS" scp -v $APKNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
-- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
-- sshpass -p "$SCP_PASS" scp -v caesaria_latest_resources.zip dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/$RESNAME
+ - cd android
+ - make build-and-pack DEBUG=0
 
+after_success:
+ - cd $TRAVIS_BUILD_DIR/android/android-project/bin
+ - ls
+# Prepare ZIP archive
+ - APKNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.apk
+ - RESNAME=caesaria-0.4-cache-`date +"%Y%m%d"`.zip
+ - mv CaesarIA-release.apk $APKNAME
+# Upload to server
+ - sshpass -p "$SCP_PASS" scp -v $APKNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+ - wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
+ - sshpass -p "$SCP_PASS" scp -v caesaria_latest_resources.zip dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/$RESNAME
+
+env:
