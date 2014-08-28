@@ -96,8 +96,6 @@ BigTempleMercure::BigTempleMercure() : BigTemple( rome::Pantheon::mercury(), bui
 {
 }
 
-unsigned int BigTempleMercure::parishionerNumber() const {  return 300; }
-
 TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
 {
   setSize( Size( 2 ) );
@@ -127,7 +125,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgI
   setMaximumWorkers( 2 );
 }
 
-unsigned int SmallTemple::parishionerNumber() const {  return 150;}
+unsigned int SmallTemple::parishionerNumber() const {  return 750; }
 
 BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
@@ -135,7 +133,7 @@ BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   setMaximumWorkers( 8 );
 }
 
-unsigned int BigTemple::parishionerNumber() const {  return 300;}
+unsigned int BigTemple::parishionerNumber() const {  return 1500; }
 
 bool BigTemple::build(PlayerCityPtr city, const TilePos& pos)
 {  

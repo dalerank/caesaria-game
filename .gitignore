@@ -35,3 +35,7 @@ en/*
 /source/version.hpp
 
 /updater/*.user
+
+# SDL for windows
+dep/SDL2/*
+dep/SDL2_mixer/*
