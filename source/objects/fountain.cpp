@@ -41,6 +41,7 @@ namespace {
 CAESARIA_LITERALCONST(lastPicId)
 CAESARIA_LITERALCONST(haveWater)
 static const unsigned int fillDistance = 4;
+static const unsigned int fillDistanceDesert = 3;
 }
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
@@ -55,6 +56,7 @@ Fountain::Fountain()
   _lastPicId = simpleFountain;
   _fgPicturesRef().resize(1);
   _initAnimation();
+  _fillDistance = 4;
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -83,7 +85,7 @@ void Fountain::timeStep(const unsigned long time)
     if( mayWork() )
     {
       Tilemap& tmap = _city()->tilemap();
-      TilesArray reachedTiles = tmap.getArea( fillDistance, pos() );
+      TilesArray reachedTiles = tmap.getArea( _fillDistance, pos() );
 
       foreach( tile, reachedTiles )
       {
@@ -107,7 +109,7 @@ void Fountain::timeStep(const unsigned long time)
     if( needWorkers() > 0 )
     {
       RecruterPtr recruter = Recruter::create( _city() );
-      recruter->once( this, needWorkers(), fillDistance * 2);
+      recruter->once( this, needWorkers(), _fillDistance * 2);
     }
   }  
 
@@ -141,6 +143,15 @@ bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
   _lastPicId = simpleFountain;
   _initAnimation();
 
+  if (city->climate() == climateDesert)
+  {
+      _fillDistance = fillDistanceDesert;
+  }
+  else
+  {
+      _fillDistance = fillDistance;
+  }
+
   return true;
 }
 
@@ -166,7 +177,7 @@ void Fountain::destroy()
   ServiceBuilding::destroy();
 
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( fillDistance, pos() );
+  TilesArray reachedTiles = tmap.getArea( _fillDistance, pos() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pFountainWater, 0 ); }
 
@@ -179,7 +190,7 @@ void Fountain::destroy()
 
 bool Fountain::mayWork() const {  return ServiceBuilding::mayWork() && ServiceBuilding::isActive() && _haveReservoirWater; }
 
-unsigned int Fountain::fillRange() const { return fillDistance; }
+unsigned int Fountain::fillRange() const { return _fillDistance; }
 
 void Fountain::load(const VariantMap& stream)
 {
