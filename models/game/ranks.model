@@ -35,27 +35,27 @@
     salary : 20
   }
 
-  edil : {
+  aedil : {
     level : 6
-    pretty : "##edil##"
+    pretty : "##aedil##"
     salary  : 30
   }
 
-  pretor : {
+  preator : {
     level : 7
-    pretty : "##pretor##"
+    pretty : "##preator##"
     salary : 40
   }
 
-  consoul : {
+  consul : {
     level : 8
-    pretty : "##consoul##"
+    pretty : "##consul##"
     salary : 60
   }
 
-  proconsoul : {
+  proconsul : {
     level : 9
-    pretty : "##proconsoul##"
+    pretty : "##proconsul##"
     salary : 80
   }
 

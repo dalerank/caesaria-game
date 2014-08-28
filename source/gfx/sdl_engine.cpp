@@ -129,8 +129,6 @@ void SdlEngine::init()
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
-  SDL_StartTextInput();
-
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
   cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
@@ -143,44 +141,44 @@ void SdlEngine::init()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   //_srcSize = Size( mode.w, mode.h );
-  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+    Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-  int gl_version = GameSettings::get( "android_glv" );
-  if( gl_version > 0 )
-  {
-    int gl_depth = GameSettings::get( "android_gl_depth" );
-    int gl_doublebuf = GameSettings::get( "android_gl_dbuf" );
-    Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: android set gl_version %d", gl_version ) );
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    switch( gl_version )
+    int gl_version = GameSettings::get( "android_glv" );
+    if( gl_version > 0 )
     {
-    case 1:
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    break;
+      int gl_depth = GameSettings::get( "android_gl_depth" );
+      int gl_doublebuf = GameSettings::get( "android_gl_dbuf" );
+      Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: android set gl_version %d", gl_version ) );
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+      switch( gl_version )
+      {
+      case 1:
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+      break;
 
-    case 2:
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    break;
+      case 2:
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+      break;
 
-    case 3:
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    break;
+      case 3:
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+      break;
+      }
+
+      // turn on double buffering set the depth buffer to 24 bits
+      // you may need to change this to 16 or 32 for your system
+      SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, gl_doublebuf);
+      SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, gl_depth ? gl_depth : 32 );
     }
 
-    // turn on double buffering set the depth buffer to 24 bits
-    // you may need to change this to 16 or 32 for your system
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, gl_doublebuf);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, gl_depth ? gl_depth : 32 );
-  }
+    window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
+             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
-
-  Logger::warning("SDLGraficEngine:Android init successfull");
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+    Logger::warning("SDLGraficEngine:Android init successfull");
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 #else
   unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );

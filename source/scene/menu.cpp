@@ -242,6 +242,10 @@ void StartMenu::Impl::resolveCredits()
                          "dimitrius (caesar-iii.ru)",
                          "aneurysm (4pda.ru)",
                          " ",
+                         _("##localization##"),
+                         "",
+                         "Alexander Klimenko (?)"
+                         "",
                          _("##thanks_to##"),
                          " ",
                          "doc (doc@nnm.me)",
