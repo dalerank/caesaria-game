@@ -279,9 +279,10 @@ void Emperor::Impl::sendGift(int money)
 {
   if( money > city->player()->money() )
   {
-    DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
+    DialogBox* dlg = new DialogBox( lbEmperorFavour->ui()->rootWidget(), Rect(),
                                     _("##nomoney_for_gift_title##"), _("##nomoney_for_gift_text##"),
                                     DialogBox::btnOk );
+    dlg->setModal();
     CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
     return;
   }

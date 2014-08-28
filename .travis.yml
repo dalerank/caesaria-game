@@ -26,15 +26,16 @@ before_script:
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 script:
 # Build CaesarIA
-- make
+- make -j4
 after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
+- cp $TRAVIS_BUILD_DIR/xcompile/mac_install_libs.sh install_libs.sh
 # Prepare ZIP archive
-- ZIPNAME=caesaria-0.4-linux-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- sshpass -p "$SCP_PASS" scp -v *.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
-
