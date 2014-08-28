@@ -55,7 +55,7 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
     foreach( i, ranks )
     {
-      std::string salaryStr = _( "##" + (*i).name + "_salary##" );
+      std::string salaryStr = _( "##" + (*i).rankName + "_salary##" );
       ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + StringHelper::i2str( (*i).salary ) );
       item.setTag( (*i).salary );
       if( (*i).salary == salary )
