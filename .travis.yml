@@ -1,8 +1,10 @@
 language: android
+
 android:
-components:
-- build-tools-19.1.0
-- android-19
+  components:
+    - build-tools-19.1.0
+    - android-19
+    
 before_install:
 - sudo apt-get install -qq wget sshpass
 - ARCH=x86_64
@@ -25,19 +27,25 @@ before_install:
 - export NDK_ROOT=$ANDROID_NDK
 #- export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools
 - export PATH=$PATH:$ANDROID_NDK
+
 before_script:
 # Don't ask for confirmation when using scp
 - cp xcompile/android-version.hpp source/version.hpp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
 script:
 # Build CaesarIA
 - cd android
 - make build-and-pack DEBUG=0
+
 after_success:
 - cd $TRAVIS_BUILD_DIR/android/android-project/bin
 - ls
 # Prepare ZIP archive
 - APKNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.apk
+- RESNAME=caesaria-0.4-cache-`date +"%Y%m%d"`.zip
 - mv CaesarIA-release.apk $APKNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $APKNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
+- sshpass -p "$SCP_PASS" scp -v caesaria_latest_resources.zip dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/$RESNAME
