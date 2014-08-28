@@ -129,8 +129,6 @@ void SdlEngine::init()
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
-  SDL_StartTextInput();
-
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
   cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
