@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "pictureconverter.hpp"
 
 #include "picture.hpp"

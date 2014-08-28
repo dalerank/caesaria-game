@@ -299,7 +299,7 @@ void Tilemap::load( const VariantMap& stream )
   ByteArray baBitset = ByteArray::fromBase64( bitsetInfo );
   ByteArray baDes = ByteArray::fromBase64( desInfo );
 
-  const int* bitsetAr = (int*)baBitset.data();
+  const long* bitsetAr = (long*)baBitset.data();
   const short* imgIdAr = (short*)baImgId.data();
   const short* desAr = (short*)baDes.data();
 

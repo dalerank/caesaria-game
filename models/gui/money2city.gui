@@ -11,10 +11,12 @@
 
   lbBlack#Label : {
     geometry : [ 50, 50, 465, 110 ]
-    bgtype : "black"
+    bgtype : "blackFrame"
+    font : "FONT_3"
+    text.align : [ "center", "center" ]
 
     btn0#PushButton : {
-      geometry : [ 15, 15, 80, 30 ]
+      geometry : [ 15, 10, 80, 30 ]
       font : "FONT_1"
       text : "0"
       pushbutton : false
@@ -24,7 +26,7 @@
     }
 
     btn500#PushButton : {
-      geometry : [ 95, 15, 160, 30 ]
+      geometry : [ 95, 10, 160, 30 ]
       font : "FONT_1"
       text : "500"
       pushbutton : false
@@ -34,7 +36,7 @@
     }
 
     btn2000#PushButton : {
-      geometry : [ 175, 15, 240, 30 ]
+      geometry : [ 175, 10, 240, 30 ]
       font : "FONT_1"
       text : "2000"
       pushbutton : false
@@ -44,7 +46,7 @@
     }
 
     btnAll#PushButton : {
-      geometry : [ 255, 15, 380, 30 ]
+      geometry : [ 255, 10, 380, 30 ]
       font : "FONT_1"
       pushbutton : false
       text : "##send_all##"

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LOGGER_H_INCLUDED__
 #define __CAESARIA_LOGGER_H_INCLUDED__
@@ -39,7 +41,7 @@ public:
   static void warningIf( bool warn, const std::string& text );
   static void update( const std::string& text, bool newline=false );
 
-  static void registerWriter( Type type );
+  static void registerWriter(Type type , const std::string &param);
   static void registerWriter( std::string name, LogWriterPtr writer );
 
   static Logger& instance();

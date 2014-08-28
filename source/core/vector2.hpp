@@ -316,14 +316,14 @@ public:
 		return *this;
 	}
 
-  T x() const { return _x; }
-  T y() const { return _y; }
+  inline T x() const { return _x; }
+  inline T y() const { return _y; }
 
-  T& rx() { return _x; }
-  T& ry() { return _y; }
+  inline T& rx() { return _x; }
+  inline T& ry() { return _y; }
 
-  void setX( T xv ) { _x = xv; }
-  void setY( T yv ) { _y = yv; }
+  inline void setX( T xv ) { _x = xv; }
+  inline void setY( T yv ) { _y = yv; }
 
 protected:
 	//! X coordinate of vector.

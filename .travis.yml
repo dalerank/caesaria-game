@@ -1,17 +1,14 @@
 language: cpp
-
 compiler:
 - gcc
-
 branches:
-  - windows-build
-
+- windows-build
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential 
-- sudo apt-get -qq install binutils-mingw-w64-i686  
+- sudo apt-get -qq install cmake p7zip-full build-essential
+- sudo apt-get -qq install binutils-mingw-w64-i686
 - sudo apt-get -qq install gcc-mingw-w64-i686
 - sudo apt-get -qq install g++-mingw-w64-i686
 - sudo apt-get -qq install sshpass
@@ -25,7 +22,7 @@ before_install:
 # fix winapifamily.h
 - wget https://www.dropbox.com/s/dm5lto9qlyfc418/SDL_platform.h
 - sudo cp SDL_platform.h /usr/i686-w64-mingw32/include/SDL2
-# Get SDL Mixer		
+# Get SDL Mixer
 - wget https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.0-mingw.tar.gz
 - tar xfz SDL2_mixer-devel-2.0.0-mingw.tar.gz
 - sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
@@ -41,10 +38,9 @@ before_script:
 - wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
 - mkdir $TRAVIS_BUILD_DIR/../caesaria-test
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
-
 script:
 # Build CaesarIA
-- make
+- make -j4
 after_success:
 - export REVISION_NUMBER=`git rev-list HEAD --count`
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
@@ -55,5 +51,5 @@ after_success:
 - chmod 666 $ZIPNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- sshpass -p "$SCP_PASS" scp -v *.exe dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
-

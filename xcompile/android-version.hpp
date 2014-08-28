@@ -12,21 +12,17 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LOCALE_H_INCLUDED__
-#define __CAESARIA_LOCALE_H_INCLUDED__
+#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
 
-#include "vfs/directory.hpp"
+#include "core/platform.hpp"
 
-class Locale
-{
-public:
-  static void setDirectory( vfs::Directory directory );
-  static void setLanguage(std::string language);
-  static void addTranslation(std::string filename);
-  static const char* translate( const std::string& text);
-};
+#define CAESARIA_VERSION_MAJOR 0
+#define CAESARIA_VERSION_MINOR 4
 
-#endif //__CAESARIA_LOCALE_H_INCLUDED__
+#define CAESARIA_STR_EXT(__A) #__A
+#define CAESARIA_STR_A(__A) CAESARIA_STR_EXT(__A)
+#define CAESARIA_VERSION CAESARIA_STR_A(CAESARIA_VERSION_MAJOR)"."CAESARIA_STR_A(CAESARIA_VERSION_MINOR)" Android"
+
+#endif

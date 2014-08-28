@@ -36,15 +36,14 @@ int SDL_main(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {
-  Logger::registerWriter( Logger::consolelog );
-  Logger::registerWriter( Logger::filelog );
-
   vfs::Directory workdir;
 #ifdef CAESARIA_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
 #else
   workdir = vfs::Path( argv[0] ).directory();
 #endif
+  Logger::registerWriter( Logger::consolelog, "" );
+
   Logger::warning( "Options: working directory is " + workdir.toString() );
 
   GameSettings::instance().setwdir( workdir.toString() );
@@ -53,6 +52,7 @@ int main(int argc, char* argv[])
     if( !strcmp( argv[i], "-R" ) )
     {
       const char* opts = argv[i+1];
+      workdir = vfs::Path( opts );
       Logger::warning( "Options: setting workdir to %s", opts  );
       GameSettings::instance().setwdir( std::string( opts, strlen( opts ) ) );
       i++;
@@ -72,6 +72,8 @@ int main(int argc, char* argv[])
       i++;
     }
   }
+
+  Logger::registerWriter( Logger::filelog, workdir.toString() );
 
   try
   {
