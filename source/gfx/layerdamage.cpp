@@ -40,7 +40,7 @@ static const char* damageLevelName[] = {
 
 int LayerDamage::type() const {  return citylayer::damage; }
 
-void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerDamage::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

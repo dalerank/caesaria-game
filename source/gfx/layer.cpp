@@ -295,7 +295,7 @@ void Layer::render( Engine& engine)
   _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  DebugTimer::reset( "render:draw_flat" );
+  //DebugTimer::reset( "render:draw_flat" );
   Tile* tile;
   foreach( it, visibleTiles )
   {
@@ -308,7 +308,7 @@ void Layer::render( Engine& engine)
       drawTile( engine, *tile, camOffset );
     }
   }
-  DebugTimer::check( "", "render:draw_flat" );
+  //DebugTimer::check( "", "render:draw_flat" );
 
   if( !_d->renderOverlay )
   {

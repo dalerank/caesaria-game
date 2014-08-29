@@ -400,7 +400,7 @@ void LayerBuild::_drawBuildTiles( Engine& engine)
   engine.resetColorMask();
 }
 
-void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
+void LayerBuild::drawTile( Engine& engine, Tile& tile, const Point& offset )
 {
   __D_IMPL(_d,LayerBuild);
   Point screenPos = tile.mappos() + offset;

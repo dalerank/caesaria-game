@@ -13,31 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LAYERHEALTH_H_INCLUDED__
-#define __CAESARIA_LAYERHEALTH_H_INCLUDED__
+#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
 
-#include "layer.hpp"
+#include "core/platform.hpp"
 
-namespace gfx
-{
+#define CAESARIA_VERSION_MAJOR 0
+#define CAESARIA_VERSION_MINOR 4
 
-class LayerHealth : public Layer
-{
-public:
-  virtual int type() const;
-  virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
+#define CAESARIA_STR_EXT(__A) #__A
+#define CAESARIA_STR_A(__A) CAESARIA_STR_EXT(__A)
+#define CAESARIA_VERSION CAESARIA_STR_A(CAESARIA_VERSION_MAJOR)"."CAESARIA_STR_A(CAESARIA_VERSION_MINOR)" Android"
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city, int type );
-  virtual void handleEvent(NEvent& event);
-
-private:
-  LayerHealth(Camera& camera, PlayerCityPtr city, int type );
-  int _getLevelValue(HousePtr house);
-
-  std::set<int> _flags;
-  int _type;
-};
-
-}//end namespace gfx
-
-#endif //__CAESARIA_LAYERHEALTH_H_INCLUDED__
+#endif

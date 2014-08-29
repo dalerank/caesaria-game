@@ -13,26 +13,36 @@
   lbBlackframe#Label : {
     geometry : [ 32, 70, "pw-32", 340 ]
     bgtype : "blackFrame"
+    multiline : true
+    font : "FONT_2"
   }
 
   lbMorale#Label : {
     geometry : [ 290, 50, 340, 80 ]
     text : "##advlegion_morale##"
+    multiline : true
+    font : "FONT_1"
   }
 
   lbGotoLegion#Label : {
     geometry : [ 380, 50, 435, 80 ]
     text : "##advlegion_gotolegion##"
+    multiline : true
+    font : "FONT_1"
   }
 
   lbReturn2Fort#Label : {
     geometry : [ 465, 50, 520, 80 ]
     text : "##advlegion_return2fort##"
+    multiline : true
+    font : "FONT_1"
   }
 
   lbServEmpire#Label : {
     geometry : [ 550, 50, 600, 80]
     text : "##advlegion_empireservice##"
+    multiline : true
+    font : "FONT_1"
   }
 
   alarm#Label : {

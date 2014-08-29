@@ -1,9 +1,8 @@
-language: cpp
 
+language: cpp
 compiler:
 - clang
 - gcc
-
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
@@ -11,12 +10,9 @@ before_install:
 #- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
 - sudo apt-get install -qq cmake build-essential libsdl2-dev libsdl2-mixer-dev
 #- sudo apt-get install -qq gcc-multilib g++-multilib
-
 install:
 # Create unix makefiles
 - cmake -DCMAKE_BUILD_TYPE=Release .
-
 script:
 # Build CaesarIA
 - make -j4
-

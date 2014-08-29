@@ -49,7 +49,7 @@
   lbTitle#Label : {
     geometryf : [ 0.1, 0.05, 0.95, 0.1 ]
     font : "FONT_5"
-    text : "##health_advisor##"
+    text : "##finance_advisor##"
     textAlign : [ "center", "center" ]
   }
 }

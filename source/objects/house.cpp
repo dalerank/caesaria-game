@@ -380,7 +380,6 @@ void House::timeStep(const unsigned long time)
 
   if( GameDate::isMonthChanged() )
   {
-    updateState( House::willSettle, -1 );
     _updateTax(); 
 
     if( _d->money > 0 ) { _d->poverity--; }

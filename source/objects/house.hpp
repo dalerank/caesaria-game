@@ -47,7 +47,7 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::paramCount, health, happiness, willSettle };
+  enum { food=Construction::paramCount, health, happiness };
 
   House( HouseLevel::ID level=HouseLevel::hovel );
 

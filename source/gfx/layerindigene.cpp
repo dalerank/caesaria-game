@@ -34,7 +34,7 @@ int LayerIndigene::type() const
   return citylayer::aborigen;
 }
 
-void LayerIndigene::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerIndigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
