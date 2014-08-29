@@ -29,6 +29,8 @@
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 
+#include <game/settings.hpp>
+
 using namespace constants;
 
 class TaxCollector::Impl
@@ -44,6 +46,17 @@ void TaxCollector::_centerTile()
 {
   Walker::_centerTile();
 
+  int difficulty = SETTINGS_VALUE(difficulty);
+  float multiply = 1.0f;
+  switch (difficulty)
+  {
+    case 0: multiply = 3.0f; break;
+    case 1: multiply = 2.0f; break;
+    case 2: multiply = 1.5f; break;
+    case 3: multiply = 1.0f; break;
+    case 4: multiply = 0.75f; break;
+  }
+
   ReachedBuildings buildings = getReachedBuildings( pos() );
   foreach( it, buildings )
   {
@@ -51,7 +64,7 @@ void TaxCollector::_centerTile()
 
     if( house.isValid() )
     {
-      float tax = house->collectTaxes();
+      float tax = house->collectTaxes() * multiply;
       _d->money += tax;
       house->applyService( this );
 
