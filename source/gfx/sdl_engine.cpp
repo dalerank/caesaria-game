@@ -38,13 +38,10 @@
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
+#include "game/settings.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
-#endif
-
-#ifdef CAESARIA_PLATFORM_ANDROID
-#include "game/settings.hpp"
 #endif
 
 namespace gfx
@@ -185,6 +182,7 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
+  //SDL_SetHint("SDL_RENDER_OPENGL_SHADERS", "0" );
   if (isFullscreen())
   {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
@@ -245,7 +243,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   SDL_Texture* tx = 0;
   if( streaming )
   {
-    tx = SDL_CreateTexture(_d->renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, ioPicture.width(), ioPicture.height() );
+    tx = SDL_CreateTexture(_d->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, ioPicture.width(), ioPicture.height() );
   }
   else
   {

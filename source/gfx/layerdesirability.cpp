@@ -37,7 +37,7 @@ public:
 
 int LayerDesirability::type() const {  return citylayer::desirability; }
 
-void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mappos() + offset;
