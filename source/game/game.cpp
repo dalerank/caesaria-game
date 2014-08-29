@@ -23,7 +23,7 @@
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/picture.hpp"
-#include "gfx/sdl_engine.hpp"
+#include "gfx/gl_engine.hpp"
 #include "sound/engine.hpp"
 #include "gfx/picture_bank.hpp"
 #include "scene/menu.hpp"
@@ -59,6 +59,7 @@
 #include "freeplay_finalizer.hpp"
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
+#include "gfx/sdl_engine.hpp"
 
 #include <list>
 

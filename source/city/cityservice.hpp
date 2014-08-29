@@ -41,7 +41,8 @@ public:
   virtual void load(const VariantMap& stream) {}
 
 protected:
-  Srvc( PlayerCity& city, const std::string& name ) : _name( name ), _city( city )
+  Srvc( PlayerCity& city, const std::string& name )
+    : _name( name ), _city( city )
   {
   }
 

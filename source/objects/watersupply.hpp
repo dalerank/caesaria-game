@@ -66,6 +66,8 @@ public:
 
 private:
   bool _isWaterSource;
+  void _dropWater();
+  void _waterStateChanged();
   bool _isNearWater( PlayerCityPtr city, const TilePos& pos ) const;
 };
 

@@ -265,7 +265,7 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   TilesArray area = tilemap.getArea( pos, size() ); // something very complex ???
   foreach( tile, area )
   {
-    is_constructible &= (*tile)->getFlag( Tile::tlRoad );
+    is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
   }
 
   return is_constructible;
