@@ -134,7 +134,9 @@ Legion::Legion( Widget* parent, int id, FortList forts )
   }
 
   if( _d->lbBlackframe && forts.empty() )
-    _d->lbBlackframe->setText( "##legionadv_no_legions##" );
+  {
+    _d->lbBlackframe->setText( _("##legionadv_no_legions##") );
+  }
 }
 
 void Legion::draw( Engine& painter )

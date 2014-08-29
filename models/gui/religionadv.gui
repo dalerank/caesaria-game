@@ -14,7 +14,7 @@
 
   lbTemplesText#Label : {
     font : "FONT_1"
-    geometry : [ 268, 32, 297, 52 ]
+    geometry : [ 268, 32, 368, 52 ]
     text : "##temples##"
   }
 
@@ -38,13 +38,14 @@
 
   lbMoodText#Label : {
     font : "FONT_1"
-    geometry : [ 450, 47, 500, 67 ]
+    geometry : [ 450, 47, 550, 67 ]
     text : "##rladv_mood_t##"
   }
 
   lbReligionAdvice#Label : {
-    geometry : [ 40, "ph-80", "pw-40", "ph-10" ]
-    font : "FONT_2"
+    geometry : [ 40, "ph-100", "pw-40", "ph-10" ]
+    multiline : true
+    font : "FONT_1"
   }
 
   btnHelp#TexturedButton : {
@@ -58,7 +59,7 @@
   lbTitle#Label : {
     geometry : [ 60, 10, 290, 50 ]
     font : "FONT_5"
-    text : "##finance_advisor##"
+    text : "##religion_advisor##"
     textAlign : [ "upperLeft", "center" ]
   }
 }

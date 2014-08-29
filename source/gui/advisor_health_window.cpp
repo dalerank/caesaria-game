@@ -121,10 +121,13 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
+  Label* lbBlackframe;
   GET_DWIDGET_FROM_UI( _d, lbAdvice )
+  GET_WIDGET_FROM_UI( lbBlackframe )
 
-  Point startPoint( 42, 112 );
-  Size labelSize( 550, 20 );
+  Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
+  Size labelSize( lbBlackframe->width() - 6, 20 );
+
   Impl::InfrastructureInfo info = _d->getInfo( city, building::baths );
   _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), building::baths,
                                              info.buildingWork, info.buildingCount, info.peoplesServed );

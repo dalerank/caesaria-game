@@ -75,9 +75,9 @@ HousePtr Emigrant::_findBlankHouse()
     HousePtr house = *itHouse;
     bool haveRoad = !house->getAccessRoads().empty();
     bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
-    bool notWillSettle = (house->state( House::willSettle ) == 0);
+    bool normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
 
-    if( haveRoad && haveVacantRoom && notWillSettle ) { ++itHouse; }
+    if( haveRoad && haveVacantRoom && normalDesirability) { ++itHouse; }
     else { itHouse = houses.erase( itHouse ); }
   }
 
@@ -105,10 +105,6 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
     pathway = PathwayHelper::create( startPoint,
                                      _city()->borderInfo().roadExit,
                                      PathwayHelper::allTerrain );
-  }
-  else
-  {
-    house->updateState( House::willSettle, 1 );
   }
 
   return pathway;

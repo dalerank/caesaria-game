@@ -38,25 +38,33 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-CAESARIA_LITERALCONST(lastPicId)
-CAESARIA_LITERALCONST(haveWater)
-static const unsigned int fillDistance = 4;
+static const unsigned int fillDistanceNormal = 4;
 static const unsigned int fillDistanceDesert = 3;
 }
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
                awesomeFountain=18, patricianFountain=26, testFountain=50 } FontainConstant;
 
+class Fountain::Impl
+{
+public:
+  bool haveReservoirWater;
+  int  waterIncreaseInterval;
+  int  lastPicId;
+  int  fillDistance;
+
+};
+
 Fountain::Fountain()
-  : ServiceBuilding(Service::fountain, building::fountain, Size(1))
+  : ServiceBuilding(Service::fountain, building::fountain, Size(1)),
+    _d( new Impl )
 {  
   setPicture( ResourceGroup::utilitya, 10 );
-  _haveReservoirWater = false;
-  _waterIncreaseInterval = GameDate::days2ticks( 7 );
-  _lastPicId = simpleFountain;
+  _d->haveReservoirWater = false;
+  _d->lastPicId = simpleFountain;
   _fgPicturesRef().resize(1);
   _initAnimation();
-  _fillDistance = 4;
+  _d->fillDistance = 4;
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -64,7 +72,7 @@ Fountain::Fountain()
 
 void Fountain::deliverService()
 {
-  if( !_haveReservoirWater )
+  if( !_d->haveReservoirWater )
     return;
 
   ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
@@ -78,14 +86,14 @@ void Fountain::deliverService()
 void Fountain::timeStep(const unsigned long time)
 {
   //filled area, that fontain present and work
-  if( time % _waterIncreaseInterval == 1 )
+  if( GameDate::isDayChanged() )
   {
-    _haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
+    _d->haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
 
     if( mayWork() )
     {
       Tilemap& tmap = _city()->tilemap();
-      TilesArray reachedTiles = tmap.getArea( _fillDistance, pos() );
+      TilesArray reachedTiles = tmap.getArea( _d->fillDistance, pos() );
 
       foreach( tile, reachedTiles )
       {
@@ -93,15 +101,19 @@ void Fountain::timeStep(const unsigned long time)
         (*tile)->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
       }
     }
+    else
+    {
+
+    }
   }
 
   if( GameDate::isWeekChanged() )
   {
     int desPic[] = { simpleFountain, testFountain, prettyFountain, awesomeFountain, patricianFountain };
     int currentId = desPic[ math::clamp<int>( tile().param( Tile::pDesirability ) / 20, 0, 4 ) ];
-    if( currentId != _lastPicId )
+    if( currentId != _d->lastPicId )
     {
-      _lastPicId = currentId;
+      _d->lastPicId = currentId;
       setPicture( ResourceGroup::utilitya, currentId );
       _initAnimation();
     }
@@ -109,7 +121,7 @@ void Fountain::timeStep(const unsigned long time)
     if( needWorkers() > 0 )
     {
       RecruterPtr recruter = Recruter::create( _city() );
-      recruter->once( this, needWorkers(), _fillDistance * 2);
+      recruter->once( this, needWorkers(), _d->fillDistance * 2);
     }
   }  
 
@@ -140,18 +152,12 @@ bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
   ServiceBuilding::build( city, pos );
 
   setPicture( ResourceGroup::utilitya, 10 );
-  _lastPicId = simpleFountain;
+  _d->lastPicId = simpleFountain;
   _initAnimation();
 
-  if (city->climate() == climateDesert)
-  {
-      _fillDistance = fillDistanceDesert;
-  }
-  else
-  {
-      _fillDistance = fillDistance;
-  }
-
+  _d->fillDistance = (city->climate() == climateDesert)
+                     ? fillDistanceDesert
+                     : fillDistanceNormal;
   return true;
 }
 
@@ -177,7 +183,7 @@ void Fountain::destroy()
   ServiceBuilding::destroy();
 
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( _fillDistance, pos() );
+  TilesArray reachedTiles = tmap.getArea( _d->fillDistance, pos() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pFountainWater, 0 ); }
 
@@ -188,17 +194,17 @@ void Fountain::destroy()
   }
 }
 
-bool Fountain::mayWork() const {  return ServiceBuilding::mayWork() && ServiceBuilding::isActive() && _haveReservoirWater; }
+bool Fountain::mayWork() const {  return ServiceBuilding::mayWork() && ServiceBuilding::isActive() && _d->haveReservoirWater; }
 
-unsigned int Fountain::fillRange() const { return _fillDistance; }
+unsigned int Fountain::fillRange() const { return _d->fillDistance; }
 
 void Fountain::load(const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
 
-  _lastPicId = stream.get( lc_lastPicId, simpleFountain );
-  _haveReservoirWater = stream.get( lc_haveWater );
-  setPicture( ResourceGroup::utilitya, _lastPicId );
+  VARIANT_LOAD_ANYDEF_D( _d, lastPicId, simpleFountain, stream )
+  VARIANT_LOAD_ANY_D( _d, haveReservoirWater, stream );
+  setPicture( ResourceGroup::utilitya, _d->lastPicId );
   _initAnimation();
   //check animation
   timeStep( 1 );
@@ -207,19 +213,19 @@ void Fountain::load(const VariantMap& stream)
 void Fountain::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
-  stream[ lc_lastPicId ] = _lastPicId;
-  stream[ lc_haveWater ] = _haveReservoirWater;
+  VARIANT_SAVE_ANY_D( stream, _d, lastPicId )
+  VARIANT_SAVE_ANY_D( stream, _d, haveReservoirWater );
 }
 
 void Fountain::_initAnimation()
 {
   _animationRef().clear();
-  _animationRef().load( ResourceGroup::utilitya, _lastPicId+1, fontainSizeAnim );
+  _animationRef().load( ResourceGroup::utilitya, _d->lastPicId+1, fontainSizeAnim );
   _animationRef().setDelay( 2 );
   _fgPicture( 0 ) = Picture::getInvalid();
   _animationRef().stop();
 
-  switch ( _lastPicId )
+  switch ( _d->lastPicId )
   {
   case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   //case testFountain: _animationRef().setOffset( Point( 0, 31 ) ); break;

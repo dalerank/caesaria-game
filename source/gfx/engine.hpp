@@ -53,12 +53,11 @@ public:
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
 
-  virtual void loadPicture( Picture& ioPicture) = 0;
+  virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
-  virtual unsigned int format() const = 0;
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;

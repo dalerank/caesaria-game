@@ -22,6 +22,7 @@
 #include "world/empire.hpp"
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
+#include "core/stringhelper.hpp"
 
 namespace gui
 {
@@ -54,7 +55,8 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
     foreach( i, ranks )
     {
-      ListBoxItem& item = lbxTitles->addItem( _( (*i).pretty ) );
+      std::string salaryStr = _( "##" + (*i).rankName + "_salary##" );
+      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + StringHelper::i2str( (*i).salary ) );
       item.setTag( (*i).salary );
       if( (*i).salary == salary )
       {
@@ -74,7 +76,7 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
   CONNECT( lbxTitles, onItemSelected(), _dfunc().data(), Impl::resolveSalaryChange );
 }
 
-ChangeSalaryWindow::~ChangeSalaryWindow(){  }
+ChangeSalaryWindow::~ChangeSalaryWindow(){}
 Signal1<int>& ChangeSalaryWindow::onChangeSalary(){  return _dfunc()->onChangeSalarySignal; }
 void ChangeSalaryWindow::Impl::resolveSalaryChange(const ListBoxItem& item ) { newSalary = item.tag(); }
 void ChangeSalaryWindow::Impl::setNewSalary(){ oc3_emit onChangeSalarySignal( newSalary ); }

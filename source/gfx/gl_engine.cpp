@@ -18,6 +18,8 @@
 
 #include "gl_engine.hpp"
 
+#ifdef CAESARIA_GL_RENDER
+
 #include <cstdlib>
 #include <string>
 #include <sstream>
@@ -33,6 +35,7 @@
 #include "vfs/file.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
+#include "ttf/SDL_ttf.h"
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #include <GLES/gl.h>
@@ -45,10 +48,6 @@
   #endif
 #endif
 
-//#if defined(CAESARIA_PLATFORM_ANDROID) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
-#if 1
-
-#else
 #include <SDL_opengl.h>
 #ifdef CAESARIA_USE_FRAMEBUFFER
   #ifdef CAESARIA_PLATFORM_LINUX
@@ -116,7 +115,11 @@ class GlEngine::Impl
 {
 public:
   FrameBuffer fb;
+  SDL_Window* window;
   EffectManager effects;
+  PictureRef fpsText;
+  SDL_Renderer *renderer;
+  Font debugFont;
 };
 
 GlEngine::GlEngine() : Engine(), _d( new Impl )
@@ -142,12 +145,36 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());  
 
-  SDL_Surface* screen = SDL_SetVideoMode( _srcSize.width(), _srcSize.height(), 16, SDL_OPENGL );
-   _screen.init( screen, Point() );
-  if( screen == NULL )
+  unsigned int flags = SDL_WINDOW_OPENGL;
+  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+
+  if(isFullscreen())
   {
-    THROW("Unable to set video mode: " << SDL_GetError());
+    _d->window = SDL_CreateWindow("CaesariA",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        0, 0,
+        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+
   }
+  else
+  {
+    _d->window = SDL_CreateWindow("CaesariA",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        _srcSize.width(), _srcSize.height(),
+        flags);
+  }
+
+  if (_d->window == NULL)
+  {
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
+    THROW("Failed to create window");
+  }
+
+  Logger::warning("SDLGraficEngine: init successfull");
+  _d->renderer = SDL_CreateRenderer(_d->window, -1, SDL_RENDERER_ACCELERATED );
+
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 #if defined(CAESARIA_PLATFORM_WIN) && !defined(NO_FRAME_BUFFER)
@@ -194,7 +221,7 @@ void GlEngine::init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Logger::warning( "GrafixEngine: set caption");
-  SDL_WM_SetCaption( "CaesarIA: OGL "CAESARIA_VERSION, 0 );
+  SDL_SetWindowTitle( _d->window, "CaesarIA:gl "CAESARIA_VERSION );
 
   //!!!!!
   if( getFlag( Engine::effects ) > 0 )
@@ -202,6 +229,8 @@ void GlEngine::init()
     _d->fb.initialize( _srcSize );
     _d->effects.load( SETTINGS_RC_PATH( opengl_opts ) );
   }
+
+  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
 }
 
 void GlEngine::exit()
@@ -216,6 +245,17 @@ void GlEngine::deletePicture( Picture* pic )
     unloadPicture( *pic );
 }
 
+void GlEngine::setFlag( int flag, int value )
+{
+  Engine::setFlag( flag, value );
+
+  if( flag == debugInfo )
+  {
+    _d->debugFont = Font::create( FONT_2 );
+  }
+}
+
+
 Picture* GlEngine::createPicture(const Size& size )
 {
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
@@ -224,7 +264,7 @@ Picture* GlEngine::createPicture(const Size& size )
   Logger::warningIf( NULL == img, StringHelper::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
 
   Picture *pic = new Picture();
-  pic->init(img, Point( 0, 0 ));  // no offset
+  pic->init( 0, img, 0 );  // no offset
 
   return pic;
 }
@@ -334,68 +374,68 @@ void GlEngine::unloadPicture(Picture& ioPicture)
   ioPicture = Picture();
 }
 
-void GlEngine::loadPicture(Picture& ioPicture)
+void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
-   GLuint& texture( ioPicture.textureID() );
+  GLuint& texture( ioPicture.textureID() );
 
-   SDL_Surface* pot_surface = SDL_DisplayFormatAlpha( ioPicture.surface() );
-   SDL_SetAlpha( pot_surface, 0, 0 );
+  SDL_Surface* surface = ioPicture.surface(); //SDL_DisplayFormatAlpha( ioPicture.surface() );
+  //SDL_SetAlpha( surface, 0, 0 );
 
-   SDL_FreeSurface( ioPicture.surface() );
+  //SDL_FreeSurface( ioPicture.surface() );
 
-   ioPicture.init( pot_surface, ioPicture.offset() );
+  //ioPicture.init( 0, ioPicture.surface(),  );
 
-   GLenum texture_format;
-   GLint nOfColors;
+  GLenum texture_format;
+  GLint nOfColors;
 
-   // get the number of channels in the SDL surface
-   nOfColors = pot_surface->format->BytesPerPixel;
-   if (nOfColors == 4)     // contains an alpha channel
-   {
+  // get the number of channels in the SDL surface
+  nOfColors = surface->format->BytesPerPixel;
+  if (nOfColors == 4)     // contains an alpha channel
+  {
 #ifdef CAESARIA_PLATFORM_ANDROID
       texture_format = GL_RGBA;
 #else
-      if (pot_surface->format->Rmask == 0x000000ff)
-         texture_format = GL_RGBA;
-      else
-         texture_format = GL_BGRA;
+    if (surface->format->Rmask == 0x000000ff)
+       texture_format = GL_RGBA;
+    else
+       texture_format = GL_BGRA;
 #endif
-   }
-   else if (nOfColors == 3)     // no alpha channel
-   {
+  }
+  else if (nOfColors == 3)     // no alpha channel
+  {
 #ifdef CAESARIA_PLATFORM_ANDROID
       texture_format = GL_RGB;
 #else
-      if (pot_surface->format->Rmask == 0x000000ff)
-         texture_format = GL_RGB;
-      else
-         texture_format = GL_BGR;
+    if (surface->format->Rmask == 0x000000ff)
+       texture_format = GL_RGB;
+    else
+       texture_format = GL_BGR;
 #endif
-   }
-   else
-   {
-      THROW("Invalid image format");
-   }
+  }
+  else
+  {
+     THROW("Invalid image format");
+  }
 
-   if (texture == 0)
-   {
-      // the picture has no texture ID!
-      // generate a texture ID
-      glGenTextures( 1, &texture );
-   }
+  if (texture == 0)
+  {
+     // the picture has no texture ID!
+     // generate a texture ID
+     glGenTextures( 1, &texture );
+  }
 
-   // Bind the texture object
-   glBindTexture( GL_TEXTURE_2D, texture );
+  // Bind the texture object
+  glBindTexture( GL_TEXTURE_2D, texture );
 
-   // Set the texture's stretching properties
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-   //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-   //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+  // Set the texture's stretching properties
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+  //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+  //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 
   // Edit the texture object's image data using the information SDL_Surface gives us
-  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, pot_surface->w, pot_surface->h, 0,
-                texture_format, GL_UNSIGNED_BYTE, pot_surface->pixels );
+  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0,
+                texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 }
 
 
@@ -412,13 +452,12 @@ void GlEngine::startRenderFrame()
 
 void GlEngine::endRenderFrame()
 { 
-  if( getFlag( debugInfo ) )
+  if( getFlag( Engine::debugInfo ) )
   {
-    static Font _debugFont = Font::create( FONT_2 );
-    static Picture* pic = Picture::create( Size( 160, 30 ));
     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-    _debugFont.draw( *pic, debugText, 0, 0, true );
-    draw( *pic, _screen.width() / 2, 2 );
+    _d->fpsText->fill( 0, Rect() );
+    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+    draw( *_d->fpsText, Point( _srcSize.width() / 2, 2 ) );
   }
 
   if( getFlag( Engine::effects ) > 0 )
@@ -427,7 +466,8 @@ void GlEngine::endRenderFrame()
     _d->fb.draw();
   }
 
-  SDL_GL_SwapBuffers(); //Refresh the screen
+  glFlush();
+  SDL_RenderPresent(_d->renderer);
   _fps++;
 
   if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
@@ -501,9 +541,19 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   }
 }
 
+void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
+{
+  int i=0;
+}
+
 void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 {
   draw( picture, pos.x(), pos.y() );
+}
+
+void GlEngine::draw(const Picture& picture, const Rect& src, const Rect& dst, Rect* clipRect)
+{
+  int i=0;
 }
 
 void GlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
@@ -561,11 +611,15 @@ Engine::Modes GlEngine::modes() const
   Modes ret;
 
   /* Get available fullscreen/hardware modes */
-  SDL_Rect** modes = SDL_ListModes( NULL, SDL_FULLSCREEN|SDL_HWSURFACE) ;
+  int num = SDL_GetNumDisplayModes(0);
 
-  for(int i=0; modes[i]; ++i)
+  for (int i = 0; i < num; ++i)
   {
-    ret.push_back( Size( modes[i]->w, modes[i]->h) );
+    SDL_DisplayMode mode;
+    if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
+    {
+      ret.push_back(Size(mode.w, mode.h));
+    }
   }
 
   return ret;
@@ -799,4 +853,4 @@ void PostprocFilter::bindTexture()
 
 }
 
-#endif //#ifdef CAESARIA_PLATFORM_MACOSX
+#endif
