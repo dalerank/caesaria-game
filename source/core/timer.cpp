@@ -133,6 +133,7 @@ unsigned int DebugTimer::delta(const std::string &name, bool reset)
   return ret;
 }
 
+#undef CAESARIA_USE_DEBUGTIMERS
 void DebugTimer::check(const std::string& prefix, const std::string &name)
 {
 #ifdef CAESARIA_USE_DEBUGTIMERS
