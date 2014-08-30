@@ -39,10 +39,10 @@ public:
   virtual void load( const VariantMap& stream);
   virtual void save(VariantMap &stream) const;
 private:
-  bool _haveReservoirWater;
+  class Impl;
+  ScopedPtr<Impl> _d;
+
   void _initAnimation();
-  int _waterIncreaseInterval;
-  int _lastPicId;
 };
 
 #endif //__CAESARIA_FOUNTAIN_INCLUDED__

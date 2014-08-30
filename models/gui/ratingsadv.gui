@@ -7,10 +7,13 @@
     image : "paneling_00258"
   }
 
-  lbBlackframe#Label : {
+  lbRatingInfo#Label : {
     geometry : [ 66, 360, 576, 420 ]
     bgtype : "blackFrame"
-    font : "FONT_2"
+    font : "FONT_1"
+    multiline : true
+    text.align : [ "upperLeft", "upperLeft" ]
+    text.offset : [ 5, 5 ]
     text : "##click_on_rating_for_info##"
   }
 

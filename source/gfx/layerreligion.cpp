@@ -35,7 +35,7 @@ int LayerReligion::type() const
   return citylayer::religion;
 }
 
-void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

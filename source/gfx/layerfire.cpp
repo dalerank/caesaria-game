@@ -41,7 +41,7 @@ static const char* fireLevelName[] = {
 
 int LayerFire::type() const {  return citylayer::fire; }
 
-void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerFire::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

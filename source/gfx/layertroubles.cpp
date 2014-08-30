@@ -36,7 +36,7 @@ namespace gfx
 
 int LayerTroubles::type() const{  return _type;}
 
-void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerTroubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
