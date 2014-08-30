@@ -70,7 +70,6 @@ namespace infobox
 class Simple::Impl
 {
 public:
-  Label* lbBackground;
   Label* lbBlackFrame;
   Label* lbTitle;
   Label* lbText;
@@ -79,7 +78,7 @@ public:
   bool isAutoPosition;
   GameAutoPause autopause;
 
-  Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
+  Impl() : lbBlackFrame(0), lbTitle(0),
     lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)
   {
 
@@ -98,7 +97,6 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
   GET_DWIDGET_FROM_UI( _d, btnHelp )
-  GET_DWIDGET_FROM_UI( _d, lbBackground )
   GET_DWIDGET_FROM_UI( _d, lbBlackFrame )
   GET_DWIDGET_FROM_UI( _d, lbText  )
 

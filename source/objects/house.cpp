@@ -1024,7 +1024,7 @@ void House::save( VariantMap& stream ) const
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "goodstore" ] = _d->goodStore.save();
   stream[ "healthLevel" ] = state( (Construction::Param)House::health );
-  stream[ "changeCondition" ] = _d->changeCondition;
+  VARIANT_SAVE_ANY_D(stream, _d, changeCondition )
   VARIANT_SAVE_ANY_D(stream, _d, taxesThisYear)
   VARIANT_SAVE_ANY_D(stream, _d, poverity)
   VARIANT_SAVE_ANY_D(stream, _d, money)
@@ -1052,7 +1052,7 @@ void House::load( const VariantMap& stream )
 
   _d->habitants.load( stream.get( "currentHubitants" ).toList() );
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
-  _d->changeCondition = stream.get( "changeCondition", 0 );
+  VARIANT_LOAD_ANY_D(_d,changeCondition, stream )
   VARIANT_LOAD_ANY_D(_d,poverity, stream)
   VARIANT_LOAD_ANY_D(_d,money, stream)
   VARIANT_LOAD_ANY_D(_d,tax, stream)
@@ -1073,7 +1073,8 @@ void House::load( const VariantMap& stream )
   }
 
   Building::build( _city(), pos() );
-  _update( false );
+  bool needUpdateTexture = !picture().isValid();
+  _update( needUpdateTexture );
 }
 
 void House::_disaster()
