@@ -51,7 +51,7 @@ static const std::string crimeDesc[] =
 
 int LayerCrime::type() const {  return citylayer::crime; }
 
-void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerCrime::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

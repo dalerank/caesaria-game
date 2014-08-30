@@ -33,7 +33,7 @@ namespace gfx
 
 int LayerTax::type() const {  return citylayer::tax; }
 
-void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
+void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

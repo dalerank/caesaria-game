@@ -139,9 +139,9 @@ void Ratings::Impl::checkCultureRating()
   city::CultureRatingPtr culture;
   culture << city->findService( city::CultureRating::defaultName() );
 
-  if( culture != 0 )
+  if( culture.isValid() )
   {
-    if( culture->value() == 0 )
+    if( culture->value() == 0  )
     {
       lbRatingInfo->setText( _("##no_culture_building_in_city##") );
       return;
@@ -225,23 +225,26 @@ void Ratings::Impl::checkPeaceRating()
   city::MilitaryPtr ml;
   ml << city->findService( city::Military::defaultName() );
 
-  unsigned int peace = city->peace();
-
-  if( ml->month2lastAttack() < 36 )
+  if( ml.isValid() )
   {
-    advices << "##province_has_peace_a_short_time##";
+    unsigned int peace = city->peace();
+
+    if( ml->month2lastAttack() < 36 )
+    {
+      advices << "##province_has_peace_a_short_time##";
+    }
+
+    if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+    else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+    else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
+    else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+
+    std::string text = advices.empty()
+                        ? "##peace_rating_text##"
+                        : advices.random();
+
+    lbRatingInfo->setText( _(text) );
   }
-
-  if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
-  else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
-  else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
-  else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
-
-  std::string text = advices.empty()
-                      ? "##peace_rating_text##"
-                      : advices.random();
-
-  lbRatingInfo->setText( _(text) );
 }
 
 void Ratings::Impl::checkFavourRating()
@@ -311,7 +314,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
 
   if( lbNeedPopulation ) lbNeedPopulation->setText( StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
 
-  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );
+  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wndrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
   _d->btnCulture->setValue( _d->city->culture() );
   _d->updateColumn( _d->btnCulture->relativeRect().getCenter(), 0 );

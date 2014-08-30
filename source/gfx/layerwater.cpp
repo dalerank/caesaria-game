@@ -37,7 +37,7 @@ namespace gfx
 
 int LayerWater::type() const{  return citylayer::water;}
 
-void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

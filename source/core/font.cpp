@@ -92,8 +92,11 @@ bool Font::isValid() const {  return _d->ttfFont != 0; }
 
 Size Font::getTextSize( const std::string& text ) const
 {
-  int w, h;
-  TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
+  int w=0, h=0;
+  if( isValid() )
+  {
+    TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
+  }
 
   return Size( w, h );
 }
