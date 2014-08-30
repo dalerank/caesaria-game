@@ -23,7 +23,6 @@
 #include <string>
 #include "core/size.hpp"
 #include "core/scopedptr.hpp"
-#include "core/referencecounted.hpp"
 #include "core/position.hpp"
 #include "core/rectangle.hpp"
 #include "core/color.hpp"
@@ -35,7 +34,7 @@ namespace gfx
 {
   
 // an image with offset, this is the basic rendered object
-class Picture : public ReferenceCounted
+class Picture
 {
 public:
   Picture();
@@ -44,12 +43,10 @@ public:
   Picture( const Picture& other );
   Picture& operator=(const Picture& other);
   
-  void init(SDL_Texture* texture, const Point& offset );
-
-  void setOffset( Point offset );
+  void setOffset( const Point& offset );
   void setOffset( int x, int y );
 
-  void addOffset( Point offset );
+  void addOffset(const Point &offset );
   void addOffset(int x, int y);
   const Point& offset() const;
 
@@ -57,8 +54,12 @@ public:
   std::string name() const;
   void setAlpha( unsigned char value );
 
-  SDL_Texture* texture() const;
+  void init( SDL_Texture* tx, SDL_Surface* srf, unsigned int ogltx );
+
+  SDL_Texture* texture() const;  
   SDL_Surface* surface() const;
+  unsigned int& textureID();
+  unsigned int textureID() const;
 
   int width() const;
   int height() const;

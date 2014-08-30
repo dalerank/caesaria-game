@@ -3,25 +3,25 @@
   bgtype : "whiteFrame"
 
   lbBlackframe#Label : {
-    geometry : [ 35, 110, "pw-35", 195 ]
+    geometry : [ 35, 90, "pw-35", 175 ]
     bgtype : "blackFrame"
   }
 
   lbWorkText#Label : {
     font : "FONT_1"
-    geometry : [ 180, 92, 280, 112 ]
+    geometry : [ 180, 72, 280, 92 ]
     text : "##work##"
   }
 
   lbMaxAv#Label : {
     font : "FONT_1"
-    geometry : [ 290, 92, 470, 112 ]
+    geometry : [ 290, 72, 470, 92 ]
     text : "##max_available##"
   }
 
   lbCoverage#Label : {
     font : "FONT_1"
-    geometry : [ 480, 92, "pw-20", 112 ]
+    geometry : [ 480, 72, "pw-20", 92 ]
     text : "##coverage##"
   }
 
@@ -38,10 +38,11 @@
   }
 
   lbAdvice#Label : {
-    geometry : [ 35, 200, "pw-35", "ph-15" ]
+    geometry : [ 35, 180, "pw-35", "ph-15" ]
     multiline : true
     text : "##healthadv_advice##"
-    font : "FONT_2"
+    font : "FONT_1"
+    multiline : true
   }
 }
 

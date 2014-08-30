@@ -31,7 +31,7 @@ using namespace updater;
 int main(int argc, char* argv[])
 {
 	// Start logging
-	Logger::registerWriter( Logger::consolelog );
+  Logger::registerWriter( Logger::consolelog, "" );
 
 	Logger::warning( "Updater v%s (c) 2012-2014 by dalerank is"
 									 " part of CaesarIA (http://bitbucket.org/dalerank/caesaria).",

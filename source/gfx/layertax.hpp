@@ -27,7 +27,7 @@ class LayerTax : public Layer
 {
 public:
   virtual int type() const;
-  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);

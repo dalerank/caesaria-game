@@ -44,7 +44,7 @@ int LayerHealth::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

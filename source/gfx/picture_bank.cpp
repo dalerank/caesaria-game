@@ -46,9 +46,6 @@ public:
 
   Pictures resources;  // key=image name, value=picture
   Picture tryLoadPicture( const std::string& name );
-
-  void setPicture( const std::string &name, SDL_Texture* texture);
-  Picture makePicture(const std::string& name, SDL_Texture* texture );
 };
 
 PictureBank& PictureBank::instance()
@@ -57,25 +54,50 @@ PictureBank& PictureBank::instance()
   return inst;
 }
 
-void PictureBank::Impl::setPicture( const std::string &name, SDL_Texture* texture )
+void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
   // first: we deallocate the current picture, if any
   unsigned int picId = StringHelper::hash( name );
-  Impl::ItPicture it = resources.find( picId );
-  if( it != resources.end() )
+  Picture* ptrPic = 0;
+  Impl::ItPicture it = _d->resources.find( picId );
+  if( it != _d->resources.end() )
   {
     SDL_DestroyTexture( it->second.texture() );
-    it->second = makePicture( name, texture );
+    ptrPic = &it->second;
   }
   else
   {
-    resources[ picId ] = makePicture( name, texture );
+    _d->resources[ picId ] = Picture();
+    ptrPic = &_d->resources[ picId ];
   }
-}
 
-void PictureBank::setPicture( const std::string &name, const Picture& pic )
-{
-  _d->setPicture( name, pic.texture() );
+  *ptrPic = pic;
+
+  int dot_pos = name.find('.');
+  std::string rcname = name.substr(0, dot_pos);
+
+  Point offset( 0, 0 );
+
+  // decode the picture name => to set the offset manually
+  Point pic_info = PictureInfoBank::instance().getOffset( rcname );
+
+  if( pic_info == Point( -1, -1 ) )
+  {
+    // this is a tiled picture=> automatic offset correction
+    offset.setY( pic.height()-15*( (pic.width()+2)/60 ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
+  }
+  else if( pic_info == Point( -2, -2 ) )
+  {
+     // this is a walker picture=> automatic offset correction
+     offset = Point( -pic.width()/2, int(pic.height()*3./4.) );
+  }
+  else
+  {
+     offset = pic_info;
+  }
+
+  ptrPic->setOffset( offset );
+  ptrPic->setName( rcname );
 }
 
 Picture& PictureBank::getPicture(const std::string &name)
@@ -101,44 +123,6 @@ Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
   return getPicture(resource_name);
-}
-
-Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Texture* texture)
-{
-   Point offset( 0, 0 );
-
-   int dot_pos = name.find('.');
-   std::string filename = name.substr(0, dot_pos);
-   int w, h;
-   SDL_QueryTexture( texture, 0, 0, &w, &h );
-
-   if( texture )
-   {
-     // decode the picture name => to set the offset manually
-     Point pic_info = PictureInfoBank::instance().getOffset( filename );
-
-     if( pic_info == Point( -1, -1 ) )
-     {
-       // this is a tiled picture=> automatic offset correction
-       offset.setY( h-15*( (w+2)/60 ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
-     }
-     else if( pic_info == Point( -2, -2 ) )
-     {
-        // this is a walker picture=> automatic offset correction
-        offset = Point( -w/2, int(h*3./4.) );
-     }
-     else
-     {
-        offset = pic_info;
-     }
-   }
-
-   Picture pic;
-   pic.init( texture, offset );
-   pic.setName( filename );
-   //pic.textureID() = id;
-
-   return pic;
 }
 
 PictureBank::PictureBank() : _d( new Impl )

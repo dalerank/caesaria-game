@@ -132,7 +132,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")  
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
   add_definitions("-DCAESARIA_COMPILER_NAME=\"gcc\"")

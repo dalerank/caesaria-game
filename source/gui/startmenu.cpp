@@ -27,14 +27,28 @@
 #include "label.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
-#include "game/settings.hpp"
 
 namespace gui
 {
 
+class StartMenu::Impl
+{
+public:
+  VariantMap options;
+};
+
 StartMenu::StartMenu( Widget* parent ) 
-	: Widget( parent, -1, parent->relativeRect() )
-{}
+  : Widget( parent, -1, parent->relativeRect() ), _d( new Impl )
+{
+  std::string path2options;
+#ifdef CAESARIA_PLATFORM_ANDROID
+  path2options = ":/gui/startmenu_android.gui";
+#else
+  path2options = ":/gui/startmenu.gui";
+#endif
+
+  _d->options = SaveAdapter::load( path2options );
+}
 
 StartMenu::~StartMenu() {}
 
@@ -45,25 +59,17 @@ void StartMenu::draw(gfx::Engine &painter)
 
 PushButton* StartMenu::addButton( const std::string& caption, int id )
 {
-  std::string path2options;
-#ifdef CAESARIA_PLATFORM_ANDROID
-  path2options = "/gui/startmenu_android.gui";
-#else
-  path2options = "/gui/startmenu.gui";
-#endif
+  Size buttonSize = _d->options.get( "buttonSize", Size( 200, 25 ) ).toSize();
+  Font btnFont = Font::create( _d->options.get( "buttonFont", Variant( "FONT_2" ) ).toString() );
+  std::string style = _d->options.get( "buttonStyle" ).toString();
+  int offsetY = _d->options.get( "buttonOffset", 40 );
 
-  VariantMap options = SaveAdapter::load( GameSettings::rcpath( path2options ) );
-  Size btnSize = options.get( "buttonSize", Size( 200, 25 ) ).toSize();
-  Font btnFont = Font::create( options.get( "buttonFont", Variant( "FONT_2" ) ).toString() );
-  std::string style = options.get( "buttonStyle" ).toString();
-  int offsetY = options.get( "buttonOffset", 40 );
-
-  PushButton* newButton = new PushButton( this, Rect( Point( 0, 0 ), btnSize ), caption, id, false );
+  PushButton* newButton = new PushButton( this, Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
   newButton->setBackgroundStyle( style );
   newButton->setFont( btnFont );
 
   List< PushButton* > buttons = findChildren< PushButton* >();
-  Point offsetBtn( ( width() - btnSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );
+  Point offsetBtn( ( width() - buttonSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );
 
   foreach( btn, buttons )
   {

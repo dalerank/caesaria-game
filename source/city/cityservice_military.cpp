@@ -23,10 +23,6 @@
 namespace city
 {
 
-namespace  {
-CAESARIA_LITERALCONST(notifications)
-}
-
 class Military::Impl
 {
 public:
@@ -43,7 +39,7 @@ city::SrvcPtr Military::create(PlayerCityPtr city )
 }
 
 Military::Military(PlayerCityPtr city )
-  : city::Srvc( *city.object(), "military" ), _d( new Impl )
+  : city::Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
 }
 
@@ -88,17 +84,17 @@ VariantMap Military::save() const
 {
   VariantMap ret;
 
-  VariantMap vlNts;
+  VariantMap notifications;
   int index = 0;
   foreach( it, _d->notifications )
   {
     VariantList vlNt;
     vlNt << (*it).date << (*it).location << Variant( (*it).message );
 
-    vlNts[ StringHelper::format( 0xff, "note_%03d", index ) ] = vlNt;
+    notifications[ StringHelper::format( 0xff, "note_%03d", index ) ] = vlNt;
   }
 
-  ret[ lc_notifications ] = vlNts;
+  VARIANT_SAVE_ANY( ret, notifications );
   VARIANT_SAVE_ANY_D( ret, _d, lastEnemyAttack )
 
   return ret;
@@ -106,10 +102,11 @@ VariantMap Military::save() const
 
 void Military::load(const VariantMap& stream)
 {
+  VariantMap notifications;
   VARIANT_LOAD_TIME_D( _d, lastEnemyAttack, stream );
+  VARIANT_LOAD_VMAP( notifications, stream );
 
-  VariantMap vlNts = stream.get( lc_notifications ).toMap();
-  foreach( it, vlNts )
+  foreach( it, notifications )
   {
     VariantList vlN = it->second.toList();
     Notification n;

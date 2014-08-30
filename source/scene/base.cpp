@@ -56,10 +56,7 @@ void Base::update(gfx::Engine& engine )
 {
   static unsigned int lastTimeUpdate = DateTime::elapsedTime();
 
-  //DebugTimer::check( "start-count", "base" );
   drawFrame( engine );
-  //DebugTimer::check( "end-count", "base" );
-
   afterFrame();
 
   NEvent nEvent;
@@ -71,9 +68,7 @@ void Base::update(gfx::Engine& engine )
   _delayTicks = DateTime::elapsedTime() - lastTimeUpdate;
   if( _delayTicks < DELAY_33_FPS )
   {
-#ifndef CAESARIA_PLATFORM_ANDROID
     engine.delay( std::max<int>( DELAY_33_FPS - _delayTicks, 0 ) );
-#endif
   }
 
   lastTimeUpdate = DateTime::elapsedTime();

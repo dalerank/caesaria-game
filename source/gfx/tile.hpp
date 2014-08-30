@@ -49,10 +49,11 @@ public:
   const TilePos& pos() const;
 
   inline const TilePos& epos() const { return _epos; }
+  inline const Point& mappos() const { return _mappos; }
+  inline const TileOverlayPtr& rov() const { return _overlay; }
   void setEPos( const TilePos& epos );
 
   Point center() const;
-  Point mappos() const;
 
   // displayed picture
   void setPicture( const Picture& picture );
@@ -73,6 +74,7 @@ public:
 
   inline void resetWasDrawn() { _wasDrawn = false; }
   inline void setWasDrawn()   { _wasDrawn = true;  }
+  inline bool rwd() const { return _wasDrawn; }
 
   void animate( unsigned int time );
 
@@ -124,6 +126,7 @@ private:
 
   TilePos _pos; // absolute coordinates
   TilePos _epos; // effective coordinates
+  Point _mappos;
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
   Terrain _terrain; // infos about the tile (building, tree, road, water, rock...)
   Picture _picture; // main picture

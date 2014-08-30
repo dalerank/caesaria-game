@@ -75,7 +75,7 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
     }
 
     // multi-tile: draw the master tile.
-    if( !master->getFlag( Tile::wasDrawn ) )
+    if( !master->rwd() )
       drawTile( engine, *master, offset );
 
     engine.resetColorMask();
@@ -229,7 +229,7 @@ void LayerDestroy::handleEvent(NEvent& event)
 
 int LayerDestroy::type() const {  return citylayer::destroyd; }
 
-void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
+void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
   TileOverlayPtr overlay = tile.overlay();
 

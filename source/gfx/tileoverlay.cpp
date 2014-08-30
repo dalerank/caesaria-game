@@ -156,7 +156,12 @@ void TileOverlay::load( const VariantMap& stream )
   _d->name = stream.get( "name" ).toString();
   _d->size = stream.get( "size", Size(1) ).toSize();
   //_d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
-  _d->picture = Picture::load( stream.get( "picture" ).toString() );
+  std::string pictureName = stream.get( "picture" ).toString();
+  _d->picture = Picture::load( pictureName );
+  if( !_d->picture.isValid() )
+  {
+    Logger::warning( "TileOverlay: invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str() );
+  }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
 }

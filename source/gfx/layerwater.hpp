@@ -28,8 +28,8 @@ class LayerWater : public Layer
 {
 public:
   virtual int type() const;
-  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
-  virtual void drawTileW(Engine &engine, Tile &tile, const Point &offset, const int depth);
+  virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
+  virtual void drawTileW(Engine &engine, Tile &tile, const Point& offset, const int depth);
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);

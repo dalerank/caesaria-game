@@ -72,15 +72,13 @@ HousePtr Emigrant::_findBlankHouse()
   HouseList::iterator itHouse = houses.begin();
   while( itHouse != houses.end() )
   {
-    if( (*itHouse)->getAccessRoads().size() > 0 && 
-        ( (*itHouse)->habitants().count() < (*itHouse)->maxHabitants() ) )
-    {
-      ++itHouse;
-    }
-    else
-    {
-      itHouse = houses.erase( itHouse );
-    }
+    HousePtr house = *itHouse;
+    bool haveRoad = !house->getAccessRoads().empty();
+    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
+    bool normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
+
+    if( haveRoad && haveVacantRoom && normalDesirability) { ++itHouse; }
+    else { itHouse = houses.erase( itHouse ); }
   }
 
   if( houses.size() > 0 )
@@ -103,7 +101,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
   }
 
   if( !pathway.isValid() )
-  {
+  {    
     pathway = PathwayHelper::create( startPoint,
                                      _city()->borderInfo().roadExit,
                                      PathwayHelper::allTerrain );

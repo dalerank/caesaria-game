@@ -5,7 +5,7 @@
   lbTitle#Label : {
     geometry : [ 15, 15, "pw-15", 35 ]
     text : "##governor_salary_title##"
-    font : "FONT_2"
+    font : "FONT_5"
     textAlign : [ "center", "center" ]
   }
 
