@@ -696,6 +696,14 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
+    case KEY_KEY_L:
+      // Add 1000 denarii
+      if (event.keyboard.shift && event.keyboard.control)
+      {
+        _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
+      }
+      break;
+
     case KEY_F11:
       if( event.keyboard.shift )
       {

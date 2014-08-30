@@ -65,9 +65,6 @@ Fountain::Fountain()
   _fgPicturesRef().resize(1);
   _initAnimation();
   _d->fillDistance = 4;
-
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
 }
 
 void Fountain::deliverService()
@@ -158,6 +155,9 @@ bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
   _d->fillDistance = (city->climate() == climateDesert)
                      ? fillDistanceDesert
                      : fillDistanceNormal;
+
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
   return true;
 }
 

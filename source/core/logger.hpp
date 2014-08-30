@@ -41,6 +41,10 @@ public:
   static void warningIf( bool warn, const std::string& text );
   static void update( const std::string& text, bool newline=false );
 
+  static void addFilter(const std::string text);
+  static bool hasFilter(const std::string text);
+  static bool removeFilter(const std::string text);
+
   static void registerWriter(Type type , const std::string &param);
   static void registerWriter( std::string name, LogWriterPtr writer );
 
