@@ -54,6 +54,8 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
 
   PushButton* btnSend;
   PushButton* btnCancel;
+  Label* lbBlack;
+  GET_WIDGET_FROM_UI( lbBlack )
   GET_WIDGET_FROM_UI( btnCancel )
   GET_WIDGET_FROM_UI( btnSend )
   GET_DWIDGET_FROM_UI( d, lbDonation )
@@ -63,6 +65,15 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendMoney );
   CONNECT( btnSend, onClicked(), this, CityDonationWindow::deleteLater );
   CONNECT( btnCancel, onClicked(), this, CityDonationWindow::deleteLater );
+
+  if( money == 0 )
+  {
+    Widgets widgets = lbBlack->children();
+    foreach( it, widgets ) (*it)->hide();
+
+    lbBlack->setText( _("##no_money_for_donation##") );
+    btnSend->hide();
+  }
 }
 
 CityDonationWindow::~CityDonationWindow() {}

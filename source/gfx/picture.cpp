@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "picture.hpp"
 
@@ -26,6 +27,7 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "core/time.hpp"
+#include "core/timer.hpp"
 #include <SDL.h>
 
 // Picture class functions
@@ -59,21 +61,25 @@ Picture::Picture( const Picture& other ) : _d( new Impl )
   *this = other;
 }
 
-void Picture::init(SDL_Texture *texture, const Point& offset )
+void Picture::init(SDL_Texture *texture, SDL_Surface* srf)
 {
   _d->texture = texture;
-  _d->offset = offset;
+  _d->surface = srf;
   if( _d->texture != 0 )
   {
     int w, h;
     SDL_QueryTexture( texture, 0, 0, &w, &h );
     _d->size = Size( w, h );
   }
+  else if( srf != 0 )
+  {
+    _d->size = Size( srf->w, srf->h );
+  }
 }
 
-void Picture::setOffset( Point offset ) { _d->offset = offset; }
+void Picture::setOffset(const Point &offset ) { _d->offset = offset; }
 void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
-void Picture::addOffset( Point offset ) { _d->offset += offset; }
+void Picture::addOffset( const Point& offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Texture* Picture::texture() const{  return _d->texture;}
@@ -86,9 +92,13 @@ void Picture::setName(const std::string &name){  _d->name = name;}
 std::string Picture::name() const{  return _d->name;}
 const Size& Picture::size() const{  return _d->size; }
 unsigned int Picture::sizeInBytes() const { return size().area() * 4; }
-bool Picture::isValid() const{  return _d->texture != 0; }
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
+
+bool Picture::isValid() const
+{
+  return _d->texture != 0;
+}
 
 void Picture::setAlpha(unsigned char value)
 {
@@ -99,7 +109,7 @@ void Picture::setAlpha(unsigned char value)
 
   if( _d->surface )
   {
-
+    SDL_SetSurfaceAlphaMod( _d->surface, value );
   }
 }
 
@@ -158,7 +168,7 @@ unsigned int* Picture::lock()
       int rc = SDL_LockTexture(_d->texture, 0, (void**)&pixels, &pitch );
       if (rc < 0)
       {
-        Logger::warning( "Cannot lock texture: %s", SDL_GetError() );
+        Logger::warning( "Picture: cannot lock texture: %s", SDL_GetError() );
         return 0;
       }
 
@@ -173,7 +183,7 @@ unsigned int* Picture::lock()
       SDL_LockSurface(_d->surface);      
     }
     return (unsigned int*)_d->surface->pixels;
-  }
+  }  
 
   return 0;
 }
@@ -241,6 +251,8 @@ void Picture::fill( const NColor& color, Rect rect )
 
 Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
 {
+  mayChange = true;
+
   Picture *pic = new Picture();
 
   if( data )

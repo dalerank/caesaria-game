@@ -19239,7 +19239,7 @@ static const char* const data =
 void initialize( const std::string& name)
 {
   char const* ptr = data;
-  std::vector<unsigned int> pixels;
+  std::vector<unsigned long> pixels;
   pixels.resize( width * height );
 
   for( unsigned int y = 0; y < height; y++ )
@@ -19249,7 +19249,6 @@ void initialize( const std::string& name)
       char pixel[4];
       PIXEL( ptr, pixel)
       pixels[ y * width + x ] = *(long*)pixel;
-      //pic->setPixel( Point( x, y ), *(int*)pixel );
     }
   }
 

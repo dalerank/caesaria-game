@@ -1,8 +1,6 @@
 {  
-  geometry : [ 0, 0, 510, 360 ]
-
   btnToggleDevastation#PushButton : {
-    geometry : [ 80, "ph-45", "pw-80", "ph-45" ]
+    geometry : [ 80, "ph-45", "pw-80", "ph-25" ]
     bgtype : "whiteBorderUp"
     font : "FONT_2"
     text : "##unknown_text##"
