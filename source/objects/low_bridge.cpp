@@ -76,7 +76,7 @@ public:
   void destroy()
   {
     if( _parent )
-    {     
+    {
       _parent->deleteLater();
     }
   }
@@ -176,6 +176,8 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
     {
       TilesArray tiles = tilemap.getArea( endPos, startPos );
 
+      if (tiles.size() < 3) break;
+
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
@@ -191,6 +193,8 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
   case northEast:
     {
       TilesArray tiles = tilemap.getArea( startPos, endPos );
+
+      if (tiles.size() < 3) break;
 
       tiles.pop_back();
       tiles.erase( tiles.begin() );
@@ -216,7 +220,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
 
       _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
       foreach( it, tiles )
-      {        
+      {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
@@ -236,7 +240,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
-      {        
+      {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
@@ -269,8 +273,8 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
 
   int imdId = tile.originalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
-  {    
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos );
+  {
+    TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(2, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
@@ -284,7 +288,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
-    TilesArray tiles = tilemap.getArea( curPos, curPos + TilePos( 10, 0) );
+    TilesArray tiles = tilemap.getArea( curPos + TilePos(2, 0), curPos + TilePos( 10, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
@@ -298,7 +302,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
-    TilesArray tiles = tilemap.getArea( curPos, curPos + TilePos( 0, 10) );
+    TilesArray tiles = tilemap.getArea( curPos + TilePos(0, 2), curPos + TilePos( 0, 10) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
@@ -312,7 +316,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos );
+    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 2) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
@@ -324,7 +328,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       }
     }
   }
-  else 
+  else
   {
     direction = noneDirection;
   }
@@ -347,13 +351,13 @@ bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
   int signSum = 1;
 
   if( _d->direction != noneDirection )
-  {    
+  {
     switch( _d->direction )
     {
     case northEast:
       _computePictures( city, endPos, startPos, southWest );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
-      signSum = -1;      
+      signSum = -1;
     break;
 
     case northWest:
@@ -374,7 +378,7 @@ bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 
     default: break;
     }
-    
+
     TilesArray tiles = tilemap.getArea( startPos, endPos );
     int index=0;
     foreach( t, tiles )
@@ -386,11 +390,11 @@ bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
       subtile->_imgId = tile.originalImgId();
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
-      
+
       events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.object() );
       event->dispatch();
       index++;
-    }    
+    }
   }
 
   return true;
@@ -413,7 +417,7 @@ bool LowBridge::canDestroy() const
 }
 
 void LowBridge::destroy()
-{ 
+{
   foreach( it, _d->subtiles )
   {
     (*it)->_parent = 0;
@@ -460,7 +464,7 @@ void LowBridge::load(const VariantMap& stream)
 {
   Construction::load( stream );
 
-  VariantList vl_tinfo = stream.get( "terraininfo" ).toList();  
+  VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
   for( unsigned int i=0; i < vl_tinfo.size(); i++ )
   {
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
