@@ -229,7 +229,7 @@ void LayerDestroy::handleEvent(NEvent& event)
 
 int LayerDestroy::type() const {  return citylayer::destroyd; }
 
-void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
+void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
   TileOverlayPtr overlay = tile.overlay();
 

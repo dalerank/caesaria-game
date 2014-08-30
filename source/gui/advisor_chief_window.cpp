@@ -335,7 +335,7 @@ void AdvisorChiefWindow::Impl::drawMilitary()
   }
 
   text = text.empty() ? "##no_warning_for_us##" : text;
-  drawReportRow( atMilitary, text );
+  drawReportRow( atMilitary, _(text) );
 }
 
 void AdvisorChiefWindow::Impl::drawCrime()
@@ -368,7 +368,7 @@ void AdvisorChiefWindow::Impl::drawHealth()
 
   text = text.empty() ? "##advchief_health_good##" : text;
 
-  drawReportRow( atHealth, text );
+  drawReportRow( atHealth, _(text));
 }
 
 void AdvisorChiefWindow::Impl::drawEducation()
