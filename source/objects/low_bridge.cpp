@@ -274,56 +274,76 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   int imdId = tile.originalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(2, 0) );
+    TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
         stop = (*it)->pos();
-        direction = constants::northWest;
+        direction = abs(stop.i() - start.i()) > 1 ? northWest : noneDirection;
+        break;
+      }
+      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      {
+        direction = noneDirection;
         break;
       }
     }
   }
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
-    TilesArray tiles = tilemap.getArea( curPos + TilePos(2, 0), curPos + TilePos( 10, 0) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
+    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = (*it)->pos();
-        direction = southEast;
+        direction = abs(stop.i() - start.i()) > 1 ? southEast : noneDirection;
+        break;
+      }
+      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      {
+        direction = noneDirection;
         break;
       }
     }
   }
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
-    TilesArray tiles = tilemap.getArea( curPos + TilePos(0, 2), curPos + TilePos( 0, 10) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 0, 10) );
+    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->pos();
-        direction = northEast;
+        direction = abs(stop.j() - start.j()) > 1 ? northEast : noneDirection;
+        break;
+      }
+      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      {
+        direction = noneDirection;
         break;
       }
     }
   }
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 2) );
+    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->pos();
-        direction = southWest;
+        direction = abs(stop.j() - start.j()) > 1 ? southWest : noneDirection;
+        break;
+      }
+      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      {
+        direction = noneDirection;
         break;
       }
     }
