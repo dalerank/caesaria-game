@@ -37,6 +37,7 @@ class Roads::Impl
 public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
   typedef std::vector< UpdateInfo > Updates;
+  typedef std::pair<TileOverlay::Type, int> UpdateBuilding;
 
   int defaultIncreasePaved;
   int defaultDecreasePaved;
@@ -71,8 +72,13 @@ void Roads::update( const unsigned int time )
 
   _d->lastTimeUpdate = GameDate::current();
 
-  std::vector< TileOverlay::Type > btypes;
-  btypes.push_back( building::senate );
+  std::vector< Impl::UpdateBuilding > btypes;
+  btypes.push_back( Impl::UpdateBuilding(building::senate, 10) );
+  btypes.push_back( Impl::UpdateBuilding(building::templeCeres, 4));
+  btypes.push_back( Impl::UpdateBuilding(building::templeMars, 4));
+  btypes.push_back( Impl::UpdateBuilding(building::templeMercury, 4));
+  btypes.push_back( Impl::UpdateBuilding(building::templeNeptune, 4));
+  btypes.push_back( Impl::UpdateBuilding(building::templeVenus, 4));
 
   Helper helper( &_city );
 
@@ -80,11 +86,11 @@ void Roads::update( const unsigned int time )
   Impl::Updates positions;
   foreach( it, btypes )
   {
-    BuildingList tmp = helper.find<Building>( *it );
+    BuildingList tmp = helper.find<Building>( it->first );
 
     foreach( b, tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b->object(), 10 ) );
+      positions.push_back( Impl::UpdateInfo( b->object(), it->second ) );
     }
   }
 
