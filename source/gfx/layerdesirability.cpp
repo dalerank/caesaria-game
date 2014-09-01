@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layerdesirability.hpp"
 #include "game/resourcegroup.hpp"
@@ -35,6 +35,15 @@ public:
   std::vector<Picture*> debugText;
 };
 
+namespace {
+  inline int __des2index( int desirability )
+  {
+    return desirability < 0
+             ? math::clamp( desirability / 25, -3, 0 )
+             : math::clamp( desirability / 10, 0, 6 );
+  }
+}
+
 int LayerDesirability::type() const {  return citylayer::desirability; }
 
 void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
@@ -48,9 +57,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offse
     //draw background
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
-      int picOffset = desirability < 0
-                          ? math::clamp( desirability / 25, -3, 0 )
-                          : math::clamp( desirability / 15, 0, 6 );
+      int picOffset = __des2index( desirability );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
       engine.draw( pic, screenPos );
@@ -85,20 +92,18 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offse
 
     //other buildings
     default:
+    {
+      int picOffset = __des2index( desirability );
+      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+
+      city::Helper helper( _city() );
+      TilesArray tiles4clear = helper.getArea( overlay );
+
+      foreach( tile, tiles4clear )
       {
-        int picOffset = desirability < 0
-                          ? math::clamp( desirability / 25, -3, 0 )
-                          : math::clamp( desirability / 15, 0, 6 );
-        Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
-
-        city::Helper helper( _city() );
-        TilesArray tiles4clear = helper.getArea( overlay );
-
-        foreach( tile, tiles4clear )
-        {
-          engine.draw( pic, (*tile)->mappos() + offset );
-        }
+        engine.draw( pic, (*tile)->mappos() + offset );
       }
+    }
     break;
     }
   }
