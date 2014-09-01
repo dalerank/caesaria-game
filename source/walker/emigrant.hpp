@@ -30,7 +30,7 @@ public:
   static EmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
                                  const gfx::Tile& startTile, std::string thinks );
 
-  void send2city( const gfx::Tile& startTile );
+  bool send2city( const gfx::Tile& startTile );
   void leaveCity( const gfx::Tile& tile );
 
   void setPeoples( const CitizenGroup& peoples );
@@ -43,10 +43,10 @@ public:
   virtual bool die();
 
 protected:
-  virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
+  virtual void _checkAvailabelHouses( HouseList& hlist );
 
   void _setCartPicture( const gfx::Picture& pic );
   virtual const gfx::Picture& _cartPicture();

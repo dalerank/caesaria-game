@@ -87,9 +87,9 @@ void Garden::save(VariantMap& stream) const
 Desirability Garden::desirability() const
 {
   Desirability ret = Construction::desirability();
-  ret.base *= size().area();
-  ret.range *= size().width();
-  ret.step *= size().width();
+  ret.base *= (size().area() * size().width());
+  //ret.range *= size().width();
+  ret.step = -ret.base / ret.range;
 
   return ret;
 }
