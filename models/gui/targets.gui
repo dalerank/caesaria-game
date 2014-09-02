@@ -1,5 +1,6 @@
 {  
   buttons : "off"
+  static : true
 
   lbToCity#Label : {
     geometry : [ "pw-300", "ph-40", "pw-110", "ph-10" ]
