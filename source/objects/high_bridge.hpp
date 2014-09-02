@@ -37,6 +37,7 @@ public:
   virtual void load(const VariantMap &stream);
 
 private:
+  bool _checkOnlyWaterUnderBridge(PlayerCityPtr city, const TilePos& start, const TilePos& stop) const;
   void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );
   void _checkParams( PlayerCityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
 
