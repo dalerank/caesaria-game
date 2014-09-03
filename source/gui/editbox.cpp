@@ -645,8 +645,8 @@ bool EditBox::_processKey(const NEvent& event)
 				s = _d->cursorPos>0 ? _d->text.substr( 0, _d->cursorPos-1) : L"";
 
 				s.append( _d->text.substr(_d->cursorPos, _d->text.size()-_d->cursorPos) );
-				_setText( s );
 				_d->cursorPos -= 1;
+				_setText( s );
 			}
 
 			if (_d->cursorPos < 0)

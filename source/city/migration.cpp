@@ -134,7 +134,7 @@ void Migration::update( const unsigned int time )
   int slumsInfluence = ( _d->isPoorHousing( params.slumNumber, params.houseNumber ) ? 20 : 0);
   int shacksInfluence = ( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ? 10 : 0 );
 
-  _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city.population(), 150 ) / d->worklessMinInfluence;
+  _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city.population(), 150 ) / _d->worklessMinInfluence;
 
   _d->emigrantsIndesirability += diffSalaryInfluence;
   _d->emigrantsIndesirability += foodStackInfluence;
