@@ -208,6 +208,10 @@ void Level::initialize()
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
   CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
 
+  CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
+  CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
+  CONNECT( city, onWarningMessage(), _d.data(), Impl::resolveWarningMessage );
+
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
   CONNECT( _d->menu, onHide(), _d->extMenu, ExtentMenu::maximize );
@@ -217,19 +221,14 @@ void Level::initialize()
   CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
   CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );
   CONNECT( _d->extMenu, onRotateLeft(), &_d->renderer, CityRenderer::rotateLeft );
-
-  CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
-  CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-  CONNECT( city, onWarningMessage(), _d.data(), Impl::resolveWarningMessage );
-
   CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectLayer );
   CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
   CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow );
   CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow );
+  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
-  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
 
