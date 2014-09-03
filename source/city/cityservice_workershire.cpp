@@ -154,7 +154,7 @@ void WorkersHire::update( const unsigned int time )
   {
     foreach( hireIt, _d->priorities )
     {
-      std::vector<building::Group> groups = city::Industry::toGroups( *hireIt );
+      Industry::BuildingGroups groups = city::Industry::toGroups( *hireIt );
 
       foreach( grIt, groups )
       {
