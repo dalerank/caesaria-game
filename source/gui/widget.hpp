@@ -143,6 +143,8 @@ public:
 
   virtual Rect localToScreen( const Rect& localPoint ) const;
 
+  virtual Point screenToLocal( const Point& screenPoint ) const;
+
   virtual Size size() const;
 
   //! Updates the absolute position.
@@ -398,10 +400,10 @@ protected:
 
 protected:
   // not virtual because needed in constructor
-  void addChild_(Widget* child);
+  void _addChild(Widget* child);
 
   // not virtual because needed in constructor
-  void recalculateAbsolutePosition(bool recursive);	
+  void _recalculateAbsolutePosition(bool recursive);
 
   __DECLARE_IMPL(Widget)
 

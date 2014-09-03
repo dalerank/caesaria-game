@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_EMIGRANT_H_INCLUDE_
-#define __CAESARIA_EMIGRANT_H_INCLUDE_
+#ifndef __CAESARIA_IMMIGRANT_H_INCLUDE_
+#define __CAESARIA_IMMIGRANT_H_INCLUDE_
 
 #include "emigrant.hpp"
 #include "core/predefinitions.hpp"
@@ -48,4 +48,4 @@ protected:
   Immigrant( PlayerCityPtr city );
 };
 
-#endif //__CAESARIA_EMIGRANT_H_INCLUDE_
+#endif //__CAESARIA_IMMIGRANT_H_INCLUDE_

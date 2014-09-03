@@ -30,9 +30,6 @@
 
 using namespace gfx;
 
-namespace gui
-{
-
 class SenatePopupInfo::Impl
 {
 public:
@@ -59,10 +56,8 @@ public:
   }
 };
 
-SenatePopupInfo::SenatePopupInfo( Widget* parent, gfx::Renderer& mapRenderer ) :
-  Widget( parent, -1, Rect( -1, -1, 0, 0 )), _d( new Impl )
+SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
 {
-  _d->cityRenderer = &mapRenderer;
   _d->startPos = Point( 6, 6 );
   _d->ratingStartPos = Point( 186, 6 );
   _d->offset = Point( 0, 14 );
@@ -83,26 +78,19 @@ SenatePopupInfo::SenatePopupInfo( Widget* parent, gfx::Renderer& mapRenderer ) :
   _d->background->update();
 }
 
-void SenatePopupInfo::draw(gfx::Engine& painter )
+void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, SenatePtr senate )
 {
-  Point cursorPos = ui()->cursorPos();
-
-  Tile* tile = _d->cityRenderer->camera()->at( cursorPos, false );
-
-  if( tile && tile->overlay().isValid() )
+  if( senate.isValid() )
   {
-    SenatePtr senate = ptr_cast<Senate>( tile->overlay() );
-
-    if( senate.isValid() )
+    if( DateTime::elapsedTime() - _d->lastUpdateTime > 2000 )
     {
-      if( DateTime::elapsedTime() - _d->lastUpdateTime > 2000 )
-      {
-        _d->updateRatings( senate );
-      }
-
-      painter.draw( *_d->background, cursorPos );     
+      _d->updateRatings( senate );
     }
+    painter.draw( *_d->background, cursorPos );
   }
 }
 
-}//end namespace gui
+SenatePopupInfo::~SenatePopupInfo()
+{
+
+}

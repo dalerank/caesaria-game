@@ -21,21 +21,18 @@
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
+#include "objects/predefinitions.hpp"
 
-namespace gui
-{
-
-class SenatePopupInfo : public Widget
+class SenatePopupInfo
 {
 public:
-  SenatePopupInfo(Widget* parent, gfx::Renderer& mapRenderer );
+  SenatePopupInfo();
 
-  virtual void draw( gfx::Engine& painter );
+  void draw(const Point& cursorPos, gfx::Engine& painter, SenatePtr senate);
+  ~SenatePopupInfo();
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-}//end namespace gui
 
 #endif //__CAESARIA_SENATE_POPUP_INFO_H_INCLUDED__

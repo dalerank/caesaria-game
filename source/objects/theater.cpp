@@ -28,6 +28,7 @@ using namespace gfx;
 Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, Size(2))
 {
   _fgPicturesRef().resize(2);
+
   _addNecessaryWalker( walker::actor );
 }
 

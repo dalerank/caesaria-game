@@ -34,6 +34,8 @@
 #include "walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "objects/senate.hpp"
+#include "gui/senate_popup_info.hpp"
 
 using namespace constants;
 
@@ -49,6 +51,7 @@ public:
   Point lastCursorPos;
   Point startCursorPos;
   Camera* camera;
+  SenatePopupInfo senateInfo;
   PlayerCityPtr city;
   PictureRef tooltipPic;
   int nextLayer;
@@ -445,7 +448,7 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
   // rounded == 10 -> header + footer
   // rounded == 20 -> header + body + footer
 
-  if (rounded == 0)
+  if (percent == 0)
   {
     // Nothing to draw.
     return;
@@ -525,6 +528,16 @@ void Layer::afterRender( Engine& engine)
         }
       }
     break;
+    }
+  }
+
+  Tile* tile = _d->camera->at( _d->lastCursorPos, true );
+  if( tile )
+  {
+    SenatePtr senate = ptr_cast<Senate>( tile->overlay() );
+    if( senate.isValid() )
+    {
+      _d->senateInfo.draw( _d->lastCursorPos, Engine::instance(), senate );
     }
   }
 }
