@@ -58,6 +58,12 @@ public:
   MovableOrders mayMove( PointF point );
   void resetDrawn();
 
+  Point getOffset( const Point& center )
+  {
+    return Point( screenSize.width() / 2 - 30 * (center.x() + 1) + 1,
+                  screenSize.height()/ 2 + 15 * (center.y() - tilemap->size() + 1) - 30 );
+  }
+
 public oc3_signals:
   Signal1<Point> onPositionChangedSignal;
 };
@@ -96,7 +102,7 @@ void TilemapCamera::setViewport(Size newSize)
   Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
 }
 
-void TilemapCamera::setCenter(TilePos pos )
+void TilemapCamera::setCenter(TilePos pos)
 {
   setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
@@ -124,11 +130,23 @@ void TilemapCamera::move(PointF relative)
 
 void TilemapCamera::setCenter(Point pos)
 {
+  Point futureOffset = _d->getOffset( pos );
+  int mapsize = _d->tilemap->size();
+  Point tile00 = _d->tilemap->at( 0, 0 ).mappos();
+  Point tile0x = _d->tilemap->at( 0, mapsize-1 ).mappos();
+  Point tilex0 = _d->tilemap->at( mapsize-1, 0 ).mappos();
+  Point tilexx = _d->tilemap->at( mapsize-1, mapsize-1 ).mappos();
+  if( (futureOffset.x() + tile00.x() > 0)
+      || (futureOffset.y() + tile0x.y() > 0)
+      /*|| (futureOffset.x() + tilex0.x() < _d->screenSize.width() )
+      || (futureOffset.y() + tilexx.y() < _d->screenSize.height() ) */)
+    return;
+
   if( _d->centerMapXZ.toPoint() != pos  )
   {
     _d->tiles.clear();
-  }
-  
+  }  
+
   _d->centerMapXZ = pos.toPointF();
   oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
@@ -162,8 +180,7 @@ const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.empty() )
   {
-    _d->offset.setX( _d->screenSize.width() / 2 - 30 * (_d->centerMapXZ.x() + 1) + 1 );
-    _d->offset.setY( _d->screenSize.height()/ 2 + 15 * (_d->centerMapXZ.y() - _d->tilemap->size() + 1) - 30 );
+    _d->offset = _d->getOffset( _d->centerMapXZ.toPoint() );
 
     int mapSize = _d->tilemap->size();
     int zm = _d->tilemap->size() + 1;
