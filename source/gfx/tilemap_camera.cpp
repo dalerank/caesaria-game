@@ -138,8 +138,8 @@ void TilemapCamera::setCenter(Point pos)
   Point tilexx = _d->tilemap->at( mapsize-1, mapsize-1 ).mappos();
   if( (futureOffset.x() + tile00.x() > 0)
       || (futureOffset.y() + tile0x.y() > 0)
-      /*|| (futureOffset.x() + tilex0.x() < _d->screenSize.width() )
-      || (futureOffset.y() + tilexx.y() < _d->screenSize.height() ) */)
+      || (futureOffset.x() + tilexx.x() < _d->screenSize.width() )
+      || (futureOffset.y() + tilex0.y() < _d->screenSize.height() ) )
     return;
 
   if( _d->centerMapXZ.toPoint() != pos  )
