@@ -142,6 +142,9 @@ void WorkersHire::update( const unsigned int time )
   if( !GameDate::isWeekChanged() )
     return;
 
+  if( _city.population() == 0 )
+    return;
+
   _d->hrInCity = _city.walkers( walker::recruter );
 
   city::Helper helper( &_city );
