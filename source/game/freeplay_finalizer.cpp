@@ -19,6 +19,8 @@
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 #include "city/city.hpp"
+#include "world/empire.hpp"
+#include "world/emperor.hpp"
 #include "city/build_options.hpp"
 #include "events/postpone.hpp"
 
@@ -43,6 +45,12 @@ void FreeplayFinalizer::addEvents(PlayerCityPtr city)
 {
   VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
+}
+
+void FreeplayFinalizer::resetFavour(PlayerCityPtr city)
+{
+  world::Emperor& emperor = city->empire()->emperor();
+  emperor.updateRelation( city->name(), 50 );
 }
 
 void FreeplayFinalizer::initBuildOptions(PlayerCityPtr city)
