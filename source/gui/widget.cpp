@@ -90,8 +90,8 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   // if we were given a parent to attach to
   if( parent )
   {
-    parent->addChild_(this);
-    recalculateAbsolutePosition(true);
+    parent->_addChild(this);
+    _recalculateAbsolutePosition(true);
     drop();
   }
 
@@ -227,7 +227,7 @@ void Widget::updateAbsolutePosition()
 {
   __D_IMPL(_d,Widget)
   const Rect oldRect = _d->absoluteRect;
-  recalculateAbsolutePosition(false);
+  _recalculateAbsolutePosition(false);
 
   if( oldRect.size() != _d->absoluteRect.size() )
   {
@@ -276,7 +276,7 @@ bool Widget::isPointInside( const Point& point ) const
 
 void Widget::addChild( Widget* child )
 {
-  addChild_(child);
+  _addChild(child);
   if (child)
   {
     child->updateAbsolutePosition();
@@ -635,7 +635,7 @@ void Widget::setupUI(const vfs::Path& filename)
   setupUI( SaveAdapter::load( filename ) );
 }
 
-void Widget::addChild_( Widget* child )
+void Widget::_addChild( Widget* child )
 {
   if (child)
   {
@@ -647,7 +647,7 @@ void Widget::addChild_( Widget* child )
   }
 }
 
-void Widget::recalculateAbsolutePosition( bool recursive )
+void Widget::_recalculateAbsolutePosition( bool recursive )
 {
     Rect parentAbsolute(0,0,0,0);
     Rect parentAbsoluteClip;
@@ -749,7 +749,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
         ChildIterator it = _d->children.begin();
         for (; it != _d->children.end(); ++it)
         {
-            (*it)->recalculateAbsolutePosition(recursive);
+            (*it)->_recalculateAbsolutePosition(recursive);
         }
     }
 }
@@ -846,11 +846,12 @@ Point Widget::lefttop() const { return Point( left(), top() ); }
 Point Widget::leftbottom() const { return Point( left(), bottom() ); }
 Point Widget::righttop() const { return Point( right(), top() ); }
 Point Widget::rightbottom() const { return Point( right(), bottom() ); }
-Point Widget::localToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
-Rect Widget::localToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}
+Point Widget::localToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.lefttop();}
+Rect Widget::localToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.lefttop();}
+Point Widget::screenToLocal(const Point &screenPoint) const { return screenPoint - _dfunc()->absoluteRect.lefttop(); }
 void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->relativeRect + relativeMovement );}
-int Widget::bottom() const{  return _dfunc()->relativeRect.LowerRightCorner.y(); }
-Point Widget::center() const { return (_dfunc()->relativeRect.LowerRightCorner + _dfunc()->relativeRect.UpperLeftCorner) / 2; }
+int Widget::bottom() const{  return _dfunc()->relativeRect.bottom(); }
+Point Widget::center() const { return (_dfunc()->relativeRect.rightbottom() + _dfunc()->relativeRect.lefttop()) / 2; }
 void Widget::setTabgroup( bool isGroup ) { _dfunc()->isTabGroup = isGroup; }
 bool Widget::visible() const{  return _dfunc()->isVisible;}
 bool Widget::isSubElement() const{  return _dfunc()->isSubElement;}

@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe01_00005"
+  title : "120 BC - Seventh assignment"
+
+  items : {
+    lutetia : {
+      title : "##lutetia_dangerous_province##"
+      location : [ 570, 280 ]
+      mission : ":/missions/lutetia.mission"
+    }
+
+    valencia : {
+      title : "##valencia_peacefully_province##"
+      mission : ":/missions/valencia.mission"
+      location : [ 20, 320 ]
+    }
+  }
+}

@@ -46,21 +46,11 @@ public:
     _pos = pos;
     _index = index;
 
-    _picture = Picture::load( ResourceGroup::transport, _index );
-    _picture.addOffset( TileHelper::tilepos2screen( _pos ) );
-    checkSecondPart();
-  }
+    Picture pic = Picture::load( ResourceGroup::transport, _index );
+    pic.addOffset( TileHelper::tilepos2screen( _pos ) );
+    setPicture( pic );
 
-  void checkSecondPart()
-  {
-    switch( _index )
-    {
-    case liftingWest: _picture.addOffset( 3, -14 ); break;
-    case liftingNorth: _picture.addOffset( 0, -2 ); break;
-    case spanWest: _picture.addOffset( 8, -13 ); break;
-    case descentNorth: _picture.addOffset( 0, 0); break;
-    case descentWest: _picture.addOffset( 8, -13 ); break;
-    }
+    //checkSecondPart();
   }
 
   bool canDestroy() const
@@ -90,33 +80,37 @@ public:
 
     Construction::build( city, pos );
 
+    setPicture( Picture::getInvalid() );
     _fgPicturesRef().clear();
-    _picture = Picture::load( ResourceGroup::transport, _index);
+    Picture pic = Picture::load( ResourceGroup::transport, _index);
 
-    if( _index == descentNorth || _index == liftingNorth )
+    if( _index == descentNorth )
     {
-      Tile* mt = &city->tilemap().at( pos + TilePos( 0, 1 ) );
+      Tile& mt = city->tilemap().at( pos + TilePos( 0, 1 ) );
       city->tilemap().at( pos + TilePos( 0, 1 ) ).setMasterTile( 0 );
-      city->tilemap().at( pos ).setMasterTile( mt );
-      _picture.addOffset( -30, -15 );
+      city->tilemap().at( pos ).setMasterTile( &mt );
 
-      if( _index == liftingNorth )
-      {
-        Picture p = Picture::load( ResourceGroup::land1a, 120 );
-        p.addOffset( -30, -15 );
-        _fgPicturesRef().push_back( p );
-      }
+      pic.addOffset( -30, -15 );
+      _fgPicturesRef().push_back( pic );
+    }
+    else if( _index == liftingNorth )
+    {
+      Tile& mt = city->tilemap().at( pos + TilePos( 0, 1 ) );
+      Picture landPic = mt.picture();
+      landPic.addOffset( TileHelper::tilepos2screen( TilePos( 0, 1 ) ) );
+      _fgPicturesRef().push_back( landPic );
+      _fgPicturesRef().push_back( pic );
     }
     else if( _index == descentWest )
     {
-      int imgid = city->tilemap().at( pos + TilePos( 1, 0) ).originalImgId();
-      Picture p = Picture::load( TileHelper::convId2PicName( imgid ));
-      p.addOffset( 30, -15 );
-      _fgPicturesRef().push_back( p );
+      Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
+      Picture landPic = mt.picture();
+      landPic.addOffset(  TileHelper::tilepos2screen( TilePos( 1, 0 ) )  );
+      _fgPicturesRef().push_back( landPic );
+      _fgPicturesRef().push_back( pic );
     }
-
-    checkSecondPart();
-    _fgPicturesRef().push_back( _picture );
+    else
+      setPicture( pic );
 
     _pos = pos;
 
@@ -191,7 +185,6 @@ public:
   int _index;
   int _info;
   int _imgId;
-  Picture _picture;
   HighBridge* _parent;
 };
 
@@ -253,7 +246,7 @@ void HighBridge::initTerrain(Tile& terrain )
 void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
 {
   Tilemap& tilemap = city->tilemap();
-  //Picture& water = Picture::load( "land1a", 120 );
+
   switch( dir )
   {
   case constants::northWest:
@@ -349,7 +342,30 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
   break;
   }
 
-  foreach( tile, _d->subtiles ) { _fgPicturesRef().push_back( (*tile)->_picture ); }
+  foreach( tile, _d->subtiles ) { _fgPicturesRef().push_back( (*tile)->picture() ); }
+}
+
+bool HighBridge::_checkOnlyWaterUnderBridge( PlayerCityPtr city, const TilePos& start, const TilePos& stop ) const
+{
+  TilesArray tiles = city->tilemap().getArea( start, stop );
+  if( tiles.size() > 2 )
+  {
+    bool onlyWater = true;
+    for( unsigned int k=1; k < tiles.size()-1; k++ )
+    {
+      const Tile* tile = tiles[ k ];
+      onlyWater &= ( !tile->getFlag(Tile::tlCoast) && (tile->getFlag(Tile::tlWater) || tile->getFlag(Tile::tlDeepWater)) );
+    }
+
+    return onlyWater;
+  }
+
+  return false;
+}
+
+static bool __isFlatCoastTile( const Tile& tile )
+{
+  return (tile.getFlag( Tile::tlCoast ) && !tile.getFlag( Tile::tlRubble ));
 }
 
 void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
@@ -358,93 +374,81 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   Tilemap& tilemap = city->tilemap();
   Tile& tile = tilemap.at( curPos );
+  direction = noneDirection;
 
-  /*if( tile.getFlag( Tile::tlRoad ) )
-  {
-    direction = constants::noneDirection;
+  if( !__isFlatCoastTile( tile ) )
     return;
-  }*/
 
-  int imdId = tile.originalImgId();
-  if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
-      imdId = (*it)->originalImgId();
-      if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
+
+      if( __isFlatCoastTile( **it ) )
       {
         stop = (*it)->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? northWest : noneDirection;
         break;
-      }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
-      {
-        direction = noneDirection;
-        break;
-      }
+      }      
     }
+
+    bool mayBuild = _checkOnlyWaterUnderBridge( city, start, stop );
+    if( !mayBuild )
+      direction = noneDirection;
   }
-  else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
+
+  if( direction == noneDirection )
   {
     TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
-    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
+    foreach( it, tiles )
     {
-      imdId = (*it)->originalImgId();
-      if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
+      if( __isFlatCoastTile( **it ) )
       {
         stop = (*it)->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? southEast : noneDirection;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
-      {
-        direction = noneDirection;
-        break;
-      }
     }
+
+    bool mayBuild = _checkOnlyWaterUnderBridge( city, start, stop );
+    if( !mayBuild )
+      direction = noneDirection;
   }
-  else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
+
+  if( direction == noneDirection )
   {
     TilesArray tiles = tilemap.getArea( curPos + TilePos(0, 1), curPos + TilePos( 0, 10) );
     for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
     {
-      imdId = (*it)->originalImgId();
-      if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
+      if( __isFlatCoastTile( **it ) )
       {
         stop = (*it)->pos();
         direction = abs( stop.j() - start.j() ) > 3 ? northEast : noneDirection;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
-      {
-        direction = noneDirection;
-        break;
-      }
     }
+
+    bool mayBuild = _checkOnlyWaterUnderBridge( city, start, stop );
+    if( !mayBuild )
+      direction = noneDirection;
   }
-  else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
+
+  if( direction == noneDirection )
   {
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
-      imdId = (*it)->originalImgId();
-      if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
+      if( __isFlatCoastTile( **it ) )
       {
         stop = (*it)->pos();
         direction = abs( stop.j() - start.j() ) > 3 ? southWest : noneDirection;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
-      {
-        direction = noneDirection;
-        break;
-      }
     }
-  }
-  else 
-  {
-    direction = noneDirection;
+
+    bool mayBuild = _checkOnlyWaterUnderBridge( city, start, stop );
+    if( !mayBuild )
+      direction = noneDirection;
   }
 }
 
@@ -472,7 +476,7 @@ bool HighBridge::build(PlayerCityPtr city, const TilePos& pos )
       HighBridgeSubTilePtr subtile = *it;
       TilePos buildPos = pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
-      subtile->setPicture( tile.picture() );
+      //subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
