@@ -184,9 +184,6 @@ void Level::initialize()
 
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
-
-  new SenatePopupInfo( gui.rootWidget(), _d->renderer );
-
   _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
   //specific android actions bar

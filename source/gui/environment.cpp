@@ -236,14 +236,15 @@ WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
 {
   Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
   elm->setSubElement(true);
-  elm->setWordwrap( true );
-  elm->setTextAlignment( align::upperLeft, align::center );
+  elm->setTextAlignment( align::upperLeft, align::upperLeft );
+  elm->setTextOffset( Point( 5, 5 ) );
 
   Size tlpSize( elm->textWidth() + 20, elm->textHeight() + 2 );
   if( tlpSize.width() > parent->width() * 0.75 )
   {
     tlpSize.setWidth( parent->width() * 0.5 );
     tlpSize.setHeight( elm->textHeight() * 2 + 10 );
+    elm->setWordwrap( true );
   }
 
   Rect rect( cursorPos, tlpSize );

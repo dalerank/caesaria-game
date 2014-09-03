@@ -38,6 +38,7 @@
       geometry : [ 16, 32, 256, 52 ]
       text : "##mission_wnd_population##"
       bgtype : "smallBrown"
+      text.offset : [ 10, 0 ]
       font : "FONT_1_RED"
     }
 
@@ -45,6 +46,7 @@
       geometry : [ 16, 54, 256, 74 ]
       text : "##mission_wnd_prosperity##"
       bgtype : "smallBrown"
+      text.offset : [ 10, 0 ]
       font : "FONT_1_RED"
     }
 
@@ -52,6 +54,7 @@
       geometry : [ 270, 10, "pw-16", 30 ]
       text : "##mission_wnd_favour##"
       bgtype : "smallBrown"
+      text.offset : [ 10, 0 ]
       font : "FONT_1_RED"
     }
 
@@ -59,6 +62,7 @@
       geometry : [ 270, 32, "pw-16", 52 ]
       text : "##mission_wnd_culture##"
       bgtype : "smallBrown"
+      text.offset : [ 10, 0 ]
       font : "FONT_1_RED"
     }
 
@@ -66,6 +70,7 @@
       geometry : [ 270, 54, "pw-16", 74 ]
       text : "##mission_wnd_peace##"
       bgtype : "smallBrown"
+      text.offset : [ 10, 0 ]
       font : "FONT_1_RED"
     }
 
@@ -73,6 +78,7 @@
       geometry : [ 16, 54, "pw-16", 74 ]
       text : "##mission_wnd_short##"
       bgtype : "smallBrown"
+      text.offset : [ 10, 0 ]
       font : "FONT_1_RED"
     }
   }
