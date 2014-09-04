@@ -33,6 +33,7 @@
 #include "statistic.hpp"
 #include "cityservice_info.hpp"
 #include "core/logger.hpp"
+#include "core/saveadapter.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -56,6 +57,8 @@ public:
   int lastMonthMigration;
   int updateTickInerval;
   int emigrantsIndesirability;
+  int worklessMinInfluence;
+  int checkRange;
   DateTime lastUpdate;
 
   float getMigrationKoeff(PlayerCity& city);
@@ -76,7 +79,11 @@ SrvcPtr Migration::create(PlayerCityPtr city)
 
 Migration::Migration( PlayerCityPtr city )
   : Srvc( *city.object(), defaultName() ), _d( new Impl )
-{
+{  
+  VariantMap options = SaveAdapter::load( ":/migration.model" );
+  VARIANT_LOAD_ANYDEF_D( _d, checkRange, DateTime::daysInWeek, options )
+  VARIANT_LOAD_ANYDEF_D( _d, worklessMinInfluence, 0, options )
+
   _d->lastMonthMigration = 0;
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
@@ -121,13 +128,15 @@ void Migration::update( const unsigned int time )
                             : (possibleTaxLevel-params.tax) );
 
   int warInfluence = ( params.monthWithourWar < DateTime::monthsInYear
-                          ? params.monthWithourWar * 5
+                          ? (DateTime::monthsInYear - params.monthWithourWar) * 5
                           : -std::min( params.monthWithourWar, 10 ) );
+  warInfluence += params.milthreat;
 
   int slumsInfluence = ( _d->isPoorHousing( params.slumNumber, params.houseNumber ) ? 20 : 0);
   int shacksInfluence = ( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ? 10 : 0 );
 
-  _d->emigrantsIndesirability += worklessInfluence;
+  _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city.population(), 150 ) / _d->worklessMinInfluence;
+
   _d->emigrantsIndesirability += diffSalaryInfluence;
   _d->emigrantsIndesirability += foodStackInfluence;
   _d->emigrantsIndesirability += params.crimeLevel;
@@ -145,11 +154,11 @@ void Migration::update( const unsigned int time )
   if( goddesRandom > _d->emigrantsIndesirability )
   {
     _d->createMigrationToCity( _city );
-    _d->updateTickInerval = math::random( GameDate::days2ticks( DateTime::daysInWeek ) ) + 10;
+    _d->updateTickInerval = math::random( GameDate::days2ticks( _d->checkRange ) ) + 10;
   }
   else
   {
-    _d->updateTickInerval = GameDate::days2ticks( DateTime::daysInWeek );
+    _d->updateTickInerval = GameDate::days2ticks( _d->checkRange );
   }
 
   if( _d->lastUpdate.monthsTo( GameDate::current() ) > 0 )
@@ -250,18 +259,18 @@ VariantMap Migration::save() const
 {
   VariantMap ret;
 
-  ret[ "lastUpdate" ] = _d->lastUpdate;
-  ret[ "lastMonthMigration" ] = _d->lastMonthMigration;
-  ret[ "lastMonthPopulation" ] = _d->lastMonthPopulation;
+  VARIANT_SAVE_ANY_D( ret, _d, lastUpdate )
+  VARIANT_SAVE_ANY_D( ret, _d, lastMonthMigration )
+  VARIANT_SAVE_ANY_D( ret, _d, lastMonthPopulation )
 
   return ret;
 }
 
 void Migration::load(const VariantMap& stream)
 {
-  _d->lastUpdate = stream.get( "lastUpdate", GameDate::current() ).toDateTime();
-  _d->lastMonthMigration = stream.get( "lastMonthMigration", 0 );
-  _d->lastMonthPopulation = stream.get( "lastMonthPopulation", 0 );
+  VARIANT_LOAD_TIME_D( _d, lastUpdate, stream )
+  VARIANT_LOAD_ANY_D( _d, lastMonthMigration, stream )
+  VARIANT_LOAD_ANY_D( _d, lastMonthPopulation, stream )
 }
 
 unsigned int Migration::Impl::calcVacantHouse( PlayerCity& city )

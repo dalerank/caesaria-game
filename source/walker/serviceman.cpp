@@ -273,13 +273,15 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( base );
 
-  if( servBuilding.isValid() && _d->maxDistance == defaultServiceDistance )
+  if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
   {
+    Logger::warning( "WARNING !!!: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
-  else
+
+  if( !servBuilding.isValid() )
   {
-    Logger::warning( "WARNING !!!: ServiceWalker sender not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "WARNING !!!: ServiceWalker send not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );
@@ -287,7 +289,7 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 
   if( !isDeleted() )
   {
-    _city()->addWalker( WalkerPtr( this ));
+    _city()->addWalker( this );
   }
 }
 

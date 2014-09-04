@@ -9,13 +9,13 @@
 
   lbCityHave#Label : {
     font : "FONT_1_WHITE"
-    geometry : [ 75, 55, 200, 80 ]
+    geometry : [ 75, 55, 400, 80 ]
     text : "##city_have##"
   }
 
   lbTaxRate#Label : {
     font : "FONT_1_WHITE"
-    geometry : [ 75, 75, 150, 100 ]
+    geometry : [ 75, 75, 240, 100 ]
     text : "##tax_rate##"
   }
 

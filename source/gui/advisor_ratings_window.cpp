@@ -229,7 +229,7 @@ void Ratings::Impl::checkPeaceRating()
   {
     unsigned int peace = city->peace();
 
-    if( ml->month2lastAttack() < 36 )
+    if( ml->monthFromLastAttack() < 36 )
     {
       advices << "##province_has_peace_a_short_time##";
     }

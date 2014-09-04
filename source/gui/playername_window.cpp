@@ -53,7 +53,7 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
   if( edPlayerName )
   {
-    edPlayerName->moveCursor( 99 );
+    edPlayerName->moveCursor( edPlayerName->text().length() );
   }
 }
 

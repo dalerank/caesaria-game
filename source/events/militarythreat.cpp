@@ -15,18 +15,45 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
-#define __CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
-
+#include "militarythreat.hpp"
+#include "game/game.hpp"
+#include "city/cityservice_military.hpp"
 #include "city/city.hpp"
 
-class FreeplayFinalizer
+namespace events
+{
+
+class MilitaryThreat::Impl
 {
 public:
-  static void addPopulationMilestones( PlayerCityPtr city );
-  static void initBuildOptions(PlayerCityPtr city);
-  static void addEvents(PlayerCityPtr city);
-  static void resetFavour(PlayerCityPtr city);
+  int value;
 };
 
-#endif //__CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
+GameEventPtr MilitaryThreat::create( int value )
+{
+  GameEventPtr ret( new MilitaryThreat( value ) );
+  ret->drop();
+
+  return ret;
+}
+
+bool MilitaryThreat::isDeleted() const { return true; }
+bool MilitaryThreat::_mayExec(Game& game, unsigned int time) const {  return true; }
+
+MilitaryThreat::MilitaryThreat( int value ) : _d( new Impl )
+{
+  _d->value = value;
+}
+
+void MilitaryThreat::_exec(Game& game, unsigned int)
+{
+  city::MilitaryPtr ml;
+  ml << game.city()->findService( city::Military::defaultName() );
+
+  if( ml.isValid() )
+  {
+    ml->updateThreat( _d->value );
+  }
+}
+
+}

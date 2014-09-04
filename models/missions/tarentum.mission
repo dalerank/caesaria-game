@@ -16,7 +16,7 @@
     prosperity : 10
     peace : 10
     favour : 40
-    next : ":/missions/tutorial4.briefing"
+    next : ":/missions/mission4.briefing"
     title : "##win_engineer_title##"
     win.text : "##tarentum_win_text##"
     may_continue : false
