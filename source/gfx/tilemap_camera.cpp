@@ -48,6 +48,7 @@ public:
   Size borderSize;
   Point offset;
   int scrollSpeed;
+  bool tilesChanged;
 
   Tilemap* tilemap;   // tile map to display
   PointF centerMapXZ; // center of the view(in tiles)
@@ -175,6 +176,7 @@ void TilemapCamera::moveRight(const int amount){  setCenter( Point( centerX() + 
 void TilemapCamera::moveLeft(const int amount){  setCenter( Point( centerX() - amount, centerZ() ) );}
 void TilemapCamera::moveUp(const int amount){  setCenter( Point( centerX(), centerZ() + amount ) );}
 void TilemapCamera::moveDown(const int amount){  setCenter( Point( centerX(), centerZ() - amount ) );}
+bool TilemapCamera::isUpdated() {  bool ret = _d->tilesChanged; _d->tilesChanged = false; return ret; }
 void TilemapCamera::startFrame(){  _d->resetDrawn(); }
 void TilemapCamera::refresh(){  _d->tiles.clear(); }
 
@@ -188,6 +190,7 @@ const TilesArray& TilemapCamera::tiles() const
   if( _d->tiles.empty() )
   {
     _d->offset = _d->getOffset( _d->centerMapXZ );
+    _d->tilesChanged = true;
 
     int mapSize = _d->tilemap->size();
     int zm = _d->tilemap->size() + 1;
