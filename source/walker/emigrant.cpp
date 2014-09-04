@@ -71,11 +71,11 @@ HousePtr Emigrant::_findBlankHouse()
 
   TilePos offset( 5, 5 );
   HouseList houses = hlp.find<House>( building::house, pos() - offset, pos() + offset );
-  _checkAvailabelHouses( houses );
+  _checkHouses( houses );
   if( houses.empty() )
   {
     houses = hlp.find<House>( building::house );
-    _checkAvailabelHouses( houses );
+    _checkHouses( houses );
   }
 
 
@@ -222,7 +222,7 @@ void Emigrant::_noWay()
     }
 }
 
-void Emigrant::_checkAvailabelHouses(HouseList &hlist)
+void Emigrant::_checkHouses(HouseList &hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->population() > 300;

@@ -103,6 +103,7 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
 Picture& PictureBank::getPicture(const std::string &name)
 {
   const unsigned int hash = StringHelper::hash( name );
+  //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
   if( it == _d->resources.end() )
