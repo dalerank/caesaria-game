@@ -127,7 +127,7 @@ void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-   Logger::warning( "Called OnPreRender() function needed" );
+   Logger::warning( "Call beforeDraw() function needed" );
    return;
   }
 
@@ -236,13 +236,21 @@ WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
 {
   Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
   elm->setSubElement(true);
+  elm->setTextAlignment( align::upperLeft, align::upperLeft );
+  elm->setTextOffset( Point( 5, 5 ) );
 
-  Size size( elm->textWidth() + 20, elm->textHeight() + 2 );
-  Rect rect( cursorPos, size );
+  Size tlpSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+  if( tlpSize.width() > parent->width() * 0.75 )
+  {
+    tlpSize.setWidth( parent->width() * 0.5 );
+    tlpSize.setHeight( elm->textHeight() * 2 + 10 );
+    elm->setWordwrap( true );
+  }
 
-  rect -= Point( size.width() + 20, -20 );
+  Rect rect( cursorPos, tlpSize );
+
+  rect -= Point( tlpSize.width() + 20, -20 );
   elm->setGeometry( rect );
-  elm->setTextAlignment( align::center, align::center );
 
   return elm;
 }
@@ -272,6 +280,7 @@ void Ui::_drawTooltip( unsigned int time )
         geom -= Point( 0, delta );
         _d->toolTip.element->setGeometry( geom );
       }
+
     }
 
     if( _d->toolTip.element.isValid() && _d->toolTip.element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)

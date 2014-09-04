@@ -54,6 +54,7 @@ public:
     int maxWorkers;
     int crimeLevel;
     int peace;    
+    int milthreat;
     int houseNumber;
     int slumNumber;
     int shackNumber;

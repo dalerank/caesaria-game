@@ -28,6 +28,7 @@ class Military::Impl
 public:
   Military::NotificationArray notifications;
   DateTime lastEnemyAttack;
+  float threatValue;
 };
 
 city::SrvcPtr Military::create(PlayerCityPtr city )
@@ -57,6 +58,11 @@ void Military::update( const unsigned int time )
       }
       else { ++it; }
     }
+
+    if( _d->threatValue < 3 )
+      _d->threatValue = 0;
+    else
+      _d->threatValue *= 0.9f;
   }
 }
 
@@ -118,8 +124,16 @@ void Military::load(const VariantMap& stream)
   }
 }
 
-int Military::month2lastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
-void Military::enemyAttack(){  _d->lastEnemyAttack = GameDate::current(); }
+void Military::updateThreat(int value)
+{
+  if( value > 0 )
+    _d->lastEnemyAttack = GameDate::current();
+
+  _d->threatValue = math::clamp<int>( _d->threatValue + value, 0, 100);
+}
+
+int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
+unsigned int Military::threadValue() const{ return _d->threatValue; }
 std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
 
 }//end namespace city

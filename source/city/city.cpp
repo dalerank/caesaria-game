@@ -239,6 +239,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
+  setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
 }
 

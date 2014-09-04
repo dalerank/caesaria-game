@@ -33,7 +33,6 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
-#include "game/settings.hpp"
 #include "widget_helper.hpp"
 
 using namespace gfx;
@@ -71,7 +70,7 @@ MissionTargetsWindow::~MissionTargetsWindow() {}
 MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle ) 
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/targets.gui" ) );
+  Widget::setupUI( ":/gui/targets.gui" );
   _d->locker.activate();
 
   WidgetEscapeCloser::insertTo( this );

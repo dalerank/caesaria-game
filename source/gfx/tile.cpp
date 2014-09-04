@@ -231,10 +231,6 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
     res_pfx = ResourceGroup::land1a;
     res_id = 0;
 
-    // std::cout.setf(std::ios::hex, std::ios::basefield);
-    // std::cout << "Unknown image Id " << imgId << std::endl;
-    // std::cout.unsetf(std::ios::hex);
-
     if (imgId == 0xb10 || imgId == 0xb0d)
     {
       res_pfx = ResourceGroup::housing;
