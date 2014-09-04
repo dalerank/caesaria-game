@@ -46,7 +46,6 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
-  virtual void _checkAvailabelHouses( HouseList& hlist );
 
   void _setCartPicture( const gfx::Picture& pic );
   virtual const gfx::Picture& _cartPicture();
@@ -59,7 +58,7 @@ protected:
   const CitizenGroup& _getPeoples() const;
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
-  void _checkAvailabelHouses(HouseList &hlist);
+  void _checkHouses(HouseList &hlist);
 
 private:
   class Impl;
