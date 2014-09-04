@@ -23,6 +23,7 @@
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
+#include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 
 using namespace constants;
@@ -105,21 +106,42 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;
   unsigned int minDistance = _d->maxDistance;
 
+  bool isNeedTrainee = false;
+  foreach( it, buildings )
+  {
+    BuildingPtr bld = *it;
+    float curNeed = bld->evaluateTrainee( type() );
+    if( curNeed > 0 )
+    {
+      isNeedTrainee = true;
+      break;
+    }
+  }
+
+  if( !isNeedTrainee )
+  {
+    Logger::warning( "Not need trainee walker from [%d,%d]", _d->base->pos().i(), _d->base->pos().j() );
+    deleteLater();
+    return;
+  }
+
   foreach( itile, startArea )
   {
     TilePos startPos = (*itile)->pos();
     foreach( it, buildings )
     {
       BuildingPtr bld = *it;
-      Pathway way = PathwayHelper::create( startPos, bld.object(),
-                                           roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
+
       float curNeed = bld->evaluateTrainee( type() );
-      if( way.isValid()
-          && _d->maxNeed < curNeed
-          && way.length() < minDistance)
+      if( _d->maxNeed < curNeed )
       {
-        _d->maxNeed = curNeed;
-        droute = DirectRoute( bld.object(), way );
+        Pathway way = PathwayHelper::create( startPos, bld.object(),
+                                             roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
+        if( way.isValid() && way.length() < minDistance )
+        {
+          _d->maxNeed = curNeed;
+          droute = DirectRoute( bld.object(), way );
+        }
       }
     }
   }

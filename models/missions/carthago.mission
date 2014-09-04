@@ -17,7 +17,7 @@
     prosperity : 30
     peace : 40
     favour : 30
-    next : ":/missions/tutorial7.briefing"
+    next : ":/missions/mission7.briefing"
     title : "##win_procurator_title##"
     win.text : "##carthago_win_text##"
     may_continue : false

@@ -278,9 +278,6 @@ void Game::setScreenMenu()
       load( startMission );
       _d->player->setName( screen.playerName() );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
-
-      /*_d->nextFilename = "/missions/mission3.briefing";
-      _d->nextScreen = SCREEN_BRIEFING;*/
     }
     break;
 
@@ -306,6 +303,7 @@ void Game::setScreenMenu()
       FreeplayFinalizer::addPopulationMilestones( _d->city );
       FreeplayFinalizer::initBuildOptions( _d->city );
       FreeplayFinalizer::addEvents( _d->city );
+      FreeplayFinalizer::resetFavour( _d->city );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }

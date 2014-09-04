@@ -12,13 +12,13 @@
   etruscanSoldier : {
     move : { rc : "etruscan", start : 249, frames : 12, action : 1, step : 8 }
     fight : { rc : "etruscan", start : 345, frames : 6, action : 2, step : 8 }
-    die : { rc : "etruscan", start : 393, frames : 1, action : 3, step : 0 }
+    die : { rc : "etruscan", start : 393, frames : 8, action : 3, step : 0 }
   }
 
   etruscanArcher : {
     move : { rc : "etruscan", start : 401, frames : 12, action : 1, step : 8 }
     fight : { rc : "etruscan", start : 497, frames : 6, action : 2, step : 8 }
-    die : { rc : "etruscan", start : 593, frames : 1, action : 3, step : 0 }
+    die : { rc : "etruscan", start : 593, frames : 8, action : 3, step : 0 }
   }
 
   bathlady : {
@@ -143,7 +143,7 @@
   romeHorseman : {
     move : { rc : "citizen04", start : 1, frames : 12, action : 1, step : 8 }
     fight : { rc : "citizen04", start : 97, frames : 6, action : 2, step : 8 }
-    die : { rc : "citizen04", start : 144, frames : 1, action : 3, step : 0 }
+    die : { rc : "citizen04", start : 144, frames : 8, action : 3, step : 0 }
   }
 
   merchant : {
@@ -163,19 +163,19 @@
   sheep : {
     move : { rc : "citizen04", start : 153, frames : 6, action : 1, step : 8, delay : 2 }
     sit : { rc : "citizen04", start : 249, frames : 1, action : 0, step : 8 }
-    die : { rc : "citizen04", start : 257, frames : 1, action : 3, step : 0 }
+    die : { rc : "citizen04", start : 257, frames : 8, action : 3, step : 0 }
   }
 
   zebra : {
     move : { rc : "citizen04", start : 425, frames : 12, action : 1, step : 8 }
     sit : { rc : "citizen04", start : 529, frames : 5, action : 0, step : 8 }
-    die : { rc : "citizen04", start : 520, frames : 1, action : 3, step : 0 }
+    die : { rc : "citizen04", start : 520, frames : 8, action : 3, step : 0 }
   }
 
   wolf : {
     move : { rc : "citizen04", start : 265, frames : 12, action : 1, step : 8 }
     fight : { rc : "citizen04", start : 369, frames : 7, action : 2, step : 8 }
-    die : { rc : "citizen04", start : 361, frames : 1, action : 3, step : 0 }
+    die : { rc : "citizen04", start : 361, frames : 8, action : 3, step : 0 }
   }
 
   fishingBoat : {
@@ -210,7 +210,7 @@
   romeSpearman : {
     move : { rc : "citizen03", start : 241, frames : 12, action : 1, step : 8 }
     fight : { rc : "citizen03", start : 337, frames : 6, action : 2, step : 8 }
-    die : { rc : "citizen03", start : 385, frames : 1, action : 3, step : 0 }
+    die : { rc : "citizen03", start : 385, frames : 8, action : 3, step : 0 }
   }
 
   missioner : {
@@ -235,13 +235,13 @@
   romeChastenerSoldier : {
     move : { rc : "citizen03", start : 441, frames : 12, action : 1, step : 8 }
     fight : { rc : "citizen03", start : 393, frames : 6, action : 3, step : 8 }
-    die : { rc : "citizen03", start : 545, frames : 1, action : 3, step : 0 }
+    die : { rc : "citizen03", start : 545, frames : 8, action : 3, step : 0 }
   }
 
   romeChastenerElephant : {
     move : { rc : "carthegenians", start : 401, frames : 12, action : 1, step : 8 }
     /*fight : { rc : "carthegenians", start : 497, frames : 1, action : 3, step : 8 }*/
-    die : { rc : "carthegenians", start : 505, frames : 1, action : 3, step : 0 }
+    die : { rc : "carthegenians", start : 505, frames : 8, action : 3, step : 0 }
   }
 }
 

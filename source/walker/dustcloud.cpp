@@ -75,6 +75,8 @@ DustCloud::DustCloud(PlayerCityPtr city )
   //_d->animation.setOffset( Point( 5, 7 ) );
 
   setName( _("##dust##") );
+
+  setFlag( vividly, false );
 }
 
 void DustCloud::send2City(const TilePos &start, const TilePos& stop )
