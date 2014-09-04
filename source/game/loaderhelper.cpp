@@ -117,13 +117,20 @@ unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
 
 void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int forceId )
 {
+  unsigned int imgId = oTile.originalImgId();
   TileOverlay::Type ovType = construction::unknown;
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
-     ovType = construction::road;
-     Picture pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 59) );
-     oTile.setPicture( pic );
-     oTile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+    ovType = construction::road;
+    Picture pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 59) );
+    oTile.setPicture( pic );
+    oTile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+  }
+  else if( (imgId >= 372 && imgId <= 403) || (imgId >= 413 && imgId <= 417) )
+  {
+    oTile.setFlag( Tile::tlCoast, true );
+    if( imgId >= 388 )
+      oTile.setFlag( Tile::tlRubble, true );
   }
   else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {
@@ -142,7 +149,6 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     overlay->setPicture( Picture::load( elevationPicName ) );
   }
 
-  //terrain.setOverlay( overlay );
   if( overlay != NULL )
   {
     //Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.originalImgId() );

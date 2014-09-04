@@ -16,6 +16,12 @@
     text : "##city_god_mode##"
   }
 
+  btnWarningsEnabled#PushButton : {
+    geometry : [ 16, 75, 220, 95 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_warnings_mode##"
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]

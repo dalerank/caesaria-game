@@ -43,6 +43,8 @@ RiverWave::RiverWave(PlayerCityPtr city )
   _animation.start( false );
 
   setName( _("##river_wave##") );
+
+  setFlag( vividly, false );
 }
 
 void RiverWave::send2City(const TilePos &location )

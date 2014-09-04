@@ -34,6 +34,8 @@
 #include "walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "objects/senate.hpp"
+#include "gui/senate_popup_info.hpp"
 
 using namespace constants;
 
@@ -49,7 +51,11 @@ public:
   Point lastCursorPos;
   Point startCursorPos;
   Camera* camera;
+  Tile* currentTile;
+  SenatePopupInfo senateInfo;
   PlayerCityPtr city;
+  PictureRef outline;
+  bool needUpdateOutline;
   PictureRef tooltipPic;
   int nextLayer;
   std::string tooltipText;
@@ -62,6 +68,9 @@ public:
   Picture footColumn;
   Picture bodyColumn;
   Picture headerColumn;
+
+public:
+  void updateOutlineTexture( Tile* tile );
 };
 
 void Layer::registerTileForRendering(Tile& tile)
@@ -110,8 +119,12 @@ void Layer::handleEvent(NEvent& event)
       if( event.mouse.isLeftPressed() )
       {
         Point delta = _d->lastCursorPos - savePos;
-        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );
+        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );        
       }
+
+      Tile* selectedTile = _d->camera->at( _d->lastCursorPos, true );
+      _d->needUpdateOutline = (selectedTile != _d->currentTile);
+      _d->currentTile = selectedTile;
     }
     break;
 
@@ -445,7 +458,7 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
   // rounded == 10 -> header + footer
   // rounded == 20 -> header + body + footer
 
-  if (rounded == 0)
+  if (percent == 0)
   {
     // Nothing to draw.
     return;
@@ -472,19 +485,26 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
+void Layer::beforeRender(Engine& engine) {}
+
 void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   Point cursorPos = engine.cursorPos();
   Size screenSize = engine.screenSize();
+  Point offset = _d->camera->offset();
   Point moveValue;
 
+  //on edge cursor moving
   if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
   else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
   if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
   else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
 
-  _d->camera->move( moveValue.toPointF() );
+  if( moveValue.x() != 0 || moveValue.y() != 0 )
+  {
+    _d->camera->move( moveValue.toPointF() );
+  }
 
   if( !_d->tooltipText.empty() )
   {
@@ -493,8 +513,7 @@ void Layer::afterRender( Engine& engine)
 
   if( _d->drawGrid )
   {
-    Tilemap& tmap = _d->city->tilemap();
-    Point offset = _d->camera->offset();
+    Tilemap& tmap = _d->city->tilemap();    
     int size = tmap.size();
     Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
@@ -527,6 +546,33 @@ void Layer::afterRender( Engine& engine)
     break;
     }
   }
+
+  if( _d->currentTile )
+  {
+    TileOverlayPtr ov = _d->currentTile->overlay();
+    SenatePtr senate = ptr_cast<Senate>( ov );
+    if( senate.isValid() )
+    {
+      _d->senateInfo.draw( _d->lastCursorPos, Engine::instance(), senate );
+    }
+
+    Point pos = _d->currentTile->mappos() + offset;
+    int size = (_d->currentTile->picture().width() + 2) / 60;
+    if( ov.isValid() )
+    {
+      size = ov->size().width();
+      pos = ov->tile().mappos() + offset;
+    }
+    else if( _d->currentTile->masterTile() != 0 )
+    {
+      pos = _d->currentTile->masterTile()->mappos();
+    }
+
+    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
+    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size, pos );
+  }
 }
 
 Layer::Layer( Camera* camera, PlayerCityPtr city )
@@ -535,6 +581,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   __D_IMPL(_d,Layer)
   _d->camera = camera;
   _d->city = city;
+  _d->currentTile = 0;
   _d->drawGrid = false;
   _d->showPath = false;
   _d->posMode = 0;
@@ -564,5 +611,19 @@ void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }
 void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
 Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
 Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
+
+void Layer::Impl::updateOutlineTexture( Tile* tile )
+{
+  if( !needUpdateOutline )
+    return;
+
+ /* if( tile && tile->overlay().isValid() )
+  {
+    const Picture& pic = tile->overlay()->picture();
+
+    outline.reset( Picture::create( pic.size(), 0, true ) );
+
+  } */
+}
 
 }

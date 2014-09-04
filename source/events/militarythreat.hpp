@@ -15,37 +15,32 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ALIGNMENT_H_INCLUDED__
-#define __CAESARIA_ALIGNMENT_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_MILITARY_THREAT_H_INCLUDE_
+#define _CAESARIA_EVENT_MILITARY_THREAT_H_INCLUDE_
 
-#include "enumerator.hpp"
+#include "event.hpp"
 
-namespace align
+namespace events
 {
 
-enum Type
-{
-  //! Aligned to parent's top or left side (default)
-  upperLeft=0,
-  //! Aligned to parent's bottom or right side
-  lowerRight,
-  //! Aligned to the center of parent
-  center,
-  //! Stretched to fit parent
-  scale,
-  //!
-  automatic
-};
-
-class Helper : public EnumsHelper<align::Type>
+class MilitaryThreat : public GameEvent
 {
 public:
-  Helper();
+  static GameEventPtr create(int value);
+
+  virtual bool isDeleted() const;
+
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec( Game &game, unsigned int time) const;
+
+private:
+  MilitaryThreat(int value);
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-} // end namespacce align
+}
 
-typedef align::Type Alignment;
-
-#endif // __CAESARIA_ALIGNMENT_H_INCLUDED__
-
+#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_

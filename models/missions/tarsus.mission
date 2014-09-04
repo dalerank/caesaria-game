@@ -17,7 +17,7 @@
     prosperity : 60
     peace : 60
     favour : 80
-    next : ":/missions/tutorial8.briefing"
+    next : ":/missions/mission8.briefing"
     title : "##win_procurator_aedile##"
     win.text : "##tarsus_win_text##"
     may_continue : false
