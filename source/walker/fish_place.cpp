@@ -58,6 +58,8 @@ FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
     _d->animation.setOffset( _d->basicOffset );
   } //small fish place
   _d->animation.setDelay( 4 );
+
+  setFlag( vividly, false );
 }
 
 FishPlacePtr FishPlace::create(PlayerCityPtr city)

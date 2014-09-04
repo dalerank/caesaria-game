@@ -17,7 +17,7 @@
     prosperity : 35
     peace : 40
     favour : 40
-    next : ":/missions/tutorial6.briefing"
+    next : ":/missions/mission6.briefing"
     title : "##win_procurator_title##"
     win.text : "##miletus_win_text##"
     may_continue : false

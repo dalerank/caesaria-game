@@ -108,6 +108,8 @@ Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 
   setName( _("##corpse##") );
   _setHealth( 0 );
+
+  setFlag( vividly, false );
 }
 
 Corpse::~Corpse(){}
