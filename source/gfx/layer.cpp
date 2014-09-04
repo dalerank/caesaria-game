@@ -557,11 +557,15 @@ void Layer::afterRender( Engine& engine)
     }
 
     Point pos = _d->currentTile->mappos() + offset;
-    int size = 1;
+    int size = (_d->currentTile->picture().width() + 2) / 60;
     if( ov.isValid() )
     {
       size = ov->size().width();
       pos = ov->tile().mappos() + offset;
+    }
+    else if( _d->currentTile->masterTile() != 0 )
+    {
+      pos = _d->currentTile->masterTile()->mappos();
     }
 
     engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
