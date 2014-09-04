@@ -47,8 +47,10 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-  int month2lastAttack() const;
-  void enemyAttack();
+  int monthFromLastAttack() const;
+
+  void updateThreat( int value );
+  unsigned int threadValue() const;
 
   static std::string defaultName();
 private:

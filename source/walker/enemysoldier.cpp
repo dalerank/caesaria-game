@@ -36,6 +36,7 @@
 #include "animals.hpp"
 #include "throwing_weapon.hpp"
 #include "core/foreach.hpp"
+#include "events/militarythreat.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -412,6 +413,9 @@ void EnemySoldier::send2City( TilePos pos )
   setPos( pos );
   _check4attack();
   _city()->addWalker( this );
+
+  events::GameEventPtr e = events::MilitaryThreat::create( 1 );
+  e->dispatch();
 }
 
 bool EnemySoldier::die()
