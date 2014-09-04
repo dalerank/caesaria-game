@@ -85,7 +85,16 @@ void CityOptionsWindow::Impl::update()
 {
   if( btnGodEnabled )
   {
-    btnGodEnabled->setText( city->getOption( PlayerCity::godEnabled ) > 0 ? _("##city_opts_god_on##") : _("##city_opts_god_off##") );
+    btnGodEnabled->setText( city->getOption( PlayerCity::godEnabled ) > 0
+                              ? _("##city_opts_god_on##")
+                              : _("##city_opts_god_off##") );
+  }
+
+  if( btnWarningsEnabled )
+  {
+    btnWarningsEnabled->setText( city->getOption( PlayerCity::warningsEnabled ) > 0
+                              ? _("##city_warnings_on##")
+                              : _("##city_warnings_off##") );
   }
 }
 

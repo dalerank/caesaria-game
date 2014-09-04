@@ -57,7 +57,7 @@ public:
   virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
 
-  virtual void beforeRender( Engine& engine) {}
+  virtual void beforeRender( Engine& engine);
   virtual void afterRender( Engine& engine);
   virtual void render( Engine& engine);
   virtual void renderPass( Engine& engine, Renderer::Pass pass);

@@ -58,6 +58,8 @@ WalkerPtr Corpse::create( PlayerCityPtr city, WalkerPtr wlk )
     Corpse* corpse = new Corpse( city );
     corpse->setPos( wlk->pos() );
     corpse->_animationRef() = animation;
+    corpse->_animationRef().setDelay( 1 );
+    corpse->_animationRef().setLoop( false );
 
     WalkerPtr ret( corpse );
     ret->drop();
@@ -149,6 +151,11 @@ void Corpse::load( const VariantMap& stream )
   _d->loop = stream.get( "loop" );
 
   _animationRef().load( stream.get( "animation" ).toMap() );
+  if( _animationRef().delay() == 0 )
+  {
+    _animationRef().setDelay( 2 );
+    _animationRef().setLoop( false );
+  }
 }
 
 const Picture& Corpse::getMainPicture()
