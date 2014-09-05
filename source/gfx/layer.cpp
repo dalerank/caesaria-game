@@ -68,8 +68,6 @@ public:
   Picture footColumn;
   Picture bodyColumn;
   Picture headerColumn;
-
-  std::vector<Tile*> flatTiles;
 public:
   void updateOutlineTexture( Tile* tile );
 };
@@ -303,23 +301,16 @@ void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   const TilesArray& visibleTiles = _d->camera->tiles();
+  const TilesArray& flatTiles = _d->camera->flatTiles();
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   Tile* tile;
-  foreach( it, visibleTiles )
+  foreach( it, flatTiles )
   {
-    int z = (*it)->epos().z();
-    tile = (*it)->masterTile();
-    if( !tile )
-      tile = *it;
-
-    if( tile->isFlat() && tile->epos().z() == z )
-    {        
-      drawTile( engine, *tile, camOffset );
-    }
+    drawTile( engine, **it, camOffset );
   }
 
   if( !_d->renderOverlay )
@@ -333,9 +324,9 @@ void Layer::render( Engine& engine)
     tile = *it;
     int z = tile->epos().z();
 
-    //drawTileR( engine, *tile, camOffset, z, false );
-    //drawWalkers( engine, *tile, camOffset );
-    //drawTileW( engine, *tile, camOffset, z );
+    drawTileR( engine, *tile, camOffset, z, false );
+    drawWalkers( engine, *tile, camOffset );
+    drawTileW( engine, *tile, camOffset, z );
   }
 
   engine.resetColorMask();
@@ -475,7 +466,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine& engine) {}
+ void Layer::beforeRender(Engine&){}
 
 void Layer::afterRender( Engine& engine)
 {

@@ -68,7 +68,7 @@ void Base::update(gfx::Engine& engine )
   _delayTicks = DateTime::elapsedTime() - lastTimeUpdate;
   if( _delayTicks < DELAY_33_FPS )
   {
-    //engine.delay( std::max<int>( DELAY_33_FPS - _delayTicks, 0 ) );
+    engine.delay( std::max<int>( DELAY_33_FPS - _delayTicks, 0 ) );
   }
 
   lastTimeUpdate = DateTime::elapsedTime();

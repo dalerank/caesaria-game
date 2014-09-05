@@ -48,12 +48,12 @@ public:
   void moveLeft(const int amount);
   void moveUp(const int amount);
   void moveDown(const int amount);
-  virtual bool isUpdated();
 
   Point offset() const;
 
   // return tile coordinates (i, j), in order of depth
   virtual const TilesArray& tiles() const;
+  virtual const TilesArray& flatTiles() const;
 
   int centerX() const;
   int centerZ() const;

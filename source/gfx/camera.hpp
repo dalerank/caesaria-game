@@ -39,6 +39,7 @@ public:
   virtual void moveUp(const int amount) = 0;
   virtual void moveDown(const int amount) = 0;
   virtual const TilesArray& tiles() const = 0;
+  virtual const TilesArray& flatTiles() const = 0;
   virtual int centerX() const = 0;
   virtual int centerZ() const = 0;
   virtual TilePos center() const = 0;
@@ -47,7 +48,6 @@ public:
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
   virtual void setCenter( TilePos pos ) = 0;
-  virtual bool isUpdated() = 0;
 
   virtual ~Camera() {}
 
