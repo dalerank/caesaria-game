@@ -47,6 +47,7 @@ public:
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
   virtual void setCenter( TilePos pos ) = 0;
+  virtual bool isUpdated() = 0;
 
   virtual ~Camera() {}
 
@@ -56,4 +57,4 @@ public oc3_signals:
 
 } //end namespace gfx
 
-#endif //__CAESARIA_GFX_LOGO_H_INCLUDED__
+#endif //__CAESARIA_GFX_CAMERA_H_INCLUDED__

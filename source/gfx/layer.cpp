@@ -60,7 +60,7 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
-  VisibleWalkers vwalkers;
+  Layer::VisibleWalkers vwalkers;
 
   bool drawGrid, renderOverlay, showPath;
   int posMode;
@@ -69,6 +69,7 @@ public:
   Picture bodyColumn;
   Picture headerColumn;
 
+  std::vector<Tile*> flatTiles;
 public:
   void updateOutlineTexture( Tile* tile );
 };
@@ -301,27 +302,25 @@ void Layer::_setTooltipText(const std::string& text)
 void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
-  DebugTimer::reset( "render:start" );
   const TilesArray& visibleTiles = _d->camera->tiles();
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  //DebugTimer::reset( "render:draw_flat" );
   Tile* tile;
   foreach( it, visibleTiles )
   {
+    int z = (*it)->epos().z();
     tile = (*it)->masterTile();
     if( !tile )
       tile = *it;
 
-    if( tile->isFlat() )
-    {
+    if( tile->isFlat() && tile->epos().z() == z )
+    {        
       drawTile( engine, *tile, camOffset );
     }
   }
-  //DebugTimer::check( "", "render:draw_flat" );
 
   if( !_d->renderOverlay )
   {
@@ -334,19 +333,10 @@ void Layer::render( Engine& engine)
     tile = *it;
     int z = tile->epos().z();
 
-    //int t = DateTime::elapsedTime();
-    drawTileR( engine, *tile, camOffset, z, false );
-    //r0 += DateTime::elapsedTime() - t;
-
-    //t = DateTime::elapsedTime();
-    drawWalkers( engine, *tile, camOffset );
-    //r1 += DateTime::elapsedTime() - t;
-
-    //t = DateTime::elapsedTime();
-    drawTileW( engine, *tile, camOffset, z );
-    //r2 += DateTime::elapsedTime() - t;
+    //drawTileR( engine, *tile, camOffset, z, false );
+    //drawWalkers( engine, *tile, camOffset );
+    //drawTileW( engine, *tile, camOffset, z );
   }
-  //Logger::warning( "r0=%d r1=%d r2=%d", r0, r1, r2 );
 
   engine.resetColorMask();
 
@@ -556,18 +546,19 @@ void Layer::afterRender( Engine& engine)
       _d->senateInfo.draw( _d->lastCursorPos, Engine::instance(), senate );
     }
 
-    Point pos = _d->currentTile->mappos() + offset;
+    Point pos = _d->currentTile->mappos();
     int size = (_d->currentTile->picture().width() + 2) / 60;
     if( ov.isValid() )
     {
       size = ov->size().width();
-      pos = ov->tile().mappos() + offset;
+      pos = ov->tile().mappos();
     }
     else if( _d->currentTile->masterTile() != 0 )
     {
       pos = _d->currentTile->masterTile()->mappos();
     }
 
+    pos += offset;
     engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
     engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
     engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );

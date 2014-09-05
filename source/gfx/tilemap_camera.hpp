@@ -48,6 +48,7 @@ public:
   void moveLeft(const int amount);
   void moveUp(const int amount);
   void moveDown(const int amount);
+  virtual bool isUpdated();
 
   Point offset() const;
 
