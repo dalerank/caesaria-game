@@ -128,13 +128,21 @@ void Migration::update( const unsigned int time )
                             : (possibleTaxLevel-params.tax) );
 
   int warInfluence = ( params.monthWithourWar < DateTime::monthsInYear
-                          ? params.monthWithourWar * 5
+                          ? (DateTime::monthsInYear - params.monthWithourWar) * 5
                           : -std::min( params.monthWithourWar, 10 ) );
+  warInfluence += params.milthreat;
 
   int slumsInfluence = ( _d->isPoorHousing( params.slumNumber, params.houseNumber ) ? 20 : 0);
   int shacksInfluence = ( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ? 10 : 0 );
 
-  _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city.population(), 150 ) / _d->worklessMinInfluence;
+  if( _d->worklessMinInfluence > 0 )
+  {
+    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city.population(), 150 ) / _d->worklessMinInfluence;
+  }
+  else
+  {
+    _d->emigrantsIndesirability += worklessInfluence;
+  }
 
   _d->emigrantsIndesirability += diffSalaryInfluence;
   _d->emigrantsIndesirability += foodStackInfluence;

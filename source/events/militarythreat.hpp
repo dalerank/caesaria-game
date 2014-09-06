@@ -15,27 +15,32 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_SPEAR_H_INCLUDED__
-#define __CAESARIA_SPEAR_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_MILITARY_THREAT_H_INCLUDE_
+#define _CAESARIA_EVENT_MILITARY_THREAT_H_INCLUDE_
 
-#include "throwing_weapon.hpp"
+#include "event.hpp"
 
-class Spear : public ThrowingWeapon
+namespace events
+{
+
+class MilitaryThreat : public GameEvent
 {
 public:
-  static SpearPtr create( PlayerCityPtr city );
-  void setPicInfo( const std::string& rc, unsigned int index );
+  static GameEventPtr create(int value);
+
+  virtual bool isDeleted() const;
 
 protected:
-  virtual void _onTarget();
-  virtual const char* rcGroup() const;
-  virtual int _rcStartIndex() const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec( Game &game, unsigned int time) const;
 
 private:
-  Spear( PlayerCityPtr city );
+  MilitaryThreat(int value);
 
-  std::string _picRc;
-  unsigned int _picIndex;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_SPEAR_H_INCLUDED__
+}
+
+#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_

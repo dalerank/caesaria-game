@@ -58,7 +58,7 @@ protected:
   const CitizenGroup& _getPeoples() const;
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
-  void _checkAvailabelHouses(HouseList &hlist);
+  void _checkHouses(HouseList &hlist);
 
 private:
   class Impl;

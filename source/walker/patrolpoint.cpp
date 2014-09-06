@@ -63,11 +63,13 @@ PatrolPoint::PatrolPoint( PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::patrolPoint );
+
+  setFlag( vividly, false );
 }
 
 void PatrolPoint::timeStep(const unsigned long time)
 {
-    _d->animation.update( time );
+  _d->animation.update( time );
 }
 
 FortPtr PatrolPoint::base() const

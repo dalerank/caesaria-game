@@ -39,6 +39,7 @@ public:
   virtual void moveUp(const int amount) = 0;
   virtual void moveDown(const int amount) = 0;
   virtual const TilesArray& tiles() const = 0;
+  virtual const TilesArray& flatTiles() const = 0;
   virtual int centerX() const = 0;
   virtual int centerZ() const = 0;
   virtual TilePos center() const = 0;
@@ -56,4 +57,4 @@ public oc3_signals:
 
 } //end namespace gfx
 
-#endif //__CAESARIA_GFX_LOGO_H_INCLUDED__
+#endif //__CAESARIA_GFX_CAMERA_H_INCLUDED__

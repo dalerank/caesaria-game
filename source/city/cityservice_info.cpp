@@ -32,6 +32,7 @@
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
 #include "statistic.hpp"
+#include "cityservice_military.hpp"
 
 using namespace constants;
 
@@ -117,6 +118,13 @@ void Info::update( const unsigned int time )
     if( peaceSrvc.isValid() )
     {
       last.peace = peaceSrvc->value();
+    }
+
+    MilitaryPtr mil;
+    mil << _city.findService( Military::defaultName() );
+    if( mil.isValid() )
+    {
+      last.milthreat = mil->threadValue();
     }
 
     Helper helper( &_city );
@@ -315,6 +323,7 @@ VariantMap Info::Parameters::save() const
   VARIANT_SAVE_ANY( ret, foodStock )
   VARIANT_SAVE_ANY( ret, foodMontlyConsumption )
   VARIANT_SAVE_ANY( ret, favour )
+  VARIANT_SAVE_ANY( ret, milthreat )
 
   return ret;
 }
@@ -350,6 +359,7 @@ void Info::Parameters::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( foodStock, stream )
   VARIANT_LOAD_ANY( foodMontlyConsumption, stream )
   VARIANT_LOAD_ANY( favour, stream )
+  VARIANT_LOAD_ANY( milthreat, stream )
 }
 
 VariantMap Info::ScribeMessage::save() const

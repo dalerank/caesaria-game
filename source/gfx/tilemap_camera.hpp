@@ -53,6 +53,7 @@ public:
 
   // return tile coordinates (i, j), in order of depth
   virtual const TilesArray& tiles() const;
+  virtual const TilesArray& flatTiles() const;
 
   int centerX() const;
   int centerZ() const;

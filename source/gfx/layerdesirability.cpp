@@ -123,6 +123,8 @@ void LayerDesirability::beforeRender( Engine& engine )
 {
   foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
+
+  Layer::beforeRender( engine );
 }
 
 LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)

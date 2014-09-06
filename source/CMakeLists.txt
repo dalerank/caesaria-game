@@ -107,12 +107,13 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-  target_link_libraries(${PROJECT_NAME} "GL")
   set(EXECUTABLE_FILENAME "caesaria.linux")
 endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
+else(APPLE)
+  target_link_libraries(${PROJECT_NAME} "GL")
 endif(APPLE)
 
 if(HAIKU)
@@ -123,7 +124,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in release mode")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
