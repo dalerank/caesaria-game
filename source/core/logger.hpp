@@ -22,7 +22,6 @@
 #include "referencecounted.hpp"
 #include "smartptr.hpp"
 #include "scopedptr.hpp"
-#include "crashHandler.hpp"
 
 class LogWriter : public ReferenceCounted
 {
