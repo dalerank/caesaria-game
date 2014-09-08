@@ -152,4 +152,6 @@ void ThrowingWeapon::setPicOffset(Point offset)
 ThrowingWeapon::ThrowingWeapon(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {
   setName( _("##unknow_throwing_weapon##") );
+
+  setFlag( vividly, false );
 }

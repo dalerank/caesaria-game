@@ -54,15 +54,18 @@ public:
   Size viewSize;      // width of the view(in tiles)  nb_tilesX = 1+2*_view_width
                       // height of the view(in tiles) nb_tilesY = 1+2*_view_height
   TilesArray tiles;   // cached list of visible tiles
+  TilesArray flatTiles;
 
   MovableOrders mayMove( PointF point );
   void resetDrawn();
 
-  Point getOffset( const Point& center )
+  Point getOffset( const PointF& center )
   {
     return Point( screenSize.width() / 2 - 30 * (center.x() + 1) + 1,
                   screenSize.height()/ 2 + 15 * (center.y() - tilemap->size() + 1) - 30 );
   }
+
+  void cacheFlatTiles();
 
 public oc3_signals:
   Signal1<Point> onPositionChangedSignal;
@@ -120,31 +123,38 @@ void TilemapCamera::move(PointF relative)
 
   if( mv.any() )
   {
+    Tile* currentCenterTile = centerTile();
     _d->centerMapXZ += relative;
-    _d->resetDrawn();
-    _d->tiles.clear();
+    _d->offset = _d->getOffset( _d->centerMapXZ );
+    Tile* newCenterTile = centerTile();
+
+    if( currentCenterTile != newCenterTile )
+    {
+      _d->resetDrawn();
+      _d->tiles.clear();
+    }
 
     oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
   }
 }
 
 void TilemapCamera::setCenter(Point pos)
-{
-  Point futureOffset = _d->getOffset( pos );
-  int mapsize = _d->tilemap->size();
-  Point tile00 = _d->tilemap->at( 0, 0 ).mappos();
-  Point tile0x = _d->tilemap->at( 0, mapsize-1 ).mappos();
-  Point tilex0 = _d->tilemap->at( mapsize-1, 0 ).mappos();
-  Point tilexx = _d->tilemap->at( mapsize-1, mapsize-1 ).mappos();
-  if( (futureOffset.x() + tile00.x() > 0)
-      || (futureOffset.y() + tile0x.y() > 0)
-      || (futureOffset.x() + tilexx.x() < _d->screenSize.width() )
-      || (futureOffset.y() + tilex0.y() < _d->screenSize.height() ) )
-    return;
-
+{ 
   if( _d->centerMapXZ.toPoint() != pos  )
   {
     _d->tiles.clear();
+
+    Point futureOffset = _d->getOffset( pos.toPointF() );
+    int mapsize = _d->tilemap->size();
+    Point tile00 = _d->tilemap->at( 0, 0 ).mappos();
+    Point tile0x = _d->tilemap->at( 0, mapsize-1 ).mappos();
+    Point tilex0 = _d->tilemap->at( mapsize-1, 0 ).mappos();
+    Point tilexx = _d->tilemap->at( mapsize-1, mapsize-1 ).mappos();
+    if( (futureOffset.x() + tile00.x() > 0)
+        || (futureOffset.y() + tile0x.y() > 0)
+        || (futureOffset.x() + tilexx.x() < _d->screenSize.width() )
+        || (futureOffset.y() + tilex0.y() < _d->screenSize.height() ) )
+      return;
   }  
 
   _d->centerMapXZ = pos.toPointF();
@@ -180,7 +190,7 @@ const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.empty() )
   {
-    _d->offset = _d->getOffset( _d->centerMapXZ.toPoint() );
+    _d->offset = _d->getOffset( _d->centerMapXZ );
 
     int mapSize = _d->tilemap->size();
     int zm = _d->tilemap->size() + 1;
@@ -226,9 +236,16 @@ const TilesArray& TilemapCamera::tiles() const
         }
       }
     }
+
+    _d->cacheFlatTiles();
   }
 
   return _d->tiles;
+}
+
+const TilesArray& TilemapCamera::flatTiles() const
+{
+  return _d->flatTiles;
 }
 
 MovableOrders TilemapCamera::Impl::mayMove(PointF point)
@@ -250,6 +267,28 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 void TilemapCamera::Impl::resetDrawn()
 {
   foreach( tile, tiles ) { (*tile)->resetWasDrawn(); }
+}
+
+void TilemapCamera::Impl::cacheFlatTiles()
+{
+  Tile* tile;
+  unsigned int reserve = flatTiles.size();
+  flatTiles.clear();
+  flatTiles.reserve( reserve );
+
+  foreach( it, tiles )
+  {
+    int z = (*it)->epos().z();
+    tile = (*it)->masterTile();
+    if( !tile )
+      tile = *it;
+
+    if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
+    {
+      tile->setWasDrawn();
+      flatTiles.push_back( tile );
+    }
+  }
 }
 
 Point TilemapCamera::offset() const{  return _d->offset;}

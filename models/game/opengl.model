@@ -1,6 +1,6 @@
 {
   framebuffer : true
-  technique_ :
+  technique :
   {
     pass_1 :
     {

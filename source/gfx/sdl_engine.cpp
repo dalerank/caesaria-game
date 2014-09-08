@@ -138,6 +138,8 @@ void SdlEngine::init()
   //_srcSize = Size( mode.w, mode.h );
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+
   window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 

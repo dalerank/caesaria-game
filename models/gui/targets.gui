@@ -87,6 +87,7 @@
     geometry : [ 16, 152, "pw-20", "ph-40" ]
     itemfont : "FONT_2_WHITE"
     itemheight : 16
-    items.offset : [ 0, 0 ]
+    margin.left : 10
+    margin.top : 10
   }
 }
