@@ -50,6 +50,9 @@ public:
   virtual unsigned int walkerDistance() const;
 
   std::string workersStateDesc() const;
+protected:
+  virtual int _getWalkerOrders() const;
+
 private:  
   void _setLastSendService( DateTime time );
 

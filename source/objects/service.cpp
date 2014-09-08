@@ -99,7 +99,7 @@ void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
-  serviceman->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
+  serviceman->send2City( this, _getWalkerOrders() );
 
   if( !serviceman->isDeleted() )
   {
@@ -148,4 +148,9 @@ std::string ServiceBuilding::workersStateDesc() const
   }
   std::string currentState = StringHelper::format( 0xff, "##%s_%s##", srvcType.c_str(), state.c_str() );
   return currentState;
+}
+
+int ServiceBuilding::_getWalkerOrders() const
+{
+  return ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed;
 }
