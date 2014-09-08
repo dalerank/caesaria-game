@@ -20,6 +20,7 @@
 #include "game/gamedate.hpp"
 #include "walker/enemysoldier.hpp"
 #include "core/stringhelper.hpp"
+#include "city/cityservice_info.hpp"
 
 using namespace constants;
 
@@ -47,6 +48,7 @@ Military::Military(PlayerCityPtr city )
   : city::Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->updateMilitaryThreat = true;
+  _d->threatValue = 0;
 }
 
 void Military::update( const unsigned int time )
@@ -73,7 +75,7 @@ void Military::update( const unsigned int time )
     enSoldiers << _city.walkers( walker::any );
 
     _d->threatValue = enSoldiers.size() * 10;
-  }
+  }  
 }
 
 void Military::addNotification(const std::string& text, const Point& location)

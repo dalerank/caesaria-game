@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
@@ -34,7 +34,11 @@ public:
                  needWorkers, maxWorkers, workless,
                  crimeLevel, colloseumCoverage, theaterCoverage,
                  entertainment, lifeValue, education,
-                 payDiff, monthWithourWar, cityWages,
+                 payDiff, monthWtWar, cityWages,
+                 romeWages, peace, milthreat,
+                 houseNumber, slumNumber, shackNumber,
+                 sentiment, foodStock, foodMontlyConsumption,
+                 favour, prosperity,
                  paramsCount } ParamName;
 
   class Parameters : public std::vector<int>
@@ -42,34 +46,7 @@ public:
   public:    
     DateTime date;
 
-    int romeWages;
-    int peace;    
-    int milthreat;
-    int houseNumber;
-    int slumNumber;
-    int shackNumber;
-    int sentiment;
-    int foodStock;
-    int foodMontlyConsumption;
-    int favour;
-    int prosperity;
-
-    Parameters()
-    {
-      resize( paramsCount );
-
-      foreach( i, *this )
-        *i = 0;
-
-      romeWages = 0;
-      houseNumber = 0;
-      slumNumber = 0;
-      shackNumber = 0;
-      foodStock = 0;
-      foodMontlyConsumption = 0;
-      favour = 0;
-      prosperity = 0;
-    }
+    Parameters();
 
     VariantList save() const;
     void load(const VariantList& stream );
@@ -78,7 +55,6 @@ public:
   struct MaxParameterValue
   {
     DateTime date;
-    std::string name;
     int value;
   };
 
@@ -99,6 +75,7 @@ public:
 
   typedef std::list<ScribeMessage> Messages;
   typedef std::vector< Info::Parameters > History;
+  typedef std::vector< Info::MaxParameterValue > MaxParameters;
 
   static SrvcPtr create( PlayerCityPtr city );
 
@@ -106,6 +83,7 @@ public:
   Parameters lastParams() const;
   Parameters params( int monthAgo ) const;
   Parameters yearParams( int year ) const;
+  const MaxParameters& maxParams() const;
 
   const History& history() const;
 

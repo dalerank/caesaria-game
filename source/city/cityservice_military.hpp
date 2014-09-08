@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "core/signals.hpp"
 
 namespace city
 {
@@ -53,6 +54,7 @@ public:
   unsigned int threadValue() const;
 
   static std::string defaultName();
+
 private:
   Military( PlayerCityPtr city );
 

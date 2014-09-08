@@ -116,7 +116,7 @@ void Migration::update( const unsigned int time )
                                    ? ((minMonthWithFood - params[ Info::monthWithFood ]) * 3)
                                    : -params[ Info::monthWithFood ] );
 
-  int sentimentInfluence = (params.sentiment - 50) / 5;
+  int sentimentInfluence = (params[ Info::sentiment ] - 50) / 5;
 
   //emigrant need workplaces
   const int& curWorklessValue = params[ Info::workless ];
@@ -128,14 +128,14 @@ void Migration::update( const unsigned int time )
                             ? params[ Info::tax ] * 2
                             : (possibleTaxLevel-params[ Info::tax ]) );
 
-  const int& monthWithourWar = params[ Info::monthWithourWar ];
+  const int& monthWithourWar = params[ Info::monthWtWar ];
   int warInfluence = ( monthWithourWar < DateTime::monthsInYear
                           ? (DateTime::monthsInYear - monthWithourWar) * 5
                           : -std::min( monthWithourWar, 10 ) );
-  warInfluence += params.milthreat;
+  warInfluence += params[ Info::milthreat ];
 
-  int slumsInfluence = ( _d->isPoorHousing( params.slumNumber, params.houseNumber ) ? 20 : 0);
-  int shacksInfluence = ( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ? 10 : 0 );
+  int slumsInfluence = ( _d->isPoorHousing( params[ Info::slumNumber ], params[ Info::houseNumber ] ) ? 20 : 0);
+  int shacksInfluence = ( _d->isPoorHousing( params[ Info::shackNumber ], params[ Info::houseNumber ] ) ? 10 : 0 );
 
   if( _d->worklessMinInfluence > 0 )
   {
@@ -158,6 +158,11 @@ void Migration::update( const unsigned int time )
   _d->emigrantsIndesirability *= migrationKoeff;
 
   Logger::warning( "MigrationSrvc: current indesrbl=%d", _d->emigrantsIndesirability );
+  if( warInfluence > 50 )
+  {
+    Logger::warning( "Migration: enemies in city migration broke" );
+    return;
+  }
 
   int goddesRandom = math::random( maxIndesirability );
   if( goddesRandom > _d->emigrantsIndesirability )
@@ -198,7 +203,7 @@ std::string Migration::reason() const
   if( _d->emigrantsIndesirability > defaultEmIndesirability )
   {
     Info::Parameters params = _d->lastMonthParams( _city );
-    if( params[ Info::monthWithourWar ] < DateTime::monthsInYear )
+    if( params[ Info::monthWtWar ] < DateTime::monthsInYear )
     {
       troubles << "##migration_war_deterring##";
     }
@@ -221,7 +226,7 @@ std::string Migration::reason() const
       else if( params[ Info::workless ] > 5 ) { troubles << "##migration_lack_workless##"; }
     }
 
-    int diffWages = params.romeWages - params[ Info::cityWages ];
+    int diffWages = params[ Info::romeWages ] - params[ Info::cityWages ];
     if( diffWages > 5 ) { troubles << "##low_wage_broke_migration##"; }
     else if( diffWages > 1 ) { troubles <<  "##low_wage_lack_migration##"; }
 
@@ -231,9 +236,9 @@ std::string Migration::reason() const
     else if( params[ Info::tax ] > simpleTaxLevel ) { troubles <<  "##migration_middle_lack_tax##"; }
     else if( params[ Info::tax ] > possibleTaxLevel ) { troubles << "##migration_lack_tax##"; }
 
-    if( params.sentiment < 50 ) { troubles << "##poor_city_mood_lack_migration##";}
+    if( params[ Info::sentiment ] < 50 ) { troubles << "##poor_city_mood_lack_migration##";}
 
-    if( _d->isPoorHousing( params.shackNumber, params.houseNumber ) ) { troubles << "##poor_housing_discourages_migration##";}
+    if( _d->isPoorHousing( params[ Info::shackNumber ], params[ Info::houseNumber ] ) ) { troubles << "##poor_housing_discourages_migration##";}
   }
 
   return troubles.empty()

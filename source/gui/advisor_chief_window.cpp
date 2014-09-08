@@ -266,7 +266,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
       city::Info::Parameters lastMonth = info->lastParams();
       city::Info::Parameters prevMonth = info->params( 1 );
 
-      if( lastMonth.foodStock < prevMonth.foodStock )
+      if( lastMonth[ city::Info::foodStock ] < prevMonth[ city::Info::foodStock ] )
       {
         text = "##no_food_stored_last_month##";
       }
