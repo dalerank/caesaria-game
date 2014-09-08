@@ -41,6 +41,7 @@ public:
 
   const ObjectList& objects() const;
   ObjectPtr findObject( const std::string& name ) const;
+  ObjectList findObjects( Point location, int deviance ) const;
   void addObject( ObjectPtr obj );
 
   void initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap );

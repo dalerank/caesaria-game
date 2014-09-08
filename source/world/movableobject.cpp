@@ -119,7 +119,7 @@ void MovableObject::load(const VariantMap& stream)
   d->step = stream.get( "step" );
 }
 
-void MovableObject::_findWay( Point p1, Point p2 )
+bool MovableObject::_findWay( Point p1, Point p2 )
 {
   __D_IMPL(d,MovableObject)
 
@@ -130,12 +130,13 @@ void MovableObject::_findWay( Point p1, Point p2 )
   setLocation( d->start );
   d->step = 0;
 
-  empire()->addObject( this );
-
   if( d->way.empty() )
   {
     Logger::warning( "MovableObject: cannot find way from [%d,%d] to [%d,%d]", p1.x(), p1.y(), p2.x(), p2.y() );
+    return false;
   }
+
+  return true;
 }
 
 }

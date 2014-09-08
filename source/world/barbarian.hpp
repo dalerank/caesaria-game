@@ -15,36 +15,40 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MOVABLEOBJECT_H_INCLUDED__
-#define __CAESARIA_MOVABLEOBJECT_H_INCLUDED__
+#ifndef __CAESARIA_WORLD_BARBARIAN_H_INCLUDED__
+#define __CAESARIA_WORLD_BARBARIAN_H_INCLUDED__
 
-#include "predefinitions.hpp"
-#include "object.hpp"
-#include "core/variant.hpp"
+#include "movableobject.hpp"
 
 namespace world
 {
 
-class MovableObject : public Object
+class Barbarian : public MovableObject
 {
 public:
-  virtual ~MovableObject();
+  static BarbarianPtr create(EmpirePtr empire, Point location );
+  virtual std::string type() const;
 
-  virtual void save( VariantMap& stream ) const;
-  virtual void load( const VariantMap& stream );
-  virtual void setSpeed( float speed );
-  virtual void timeStep(const unsigned int time);
-  virtual bool isMovable() const { return true; }
+  virtual void timeStep( unsigned int time );
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
 
 protected:
-  virtual bool _findWay( Point p1, Point p2 );
   virtual void _reachedWay();
-  PointsArray& _way();
-  MovableObject( EmpirePtr empire );
+  virtual void _check4attack();
+  virtual void _goaway();
+  virtual bool _attackObject( ObjectList objs );
+  virtual bool _attackObject( ObjectPtr obj );
 
-private: 
-  __DECLARE_IMPL(MovableObject)
+  Barbarian( EmpirePtr empire );
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }
-#endif //__CAESARIA_ARMY_H_INCLUDED__
+
+#endif //__CAESARIA_WORLD_BARBARIAN_H_INCLUDED__

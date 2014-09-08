@@ -61,7 +61,20 @@ void Army::_reachedWay()
 {
   __D_IMPL(d,Army)
 
-  ObjectPtr obj = empire()->findObject( d->destination );
+  ObjectPtr obj;
+  if( !d->destination.empty() )
+  {
+    obj = empire()->findObject( d->destination );
+  }
+  else
+  {
+    ObjectList objs = empire()->findObjects( location(), 20 );
+    objs.remove( this );
+
+    if( !objs.empty() )
+      obj = objs.front();
+  }
+
   if( obj.isValid() )
   {
     obj->addObject( this );
@@ -80,6 +93,7 @@ void Army::save(VariantMap& stream) const
 
   __D_IMPL_CONST(d,Army)
   stream[ "base"  ] = Variant( d->base.isValid() ? d->base->name() : "" );
+  VARIANT_SAVE_STR_D( stream, d, destination )
 }
 
 void Army::load(const VariantMap& stream)
@@ -87,8 +101,10 @@ void Army::load(const VariantMap& stream)
   MovableObject::load( stream );
 
   __D_IMPL(d,Army)
-  d->base = empire()->findCity( d->options[ "base" ].toString() );
+  d->base = empire()->findCity( d->options[ "base" ].toString() );  
   d->options = stream;
+
+  VARIANT_LOAD_STR_D( d, destination, stream )
 }
 
 std::string Army::type() const { return CAESARIA_STR_EXT(Army); }

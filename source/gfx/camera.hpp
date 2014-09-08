@@ -48,6 +48,7 @@ public:
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
   virtual void setCenter( TilePos pos ) = 0;
+  virtual void refresh() = 0;
 
   virtual ~Camera() {}
 
