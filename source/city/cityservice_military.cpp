@@ -18,7 +18,10 @@
 #include "cityservice_military.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
+#include "walker/enemysoldier.hpp"
 #include "core/stringhelper.hpp"
+
+using namespace constants;
 
 namespace city
 {
@@ -29,6 +32,7 @@ public:
   Military::NotificationArray notifications;
   DateTime lastEnemyAttack;
   float threatValue;
+  bool updateMilitaryThreat;
 };
 
 city::SrvcPtr Military::create(PlayerCityPtr city )
@@ -42,6 +46,7 @@ city::SrvcPtr Military::create(PlayerCityPtr city )
 Military::Military(PlayerCityPtr city )
   : city::Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
+  _d->updateMilitaryThreat = true;
 }
 
 void Military::update( const unsigned int time )
@@ -58,11 +63,16 @@ void Military::update( const unsigned int time )
       }
       else { ++it; }
     }
+  }
 
-    if( _d->threatValue < 3 )
-      _d->threatValue = 0;
-    else
-      _d->threatValue *= 0.9f;
+  if( _d->updateMilitaryThreat || GameDate::isMonthChanged() )
+  {
+    _d->updateMilitaryThreat = false;
+
+    EnemySoldierList enSoldiers;
+    enSoldiers << _city.walkers( walker::any );
+
+    _d->threatValue = enSoldiers.size() * 10;
   }
 }
 
@@ -126,10 +136,10 @@ void Military::load(const VariantMap& stream)
 
 void Military::updateThreat(int value)
 {
+  _d->updateMilitaryThreat = true;
+
   if( value > 0 )
     _d->lastEnemyAttack = GameDate::current();
-
-  _d->threatValue = math::clamp<int>( _d->threatValue + value, 0, 100);
 }
 
 int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }

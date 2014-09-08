@@ -201,7 +201,7 @@ void Ratings::Impl::checkProsperityRating()
       troubles << "##how_to_grow_prosperity##";
     }
     if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
-    if( current.payDiff > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
+    if( current[ Info::payDiff ] > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
     unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );

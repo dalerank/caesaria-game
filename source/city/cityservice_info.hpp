@@ -29,30 +29,20 @@ namespace city
 class Info : public Srvc
 {
 public:
-  class Parameters
+  typedef enum { population=0, funds, tax, taxpayes,
+                 monthWithFood, foodKoeff, godsMood,
+                 needWorkers, maxWorkers, workless,
+                 crimeLevel, colloseumCoverage, theaterCoverage,
+                 entertainment, lifeValue, education,
+                 payDiff, monthWithourWar, cityWages,
+                 paramsCount } ParamName;
+
+  class Parameters : public std::vector<int>
   {
-  public:
+  public:    
     DateTime date;
-    int population;
-    int funds;
-    int tax;
-    int taxpayes;
-    int monthWithFood;    
-    int foodKoeff;
-    int godsMood;
-    int needWorkers;
-    int workless;
-    int colloseumCoverage;
-    int theaterCoverage;
-    int entertainment;
-    int lifeValue;
-    int education;
-    int payDiff;
-    int monthWithourWar;
-    int cityWages;
+
     int romeWages;
-    int maxWorkers;
-    int crimeLevel;
     int peace;    
     int milthreat;
     int houseNumber;
@@ -66,25 +56,11 @@ public:
 
     Parameters()
     {
-      population = 0;
-      funds = 0;
-      tax = 0;
-      taxpayes = 0;
-      monthWithFood = 0;
-      foodKoeff = 0;
-      godsMood = 0;
-      needWorkers = 0;
-      maxWorkers = 0;
-      workless = 0;
-      tax = 0;
-      crimeLevel = 0;
-      colloseumCoverage = 0;
-      theaterCoverage = 0;
-      entertainment = 0;
-      lifeValue = 0;
-      payDiff = 0;
-      education = 0;
-      cityWages = 0;
+      resize( paramsCount );
+
+      foreach( i, *this )
+        *i = 0;
+
       romeWages = 0;
       houseNumber = 0;
       slumNumber = 0;
@@ -95,8 +71,15 @@ public:
       prosperity = 0;
     }
 
-    VariantMap save() const;
-    void load( const VariantMap& stream );
+    VariantList save() const;
+    void load(const VariantList& stream );
+  };
+
+  struct MaxParameterValue
+  {
+    DateTime date;
+    std::string name;
+    int value;
   };
 
   struct ScribeMessage

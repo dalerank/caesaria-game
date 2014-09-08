@@ -272,7 +272,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
       }
       else
       {
-        int monthWithFood = lastMonth.monthWithFood;
+        int monthWithFood = lastMonth[ city::Info::monthWithFood ];
         switch( monthWithFood )
         {
           case 0: text = "##have_no_food_on_next_month##"; break;
@@ -296,7 +296,7 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
   city::InfoPtr info;
   info << city->findService( city::Info::defaultName() );
 
-  int fk = info->lastParams().foodKoeff;
+  int fk = info->lastParams()[ city::Info::foodKoeff ];
 
   if( fk < -4 )
   {
@@ -308,7 +308,7 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
   }
   else
   {
-    switch( info->lastParams().foodKoeff )
+    switch( info->lastParams()[ city::Info::foodKoeff ] )
     {
     case -3: text = "##we_eat_more_thie_produce##"; break;
     case -2: text = "##we_eat_some_then_produce##"; break;

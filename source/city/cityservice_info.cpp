@@ -46,10 +46,14 @@ CAESARIA_LITERALCONST(messages)
 class Info::Impl
 {
 public:
+  typedef std::map< Info::ParamName, Info::MaxParameterValue > MaxParameters;
+
   DateTime lastDate;
   Info::History lastYearHistory;
   Info::History allHistory;
   Info::Messages messages;
+
+  MaxParameters maxParams;
 };
 
 SrvcPtr Info::create(PlayerCityPtr city )
@@ -82,35 +86,35 @@ void Info::update( const unsigned int time )
 
     Parameters& last = _d->lastYearHistory.back();
     last.date = _d->lastDate;
-    last.population = _city.population();
-    last.funds = _city.funds().treasury();
-    last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
+    last[ Info::population ] = _city.population();
+    last[ Info::funds ] = _city.funds().treasury();
+    last[ Info::taxpayes ] =  0;//_d->city->getLastMonthTaxpayer();
 
     last.foodStock = city::Statistic::getFoodStock( &_city );
     last.foodMontlyConsumption = city::Statistic::getFoodMonthlyConsumption( &_city );
-    last.monthWithFood = last.foodMontlyConsumption > 0 ? (last.foodStock / last.foodMontlyConsumption) : 0;
+    last[ Info::monthWithFood ] = last.foodMontlyConsumption > 0 ? (last.foodStock / last.foodMontlyConsumption) : 0;
 
     int foodProducing = city::Statistic::getFoodProducing( &_city );
     int yearlyFoodConsumption = last.foodMontlyConsumption * DateTime::monthsInYear;
-    last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
+    last[ Info::foodKoeff ] = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -(yearlyFoodConsumption / (foodProducing+1) );
 
     int currentWorkers, maxWorkers;
     city::Statistic::getWorkersNumber( &_city, currentWorkers, maxWorkers );
 
-    last.needWorkers = maxWorkers - currentWorkers;
-    last.maxWorkers = maxWorkers;
-    last.workless = city::Statistic::getWorklessPercent( &_city );
-    last.payDiff = _city.empire()->workerSalary() - _city.funds().workerSalary();
-    last.tax = _city.funds().taxRate();
-    last.cityWages = _city.funds().workerSalary();
+    last[ Info::needWorkers ] = maxWorkers - currentWorkers;
+    last[ Info::maxWorkers ] = maxWorkers;
+    last[ Info::workless ] = city::Statistic::getWorklessPercent( &_city );
+    last[ Info::payDiff ] = _city.empire()->workerSalary() - _city.funds().workerSalary();
+    last[ Info::tax ] = _city.funds().taxRate();
+    last[ Info::cityWages ] = _city.funds().workerSalary();
     last.romeWages = _city.empire()->workerSalary();
-    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );
+    last[ Info::crimeLevel ] = city::Statistic::getCrimeLevel( &_city );
     last.favour = _city.favour();
     last.prosperity = _city.prosperity();
 
-    last.monthWithourWar = city::Statistic::months2lastAttack( &_city );
+    last[ Info::monthWithourWar ] = city::Statistic::months2lastAttack( &_city );
     last.peace = 0;
 
     PeacePtr peaceSrvc;
@@ -226,14 +230,14 @@ void Info::load(const VariantMap& stream)
   foreach( i, currentHistory )
   {
     _d->lastYearHistory.push_back( Parameters() );
-    _d->lastYearHistory.back().load( i->second.toMap() );
+    _d->lastYearHistory.back().load( i->second.toList() );
   }
 
   VariantMap allHistory = stream.get( lc_allHistory ).toMap();
   foreach( i, allHistory )
   {
     _d->allHistory.push_back( Parameters() );
-    _d->allHistory.back().load( i->second.toMap() );
+    _d->allHistory.back().load( i->second.toList() );
   }
 
   VariantMap messages= stream.get( lc_messages ).toMap();
@@ -286,15 +290,18 @@ CAESARIA_LITERALCONST(text)
 CAESARIA_LITERALCONST(title)
 CAESARIA_LITERALCONST(gtype)
 CAESARIA_LITERALCONST(position)
-CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(opened)
 CAESARIA_LITERALCONST(ext)
 }
 
-VariantMap Info::Parameters::save() const
+VariantList Info::Parameters::save() const
 {
-  VariantMap ret;
-  VARIANT_SAVE_ANY( ret, date )
+  VariantList vl;
+  for( int k=0; k < Info::paramsCount; k++  )
+  {
+    vl.push_back( (*this)[ k ] );
+  }
+  /*VARIANT_SAVE_ANY( ret, date )
   VARIANT_SAVE_ANY( ret, population )
   VARIANT_SAVE_ANY( ret, funds )
   VARIANT_SAVE_ANY( ret, tax )
@@ -323,14 +330,20 @@ VariantMap Info::Parameters::save() const
   VARIANT_SAVE_ANY( ret, foodStock )
   VARIANT_SAVE_ANY( ret, foodMontlyConsumption )
   VARIANT_SAVE_ANY( ret, favour )
-  VARIANT_SAVE_ANY( ret, milthreat )
+  VARIANT_SAVE_ANY( ret, milthreat )    */
 
-  return ret;
+  return vl;
 }
 
-void Info::Parameters::load(const VariantMap& stream)
+void Info::Parameters::load(const VariantList& stream)
 {
-  VARIANT_LOAD_TIME( date, stream )
+  int k=0;
+  foreach( it, stream )
+  {
+    (*this)[ k ] = *it;
+    k++;
+  }
+  /*VARIANT_LOAD_TIME( date, stream )
   VARIANT_LOAD_ANY( population, stream )
   VARIANT_LOAD_ANY( funds, stream )
   VARIANT_LOAD_ANY( tax, stream )
@@ -359,7 +372,7 @@ void Info::Parameters::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( foodStock, stream )
   VARIANT_LOAD_ANY( foodMontlyConsumption, stream )
   VARIANT_LOAD_ANY( favour, stream )
-  VARIANT_LOAD_ANY( milthreat, stream )
+  VARIANT_LOAD_ANY( milthreat, stream )*/
 }
 
 VariantMap Info::ScribeMessage::save() const
@@ -369,7 +382,7 @@ VariantMap Info::ScribeMessage::save() const
   ret[ lc_title ] = Variant( title );
   ret[ lc_gtype ] = Variant( GoodHelper::getTypeName( gtype ) );
   ret[ lc_position ] = position;
-  ret[ lc_type ] = type;
+  VARIANT_SAVE_ANY( ret, type )
   VARIANT_SAVE_ANY( ret, date )
   ret[ lc_opened ] = opened;
   ret[ lc_ext ] = ext;
@@ -383,7 +396,7 @@ void Info::ScribeMessage::load(const VariantMap& stream)
   title = stream.get( lc_title ).toString();
   gtype = GoodHelper::getType( stream.get( lc_gtype ).toString() );
   position = stream.get( lc_position ).toPoint();
-  type = stream.get( lc_type );
+  VARIANT_LOAD_ANY( type, stream )
   VARIANT_LOAD_TIME( date, stream )
   opened = stream.get( lc_opened );
   ext = stream.get( lc_ext );
