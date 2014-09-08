@@ -22,6 +22,7 @@
 #include "referencecounted.hpp"
 #include "smartptr.hpp"
 #include "scopedptr.hpp"
+#include "crashHandler.hpp"
 
 class LogWriter : public ReferenceCounted
 {
@@ -56,5 +57,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+void CrashHandler_initCrashHandler();
+void CrashHandler_handleCrash(int signum);
 
 #endif //__CAESARIA_LOGGER_H_INCLUDED__
