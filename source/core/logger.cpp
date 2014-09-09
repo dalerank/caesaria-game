@@ -21,7 +21,6 @@
 #include "time.hpp"
 #include "foreach.hpp"
 #include "list.hpp"
-#include "crashHandler.hpp"
 
 #include <cstdarg>
 #include <cfloat>
