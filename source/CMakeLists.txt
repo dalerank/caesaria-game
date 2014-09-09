@@ -108,12 +108,11 @@ endif(WIN32)
 
 if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
+  target_link_libraries(${PROJECT_NAME} "GL")
 endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
-else(APPLE)
-  target_link_libraries(${PROJECT_NAME} "GL")
 endif(APPLE)
 
 if(HAIKU)
