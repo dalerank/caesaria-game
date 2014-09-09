@@ -111,6 +111,8 @@ void Stacktrace::print(unsigned int starting_frame, unsigned int max_frames)
 
   //free(funcname);
   free(symbollist);
+#else
+  Logger::warning("Stack trace not available");
 #endif // CAESARIA_PLATFORM_LINUX
 }
 
