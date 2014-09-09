@@ -105,6 +105,7 @@ bool TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
       initTerrain( tile );
     }
   }
+  city->setOption( PlayerCity::updateTiles, 1 );
 
   return true;
 }

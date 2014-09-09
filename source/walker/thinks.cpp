@@ -25,6 +25,7 @@
 #include "core/stringhelper.hpp"
 
 using namespace constants;
+using namespace city;
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)
 {
@@ -46,47 +47,47 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   StringArray troubles = own;
   std::string walkerTypename = WalkerHelper::getTypename( walker->type() );
   city::Info::Parameters params = info->lastParams();
-  if( params.monthWithFood < 3 )
+  if( params[ Info::monthWithFood ] < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
   }
 
-  if( params.godsMood < 3 )
+  if( params[ Info::godsMood ] < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
   }
 
-  if( params.colloseumCoverage < 3 )
+  if( params[ Info::colloseumCoverage ] < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_need_colloseum##" );
   }
 
-  if( params.theaterCoverage < 3 )
+  if( params[ Info::theaterCoverage ] < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_need_theater##" );
   }
 
-  if( params.entertainment < 20 )
+  if( params[ Info::entertainment ] < 20 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
   }
 
-  if( params.needWorkers > 0 )
+  if( params[ Info::needWorkers ] > 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_need_workers##" );
   }
 
-  if( params.workless > 15 )
+  if( params[ Info::workless ] > 15 )
   {
     troubles.push_back( "##" + walkerTypename + "_high_workless##" );
   }
 
-  if( params.tax > 10 )
+  if( params[ Info::tax ] > 10 )
   {
     troubles.push_back( "##" + walkerTypename + "_high_tax##" );
   }
 
-  if( params.payDiff < 0 )
+  if( params[ Info::payDiff ] < 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_salary##" );
   }
@@ -97,20 +98,20 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   }
 
   StringArray positiveIdeas = own;
-  if( params.lifeValue > 90 )
+  if( params[ Info::lifeValue ] > 90 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_good_life##" );
   }
-  else if( params.lifeValue > 75 )
+  else if( params[ Info::lifeValue ] > 75 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
   }
-  else if( params.lifeValue > 50 )
+  else if( params[ Info::lifeValue ] > 50 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_normal_life##" );
   }
 
-  if( params.education > 90 )
+  if( params[ Info::education ] > 90 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_good_education##" );
   }

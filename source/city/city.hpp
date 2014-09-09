@@ -49,7 +49,7 @@ class PlayerCity : public world::City
 {
 public:
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
-                 forceBuild, warningsEnabled } OptionType;
+                 forceBuild, warningsEnabled, updateTiles } OptionType;
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 

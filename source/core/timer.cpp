@@ -21,6 +21,7 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include <SDL_cpuinfo.h>
+#include <SDL_timer.h>
 
 #define CAESARIA_USE_DEBUGTIMERS
 
@@ -103,6 +104,11 @@ public:
 
   std::map<unsigned int, TimerInfo> timers;
 };
+
+unsigned int DebugTimer::ticks()
+{
+  return SDL_GetTicks();
+}
 
 void DebugTimer::reset(const std::string &name)
 {

@@ -22,7 +22,6 @@
 #include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
-#include "events/winmission.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"

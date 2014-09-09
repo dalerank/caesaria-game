@@ -80,6 +80,8 @@
 #include "gui/city_options_window.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/timer.hpp"
+#include "city/cityservice_military.hpp"
+#include "city/cityservice_info.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -116,6 +118,8 @@ public:
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveSelectLayer( int type );
+  void checkFailedMission(Level *lvl);
+  void checkWinMission(Level *lvl);
   void resolveRemoveTool();
   void makeScreenShot();
   void setVideoOptions();
@@ -495,47 +499,26 @@ void Level::Impl::showEmpireMapWindow()
 
 void Level::draw()
 { 
-  //DebugTimer::reset( "render" );
   _d->renderer.render();
-  //DebugTimer::check( "", "render" );
 
-  //DebugTimer::reset( "beforeDraw" );
   _d->game->gui()->beforeDraw();
-  //DebugTimer::check( "", "beforeDraw" );
 
-  //DebugTimer::reset( "draw" );
   _d->game->gui()->draw();
-  //DebugTimer::check( "",  "draw" );
 }
 
 void Level::animate( unsigned int time )
 {
   _d->renderer.animate( time );
 
+  if( GameDate::isWeekChanged() )
+  {
+    _d->checkWinMission( this );
+    _d->checkFailedMission( this );
+  }
+
   if( GameDate::isMonthChanged() )
   {
-    PlayerCityPtr city = _d->game->city();
-    const city::VictoryConditions& wt = city->victoryConditions();
-
-    int culture = city->culture();
-    int prosperity = city->prosperity();
-    int favour = city->favour();
-    int peace = city->favour();
-    int population = city->population();
-    bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
-
-    if( success )
-    {
-      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(),
-                                                              wt.newTitle(), wt.winText(),
-                                                              false );
-
-      _d->mapToLoad = wt.nextMission();
-
-      CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
-    }
-
-    int autosaveInterval = GameSettings::get( GameSettings::autosaveInterval );
+    int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
     if( GameDate::current().month() % autosaveInterval == 0 )
     {
       static int rotate = 0;
@@ -792,6 +775,62 @@ void Level::Impl::makeScreenShot()
   Engine::instance().createScreenshot( filename );
   events::GameEventPtr e = events::WarningMessageEvent::create( "Screenshot save to " + filename );
   e->dispatch();
+}
+
+void Level::Impl::checkFailedMission( Level* lvl )
+{
+  PlayerCityPtr pcity = game->city();
+  city::MilitaryPtr mil;
+  city::InfoPtr info;
+  info << pcity->findService( city::Info::defaultName() );
+  mil << pcity->findService( city::Military::defaultName() );
+
+  if( mil.isValid() && info.isValid() )
+  {
+    const city::Info::MaxParameters& params = info->maxParams();
+
+    if( mil->threadValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population() )
+    {
+      game->pause();
+      Window* wnd = new Window( game->gui()->rootWidget(),
+                                          Rect( 0, 0, 400, 220 ), "" );
+      Label* lb = new Label( wnd, Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
+      lb->setTextAlignment( align::center, align::center );
+      lb->setFont( Font::create( FONT_6 ) );
+
+      PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 140), _("##restart_mission##") );
+
+      wnd->setCenter( game->gui()->rootWidget()->center() );
+      wnd->setModal();
+
+      CONNECT( btn, onClicked(), lvl, Level::_resolveRestart );
+    }
+  }
+}
+
+void Level::Impl::checkWinMission( Level* lvl )
+{
+  PlayerCityPtr city = game->city();
+  const city::VictoryConditions& wt = city->victoryConditions();
+
+  int culture = city->culture();
+  int prosperity = city->prosperity();
+  int favour = city->favour();
+  int peace = city->favour();
+  int population = city->population();
+  bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
+
+  if( success )
+  {
+    gui::WinMissionWindow* wnd = new gui::WinMissionWindow( game->gui()->rootWidget(),
+                                                            wt.newTitle(), wt.winText(),
+                                                            false );
+
+    mapToLoad = wt.nextMission();
+
+    CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
+  }
+
 }
 
 int Level::result() const {  return _d->result; }

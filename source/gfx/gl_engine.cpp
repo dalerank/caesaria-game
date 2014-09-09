@@ -38,17 +38,18 @@
 #include "ttf/SDL_ttf.h"
 
 #ifdef CAESARIA_PLATFORM_ANDROID
-  #include <GLES/gl.h>
-  #include <GLES/glext.h>
   #define glOrtho glOrthof
   #undef CAESRAIA_USE_SHADERS
+  #undef CAESARIA_USE_FRAMEBUFFER
+  #include <SDL_opengles2.h>
+  #define USE_GLES2
 #else
   #ifdef CAESARIA_PLATFORM_LINUX
     #define GL_GLEXT_PROTOTYPES
   #endif
+  #include <SDL_opengl.h>
 #endif
 
-#include <SDL_opengl.h>
 #ifdef CAESARIA_USE_FRAMEBUFFER
   #ifdef CAESARIA_PLATFORM_LINUX
     #define glGenFramebuffers  glGenFramebuffersEXT
@@ -99,7 +100,6 @@
     #define glFramebufferTexture2D glFramebufferTexture2DEXT
   #endif
 #else
-  #define NO_FRAME_BUFFER
   #undef CAESARIA_USE_SHADERS
 #endif
 
@@ -111,22 +111,7 @@
 
 namespace gfx{
 
-class GlEngine::Impl
-{
-public:
-  FrameBuffer fb;
-  SDL_Window* window;
-  EffectManager effects;
-  PictureRef fpsText;
-  SDL_Renderer *renderer;
-  Font debugFont;
-};
-
-GlEngine::GlEngine() : Engine(), _d( new Impl )
-{
-}
-
-GlEngine::~GlEngine() {}
+#ifdef CAESARIA_USE_FRAMEBUFFER
 
 static const char* screenVertexSource = "varying vec2 vTexCoord; \n"
 "void main(void) \n"
@@ -135,146 +120,66 @@ static const char* screenVertexSource = "varying vec2 vTexCoord; \n"
    "gl_Position = ftransform(); \n"
 "} \n";
 
-void GlEngine::init()
+PREDEFINE_CLASS_SMARTLIST(PostprocFilter,List)
+typedef PostprocFilterList Effects;
+
+class PostprocFilter : public ReferenceCounted
 {
-  setFlag( Engine::effects, 1 );
-  _rmask = _gmask = _bmask = _amask = 1.f;
-  int rc;
-  rc = SDL_Init(SDL_INIT_VIDEO);
-  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
-  rc = TTF_Init();
-  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());  
+public:
+  static PostprocFilterPtr create();
+  void setVariables( const VariantMap& variables );
+  void loadProgramm( vfs::Path fragmentShader );
 
-  unsigned int flags = SDL_WINDOW_OPENGL;
-  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  void setUniformVar( const std::string& name, const Variant& var );
 
-  if(isFullscreen())
-  {
-    _d->window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        0, 0,
-        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+  void begin();
+  void bindTexture();
+  void end();
 
-  }
-  else
-  {
-    _d->window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        _srcSize.width(), _srcSize.height(),
-        flags);
-  }
+private:
+  PostprocFilter();
+  void _log( unsigned int program );
+  unsigned int _program;
+  unsigned int _vertexShader, _fragmentShader;
+  VariantMap _variables;
+};
 
-  if (_d->window == NULL)
-  {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
-    THROW("Failed to create window");
-  }
-
-  Logger::warning("SDLGraficEngine: init successfull");
-  _d->renderer = SDL_CreateRenderer(_d->window, -1, SDL_RENDERER_ACCELERATED );
-
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-#if defined(CAESARIA_PLATFORM_WIN) && !defined(NO_FRAME_BUFFER)
-  ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
-  ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
-  ASSIGNGLFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader)
-  ASSIGNGLFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv)
-  ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM1FPROC,glUniform1f)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM2IPROC,glUniform2i)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM2FPROC,glUniform2f)
-  ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
-  ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
-  ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
-  ASSIGNGLFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram)
-  ASSIGNGLFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader)
-  ASSIGNGLFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram)
-  ASSIGNGLFUNCTION(PFNGLGETPROGRAMIVPROC,glGetProgramiv)
-  ASSIGNGLFUNCTION(PFNGLGENFRAMEBUFFERSEXTPROC,glGenFramebuffersEXT)
-  ASSIGNGLFUNCTION(PFNGLGENTEXTURESEXTPROC,glGenTexturesEXT)
-  ASSIGNGLFUNCTION(PFNGLGENRENDERBUFFERSEXTPROC,glGenRenderbuffersEXT)
-  ASSIGNGLFUNCTION(PFNGLBINDFRAMEBUFFEREXTPROC,glBindFramebufferEXT)
-  ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC,glFramebufferTexture2DEXT)
-  ASSIGNGLFUNCTION(PFNGLBINDRENDERBUFFEREXTPROC,glBindRenderbufferEXT)
-  ASSIGNGLFUNCTION(PFNGLRENDERBUFFERSTORAGEEXTPROC,glRenderbufferStorageEXT)
-  ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
-  ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
-#endif
-
-  glEnable( GL_TEXTURE_2D );
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-  glViewport( 0, 0, _srcSize.width(), _srcSize.height() );
-  glClear(GL_COLOR_BUFFER_BIT); // black screen
-  glDisable(GL_DEPTH_TEST); // no depth test
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0, _srcSize.width(), _srcSize.height(), 0, 0, 1);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  // Displacement trick for exact pixelization
-  glTranslatef(0.375, 0.375, 0);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  Logger::warning( "GrafixEngine: set caption");
-  SDL_SetWindowTitle( _d->window, "CaesarIA:gl "CAESARIA_VERSION );
-
-  //!!!!!
-  if( getFlag( Engine::effects ) > 0 )
-  {
-    _d->fb.initialize( _srcSize );
-    _d->effects.load( SETTINGS_RC_PATH( opengl_opts ) );
-  }
-
-  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
-}
-
-void GlEngine::exit()
+class EffectManager : public ReferenceCounted
 {
-   TTF_Quit();
-   SDL_Quit();
-}
+public:
+  EffectManager();
+  void load( vfs::Path effectModel );
 
-void GlEngine::deletePicture( Picture* pic )
+  Effects& effects();
+
+private:
+  Effects _effects;
+};
+
+class FrameBuffer : public ReferenceCounted
 {
-  if( pic )
-    unloadPicture( *pic );
-}
+public:
+  FrameBuffer();
+  void initialize( Size size );
 
-void GlEngine::setFlag( int flag, int value )
-{
-  Engine::setFlag( flag, value );
+  void begin();
+  void end();
 
-  if( flag == debugInfo )
-  {
-    _d->debugFont = Font::create( FONT_2 );
-  }
-}
+  void draw();
+  void draw( Effects& effects );
 
+  bool isOk() const;
 
-Picture* GlEngine::createPicture(const Size& size )
-{
-  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
-                                           0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+private:
+  void _createFramebuffer( unsigned int& id );
 
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
-
-  Picture *pic = new Picture();
-  pic->init( 0, img, 0 );  // no offset
-
-  return pic;
-}
-
-Picture& GlEngine::screen(){  return _screen; }
+  unsigned int _framebuffer, _framebuffer2;
+  Size _size;
+  bool _isOk;
+};
 
 void FrameBuffer::_createFramebuffer( unsigned int& id )
 {
-#ifndef NO_FRAME_BUFFER
-
   unsigned int colorbuffer, depthbuffer;
 
 #ifndef GL_DRAW_FRAMEBUFFER
@@ -316,12 +221,10 @@ void FrameBuffer::_createFramebuffer( unsigned int& id )
        Logger::warning("FrameBuffer:: init framebuffer failed");
      }
   }
-#endif
 }
 
 void FrameBuffer::draw()
 {
-#ifndef NO_FRAME_BUFFER
   if( !_isOk )
     return;
   // Bind default framebuffer and draw contents of our framebuffer
@@ -353,276 +256,6 @@ void FrameBuffer::draw()
   glVertex2f( x1, y0 );
 
   glEnd();
-#endif
-}
-
-Point GlEngine::cursorPos() const
-{
-  int x,y;
-  SDL_GetMouseState(&x,&y);
-
-  return Point( x, y );
-}
-
-void GlEngine::unloadPicture(Picture& ioPicture)
-{
-  GLuint& texture( ioPicture.textureID() );
-  glDeleteTextures(1, &texture );
-  SDL_FreeSurface(ioPicture.surface());
-  texture = 0;
-
-  ioPicture = Picture();
-}
-
-void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
-{
-  GLuint& texture( ioPicture.textureID() );
-
-  SDL_Surface* surface = ioPicture.surface(); //SDL_DisplayFormatAlpha( ioPicture.surface() );
-  //SDL_SetAlpha( surface, 0, 0 );
-
-  //SDL_FreeSurface( ioPicture.surface() );
-
-  //ioPicture.init( 0, ioPicture.surface(),  );
-
-  GLenum texture_format;
-  GLint nOfColors;
-
-  // get the number of channels in the SDL surface
-  nOfColors = surface->format->BytesPerPixel;
-  if (nOfColors == 4)     // contains an alpha channel
-  {
-#ifdef CAESARIA_PLATFORM_ANDROID
-      texture_format = GL_RGBA;
-#else
-    if (surface->format->Rmask == 0x000000ff)
-       texture_format = GL_RGBA;
-    else
-       texture_format = GL_BGRA;
-#endif
-  }
-  else if (nOfColors == 3)     // no alpha channel
-  {
-#ifdef CAESARIA_PLATFORM_ANDROID
-      texture_format = GL_RGB;
-#else
-    if (surface->format->Rmask == 0x000000ff)
-       texture_format = GL_RGB;
-    else
-       texture_format = GL_BGR;
-#endif
-  }
-  else
-  {
-     THROW("Invalid image format");
-  }
-
-  if (texture == 0)
-  {
-     // the picture has no texture ID!
-     // generate a texture ID
-     glGenTextures( 1, &texture );
-  }
-
-  // Bind the texture object
-  glBindTexture( GL_TEXTURE_2D, texture );
-
-  // Set the texture's stretching properties
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-  //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-  //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-
-  // Edit the texture object's image data using the information SDL_Surface gives us
-  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0,
-                texture_format, GL_UNSIGNED_BYTE, surface->pixels );
-}
-
-
-void GlEngine::startRenderFrame()
-{
-#ifndef NO_FRAME_BUFFER
-  if( getFlag( Engine::effects ) > 0 )
-  {
-    _d->fb.begin();
-  }
-#endif
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
-}
-
-void GlEngine::endRenderFrame()
-{ 
-  if( getFlag( Engine::debugInfo ) )
-  {
-    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-    _d->fpsText->fill( 0, Rect() );
-    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
-    draw( *_d->fpsText, Point( _srcSize.width() / 2, 2 ) );
-  }
-
-  if( getFlag( Engine::effects ) > 0 )
-  {    
-    _d->fb.draw( _d->effects.effects() );
-    _d->fb.draw();
-  }
-
-  glFlush();
-  SDL_RenderPresent(_d->renderer);
-  _fps++;
-
-  if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
-  {
-    _lastUpdateFps = DateTime::elapsedTime();
-    _lastFps = _fps;
-    _fps = 0;
-  }
-
-  _drawCall = 0;
-}
-
-void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect)
-{
-   const GLuint& aTextureID( picture.textureID() );
-   if( aTextureID == 0 )
-     return;
-
-   _drawCall++;
-   float x0 = (float)( dx+picture.offset().x());
-   float x1 = x0+picture.width();
-   float y0 = (float)(dy-picture.offset().y());
-   float y1 = y0+picture.height();
-
-   // Bind the texture to which subsequent calls refer to
-   glBindTexture( GL_TEXTURE_2D, aTextureID);
-   // Set the texture's stretching properties
-
-#ifndef CAESARIA_PLATFORM_ANDROID
-  glBegin( GL_QUADS );
-
-  //Bottom-left vertex (corner)
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 0 ); glVertex2f( x0, y0 );   
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 0 ); glVertex2f( x1, y0 );
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 1 ); glVertex2f( x1, y1 );
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 1 ); glVertex2f( x0, y1 );
-
-  glEnd();
-#else
-  GLfloat vtx1[] = {
-    x0, y0,
-    x1, y0,
-    x1, y1,
-    x0, y1
-  };
-
-  GLfloat tex1[] = {
-    0, 0,
-    1, 0,
-    1, 1,
-    0, 1
-  };
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-  glVertexPointer(3,GL_FLOAT, 0, vtx1 );
-  glTexCoordPointer(2, GL_FLOAT, 0, tex1 );
-  glDrawArrays(GL_TRIANGLE_FAN, 0, 4 );
-
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#endif
-}
-
-void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
-{
-  foreach( it, pictures )
-  {
-    draw( *it, pos, clipRect );
-  }
-}
-
-void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
-{
-  int i=0;
-}
-
-void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
-{
-  draw( picture, pos.x(), pos.y() );
-}
-
-void GlEngine::draw(const Picture& picture, const Rect& src, const Rect& dst, Rect* clipRect)
-{
-  int i=0;
-}
-
-void GlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
-{
-  _rmask = (rmask ? 1.f : 0.f);
-  _gmask = (gmask ? 1.f : 0.f);
-  _bmask = (bmask ? 1.f : 0.f);
-  _amask = (amask ? 1.f : 0.f);
-}
-
-void GlEngine::resetColorMask()
-{
-  _rmask = _gmask = _bmask = _amask = 1.f;
-}
-
-void GlEngine::createScreenshot( const std::string& filename )
-{
-  Picture* screen = createPicture( screenSize() );
-#ifdef CAESARIA_PLATFORM_ANDROID
-  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_RGBA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
-#else
-  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
-#endif
-
-  PictureConverter::flipVertical( *screen );
-
-  IMG_SavePNG( filename.c_str(), screen->surface(), -1 );
-
-  deletePicture( screen );
-  delete screen;
-}
-
-unsigned int GlEngine::fps() const {  return _fps; }
-
-void GlEngine::delay( const unsigned int msec )
-{
-  SDL_Delay( msec );
-}
-
-bool GlEngine::haveEvent( NEvent& event )
-{
-  SDL_Event sdlEvent;
-
-  if( SDL_PollEvent(&sdlEvent) )
-  {
-    event = EventConverter::instance().get( sdlEvent );
-    return true;
-  }
-
-  return false;
-}
-
-Engine::Modes GlEngine::modes() const
-{
-  Modes ret;
-
-  /* Get available fullscreen/hardware modes */
-  int num = SDL_GetNumDisplayModes(0);
-
-  for (int i = 0; i < num; ++i)
-  {
-    SDL_DisplayMode mode;
-    if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
-    {
-      ret.push_back(Size(mode.w, mode.h));
-    }
-  }
-
-  return ret;
 }
 
 FrameBuffer::FrameBuffer()
@@ -641,17 +274,14 @@ void FrameBuffer::initialize(Size size)
 
 void FrameBuffer::begin()
 {
-#ifndef NO_FRAME_BUFFER
   if( _isOk )
     glBindFramebuffer(GL_FRAMEBUFFER_EXT, _framebuffer);
-#endif
 }
 
 bool FrameBuffer::isOk() const { return _isOk; }
 
 void FrameBuffer::draw( Effects& effects )
 {
-#ifndef NO_FRAME_BUFFER
   foreach( it, effects )
   {
     // Bind default framebuffer and draw contents of our framebuffer
@@ -690,7 +320,6 @@ void FrameBuffer::draw( Effects& effects )
 
     std::swap( _framebuffer, _framebuffer2 );
   }
-#endif
 }
 
 PostprocFilterPtr PostprocFilter::create()
@@ -849,6 +478,478 @@ void PostprocFilter::bindTexture()
 {
   GLint ii = glGetUniformLocation( _program, "tex");
   glUniform1i( ii, 0 );
+}
+
+#endif
+
+class GlEngine::Impl
+{
+public:
+  SDL_GLContext context;
+  SDL_Window* window;
+
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  FrameBuffer fb;
+  EffectManager effects;
+#endif
+
+  PictureRef fpsText;
+  Font debugFont;
+
+public:
+  void throwIfnoWindow()
+  {
+    if (window == NULL)
+    {
+      Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
+      THROW("Failed to create window");
+    }
+  }
+};
+
+GlEngine::GlEngine() : Engine(), _d( new Impl )
+{
+}
+
+GlEngine::~GlEngine() {}
+
+void GlEngine::init()
+{
+  setFlag( Engine::effects, 1 );
+  _rmask = _gmask = _bmask = _amask = 1.f;
+  int rc;
+  rc = SDL_Init(SDL_INIT_VIDEO);
+  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  rc = TTF_Init();
+  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+
+  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+
+#ifdef USE_GLES2
+  //_srcSize = Size( mode.w, mode.h );
+  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+
+  _d->window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
+           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+
+  Logger::warning("SDLGraficEngine:Android init successfull");
+
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,0);
+
+  _d->throwIfnoWindow();
+
+  SDL_SetWindowFullscreen(_d->window, SDL_TRUE );
+  _d->context = SDL_GL_CreateContext(_d->window);
+
+#else
+  unsigned int flags = SDL_WINDOW_OPENGL;
+  if(isFullscreen())
+  {
+    _d->window = SDL_CreateWindow("CaesariA",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        0, 0,
+        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+  }
+  else
+  {
+    _d->window = SDL_CreateWindow("CaesariA",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        _srcSize.width(), _srcSize.height(),
+        flags);
+  }
+
+  _d->throwIfnoWindow();
+
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+  _d->context = SDL_GL_CreateContext(_d->window);
+
+  Logger::warning("SDLGraficEngine: init successfull");
+#endif
+
+#if defined(CAESARIA_PLATFORM_WIN) && defined(CAESARIA_USE_FRAMEBUFFER)
+  ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
+  ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
+  ASSIGNGLFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader)
+  ASSIGNGLFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv)
+  ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM1FPROC,glUniform1f)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM2IPROC,glUniform2i)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM2FPROC,glUniform2f)
+  ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
+  ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
+  ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
+  ASSIGNGLFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram)
+  ASSIGNGLFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader)
+  ASSIGNGLFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram)
+  ASSIGNGLFUNCTION(PFNGLGETPROGRAMIVPROC,glGetProgramiv)
+  ASSIGNGLFUNCTION(PFNGLGENFRAMEBUFFERSEXTPROC,glGenFramebuffersEXT)
+  ASSIGNGLFUNCTION(PFNGLGENTEXTURESEXTPROC,glGenTexturesEXT)
+  ASSIGNGLFUNCTION(PFNGLGENRENDERBUFFERSEXTPROC,glGenRenderbuffersEXT)
+  ASSIGNGLFUNCTION(PFNGLBINDFRAMEBUFFEREXTPROC,glBindFramebufferEXT)
+  ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC,glFramebufferTexture2DEXT)
+  ASSIGNGLFUNCTION(PFNGLBINDRENDERBUFFEREXTPROC,glBindRenderbufferEXT)
+  ASSIGNGLFUNCTION(PFNGLRENDERBUFFERSTORAGEEXTPROC,glRenderbufferStorageEXT)
+  ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
+  ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
+#endif
+
+#ifdef USE_GLES2
+  glViewport( 0, 0, _srcSize.width(), _srcSize.height() );
+  glClear(GL_COLOR_BUFFER_BIT);
+  // Swap our back buffer to the front
+  SDL_GL_SwapWindow(_d->window);
+  glClear(GL_COLOR_BUFFER_BIT);
+  // enable blending
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#else
+  glEnable( GL_TEXTURE_2D );
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  glViewport( 0, 0, _srcSize.width(), _srcSize.height() );
+  glClear(GL_COLOR_BUFFER_BIT); // black screen
+  glDisable(GL_DEPTH_TEST); // no depth test
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, _srcSize.width(), _srcSize.height(), 0, 0, 1);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  // Displacement trick for exact pixelization
+  glTranslatef(0.375, 0.375, 0);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#endif
+
+  Logger::warning( "GrafixEngine: set caption");
+  SDL_SetWindowTitle( _d->window, "CaesarIA:gl "CAESARIA_VERSION );
+
+  //!!!!!
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    _d->fb.initialize( _srcSize );
+    _d->effects.load( SETTINGS_RC_PATH( opengl_opts ) );
+  }
+#endif
+
+  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
+}
+
+void GlEngine::exit()
+{
+   TTF_Quit();
+   SDL_Quit();
+}
+
+void GlEngine::deletePicture( Picture* pic )
+{
+  if( pic )
+    unloadPicture( *pic );
+}
+
+void GlEngine::setFlag( int flag, int value )
+{
+  Engine::setFlag( flag, value );
+
+  if( flag == debugInfo )
+  {
+    _d->debugFont = Font::create( FONT_2 );
+  }
+}
+
+Picture* GlEngine::createPicture(const Size& size )
+{
+  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
+                                           0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+
+  Picture *pic = new Picture();
+  pic->init( 0, img, 0 );  // no offset
+
+  return pic;
+}
+
+Picture& GlEngine::screen(){  return _screen; }
+
+Point GlEngine::cursorPos() const
+{
+  int x,y;
+  SDL_GetMouseState(&x,&y);
+
+  return Point( x, y );
+}
+
+void GlEngine::unloadPicture(Picture& ioPicture)
+{
+  GLuint& texture( ioPicture.textureID() );
+  glDeleteTextures(1, &texture );
+  SDL_FreeSurface(ioPicture.surface());
+  texture = 0;
+
+  ioPicture = Picture();
+}
+
+void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
+{
+  GLuint& texture( ioPicture.textureID() );
+
+  SDL_Surface* surface = ioPicture.surface(); //SDL_DisplayFormatAlpha( ioPicture.surface() );
+  //SDL_SetAlpha( surface, 0, 0 );
+
+  //SDL_FreeSurface( ioPicture.surface() );
+
+  //ioPicture.init( 0, ioPicture.surface(),  );
+
+  GLenum texture_format;
+  GLint nOfColors;
+
+  // get the number of channels in the SDL surface
+  nOfColors = surface->format->BytesPerPixel;
+  if (nOfColors == 4)     // contains an alpha channel
+  {
+#ifdef USE_GLES2
+      texture_format = GL_RGBA;
+#else
+    if (surface->format->Rmask == 0x000000ff)
+       texture_format = GL_RGBA;
+    else
+       texture_format = GL_BGRA;
+#endif
+  }
+  else if (nOfColors == 3)     // no alpha channel
+  {
+#ifdef USE_GLES2
+      texture_format = GL_RGB;
+#else
+    if (surface->format->Rmask == 0x000000ff)
+       texture_format = GL_RGB;
+    else
+       texture_format = GL_BGR;
+#endif
+  }
+  else
+  {
+     THROW("Invalid image format");
+  }
+
+  if (texture == 0)
+  {
+     // the picture has no texture ID!
+     // generate a texture ID
+     glGenTextures( 1, &texture );
+  }
+
+  // Bind the texture object
+  glBindTexture( GL_TEXTURE_2D, texture );
+
+  // Set the texture's stretching properties
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+  glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+  glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+
+  // Edit the texture object's image data using the information SDL_Surface gives us
+  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0,
+                texture_format, GL_UNSIGNED_BYTE, surface->pixels );
+}
+
+void GlEngine::startRenderFrame()
+{
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    _d->fb.begin();
+  }
+#endif
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
+}
+
+void GlEngine::endRenderFrame()
+{ 
+  if( getFlag( Engine::debugInfo ) )
+  {
+    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
+    _d->fpsText->fill( 0, Rect() );
+    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+    draw( *_d->fpsText, Point( _srcSize.width() / 2, 2 ) );
+  }
+
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  if( getFlag( Engine::effects ) > 0 )
+  {    
+    _d->fb.draw( _d->effects.effects() );
+    _d->fb.draw();
+  }
+#endif
+
+  //glFlush();
+  SDL_GL_SwapWindow(_d->window);
+  _fps++;
+
+  if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
+  {
+    _lastUpdateFps = DateTime::elapsedTime();
+    _lastFps = _fps;
+    _fps = 0;
+  }
+
+  _drawCall = 0;
+}
+
+void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect)
+{
+   const GLuint& aTextureID( picture.textureID() );
+   if( aTextureID == 0 )
+     return;
+
+   _drawCall++;
+   float x0 = (float)( dx+picture.offset().x());
+   float x1 = x0+picture.width();
+   float y0 = (float)(dy-picture.offset().y());
+   float y1 = y0+picture.height();
+
+#ifdef USE_GLES2
+  GLfloat vtx1[] = {
+    x0, y0,
+    x1, y0,
+    x1, y1,
+    x0, y1
+  };
+
+  GLfloat tex1[] = {
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1
+  };
+
+  /*glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, aTextureID);
+
+  glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, vtx1);
+  glEnableVertexAttribArray(ATTRIB_VERTEX);
+  glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, tex1);
+  glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITON);
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);*/
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vtx1);
+  glEnableVertexAttribArray(0);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+#else
+  // Bind the texture to which subsequent calls refer to
+  glBindTexture( GL_TEXTURE_2D, aTextureID);
+  glBegin( GL_QUADS );
+
+  //Bottom-left vertex (corner)
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 0 ); glVertex2f( x0, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 0 ); glVertex2f( x1, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 1 ); glVertex2f( x1, y1 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 1 ); glVertex2f( x0, y1 );
+
+  glEnd();
+#endif
+}
+
+void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
+{
+  foreach( it, pictures )
+  {
+    draw( *it, pos, clipRect );
+  }
+}
+
+void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
+{
+  int i=0;
+}
+
+void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
+{
+  draw( picture, pos.x(), pos.y() );
+}
+
+void GlEngine::draw(const Picture& picture, const Rect& src, const Rect& dst, Rect* clipRect)
+{
+  int i=0;
+}
+
+void GlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
+{
+  _rmask = (rmask ? 1.f : 0.f);
+  _gmask = (gmask ? 1.f : 0.f);
+  _bmask = (bmask ? 1.f : 0.f);
+  _amask = (amask ? 1.f : 0.f);
+}
+
+void GlEngine::resetColorMask()
+{
+  _rmask = _gmask = _bmask = _amask = 1.f;
+}
+
+void GlEngine::createScreenshot( const std::string& filename )
+{
+  Picture* screen = createPicture( screenSize() );
+#ifdef USE_GLES2
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_RGBA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
+#else
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
+#endif
+
+  PictureConverter::flipVertical( *screen );
+
+  IMG_SavePNG( filename.c_str(), screen->surface(), -1 );
+
+  deletePicture( screen );
+  delete screen;
+}
+
+unsigned int GlEngine::fps() const {  return _fps; }
+
+void GlEngine::delay( const unsigned int msec )
+{
+  SDL_Delay( msec );
+}
+
+bool GlEngine::haveEvent( NEvent& event )
+{
+  SDL_Event sdlEvent;
+
+  if( SDL_PollEvent(&sdlEvent) )
+  {
+    event = EventConverter::instance().get( sdlEvent );
+    return true;
+  }
+
+  return false;
+}
+
+Engine::Modes GlEngine::modes() const
+{
+  Modes ret;
+
+  /* Get available fullscreen/hardware modes */
+  int num = SDL_GetNumDisplayModes(0);
+
+  for (int i = 0; i < num; ++i)
+  {
+    SDL_DisplayMode mode;
+    if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
+    {
+      ret.push_back(Size(mode.w, mode.h));
+    }
+  }
+
+  return ret;
 }
 
 }

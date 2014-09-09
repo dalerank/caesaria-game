@@ -266,7 +266,7 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 
 void TilemapCamera::Impl::resetDrawn()
 {
-  foreach( tile, tiles ) { (*tile)->resetWasDrawn(); }
+  foreach( i, tiles ) { (*i)->resetWasDrawn(); }
 }
 
 void TilemapCamera::Impl::cacheFlatTiles()
@@ -276,6 +276,7 @@ void TilemapCamera::Impl::cacheFlatTiles()
   flatTiles.clear();
   flatTiles.reserve( reserve );
 
+  resetDrawn();
   foreach( it, tiles )
   {
     int z = (*it)->epos().z();
