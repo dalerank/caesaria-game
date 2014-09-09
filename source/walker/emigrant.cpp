@@ -35,7 +35,6 @@ using namespace gfx;
 
 namespace  {
 CAESARIA_LITERALCONST(peoples)
-CAESARIA_LITERALCONST(stamina)
 }
 
 class Emigrant::Impl
@@ -90,6 +89,7 @@ HousePtr Emigrant::_findBlankHouse()
 Pathway Emigrant::_findSomeWay( TilePos startPoint )
 {
   HousePtr house = _findBlankHouse();  
+  _d->failedWayCount++;
 
   Pathway pathway;
   if( house.isValid() )
@@ -98,7 +98,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
                                      PathwayHelper::roadFirst  );
   }
 
-  if( !pathway.isValid() )
+  if( !pathway.isValid() || _d->failedWayCount > 10 )
   {    
     pathway = PathwayHelper::create( startPoint,
                                      _city()->borderInfo().roadExit,
@@ -164,20 +164,24 @@ void Emigrant::_append2house( HousePtr house )
 bool Emigrant::_checkNearestHouse()
 {
   city::Helper helper( _city() );
-  TilePos offset( 2, 2 );
-  HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
-  foreach( it, houses )  //have destination
+
+  for( int k=1; k < 3; k++ )
   {
-    HousePtr house = *it;
-
-    int freeRoom = house->maxHabitants() - house->habitants().count();
-    if( freeRoom > 0 )
+    TilePos offset( k, k );
+    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+    foreach( it, houses )  //have destination
     {
-      Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+      HousePtr house = *it;
 
-      _updatePathway( pathway );
-      go();
-      return true;
+      int freeRoom = house->maxHabitants() - house->habitants().count();
+      if( freeRoom > 0 )
+      {
+        Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+
+        _updatePathway( pathway );
+        go();
+        return true;
+      }
     }
   }
 
@@ -186,6 +190,11 @@ bool Emigrant::_checkNearestHouse()
 
 void Emigrant::_brokePathway(TilePos p)
 {
+  if( is_kind_of<House>( _nextTile().overlay() ) )
+  {
+    return;
+  }
+
   _reachedPathway();
 
   if( isDeleted() )
@@ -219,7 +228,7 @@ void Emigrant::_noWay()
     _d->failedWayCount = 0;
     setPathway( someway );
     go();
-    }
+  }
 }
 
 void Emigrant::_checkHouses(HouseList &hlist)
@@ -244,9 +253,9 @@ void Emigrant::_checkHouses(HouseList &hlist)
 
 EmigrantPtr Emigrant::create(PlayerCityPtr city )
 {
-  EmigrantPtr newImmigrant( new Emigrant( city ) );
-  newImmigrant->drop(); //delete automatically
-  return newImmigrant;
+  EmigrantPtr ret( new Emigrant( city ) );
+  ret->drop(); //delete automatically
+  return ret;
 }
 
 EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
@@ -344,14 +353,14 @@ void Emigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ lc_peoples ] = _d->peoples.save();
-  stream[ lc_stamina ] = _d->stamina;
+  VARIANT_SAVE_ANY_D( stream, _d, stamina )
 }
 
 void Emigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
   _d->peoples.load( stream.get( lc_peoples ).toList() );
-  _d->stamina = stream.get( lc_stamina );
+  VARIANT_LOAD_ANY_D( _d, stamina, stream )
 }
 
 bool Emigrant::die()

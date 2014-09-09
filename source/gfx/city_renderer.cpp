@@ -157,12 +157,6 @@ void CityRenderer::render()
     return;
   }
 
-  if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
-  {
-    _d->camera.refresh();
-    _d->city->setOption( PlayerCity::updateTiles, 0 );
-  }
-
   _d->currentLayer->beforeRender( *_d->engine );
 
   _d->currentLayer->render( *_d->engine );
@@ -174,6 +168,12 @@ void CityRenderer::render()
   if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
   {
     _d->setLayer( _d->currentLayer->nextLayer() );
+  }
+
+  if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
+  {
+    _d->camera.refresh();
+    _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 }
 
