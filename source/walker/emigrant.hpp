@@ -22,7 +22,7 @@
 #include "core/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 
-/** This is an immigrant coming with his stuff */
+/** This is an emigrant coming with his stuff */
 class Emigrant : public Walker
 {
 public:
