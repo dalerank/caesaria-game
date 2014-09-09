@@ -17,9 +17,12 @@
 
 #include "layerdesirability.hpp"
 #include "game/resourcegroup.hpp"
+#include "camera.hpp"
+#include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
 #include "core/font.hpp"
+#include "core/event.hpp"
 #include "core/stringhelper.hpp"
 #include "layerconstants.hpp"
 
@@ -125,6 +128,35 @@ void LayerDesirability::beforeRender( Engine& engine )
   _d->debugText.clear();
 
   Layer::beforeRender( engine );
+}
+
+void LayerDesirability::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        int desirability = tile->param( Tile::pDesirability );
+
+        if( desirability >= 0 && desirability < 10 ) { text = "##desirability_indiffirent_area##"; }
+        else if( desirability >= 10 && desirability < 20 ) { text = "##desirability_pretty_area##"; }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)

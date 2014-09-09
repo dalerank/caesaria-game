@@ -43,7 +43,12 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   std::string text;
   std::string title;
 
-  if( tile.getFlag( Tile::tlTree ) )
+  if( tile.pos() == city->borderInfo().roadExit )
+  {
+    title = "##to_empire_road##";
+    text = "";
+  }
+  else if( tile.getFlag( Tile::tlTree ) )
   {
     title = "##trees_and_forest_caption##";
     text = "##trees_and_forest_text##";

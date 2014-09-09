@@ -31,6 +31,7 @@ public:
   virtual void beforeRender( Engine& engine );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
+  virtual void handleEvent(NEvent& event);
 private:
   LayerDesirability( Camera& camera, PlayerCityPtr city );
 

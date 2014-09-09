@@ -110,7 +110,7 @@ class Education::Impl
 public:
   Label* lbCityInfo;
   Label* lbTroubleInfo;
-  Label* lbBackframe;
+  Label* lbBlackframe;
 
   EducationInfoLabel* lbSchoolInfo;
   EducationInfoLabel* lbCollegeInfo;
@@ -128,7 +128,7 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
   
   __D_IMPL(_d,Education)
-  GET_DWIDGET_FROM_UI( _d, lbBackframe )
+  GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbCityInfo )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
 
@@ -136,13 +136,13 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
   info = _d->getInfo( city, building::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint, labelSize ), building::school, info );
+  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), building::school, info );
 
   info = _d->getInfo( city, building::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 20), labelSize), building::academy, info );
+  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::academy, info );
 
   info = _d->getInfo( city, building::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 40), labelSize), building::library, info );
+  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::library, info );
 
   city::Helper helper( city );
 
@@ -155,7 +155,7 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
     sumStudents += (*house)->habitants().count( CitizenGroup::student );
   }
 
-  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##peoples##"),
+  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 

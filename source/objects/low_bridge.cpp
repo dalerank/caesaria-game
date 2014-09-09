@@ -93,9 +93,9 @@ public:
   {
     switch( _index )
     {
-    case liftingWest: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
-    case spanWest:    return Point( -15, -30 );
-    case descentWest: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
+    case liftingWest: return Point( -subpos.x(), subpos.x()*2 );
+    case spanWest:    return Point( 0, -30 );
+    case descentWest: return Point( subpos.x(), 12 - subpos.x() );
     case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
     case spanNorth:    return spanswOffset;
     case liftingNorth: return Point( subpos.y()*0.6, -30-subpos.y() );
