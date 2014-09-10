@@ -48,6 +48,7 @@
 #include "gui/infobox_colloseum.hpp"
 #include "gui/infobox_theater.hpp"
 #include "gui/infobox_amphitheater.hpp"
+#include "gui/infobox_fort.hpp"
 #include <map>
 
 using namespace constants;
@@ -243,6 +244,9 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::collapsedRuins,   CAESARIA_STR_EXT(CollapsedRuins), new BaseInfoboxCreator<AboutRuins>() );
   addInfobox( building::burnedRuins,      CAESARIA_STR_EXT(BurnedRuins), new BaseInfoboxCreator<AboutRuins>() );
   addInfobox( building::plagueRuins,      CAESARIA_STR_EXT(PlagueRuins), new BaseInfoboxCreator<AboutRuins>() );
+  ADD_INFOBOX( building::fortLegionaire,   BaseInfoboxCreator<AboutFort>() )
+  ADD_INFOBOX( building::fortJavelin,   BaseInfoboxCreator<AboutFort>() )
+  ADD_INFOBOX( building::fortMounted,   BaseInfoboxCreator<AboutFort>() )
 }
 
 Manager::~Manager() {}

@@ -115,7 +115,7 @@ void Game::Impl::initVideo()
 
   //std::string render = GameSettings::get( GameSettings::render ).toString();
 
-  engine = new gfx::SdlEngine();
+  engine = new gfx::GlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );

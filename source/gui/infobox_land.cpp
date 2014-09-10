@@ -48,6 +48,11 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     title = "##to_empire_road##";
     text = "";
   }
+  else if( tile.pos() == city->borderInfo().boatEntry )
+  {
+    title = "##to_rome_road##";
+    text = "";
+  }
   else if( tile.getFlag( Tile::tlTree ) )
   {
     title = "##trees_and_forest_caption##";

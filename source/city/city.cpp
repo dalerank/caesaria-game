@@ -80,6 +80,9 @@
 #include "walker/chastener_elephant.hpp"
 #include "sentiment.hpp"
 #include "walker/chastener.hpp"
+#include "world/barbarian.hpp"
+#include "events/showinfobox.hpp"
+
 
 #include <set>
 
@@ -813,7 +816,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
       soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( GameDate::days2ticks( k ) );
+      soldier->wait( GameDate::days2ticks( k ) / 2 );
       if( (k % 16) == 15 )
       {
         ChastenerElephantPtr elephant = ChastenerElephant::create( this );
@@ -821,6 +824,19 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( GameDate::days2ticks( k ) );
       }
     }
+  }
+  else if( is_kind_of<world::Barbarian>( object ) )
+  {
+    world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
+    for( unsigned int k=0; k < brb->strength() / 2; k++ )
+    {
+      EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
+      soldier->send2City( borderInfo().roadEntry );
+      soldier->wait( GameDate::days2ticks( k ) / 2 );
+    }
+
+    events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
+    e->dispatch();
   }
 }
 

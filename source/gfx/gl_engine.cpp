@@ -41,8 +41,8 @@
   #define glOrtho glOrthof
   #undef CAESRAIA_USE_SHADERS
   #undef CAESARIA_USE_FRAMEBUFFER
-  #include <SDL_opengles2.h>
-  #define USE_GLES2
+  #include <SDL_opengles.h>
+  #define USE_GLES
 #else
   #ifdef CAESARIA_PLATFORM_LINUX
     #define GL_GLEXT_PROTOTYPES
@@ -525,7 +525,7 @@ void GlEngine::init()
 
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-#ifdef USE_GLES2
+#ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
@@ -537,7 +537,7 @@ void GlEngine::init()
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,1);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,0);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,1);
 
   _d->throwIfnoWindow();
 
@@ -602,16 +602,6 @@ void GlEngine::init()
   ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
 #endif
 
-#ifdef USE_GLES2
-  glViewport( 0, 0, _srcSize.width(), _srcSize.height() );
-  glClear(GL_COLOR_BUFFER_BIT);
-  // Swap our back buffer to the front
-  SDL_GL_SwapWindow(_d->window);
-  glClear(GL_COLOR_BUFFER_BIT);
-  // enable blending
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-#else
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
   glViewport( 0, 0, _srcSize.width(), _srcSize.height() );
@@ -626,7 +616,6 @@ void GlEngine::init()
   glTranslatef(0.375, 0.375, 0);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-#endif
 
   Logger::warning( "GrafixEngine: set caption");
   SDL_SetWindowTitle( _d->window, "CaesarIA:gl "CAESARIA_VERSION );
@@ -698,6 +687,17 @@ void GlEngine::unloadPicture(Picture& ioPicture)
   ioPicture = Picture();
 }
 
+static int power_of_2(int input)
+{
+    int value = 1;
+
+    while (value < input)
+    {
+        value <<= 1;
+    }
+    return value;
+}
+
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
   GLuint& texture( ioPicture.textureID() );
@@ -716,7 +716,7 @@ void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
   nOfColors = surface->format->BytesPerPixel;
   if (nOfColors == 4)     // contains an alpha channel
   {
-#ifdef USE_GLES2
+#ifdef USE_GLES
       texture_format = GL_RGBA;
 #else
     if (surface->format->Rmask == 0x000000ff)
@@ -727,7 +727,7 @@ void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
   }
   else if (nOfColors == 3)     // no alpha channel
   {
-#ifdef USE_GLES2
+#ifdef USE_GLES
       texture_format = GL_RGB;
 #else
     if (surface->format->Rmask == 0x000000ff)
@@ -758,8 +758,16 @@ void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
   glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 
   // Edit the texture object's image data using the information SDL_Surface gives us
+#ifdef USE_GLES
+  int texture_w = power_of_2(surface->w);
+  int texture_h = power_of_2(surface->h);
+
+  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, texture_w, texture_h, 0,
+                texture_format, GL_UNSIGNED_BYTE, surface->pixels );
+#else
   glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0,
                 texture_format, GL_UNSIGNED_BYTE, surface->pixels );
+#endif
 }
 
 void GlEngine::startRenderFrame()
@@ -817,37 +825,34 @@ void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* cl
    float y0 = (float)(dy-picture.offset().y());
    float y1 = y0+picture.height();
 
-#ifdef USE_GLES2
-  GLfloat vtx1[] = {
-    x0, y0,
-    x1, y0,
-    x1, y1,
-    x0, y1
-  };
+   glBindTexture( GL_TEXTURE_2D, aTextureID);
+#ifdef USE_GLES
+   GLfloat vtx1[] = {
+     x0, y0,
+     x1, y0,
+     x1, y1,
+     x0, y1
+   };
 
-  GLfloat tex1[] = {
-    0, 0,
-    1, 0,
-    1, 1,
-    0, 1
-  };
+   GLfloat tex1[] = {
+     0, 0,
+     1, 0,
+     1, 1,
+     0, 1
+   };
 
-  /*glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, aTextureID);
+   glEnableClientState(GL_VERTEX_ARRAY);
+   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-  glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, vtx1);
-  glEnableVertexAttribArray(ATTRIB_VERTEX);
-  glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, tex1);
-  glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITON);
+   glVertexPointer(3,GL_FLOAT, 0, vtx1 );
+   glTexCoordPointer(2, GL_FLOAT, 0, tex1 );
+   glDrawArrays(GL_TRIANGLE_FAN, 0, 4 );
 
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);*/
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vtx1);
-  glEnableVertexAttribArray(0);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+   glDisableClientState(GL_VERTEX_ARRAY);
+   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 #else
   // Bind the texture to which subsequent calls refer to
-  glBindTexture( GL_TEXTURE_2D, aTextureID);
+
   glBegin( GL_QUADS );
 
   //Bottom-left vertex (corner)
@@ -899,7 +904,7 @@ void GlEngine::resetColorMask()
 void GlEngine::createScreenshot( const std::string& filename )
 {
   Picture* screen = createPicture( screenSize() );
-#ifdef USE_GLES2
+#ifdef USE_GLES
   glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_RGBA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
 #else
   glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
