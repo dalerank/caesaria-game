@@ -45,6 +45,7 @@
 #include "gameautopause.hpp"
 #include "gui/environment.hpp"
 #include "widget_helper.hpp"
+#include "world/movableobject.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -188,7 +189,34 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   {
     if( (*obj)->isMovable() )
     {
-      painter.draw( (*obj)->pictures(), offset + (*obj)->location() );
+      world::MovableObjectPtr mobj = ptr_cast<world::MovableObject>( *obj );
+      Point mappos = mobj->location();
+      painter.draw( mobj->pictures(), offset + mobj->location() );
+
+      int distance = mobj->viewDistance();
+      if( distance > 0 )
+      {
+        Point lastPos( distance * sin( 0 ), distance * cos( 0 ) );
+        for( int i=1; i <= 16; i++ )
+        {
+          Point curPos( distance * sin( math::DEGTORAD * (360 * i / 16)),
+                        distance * cos( math::DEGTORAD * (360 * i / 16)) );
+
+          painter.drawLine( DefaultColors::blue, offset + mappos + lastPos, offset + mappos + curPos );
+          lastPos = curPos;
+        }
+      }
+
+      const PointsArray& way = mobj->way();
+      if( !way.empty() )
+      {
+        Point lastPos = way[ mobj->currentStep() ];
+        for( int k = mobj->currentStep()+1; k < way.size(); k++ )
+        {
+          painter.drawLine( DefaultColors::aliceBlue, offset + lastPos, offset + way[ k ] );
+          lastPos = way[ k ];
+        }
+      }
     }
   }
 }

@@ -36,6 +36,7 @@ class Army::Impl
 public:
   CityPtr base;
   std::string destination;
+  int strength;
 
   VariantMap options;
 };
@@ -43,13 +44,19 @@ public:
 Army::Army( EmpirePtr empire )
   : MovableObject( empire ), __INIT_IMPL(Army)
 {
+  __D_IMPL(d,Army)
+
   _animation().load( ResourceGroup::empirebits, 37, 16 );
   _animation().setLoop( Animation::loopAnimation );
+  Size size = _animation().getFrame( 0 ).size();
+  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
+  d->strength = 0;
 }
 
 ArmyPtr Army::create(EmpirePtr empire)
 {
   ArmyPtr ret( new Army( empire ) );
+
   ret->drop();
 
   return ret;
@@ -94,6 +101,7 @@ void Army::save(VariantMap& stream) const
   __D_IMPL_CONST(d,Army)
   stream[ "base"  ] = Variant( d->base.isValid() ? d->base->name() : "" );
   VARIANT_SAVE_STR_D( stream, d, destination )
+  VARIANT_SAVE_ENUM_D( stream, d, strength )
 }
 
 void Army::load(const VariantMap& stream)
@@ -105,6 +113,7 @@ void Army::load(const VariantMap& stream)
   d->options = stream;
 
   VARIANT_LOAD_STR_D( d, destination, stream )
+  VARIANT_LOAD_ANY_D( d, strength, stream )
 }
 
 std::string Army::type() const { return CAESARIA_STR_EXT(Army); }
@@ -134,5 +143,8 @@ void Army::attack(ObjectPtr obj)
     Logger::warningIf( obj.isNull(), "Army: object for attack is null" );
   }
 }
+
+void Army::setStrength(int value) { _dfunc()->strength = value; }
+int Army::strength() const { return _dfunc()->strength; }
 
 }

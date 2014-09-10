@@ -40,6 +40,7 @@ public:
   virtual SmartPtr<Player> player() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
+  virtual DateTime lastAttack() const;
 
   virtual void delayTrade( unsigned int month );
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost );

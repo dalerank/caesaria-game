@@ -136,6 +136,8 @@ void Military::load(const VariantMap& stream)
   }
 }
 
+const DateTime&Military::lastAttack() const { _d->lastEnemyAttack; }
+
 void Military::updateThreat(int value)
 {
   _d->updateMilitaryThreat = true;

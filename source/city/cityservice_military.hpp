@@ -48,6 +48,7 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
+  const DateTime& lastAttack() const;
   int monthFromLastAttack() const;
 
   void updateThreat( int value );

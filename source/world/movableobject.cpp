@@ -79,29 +79,33 @@ void MovableObject::timeStep(const unsigned int time)
     {
       Logger::warning( "Army: way are empty" );
     }
-    }
+  }
 }
+
+int MovableObject::viewDistance() const { return 40; }
+const PointsArray&MovableObject::way() const { return _dfunc()->way; }
+int MovableObject::currentStep() const { return _dfunc()->step; }
 
 void MovableObject::_reachedWay()
 {
   deleteLater();
 }
 
-PointsArray &MovableObject::_way() { return _dfunc()->way; }
+PointsArray& MovableObject::_way() { return _dfunc()->way; }
 
 void MovableObject::save(VariantMap& stream) const
 {
   Object::save( stream );
 
   __D_IMPL_CONST(d,MovableObject)
-  stream[ "start" ] = d->start;
-  stream[ "stop"  ] = d->stop;
+  VARIANT_SAVE_ANY_D( stream, d, start )
+  VARIANT_SAVE_ANY_D( stream, d, stop )
+  VARIANT_SAVE_ANY_D( stream, d, step )
 
   VariantList pointsVl;
   foreach( i, d->way ) { pointsVl.push_back( *i ); }
 
   stream[ "points" ] = pointsVl;
-  stream[ "step" ] = d->step;
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -110,13 +114,12 @@ void MovableObject::load(const VariantMap& stream)
 
   __D_IMPL(d,MovableObject)
   d->options = stream;
-  d->start = stream.get( "start" ).toPoint();
-  d->stop = stream.get( "stop"  ).toPoint();
+  VARIANT_LOAD_ANY_D( d, start, stream )
+  VARIANT_LOAD_ANY_D( d, stop, stream )
+  VARIANT_LOAD_ANY_D( d, step, stream )
 
   VariantList points = stream.get( "points" ).toList();
   foreach( i, points ) { d->way.push_back( (*i).toPoint() ); }
-
-  d->step = stream.get( "step" );
 }
 
 bool MovableObject::_findWay( Point p1, Point p2 )

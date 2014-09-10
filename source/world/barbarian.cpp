@@ -21,7 +21,9 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "merchant.hpp"
+#include "gfx/animation.hpp"
 #include "city.hpp"
+#include "game/gamedate.hpp"
 
 namespace world
 {
@@ -42,6 +44,7 @@ BarbarianPtr Barbarian::create(EmpirePtr empire, Point location)
 {
   BarbarianPtr ret( new Barbarian( empire ) );
   ret->setLocation( location );
+  ret->setStrength( 10 + math::random( 50 ) );
   ret->_check4attack();  
   ret->drop();
 
@@ -67,6 +70,8 @@ void Barbarian::load(const VariantMap& stream)
   _d->options = stream;
 }
 
+int Barbarian::viewDistance() const { return 60; }
+
 void Barbarian::_check4attack()
 {
   MovableObjectList mobjects;
@@ -77,7 +82,7 @@ void Barbarian::_check4attack()
 
   foreach( it, mobjects )
   {
-    float distance = location().distanceTo( (*it)->location() );
+    float distance = location().distanceTo( (*it)->location() );    
     distanceMap[ (int)distance ] = *it;
   }
 
@@ -88,7 +93,7 @@ void Barbarian::_check4attack()
       _attackObject( ptr_cast<Object>( it->second ) );
       break;
     }
-    else if( it->first < 200 )
+    else if( it->first < viewDistance() )
     {
       bool validWay = _findWay( location(), it->second->location() );
       if( validWay )
@@ -104,10 +109,12 @@ void Barbarian::_check4attack()
      CityList cities = empire()->cities();
      std::map< int, CityPtr > citymap;
 
+     DateTime currentDate = GameDate::current();
      foreach( it, cities )
      {
        float distance = location().distanceTo( (*it)->location() );
-       citymap[ (int)distance ] = *it;
+       int month2lastAttack = math::clamp<int>( 12 - (*it)->lastAttack().monthsTo( currentDate ), 0, 12 );
+       citymap[ month2lastAttack * 100 + (int)distance ] = *it;
      }
 
      foreach( it, citymap )
@@ -181,12 +188,16 @@ bool Barbarian::_attackObject(ObjectPtr obj)
 }
 
 Barbarian::Barbarian( EmpirePtr empire )
- : MovableObject( empire ), _d( new Impl )
+ : Army( empire ), _d( new Impl )
 {
   _d->mode = Impl::findAny;
   setSpeed( 4.f );
 
-  setPicture( gfx::Picture::load( ResourceGroup::empirebits, 54 ) );
+  _animation().clear();
+  _animation().load( ResourceGroup::empirebits, 53, 16 );
+  Size size = _animation().getFrame( 0 ).size();
+  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
+  _animation().setLoop( gfx::Animation::loopAnimation );
 }
 
 

@@ -35,6 +35,9 @@ public:
   virtual void setSpeed( float speed );
   virtual void timeStep(const unsigned int time);
   virtual bool isMovable() const { return true; }
+  virtual int viewDistance() const;
+  virtual const PointsArray& way() const;
+  virtual int currentStep() const;
 
 protected:
   virtual bool _findWay( Point p1, Point p2 );

@@ -379,6 +379,14 @@ void              PlayerCity::setClimate(const ClimateType climate) { _d->climat
 city::Funds& PlayerCity::funds()  {  return _d->funds;   }
 unsigned int PlayerCity::population() const { return _d->population; }
 
+DateTime PlayerCity::lastAttack() const
+{
+  city::MilitaryPtr mil;
+  mil << findService( city::Military::defaultName() );
+
+  return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
+}
+
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
   city::Helper hlp( city );

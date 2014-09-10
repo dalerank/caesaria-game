@@ -18,22 +18,22 @@
 #ifndef __CAESARIA_WORLD_BARBARIAN_H_INCLUDED__
 #define __CAESARIA_WORLD_BARBARIAN_H_INCLUDED__
 
-#include "movableobject.hpp"
+#include "army.hpp"
 
 namespace world
 {
 
-class Barbarian : public MovableObject
+class Barbarian : public Army
 {
 public:
-  static BarbarianPtr create(EmpirePtr empire, Point location );
+  static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1,-1) );
   virtual std::string type() const;
 
   virtual void timeStep( unsigned int time );
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
-
+  virtual int viewDistance() const;
 
 protected:
   virtual void _reachedWay();

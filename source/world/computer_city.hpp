@@ -41,6 +41,7 @@ public:
   virtual void setAvailable(bool value);
   virtual SmartPtr<Player> player() const;
   virtual void timeStep( unsigned int time );
+  virtual DateTime lastAttack() const;
 
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );

@@ -27,6 +27,7 @@
 #include "game/resourcegroup.hpp"
 #include "empiremap.hpp"
 #include "game/player.hpp"
+#include "world/barbarian.hpp"
 
 using namespace gfx;
 
@@ -45,6 +46,7 @@ public:
   SimpleGoodStore realSells;
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
+  DateTime lastAttack;
   unsigned int merchantsNumber;
   city::Funds funds;
 };
@@ -122,27 +124,30 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
-  VARIANT_SAVE_ANY_D( options, _d, available );
-  VARIANT_SAVE_ANY_D( options, _d, merchantsNumber );
+  options[ "realSells" ] = _d->realSells.save();
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
+
+  VARIANT_SAVE_ANY_D( options, _d, available )
+  VARIANT_SAVE_ANY_D( options, _d, merchantsNumber );
   VARIANT_SAVE_ANY_D( options, _d, distantCity );
   VARIANT_SAVE_ANY_D( options, _d, romecity );
-  options[ "realSells" ] = _d->realSells.save();
-  VARIANT_SAVE_ANY_D( options, _d, tradeDelay );
+  VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
+  VARIANT_SAVE_ANY_D( options, _d, lastAttack )
 }
 
 void ComputerCity::load( const VariantMap& options )
 {
   City::load( options );
 
-  VARIANT_LOAD_ANY_D( _d, available, options );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
+  VARIANT_LOAD_ANY_D( _d, available, options );
   VARIANT_LOAD_ANY_D( _d, merchantsNumber, options );
   VARIANT_LOAD_ANY_D( _d, distantCity, options );
   VARIANT_LOAD_ANY_D( _d, romecity, options );
   VARIANT_LOAD_ANY_D( _d, tradeDelay, options );
+  VARIANT_LOAD_TIME_D(_d, lastAttack, options );
 
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
@@ -154,14 +159,14 @@ void ComputerCity::load( const VariantMap& options )
 
   changeTradeOptions( options );
 
-  const VariantMap& sold_vm = options.get( "sold" ).toMap();
+  VariantMap sold_vm = options.get( "sold" ).toMap();
   for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
-  const VariantMap& bought_vm = options.get( "bought" ).toMap();
+  VariantMap bought_vm = options.get( "bought" ).toMap();
   for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
@@ -198,9 +203,9 @@ CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 
 void ComputerCity::addObject(ObjectPtr object )
 {
-  MerchantPtr merchant = ptr_cast<Merchant>( object );
-  if( merchant.isValid() )
+  if( is_kind_of<Merchant>( object ) )
   {
+    MerchantPtr merchant = ptr_cast<Merchant>( object );
     GoodStore& sellGoods = merchant->sellGoods();
     GoodStore& buyGoods = merchant->buyGoods();
 
@@ -217,6 +222,12 @@ void ComputerCity::addObject(ObjectPtr object )
     _d->sellStore.storeAll( sellGoods );
 
     _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
+  }
+  else if( is_kind_of<Barbarian>( object ) )
+  {
+    BarbarianPtr brb = ptr_cast<Barbarian>( object );
+    delayTrade( brb->strength() );
+    _d->lastAttack = GameDate::current();
   }
 }
 
@@ -315,6 +326,8 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 }
+
+DateTime ComputerCity::lastAttack() const { return _d->lastAttack; }
 
 unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
 

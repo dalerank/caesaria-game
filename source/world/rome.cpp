@@ -20,6 +20,8 @@
 #include "good/goodstore_simple.hpp"
 #include "city/funds.hpp"
 #include "events/showinfobox.hpp"
+#include "game/gamedate.hpp"
+#include "barbarian.hpp"
 #include "goodcaravan.hpp"
 #include "core/gettext.hpp"
 #include "game/player.hpp"
@@ -33,6 +35,7 @@ class Rome::Impl
 public:
   city::Funds funds;
   SimpleGoodStore gstore;
+  DateTime lastAttack;
 };
 
 Rome::Rome(EmpirePtr empire)
@@ -81,6 +84,17 @@ void Rome::addObject(ObjectPtr obj)
                                                           !events::ShowInfobox::send2scribe);
     e->dispatch();
   }
+  else if( is_kind_of<Barbarian>( obj ) )
+  {
+    BarbarianPtr brb = ptr_cast<Barbarian>( obj );
+
+    if( brb.isValid() )
+    {
+      _d->lastAttack = GameDate::current();
+    }
+  }
 }
+
+DateTime Rome::lastAttack() const { return _d->lastAttack; }
 
 } // end namespace world

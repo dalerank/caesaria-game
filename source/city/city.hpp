@@ -72,6 +72,7 @@ public:
   virtual gfx::Picture picture() const;
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
+  virtual DateTime lastAttack() const;
 
   PlayerPtr player() const;
   
