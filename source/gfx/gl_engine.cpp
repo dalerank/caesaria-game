@@ -529,15 +529,15 @@ void GlEngine::init()
   //_srcSize = Size( mode.w, mode.h );
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-  _d->window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
-
-  Logger::warning("SDLGraficEngine:Android init successfull");
-
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,1);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,1);
+
+  _d->window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
+           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+
+  Logger::warning("SDLGraficEngine:Android init successfull");
 
   _d->throwIfnoWindow();
 
@@ -601,6 +601,14 @@ void GlEngine::init()
   ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
   ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
 #endif
+
+  SDL_DisplayMode mode;
+  SDL_GetCurrentDisplayMode(0, &mode);
+  Logger::warning( "Screen bpp: %d", SDL_BITSPERPIXEL(mode.format));
+  Logger::warning( "Vendor     : %s", glGetString(GL_VENDOR));
+  Logger::warning( "Renderer   : %s", glGetString(GL_RENDERER));
+  Logger::warning( "Version    : %s", glGetString(GL_VERSION));
+  Logger::warning( "Extensions : %n", glGetString(GL_EXTENSIONS));
 
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -799,7 +807,6 @@ void GlEngine::endRenderFrame()
   }
 #endif
 
-  //glFlush();
   SDL_GL_SwapWindow(_d->window);
   _fps++;
 
@@ -815,41 +822,41 @@ void GlEngine::endRenderFrame()
 
 void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect)
 {
-   const GLuint& aTextureID( picture.textureID() );
-   if( aTextureID == 0 )
-     return;
+  const GLuint& aTextureID( picture.textureID() );
+  if( aTextureID == 0 )
+    return;
 
-   _drawCall++;
-   float x0 = (float)( dx+picture.offset().x());
-   float x1 = x0+picture.width();
-   float y0 = (float)(dy-picture.offset().y());
-   float y1 = y0+picture.height();
+  _drawCall++;
+  float x0 = (float)( dx+picture.offset().x());
+  float x1 = x0+picture.width();
+  float y0 = (float)(dy-picture.offset().y());
+  float y1 = y0+picture.height();
 
-   glBindTexture( GL_TEXTURE_2D, aTextureID);
+  glBindTexture( GL_TEXTURE_2D, aTextureID);
 #ifdef USE_GLES
-   GLfloat vtx1[] = {
-     x0, y0,
-     x1, y0,
-     x1, y1,
-     x0, y1
-   };
+  GLfloat vtx1[] = {
+    x0, y0,
+    x1, y0,
+    x1, y1,
+    x0, y1
+  };
 
-   GLfloat tex1[] = {
-     0, 0,
-     1, 0,
-     1, 1,
-     0, 1
-   };
+  GLfloat tex1[] = {
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1
+  };
 
-   glEnableClientState(GL_VERTEX_ARRAY);
-   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-   glVertexPointer(3,GL_FLOAT, 0, vtx1 );
-   glTexCoordPointer(2, GL_FLOAT, 0, tex1 );
-   glDrawArrays(GL_TRIANGLE_FAN, 0, 4 );
+  glVertexPointer(3, GL_FLOAT, 0, vtx1 );
+  glTexCoordPointer(2, GL_FLOAT, 0, tex1 );
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4 );
 
-   glDisableClientState(GL_VERTEX_ARRAY);
-   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 #else
   // Bind the texture to which subsequent calls refer to
 

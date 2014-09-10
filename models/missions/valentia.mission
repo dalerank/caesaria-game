@@ -21,6 +21,7 @@
     favour : 60
     next : ":/missions/mission9.briefing"
     title : "##win_praetor_title##"
+    win.text : "##valencia_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##valentia_title##"

@@ -144,7 +144,8 @@ void LayerDesirability::handleEvent(NEvent& event)
       {
         int desirability = tile->param( Tile::pDesirability );
 
-        if( desirability >= 0 && desirability < 10 ) { text = "##desirability_indiffirent_area##"; }
+        if( desirability < -25 ) { text = "##no_citizens_desire_live_here##"; }
+        else if( desirability >= 0 && desirability < 10 ) { text = "##desirability_indiffirent_area##"; }
         else if( desirability >= 10 && desirability < 20 ) { text = "##desirability_pretty_area##"; }
       }
 

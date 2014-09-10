@@ -242,21 +242,28 @@ std::string Education::Impl::getTrouble(PlayerCityPtr city)
     return "##not_need_education##";
   }
 
-  if( schInfo.nextLevel > 0 ) { advices << "##have_no_access_school_colege##"; }
-  if( schInfo.coverage < 75 ) { advices << "##need_more_school_colege##"; }
+  if( schInfo.nextLevel > 0 ) { advices << "##have_no_access_school_colege##"; }  
   if( lbrInfo.nextLevel > 0 ) { advices << "##have_no_access_to_library##"; }
-  if( lbrInfo.coverage < 75 ) { advices << "##need_more_access_to_library##"; }
+
+
   if( schInfo.minAccessLevel < 30 || clgInfo.minAccessLevel < 30 )
   {
     advices << "##edadv_need_better_access_school_or_colege##";
   }
+
   if( schInfo.coverage < 75 && clgInfo.coverage < 75 && lbrInfo.coverage < 75 )
   {
     advices << "##need_more_access_to_lbr_school_colege##";
   }
-  if( schInfo.coverage >= 100 && schInfo.coverage < 115 ) { advices << "##school_access_perfectly##"; }
-  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { advices << "##colege_access_perfectly##"; }
-  if( clgInfo.coverage >= 100 && clgInfo.coverage < 115 ) { advices << "##academy_access_perfectly##"; }
+
+  if( schInfo.coverage < 75 ) { advices << "##need_more_school_colege##"; }
+  else if( schInfo.coverage >= 100 && schInfo.coverage < 150 ) { advices << "##school_access_perfectly##"; }
+
+  if( clgInfo.coverage >= 100 && clgInfo.coverage < 150 ) { advices << "##colege_access_perfectly##"; }
+
+  if( lbrInfo.coverage < 75 ) { advices << "##need_more_access_to_library##"; }
+  else if( lbrInfo.coverage > 100 && lbrInfo.coverage < 150 ) { advices << "##library_access_perfectrly##"; }
+
   if( lbrInfo.minAccessLevel < 30 ) { advices << "##some_houses_need_better_library_access##"; }
   if( lbrInfo.nextLevel > 0 && clgInfo.nextLevel > 0 )
   {

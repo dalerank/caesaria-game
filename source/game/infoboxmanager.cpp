@@ -206,9 +206,9 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::academy,          CAESARIA_STR_EXT(B_COLLEGE),   new ServiceBaseInfoboxCreator( "", "" ));
   addInfobox( building::library,          CAESARIA_STR_EXT(B_LIBRARY),   new ServiceBaseInfoboxCreator( "", "" ));
   addInfobox( construction::garden,       CAESARIA_STR_EXT(B_GARDEN),    new InfoboxBasicCreator( "", "##garden_info##" )  );
-  addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoboxBasicCreator( "", "##statue_info##") );
-  addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_info##") );
-  addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_info##") );
+  addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoboxBasicCreator( "", "##statue_small_info##") );
+  addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_middle_info##") );
+  addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_big_info##") );
   addInfobox( building::nativeHut,        CAESARIA_STR_EXT(NativeHut),   new InfoboxBasicCreator( "", "##nativeHut_info##") );
   ADD_INFOBOX( building::nativeField, InfoboxBasicCreator( "", "##nativeField_info##") );
   addInfobox( building::nativeCenter,     CAESARIA_STR_EXT(NativeCenter),   new InfoboxBasicCreator( "", "##nativeCenter_info##") );

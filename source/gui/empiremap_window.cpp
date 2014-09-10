@@ -46,6 +46,7 @@
 #include "gui/environment.hpp"
 #include "widget_helper.hpp"
 #include "world/movableobject.hpp"
+#include "world/barbarian.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -88,12 +89,12 @@ public:
   void drawMovable( Engine& painter );
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
-  world::CityPtr findCity( const Point& pos );
+  world::ObjectPtr findObject( Point pos );
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  currentCity = findCity( pos );
+  currentCity = ptr_cast<world::City>( findObject( pos ) );
 
   updateCityInfo();
 }
@@ -274,22 +275,11 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
                                        -p->height() + (120 + centerPicture.height() - 20)) );
 }
 
-world::CityPtr EmpireMapWindow::Impl::findCity(const Point& pos)
+world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
 {
-  world::CityList cities = empire->cities();
+  world::ObjectList objs = empire->findObjects( offset + pos, 20 );
 
-  world::CityPtr ret;
-  foreach( it, cities )
-  {
-    Rect rect( (*it)->location(), Size( 40 ) );
-    if( rect.isPointInside( pos ) )
-    {
-      ret = (*it);
-      break;
-    }
-  }
-
-  return ret;
+  return objs.empty() ? world::ObjectPtr() : objs.front();
 }
 
 void EmpireMapWindow::Impl::createTradeRoute()
@@ -558,17 +548,29 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
 std::string EmpireMapWindow::tooltipText() const
 {
-  world::CityPtr wCity = _d->findCity( const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() );
+  world::ObjectPtr obj = _d->findObject( const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() );
 
-  if( wCity.isValid() )
+  if( obj.isValid() )
   {
-    world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( wCity );
+    std::string text;
+    world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
     if( cCity.isValid() )
     {
       if( cCity->isDistantCity() )
-        return "##empmap_distant_romecity_tip##";
+        text = "##empmap_distant_romecity_tip##";
+      else
+        text = "##click_on_city_for_info##";
+    }    
+    else if( is_kind_of<world::City>( obj ) )
+    {
+      text = "##click_on_city_for_info##";
     }
-    return "##click_on_city_for_info##";
+    else if( is_kind_of<world::Barbarian>( obj ) )
+    {
+      text = "##enemy_army_threating_a_city##";
+    }
+
+    return text;
   }
 
   return Widget::tooltipText();
