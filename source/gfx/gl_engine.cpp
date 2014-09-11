@@ -60,6 +60,7 @@
     #define glFramebufferTexture2D glFramebufferTexture2DEXT
   #elif defined(CAESARIA_PLATFORM_WIN)
     #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
+  #ifndef GL_GLEXT_PROTOTYPES
     PFNGLCREATESHADERPROC glCreateShader;
     PFNGLSHADERSOURCEPROC glShaderSource;
     PFNGLCOMPILESHADERPROC glCompileShader;
@@ -85,6 +86,7 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
+ #endif
 
     #define glGenFramebuffers  glGenFramebuffersEXT
     #define glGenTextures     glGenTexturesEXT
