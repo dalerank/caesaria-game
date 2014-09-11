@@ -2,7 +2,6 @@
  fullscreen : false
  resolution : [ 1280, 800 ]
  language : "en"
- render : "sdl"
- android_glv : 0
+ render_version : 0
  /*c3gfx : "./resources/gfx"*/
 }

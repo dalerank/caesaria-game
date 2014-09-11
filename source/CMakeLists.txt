@@ -90,11 +90,9 @@ endif()
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
-endif(BUILD_GL_FRAMEBUFFER)
-
-if(BUILD_GL_SHADERS)
+add_definitions( -DGL_GLEXT_PROTOTYPES )
 add_definitions( -DCAESARIA_USE_SHADERS )
-endif(BUILD_GL_SHADERS)
+endif(BUILD_GL_FRAMEBUFFER)
 
 if( DEBUG_TIMERS )
 add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
@@ -107,8 +105,11 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-  target_link_libraries(${PROJECT_NAME} "GL")
   set(EXECUTABLE_FILENAME "caesaria.linux")
+  if(NOT APPLE)
+  target_link_libraries(${PROJECT_NAME} "GL")
+  endif()
+  # target_link_libraries(${PROJECT_NAME} "GLESv1_CM")
 endif(UNIX)
 
 if(APPLE)

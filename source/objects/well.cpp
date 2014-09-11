@@ -32,9 +32,6 @@ namespace {
 
 Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
-
   setWorkers( 0 );
 }
 
@@ -80,6 +77,9 @@ bool Well::build(PlayerCityPtr city, const TilePos &pos)
   ServiceBuilding::build( city, pos );
 
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
   return true;
 }
 

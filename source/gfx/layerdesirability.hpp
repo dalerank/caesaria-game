@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LAYERDESIRABILITY_H_INCLUDED__
 #define __CAESARIA_LAYERDESIRABILITY_H_INCLUDED__
@@ -27,10 +27,11 @@ class LayerDesirability : public Layer
 {
 public:
   virtual int type() const;
-  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
   virtual void beforeRender( Engine& engine );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
+  virtual void handleEvent(NEvent& event);
 private:
   LayerDesirability( Camera& camera, PlayerCityPtr city );
 

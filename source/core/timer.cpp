@@ -20,6 +20,8 @@
 #include "city/cityservice_timers.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include <SDL_cpuinfo.h>
+#include <SDL_timer.h>
 
 #define CAESARIA_USE_DEBUGTIMERS
 
@@ -103,10 +105,15 @@ public:
   std::map<unsigned int, TimerInfo> timers;
 };
 
+unsigned int DebugTimer::ticks()
+{
+  return SDL_GetTicks();
+}
+
 void DebugTimer::reset(const std::string &name)
 {
   unsigned int namehash = StringHelper::hash( name );
-  instance()._d->timers[ namehash ].time = DateTime::elapsedTime();
+  instance()._d->timers[ namehash ].time = SDL_GetCPUCount();
 }
 
 unsigned int DebugTimer::take(const std::string &name, bool reset)
@@ -116,7 +123,7 @@ unsigned int DebugTimer::take(const std::string &name, bool reset)
 
   unsigned int ret = tinfo.time;
   if( reset )
-    tinfo.time = DateTime::elapsedTime();
+    tinfo.time = SDL_GetCPUCount();
 
   return ret;
 }
@@ -126,13 +133,14 @@ unsigned int DebugTimer::delta(const std::string &name, bool reset)
   unsigned int namehash = StringHelper::hash( name );
   Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
 
-  unsigned int ret = DateTime::elapsedTime() - tinfo.time;
+  unsigned int ret = SDL_GetCPUCount() - tinfo.time;
   if( reset )
-    tinfo.time = DateTime::elapsedTime();
+    tinfo.time = SDL_GetCPUCount();
 
   return ret;
 }
 
+#undef CAESARIA_USE_DEBUGTIMERS
 void DebugTimer::check(const std::string& prefix, const std::string &name)
 {
 #ifdef CAESARIA_USE_DEBUGTIMERS

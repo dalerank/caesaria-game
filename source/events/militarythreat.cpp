@@ -13,41 +13,47 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "winmission.hpp"
+#include "militarythreat.hpp"
 #include "game/game.hpp"
+#include "city/cityservice_military.hpp"
 #include "city/city.hpp"
-#include "gui/win_mission_window.hpp"
-#include "city/victoryconditions.hpp"
-#include "gui/environment.hpp"
-#include "core/logger.hpp"
 
 namespace events
 {
 
-GameEventPtr WinMission::create()
+class MilitaryThreat::Impl
 {
-  WinMission* e = new WinMission();
+public:
+  int value;
+};
 
-  GameEventPtr ret( e );
+GameEventPtr MilitaryThreat::create( int value )
+{
+  GameEventPtr ret( new MilitaryThreat( value ) );
   ret->drop();
 
   return ret;
 }
 
-void WinMission::_exec(Game& game, unsigned int)
+bool MilitaryThreat::isDeleted() const { return true; }
+bool MilitaryThreat::_mayExec(Game& game, unsigned int time) const {  return true; }
+
+MilitaryThreat::MilitaryThreat( int value ) : _d( new Impl )
 {
-  Logger::warning( "WinMission: exec ");
-  PlayerCityPtr city = game.city();
-
-  const city::VictoryConditions& wt = city->victoryConditions();
-
-  new gui::WinMissionWindow( game.gui()->rootWidget(),
-                             wt.newTitle(), wt.winText(),
-                             false );
+  _d->value = value;
 }
 
-bool WinMission::_mayExec(Game&, unsigned int ) const { return true; }
+void MilitaryThreat::_exec(Game& game, unsigned int)
+{
+  city::MilitaryPtr ml;
+  ml << game.city()->findService( city::Military::defaultName() );
+
+  if( ml.isValid() )
+  {
+    ml->updateThreat( _d->value );
+  }
+}
 
 }

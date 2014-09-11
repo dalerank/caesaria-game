@@ -45,6 +45,7 @@ public:
   std::string name; // for game save
   SDL_Surface* surface;
   SDL_Texture* texture;  // for SDL surface
+  unsigned int opengltx;
 };
 
 Picture::Picture() : _d( new Impl )
@@ -54,6 +55,7 @@ Picture::Picture() : _d( new Impl )
   _d->size = Size( 0 );
   _d->name = "";
   _d->surface = 0;
+  _d->opengltx = 0;
 }
 
 Picture::Picture( const Picture& other ) : _d( new Impl )
@@ -61,10 +63,12 @@ Picture::Picture( const Picture& other ) : _d( new Impl )
   *this = other;
 }
 
-void Picture::init(SDL_Texture *texture, SDL_Surface* srf)
+void Picture::init(SDL_Texture *texture, SDL_Surface* srf, unsigned int ogltx)
 {
   _d->texture = texture;
   _d->surface = srf;
+  _d->opengltx = ogltx;
+
   if( _d->texture != 0 )
   {
     int w, h;
@@ -84,6 +88,8 @@ void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Texture* Picture::texture() const{  return _d->texture;}
 SDL_Surface*Picture::surface() const { return _d->surface;  }
+unsigned int Picture::textureID() const { return _d->opengltx; }
+unsigned int& Picture::textureID() { return _d->opengltx; }
 const Point& Picture::offset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
@@ -97,7 +103,7 @@ Picture& Picture::load( const std::string& filename ){  return PictureBank::inst
 
 bool Picture::isValid() const
 {
-  return _d->texture != 0;
+  return (_d->texture || _d->opengltx);
 }
 
 void Picture::setAlpha(unsigned char value)
@@ -216,6 +222,7 @@ Picture& Picture::operator=( const Picture& other )
   _d->texture = other._d->texture;
   _d->offset = other._d->offset;
   _d->surface = other._d->surface;
+  _d->opengltx = other._d->opengltx;
 
   return *this;
 }
@@ -229,10 +236,31 @@ void Picture::destroy( Picture* ptr )
 
 void Picture::update()
 {
-  if( _d->texture && _d->surface )
+  if( _d->surface )
   {
-    SDL_Rect r = { 0, 0, _d->surface->w, _d->surface->h };
-    SDL_UpdateTexture(_d->texture, &r, _d->surface->pixels, _d->surface->pitch );
+    if( _d->texture )
+    {
+      int access;
+      SDL_QueryTexture( _d->texture, 0, &access, 0, 0 );
+      /*if( access == SDL_TEXTUREACCESS_STREAMING )
+      {
+        void* pixels = 0;
+        int pitch;
+        int result = SDL_LockTexture(_d->texture, 0, &pixels, &pitch );
+        if( result == 0 )
+        {
+          memcpy( pixels, _d->surface->pixels, _d->surface->h * pitch );
+        }
+      }
+      else*/
+      {
+        SDL_UpdateTexture(_d->texture, 0, _d->surface->pixels, _d->surface->pitch );
+      }
+    }
+    else if( _d->opengltx > 0 )
+    {
+      Engine::instance().loadPicture( *this, false );
+    }
   }
 }
 
@@ -251,10 +279,9 @@ void Picture::fill( const NColor& color, Rect rect )
 
 Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
 {
-  mayChange = true;
-
   Picture *pic = new Picture();
 
+  pic->_d->size = size;
   if( data )
   {
     pic->_d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
@@ -267,7 +294,7 @@ Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
     SDL_FillRect( pic->_d->surface, 0, 0 );
   }
 
-  Engine::instance().loadPicture( *pic );
+  Engine::instance().loadPicture( *pic, mayChange );
   if( !mayChange )
   {
     SDL_FreeSurface( pic->_d->surface );

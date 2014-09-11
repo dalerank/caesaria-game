@@ -140,7 +140,11 @@ std::string EntertainmentBuilding::troubleDesc() const
 EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::necessaryWalkers() const { return _d->necWalkers; }
 WalkerList EntertainmentBuilding::_specificWorkers() const { return walkers(); }
 
-void EntertainmentBuilding::_addNecessaryWalker(walker::Type type){  _d->necWalkers.push_back( type );}
+void EntertainmentBuilding::_addNecessaryWalker(walker::Type type)
+{
+  _d->necWalkers.push_back( type );
+ setTraineeValue( type, 0 );
+}
 
 bool EntertainmentBuilding::_isWalkerReady()
 {

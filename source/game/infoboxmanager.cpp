@@ -48,6 +48,7 @@
 #include "gui/infobox_colloseum.hpp"
 #include "gui/infobox_theater.hpp"
 #include "gui/infobox_amphitheater.hpp"
+#include "gui/infobox_fort.hpp"
 #include <map>
 
 using namespace constants;
@@ -205,9 +206,9 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::academy,          CAESARIA_STR_EXT(B_COLLEGE),   new ServiceBaseInfoboxCreator( "", "" ));
   addInfobox( building::library,          CAESARIA_STR_EXT(B_LIBRARY),   new ServiceBaseInfoboxCreator( "", "" ));
   addInfobox( construction::garden,       CAESARIA_STR_EXT(B_GARDEN),    new InfoboxBasicCreator( "", "##garden_info##" )  );
-  addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoboxBasicCreator( "", "##statue_info##") );
-  addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_info##") );
-  addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_info##") );
+  addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoboxBasicCreator( "", "##statue_small_info##") );
+  addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_middle_info##") );
+  addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_big_info##") );
   addInfobox( building::nativeHut,        CAESARIA_STR_EXT(NativeHut),   new InfoboxBasicCreator( "", "##nativeHut_info##") );
   ADD_INFOBOX( building::nativeField, InfoboxBasicCreator( "", "##nativeField_info##") );
   addInfobox( building::nativeCenter,     CAESARIA_STR_EXT(NativeCenter),   new InfoboxBasicCreator( "", "##nativeCenter_info##") );
@@ -235,14 +236,17 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::governorHouse,    CAESARIA_STR_EXT(governorHouse),new ServiceBaseInfoboxCreator( "", "##governor_house_text##") );
   addInfobox( building::governorVilla,    CAESARIA_STR_EXT(governorVilla),new ServiceBaseInfoboxCreator( "", "##governor_villa_text##") );
   addInfobox( building::governorPalace,   CAESARIA_STR_EXT(governorPalace), new ServiceBaseInfoboxCreator( "", "##governor_palace_text##") );
-  addInfobox( building::highBridge,       CAESARIA_STR_EXT(HighBridge),   new InfoboxBasicCreator( "", "##high_bridge_text##") );
-  addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoboxBasicCreator( "", "##low_bridge_text##") );
+  addInfobox( building::highBridge,       CAESARIA_STR_EXT(HighBridge),   new InfoboxBasicCreator( "", "##high_bridge_info##") );
+  addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoboxBasicCreator( "", "##bridge_extends_city_area##") );
   addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<AboutWharf>() );
   ADD_INFOBOX( building::burningRuins,    InfoboxBasicCreator( "", "##this_fire_can_spread##" ) );
   ADD_INFOBOX( building::rift,    InfoboxBasicCreator( "", "##these_rift_info##" ) );
   addInfobox( building::collapsedRuins,   CAESARIA_STR_EXT(CollapsedRuins), new BaseInfoboxCreator<AboutRuins>() );
   addInfobox( building::burnedRuins,      CAESARIA_STR_EXT(BurnedRuins), new BaseInfoboxCreator<AboutRuins>() );
   addInfobox( building::plagueRuins,      CAESARIA_STR_EXT(PlagueRuins), new BaseInfoboxCreator<AboutRuins>() );
+  ADD_INFOBOX( building::fortLegionaire,   BaseInfoboxCreator<AboutFort>() )
+  ADD_INFOBOX( building::fortJavelin,   BaseInfoboxCreator<AboutFort>() )
+  ADD_INFOBOX( building::fortMounted,   BaseInfoboxCreator<AboutFort>() )
 }
 
 Manager::~Manager() {}

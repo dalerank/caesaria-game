@@ -759,7 +759,11 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
       StringArray& hSizeTxs = _d->houseTextures[ arName ];
       foreach( tx, txNames )
       {
-        hSizeTxs.push_back( *tx );
+        Picture pic = Picture::load( *tx );
+        if( pic.isValid() )
+        {
+          hSizeTxs.push_back( *tx );
+        }
       }
     }
 

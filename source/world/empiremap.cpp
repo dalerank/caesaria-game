@@ -89,9 +89,9 @@ EmpireMap::TerrainType EmpireMap::at( const TilePos& ij ) const
   return _d->at( ij ).info;
 }
 
-PointsArray EmpireMap::findRoute(Point start, Point stop, int flags ) const
+Route EmpireMap::findRoute(Point start, Point stop, int flags ) const
 {
-  PointsArray way;
+  Route way;
   TilePosArray tiles;
 
   _d->routefinder->findRoute( _d->pnt2tp( start ), _d->pnt2tp( stop ), tiles, flags);

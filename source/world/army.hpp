@@ -36,6 +36,8 @@ public:
   virtual std::string type() const;
   virtual void setBase( CityPtr base);
   virtual void attack( ObjectPtr obj );
+  virtual void setStrength( int value );
+  virtual int strength() const;
 
 protected:
   void _reachedWay();

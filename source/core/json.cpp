@@ -17,7 +17,7 @@
 
 #include "json.hpp"
 #include "stringhelper.hpp"
-//#include <iostream>
+
 static std::string lastParsedObjectName;
 static std::string sanitizeString(std::string str)
 {
@@ -378,7 +378,8 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
         if(token != JsonTokenColon)
         {
           success = false;
-          return Variant();
+          std::string errText = StringHelper::format( 0xff, "Wrong token colon near \"%s\"", name.c_str() );
+          return Variant( errText );
         }
 
         //Parse the key/value pair's value

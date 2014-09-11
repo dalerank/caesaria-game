@@ -99,6 +99,7 @@ void OverlaysMenu::_addButtons(const int type )
   case citylayer::commerce:
     _addButton( citylayer::tax, startPos );
     _addButton( citylayer::food, startPos+=offset );
+    _addButton( citylayer::market, startPos+=offset );
     _addButton( citylayer::desirability, startPos+=offset );
     break;
 

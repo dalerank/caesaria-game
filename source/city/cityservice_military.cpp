@@ -18,20 +18,22 @@
 #include "cityservice_military.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
+#include "walker/enemysoldier.hpp"
 #include "core/stringhelper.hpp"
+#include "city/cityservice_info.hpp"
+
+using namespace constants;
 
 namespace city
 {
-
-namespace  {
-CAESARIA_LITERALCONST(notifications)
-}
 
 class Military::Impl
 {
 public:
   Military::NotificationArray notifications;
   DateTime lastEnemyAttack;
+  float threatValue;
+  bool updateMilitaryThreat;
 };
 
 city::SrvcPtr Military::create(PlayerCityPtr city )
@@ -43,8 +45,10 @@ city::SrvcPtr Military::create(PlayerCityPtr city )
 }
 
 Military::Military(PlayerCityPtr city )
-  : city::Srvc( *city.object(), "military" ), _d( new Impl )
+  : city::Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
+  _d->updateMilitaryThreat = true;
+  _d->threatValue = 0;
 }
 
 void Military::update( const unsigned int time )
@@ -62,6 +66,16 @@ void Military::update( const unsigned int time )
       else { ++it; }
     }
   }
+
+  if( _d->updateMilitaryThreat || GameDate::isMonthChanged() )
+  {
+    _d->updateMilitaryThreat = false;
+
+    EnemySoldierList enSoldiers;
+    enSoldiers << _city.walkers( walker::any );
+
+    _d->threatValue = enSoldiers.size() * 10;
+  }  
 }
 
 void Military::addNotification(const std::string& text, const Point& location)
@@ -88,17 +102,17 @@ VariantMap Military::save() const
 {
   VariantMap ret;
 
-  VariantMap vlNts;
+  VariantMap notifications;
   int index = 0;
   foreach( it, _d->notifications )
   {
     VariantList vlNt;
     vlNt << (*it).date << (*it).location << Variant( (*it).message );
 
-    vlNts[ StringHelper::format( 0xff, "note_%03d", index ) ] = vlNt;
+    notifications[ StringHelper::format( 0xff, "note_%03d", index ) ] = vlNt;
   }
 
-  ret[ lc_notifications ] = vlNts;
+  VARIANT_SAVE_ANY( ret, notifications );
   VARIANT_SAVE_ANY_D( ret, _d, lastEnemyAttack )
 
   return ret;
@@ -106,10 +120,11 @@ VariantMap Military::save() const
 
 void Military::load(const VariantMap& stream)
 {
+  VariantMap notifications;
   VARIANT_LOAD_TIME_D( _d, lastEnemyAttack, stream );
+  VARIANT_LOAD_VMAP( notifications, stream );
 
-  VariantMap vlNts = stream.get( lc_notifications ).toMap();
-  foreach( it, vlNts )
+  foreach( it, notifications )
   {
     VariantList vlN = it->second.toList();
     Notification n;
@@ -121,8 +136,18 @@ void Military::load(const VariantMap& stream)
   }
 }
 
-int Military::month2lastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
-void Military::enemyAttack(){  _d->lastEnemyAttack = GameDate::current(); }
+const DateTime& Military::lastAttack() const { return _d->lastEnemyAttack; }
+
+void Military::updateThreat(int value)
+{
+  _d->updateMilitaryThreat = true;
+
+  if( value > 0 )
+    _d->lastEnemyAttack = GameDate::current();
+}
+
+int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
+unsigned int Military::threadValue() const{ return _d->threatValue; }
 std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
 
 }//end namespace city

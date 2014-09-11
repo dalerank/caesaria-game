@@ -31,16 +31,16 @@ namespace gfx
 {
 
 static const char* damageLevelName[] = {
-                                         "##none_damage_risk##",
+                                         "##none_damage_risk##", "##some_defects_damage_risk##",
                                          "##very_low_damage_risk##", "##low_damage_risk##",
                                          "##little_damage_risk##",   "##some_damage_risk##",
-                                         "##high_damage_risk##",
+                                         "##high_damage_risk##", "##collapse_available_damage_risk##",
                                          "##very_high_damage_risk##", "##extreme_damage_risk##"
                                        };
 
 int LayerDamage::type() const {  return citylayer::damage; }
 
-void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerDamage::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -141,7 +141,7 @@ void LayerDamage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 12.5, 0, 7 );
+          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 10, 0, 7 );
           text = damageLevelName[ damageLevel ];
         }
       }

@@ -41,6 +41,7 @@ static const std::string crimeDesc[] =
   "##low_crime_risk##",
   "##few_crime_risk##"
   "##some_crime_risk##",
+  "##peaceful_crime_risk##",
   "##several_crimes_but_area_secure##",
   "##dangerous_crime_risk##"
   "##averange_crime_risk##",
@@ -51,7 +52,7 @@ static const std::string crimeDesc[] =
 
 int LayerCrime::type() const {  return citylayer::crime; }
 
-void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerCrime::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -145,7 +146,7 @@ void LayerCrime::handleEvent(NEvent& event)
         if( house != 0 )
         {
           int crime = (int)house->getServiceValue( Service::crime );
-          text = crimeDesc[ math::clamp<int>( crime / 12.5, 0, 7 ) ];
+          text = crimeDesc[ math::clamp<int>( crime / 11, 0, 7 ) ];
         }
       }
 

@@ -30,7 +30,7 @@ typedef enum { simple=0, water, fire, damage, desirability,
        religion,
        risks, crime, aborigen, troubles,
        educations, education, school, library, academy,
-       commerce, tax,
+       commerce, tax, market,
        build, destroyd,
        all, count=0xff
      } Type;

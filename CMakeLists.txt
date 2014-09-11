@@ -16,7 +16,6 @@ option( BUILD_SMK   "Static smk"     ON )
 option( BUILD_FREETYPE "Static freetype2" ON )
 option( BUILD_TTF   "Static ttf"     ON )
 option( BUILD_GL_FRAMEBUFFER "Opengl framebuffer"     ON )
-option( BUILD_GL_SHADERS "OpenGL shaders"     ON )
 option( BUILD_AUDIO "Use sdl_mixer"  ON )
 option( DEBUG_TIMERS "Show debug timers" ON)
 

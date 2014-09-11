@@ -42,6 +42,8 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
   setSpeedMultiplier( 0.5 + math::random( 10 ) / 10.f );
 
   setName( _("##water_garbage##") );
+
+  setFlag( vividly, false );
 }
 
 void WaterGarbage::send2City(const TilePos &start )

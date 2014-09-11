@@ -66,6 +66,8 @@ Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 
   setName( _("##locust##") );
   _setHealth( 0 );
+
+  setFlag( vividly, false );
 }
 
 Locust::~Locust()

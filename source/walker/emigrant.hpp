@@ -15,14 +15,14 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_IMMIGRANT_H_INCLUDED__
-#define __CAESARIA_IMMIGRANT_H_INCLUDED__
+#ifndef __CAESARIA_EMIGRANT_H_INCLUDED__
+#define __CAESARIA_EMIGRANT_H_INCLUDED__
 
 #include "walker.hpp"
 #include "core/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 
-/** This is an immigrant coming with his stuff */
+/** This is an emigrant coming with his stuff */
 class Emigrant : public Walker
 {
 public:
@@ -30,7 +30,7 @@ public:
   static EmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
                                  const gfx::Tile& startTile, std::string thinks );
 
-  void send2city( const gfx::Tile& startTile );
+  bool send2city( const gfx::Tile& startTile );
   void leaveCity( const gfx::Tile& tile );
 
   void setPeoples( const CitizenGroup& peoples );
@@ -43,7 +43,6 @@ public:
   virtual bool die();
 
 protected:
-  virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
@@ -59,10 +58,11 @@ protected:
   const CitizenGroup& _getPeoples() const;
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
+  void _checkHouses(HouseList &hlist);
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_IMMIGRANT_H_INCLUDED__
+#endif //__CAESARIA_EMIGRANT_H_INCLUDED__

@@ -35,6 +35,7 @@
 #include "game/settings.hpp"
 #include "game/gamedate.hpp"
 #include "city/funds.hpp"
+#include "barbarian.hpp"
 
 namespace world
 {
@@ -50,6 +51,7 @@ public:
   Emperor emperor;
   unsigned int treasury;
   bool enabled;
+  unsigned int maxBarbariansGroups;
 
   std::string playerCityName;
   int workerSalary;
@@ -58,6 +60,7 @@ public:
 public:
   void takeTaxes();
   void checkLoans();
+  void checkBarbarians(EmpirePtr empire);
 };
 
 Empire::Empire() : _d( new Impl )
@@ -68,16 +71,17 @@ Empire::Empire() : _d( new Impl )
   _d->treasury = 0;
   _d->objUid = 0;
   _d->rateInterest = 10;
+  _d->maxBarbariansGroups = 1;
   _d->emperor.init( *this );
 }
 
 CityList Empire::cities() const
 {
   CityList ret;
-  foreach( city, _d->cities )
+  foreach( it, _d->cities )
   {
-    if( (*city)->isAvailable() )
-      ret.push_back( *city );
+    if( (*it)->isAvailable() )
+      ret.push_back( *it );
   }
 
   return ret;
@@ -210,10 +214,11 @@ void Empire::save( VariantMap& stream ) const
   stream[ "cities"  ] = vm_cities;
   stream[ "objects" ] = vm_objects;
   stream[ "trade"   ] = _d->trading.save();
-  stream[ "enabled" ] = _d->enabled;
   stream[ "emperor" ] = _d->emperor.save();
-  stream[ "objUid"  ] = _d->objUid;
-  stream[ "rateInterest" ] = _d->rateInterest;
+  VARIANT_SAVE_ANY_D( stream, _d, enabled )
+  VARIANT_SAVE_ANY_D( stream, _d, objUid )
+  VARIANT_SAVE_ANY_D( stream, _d, maxBarbariansGroups )
+  VARIANT_SAVE_ANY_D( stream, _d, rateInterest )
 }
 
 void Empire::_loadObjects(const VariantMap &objects)
@@ -231,13 +236,12 @@ void Empire::_loadObjects(const VariantMap &objects)
 
 void Empire::load( const VariantMap& stream )
 {
-  Variant uidV = stream.get( "objUid" );
-  if( uidV.isValid() ) _d->objUid = uidV;
+  VARIANT_LOAD_ANYDEF_D( _d, objUid, _d->objUid, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, enabled, _d->enabled, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, maxBarbariansGroups, _d->maxBarbariansGroups, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, rateInterest, _d->rateInterest, stream )
 
   _d->trading.load( stream.get( "trade").toMap() );
-
-  Variant enV = stream.get( "enabled" );;
-  if( enV.isValid() ) _d->enabled = enV;
 
   VariantMap cities = stream.get( "cities" ).toMap();
   foreach( item, cities )
@@ -364,6 +368,7 @@ void Empire::timeStep( unsigned int time )
   if( GameDate::isMonthChanged() )
   {
     _d->checkLoans();
+    _d->checkBarbarians( this );
   }
 
   if( GameDate::isYearChanged() )
@@ -404,6 +409,29 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 }
 
 const ObjectList& Empire::objects() const{  return _d->objects; }
+
+ObjectList Empire::findObjects( Point location, int deviance ) const
+{
+  ObjectList ret;
+  foreach( i, _d->objects )
+  {
+    if( (*i)->location().distanceTo( location ) < deviance )
+    {
+      ret << *i;
+    }
+  }
+
+  foreach( i, _d->cities )
+  {
+    if( (*i)->location().distanceTo( location ) < deviance )
+    {
+      ret << ptr_cast<Object>( *i );
+    }
+  }
+
+  return ret;
+}
+
 
 ObjectPtr Empire::findObject(const std::string& name) const
 {
@@ -506,6 +534,18 @@ void Empire::Impl::checkLoans()
         }
       }
     }
+  }
+}
+
+void Empire::Impl::checkBarbarians( EmpirePtr empire )
+{
+  BarbarianList barbarians;
+  barbarians << objects;
+
+  if( barbarians.size() < maxBarbariansGroups )
+  {
+    BarbarianPtr brb = Barbarian::create( empire, Point( 1000, 0 ) );
+    empire->addObject( ptr_cast<Object>( brb ) );
   }
 }
 

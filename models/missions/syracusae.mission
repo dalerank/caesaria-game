@@ -16,7 +16,7 @@
     prosperity : 20
     peace : 25
     favour : 20
-    next : ":/missions/tutorial5.briefing"
+    next : ":/missions/mission5.briefing"
     title : "##win_engineer_title##"
     win.text : "##win_syracusae_text##"
     may_continue : false

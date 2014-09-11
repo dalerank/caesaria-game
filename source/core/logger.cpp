@@ -20,6 +20,7 @@
 #include "stringhelper.hpp"
 #include "time.hpp"
 #include "foreach.hpp"
+#include "list.hpp"
 
 #include <cstdarg>
 #include <cfloat>
@@ -111,11 +112,26 @@ class Logger::Impl
 {
 public:
   typedef std::map<std::string,LogWriterPtr> Writers;
+  typedef List<std::string> Filters;
+
+  Filters filters;
 
   Writers writers;
 
   void write( const std::string& message, bool newline=true )
   {
+    // Check for filter pass
+    bool pass = filters.size() == 0;
+    foreach ( filter, filters )
+    {
+      if (message.compare( 0, filter->length(), *filter ) == 0)
+      {
+        pass = true;
+        break;
+      }
+    }
+    if (!pass) return;
+
     foreach( i, writers )
     {
       if( i->second.isValid() )
@@ -124,6 +140,7 @@ public:
       }
     }
   }
+
 };
 
 void Logger::warning( const char* fmt, ... )
@@ -143,6 +160,34 @@ void Logger::warning( const char* fmt, ... )
 void Logger::warning(const std::string& text) {  instance()._d->write( text );}
 void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
 void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
+
+void Logger::addFilter(const std::string text)
+{
+  if (hasFilter(text)) return;
+  instance()._d->filters.append(text);
+}
+
+bool Logger::hasFilter(const std::string text)
+{
+  foreach(filter, instance()._d->filters)
+  {
+    if (*filter == text) return true;
+  }
+  return false;
+}
+
+bool Logger::removeFilter(const std::string text)
+{
+  foreach(filter, instance()._d->filters)
+  {
+    if (*filter == text)
+    {
+      instance()._d->filters.erase(filter);
+      return true;
+    }
+  }
+  return false;
+}
 
 void Logger::registerWriter(Logger::Type type, const std::string& param )
 {
@@ -180,6 +225,7 @@ Logger::~Logger() {}
 
 Logger::Logger() : _d( new Impl )
 {
+  CrashHandler_initCrashHandler();
 }
 
 void Logger::registerWriter(std::string name, LogWriterPtr writer)
@@ -190,3 +236,29 @@ void Logger::registerWriter(std::string name, LogWriterPtr writer)
   }
 }
 
+// Crash handler
+
+#include "stacktrace.hpp"
+#include <signal.h>
+
+void CrashHandler_initCrashHandler()
+{
+  signal( SIGABRT, CrashHandler_handleCrash);
+  signal( SIGSEGV, CrashHandler_handleCrash);
+  signal( SIGILL , CrashHandler_handleCrash);
+  signal( SIGFPE , CrashHandler_handleCrash);
+}
+
+void CrashHandler_handleCrash(int signum)
+{
+  switch(signum)
+  {
+    case SIGABRT: Logger::warning("SIGABRT: abort() called somewhere in the program."); break;
+    case SIGSEGV: Logger::warning("SIGSEGV: Illegal memory access."); break;
+    case SIGILL: Logger::warning("SIGILL: Executing a malformed instruction. (possibly invalid pointer)"); break;
+    case SIGFPE: Logger::warning("SIGFPE: Illegal floating point instruction (possibly division by zero)."); break;
+  }
+
+  Stacktrace::print();
+  exit(signum);
+}
