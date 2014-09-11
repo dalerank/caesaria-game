@@ -13,5 +13,10 @@
       shader : "/shaders/fxaa.glsl"
       texOffset : [2,2]
     }
+    /*
+    pass_3:
+    {
+      shader : "/shaders/viegret.glsl"
+    }*/
   }
 }

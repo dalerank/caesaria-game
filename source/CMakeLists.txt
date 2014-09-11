@@ -106,7 +106,9 @@ endif(WIN32)
 
 if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
+  if(NOT APPLE)
   target_link_libraries(${PROJECT_NAME} "GL")
+  endif()
   # target_link_libraries(${PROJECT_NAME} "GLESv1_CM")
 endif(UNIX)
 
