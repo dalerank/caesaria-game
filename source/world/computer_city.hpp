@@ -53,7 +53,7 @@ public:
   virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 
   virtual unsigned int tradeType() const;
-
+  virtual int strength() const;
   virtual void addObject(ObjectPtr object);
 
   void changeTradeOptions( const VariantMap& stream );

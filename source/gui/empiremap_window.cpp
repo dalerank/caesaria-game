@@ -210,11 +210,11 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         }
       }
 
-      const PointsArray& way = mobj->way();
+      const world::Route& way = mobj->way();
       if( !way.empty() )
       {
-        Point lastPos = way[ mobj->currentStep() ];
-        for( int k = mobj->currentStep()+1; k < way.size(); k++ )
+        Point lastPos = way[ way.step ];
+        for( int k = way.step+1; k < way.size(); k++ )
         {
           painter.drawLine( DefaultColors::aliceBlue, offset + lastPos, offset + way[ k ] );
           lastPos = way[ k ];

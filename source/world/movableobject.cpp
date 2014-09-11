@@ -36,8 +36,7 @@ class MovableObject::Impl
 public:
   Point start, stop;
 
-  PointsArray way;
-  unsigned int step;
+  Route way;
   unsigned int speed;
   VariantMap options;
 };
@@ -63,35 +62,38 @@ void MovableObject::timeStep(const unsigned int time)
   {    
     if( !d->way.empty() )
     {
-      d->step++;
+      d->way.step++;
 
-      if( d->step >= d->way.size() )
+      if( d->way.step >= d->way.size() )
       {
+        d->way.reset();
         _reachedWay();
       }
       else
       {
-        d->step = math::clamp<int>( d->step, 0, d->way.size()-1 );
-        setLocation( d->way[ d->step ] );
+        d->way.step = math::clamp<int>( d->way.step, 0, d->way.size()-1 );
+        setLocation( d->way[ d->way.step ] );
       }
     }
     else
     {
+      _noWay();
       Logger::warning( "Army: way are empty" );
     }
   }
 }
 
 int MovableObject::viewDistance() const { return 40; }
-const PointsArray&MovableObject::way() const { return _dfunc()->way; }
-int MovableObject::currentStep() const { return _dfunc()->step; }
+const Route& MovableObject::way() const { return _dfunc()->way; }
 
 void MovableObject::_reachedWay()
 {
   deleteLater();
 }
 
-PointsArray& MovableObject::_way() { return _dfunc()->way; }
+void MovableObject::_noWay() {}
+
+Route& MovableObject::_way() { return _dfunc()->way; }
 
 void MovableObject::save(VariantMap& stream) const
 {
@@ -100,12 +102,12 @@ void MovableObject::save(VariantMap& stream) const
   __D_IMPL_CONST(d,MovableObject)
   VARIANT_SAVE_ANY_D( stream, d, start )
   VARIANT_SAVE_ANY_D( stream, d, stop )
-  VARIANT_SAVE_ANY_D( stream, d, step )
 
   VariantList pointsVl;
   foreach( i, d->way ) { pointsVl.push_back( *i ); }
 
   stream[ "points" ] = pointsVl;
+  stream[ "step"   ] = d->way.step;
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -116,8 +118,8 @@ void MovableObject::load(const VariantMap& stream)
   d->options = stream;
   VARIANT_LOAD_ANY_D( d, start, stream )
   VARIANT_LOAD_ANY_D( d, stop, stream )
-  VARIANT_LOAD_ANY_D( d, step, stream )
 
+  d->way.step = stream.get( "step" );
   VariantList points = stream.get( "points" ).toList();
   foreach( i, points ) { d->way.push_back( (*i).toPoint() ); }
 }
@@ -131,7 +133,7 @@ bool MovableObject::_findWay( Point p1, Point p2 )
 
   d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::land );
   setLocation( d->start );
-  d->step = 0;
+  d->way.step = 0;
 
   if( d->way.empty() )
   {

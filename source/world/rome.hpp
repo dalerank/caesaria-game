@@ -37,11 +37,12 @@ public:
   virtual std::string name() const;
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
+  virtual void timeStep(const unsigned int time);
   virtual SmartPtr<Player> player() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
   virtual DateTime lastAttack() const;
-
+  virtual int strength() const;
   virtual void delayTrade( unsigned int month );
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost );
   virtual const GoodStore& importingGoods() const;

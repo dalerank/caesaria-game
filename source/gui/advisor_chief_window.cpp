@@ -41,6 +41,9 @@
 #include "city/cityservice_health.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
+#include "world/barbarian.hpp"
+#include "world/romechastenerarmy.hpp"
+#include "world/empire.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -324,17 +327,28 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
 
 void AdvisorChiefWindow::Impl::drawMilitary()
 {
-  std::string text;
+  StringArray reasons;
   city::MilitaryPtr mil;
   mil << city->findService( city::Military::defaultName() );
 
   if( mil.isValid() )
   {
     city::Military::Notification n = mil->priorityNotification();
-    text = n.message;
+    reasons << n.message;
   }
 
-  text = text.empty() ? "##no_warning_for_us##" : text;
+  world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
+  foreach( i, objs )
+  {
+    if( is_kind_of<world::Barbarian>( *i ) ||
+        is_kind_of<world::RomeChastenerArmy>( *i ) )
+    {
+      reasons << "##getting_reports_about_enemies##";
+      break;
+    }
+  }
+
+  std::string text = reasons.empty() ? "##no_warning_for_us##" : reasons.random();
   drawReportRow( atMilitary, _(text) );
 }
 

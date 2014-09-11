@@ -25,6 +25,18 @@
 namespace world
 {
 
+class Route : public PointsArray
+{
+public:
+  int step;
+
+  void reset()
+  {
+    clear();
+    step = 0;
+  }
+};
+
 class MovableObject : public Object
 {
 public:
@@ -36,13 +48,13 @@ public:
   virtual void timeStep(const unsigned int time);
   virtual bool isMovable() const { return true; }
   virtual int viewDistance() const;
-  virtual const PointsArray& way() const;
-  virtual int currentStep() const;
+  virtual const Route& way() const;
 
 protected:
   virtual bool _findWay( Point p1, Point p2 );
   virtual void _reachedWay();
-  PointsArray& _way();
+  virtual void _noWay();
+  Route& _way();
   MovableObject( EmpirePtr empire );
 
 private: 

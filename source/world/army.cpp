@@ -144,7 +144,16 @@ void Army::attack(ObjectPtr obj)
   }
 }
 
-void Army::setStrength(int value) { _dfunc()->strength = value; }
+void Army::setStrength(int value)
+{
+  _dfunc()->strength = value;
+  if( _dfunc()->strength <= 0 )
+  {
+    deleteLater();
+  }
+}
+
+
 int Army::strength() const { return _dfunc()->strength; }
 
 }

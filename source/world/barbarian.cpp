@@ -70,6 +70,11 @@ void Barbarian::load(const VariantMap& stream)
   _d->options = stream;
 }
 
+void Barbarian::updateStrength(int value)
+{
+  setStrength( strength() + value );
+}
+
 int Barbarian::viewDistance() const { return 60; }
 
 void Barbarian::_check4attack()
@@ -141,18 +146,16 @@ void Barbarian::_goaway()
   _d->mode = Impl::goaway;
 }
 
+void Barbarian::_noWay()
+{
+  _attackAny();
+}
+
 void Barbarian::_reachedWay()
 {
   if( _d->mode == Impl::go2object )
   {
-    ObjectList objs = empire()->findObjects( location(), 20 );
-    objs.remove( this );
-
-    bool successAttack = _attackObject( objs );
-    if( successAttack )
-    {
-      _goaway();
-    }
+    _attackAny();
   }
   else if( _d->mode == Impl::goaway )
   {
@@ -160,15 +163,21 @@ void Barbarian::_reachedWay()
   }
 }
 
-bool Barbarian::_attackObject(ObjectList objs)
+void Barbarian::_attackAny()
 {
+  ObjectList objs = empire()->findObjects( location(), 20 );
+  objs.remove( this );
+
+  bool successAttack = false;
   foreach( i, objs )
   {
-    if( _attackObject( *i ) )
-      return true;
+    successAttack = _attackObject( *i );
+    if( successAttack )
+      break;
   }
 
-  return false;
+  if( successAttack )
+    _goaway();
 }
 
 bool Barbarian::_attackObject(ObjectPtr obj)
@@ -180,8 +189,11 @@ bool Barbarian::_attackObject(ObjectPtr obj)
   }
   else if( is_kind_of<City>( obj ) )
   {
-    obj->addObject( this );
-    return true;
+    CityPtr pcity = ptr_cast<City>( obj );
+
+    pcity->addObject( this );
+
+    return !pcity->strength();
   }
 
   return false;

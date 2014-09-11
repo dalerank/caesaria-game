@@ -40,6 +40,8 @@ public:
   unsigned int tradeType;
   bool distantCity, romecity;
   bool available;
+  int population;
+  int strength;
   unsigned int tradeDelay;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
@@ -59,6 +61,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->distantCity = false;
   _d->merchantsNumber = 0;
   _d->available = true;
+  _d->population = 0;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
@@ -129,11 +132,13 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
   VARIANT_SAVE_ANY_D( options, _d, available )
-  VARIANT_SAVE_ANY_D( options, _d, merchantsNumber );
-  VARIANT_SAVE_ANY_D( options, _d, distantCity );
-  VARIANT_SAVE_ANY_D( options, _d, romecity );
+  VARIANT_SAVE_ANY_D( options, _d, merchantsNumber )
+  VARIANT_SAVE_ANY_D( options, _d, distantCity )
+  VARIANT_SAVE_ANY_D( options, _d, romecity )
   VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
   VARIANT_SAVE_ANY_D( options, _d, lastAttack )
+  VARIANT_SAVE_ANY_D( options, _d, population )
+  VARIANT_SAVE_ANY_D( options, _d, strength )
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -142,12 +147,14 @@ void ComputerCity::load( const VariantMap& options )
 
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
-  VARIANT_LOAD_ANY_D( _d, available, options );
-  VARIANT_LOAD_ANY_D( _d, merchantsNumber, options );
-  VARIANT_LOAD_ANY_D( _d, distantCity, options );
-  VARIANT_LOAD_ANY_D( _d, romecity, options );
-  VARIANT_LOAD_ANY_D( _d, tradeDelay, options );
-  VARIANT_LOAD_TIME_D(_d, lastAttack, options );
+  VARIANT_LOAD_ANY_D( _d, available, options )
+  VARIANT_LOAD_ANY_D( _d, merchantsNumber, options )
+  VARIANT_LOAD_ANY_D( _d, distantCity, options )
+  VARIANT_LOAD_ANY_D( _d, romecity, options )
+  VARIANT_LOAD_ANY_D( _d, tradeDelay, options )
+  VARIANT_LOAD_TIME_D(_d, lastAttack, options )
+  VARIANT_LOAD_ANY_D( _d, strength, options )
+  VARIANT_LOAD_ANYDEF_D(_d, population, _d->population, options )
 
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
@@ -226,8 +233,20 @@ void ComputerCity::addObject(ObjectPtr object )
   else if( is_kind_of<Barbarian>( object ) )
   {
     BarbarianPtr brb = ptr_cast<Barbarian>( object );
-    delayTrade( brb->strength() );
     _d->lastAttack = GameDate::current();
+    int attack = std::max<int>( brb->strength() - strength(), 0 );
+    if( !attack ) attack = 10;
+    _d->strength = math::clamp<int>( _d->strength - math::random( attack ), 0, 100 );
+
+    if( _d->strength > 0 )
+    {
+      int resist = std::max<int>( strength() - brb->strength(), 0 );
+      brb->updateStrength( math::random( resist ) );
+    }
+    else
+    {
+      delayTrade( brb->strength() );
+    }
   }
 }
 
@@ -256,6 +275,11 @@ void ComputerCity::timeStep( unsigned int time )
   if( GameDate::isMonthChanged() )
   {
     _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _d->strength = math::clamp<int>( _d->strength+1, 0, _d->population / 100 );
   }
 
   //one year before step need
@@ -328,8 +352,8 @@ void ComputerCity::timeStep( unsigned int time )
 }
 
 DateTime ComputerCity::lastAttack() const { return _d->lastAttack; }
-
 unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
+int ComputerCity::strength() const { return _d->strength; }
 
 void ComputerCity::_initTextures()
 {

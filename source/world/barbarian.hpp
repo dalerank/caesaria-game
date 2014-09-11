@@ -33,13 +33,15 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  virtual void updateStrength( int value );
   virtual int viewDistance() const;
 
 protected:
   virtual void _reachedWay();
   virtual void _check4attack();
   virtual void _goaway();
-  virtual bool _attackObject( ObjectList objs );
+  virtual void _noWay();
+  virtual void _attackAny();
   virtual bool _attackObject( ObjectPtr obj );
 
   Barbarian( EmpirePtr empire );

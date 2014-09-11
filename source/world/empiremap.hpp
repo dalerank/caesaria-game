@@ -22,6 +22,7 @@
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
 #include "core/predefinitions.hpp"
+#include "movableobject.hpp"
 
 namespace world
 {
@@ -41,7 +42,7 @@ public:
 
   TerrainType at(const TilePos& ij) const;
 
-  PointsArray findRoute(Point start, Point stop, int flags ) const;
+  Route findRoute(Point start, Point stop, int flags ) const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

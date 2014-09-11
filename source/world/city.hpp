@@ -51,6 +51,7 @@ public:
   virtual bool haveOverduePayment() const = 0;
   virtual bool isMovable() const { return false; }
   virtual DateTime lastAttack() const = 0;
+  virtual int strength() const = 0;
   virtual SmartPtr<Player> player() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;

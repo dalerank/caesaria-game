@@ -81,6 +81,7 @@
 #include "sentiment.hpp"
 #include "walker/chastener.hpp"
 #include "world/barbarian.hpp"
+#include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
 
 
@@ -381,6 +382,21 @@ ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
 city::Funds& PlayerCity::funds()  {  return _d->funds;   }
 unsigned int PlayerCity::population() const { return _d->population; }
+
+int PlayerCity::strength() const
+{
+  city::Helper helper( const_cast<PlayerCity*>( this ) );
+  FortList forts = helper.find<Fort>( building::any );
+
+  int ret = 0;
+  foreach( i, forts )
+  {
+    SoldierList soldiers = (*i)->soldiers();
+    ret += soldiers.size();
+  }
+
+  return ret;
+}
 
 DateTime PlayerCity::lastAttack() const
 {

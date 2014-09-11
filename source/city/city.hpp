@@ -85,6 +85,7 @@ public:
   city::Funds& funds();
 
   unsigned int population() const;
+  virtual int strength() const;
   int prosperity() const;
   int culture() const;
   int peace() const;
