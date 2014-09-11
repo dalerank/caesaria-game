@@ -44,9 +44,6 @@
   #include <SDL_opengles.h>
   #define USE_GLES
 #else
-  #ifdef CAESARIA_PLATFORM_LINUX
-    #define GL_GLEXT_PROTOTYPES
-  #endif
   #include <SDL_opengl.h>
 #endif
 
