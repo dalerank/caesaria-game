@@ -34,7 +34,7 @@ namespace gfx
 
 int LayerFood::type() const {  return citylayer::food; }
 
-void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

@@ -50,6 +50,12 @@ bool Road::build( PlayerCityPtr city, const TilePos& pos )
     return false;
   }
 
+  if( is_kind_of<Aqueduct>( overlay ) )
+  {
+    if( overlay->tile().getFlag( Tile::tlRoad ) )
+      return false;
+  }
+
   Construction::build( city, pos );
 
   if( is_kind_of<Aqueduct>( overlay ) )
@@ -265,7 +271,7 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   TilesArray area = tilemap.getArea( pos, size() ); // something very complex ???
   foreach( tile, area )
   {
-    is_constructible &= (*tile)->getFlag( Tile::tlRoad );
+    is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
   }
 
   return is_constructible;

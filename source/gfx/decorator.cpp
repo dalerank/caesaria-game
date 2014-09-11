@@ -269,8 +269,8 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
   {
     NColor color = mode == lineBlackBorder ? DefaultColors::black : DefaultColors::white;
     drawLine( dstpic, rectangle.lefttop(), rectangle.righttop(), color );
-    drawLine( dstpic, rectangle.righttop(), rectangle.rightbottom(), color );
-    drawLine( dstpic, rectangle.rightbottom(), rectangle.leftbottom(), color );
+    drawLine( dstpic, rectangle.righttop()-Point(1,0), rectangle.rightbottom()-Point(1,0), color );
+    drawLine( dstpic, rectangle.rightbottom()-Point(0,1), rectangle.leftbottom()-Point(0,1), color );
     drawLine( dstpic, rectangle.leftbottom(), rectangle.lefttop(), color );
   }
   break;

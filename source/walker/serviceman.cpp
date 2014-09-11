@@ -41,6 +41,7 @@ class ServiceWalker::Impl
 {
 public:
   BuildingPtr base;
+  TilePos lastHousePos;
   Service::Type service;
   unsigned int reachDistance;
   int maxDistance;
@@ -53,6 +54,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
+  _d->lastHousePos = TilePos( -1, -1 );
 
   _init(service);
 }
@@ -149,9 +151,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
       && pathWayList.size() > 0
       && ( (orders & anywayWhenFailed ) == anywayWhenFailed ) )
   {
-    PathwayList::iterator it = pathWayList.begin();
-    std::advance( it, math::random( pathWayList.size() ) );
-    bestPath = *it;
+    bestPath = pathWayList.random();
   }
 
   if( !bestPath.isValid() )
@@ -159,6 +159,22 @@ void ServiceWalker::_computeWalkerPath( int orders )
     //no good path
     deleteLater();
     return;
+  }
+
+  if( (orders & enterLastHouse) == enterLastHouse )
+  {
+    const TilesArray& tiles = bestPath->allTiles();
+    foreach( itTile, tiles )
+    {
+      ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
+      foreach( it, reachedBuildings )
+      {
+        if( (*it)->type() == building::house )
+        {
+          _d->lastHousePos = (*itTile)->pos();
+        }
+      }
+    }
   }
 
   setPos( bestPath->startPos() );
@@ -226,7 +242,7 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        res += (*it)->evaluateService( ServiceWalkerPtr( this ) );
+        res += (*it)->evaluateService( ServiceWalkerPtr( this ) );        
       }
     }
     distance++;
@@ -273,13 +289,15 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( base );
 
-  if( servBuilding.isValid() && _d->maxDistance == defaultServiceDistance )
+  if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
   {
+    Logger::warning( "WARNING !!!: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
-  else
+
+  if( !servBuilding.isValid() )
   {
-    Logger::warning( "WARNING !!!: ServiceWalker sender not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "WARNING !!!: ServiceWalker send not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );
@@ -287,7 +305,7 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 
   if( !isDeleted() )
   {
-    _city()->addWalker( WalkerPtr( this ));
+    _city()->addWalker( this );
   }
 }
 
@@ -303,6 +321,11 @@ void ServiceWalker::_centerTile()
   if( servBuilding.isValid() )
   {
     servBuilding->buildingsServed( reachedBuildings, this );
+  }
+
+  if( _d->lastHousePos == pos() )
+  {
+    deleteLater();
   }
 }
 
@@ -357,8 +380,9 @@ void ServiceWalker::save( VariantMap& stream ) const
   Walker::save( stream );
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
   stream[ "base" ] = _d->base->pos();
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reachDistance" ] = _d->reachDistance;
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
+  VARIANT_SAVE_ANY_D( stream, _d, reachDistance )
+  VARIANT_SAVE_ANY_D( stream, _d, lastHousePos )
 }
 
 void ServiceWalker::load( const VariantMap& stream )
@@ -367,8 +391,9 @@ void ServiceWalker::load( const VariantMap& stream )
 
   Service::Type srvcType = ServiceHelper::getType( stream.get( "service" ).toString() );
   _init( srvcType );
-  _d->maxDistance = stream.get( "maxDistance" );
-  _d->reachDistance = (int)stream.get( "reachDistance" );
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
+  VARIANT_LOAD_ANY_D( _d, reachDistance, stream )
+  VARIANT_LOAD_ANY_D( _d, lastHousePos, stream )
 
   TilePos basePos = stream.get( "base" ).toTilePos();
   TileOverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();

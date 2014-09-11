@@ -45,13 +45,19 @@ AboutFontain::AboutFontain(Widget* parent, const Tile& tile)
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  FountainPtr fountain = ptr_cast<Fountain>( tile.overlay() );
+  FountainPtr fountain;
+  fountain << tile.overlay();
+
   setConstruction( ptr_cast<Construction>( fountain ) );
 
   std::string text;
-  if( fountain != 0 )
+  if( fountain.isValid() )
   {
-    if( fountain->isActive() )
+    if( fountain->haveReservoirAccess() && tile.param( Tile::pReservoirWater ) <= 0 )
+    {
+      text = "##fountain_will_soon_be_hooked##";
+    }
+    else if( fountain->isActive() )
     {     
       text = fountain->mayWork()
               ? "##fountain_info##"

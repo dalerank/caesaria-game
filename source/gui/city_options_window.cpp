@@ -36,10 +36,12 @@ class CityOptionsWindow::Impl
 public:
   GameAutoPause locker;
   PushButton* btnGodEnabled;
+  PushButton* btnWarningsEnabled;
   PlayerCityPtr city;
 
   void update();
   void toggleGods();
+  void toggleWarnings();
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -54,8 +56,10 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
 
   GET_WIDGET_FROM_UI( btnClose )
   GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnWarningsEnabled )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
+  CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
 
   _d->update();
@@ -70,11 +74,27 @@ void CityOptionsWindow::Impl::toggleGods()
   update();
 }
 
+void CityOptionsWindow::Impl::toggleWarnings()
+{
+  bool value = city->getOption( PlayerCity::warningsEnabled );
+  city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
 void CityOptionsWindow::Impl::update()
 {
   if( btnGodEnabled )
   {
-    btnGodEnabled->setText( city->getOption( PlayerCity::godEnabled ) > 0 ? _("##city_opts_god_on##") : _("##city_opts_god_off##") );
+    btnGodEnabled->setText( city->getOption( PlayerCity::godEnabled ) > 0
+                              ? _("##city_opts_god_on##")
+                              : _("##city_opts_god_off##") );
+  }
+
+  if( btnWarningsEnabled )
+  {
+    btnWarningsEnabled->setText( city->getOption( PlayerCity::warningsEnabled ) > 0
+                              ? _("##city_warnings_on##")
+                              : _("##city_warnings_off##") );
   }
 }
 

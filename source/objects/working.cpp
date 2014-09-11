@@ -189,7 +189,7 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
           _fgPicturesRef().back() = Picture::getInvalid();
         }
 
-       _animationRef().stop();
+        _animationRef().stop();
       }
     }
   }

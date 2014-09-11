@@ -43,13 +43,23 @@ public:
   std::string errorStr;
 };
 
-void Reservoir::destroy()
+void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _city()->tilemap();
   TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
+}
+
+void Reservoir::_waterStateChanged()
+{
+
+}
+
+void Reservoir::destroy()
+{
+  _dropWater();
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -120,6 +130,7 @@ void Reservoir::timeStep(const unsigned long time)
   if( !_d->water )
   {
     _fgPicture( 0 ) = Picture::getInvalid();
+    _dropWater();
     return;
   }
 

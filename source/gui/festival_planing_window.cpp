@@ -78,7 +78,8 @@ public:
                                            imgSize, divId + type, ResourceGroup::festivalimg,
                                            startPic, startPic, startPic+5, startPic+5 ) );
     godBtns.back()->setIsPushButton( true );
-    divines[ divId + type ] = type;
+    godBtns.back()->setTooltipText( _("##arrange_festiable_for_this_god##") );
+    divines[ divId + type ] = type;    
   }
 
   void updateTitle()

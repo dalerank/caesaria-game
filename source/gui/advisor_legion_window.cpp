@@ -58,9 +58,11 @@ public:
     PushButton* return2fort   = new PushButton( this, Rect( 450, 5, 450 + 32, 6 +32 ), "", -1, false, PushButton::blackBorderUp );
     return2fort->setIcon(  ResourceGroup::panelBackground, 564 );
     return2fort->setIconOffset( Point( 4, 4 ) );
+    return2fort->setTooltipText( _("##return_2_fort##") );
     PushButton* empireService = new PushButton( this, Rect( 530, 5, 530 + 32, 6 + 32), "", -1, false, PushButton::blackBorderUp );
     empireService->setIcon( ResourceGroup::panelBackground, 566 );
     empireService->setIconOffset( Point( 4, 4 ) );
+    empireService->setTooltipText( "##empire_service_tip##");
 
     CONNECT( gotoLegion, onClicked(), this, LegionButton::_resolveMove2Legion );
     CONNECT( return2fort, onClicked(), this, LegionButton::_resolveReturnLegion2Fort );
@@ -69,7 +71,7 @@ public:
 
   virtual void _updateTextPic()
   {
-    PushButton::_textPictureRef();
+    PushButton::_updateTextPic();
 
     PictureRef& pic = _textPictureRef();
 

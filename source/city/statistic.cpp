@@ -232,7 +232,7 @@ int Statistic::months2lastAttack(PlayerCityPtr city)
 {
   MilitaryPtr ml;
   ml << city->findService( Military::defaultName() );
-  return ml.isValid() ? ml->month2lastAttack() : 0;
+  return ml.isValid() ? ml->monthFromLastAttack() : 0;
 }
 
 int Statistic::getWagesDiff(PlayerCityPtr city)

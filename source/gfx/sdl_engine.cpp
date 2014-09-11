@@ -38,13 +38,10 @@
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
+#include "game/settings.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
-#endif
-
-#ifdef CAESARIA_PLATFORM_ANDROID
-#include "game/settings.hpp"
 #endif
 
 namespace gfx
@@ -78,7 +75,6 @@ public:
   unsigned int lastUpdateFps;
   unsigned int drawCall;
   Font debugFont;
-  bool showDebugInfo;
 };
 
 
@@ -90,7 +86,6 @@ SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 
   _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
-  _d->showDebugInfo = false;
 }
 
 SdlEngine::~SdlEngine(){}
@@ -141,44 +136,20 @@ void SdlEngine::init()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   //_srcSize = Size( mode.w, mode.h );
-    Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-    int gl_version = GameSettings::get( "android_glv" );
-    if( gl_version > 0 )
-    {
-      int gl_depth = GameSettings::get( "android_gl_depth" );
-      int gl_doublebuf = GameSettings::get( "android_gl_dbuf" );
-      Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: android set gl_version %d", gl_version ) );
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-      switch( gl_version )
-      {
-      case 1:
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-      break;
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
 
-      case 2:
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-      break;
+  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
+           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
-      case 3:
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-      break;
-      }
+  Logger::warning("SDLGraficEngine:Android init successfull");
 
-      // turn on double buffering set the depth buffer to 24 bits
-      // you may need to change this to 16 or 32 for your system
-      SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, gl_doublebuf);
-      SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, gl_depth ? gl_depth : 32 );
-    }
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
 
-    window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
-
-    Logger::warning("SDLGraficEngine:Android init successfull");
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #else
   unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
@@ -208,8 +179,10 @@ void SdlEngine::init()
   }
 
   Logger::warning("SDLGraficEngine: init successfull");
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 #endif
+
+  int render_version = math::clamp( GameSettings::get( "render_version" ).toInt(), -1, SDL_GetNumRenderDrivers());
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
@@ -217,6 +190,7 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
+  //SDL_SetHint("SDL_RENDER_OPENGL_SHADERS", "0" );
   if (isFullscreen())
   {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
@@ -227,20 +201,31 @@ void SdlEngine::init()
   SDL_RenderClear(renderer);
   SDL_RenderPresent(renderer);
 
+  SDL_RendererInfo info;
+  for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
+  {
+    SDL_GetRenderDriverInfo( k, &info );
+    Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
+  }
+
+  SDL_GetRendererInfo( renderer, &info );
+  Logger::warning( "SDLGraficEngine: init render %s ", info.name );
+
+
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
                                                  SDL_TEXTUREACCESS_STREAMING,
                                                  _srcSize.width(), _srcSize.height());
 
-  Logger::warning( "GrafixEngine: init successfull");
-  _d->screen.init( screenTexture, 0 );
+  Logger::warning( "SDLGraficEngine: init successfull");
+  _d->screen.init( screenTexture, 0, 0 );
 
   if( !_d->screen.isValid() )
   {
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  Logger::warning( "GrafixEngine: set caption");
+  Logger::warning( "SDLGraficEngine: set caption");
   SDL_SetWindowTitle( window, "CaesarIA: "CAESARIA_VERSION );
 
   _d->window = window;
@@ -255,21 +240,34 @@ void SdlEngine::exit()
   SDL_Quit();
 }
 
-void SdlEngine::loadPicture( Picture& ioPicture )
+void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
 {
-  if( ioPicture.surface() )
-  {
-    SDL_Texture* tx = SDL_CreateTextureFromSurface(_d->renderer, ioPicture.surface());
-    if( !tx )
-    {
-      Logger::warning( "SdlEngine: cannot create texture from surface" + ioPicture.name() );
-    }
-    ioPicture.init( tx, ioPicture.surface() );
-  }
-  else
+  if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
     Logger::warning( StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+  }
+
+  SDL_Texture* tx = 0;
+  if( streaming )
+  {
+    tx = SDL_CreateTexture(_d->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, ioPicture.width(), ioPicture.height() );
+  }
+  else
+  {
+    tx = SDL_CreateTextureFromSurface(_d->renderer, ioPicture.surface());
+  }
+
+  if( !tx )
+  {
+    Logger::warning( "SdlEngine: cannot create texture from surface" + ioPicture.name() );
+  }
+
+  ioPicture.init( tx, ioPicture.surface(), 0 );
+
+  if( streaming )
+  {
+    ioPicture.update();
   }
 
   SDL_SetTextureBlendMode( ioPicture.texture(), SDL_BLENDMODE_BLEND );
@@ -293,7 +291,7 @@ void SdlEngine::startRenderFrame()
 
 void SdlEngine::endRenderFrame()
 {
-  if( _d->showDebugInfo )
+  if( getFlag( Engine::debugInfo ) )
   {
     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
     _d->fpsText->fill( 0, Rect() );
@@ -303,7 +301,6 @@ void SdlEngine::endRenderFrame()
 
   //Refresh the screen
   SDL_RenderPresent(_d->renderer);
-  //SDL_GL_SwapWindow(_d->window);
 
   _d->fps++;
 
@@ -528,7 +525,6 @@ void SdlEngine::setFlag( int flag, int value )
 
   if( flag == debugInfo )
   {
-    _d->showDebugInfo = value > 0;
     _d->debugFont = Font::create( FONT_2 );
   }
 }

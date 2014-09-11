@@ -19,7 +19,7 @@
     prosperity : 10
     peace : 0
     favour : 60
-    next : ":/missions/tutorial4.briefing"
+    next : ":/missions/mission4.briefing"
     title : "##win_engineer_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -29,6 +29,10 @@
 	
   empire : {
     enabled : true
+    barbarians :
+    {
+      maximumGroups : 3
+    }
 
     cities :
     {
@@ -90,12 +94,6 @@
   		
   events :
   {
-    "health_upper#health_updater" : {
-      date : "-350.01.01"
-      endTime : "348.01.01"
-      value : 30
-    }
-
     oil_price_rising#trading_options : {
       date : "-345.04.01"
       goods : {

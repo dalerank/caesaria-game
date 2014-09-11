@@ -1,4 +1,4 @@
-{" ":""
+{
 "##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
 "##1_entertainment_access##":"Cette habitation n'a accès à quasiment aucun divertissement"
 "##2_entertainment_access##":"Cette habitation a un faible niveau d'accès à des lieux de divertissement"
@@ -144,6 +144,7 @@
 "##architect_salary##":"Salaire de l'architecte de"
 "##architect##":"Architecte"
 "##army_marker##":"Créateur d'armée"
+"##arrange_festiable_for_this_god##":""
 "##arrow##":"Flèche"
 "##averange_crime_risk##":""
 "##avesome_amphitheater_access##":"Cette maison a été récemment visitée par un acteur ou un gladiateur. Elle aura accès à un amphithéatre pour une longue période."
@@ -166,6 +167,8 @@
 "##bad_house_quality##":""
 "##balance##":"Balance"
 "##ballista##":"Balliste"
+"##barbarian_attack_text##":"Les ennemis de Rome sont aux portes de votre cité. Ils tenteront probablement d'en forcer l'entrée pour piller votre vin et tout ce qui pourrait les intéresser !"
+"##barbarian_attack_title##":""
 "##barbarian_warrior##":"Un guerrier barbare"
 "##barber_access##":"Accès au barbier"
 "##barber_average_life##":"Je vous fais la barbe citoyen ? La vie est agréable par ici, n'est-ce pas ?"
@@ -185,6 +188,7 @@
 "##barracks_bad_weapons_bad_workers##":"Barbier"
 "##barracks_bad_weapons_need_some_workers##":""
 "##barracks_bad_weapons_slow_workers##":""
+"##barracks_city_not_need_soldiers##":""
 "##barracks_full_work##":"Nous entrainons des soldats avec une efficacité maximum, et avons les armes nécessaires pour entrainer tout type de soldat."
 "##barracks_have_weapons_bad_workers##":""
 "##barracks_have_weapons_slow_workers##":""
@@ -210,8 +214,10 @@
 "##below_average##":"Sous la moyenne"
 "##better_class_road##":"Un meilleur type de route"
 "##big_domus##":"Grande insula"
+"##big_hovel##":""
 "##big_hut##":"Grande maison"
 "##big_palace##":"Grand palace"
+"##big_shack##":""
 "##big_tent##":"Grande tente"
 "##big_villa##":"Grande villa"
 "##bldm_factory##":"Ateliers"
@@ -219,10 +225,13 @@
 "##bldm_raw_materials##":"Matériaux bruts"
 "##bldm_raw##":""
 "##bolt##":"Projectile"
+"##bridge_extends_city_area##":""
 "##bridge##":"Pont"
 "##bridges##":"Ponts"
 "##briton##":"Un breton"
 "##britons##":"Bretons"
+"##broke_empiretax_warning##":""
+"##broke_empiretax_with2years_warning##":""
 "##btn_showprice_tooltip##":"Montre les prix d'import/export, tels que décrétés par Rome"
 "##build_fishing_boat##":"Nous construisons un bateau pour satisfaire la commande d'un port de pêche de la cité."
 "##build_housing##":"Construire des logements"
@@ -234,6 +243,7 @@
 "##buy_price##":""
 "##caesar_assign_new_title##":"César vous a promu au rang de"
 "##caesar_salary##":"Le salaire de César de"
+"##caesarea_win_text##":""
 "##can_build_only_one_of_building##":"Vous pouvez seulement avoir un bâtiment de ce type"
 "##cancel##":"Annuler"
 "##cancelBtnTooltip##":"Annuler cette opération"
@@ -260,9 +270,9 @@
 "##charioteer##":"Charettier"
 "##charioter_so_hungry##":"Si j'ai faim ? Je vais finir par manger mon cheval si ça continue comme ça !"
 "##chatioteer_school_bad_work##":"Je n'ai pas d'autre personnel que moi-même. Je ne peux espérer travailler dans ces conditions ! Au mieux, je peux produire un chariot tous les trois mois."
-"##chatioteer_school_bad_work##":"Nous manquons désespérément d'employés, et aurons du mal à produire un nouveau chariot dans les deux prochains mois."
 "##chatioteer_school_info##":""
 "##chatioteer_school_no_workers##":"Sans constructeurs, aucun chariot ne peux être produit. L'hippodrome, s'il fonctionne, pourrait en souffrir."
+"##chatioteer_school_slow_work##":"Nous manquons désespérément d'employés, et aurons du mal à produire un nouveau chariot dans les deux prochains mois."
 "##chatioteer_school##":"Constructeur de chars."
 "##chief_advisor##":"Conseiller en chef"
 "##children##":"Enfants"
@@ -289,6 +299,7 @@
 "##city_have_goods_for_request##":"Vos entrepôts vous informent que vous disposez maintenant d'une quantité suffisante de produits pour répondre à la récente requête de l'Empereur."
 "##city_have##":"La trésorerie de la cité s'élève à "
 "##city_health##":"Hygiène de la cité"
+"##city_loathed_you##":""
 "##city_need_more_workers##":"La cité a besoin de plus de main-d'oeuvre"
 "##city_sounds_off##":"Son de la cité désactivé"
 "##city_sounds_on##":"Son de la cité activé"
@@ -321,6 +332,8 @@
 "##clinic_no_workers##":"Ce dispensaire n'est pas opérationnel. Il n'est donc d'aucune utilité pour vos citoyens."
 "##clinic##":"Dispensaire"
 "##clinics##":"Dispensaires"
+"##colege_access_perfectly##":""
+"##collapse_available_damage_risk##":""
 "##collapse_immitent##":"Effondrement imminent"
 "##collapsed_ruins_info##":"Ces gravats ne font rien pour améliorer l'attrait de ce quartier."
 "##colloseum_haveno_animal_bouts##":"Pas de combats d'animaux actuellement"
@@ -347,8 +360,11 @@
 "##crack##":""
 "##credit##":"Couteux"
 "##current_game_speed_is##":"La vitesse du jeu est"
+"##current_year_notpay_tribute_warning##":""
 "##cursed_by_mars##":""
 "##damage##":"Dégât"
+"##damascus_somewhat_dangerous_province##":""
+"##damascus_win_text##":""
 "##dangerous_crime_risk##":""
 "##date_tooltip##":"Date"
 "##date##":"Date"
@@ -371,6 +387,8 @@
 "##demand##":"Demande"
 "##demands_3_religion##":"Des accès à un troisième culte sont demandés"
 "##denarii_short##":"Dn"
+"##desirability_indiffirent_area##":""
+"##desirability_pretty_area##":""
 "##desirability##":"Attrait"
 "##destroy_bridge_warning##":"Soyez prudent lorsque vous supprimez un pont. Les communautés isolées de la route vers Rome ne tarderont pas à dépérir."
 "##destroy_bridge##":"Destruction d'un pont"
@@ -392,6 +410,7 @@
 "##dn's##":"Denarii"
 "##dn##":"Denarius"
 "##dock_bad_work##":""
+"##dock_bad_work##":"Nous ne pouvons pas nous occuper du navire qui vient d'accoster car aucun docker n'est employé ici."
 "##dock_busy_bad_work##":""
 "##dock_busy_patrly_workers##":""
 "##dock_cart_returning_from":""
@@ -402,7 +421,6 @@
 "##dock_info##":"Des navires de commerce de tout l'empire accostent ici pour livrer des produits d'importation et exporter nos biens. Le commerce maritime est impossible sans dock."
 "##dock_need_some_workers##":"Nous manquons de main-d'oeuvre, et il nous faudra du temps pour nous occuper des navires qui accosteront au port."
 "##dock_no_workers##":"Tout navire accostant ici ne trouvera personne pour s'occuper de sa cargaison."
-"##dock_no_workers##":"Nous ne pouvons pas nous occuper du navire qui vient d'accoster car aucun docker n'est employé ici."
 "##dock##":"Dock"
 "##docked_buying_selling_goods##":""
 "##doctor_average_life##":"La cité se porte bien."
@@ -413,10 +431,15 @@
 "##doctor_need_workers##":"Il y a vraiment un problème de main-d'œuvre par ici."
 "##doctor_no_access##":"Cette maison n'a aucun accès à la clinique"
 "##doctor_so_hungry##":"Il y a de plus en plus de problèmes dus à la malnutrition. Mais le seul remède serait d'avoir plus de nourriture !"
+"##donation_is##":""
 "##donations##":"Donations"
+"##donationwnd_exit_tip##":""
+"##donot_organize_festival##":""
 "##east##":"Est"
+"##edadv_need_better_access_school_or_colege##":""
 "##edil_salary##":"Salaire d'édile de"
 "##education_advisor_title##":"Education"
+"##education_awesome##":""
 "##education_full_access##":""
 "##education_have_academy_access##":"Cette maison a accès à une université."
 "##education_have_no_access##":"Cette maison n'a pas accès à une école ou à une bibliothèque."
@@ -469,20 +492,24 @@
 "##emperor_favour_20##":"L'empereur est béat d'admiration et parle de faire de vous son successeur."
 "##emperor_request##":"Requête imperial"
 "##emperor_send_money_to_you_nearest_time##":""
+"##emperor_wrath_by_debt_text##":""
 "##emperor##":"Empereur"
+"##emperoradv_caesar_has_high_respect_for_you##":""
 "##emperror_legion_at_out_gates##":"Une légion des troupes de l'empereur est à nos portes."
 "##empire_map##":"Voir la carte de l'Empire"
+"##empire_service_tip##":""
 "##empire_tax##":"Tribut"
 "##empireBtnTooltip##":"Afficher la carte de l'Empire"
 "##empiremap_our_city##":"Notre cité!"
 "##employee##":"employé"
 "##employees##":"employés"
 "##employers##":"employés"
+"##empmap_distant_romecity_tip##":""
 "##emw_bought##":""
 "##emw_buy##":""
 "##emw_sell##":""
 "##emw_sold##":""
-"##enemy_attack_city##":"Les ennemis de Rome sont aux portes de votre cité. Ils tenteront probablement d'en forcer l'entrée pour piller votre vin et tout ce qui pourrait les intéresser !"
+"##enemy_army_threating_a_city##":""
 "##engineer_average_life##":"Tout a l'air en ordre par ici."
 "##engineer_building_allok##":"Ces bâtiments sont en très bon état, et je fais surtout des inspections de routine"
 "##engineer_gods_angry##":"Que les dieux aient pitié de moi ! Ce n'est pas de ma faute si le gouverneur les ignore !"
@@ -506,11 +533,14 @@
 "##engineering_post_slow_work##":"Nous manquons cruellement de personnel, et il faut parfois deux semaines à un ingénieur pour faire sa ronde."
 "##engineering_post##":"Etude d'ingénieurs"
 "##engineering_structures##":"Structures du génie"
+"##entadv_small_city_not_need_entert##":""
 "##enter_your_name##":"Veuillez entrer votre nom"
 "##entertainment_advisor_title##":"Divertissement"
+"##entertainment_need_for_upgrade##":""
 "##entertainment_short##":""
 "##entertainment##":"Loisirs"
 "##entertainmentBtnTooltip##":"Structures de divertissement"
+"##etertadv_as_city_grow_you_need_more_entert##":""
 "##exit_point##":"Point de sorti"
 "##exit_salary_window##":"Sortir de l'affichage du salaire"
 "##exit_this_panel##":"Sortir du panneau"
@@ -548,6 +578,8 @@
 "##fishing_wharf##":""
 "##floatsam_enabled##":""
 "##floatsam##":""
+"##for_second_year_broke_tribute##":""
+"##fort_has_been_cursed_by_mars##":""
 "##fort_horse##":""
 "##fort_info##":"Le fort recrute ses soldats dans les casernes de la ville. La construction d'une académie militaire augmentera la qualité de vos troupes."
 "##fort_javelin##":""
@@ -567,6 +599,7 @@
 "##forum##":"Forum"
 "##fountain_info##":"La population tire toute l'eau dont elle a besoin des fontaines, qui doivent être situées dans la zone d'alimentation d'un réservoir. Une jolie fontaine fait la joie d'un quartier, mais augmente vos besoins en employés des eaux."
 "##fountain_not_work##":"Cette fontaine ne fonctionne pas. Ton superviseur de travail devrait assigner plus de monde au services des eaux."
+"##fountain_will_soon_be_hooked##":""
 "##fountain##":"Fontaine"
 "##free##":"libre"
 "##freehouse_caption##":"Terrain à bâtir"
@@ -584,6 +617,7 @@
 "##furniture_workshop_info##":"Les charpentiers de cette fabrique transforment le bois en meubles raffinés. Certains citoyens désirent décorer leurs maisons avec ces meubles, et les surplus pourront être exportés."
 "##furniture_workshop_need_resource##":"Cette fabrique a besoin qu'on lui livre du bois en provenance d'un entrepôt ou d'un chantier afin de pouvoir construire des meubles."
 "##furniture_workshop_need_some_workers##":"Cette fabrique manque de main-d'oeuvre, et la production de meubles est donc plus longue que prévue."
+"##furniture_workshop_no_workers##":""
 "##furniture_workshop_patrly_workers##":"Cette fabrique a encore des postes à pourvoir. La production augmentera lorsqu'ils seront pris."
 "##furniture_workshop_slow_work##":"Seuls quelques employés travaillent ici. La production de meubles est donc très ralentie."
 "##furniture_workshop##":"Fabrique de meubles"
@@ -595,6 +629,7 @@
 "##garden##":"Jardins"
 "##gardens_info##":"Les jardins améliorent l'attrait du quartier."
 "##gatehouse##":"Corps de garde"
+"##getting_reports_about_enemies##":""
 "##give_money_tip##":"Faire un don à la cité"
 "##give_money##":"Donner de l'argent"
 "##gladiator_gods_angry##":"Ave citoyen ! Etes-vous au courant de la colère des dieux ?"
@@ -676,6 +711,7 @@
 "##have_less_temple_in_city_0##":""
 "##have_less_theater_in_city_0##":""
 "##have_no_access_school_colege##":""
+"##have_no_access_to_library##":""
 "##have_no_food_on_next_month##":""
 "##have_no_legions##":""
 "##have_no_requests##":"L'empereur ne vous demande rien pour l'instant."
@@ -685,10 +721,13 @@
 "##health##":"Hygiène"
 "##healthadv_noproblem_small_city##":""
 "##healthadv_not_need_health_service_now##":""
+"##healthadv_some_regions_need_barbers_2##":""
 "##healthadv_some_regions_need_barbers##":""
+"##healthadv_some_regions_need_bath_2##":""
 "##healthadv_some_regions_need_bath##":""
 "##healthadv_some_regions_need_doctors_2##":""
 "##healthadv_some_regions_need_doctors##":""
+"##healthadv_some_regions_need_hospital##":""
 "##healthBtnTooltip##":"Structures en rapport avec l'hygiène"
 "##help##":"Aide"
 "##hide_bigpanel##":"Cacher le panneau"
@@ -734,6 +773,8 @@
 "##imperial_request_cance_badly_affected##":""
 "##import_fn##":""
 "##import##":""
+"##industry_disabled##":""
+"##industry_enabled##":""
 "##infobox_construction_comma_tip##":""
 "##infobox_tooltip_exit##":"Quitter ce panneau"
 "##infobox_tooltip_help##":"Afficher l'écran d'aide correspondant à ce panneau"
@@ -745,7 +786,6 @@
 "##initialize_walkers##":""
 "##inland_lake_text##":""
 "##iron_factory_stock##":""
-"##iron_mine_bad_work##":"Seuls quelques employés travaillent ici. La production est donc très ralentie."
 "##iron_mine_bad_work##":"Compte tenu du nombre de mineurs ici, la production est presque nulle. Très peu de fer sera extrait cette année."
 "##iron_mine_collapse##":""
 "##iron_mine_full_work##":"Cette mine dispose de toute la main-d'oeuvre nécessaire, et la production de fer est abondante."
@@ -753,8 +793,10 @@
 "##iron_mine_need_some_workers##":"Cette mine ne dispose pas de suffisamment d'ouvriers. L'extraction pourrait être plus efficace avec plus de mineurs."
 "##iron_mine_no_workers##":"Cette mine n'emploie personne. La production est inexistante."
 "##iron_mine_patrly_workers##":"Cette mine manque de main-d'oeuvre. La production est plus longue que d'habitude."
+"##iron_mine_slow_work##":"Seuls quelques employés travaillent ici. La production est donc très ralentie."
 "##iron_mine##":"Mine de fer"
 "##iron##":"Fer"
+"##its_very_peacefull_province##":""
 "##judaean_warrior##":"Un guerrier judéen"
 "##labor##":"Emploi"
 "##landmerchant_good_deals##":"J'adore venir ici ! Les affaires y sont florissantes !"
@@ -786,12 +828,14 @@
 "##lgn_stallion##":""
 "##lgn_wolves##":""
 "##libraries##":"Bibliothèques"
+"##library_access_perfectrly##":""
 "##library_full_access##":"Cette maison a accès à une bibliothèque."
 "##library_full_work##":"Cette bibliothèque est opérationnelle, et ses étagères sont pleines de manuscrits et de parchemins."
 "##library_info##":"Des ouvrages littéraires provenant des quatre coins de l'empire sont rassemblés dans ce bâtiment à l'attention des érudits et des curieux."
 "##library_no_access##":"Cette maison n'a pas accès à une bibliothèque"
 "##library_no_workers##":"Les étagères de cette bibliothèque sont vides. Elle n'est donc d'aucune utilité pour vos citoyens."
 "##library##":"Bibliothèque"
+"##lindum_extremely_dangerous_province##":""
 "##lion_pit_bad_work##":"Je n'ai aucun employé ! Dans ces conditions, je pourrai peut-être dompter un lion d'ici trois mois, et encore..."
 "##lion_pit_need_some_workers##":"Nous ne pouvons dompter plus de deux lions par mois, car nous manquons d'effectifs."
 "##lion_pit_no_workers##":"Sans dompteur disponible, aucun lion ne peut être dressé ici."
@@ -811,6 +855,8 @@
 "##Load_save##":""
 "##loading_offsets##":""
 "##loading_resources##":""
+"##londinium_win_text##":""
+"##lost_money_last_year##":""
 "##low_bridge##":"Pont bas"
 "##low_crime_risk##":""
 "##low_damage_risk##":"Très léger risque d'effondrement"
@@ -821,14 +867,15 @@
 "##low_wage_broke_migration##":"Les faibles revenus réduisent l'immigration dans votre cité."
 "##low_wage_lack_migration##":""
 "##lugdunum_win_text##":""
-"##lumber_mill_bad_work##":"Seuls quelques employés travaillent ici. La production de bois est donc ralentie."
 "##lumber_mill_bad_work##":"Compte tenu du nombre de bûcherons, la production est pratiquement nulle. Les bois redeviennent sauvages."
 "##lumber_mill_full_work##":"Ce chantier dispose de toute la main-d'oeuvre nécessaire. La production de bois est abondante."
 "##lumber_mill_info##":"Le bois peut être revendu ou utilisé pour fabriquer des meubles. Les citoyens veulent de jolis meubles pour décorer leur maison, et ces ouvrages s'exportent bien."
 "##lumber_mill_need_some_workers##":"Ce chantier manque de main-d'oevre, et la coupe du bois prend plus longtemps qu'à l'accoutumée."
 "##lumber_mill_need_some_workers##":"Ce chantier ne dispose pas de suffisamment d'ouvriers. La production sera donc légèrement réduite."
 "##lumber_mill_no_workers##":"Ce chantier n'emploie personne. La production a cessé."
+"##lumber_mill_slow_work##":"Seuls quelques employés travaillent ici. La production de bois est donc ralentie."
 "##lumber_mill##":"Chantier de bois"
+"##lutetia_win_text##":""
 "##luxury_palace##":""
 "##macedonian_soldier##":"Un soldat macédonien"
 "##mainmenu_credits##":""
@@ -865,17 +912,18 @@
 "##marketLady_no_food_on_market##":""
 "##mars_desc##":"Guerre"
 "##mars_watches_over_soldiers##":""
+"##massilia_preview_mission##":""
 "##max_available##":""
 "##maximizeBtnTooltip##":"Montrer le tableau"
 "##may_collect_about##":""
 "##meadow_caption##":""
-"##meat_farm_bad_work##":"Seuls quelques employés travaillent ici. La production de viande est donc ralentie."
 "##meat_farm_bad_work##":"Compte tenu du nombre d'employés de cette ferme, son petit troupeau est faible et grandi lentement."
 "##meat_farm_full_work##":"Cette ferme dispose de toute la main-d'oeuvre nécessaire. Son troupeau est vaste et bien nourri."
 "##meat_farm_info##":"Des citoyens bien nourris apprécient la viande sous toutes ses formes. Elle peut être conservée dans des greniers pour être consommée localement, ou stockée dans des entrepôts avant d'être exportée."
 "##meat_farm_need_some_workers##":"Cette ferme manque de main-d'oeuvre. Les porcs manquent de litière et grandissent lentement."
 "##meat_farm_no_workers##":"Cette ferme n'emploie personne, et tous les animaux se sont enfuis ou sont morts."
 "##meat_farm_patrly_workers##":"Cette ferme ne dispose pas de suffisamment d'ouvriers. La production de viande sera un peu réduite."
+"##meat_farm_slow_work##":"Seuls quelques employés travaillent ici. La production de viande est donc ralentie."
 "##meat_farm##":"Porcherie"
 "##meat##":"Viande"
 "##mediolanum_win_text##":""
@@ -883,7 +931,6 @@
 "##mercury##":"Mercure"
 "##message##":"Message"
 "##messageBtnTooltip##":"Messages de vos scribes"
-"##messageBtnTooltip##":"Afficher les messages"
 "##messages##":"Messages"
 "##middle_festival##":""
 "##middle_file_risk##":""
@@ -898,11 +945,13 @@
 "##migration_lack_tax##":""
 "##migration_lack_workless##":""
 "##migration_lessfood_granary##":"La pénurie de nourriture en réserve réduit l'immigration."
+"##migration_low_food_stocks##":""
 "##migration_middle_lack_tax##":""
 "##migration_middle_lack_workless##":""
 "##migration_middle_lack_workless##":"Le chômage freine l'immigration"
 "##migration_people_away##":"Le manque d'emplois fait partir votre population."
 "##migration_war_deterring##":""
+"##miletus_win_text##":""
 "##military_academy_patrly_workers##":"Quand les nouvelles recrues sortent de la caserne, elles désirent améliorer leurs techniques de combat à l'académie. Ce ne sera possible que quand cette dernière aura tous les employés dont elle a besoin."
 "##militaryAcademy_full_work##":""
 "##militaryAcademy_no_workers##":""
@@ -987,10 +1036,16 @@
 "##month_7_short##":"Jul"
 "##month_8_short##":"Aou"
 "##month_9_short##":"Sep"
+"##month_from_last_festival##":""
 "##month##":"Mois"
 "##months_until_defeat##":"Mois jusqu'à la défaite"
 "##months_until_victory##":"Mois jusqu'à la victoire"
 "##months##":"Mois"
+"##more_0_month_from_festival##":""
+"##more_12_month_from_festival##":""
+"##more_16_month_from_festival##":""
+"##more_4_month_from_festival##":""
+"##more_8_month_from_festival## ":""
 "##more_people##":""
 "##more_person##":""
 "##more_salary_dispeasure_senate##":""
@@ -1033,9 +1088,11 @@
 "##newcomer_this_month##":""
 "##newcomers_this_month##":""
 "##no_academy_access##":"Cette maison n'a pas accès à une université"
+"##no_citizens_desire_live_here##":""
 "##no_culture_building_in_city##":""
 "##no_dock_for_sea_trade_routes##":""
 "##no_fire_risk##":""
+"##no_fishplace_in_city##":""
 "##no_food_stored_last_month##":""
 "##no_goods_for_request##":""
 "##no_people_in_city##":""
@@ -1054,13 +1111,14 @@
 "##numidian_warrior##":""
 "##occupants##":"occupants"
 "##oil_workshop_bad_work##":""
-"##oil_workshop_bad_work##":""
 "##oil_workshop_full_work##":""
 "##oil_workshop_info##":""
 "##oil_workshop_need_resource##":""
 "##oil_workshop_need_some_workers##":""
 "##oil_workshop_no_workers##":""
+"##oil_workshop_no_workers##":""
 "##oil_workshop_patrly_workers##":""
+"##oil_workshop_slow_work##":""
 "##oil_workshop##":""
 "##oil##":"Huile"
 "##ok##":"OK"
@@ -1069,6 +1127,7 @@
 "##olive_farm_full_work##":""
 "##olive_farm_info##":""
 "##olive_farm_need_some_workers##":""
+"##olive_farm_no_workers##":""
 "##olive_farm_patrly_workers##":""
 "##olive_farm_slow_work##":""
 "##olive_farm##":""
@@ -1106,6 +1165,7 @@
 "##ovrm_hippodrome##":"Hippodromes"
 "##ovrm_hospital##":"Hôpitaux"
 "##ovrm_library##":"Bibliothèques"
+"##ovrm_market##":""
 "##ovrm_religion##":"Religion"
 "##ovrm_risks##":"Risques"
 "##ovrm_school##":"Ecoles"
@@ -1126,6 +1186,7 @@
 "##patrician_so_hungry##":"Ave ! A quoi cela sert-il d'être riche s'il n'y a pas de nourriture à acheter ?"
 "##pay_to_open_trade_route?##":""
 "##peace_rating_text##":""
+"##peaceful_crime_risk##":""
 "##people_leave_city_insane_tax##":""
 "##people_leave_city_low_wage##":""
 "##people_leave_city_some##":""
@@ -1185,6 +1246,7 @@
 "##proconsoul_salary##":"Salaire de proconsul de"
 "##procurator_salary##":"Salaire de procureur de"
 "##profit##":"Bénéfice / Pertes"
+"##prosperity_lack_that_you_pay_less_rome##":""
 "##province_has_peace_a_short_time##":""
 "##qty_stacked_in_city_warehouse##":"en stock dans les entrepôts de la cité"
 "##quaestor_salary##":"Salaire de questeur de"
@@ -1219,14 +1281,18 @@
 "##religion_in_your_city_is_flourishing##":""
 "##religion_no_access##":""
 "##religion##":""
-"##religionadv_need_second_relgigion##":""
-"##religionadv_need_third_relgigion##":""
+"##religionadv_need_basic_religion##":""
+"##religionadv_need_second_religion##":""
+"##religionadv_need_third_religion##":""
 "##replay_game##":""
 "##request_btn_tooltip##":""
+"##request_failed##":""
 "##requierd##":"requis"
 "##reservoir_info##":""
 "##reservoir_no_water##":""
 "##reservoir##":"Réservoir"
+"##restocking_fishing_boat##":""
+"##return_2_fort##":""
 "##return_to_main_map##":""
 "##rift_info##":""
 "##right_click_to_exit##":""
@@ -1234,7 +1300,9 @@
 "##rioter_say_3##":"Vous voulez savoir à quoi ressemble une cité en flammes ? Regardez bien !"
 "##rladv_mood##":"Les dieux sont"
 "##road_caption##":"Route"
+"##road_from_rome##":""
 "##road_text##":"Les routes sont vitales au bon fonctionnement de la cité, car ses habitants ne s'aventureront pas à l'extérieur s'il n'y a pas de route."
+"##road_to_distant_region##":""
 "##roadBtnTooltip##":""
 "##rock_caption##":"Rochers"
 "##rock_text##":"Les rochers sont infranchissables. Les structures d'extraction de marbre et de fer ne fonctionneront qu'à proximité de rochers."
@@ -1262,17 +1330,17 @@
 "##scholar_so_hungry##":"J'ai faim !"
 "##scholar##":"Ecolier"
 "##scholars##":""
+"##school_access_perfectly##":""
 "##school_full_access##":"Cette maison a accès à une école."
-"##school_full_work##":"Cette école n'est pas opérationnelle. Elle n'est donc d'aucune utilité pour vos citoyens."
 "##school_full_work##":"Cette école est opérationnelle et éduque les enfants du quartier."
 "##school_info##":"C'est ici que sont enseignés aux enfants les rudiments de la lecture, de l'écriture et de la rhétorique."
 "##school_no_access##":"Cette maison n'a pas accès à une école."
+"##school_no_workers##":"Cette école n'est pas opérationnelle. Elle n'est donc d'aucune utilité pour vos citoyens."
 "##school##":"Ecole"
 "##schools##":"Ecoles"
 "##screen_settings##":"Affichage"
+"##scribe_messages_title##":"Messages de vos scribes"
 "##scribemessages_unread##":""
-"##scribes_messages_title## ":""
-"##scrive_messages_title##":"Messages de vos scribes"
 "##scrw_subject##":""
 "##sdlr_bold##":""
 "##seamerchant_noany_trade##":"Si cela ne tenait qu'à moi je ne viendrais jamais par ici. Cette cité n'achète rien et n'a rien à vendre !"
@@ -1294,6 +1362,7 @@
 "##send_lavish_gift##":""
 "##send_legion_to_emperor##":""
 "##send_modest_gift##":""
+"##send_money_to_city##":""
 "##send_money##":""
 "##send_to_city##":""
 "##sentiment_people_angry_you##":""
@@ -1307,6 +1376,7 @@
 "##sentiment_people_veryangry_you##":""
 "##sentiment_people_verypleased_you##":""
 "##sentiment_people_veryupset_you##":""
+"##set_amount_to_donate##":""
 "##set_mayor_salary##":""
 "##several_crimes_but_area_secure##":""
 "##shipyard_info##":""
@@ -1314,7 +1384,13 @@
 "##shipyard##":""
 "##show_bigpanel##":"Afficher le panneau"
 "##show_prices##":""
+"##show_spots_of_city_troubles_tip##":""
 "##show##":""
+"##showing_agamemnon_aeschylus##":""
+"##showing_antigone_sophocles##":""
+"##showing_lisistrata_aristopanes##":""
+"##showing_odyssey_homer##":""
+"##showing_thecrito_plato##":""
 "##simple_formation_text##":"Une formation simple qui donne un avantage au défenseur."
 "##sldh_health_sparse##":""
 "##sldh_health_strong##":""
@@ -1329,6 +1405,7 @@
 "##sldr_very_bold##":""
 "##sldr_very_frightened##":""
 "##small_ceres_temple##":"Temple à Cérès"
+"##small_colloseum_show##":""
 "##small_domus##":""
 "##small_festival##":""
 "##small_food_on_next_month##":""
@@ -1355,11 +1432,13 @@
 "##soldiers##":"Soldats"
 "##some_amphitheaters_no_actors##":""
 "##some_crime_risk##":""
+"##some_defects_damage_risk##":""
 "##some_fire_risk##":"Ce bâtiment risque de prendre feu"
 "##some_food_on_next_month##":""
 "##some_houses_inadequate_entertainment##":""
 "##some_houses_need_amph_for_grow##":""
 "##some_houses_need_better_library_access##":""
+"##some_houses_need_library_or_colege_access##":""
 "##some_low_fire_risk##":""
 "##sound_settings##":"Son"
 "##spear##":""
@@ -1368,9 +1447,14 @@
 "##spirit_of_mars_text##":""
 "##spirit_of_mars_title##":""
 "##stacking_resource##":""
+"##stacking##":""
 "##start_condition##":""
 "##start_this_map##":""
+"##statue_big_info##":""
+"##statue_big##":""
 "##statue_desc##":""
+"##statue_middle##":""
+"##status_small##":""
 "##stop_granary_devastation##":""
 "##stop_warehouse_devastation##":""
 "##students##":""
@@ -1417,6 +1501,7 @@
 "##theaters##":"Théatres"
 "##these_rift_info##":""
 "##this_fire_can_spread##":""
+"##this_is_ruins##":""
 "##this_lawab_province_become_very_peacefull##":""
 "##this_time_you_city_not_need_religion##":""
 "##this_year##":""
@@ -1425,11 +1510,15 @@
 "##timber##":""
 "##time_since_last_gift##":""
 "##tingis_dangerous_province##":""
+"##tingis_win_text##":""
+"##to_empire_road##":""
+"##to_rome_road##":""
 "##to_trade_advisor##":""
 "##tooltip_full##":""
 "##tooltip_some##":""
 "##tower_have_workers_no_soldiers##":""
 "##tower_may_build_on_thick_walls##":""
+"##tower_need_wall_for_patrol##":""
 "##tower_no_workers##":""
 "##tower##":"Tour"
 "##trade_advisor_blocked_clay_production##":"Votre conseiller commercial a ordonné de mettre un frein à l'extraction d'argile."
@@ -1454,6 +1543,8 @@
 "##tradeadv_industrystate_tip##":""
 "##trees_and_forest_caption##":"Arbres et bosquets"
 "##trees_and_forest_text##":"Les arbres sont impassables, mais peuvent être coupés. Ils sont vitaux pour l'industrie du bois. Les chantiers de bois doivent être placés près des arbres."
+"##triumphal_arch_info##":""
+"##triumphal_arch##":""
 "##trouble_colloseum_full_work##":""
 "##trouble_colloseum_have_only_gladiatros##":""
 "##trouble_colloseum_have_only_lions##":""
@@ -1475,23 +1566,31 @@
 "##try_reduce_your_high_salary##":""
 "##try_reduce_your_salary##":""
 "##tutorial_prefecture_info##":""
+"##tutorial_win_text##":""
 "##tutorial2_win_text##":""
 "##unable_fullfill_request##":""
 "##unit##":"Unité"
 "##units_in_stock##":"Stockage"
 "##units##":"Unités"
 "##use_and_trade_resource##":"Utilisation et commerce de cette ressource"
+"##valencia_peacefully_province##":""
+"##valencia_win_text##":""
+"##valentia_preview_mission##":""
+"##vegetable_farm_bad_work##":""
 "##vegetable_farm_full_work##":"Cette ferme dispose de toute la main-d'oeuvre nécessaire. Les légumes y poussent en abondance."
 "##vegetable_farm_info##":"Les légumes sont importants pour l'équilibre alimentaire de votre peuple et pour son bien-être. Les greniers stockent les légumes destinés à la consommation, et les entrepôts emmagasinent les surplus destinés à l'exportation."
 "##vegetable_farm_need_some_workers##":"Cette ferme ne dispose pas de suffisamment d'ouvriers. La récolte de légumes sera un peu en retard."
 "##vegetable_farm_no_workers##":"Cette ferme n'emploie personne. Rien n'a été planté."
+"##vegetable_farm_no_workers##":""
 "##vegetable_farm_patrly_workers##":"Cette ferme manque de main-d'oeuvre, ce qui fait chuter son rendement."
+"##vegetable_farm_slow_work##":""
 "##vegetable_farm##":"Ferme végétale"
 "##vegetable##":"Légumes"
 "##venus_desc##":"(Amour)"
 "##venus##":"Venus"
 "##very_high_damage_risk##":""
 "##very_high_fire_risk##":"Ce bâtiment risque de prendre feu très prochainement"
+"##very_low_crime_risk##":""
 "##very_low_damage_risk##":""
 "##very_low_fire_risk##":"Très faible risque d'incendie"
 "##vinard_bad_work##":"Compte tenu du nombre d'employés de cette vigne, peu de raisin survivra jusqu'à la récolte."
@@ -1515,11 +1614,13 @@
 "##visit_rating_advisor##":"Evaluation"
 "##visit_religion_advisor##":"Religion"
 "##visit_trade_advisor##":"Commerce"
+"##wage_level_tip##":""
 "##wages##":"Salaire"
 "##wait_for_fishing_boat##":""
 "##waiting_for_free_dock##":""
 "##wall_info##":""
 "##wall##":"Mur"
+"##walls_need_a_gatehouse##":""
 "##warehouse_devastation_mode_text##":""
 "##warehouse_full_warning##":"ATTENTION : cet entrepôt est plein et ne peut plus accepter de marchandises."
 "##warehouse_gettinfull_warning##":"ATTENTION : cet entrepôt est presque plein. Il n'acceptera que les stocks existants et refusera tout nouveau type de marchandises."
@@ -1558,13 +1659,14 @@
 "##we_produce_much_than_eat##":"Nous produisons plus que ce que nous mangeons"
 "##we_produce_some_than_eat##":""
 "##weapon##":"Armes"
-"##weapons_workshop_bad_work##":"Seuls quelques employés travaillent ici. La production est donc très ralentie."
 "##weapons_workshop_bad_work##":"Compte tenu du nombre d'employés de cette fabrique, la production est pratiquement inexistante. Très peu d'armes seront fabriquées cette année."
 "##weapons_workshop_full_work##":"Cette fabrique dispose de toute la main-d'oeuvre nécessaire et produit des armes de qualité."
 "##weapons_workshop_info##":"L'armurier utilise le fer pour forger des armes et des armures, que vous pouvez revendre à bon prix ou utiliser pour équiper vos armées."
 "##weapons_workshop_need_resource##":"Cette fabrique a besoin qu'on lui livre du fer en provenance d'un entrepôt ou d'une mine afin de pouvoir construire des armes."
 "##weapons_workshop_need_some_workers##":"Cette fabrique ne dispose pas de suffisamment d'ouvriers, la production sera donc légèrement réduite."
+"##weapons_workshop_no_workers##":""
 "##weapons_workshop_patrly_workers##":"Cette fabrique manque de personnel, et la production d'armes est plus longue que d'habitude."
+"##weapons_workshop_slow_work##":"Seuls quelques employés travaillent ici. La production est donc très ralentie."
 "##weapons_workshop##":"Fabrique d'armes"
 "##well_haveno_houses_inarea##":"Ce puits est inutile car aucune maison ne se trouve à proximité."
 "##well_info##":"Les citoyens n'ayant pas accès à une fontaine peuvent tirer l'eau d'un puits, mais peu de personnes souhaiteront vivre ainsi."
@@ -1580,7 +1682,6 @@
 "##wheat_farm_full_work##":"Cette ferme dispose de toute la main-d'oeuvre nécessaire. La production est à son maximum."
 "##wheat_farm_info##":"Les céréales sont la nourriture de base de votre population, et le type de culture le plus productif. Elles doivent être stockées dans des greniers pour nourrir votre peuple, ou dans des entrepôts pour être exportées."
 "##wheat_farm_need_some_workers##":"Cette ferme ne dispose pas de suffisamment d'ouvriers. La production pourrait être meilleure avec plus de main-d'oeuvre."
-"##wheat_farm_no_workers##":""
 "##wheat_farm_no_workers##":"Cette ferme n'emploie personne. Ses champs sont en friche."
 "##wheat_farm_patrly_workers##":"La ferme manque de main-d'oeuvre, ce qui fait chuter son rendement."
 "##wheat_farm##":"Plantation céréalière"
@@ -1600,6 +1701,7 @@
 "##wndrt_culture##":""
 "##wndrt_favor_tooltip##":""
 "##wndrt_favour##":"Faveur"
+"##wndrt_need##":""
 "##wndrt_peace_tooltip##":""
 "##wndrt_peace##":"Niveau de paix"
 "##wndrt_prosperity_tooltip##":""
@@ -1630,6 +1732,8 @@
 "##wt_marketBuyer##":"Acheteur"
 "##wt_marketLady##":"Marchande"
 "##wt_missionary##":""
+"##wt_missioner_average_life##":""
+"##wt_missioner_normal_life##":""
 "##wt_prefect##":"Préfet"
 "##wt_priest##":""
 "##wt_rioter##":""
@@ -1642,7 +1746,11 @@
 "##years##":"Années"
 "##yes##":"Oui"
 "##your_favor_is_dropping_catch_it##":""
+"##your_favour_increased_from_last_year##":""
+"##your_favour_unchanged_from_last_year##":""
+"##your_prosperity_raising##":""
 "##your_province_quiet_and_secure##":""
+"##your_salary_frowned_senate##":""
 "#winning_population##":""
 "Variable":"FRENCH(v1.0)"
 
@@ -2071,139 +2179,4 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"}

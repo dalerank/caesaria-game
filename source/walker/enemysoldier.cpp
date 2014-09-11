@@ -36,6 +36,7 @@
 #include "animals.hpp"
 #include "throwing_weapon.hpp"
 #include "core/foreach.hpp"
+#include "events/militarythreat.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -149,9 +150,10 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
       foreach( i, tileWalkers )
       {
         rtype = (*i)->type();
+        bool vividlyObject = (*i)->getFlag( Walker::vividly );
         if( rtype == type() || is_kind_of<Animal>(*i) || is_kind_of<Fish>( *i)
-            || rtype  == walker::corpse
-            || is_kind_of<EnemySoldier>(*i) || is_kind_of<ThrowingWeapon>(*i))
+            || !vividlyObject
+            || is_kind_of<EnemySoldier>(*i) )
           continue;
 
         walkers.push_back( *i );
@@ -411,6 +413,9 @@ void EnemySoldier::send2City( TilePos pos )
   setPos( pos );
   _check4attack();
   _city()->addWalker( this );
+
+  events::GameEventPtr e = events::MilitaryThreat::create( 1 );
+  e->dispatch();
 }
 
 bool EnemySoldier::die()

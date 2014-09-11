@@ -53,6 +53,7 @@ public:
 
   // return tile coordinates (i, j), in order of depth
   virtual const TilesArray& tiles() const;
+  virtual const TilesArray& flatTiles() const;
 
   int centerX() const;
   int centerZ() const;
@@ -65,8 +66,8 @@ public:
   Tile* at( const TilePos& pos ) const;
   Tile* centerTile() const;
 
-  void startFrame();
-  void refresh();
+  virtual void startFrame();
+  virtual void refresh();
 
 public oc3_signals:
   virtual Signal1<Point>& onPositionChanged();
