@@ -1,67 +1,63 @@
-#ifndef _NRP_CONSOLE_H_
-#define _NRP_CONSOLE_H_
-/*
-#include "command_dispatcher.hpp"
-#include "NrpMessageSink.h"
-#include "NrpConsoleUtils.h"
-#include <NrpWidget.h>
+#ifndef _CAESARIA_GUI_CONSOLE_H_INCLUDE_
+#define _CAESARIA_GUI_CONSOLE_H_INCLUDE_
 
-NERPA_MODULE_BEGIN(gui)
+#include "console_dispatcher.hpp"
+#include "message_sink.hpp"
+#include "widget.hpp"
+#include "gfx/picture.hpp"
 
-class NrpConsole : public Widget, public core::CommandDispatcher, public core::MessageSink
+namespace gui
+{
+
+class Console : public Widget , public CommandDispatcher, public MessageSink
 {
 public:
-    NrpConsole( Widget* parent, s32 id, const core::RectI& rectangle );															//! constructor
-    virtual ~NrpConsole();													//! destructor
+    Console( Widget* parent, int id, const Rect& rectangle );															//! constructor
+    virtual ~Console();													//! destructor
 
     void setVisible( bool vis );
-    void ToggleVisible();
+    void toggleVisible();
 
-    void onPaint( Painter* painter );
+    void draw( gfx::Engine& painter );
 
-    void AppendMessage( const String& message );						//   
-    void ClearMessages();													// 
-    String getTypeName() const;
+    void appendMessage( const std::string& message );						//
+    void clearMessages();													//
 
-    int InitKey() const;
+    int initKey() const;
 
-    void KeyPress( const NEvent& event );								//     
-
-    virtual void styleChanged() {}
+    void keyPress( const NEvent& event );								//
 
 private:
-    void HandleCommandString( const core::String& wstr);							// 
-    void AddToHistory( const core::String& line);								//   
-    void CalculateConsoleRect(const core::NSizeU& screenSize); //   
-    void CalculatePrintRects(core::RectI& textRect, core::RectI& shellRect);
-    bool CalculateLimits(u32& maxLines, u32& lineHeight,s32& fontHeight);	//  
-    void ResizeMessages();
-    void TabComplete();														// 
-    void SetNextCommand_();
-    void SetPrevCommand_();
-    void ResolveCommand_();
-    void InputChar_( wchar_t key_char, bool shift_down );
-    void RegisterDefaultCommands_();					// 
-    void MoveCursor_( bool leftStep );
+    void handleCommandString( const std::string& wstr);							//
+    void addToHistory( const std::string& line);								//
+    void calculateConsoleRect(const Size& screenSize); //
+    void calculatePrintRects( Rect& textRect, Rect& shellRect);
+    bool calculateLimits(unsigned int& maxLines, unsigned int& lineHeight, int& fontHeight);	//
+    void resizeMessages();
+    void tabComplete();														//
+    void setNextCommand_();
+    void setPrevCommand_();
+    void resolveCommand_();
+    void inputChar_(unsigned int key_char, bool shift_down );
+    void registerDefaultCommands_();					//
+    void moveCursor_( bool leftStep );
 
-    typedef core::Array< String > _STRINGS;
-
-    _STRINGS console_messages_;								//   
-    _STRINGS console_history_;								// 
-    u32 consoleHistoryIndex_;
+    StringArray console_messages_;								//
+    StringArray console_history_;								//
+    unsigned int consoleHistoryIndex_;
     Font _font;
 
     typedef enum { NONE=0, UPLIGTH, DOWNLIGTH } TOGGLE_TYPE;
     TOGGLE_TYPE toggle_visible_;
 
-    core::String currentCommand_;												// 
-    u32 cursorPos_;
+    std::string currentCommand_;												//
+    gfx::PictureRef _bgpic;
+    unsigned int cursorPos_;
 
     void SaveCommands_();
     void LoadSaveCommands_();
 };
 
-NERPA_MODULE_END(gui)
+}
 
-*/
-#endif
+#endif //_CAESARIA_GUI_CONSOLE_H_INCLUDE_

@@ -35,6 +35,7 @@
       hovered : [ "paneling", 602 ]
       pressed : [ "paneling", 603 ]
       disabled : [ "paneling", 301 ]
+      tooltip : "##wage_level_tip##"
     }
 
     btnIncreaseSalary#TexturedButton : {
@@ -43,6 +44,7 @@
       hovered : [ "paneling", 606 ]
       pressed : [ "paneling", 607 ]
       disabled : [ "paneling", 305 ]
+      tooltip : "##wage_level_tip##"
     }
 
     lbSalaries#Label : {

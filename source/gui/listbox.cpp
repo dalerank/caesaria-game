@@ -630,8 +630,9 @@ void ListBox::draw(gfx::Engine& painter )
 
   Point scrollBarOffset( 0, -_d->scrollBar->value() );
   Rect frameRect = _itemsRect();
+  frameRect += _d->margin.lefttop();
   frameRect.rbottom() = frameRect.top() + _d->itemHeight;
-  const Point& widgetLeftup = absoluteRect().UpperLeftCorner;
+  const Point& widgetLeftup = absoluteRect().lefttop();
 
   Rect clipRect = absoluteClippingRectRef();
   clipRect.UpperLeftCorner += Point( 3, 3 );
@@ -651,17 +652,17 @@ void ListBox::draw(gfx::Engine& painter )
     {
       if( refItem.icon().isValid() )
       {
-        _drawItemIcon( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect );
+        _drawItemIcon( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset, &clipRect );
       }
 
       if( refItem.picture().isValid() )
       {
-        _drawItemText( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect  );
+        _drawItemText( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset, &clipRect  );
       }
 
       if( !refItem.url().empty() )
       {
-        Point r = frameRect.LowerRightCorner;
+        Point r = frameRect.rightbottom();
         r += Point( 0, -_d->scrollBar->value() ) + refItem.textOffset();
         //_d->background->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
         painter.drawLine( 0xff00ff00, r - Point( frameRect.width(), 0 ), r );
@@ -890,6 +891,9 @@ void ListBox::setupUI(const VariantMap& ui)
   Variant itemtextoffset = ui.get( "items.offset" );
   if( itemtextoffset.isValid() )
     setItemTextOffset( itemtextoffset.toPoint() );
+
+  _d->margin.rleft() = ui.get( "margin.left", _d->margin.left() );
+  _d->margin.rtop() = ui.get( "margin.top", _d->margin.top() );
 
   VariantList items = ui.get( "items" ).toList();
   foreach( i, items )

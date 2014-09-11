@@ -35,6 +35,7 @@ public:
   typedef std::map<int, double> Params;
   TilesArray accessRoads;
   Params params;
+
   ConstructionExtensionList extensions;
 };
 
@@ -189,10 +190,8 @@ void Construction::load( const VariantMap& stream )
   }
 }
 
-void Construction::addExtension(ConstructionExtensionPtr ext)
-{
-  _d->extensions.push_back( ext );
-}
+void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->extensions.push_back( ext ); }
+const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
 
 double Construction::state( ParameterType param) const { return _d->params[ param ]; }
 

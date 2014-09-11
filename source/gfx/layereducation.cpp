@@ -59,7 +59,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   return 0;
 }
 
-void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerEducation::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 

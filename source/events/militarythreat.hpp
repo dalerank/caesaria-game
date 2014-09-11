@@ -13,26 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
-#define _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_MILITARY_THREAT_H_INCLUDE_
+#define _CAESARIA_EVENT_MILITARY_THREAT_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class WinMission : public GameEvent
+class MilitaryThreat : public GameEvent
 {
 public:
-  static GameEventPtr create();
+  static GameEventPtr create(int value);
+
+  virtual bool isDeleted() const;
 
 protected:
   virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int) const;
+  virtual bool _mayExec( Game &game, unsigned int time) const;
+
+private:
+  MilitaryThreat(int value);
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }
 
-#endif //_CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_

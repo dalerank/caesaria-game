@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "core/signals.hpp"
 
 namespace city
 {
@@ -47,10 +48,14 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-  int month2lastAttack() const;
-  void enemyAttack();
+  const DateTime& lastAttack() const;
+  int monthFromLastAttack() const;
+
+  void updateThreat( int value );
+  unsigned int threadValue() const;
 
   static std::string defaultName();
+
 private:
   Military( PlayerCityPtr city );
 

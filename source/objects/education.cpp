@@ -43,6 +43,7 @@ School::School() : ServiceBuilding(Service::school, building::school, Size(2)), 
 
 int School::getVisitorsNumber() const { return _d->currentPeopleServed; }
 
+
 void School::deliverService()
 {
   if( numberWorkers() <= 0 )
@@ -85,6 +86,11 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
 
   if( _d->currentPeopleServed > _d->maxMonthVisitors )
     walker->return2Base();
+}
+
+int School::_getWalkerOrders() const
+{
+  return ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
 }
 
 Library::Library() : ServiceBuilding(Service::library, building::library, Size(2))

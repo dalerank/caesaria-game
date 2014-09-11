@@ -34,6 +34,7 @@ public:
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;
 	Rect clientClip;
+	Rect margin;
   bool dragEventSended;
   int hoveredItemIndex;
   int itemHeight;

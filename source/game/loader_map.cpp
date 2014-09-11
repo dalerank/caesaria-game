@@ -324,11 +324,12 @@ void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 
 void GameLoaderC3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity)
 {
-  unsigned short int i = 0;
+  /*unsigned short int i = 0;
   unsigned short int j = 0;
   f.seekg(kCamera, std::ios::beg);
   f.read((char*)&i, 2);
-  f.read((char*)&j, 2);
+  f.read((char*)&j, 2);*/
+  int mapSize = ioCity->tilemap().size();
 
-  ioCity->setCameraPos( TilePos( i, j ) );
+  ioCity->setCameraPos( TilePos( mapSize / 2, mapSize / 2 ) );
 }

@@ -35,7 +35,6 @@ using namespace gfx;
 
 namespace  {
 CAESARIA_LITERALCONST(peoples)
-CAESARIA_LITERALCONST(stamina)
 }
 
 class Emigrant::Impl
@@ -66,20 +65,18 @@ Emigrant::Emigrant(PlayerCityPtr city )
 HousePtr Emigrant::_findBlankHouse()
 {
   city::Helper hlp( _city() );
-  HouseList houses = hlp.find<House>( building::house );
+
   HousePtr blankHouse;
 
-  HouseList::iterator itHouse = houses.begin();
-  while( itHouse != houses.end() )
+  TilePos offset( 5, 5 );
+  HouseList houses = hlp.find<House>( building::house, pos() - offset, pos() + offset );
+  _checkHouses( houses );
+  if( houses.empty() )
   {
-    HousePtr house = *itHouse;
-    bool haveRoad = !house->getAccessRoads().empty();
-    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
-    bool notWillSettle = (house->state( House::willSettle ) == 0);
-
-    if( haveRoad && haveVacantRoom && notWillSettle ) { ++itHouse; }
-    else { itHouse = houses.erase( itHouse ); }
+    houses = hlp.find<House>( building::house );
+    _checkHouses( houses );
   }
+
 
   if( houses.size() > 0 )
   {
@@ -92,6 +89,7 @@ HousePtr Emigrant::_findBlankHouse()
 Pathway Emigrant::_findSomeWay( TilePos startPoint )
 {
   HousePtr house = _findBlankHouse();  
+  _d->failedWayCount++;
 
   Pathway pathway;
   if( house.isValid() )
@@ -100,15 +98,11 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
                                      PathwayHelper::roadFirst  );
   }
 
-  if( !pathway.isValid() )
+  if( !pathway.isValid() || _d->failedWayCount > 10 )
   {    
     pathway = PathwayHelper::create( startPoint,
                                      _city()->borderInfo().roadExit,
                                      PathwayHelper::allTerrain );
-  }
-  else
-  {
-    house->updateState( House::willSettle, 1 );
   }
 
   return pathway;
@@ -170,20 +164,24 @@ void Emigrant::_append2house( HousePtr house )
 bool Emigrant::_checkNearestHouse()
 {
   city::Helper helper( _city() );
-  TilePos offset( 2, 2 );
-  HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
-  foreach( it, houses )  //have destination
+
+  for( int k=1; k < 3; k++ )
   {
-    HousePtr house = *it;
-
-    int freeRoom = house->maxHabitants() - house->habitants().count();
-    if( freeRoom > 0 )
+    TilePos offset( k, k );
+    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+    foreach( it, houses )  //have destination
     {
-      Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+      HousePtr house = *it;
 
-      _updatePathway( pathway );
-      go();
-      return true;
+      int freeRoom = house->maxHabitants() - house->habitants().count();
+      if( freeRoom > 0 )
+      {
+        Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+
+        _updatePathway( pathway );
+        go();
+        return true;
+      }
     }
   }
 
@@ -192,6 +190,11 @@ bool Emigrant::_checkNearestHouse()
 
 void Emigrant::_brokePathway(TilePos p)
 {
+  if( is_kind_of<House>( _nextTile().overlay() ) )
+  {
+    return;
+  }
+
   _reachedPathway();
 
   if( isDeleted() )
@@ -228,11 +231,31 @@ void Emigrant::_noWay()
   }
 }
 
+void Emigrant::_checkHouses(HouseList &hlist)
+{
+  HouseList::iterator itHouse = hlist.begin();
+  bool bigcity = _city()->population() > 300;
+  while( itHouse != hlist.end() )
+  {
+    HousePtr house = *itHouse;
+    bool haveRoad = !house->getAccessRoads().empty();
+    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
+    bool normalDesirability = true;
+    if( bigcity )
+    {
+      normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
+    }
+
+    if( haveRoad && haveVacantRoom && normalDesirability) { ++itHouse; }
+    else { itHouse = hlist.erase( itHouse ); }
+  }
+}
+
 EmigrantPtr Emigrant::create(PlayerCityPtr city )
 {
-  EmigrantPtr newImmigrant( new Emigrant( city ) );
-  newImmigrant->drop(); //delete automatically
-  return newImmigrant;
+  EmigrantPtr ret( new Emigrant( city ) );
+  ret->drop(); //delete automatically
+  return ret;
 }
 
 EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
@@ -250,15 +273,21 @@ EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples
   return EmigrantPtr();
 }
 
-void Emigrant::send2city( const Tile& startTile )
+bool Emigrant::send2city( const Tile& startTile )
 {    
-  Pathway way = _findSomeWay( startTile.pos() );
   setPos( startTile.pos() );
+  Pathway way = _findSomeWay( startTile.pos() );
 
   if( way.isValid() )
   {
     setPathway( way );
     _city()->addWalker( this );
+    return true;
+  }
+  else
+  {
+    deleteLater();
+    return false;
   }
 }
 
@@ -324,14 +353,14 @@ void Emigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ lc_peoples ] = _d->peoples.save();
-  stream[ lc_stamina ] = _d->stamina;
+  VARIANT_SAVE_ANY_D( stream, _d, stamina )
 }
 
 void Emigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
   _d->peoples.load( stream.get( lc_peoples ).toList() );
-  _d->stamina = stream.get( lc_stamina );
+  VARIANT_LOAD_ANY_D( _d, stamina, stream )
 }
 
 bool Emigrant::die()
@@ -345,22 +374,4 @@ bool Emigrant::die()
   }
 
   return created;
-}
-
-void Emigrant::_centerTile()
-{
-  Walker::_centerTile();
-
-  HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
-  if( house.isValid() )
-  {
-    _append2house( house );
-    if( _d->peoples.count() == 0 )
-    {
-      deleteLater();
-      return;
-    }
-  }
-
-  _checkNearestHouse();
 }

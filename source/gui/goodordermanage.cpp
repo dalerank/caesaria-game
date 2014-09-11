@@ -175,14 +175,14 @@ void GoodOrderManageWindow::draw(Engine &painter)
 void GoodOrderManageWindow::increaseQty()
 {
   city::TradeOptions& ctrade = _d->city->tradeOptions();
-  ctrade.setExportLimit( _d->type, math::clamp<unsigned int>( ctrade.exportLimit( _d->type )+1, 0, 999 ) );
+  ctrade.setExportLimit( _d->type, math::clamp<int>( ctrade.exportLimit( _d->type )+1, 0, 999 ) );
   updateTradeState();
 }
 
 void GoodOrderManageWindow::decreaseQty()
 {
   city::TradeOptions& ctrade = _d->city->tradeOptions();
-  ctrade.setExportLimit( _d->type, math::clamp<unsigned int>( ctrade.exportLimit( _d->type )-1, 0, 999 ) );
+  ctrade.setExportLimit( _d->type, math::clamp<int>( ctrade.exportLimit( _d->type )-1, 0, 999 ) );
   updateTradeState();
 }
 

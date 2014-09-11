@@ -22,7 +22,6 @@
 #include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
-#include "events/winmission.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
@@ -81,6 +80,10 @@
 #include "walker/chastener_elephant.hpp"
 #include "sentiment.hpp"
 #include "walker/chastener.hpp"
+#include "world/barbarian.hpp"
+#include "objects/fort.hpp"
+#include "events/showinfobox.hpp"
+
 
 #include <set>
 
@@ -239,6 +242,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
+  setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
 }
 
@@ -378,6 +382,29 @@ ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
 city::Funds& PlayerCity::funds()  {  return _d->funds;   }
 unsigned int PlayerCity::population() const { return _d->population; }
+
+int PlayerCity::strength() const
+{
+  city::Helper helper( const_cast<PlayerCity*>( this ) );
+  FortList forts = helper.find<Fort>( building::any );
+
+  int ret = 0;
+  foreach( i, forts )
+  {
+    SoldierList soldiers = (*i)->soldiers();
+    ret += soldiers.size();
+  }
+
+  return ret;
+}
+
+DateTime PlayerCity::lastAttack() const
+{
+  city::MilitaryPtr mil;
+  mil << findService( city::Military::defaultName() );
+
+  return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
+}
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
@@ -805,7 +832,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
       soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( GameDate::days2ticks( k ) );
+      soldier->wait( GameDate::days2ticks( k ) / 2 );
       if( (k % 16) == 15 )
       {
         ChastenerElephantPtr elephant = ChastenerElephant::create( this );
@@ -813,6 +840,19 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( GameDate::days2ticks( k ) );
       }
     }
+  }
+  else if( is_kind_of<world::Barbarian>( object ) )
+  {
+    world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
+    for( unsigned int k=0; k < brb->strength() / 2; k++ )
+    {
+      EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
+      soldier->send2City( borderInfo().roadEntry );
+      soldier->wait( GameDate::days2ticks( k ) / 2 );
+    }
+
+    events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
+    e->dispatch();
   }
 }
 

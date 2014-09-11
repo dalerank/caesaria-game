@@ -195,13 +195,14 @@ void LayerDestroy::handleEvent(NEvent& event)
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
       events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_money4destroy );
-      e->dispatch();
+      e->dispatch();      
     }
     break;
 
     case mouseRbtnRelease:
     {
       _setNextLayer( citylayer::simple );
+      _city()->setOption( PlayerCity::updateTiles, 1 );
     }
     break;
 
@@ -229,7 +230,7 @@ void LayerDestroy::handleEvent(NEvent& event)
 
 int LayerDestroy::type() const {  return citylayer::destroyd; }
 
-void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
+void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
   TileOverlayPtr overlay = tile.overlay();
 

@@ -107,6 +107,7 @@ void GoodCaravan::_reachedWay()
   {
     obj->addObject( this );
   }
+  deleteLater();
 }
 
 GoodCaravan::GoodCaravan( CityPtr city )

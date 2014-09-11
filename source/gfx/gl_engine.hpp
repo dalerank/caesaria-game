@@ -32,68 +32,8 @@
 namespace gfx
 {
 
-//#if defined(CAESARIA_PLATFORM_ANDROID) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
-#if 1
-#define GlEngine SdlEngine
-#else
-
-PREDEFINE_CLASS_SMARTLIST(PostprocFilter,List)
-typedef PostprocFilterList Effects;
-
-class PostprocFilter : public ReferenceCounted
-{
-public:
-  static PostprocFilterPtr create();
-  void setVariables( const VariantMap& variables );
-  void loadProgramm( vfs::Path fragmentShader );
-
-  void setUniformVar( const std::string& name, const Variant& var );
-
-  void begin();
-  void bindTexture();
-  void end();
-
-private:
-  PostprocFilter();
-  void _log( unsigned int program );
-  unsigned int _program;
-  unsigned int _vertexShader, _fragmentShader;
-  VariantMap _variables;
-};
-
-class EffectManager : public ReferenceCounted
-{
-public:
-  EffectManager();
-  void load( vfs::Path effectModel );
-
-  Effects& effects();
-
-private:
-  Effects _effects;
-};
-
-class FrameBuffer : public ReferenceCounted
-{
-public:
-  FrameBuffer();
-  void initialize( Size size );
-
-  void begin();
-  void end();
-
-  void draw();
-  void draw( Effects& effects );
-
-  bool isOk() const;
-
-private:
-  void _createFramebuffer( unsigned int& id );
-
-  unsigned int _framebuffer, _framebuffer2;
-  Size _size;
-  bool _isOk;
-};
+#define CAESARIA_GL_RENDER
+#ifdef CAESARIA_GL_RENDER
 
 class GlEngine : public Engine
 {
@@ -105,14 +45,17 @@ public:
   void delay( const unsigned int msec );
 
   Picture* createPicture(const Size& size);
-  virtual void loadPicture(Picture &ioPicture);
+  virtual void loadPicture(Picture &ioPicture, bool streamed);
   virtual void unloadPicture(Picture &ioPicture);
   void deletePicture(Picture* pic);
 
   void startRenderFrame();
   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
+  void draw(const Picture &picture, const Rect& src, const Rect& dst, Rect* clipRect=0 );
   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
+  void drawLine(const NColor &color, const Point &p1, const Point &p2);
+
   void endRenderFrame();
 
   void setColorMask( int rmask, int gmask, int bmask, int amask );
@@ -126,6 +69,8 @@ public:
 
   Point cursorPos() const;
   Picture& screen();
+  virtual void setFlag(int flag, int value);
+
 private:
   void _createFramebuffer( unsigned int& id );
   void _initShaderProgramm(const char* vertSrc, const char* fragSrc,
@@ -138,7 +83,8 @@ private:
   unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
   float _rmask, _gmask, _bmask, _amask;  
 };
-#endif //#ifdef CAESARIA_PLATFORM_MACOSX
+
+#endif
 
 }
 #endif

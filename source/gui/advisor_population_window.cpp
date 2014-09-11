@@ -33,6 +33,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -219,12 +220,12 @@ void Population::Impl::updateStates()
   {
     int currentPop = city->population();
 
-    city::InfoPtr info;
+    InfoPtr info;
     info << city->findService( city::Info::defaultName() );
 
-    city::Info::Parameters lastMonth = info->lastParams();
+    Info::Parameters lastMonth = info->lastParams();
 
-    int migrationValue = currentPop - lastMonth.population;
+    int migrationValue = currentPop - lastMonth[ Info::population ];
 
     if( migrationValue >= 0 )
     {
@@ -327,8 +328,9 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       _values.clear();
       foreach( it, history )
       {
-        _values.push_back( (*it).population );
-        _maxValue = std::max<unsigned int>( _maxValue, (*it).population );
+        const Info::Parameters& p = *it;
+        _values.push_back( p[ Info::population ] );
+        _maxValue = std::max<unsigned int>( _maxValue, p[ Info::population ] );
       }
 
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;

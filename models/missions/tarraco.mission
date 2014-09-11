@@ -16,7 +16,7 @@
     prosperity : 25
     peace : 30
     favour : 70
-    next : ":/missions/tutorial5.briefing"
+    next : ":/missions/mission5.briefing"
     title : "##win_engineer_title##"
     win.text : "##tarraco_win_text##"
     may_continue : false

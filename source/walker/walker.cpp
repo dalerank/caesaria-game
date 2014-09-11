@@ -92,6 +92,8 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->isDeleted = false;
   _d->centerReached = false;
   _d->waitInterval = 0;
+
+  setFlag( vividly, true );
 }
 
 Walker::~Walker() {}

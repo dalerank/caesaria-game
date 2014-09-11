@@ -139,9 +139,9 @@ void Ratings::Impl::checkCultureRating()
   city::CultureRatingPtr culture;
   culture << city->findService( city::CultureRating::defaultName() );
 
-  if( culture != 0 )
+  if( culture.isValid() )
   {
-    if( culture->value() == 0 )
+    if( culture->value() == 0  )
     {
       lbRatingInfo->setText( _("##no_culture_building_in_city##") );
       return;
@@ -188,7 +188,7 @@ void Ratings::Impl::checkProsperityRating()
     city::Info::Parameters current = info->lastParams();
     city::Info::Parameters lastYear = info->yearParams( 0 );
 
-    if( current.prosperity > lastYear.prosperity ) { troubles <<  "##your_prosperity_raising##"; }
+    if( current[ city::Info::prosperity ] > lastYear[ city::Info::prosperity ] ) { troubles <<  "##your_prosperity_raising##"; }
 
     if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
     if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
@@ -201,7 +201,7 @@ void Ratings::Impl::checkProsperityRating()
       troubles << "##how_to_grow_prosperity##";
     }
     if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
-    if( current.payDiff > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
+    if( current[ Info::payDiff ] > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
     unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
@@ -225,23 +225,26 @@ void Ratings::Impl::checkPeaceRating()
   city::MilitaryPtr ml;
   ml << city->findService( city::Military::defaultName() );
 
-  unsigned int peace = city->peace();
-
-  if( ml->month2lastAttack() < 36 )
+  if( ml.isValid() )
   {
-    advices << "##province_has_peace_a_short_time##";
+    unsigned int peace = city->peace();
+
+    if( ml->monthFromLastAttack() < 36 )
+    {
+      advices << "##province_has_peace_a_short_time##";
+    }
+
+    if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+    else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+    else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
+    else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+
+    std::string text = advices.empty()
+                        ? "##peace_rating_text##"
+                        : advices.random();
+
+    lbRatingInfo->setText( _(text) );
   }
-
-  if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
-  else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
-  else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
-  else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
-
-  std::string text = advices.empty()
-                      ? "##peace_rating_text##"
-                      : advices.random();
-
-  lbRatingInfo->setText( _(text) );
 }
 
 void Ratings::Impl::checkFavourRating()
@@ -275,11 +278,11 @@ void Ratings::Impl::checkFavourRating()
   else if( salaryKoeff > 1.5f ) { problems << "##try_reduce_your_salary##"; }
   else if( salaryKoeff > 1.f ) { problems << "##your_salary_frowned_senate##"; }
 
-  if( current.favour == lastYear.favour )   {    problems << "##your_favour_unchanged_from_last_year##";  }
-  else if( current.favour > lastYear.favour ) { problems << "##your_favour_increased_from_last_year##"; }
+  if( current[ city::Info::favour ] == lastYear[ city::Info::favour ] )   {    problems << "##your_favour_unchanged_from_last_year##";  }
+  else if( current[ city::Info::favour ] > lastYear[ city::Info::favour ] ) { problems << "##your_favour_increased_from_last_year##"; }
 
-  if( current.favour < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
-  else if( current.favour > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
+  if( current[ city::Info::favour ] < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current[ city::Info::favour ] > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
 
   if( rd.isValid() )
   {
@@ -311,7 +314,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
 
   if( lbNeedPopulation ) lbNeedPopulation->setText( StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
 
-  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );
+  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wndrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
   _d->btnCulture->setValue( _d->city->culture() );
   _d->updateColumn( _d->btnCulture->relativeRect().getCenter(), 0 );

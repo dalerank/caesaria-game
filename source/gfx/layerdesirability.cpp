@@ -13,13 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layerdesirability.hpp"
 #include "game/resourcegroup.hpp"
+#include "camera.hpp"
+#include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
 #include "core/font.hpp"
+#include "core/event.hpp"
 #include "core/stringhelper.hpp"
 #include "layerconstants.hpp"
 
@@ -35,9 +38,18 @@ public:
   std::vector<Picture*> debugText;
 };
 
+namespace {
+  inline int __des2index( int desirability )
+  {
+    return desirability < 0
+             ? math::clamp( desirability / 25, -3, 0 )
+             : math::clamp( desirability / 10, 0, 6 );
+  }
+}
+
 int LayerDesirability::type() const {  return citylayer::desirability; }
 
-void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
+void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mappos() + offset;
@@ -48,9 +60,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     //draw background
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
-      int picOffset = desirability < 0
-                          ? math::clamp( desirability / 25, -3, 0 )
-                          : math::clamp( desirability / 15, 0, 6 );
+      int picOffset = __des2index( desirability );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
       engine.draw( pic, screenPos );
@@ -85,20 +95,18 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
     //other buildings
     default:
+    {
+      int picOffset = __des2index( desirability );
+      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+
+      city::Helper helper( _city() );
+      TilesArray tiles4clear = helper.getArea( overlay );
+
+      foreach( tile, tiles4clear )
       {
-        int picOffset = desirability < 0
-                          ? math::clamp( desirability / 25, -3, 0 )
-                          : math::clamp( desirability / 15, 0, 6 );
-        Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
-
-        city::Helper helper( _city() );
-        TilesArray tiles4clear = helper.getArea( overlay );
-
-        foreach( tile, tiles4clear )
-        {
-          engine.draw( pic, (*tile)->mappos() + offset );
-        }
+        engine.draw( pic, (*tile)->mappos() + offset );
       }
+    }
     break;
     }
   }
@@ -118,6 +126,38 @@ void LayerDesirability::beforeRender( Engine& engine )
 {
   foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
+
+  Layer::beforeRender( engine );
+}
+
+void LayerDesirability::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        int desirability = tile->param( Tile::pDesirability );
+
+        if( desirability < -25 ) { text = "##no_citizens_desire_live_here##"; }
+        else if( desirability >= 0 && desirability < 10 ) { text = "##desirability_indiffirent_area##"; }
+        else if( desirability >= 10 && desirability < 20 ) { text = "##desirability_pretty_area##"; }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)

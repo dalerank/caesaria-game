@@ -1,223 +1,179 @@
 #include "console.hpp"
 #include "console_commands.hpp"
-/*
-NERPA_MODULE_BEGIN(gui)
+#include "environment.hpp"
+#include "core/saveadapter.hpp"
+#include "gfx/engine.hpp"
+#include "core/stringhelper.hpp"
+#include "core/event.hpp"
+
+namespace gui
+{
 
 //! constructor
-NrpConsole::NrpConsole( Widget* parent, s32 id, const core::RectI& rectangle )
-			: Widget( NRPGUI_CONSOLE, parent, id, rectangle ),
+Console::Console( Widget* parent, int id, const Rect& rectangle )
+      : Widget( parent, id, rectangle ),
 							 consoleHistoryIndex_(0),
-                                                         _font( NULL ), toggle_visible_(NONE)
+               toggle_visible_(NONE)
 {
-    setInternalName( ConsoleConfig::Instance()[ GUINAME ].As<String>() );
+  calculateConsoleRect( ui()->rootWidget()->size() );										//calculate the console rectangle
 
-	CalculateConsoleRect( getEnvironment()->getScreenSize() );										//calculate the console rectangle
+  resizeMessages();														//resize message array
 
-	ResizeMessages();														//resize message array
+  registerDefaultCommands_();
 
-	RegisterDefaultCommands_();
-
-	_isVisible = false;
-	setOpacity( 3 );
+  hide();
 	cursorPos_ = 1;
 
-    ConsoleConfig& conf = ConsoleConfig::Instance();
-    _font = Font( conf[ FONTNAME ].As<String>() );
+  _font = Font::create( FONT_1_WHITE );
 
-    if( !_font.available() )
-        _font = Font( getStyle().getName() );
-
-    AppendMessage( String( L"NrpConsole initialized" ) );								//append a message
+   appendMessage( "NrpConsole initialized" );								//append a message
 }
 
-void NrpConsole::SaveCommands_()																	//  
+void Console::SaveCommands_()																	//
 {					
 	//   
-    String path = ConsoleConfig::Instance()[ COMMANDS_FILE ];							//  		
+  vfs::Path path( ":/commands.model" );					//
 
-	try
-	{
-        io::IniFile sv( path );
-		sv.Set( L"commands", L"number_commands", (int)console_history_.size() );	//   
+  VariantMap commands;
 
-		for( u32 cnt=0; cnt < console_history_.size(); cnt++ )							//   
-		{
-            sv.Set( L"commands", String( L"type_") + String::fromInt( cnt ), console_history_[ cnt ] ); 
-		}	
+  foreach( it, console_history_ )							//
+  {
+    commands[ *it ] = "";
+  }
 
-		sv.Save();
-	}
-	catch(...)
-	{
-#ifdef _DEBUG
-        core::Log( core::APP ) << "Can't write command to " << path << core::MsgTerminator();
-#endif
-	}
+  SaveAdapter::save( commands, path );
 }
 
-void NrpConsole::LoadSaveCommands_()													//  
+void Console::LoadSaveCommands_()													//
 {
-    String path = ConsoleConfig::Instance()[ COMMANDS_FILE ];
+  vfs::Path path( ":/commands.model" );					//
 
-    io::IniFile sv( path );
-	int num_com = sv.Get( L"commands", L"number_commands", (int)0 );
-
-	for( int cnt=0; cnt < num_com; cnt++ )
+  VariantMap commands = SaveAdapter::load( path );
+  foreach( it, commands )
 	{
-        String strk = sv.Get( L"commands", String( L"type_" ) + String::fromInt( cnt ), String( L"null" ) );								//       "null"
-
-		console_history_.push_back( strk );
+    console_history_.push_back( it->first );
 	}	
 }
 
-NrpConsole::~NrpConsole()													//! destructor
+Console::~Console()													//! destructor
 {
 	SaveCommands_();
 }
 
-void NrpConsole::RegisterDefaultCommands_()			//! loads a few default commands into the console
+void Console::registerDefaultCommands_()			//! loads a few default commands into the console
 {
 	LoadSaveCommands_();
 	
-	RegisterCommand( new core::IC_Command_ECHO() );
-	RegisterCommand( new core::IC_Command_HELP() );
-	RegisterCommand( new core::IC_Command_LIST() );
-	RegisterCommand( new core::IC_Command_CLS() );
-	RegisterCommand( new core::IC_Command_SCRIPT() );
+  RegisterCommand( new IC_Command_ECHO() );
+  RegisterCommand( new IC_Command_HELP() );
+  RegisterCommand( new IC_Command_LIST() );
+  RegisterCommand( new IC_Command_CLS() );
+  RegisterCommand( new IC_Command_SCRIPT() );
 }
 
-void NrpConsole::ResizeMessages()											//! resize the message count
+void Console::resizeMessages()											//! resize the message count
 {
-	u32 maxLines = 0;
-	u32 lineHeight = 0;
-	s32 fontHeight = 0;
-	if( CalculateLimits(maxLines,lineHeight,fontHeight) )						//     
+  unsigned int maxLines = 0;
+  unsigned int lineHeight = 0;
+  int fontHeight = 0;
+  if( calculateLimits(maxLines,lineHeight,fontHeight) )						//
 	{
-		u32 messageCount = console_messages_.size();	
+    unsigned int messageCount = console_messages_.size();
 		if(messageCount > maxLines)											// 
-			console_messages_.erase( 0, messageCount - maxLines );
+      console_messages_.erase( console_messages_.begin(), console_messages_.begin() + messageCount - maxLines );
 	}
 }
 
-void NrpConsole::ToggleVisible()											//! toggle the visibility of the console
+void Console::toggleVisible()											//! toggle the visibility of the console
 {
-   setVisible( (toggle_visible_ == NONE && isVisible()) 
+   setVisible( (toggle_visible_ == NONE && visible())
                 ? false 
                 : toggle_visible_ != UPLIGTH );
 }
 
-void NrpConsole::setVisible( bool vis )											//! toggle the visibility of the console
+void Console::setVisible( bool vis )											//! toggle the visibility of the console
 {
-    toggle_visible_ = vis ? UPLIGTH : DOWNLIGTH;
-	_isVisible = true;
+  toggle_visible_ = vis ? UPLIGTH : DOWNLIGTH;
+  Widget::setVisible( true );
 }
 
-void NrpConsole::AppendMessage( const core::String& message )					//   
+void Console::appendMessage( const std::string& message )					//
 {
-	//EnterCriticalSection( &cs_dataaccess_ );
-
-	try
-	{
-//		console_messages_.push_back( message );								//     
-	}
-	catch(...)
-	{
-		//ErrLog(gfx) << all << "     " << term;
-	}
-
-	//LeaveCriticalSection( &cs_dataaccess_ );
+  console_messages_.push_back( message );								//
 }
 
-void NrpConsole::ClearMessages()											//! clear all the messages in the sink
+void Console::clearMessages()											//! clear all the messages in the sink
 {
 	console_messages_.clear();
 }
 
-void NrpConsole::onPaint( Painter* painter )
+void Console::draw( gfx::Engine& painter )
 {
-    ConsoleConfig& conf = ConsoleConfig::Instance();
+  resizeMessages();
 
-    ResizeMessages();
-
-    if( !_font.available() )
+    if( !_font.isValid() )
     {
-        Widget::onPaint( painter );
+        Widget::draw( painter );
         return;
     }
 
-	if( isVisible() )															// render only if the console is visible
+  if( visible() )															// render only if the console is visible
 	{
 		if( toggle_visible_ != NONE )
 		{
 			if( toggle_visible_ == DOWNLIGTH )
 			{
-				if( getOpacity() > 5 ) setOpacity( getOpacity() - 3 );
-				else _isVisible = false;
+        //if( getOpacity() > 5 ) setOpacity( getOpacity() - 3 );
+        //else _isVisible = false;
 			}
 			else
 			{
-                if( (int)getOpacity() < (int)conf[ MAX_BLEND ] )	setOpacity( getOpacity() + 3 );
-				else toggle_visible_ = NONE;
+        //if( (int)getOpacity() < (int)conf[ MAX_BLEND ] )	setOpacity( getOpacity() + 3 );
+        //else toggle_visible_ = NONE;
 			}
 		}
 
-                 if( (bool)conf[ SHOW_BACKGROUND ] )											//if bg is to be drawn fill the console bg with color
-		{
-                        Color color = conf[ BG_COLOR ].As< Color >();
-			color.setAlpha( u32( getOpacity() ) );
-			painter->drawRectangle( color, getAbsoluteRect(), 0 );	//draw the bg as per configured color
-		}
+    painter.draw( *_bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
 		
-		core::RectI textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
-		CalculatePrintRects(textRect,shellRect);
+    Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
+    calculatePrintRects(textRect,shellRect);
 
-		u32 maxLines, lineHeight;											//now, render the messages
-		s32 fontHeight=0;													//  
-		if(!CalculateLimits(maxLines,lineHeight,fontHeight))
+    unsigned int maxLines, lineHeight;											//now, render the messages
+    int fontHeight=0;													//
+    if(!calculateLimits(maxLines,lineHeight,fontHeight))
 		{
 			return;
 		}
 		
-		core::RectI lineRect( textRect.UpperLeftCorner.X,						//calculate the line rectangle
-							  textRect.UpperLeftCorner.Y,
-							  textRect.LowerRightCorner.X,
-							  textRect.UpperLeftCorner.Y + lineHeight);
+    Rect lineRect( textRect.UpperLeftCorner.x(),						//calculate the line rectangle
+                textRect.UpperLeftCorner.y(),
+                textRect.LowerRightCorner.x(),
+                textRect.UpperLeftCorner.y() + lineHeight);
 
-		//EnterCriticalSection( &cs_dataaccess_ );
-        Color fontcolor = conf[ FONT_COLOR ].As<Color>();
-		fontcolor.setAlpha( u32( getOpacity() ) );
+    NColor fontcolor = DefaultColors::white;
 
-		try
-		{
-			for(u32 i = 0; i < console_messages_.size(); i++)
-			{
-				_font.Draw( console_messages_[i].c_str(), 
-					 		lineRect, 
-							fontcolor, 
-							false, true,
-							&getAbsoluteClippingRectRef() );									//we draw each line with the configured font and color vertically centered in the rectangle
+  /* for(unsigned int i = 0; i < console_messages_.size(); i++)
+   {
+     _font.Draw( console_messages_[i].c_str(),
+          lineRect,
+          fontcolor,
+          false, true,
+          &getAbsoluteClippingRectRef() );									//we draw each line with the configured font and color vertically centered in the rectangle
 
-				lineRect.UpperLeftCorner.Y += lineHeight;						//update line rectangle
-				lineRect.LowerRightCorner.Y += lineHeight;
-			}
-		}
-		catch(...)
-		{
-			//ErrLog(gfx) << all << "   " << term;
-		}
+     lineRect.UpperLeftCorner.Y += lineHeight;						//update line rectangle
+     lineRect.LowerRightCorner.Y += lineHeight;
+   }
 
-		//LeaveCriticalSection( &cs_dataaccess_);
-
-        String shellText = conf[ PROMT ];	//now, render the prompt
-		shellText.append( L"$>" );
-		size_t textSize = shellText.size();
-		shellText.append( currentCommand_ );
+   std::string shellText = conf[ PROMT ];	//now, render the prompt
+   shellText.append( L"$>" );
+   size_t textSize = shellText.size();
+   shellText.append( currentCommand_ );
 		
-		_font.Draw(  shellText,
+   _font.Draw(  shellText,
 			          shellRect,
-				      fontcolor,
-					  false, false, 
-					  &getAbsoluteClippingRectRef() );											//draw the prompt string
+                fontcolor,
+                false, false,
+                &getAbsoluteClippingRectRef() );											//draw the prompt string
 
         if( ( DateTime::getElapsedTime() % 700 ) < 350 )
 		{
@@ -225,27 +181,27 @@ void NrpConsole::onPaint( Painter* painter )
 			_font.Draw( L"_", core::RectI( pos.Width , 0, pos.Width + 20, pos.Height ) + shellRect.UpperLeftCorner,
 						0xffff0000,
 						false, false, &getAbsoluteClippingRectRef() );
-		}		
-	}
+    }	*/
+  }
 
-	Widget::onPaint( painter );
+  Widget::draw( painter );
 }
 
-void NrpConsole::ResolveCommand_()											//  Enter
+void Console::resolveCommand_()											//  Enter
 {
-	AddToHistory( currentCommand_ );											//   
-	HandleCommandString( currentCommand_ );									// 
-	currentCommand_ = L"";
+  addToHistory( currentCommand_ );											//
+  handleCommandString( currentCommand_ );									//
+  currentCommand_ = "";
 	consoleHistoryIndex_ = 0;
 	cursorPos_ = 1;
 }
 
-void NrpConsole::SetPrevCommand_()
+void Console::setPrevCommand_()
 {
 	if(console_history_.size() > 0)
 	{
-		s32 index = console_history_.size() - 1 - consoleHistoryIndex_;
-		if(index >= 0 && index < s32( console_history_.size() ) )
+    int index = console_history_.size() - 1 - consoleHistoryIndex_;
+    if(index >= 0 && index < int( console_history_.size() ) )
 		{
 			consoleHistoryIndex_++;
 			currentCommand_ = console_history_[index].c_str();
@@ -262,13 +218,13 @@ void NrpConsole::SetPrevCommand_()
 	}
 }
 
-void NrpConsole::SetNextCommand_()
+void Console::setNextCommand_()
 {
 	if(console_history_.size() > 0)
 	{
 
-		s32 index = console_history_.size() - consoleHistoryIndex_;
-		if(index >= 0 && index < static_cast< s32 >( console_history_.size() ) )
+    int index = console_history_.size() - consoleHistoryIndex_;
+    if(index >= 0 && index < static_cast< int >( console_history_.size() ) )
 		{
 			consoleHistoryIndex_--;
 			currentCommand_ = console_history_[index].c_str();
@@ -285,32 +241,33 @@ void NrpConsole::SetNextCommand_()
 	}
 }
 
-void NrpConsole::InputChar_( wchar_t key_char, bool shift_down )		//  
+void Console::inputChar_( unsigned int key_char, bool shift_down )		//
 {
 	if(key_char)
 	{
-		wchar_t buf[2];
+    char buf[2];
 		buf[0] = key_char;
 		buf[1] = 0;
-		core::String astr = buf;
+    std::string astr = buf;
 		
-		if(shift_down)
-			astr.make_upper();
+    //if(shift_down)
+    //  astr = StringHelper::localUpper( astr );
 		
-		currentCommand_ = currentCommand_.subString( 0, cursorPos_-1 ) + astr + currentCommand_.subString( cursorPos_-1, 0xff );
+    currentCommand_ = currentCommand_.substr( 0, cursorPos_-1 ) + astr + currentCommand_.substr( cursorPos_-1, 0xff );
 		cursorPos_++;
 	}
 }
 
-void NrpConsole::KeyPress( const NEvent& event )							//  
+void Console::keyPress( const NEvent& event )							//
 {
-        if( event.KeyboardEvent.Key == KEY_RETURN )
+  if( event.keyboard.key == KEY_RETURN )
 	{
 		if( currentCommand_.size() > 0 )
-			ResolveCommand_(); 	
+      resolveCommand_();
 	}
-	else if( event.KeyboardEvent.PressedDown )
-			switch ( event.KeyboardEvent.Key )
+  else if( event.keyboard.pressed )
+    {
+      switch ( event.keyboard.key )
 			{
 				case KEY_BACK:	
 							if( currentCommand_.size() > 0 && cursorPos_ > 1 )
@@ -326,47 +283,48 @@ void NrpConsole::KeyPress( const NEvent& event )							//
 							}
 							break;
 				case KEY_UP:									//  
-							SetPrevCommand_();
+              setPrevCommand_();
 							break;
 				case KEY_LEFT:
 				case KEY_RIGHT:
-                                                        MoveCursor_( event.KeyboardEvent.Key == KEY_LEFT );
+              moveCursor_( event.keyboard.key == KEY_LEFT );
 							break;
 				case KEY_DOWN:
-							SetNextCommand_();
+              setNextCommand_();
 							break;
 				case KEY_TAB:									// 
-							TabComplete();
+              tabComplete();
 							break;
 				default:
-							InputChar_( event.KeyboardEvent.Char, event.KeyboardEvent.Shift );
+              inputChar_( event.keyboard.symbol, event.keyboard.shift );
 						    break;
 			}
+    }
 }
 
-void NrpConsole::HandleCommandString( const core::String& wstr)						//! handle the current command string
+void Console::handleCommandString( const std::string& wstr)						//! handle the current command string
 {
 	if(wstr.size() > 0 )							//check if it is a command
 	{
-		core::String cmdLine = wstr;
+    std::string cmdLine = wstr;
 
 		//append the message
-		core::String msg = L">> Command : ";
+    std::string msg = ">> Command : ";
 		msg += cmdLine;
 		AppendMessage( msg );
 
 		//parsing logic
 		
-		core::Array< String > args;
-		String cmdName;
-        core::ConsoleParser parser(cmdLine);
+    StringArray args;
+    std::string cmdName;
+    ConsoleParser parser(cmdLine);
 		if( parser.parse(cmdName,args) )
 		{		
 			Dispatch(cmdName,args,this);
 		}
 		else
 		{
-			String errorMessage = L"The command syntax is incorrect or it could not be parsed";
+      std::string errorMessage = "The command syntax is incorrect or it could not be parsed";
 			LogError(errorMessage);
 		}
 	}
@@ -376,99 +334,58 @@ void NrpConsole::HandleCommandString( const core::String& wstr)						//! handle 
 	}
 }
 
-void NrpConsole::AddToHistory( const core::String& wstr)								//! add to history and readjust history
+void Console::addToHistory( const std::string& wstr)								//! add to history and readjust history
 {
 	for( size_t cnt=0; cnt < console_history_.size(); cnt++ )						//     
 		if( console_history_[ cnt ] == wstr )										//    
 			return;
  
-    if( (int)console_history_.size() >= (int)ConsoleConfig::Instance()[ HISTORY_SIZE ] )
-		console_history_.erase( 0 );
+    if( (int)console_history_.size() >= 20 )
+      console_history_.erase( console_history_.begin() );
 
 	console_history_.push_back( wstr.c_str() );
 }
 
-void NrpConsole::CalculateConsoleRect(const core::NSizeU& screenSize)	//! calculate the whole console rect
+void Console::calculateConsoleRect(const Size& screenSize)	//! calculate the whole console rect
 {
-	core::RectI console_rect;
-    ConsoleConfig& conf = ConsoleConfig::Instance();
-    core::NSizeF scr_rat = conf[ RELATIVE_SIZE ].As< core::NSizeF >();
+  Rect console_rect;
 
-	if( scr_rat.Width == 0 || scr_rat.Height == 0)
+  Size consoleDim = ui()->rootWidget()->size();									//calculate console dimension
+
+  consoleDim.setWidth( consoleDim.width()  * 0.9 );
+  consoleDim.setHeight( consoleDim.height() * 0.3 );
+
+  setGeometry( console_rect );
+}
+
+void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calculate the messages rect and prompt / shell rect
+{
+  unsigned int maxLines, lineHeight;
+  int fontHeight;
+
+  if( calculateLimits(maxLines,lineHeight,fontHeight) )
 	{
-		console_rect = core::RectI(0,0,0,0);
+    shellRect = absoluteRect();
+    shellRect.UpperLeftCorner.ry() = shellRect.LowerRightCorner.y() - lineHeight;
+
+    textRect = absoluteRect();
+    textRect.LowerRightCorner.ry() = textRect.UpperLeftCorner.y() + lineHeight;
 	}
 	else
 	{
-		core::NSizeU consoleDim = getEnvironment()->getScreenSize();									//calculate console dimension
-
-		consoleDim.Width = (s32)(consoleDim.Width  * scr_rat.Width );
-		consoleDim.Height= (s32)(consoleDim.Height * scr_rat.Height );
-
-        String al_v = conf[ VERT_ALIGN ].As<String>();
-        if( al_v == NrpAlignmentNames[ alignUpperLeft ] )									//set vertical alignment
-		{
-			console_rect.UpperLeftCorner.Y = 0;
-		}
-        else if( al_v== NrpAlignmentNames[ alignLowerRight ] )
-		{
-			console_rect.UpperLeftCorner.Y = screenSize.Height - consoleDim.Height;
-		}
-        else if( al_v == NrpAlignmentNames[ alignCenter ] )
-		{
-			console_rect.UpperLeftCorner.Y = (screenSize.Height - consoleDim.Height) / 2; 
-		}
-	
-        String al_h = conf[ HORT_ALIGN ].As<String>();
-        if( al_h == NrpAlignmentNames[ alignUpperLeft ] )								//set horizontal alignment
-		{
-			console_rect.UpperLeftCorner.X = 0;
-		}
-        else if( al_h == NrpAlignmentNames[ alignLowerRight ] )
-		{
-			console_rect.UpperLeftCorner.X = screenSize.Width - consoleDim.Width;
-		}
-        else if( al_h == NrpAlignmentNames[ alignCenter ] )
-		{
-			console_rect.UpperLeftCorner.X = (screenSize.Width - consoleDim.Width) / 2; 
-		}
-		
-		console_rect.LowerRightCorner.X = console_rect.UpperLeftCorner.X + consoleDim.Width;	 		//set the lower right corner stuff
-		console_rect.LowerRightCorner.Y = console_rect.UpperLeftCorner.Y + consoleDim.Height;
-
-		setGeometry( console_rect );
+    textRect = Rect(0,0,0,0);
+    shellRect = Rect(0,0,0,0);
 	}
 }
 
-void NrpConsole::CalculatePrintRects( core::RectI& textRect, core::RectI& shellRect)  //! calculate the messages rect and prompt / shell rect
+bool Console::calculateLimits(unsigned int& maxLines, unsigned int& lineHeight,int& fontHeight)
 {
-	u32 maxLines, lineHeight;
-	s32 fontHeight;
+  unsigned int consoleHeight = height();
 
-	if( CalculateLimits(maxLines,lineHeight,fontHeight) )
+  if( _font.isValid() && consoleHeight > 0)
 	{
-		shellRect = getAbsoluteRect();
-		shellRect.UpperLeftCorner.Y = shellRect.LowerRightCorner.Y - lineHeight;
-
-		textRect = getAbsoluteRect();
-		textRect.LowerRightCorner.Y = textRect.UpperLeftCorner.Y + lineHeight;
-	}
-	else
-	{
-		textRect = core::RectI(0,0,0,0);
-		shellRect = core::RectI(0,0,0,0);
-	}
-}
-
-bool NrpConsole::CalculateLimits(u32& maxLines, u32& lineHeight,s32& fontHeight)
-{
-	u32 consoleHeight = getHeight();
-    ConsoleConfig& conf = ConsoleConfig::Instance();
-
-	if( _font.available() && consoleHeight > 0)
-	{
-		fontHeight = _font.getDimension(L"X").Height + 2;
-        lineHeight = fontHeight + (int)conf[ LINE_SPACING ];
+    fontHeight = _font.getTextSize("X").height() + 2;
+    lineHeight = fontHeight + 5;
 		maxLines = consoleHeight / lineHeight;
 		if(maxLines > 2)
 		{
@@ -482,24 +399,24 @@ bool NrpConsole::CalculateLimits(u32& maxLines, u32& lineHeight,s32& fontHeight)
 	}
 }
 
-void NrpConsole::TabComplete()											//  
+void Console::tabComplete()											//
 {
 	if(currentCommand_.size() == 0)
 	{
 		return;
 	}
 
-	core::String ccStr = currentCommand_.subString(1,currentCommand_.size() - 1); //    
+  std::string ccStr = currentCommand_.substr(1,currentCommand_.size() - 1); //
 	
-	core::Array< core::String > names;						//  
+  StringArray names;						//
 
 	GetRegisteredCommands( names );
 
-	core::Array< core::String > commands_find;				//    
+  StringArray commands_find;				//
 
-	for(u32 i = 0; i < names.size(); i++)
+  for(unsigned int i = 0; i < names.size(); i++)
 	{
-		core::String thisCmd = names[i];
+    std::string thisCmd = names[i];
 		if(thisCmd.size() == ccStr.size())				
 		{
 			if(thisCmd == ccStr)
@@ -509,7 +426,7 @@ void NrpConsole::TabComplete()											//
 		}
 		else if(thisCmd.size() > ccStr.size())
 		{
-			if(thisCmd.subString(0,ccStr.size()) == ccStr) //   
+      if(thisCmd.substr(0,ccStr.size()) == ccStr) //
 			{												//      
 				commands_find.push_back( thisCmd );
 			}
@@ -528,7 +445,7 @@ void NrpConsole::TabComplete()											//
 	}
 }
 
-void NrpConsole::MoveCursor_( bool leftStep )
+void Console::moveCursor_( bool leftStep )
 {
 	if( leftStep )
 		cursorPos_ -= (cursorPos_ > 0 && currentCommand_.size() ) & 1;
@@ -536,15 +453,9 @@ void NrpConsole::MoveCursor_( bool leftStep )
 		cursorPos_ += (cursorPos_ < currentCommand_.size() + 1) & 1;
 }
 
-String NrpConsole::getTypeName() const
+int Console::initKey() const
 {
-    return L"CNrpConsole";
+    return '`';
 }
 
-int NrpConsole::InitKey() const
-{
-    return ConsoleConfig::Instance()[ INIT_KEY ];
 }
-
-NERPA_MODULE_END(gui)
-*/
