@@ -79,6 +79,7 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
+
   #endif
 
   #define glGenFramebuffers         glGenFramebuffersEXT
@@ -565,7 +566,7 @@ void GlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-#if defined(CAESARIA_PLATFORM_WIN) && defined(CAESARIA_USE_FRAMEBUFFER)
+#if defined(CAESARIA_PLATFORM_WIN) && defined(CAESARIA_USE_FRAMEBUFFER) && !defined(GL_GLEXT_PROTOTYPES)
   ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
   ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
   ASSIGNGLFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader)
