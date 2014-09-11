@@ -90,7 +90,6 @@ endif()
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
-add_definitions( -DGL_GLEXT_PROTOTYPES )
 add_definitions( -DCAESARIA_USE_SHADERS )
 endif(BUILD_GL_FRAMEBUFFER)
 
@@ -114,6 +113,9 @@ endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
+  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+  FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
+  target_link_libraries(${PROJECT_NAME} ${OpenGL_LIBRARY} )
 endif(APPLE)
 
 if(HAIKU)

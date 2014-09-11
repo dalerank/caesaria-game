@@ -37,6 +37,10 @@
 #include "core/saveadapter.hpp"
 #include "ttf/SDL_ttf.h"
 
+#ifndef CAESARIA_PLATFORM_WIN
+#define GL_GLEXT_PROTOTYPES
+#endif
+
 #ifdef CAESARIA_PLATFORM_ANDROID
   #define glOrtho glOrthof
   #undef CAESRAIA_USE_SHADERS
@@ -48,17 +52,7 @@
 #endif
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
-  #ifdef CAESARIA_PLATFORM_LINUX
-    #define glGenFramebuffers  glGenFramebuffersEXT
-    #define glGenTextures     glGenTexturesEXT
-    #define glGenRenderbuffers glGenRenderbuffersEXT
-    #define glBindFramebuffer glBindFramebufferEXT
-    #define glBindRenderbuffer glBindRenderbufferEXT
-    #define glRenderbufferStorage glRenderbufferStorageEXT
-    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-    #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
-    #define glFramebufferTexture2D glFramebufferTexture2DEXT
-  #elif defined(CAESARIA_PLATFORM_WIN)
+  #ifndef GL_GLEXT_PROTOTYPES
     #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
     PFNGLCREATESHADERPROC glCreateShader;
     PFNGLSHADERSOURCEPROC glShaderSource;
@@ -85,17 +79,17 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
-
-    #define glGenFramebuffers  glGenFramebuffersEXT
-    #define glGenTextures     glGenTexturesEXT
-    #define glGenRenderbuffers glGenRenderbuffersEXT
-    #define glBindFramebuffer glBindFramebufferEXT
-    #define glBindRenderbuffer glBindRenderbufferEXT
-    #define glRenderbufferStorage glRenderbufferStorageEXT
-    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-    #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
-    #define glFramebufferTexture2D glFramebufferTexture2DEXT
   #endif
+
+  #define glGenFramebuffers         glGenFramebuffersEXT
+  #define glGenTextures             glGenTexturesEXT
+  #define glGenRenderbuffers        glGenRenderbuffersEXT
+  #define glBindFramebuffer         glBindFramebufferEXT
+  #define glBindRenderbuffer        glBindRenderbufferEXT
+  #define glRenderbufferStorage     glRenderbufferStorageEXT
+  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+  #define glCheckFramebufferStatus  glCheckFramebufferStatusEXT
+  #define glFramebufferTexture2D    glFramebufferTexture2DEXT
 #else
   #undef CAESARIA_USE_SHADERS
 #endif
