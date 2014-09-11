@@ -63,6 +63,7 @@ public:
   Pictures border;
   Picture empireMap;
   world::CityPtr currentCity;
+  Label* tooltipLabel;
   Point offset;
   bool dragging;
   Point dragStartPosition;
@@ -70,6 +71,7 @@ public:
   PushButton* btnExit;
   PushButton* btnTrade;
   std::string ourCity;
+  Point lastPosition;
 
   Label* lbTitle;
   Widget* gbox;
@@ -277,7 +279,7 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
 
 world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
 {
-  world::ObjectList objs = empire->findObjects( offset + pos, 20 );
+  world::ObjectList objs = empire->findObjects( -offset + pos, 30 );
 
   return objs.empty() ? world::ObjectPtr() : objs.front();
 }
@@ -439,6 +441,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 {
   // use some clipping to remove the right and bottom areas
   setupUI( ":/gui/empirewnd.gui" );
+  _d->tooltipLabel = 0;
   _d->autopause.activate();
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
@@ -484,6 +487,11 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   Widget::draw( engine );
 }
 
+void EmpireMapWindow::beforeDraw(Engine& painter)
+{
+  Widget::beforeDraw( painter );
+}
+
 bool EmpireMapWindow::onEvent( const NEvent& event )
 {
   if( event.EventType == sEventMouse )
@@ -492,7 +500,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
     {
     case mouseLbtnPressed:
       _d->dragStartPosition = event.mouse.pos();
-      _d->dragging = true;//_d->flags.isFlag( draggable );
+      _d->dragging = true;
       bringToFront();
 
       _d->checkCityOnMap( _d->dragStartPosition - _d->offset );
@@ -508,32 +516,36 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
     break;
 
     case mouseMoved:
+    {
+      if ( !event.mouse.isLeftPressed() )
       {
-        //bool t = _d->dragging;
-
-        if ( !event.mouse.isLeftPressed() )
-        {
-          _d->dragging = false;
-        }
-
-        if( _d->dragging )
-        {
-          // gui window should not be dragged outside its parent
-          if( _d->offset.x() > 0
-              || _d->offset.x() + _d->empireMap.width() < (int)width()
-              || _d->offset.y() > 0
-              || _d->offset.y() + _d->empireMap.height() < (int)height()-120 )
-          {
-            break;
-          }
-
-          _d->offset += (event.mouse.pos() - _d->dragStartPosition);
-          _d->dragStartPosition = event.mouse.pos();
-
-          _d->offset.setX( math::clamp<int>( _d->offset.x(), -_d->empireMap.width() + width(), 0 ) );
-          _d->offset.setY( math::clamp<int>( _d->offset.y(), -_d->empireMap.height() + height() - 120, 0 ) );
-        }
+        _d->dragging = false;
       }
+
+      if( _d->lastPosition != event.mouse.pos() )
+      {
+        _d->lastPosition = event.mouse.pos();
+        _changePosition();
+      }
+
+      if( _d->dragging )
+      {
+        // gui window should not be dragged outside its parent
+        if( _d->offset.x() > 0
+            || _d->offset.x() + _d->empireMap.width() < (int)width()
+            || _d->offset.y() > 0
+            || _d->offset.y() + _d->empireMap.height() < (int)height()-120 )
+        {
+          break;
+        }
+
+        _d->offset += (event.mouse.pos() - _d->dragStartPosition);
+        _d->dragStartPosition = event.mouse.pos();
+
+        _d->offset.setX( math::clamp<int>( _d->offset.x(), -_d->empireMap.width() + width(), 0 ) );
+        _d->offset.setY( math::clamp<int>( _d->offset.y(), -_d->empireMap.height() + height() - 120, 0 ) );
+      }
+    }
     break;
     
     default:
@@ -546,13 +558,13 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-std::string EmpireMapWindow::tooltipText() const
+void EmpireMapWindow::_changePosition()
 {
   world::ObjectPtr obj = _d->findObject( const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() );
 
+  std::string text;
   if( obj.isValid() )
-  {
-    std::string text;
+  {    
     world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
     if( cCity.isValid() )
     {
@@ -568,12 +580,37 @@ std::string EmpireMapWindow::tooltipText() const
     else if( is_kind_of<world::Barbarian>( obj ) )
     {
       text = "##enemy_army_threating_a_city##";
-    }
-
-    return text;
+    }    
   }
 
-  return Widget::tooltipText();
+  if( _d->tooltipLabel )
+  {
+    _d->tooltipLabel->deleteLater();
+    _d->tooltipLabel = 0;
+  }
+
+  if( !text.empty() )
+  {
+    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), text, true, Label::bgSimpleWhite );
+    elm->setSubElement(true);
+    elm->setTextAlignment( align::upperLeft, align::upperLeft );
+    elm->setTextOffset( Point( 5, 5 ) );
+
+    Size tlpSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+    if( tlpSize.width() > width() * 0.75 )
+    {
+      tlpSize.setWidth( width() * 0.5 );
+      tlpSize.setHeight( elm->textHeight() * 2 + 10 );
+      elm->setWordwrap( true );
+    }
+
+    Rect rect( _d->lastPosition, tlpSize );
+
+    rect -= Point( tlpSize.width() + 20, -20 );
+    elm->setGeometry( rect );
+
+    _d->tooltipLabel = elm;
+  }
 }
 
 EmpireMapWindow* EmpireMapWindow::create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id )
