@@ -106,13 +106,9 @@ endif(WIN32)
 
 if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
-  if(APPLE)
-  #-framework OpenGL
-  target_link_libraries(${PROJECT_NAME} "OpenGL")
-  else()
-  target_link_libraries(${PROJECT_NAME} "GL")
+  if(NOT APPLE)
+    target_link_libraries(${PROJECT_NAME} "GL")
   endif()
-  # target_link_libraries(${PROJECT_NAME} "GLESv1_CM")
 endif(UNIX)
 
 if(APPLE)
