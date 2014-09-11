@@ -49,6 +49,7 @@ include_directories(
     src/psnames
     include
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${ZLIB_HOME}
 )
 
 add_library(${FREETYPELIB_NAME} STATIC ${CFF_SOURCES} ${freetype_SRC} ${TYPE1_SOURCES}

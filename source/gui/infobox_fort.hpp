@@ -13,26 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
-#define _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+#ifndef _CAESARIA_INFOBOX_FORT_H_INCLUDE_
+#define _CAESARIA_INFOBOX_FORT_H_INCLUDE_
 
-#include "event.hpp"
+#include "info_box.hpp"
 
-namespace events
+namespace gui
 {
 
-class WinMission : public GameEvent
+namespace infobox
+{
+
+class AboutFort : public Simple
 {
 public:
-  static GameEventPtr create();
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int) const;
+  AboutFort( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutFort();
 };
 
 }
 
-#endif //_CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_FORT_H_INCLUDE_

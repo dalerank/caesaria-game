@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
@@ -29,74 +29,33 @@ namespace city
 class Info : public Srvc
 {
 public:
-  class Parameters
+  typedef enum { population=0, funds, tax, taxpayes,
+                 monthWithFood, foodKoeff, godsMood,
+                 needWorkers, maxWorkers, workless,
+                 crimeLevel, colloseumCoverage, theaterCoverage,
+                 entertainment, lifeValue, education,
+                 payDiff, monthWtWar, cityWages,
+                 romeWages, peace, milthreat,
+                 houseNumber, slumNumber, shackNumber,
+                 sentiment, foodStock, foodMontlyConsumption,
+                 favour, prosperity,
+                 paramsCount } ParamName;
+
+  class Parameters : public std::vector<int>
   {
-  public:
+  public:    
     DateTime date;
-    int population;
-    int funds;
-    int tax;
-    int taxpayes;
-    int monthWithFood;    
-    int foodKoeff;
-    int godsMood;
-    int needWorkers;
-    int workless;
-    int colloseumCoverage;
-    int theaterCoverage;
-    int entertainment;
-    int lifeValue;
-    int education;
-    int payDiff;
-    int monthWithourWar;
-    int cityWages;
-    int romeWages;
-    int maxWorkers;
-    int crimeLevel;
-    int peace;    
-    int milthreat;
-    int houseNumber;
-    int slumNumber;
-    int shackNumber;
-    int sentiment;
-    int foodStock;
-    int foodMontlyConsumption;
-    int favour;
-    int prosperity;
 
-    Parameters()
-    {
-      population = 0;
-      funds = 0;
-      tax = 0;
-      taxpayes = 0;
-      monthWithFood = 0;
-      foodKoeff = 0;
-      godsMood = 0;
-      needWorkers = 0;
-      maxWorkers = 0;
-      workless = 0;
-      tax = 0;
-      crimeLevel = 0;
-      colloseumCoverage = 0;
-      theaterCoverage = 0;
-      entertainment = 0;
-      lifeValue = 0;
-      payDiff = 0;
-      education = 0;
-      cityWages = 0;
-      romeWages = 0;
-      houseNumber = 0;
-      slumNumber = 0;
-      shackNumber = 0;
-      foodStock = 0;
-      foodMontlyConsumption = 0;
-      favour = 0;
-      prosperity = 0;
-    }
+    Parameters();
 
-    VariantMap save() const;
-    void load( const VariantMap& stream );
+    VariantList save() const;
+    void load(const VariantList& stream );
+  };
+
+  struct MaxParameterValue
+  {
+    DateTime date;
+    int value;
   };
 
   struct ScribeMessage
@@ -116,6 +75,7 @@ public:
 
   typedef std::list<ScribeMessage> Messages;
   typedef std::vector< Info::Parameters > History;
+  typedef std::vector< Info::MaxParameterValue > MaxParameters;
 
   static SrvcPtr create( PlayerCityPtr city );
 
@@ -123,6 +83,7 @@ public:
   Parameters lastParams() const;
   Parameters params( int monthAgo ) const;
   Parameters yearParams( int year ) const;
+  const MaxParameters& maxParams() const;
 
   const History& history() const;
 

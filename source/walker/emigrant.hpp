@@ -22,7 +22,7 @@
 #include "core/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 
-/** This is an immigrant coming with his stuff */
+/** This is an emigrant coming with his stuff */
 class Emigrant : public Walker
 {
 public:
@@ -58,7 +58,7 @@ protected:
   const CitizenGroup& _getPeoples() const;
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
-  void _checkAvailabelHouses(HouseList &hlist);
+  void _checkHouses(HouseList &hlist);
 
 private:
   class Impl;

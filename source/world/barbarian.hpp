@@ -15,39 +15,42 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_EMPIREMAP_H_INCLUDED__
-#define __CAESARIA_EMPIREMAP_H_INCLUDED__
+#ifndef __CAESARIA_WORLD_BARBARIAN_H_INCLUDED__
+#define __CAESARIA_WORLD_BARBARIAN_H_INCLUDED__
 
-#include "core/smartptr.hpp"
-#include "core/scopedptr.hpp"
-#include "core/variant.hpp"
-#include "core/predefinitions.hpp"
-#include "movableobject.hpp"
+#include "army.hpp"
 
 namespace world
 {
 
-class EmpireMap
+class Barbarian : public Army
 {
 public:
-  typedef enum { unknown=0, sea=0x1, land=0x2, city=sea|land, any=0x4 } TerrainType;
+  static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1,-1) );
+  virtual std::string type() const;
 
-  EmpireMap();
-  ~EmpireMap();
+  virtual void timeStep( unsigned int time );
 
-  void initialize( const VariantMap& stream );
-  void setCity( Point pos );
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+  virtual void updateStrength( int value );
+  virtual int viewDistance() const;
 
-  Size getSize() const;
+protected:
+  virtual void _reachedWay();
+  virtual void _check4attack();
+  virtual void _goaway();
+  virtual void _noWay();
+  virtual void _attackAny();
+  virtual bool _attackObject( ObjectPtr obj );
 
-  TerrainType at(const TilePos& ij) const;
+  Barbarian( EmpirePtr empire );
 
-  Route findRoute(Point start, Point stop, int flags ) const;
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 }
 
-#endif //__CAESARIA_EMPIREMAP_H_INCLUDED__
+#endif //__CAESARIA_WORLD_BARBARIAN_H_INCLUDED__

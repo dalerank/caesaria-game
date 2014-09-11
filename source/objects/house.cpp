@@ -113,6 +113,7 @@ House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl
     Service::Type service = Service::Type(i);
     _d->services[service] = Service();
   }
+
   _d->services[ Service::recruter ].setMax( 0 );
   _d->services[ Service::crime ] = 0;
 
@@ -920,9 +921,18 @@ double House::state( ParameterType param) const
 
 void House::_update( bool needChangeTexture )
 {
+  const bool emptyHouse = ( HouseLevel::vacantLot == _d->hid );
+
   _d->hid = ( _d->houseLevel == HouseLevel::hovel && _d->habitants.count() == 0 )
                                              ? HouseLevel::vacantLot
                                              : (HouseLevel::ID)_d->houseLevel;
+
+  if( emptyHouse && _d->hid != HouseLevel::vacantLot )
+  {
+    city::Helper helper( _city() );
+    helper.updateDesirability( this, city::Helper::onDesirability );
+  }
+
   Picture pic = HouseSpecHelper::instance().getPicture( _d->hid, size().width() );
   if( needChangeTexture )
   {
@@ -943,6 +953,7 @@ int House::roadAccessDistance() const {  return 2; }
 void House::addHabitants( CitizenGroup& habitants )
 {
   bool needUpdate = _d->habitants.empty();
+
   int peoplesCount = math::max(_d->maxHabitants - _d->habitants.count(), 0u);
   CitizenGroup newState = _d->habitants;
   newState += habitants.retrieve( peoplesCount );
@@ -1018,17 +1029,18 @@ void House::save( VariantMap& stream ) const
 {
   Building::save( stream );
 
-  stream[ "houseLevel" ] = _d->houseLevel;
   stream[ "desirability" ] = _d->desirability.base;
   stream[ "currentHubitants" ] = _d->habitants.save();
-  stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "goodstore" ] = _d->goodStore.save();
   stream[ "healthLevel" ] = state( (Construction::Param)House::health );
+  VARIANT_SAVE_ANY_D(stream, _d, maxHabitants )
+  VARIANT_SAVE_ANY_D(stream, _d, houseLevel )
   VARIANT_SAVE_ANY_D(stream, _d, changeCondition )
   VARIANT_SAVE_ANY_D(stream, _d, taxesThisYear)
   VARIANT_SAVE_ANY_D(stream, _d, poverity)
   VARIANT_SAVE_ANY_D(stream, _d, money)
   VARIANT_SAVE_ANY_D(stream, _d, tax)
+  VARIANT_SAVE_ANY_D(stream, _d, hid)
 
   VariantList vl_services;
   foreach( mapItem, _d->services )
@@ -1044,18 +1056,19 @@ void House::load( const VariantMap& stream )
 {
   Building::load( stream );
 
-  _d->houseLevel = (int)stream.get( "houseLevel", 0 );
+  VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
   _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
   _d->desirability.step = _d->desirability.base < 0 ? 1 : -1;
 
   _d->habitants.load( stream.get( "currentHubitants" ).toList() );
-  _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
+  VARIANT_LOAD_ANY_D(_d,maxHabitants, stream )
   VARIANT_LOAD_ANY_D(_d,changeCondition, stream )
   VARIANT_LOAD_ANY_D(_d,poverity, stream)
   VARIANT_LOAD_ANY_D(_d,money, stream)
-  VARIANT_LOAD_ANY_D(_d,tax, stream)
+  VARIANT_LOAD_ANY_D(_d,tax, stream )
+  VARIANT_LOAD_ANY_D(_d,hid, stream )
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
@@ -1073,8 +1086,11 @@ void House::load( const VariantMap& stream )
   }
 
   Building::build( _city(), pos() );
-  bool needUpdateTexture = !picture().isValid();
-  _update( needUpdateTexture );
+
+  if( !picture().isValid() )
+  {
+    _update( true );
+  }
 }
 
 void House::_disaster()
@@ -1196,7 +1212,6 @@ float House::taxesThisYear() const { return _d->taxesThisYear; }
 void House::appendMoney(float money) {  _d->money += money; }
 DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::evolveInfo() const{  return _d->evolveInfo;}
-Desirability House::desirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return size().width() == 1; }
 bool House::isFlat() const { return _d->hid == HouseLevel::vacantLot; }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
@@ -1207,6 +1222,17 @@ float House::getServiceValue( Service::Type service){  return _d->services[servi
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
 unsigned int House::maxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
+
+Desirability House::desirability() const
+{
+  Desirability ret = _d->desirability;
+  if( _d->habitants.empty() )
+  {
+    ret.base = 0;
+    ret.range = 0;
+  }
+  return ret;
+}
 
 std::string House::levelName() const
 {

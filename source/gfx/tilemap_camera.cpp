@@ -54,6 +54,7 @@ public:
   Size viewSize;      // width of the view(in tiles)  nb_tilesX = 1+2*_view_width
                       // height of the view(in tiles) nb_tilesY = 1+2*_view_height
   TilesArray tiles;   // cached list of visible tiles
+  TilesArray flatTiles;
 
   MovableOrders mayMove( PointF point );
   void resetDrawn();
@@ -63,6 +64,8 @@ public:
     return Point( screenSize.width() / 2 - 30 * (center.x() + 1) + 1,
                   screenSize.height()/ 2 + 15 * (center.y() - tilemap->size() + 1) - 30 );
   }
+
+  void cacheFlatTiles();
 
 public oc3_signals:
   Signal1<Point> onPositionChangedSignal;
@@ -233,9 +236,16 @@ const TilesArray& TilemapCamera::tiles() const
         }
       }
     }
+
+    _d->cacheFlatTiles();
   }
 
   return _d->tiles;
+}
+
+const TilesArray& TilemapCamera::flatTiles() const
+{
+  return _d->flatTiles;
 }
 
 MovableOrders TilemapCamera::Impl::mayMove(PointF point)
@@ -256,7 +266,30 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 
 void TilemapCamera::Impl::resetDrawn()
 {
-  foreach( tile, tiles ) { (*tile)->resetWasDrawn(); }
+  foreach( i, tiles ) { (*i)->resetWasDrawn(); }
+}
+
+void TilemapCamera::Impl::cacheFlatTiles()
+{
+  Tile* tile;
+  unsigned int reserve = flatTiles.size();
+  flatTiles.clear();
+  flatTiles.reserve( reserve );
+
+  resetDrawn();
+  foreach( it, tiles )
+  {
+    int z = (*it)->epos().z();
+    tile = (*it)->masterTile();
+    if( !tile )
+      tile = *it;
+
+    if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
+    {
+      tile->setWasDrawn();
+      flatTiles.push_back( tile );
+    }
+  }
 }
 
 Point TilemapCamera::offset() const{  return _d->offset;}

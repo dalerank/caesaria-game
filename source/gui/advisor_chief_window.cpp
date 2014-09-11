@@ -41,6 +41,9 @@
 #include "city/cityservice_health.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
+#include "world/barbarian.hpp"
+#include "world/romechastenerarmy.hpp"
+#include "world/empire.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -266,13 +269,13 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
       city::Info::Parameters lastMonth = info->lastParams();
       city::Info::Parameters prevMonth = info->params( 1 );
 
-      if( lastMonth.foodStock < prevMonth.foodStock )
+      if( lastMonth[ city::Info::foodStock ] < prevMonth[ city::Info::foodStock ] )
       {
         text = "##no_food_stored_last_month##";
       }
       else
       {
-        int monthWithFood = lastMonth.monthWithFood;
+        int monthWithFood = lastMonth[ city::Info::monthWithFood ];
         switch( monthWithFood )
         {
           case 0: text = "##have_no_food_on_next_month##"; break;
@@ -296,7 +299,7 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
   city::InfoPtr info;
   info << city->findService( city::Info::defaultName() );
 
-  int fk = info->lastParams().foodKoeff;
+  int fk = info->lastParams()[ city::Info::foodKoeff ];
 
   if( fk < -4 )
   {
@@ -308,7 +311,7 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
   }
   else
   {
-    switch( info->lastParams().foodKoeff )
+    switch( info->lastParams()[ city::Info::foodKoeff ] )
     {
     case -3: text = "##we_eat_more_thie_produce##"; break;
     case -2: text = "##we_eat_some_then_produce##"; break;
@@ -324,17 +327,28 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
 
 void AdvisorChiefWindow::Impl::drawMilitary()
 {
-  std::string text;
+  StringArray reasons;
   city::MilitaryPtr mil;
   mil << city->findService( city::Military::defaultName() );
 
   if( mil.isValid() )
   {
     city::Military::Notification n = mil->priorityNotification();
-    text = n.message;
+    reasons << n.message;
   }
 
-  text = text.empty() ? "##no_warning_for_us##" : text;
+  world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
+  foreach( i, objs )
+  {
+    if( is_kind_of<world::Barbarian>( *i ) ||
+        is_kind_of<world::RomeChastenerArmy>( *i ) )
+    {
+      reasons << "##getting_reports_about_enemies##";
+      break;
+    }
+  }
+
+  std::string text = reasons.empty() ? "##no_warning_for_us##" : reasons.random();
   drawReportRow( atMilitary, _(text) );
 }
 

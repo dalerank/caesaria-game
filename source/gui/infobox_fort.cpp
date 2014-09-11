@@ -15,15 +15,11 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "infobox_ruins.hpp"
-#include "good/goodhelper.hpp"
-#include "image.hpp"
-#include "core/stringhelper.hpp"
-#include "label.hpp"
+#include "infobox_fort.hpp"
+#include "objects/fort.hpp"
+#include "objects/extension.hpp"
 #include "core/gettext.hpp"
-#include "objects/constants.hpp"
-#include "game/settings.hpp"
-#include "objects/ruins.hpp"
+#include "label.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -34,18 +30,24 @@ namespace gui
 namespace infobox
 {
 
-AboutRuins::AboutRuins( Widget* parent, const Tile& tile )
+AboutFort::AboutFort( Widget* parent, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )
 {
-  RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
-  setTitle( MetaDataHolder::findPrettyName( ruin->type() ) );
-  std::string text = _("##ruins_0000_text##");
+  FortPtr fort = ptr_cast<Fort>( tile.overlay() );
+  setTitle( MetaDataHolder::findPrettyName( fort->type() ) );
 
-  if( ruin.isValid() )
+  std::string text = _("##fort_info##");
+
+  if( fort.isValid() )
   {
-    if( !ruin->info().empty() )
+    const ConstructionExtensionList& exts = fort->extensions();
+    foreach( i, exts )
     {
-      text = _( ruin->info().c_str() );
+      if( is_kind_of<FortCurseByMars>( *i ) )
+      {
+        text = "##fort_has_been_cursed_by_mars##";
+        break;
+      }
     }
   }
 
@@ -54,7 +56,7 @@ AboutRuins::AboutRuins( Widget* parent, const Tile& tile )
   lb->setWordwrap( true );
 }
 
-AboutRuins::~AboutRuins()
+AboutFort::~AboutFort()
 {
 }
 

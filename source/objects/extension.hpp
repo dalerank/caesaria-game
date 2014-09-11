@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__
 #define __CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__
@@ -24,22 +24,39 @@
 class ConstructionExtension : public ReferenceCounted
 {
 public:
-  virtual void run( gfx::TileOverlayPtr parent, unsigned int time ) = 0;
+  virtual void run( ConstructionPtr parent, unsigned int time ) = 0;
   virtual bool isDeleted() const = 0;
 };
 
 class FactoryProgressUpdater : public ConstructionExtension
 {
 public:
-  static ConstructionExtensionPtr assignTo( FactoryPtr factory, float value, int time );
+  static ConstructionExtensionPtr assignTo(FactoryPtr factory, float value, int week2finish );
 
-  virtual void run( gfx::TileOverlayPtr parent, unsigned int time );
+  virtual void run( ConstructionPtr parent, unsigned int time );
   virtual bool isDeleted() const;
 private:
   FactoryProgressUpdater();
 
   float _value;
-  int _time;
+  bool _isDeleted;
+  DateTime _finishDate;
 };
+
+class FortCurseByMars : public ConstructionExtension
+{
+  static ConstructionExtensionPtr assignTo( FortPtr fort, unsigned int monthsCurse );
+
+  virtual void run( ConstructionPtr parent, unsigned int time );
+  virtual bool isDeleted() const;
+
+private:
+  FortCurseByMars();
+
+  bool _isDeleted;
+  DateTime _finishDate;
+};
+
+
 
 #endif //__CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__

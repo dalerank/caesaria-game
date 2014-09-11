@@ -22,7 +22,6 @@
 #include "core/exception.hpp"
 #include "core/event.hpp"
 #include "core/eventconverter.hpp"
-#include "core/time.hpp"
 #include "core/timer.hpp"
 
 namespace scene
@@ -54,7 +53,7 @@ void Base::stop(){ _isStopped = true;}
 
 void Base::update(gfx::Engine& engine )
 {
-  static unsigned int lastTimeUpdate = DateTime::elapsedTime();
+  static unsigned int lastTimeUpdate = DebugTimer::ticks();
 
   drawFrame( engine );
   afterFrame();
@@ -65,13 +64,13 @@ void Base::update(gfx::Engine& engine )
     handleEvent( nEvent );
   }
 
-  _delayTicks = DateTime::elapsedTime() - lastTimeUpdate;
+  _delayTicks = DebugTimer::ticks() - lastTimeUpdate;
   if( _delayTicks < DELAY_33_FPS )
   {
     engine.delay( std::max<int>( DELAY_33_FPS - _delayTicks, 0 ) );
   }
 
-  lastTimeUpdate = DateTime::elapsedTime();
+  lastTimeUpdate = DebugTimer::ticks();
 }
 
 bool Base::isStopped() const{  return _isStopped;}

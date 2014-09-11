@@ -140,6 +140,7 @@ public:
       }
     }
   }
+
 };
 
 void Logger::warning( const char* fmt, ... )
@@ -224,6 +225,7 @@ Logger::~Logger() {}
 
 Logger::Logger() : _d( new Impl )
 {
+  CrashHandler_initCrashHandler();
 }
 
 void Logger::registerWriter(std::string name, LogWriterPtr writer)
@@ -234,3 +236,29 @@ void Logger::registerWriter(std::string name, LogWriterPtr writer)
   }
 }
 
+// Crash handler
+
+#include "stacktrace.hpp"
+#include <signal.h>
+
+void CrashHandler_initCrashHandler()
+{
+  signal( SIGABRT, CrashHandler_handleCrash);
+  signal( SIGSEGV, CrashHandler_handleCrash);
+  signal( SIGILL , CrashHandler_handleCrash);
+  signal( SIGFPE , CrashHandler_handleCrash);
+}
+
+void CrashHandler_handleCrash(int signum)
+{
+  switch(signum)
+  {
+    case SIGABRT: Logger::warning("SIGABRT: abort() called somewhere in the program."); break;
+    case SIGSEGV: Logger::warning("SIGSEGV: Illegal memory access."); break;
+    case SIGILL: Logger::warning("SIGILL: Executing a malformed instruction. (possibly invalid pointer)"); break;
+    case SIGFPE: Logger::warning("SIGFPE: Illegal floating point instruction (possibly division by zero)."); break;
+  }
+
+  Stacktrace::print();
+  exit(signum);
+}

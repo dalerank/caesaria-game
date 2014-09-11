@@ -61,6 +61,7 @@ Helper::Helper()
     __REG_LAYER(tax)
     __REG_LAYER(build)
     __REG_LAYER(destroyd)
+    __REG_LAYER(market)
     __REG_LAYER(all)
 #undef __REG_LAYER
 
