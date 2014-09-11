@@ -117,6 +117,9 @@ endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
+  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+  FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
+  target_link_libraries(${PROJECT_NAME} ${OpenGL_LIBRARY} )
 endif(APPLE)
 
 if(HAIKU)
