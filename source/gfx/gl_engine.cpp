@@ -80,7 +80,11 @@
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
+#else
+  #undef CAESARIA_USE_SHADERS
+#endif
 
+#ifndef CAESARIA_PLATFORM_MACOS
   #define glGenFramebuffers  glGenFramebuffersEXT
   #define glGenTextures     glGenTexturesEXT
   #define glGenRenderbuffers glGenRenderbuffersEXT
@@ -90,8 +94,6 @@
   #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
   #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
   #define glFramebufferTexture2D glFramebufferTexture2DEXT
-#else
-  #undef CAESARIA_USE_SHADERS
 #endif
 
 #include "core/font.hpp"
