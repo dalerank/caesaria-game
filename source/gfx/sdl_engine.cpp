@@ -181,8 +181,8 @@ void SdlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-  int render_version = math::clamp( GameSettings::get( "render_version", -1 ).toInt(), -1, SDL_GetNumRenderDrivers());
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version, SDL_RENDERER_ACCELERATED );
+  int render_version = math::clamp( GameSettings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version-1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
