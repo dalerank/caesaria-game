@@ -22,6 +22,7 @@
 #include "walker/action.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
+#include "vfs/path.hpp"
 
 // loads pictures from files
 namespace gfx
@@ -32,8 +33,12 @@ class PictureBank
 public:
   static PictureBank& instance();
 
+  void reset();
+
   // set the current picture
   void setPicture(const std::string &name, const Picture& picture);
+
+  void addAtlas( vfs::Path name );
 
   // show resource
   Picture& getPicture(const std::string &name);
