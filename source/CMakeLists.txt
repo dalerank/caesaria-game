@@ -90,7 +90,6 @@ endif()
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
-add_definitions( -DGL_GLEXT_PROTOTYPES )
 add_definitions( -DCAESARIA_USE_SHADERS )
 endif(BUILD_GL_FRAMEBUFFER)
 
