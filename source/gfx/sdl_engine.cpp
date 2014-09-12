@@ -112,7 +112,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -120,7 +120,7 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -174,7 +174,7 @@ void SdlEngine::init()
 
   if (window == NULL)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
     THROW("Failed to create window");
   }
 
@@ -186,7 +186,7 @@ void SdlEngine::init()
 
   if (renderer == NULL)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create renderer: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
     THROW("Failed to create renderer");
   }
 
