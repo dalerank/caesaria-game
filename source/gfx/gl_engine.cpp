@@ -81,15 +81,17 @@
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
 
-  #define glGenFramebuffers  glGenFramebuffersEXT
-  #define glGenTextures     glGenTexturesEXT
-  #define glGenRenderbuffers glGenRenderbuffersEXT
-  #define glBindFramebuffer glBindFramebufferEXT
-  #define glBindRenderbuffer glBindRenderbufferEXT
-  #define glRenderbufferStorage glRenderbufferStorageEXT
-  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-  #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
-  #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #ifdef CAESARIA_PLATFORM_LINUX
+    #define glGenFramebuffers  glGenFramebuffersEXT
+    #define glGenTextures     glGenTexturesEXT
+    #define glGenRenderbuffers glGenRenderbuffersEXT
+    #define glBindFramebuffer glBindFramebufferEXT
+    #define glBindRenderbuffer glBindRenderbufferEXT
+    #define glRenderbufferStorage glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #endif
 #else
   #undef CAESARIA_USE_SHADERS
 #endif
