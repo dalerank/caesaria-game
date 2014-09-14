@@ -84,7 +84,7 @@
   #undef CAESARIA_USE_SHADERS
 #endif
 
-#ifndef CAESARIA_PLATFORM_MACOS
+#ifndef CAESARIA_PLATFORM_MACOSX
   #define glGenFramebuffers  glGenFramebuffersEXT
   #define glGenTextures     glGenTexturesEXT
   #define glGenRenderbuffers glGenRenderbuffersEXT
