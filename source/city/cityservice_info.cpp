@@ -166,7 +166,7 @@ void Info::update( const unsigned int time )
 
 Info::Parameters Info::lastParams() const {  return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
 
-Info::Parameters Info::params(int monthAgo) const
+Info::Parameters Info::params(unsigned int monthAgo) const
 {
   if( _d->lastYearHistory.empty() )
     return Parameters();
@@ -177,7 +177,7 @@ Info::Parameters Info::params(int monthAgo) const
   return _d->lastYearHistory[ monthAgo ];
 }
 
-Info::Parameters Info::yearParams(int year) const
+Info::Parameters Info::yearParams(unsigned int year) const
 {
   if( _d->allHistory.empty() )
     return Parameters();
