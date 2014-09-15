@@ -87,19 +87,19 @@ public:
   unsigned int timeX10; // time (ticks) multiplied by 10;
   unsigned int timeMultiplier; // 100 = 1x speed
 
-  void initLocale(std::string localePath);
+  void initLocale( std::string localePath );
   void initVideo();
   void initSound();
   void initPictures();
   void initGuiEnvironment();
   void initArchiveLoaders();
-  void initPantheon(vfs::Path filename );
-  void initFontCollection(vfs::Path resourcePath);
+  void initPantheon( vfs::Path filename );
+  void initFontCollection( vfs::Path resourcePath );
   void mountArchives( ResourceLoader& loader );
   void createSaveDir();
 };
 
-void Game::Impl::initLocale( std::string localePath)
+void Game::Impl::initLocale( std::string localePath )
 {
   //init translator
   Logger::warning( "Game: initialize localization folder" );
@@ -342,22 +342,22 @@ void Game::setScreenGame()
     {
       _d->timeX10 += _d->timeMultiplier / 10;
     }
-    else if (_d->manualTicksCounterX10 > 0)
+    else if ( _d->manualTicksCounterX10 > 0 )
     {
-      unsigned int add = math::min(_d->timeMultiplier / 10, _d->manualTicksCounterX10);
+      unsigned int add = math::min( _d->timeMultiplier / 10, _d->manualTicksCounterX10 );
       _d->timeX10 += add;
       _d->manualTicksCounterX10 -= add;
     }
-    while (_d->timeX10 > _d->saveTime * 10 + 1)
+    while ( _d->timeX10 > _d->saveTime * 10 + 1 )
     {
       _d->saveTime++;
 
-      cdate.timeStep(_d->saveTime);
-      _d->empire->timeStep(_d->saveTime);
+      cdate.timeStep( _d->saveTime );
+      _d->empire->timeStep( _d->saveTime );
 
-      screen.animate(_d->saveTime);
+      screen.animate( _d->saveTime );
     }
-    events::Dispatcher::instance().update( *this, _d->saveTime);
+    events::Dispatcher::instance().update( *this, _d->saveTime );
   }
 
   _d->nextFilename = screen.nextFilename();
@@ -458,7 +458,7 @@ void Game::load(std::string filename)
     }
   }
 
-  Logger::warning( "Game: reseting varialbes" );
+  Logger::warning( "Game: reseting variables" );
   reset();
 
   Logger::warning( "Game: init empire start options" );
@@ -577,10 +577,10 @@ void Game::exec()
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
 
-  while(_d->nextScreen != SCREEN_QUIT )
+  while( _d->nextScreen != SCREEN_QUIT )
   {
     Logger::warning( "Game: exec switch to screen %d", _d->nextScreen );
-    switch(_d->nextScreen)
+    switch( _d->nextScreen )
     {
       case SCREEN_MENU:        setScreenMenu();     break;
       case SCREEN_GAME:        setScreenGame();     break;
