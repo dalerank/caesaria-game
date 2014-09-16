@@ -81,8 +81,8 @@ public:
 
   void update( const unsigned int time );
   Parameters lastParams() const;
-  Parameters params( int monthAgo ) const;
-  Parameters yearParams( int year ) const;
+  Parameters params( unsigned int monthAgo ) const;
+  Parameters yearParams( unsigned int year ) const;
   const MaxParameters& maxParams() const;
 
   const History& history() const;
