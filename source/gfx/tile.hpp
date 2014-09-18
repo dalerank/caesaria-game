@@ -68,7 +68,7 @@ public:
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
-  void changeDirection(constants::Direction newDirection);
+  void changeDirection( Tile* masterTile, constants::Direction newDirection);
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 

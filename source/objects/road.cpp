@@ -30,6 +30,7 @@ using namespace gfx;
 
 namespace {
 static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
+typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 0x8 } RoadDirection;
 }
 
 Road::Road()
@@ -81,7 +82,6 @@ bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
 }
 
-
 void Road::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::tlRoad, true );
@@ -89,25 +89,19 @@ void Road::initTerrain(Tile& terrain)
 
 const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::TilesArray& tmp ) const
 {
-  int i = p.i();
-  int j = p.j();
-
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   if (!tmp.empty())
   {
     foreach( it, tmp )
     {
-      int i = (*it)->i();
-      int j = (*it)->j();
+      const TilePos& epos = (*it)->epos();
 
-      if( (*it)->getFlag( Tile::tlRoad ) ||
-          is_kind_of<Road>( (*it)->overlay() ) )
+      if( (*it)->getFlag( Tile::tlRoad ) || is_kind_of<Road>( (*it)->overlay() ) )
       {
-
-        if( i == p.i() && j == (p.j() + 1)) directionFlags |= 0x1; // road to the north
-        else if (i == p.i() && j == (p.j() - 1)) directionFlags |= 0x4; // road to the south
-        else if (j == p.j() && i == (p.i() + 1)) directionFlags |= 0x2; // road to the east
-        else if (j == p.j() && i == (p.i() - 1)) directionFlags |= 0x8; // road to the west
+        if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
+        else if ( epos == p.southnb() ) directionFlags |= road2south; // road to the south
+        else if ( epos == p.eastnb() ) directionFlags |= road2east; // road to the east
+        else if ( epos == p.westnb() ) directionFlags |= road2west; // road to the west
       }
     }
   }
@@ -119,23 +113,23 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
   foreach( it, roads )
   {
     Tile* tile = *it;
-    if( tile->getFlag( Tile::tlRoad ) ||
-        is_kind_of<Road>( tile->overlay() ) )
+    const TilePos& epos = tile->epos();
+    if( tile->getFlag( Tile::tlRoad ) || is_kind_of<Road>( tile->overlay() ) )
     {
-      if (tile->j() > j )      { directionFlags |= 0x1; } // road to the north
-      else if (tile->j() < j ) { directionFlags |= 0x4; } // road to the south
-      else if (tile->i() > i ) { directionFlags |= 0x2; } // road to the east
-      else if (tile->i() < i ) { directionFlags |= 0x8; } // road to the west
+      if (epos.j() > p.j())      { directionFlags |= road2north; } // road to the north
+      else if (epos.j() < p.j()) { directionFlags |= road2south; } // road to the south
+      else if (epos.i() > p.i()) { directionFlags |= road2east; } // road to the east
+      else if (epos.i() < p.i()) { directionFlags |= road2west; } // road to the west
     }
   }
 
   if( city.isValid() )
   {
     int mapBorder = city->tilemap().size()-1;
-    if( p.i() == 0 ) { directionFlags |= 0x2; }
-    if( p.i() == mapBorder ) { directionFlags |= 0x8; }
-    if( p.j() == 0 ) { directionFlags |= 0x4; }
-    if( p.j() == mapBorder ) { directionFlags |= 0x1; }
+    if( p.i() == 0 ) { directionFlags |= road2east; }
+    if( p.i() == mapBorder ) { directionFlags |= road2west; }
+    if( p.j() == 0 ) { directionFlags |= road2south; }
+    if( p.j() == mapBorder ) { directionFlags |= road2north; }
   }
 
   int index=0;
@@ -192,7 +186,7 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
 
 bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
-void Road::updatePicture(){  setPicture( picture( _city(), _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() ) );}
+void Road::updatePicture(){  setPicture( picture( _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() ) );}
 bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
@@ -225,6 +219,12 @@ void Road::appendPaved( int value )
 void Road::computeAccessRoads()
 {
   Construction::computeAccessRoads();
+  updatePicture();
+}
+
+void Road::changeDirection(Tile *masterTile, Direction direction)
+{
+  Construction::changeDirection( masterTile, direction );
   updatePicture();
 }
 

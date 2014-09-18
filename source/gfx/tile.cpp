@@ -102,10 +102,10 @@ void Tile::setEPos(const TilePos& epos)
   _mappos = Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) - _height * y_tileBase );
 }
 
-void Tile::changeDirection(constants::Direction newDirection)
+void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
 {
   if( _overlay.isValid() )
-    _overlay->changeDirection(newDirection);
+    _overlay->changeDirection( masterTile, newDirection);
 }
 
 

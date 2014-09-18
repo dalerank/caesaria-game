@@ -202,10 +202,10 @@ void Level::initialize()
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
-  CONNECT( _d->topMenu, onLoad(), this, Level::_resolveShowLoadGameWnd );
-  CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
-  CONNECT( _d->topMenu, onRestart(), this, Level::_resolveRestart );
+  CONNECT( _d->topMenu, onExit(), this, Level::_requestExitGame );
+  CONNECT( _d->topMenu, onLoad(), this, Level::_showLoadDialog );
+  CONNECT( _d->topMenu, onEnd(), this, Level::_exitToMainMenu );
+  CONNECT( _d->topMenu, onRestart(), this, Level::_restartMission );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
@@ -461,11 +461,11 @@ void Level::_showIngameMenu()
   PushButton* btnExit = findChildA<PushButton*>( "btnExit", true, menu );
 
   CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
-  CONNECT( btnExit, onClicked(), this, Level::_resolveExitGame );
-  CONNECT( btnSave, onClicked(), this, Level::_resolveShowLoadGameWnd );
-  CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
-  CONNECT( btnRestart, onClicked(), this, Level::_resolveRestart );
-  CONNECT( btnMainMenu, onClicked(), this, Level::_resolveEndGame );
+  CONNECT( btnExit, onClicked(), this, Level::_requestExitGame );
+  CONNECT( btnLoad, onClicked(), this, Level::_showLoadDialog );
+  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnRestart, onClicked(), this, Level::_restartMission );
+  CONNECT( btnMainMenu, onClicked(), this, Level::_exitToMainMenu );
 }
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
@@ -540,7 +540,7 @@ void Level::handleEvent( NEvent& event )
 
   if (event.EventType == sEventQuit)
   {
-    _resolveExitGame();
+    _requestExitGame();
     return;
   }
 
@@ -803,7 +803,7 @@ void Level::Impl::checkFailedMission( Level* lvl )
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
 
-      CONNECT( btn, onClicked(), lvl, Level::_resolveRestart );
+      CONNECT( btn, onClicked(), lvl, Level::_restartMission );
     }
   }
 }
@@ -840,12 +840,12 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
-void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
+void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
+void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 
-void Level::_resolveExitGame()
+void Level::_requestExitGame()
 {
   DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
@@ -870,7 +870,7 @@ void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
   e->dispatch();
 }
 
-void Level::_resolveShowLoadGameWnd()
+void Level::_showLoadDialog()
 {
   gui::Widget* parent = _d->game->gui()->rootWidget();
 

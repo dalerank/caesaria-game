@@ -181,8 +181,7 @@ unsigned int* Picture::lock()
       return pixels;
     }
   }
-
-  if( _d->surface )
+  else if( _d->surface )
   {
     if( SDL_MUSTLOCK(_d->surface) )
     {
@@ -205,8 +204,7 @@ void Picture::unlock()
       SDL_UnlockTexture(_d->texture);
     }
   }
-
-  if( _d->surface )
+  else if( _d->surface )
   {
     if( SDL_MUSTLOCK(_d->surface) )
     {
