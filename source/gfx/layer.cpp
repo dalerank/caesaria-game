@@ -174,8 +174,8 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.keyboard.key )
     {
-    case KEY_UP: case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN: case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
+    case KEY_UP:    case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
     case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
     case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
