@@ -210,7 +210,11 @@ void StartMenu::Impl::resolveCredits()
   gui::Widget* parent = game->gui()->rootWidget();
 
   Size size = engine->screenSize();
-  std::string strs[] = { _("##developers##"),
+  std::string strs[] = { _("##original_game##"),
+                         "Caesar III (c)",
+                         "Thank you, Impressions Games, for amazing game",
+                         " ",
+                         _("##developers##"),
                          " ",
                          "dalerank (dalerankn8@gmail.com)",
                          "gathanase (gathanase@gmail.com) render, game mechanics ",
@@ -243,14 +247,21 @@ void StartMenu::Impl::resolveCredits()
                          "aneurysm (4pda.ru)",
                          " ",
                          _("##localization##"),
-                         "",
-                         "Alexander Klimenko (?)"
-                         "",
+                         " ",
+                         "Alexander Klimenko (?)",
+                         " ",
                          _("##thanks_to##"),
                          " ",
-                         "doc (doc@nnm.me)",
-                         "Juan Font Alonso ",
-                         "Mephistopheles",
+                         "doc (doc@nnm.me),vk.com/caesaria-game",
+                         "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
+                         "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
+                         "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
+                         "deniskravtsov, Vhall, Dmitry Vorobiev, yevg.mord",
+                         "mmagir,Yury Vidineev, Pavel Aleynikov, brickbtv",
+                         "dovg1, KONSTANTIN KITMANOV, Serge Savostin, Memfis",
+                         "Zatolokinandrey, yuri_abzyanov, dmitrii.dukhonchenko, twilight.temple",
+                         "holubmarek,butjer1010, Agmenor Ultime, m0nochr0mex",
+                         "rad.n,jsimek.cz, saintech,phdarcy, Casey Knauss, meikit2000",
                          "" };
 
   gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
