@@ -73,6 +73,7 @@ public:
   void resize( const int s );
   void set( int i, int j, Tile* v );
   void saveMasterTiles( MasterTiles& mtiles );
+  void checkCoastAfterTurn();
 };
 
 Tilemap::Tilemap() : _d( new Impl )
@@ -156,7 +157,7 @@ TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
     case FourNeighbors:
       return getRectangle(pos - offset, pos + offset, !checkCorners);
   }
-  //_CAESARIA_DEBUG_BREAK_IF("Unexpected type")
+
   Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
   return TilesArray();
 }
@@ -172,7 +173,7 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   start = TilePos( mini, minj );
   stop = TilePos( maxi, maxj );
 
-  size_t expected = (2 * (maxi - mini) + 2 * (maxj - minj) + corners) ? 4 : 0;
+  size_t expected = 2 * ((maxi - mini) + (maxj - minj)) + corners;
   res.reserve(expected);
 
   int delta_corners = 0;
@@ -329,8 +330,7 @@ void Tilemap::load( const VariantMap& stream )
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
-      std::string picName = TileHelper::convId2PicName( imgId );
-      Picture& pic = Picture::load( picName );
+      Picture& pic = TileHelper::pictureFromId( imgId );
 
       tile->setOriginalImgId( imgId );
 
@@ -406,6 +406,8 @@ void Tilemap::turnRight()
     mTile->setPicture( ti.pic );
     ti.tile->changeDirection( mTile, _d->direction );
   }
+
+  _d->checkCoastAfterTurn();
 }
 
 void Tilemap::turnLeft()
@@ -459,6 +461,8 @@ void Tilemap::turnLeft()
     mTile->setPicture( ti.pic );
     ti.tile->changeDirection( mTile, _d->direction );
   }
+
+  _d->checkCoastAfterTurn();
 }
 
 Direction Tilemap::direction() const { return _d->direction; }
@@ -550,6 +554,19 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
           }
         }
       }
+    }
+    }
+}
+
+void Tilemap::Impl::checkCoastAfterTurn()
+{
+  for( int i=0; i < size; i++ )
+  {
+    for( int j=0; j < size; j++ )
+    {
+      Tile* tmp = ate( i, j );
+      if( tmp->getFlag( Tile::tlWater ) )
+        tmp->changeDirection( 0, direction );
     }
   }
 }

@@ -338,25 +338,29 @@ void Game::setScreenGame()
   {
     screen.update( *_d->engine );
 
-    if( !_d->pauseCounter )
+    if( _d->city->tilemap().direction() == constants::north )
     {
-      _d->timeX10 += _d->timeMultiplier / 10;
-    }
-    else if ( _d->manualTicksCounterX10 > 0 )
-    {
-      unsigned int add = math::min( _d->timeMultiplier / 10, _d->manualTicksCounterX10 );
-      _d->timeX10 += add;
-      _d->manualTicksCounterX10 -= add;
-    }
-    while ( _d->timeX10 > _d->saveTime * 10 + 1 )
-    {
-      _d->saveTime++;
+       if( !_d->pauseCounter )
+      {
+        _d->timeX10 += _d->timeMultiplier / 10;
+      }
+      else if ( _d->manualTicksCounterX10 > 0 )
+      {
+        unsigned int add = math::min( _d->timeMultiplier / 10, _d->manualTicksCounterX10 );
+        _d->timeX10 += add;
+        _d->manualTicksCounterX10 -= add;
+      }
+      while ( _d->timeX10 > _d->saveTime * 10 + 1 )
+      {
+        _d->saveTime++;
 
-      cdate.timeStep( _d->saveTime );
-      _d->empire->timeStep( _d->saveTime );
+        cdate.timeStep( _d->saveTime );
+        _d->empire->timeStep( _d->saveTime );
 
-      screen.animate( _d->saveTime );
+        screen.animate( _d->saveTime );
+      }
     }
+
     events::Dispatcher::instance().update( *this, _d->saveTime );
   }
 
