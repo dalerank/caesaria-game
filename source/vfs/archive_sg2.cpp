@@ -170,8 +170,14 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
       if( !p555.exist() )
       {
-        Logger::warning( "Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str() );
-        continue; // skip to next bitmap
+        Path dir, path, ext;
+        p555.splitToDirPathExt(&dir, &path, &ext);
+        p555 = dir + Path("555/") + path + Path(".") + ext;
+        if (!p555.exist())
+        {
+          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str());
+          continue; // skip to next bitmap
+        }
       }
 
       _fileInfo[name];
@@ -283,7 +289,7 @@ void Sg2ArchiveReader::_loadIsometricImage( Picture& pic, const SgFileEntry& rec
 {
 	ByteArray buffer = _readData( rec );
 	_writeIsometricBase( pic, rec.sr, (unsigned char*)buffer.data() );
-	_writeTransparentImage( pic, (unsigned char*)&buffer[rec.sr.uncompressed_length],
+	_writeTransparentImage( pic, (unsigned char*)(&buffer[0] + rec.sr.uncompressed_length),
 				rec.sr.length - rec.sr.uncompressed_length);
 }
 
