@@ -58,6 +58,7 @@
           #include <crtdbg.h>
           #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
         #else
+          #include <cassert>
           #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_asm int 3}
         #endif
       #else
