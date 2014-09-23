@@ -18,10 +18,24 @@
 #include "elevation.hpp"
 #include "constants.hpp"
 #include "gfx/tile.hpp"
+#include "game/resourcegroup.hpp"
+#include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace gfx;
 
-Elevation::Elevation() : TileOverlay( constants::building::elevation, Size( 2 ) )
+namespace {
+  static const int startElevationId = 845;
+}
+
+class Elevation::Impl
+{
+public:
+  int basicImgId;
+};
+
+Elevation::Elevation()
+  : TileOverlay( constants::building::elevation, Size( 2 ) ), _d( new Impl )
 {
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }
@@ -32,15 +46,31 @@ void Elevation::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlRoad, true );
+
+  terrain.setPicture( Picture::getInvalid() );
 }
 
 bool Elevation::isWalkable() const{  return true;}
-bool Elevation::isFlat() const{  return true;
-}
+bool Elevation::isFlat() const{  return true;}
 
 Point Elevation::offset( const Tile& tile, const Point& subpos) const
 {
   return Point( -(5 - subpos.y()), 0 );
 }
 
+void Elevation::changeDirection(Tile* masterTile, constants::Direction direction)
+{
+  int imgid = _d->basicImgId - startElevationId;
+
+  TileOverlay::changeDirection( masterTile, direction );
+  setPicture( TileHelper::pictureFromId( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
+}
+
 bool Elevation::isDestructible() const{  return false;}
+
+bool Elevation::build(PlayerCityPtr city, const TilePos &pos)
+{
+  TileOverlay::build(city, pos);
+
+  _d->basicImgId = city->tilemap().at( pos ).originalImgId();
+}

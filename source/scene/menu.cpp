@@ -46,6 +46,7 @@
 #include "events/setsoundoptions.hpp"
 #include "gui/widgetpositionanimator.hpp"
 #include "gui/loadmissiondialog.hpp"
+#include "gui/widgetescapecloser.hpp"
 #include "core/event.hpp"
 #include "core/timer.hpp"
 
@@ -259,12 +260,14 @@ void StartMenu::Impl::resolveCredits()
                          "deniskravtsov, Vhall, Dmitry Vorobiev, yevg.mord",
                          "mmagir,Yury Vidineev, Pavel Aleynikov, brickbtv",
                          "dovg1, KONSTANTIN KITMANOV, Serge Savostin, Memfis",
+                         "MennyCalavera, Anastasia Smolskaya, niosus, SkidanovAlex",
                          "Zatolokinandrey, yuri_abzyanov, dmitrii.dukhonchenko, twilight.temple",
-                         "holubmarek,butjer1010, Agmenor Ultime, m0nochr0mex",
+                         "holubmarek,butjer1010, Agmenor Ultime, m0nochr0mex, Alexeyco",
                          "rad.n,jsimek.cz, saintech,phdarcy, Casey Knauss, meikit2000",
                          "" };
 
   gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
+  gui::WidgetEscapeCloser::insertTo( frame );
   frame->setAlpha( 0xa0 );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
@@ -272,6 +275,7 @@ void StartMenu::Impl::resolveCredits()
     Label* lb = new gui::Label( frame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
     lb->setTextAlignment( align::center, align::center );
     lb->setFont( Font::create( FONT_2_WHITE ) );
+    lb->setSubElement( true );
     PositionAnimator* anim = new PositionAnimator( lb, WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
     anim->setSpeed( PointF( 0, -0.5 ) );
   }
@@ -279,6 +283,8 @@ void StartMenu::Impl::resolveCredits()
   gui::PushButton* btn = new gui::PushButton( frame,
                                               Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
                                               _("##close##") );
+  frame->setFocus();
+
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
   CONNECT( btn, onClicked(), this, Impl::playMenuSoundTheme );
 }

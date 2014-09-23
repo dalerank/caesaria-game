@@ -59,7 +59,7 @@ public:
     TileOverlayPtr overlay;
   };
 
-  typedef std::vector<TurnInfo> MasterTiles;
+  typedef std::map<Tile*, TurnInfo> MasterTiles;
 
   int size;
   Direction direction;
@@ -387,7 +387,7 @@ void Tilemap::turnRight()
 
   foreach( it, masterTiles )
   {    
-    const Impl::TurnInfo& ti = *it;
+    const Impl::TurnInfo& ti = it->second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / 60;
@@ -442,7 +442,7 @@ void Tilemap::turnLeft()
 
   foreach( it, masterTiles )
   {
-    const Impl::TurnInfo& ti = *it;
+    const Impl::TurnInfo& ti = it->second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / 60;
@@ -533,29 +533,36 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
     for( int j=0; j < size; j++ )
     {
       tmp = ate( i, j );
-      if( tmp->masterTile() )
-      {
-        Impl::TurnInfo ti;
-        ti.tile = tmp->masterTile();
-        ti.pic = ti.tile ->picture();
-        ti.overlay = tmp->overlay();
+      Tile* masterTile = tmp->masterTile();
 
-        int pSize = (ti.pic.width() + 2) / 60;
+      if( masterTile )
+      {        
+        Impl::MasterTiles::iterator mtFound = mtiles.find( masterTile );
 
-        mtiles.push_back( ti );
-
-        for( int i=0; i < pSize; i++ )
+        if( mtFound == mtiles.end() )
         {
-          for( int j=0; j < pSize; j++ )
+          Impl::TurnInfo ti;
+          ti.tile = masterTile;
+          ti.pic = ti.tile ->picture();
+          ti.overlay = tmp->overlay();
+
+          mtiles[ masterTile ] = ti;
+
+          int pSize = (ti.pic.width() + 2) / 60;
+
+          for( int i=0; i < pSize; i++ )
           {
-            Tile* apTile = ate( ti.tile->epos() + TilePos( i, j ) );
-            apTile->setMasterTile( 0 );
-            apTile->setPicture( Picture::getInvalid() );
+            for( int j=0; j < pSize; j++ )
+            {
+              Tile* apTile = ate( ti.tile->epos() + TilePos( i, j ) );
+              apTile->setMasterTile( 0 );
+              apTile->setPicture( Picture::getInvalid() );
+            }
           }
         }
       }
     }
-    }
+  }
 }
 
 void Tilemap::Impl::checkCoastAfterTurn()

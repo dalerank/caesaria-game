@@ -25,11 +25,22 @@
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
+#include "core/flagholder.hpp"
 
 #include <set>
 
 namespace gfx
 {
+
+class LayerDrawOptions : public FlagHolder<int>
+{
+public:
+  typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4 } Flags;
+  static LayerDrawOptions& instance();
+
+private:
+  LayerDrawOptions() {}
+};
 
 class Layer : public ReferenceCounted
 {
@@ -72,13 +83,14 @@ protected:
   WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
+  Tile* _currentTile() const;
   void _setTooltipText( const std::string& text );
   void _loadColumnPicture( int picId );
   void _addWalkerType( constants::walker::Type wtype );
 
-  TilesArray _getSelectedArea();
+  TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 
-  Layer(Camera* camera, PlayerCityPtr city );
+  Layer( Camera* camera, PlayerCityPtr city );
   Camera* _camera();
   PlayerCityPtr _city();
   void _setNextLayer(int layer);

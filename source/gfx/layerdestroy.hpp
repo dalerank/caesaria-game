@@ -20,8 +20,6 @@
 
 #include "core/referencecounted.hpp"
 #include "gfx/layer.hpp"
-#include "city_renderer.hpp"
-#include "core/font.hpp"
 
 namespace gfx
 {
@@ -43,10 +41,8 @@ private:
   void _clearAll();
   unsigned int _checkMoney4destroy( const Tile& tile );
 
-  Picture _clearPic;
-  PictureRef _textPic;
-  unsigned int _money4destroy;
-  Font _textFont;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gfx

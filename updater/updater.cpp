@@ -62,22 +62,27 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 
 void Updater::setBinaryAsExecutable()
 {
+  std::vector<vfs::Path> executableNames;
 #ifdef CAESARIA_PLATFORM_WIN
-	vfs::Path executableName = "caesaria.exe";
+  executableNames.push_back( "caesaria.exe" );
 #elif defined(CAESARIA_PLATFORM_LINUX)
-	vfs::Path executableName = "caesaria.linux";
+  executableNames.push_back( "caesaria.linux" );
+  executableNames.push_back( "caesaria.linux64" );
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-	vfs::Path executableName = "caesaria.macos";
+  executableNames.push_back( "caesaria.macos" );
 #elif defined(CAESARIA_PLATFORM_HAIKU)
-	vfs::Path executableName = "caesaria.haiku";
+  executableNames.push_back( "caesaria.haiku" );
 #endif
 
-	vfs::Path path2exe = getTargetDir()/executableName;
-	if( path2exe.exist() )
-	{
-		// set the executable bit on binary
-		_markFileAsExecutable( path2exe );
-	}
+  foreach( it, executableNames )
+  {
+    vfs::Path path2exe = getTargetDir()/(*it);
+    if( path2exe.exist() )
+    {
+      // set the executable bit on binary
+      _markFileAsExecutable( path2exe );
+    }
+  }
 }
 
 void Updater::removeDownload(std::string itemname)
@@ -95,7 +100,7 @@ void Updater::_markFileAsExecutable(vfs::Path path )
 
 	mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
 
-	if (chmod(path.toString().c_str(), mask.st_mode) == -1)
+  if( chmod(path.toString().c_str(), mask.st_mode) == -1)
 	{
 		Logger::warning( "Could not mark file as executable: " + path.toString() );
 	}

@@ -29,9 +29,13 @@ class LayerSimple : public Layer
 public:
   virtual int type() const;
   static LayerPtr create(Camera& camera, PlayerCityPtr city );
+  virtual void afterRender(Engine &engine);
 
 protected:
   LayerSimple(Camera& camera, PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gfx
