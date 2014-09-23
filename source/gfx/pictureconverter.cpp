@@ -83,7 +83,7 @@ void PictureConverter::save(Picture& pic, const std::string& filename, const std
 
 ByteArray PictureConverter::save(Picture& pic, const std::string &type)
 {
-  SDL_Surface* srf = SDL_CreateRGBSurfaceFrom( pic.lock(), pic.width(), pic.height(), 32, pic.width() * 4, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+  SDL_Surface* srf = SDL_CreateRGBSurfaceFrom( pic.lock(), pic.width(), pic.height(), 32, pic.width() * 4, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000 );
 
   SDL_RWops *rout;
   ByteArray rdata;

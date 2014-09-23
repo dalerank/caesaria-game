@@ -503,7 +503,7 @@ unsigned int Sg2ArchiveReader::_555toRGBA( unsigned short color)
 	rgb.setGreen( (green >> 8) & 0xff );
 	rgb.setBlue( blue & 0xff );
 
-	return rgb.color;
+	return rgb.abgr();
 }
 
 NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
