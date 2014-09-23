@@ -156,7 +156,7 @@ void Layer::handleEvent(NEvent& event)
       Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile )
       {
-        events::GameEventPtr e = events::ShowTileInfo::create( tile->pos() );
+        events::GameEventPtr e = events::ShowTileInfo::create( tile->epos() );
         e->dispatch();
       }
     }
