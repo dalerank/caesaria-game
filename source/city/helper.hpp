@@ -214,9 +214,12 @@ SmartPtr<T> Helper::prew(const SmartPtr<T> current)
   {
     if( current == *obj )
     {
+      if (obj == objects.begin()) // MSVC compiler doesn't support sircular lists. Neither standart does.
+      {
+        obj = objects.end();
+      }      
       obj--;
-      if( obj == objects.end() ) { return objects.back(); }
-      else { return *obj; }
+     return *obj;
     }
   }
 
