@@ -220,7 +220,7 @@ bool EditBox::isMultilineEnabled() const {	return _d->multiLine; }       //! Che
 
 void EditBox::moveCursor(int index)
 {  
-  _d->cursorPos = math::clamp( index, 0, _d->text.size() );
+  _d->cursorPos = math::clamp<int>( index, 0, _d->text.size() );
 }
 
 void EditBox::setPasswordBox(bool passwordBox, char passwordChar)

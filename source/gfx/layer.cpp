@@ -185,7 +185,7 @@ void Layer::handleEvent(NEvent& event)
       {
       case KEY_KEY_1: opts.toggle( LayerDrawOptions::drawGrid ); break;
       case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
-      case KEY_KEY_3: opts.toggle( LayerDrawOptions::renderOverlay ); break;
+      case KEY_KEY_3: opts.toggle( LayerDrawOptions::shadowOverlay ); break;
       case KEY_KEY_4: opts.toggle( LayerDrawOptions::showPath ); break;
       default: break;
       }
@@ -193,12 +193,14 @@ void Layer::handleEvent(NEvent& event)
   }
 }
 
-TilesArray Layer::_getSelectedArea()
+TilesArray Layer::_getSelectedArea( TilePos startPos )
 {
   __D_IMPL(_d,Layer)
   TilePos outStartPos, outStopPos;
 
-  Tile* startTile = _d->camera->at( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+  Tile* startTile = startPos.i() < 0
+                      ? _d->camera->at( _d->startCursorPos, true ) // tile under the cursor (or NULL)
+                      : _d->camera->at( startPos );
   Tile* stopTile  = _d->camera->at( _d->lastCursorPos, true );
 
   TilePos startPosTmp = startTile->pos();
@@ -311,7 +313,7 @@ void Layer::render( Engine& engine)
   }
 
   LayerDrawOptions& opts = LayerDrawOptions::instance();
-  if( !opts.isFlag( LayerDrawOptions::renderOverlay ) )
+  if( opts.isFlag( LayerDrawOptions::shadowOverlay ) )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }

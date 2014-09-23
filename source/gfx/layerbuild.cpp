@@ -52,6 +52,7 @@ class LayerBuild::Impl
 public:
   bool multiBuilding;
   TilePos lastTilePos;
+  TilePos startTilePos;
   bool kbShift, kbCtrl;
   bool borderBuilding;
   bool roadAssignment;
@@ -187,7 +188,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
   if( d->borderBuilding )
   {
-    Tile* startTile = _camera()->at( _startCursorPos(), true );  // tile under the cursor (or NULL)
+    Tile* startTile = _camera()->at( d->startTilePos );  // tile under the cursor (or NULL)
     Tile* stopTile  = _camera()->at( _lastCursorPos(),  true );
 
     TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
@@ -229,7 +230,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
   }
   else
   {
-    TilesArray tiles = _getSelectedArea();
+    TilesArray tiles = _getSelectedArea( d->startTilePos );
 
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->pos() ); }
   }  
@@ -302,6 +303,9 @@ void LayerBuild::handleEvent(NEvent& event)
       if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
       {
         _setStartCursorPos( _lastCursorPos() );
+
+        Tile* tile = _camera()->at( _lastCursorPos(), true );
+        _d->startTilePos = tile ? tile->pos() : TilePos( -1, -1 );
       }
 
       _updatePreviewTiles( false );
@@ -310,7 +314,6 @@ void LayerBuild::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {
-      _setStartCursorPos( _lastCursorPos() );
       _updatePreviewTiles( false );
     }
     break;
@@ -482,6 +485,7 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   __D_IMPL(d,LayerBuild);
   d->renderer = renderer;
   d->frameCount = 0;
+  d->startTilePos = TilePos( -1, -1 );
   d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );

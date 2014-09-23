@@ -35,7 +35,7 @@ namespace gfx
 class LayerDrawOptions : public FlagHolder<int>
 {
 public:
-  typedef enum { drawGrid=0x1, renderOverlay=0x2, showPath=0x4 } Flags;
+  typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4 } Flags;
   static LayerDrawOptions& instance();
 
 private:
@@ -88,7 +88,7 @@ protected:
   void _loadColumnPicture( int picId );
   void _addWalkerType( constants::walker::Type wtype );
 
-  TilesArray _getSelectedArea();
+  TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 
   Layer( Camera* camera, PlayerCityPtr city );
   Camera* _camera();
