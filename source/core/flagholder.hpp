@@ -20,25 +20,30 @@ template< class T >
 class FlagHolder 
 {
 public:
-    FlagHolder() : _flags( 0 ) {}
+  FlagHolder() : _flags( 0 ) {}
 
 	void setFlag( T flag, bool enabled=true )
 	{
-        if( enabled )
-		    _flags |= flag;
-        else
-            _flags &= ~flag;
+    if( enabled )
+    _flags |= flag;
+    else
+        _flags &= ~flag;
 	}
 
-    void resetFlag( T flag )
-    {
-        setFlag( flag, false );
-    }
+  void resetFlag( T flag )
+  {
+    setFlag( flag, false );
+  }
 
 	bool isFlag( T flag ) const
 	{
 		return (_flags & flag) > 0;
 	}
+
+  void toggle( T flag )
+  {
+    setFlag( flag, !isFlag( flag ) );
+  }
 
 	void setFlags( int val )
 	{
