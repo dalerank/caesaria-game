@@ -56,6 +56,7 @@
         #undef CAESARIA_USE_MINGW_COMPILER
         #if defined(CAESARIA_PLATFORM_WIN64) // using portable common solution for x64 configuration
           #include <crtdbg.h>
+          #include <cassert>
           #define _CAESARIA_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
         #else
           #include <cassert>
