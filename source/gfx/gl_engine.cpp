@@ -43,7 +43,7 @@
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #define glOrtho glOrthof
-  #undef CAESRAIA_USE_SHADERS
+  #undef CAESARIA_USE_SHADERS
   #undef CAESARIA_USE_FRAMEBUFFER
   #include <SDL_opengles.h>
   #define USE_GLES
