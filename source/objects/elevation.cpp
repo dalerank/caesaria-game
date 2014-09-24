@@ -70,7 +70,8 @@ bool Elevation::isDestructible() const{  return false;}
 
 bool Elevation::build(PlayerCityPtr city, const TilePos &pos)
 {
-  TileOverlay::build(city, pos);
-
+  bool res = TileOverlay::build(city, pos);
   _d->basicImgId = city->tilemap().at( pos ).originalImgId();
+
+	return res;
 }
