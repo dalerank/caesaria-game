@@ -219,6 +219,7 @@ void SdlEngine::init()
 
   Logger::warning( "SDLGraficEngine: init successfull");
   _d->screen.init( screenTexture, 0, 0 );
+  _d->screen.setOriginRect( Rect( 0, 0, _srcSize.width(), _srcSize.height() ) );
 
   if( !_d->screen.isValid() )
   {

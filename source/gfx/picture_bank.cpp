@@ -22,6 +22,7 @@
 #include <memory>
 #include <sys/stat.h>
 #include <map>
+#include <set>
 #include <SDL.h>
 
 #include "core/position.hpp"
@@ -34,24 +35,43 @@
 #include "picture_info_bank.hpp"
 #include "core/foreach.hpp"
 #include "loader.hpp"
+#include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
 #include "core/color.hpp"
+
+struct AtlasInfo
+{
+  std::string filename;
+  std::set<unsigned int> images;
+
+  inline bool find( unsigned int hash ) { return images.count( hash ) > 0; }
+};
 
 class PictureBank::Impl
 {
 public:
-  typedef std::map< unsigned int, Picture> Pictures;
+  typedef std::map<unsigned int, Picture> Pictures;
+  typedef std::vector< AtlasInfo > AtlasMap;
   typedef Pictures::iterator ItPicture;
-  StringArray availableExentions;
 
+  AtlasMap unloadAtlas;
+  StringArray availableExentions;
   Pictures resources;  // key=image name, value=picture
+
+public:
   Picture tryLoadPicture( const std::string& name );
+  void loadAtlas( const AtlasInfo& info );
 };
 
 PictureBank& PictureBank::instance()
 {
   static PictureBank inst; 
   return inst;
+}
+
+void PictureBank::reset()
+{
+
 }
 
 void PictureBank::setPicture( const std::string &name, const Picture& pic )
@@ -100,6 +120,26 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
   ptrPic->setName( rcname );
 }
 
+void PictureBank::addAtlas( vfs::Path name)
+{
+  VariantMap atlasInfo = SaveAdapter::load( name );
+
+  if( !atlasInfo.empty() )
+  {
+    AtlasInfo atlas;
+    atlas.filename = name.toString();
+
+    VariantMap items = atlasInfo.get( "items" ).toMap();
+    foreach( i, items )
+    {
+      unsigned int hash = StringHelper::hash( i->first );
+      atlas.images.insert( hash );
+    }
+
+    _d->unloadAtlas.push_back( atlas );
+  }
+}
+
 Picture& PictureBank::getPicture(const std::string &name)
 {
   const unsigned int hash = StringHelper::hash( name );
@@ -111,8 +151,8 @@ Picture& PictureBank::getPicture(const std::string &name)
     //can't find image in valid resources, try load from hdd
     const Picture& pic = _d->tryLoadPicture( name );
 
-    if( pic.isValid() )     {      setPicture( name, pic );    }
-    else    {      _d->resources[ hash ] = pic;    }
+    if( pic.isValid() ) { setPicture( name, pic );  }
+    else{ _d->resources[ hash ] = pic; }
 
     return _d->resources[ hash ];
   }
@@ -144,7 +184,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   {
     foreach( itExt, availableExentions )
     {
-     realPath = name + *itExt;
+      realPath = name + *itExt;
 
       if( realPath.exist() )
       {
@@ -164,6 +204,65 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
+  unsigned int hash = StringHelper::hash( name );
+  foreach( i, unloadAtlas )
+  {
+    bool found = i->find( hash );
+    if( found )
+    {
+      loadAtlas( *i );
+      unloadAtlas.erase( i );
+      break;
+    }
+  }
+
+  Pictures::iterator it = resources.find( hash );
+  if( it != resources.end() )
+  {
+    return it->second;
+  }
+
   Logger::warning( "PictureBank: Unknown resource %s", name.c_str() );
   return Picture::getInvalid();
+}
+
+void PictureBank::Impl::loadAtlas(const AtlasInfo& info)
+{
+  vfs::Path filePath( info.filename );
+
+  if( filePath.exist() )
+  {
+    VariantMap info = SaveAdapter::load( filePath );
+
+    vfs::Path texturePath = info.get( "texture" ).toString();
+
+    vfs::NFile file = vfs::NFile::open( texturePath );
+
+    Picture mainTexture;
+    if( file.isOpen() )
+    {
+      mainTexture = PictureLoader::instance().load( file );
+    }
+    else
+    {
+      Logger::warning( "PictureBank: load atlas failed for texture" + texturePath.toString() );
+      mainTexture = Picture::getInvalid();
+    }
+
+    if( !info.empty() )
+    {
+      VariantMap items = info.get( "items" ).toMap();
+      foreach( i, items )
+      {
+        unsigned int hash = StringHelper::hash( i->first );
+        VariantList rInfo = i->second.toList();
+        Picture pic = mainTexture;
+        Point start(rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
+        Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
+
+        pic.setOriginRect( Rect( start, size ) );
+        resources[ hash ] = pic;
+      }
+    }
+  }
 }
