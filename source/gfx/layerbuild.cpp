@@ -274,6 +274,8 @@ void LayerBuild::_buildAll()
     }
   }
 
+  d->startTilePos = d->lastTilePos;
+
   if( !buildOk )
   {
     std::string errorStr = cnstr->errorDesc();

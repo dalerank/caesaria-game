@@ -78,7 +78,6 @@ public:
   PlayerCityPtr city;
   PlayerPtr player;
 
-  bool loadOk;
   int pauseCounter;
   unsigned int manualTicksCounterX10;
   std::string restartFile;
@@ -242,10 +241,10 @@ void Game::setScreenBriefing()
   {
     case scene::Briefing::loadMission:
     {
-      load( screen.getMapName() );
-      Logger::warning( "Briefing: end loading map" );
+      bool loadOk = load( screen.getMapName() );
+      Logger::warning( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + screen.getMapName() );
 
-      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
+      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
 
@@ -272,12 +271,14 @@ void Game::setScreenMenu()
     case scene::StartMenu::startNewGame:
     {
       std::srand( DateTime::elapsedTime() );
-      std::string startMission = "/missions/tutorial.mission";
-      Logger::warning( "Start new career with mission " + startMission );
+      std::string startMission = "/missions/tutorial.mission";    
 
-      load( startMission );
+      bool loadOk = load( startMission );
       _d->player->setName( screen.playerName() );
-      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
+
+      Logger::warning( (loadOk ? "Career: start mission " : "Career: cant load mission") + startMission );
+
+      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
 
@@ -288,24 +289,24 @@ void Game::setScreenMenu()
     case scene::StartMenu::loadSavedGame:
     case scene::StartMenu::loadMission:
     {
-      load( screen.mapName() );
-      Logger::warning( "screen menu: end loading map" );
+      bool loadOk = load( screen.mapName() );
+      Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + screen.mapName()  );
 
-      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
+      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
 
     case scene::StartMenu::loadMap:
     {
-      load( screen.mapName() );
-      Logger::warning( "screen menu: end loading map" );
+      bool loadOk = load( screen.mapName() );
+      Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + screen.mapName() );
 
       FreeplayFinalizer::addPopulationMilestones( _d->city );
       FreeplayFinalizer::initBuildOptions( _d->city );
       FreeplayFinalizer::addEvents( _d->city );
       FreeplayFinalizer::resetFavour( _d->city );
 
-      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
+      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
 
@@ -372,17 +373,21 @@ void Game::setScreenGame()
 
     case scene::Level::restart:
     {
-      Logger::warning( "ScreenGame: restart game " + _d->restartFile );
-      _d->nextScreen = SCREEN_GAME;
-      load( _d->restartFile );
+      Logger::warning( "ScreenGame: restart game " + _d->restartFile );      
+      bool loadOk = load( _d->restartFile );
+      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
 
-      Logger::warning( "ScreenGame: end loading file " + _d->restartFile );
-      std::string ext = vfs::Path( _d->restartFile ).extension();
-      if( ext == ".map" || ext == ".sav" )
+      Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " )+ _d->restartFile );
+
+      if( loadOk )
       {
-        FreeplayFinalizer::addPopulationMilestones( _d->city );
-        FreeplayFinalizer::initBuildOptions( _d->city );
-        FreeplayFinalizer::addEvents( _d->city );
+        std::string ext = vfs::Path( _d->restartFile ).extension();
+        if( ext == ".map" || ext == ".sav" )
+        {
+          FreeplayFinalizer::addPopulationMilestones( _d->city );
+          FreeplayFinalizer::initBuildOptions( _d->city );
+          FreeplayFinalizer::addEvents( _d->city );
+        }
       }
     }
     break;
@@ -438,9 +443,12 @@ void Game::save(std::string filename) const
   e->dispatch();
 }
 
-void Game::load(std::string filename)
+bool Game::load(std::string filename)
 {
   Logger::warning( "Game: try load from " + filename );
+
+  Logger::warning( "Game: reseting variables" );
+  reset();
 
   vfs::Path fPath( filename );
   if( !fPath.exist() )
@@ -457,13 +465,10 @@ void Game::load(std::string filename)
       if( !fPath.exist() )
       {
         Logger::warning( "Game: Cannot find file " + fPath.toString() );
-        return;
+        return false;
       }
     }
   }
-
-  Logger::warning( "Game: reseting variables" );
-  reset();
 
   Logger::warning( "Game: init empire start options" );
   events::Dispatcher::instance().reset();
@@ -473,12 +478,12 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: try find loader" );
   GameLoader loader;
-  _d->loadOk = loader.load( fPath, *this );
+  bool loadOk = loader.load( fPath, *this );
 
-  if( !_d->loadOk )
+  if( !loadOk )
   {
     Logger::warning( "LOADING ERROR: can't load game from " + filename );
-    return;
+    return false;
   }
 
   _d->restartFile = loader.restartFile();
@@ -487,7 +492,7 @@ void Game::load(std::string filename)
   if( city.isNull() )
   {
     Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
-    return;
+    return false;
   }
 
   Logger::warning( "Game: calculate road access for buildings" );
@@ -505,7 +510,7 @@ void Game::load(std::string filename)
   Pathfinder::instance().update( _d->city->tilemap() );
 
   Logger::warning( "Game: load finished" );
-  return;
+  return true;
 }
 
 void Game::Impl::initArchiveLoaders()

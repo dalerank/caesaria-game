@@ -105,8 +105,10 @@ SrvcPtr AmbientSound::create(PlayerCityPtr city, gfx::Camera* camera )
   return p;
 }
 
+AmbientSound::~AmbientSound() {}
+
 AmbientSound::AmbientSound( PlayerCityPtr city )
-: Srvc( *city.object(), "ambientsound" ), _d( new Impl )
+: Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
 }
 
@@ -164,7 +166,9 @@ void AmbientSound::update( const unsigned int time )
 
       ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
-  }
+    }
 }
+
+std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }
 
 }//end namespace city
