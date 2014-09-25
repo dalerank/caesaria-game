@@ -292,7 +292,7 @@ public class AtlasGenerator
 				
 				BufferedWriter atlas = new BufferedWriter(new FileWriter(name + ".atlas"));
 				
-        atlas.write( "{\ntexture: " + name + ".png \n" );
+        atlas.write( "{\ntexture: \"" + name + ".png\" \n" );
         atlas.write( "frames: {\n" );
 				for(Map.Entry<String, Rectangle> e : rectangleMap.entrySet())
 				{

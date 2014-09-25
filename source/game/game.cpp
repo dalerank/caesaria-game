@@ -249,7 +249,7 @@ void Game::setScreenBriefing()
     break;
 
     default:
-      _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
+      _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
    }
 }
 

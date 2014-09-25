@@ -343,10 +343,8 @@ void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
 
-  DebugTimer::reset( "init_b" );
   gui::PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
-  DebugTimer::check( "", "init_b" );
 
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
