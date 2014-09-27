@@ -344,19 +344,14 @@ WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, cons
   }
 
   TilesArray area = _d->tilemap.getArea( startPos, stopPos );
-  foreach( tile, area)
-  {
-    WalkerList current = _d->walkersGrid.at( (*tile)->pos() );
-
-    foreach( w, current )
-    {
-      if( (*w)->type() == rtype || rtype == walker::any )
-      {
-        ret.push_back( *w );
-      }
-    }
-  }
-
+	for (auto walker : _d->walkerList){
+		if (walker->type() == rtype || rtype == walker::any)
+		{
+			if (area.contain(walker->pos())){
+				ret.push_back(walker);
+			}
+		}
+	}
   return ret;
 }
 

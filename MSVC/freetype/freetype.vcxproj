@@ -158,8 +158,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsC</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -190,8 +189,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsC</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -220,8 +218,7 @@
       <AdditionalIncludeDirectories>E:\caesaria\dep\freetype\builds\unix;E:\caesaria\dep\freetype\src\base;E:\caesaria\dep\freetype\src\truetype;E:\caesaria\dep\freetype\src\type1;E:\caesaria\dep\freetype\src\cff;E:\caesaria\dep\freetype\src\cid;E:\caesaria\dep\freetype\src\pfr;E:\caesaria\dep\freetype\src\type42;E:\caesaria\dep\freetype\src\winfonts;E:\caesaria\dep\freetype\src\pcf;E:\caesaria\dep\freetype\src\bdf;E:\caesaria\dep\freetype\src\sfnt;E:\caesaria\dep\freetype\src\autofit;E:\caesaria\dep\freetype\src\pshinter;E:\caesaria\dep\freetype\src\raster;E:\caesaria\dep\freetype\src\smooth;E:\caesaria\dep\freetype\src\cache;E:\caesaria\dep\freetype\src\gzip;E:\caesaria\dep\freetype\src\lzw;E:\caesaria\dep\freetype\src\psaux;E:\caesaria\dep\freetype\src\psnames;E:\caesaria\dep\freetype\include;E:\caesaria\dep\freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -252,8 +249,7 @@
       <AdditionalIncludeDirectories>E:\caesaria\dep\freetype\builds\unix;E:\caesaria\dep\freetype\src\base;E:\caesaria\dep\freetype\src\truetype;E:\caesaria\dep\freetype\src\type1;E:\caesaria\dep\freetype\src\cff;E:\caesaria\dep\freetype\src\cid;E:\caesaria\dep\freetype\src\pfr;E:\caesaria\dep\freetype\src\type42;E:\caesaria\dep\freetype\src\winfonts;E:\caesaria\dep\freetype\src\pcf;E:\caesaria\dep\freetype\src\bdf;E:\caesaria\dep\freetype\src\sfnt;E:\caesaria\dep\freetype\src\autofit;E:\caesaria\dep\freetype\src\pshinter;E:\caesaria\dep\freetype\src\raster;E:\caesaria\dep\freetype\src\smooth;E:\caesaria\dep\freetype\src\cache;E:\caesaria\dep\freetype\src\gzip;E:\caesaria\dep\freetype\src\lzw;E:\caesaria\dep\freetype\src\psaux;E:\caesaria\dep\freetype\src\psnames;E:\caesaria\dep\freetype\include;E:\caesaria\dep\freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -284,8 +280,7 @@
       <AdditionalIncludeDirectories>E:\caesaria\dep\freetype\builds\unix;E:\caesaria\dep\freetype\src\base;E:\caesaria\dep\freetype\src\truetype;E:\caesaria\dep\freetype\src\type1;E:\caesaria\dep\freetype\src\cff;E:\caesaria\dep\freetype\src\cid;E:\caesaria\dep\freetype\src\pfr;E:\caesaria\dep\freetype\src\type42;E:\caesaria\dep\freetype\src\winfonts;E:\caesaria\dep\freetype\src\pcf;E:\caesaria\dep\freetype\src\bdf;E:\caesaria\dep\freetype\src\sfnt;E:\caesaria\dep\freetype\src\autofit;E:\caesaria\dep\freetype\src\pshinter;E:\caesaria\dep\freetype\src\raster;E:\caesaria\dep\freetype\src\smooth;E:\caesaria\dep\freetype\src\cache;E:\caesaria\dep\freetype\src\gzip;E:\caesaria\dep\freetype\src\lzw;E:\caesaria\dep\freetype\src\psaux;E:\caesaria\dep\freetype\src\psnames;E:\caesaria\dep\freetype\include;E:\caesaria\dep\freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MinSpace</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -316,8 +311,7 @@
       <AdditionalIncludeDirectories>E:\caesaria\dep\freetype\builds\unix;E:\caesaria\dep\freetype\src\base;E:\caesaria\dep\freetype\src\truetype;E:\caesaria\dep\freetype\src\type1;E:\caesaria\dep\freetype\src\cff;E:\caesaria\dep\freetype\src\cid;E:\caesaria\dep\freetype\src\pfr;E:\caesaria\dep\freetype\src\type42;E:\caesaria\dep\freetype\src\winfonts;E:\caesaria\dep\freetype\src\pcf;E:\caesaria\dep\freetype\src\bdf;E:\caesaria\dep\freetype\src\sfnt;E:\caesaria\dep\freetype\src\autofit;E:\caesaria\dep\freetype\src\pshinter;E:\caesaria\dep\freetype\src\raster;E:\caesaria\dep\freetype\src\smooth;E:\caesaria\dep\freetype\src\cache;E:\caesaria\dep\freetype\src\gzip;E:\caesaria\dep\freetype\src\lzw;E:\caesaria\dep\freetype\src\psaux;E:\caesaria\dep\freetype\src\psnames;E:\caesaria\dep\freetype\include;E:\caesaria\dep\freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MinSpace</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -349,8 +343,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -380,8 +373,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>
-      </ExceptionHandling>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
