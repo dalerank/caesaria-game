@@ -25,6 +25,11 @@
 
 using namespace vfs;
 
+namespace {
+const char* archiveDescFile = "info";
+const char* atlasListSection = "atlas";
+}
+
 class ResourceLoader::Impl
 {
 public oc3_signals:
@@ -56,24 +61,24 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 
     ArchivePtr archive = FileSystem::instance().mountArchive( absArchivePath );
 
-    NFile archiveInfo = archive->createAndOpenFile( "info" );
-    if( archiveInfo.isOpen() )
-    {
-      VariantMap vm = SaveAdapter::load( archiveInfo );
-
-      VariantList atlasNames = vm.get( "atlas" ).toList();
-      foreach( it, atlasNames )
-      {
-        NFile atlasFile = archive->createAndOpenFile( *it );
-
-        VariantMap options = SaveAdapter::load( atlasFile );
-        gfx::PictureBank::instance().addAtlas( it->toString(), options );
-      }
-    }
-
     if( archive.isValid() )
     {
       oc3_emit _d->onStartLoadingSignal( a->first );
+
+      NFile archiveInfo = archive->createAndOpenFile( archiveDescFile );
+      if( archiveInfo.isOpen() )
+      {
+        VariantMap vm = SaveAdapter::load( archiveInfo );
+
+        VariantList atlasNames = vm.get( atlasListSection ).toList();
+        foreach( it, atlasNames )
+        {
+          NFile atlasFile = archive->createAndOpenFile( it->toString() );
+
+          VariantMap options = SaveAdapter::load( atlasFile );
+          gfx::PictureBank::instance().addAtlas( it->toString(), options );
+        }
+      }
     }
     else
     {

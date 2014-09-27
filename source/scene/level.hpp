@@ -62,6 +62,7 @@ private oc3_slots:
   void _resolveEnterButton();
   void _showIngameMenu();
   void _requestExitGame();
+  void _handleDebugEvent( int event );
 
 private:
   class Impl;

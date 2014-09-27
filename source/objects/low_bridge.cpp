@@ -447,7 +447,6 @@ void LowBridge::destroy()
     //std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
-    //mapTile.setPicture( Picture::load( picName ) );
     TileHelper::decode( mapTile, (*it)->_info );
   }
 }

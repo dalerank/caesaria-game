@@ -35,6 +35,7 @@
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
 #include "listbox.hpp"
+#include "city/debug_events.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -64,6 +65,7 @@ oc3_slots public:
   void updateDate();
   void showAboutInfo();
   void resolveAdvisorShow(int);
+  void handleDebugEvent(int);
   void showShortKeyInfo();
   void initBackground( const Size& size );
 
@@ -77,6 +79,7 @@ oc3_signals public:
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
   Signal0<> onShowCityOptionsSignal;
+  Signal1<int> onDebugEventSignal;
   Signal1<advisor::Type> onRequestAdvisorSignal;
 };
 
@@ -232,6 +235,19 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
+  tmp = addItem( _("##gmenu_debug##"), -1, true, true, false, false );
+  ContextMenu* debugMenu = tmp->addSubMenu();
+  debugMenu->addItem( "add_enemy_archers", city::debug_event::add_enemy_archers );
+  debugMenu->addItem( "add_enemy_soldiers", city::debug_event::add_enemy_soldiers );
+  debugMenu->addItem( "add_wolves", city::debug_event::add_wolves );
+  debugMenu->addItem( "decrease_mars_relation", city::debug_event::dec_mars_relation );
+  debugMenu->addItem( "add_1000_dn", city::debug_event::add_1000_dn );
+  debugMenu->addItem( "add_player_money", city::debug_event::add_player_money );
+  debugMenu->addItem( "send_chastener", city::debug_event::send_chastener );
+  debugMenu->addItem( "test_request", city::debug_event::test_request );
+
+  CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
+
   _d->updateDate();
 }
 
@@ -245,6 +261,8 @@ Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; 
 Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
 Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
-void TopMenu::Impl::resolveAdvisorShow(int id) { onRequestAdvisorSignal.emit( (advisor::Type)id ); }
+Signal1<int> &TopMenu::onDebugEvent() { return _d->onDebugEventSignal; }
+void TopMenu::Impl::resolveAdvisorShow(int id) { oc3_emit onRequestAdvisorSignal( (advisor::Type)id ); }
+void TopMenu::Impl::handleDebugEvent(int id) { oc3_emit onDebugEventSignal( id ); }
 
 }//end namespace gui
