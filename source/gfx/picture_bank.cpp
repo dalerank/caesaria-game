@@ -39,6 +39,10 @@
 #include "vfs/file.hpp"
 #include "core/color.hpp"
 
+namespace {
+const char* framesSection = "frames";
+}
+
 struct AtlasPreview
 {
   std::string filename;
@@ -64,6 +68,7 @@ public:
   Picture tryLoadPicture( const std::string& name );
   void loadAtlas( const AtlasPreview& info );
   void setPicture( const std::string &name, const Picture& pic );
+  void destroyUnusableTextures();
 };
 
 void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
@@ -117,6 +122,22 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   ptrPic->setName( rcname );
 }
 
+void PictureBank::Impl::destroyUnusableTextures()
+{
+  for( TextureCounter::iterator it=txCounters.begin(); it != txCounters.end(); )
+  {
+    if( it->second <= 0 )
+    {
+      SDL_DestroyTexture( it->first );
+      txCounters.erase( it++ );
+    }
+    else
+    {
+      ++it;
+    }
+  }
+}
+
 PictureBank& PictureBank::instance()
 {
   static PictureBank inst; 
@@ -142,7 +163,7 @@ void PictureBank::addAtlas( const std::string& filename, const VariantMap& optio
     AtlasPreview atlas;
     atlas.filename = filename;
 
-    VariantMap items = options.get( "frames" ).toMap();
+    VariantMap items = options.get( framesSection ).toMap();
     foreach( i, items )
     {
       unsigned int hash = StringHelper::hash( i->first );
@@ -264,7 +285,7 @@ void PictureBank::Impl::loadAtlas(const AtlasPreview& info)
 
     if( !info.empty() )
     {
-      VariantMap items = info.get( "frames" ).toMap();
+      VariantMap items = info.get( framesSection ).toMap();
       foreach( i, items )
       {
         VariantList rInfo = i->second.toList();

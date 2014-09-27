@@ -55,7 +55,7 @@ GameEventPtr RandomAnimals::create( walker::Type type, unsigned int wolvesNumber
 {
   RandomAnimals* r = new RandomAnimals();
   r->_d->count = wolvesNumber;
-  r->_d->count = type;
+  r->_d->animalType = type;
 
   GameEventPtr ret( r );
   ret->drop();

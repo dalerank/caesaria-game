@@ -82,6 +82,7 @@
 #include "core/timer.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
+#include "city/debug_events.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -211,6 +212,7 @@ void Level::initialize()
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
   CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
+  CONNECT( _d->topMenu, onDebugEvent(), this, Level::_handleDebugEvent );
 
   CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
@@ -630,68 +632,6 @@ void Level::handleEvent( NEvent& event )
         _d->makeFullScreenshot();
     break;
 
-    case KEY_KEY_R:
-    {
-      if( event.keyboard.shift )
-      {
-        VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
-        events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
-        e->dispatch();
-        return;
-      }
-    }
-    break;
-
-    case KEY_KEY_I:
-    {
-      if( event.keyboard.shift )
-      {
-        world::CityPtr rome = _d->game->empire()->rome();
-        PlayerCityPtr plCity = _d->game->city();
-
-        world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
-        army->setBase( rome );
-        army->attack( ptr_cast<world::Object>( plCity ) );
-      }
-    }
-    break;
-
-    case KEY_KEY_Y:
-    {
-      if( event.keyboard.shift )
-      {
-        _d->game->player()->appendMoney( 1000 );
-      }
-    }
-    break;
-
-    case KEY_KEY_M:
-    {
-      if( event.keyboard.shift )
-      {
-        religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
-        return;
-      }
-    }
-    break;
-
-    case KEY_KEY_L:
-      // Add 1000 denarii
-      if (event.keyboard.shift && event.keyboard.control)
-      {
-        _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
-      }
-      break;
-
-    case KEY_F11:
-      if( event.keyboard.shift )
-      {
-        events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
-        e->dispatch();
-      }
-      else { _d->makeEnemy(); }
-    break;    
-
     case KEY_ESCAPE:
     {
       Widget::Widgets children = _d->game->gui()->rootWidget()->children();
@@ -850,6 +790,55 @@ void Level::_requestExitGame()
   DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
   CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+}
+
+void Level::_handleDebugEvent(int event)
+{
+  switch( event )
+  {
+  case city::debug_event::dec_mars_relation:
+    religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
+  break;
+
+  case city::debug_event::add_1000_dn:
+    _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
+  break;
+
+  case city::debug_event::add_wolves:
+  {
+    events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
+    e->dispatch();
+  }
+  break;
+
+  case city::debug_event::add_enemy_archers:
+  case city::debug_event::add_enemy_soldiers:
+     _d->makeEnemy();
+  break;
+
+  case city::debug_event::add_player_money:
+    _d->game->player()->appendMoney( 1000 );
+  break;
+
+  case city::debug_event::send_chastener:
+  {
+    world::CityPtr rome = _d->game->empire()->rome();
+    PlayerCityPtr plCity = _d->game->city();
+
+    world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
+    army->setBase( rome );
+    army->attack( ptr_cast<world::Object>( plCity ) );
+  }
+  break;
+
+  case city::debug_event::test_request:
+  {
+    VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
+    events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
+    e->dispatch();
+  }
+  break;
+  }
 }
 
 void Level::Impl::showMissionTaretsWindow()
