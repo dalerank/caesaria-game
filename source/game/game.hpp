@@ -35,7 +35,6 @@ public:
   ~Game();
 
   void save(std::string filename) const;
-  void load(std::string filename);
 
   void initialize();
 
@@ -70,6 +69,8 @@ public oc3_signals:
   Signal1<std::string>& onSaveAccepted();
 
 private:
+  bool load(std::string filename);
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

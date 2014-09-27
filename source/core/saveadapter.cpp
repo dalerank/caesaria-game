@@ -20,6 +20,7 @@
 #include "json.hpp"
 #include "logger.hpp"
 #include "vfs/file.hpp"
+#include "vfs/path.hpp"
 
 using namespace vfs;
 
@@ -28,25 +29,30 @@ VariantMap SaveAdapter::load( const vfs::Path& filename )
   Logger::warning( "SaveAdapter: try load model from " + filename.toString() );
   NFile f = NFile::open( filename );
 
+  return load( f );
+}
+
+VariantMap SaveAdapter::load( vfs::NFile f )
+{
   if( f.isOpen() )
   {
     ByteArray data = f.readAll();
 
     bool jsonParsingOk;
-    Variant ret = Json::parse( data.data(), jsonParsingOk );
+    Variant ret = Json::parse( data.toString(), jsonParsingOk );
     if( jsonParsingOk )
     {
       return ret.toMap();
     }
     else
     {
-     Logger::warning( "Can't parse file %s: %s", filename.toString().c_str(), ret.toString().c_str() );
-     Logger::warning( "Last parsed object is %s", Json::lastParsedObject().c_str() );
+     Logger::warning( "Can't parse file " + f.path().toString() + " error: " + ret.toString() );
+     Logger::warning( "Last parsed object is " + Json::lastParsedObject() );
     }
   }
   else
   {
-    Logger::warning( "Can't find file %s", filename.toString().c_str() );
+    Logger::warning( "Can't find file " + f.path().toString() );
   }
 
   return VariantMap();

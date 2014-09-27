@@ -80,8 +80,6 @@ public:
 
     if( _fort.isValid() )
     {
-      pic->draw( _fort->legionEmblem(), Point( 6, 4 ), false );
-
       fontW.draw( *pic, _fort->legionName(), 70, 4 );
 
       std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
@@ -90,7 +88,14 @@ public:
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = StringHelper::format( 0xff, "##legion_morale_%d##", moraleValue );
       fontB.draw( *pic, _( moraleStr ), 180, 15 );
-    }
+    }    
+  }
+
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    painter.draw( _fort->legionEmblem(), absoluteRect().lefttop() + Point( 6, 4 ), &absoluteClippingRectRef() );
   }
 
 public oc3_signals:

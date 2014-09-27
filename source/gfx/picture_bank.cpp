@@ -22,6 +22,7 @@
 #include <memory>
 #include <sys/stat.h>
 #include <map>
+#include <set>
 #include <SDL.h>
 
 #include "core/position.hpp"
@@ -34,44 +35,60 @@
 #include "picture_info_bank.hpp"
 #include "core/foreach.hpp"
 #include "loader.hpp"
+#include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
 #include "core/color.hpp"
+
+struct AtlasPreview
+{
+  std::string filename;
+  std::set<unsigned int> images;
+
+  inline bool find( unsigned int hash ) { return images.count( hash ) > 0; }
+};
 
 class PictureBank::Impl
 {
 public:
-  typedef std::map< unsigned int, Picture> Pictures;
-  typedef Pictures::iterator ItPicture;
-  StringArray availableExentions;
+  typedef std::map<unsigned int, Picture> CachedPictures;
+  typedef std::vector< AtlasPreview > AtlasPreviews;
+  typedef std::map<SDL_Texture*, int> TextureCounter;
+  typedef CachedPictures::iterator ItPicture;
 
-  Pictures resources;  // key=image name, value=picture
+  AtlasPreviews atlases;
+  StringArray picExentions;
+  TextureCounter txCounters;
+  CachedPictures resources;  // key=image name, value=picture
+
+public:
   Picture tryLoadPicture( const std::string& name );
+  void loadAtlas( const AtlasPreview& info );
+  void setPicture( const std::string &name, const Picture& pic );
 };
 
-PictureBank& PictureBank::instance()
-{
-  static PictureBank inst; 
-  return inst;
-}
-
-void PictureBank::setPicture( const std::string &name, const Picture& pic )
+void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
 {
   // first: we deallocate the current picture, if any
   unsigned int picId = StringHelper::hash( name );
   Picture* ptrPic = 0;
-  Impl::ItPicture it = _d->resources.find( picId );
-  if( it != _d->resources.end() )
+  Impl::ItPicture it = resources.find( picId );
+  if( it != resources.end() )
   {
-    SDL_DestroyTexture( it->second.texture() );
+    //SDL_DestroyTexture( it->second.texture() );
+    if( it->second.texture() > 0 )
+      txCounters[ it->second.texture() ]--;
+
     ptrPic = &it->second;
   }
   else
   {
-    _d->resources[ picId ] = Picture();
-    ptrPic = &_d->resources[ picId ];
+    resources[ picId ] = Picture();
+    ptrPic = &resources[ picId ];
   }
 
   *ptrPic = pic;
+  if( pic.texture() > 0 )
+    txCounters[ pic.texture() ]++;
 
   int dot_pos = name.find('.');
   std::string rcname = name.substr(0, dot_pos);
@@ -100,6 +117,42 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
   ptrPic->setName( rcname );
 }
 
+PictureBank& PictureBank::instance()
+{
+  static PictureBank inst; 
+  return inst;
+}
+
+void PictureBank::reset()
+{
+
+}
+
+void PictureBank::setPicture( const std::string &name, const Picture& pic )
+{
+  _d->setPicture( name, pic );
+}
+
+void PictureBank::addAtlas( const std::string& filename, const VariantMap& options )
+{
+  if( !options.empty() )
+  {
+    Logger::warning( "PictureBank: load atlas " + filename );
+
+    AtlasPreview atlas;
+    atlas.filename = filename;
+
+    VariantMap items = options.get( "frames" ).toMap();
+    foreach( i, items )
+    {
+      unsigned int hash = StringHelper::hash( i->first );
+      atlas.images.insert( hash );
+    }
+
+    _d->atlases.push_back( atlas );
+  }
+}
+
 Picture& PictureBank::getPicture(const std::string &name)
 {
   const unsigned int hash = StringHelper::hash( name );
@@ -111,8 +164,8 @@ Picture& PictureBank::getPicture(const std::string &name)
     //can't find image in valid resources, try load from hdd
     const Picture& pic = _d->tryLoadPicture( name );
 
-    if( pic.isValid() )     {      setPicture( name, pic );    }
-    else    {      _d->resources[ hash ] = pic;    }
+    if( pic.isValid() ) { setPicture( name, pic );  }
+    else{ _d->resources[ hash ] = pic; }
 
     return _d->resources[ hash ];
   }
@@ -128,8 +181,8 @@ Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
 
 PictureBank::PictureBank() : _d( new Impl )
 {
-  _d->availableExentions << ".png";
-  _d->availableExentions << ".bmp";
+  _d->picExentions << ".png";
+  _d->picExentions << ".bmp";
 }
 
 PictureBank::~PictureBank(){}
@@ -142,9 +195,9 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   bool fileExist = false;
   if( realPath.extension().empty() )
   {
-    foreach( itExt, availableExentions )
+    foreach( itExt, picExentions )
     {
-     realPath = name + *itExt;
+      realPath = name + *itExt;
 
       if( realPath.exist() )
       {
@@ -164,6 +217,64 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
+  unsigned int hash = StringHelper::hash( name );
+  foreach( i, atlases )
+  {
+    bool found = i->find( hash );
+    if( found )
+    {
+      loadAtlas( *i );
+      //unloadAtlas.erase( i );
+      break;
+    }
+  }
+
+  CachedPictures::iterator it = resources.find( hash );
+  if( it != resources.end() )
+  {
+    return it->second;
+  }
+
   Logger::warning( "PictureBank: Unknown resource %s", name.c_str() );
   return Picture::getInvalid();
+}
+
+void PictureBank::Impl::loadAtlas(const AtlasPreview& info)
+{
+  vfs::Path filePath( info.filename );
+
+  if( filePath.exist() )
+  {
+    VariantMap info = SaveAdapter::load( filePath );
+
+    vfs::Path texturePath = info.get( "texture" ).toString();
+
+    vfs::NFile file = vfs::NFile::open( texturePath );
+
+    Picture mainTexture;
+    if( file.isOpen() )
+    {
+      mainTexture = PictureLoader::instance().load( file );
+    }
+    else
+    {
+      Logger::warning( "PictureBank: load atlas failed for texture" + texturePath.toString() );
+      mainTexture = Picture::getInvalid();
+    }
+
+    if( !info.empty() )
+    {
+      VariantMap items = info.get( "frames" ).toMap();
+      foreach( i, items )
+      {
+        VariantList rInfo = i->second.toList();
+        Picture pic = mainTexture;
+        Point start(rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
+        Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
+
+        pic.setOriginRect( Rect( start, size ) );
+        setPicture( i->first, pic );
+      }
+    }
+  }
 }

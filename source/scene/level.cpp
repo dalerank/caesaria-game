@@ -392,7 +392,7 @@ void Level::Impl::makeFullScreenshot()
                             : t->picture();
 
     Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+    //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
   }
 
   std::string filename = getScreenshotName();
