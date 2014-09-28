@@ -368,7 +368,7 @@ void Level::Impl::makeFullScreenshot()
   {
     for( int t=0; t <= y; t++ )
     {
-      ret.push_back( &tmap.at( t, mapSize - 1 - ( y - t ) ) );
+			ret.append(&tmap.at(t, mapSize - 1 - (y - t)));
     }
   }
 
@@ -376,7 +376,7 @@ void Level::Impl::makeFullScreenshot()
   {
     for( int t=0; t < mapSize-x; t++ )
     {
-      ret.push_back( &tmap.at( x + t, t ) );
+			ret.append(&tmap.at(x + t, t));
     }
   }
 

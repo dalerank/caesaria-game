@@ -76,7 +76,8 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     TilesArray nextPoints = tmap.getNeighbors(_d->currentPoint, Tilemap::FourNeighbors);
 
     int lastDst = _d->currentPoint.getDistanceFromSQ(_d->endPoint);
-    for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
+    //for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
+		foreach(it, nextPoints)
     {
       bool mayDestruct = (*it)->getFlag( Tile::isConstructible );
       mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );

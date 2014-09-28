@@ -19,16 +19,18 @@
 
 #include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
+#include <core/variant.hpp>
 
 class Game;
 
 class GameLoaderOc3 : public GameAbstractLoader
 {
-public:
-  GameLoaderOc3();
-
-  virtual bool load(const std::string& filename, Game &game);
-  virtual int  climateType(const std::string& filename);
+public:	
+  GameLoaderOc3();  
+	virtual bool load(const std::string& filename, Game &game);	
+	virtual bool load(VariantMap& vm, Game &game);
+	virtual int  climateType(const std::string& filename);
+	virtual int  climateType(VariantMap& vm);
   virtual bool isLoadableFileExtension( const std::string& filename );
   virtual std::string restartFile() const;
 

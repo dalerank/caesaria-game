@@ -127,7 +127,7 @@ void Construction::computeAccessRoads()
     {
       if( (*tile)->getFlag( Tile::tlRoad ) )
       {
-        _d->accessRoads.push_back( *tile );
+        _d->accessRoads.append( *tile );
       }
     }
   }

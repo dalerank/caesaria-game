@@ -175,7 +175,7 @@ Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
   }
 
   TilesArray area;
-  area.push_back( &_d->tilemap->at(stop) );
+  area.append( &_d->tilemap->at(stop) );
   return getPath( start, area, flags );
 }
 

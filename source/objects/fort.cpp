@@ -273,44 +273,44 @@ TilePos Fort::freeSlot() const
   break;
 
   case frmWestLine:
-    tiles.push_back( &tile() );
+    tiles.append( &tile() );
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
+			tiles.append(&tmap.at(patrolPos - TilePos(0, range)));
+			tiles.append(&tmap.at(patrolPos + TilePos(0, range)));
     }
   break;
 
   case frmWestDblLine:
-    tiles.push_back( &tile() );
-    tiles.push_back( &tmap.at( patrolPos + TilePos( 0, 1 ) ) );
+		tiles.append(&tile());
+		tiles.append(&tmap.at(patrolPos + TilePos(0, 1)));
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos - TilePos( -1, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 1, range ) ) );
+			tiles.append(&tmap.at(patrolPos - TilePos(0, range)));
+			tiles.append(&tmap.at(patrolPos - TilePos(-1, range)));
+			tiles.append(&tmap.at(patrolPos + TilePos(0, range)));
+			tiles.append(&tmap.at(patrolPos + TilePos(1, range)));
     }
   break;
 
   case frmNorthLine:
-    tiles.push_back( &tile() );
+		tiles.append(&tile());
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range, 0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range, 0 ) ) );
+			tiles.append(&tmap.at(patrolPos - TilePos(range, 0)));
+			tiles.append(&tmap.at(patrolPos + TilePos(range, 0)));
     }
   break;
 
   case frmNorthDblLine:
-    tiles.push_back( &tile() );
-    tiles.push_back( &tmap.at( patrolPos - TilePos( 1, 0 ) ) );
+		tiles.append(&tile());
+		tiles.append(&tmap.at(patrolPos - TilePos(1, 0)));
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range,0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range,1 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range,0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range,-1 ) ) );
+			tiles.append(&tmap.at(patrolPos - TilePos(range, 0)));
+			tiles.append(&tmap.at(patrolPos - TilePos(range, 1)));
+			tiles.append(&tmap.at(patrolPos + TilePos(range, 0)));
+			tiles.append(&tmap.at(patrolPos + TilePos(range, -1)));
     }
   break;
 

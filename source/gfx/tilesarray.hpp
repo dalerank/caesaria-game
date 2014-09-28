@@ -24,95 +24,216 @@
 namespace gfx
 {
 
-class TilesArray : public std::vector<Tile*>
+class TilesArray
 {
+private:
+	std::vector<Tile*> tiles;
+	TilePos _leftUpCorner;
+	TilePos _rightDownCorner;
+	bool isCornersUpToDate;
 public:
-  bool contain( TilePos tilePos ) const
-  {
-    foreach( it, *this )
-    {
-      if( (*it)->pos() == tilePos )
-        return true;
-    }
+	bool isRectangular;
 
-    return false;
+	typedef std::vector<Tile*>::const_iterator const_iterator;
+	typedef std::vector<Tile*>::const_reverse_iterator const_reverse_iterator;
+	typedef std::vector<Tile*>::iterator iterator;
+	typedef std::vector<Tile*>::reverse_iterator reverse_iterator;
+	typedef std::vector<Tile*>::size_type size_type;
+	typedef std::vector<Tile*>::const_reference const_reference;
+	typedef std::vector<Tile*>::reference reference;
+
+	const_iterator begin() const { return tiles.begin(); }
+	const_iterator end() const { return tiles.end(); }
+
+	iterator begin() { return tiles.begin(); }
+	iterator end() { return tiles.end(); }
+
+	const_reverse_iterator rbegin() const { return tiles.rbegin(); }
+	const_reverse_iterator rend() const { return tiles.rend(); }
+
+	reverse_iterator rbegin() { return tiles.rbegin(); }
+	reverse_iterator rend() { return tiles.rend(); }
+
+	bool empty() const { return tiles.empty(); }
+	void clear() { tiles.clear(); recreateCorners(); }
+	void reserve(size_type newSize) { tiles.reserve(newSize); }
+	void pop_back() { tiles.pop_back(); isCornersUpToDate = false; }
+	void insert(const_iterator where, Tile* tile) { tiles.insert(where, tile); }
+	iterator erase(const_iterator it){
+		isCornersUpToDate = false;
+		return tiles.erase(it);
+	}
+	size_type size() const { return tiles.size(); }
+	const_reference front() const { return tiles.front(); }
+	const_reference back() const { return tiles.back(); }
+	const_reference operator[] (size_type ind) const { return tiles[ind]; }
+
+  bool contain( TilePos& tilePos )
+  {
+		const int k = 1000;
+		if (isRectangular)
+		{
+			if (tilePos.i() >= leftUpCorner().i() && tilePos.i() <= rightDownCorner().i()
+				&& tilePos.j() <= leftUpCorner().j() && tilePos.j() >= rightDownCorner().j())
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (tiles.size() > k){
+				bool b = true;
+			}
+			foreach(it, tiles)
+			{
+				if ((*it)->pos() == tilePos)
+					return true;
+			}
+		}
+
+
+
+		return false;
   }
 
-  TilesArray() {}
+	TilesArray()
+	{
+	  isRectangular = false;
+		_leftUpCorner = TilePos(-1, -1);
+		_rightDownCorner = TilePos(-1, -1);
+		isCornersUpToDate = true;
+  }
+
+	TilesArray(size_type size) : TilesArray()
+	{
+		tiles.reserve(size);
+	}
 
   TilesArray( const TilesArray& a )
-  {
-    *this = a;
+  {		
+		tiles = a.tiles;
+		isRectangular = a.isRectangular;
+		isCornersUpToDate = a.isCornersUpToDate;
+		_leftUpCorner = a._leftUpCorner;
+		_rightDownCorner = a._rightDownCorner;
   }
 
-  TilePos leftUpCorner() const
+  TilePos leftUpCorner()
   {
-    if( empty() )
-      return TilePos( -1, -1 );
+		if (!isCornersUpToDate)
+		{
+			recreateCorners();
+		}
 
-    TilePos ret( 9999, 0 );
-    foreach( it, *this )
-    {
-      const TilePos& cpos = (*it)->pos();
-      if( cpos.i() < ret.i() ) { ret.setI( cpos.i() ); }
-      if( cpos.j() > ret.j() ) { ret.setJ( cpos.j() ); }
-    }
-
-    return ret;
+		return _leftUpCorner;
   }
 
-  TilePos rightDownCorner() const
+  TilePos rightDownCorner()
   {
-    if( empty() )
-      return TilePos( -1, -1 );
-
-    TilePos ret( 0, 9999 );
-    foreach( it, *this )
-    {
-      const TilePos& cpos = (*it)->pos();
-      if( cpos.j() < ret.j() ) { ret.setJ( cpos.j() ); }
-      if( cpos.i() > ret.i() ) { ret.setI( cpos.i() ); }
-    }
-
-    return ret;
+		if (!isCornersUpToDate)
+		{
+			recreateCorners();
+		}
+		return  _rightDownCorner;
   }
 
   TilesArray& operator=(const TilesArray& a)
   {
-    clear();
-    insert(begin(), a.begin(), a.end());
+		tiles = a.tiles;
+		_leftUpCorner = a._leftUpCorner;
+		_rightDownCorner = a._rightDownCorner;
+		isRectangular = a.isRectangular;
+		if (!a.isCornersUpToDate){
+			recreateCorners();
+		}
     return *this;
   }
+
+	void recreateCorners()
+	{
+		if (tiles.empty())
+		{
+			_leftUpCorner = TilePos(-1, -1);
+			_rightDownCorner = TilePos(-1, -1);
+			isCornersUpToDate = true;
+			return;
+		}
+
+		_rightDownCorner = TilePos(0, 9999);
+		_leftUpCorner = TilePos(9999, 0);
+		foreach(it, tiles)
+		{
+			const TilePos& pos = (*it)->pos();
+			if (pos.i() < _leftUpCorner.i()) { _leftUpCorner.setI(pos.i()); }
+			if (pos.j() > _leftUpCorner.j()) { _leftUpCorner.setJ(pos.j()); }
+			if (pos.j() < _rightDownCorner.j()) { _rightDownCorner.setJ(pos.j()); }
+			if (pos.i() > _rightDownCorner.i()) { _rightDownCorner.setI(pos.i()); }
+		}
+
+		isCornersUpToDate = true;
+
+		int areaBetweenCorners = (_leftUpCorner.j() - _rightDownCorner.j() + 1) * (_rightDownCorner.i() - _leftUpCorner.i() + 1);
+
+		isRectangular = areaBetweenCorners == tiles.size();
+	}
+
+	void updateCorners(TilePos& pos)
+	{
+		if (pos.i() < _leftUpCorner.i()) { _leftUpCorner.setI(pos.i()); }
+		if (pos.j() > _leftUpCorner.j()) { _leftUpCorner.setJ(pos.j()); }
+		if (pos.j() < _rightDownCorner.j()) { _rightDownCorner.setJ(pos.j()); }
+		if (pos.i() > _rightDownCorner.i()) { _rightDownCorner.setI(pos.i()); }
+  }
+
+	TilesArray& append(Tile* tile)
+	{
+		tiles.push_back(tile);
+		isCornersUpToDate = false;
+		return *this;
+	}
 
   TilesArray& append( const TilesArray& a )
   {
-    insert( end(), a.begin(), a.end() );
+    tiles.insert( tiles.end(), a.tiles.begin(), a.tiles.end() );
+
+		recreateCorners();
 
     return *this;
   }
+
+	void replace(size_type pos, Tile* tile){
+		tiles[pos] = tile;
+		isCornersUpToDate = false;
+	}
 
   TilesArray walkableTiles( bool alllands=false ) const
   {
     TilesArray ret;
-    foreach( i, *this)
+    foreach( i, tiles)
     {
       if( (*i)->isWalkable( alllands ) )
-          ret.push_back( *i );
+          ret.tiles.push_back( *i );
     }
 
     return ret;
   }
 
-  TilesArray& remove( TilePos pos )
+	
+
+  TilesArray& remove( TilePos& pos )
   {
-    foreach( it, *this )
+    foreach( it, tiles )
     {
       if( (*it)->pos() == pos )
       {
-        erase( it );
+        tiles.erase( it );
+				recreateCorners();
+				isRectangular = false;
         break;
       }
     }
+
+		isCornersUpToDate = false;
 
     return *this;
   }
@@ -120,7 +241,7 @@ public:
   TileOverlayList overlays() const
   {
     TileOverlayList ret;
-    foreach( i, *this)
+    foreach( i, tiles)
     {
       if( (*i)->overlay().isValid() )
         ret << (*i)->overlay();
@@ -131,7 +252,7 @@ public:
 
   Tile* random() const
   {
-    return size() > 0 ? (*this)[ math::random( size() ) ] : 0;
+    return tiles.size() > 0 ? tiles[ math::random( tiles.size() ) ] : 0;
   }
 };
 
