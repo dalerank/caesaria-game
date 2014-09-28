@@ -38,7 +38,7 @@ public:
   void setFunds( int value );
   void setPopulation( int value );
 
-oc3_signals public:
+signals public:
   Signal0<>& onExit();
   Signal0<>& onSave();
   Signal0<>& onEnd();

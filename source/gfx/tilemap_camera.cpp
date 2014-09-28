@@ -67,7 +67,7 @@ public:
 
   void cacheFlatTiles();
 
-public oc3_signals:
+public signals:
   Signal1<Point> onPositionChangedSignal;
 };
 
@@ -109,7 +109,7 @@ void TilemapCamera::setCenter(TilePos pos)
 {
   setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
-  oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
+  emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
 void TilemapCamera::move(PointF relative)
@@ -134,7 +134,7 @@ void TilemapCamera::move(PointF relative)
       _d->tiles.clear();
     }
 
-    oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
+    emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
   }
 }
 
@@ -158,7 +158,7 @@ void TilemapCamera::setCenter(Point pos)
   }  
 
   _d->centerMapXZ = pos.toPointF();
-  oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
+  emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
 TilePos TilemapCamera::center() const

@@ -300,9 +300,9 @@ unsigned int ContextMenu::_sendClick(const Point& p)
 		ContextMenuItem* tItem = selectedItem();
 		if( tItem )
     {
-      oc3_emit tItem->onClicked()();
+      emit tItem->onClicked()();
 
-      oc3_emit _d->onItemActionSignal( tItem->commandId() );
+      emit _d->onItemActionSignal( tItem->commandId() );
     }
 		return 1;
 	}

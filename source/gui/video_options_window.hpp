@@ -36,7 +36,7 @@ public:
   virtual ~VideoOptionsWindow(void);
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
+public:
   Signal1<Size>& onSreenSizeChange();
   Signal1<bool>& onFullScreenChange();
   Signal0<>& onClose();

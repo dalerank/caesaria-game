@@ -34,7 +34,7 @@ public:
 
 	void restart( Widget* parent );
 
-public oc3_signals:
+public signals:
 	Signal0<> finishedSignal;
 };
 

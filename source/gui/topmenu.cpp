@@ -60,7 +60,7 @@ public:
   ContextMenu* langSelect;
   Pictures background;
 
-oc3_slots public:
+slots public:
   void resolveSave();
   void updateDate();
   void showAboutInfo();
@@ -69,7 +69,7 @@ oc3_slots public:
   void showShortKeyInfo();
   void initBackground( const Size& size );
 
-oc3_signals public:
+signals public:
   Signal0<> onExitSignal;
   Signal0<> onEndSignal;
   Signal0<> onSaveSignal;
@@ -193,11 +193,11 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
 
-  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::emit );
-  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
-  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::emit );
-  CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::emit );
-  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::emit );
+  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::_emit );
+  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::_emit );
+  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::_emit );
+  CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::_emit );
+  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
@@ -206,10 +206,10 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
   ContextMenuItem* cityopts = options->addItem( _("##city_settings##"), -1, true, false, false, false );
 
-  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::emit );
-  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
-  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::emit );
-  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::emit );
+  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::_emit );
+  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::_emit );
+  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::_emit );
+  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
@@ -235,7 +235,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
-  tmp = addItem( _("##gmenu_debug##"), -1, true, true, false, false );
+  tmp = addItem( _("Debug"), -1, true, true, false, false );
   ContextMenu* debugMenu = tmp->addSubMenu();
   debugMenu->addItem( "add_enemy_archers", city::debug_event::add_enemy_archers );
   debugMenu->addItem( "add_enemy_soldiers", city::debug_event::add_enemy_soldiers );
@@ -245,6 +245,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "add_player_money", city::debug_event::add_player_money );
   debugMenu->addItem( "send_chastener", city::debug_event::send_chastener );
   debugMenu->addItem( "test_request", city::debug_event::test_request );
+  debugMenu->addItem( "send_player_army", city::debug_event::send_player_army );
+  debugMenu->addItem( "screenshot", city::debug_event::screenshot );
+  debugMenu->addItem( "add_empire_barbarian", city::debug_event::add_empire_barbarian );
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
 
@@ -262,7 +265,7 @@ Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
 Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
 Signal1<int> &TopMenu::onDebugEvent() { return _d->onDebugEventSignal; }
-void TopMenu::Impl::resolveAdvisorShow(int id) { oc3_emit onRequestAdvisorSignal( (advisor::Type)id ); }
-void TopMenu::Impl::handleDebugEvent(int id) { oc3_emit onDebugEventSignal( id ); }
+void TopMenu::Impl::resolveAdvisorShow(int id) { emit onRequestAdvisorSignal( (advisor::Type)id ); }
+void TopMenu::Impl::handleDebugEvent(int id) { emit onDebugEventSignal( id ); }
 
 }//end namespace gui

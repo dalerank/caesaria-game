@@ -33,7 +33,7 @@ public:
   typedef std::vector< PushButton* > SubmenuButtons;
   SubmenuButtons buttons;
 
-oc3_signals public:
+signals public:
   Signal1<int> onSelectOverlayTypeSignal;
 };
 
@@ -170,7 +170,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
         _d->buttons.clear();
                 
-        oc3_emit _d->onSelectOverlayTypeSignal( event.gui.caller->ID() );
+        emit _d->onSelectOverlayTypeSignal( event.gui.caller->ID() );
         hide();
       }
     break;

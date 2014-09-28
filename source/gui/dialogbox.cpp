@@ -35,7 +35,7 @@ namespace {
 
 class DialogBox::Impl
 {
-oc3_signals public:
+signals public:
   Signal1<int> onResultSignal;
   Signal0<> onOkSignal;
   Signal0<> onCancelSignal;
@@ -91,13 +91,13 @@ bool DialogBox::onEvent( const NEvent& event )
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->ID();
-    oc3_emit _d->onResultSignal( id );
+    emit _d->onResultSignal( id );
 
     switch( id )
     {
-    case btnOk: oc3_emit _d->onOkSignal(); break;
-    case btnCancel: oc3_emit _d->onCancelSignal(); break;
-    case btnNever: oc3_emit _d->onNeverSignal(); break;
+    case btnOk: emit _d->onOkSignal(); break;
+    case btnCancel: emit _d->onCancelSignal(); break;
+    case btnNever: emit _d->onNeverSignal(); break;
     }
 
     return true;

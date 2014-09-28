@@ -121,7 +121,7 @@ public:
 
   void clean();
    
-oc3_signals public:
+signals public:
   Signal1<int>& onPopulationChanged();
   Signal1<int>& onFundsChanged();
   Signal1<std::string>& onWarningMessage();

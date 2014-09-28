@@ -60,7 +60,7 @@ public:
 
   Impl() : s( 0 ), image_data( 0 ) {}
 
-public oc3_signals:
+public signals:
   Signal0<> onFinishSignal;
 };
 
@@ -200,7 +200,7 @@ void SmkViewer::Impl::nextFrame()
   if( currentFrame+1 == frameCount )
   {
     currentFrame++;
-    oc3_emit onFinishSignal();
+    emit onFinishSignal();
   }
 
   Logger::warning( " -> Frame %d...", currentFrame );
