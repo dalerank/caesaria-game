@@ -44,7 +44,7 @@ public:
 	CloseMode closeHandling;
 	bool needRecalculateItems;
 
-oc3_signals public:
+signals public:
   Signal1<int> onItemActionSignal;
 };
 

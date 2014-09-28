@@ -84,7 +84,7 @@ bool Object::isMovable() const { return false; }
 
 void Object::save( VariantMap& stream ) const
 {
-  stream[ "location" ] = _d->location;
+  VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
   stream[ "name" ] = Variant( _d->name );
   stream[ "animation" ] = _d->animation.save();
@@ -94,7 +94,7 @@ void Object::save( VariantMap& stream ) const
 
 void Object::load(const VariantMap& stream)
 {
-  _d->location = stream.get( "location" ).toPoint();  
+  VARIANT_LOAD_ANY_D( _d, location, stream )
 
   Variant name = stream.get( "name" );
   if( name.isValid() )
@@ -121,5 +121,6 @@ Object::Object( EmpirePtr empire) : _d( new Impl )
 }
 
 Animation& Object::_animation() { return _d->animation; }
+Pictures &Object::_pictures() { return _d->pictures; }
 
 }

@@ -32,7 +32,7 @@ namespace world
 
 class Traderoute::Impl
 {
-oc3_signals public:
+signals public:
   Signal1<MerchantPtr> onMerchantArrivedSignal;
 public:
   std::string begin;
@@ -62,7 +62,7 @@ public:
       city->addObject( ptr_cast<Object>( merchant ) );
     }
 
-    oc3_emit onMerchantArrivedSignal( merchant );
+    emit onMerchantArrivedSignal( merchant );
   }
 };
 

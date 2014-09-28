@@ -51,9 +51,11 @@ public:
   virtual ~Object();
 
   void deleteLater();
+
 protected:
   Object(EmpirePtr empire );
   gfx::Animation& _animation();
+  gfx::Pictures& _pictures();
 
 private:
   class Impl;

@@ -62,13 +62,13 @@ public:
   PlayerCityPtr city;
   RomeDivinityType currentDivinity;
 
-public oc3_signals:
+public signals:
   Signal2<int, int> onFestivalAssignSignal;
 
 public:
   void assignFestival()
   {    
-    oc3_emit onFestivalAssignSignal( (int)currentDivinity, festivalType );
+    emit onFestivalAssignSignal( (int)currentDivinity, festivalType );
   }
 
   void addImage( Widget* parent, RomeDivinityType type, int column, int startPic )

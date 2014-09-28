@@ -90,7 +90,7 @@ public:
 
   virtual SubMenuAlign subMenuAlignment() const;
 
-oc3_signals public:
+signals public:
   Signal1<bool>& onChecked();
 
 private:

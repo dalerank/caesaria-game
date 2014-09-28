@@ -32,7 +32,7 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
+public signals:
   Signal2<city::Industry::Type, int>& onAcceptPriority();
 
 private:

@@ -70,9 +70,9 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 
     case 1001:
     {
-      oc3_emit _d->onGameSpeedChangeSignal( _d->speedValue );
-      oc3_emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
-      oc3_emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
+      emit _d->onGameSpeedChangeSignal( _d->speedValue );
+      emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
+      emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
       deleteLater();
     }
     break;

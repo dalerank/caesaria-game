@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "barbarian.hpp"
+#include "playerarmy.hpp"
 #include "empire.hpp"
 #include "good/goodstore_simple.hpp"
 #include "game/resourcegroup.hpp"
@@ -25,59 +25,88 @@
 #include "city.hpp"
 #include "game/gamedate.hpp"
 
+using namespace gfx;
+
 namespace world
 {
 
-namespace {
-static const Point barbarianStartLocation( 1500, 0 );
-}
-
-class Barbarian::Impl
+class PlayerArmy::Impl
 {
 public:  
-  typedef enum { findAny, go2object, hunting, goaway } Mode;
+  typedef enum { findAny, go2location, wait, go2home } Mode;
+
   Mode mode;
-  VariantMap options;
+  RomeSoldierList soldiers;
+  CityPtr base;
 };
 
-BarbarianPtr Barbarian::create(EmpirePtr empire, Point location)
+PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
 {
-  BarbarianPtr ret( new Barbarian( empire ) );
-  ret->setLocation( location );
-  ret->setStrength( 10 + math::random( 50 ) );
-  ret->_check4attack();  
+  PlayerArmyPtr ret( new PlayerArmy( empire ) );
+  ret->_d->base = city;
+  ret->setLocation( city->location() );
   ret->drop();
 
   return ret;
 }
 
-std::string Barbarian::type() const { return CAESARIA_STR_EXT(Barbarian); }
+std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
 
-void Barbarian::timeStep(unsigned int time)
+void PlayerArmy::timeStep(unsigned int time)
 {
   MovableObject::timeStep( time );
 }
 
-void Barbarian::save(VariantMap& stream) const
+void PlayerArmy::move2location(Point point)
+{
+  bool validWay = _findWay( location(), point);
+  if( !validWay )
+  {
+    Logger::warning( "PlayerArmy: cant find way to point [%d,%d]", point.x(), point.y()  );
+    deleteLater();
+  }
+
+  _d->mode = Impl::go2home;
+}
+
+void PlayerArmy::return2fort()
+{
+  if( _d->base.isValid() )
+  {
+    bool validWay = _findWay( location(), _d->base->location() );
+    if( !validWay )
+    {
+      Logger::warning( "PlayerArmy: cant find way to base" );
+      deleteLater();
+    }
+
+    _d->mode = Impl::go2home;
+  }
+  else
+  {
+    Logger::warning( "PlayerArmy: base is null delete army" );
+    deleteLater();
+  }
+}
+
+void PlayerArmy::save(VariantMap& stream) const
 {
   MovableObject::save( stream );
 }
 
-void Barbarian::load(const VariantMap& stream)
+void PlayerArmy::load(const VariantMap& stream)
 {
   MovableObject::load( stream );
-
-  _d->options = stream;
 }
 
-void Barbarian::updateStrength(int value)
+int PlayerArmy::viewDistance() const { return 40; }
+
+void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
-  setStrength( strength() + value );
+  _d->soldiers.insert( _d->soldiers.end(), soldiers.begin(), soldiers.end() );
 }
 
-int Barbarian::viewDistance() const { return 60; }
-
-void Barbarian::_check4attack()
+void PlayerArmy::_check4attack()
 {
   MovableObjectList mobjects;
   mobjects << empire()->objects();
@@ -103,7 +132,7 @@ void Barbarian::_check4attack()
       bool validWay = _findWay( location(), it->second->location() );
       if( validWay )
       {
-        _d->mode = Impl::go2object;
+        _d->mode = Impl::go2location;
         break;
       }
     }
@@ -127,43 +156,43 @@ void Barbarian::_check4attack()
        bool validWay = _findWay( location(), it->second->location() );
        if( validWay )
        {
-         _d->mode = Impl::go2object;
+         _d->mode = Impl::go2location;
          break;
        }
      }
   }
 }
 
-void Barbarian::_goaway()
+void PlayerArmy::_noWay()
 {
-  bool validWay = _findWay( location(), barbarianStartLocation );
-  if( !validWay )
-  {
-    Logger::warning( "Barbarian: cant find way for out" );
-    deleteLater();
-  }
-
-  _d->mode = Impl::goaway;
+  return2fort();
 }
 
-void Barbarian::_noWay()
+void PlayerArmy::_reachedWay()
 {
-  _attackAny();
-}
-
-void Barbarian::_reachedWay()
-{
-  if( _d->mode == Impl::go2object )
+  if( _d->mode == Impl::go2location )
   {
     _attackAny();
   }
-  else if( _d->mode == Impl::goaway )
+  else if( _d->mode == Impl::go2home )
   {
+    ObjectList objects = empire()->findObjects( location(), 20 );
+
+    foreach( it, objects )
+    {
+      CityPtr pCity = ptr_cast<City>( *it );
+      if( pCity == _d->base )
+      {
+        (*it)->addObject( this );
+        break;
+      }
+    }
+
     deleteLater();
   }
 }
 
-void Barbarian::_attackAny()
+void PlayerArmy::_attackAny()
 {
   ObjectList objs = empire()->findObjects( location(), 20 );
   objs.remove( this );
@@ -175,14 +204,11 @@ void Barbarian::_attackAny()
     if( successAttack )
       break;
   }
-
-  if( successAttack )
-    _goaway();
 }
 
-bool Barbarian::_attackObject(ObjectPtr obj)
+bool PlayerArmy::_attackObject(ObjectPtr obj)
 {
-  if( is_kind_of<Merchant>( obj ) )
+  /*if( is_kind_of<Merchant>( obj ) )
   {
     obj->deleteLater();
     return true;
@@ -194,23 +220,26 @@ bool Barbarian::_attackObject(ObjectPtr obj)
     pcity->addObject( this );
 
     return !pcity->strength();
-  }
-  //else if( )
+  }*/
 
   return false;
 }
 
-Barbarian::Barbarian( EmpirePtr empire )
+PlayerArmy::PlayerArmy( EmpirePtr empire )
  : Army( empire ), _d( new Impl )
 {
   _d->mode = Impl::findAny;
   setSpeed( 4.f );
 
+  Picture pic = Picture::load( ResourceGroup::empirebits, 37 );
+  Size size = pic.size();
+  pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
+  setPicture( pic );
+
   _animation().clear();
-  _animation().load( ResourceGroup::empirebits, 53, 16 );
-  Size size = _animation().getFrame( 0 ).size();
-  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
+  _animation().load( ResourceGroup::empirebits, 72, 16 );
   _animation().setLoop( gfx::Animation::loopAnimation );
+  _animation().setOffset( Point( 5, -10 ) );
 }
 
 

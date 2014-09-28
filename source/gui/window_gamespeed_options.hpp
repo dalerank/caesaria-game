@@ -37,7 +37,7 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
+public signals:
   Signal1<int>& onGameSpeedChange();
   Signal1<int>& onScrollSpeedChange();
   Signal1<int>& onAutosaveIntervalChange();

@@ -32,7 +32,7 @@ const char* atlasListSection = "atlas";
 
 class ResourceLoader::Impl
 {
-public oc3_signals:
+public signals:
   Signal1<std::string> onStartLoadingSignal;
 };
 
@@ -63,7 +63,7 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 
     if( archive.isValid() )
     {
-      oc3_emit _d->onStartLoadingSignal( a->first );
+      emit _d->onStartLoadingSignal( a->first );
 
       NFile archiveInfo = archive->createAndOpenFile( archiveDescFile );
       if( archiveInfo.isOpen() )

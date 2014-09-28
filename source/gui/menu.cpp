@@ -88,7 +88,7 @@ public:
   void playSound();
   void updateBuildingOptions();
 
-oc3_signals public:
+signals public:
   Signal1<int> onCreateConstructionSignal;
   Signal0<> onRemoveToolSignal;
   Signal0<> onHideSignal;
@@ -200,13 +200,13 @@ bool Menu::onEvent(const NEvent& event)
     case construction::road:
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
-      oc3_emit _d->onCreateConstructionSignal( id );
+      emit _d->onCreateConstructionSignal( id );
     break;
 
     case REMOVE_TOOL_ID:
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
-      oc3_emit _d->onRemoveToolSignal();
+      emit _d->onRemoveToolSignal();
     break;
 
     default:
@@ -224,7 +224,7 @@ bool Menu::onEvent(const NEvent& event)
           }
           else
           {
-            oc3_emit _d->onCreateConstructionSignal( id );
+            emit _d->onCreateConstructionSignal( id );
             _createBuildMenu( -1, this );
             setFocus();
           }
@@ -305,7 +305,7 @@ void Menu::minimize()
   _createBuildMenu( -1, this );
   Point stopPos = lefttop() + Point( width(), 0 );
   PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
-  CONNECT( anim, onFinish(), &_d->onHideSignal, Signal0<>::emit );
+  CONNECT( anim, onFinish(), &_d->onHideSignal, Signal0<>::_emit );
 
   events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
   e->dispatch();

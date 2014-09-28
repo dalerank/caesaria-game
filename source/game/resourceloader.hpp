@@ -31,7 +31,7 @@ public:
 
   void loadFromModel( vfs::Path path2model, const vfs::Directory altDir=vfs::Directory() );
 
-public oc3_signals:
+public signals:
   Signal1<std::string> &onStartLoading();
 
 private:

@@ -119,7 +119,7 @@ public:
 
 	int hovered() const;
 
-oc3_signals public:
+signals public:
   virtual Signal1<int>& onItemAction();
 	
 protected:

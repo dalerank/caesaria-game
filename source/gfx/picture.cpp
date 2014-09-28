@@ -81,6 +81,7 @@ SDL_Surface*Picture::surface() const { return _d->surface;  }
 unsigned int Picture::textureID() const { return _d->opengltx; }
 unsigned int& Picture::textureID() { return _d->opengltx; }
 const Point& Picture::offset() const{  return _d->offset;}
+
 int Picture::width() const{  return _d->orect.width();}
 int Picture::height() const{  return _d->orect.height();}
 int Picture::pitch() const { return width() * 4; }

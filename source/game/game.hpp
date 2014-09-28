@@ -65,7 +65,7 @@ public:
   void setTimeMultiplier(int percent);
   int timeMultiplier() const;
 
-public oc3_signals:
+public signals:
   Signal1<std::string>& onSaveAccepted();
 
 private:
