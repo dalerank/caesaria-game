@@ -33,6 +33,7 @@ namespace gui
 class LegionTargetWindow::Impl
 {
 public:
+  Point lastCursor;
   Point location;
   Picture locationPic;
 
@@ -47,9 +48,8 @@ LegionTargetWindow::LegionTargetWindow(Widget* parent, int id, PlayerCityPtr cit
 {
   _d->location = Point( -1, -1 );
   _d->locationPic = Picture::load( ResourceGroup::empirebits, 29 );
-  Point offset = _d->locationPic.originRect().center();
-  offset.ry() *= -1;
-  _d->locationPic.setOffset( offset );
+  Size s = _d->locationPic.originRect().size() ;
+  _d->locationPic.setOffset( Point( -s.width(), s.height() ) / 2 );
 
   setFlag( showCityInfo, false );
 }
@@ -60,7 +60,7 @@ void LegionTargetWindow::draw(gfx::Engine& engine )
 
   if( _d->location.x() > 0 )
   {
-    engine.draw( _d->locationPic, _offset() + _d->location );
+    engine.draw( _d->locationPic, _d->location + _offset() );
   }
 }
 
@@ -71,15 +71,21 @@ bool LegionTargetWindow::onEvent( const NEvent& event )
     switch(event.mouse.type)
     {
     case mouseLbtnPressed:
-      _d->location = event.mouse.pos();
-      _changePosition();
+      _d->lastCursor = event.mouse.pos();
     break;
-    
+
+    case mouseLbtnRelease:
+      if( _d->lastCursor.distanceTo(event.mouse.pos() ) < 2 )
+      {
+        _d->lastCursor = event.mouse.pos();
+        _d->location = _d->lastCursor - _offset();
+        _changePosition();
+      }
+    break;
+
     default:
     break;
     }
-
-    return true;
   }
 
   return EmpireMapWindow::onEvent( event );
@@ -93,12 +99,12 @@ void LegionTargetWindow::_changePosition()
 
   if( wdg )
   {
-    Point startDraw = wdg->center();
+    Point startDraw = wdg->center() - wdg->lefttop();
     Point offset( 400, 20 );
 
     PushButton* btnSendTroops = new PushButton( wdg, Rect( startDraw - offset, startDraw ),
                                                 _("##lgntrg_send##"), -1, false, PushButton::blackBorderUp );
-    PushButton* btnExit = new PushButton( wdg, Rect( startDraw, startDraw + offset ),
+    PushButton* btnExit = new PushButton( wdg, Rect( btnSendTroops->righttop(), btnSendTroops->righttop() + offset ) ,
                                           _("##lngtrg_exit"), -1, false, PushButton::blackBorderUp );
 
     CONNECT( btnSendTroops, onClicked(), _d.data(), Impl::handleSendTroops );

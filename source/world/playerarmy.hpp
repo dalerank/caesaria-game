@@ -30,7 +30,7 @@ public:
   static PlayerArmyPtr create(EmpirePtr empire, CityPtr city=CityPtr() );
   virtual std::string type() const;
 
-  virtual void timeStep( unsigned int time );
+  virtual void timeStep( const unsigned int time );
   virtual void move2location( Point location );
   virtual void setFortPos(const TilePos& base );
   virtual void return2fort();
@@ -39,7 +39,7 @@ public:
 
   virtual int viewDistance() const;
 
-  virtual void addSoldiers( RomeSoldierList soldiers );
+  virtual void addSoldiers(RomeSoldierList soldiers);
 
 protected:
   virtual void _reachedWay();

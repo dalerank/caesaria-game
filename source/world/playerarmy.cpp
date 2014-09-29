@@ -23,8 +23,11 @@
 #include "merchant.hpp"
 #include "gfx/animation.hpp"
 #include "city.hpp"
+#include "city/city.hpp"
+#include "objects/fort.hpp"
 #include "game/gamedate.hpp"
 #include "core/stringhelper.hpp"
+#include "walker/walkers_factory.hpp"
 
 using namespace gfx;
 
@@ -33,11 +36,12 @@ namespace world
 
 class PlayerArmy::Impl
 {
-public:  
+public:
   typedef enum { findAny, go2location, wait, go2home } Mode;
 
   Mode mode;
-  RomeSoldierList soldiers;
+  RomeSoldierList waitSoldiers;
+  VariantList soldiersInfo;
   TilePos fortPos;
   CityPtr base;
 };
@@ -46,7 +50,7 @@ PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
 {
   PlayerArmyPtr ret( new PlayerArmy( empire ) );
   ret->_d->base = city;
-  ret->setLocation( city->location() );
+  ret->setLocation( city->location() - Point( 0, 10 ));
   ret->drop();
 
   return ret;
@@ -54,24 +58,25 @@ PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
 
 std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
 
-void PlayerArmy::timeStep(unsigned int time)
+void PlayerArmy::timeStep(const unsigned int time)
 {
   if( _d->mode == Impl::wait )
   {
     if( GameDate::isDayChanged() )
     {
-      bool ready2go = true;
-
-      foreach( it, _d->soldiers )
+      for( RomeSoldierList::iterator it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
       {
-        if( (*it)->rcount() > 1 )
+        if( (*it)->isDeleted() )
         {
-          ready2go = false;
-          break;
+          VariantMap vmSldr;
+          (*it)->save( vmSldr );
+          _d->soldiersInfo.push_back( vmSldr );
+          it = _d->waitSoldiers.erase( it );
         }
+        else { ++it; }
       }
 
-      if( ready2go )
+      if( _d->waitSoldiers.empty() )
       {
         _d->mode = Impl::go2location;
       }
@@ -92,7 +97,7 @@ void PlayerArmy::move2location(Point point)
     deleteLater();
   }
 
-  _d->mode = Impl::go2home;
+  _d->mode = Impl::go2location;
 }
 
 void PlayerArmy::setFortPos(const TilePos& base)
@@ -131,12 +136,12 @@ void PlayerArmy::load(const VariantMap& stream)
   MovableObject::load( stream );
 }
 
-int PlayerArmy::viewDistance() const { return 40; }
+int PlayerArmy::viewDistance() const { return 30; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
   _d->mode = Impl::wait;
-  _d->soldiers.insert( _d->soldiers.end(), soldiers.begin(), soldiers.end() );
+  _d->waitSoldiers.insert( _d->waitSoldiers.end(), soldiers.begin(), soldiers.end() );
 }
 
 void PlayerArmy::_check4attack()
@@ -206,18 +211,26 @@ void PlayerArmy::_reachedWay()
   if( _d->mode == Impl::go2location )
   {
     _attackAny();
+    return2fort();
   }
   else if( _d->mode == Impl::go2home )
   {
-    ObjectList objects = empire()->findObjects( location(), 20 );
-
-    foreach( it, objects )
+    PlayerCityPtr pCity = ptr_cast<PlayerCity>( _d->base );
+    if( pCity.isValid() )
     {
-      CityPtr pCity = ptr_cast<City>( *it );
-      if( pCity == _d->base )
+      foreach( it, _d->soldiersInfo )
       {
-        (*it)->addObject( this );
-        break;
+        VariantMap& info = *it;
+        int type = info[ "type" ];
+        WalkerPtr walker = WalkerManager::create( (constants::walker::Type)type, pCity );
+        pCity->addWalker( walker );
+      }
+
+      FortPtr fort = ptr_cast<Fort>( pCity->getOverlay( _d->fortPos ) );
+      if( fort.isValid() )
+      {
+        fort->returnSoldiers();
+        fort->resetExpedition();
       }
     }
 
@@ -261,7 +274,7 @@ bool PlayerArmy::_attackObject(ObjectPtr obj)
 PlayerArmy::PlayerArmy( EmpirePtr empire )
  : Army( empire ), _d( new Impl )
 {
-  _d->mode = Impl::findAny;
+  _d->mode = Impl::wait;
   setSpeed( 4.f );
 
   Picture pic = Picture::load( ResourceGroup::empirebits, 37 );
@@ -270,7 +283,7 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   setPicture( pic );
 
   _animation().clear();
-  _animation().load( ResourceGroup::empirebits, 72, 16 );
+  _animation().load( ResourceGroup::empirebits, 72, 6 );
   _animation().setLoop( gfx::Animation::loopAnimation );
   _animation().setOffset( Point( 5, -10 ) );
 }

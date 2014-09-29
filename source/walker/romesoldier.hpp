@@ -48,7 +48,7 @@ protected:
   virtual void _back2base();
   virtual void _duckout();
 
-  void _init( constants::walker::Type type);
+  void _init( constants::walker::Type type );
 
   virtual WalkerList _findEnemiesInRange(unsigned int range);
   virtual ConstructionList _findContructionsInRange(unsigned int range);
