@@ -24,6 +24,7 @@
 #include "gfx/animation.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace gfx;
 
@@ -37,6 +38,7 @@ public:
 
   Mode mode;
   RomeSoldierList soldiers;
+  TilePos fortPos;
   CityPtr base;
 };
 
@@ -54,7 +56,31 @@ std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
 
 void PlayerArmy::timeStep(unsigned int time)
 {
-  MovableObject::timeStep( time );
+  if( _d->mode == Impl::wait )
+  {
+    if( GameDate::isDayChanged() )
+    {
+      bool ready2go = true;
+
+      foreach( it, _d->soldiers )
+      {
+        if( (*it)->rcount() > 1 )
+        {
+          ready2go = false;
+          break;
+        }
+      }
+
+      if( ready2go )
+      {
+        _d->mode = Impl::go2location;
+      }
+    }
+  }
+  else
+  {
+    MovableObject::timeStep( time );
+  }
 }
 
 void PlayerArmy::move2location(Point point)
@@ -67,6 +93,12 @@ void PlayerArmy::move2location(Point point)
   }
 
   _d->mode = Impl::go2home;
+}
+
+void PlayerArmy::setFortPos(const TilePos& base)
+{
+  _d->fortPos = base;
+  setName( StringHelper::format( 0xff, "expedition_from_%dx%d", base.i(), base.j() ) );
 }
 
 void PlayerArmy::return2fort()
@@ -103,6 +135,7 @@ int PlayerArmy::viewDistance() const { return 40; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
+  _d->mode = Impl::wait;
   _d->soldiers.insert( _d->soldiers.end(), soldiers.begin(), soldiers.end() );
 }
 

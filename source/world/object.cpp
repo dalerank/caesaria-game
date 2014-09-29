@@ -108,6 +108,12 @@ void Object::load(const VariantMap& stream)
   _d->isDeleted = stream.get( "isDeleted" );
 }
 
+void Object::attach()
+{
+  if( _d->empire.isValid() )
+    _d->empire->addObject( this );
+}
+
 Object::~Object() {}
 
 void Object::deleteLater() { _d->isDeleted = true; }

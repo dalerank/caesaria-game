@@ -121,6 +121,7 @@ public:
   gui::Label* alarm;
   gui::Label* helpRequest;
   gui::Label* lbBlackframe;
+  FortPtr currentFort;
   PlayerCityPtr city;
 };
 
@@ -178,6 +179,9 @@ void Legion::_handleRetreaLegion(FortPtr fort)
 void Legion::_handleServiceEmpire(FortPtr fort)
 {
   LegionTargetWindow* dlg = LegionTargetWindow::create( _d->city, ui()->rootWidget(), -1 );
+  dlg->show();
+
+  CONNECT( dlg, onSelectLocation(), fort.object(), Fort::sendExpedition );
 }
 
 }

@@ -32,6 +32,8 @@
 #include "walker/helper.hpp"
 #include "walker/romearcher.hpp"
 #include "core/stacktrace.hpp"
+#include "world/playerarmy.hpp"
+#include "world/empire.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -67,6 +69,7 @@ static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
 
     newEmblem.name = vm_emblem[ lc_name ].toString();
     newEmblem.pic = Picture::load( vm_emblem[ lc_img ].toString() );
+
     if( !newEmblem.name.empty() && newEmblem.pic.isValid() )
     {
       availableEmblems.push_back( newEmblem );
@@ -102,6 +105,7 @@ public:
   std::map<unsigned int, TilePos> patrolAreaPos;
   Fort::TroopsFormations availableFormations;
   Fort::TroopsFormation formation;
+  std::string expeditionName;
 };
 
 class FortArea::Impl
@@ -415,7 +419,8 @@ void Fort::save(VariantMap& stream) const
   {
     stream[ "patrolPoint" ] =  _d->patrolPoint->pos();
   }
-  stream[ "soldierNumber"  ] = _d->maxSoldier;
+
+  VARIANT_SAVE_ANY_D( stream, _d, maxSoldier )
   stream[ lc_lastPatrolPos ] = _d->lastPatrolPos;
   stream[ lc_formation     ] = (int)_d->formation;
 }
@@ -427,7 +432,7 @@ void Fort::load(const VariantMap& stream)
   TilePos patrolPos = stream.get( "patrolPoint", pos() + TilePos( 3, 4 ) );
   _d->patrolPoint->setPos( patrolPos );
   _d->lastPatrolPos = stream.get( lc_lastPatrolPos, TilePos( -1, -1 ) );
-  _d->maxSoldier = stream.get( "soldierNumber", 16 ).toUInt();
+  VARIANT_LOAD_ANY_D( _d, maxSoldier, stream )
   _d->formation = (TroopsFormation)stream.get( lc_formation, 0 ).toInt();
 }
 
@@ -445,6 +450,27 @@ void Fort::returnSoldiers()
   {
     _d->patrolPoint->setPos( _d->area->pos() + TilePos( 0, 3 ) );
     changePatrolArea();
+  }
+}
+
+void Fort::sendExpedition(Point location)
+{
+  world::PlayerArmyPtr army = world::PlayerArmy::create( _city()->empire(), ptr_cast<world::City>( _city() ) );
+  army->setFortPos( pos() );
+
+  RomeSoldierList soldiers;
+  soldiers << walkers();
+
+  army->addSoldiers( soldiers );
+  army->move2location( location );
+
+  army->attach();
+
+  _d->expeditionName = army->name();
+
+  foreach( it, soldiers )
+  {
+
   }
 }
 
