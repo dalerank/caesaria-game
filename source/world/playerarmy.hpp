@@ -32,6 +32,7 @@ public:
 
   virtual void timeStep( unsigned int time );
   virtual void move2location( Point location );
+  virtual void setFortPos(const TilePos& base );
   virtual void return2fort();
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

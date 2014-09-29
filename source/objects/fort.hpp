@@ -64,6 +64,7 @@ public:
 
   virtual SoldierList soldiers() const;
   virtual void returnSoldiers();
+  virtual void sendExpedition( Point location );
 
 protected:
   virtual void _readyNewSoldier() {}

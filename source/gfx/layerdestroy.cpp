@@ -177,6 +177,14 @@ void LayerDestroy::render( Engine& engine )
   engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
+void LayerDestroy::init(Point cursor)
+{
+  Layer::init( cursor );
+  _setLastCursorPos( cursor );
+  _setStartCursorPos( cursor );
+  _d->startTilePos = TilePos( -1, -1 );
+}
+
 void LayerDestroy::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
