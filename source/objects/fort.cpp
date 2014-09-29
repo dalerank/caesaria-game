@@ -451,6 +451,7 @@ void Fort::returnSoldiers()
     _d->patrolPoint->setPos( _d->area->pos() + TilePos( 0, 3 ) );
     changePatrolArea();
   }
+
 }
 
 void Fort::sendExpedition(Point location)
@@ -461,8 +462,8 @@ void Fort::sendExpedition(Point location)
   RomeSoldierList soldiers;
   soldiers << walkers();
 
-  army->addSoldiers( soldiers );
   army->move2location( location );
+  army->addSoldiers( soldiers );
 
   army->attach();
 
@@ -470,10 +471,11 @@ void Fort::sendExpedition(Point location)
 
   foreach( it, soldiers )
   {
-
+    (*it)->send2expedition( army->name() );
   }
 }
 
+void Fort::resetExpedition() { _d->expeditionName.clear(); }
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
 void Fort::_setName(const std::string& name) { _d->emblem.name = name; }

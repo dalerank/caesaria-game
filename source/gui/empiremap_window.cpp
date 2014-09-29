@@ -627,7 +627,7 @@ void EmpireMapWindow::_changePosition()
 }
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
-Widget *EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
+Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
 
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {

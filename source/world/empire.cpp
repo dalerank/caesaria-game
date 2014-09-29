@@ -146,10 +146,11 @@ void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path f
 void Empire::addObject(ObjectPtr obj)
 {
   if( obj->name().empty() )
-  {
-    obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );
-    _d->objects.push_back( obj );
-  }
+  {          
+    obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );    
+  }  
+
+  _d->objects.push_back( obj );
 }
 
 CityPtr Empire::addCity( CityPtr city )
