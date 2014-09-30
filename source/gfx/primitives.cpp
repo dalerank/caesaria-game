@@ -4034,12 +4034,12 @@ int ellipseRGBA(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uin
 #if defined(_MSC_VER)
 /* Detect 64bit and use intrinsic version */
 #ifdef _M_X64
-#include <emmintrin.h>
-static __inline long 
-	lrint(float f) 
-{
-	return _mm_cvtss_si32(_mm_load_ss(&f));
-}
+//#include <emmintrin.h>
+//static __inline long 
+//	lrint(float f) 
+//{
+//	return _mm_cvtss_si32(_mm_load_ss(&f));
+//}
 #elif defined(_M_IX86)
 __inline long int
 	lrint (double flt)

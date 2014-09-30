@@ -82,7 +82,7 @@ Shoreline::Shoreline( PlayerCityPtr city )
 
 void Shoreline::update( const unsigned int time )
 {
-  if( !GameDate::isWeekChanged() )
+  //if( !GameDate::isWeekChanged() )
     return;
 
   if( _d->slTiles.empty() )

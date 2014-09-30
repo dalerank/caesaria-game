@@ -29,8 +29,8 @@ public:
 
     Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
 
-    int width() const { return _x; }
-    int height() const { return _y; }
+    inline int width() const { return _x; }
+    inline int height() const { return _y; }
 
     void setWidth( int w ) { _x = w; }
     void setHeight( int h ) { _y = h; }
@@ -56,8 +56,8 @@ public:
 
   SizeF operator+(const SizeF& other) const { return SizeF( _x + other._x, _y + other._y ); }
 
-  float width() const { return _x; }
-  float height() const { return _y; }
+  inline float width() const { return _x; }
+  inline float height() const { return _y; }
 
   void setWidth( float w ) { _x = w; }
   void setHeight( float h ) { _y = h; }

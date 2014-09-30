@@ -80,6 +80,9 @@
 #include "gui/city_options_window.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/timer.hpp"
+#include "city/cityservice_military.hpp"
+#include "city/cityservice_info.hpp"
+#include "city/debug_events.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -116,6 +119,8 @@ public:
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveSelectLayer( int type );
+  void checkFailedMission(Level *lvl);
+  void checkWinMission(Level *lvl);
   void resolveRemoveTool();
   void makeScreenShot();
   void setVideoOptions();
@@ -198,15 +203,16 @@ void Level::initialize()
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
-  CONNECT( _d->topMenu, onLoad(), this, Level::_resolveShowLoadGameWnd );
-  CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
-  CONNECT( _d->topMenu, onRestart(), this, Level::_resolveRestart );
+  CONNECT( _d->topMenu, onExit(), this, Level::_requestExitGame );
+  CONNECT( _d->topMenu, onLoad(), this, Level::_showLoadDialog );
+  CONNECT( _d->topMenu, onEnd(), this, Level::_exitToMainMenu );
+  CONNECT( _d->topMenu, onRestart(), this, Level::_restartMission );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
   CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
+  CONNECT( _d->topMenu, onDebugEvent(), this, Level::_handleDebugEvent );
 
   CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
@@ -388,7 +394,7 @@ void Level::Impl::makeFullScreenshot()
                             : t->picture();
 
     Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+    //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
   }
 
   std::string filename = getScreenshotName();
@@ -457,11 +463,11 @@ void Level::_showIngameMenu()
   PushButton* btnExit = findChildA<PushButton*>( "btnExit", true, menu );
 
   CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
-  CONNECT( btnExit, onClicked(), this, Level::_resolveExitGame );
-  CONNECT( btnSave, onClicked(), this, Level::_resolveShowLoadGameWnd );
-  CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
-  CONNECT( btnRestart, onClicked(), this, Level::_resolveRestart );
-  CONNECT( btnMainMenu, onClicked(), this, Level::_resolveEndGame );
+  CONNECT( btnExit, onClicked(), this, Level::_requestExitGame );
+  CONNECT( btnLoad, onClicked(), this, Level::_showLoadDialog );
+  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnRestart, onClicked(), this, Level::_restartMission );
+  CONNECT( btnMainMenu, onClicked(), this, Level::_exitToMainMenu );
 }
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
@@ -495,47 +501,26 @@ void Level::Impl::showEmpireMapWindow()
 
 void Level::draw()
 { 
-  //DebugTimer::reset( "render" );
   _d->renderer.render();
-  //DebugTimer::check( "", "render" );
 
-  //DebugTimer::reset( "beforeDraw" );
   _d->game->gui()->beforeDraw();
-  //DebugTimer::check( "", "beforeDraw" );
 
-  //DebugTimer::reset( "draw" );
   _d->game->gui()->draw();
-  //DebugTimer::check( "",  "draw" );
 }
 
 void Level::animate( unsigned int time )
 {
   _d->renderer.animate( time );
 
+  if( GameDate::isWeekChanged() )
+  {
+    _d->checkWinMission( this );
+    _d->checkFailedMission( this );
+  }
+
   if( GameDate::isMonthChanged() )
   {
-    PlayerCityPtr city = _d->game->city();
-    const city::VictoryConditions& wt = city->victoryConditions();
-
-    int culture = city->culture();
-    int prosperity = city->prosperity();
-    int favour = city->favour();
-    int peace = city->favour();
-    int population = city->population();
-    bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
-
-    if( success )
-    {
-      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(),
-                                                              wt.newTitle(), wt.winText(),
-                                                              false );
-
-      _d->mapToLoad = wt.nextMission();
-
-      CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
-    }
-
-    int autosaveInterval = GameSettings::get( GameSettings::autosaveInterval );
+    int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
     if( GameDate::current().month() % autosaveInterval == 0 )
     {
       static int rotate = 0;
@@ -557,7 +542,7 @@ void Level::handleEvent( NEvent& event )
 
   if (event.EventType == sEventQuit)
   {
-    _resolveExitGame();
+    _requestExitGame();
     return;
   }
 
@@ -647,68 +632,6 @@ void Level::handleEvent( NEvent& event )
         _d->makeFullScreenshot();
     break;
 
-    case KEY_KEY_R:
-    {
-      if( event.keyboard.shift )
-      {
-        VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
-        events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
-        e->dispatch();
-        return;
-      }
-    }
-    break;
-
-    case KEY_KEY_I:
-    {
-      if( event.keyboard.shift )
-      {
-        world::CityPtr rome = _d->game->empire()->rome();
-        PlayerCityPtr plCity = _d->game->city();
-
-        world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
-        army->setBase( rome );
-        army->attack( ptr_cast<world::Object>( plCity ) );
-      }
-    }
-    break;
-
-    case KEY_KEY_Y:
-    {
-      if( event.keyboard.shift )
-      {
-        _d->game->player()->appendMoney( 1000 );
-      }
-    }
-    break;
-
-    case KEY_KEY_M:
-    {
-      if( event.keyboard.shift )
-      {
-        religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
-        return;
-      }
-    }
-    break;
-
-    case KEY_KEY_L:
-      // Add 1000 denarii
-      if (event.keyboard.shift && event.keyboard.control)
-      {
-        _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
-      }
-      break;
-
-    case KEY_F11:
-      if( event.keyboard.shift )
-      {
-        events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
-        e->dispatch();
-      }
-      else { _d->makeEnemy(); }
-    break;    
-
     case KEY_ESCAPE:
     {
       Widget::Widgets children = _d->game->gui()->rootWidget()->children();
@@ -794,6 +717,62 @@ void Level::Impl::makeScreenShot()
   e->dispatch();
 }
 
+void Level::Impl::checkFailedMission( Level* lvl )
+{
+  PlayerCityPtr pcity = game->city();
+  city::MilitaryPtr mil;
+  city::InfoPtr info;
+  info << pcity->findService( city::Info::defaultName() );
+  mil << pcity->findService( city::Military::defaultName() );
+
+  if( mil.isValid() && info.isValid() )
+  {
+    const city::Info::MaxParameters& params = info->maxParams();
+
+    if( mil->threadValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population() )
+    {
+      game->pause();
+      Window* wnd = new Window( game->gui()->rootWidget(),
+                                          Rect( 0, 0, 400, 220 ), "" );
+      Label* lb = new Label( wnd, Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
+      lb->setTextAlignment( align::center, align::center );
+      lb->setFont( Font::create( FONT_6 ) );
+
+      PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 140), _("##restart_mission##") );
+
+      wnd->setCenter( game->gui()->rootWidget()->center() );
+      wnd->setModal();
+
+      CONNECT( btn, onClicked(), lvl, Level::_restartMission );
+    }
+  }
+}
+
+void Level::Impl::checkWinMission( Level* lvl )
+{
+  PlayerCityPtr city = game->city();
+  const city::VictoryConditions& wt = city->victoryConditions();
+
+  int culture = city->culture();
+  int prosperity = city->prosperity();
+  int favour = city->favour();
+  int peace = city->favour();
+  int population = city->population();
+  bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
+
+  if( success )
+  {
+    gui::WinMissionWindow* wnd = new gui::WinMissionWindow( game->gui()->rootWidget(),
+                                                            wt.newTitle(), wt.winText(),
+                                                            false );
+
+    mapToLoad = wt.nextMission();
+
+    CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
+  }
+
+}
+
 int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
 void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
@@ -801,16 +780,65 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
-void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
+void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
+void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 
-void Level::_resolveExitGame()
+void Level::_requestExitGame()
 {
   DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
   CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+}
+
+void Level::_handleDebugEvent(int event)
+{
+  switch( event )
+  {
+  case city::debug_event::dec_mars_relation:
+    religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
+  break;
+
+  case city::debug_event::add_1000_dn:
+    _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
+  break;
+
+  case city::debug_event::add_wolves:
+  {
+    events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
+    e->dispatch();
+  }
+  break;
+
+  case city::debug_event::add_enemy_archers:
+  case city::debug_event::add_enemy_soldiers:
+     _d->makeEnemy();
+  break;
+
+  case city::debug_event::add_player_money:
+    _d->game->player()->appendMoney( 1000 );
+  break;
+
+  case city::debug_event::send_chastener:
+  {
+    world::CityPtr rome = _d->game->empire()->rome();
+    PlayerCityPtr plCity = _d->game->city();
+
+    world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
+    army->setBase( rome );
+    army->attack( ptr_cast<world::Object>( plCity ) );
+  }
+  break;
+
+  case city::debug_event::test_request:
+  {
+    VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
+    events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
+    e->dispatch();
+  }
+  break;
+  }
 }
 
 void Level::Impl::showMissionTaretsWindow()
@@ -831,7 +859,7 @@ void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
   e->dispatch();
 }
 
-void Level::_resolveShowLoadGameWnd()
+void Level::_showLoadDialog()
 {
   gui::Widget* parent = _d->game->gui()->rootWidget();
 

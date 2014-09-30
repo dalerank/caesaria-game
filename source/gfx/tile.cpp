@@ -102,10 +102,21 @@ void Tile::setEPos(const TilePos& epos)
   _mappos = Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) - _height * y_tileBase );
 }
 
-void Tile::changeDirection(constants::Direction newDirection)
+void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
 {
-  if( _overlay.isValid() )
-    _overlay->changeDirection(newDirection);
+  if( masterTile && _overlay.isValid() )
+  {
+    _overlay->changeDirection( masterTile, newDirection);
+  }
+
+  if( _terrain.coast )
+  {
+    int imgid = TileHelper::turnCoastTile( _terrain.imgid, newDirection );
+
+    _picture = imgid == -1
+                ? Picture::getInvalid()
+                : TileHelper::pictureFromId( imgid );
+  }
 }
 
 
@@ -268,6 +279,12 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
   return res_id;
 }
 
+Picture &TileHelper::pictureFromId(const unsigned int imgId)
+{
+  std::string picname = convId2PicName( imgId );
+  return Picture::load( picname );
+}
+
 int TileHelper::encode(const Tile& tt)
 {
   int res = tt.getFlag( Tile::tlTree )   ? 0x00011 : 0;
@@ -283,6 +300,51 @@ int TileHelper::encode(const Tile& tt)
   res += tt.getFlag( Tile::tlDeepWater ) ? 0x08000 : 0;
   res += tt.getFlag( Tile::tlRift )      ? 0x10000 : 0;
   return res;
+}
+
+static int __turnBySet( int imgid, int start, int length, int frameCount, int angle90time )
+{
+  imgid -= start;
+  imgid += (frameCount * angle90time);
+  imgid %= (frameCount * 4);
+  imgid += start;
+
+  return imgid;
+}
+
+int TileHelper::turnCoastTile(int imgid, constants::Direction newDirection )
+{
+  int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
+  imgid -= 372;
+  if( koeff[ newDirection ] >= 0 )
+  {
+    if( (imgid >= 0 && imgid <= 15) )
+    {
+      imgid = __turnBySet( imgid, 0, 16, 4, koeff[ newDirection ] );
+    }
+    else if( imgid >= 16 && imgid <= 31 )
+    {
+      imgid = __turnBySet( imgid, 16, 16, 4, koeff[ newDirection ] );
+    }
+    else if( imgid >= 36 && imgid <= 39 )
+    {
+      imgid = __turnBySet( imgid, 36, 4, 1, koeff[ newDirection ] );
+    }
+    else if( imgid >= 42 && imgid <= 45 )
+    {
+      imgid = __turnBySet( imgid, 42, 4, 1, koeff[ newDirection ] );
+    }
+    else if( imgid >= 46 && imgid <= 49 )
+    {
+      imgid = __turnBySet( imgid, 46, 4, 1, koeff[ newDirection ] );
+    }
+    else
+    {
+      return -1;
+    }
+  }
+
+  return imgid + 372;
 }
 
 unsigned int TileHelper::hash(const TilePos& pos)

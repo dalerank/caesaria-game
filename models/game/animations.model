@@ -234,13 +234,13 @@
 
   romeChastenerSoldier : {
     move : { rc : "citizen03", start : 441, frames : 12, action : 1, step : 8 }
-    fight : { rc : "citizen03", start : 393, frames : 6, action : 3, step : 8 }
+    fight : { rc : "citizen03", start : 393, frames : 6, action : 2, step : 8, delay : 2 }
     die : { rc : "citizen03", start : 545, frames : 8, action : 3, step : 0 }
   }
 
   romeChastenerElephant : {
     move : { rc : "carthegenians", start : 401, frames : 12, action : 1, step : 8 }
-    /*fight : { rc : "carthegenians", start : 497, frames : 1, action : 3, step : 8 }*/
+    /*fight : { rc : "carthegenians", start : 497, frames : 1, action : 2, step : 8 }*/
     die : { rc : "carthegenians", start : 505, frames : 8, action : 3, step : 0 }
   }
 }

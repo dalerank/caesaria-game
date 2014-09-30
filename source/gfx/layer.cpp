@@ -34,8 +34,6 @@
 #include "walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
-#include "objects/senate.hpp"
-#include "gui/senate_popup_info.hpp"
 
 using namespace constants;
 
@@ -52,7 +50,6 @@ public:
   Point startCursorPos;
   Camera* camera;
   Tile* currentTile;
-  SenatePopupInfo senateInfo;
   PlayerCityPtr city;
   PictureRef outline;
   bool needUpdateOutline;
@@ -60,15 +57,13 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
-  VisibleWalkers vwalkers;
+  Layer::VisibleWalkers vwalkers;
 
-  bool drawGrid, renderOverlay, showPath;
   int posMode;
 
   Picture footColumn;
   Picture bodyColumn;
   Picture headerColumn;
-
 public:
   void updateOutlineTexture( Tile* tile );
 };
@@ -157,7 +152,7 @@ void Layer::handleEvent(NEvent& event)
       Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile )
       {
-        events::GameEventPtr e = events::ShowTileInfo::create( tile->pos() );
+        events::GameEventPtr e = events::ShowTileInfo::create( tile->epos() );
         e->dispatch();
       }
     }
@@ -175,8 +170,8 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.keyboard.key )
     {
-    case KEY_UP: case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN: case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
+    case KEY_UP:    case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
     case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
     case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
@@ -185,24 +180,27 @@ void Layer::handleEvent(NEvent& event)
 
     if( event.keyboard.control && event.keyboard.shift && event.keyboard.pressed )
     {
+      LayerDrawOptions& opts = LayerDrawOptions::instance();
       switch( event.keyboard.key )
       {
-      case KEY_KEY_1: _d->drawGrid = !_d->drawGrid; break;
+      case KEY_KEY_1: opts.toggle( LayerDrawOptions::drawGrid ); break;
       case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
-      case KEY_KEY_3: _d->renderOverlay = !_d->renderOverlay; break;
-      case KEY_KEY_4: _d->showPath = !_d->showPath; break;
+      case KEY_KEY_3: opts.toggle( LayerDrawOptions::shadowOverlay ); break;
+      case KEY_KEY_4: opts.toggle( LayerDrawOptions::showPath ); break;
       default: break;
       }
     }
   }
 }
 
-TilesArray Layer::_getSelectedArea()
+TilesArray Layer::_getSelectedArea( TilePos startPos )
 {
   __D_IMPL(_d,Layer)
   TilePos outStartPos, outStopPos;
 
-  Tile* startTile = _d->camera->at( _d->startCursorPos, true );  // tile under the cursor (or NULL)
+  Tile* startTile = startPos.i() < 0
+                      ? _d->camera->at( _d->startCursorPos, true ) // tile under the cursor (or NULL)
+                      : _d->camera->at( startPos );
   Tile* stopTile  = _d->camera->at( _d->lastCursorPos, true );
 
   TilePos startPosTmp = startTile->pos();
@@ -301,29 +299,21 @@ void Layer::_setTooltipText(const std::string& text)
 void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
-  DebugTimer::reset( "render:start" );
   const TilesArray& visibleTiles = _d->camera->tiles();
+  const TilesArray& flatTiles = _d->camera->flatTiles();
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  //DebugTimer::reset( "render:draw_flat" );
   Tile* tile;
-  foreach( it, visibleTiles )
+  foreach( it, flatTiles )
   {
-    tile = (*it)->masterTile();
-    if( !tile )
-      tile = *it;
-
-    if( tile->isFlat() )
-    {
-      drawTile( engine, *tile, camOffset );
-    }
+    drawTile( engine, **it, camOffset );
   }
-  //DebugTimer::check( "", "render:draw_flat" );
 
-  if( !_d->renderOverlay )
+  LayerDrawOptions& opts = LayerDrawOptions::instance();
+  if( opts.isFlag( LayerDrawOptions::shadowOverlay ) )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }
@@ -334,23 +324,14 @@ void Layer::render( Engine& engine)
     tile = *it;
     int z = tile->epos().z();
 
-    //int t = DateTime::elapsedTime();
     drawTileR( engine, *tile, camOffset, z, false );
-    //r0 += DateTime::elapsedTime() - t;
-
-    //t = DateTime::elapsedTime();
     drawWalkers( engine, *tile, camOffset );
-    //r1 += DateTime::elapsedTime() - t;
-
-    //t = DateTime::elapsedTime();
     drawTileW( engine, *tile, camOffset, z );
-    //r2 += DateTime::elapsedTime() - t;
   }
-  //Logger::warning( "r0=%d r1=%d r2=%d", r0, r1, r2 );
 
   engine.resetColorMask();
 
-  if( _d->showPath )
+  if( opts.isFlag( LayerDrawOptions::showPath ) )
   {
     const WalkerList& walkers = _city()->walkers( walker::all );
     foreach( it, walkers )
@@ -485,7 +466,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine& engine) {}
+ void Layer::beforeRender(Engine&){}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -511,7 +492,8 @@ void Layer::afterRender( Engine& engine)
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }  
 
-  if( _d->drawGrid )
+  LayerDrawOptions& opts = LayerDrawOptions::instance();
+  if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    
     int size = tmap.size();
@@ -549,25 +531,21 @@ void Layer::afterRender( Engine& engine)
 
   if( _d->currentTile )
   {
-    TileOverlayPtr ov = _d->currentTile->overlay();
-    SenatePtr senate = ptr_cast<Senate>( ov );
-    if( senate.isValid() )
-    {
-      _d->senateInfo.draw( _d->lastCursorPos, Engine::instance(), senate );
-    }
-
-    Point pos = _d->currentTile->mappos() + offset;
+    Point pos = _d->currentTile->mappos();
     int size = (_d->currentTile->picture().width() + 2) / 60;
+
+    TileOverlayPtr ov = _d->currentTile->overlay();
     if( ov.isValid() )
     {
       size = ov->size().width();
-      pos = ov->tile().mappos() + offset;
+      pos = ov->tile().mappos();
     }
     else if( _d->currentTile->masterTile() != 0 )
     {
       pos = _d->currentTile->masterTile()->mappos();
     }
 
+    pos += offset;
     engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
     engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
     engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );
@@ -582,10 +560,8 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->camera = camera;
   _d->city = city;
   _d->currentTile = 0;
-  _d->drawGrid = false;
-  _d->showPath = false;
+
   _d->posMode = 0;
-  _d->renderOverlay = true;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
 }
 
@@ -610,6 +586,7 @@ Layer::~Layer(){}
 void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }
 void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
 Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
+Tile *Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
 
 void Layer::Impl::updateOutlineTexture( Tile* tile )
@@ -624,6 +601,12 @@ void Layer::Impl::updateOutlineTexture( Tile* tile )
     outline.reset( Picture::create( pic.size(), 0, true ) );
 
   } */
+}
+
+LayerDrawOptions &LayerDrawOptions::instance()
+{
+  static LayerDrawOptions inst;
+  return inst;
 }
 
 }

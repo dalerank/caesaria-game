@@ -188,6 +188,13 @@ void Animation::addFrame(const std::string& resource, int index)
   _pictures.push_back( Picture::load( resource, index ) );
 }
 
+const Picture& Animation::getFrame(int index) const
+{
+  return ( index >= 0 && index < _pictures.size() )
+           ? _pictures[ index ]
+           : Picture::getInvalid();
+}
+
 void Animation::addFrame(const Picture& pic)
 {
   _pictures.push_back( pic );

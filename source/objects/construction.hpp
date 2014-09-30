@@ -61,7 +61,9 @@ public:
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+
   virtual void addExtension( ConstructionExtensionPtr ext );
+  virtual const ConstructionExtensionList& extensions() const;
 protected:
   class Impl;
   ScopedPtr< Impl > _d;

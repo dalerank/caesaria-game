@@ -78,6 +78,7 @@ public:
   bool isValid() const;
   void addFrame( const Picture& pic );
   void addFrame(const std::string& resource, int index);
+  const Picture& getFrame( int index ) const;
 private:
   Pictures _pictures;
 

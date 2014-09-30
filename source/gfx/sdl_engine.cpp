@@ -112,7 +112,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -120,7 +120,7 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -138,10 +138,18 @@ void SdlEngine::init()
   //_srcSize = Size( mode.w, mode.h );
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+
   window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
+
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #else
   unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
@@ -166,19 +174,19 @@ void SdlEngine::init()
 
   if (window == NULL)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
     THROW("Failed to create window");
   }
 
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-  int render_version = math::clamp( GameSettings::get( "render_version" ).toInt(), -1, SDL_GetNumRenderDrivers());
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version, SDL_RENDERER_ACCELERATED );
+  int render_version = math::clamp( GameSettings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version-1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create renderer: %d", SDL_GetError() ) );
+    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
     THROW("Failed to create renderer");
   }
 
@@ -211,6 +219,7 @@ void SdlEngine::init()
 
   Logger::warning( "SDLGraficEngine: init successfull");
   _d->screen.init( screenTexture, 0, 0 );
+  _d->screen.setOriginRect( Rect( 0, 0, _srcSize.width(), _srcSize.height() ) );
 
   if( !_d->screen.isValid() )
   {
@@ -293,7 +302,6 @@ void SdlEngine::endRenderFrame()
 
   //Refresh the screen
   SDL_RenderPresent(_d->renderer);
-  //SDL_GL_SwapWindow(_d->window);
 
   _d->fps++;
 
@@ -325,7 +333,8 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
 
   const Impl::MaskInfo& mask = _d->mask;
   SDL_Texture* ptx = picture.texture();
-  const Size& picSize = picture.size();
+  const Rect& orect = picture.originRect();
+  Size picSize = orect.size();
   const Point& offset = picture.offset();
 
   if( mask.enabled )
@@ -334,7 +343,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
   }
 
-  SDL_Rect srcRect = { 0, 0, picSize.width(), picSize.height() };
+  SDL_Rect srcRect = { orect.left(), orect.top(), picSize.width(), picSize.height() };
   SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
 
   SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
@@ -376,7 +385,8 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   {
     const Picture& picture = *it;
     SDL_Texture* ptx = picture.texture();
-    const Size& size = picture.size();
+    const Rect& orect = picture.originRect();
+    Size size = orect.size();
     const Point& offset = picture.offset();
 
     if( mask.enabled )
@@ -385,7 +395,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
       SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
     }
 
-    SDL_Rect srcRect = { 0, 0, size.width(), size.height() };
+    SDL_Rect srcRect = { orect.left(), orect.top(), size.width(), size.height() };
     SDL_Rect dstRect = { pos.x() + offset.x(), pos.y() - offset.y(), size.width(), size.height() };
 
     SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );

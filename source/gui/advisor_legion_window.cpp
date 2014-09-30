@@ -58,9 +58,11 @@ public:
     PushButton* return2fort   = new PushButton( this, Rect( 450, 5, 450 + 32, 6 +32 ), "", -1, false, PushButton::blackBorderUp );
     return2fort->setIcon(  ResourceGroup::panelBackground, 564 );
     return2fort->setIconOffset( Point( 4, 4 ) );
+    return2fort->setTooltipText( _("##return_2_fort##") );
     PushButton* empireService = new PushButton( this, Rect( 530, 5, 530 + 32, 6 + 32), "", -1, false, PushButton::blackBorderUp );
     empireService->setIcon( ResourceGroup::panelBackground, 566 );
     empireService->setIconOffset( Point( 4, 4 ) );
+    empireService->setTooltipText( "##empire_service_tip##");
 
     CONNECT( gotoLegion, onClicked(), this, LegionButton::_resolveMove2Legion );
     CONNECT( return2fort, onClicked(), this, LegionButton::_resolveReturnLegion2Fort );
@@ -69,7 +71,7 @@ public:
 
   virtual void _updateTextPic()
   {
-    PushButton::_textPictureRef();
+    PushButton::_updateTextPic();
 
     PictureRef& pic = _textPictureRef();
 
@@ -78,8 +80,6 @@ public:
 
     if( _fort.isValid() )
     {
-      pic->draw( _fort->legionEmblem(), Point( 6, 4 ), false );
-
       fontW.draw( *pic, _fort->legionName(), 70, 4 );
 
       std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
@@ -88,7 +88,14 @@ public:
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = StringHelper::format( 0xff, "##legion_morale_%d##", moraleValue );
       fontB.draw( *pic, _( moraleStr ), 180, 15 );
-    }
+    }    
+  }
+
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    painter.draw( _fort->legionEmblem(), absoluteRect().lefttop() + Point( 6, 4 ), &absoluteClippingRectRef() );
   }
 
 public oc3_signals:

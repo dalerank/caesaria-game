@@ -1,11 +1,11 @@
 {
-  framebuffer : true
-  technique_ :
+  framebuffer : false
+  technique :
   {
     pass_1 :
     {
       shader : "/shaders/saturation.glsl"
-      saturation : 1.1
+      saturation : 0.2
     }
 
     pass_2 :
@@ -13,5 +13,10 @@
       shader : "/shaders/fxaa.glsl"
       texOffset : [2,2]
     }
+    /*
+    pass_3:
+    {
+      shader : "/shaders/viegret.glsl"
+    }*/
   }
 }

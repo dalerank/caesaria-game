@@ -67,7 +67,7 @@ public:
 
   virtual Point offset(const Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
-  virtual void changeDirection(constants::Direction direction);
+  virtual void changeDirection(Tile *masterTile, constants::Direction direction);
 
   // graphic
   virtual void setPicture(Picture picture);

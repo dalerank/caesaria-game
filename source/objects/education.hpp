@@ -31,6 +31,9 @@ public:
 
   virtual unsigned int walkerDistance() const;
   virtual void buildingsServed(const std::set<BuildingPtr> &buildings, ServiceWalkerPtr walker);
+protected:
+  virtual int _getWalkerOrders() const;
+
 private:
   class Impl;
   ScopedPtr<Impl> _d;
