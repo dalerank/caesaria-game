@@ -55,7 +55,7 @@ public:
 
   void updateStackingState();
 
-oc3_signals public:
+signals public:
   Signal0<> &onOrderChanged();
 
 private:

@@ -88,7 +88,7 @@ public:
 
   void breakText( const std::string& text, const Size& size );
 
-public oc3_signals:
+public signals:
   Signal0<> onClickedSignal;
 };
 
@@ -221,7 +221,7 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
 
 void Label::_handleClick()
 {
-  oc3_emit _d->onClickedSignal();
+  emit _d->onClickedSignal();
 }
 
 //! destructor

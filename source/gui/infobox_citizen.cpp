@@ -62,7 +62,7 @@ public:
 
   virtual void _handleClick()
   {
-    oc3_emit _onClickedSignal( _walker );
+    emit _onClickedSignal( _walker );
   }
 
   virtual void draw(gfx::Engine &painter)

@@ -53,6 +53,7 @@
 #include "events/showempiremapwindow.hpp"
 #include "advisor_population_window.hpp"
 #include "widget_helper.hpp"
+#include "world/empire.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -150,7 +151,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   {
     FortList forts;
     forts << _d->city->overlays();
-    _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, forts );
+    _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, _d->city, forts );
   }
   break;
 

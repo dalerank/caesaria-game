@@ -43,7 +43,7 @@ public:
 	void setTime( unsigned int t );
 	void setStartRect( const Rect& r );
 
-public oc3_signals:
+public signals:
 	virtual Signal0<>& onFinished();
 
 protected:

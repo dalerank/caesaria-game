@@ -38,7 +38,7 @@ public:
   unsigned int step;
   std::string destCity, baseCity;
 
-oc3_signals public:
+signals public:
   Signal1<MerchantPtr> onDestinationSignal;
 };
 
@@ -94,7 +94,7 @@ void Merchant::timeStep( unsigned int time )
 
   if( _d->step >= _d->steps.size() )
   {
-    oc3_emit _d->onDestinationSignal( this );
+    emit _d->onDestinationSignal( this );
   }
   else
   {
