@@ -20,8 +20,7 @@
 
 #include "core/predefinitions.hpp"
 
-//PREDEFINE_CLASS_SMARTLIST(Walker,List)
-class Walker; typedef SmartPtr<Walker> WalkerPtr;; typedef std::vector<WalkerPtr> WalkerList;
+PREDEFINE_CLASS_SMARTLIST(Walker,List)
 PREDEFINE_CLASS_SMARTLIST(FishingBoat,List)
 PREDEFINE_CLASS_SMARTLIST(Wolf,List)
 PREDEFINE_CLASS_SMARTLIST(Ability,List)

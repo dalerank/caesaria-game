@@ -499,7 +499,7 @@ static void __createRivers(Game& game )
   pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRiver ) );
 
   TilesArray terrainTiles = oTilemap.getArea( TilePos(0,0), Size( oTilemap.size() ) );
-	foreach(it, terrainTiles)
+  for( TilesArray::iterator it=terrainTiles.begin(); it != terrainTiles.end(); )
   {
     Tile* tile = *it;
     if( tile->isWalkable( true ) || tile->getFlag( Tile::tlTree ) ) { ++it; }

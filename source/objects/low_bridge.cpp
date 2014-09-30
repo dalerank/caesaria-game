@@ -200,7 +200,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
-      for( TilesArray::const_reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
       }
@@ -239,7 +239,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
-      for( TilesArray::const_reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
@@ -275,7 +275,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
-    for( TilesArray::const_reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
@@ -294,7 +294,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
     TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
-    for( TilesArray::const_iterator it=tiles.begin(); it != tiles.end(); ++it )
+    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )

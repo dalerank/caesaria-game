@@ -168,7 +168,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)/$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <FloatingPointExceptions>true</FloatingPointExceptions>
@@ -306,7 +306,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>

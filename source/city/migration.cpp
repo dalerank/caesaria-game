@@ -336,12 +336,7 @@ void Migration::Impl::createMigrationToCity( PlayerCity& city )
   }
 
   EmigrantList migrants;
-  //migrants << city.walkers( walker::any );
-	auto walkers = city.walkers(walker::any);
-	for (auto it : walkers){
-		migrants.push_back(ptr_cast<Emigrant, Walker>(it));
-	}
-	//migrants.insert(migrants.begin(), walkers.begin(), walkers.end());
+  migrants << city.walkers( walker::any );
 
   if( vh <= migrants.size() * 5 )
   {

@@ -256,10 +256,10 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
       
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
       _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingWest );
       _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
 
       foreach( tile, tiles )
       {
@@ -277,14 +277,14 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
       tiles.pop_back();
       tiles.pop_back();
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
       TilePos liftPos = tiles.front()->pos();
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
 
-			for (TilesArray::const_reverse_iterator it = tiles.rbegin(); it != tiles.rend(); ++it)
+      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
@@ -301,10 +301,10 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
 
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
       _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingWest );
       _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
 
       foreach( tile, tiles )
       {        
@@ -323,13 +323,13 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
       
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
       TilePos liftPos = tiles.front()->pos();
-			tiles.erase(tiles.begin());
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
-      for( TilesArray::const_reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {        
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
@@ -381,7 +381,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   {
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
-    for( TilesArray::const_reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
 
       if( __isFlatCoastTile( **it ) )
@@ -418,8 +418,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   if( direction == noneDirection )
   {
     TilesArray tiles = tilemap.getArea( curPos + TilePos(0, 1), curPos + TilePos( 0, 10) );
-    //for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
-		foreach(it, tiles)
+    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
     {
       if( __isFlatCoastTile( **it ) )
       {
@@ -437,7 +436,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   if( direction == noneDirection )
   {
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
-    for( TilesArray::const_reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       if( __isFlatCoastTile( **it ) )
       {

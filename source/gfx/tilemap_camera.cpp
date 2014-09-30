@@ -220,7 +220,7 @@ const TilesArray& TilemapCamera::tiles() const
         Tile* tile = &_d->tilemap->at( i, j );
         if( (i >= 0) && (j >= 0) && (i < mapSize) && (j < mapSize) )
         {
-          _d->tiles.append( tile );
+          _d->tiles.push_back( tile );
         }
 
         Tile* master = tile->masterTile();
@@ -230,7 +230,7 @@ const TilesArray& TilemapCamera::tiles() const
           std::set< Tile* >::iterator mIt = overborderTiles.find( master );
           if( pos.x() < 0 && mIt == overborderTiles.end() )
           {
-						_d->tiles.append(master);
+            _d->tiles.push_back( master );
             overborderTiles.insert( master );
           }
         }
@@ -287,7 +287,7 @@ void TilemapCamera::Impl::cacheFlatTiles()
     if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
     {
       tile->setWasDrawn();
-			flatTiles.append(tile);
+      flatTiles.push_back( tile );
     }
   }
 }

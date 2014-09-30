@@ -68,7 +68,7 @@ void Propagator::init( Tile& origin )
 {
   _d->origin = &origin;
   TilesArray tileList;
-	tileList.append(&origin);
+  tileList.push_back(&origin);
 
   init( tileList );
 }
@@ -230,7 +230,7 @@ PathwayList Propagator::getWays(const unsigned int maxDistance)
          bool notResolved = (markTiles.find( tile2 ) == markTiles.end());
          if( tile2->isWalkable(_d->allLands) && !pathWay->contains( *tile2 ) && notResolved)
          {
-					 nextTiles.append(tile2);
+           nextTiles.push_back( tile2 );
            markTiles.insert( tile2 );
          }
        }

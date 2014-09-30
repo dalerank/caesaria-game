@@ -164,7 +164,7 @@ TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
 
 TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corners /*= true*/ )
 {
-  
+  TilesArray res;
 
   int mini = math::min( start.i(), stop.i() );
   int minj = math::min( start.j(), stop.j() );
@@ -174,7 +174,7 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   stop = TilePos( maxi, maxj );
 
   size_t expected = 2 * ((maxi - mini) + (maxj - minj)) + corners;
-	TilesArray res(expected);
+  res.reserve(expected);
 
   int delta_corners = 0;
   if(!corners)
@@ -187,31 +187,30 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   for(int j = start.j() + delta_corners; j <= stop.j() - delta_corners; ++j)
   {
     if( isInside( TilePos( tmpij, j  ) ) )
-      res.append( &at( tmpij, j ));
+      res.push_back( &at( tmpij, j ));
   }
 
   tmpij = stop.j();
   for(int i = start.i() + 1; i <= stop.i() - delta_corners; ++i)
   {
     if( isInside( TilePos( i, tmpij  ) ) )
-			res.append(&at(i, tmpij));
+      res.push_back( &at(i, tmpij ));
   }
 
   tmpij = stop.i();
   for (int j = stop.j() - 1; j >= start.j() + delta_corners; --j)  // corners have been handled already
   {
     if( isInside( TilePos( tmpij, j ) ))
-			res.append(&at(tmpij, j));
+      res.push_back(&at( tmpij, j));
   }
 
   tmpij = start.j();
   for( int i = stop.i() - 1; i >= start.i() + 1; --i)  // corners have been handled already
   {
     if( isInside( TilePos( i, tmpij )) )
-			res.append(&at(i, tmpij));
+      res.push_back(&at( i, tmpij));
   }
 
-	res.isRectangular = true;
   return res;
 }
 
@@ -228,9 +227,10 @@ TilesArray Tilemap::getRectangle(unsigned int range, TilePos center)
 
 // Get tiles inside of rectangle
 TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
-{  
+{
+  TilesArray res;
   int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
-	TilesArray res(expected);
+  res.reserve(expected);
 
   Rect r( start.i(), start.j(), stop.i(), stop.j() );
   r.repair();
@@ -241,12 +241,11 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
     {
       if( isInside( TilePos( i, j ) ))
       {
-				res.append(&(const_cast<Tilemap*>(this)->at(TilePos(i, j))));
+        res.push_back( &( const_cast<Tilemap*>( this )->at( TilePos( i, j ) )) );
       }
     }
   }
 
-	res.isRectangular = true;
   return res;
 }
 
@@ -514,7 +513,7 @@ void Tilemap::Impl::resize(const int s)
 
     for (int j = 0; j < size; ++j)
     {
-      (*this)[i].append( new Tile( TilePos( i, j ) ));
+      (*this)[i].push_back( new Tile( TilePos( i, j ) ));
     }
   }
 }
@@ -522,7 +521,7 @@ void Tilemap::Impl::resize(const int s)
 void Tilemap::Impl::set(int i, int j, Tile* v)
 {
   v->setEPos( TilePos( i, j ) );
-  (*this)[i].replace(j, v);
+  (*this)[i][j] = v;
 }
 
 void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)

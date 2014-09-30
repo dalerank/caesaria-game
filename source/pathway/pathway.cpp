@@ -88,7 +88,7 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
   _d->directionIt = _d->directionList.begin();
   _d->directionIt_reverse = _d->directionList.rbegin();
   _d->tileList.clear();
-	_d->tileList.append(&origin);
+  _d->tileList.push_back(&origin);
 }
 
 unsigned int Pathway::length() const
@@ -232,7 +232,7 @@ void Pathway::setNextDirection(Direction direction)
   }
   else
   {
-		_d->tileList.append(&_d->tilemap->at(_d->destination));
+    _d->tileList.push_back( &_d->tilemap->at( _d->destination ) );
     _d->directionList.push_back(direction);
   }
 }

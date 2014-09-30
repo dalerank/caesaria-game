@@ -34,7 +34,6 @@
 #include "climatemanager.hpp"
 
 #include <vector>
-#include <core/saveadapter.hpp>
 
 using namespace gfx;
 
@@ -156,31 +155,13 @@ bool GameLoader::load( vfs::Path filename, Game& game )
     if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
         (*it)->isLoadableFileFormat(file) */ )
     {
-			VariantMap vm;
-			ClimateType currentClimate;
-			if (typeid(*(*it).object()) != typeid(GameLoaderOc3))
-			{
-				currentClimate = (ClimateType)(*it)->climateType(filename.toString());
-			}
-			else
-			{
-				vm = SaveAdapter::load(filename);
-				currentClimate = (ClimateType)((GameLoaderOc3*)(*it).object())->climateType(vm);
-			}
+      ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
       if( currentClimate >= 0  )
       {
         ClimateManager::initialize( currentClimate );
       }
 
-			bool loadok;
-			if (typeid(*(*it).object()) != typeid(GameLoaderOc3))
-			{
-				 loadok = (*it)->load(filename.toString(), game);
-			}
-			else
-			{
-				loadok = ((GameLoaderOc3*)(*it).object())->load(vm, game);
-			}
+      bool loadok = (*it)->load( filename.toString(), game );      
       
       if( loadok )
       {

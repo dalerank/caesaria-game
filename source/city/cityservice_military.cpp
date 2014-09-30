@@ -72,12 +72,7 @@ void Military::update( const unsigned int time )
     _d->updateMilitaryThreat = false;
 
     EnemySoldierList enSoldiers;
-		auto walkers = _city.walkers(walker::any);
-    //enSoldiers << _city.walkers( walker::any );
-	  for (auto it : walkers){
-			enSoldiers.push_back(ptr_cast<EnemySoldier, Walker>(it));
-	  }
-		//enSoldiers.insert(enSoldiers.begin(), walkers.begin(), walkers.end());
+    enSoldiers << _city.walkers( walker::any );
 
     _d->threatValue = enSoldiers.size() * 10;
   }  

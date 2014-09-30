@@ -900,7 +900,7 @@ TilesArray House::enterArea() const
   if( isWalkable() )
   {
     TilesArray ret;
-		ret.append(&tile());
+    ret.push_back( &tile() );
     return ret;
   }
   else
