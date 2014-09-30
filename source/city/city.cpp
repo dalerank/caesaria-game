@@ -345,7 +345,7 @@ WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, cons
 
   TilesArray area = _d->tilemap.getArea( startPos, stopPos );
 	for (auto walker : _d->walkerList){
-		if (walker->type() == rtype || rtype == walker::any)
+		if (rtype == walker::any || walker->type() == rtype)
 		{
 			if (area.contain(walker->pos())){
 				ret.push_back(walker);

@@ -43,16 +43,20 @@ public:
   std::string restartFile;
 };
 
-bool GameLoaderOc3::load( const std::string& filename, Game& game )
+bool GameLoaderOc3::load(const std::string& filename, Game& game)
 {
-  Logger::warning( "GameLoaderOc3: start loading from " + filename );
-  VariantMap vm = SaveAdapter::load( filename );
-  if( vm.empty() )
-  {
-    Logger::warning( "GameLoaderOc3: empty file " + filename );
-    return false;
-  }
-  
+	Logger::warning("GameLoaderOc3: start loading from " + filename);
+	VariantMap vm = SaveAdapter::load(filename);
+	if (vm.empty())
+	{
+		Logger::warning("GameLoaderOc3: empty file " + filename);
+		return false;
+	}
+	return load(vm, game);
+}
+
+bool GameLoaderOc3::load(VariantMap& vm, Game& game)
+{
   int fileVersion = vm[ SaverOptions::version ];
   if( currentVesion == fileVersion )
   {      
@@ -84,8 +88,13 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
 
 int GameLoaderOc3::climateType(const std::string& filename)
 {
-  Logger::warning( "GameLoaderOc3: check climate type" + filename );
-  VariantMap vm = SaveAdapter::load( filename );
+	Logger::warning("GameLoaderOc3: check climate type" + filename);
+	VariantMap vm = SaveAdapter::load(filename);
+	return climateType(vm);
+}
+
+int GameLoaderOc3::climateType(VariantMap& vm)
+{  
   VariantMap scenario_vm = vm[ "scenario" ].toMap();
 
   return scenario_vm.get( "climate", -1 );

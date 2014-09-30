@@ -217,7 +217,7 @@ const Tile& Dock::queueTile() const
   TilePos offset( 3, 3 );
   TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
 
-  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+	foreach(it, tiles)
   {
     bool saveTile = false;
     if( (*it)->getFlag( Tile::tlDeepWater ) )

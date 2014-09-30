@@ -53,12 +53,12 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
     int imgId = (*tile)->originalImgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || (*tile)->getFlag( Tile::tlCoast ) )
     {
-      slTiles.push_back( *tile );
+      slTiles.append( *tile );
     }
 
     if( (*tile)->getFlag( Tile::tlDeepWater ) )
     {
-      dwTiles.push_back( *tile );
+			dwTiles.append(*tile);
     }
   }
 }

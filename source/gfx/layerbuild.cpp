@@ -126,7 +126,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
-        d->buildTiles.push_back( tile );
+        d->buildTiles.append( tile );
       }
     }
   }
@@ -161,7 +161,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         tile->setFlag( Tile::clearAll, true );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         tile->setOverlay( 0 );
-        d->buildTiles.push_back( tile );
+        d->buildTiles.append( tile );
       }
     }
   }
@@ -208,7 +208,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
       {
         TilePos tpos = leftDownCorner + TilePos( t, mmapSize - 1 - ( y - t ) );
         if( pathWay.contain( tpos ) )
-          ret.push_back( &tmap.at( tpos ) );
+          ret.append( &tmap.at( tpos ) );
       }
     }
 
@@ -218,7 +218,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
       {
         TilePos tpos = leftDownCorner + TilePos( x + t, t );
         if( pathWay.contain( tpos ) )
-          ret.push_back( &tmap.at( tpos ) );
+          ret.append( &tmap.at( tpos ) );
       }
     }
 

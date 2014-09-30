@@ -53,7 +53,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   TilesArray ret;
   if( startPos == stopPos )
   {
-    ret.push_back( &tileMap.at( startPos ) );
+    ret.append( &tileMap.at( startPos ) );
     return ret;
   }
 
