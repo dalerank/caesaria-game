@@ -20,7 +20,7 @@ before_install:
 - sudo cp -r SDL2-2.0.3/i686-w64-mingw32/lib/* /usr/i686-w64-mingw32/lib/
 #- sudo chmod +x /usr/i586-mingw32msvc/bin/sdl-config
 # fix winapifamily.h
-- wget https://www.dropbox.com/s/anxtzyruomrd1wb/SDL_platform.h
+- wget https://hg.libsdl.org/SDL/raw-file/9ecf775ead1b/include/SDL_platform.h
 - sudo cp SDL_platform.h /usr/i686-w64-mingw32/include/SDL2
 # Get SDL Mixer
 - wget https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.0-mingw.tar.gz
