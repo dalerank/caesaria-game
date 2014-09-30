@@ -235,6 +235,10 @@ void StartMenu::Impl::resolveCredits()
                          "ramMASTER",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
                          " ",
+                         _("##operations_manager##"),
+                         " ",
+                         "Max Mironchik (?) "
+                         " ",
                          _("##testers##"),
                          " ",
                          "radek liška",
