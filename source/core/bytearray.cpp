@@ -258,6 +258,6 @@ char* ByteArray::data(){  return &(*this)[0]; }
 std::string ByteArray::toString() const
 {
   std::string ret( data() );
-  *(ret.rbegin()) = '\0';
+  ret.resize( size() );
   return ret;
 }

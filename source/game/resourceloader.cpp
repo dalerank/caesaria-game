@@ -19,10 +19,16 @@
 #include "core/logger.hpp"
 #include "vfs/filesystem.hpp"
 #include "vfs/directory.hpp"
+#include "gfx/picture_bank.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 
 using namespace vfs;
+
+namespace {
+const char* archiveDescFile = "info";
+const char* atlasListSection = "atlas";
+}
 
 class ResourceLoader::Impl
 {
@@ -48,19 +54,35 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
       Path rpath = a->second.toString();
       absArchivePath = dir/rpath;
     }
-    Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
+    Logger::warning( "ResourceLoader: try mount archive " + absArchivePath.toString() );
 
     Directory absDir = absArchivePath.directory();
-    absArchivePath = absDir.find( absArchivePath.baseName(), Path::ignoreCase );
+    absArchivePath = absDir.find( absArchivePath.baseName(), Path::ignoreCase );       
 
     ArchivePtr archive = FileSystem::instance().mountArchive( absArchivePath );
+
     if( archive.isValid() )
     {
       oc3_emit _d->onStartLoadingSignal( a->first );
+
+      NFile archiveInfo = archive->createAndOpenFile( archiveDescFile );
+      if( archiveInfo.isOpen() )
+      {
+        VariantMap vm = SaveAdapter::load( archiveInfo );
+
+        VariantList atlasNames = vm.get( atlasListSection ).toList();
+        foreach( it, atlasNames )
+        {
+          NFile atlasFile = archive->createAndOpenFile( it->toString() );
+
+          VariantMap options = SaveAdapter::load( atlasFile );
+          gfx::PictureBank::instance().addAtlas( it->toString(), options );
+        }
+      }
     }
     else
     {
-      Logger::warning( "Game: cannot load archive " + absArchivePath.toString() );
+      Logger::warning( "ResourceLoader: cannot load archive " + absArchivePath.toString() );
     }
   }
 }

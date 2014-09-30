@@ -15,6 +15,14 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
+#ifdef _MSC_VER
+#include <cmath>
+float roundf(float x)
+{
+	return x >= 0.0f ? floorf(x + 0.5f) : ceilf(x - 0.5f);
+}
+#endif
+
 #include "widget.hpp"
 #include "widgetprivate.hpp"
 #include "environment.hpp"
@@ -132,7 +140,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
 
 void Widget::_resizeEvent(){}
 
-Widget::Widgets& Widget::Widget::_getChildren() {  return _dfunc()->children;}
+Widget::Widgets& Widget::_getChildren() {  return _dfunc()->children;}
 
 void Widget::setPosition( const Point& position )
 {

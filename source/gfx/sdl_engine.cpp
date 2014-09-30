@@ -219,6 +219,7 @@ void SdlEngine::init()
 
   Logger::warning( "SDLGraficEngine: init successfull");
   _d->screen.init( screenTexture, 0, 0 );
+  _d->screen.setOriginRect( Rect( 0, 0, _srcSize.width(), _srcSize.height() ) );
 
   if( !_d->screen.isValid() )
   {
@@ -332,7 +333,8 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
 
   const Impl::MaskInfo& mask = _d->mask;
   SDL_Texture* ptx = picture.texture();
-  const Size& picSize = picture.size();
+  const Rect& orect = picture.originRect();
+  Size picSize = orect.size();
   const Point& offset = picture.offset();
 
   if( mask.enabled )
@@ -341,7 +343,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
   }
 
-  SDL_Rect srcRect = { 0, 0, picSize.width(), picSize.height() };
+  SDL_Rect srcRect = { orect.left(), orect.top(), picSize.width(), picSize.height() };
   SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
 
   SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
@@ -383,7 +385,8 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   {
     const Picture& picture = *it;
     SDL_Texture* ptx = picture.texture();
-    const Size& size = picture.size();
+    const Rect& orect = picture.originRect();
+    Size size = orect.size();
     const Point& offset = picture.offset();
 
     if( mask.enabled )
@@ -392,7 +395,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
       SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
     }
 
-    SDL_Rect srcRect = { 0, 0, size.width(), size.height() };
+    SDL_Rect srcRect = { orect.left(), orect.top(), size.width(), size.height() };
     SDL_Rect dstRect = { pos.x() + offset.x(), pos.y() - offset.y(), size.width(), size.height() };
 
     SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );

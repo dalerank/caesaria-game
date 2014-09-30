@@ -126,7 +126,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     oTile.setPicture( pic );
     oTile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
   }
-  else if( (imgId >= 372 && imgId <= 403) || (imgId >= 413 && imgId <= 417) )
+  else if( (imgId >= 372 && imgId <= 427) )
   {
     oTile.setFlag( Tile::tlCoast, true );
     if( imgId >= 388 )

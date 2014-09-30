@@ -152,6 +152,12 @@ void CityRenderer::Impl::setLayer(int type)
 
 void CityRenderer::render()
 {
+  if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
+  {
+    _d->camera.refresh();
+    _d->city->setOption( PlayerCity::updateTiles, 0 );
+  }
+
   if( _d->currentLayer.isNull() )
   {
     return;
@@ -168,12 +174,6 @@ void CityRenderer::render()
   if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
   {
     _d->setLayer( _d->currentLayer->nextLayer() );
-  }
-
-  if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
-  {
-    _d->camera.refresh();
-    _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 }
 

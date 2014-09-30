@@ -263,7 +263,7 @@ void Minimap::Impl::updateImage()
   }
 
   minimap->unlock();
-  minimap->update();
+  //minimap->update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it

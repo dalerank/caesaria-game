@@ -28,7 +28,6 @@
 #include "world/city.hpp"
 #include "walker/constants.hpp"
 
-
 namespace city
 {
   class Funds;
@@ -47,7 +46,7 @@ struct BorderInfo
 
 class PlayerCity : public world::City
 {
-public:
+public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles } OptionType;
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );

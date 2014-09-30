@@ -40,6 +40,18 @@ static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePath
   }
 }
 
+std::string getFilePlatforms(vfs::Path &path) {
+  std::string extension = path.extension();
+  if (extension.empty()) return "";
+  if ("dll" == extension) return "win32,win64";
+  if ("exe" == extension) return "win32,win64";
+  if ("linux" == extension) return "linux";
+  if ("linux64" == extension) return "linux,linux64";
+  if ("macos" == extension) return "macosx";
+  if ("haiku" == extension) return "haiku";
+  return "";
+}
+
 void Packager::createUpdate( bool release )
 {
   FilePathList allFiles;
@@ -74,7 +86,12 @@ void Packager::createUpdate( bool release )
 
     unsigned int crc = data.crc32( 0 );
     vinfo->SetValue( sectionName, "crc", StringHelper::format( 0xff, "%x", crc ) );
-    vinfo->SetValue( sectionName, "filesize", StringHelper::format( 0xff, "%d", data.size() ) );    
+    vinfo->SetValue( sectionName, "filesize", StringHelper::format( 0xff, "%d", data.size() ) );
+    // Add platforms information info release file
+    std::string platforms = getFilePlatforms(*i);
+    if (!platforms.empty()) {
+      vinfo->SetValue( sectionName, "platforms", platforms );
+    }
   }
 
   vinfo->ExportToFile( release

@@ -15,28 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RESOURCELOADER_INCLUDE_H_
-#define _CAESARIA_RESOURCELOADER_INCLUDE_H_
+#ifndef __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#define __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
 
-#include "core/signals.hpp"
-#include "core/scopedptr.hpp"
-#include "vfs/path.hpp"
-#include "vfs/directory.hpp"
-
-class ResourceLoader
+namespace city
 {
-public:
-  ResourceLoader();
-  virtual ~ResourceLoader();
 
-  void loadFromModel( vfs::Path path2model, const vfs::Directory altDir=vfs::Directory() );
+namespace debug_event
+{
 
-public oc3_signals:
-  Signal1<std::string> &onStartLoading();
-
-private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+enum {
+  add_enemy_archers=0,
+  add_enemy_soldiers,
+  add_wolves,
+  dec_mars_relation,
+  add_1000_dn,
+  add_player_money,
+  send_chastener,
+  test_request
 };
 
-#endif //_CAESARIA_RESOURCELOADER_INCLUDE_H_
+}
+
+}//end namespace city
+#endif //__CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__

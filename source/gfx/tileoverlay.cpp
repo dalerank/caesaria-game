@@ -72,9 +72,9 @@ void TileOverlay::setType(const Type type)
 
 void TileOverlay::timeStep(const unsigned long) {}
 
-void TileOverlay::changeDirection(constants::Direction direction)
+void TileOverlay::changeDirection( Tile* masterTile, constants::Direction direction)
 {
-
+  _d->masterTile = masterTile;
 }
 
 void TileOverlay::setPicture(Picture picture)
