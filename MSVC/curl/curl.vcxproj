@@ -332,7 +332,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsC</CompileAs>
@@ -348,10 +348,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -361,7 +361,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsC</CompileAs>
@@ -377,10 +377,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -390,7 +390,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
@@ -406,10 +406,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -419,7 +419,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
@@ -435,10 +435,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -448,7 +448,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
@@ -464,10 +464,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -477,7 +477,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
@@ -493,10 +493,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -506,7 +506,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -521,10 +521,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -534,7 +534,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -549,10 +549,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>E:\caesaria\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
