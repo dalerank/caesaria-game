@@ -114,7 +114,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
 
     int tag = lbx->selectedItem().tag();
 
-    oc3_emit _d->onScreenSizeChangeSignal( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
+    emit _d->onScreenSizeChangeSignal( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
   }
   break;
 

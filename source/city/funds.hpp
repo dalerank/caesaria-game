@@ -73,7 +73,7 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
-oc3_signals public:
+signals public:
   Signal1<int>& onChange();
 
 private:

@@ -48,10 +48,10 @@ public:
 
     alarms.erase( alarms.begin() );
     currentIndex = math::clamp<int>( currentIndex, 0, alarms.size() - 1 );
-    oc3_emit onAlarmChangeSignal( alarms.size() > 0 );
+    emit onAlarmChangeSignal( alarms.size() > 0 );
   }
 
-public oc3_signals:
+public signals:
   Signal1<bool> onAlarmChangeSignal;
   Signal1<TilePos> onMoveToAlarmSignal;
 };
@@ -74,7 +74,7 @@ void AlarmEventHolder::add( TilePos pos, std::string message )
   alarm.position = pos;
   
   _d->alarms.push_back( alarm );
-  oc3_emit _d->onAlarmChangeSignal( _d->alarms.size() > 0 );
+  emit _d->onAlarmChangeSignal( _d->alarms.size() > 0 );
 }
 
 void AlarmEventHolder::next()
@@ -83,7 +83,7 @@ void AlarmEventHolder::next()
     return;
 
   _d->currentIndex = (_d->currentIndex+1) % _d->alarms.size();
-  oc3_emit _d->onMoveToAlarmSignal( _d->alarms[ _d->currentIndex ].position );
+  emit _d->onMoveToAlarmSignal( _d->alarms[ _d->currentIndex ].position );
 }
 
 TilePos AlarmEventHolder::getCurrentPos() const

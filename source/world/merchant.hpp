@@ -47,7 +47,7 @@ public:
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
 
-oc3_signals public:
+signals public:
   Signal1<MerchantPtr>& onDestination();
 
 private:

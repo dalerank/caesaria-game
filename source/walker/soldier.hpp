@@ -33,7 +33,8 @@ public:
                  back2base,
                  duckout,
                  patrol,
-                 doNothing } SldrAction;
+                 userAction,
+                 doNothing=0xff } SldrAction;
 
   virtual ~Soldier();
 

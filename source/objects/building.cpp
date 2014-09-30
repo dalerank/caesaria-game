@@ -78,7 +78,7 @@ void Building::timeStep(const unsigned long time)
 
 void Building::storeGoods(GoodStock &stock, const int amount)
 {
-  std::string bldType = getDebugName();
+  std::string bldType = debugName();
   Logger::warning( "This building should not store any goods %s at [%d,%d]",
                    bldType.c_str(), pos().i(), pos().j() );
   try

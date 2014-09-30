@@ -35,6 +35,9 @@ using namespace gfx;
 
 namespace  {
 static const int maxDistanceFromBase = 32;
+enum {
+  expedition=Soldier::userAction+1
+ };
 }
 
 class RomeSoldier::Impl
@@ -43,6 +46,7 @@ public:
   TilePos basePos;
   TilePos patrolPosition;
   double strikeForce, resistance;
+  std::string expedition;
 };
 
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
@@ -290,8 +294,12 @@ void RomeSoldier::_reachedPathway()
 {
   Soldier::_reachedPathway();
 
-  switch( _subAction() )
+  switch( (int)_subAction() )
   {
+
+  case expedition:
+    deleteLater();
+  break;
 
   case go2position:
   {
@@ -370,5 +378,19 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
   if( !isDeleted() )
   {
     _city()->addWalker( this );
+  }
+}
+
+void RomeSoldier::send2expedition(const std::string& name)
+{
+  _d->expedition = name;
+  TilePos cityEnter = _city()->borderInfo().roadEntry;
+
+  Pathway way = PathwayHelper::create( pos(), cityEnter, PathwayHelper::allTerrain );
+  if( way.isValid() )
+  {
+    setPathway( way );
+    _setSubAction( (SldrAction)expedition );
+    go();
   }
 }

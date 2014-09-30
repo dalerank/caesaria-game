@@ -44,7 +44,7 @@ public:
   
   void destroy();
 
-oc3_signals public:
+signals public:
   Signal1<int>& onTimeoutA();
   Signal0<>& onTimeout();
 

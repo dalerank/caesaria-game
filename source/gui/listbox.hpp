@@ -149,7 +149,7 @@ public:
 
   virtual void setupUI(const VariantMap &ui);
 
-oc3_signals public:
+signals public:
   Signal1<std::string>& onItemSelectedAgain();
   Signal1<const ListBoxItem&>& onItemSelected();
 

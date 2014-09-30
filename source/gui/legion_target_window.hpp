@@ -15,44 +15,40 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LOADFILEDIALOG_H_INCLUDED__
-#define __CAESARIA_LOADFILEDIALOG_H_INCLUDED__
+#ifndef __CAESARIA_LEGION_TARGET_WINDOW_H_INCLUDED__
+#define __CAESARIA_LEGION_TARGET_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/scopedptr.hpp"
-#include "vfs/path.hpp"
+#include "empiremap_window.hpp"
 #include "core/signals.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
 
-class LoadFileDialog : public Window
+class LegionTargetWindow : public EmpireMapWindow
 {
 public:
-  LoadFileDialog( Widget* parent, const Rect& rect,
-                 const vfs::Directory& dir, const std::string& ext,
-                 int id );
-  
-  virtual ~LoadFileDialog();
+  static LegionTargetWindow* create( PlayerCityPtr city, Widget* parent, int id );
 
-  virtual void draw( gfx::Engine& engine );  // draw on screen
+  virtual ~LegionTargetWindow();
 
-  virtual bool onEvent( const NEvent& event);
+  // draw on screen
+  virtual void draw( gfx::Engine& engine );
 
-  virtual bool isPointInside(const Point& point) const;
+  //resolve event
+  virtual bool onEvent(const NEvent& event);
 
-  void setTitle( const std::string& title );
-
-  void setMayDelete( bool mayDelete );
-  bool isMayDelete() const;
-
-signals public:
-  Signal1<std::string>& onSelectFile();
+public signals:
+  Signal1<Point>& onSelectLocation();
 
 protected:
+  void _changePosition();
+
   class Impl;
   ScopedPtr< Impl > _d;
+
+  LegionTargetWindow(  Widget* parent, int id, PlayerCityPtr city );
 };
 
 }//end namespace gui
-#endif //__CAESARIA_LOADFILEDIALOG_H_INCLUDED__
+#endif //__CAESARIA_LEGION_TARGET_WINDOW_H_INCLUDED__

@@ -57,7 +57,7 @@ void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      gui::EmpireMapWindow::create( game.empire(), game.city(), game.gui()->rootWidget(), -1 );
+      gui::EmpireMapWindow::create( game.city(), game.gui()->rootWidget(), -1 );
     }
   }
   else

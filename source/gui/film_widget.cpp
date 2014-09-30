@@ -42,7 +42,7 @@ public:
   SmkViewer* smkViewer;
   vfs::Path videoFile;
 
-public oc3_signals:
+public signals:
   Signal0<> onCloseSignal;
 };
 
@@ -67,7 +67,7 @@ FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
 
   _d->smkViewer->setFilename( _d->videoFile );
 
-  CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+  CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
   CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );
 }
 

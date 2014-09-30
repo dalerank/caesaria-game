@@ -83,6 +83,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
 #include "city/debug_events.hpp"
+#include "world/barbarian.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -625,7 +626,7 @@ void Level::handleEvent( NEvent& event )
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
 
-    case KEY_F10:
+    case KEY_SNAPSHOT:
       if( !event.keyboard.shift )
         _d->makeScreenShot();
       else
@@ -828,6 +829,17 @@ void Level::_handleDebugEvent(int event)
     world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
     army->setBase( rome );
     army->attack( ptr_cast<world::Object>( plCity ) );
+  }
+  break;
+
+  case city::debug_event::screenshot:
+    _d->makeScreenShot();
+  break;
+
+  case city::debug_event::add_empire_barbarian:
+  {
+    world::BarbarianPtr brb = world::Barbarian::create( _d->game->empire(), Point( 1000, 0 ) );
+    _d->game->empire()->addObject( ptr_cast<world::Object>( brb ) );
   }
   break;
 

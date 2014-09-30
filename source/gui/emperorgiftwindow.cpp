@@ -39,11 +39,11 @@ public:
   void fillGifts( ListBox* lbx );
   unsigned int getGiftCost( GiftType type, unsigned int money );
 
-public oc3_slots:
-  void sendGift() { oc3_emit sendGiftSignal( wantSend ); }
+public slots:
+  void sendGift() { emit sendGiftSignal( wantSend ); }
   void selectGift( const ListBoxItem& item);
 
-public oc3_signals:
+public signals:
   Signal1<int> sendGiftSignal;
 };
 

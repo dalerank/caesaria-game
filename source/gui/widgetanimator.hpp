@@ -42,7 +42,7 @@ public:
 
   void beforeDraw( gfx::Engine& painter );
 
-oc3_signals public:
+public signals:
   Signal0<>& onFinish() { return _onFinishSignal; }
 
 protected:

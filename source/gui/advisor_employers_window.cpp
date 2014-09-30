@@ -83,7 +83,7 @@ public:
     _resizeEvent();
   }
 
-oc3_signals public:
+signals public:
   Signal1<Industry::Type> onClickedSignal;
 
 protected:
@@ -127,7 +127,7 @@ protected:
   virtual void _btnClicked()
   {
     PushButton::_btnClicked();
-    oc3_emit onClickedSignal( (Industry::Type)ID() );
+    emit onClickedSignal( (Industry::Type)ID() );
   }
 
 private:

@@ -69,7 +69,7 @@ ScrollBar::~ScrollBar(){}
 void ScrollBar::_resolvePositionChanged()
 {
   parent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
-  oc3_emit _d->onPositionChanged( _value );
+  emit _d->onPositionChanged( _value );
 }
 
 //! called if an event happened

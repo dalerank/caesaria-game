@@ -79,7 +79,7 @@ public:
   LayerPtr currentLayer;
   void setLayer( int type );
 
-public oc3_signals:
+public signals:
   Signal1<int> onLayerSwitchSignal;
 };
 
@@ -147,7 +147,7 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   currentLayer->init( currentCursorPos );
-  oc3_emit onLayerSwitchSignal( currentLayer->type() );
+  emit onLayerSwitchSignal( currentLayer->type() );
 }
 
 void CityRenderer::render()

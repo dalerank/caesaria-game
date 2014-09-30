@@ -58,18 +58,18 @@ public:
   virtual void applyStorageReservation( GoodStock &stock, const int reservationID )
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
-    oc3_emit onChangeState();
+    emit onChangeState();
   }
 
   virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
-    oc3_emit onChangeState();
+    emit onChangeState();
   }
 
   Factory* factory;
 
-public oc3_signals:
+public signals:
   Signal0<> onChangeState;
 };
 

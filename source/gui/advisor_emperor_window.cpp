@@ -106,11 +106,11 @@ public:
     }
   }
 
-public oc3_signals:
+public signals:
   Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
-  void _acceptRequest()  { oc3_emit _onExecRequestSignal( _request );  }
+  void _acceptRequest()  { emit _onExecRequestSignal( _request );  }
 
   void _executeRequest()
   {

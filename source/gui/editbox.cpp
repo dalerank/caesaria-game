@@ -89,7 +89,7 @@ public:
   //! sets the area of the given line
   void setTextRect( EditBox* who, int line, const std::string& r="");
 
-oc3_signals public:
+signals public:
   Signal1<std::string> onTextChangedSignal;
   Signal0<> onEnterPressedSignal;
 };
@@ -135,7 +135,7 @@ void EditBox::_init()
 void EditBox::_setText(const std::wstring& r)
 {
   _d->text = r;
-  oc3_emit _d->onTextChangedSignal( __ucs2utf8( r ) );
+  emit _d->onTextChangedSignal( __ucs2utf8( r ) );
 
   if( (unsigned int)_d->cursorPos > _d->text.size())
   {
@@ -509,7 +509,7 @@ bool EditBox::_processKey(const NEvent& event)
 		}
 		else
 		{
-			oc3_emit _d->onEnterPressedSignal();
+			emit _d->onEnterPressedSignal();
 			_sendGuiEvent( guiEditboxEnter );
 		}
 		break;

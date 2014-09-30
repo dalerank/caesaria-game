@@ -30,7 +30,7 @@ public:
   EmperorGiftWindow( Widget* parent, int money, const DateTime& lastgift );
   virtual ~EmperorGiftWindow();
 
-public oc3_signals:
+public signals:
   Signal1<int>& onSendGift();
 
 private:
