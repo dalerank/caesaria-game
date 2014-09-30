@@ -220,9 +220,10 @@ void PlayerArmy::_reachedWay()
     {
       foreach( it, _d->soldiersInfo )
       {
-        VariantMap& info = *it;
+        VariantMap info = (*it).toMap();
         int type = info[ "type" ];
-        WalkerPtr walker = WalkerManager::create( (constants::walker::Type)type, pCity );
+        WalkerPtr walker = WalkerManager::instance().create( (constants::walker::Type)type, pCity );
+        walker->load( info );
         pCity->addWalker( walker );
       }
 
