@@ -35,7 +35,7 @@ public:
                  patrol,
                  doNothing } SldrAction;
 
-  Soldier(PlayerCityPtr city, constants::walker::Type type);
+  virtual ~Soldier();
 
   virtual void fight();
 
@@ -50,7 +50,6 @@ public:
 
   virtual void wait(int ticks);
   virtual void initialize(const VariantMap &options);
-  virtual ~Soldier();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -59,12 +58,15 @@ public:
   virtual void setAttackDistance( unsigned int distance );
 
 protected:
+  Soldier(PlayerCityPtr city, constants::walker::Type type);
+
   SldrAction _subAction() const;
   void _setSubAction( SldrAction action );
 
   virtual bool _move2freePos(TilePos target);
   virtual ConstructionList _findContructionsInRange(unsigned int range) = 0;
   virtual WalkerList _findEnemiesInRange(unsigned int range) = 0;
+
 private:
   __DECLARE_IMPL(Soldier)
 };

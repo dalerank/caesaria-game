@@ -33,13 +33,15 @@ public:
 
   // draw on screen
   virtual void draw( gfx::Engine& engine );
+  virtual void beforeDraw(gfx::Engine &painter);
 
   //resolve event
   virtual bool onEvent(const NEvent& event);
 
-  virtual std::string tooltipText() const;
 
 protected:
+  void _changePosition();
+
   class Impl;
   ScopedPtr< Impl > _d;
 

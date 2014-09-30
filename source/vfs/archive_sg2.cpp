@@ -170,8 +170,8 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
       if( !p555.exist() )
       {
-        Logger::warning( "Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str() );
-        continue; // skip to next bitmap
+          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str());
+          continue; // skip to next bitmap
       }
 
       _fileInfo[name];
@@ -208,6 +208,7 @@ std::string Sg2ArchiveReader::_find555File( const SgFileEntry& rec )
 	// Fetch basename of the file
 	// either the same name as sg(2|3) or from file record
 	Path filename;
+  std::string retValue = rec.fn;
 	if( rec.sr.flags[0] > 0 )
 	{
 		filename = rec.fn;
@@ -223,10 +224,18 @@ std::string Sg2ArchiveReader::_find555File( const SgFileEntry& rec )
 	Path path = _findFilenameCaseInsensitive( _file.path().directory(), filename.baseName().toString() );
 	if( path.exist() )
 	{
-		return path.toString();
+		retValue = path.toString();
+	}
+	else
+	{
+		path = _findFilenameCaseInsensitive((Path(_file.path().directory()) + Path("/555")).toString(), filename.baseName().toString());    
+		if (path.exist())
+		{
+			retValue = path.toString();
+		}
 	}
 
-	return rec.fn;
+	return retValue;
 }
 
 std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& dir, std::string filename )
@@ -283,7 +292,7 @@ void Sg2ArchiveReader::_loadIsometricImage( Picture& pic, const SgFileEntry& rec
 {
 	ByteArray buffer = _readData( rec );
 	_writeIsometricBase( pic, rec.sr, (unsigned char*)buffer.data() );
-	_writeTransparentImage( pic, (unsigned char*)&buffer[rec.sr.uncompressed_length],
+	_writeTransparentImage( pic, (unsigned char*)(&buffer[0] + rec.sr.uncompressed_length),
 				rec.sr.length - rec.sr.uncompressed_length);
 }
 
@@ -494,7 +503,7 @@ unsigned int Sg2ArchiveReader::_555toRGBA( unsigned short color)
 	rgb.setGreen( (green >> 8) & 0xff );
 	rgb.setBlue( blue & 0xff );
 
-	return rgb.color;
+	return rgb.abgr();
 }
 
 NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)

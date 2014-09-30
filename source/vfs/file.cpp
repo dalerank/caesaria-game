@@ -114,8 +114,13 @@ ByteArray NFile::read( unsigned int sizeToRead)
 
 ByteArray NFile::readAll()
 {
-  seek( 0 );
-  return read( size() );
+  if( _entity.isValid() )
+  {
+    seek( 0 );
+    return read( size() );
+  }
+
+  return ByteArray();
 }
 
 //! returns name of file

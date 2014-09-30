@@ -99,7 +99,7 @@ void GameSpeedOptionsWindow::_update()
   GET_WIDGET_FROM_UI( lbScrollSpeedPercent )
   GET_WIDGET_FROM_UI( lbAutosaveInterval )
 
-  _d->speedValue = math::clamp( _d->speedValue, 10, 1000 );
+  _d->speedValue = math::clamp( _d->speedValue, 10, 300 );
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
   _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
 

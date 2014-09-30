@@ -276,19 +276,19 @@ public:
            && LowerRightCorner.IsEqual( other.LowerRightCorner, tolerance);
   }
 
-	T top() const 	{		return UpperLeftCorner.y();	}
 	Vector2<T> righttop() const { return Vector2<T>( LowerRightCorner.x(), UpperLeftCorner.y() ); }
 	Vector2<T> leftbottom() const { return Vector2<T>( UpperLeftCorner.x(), LowerRightCorner.y() ); }
-	Vector2<T> lefttop() const { return UpperLeftCorner; }
-	Vector2<T> rightbottom() const { return LowerRightCorner; }
+  const Vector2<T>& lefttop() const { return UpperLeftCorner; }
+  const Vector2<T>& rightbottom() const { return LowerRightCorner; }
 
-  T& rtop() {		return UpperLeftCorner.ry();	}
-	T left() const	{		return UpperLeftCorner.x();	}
-  T& rleft() {		return UpperLeftCorner.rx();	}
-	T bottom() const	{		return LowerRightCorner.y();	}
-  T& rbottom() { return LowerRightCorner.ry();	}
-	T right() const	{		return LowerRightCorner.x();	}
-  T& rright() {	return LowerRightCorner.rx();	}
+  inline T top() const 	{		return UpperLeftCorner.y();   }
+  inline T& rtop()      {		return UpperLeftCorner.ry();	}
+  inline T left() const	{		return UpperLeftCorner.x();   }
+  inline T& rleft()     {		return UpperLeftCorner.rx();	}
+  inline T bottom()const{		return LowerRightCorner.y();	}
+  inline T& rbottom()   {   return LowerRightCorner.ry(); }
+  inline T right() const{		return LowerRightCorner.x();	}
+  inline T& rright()    {   return LowerRightCorner.rx(); }
 
 	//! Upper left corner
 	Vector2<T> UpperLeftCorner;

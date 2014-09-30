@@ -36,6 +36,7 @@
 	
   empire : {
     enabled : false
+    maxBarbariansGroups : 0
   }
   		
   events :
@@ -72,7 +73,7 @@
 
     "enable_industry#building_options" : {
       population : 450
-      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true, weapons_workshop : true }
+      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true, weapons_workshop : true, forum_1 : true }
     }
 
     "enable_advisors#empire_options" : {

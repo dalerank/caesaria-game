@@ -1,6 +1,7 @@
 {
   geometry : [ 0, 0, 640, 416 ]
   bgtype : "whiteFrame"
+  static : true
     
   lbIcon#Label : {
     geometry : [ 10, 10, 50, 50 ]

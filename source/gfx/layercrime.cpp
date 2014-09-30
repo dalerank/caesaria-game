@@ -41,6 +41,7 @@ static const std::string crimeDesc[] =
   "##low_crime_risk##",
   "##few_crime_risk##"
   "##some_crime_risk##",
+  "##peaceful_crime_risk##",
   "##several_crimes_but_area_secure##",
   "##dangerous_crime_risk##"
   "##averange_crime_risk##",
@@ -145,7 +146,7 @@ void LayerCrime::handleEvent(NEvent& event)
         if( house != 0 )
         {
           int crime = (int)house->getServiceValue( Service::crime );
-          text = crimeDesc[ math::clamp<int>( crime / 12.5, 0, 7 ) ];
+          text = crimeDesc[ math::clamp<int>( crime / 11, 0, 7 ) ];
         }
       }
 

@@ -19,9 +19,9 @@
 #define __CAESARIA_PICTURE_BANK_H_INCLUDED__
 
 #include "picture.hpp"
-#include "walker/action.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
+#include "core/variant.hpp"
 
 // loads pictures from files
 namespace gfx
@@ -32,8 +32,12 @@ class PictureBank
 public:
   static PictureBank& instance();
 
+  void reset();
+
   // set the current picture
   void setPicture(const std::string &name, const Picture& picture);
+
+  void addAtlas(const std::string &filename, const VariantMap& options );
 
   // show resource
   Picture& getPicture(const std::string &name);

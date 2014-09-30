@@ -20,11 +20,17 @@
 #include "good/goodstore_simple.hpp"
 #include "city/funds.hpp"
 #include "events/showinfobox.hpp"
+#include "game/gamedate.hpp"
+#include "barbarian.hpp"
 #include "goodcaravan.hpp"
 #include "core/gettext.hpp"
 #include "game/player.hpp"
 
 namespace world {
+
+namespace {
+const int maxSoldiers = 200;
+}
 
 const char* Rome::defaultName = "Rome";
 
@@ -33,6 +39,8 @@ class Rome::Impl
 public:
   city::Funds funds;
   SimpleGoodStore gstore;
+  DateTime lastAttack;
+  int strength;
 };
 
 Rome::Rome(EmpirePtr empire)
@@ -43,6 +51,7 @@ Rome::Rome(EmpirePtr empire)
   setPicture( pic );
 
   setLocation( Point( 870, 545 ) );
+  _d->strength = maxSoldiers;
 }
 
 unsigned int Rome::tradeType() const { return 0; }
@@ -51,6 +60,11 @@ city::Funds& Rome::funds() { return _d->funds; }
 std::string Rome::name() const { return Rome::defaultName; }
 unsigned int Rome::population() const { return 45000; }
 bool Rome::isPaysTaxes() const { return true; }
+
+void Rome::timeStep(const unsigned int time)
+{
+  City::timeStep( time );
+}
 
 SmartPtr<Player> Rome::player() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
@@ -81,6 +95,18 @@ void Rome::addObject(ObjectPtr obj)
                                                           !events::ShowInfobox::send2scribe);
     e->dispatch();
   }
+  else if( is_kind_of<Barbarian>( obj ) )
+  {
+    BarbarianPtr brb = ptr_cast<Barbarian>( obj );
+
+    if( brb.isValid() )
+    {
+      _d->lastAttack = GameDate::current();
+    }
+  }
 }
+
+DateTime Rome::lastAttack() const { return _d->lastAttack; }
+int Rome::strength() const { return _d->strength; }
 
 } // end namespace world

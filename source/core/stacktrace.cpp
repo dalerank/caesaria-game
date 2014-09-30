@@ -23,7 +23,7 @@
   #include <execinfo.h>
 #endif
 
-#if !defined(CAESARIA_PLATFORM_HAIKU) && !defined(CAESARIA_PLATFORM_ANDROID)
+#if !defined(CAESARIA_PLATFORM_HAIKU) && !defined(CAESARIA_PLATFORM_ANDROID) && !defined(_MSC_VER)
   #include <cxxabi.h>
 #endif
 
@@ -111,6 +111,8 @@ void Stacktrace::print(unsigned int starting_frame, unsigned int max_frames)
 
   //free(funcname);
   free(symbollist);
+#else
+  Logger::warning("Stack trace not available");
 #endif // CAESARIA_PLATFORM_LINUX
 }
 

@@ -39,6 +39,7 @@ public:
   virtual void burn();
   virtual void appendPaved( int value );
   virtual void computeAccessRoads();
+  virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
   int pavedValue() const;
   virtual gfx::Renderer::PassQueue passQueue() const;
 

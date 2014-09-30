@@ -27,7 +27,7 @@ class ResourceLoader
 {
 public:
   ResourceLoader();
-  ~ResourceLoader();
+  virtual ~ResourceLoader();
 
   void loadFromModel( vfs::Path path2model, const vfs::Directory altDir=vfs::Directory() );
 

@@ -33,7 +33,8 @@ public:
    {
      size_type newSize = a.size();
      resize( newSize );
-     std::memcpy( &front(), &a.front(), sizeof(Direction) * newSize );
+	 clear();
+	 insert(begin(), a.begin(), a.end());
 
      return *this;
    }

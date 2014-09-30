@@ -53,6 +53,14 @@ class TileGrid : public std::vector< TileRow >
 class Tilemap::Impl : public TileGrid
 {
 public:
+  struct TurnInfo {
+    Tile* tile;
+    Picture pic;
+    TileOverlayPtr overlay;
+  };
+
+  typedef std::map<Tile*, TurnInfo> MasterTiles;
+
   int size;
   Direction direction;
 
@@ -64,6 +72,8 @@ public:
   bool isInside( const TilePos& pos );
   void resize( const int s );
   void set( int i, int j, Tile* v );
+  void saveMasterTiles( MasterTiles& mtiles );
+  void checkCoastAfterTurn();
 };
 
 Tilemap::Tilemap() : _d( new Impl )
@@ -118,7 +128,6 @@ Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
 const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
 Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }
 
-
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
   return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
@@ -148,7 +157,7 @@ TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
     case FourNeighbors:
       return getRectangle(pos - offset, pos + offset, !checkCorners);
   }
-  //_CAESARIA_DEBUG_BREAK_IF("Unexpected type")
+
   Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
   return TilesArray();
 }
@@ -164,7 +173,7 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   start = TilePos( mini, minj );
   stop = TilePos( maxi, maxj );
 
-  size_t expected = (2 * (maxi - mini) + 2 * (maxj - minj) + corners) ? 4 : 0;
+  size_t expected = 2 * ((maxi - mini) + (maxj - minj)) + corners;
   res.reserve(expected);
 
   int delta_corners = 0;
@@ -321,8 +330,7 @@ void Tilemap::load( const VariantMap& stream )
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
-      std::string picName = TileHelper::convId2PicName( imgId );
-      Picture& pic = Picture::load( picName );
+      Picture& pic = TileHelper::pictureFromId( imgId );
 
       tile->setOriginalImgId( imgId );
 
@@ -360,78 +368,46 @@ void Tilemap::turnRight()
     Logger::warning( "Tilemap::turnRight wrong direction %d", _d->direction );
   }
 
-  std::map<Tile*,Picture> masterTiles;
+  Impl::MasterTiles masterTiles;
+  _d->saveMasterTiles( masterTiles );
 
+  const int& msize = _d->size;
   Tile* tmp;
-  unsigned int size = _d->size;
-
-  for( unsigned int i=0; i < size; i++ )
+  for( int i=0; i < msize/2;i++)
   {
-    for( unsigned int j=0; j < size; j++ )
+    for( int j=i; j < msize-1-i;j++)
     {
       tmp = _d->ate( i, j );
-      if( tmp->masterTile() )
-      {
-        Tile* mTile = tmp->masterTile();
-        Picture pic = mTile->picture();
-        int pSize = (pic.width() + 2) / 60;
-
-        masterTiles[ tmp->masterTile() ] = pic;
-        for( int i=0; i < pSize; i++ )
-        {
-          for( int j=0; j < pSize; j++ )
-          {
-            Tile* apTile = _d->ate( mTile->pos() + TilePos( i, j ) );
-            apTile->setMasterTile( 0 );
-            apTile->setPicture( Picture::getInvalid() );
-          }
-        }
-      }
-    }
-  }
-
-  for( unsigned int i=0;i< size/2;i++)
-  {
-    for( unsigned int j=i; j< size-1-i;j++)
-    {
-      tmp = _d->ate( i, j );
-      _d->set( i, j, _d->ate( size -j-1, i ) );
-      _d->set( size-j-1, i, _d->ate( size-i-1, size-j-1 ) );
-      _d->set( size-i-1, size-j-1, _d->ate( j, size-i-1 ) );
-      _d->set( j, size-i-1, tmp );
+      _d->set( i, j, _d->ate( msize -j-1, i ) );
+      _d->set( msize-j-1, i, _d->ate( msize-i-1, msize-j-1 ) );
+      _d->set( msize-i-1, msize-j-1, _d->ate( j, msize-i-1 ) );
+      _d->set( j, msize-i-1, tmp );
     }
   }  
 
   foreach( it, masterTiles )
-  {
-    Picture pic = it->second;
+  {    
+    const Impl::TurnInfo& ti = it->second;
+
+    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / 60;
 
-    switch( _d->direction )
+    TilePos mTilePos = ti.tile->epos() - TilePos( 0, pSize - 1 );
+    Tile* mTile = _d->ate( mTilePos );
+    for( int i=0; i < pSize; i++ )
     {
-    case west:
-    {
-      TilePos mTilePos = it->first->epos() - TilePos( 0, pSize - 1 );
-      Tile* mTile = _d->ate( mTilePos );
-      for( int i=0; i < pSize; i++ )
+      for( int j=0; j < pSize; j++ )
       {
-        for( int j=0; j < pSize; j++ )
-        {
-          Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
-          apTile->setMasterTile( mTile );
-        }
+        Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
+        apTile->setMasterTile( mTile );
       }
-      mTile->setPicture( pic );
-    }
-    break;
-
-    default:
-      break;
     }
 
+    mTile->setPicture( ti.pic );
+    ti.tile->changeDirection( mTile, _d->direction );
   }
 
-  //tmp->changeDirection( _d->direction );
+  _d->checkCoastAfterTurn();
 }
 
 void Tilemap::turnLeft()
@@ -447,8 +423,11 @@ void Tilemap::turnLeft()
     Logger::warning( "Tilemap::turnLeft wrong direction %d", _d->direction );
   }
 
-  Tile* tmp;
+  Impl::MasterTiles masterTiles;
+  _d->saveMasterTiles( masterTiles );
+
   unsigned int size = _d->size;
+  Tile* tmp;
   for( unsigned int i=0;i<size/2;i++)
   {
     for( unsigned int j=i;j<size-1-i;j++)
@@ -458,10 +437,32 @@ void Tilemap::turnLeft()
       _d->set( j, size-1-i, _d->ate( size-1-i, size-1-j ) );
       _d->set( size-1-i, size-1-j, _d->ate( size-1-j, i ) );
       _d->set( size-1-j, i, tmp );
-
-      tmp->changeDirection( _d->direction );
     }
   }
+
+  foreach( it, masterTiles )
+  {
+    const Impl::TurnInfo& ti = it->second;
+
+    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
+    int pSize = (pic.width() + 2) / 60;
+
+    TilePos mTilePos = ti.tile->epos() - TilePos( pSize - 1, 0 );
+    Tile* mTile = _d->ate( mTilePos );
+    for( int i=0; i < pSize; i++ )
+    {
+      for( int j=0; j < pSize; j++ )
+      {
+        Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
+        apTile->setMasterTile( mTile );
+      }
+    }
+
+    mTile->setPicture( ti.pic );
+    ti.tile->changeDirection( mTile, _d->direction );
+  }
+
+  _d->checkCoastAfterTurn();
 }
 
 Direction Tilemap::direction() const { return _d->direction; }
@@ -521,6 +522,60 @@ void Tilemap::Impl::set(int i, int j, Tile* v)
 {
   v->setEPos( TilePos( i, j ) );
   (*this)[i][j] = v;
+}
+
+void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
+{
+  Tile* tmp;
+
+  for( int i=0; i < size; i++ )
+  {
+    for( int j=0; j < size; j++ )
+    {
+      tmp = ate( i, j );
+      Tile* masterTile = tmp->masterTile();
+
+      if( masterTile )
+      {        
+        Impl::MasterTiles::iterator mtFound = mtiles.find( masterTile );
+
+        if( mtFound == mtiles.end() )
+        {
+          Impl::TurnInfo ti;
+          ti.tile = masterTile;
+          ti.pic = ti.tile ->picture();
+          ti.overlay = tmp->overlay();
+
+          mtiles[ masterTile ] = ti;
+
+          int pSize = (ti.pic.width() + 2) / 60;
+
+          for( int i=0; i < pSize; i++ )
+          {
+            for( int j=0; j < pSize; j++ )
+            {
+              Tile* apTile = ate( ti.tile->epos() + TilePos( i, j ) );
+              apTile->setMasterTile( 0 );
+              apTile->setPicture( Picture::getInvalid() );
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+void Tilemap::Impl::checkCoastAfterTurn()
+{
+  for( int i=0; i < size; i++ )
+  {
+    for( int j=0; j < size; j++ )
+    {
+      Tile* tmp = ate( i, j );
+      if( tmp->getFlag( Tile::tlWater ) )
+        tmp->changeDirection( 0, direction );
+    }
+  }
 }
 
 }//end namespace gfx

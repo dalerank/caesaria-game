@@ -50,7 +50,7 @@ bool AboutConstruction::onEvent(const NEvent& event)
   case sEventGui:
     if( event.gui.type == guiButtonClicked && ( event.gui.caller->ID() == KEY_COMMA || event.gui.caller->ID() == KEY_PERIOD ) )
     {
-      _switch( event.keyboard.key );
+      _switch(event.gui.caller->ID());
     }
   break;
 

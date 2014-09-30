@@ -40,6 +40,7 @@ AboutRuins::AboutRuins( Widget* parent, const Tile& tile )
   RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
   setTitle( MetaDataHolder::findPrettyName( ruin->type() ) );
   std::string text = _("##ruins_0000_text##");
+
   if( ruin.isValid() )
   {
     if( !ruin->info().empty() )
@@ -47,6 +48,7 @@ AboutRuins::AboutRuins( Widget* parent, const Tile& tile )
       text = _( ruin->info().c_str() );
     }
   }
+
   Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
   lb->setTextAlignment( align::center, align::center );
   lb->setWordwrap( true );

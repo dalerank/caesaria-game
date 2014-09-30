@@ -13,26 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
-#define _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+#ifndef __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#define __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
 
-#include "event.hpp"
-
-namespace events
+namespace city
 {
 
-class WinMission : public GameEvent
+namespace debug_event
 {
-public:
-  static GameEventPtr create();
 
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int) const;
+enum {
+  add_enemy_archers=0,
+  add_enemy_soldiers,
+  add_wolves,
+  dec_mars_relation,
+  add_1000_dn,
+  add_player_money,
+  send_chastener,
+  test_request
 };
 
 }
 
-#endif //_CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+}//end namespace city
+#endif //__CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__

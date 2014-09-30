@@ -704,19 +704,8 @@ void ContextMenu::_closeAllSubMenus()
 	//HighLighted = -1;
 }
 
-void ContextMenu::setAllowFocus( bool enabled )
-{
-	_d->allowFocus = enabled;
-}
-
-int ContextMenu::hovered() const
-{
-	return _d->highlihted;
-}
-
-Signal1<int>& ContextMenu::onItemAction()
-{
-  return _d->onItemActionSignal;
-}
+void ContextMenu::setAllowFocus( bool enabled ) {	_d->allowFocus = enabled;}
+int ContextMenu::hovered() const {	return _d->highlihted; }
+Signal1<int>& ContextMenu::onItemAction() {  return _d->onItemActionSignal; }
 
 }//end namespace gui
