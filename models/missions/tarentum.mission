@@ -29,6 +29,7 @@
 	
   empire : {
     enabled : true
+    maxBarbariansGroups : 1
 
     cities :
     {

@@ -39,7 +39,7 @@ public:
   TilePos getCurrentPos() const;
   std::string getCurrentMessage() const;
 
-oc3_signals public:
+signals public:
   Signal1<bool>& onAlarmChange();
   Signal1<TilePos>& onMoveToAlarm();
 

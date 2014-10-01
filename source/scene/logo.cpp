@@ -36,6 +36,7 @@ class SplashScreen::Impl
 public:
   Picture background;
   PictureRef textPic;
+  std::string lastText;
   std::string text, prefix;
   PictureRef fadetx;
 
@@ -69,9 +70,7 @@ void SplashScreen::draw()
 {
   Engine& engine = Engine::instance();
 
-  engine.draw( _d->background, 0, 0);
-
-  if( !_d->text.empty() )
+  if( _d->text != _d->lastText )
   {
     Font textFont = Font::create( FONT_2_WHITE ) ;
 
@@ -81,8 +80,11 @@ void SplashScreen::draw()
 
     textFont.draw( *_d->textPic, _d->text, textRect.left(), textRect.top(), false, true );
 
-    engine.draw( *_d->textPic, 0, 0 );
+    _d->lastText = _d->text;
   }
+
+  engine.draw( _d->background, 0, 0);
+  engine.draw( *_d->textPic, 0, 0 );
 }
 
 void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offset )

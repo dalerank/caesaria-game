@@ -16,6 +16,10 @@
 #ifndef __CAESARIA_FOREACH_INCLUDE_H__
 #define __CAESARIA_FOREACH_INCLUDE_H__
 
+#ifdef _MSC_VER
+#define __typeof__ decltype
+#endif
+
 #define foreach(m_itname,m_container) \
        for( __typeof__((m_container).begin()) m_itname=(m_container).begin() ; \
        m_itname!=(m_container).end() ; \

@@ -56,7 +56,7 @@ void WidgetAnimator::_afterFinished()
   else if( isFlag( removeSelf ) )
     deleteLater();
 
-  oc3_emit _onFinishSignal();
+  emit _onFinishSignal();
 }
 
 }//end namespace gui

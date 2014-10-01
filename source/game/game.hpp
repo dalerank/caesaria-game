@@ -35,7 +35,6 @@ public:
   ~Game();
 
   void save(std::string filename) const;
-  void load(std::string filename);
 
   void initialize();
 
@@ -66,10 +65,12 @@ public:
   void setTimeMultiplier(int percent);
   int timeMultiplier() const;
 
-public oc3_signals:
+public signals:
   Signal1<std::string>& onSaveAccepted();
 
 private:
+  bool load(std::string filename);
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

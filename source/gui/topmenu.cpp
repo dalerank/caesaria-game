@@ -35,6 +35,7 @@
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
 #include "listbox.hpp"
+#include "city/debug_events.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -59,15 +60,16 @@ public:
   ContextMenu* langSelect;
   Pictures background;
 
-oc3_slots public:
+slots public:
   void resolveSave();
   void updateDate();
   void showAboutInfo();
   void resolveAdvisorShow(int);
+  void handleDebugEvent(int);
   void showShortKeyInfo();
   void initBackground( const Size& size );
 
-oc3_signals public:
+signals public:
   Signal0<> onExitSignal;
   Signal0<> onEndSignal;
   Signal0<> onSaveSignal;
@@ -77,6 +79,7 @@ oc3_signals public:
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
   Signal0<> onShowCityOptionsSignal;
+  Signal1<int> onDebugEventSignal;
   Signal1<advisor::Type> onRequestAdvisorSignal;
 };
 
@@ -190,11 +193,11 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
 
-  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::emit );
-  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
-  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::emit );
-  CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::emit );
-  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::emit );
+  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::_emit );
+  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::_emit );
+  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::_emit );
+  CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::_emit );
+  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
@@ -203,10 +206,10 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
   ContextMenuItem* cityopts = options->addItem( _("##city_settings##"), -1, true, false, false, false );
 
-  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::emit );
-  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
-  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::emit );
-  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::emit );
+  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::_emit );
+  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::_emit );
+  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::_emit );
+  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
@@ -232,6 +235,22 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
+  tmp = addItem( _("Debug"), -1, true, true, false, false );
+  ContextMenu* debugMenu = tmp->addSubMenu();
+  debugMenu->addItem( "add_enemy_archers", city::debug_event::add_enemy_archers );
+  debugMenu->addItem( "add_enemy_soldiers", city::debug_event::add_enemy_soldiers );
+  debugMenu->addItem( "add_wolves", city::debug_event::add_wolves );
+  debugMenu->addItem( "decrease_mars_relation", city::debug_event::dec_mars_relation );
+  debugMenu->addItem( "add_1000_dn", city::debug_event::add_1000_dn );
+  debugMenu->addItem( "add_player_money", city::debug_event::add_player_money );
+  debugMenu->addItem( "send_chastener", city::debug_event::send_chastener );
+  debugMenu->addItem( "test_request", city::debug_event::test_request );
+  debugMenu->addItem( "send_player_army", city::debug_event::send_player_army );
+  debugMenu->addItem( "screenshot", city::debug_event::screenshot );
+  debugMenu->addItem( "add_empire_barbarian", city::debug_event::add_empire_barbarian );
+
+  CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
+
   _d->updateDate();
 }
 
@@ -245,6 +264,8 @@ Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; 
 Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
 Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
-void TopMenu::Impl::resolveAdvisorShow(int id) { onRequestAdvisorSignal.emit( (advisor::Type)id ); }
+Signal1<int> &TopMenu::onDebugEvent() { return _d->onDebugEventSignal; }
+void TopMenu::Impl::resolveAdvisorShow(int id) { emit onRequestAdvisorSignal( (advisor::Type)id ); }
+void TopMenu::Impl::handleDebugEvent(int id) { emit onDebugEventSignal( id ); }
 
 }//end namespace gui

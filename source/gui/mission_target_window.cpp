@@ -62,6 +62,8 @@ MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, Rect( 0, 0, 610, 430 ) );
   ret->setCenter( parent->center() );
   ret->setCity( city );
+  ret->setModal();
+
   return ret;
 }
 

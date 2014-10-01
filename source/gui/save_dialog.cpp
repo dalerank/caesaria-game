@@ -49,7 +49,7 @@ public:
   vfs::Directory directory;
   std::string extension;
 
-oc3_signals public:
+signals public:
   Signal1<std::string> onFileSelectedSignal;
 
 public:
@@ -59,7 +59,7 @@ public:
     if( filename.extension().empty() )
       filename = filename + extension;
 
-    oc3_emit onFileSelectedSignal( (directory/filename).toString() );
+    emit onFileSelectedSignal( (directory/filename).toString() );
   }
 
   void resolveListboxChange( std::string text )

@@ -52,7 +52,7 @@ public:
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
-public oc3_signals:
+public signals:
   Signal1<TilePos> onCenterChangeSignal;
 };
 
@@ -263,7 +263,7 @@ void Minimap::Impl::updateImage()
   }
 
   minimap->unlock();
-  minimap->update();
+  //minimap->update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
@@ -332,7 +332,7 @@ bool Minimap::onEvent(const NEvent& event)
     tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
     tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
-    oc3_emit _d->onCenterChangeSignal( tpos );
+    emit _d->onCenterChangeSignal( tpos );
   }
 
   return Widget::onEvent( event );

@@ -61,17 +61,22 @@ public:
   {
     Label::_updateTexture( painter );
 
-    Picture goodIcon = GoodHelper::picture( _type );
     std::string goodName = _( "##" + GoodHelper::getTypeName( _type ) + "##" );
 
     if( _textPictureRef() )
     {
-      _textPictureRef()->draw( goodIcon, 15, 0, false );
-      _textPictureRef()->draw( goodIcon, 390, 0, false );
-
       Font rfont = font();
       rfont.draw( *_textPictureRef(), goodName, 55, 0 );
     }
+  }
+
+  void draw(Engine &painter)
+  {
+    Label::draw( painter );
+
+    Picture goodIcon = GoodHelper::picture( _type );
+    painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
+    painter.draw( goodIcon, absoluteRect().lefttop() + Point( 390, 0 ), &absoluteClippingRectRef() );
   }
 
   void updateBtnText()

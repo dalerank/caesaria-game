@@ -79,9 +79,8 @@ public:
 
   TilesArray& operator=(const TilesArray& a)
   {
-    resize( a.size() );
-    memcpy( &front(), &a.front(), (unsigned int)(sizeof(Tile*) * a.size()) );   
-
+    clear();
+    insert(begin(), a.begin(), a.end());
     return *this;
   }
 

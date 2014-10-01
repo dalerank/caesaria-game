@@ -32,11 +32,11 @@ class ChangeSalaryWindow::Impl
 public:
   int newSalary;
 
-public oc3_slots:
+public slots:
   void resolveSalaryChange(const ListBoxItem&);
   void setNewSalary();
 
-public oc3_signals:
+public signals:
   Signal1<int> onChangeSalarySignal;
 };
 
@@ -79,7 +79,7 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
 ChangeSalaryWindow::~ChangeSalaryWindow(){}
 Signal1<int>& ChangeSalaryWindow::onChangeSalary(){  return _dfunc()->onChangeSalarySignal; }
 void ChangeSalaryWindow::Impl::resolveSalaryChange(const ListBoxItem& item ) { newSalary = item.tag(); }
-void ChangeSalaryWindow::Impl::setNewSalary(){ oc3_emit onChangeSalarySignal( newSalary ); }
+void ChangeSalaryWindow::Impl::setNewSalary(){ emit onChangeSalarySignal( newSalary ); }
 
 
 }//end namespace gui

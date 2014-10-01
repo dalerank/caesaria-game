@@ -78,7 +78,7 @@ void ContextMenuItem::toggleCheck()
   if( _d->isAutoChecking )
   {
     _d->checked = !_d->checked;
-    oc3_emit _d->onCheckedSignal( _d->checked );
+    emit _d->onCheckedSignal( _d->checked );
   }
 }
 

@@ -20,11 +20,19 @@
 #include "walker/constants.hpp"
 #include "city_renderer.hpp"
 #include "city/city.hpp"
+#include "gui/senate_popup_info.hpp"
+#include "objects/senate.hpp"
 
 using namespace constants;
 
 namespace gfx
 {
+
+class LayerSimple::Impl
+{
+public:
+  SenatePopupInfo senateInfo;
+};
 
 int LayerSimple::type() const { return citylayer::simple; }
 
@@ -36,8 +44,24 @@ LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
   return ret;
 }
 
+void LayerSimple::afterRender(Engine &engine)
+{
+  Layer::afterRender( engine );
+
+  Tile* lastTile = _currentTile();
+  if( lastTile )
+  {
+    TileOverlayPtr ov = lastTile->overlay();
+    SenatePtr senate = ptr_cast<Senate>( ov );
+    if( senate.isValid() )
+    {
+      _d->senateInfo.draw( _lastCursorPos(), Engine::instance(), senate );
+    }
+  }
+}
+
 LayerSimple::LayerSimple( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : Layer( &camera, city ), _d( new Impl )
 {
   _addWalkerType( walker::all );
 }

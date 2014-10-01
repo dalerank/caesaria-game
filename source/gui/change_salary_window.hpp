@@ -31,7 +31,7 @@ public:
 
   virtual ~ChangeSalaryWindow();
 
-public oc3_signals:
+public signals:
   Signal1<int>& onChangeSalary();
 
 private:

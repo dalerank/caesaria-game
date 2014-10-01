@@ -196,7 +196,7 @@ public:
   void updateOverlays(PlayerCityPtr city, unsigned int time);
   void updateServices( unsigned int time );
 
-oc3_signals public:
+signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
   Signal2<TilePos,std::string> onDisasterEventSignal;
@@ -458,7 +458,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
   population = pop;
-  oc3_emit onPopulationChangedSignal( pop );
+  emit onPopulationChangedSignal( pop );
 }
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
@@ -735,7 +735,7 @@ city::SrvcList PlayerCity::services() const { return _d->services; }
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {
   _d->buildOptions = options;
-  oc3_emit _d->onChangeBuildingOptionsSignal();
+  emit _d->onChangeBuildingOptionsSignal();
 }
 
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }

@@ -58,18 +58,11 @@ public:
     _wlkPicture.init( rectangle.size() - Size( 6 ) );
     _wlkPicture->fill( DefaultColors::green, Rect() );
     _walker = wlk;
-
-    gfx::Pictures pics;
-    wlk->getPictures( pics );
-    foreach( it, pics )
-    {
-      _wlkPicture->draw( *it, Point( rectangle.width(), rectangle.height() ) / 2 );
-    }
   }
 
   virtual void _handleClick()
   {
-    oc3_emit _onClickedSignal( _walker );
+    emit _onClickedSignal( _walker );
   }
 
   virtual void draw(gfx::Engine &painter)
@@ -81,7 +74,10 @@ public:
 
     if( !_wlkPicture.isNull() )
     {
-      painter.draw( *_wlkPicture, absoluteRect().UpperLeftCorner + Point( 3, 3 ), &absoluteClippingRectRef() );
+      painter.draw( *_wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &absoluteClippingRectRef() );
+      gfx::Pictures pics;
+      _walker->getPictures( pics );
+      painter.draw( pics, absoluteRect().lefttop() + Point( 15, 15 ), &absoluteClippingRectRef() );
     }
   }
 

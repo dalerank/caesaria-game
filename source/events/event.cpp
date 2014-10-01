@@ -164,6 +164,8 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
       game.city()->setOption( PlayerCity::updateRoads, 1 );
     }
   }
+
+  game.city()->setOption( PlayerCity::updateTiles, 1 );
 }
 
 GameEventPtr Pause::create( Mode mode )

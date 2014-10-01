@@ -24,13 +24,18 @@ class Elevation : public gfx::TileOverlay
 {
 public:
   Elevation();
-  ~Elevation();
+  virtual ~Elevation();
 
   virtual void initTerrain(gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual Point offset( const gfx::Tile& tile, const Point &subpos) const;
+  virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
   virtual bool isDestructible() const;
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_ELEVATION_H_INCLUDE_
