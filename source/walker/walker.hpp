@@ -100,6 +100,8 @@ public:
   virtual void initialize( const VariantMap& options );
   virtual int agressive() const;
 
+  void attach();
+
 protected:
   void _walk();
   void _computeDirection();

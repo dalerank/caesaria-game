@@ -641,7 +641,7 @@ void House::_levelUp()
 
     _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
 
-    if( _d->houseLevel == HouseLevel::bigInsula )
+    if( _d->houseLevel == HouseLevel::smallVilla )
     {
       events::GameEventPtr e = events::FireWorkers::create( pos(), habitants().count( CitizenGroup::mature ) );
       e->dispatch();
@@ -709,6 +709,27 @@ void House::_levelDown()
     return;
 
   _d->houseLevel = math::clamp<int>( _d->houseLevel-1, HouseLevel::hovel, 0xff );
+
+  if( _d->houseLevel == HouseLevel::beatyfullInsula )
+  {
+    int homelessCount = _d->habitants.count();
+    while( homelessCount > 0 )
+    {
+      int currentPeople = math::clamp( math::random( homelessCount+1 ), 0, 8 );
+
+      homelessCount -= currentPeople;
+      CitizenGroup homeless = _d->habitants.retrieve( currentPeople );
+
+      EmigrantPtr em = Emigrant::send2city( _city(), homeless, tile(), "##emigrant_no_home##" );
+
+      if( em.isValid() )
+      {
+        em->leaveCity( tile() );
+      }
+    }
+
+    _d->habitants.clear();
+  }
 
   _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel );
 

@@ -367,6 +367,12 @@ void Walker::initialize(const VariantMap &options)
 
 int Walker::agressive() const { return 0; }
 
+void Walker::attach()
+{
+  if( _city().isValid() )
+    _city()->addWalker( this );
+}
+
 std::string Walker::currentThinks() const
 {
   if( _d->thinks.empty() )
