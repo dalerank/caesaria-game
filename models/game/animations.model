@@ -116,11 +116,10 @@
     move : { rc : "citizen03", start : 817, frames : 12, action : 1, step : 8 }
   }
 
-  /*
   patrician : {
     move : { rc : "citizen03", start : 713, frames : 12, action : 1, step : 8 }
   }
-
+  /*
   patrician2 : {
     move : { rc : "citizen03", start : 921, frames : 12, action : 1, step : 8 }
   }
