@@ -37,6 +37,16 @@
 #include "core/saveadapter.hpp"
 #include "ttf/SDL_ttf.h"
 
+#ifdef CAESARIA_PLATFORM_ANDROID
+  #define glOrtho glOrthof
+  #undef CAESARIA_USE_SHADERS
+  #undef CAESARIA_USE_FRAMEBUFFER
+  #include <SDL_opengles.h>
+  #define USE_GLES
+#else
+  #include <SDL_opengl.h>
+#endif
+
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #else
@@ -66,16 +76,6 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
-#endif
-
-#ifdef CAESARIA_PLATFORM_ANDROID
-  #define glOrtho glOrthof
-  #undef CAESARIA_USE_SHADERS
-  #undef CAESARIA_USE_FRAMEBUFFER
-  #include <SDL_opengles.h>
-  #define USE_GLES
-#else
-  #include <SDL_opengl.h>
 #endif
 
 #ifndef CAESARIA_USE_FRAMEBUFFER
