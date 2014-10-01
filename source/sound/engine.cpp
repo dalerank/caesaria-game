@@ -170,6 +170,11 @@ bool Engine::_loadSound(vfs::Path filename)
       return true;
     }
 
+    if( !filename.exist() )
+    {
+      return false;
+    }
+
     Sample sample;
 
     /* load the sample */
@@ -191,7 +196,6 @@ bool Engine::_loadSound(vfs::Path filename)
     }
 
     _d->samples[ filename.toString() ] = sample;
-    //Logger::warning( " Loaded %s to sample %i.",filename.toString().c_str(), _d->samples.size() );
   }
 
   return true;

@@ -29,6 +29,7 @@
 	
   empire : {
     enabled : false
+    maxBarbariansGroups : 0
   }
   		
   events :

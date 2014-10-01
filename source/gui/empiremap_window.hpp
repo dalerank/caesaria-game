@@ -27,7 +27,8 @@ namespace gui
 class EmpireMapWindow : public Widget
 {
 public:
-  static EmpireMapWindow* create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id );
+  typedef enum { showCityInfo=0 } Flag;
+  static EmpireMapWindow* create( PlayerCityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
 
@@ -35,17 +36,21 @@ public:
   virtual void draw( gfx::Engine& engine );
   virtual void beforeDraw(gfx::Engine &painter);
 
+  void setFlag(Flag flag , bool value);
+
   //resolve event
   virtual bool onEvent(const NEvent& event);
 
-
 protected:
   void _changePosition();
+  const Point& _offset() const;
+
+  Widget* _resetInfoPanel();
 
   class Impl;
   ScopedPtr< Impl > _d;
 
-  EmpireMapWindow( Widget* parent, int id );
+  EmpireMapWindow( Widget* parent, int id, PlayerCityPtr city );
 };
 
 }//end namespace gui

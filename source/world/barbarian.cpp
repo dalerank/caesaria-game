@@ -195,6 +195,7 @@ bool Barbarian::_attackObject(ObjectPtr obj)
 
     return !pcity->strength();
   }
+  //else if( )
 
   return false;
 }

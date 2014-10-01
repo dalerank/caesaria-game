@@ -29,10 +29,7 @@
 	
   empire : {
     enabled : true
-    barbarians :
-    {
-      maximumGroups : 3
-    }
+    maxBarbariansGroups : 0
 
     cities :
     {

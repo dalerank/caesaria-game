@@ -19,9 +19,9 @@
 #include "delegate.hpp"
 #include "list.hpp"
 
-#define oc3_signals
-#define oc3_slots
-#define oc3_emit
+#define signals
+#define slots
+#define emit
 
 #define CONNECT( a, signal, b, slot ) \
 { \
@@ -96,7 +96,7 @@ public:
 			}
 	}
 
-	void emit() const
+  void _emit() const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
 			(*it)();
@@ -104,7 +104,7 @@ public:
 
 	void operator() () const
 	{
-		emit();
+    _emit();
 	}
 };
 
@@ -177,7 +177,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1 ) const
+  void _emit( Param1 p1 ) const
 	{
 		for( DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it )
 		{
@@ -187,7 +187,7 @@ public:
 
 	void operator() ( Param1 p1 ) const
 	{
-		emit( p1 );
+    _emit( p1 );
 	}
 };
 
@@ -254,7 +254,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2 ) const
+  void _emit( Param1 p1, Param2 p2 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
 			(*it)( p1, p2 );
@@ -262,7 +262,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2 ) const
 	{
-		emit( p1, p2 );
+    _emit( p1, p2 );
 	}
 };
 
@@ -330,7 +330,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2, Param3 p3 ) const
+  void _emit( Param1 p1, Param2 p2, Param3 p3 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
 			( *it )( p1, p2, p3 );
@@ -338,7 +338,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2, Param3 p3 ) const
 	{
-		emit( p1, p2, p3 );
+    _emit( p1, p2, p3 );
 	}
 };
 
@@ -406,7 +406,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4 ) const
+  void _emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
                     ( *it )( p1, p2, p3, p4 );
@@ -414,7 +414,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2, Param3 p3, Param4 p4 ) const
 	{
-		emit( p1, p2, p3, p4 );
+    _emit( p1, p2, p3, p4 );
 	}
 };
 
@@ -482,7 +482,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5 ) const
+  void _emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
 			( *it )( p1, p2, p3, p4, p5 );
@@ -490,7 +490,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5 ) const
 	{
-		emit( p1, p2, p3, p4, p5 );
+    _emit( p1, p2, p3, p4, p5 );
 	}
 };
 
@@ -558,7 +558,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6 ) const
+  void _emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
 			(*it)( p1, p2, p3, p4, p5, p6 );
@@ -566,7 +566,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6 ) const
 	{
-		emit( p1, p2, p3, p4, p5, p6 );
+    _emit( p1, p2, p3, p4, p5, p6 );
 	}
 };
 
@@ -634,7 +634,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7 ) const
+  void _emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
                         (*it)( p1, p2, p3, p4, p5, p6, p7 );
@@ -642,7 +642,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7 ) const
 	{
-		emit( p1, p2, p3, p4, p5, p6, p7 );
+    _emit( p1, p2, p3, p4, p5, p6, p7 );
 	}
 };
 
@@ -710,7 +710,7 @@ public:
 			}
 	}
 
-	void emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8 ) const
+  void _emit( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8 ) const
 	{
 		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
                         (*it)( p1, p2, p3, p4, p5, p6, p7, p8 );
@@ -718,7 +718,7 @@ public:
 
 	void operator() ( Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8 ) const
 	{
-		emit( p1, p2, p3, p4, p5, p6, p7, p8 );
+    _emit( p1, p2, p3, p4, p5, p6, p7, p8 );
 	}
 };
 

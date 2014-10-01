@@ -50,15 +50,7 @@ void DownloadManager::ClearDownloads()
 
 bool DownloadManager::DownloadInProgress()
 {
-	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
-	{
-		if (i->second->GetStatus() == Download::IN_PROGRESS)
-		{
-			return true;
-		}
-	}
-
-	return false;
+  return GetCurrentDownloadId() != -1;
 }
 
 bool DownloadManager::HasPendingDownloads()

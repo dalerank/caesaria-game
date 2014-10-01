@@ -52,7 +52,7 @@ public:
 
   virtual ~Camera() {}
 
-public oc3_signals:
+public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
 };
 

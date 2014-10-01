@@ -52,7 +52,7 @@ public:
   Point itemTextOffset;
   bool needItemsRepackTextures;
 
-oc3_signals public:
+signals public:
 	Signal1<int> indexSelected;
   Signal1<std::string> textSelected;
 	Signal1<int> indexSelectedAgain;

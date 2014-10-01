@@ -91,6 +91,11 @@ inline int random( int max )
 #endif
 }
 
+#ifdef _MSC_VER
+#undef max
+#undef min
+#endif
+
 template <class T>
 inline const T& max( const T& a, const T& b) { return a > b ? a : b; }
 

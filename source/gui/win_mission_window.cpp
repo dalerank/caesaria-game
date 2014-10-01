@@ -31,7 +31,7 @@ class WinMissionWindow::Impl
 public:
   GameAutoPause locker;
 
-public oc3_signals:
+public signals:
   Signal0<> onNextMissionSignal;
   Signal1<int> onContinueRulesSignal;
 };
@@ -53,7 +53,7 @@ WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const
   PushButton* btnAccept;
   GET_WIDGET_FROM_UI( btnAccept )
 
-  CONNECT( btnAccept, onClicked(), &_d->onNextMissionSignal, Signal0<>::emit );
+  CONNECT( btnAccept, onClicked(), &_d->onNextMissionSignal, Signal0<>::_emit );
   CONNECT( btnAccept, onClicked(), this, WinMissionWindow::deleteLater );
 
   if( !winText.empty() )

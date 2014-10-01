@@ -17,12 +17,13 @@
 #define __CAESARIA_SAVEADAPTER_H_INCLUDED__
 
 #include "core/variant.hpp"
-#include "vfs/path.hpp"
+#include "vfs/file.hpp"
 
 class SaveAdapter
 {
 public:
   static VariantMap load( const vfs::Path& fileName );
+  static VariantMap load( vfs::NFile file );
 
   static bool save( const VariantMap& options, const vfs::Path& filename );
 private:

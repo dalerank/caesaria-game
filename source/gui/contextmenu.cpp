@@ -300,9 +300,9 @@ unsigned int ContextMenu::_sendClick(const Point& p)
 		ContextMenuItem* tItem = selectedItem();
 		if( tItem )
     {
-      oc3_emit tItem->onClicked()();
+      emit tItem->onClicked()();
 
-      oc3_emit _d->onItemActionSignal( tItem->commandId() );
+      emit _d->onItemActionSignal( tItem->commandId() );
     }
 		return 1;
 	}
@@ -704,19 +704,8 @@ void ContextMenu::_closeAllSubMenus()
 	//HighLighted = -1;
 }
 
-void ContextMenu::setAllowFocus( bool enabled )
-{
-	_d->allowFocus = enabled;
-}
-
-int ContextMenu::hovered() const
-{
-	return _d->highlihted;
-}
-
-Signal1<int>& ContextMenu::onItemAction()
-{
-  return _d->onItemActionSignal;
-}
+void ContextMenu::setAllowFocus( bool enabled ) {	_d->allowFocus = enabled;}
+int ContextMenu::hovered() const {	return _d->highlihted; }
+Signal1<int>& ContextMenu::onItemAction() {  return _d->onItemActionSignal; }
 
 }//end namespace gui

@@ -58,7 +58,7 @@ protected:
       }
     }
 
-    onMissionSelect.emit( _mission, _title );
+    emit onMissionSelect( _mission, _title );
   }
 
   std::string _mission,

@@ -86,10 +86,6 @@ public:
     if( gr.isValid() )
     {
       font.draw( *pic, StringHelper::format( 0xff, "%d", gr->qty() ), 2, 2 );
-
-      Picture goodPicture = GoodHelper::picture( gr->goodType() );
-      pic->draw( goodPicture, Point( 40, 2 ), false );
-
       font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = GameDate::current().monthsTo( gr->finishedDate() );
@@ -98,11 +94,23 @@ public:
     }
   }
 
-public oc3_signals:
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
+    if( gr.isValid() )
+    {
+      Picture goodPicture = GoodHelper::picture( gr->goodType() );
+      painter.draw( goodPicture, absoluteRect().lefttop() + Point( 40, 2 ), &absoluteClippingRectRef() );
+    }
+  }
+
+public signals:
   Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
-  void _acceptRequest()  { oc3_emit _onExecRequestSignal( _request );  }
+  void _acceptRequest()  { emit _onExecRequestSignal( _request );  }
 
   void _executeRequest()
   {

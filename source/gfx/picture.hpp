@@ -46,6 +46,9 @@ public:
   void setOffset( const Point& offset );
   void setOffset( int x, int y );
 
+  void setOriginRect( const Rect& rect );
+  const Rect& originRect() const;
+
   void addOffset(const Point &offset );
   void addOffset(int x, int y);
   const Point& offset() const;
@@ -65,17 +68,17 @@ public:
   int height() const;
   int pitch() const;
 
-  void draw( const Picture& srcpic, int x, int y, bool useAlpha=true );
+  /*void draw( const Picture& srcpic, int x, int y, bool useAlpha=true );
   void draw( const Picture& srcpic, const Point& pos, bool useAlpha=true );
   void draw( const Picture& srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
+  void draw( const Picture& srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );*/
 
   void fill(const NColor& color, Rect rect=Rect() );
 
   unsigned int* lock();
   void unlock();
 
-  const Size& size() const;
+  Size size() const;
   unsigned int sizeInBytes() const;
 
   bool isValid() const;

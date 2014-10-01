@@ -21,6 +21,8 @@
 #include "object.hpp"
 #include "romechastenerarmy.hpp"
 #include "barbarian.hpp"
+#include "city.hpp"
+#include "playerarmy.hpp"
 #include <map>
 
 namespace world
@@ -48,6 +50,7 @@ ObjectsFactory::ObjectsFactory() : _d( new Impl )
   addCreator( CAESARIA_STR_EXT(Object), new BaseCreator<Object>() );
   addCreator( CAESARIA_STR_EXT(RomeChastenerArmy), new BaseCreator<RomeChastenerArmy>() );
   addCreator( CAESARIA_STR_EXT(Barbarian), new BaseCreator<Barbarian>() );
+  addCreator( CAESARIA_STR_EXT(PlayerArmy), new BaseCreator<PlayerArmy>() );
 }
 
 ObjectsFactory::~ObjectsFactory(){}

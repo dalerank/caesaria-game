@@ -45,9 +45,9 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	// Assign the proxy settings to the connection
 	_options.CheckProxy(_conn);
 
-	_ignoreList.insert("stable_info.txt");
-	_ignoreList.insert("update_info.txt");
-	_ignoreList.insert("mirrors.txt");
+  _ignoreList.insert(STABLE_VERSION_FILE);
+  _ignoreList.insert(UPDATE_VERSION_FILE);
+  _ignoreList.insert(CAESARIA_MIRRORS_INFO);
 
 	MirrorDownload::InitRandomizer();
 
@@ -62,22 +62,27 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 
 void Updater::setBinaryAsExecutable()
 {
+  std::vector<vfs::Path> executableNames;
 #ifdef CAESARIA_PLATFORM_WIN
-	vfs::Path executableName = "caesaria.exe";
+  executableNames.push_back( "caesaria.exe" );
 #elif defined(CAESARIA_PLATFORM_LINUX)
-	vfs::Path executableName = "caesaria.linux";
+  executableNames.push_back( "caesaria.linux" );
+  executableNames.push_back( "caesaria.linux64" );
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-	vfs::Path executableName = "caesaria.macos";
+  executableNames.push_back( "caesaria.macos" );
 #elif defined(CAESARIA_PLATFORM_HAIKU)
-	vfs::Path executableName = "caesaria.haiku";
+  executableNames.push_back( "caesaria.haiku" );
 #endif
 
-	vfs::Path path2exe = getTargetDir()/executableName;
-	if( path2exe.exist() )
-	{
-		// set the executable bit on binary
-		_markFileAsExecutable( path2exe );
-	}
+  foreach( it, executableNames )
+  {
+    vfs::Path path2exe = getTargetDir()/(*it);
+    if( path2exe.exist() )
+    {
+      // set the executable bit on binary
+      _markFileAsExecutable( path2exe );
+    }
+  }
 }
 
 void Updater::removeDownload(std::string itemname)
@@ -95,7 +100,7 @@ void Updater::_markFileAsExecutable(vfs::Path path )
 
 	mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
 
-	if (chmod(path.toString().c_str(), mask.st_mode) == -1)
+  if( chmod(path.toString().c_str(), mask.st_mode) == -1)
 	{
 		Logger::warning( "Could not mark file as executable: " + path.toString() );
 	}
@@ -291,14 +296,17 @@ void Updater::DetermineLocalVersion()
 			}
 
 			// Calculate the CRC of this file
-			unsigned int crc = CRC::GetCrcForFile( candidate );
+      if (!_options.isSet("no-crc"))
+      {
+        unsigned int crc = CRC::GetCrcForFile(candidate);
 
-			if (crc != f->second.crc)
-			{
-				Logger::warning( "WRONG CRC[need=%x have=%x]", f->second.crc, crc );
-				mismatch = true;
-				continue;
-			}
+        if (crc != f->second.crc)
+        {
+          Logger::warning("WRONG CRC[need=%x have=%x]", f->second.crc, crc);
+          mismatch = true;
+          continue;
+        }
+      }
 
 			// The file is matching - record this version
 			Logger::warning( f->second.isWrongOS() ? "SKIP [WRONG OS]" : "NOT NEED UPDATE" );
@@ -409,7 +417,7 @@ void Updater::PerformSingleMirroredDownload(const std::string& remoteFile, std::
 {
 	DownloadPtr download = PrepareMirroredDownload(remoteFile);
 
-	download->EnableCrcCheck(true);
+  download->EnableCrcCheck(!_options.isSet("no-crc"));
 	download->EnableFilesizeCheck(true);
 	download->SetRequiredCrc(requiredCrc);
 	download->SetRequiredFilesize(requiredSize);
@@ -503,51 +511,56 @@ void Updater::CheckLocalFiles()
     }
 }
 
+bool Updater::isIgnored(std::string name)
+{
+  return _ignoreList.find(name) != _ignoreList.end();
+}
+
 bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile)
 {
-	//boost::this_thread::interruption_point();
+  //boost::this_thread::interruption_point();
 
-	vfs::Path localFile = vfs::Directory( installPath ).getFilePath( releaseFile.file );
+  vfs::Path localFile = vfs::Directory(installPath).getFilePath(releaseFile.file);
 
-	//Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
+  //Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
 
-	if( localFile.exist() )
-	{
-		// File exists, check ignore list
-		if (_ignoreList.find( StringHelper::localeLower( releaseFile.file.toString()) ) != _ignoreList.end())
-		{
-			Logger::warning( "IGNORED");
-			return true; // ignore this file
-		}
+  // check ignore list
+  if (isIgnored(StringHelper::localeLower(releaseFile.file.toString())))
+  {
+    Logger::warning("IGNORED");
+    return true; // ignore this file
+  }
 
-		// Compare file size
-		std::size_t fileSize = vfs::NFile::size( localFile );
+  if (!localFile.exist())
+  {
+    Logger::warning("MISSING");
+    return false;
+  }
+  // File exists
+  // Compare file size
+  std::size_t fileSize = vfs::NFile::size(localFile);
 
-		if (fileSize != releaseFile.filesize)
-		{
-			Logger::warning( "SIZE MISMATCH" );
-			return false;
-		}
+  if (fileSize != releaseFile.filesize)
+  {
+    Logger::warning("SIZE MISMATCH");
+    return false;
+  }
+  // Size is matching
 
-		// Size is matching, check CRC
-		unsigned int existingCrc = CRC::GetCrcForFile(localFile);
+  // Check CRC if not disabled
+  if (!_options.isSet("no-crc"))
+  {
+    unsigned int existingCrc = CRC::GetCrcForFile(localFile);
 
-		if (existingCrc == releaseFile.crc)
-		{
-			Logger::warning( "EQUALE");
-			return true;
-		}
-		else
-		{
-			Logger::warning( "CRC MISMATCH");
-			return false;
-		}
-	}
-	else
-	{
-		Logger::warning( "MISSING");
-		return false;
-	}
+    if (existingCrc != releaseFile.crc)
+    {
+      Logger::warning("CRC MISMATCH");
+      return false;
+    }
+  }
+
+  Logger::warning("EQUALE");
+  return true;
 }
 
 bool Updater::LocalFilesNeedUpdate()
@@ -564,7 +577,7 @@ void Updater::PrepareUpdateStep(std::string prefix)
 	{
 		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(prefix+i->second.file.toString() ) )) ;
 
-    download->EnableCrcCheck( true );
+    download->EnableCrcCheck(!_options.isSet("no-crc"));
     download->EnableFilesizeCheck( true );
     download->SetRequiredCrc( i->second.crc );
     download->SetRequiredFilesize( i->second.filesize );
@@ -585,7 +598,7 @@ void Updater::PerformUpdateStep()
 
 		if (_downloadManager->HasFailedDownloads())
 		{
-			throw FailureException("Could not download from any mirror.");
+      // Lets continue downloading. Fetch as much as we can.
 		}
 
 		NotifyDownloadProgress();
@@ -595,9 +608,11 @@ void Updater::PerformUpdateStep()
 		Util::Wait(100);
 	}
 
-	if (_downloadManager->HasFailedDownloads())
+  Logger::warning("Downloading finished");
+
+  if (_downloadManager->HasFailedDownloads())
 	{
-		throw FailureException("Could not download from any mirror.");
+    Logger::warning("Some downloads failed. Check log above for details.");
 	}
 
 	if (_downloadProgressCallback.isValid())

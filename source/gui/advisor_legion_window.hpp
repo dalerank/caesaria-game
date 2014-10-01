@@ -21,6 +21,7 @@
 #include "window.hpp"
 #include "core/signals.hpp"
 #include "objects/predefinitions.hpp"
+#include "city/predefinitions.hpp"
 
 namespace gui
 {
@@ -31,12 +32,14 @@ namespace advisorwnd
 class Legion : public Window
 {
 public:
-  Legion(Widget* parent, int id , FortList forts);
+  Legion(Widget* parent, int id, PlayerCityPtr city, FortList forts);
 
   virtual void draw( gfx::Engine& painter );
 
 private:
   void _handleMove2Legion( FortPtr fort );
+  void _handleRetreaLegion( FortPtr fort );
+  void _handleServiceEmpire( FortPtr fort );
 
   class Impl;
   ScopedPtr< Impl > _d;

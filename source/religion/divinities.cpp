@@ -199,7 +199,7 @@ RomeDivinity::RomeDivinity()
 }
 
 void RomeDivinity::setInternalName(const std::string& newName){  setDebugName( newName );}
-std::string RomeDivinity::internalName() const{  return getDebugName();}
+std::string RomeDivinity::internalName() const{  return debugName();}
 
 }//end namespace rome
 

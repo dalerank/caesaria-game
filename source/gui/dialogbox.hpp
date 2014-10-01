@@ -38,7 +38,7 @@ public:
 
   void draw( gfx::Engine& painter );
 
-oc3_signals public:  
+signals public:  
   Signal1<int>& onResult();
   Signal0<>& onOk();
   Signal0<>& onCancel();

@@ -121,7 +121,7 @@ protected:
   {
     PushButton::_btnClicked();
 
-    oc3_emit _onClickedASignal( _type );
+    emit _onClickedASignal( _type );
   }
 
 private:
@@ -134,7 +134,7 @@ private:
   Picture _goodPicture;
   Pictures _border;
 
-oc3_signals private:
+signals private:
   Signal1<Good::Type> _onClickedASignal;
 };
 

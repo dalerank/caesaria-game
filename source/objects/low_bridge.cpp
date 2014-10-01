@@ -444,10 +444,9 @@ void LowBridge::destroy()
     events::GameEventPtr event = events::ClearLandEvent::create( (*it)->_pos );
     event->dispatch();
 
-    std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
+    //std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
-    mapTile.setPicture( Picture::load( picName ) );
     TileHelper::decode( mapTile, (*it)->_info );
   }
 }
