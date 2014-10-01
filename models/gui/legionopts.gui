@@ -87,4 +87,10 @@
     bgtype : "whiteBorderUp"
     text : "##return_to_fort##"
   }
+
+  btnAttackAnimals#PushButton : {
+    geometry : [ 60, "ph-60", 200, "ph-40" ]
+    bgtype : "whiteBorderUp"
+    text : "##attacK_animals_off##"
+  }
 }
