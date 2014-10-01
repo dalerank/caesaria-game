@@ -39,8 +39,21 @@
 
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
+#endif
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  #define glOrtho glOrthof
+  #undef CAESARIA_USE_SHADERS
+  #undef CAESARIA_USE_FRAMEBUFFER
+  #include <SDL_opengles.h>
+  #define USE_GLES
 #else
-   #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
+  #include <SDL_opengl.h>
+#endif
+
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  #ifndef GL_GLEXT_PROTOTYPES
+    #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
     PFNGLCREATESHADERPROC glCreateShader;
     PFNGLSHADERSOURCEPROC glShaderSource;
     PFNGLCOMPILESHADERPROC glCompileShader;
@@ -66,8 +79,9 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
-#endif
+  #endif
 
+<<<<<<< HEAD
 #ifdef CAESARIA_PLATFORM_ANDROID
   #define glOrtho glOrthof
   #undef CAESARIA_USE_SHADERS
@@ -92,6 +106,21 @@
   #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
   #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
   #define glFramebufferTexture2D glFramebufferTexture2DEXT
+=======
+  #ifdef CAESARIA_PLATFORM_LINUX
+    #define glGenFramebuffers  glGenFramebuffersEXT
+    #define glGenTextures     glGenTexturesEXT
+    #define glGenRenderbuffers glGenRenderbuffersEXT
+    #define glBindFramebuffer glBindFramebufferEXT
+    #define glBindRenderbuffer glBindRenderbufferEXT
+    #define glRenderbufferStorage glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #endif
+#else
+  #undef CAESARIA_USE_SHADERS
+>>>>>>> 5d8bd1d60b7b50cf349aedecb7abc6a8ccdb64be
 #endif
 
 #include "core/font.hpp"
