@@ -40,7 +40,7 @@ public:
 
   virtual void render() = 0;
   virtual Camera* camera() = 0;
-  virtual Renderer::ModePtr getMode() const = 0;
+  virtual Renderer::ModePtr mode() const = 0;
 };
 
 }//end namespace gfx

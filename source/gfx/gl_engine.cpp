@@ -655,7 +655,7 @@ void GlEngine::setFlag( int flag, int value )
   }
 }
 
-Picture* GlEngine::createPicture(const Size& size )
+Picture* GlEngine::createPicture( const Size& size )
 {
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
