@@ -781,7 +781,7 @@ void GlEngine::startRenderFrame()
 }
 
 void GlEngine::endRenderFrame()
-{ 
+{
   if( getFlag( Engine::debugInfo ) )
   {
     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
@@ -792,7 +792,7 @@ void GlEngine::endRenderFrame()
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
-  {    
+  {
     _d->fb.draw( _d->effects.effects() );
     _d->fb.draw();
   }
