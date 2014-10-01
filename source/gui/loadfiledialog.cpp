@@ -59,7 +59,7 @@ public:
 
   void emitSelectFile();
 
-oc3_signals public:
+signals public:
   Signal1<std::string> onSelecteFileSignal;
 };
 
@@ -147,7 +147,7 @@ void LoadFileDialog::Impl::emitSelectFile()
     return;
 
   vfs::Path fn(saveItemText);
-  oc3_emit onSelecteFileSignal( (directory/fn).toString() );
+  emit onSelecteFileSignal( (directory/fn).toString() );
 }
 
 void LoadFileDialog::draw(gfx::Engine& engine )

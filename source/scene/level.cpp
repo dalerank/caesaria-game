@@ -82,6 +82,8 @@
 #include "core/timer.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
+#include "city/debug_events.hpp"
+#include "world/barbarian.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -202,15 +204,16 @@ void Level::initialize()
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
-  CONNECT( _d->topMenu, onLoad(), this, Level::_resolveShowLoadGameWnd );
-  CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
-  CONNECT( _d->topMenu, onRestart(), this, Level::_resolveRestart );
+  CONNECT( _d->topMenu, onExit(), this, Level::_requestExitGame );
+  CONNECT( _d->topMenu, onLoad(), this, Level::_showLoadDialog );
+  CONNECT( _d->topMenu, onEnd(), this, Level::_exitToMainMenu );
+  CONNECT( _d->topMenu, onRestart(), this, Level::_restartMission );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
   CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
+  CONNECT( _d->topMenu, onDebugEvent(), this, Level::_handleDebugEvent );
 
   CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
   CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
@@ -392,7 +395,7 @@ void Level::Impl::makeFullScreenshot()
                             : t->picture();
 
     Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+    //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
   }
 
   std::string filename = getScreenshotName();
@@ -461,11 +464,11 @@ void Level::_showIngameMenu()
   PushButton* btnExit = findChildA<PushButton*>( "btnExit", true, menu );
 
   CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
-  CONNECT( btnExit, onClicked(), this, Level::_resolveExitGame );
-  CONNECT( btnSave, onClicked(), this, Level::_resolveShowLoadGameWnd );
-  CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
-  CONNECT( btnRestart, onClicked(), this, Level::_resolveRestart );
-  CONNECT( btnMainMenu, onClicked(), this, Level::_resolveEndGame );
+  CONNECT( btnExit, onClicked(), this, Level::_requestExitGame );
+  CONNECT( btnLoad, onClicked(), this, Level::_showLoadDialog );
+  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnRestart, onClicked(), this, Level::_restartMission );
+  CONNECT( btnMainMenu, onClicked(), this, Level::_exitToMainMenu );
 }
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
@@ -540,7 +543,7 @@ void Level::handleEvent( NEvent& event )
 
   if (event.EventType == sEventQuit)
   {
-    _resolveExitGame();
+    _requestExitGame();
     return;
   }
 
@@ -623,74 +626,12 @@ void Level::handleEvent( NEvent& event )
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
 
-    case KEY_F10:
+    case KEY_SNAPSHOT:
       if( !event.keyboard.shift )
         _d->makeScreenShot();
       else
         _d->makeFullScreenshot();
     break;
-
-    case KEY_KEY_R:
-    {
-      if( event.keyboard.shift )
-      {
-        VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
-        events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
-        e->dispatch();
-        return;
-      }
-    }
-    break;
-
-    case KEY_KEY_I:
-    {
-      if( event.keyboard.shift )
-      {
-        world::CityPtr rome = _d->game->empire()->rome();
-        PlayerCityPtr plCity = _d->game->city();
-
-        world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
-        army->setBase( rome );
-        army->attack( ptr_cast<world::Object>( plCity ) );
-      }
-    }
-    break;
-
-    case KEY_KEY_Y:
-    {
-      if( event.keyboard.shift )
-      {
-        _d->game->player()->appendMoney( 1000 );
-      }
-    }
-    break;
-
-    case KEY_KEY_M:
-    {
-      if( event.keyboard.shift )
-      {
-        religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
-        return;
-      }
-    }
-    break;
-
-    case KEY_KEY_L:
-      // Add 1000 denarii
-      if (event.keyboard.shift && event.keyboard.control)
-      {
-        _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
-      }
-      break;
-
-    case KEY_F11:
-      if( event.keyboard.shift )
-      {
-        events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
-        e->dispatch();
-      }
-      else { _d->makeEnemy(); }
-    break;    
 
     case KEY_ESCAPE:
     {
@@ -803,7 +744,7 @@ void Level::Impl::checkFailedMission( Level* lvl )
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
 
-      CONNECT( btn, onClicked(), lvl, Level::_resolveRestart );
+      CONNECT( btn, onClicked(), lvl, Level::_restartMission );
     }
   }
 }
@@ -840,16 +781,76 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
-void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
+void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
+void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 
-void Level::_resolveExitGame()
+void Level::_requestExitGame()
 {
   DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
   CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+}
+
+void Level::_handleDebugEvent(int event)
+{
+  switch( event )
+  {
+  case city::debug_event::dec_mars_relation:
+    religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
+  break;
+
+  case city::debug_event::add_1000_dn:
+    _d->game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
+  break;
+
+  case city::debug_event::add_wolves:
+  {
+    events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
+    e->dispatch();
+  }
+  break;
+
+  case city::debug_event::add_enemy_archers:
+  case city::debug_event::add_enemy_soldiers:
+     _d->makeEnemy();
+  break;
+
+  case city::debug_event::add_player_money:
+    _d->game->player()->appendMoney( 1000 );
+  break;
+
+  case city::debug_event::send_chastener:
+  {
+    world::CityPtr rome = _d->game->empire()->rome();
+    PlayerCityPtr plCity = _d->game->city();
+
+    world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
+    army->setBase( rome );
+    army->attack( ptr_cast<world::Object>( plCity ) );
+  }
+  break;
+
+  case city::debug_event::screenshot:
+    _d->makeScreenShot();
+  break;
+
+  case city::debug_event::add_empire_barbarian:
+  {
+    world::BarbarianPtr brb = world::Barbarian::create( _d->game->empire(), Point( 1000, 0 ) );
+    _d->game->empire()->addObject( ptr_cast<world::Object>( brb ) );
+  }
+  break;
+
+  case city::debug_event::test_request:
+  {
+    VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
+    events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
+    e->dispatch();
+  }
+  break;
+  }
 }
 
 void Level::Impl::showMissionTaretsWindow()
@@ -870,7 +871,7 @@ void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
   e->dispatch();
 }
 
-void Level::_resolveShowLoadGameWnd()
+void Level::_showLoadDialog()
 {
   gui::Widget* parent = _d->game->gui()->rootWidget();
 

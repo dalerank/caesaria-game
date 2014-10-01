@@ -46,7 +46,7 @@ public:
   void setMayDelete( bool mayDelete );
   bool isMayDelete() const;
 
-oc3_signals public:
+signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:

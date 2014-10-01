@@ -79,7 +79,7 @@ public:
   LayerPtr currentLayer;
   void setLayer( int type );
 
-public oc3_signals:
+public signals:
   Signal1<int> onLayerSwitchSignal;
 };
 
@@ -147,11 +147,17 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   currentLayer->init( currentCursorPos );
-  oc3_emit onLayerSwitchSignal( currentLayer->type() );
+  emit onLayerSwitchSignal( currentLayer->type() );
 }
 
 void CityRenderer::render()
 {
+  if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
+  {
+    _d->camera.refresh();
+    _d->city->setOption( PlayerCity::updateTiles, 0 );
+  }
+
   if( _d->currentLayer.isNull() )
   {
     return;
@@ -168,12 +174,6 @@ void CityRenderer::render()
   if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
   {
     _d->setLayer( _d->currentLayer->nextLayer() );
-  }
-
-  if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
-  {
-    _d->camera.refresh();
-    _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 }
 

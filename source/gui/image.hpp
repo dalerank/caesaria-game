@@ -48,7 +48,7 @@ public:
     
   gfx::Picture picture() const;
 
-oc3_signals public:
+signals public:
   virtual Signal0<>& onClicked();
 
 private:

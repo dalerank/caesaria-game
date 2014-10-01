@@ -50,18 +50,19 @@ public:
 
   void setCameraPos( TilePos pos );
 
-private oc3_slots:
-  void _resolveEndGame();
-  void _resolveExitGame();
+private slots:
+  void _exitToMainMenu();
+  void _exitGame();
   void _resolveSwitchMap();
-  void _resolveRestart();
-  void _resolveShowLoadGameWnd();
+  void _restartMission();
+  void _showLoadDialog();
   void _resolveLoadGame(std::string filename);
   void _resolveLoad();
   void _resolveEscapeButton();
   void _resolveEnterButton();
   void _showIngameMenu();
-  void _exitGame();
+  void _requestExitGame();
+  void _handleDebugEvent( int event );
 
 private:
   class Impl;

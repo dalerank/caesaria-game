@@ -76,7 +76,11 @@ bool Well::build(PlayerCityPtr city, const TilePos &pos)
 {
   ServiceBuilding::build( city, pos );
 
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Picture rpic = MetaDataHolder::randomPicture( type(), size() );
+  if( !rpic.isValid() )
+    rpic = Picture::load( ResourceGroup::utilitya, 1 );
+
+  setPicture( rpic );
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );

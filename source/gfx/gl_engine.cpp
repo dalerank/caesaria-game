@@ -39,21 +39,8 @@
 
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
-#endif
-
-#ifdef CAESARIA_PLATFORM_ANDROID
-  #define glOrtho glOrthof
-  #undef CAESRAIA_USE_SHADERS
-  #undef CAESARIA_USE_FRAMEBUFFER
-  #include <SDL_opengles.h>
-  #define USE_GLES
 #else
-  #include <SDL_opengl.h>
-#endif
-
-#ifdef CAESARIA_USE_FRAMEBUFFER
-  #ifndef GL_GLEXT_PROTOTYPES
-    #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
+   #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
     PFNGLCREATESHADERPROC glCreateShader;
     PFNGLSHADERSOURCEPROC glShaderSource;
     PFNGLCOMPILESHADERPROC glCompileShader;
@@ -79,8 +66,23 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
-  #endif
+#endif
 
+#ifdef CAESARIA_PLATFORM_ANDROID
+  #define glOrtho glOrthof
+  #undef CAESARIA_USE_SHADERS
+  #undef CAESARIA_USE_FRAMEBUFFER
+  #include <SDL_opengles.h>
+  #define USE_GLES
+#else
+  #include <SDL_opengl.h>
+#endif
+
+#ifndef CAESARIA_USE_FRAMEBUFFER
+  #undef CAESARIA_USE_SHADERS
+#endif
+
+#ifndef CAESARIA_PLATFORM_MACOSX
   #define glGenFramebuffers  glGenFramebuffersEXT
   #define glGenTextures     glGenTexturesEXT
   #define glGenRenderbuffers glGenRenderbuffersEXT
@@ -90,8 +92,6 @@
   #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
   #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
   #define glFramebufferTexture2D glFramebufferTexture2DEXT
-#else
-  #undef CAESARIA_USE_SHADERS
 #endif
 
 #include "core/font.hpp"
@@ -492,7 +492,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %d", SDL_GetError() ) );
+      Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
       THROW("Failed to create window");
     }
   }

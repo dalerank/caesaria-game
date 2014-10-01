@@ -43,7 +43,7 @@ public:
 
   bool unselectAll();
 
-oc3_signals public:
+signals public:
   Signal1<int>& onCreateConstruction();
   Signal0<>& onRemoveTool();
   Signal0<>& onHide();
@@ -72,10 +72,10 @@ public:
 
   void setAlarmEnabled( bool enabled );
 
-oc3_slots public:
+slots public:
   void changeOverlay( int ovType );
 
-oc3_signals public:
+signals public:
   Signal1<int>& onSelectOverlayType();
   Signal0<>& onEmpireMapShow();
   Signal0<>& onAdvisorsWindowShow();

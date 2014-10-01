@@ -30,8 +30,10 @@ class AmbientSound : public Srvc
 {
 public:
   static SrvcPtr create(PlayerCityPtr city, gfx::Camera* camera );
+  virtual ~AmbientSound();
 
   void update( const unsigned int time );
+  static std::string defaultName();
 private:
   AmbientSound( PlayerCityPtr city );
 

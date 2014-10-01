@@ -63,10 +63,10 @@ public:
 
   void setViewport( const Size& size );
 
-public oc3_signals:
+public signals:
   Signal1<int>& onLayerSwitch();
 
-public oc3_slots:
+public slots:
   void rotateRight();
   void rotateLeft();
 

@@ -9,6 +9,14 @@ void ReleaseFileSet::Visitor::VisitSection(const IniFile& iniFile, const std::st
 					vfs::Path filename = section.substr(5);
 
 					ReleaseFile rfile(filename);
+          // Lets check platform compatibility using 'platforms' property of section
+          std::string platform = iniFile.GetValue(section, "platforms");
+          if (!platform.empty()) {
+            if (platform.find(CAESARIA_PLATFORM_NAME) == std::string::npos) {
+              return;
+            }
+          }
+          // TODO: remove in later releases
 					if( rfile.isWrongOS() )
 						return;
 
@@ -26,5 +34,5 @@ void ReleaseFileSet::Visitor::VisitSection(const IniFile& iniFile, const std::st
 						result.first->second.isArchive = false;
 					}
 				}
-			}	
+			}
 }

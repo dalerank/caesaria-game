@@ -28,15 +28,26 @@
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
+#include "core/font.hpp"
 
 using namespace constants;
 
 namespace gfx
 {
 
+class LayerDestroy::Impl
+{
+public:
+  Picture clearPic;
+  PictureRef textPic;
+  unsigned int money4destroy;
+  TilePos startTilePos;
+  Font textFont;
+};
+
 void LayerDestroy::_clearAll()
 {
-  TilesArray tiles4clear = _getSelectedArea();
+  TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
   foreach( tile, tiles4clear )
   {
     events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->pos() );
@@ -65,7 +76,7 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   {
     // single-tile
     drawTile( engine, tile, offset );
-    engine.draw( _clearPic, tile.mappos() + offset );
+    engine.draw( _d->clearPic, tile.mappos() + offset );
   }
   else
   {
@@ -87,18 +98,19 @@ void LayerDestroy::render( Engine& engine )
   // center the map on the screen
   Point cameraOffset = _camera()->offset();
 
-  _camera()->startFrame();
-
   const TilesArray& visibleTiles = _camera()->tiles();
+  const TilesArray& flatTiles = _camera()->flatTiles();
+
+  _camera()->startFrame();
 
   Tilemap& tmap = _city()->tilemap();
 
   std::set<int> hashDestroyArea;
-  TilesArray destroyArea = _getSelectedArea();
+  TilesArray destroyArea = _getSelectedArea( _d->startTilePos );
 
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
-  unsigned int saveSum = _money4destroy;
-  _money4destroy = 0;
+  unsigned int saveSum = _d->money4destroy;
+  _d->money4destroy = 0;
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
@@ -114,17 +126,14 @@ void LayerDestroy::render( Engine& engine )
       }
     }
 
-    _money4destroy += _checkMoney4destroy( *tile );
+    _d->money4destroy += _checkMoney4destroy( *tile );
   }
 
-  // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( it, visibleTiles )
+  // FIRST PART: draw all flat land (walkable/boatable)  
+  foreach( it, flatTiles )
   {
     Tile* tile = *it;
     Tile* master = tile->masterTile();
-
-    if( !tile->isFlat() )
-      continue;
 
     int tilePosHash = TileHelper::hash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
@@ -133,7 +142,7 @@ void LayerDestroy::render( Engine& engine )
     }
     else
     {
-      drawTile( engine, master == NULL ? *tile :*master, cameraOffset );
+      drawTile( engine, *tile, cameraOffset );
     }
   }
 
@@ -158,14 +167,22 @@ void LayerDestroy::render( Engine& engine )
     engine.resetColorMask();
   }
 
-  if( saveSum != _money4destroy )
+  if( saveSum != _d->money4destroy )
   {
-    _textPic->fill( 0x0, Rect() );
-    _textFont.setColor( 0xffff0000 );
-    _textFont.draw( *_textPic, StringHelper::i2str( _money4destroy ) + " Dn", Point() );
+    _d->textPic->fill( 0x0, Rect() );
+    _d->textFont.setColor( 0xffff0000 );
+    _d->textFont.draw( *_d->textPic, StringHelper::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
-  engine.draw( *_textPic, engine.cursorPos() + Point( 10, 10 ));
+  engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
+}
+
+void LayerDestroy::init(Point cursor)
+{
+  Layer::init( cursor );
+  _setLastCursorPos( cursor );
+  _setStartCursorPos( cursor );
+  _d->startTilePos = TilePos( -1, -1 );
 }
 
 void LayerDestroy::handleEvent(NEvent& event)
@@ -180,6 +197,9 @@ void LayerDestroy::handleEvent(NEvent& event)
       if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
       {
         _setStartCursorPos( _lastCursorPos() );
+
+       Tile* tile = _camera()->at( _lastCursorPos(), true );
+        _d->startTilePos = tile ? tile->pos() : TilePos( -1, -1 );
       }
     }
     break;
@@ -194,7 +214,7 @@ void LayerDestroy::handleEvent(NEvent& event)
     {
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
-      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_money4destroy );
+      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_d->money4destroy );
       e->dispatch();      
     }
     break;
@@ -251,11 +271,11 @@ LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
 }
 
 LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : Layer( &camera, city ), _d( new Impl )
 {
-  _clearPic = Picture::load( "oc3_land", 2 );
-  _textFont = Font::create( FONT_5 );
-  _textPic.init( Size( 100, 30 ) );
+  _d->clearPic = Picture::load( "oc3_land", 2 );
+  _d->textFont = Font::create( FONT_5 );
+  _d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );
 }
 

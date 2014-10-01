@@ -41,7 +41,7 @@ public:
 
   Sounds current, save;
 
-public oc3_signals:
+public signals:
   Signal2<audio::SoundType, int> onSoundChangeSignal;
   Signal0<> onCloseSignal;
 };
@@ -75,16 +75,16 @@ bool SoundOptionsWindow::onEvent(const NEvent& event)
     case 21: case 22: _d->current.theme += (id == 21 ? -10 : +10 );   _update(); break;
 
     case 1001:
-      oc3_emit _d->onCloseSignal();
+      emit _d->onCloseSignal();
       deleteLater();
     break;
 
     case 1002:
     {
-      oc3_emit _d->onSoundChangeSignal( audio::gameSound, _d->save.game );
-      oc3_emit _d->onSoundChangeSignal( audio::ambientSound, _d->save.ambient );
-      oc3_emit _d->onSoundChangeSignal( audio::themeSound, _d->save.theme );
-      oc3_emit _d->onCloseSignal();
+      emit _d->onSoundChangeSignal( audio::gameSound, _d->save.game );
+      emit _d->onSoundChangeSignal( audio::ambientSound, _d->save.ambient );
+      emit _d->onSoundChangeSignal( audio::themeSound, _d->save.theme );
+      emit _d->onCloseSignal();
       deleteLater();
     }
     break;
@@ -118,9 +118,9 @@ void SoundOptionsWindow::_update()
   if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.ambient ) ); }
   if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.theme ) ); }
 
-  oc3_emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
-  oc3_emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );
-  oc3_emit _d->onSoundChangeSignal( audio::themeSound,_d->current.theme );
+  emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
+  emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );
+  emit _d->onSoundChangeSignal( audio::themeSound,_d->current.theme );
 }
 
 }//end namespace gui

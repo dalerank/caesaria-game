@@ -22,8 +22,6 @@
 #include "core/scopedptr.hpp"
 #include "vfs/file.hpp"
 
-using namespace gfx;
-
 //! Class which is able to create a picture(sdl surface) from a file.
 class AbstractPictureLoader : public ReferenceCounted
 {
@@ -36,7 +34,7 @@ public:
     virtual bool isALoadableFileFormat( vfs::NFile file ) const = 0;
 
     //! creates a surface from the file
-    virtual Picture load( vfs::NFile file ) const = 0;
+    virtual gfx::Picture load( vfs::NFile file ) const = 0;
 };
 
 class PictureLoader
@@ -44,7 +42,7 @@ class PictureLoader
 public:
     static PictureLoader& instance();
 
-    Picture load( vfs::NFile file );
+    gfx::Picture load( vfs::NFile file );
 
     ~PictureLoader(void);
 private:

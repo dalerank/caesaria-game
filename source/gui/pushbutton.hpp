@@ -91,7 +91,7 @@ public:
 
   virtual void setTextOffset( const Point& offset );
 
-oc3_signals public:
+signals public:
   virtual Signal0<>& onClicked(); 
 
 protected:

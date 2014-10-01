@@ -100,7 +100,7 @@ public:
 
 	float getRange () const;
 
-public oc3_signals:
+public signals:
 	Signal1<int>& onPositionChanged();
 
 protected:

@@ -73,7 +73,7 @@ public:
   ElementState currentButtonState, lastButtonState;
   ButtonState buttonStates[ StateCount ];
 
-oc3_signals public:
+signals public:
   Signal0<> onClickedSignal;
 
 public:
@@ -417,7 +417,7 @@ void PushButton::_btnClicked()
 {
   parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
 
-  onClicked().emit();
+  emit _dfunc()->onClickedSignal();
 }
 
 Signal0<>& PushButton::onClicked() { return _dfunc()->onClickedSignal; }

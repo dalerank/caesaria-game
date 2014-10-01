@@ -33,7 +33,7 @@ public:
                    bool mayContinue);
   virtual ~WinMissionWindow();
 
-public oc3_signals:
+public signals:
   Signal0<>& onAcceptAssign();
   Signal1<int>& onContinueRules();
 

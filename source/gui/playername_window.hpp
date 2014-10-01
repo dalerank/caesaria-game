@@ -34,7 +34,7 @@ public:
   virtual std::string text() const;
   virtual void setModal();
 
-public oc3_signals:
+public signals:
   Signal0<>& onClose();
   Signal1<std::string>& onNameChange();
 

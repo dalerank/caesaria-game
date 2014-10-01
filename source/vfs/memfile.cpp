@@ -30,7 +30,7 @@ MemoryFile::MemoryFile()
     deleteMemoryWhenDropped = false;
 
 #ifdef _DEBUG
-        setDebugName(L"MemoryFile");
+        setDebugName("MemoryFile");
 #endif
 
 }

@@ -205,21 +205,21 @@ void ListBox::_indexChanged( unsigned int eventType )
   {
   case guiListboxChanged:
   {
-    oc3_emit _d->indexSelected( _d->selectedItemIndex );
+    emit _d->indexSelected( _d->selectedItemIndex );
     if( _d->selectedItemIndex >= 0 )
     {
-      oc3_emit _d->textSelected( _d->items[ _d->selectedItemIndex ].text() );
-      oc3_emit _d->onItemSelectedSignal( _d->items[ _d->selectedItemIndex ] );
+      emit _d->textSelected( _d->items[ _d->selectedItemIndex ].text() );
+      emit _d->onItemSelectedSignal( _d->items[ _d->selectedItemIndex ] );
     }
   }
   break;
 
   case guiListboxSelectedAgain:
   {
-    oc3_emit _d->indexSelectedAgain( _d->selectedItemIndex );
+    emit _d->indexSelectedAgain( _d->selectedItemIndex );
     if( _d->selectedItemIndex >= 0 )
     {
-      oc3_emit _d->onItemSelectedAgainSignal( _d->items[ _d->selectedItemIndex ].text() );
+      emit _d->onItemSelectedAgainSignal( _d->items[ _d->selectedItemIndex ].text() );
     }
   }
   break;

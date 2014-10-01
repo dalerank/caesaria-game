@@ -47,7 +47,7 @@ public:
   typedef std::vector< IssuesValue > IssuesHistory;
   IssuesHistory history;
 
-oc3_signals public:
+signals public:
   Signal1<int> onChangeSignal;
 };
 
@@ -94,7 +94,7 @@ void Funds::resolveIssue( FundIssue issue )
   break;
   }
 
-  oc3_emit _d->onChangeSignal( _d->money );
+  emit _d->onChangeSignal( _d->money );
 }
 
 int Funds::treasury() const { return _d->money; }
