@@ -352,14 +352,16 @@ void Entertainment::Impl::updateFestivalInfo()
     btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
     btnNewFestival->setEnabled( !prepare2Festival );
 
-    int strIndex[24] = { 0, 4, 4, 4,
+    int strIndex[32] = { 0, 4, 4, 4,
                          4, 4, 4, 8,
                          8, 8, 8, 12,
                          12, 12, 12, 12,
                          12, 16, 16, 16,
-                         16, 16, 16, 24 };
+                         16, 16, 16, 24,
+                         24, 24, 24, 24,
+                         24, 24, 31, 31 };
 
-    text = StringHelper::format( 0xff, "##more_%d_month_from_festival##", strIndex[ math::clamp( monthFromLastFestival, 0, 23) ] );
+    text = StringHelper::format( 0xff, "##more_%d_month_from_festival##", strIndex[ math::clamp( monthFromLastFestival, 0, 32) ] );
     if( lbInfoAboutLastFestival ) { lbInfoAboutLastFestival->setText( _( text ) ); }
   }
 }

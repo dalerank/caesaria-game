@@ -70,9 +70,9 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 
     case 1001:
     {
-      oc3_emit _d->onGameSpeedChangeSignal( _d->speedValue );
-      oc3_emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
-      oc3_emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
+      emit _d->onGameSpeedChangeSignal( _d->speedValue );
+      emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
+      emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
       deleteLater();
     }
     break;
@@ -99,7 +99,7 @@ void GameSpeedOptionsWindow::_update()
   GET_WIDGET_FROM_UI( lbScrollSpeedPercent )
   GET_WIDGET_FROM_UI( lbAutosaveInterval )
 
-  _d->speedValue = math::clamp( _d->speedValue, 10, 1000 );
+  _d->speedValue = math::clamp( _d->speedValue, 10, 300 );
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
   _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
 

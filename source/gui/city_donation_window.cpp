@@ -35,10 +35,10 @@ public:
 
   void updateDonationText();
 
-public oc3_slots:
-  void sendMoney() { oc3_emit sendMoneySignal( wantSend ); }
+public slots:
+  void sendMoney() { emit sendMoneySignal( wantSend ); }
 
-public oc3_signals:
+public signals:
   Signal1<int> sendMoneySignal;
 };
 

@@ -37,8 +37,8 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
-  Signal2<audio::SoundType, int>& onSoundChange();
+public signals:
+  Signal2<audio::SoundType, int >& onSoundChange();
   Signal0<>& onClose();
 
 private:

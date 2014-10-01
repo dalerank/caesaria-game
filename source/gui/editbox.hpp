@@ -138,7 +138,7 @@ public:
 
   virtual void beforeDraw( gfx::Engine& painter );
 
-oc3_signals public:
+signals public:
   Signal1<std::string>& onTextChanged();
   Signal0<>& onEnterPressed();
 

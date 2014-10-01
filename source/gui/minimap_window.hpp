@@ -44,7 +44,7 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
+public signals:
   Signal1<TilePos>& onCenterChange();
 
 private:

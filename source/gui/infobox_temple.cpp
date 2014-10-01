@@ -45,7 +45,7 @@ AboutTemple::AboutTemple( Widget* parent, const Tile& tile )
   std::string desc = _( divn->shortDescription() );
   std::string text = _( StringHelper::format( 0xff, "##%s_%s_temple##",
                                                  bigTemple ? "big" : "small",
-                                                 divn->getDebugName().c_str() ) );
+                                                 divn->debugName().c_str() ) );
   setTitle( text + " ( " + desc + " )" );
 
   _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );

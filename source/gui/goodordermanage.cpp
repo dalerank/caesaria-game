@@ -115,7 +115,7 @@ public:
   Picture icon;
   PushButton* btnStackingState;
 
-oc3_signals public:
+signals public:
   Signal0<> onOrderChangedSignal;
 };
 
@@ -198,7 +198,7 @@ void GoodOrderManageWindow::changeTradeState()
 {
   _d->city->tradeOptions().switchOrder( _d->type );
   updateTradeState();
-  oc3_emit _d->onOrderChangedSignal();
+  emit _d->onOrderChangedSignal();
 }
 
 bool GoodOrderManageWindow::isIndustryEnabled()
@@ -252,7 +252,7 @@ void GoodOrderManageWindow::toggleIndustryEnable()
   foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
 
   updateIndustryState();
-  oc3_emit _d->onOrderChangedSignal();
+  emit _d->onOrderChangedSignal();
 }
 
 void GoodOrderManageWindow::toggleStackingGoods()
@@ -261,7 +261,7 @@ void GoodOrderManageWindow::toggleStackingGoods()
   _d->city->tradeOptions().setStackMode( _d->type, !isStacking );
 
   updateStackingState();
-  oc3_emit _d->onOrderChangedSignal();
+  emit _d->onOrderChangedSignal();
 }
 
 void GoodOrderManageWindow::updateStackingState()

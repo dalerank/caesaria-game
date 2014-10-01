@@ -89,7 +89,7 @@ public:
   //! sets the area of the given line
   void setTextRect( EditBox* who, int line, const std::string& r="");
 
-oc3_signals public:
+signals public:
   Signal1<std::string> onTextChangedSignal;
   Signal0<> onEnterPressedSignal;
 };
@@ -135,7 +135,7 @@ void EditBox::_init()
 void EditBox::_setText(const std::wstring& r)
 {
   _d->text = r;
-  oc3_emit _d->onTextChangedSignal( __ucs2utf8( r ) );
+  emit _d->onTextChangedSignal( __ucs2utf8( r ) );
 
   if( (unsigned int)_d->cursorPos > _d->text.size())
   {
@@ -219,8 +219,8 @@ void EditBox::setMultiline(bool enable) {	_d->multiLine = enable; }       //! En
 bool EditBox::isMultilineEnabled() const {	return _d->multiLine; }       //! Checks if multi line editing is enabled
 
 void EditBox::moveCursor(int index)
-{
-	_d->cursorPos = index;
+{  
+  _d->cursorPos = math::clamp<int>( index, 0, _d->text.size() );
 }
 
 void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
@@ -509,7 +509,7 @@ bool EditBox::_processKey(const NEvent& event)
 		}
 		else
 		{
-			oc3_emit _d->onEnterPressedSignal();
+			emit _d->onEnterPressedSignal();
 			_sendGuiEvent( guiEditboxEnter );
 		}
 		break;

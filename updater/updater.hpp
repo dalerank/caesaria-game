@@ -328,6 +328,8 @@ private:
 	void PerformSingleMirroredDownload(const DownloadPtr& download);
 
 	void _markFileAsExecutable(vfs::Path path);
+
+  bool isIgnored(std::string name);
 };
 
 } // namespace

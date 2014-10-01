@@ -22,16 +22,21 @@
 #include "core/scopedptr.hpp"
 #include "vfs/path.hpp"
 #include "vfs/directory.hpp"
+#include "vfs/file.hpp"
+#include "vfs/archive.hpp"
+
 
 class ResourceLoader
 {
 public:
   ResourceLoader();
-  ~ResourceLoader();
+  virtual ~ResourceLoader();
 
   void loadFromModel( vfs::Path path2model, const vfs::Directory altDir=vfs::Directory() );
+  void loadAtlases( vfs::NFile file, bool lazy );
+  void loadFiles( vfs::ArchivePtr archive );
 
-public oc3_signals:
+public signals:
   Signal1<std::string> &onStartLoading();
 
 private:

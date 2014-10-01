@@ -19,14 +19,21 @@
 #include "core/logger.hpp"
 #include "vfs/filesystem.hpp"
 #include "vfs/directory.hpp"
+#include "gfx/picture_bank.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "gfx/loader.hpp"
 
 using namespace vfs;
 
+namespace {
+const char* archiveDescFile = "info";
+const char* atlasListSection = "atlas";
+}
+
 class ResourceLoader::Impl
 {
-public oc3_signals:
+public signals:
   Signal1<std::string> onStartLoadingSignal;
 };
 
@@ -48,19 +55,63 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
       Path rpath = a->second.toString();
       absArchivePath = dir/rpath;
     }
-    Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
+    Logger::warning( "ResourceLoader: try mount archive " + absArchivePath.toString() );
 
     Directory absDir = absArchivePath.directory();
-    absArchivePath = absDir.find( absArchivePath.baseName(), Path::ignoreCase );
+    absArchivePath = absDir.find( absArchivePath.baseName(), Path::ignoreCase );       
 
     ArchivePtr archive = FileSystem::instance().mountArchive( absArchivePath );
+
     if( archive.isValid() )
     {
-      oc3_emit _d->onStartLoadingSignal( a->first );
+      emit _d->onStartLoadingSignal( a->first );
+
+      NFile archiveInfo = archive->createAndOpenFile( archiveDescFile );
+      loadAtlases( archiveInfo, true );
     }
     else
     {
-      Logger::warning( "Game: cannot load archive " + absArchivePath.toString() );
+      Logger::warning( "ResourceLoader: cannot load archive " + absArchivePath.toString() );
+    }
+  }
+}
+
+void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
+{
+  if( archiveInfo.isOpen() )
+  {
+    VariantMap vm = SaveAdapter::load( archiveInfo );
+
+    VariantList atlasNames = vm.get( atlasListSection ).toList();
+    foreach( it, atlasNames )
+    {
+      if( lazy )
+      {        
+        gfx::PictureBank::instance().addAtlas( it->toString() );
+      }
+      else
+      {
+        gfx::PictureBank::instance().loadAtlas( it->toString() );
+      }
+    }
+  }
+}
+
+void ResourceLoader::loadFiles(ArchivePtr archive)
+{
+  const vfs::Entries::Items& files = archive->entries()->items();
+
+  foreach( it, files )
+  {
+    NFile file = archive->createAndOpenFile( it->name );
+    if( file.isOpen() )
+    {
+      gfx::Picture pic = PictureLoader::instance().load( file );
+      if( pic.isValid() )
+      {
+        std::string basename = it->name.baseName().toString();
+        gfx::PictureBank::instance().setPicture( basename, pic );
+      }
     }
   }
 }

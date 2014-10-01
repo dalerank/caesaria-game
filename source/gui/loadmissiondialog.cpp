@@ -48,11 +48,11 @@ public:
 
   void fillFiles();
 
-oc3_slots public:
+slots public:
   void resolveItemSelected(const ListBoxItem& item);
   void emitSelectFile();
 
-oc3_signals public:
+signals public:
   Signal1<std::string> onSelectFileSignal;
 };
 
@@ -120,7 +120,7 @@ void LoadMissionDialog::Impl::emitSelectFile()
     return;
 
   vfs::Path fn(saveItemText);
-  oc3_emit onSelectFileSignal( (directory/fn).toString() );
+  emit onSelectFileSignal( (directory/fn).toString() );
 }
 
 

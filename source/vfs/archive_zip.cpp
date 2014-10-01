@@ -126,8 +126,8 @@ ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePath
  : Entries( (file.isOpen() ? file.path() : Path("") ), ignoreCase ? Path::ignoreCase : Path::equaleCase, ignorePaths),
    File(file), _d( new Impl )
 {
-	#ifdef _DEBUG
-    FileList::setDebugName( "ZipReader");
+  #ifdef _DEBUG
+    //setDebugName("ZipReader");
   #endif
 
   _d->isGZip = isGZip;

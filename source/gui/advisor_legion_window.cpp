@@ -23,12 +23,15 @@
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
+#include "city/city.hpp"
 #include "texturedbutton.hpp"
 #include "objects/military.hpp"
 #include "walker/soldier.hpp"
 #include "core/logger.hpp"
 #include "events/movecamera.hpp"
 #include "widget_helper.hpp"
+#include "legion_target_window.hpp"
+#include "environment.hpp"
 
 using namespace gfx;
 
@@ -80,8 +83,6 @@ public:
 
     if( _fort.isValid() )
     {
-      pic->draw( _fort->legionEmblem(), Point( 6, 4 ), false );
-
       fontW.draw( *pic, _fort->legionName(), 70, 4 );
 
       std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
@@ -90,18 +91,25 @@ public:
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = StringHelper::format( 0xff, "##legion_morale_%d##", moraleValue );
       fontB.draw( *pic, _( moraleStr ), 180, 15 );
-    }
+    }    
   }
 
-public oc3_signals:
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    painter.draw( _fort->legionEmblem(), absoluteRect().lefttop() + Point( 6, 4 ), &absoluteClippingRectRef() );
+  }
+
+public signals:
   Signal1<FortPtr> onShowLegionSignal;
   Signal1<FortPtr> onLegionRetreatSignal;
   Signal1<FortPtr> onEmpireServiceSignal;
 
-private oc3_slots:
-  void _resolveMove2Legion() { oc3_emit onShowLegionSignal( _fort ); }
-  void _resolveReturnLegion2Fort() { oc3_emit onLegionRetreatSignal( _fort ); }
-  void _resolveEmpireService() { oc3_emit onEmpireServiceSignal( _fort ); }
+private slots:
+  void _resolveMove2Legion() { emit onShowLegionSignal( _fort ); }
+  void _resolveReturnLegion2Fort() { emit onLegionRetreatSignal( _fort ); }
+  void _resolveEmpireService() { emit onEmpireServiceSignal( _fort ); }
 
 private:
   FortPtr _fort;
@@ -113,9 +121,11 @@ public:
   gui::Label* alarm;
   gui::Label* helpRequest;
   gui::Label* lbBlackframe;
+  FortPtr currentFort;
+  PlayerCityPtr city;
 };
 
-Legion::Legion( Widget* parent, int id, FortList forts )
+Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
 : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/legionadv.gui" );
@@ -123,6 +133,7 @@ Legion::Legion( Widget* parent, int id, FortList forts )
 
   //buttons background
   Point startLegionArea( 32, 70 );
+  _d->city = city;
 
   GET_DWIDGET_FROM_UI( _d, alarm )
   GET_DWIDGET_FROM_UI( _d, helpRequest )
@@ -132,7 +143,10 @@ Legion::Legion( Widget* parent, int id, FortList forts )
   foreach( it, forts )
   {
     LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
+
     CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
+    CONNECT( btn, onLegionRetreatSignal, this, Legion::_handleRetreaLegion );
+    CONNECT( btn, onEmpireServiceSignal, this, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )
@@ -154,6 +168,20 @@ void Legion::_handleMove2Legion(FortPtr fort)
   parent()->deleteLater();
   events::GameEventPtr e = events::MoveCamera::create( fort->patrolLocation() );
   e->dispatch();
+}
+
+void Legion::_handleRetreaLegion(FortPtr fort)
+{
+  if( fort.isValid() )
+    fort->returnSoldiers();
+}
+
+void Legion::_handleServiceEmpire(FortPtr fort)
+{
+  LegionTargetWindow* dlg = LegionTargetWindow::create( _d->city, ui()->rootWidget(), -1 );
+  dlg->show();
+
+  CONNECT( dlg, onSelectLocation(), fort.object(), Fort::sendExpedition );
 }
 
 }

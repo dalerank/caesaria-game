@@ -72,9 +72,9 @@ void TileOverlay::setType(const Type type)
 
 void TileOverlay::timeStep(const unsigned long) {}
 
-void TileOverlay::changeDirection(constants::Direction direction)
+void TileOverlay::changeDirection( Tile* masterTile, constants::Direction direction)
 {
-
+  _d->masterTile = masterTile;
 }
 
 void TileOverlay::setPicture(Picture picture)
@@ -140,7 +140,7 @@ void TileOverlay::save( VariantMap& stream ) const
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
                       ? Variant( md.getData( _d->overlayType ).name() )
-                      : Variant( getDebugName() ) );
+                      : Variant( debugName() ) );
 
   config.push_back( tile().pos() );
 

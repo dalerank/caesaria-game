@@ -38,7 +38,7 @@ public:
   void setFunds( int value );
   void setPopulation( int value );
 
-oc3_signals public:
+signals public:
   Signal0<>& onExit();
   Signal0<>& onSave();
   Signal0<>& onEnd();
@@ -48,6 +48,7 @@ oc3_signals public:
   Signal0<>& onShowSoundOptions();
   Signal0<>& onShowGameSpeedOptions();
   Signal0<>& onShowCityOptions();
+  Signal1<int>& onDebugEvent();
   Signal1<constants::advisor::Type>& onRequestAdvisor();
 
 private:

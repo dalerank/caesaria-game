@@ -69,7 +69,7 @@ public:
   virtual void startFrame();
   virtual void refresh();
 
-public oc3_signals:
+public signals:
   virtual Signal1<Point>& onPositionChanged();
   
 private:

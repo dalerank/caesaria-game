@@ -114,7 +114,7 @@ public:
 
   virtual void setTextOffset( Point offset );
     
-oc3_signals public:
+signals public:
   virtual Signal0<>& onClicked();
 
 protected:

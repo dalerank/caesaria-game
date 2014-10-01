@@ -696,7 +696,7 @@ void House::_levelDown()
         HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( building::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         //house->_d->houseId = HouseLevel::smallHovel;
-        house->_update( true );
+        //house->_update( true );
 
         GameEventPtr event = BuildEvent::create( (*tile)->pos(), house.object() );
         event->dispatch();

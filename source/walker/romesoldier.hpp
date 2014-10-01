@@ -26,7 +26,8 @@ class RomeSoldier : public Soldier
 public:
   static RomeSoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
 
-  void send2city(FortPtr base , TilePos pos);
+  void send2city(FortPtr base, TilePos pos);
+  void send2expedition(const std::string& name);
 
   virtual bool die();
   virtual void timeStep(const unsigned long time);
@@ -47,7 +48,7 @@ protected:
   virtual void _back2base();
   virtual void _duckout();
 
-  void _init( constants::walker::Type type);
+  void _init( constants::walker::Type type );
 
   virtual WalkerList _findEnemiesInRange(unsigned int range);
   virtual ConstructionList _findContructionsInRange(unsigned int range);
