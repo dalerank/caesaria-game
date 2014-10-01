@@ -23,16 +23,18 @@
 #include "core/stringhelper.hpp"
 #include "gfx/picture_bank.hpp"
 #include "core/logger.hpp"
+#include "vfs/entries.hpp"
+#include "resourceloader.hpp"
 
 using namespace vfs;
 
-void __appendRange( const std::string& rc, int start, int stop, StringArray& ar )
+/*void __appendRange( const std::string& rc, int start, int stop, StringArray& ar )
 {
   for( int index=start; index <= stop; index++ )
   {
     ar << StringHelper::format( 0xff, "%s_%05d", rc.c_str(), index );
   }
-}
+}*/
 
 void ClimateManager::initialize(ClimateType climate)
 {
@@ -52,33 +54,14 @@ void ClimateManager::initialize(ClimateType climate)
     return;
   }
 
-  StringArray fileNames;
-  __appendRange( ResourceGroup::housing, 1, 51, fileNames );
-  __appendRange( ResourceGroup::land1a, 1, 303, fileNames );
-  __appendRange( ResourceGroup::land2a, 93, 110, fileNames );
-  __appendRange( ResourceGroup::land2a, 119, 148, fileNames );
-  __appendRange( ResourceGroup::land3a, 47, 92, fileNames );
-  __appendRange( ResourceGroup::plateau, 1, 44, fileNames );
-  __appendRange( ResourceGroup::transport, 1, 5, fileNames );
-  fileNames << "transport_00017";
-  fileNames << "transport_00029";
-  fileNames << "transport_00041";
-  fileNames << "transport_00052";
-  fileNames << "transport_00053";
-  fileNames << "transport_00054";
-  fileNames << "transport_00055";
-  fileNames << "utilitya_00001";
-
-  foreach( it, fileNames )
+  ResourceLoader rc;
+  NFile atlasInfo = archive->createAndOpenFile( "info" );
+  if( atlasInfo.isOpen() )
   {
-    NFile file = archive->createAndOpenFile( *it + ".png" );
-    if( file.isOpen() )
-    {
-      Picture pic = PictureLoader::instance().load( file );
-      if( pic.isValid() )
-      {
-        PictureBank::instance().setPicture( *it, pic );
-      }
-    }
+    rc.loadAtlases( atlasInfo, false );
+  }
+  else
+  {
+    rc.loadFiles( archive );
   }
 }

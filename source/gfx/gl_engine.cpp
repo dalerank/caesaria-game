@@ -37,13 +37,13 @@
 #include "core/saveadapter.hpp"
 #include "ttf/SDL_ttf.h"
 
+
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #define glOrtho glOrthof
-  #undef CAESARIA_USE_SHADERS
   #undef CAESARIA_USE_FRAMEBUFFER
   #include <SDL_opengles.h>
   #define USE_GLES
@@ -81,15 +81,17 @@
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
 
-  #define glGenFramebuffers  glGenFramebuffersEXT
-  #define glGenTextures     glGenTexturesEXT
-  #define glGenRenderbuffers glGenRenderbuffersEXT
-  #define glBindFramebuffer glBindFramebufferEXT
-  #define glBindRenderbuffer glBindRenderbufferEXT
-  #define glRenderbufferStorage glRenderbufferStorageEXT
-  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-  #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
-  #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #ifndef CAESARIA_PLATFORM_MACOSX
+    #define glGenFramebuffers         glGenFramebuffersEXT
+    #define glGenTextures             glGenTexturesEXT
+    #define glGenRenderbuffers        glGenRenderbuffersEXT
+    #define glBindFramebuffer         glBindFramebufferEXT
+    #define glBindRenderbuffer        glBindRenderbufferEXT
+    #define glRenderbufferStorage     glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus  glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D    glFramebufferTexture2DEXT
+  #endif
 #else
   #undef CAESARIA_USE_SHADERS
 #endif
@@ -781,7 +783,7 @@ void GlEngine::startRenderFrame()
 }
 
 void GlEngine::endRenderFrame()
-{ 
+{
   if( getFlag( Engine::debugInfo ) )
   {
     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
@@ -792,7 +794,7 @@ void GlEngine::endRenderFrame()
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
-  {    
+  {
     _d->fb.draw( _d->effects.effects() );
     _d->fb.draw();
   }

@@ -19,7 +19,7 @@ public:
    virtual bool isALoadableFileFormat( vfs::NFile file) const;
 
    //! creates a surface from the file
-   virtual Picture load( vfs::NFile file ) const;
+   virtual gfx::Picture load( vfs::NFile file ) const;
 };
 
 #endif //__OC3_PICTURELOADER_PNG_H_INCLUDED__

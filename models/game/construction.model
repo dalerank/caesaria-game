@@ -159,6 +159,7 @@
     desirability : { base :3,	range : 3,	step : -1}
     employers : 0
     class : "sight"
+    sound : [ "statue", 1 ]
   },
   
   statue_middle : {
@@ -255,6 +256,7 @@
     employers : 20
     class : "education"
     image : [ "commerce", 84 ]
+    sound : [ "library", 1 ]
   },
 
   prefecture : {
@@ -410,6 +412,7 @@
     desirability : { base : 8,	range : 4,	step : -2 }
     employers : 10
     class : "trade"
+    sounde : [ "shipyard", 1 ]
   }, 
   
   dock : {
@@ -713,6 +716,7 @@
     employers : 10
     productRate : 4.8
     class : "industry"
+    sound : [ "winery", 1 ]
   },
 
   oil_workshop :
@@ -732,6 +736,7 @@
     employers : 10
     productRate : 2.4
     class : "industry"
+    sound : [ "weapons_workshop", 1 ]
   },
   
   furniture_workshop :

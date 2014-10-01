@@ -43,6 +43,7 @@ public:
   Picture cartPicture;
   CitizenGroup peoples;
   int failedWayCount;
+  bool leaveCity;
   float stamina;
 
   void mayWalk( const Tile* tile, bool& ret )
@@ -60,6 +61,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = math::random( 80 ) + 20;
   _d->failedWayCount = 0;
+  _d->leaveCity = false;
 }
 
 HousePtr Emigrant::_findBlankHouse()
@@ -291,7 +293,7 @@ bool Emigrant::send2city( const Tile& startTile )
   }
 }
 
-void Emigrant::leaveCity( const Tile& tile)
+void Emigrant::leaveCity( const Tile& tile )
 {
   setPos( tile.pos() );
   Pathway pathway = PathwayHelper::create( tile.pos(),
@@ -304,7 +306,8 @@ void Emigrant::leaveCity( const Tile& tile)
     return;
   }
 
-  _city()->addWalker( this );
+  attach();
+  _d->leaveCity = true;
   setPathway( pathway );
   go();
 }
@@ -335,11 +338,15 @@ void Emigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
     if( _d->stamina >= 100 )
     {
-      Pathway way = _findSomeWay( pos() );
-      if( way.isValid() )
+      if( !_d->leaveCity )
       {
-        _updatePathway( way );
+        Pathway way = _findSomeWay( pos() );
+        if( way.isValid() )
+        {
+          _updatePathway( way );
+        }
       }
+
       go();
     }
   break;
