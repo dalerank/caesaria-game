@@ -41,6 +41,7 @@
 #include "city/funds.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
+#include "walker/patrician.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -222,6 +223,19 @@ void House::_checkEvolve()
   }
 }
 
+void House::_checkPatricianDeals()
+{
+  if( !spec().isPatrician() )
+    return;
+
+  TilesArray roads = getAccessRoads();
+  if( !roads.empty() )
+  {
+    PatricianPtr patric = Patrician::create( _city() );
+    patric->send2City( roads.front()->pos() );
+  }
+}
+
 void House::_updateTax()
 {
   float cityTax = _city()->funds().taxRate() / 100.f;
@@ -353,7 +367,7 @@ void House::_checkHomeless()
 void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
-    return;
+    return; 
 
   if( _d->currentYear != GameDate::current().year() )
   {
@@ -394,12 +408,13 @@ void House::timeStep(const unsigned long time)
     _checkEvolve();
     _updateCrime();
     _checkHomeless();
+    _checkPatricianDeals();
   }
 
   Building::timeStep( time );
 }
 
-void House::_tryEvolve_1_to_11_lvl( int level4grow, int growSize, const char desirability )
+bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char desirability )
 {
   city::Helper helper( _city() );
 
@@ -469,7 +484,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int growSize, const char des
       helper.updateDesirability( this, city::Helper::offDesirability );
 
       setSize( growSize  );
-      _update( false );
+      //_update( false );
 
       build( _city(), pos() );
       //set new desirability level
@@ -484,9 +499,11 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int growSize, const char des
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //now upgrade groud area to new desirability
   helper.updateDesirability( this, city::Helper::onDesirability );
+
+  return true;
 }
 
-void House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char desirability )
+bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char desirability )
 {
   city::Helper helper( _city() );
   //startPic += math::random( 10 ) > 5 ? 1 : 0;
@@ -572,10 +589,12 @@ void House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
 
     //now upgrade groud area to new desirability
     helper.updateDesirability( this, city::Helper::onDesirability );
+    return true;
   }
   else
   {
     _d->evolveInfo = "##no_space_for_evolve##";
+    return false;
   }
 }
 
@@ -585,42 +604,54 @@ void House::_levelUp()
   if( _d->houseLevel >= HouseLevel::greatPalace )
     return;
 
-  _d->houseLevel = math::clamp<int>( _d->houseLevel+1, 0, HouseLevel::greatPalace );
-     
-  switch( _d->houseLevel )
+  int nextLevel = math::clamp<int>( _d->houseLevel+1, 0, HouseLevel::greatPalace );
+  bool mayUpgrade = false;
+
+  switch( nextLevel )
   {
   case HouseLevel::hovel:
     _d->desirability.base = -3;
     _d->desirability.step = 1;
   break;
 
-  case HouseLevel::tent:  _tryEvolve_1_to_11_lvl( HouseLevel::hovel, HouseLevel::maxSize2, -3); break;
-  case HouseLevel::shack: _tryEvolve_1_to_11_lvl( HouseLevel::tent, HouseLevel::maxSize2, -3 );   break;
-  case HouseLevel::hut:   _tryEvolve_1_to_11_lvl( HouseLevel::shack, HouseLevel::maxSize2, -2 );  break;
-  case HouseLevel::domus: _tryEvolve_1_to_11_lvl( HouseLevel::hut, HouseLevel::maxSize2, -2 );  break;
-  case HouseLevel::bigDomus: _tryEvolve_1_to_11_lvl( HouseLevel::domus, HouseLevel::maxSize2, -2 ); break;
-  case HouseLevel::mansion: _tryEvolve_1_to_11_lvl( HouseLevel::bigDomus, HouseLevel::maxSize2, -2 );   break;
-  case HouseLevel::bigMansion:  _tryEvolve_1_to_11_lvl( HouseLevel::mansion, HouseLevel::maxSize2, -1 );  break;
-  case HouseLevel::insula: _tryEvolve_1_to_11_lvl( HouseLevel::bigMansion, HouseLevel::maxSize2, -1 );   break;
-  case HouseLevel::middleInsula: _tryEvolve_1_to_11_lvl( HouseLevel::insula, HouseLevel::maxSize2, 0 );   break;
-  case HouseLevel::bigInsula:    _tryEvolve_12_to_20_lvl( HouseLevel::middleInsula, HouseLevel::maxSize2, 0 );  break;
-  case HouseLevel::beatyfullInsula: _tryEvolve_12_to_20_lvl( HouseLevel::bigInsula, HouseLevel::maxSize2, 1 ); break;
-  case HouseLevel::smallVilla:  _tryEvolve_12_to_20_lvl( HouseLevel::beatyfullInsula, HouseLevel::maxSize2, 2 ); break;
-  case HouseLevel::middleVilla: _tryEvolve_12_to_20_lvl( HouseLevel::smallVilla, HouseLevel::maxSize2, 2 ); break;
-  case HouseLevel::bigVilla:    _tryEvolve_12_to_20_lvl( HouseLevel::middleVilla, HouseLevel::maxSize3, 3 );  break;
-  case HouseLevel::greatVilla:  _tryEvolve_12_to_20_lvl( HouseLevel::bigVilla, HouseLevel::maxSize3, 3 );  break;
-  case HouseLevel::smallPalace: _tryEvolve_12_to_20_lvl( HouseLevel::greatVilla, HouseLevel::maxSize3, 4 );  break;
-  case HouseLevel::middlePalace:_tryEvolve_12_to_20_lvl( HouseLevel::smallPalace, HouseLevel::maxSize3, 4 );  break;
-  case HouseLevel::bigPalace:   _tryEvolve_12_to_20_lvl( HouseLevel::middlePalace, HouseLevel::maxSize4, 5 );  break;
-  case HouseLevel::greatPalace:_tryEvolve_12_to_20_lvl( HouseLevel::bigPalace, HouseLevel::maxSize4, 6 );  break;
+  case HouseLevel::tent:        mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::hovel, HouseLevel::maxSize2, -3); break;
+  case HouseLevel::shack:       mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::tent, HouseLevel::maxSize2, -3 );   break;
+  case HouseLevel::hut:         mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::shack, HouseLevel::maxSize2, -2 );  break;
+  case HouseLevel::domus:       mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::hut, HouseLevel::maxSize2, -2 );  break;
+  case HouseLevel::bigDomus:    mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::domus, HouseLevel::maxSize2, -2 ); break;
+  case HouseLevel::mansion:     mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::bigDomus, HouseLevel::maxSize2, -2 );   break;
+  case HouseLevel::bigMansion:  mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::mansion, HouseLevel::maxSize2, -1 );  break;
+  case HouseLevel::insula:      mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::bigMansion, HouseLevel::maxSize2, -1 );   break;
+  case HouseLevel::middleInsula:mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::insula, HouseLevel::maxSize2, 0 );   break;
+  case HouseLevel::bigInsula:   mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::middleInsula, HouseLevel::maxSize2, 0 );  break;
+  case HouseLevel::beatyfullInsula: mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::bigInsula, HouseLevel::maxSize2, 1 ); break;
+  case HouseLevel::smallVilla:  mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::beatyfullInsula, HouseLevel::maxSize2, 2 ); break;
+  case HouseLevel::middleVilla: mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::smallVilla, HouseLevel::maxSize2, 2 ); break;
+  case HouseLevel::bigVilla:    mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::middleVilla, HouseLevel::maxSize3, 3 );  break;
+  case HouseLevel::greatVilla:  mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::bigVilla, HouseLevel::maxSize3, 3 );  break;
+  case HouseLevel::smallPalace: mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::greatVilla, HouseLevel::maxSize3, 4 );  break;
+  case HouseLevel::middlePalace:mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::smallPalace, HouseLevel::maxSize3, 4 );  break;
+  case HouseLevel::bigPalace:   mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::middlePalace, HouseLevel::maxSize4, 5 );  break;
+  case HouseLevel::greatPalace: mayUpgrade = _tryEvolve_12_to_20_lvl( HouseLevel::bigPalace, HouseLevel::maxSize4, 6 );  break;
   }
 
-  _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
+  if( mayUpgrade )
+  {
+    _d->houseLevel = nextLevel;
 
-  _update( true );
+    _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
+
+    if( _d->houseLevel == HouseLevel::smallVilla )
+    {
+      events::GameEventPtr e = events::FireWorkers::create( pos(), habitants().count( CitizenGroup::mature ) );
+      e->dispatch();
+    }
+
+    _update( true );
+  }
 }
 
-void House::_tryDegrage_11_to_2_lvl( const char desirability )
+void House::_tryDegrage_12_to_2_lvl( const char desirability )
 {
   city::Helper helper( _city() );
   //clear current desirability influence
@@ -679,6 +710,27 @@ void House::_levelDown()
 
   _d->houseLevel = math::clamp<int>( _d->houseLevel-1, HouseLevel::hovel, 0xff );
 
+  if( _d->houseLevel == HouseLevel::beatyfullInsula )
+  {
+    int homelessCount = _d->habitants.count();
+    while( homelessCount > 0 )
+    {
+      int currentPeople = math::clamp( math::random( homelessCount+1 ), 0, 8 );
+
+      homelessCount -= currentPeople;
+      CitizenGroup homeless = _d->habitants.retrieve( currentPeople );
+
+      EmigrantPtr em = Emigrant::send2city( _city(), homeless, tile(), "##emigrant_no_home##" );
+
+      if( em.isValid() )
+      {
+        em->leaveCity( tile() );
+      }
+    }
+
+    _d->habitants.clear();
+  }
+
   _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel );
 
   switch (_d->houseLevel)
@@ -708,16 +760,16 @@ void House::_levelDown()
   }
   break;
 
-  case HouseLevel::tent: _tryDegrage_11_to_2_lvl( -3 ); break;
-  case HouseLevel::shack: _tryDegrage_11_to_2_lvl( -3 ); break;
-  case HouseLevel::hut: _tryDegrage_11_to_2_lvl( -2 ); break;
-  case HouseLevel::domus: _tryDegrage_11_to_2_lvl( -2 ); break;
-  case HouseLevel::bigDomus: _tryDegrage_11_to_2_lvl( -2 ); break;
-  case HouseLevel::mansion: _tryDegrage_11_to_2_lvl( -2 );  break;
-  case HouseLevel::bigMansion: _tryDegrage_11_to_2_lvl( -1 );  break;
-  case HouseLevel::insula: _tryDegrage_11_to_2_lvl( -1 );  break;
-  case HouseLevel::middleInsula: _tryDegrage_11_to_2_lvl( 0 );  break;
-  case HouseLevel::bigInsula: _tryDegrage_11_to_2_lvl( 0 );  break;
+  case HouseLevel::tent: _tryDegrage_12_to_2_lvl( -3 ); break;
+  case HouseLevel::shack: _tryDegrage_12_to_2_lvl( -3 ); break;
+  case HouseLevel::hut: _tryDegrage_12_to_2_lvl( -2 ); break;
+  case HouseLevel::domus: _tryDegrage_12_to_2_lvl( -2 ); break;
+  case HouseLevel::bigDomus: _tryDegrage_12_to_2_lvl( -2 ); break;
+  case HouseLevel::mansion: _tryDegrage_12_to_2_lvl( -2 );  break;
+  case HouseLevel::bigMansion: _tryDegrage_12_to_2_lvl( -1 );  break;
+  case HouseLevel::insula: _tryDegrage_12_to_2_lvl( -1 );  break;
+  case HouseLevel::middleInsula: _tryDegrage_12_to_2_lvl( 0 );  break;
+  case HouseLevel::bigInsula: _tryDegrage_12_to_2_lvl( 0 );  break;
   case HouseLevel::beatyfullInsula: _tryDegrade_20_to_12_lvl( HouseLevel::maxSize2, 1 ); break;
   case HouseLevel::smallVilla: _tryDegrade_20_to_12_lvl( HouseLevel::maxSize2, 2 ); break;
   case HouseLevel::middleVilla: _tryDegrade_20_to_12_lvl( HouseLevel::maxSize2, 2 ); break;
@@ -882,7 +934,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   break;
 
   case Service::recruter:
-    res = getServiceValue( service );
+    res = spec().isPatrician() ? 0 : getServiceValue( service );
   break;   
 
   default:
@@ -952,7 +1004,7 @@ int House::roadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
-  bool needUpdate = _d->habitants.empty();
+  bool needUpdate = _d->hid <= HouseLevel::hovel;
 
   int peoplesCount = math::max(_d->maxHabitants - _d->habitants.count(), 0u);
   CitizenGroup newState = _d->habitants;

@@ -71,7 +71,7 @@ public:
 
 int HouseSpecification::level() const {   return _d->houseLevel;}
 const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
-bool HouseSpecification::isPatrician() const{   return _d->houseLevel > 12;}
+bool HouseSpecification::isPatrician() const{   return _d->houseLevel >= HouseLevel::smallVilla;}
 int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}

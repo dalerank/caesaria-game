@@ -106,6 +106,7 @@ public:
   Fort::TroopsFormations availableFormations;
   Fort::TroopsFormation formation;
   std::string expeditionName;
+  bool attackAnimals;
 };
 
 class FortArea::Impl
@@ -166,6 +167,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   _d->flagIndex = 21;
   _d->maxSoldier = 16;
   _d->formation = frmSquad;
+  _d->attackAnimals = false;
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -421,6 +423,7 @@ void Fort::save(VariantMap& stream) const
   }
 
   VARIANT_SAVE_ANY_D( stream, _d, maxSoldier )
+  VARIANT_SAVE_ANY_D( stream, _d, attackAnimals )
   stream[ lc_lastPatrolPos ] = _d->lastPatrolPos;
   stream[ lc_formation     ] = (int)_d->formation;
 }
@@ -433,6 +436,7 @@ void Fort::load(const VariantMap& stream)
   _d->patrolPoint->setPos( patrolPos );
   _d->lastPatrolPos = stream.get( lc_lastPatrolPos, TilePos( -1, -1 ) );
   VARIANT_LOAD_ANY_D( _d, maxSoldier, stream )
+  VARIANT_LOAD_ANY_D( _d, attackAnimals, stream )
   _d->formation = (TroopsFormation)stream.get( lc_formation, 0 ).toInt();
 }
 
@@ -475,7 +479,9 @@ void Fort::sendExpedition(Point location)
   }
 }
 
+void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }
 void Fort::resetExpedition() { _d->expeditionName.clear(); }
+bool Fort::isAttackAnimals() const { return _d->attackAnimals; }
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
 void Fort::_setName(const std::string& name) { _d->emblem.name = name; }
