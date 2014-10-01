@@ -3,6 +3,8 @@
 #include "vfs/path.hpp"
 #include "png.h"
 
+using namespace gfx;
+
 // PNG function for error handling
 static void png_cpexcept_error(png_structp png_ptr, png_const_charp msg)
 {

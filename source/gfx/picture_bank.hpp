@@ -37,7 +37,8 @@ public:
   // set the current picture
   void setPicture(const std::string &name, const Picture& picture);
 
-  void addAtlas(const std::string &filename, const VariantMap& options );
+  void addAtlas(const std::string& filename);
+  void loadAtlas(const std::string& filename);
 
   // show resource
   Picture& getPicture(const std::string &name);
