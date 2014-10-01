@@ -50,7 +50,6 @@
   #include <SDL_opengl.h>
 #endif
 
-
 #ifdef CAESARIA_USE_FRAMEBUFFER
   #ifndef GL_GLEXT_PROTOTYPES
     #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
@@ -80,20 +79,20 @@
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
+
+  #ifndef CAESARIA_PLATFORM_MACOSX
+    #define glGenFramebuffers         glGenFramebuffersEXT
+    #define glGenTextures             glGenTexturesEXT
+    #define glGenRenderbuffers        glGenRenderbuffersEXT
+    #define glBindFramebuffer         glBindFramebufferEXT
+    #define glBindRenderbuffer        glBindRenderbufferEXT
+    #define glRenderbufferStorage     glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus  glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D    glFramebufferTexture2DEXT
+  #endif
 #else
   #undef CAESARIA_USE_SHADERS
-#endif
-
-#ifndef CAESARIA_PLATFORM_MACOSX
-  #define glGenFramebuffers         glGenFramebuffersEXT
-  #define glGenTextures             glGenTexturesEXT
-  #define glGenRenderbuffers        glGenRenderbuffersEXT
-  #define glBindFramebuffer         glBindFramebufferEXT
-  #define glBindRenderbuffer        glBindRenderbufferEXT
-  #define glRenderbufferStorage     glRenderbufferStorageEXT
-  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-  #define glCheckFramebufferStatus  glCheckFramebufferStatusEXT
-  #define glFramebufferTexture2D    glFramebufferTexture2DEXT
 #endif
 
 #include "core/font.hpp"
