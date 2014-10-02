@@ -96,12 +96,13 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap );
+  _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
   _d->zoom = 100;
   _d->zoomChanged = false;
 
   _d->engine->initViewport( 0, _d->engine->screenSize() );
+
 
   addLayer( LayerSimple::create( _d->camera, city ) );
   addLayer( LayerWater::create( _d->camera, city ) );
@@ -185,7 +186,7 @@ void CityRenderer::render()
   _d->currentLayer->renderPass( *_d->engine, Renderer::animations );
 
   _d->currentLayer->afterRender( *_d->engine );
-  _d->engine->setViewport(0, false);
+  _d->engine->setViewport( 0, false );
   _d->engine->drawViewport( 0, Rect() );
 
   if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
@@ -202,8 +203,9 @@ void CityRenderer::handleEvent( NEvent& event )
 
     if( event.mouse.type == mouseWheel )
     {
-      _d->zoom += event.mouse.wheel * 10;
-      _d->zoomChanged = true;
+      int lastZoom = _d->zoom;
+      _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10, 30, 300 );
+      _d->zoomChanged = (lastZoom != _d->zoom);
     }
   }
 
