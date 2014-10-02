@@ -83,7 +83,7 @@ void LayerBuild::_discardPreview()
 void LayerBuild::_checkPreviewBuild(TilePos pos)
 {
   __D_IMPL(d,LayerBuild);
-  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->getMode() );
+  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->mode() );
 
   if (bldCommand.isNull())
     return;
@@ -243,7 +243,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 void LayerBuild::_buildAll()
 {
   __D_IMPL(d,LayerBuild);
-  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->getMode() );
+  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->mode() );
   if( bldCommand.isNull() )
     return;
 
@@ -464,7 +464,7 @@ void LayerBuild::init(Point cursor)
   __D_IMPL(_d,LayerBuild);
   Layer::init( cursor );
 
-  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->getMode() );
+  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
   _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
   _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
   _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;

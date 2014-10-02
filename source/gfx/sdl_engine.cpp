@@ -62,6 +62,8 @@ public:
     int blue;
     int alpha;
     bool enabled;
+
+    void reset() { red = green = blue = alpha = 0; enabled = false; }
   }MaskInfo;
 
   Picture screen;
@@ -69,6 +71,8 @@ public:
 
   SDL_Window *window;
   SDL_Renderer *renderer;
+
+  std::map< int, SDL_Texture* > renderTargets;
 
   MaskInfo mask;
   unsigned int fps, lastFps;
@@ -214,7 +218,7 @@ void SdlEngine::init()
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
-                                                 SDL_TEXTUREACCESS_STREAMING,
+                                                 SDL_TEXTUREACCESS_TARGET,
                                                  _srcSize.width(), _srcSize.height());
 
   Logger::warning( "SDLGraficEngine: init successfull");
@@ -301,6 +305,9 @@ void SdlEngine::endRenderFrame()
   }
 
   //Refresh the screen
+  //SDL_SetRenderTarget( _d->renderer, NULL );
+
+  //SDL_RenderCopyEx(_d->renderer, _d->screen.texture(), 0, 0, 0, 0, SDL_FLIP_HORIZONTAL );
   SDL_RenderPresent(_d->renderer);
 
   _d->fps++;
@@ -476,9 +483,44 @@ void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
   mask.enabled = true;
 }
 
-void SdlEngine::resetColorMask()
+void SdlEngine::resetColorMask() { _d->mask.reset(); }
+
+void SdlEngine::initViewport(int index, Size s)
 {
-  memset( &_d->mask, 0, sizeof(Impl::MaskInfo) );
+  SDL_Texture*& target = _d->renderTargets[ index ];
+  if( target != 0 )
+  {
+    SDL_DestroyTexture( target );
+    target = 0;
+  }
+
+  if( s.area() > 0 )
+  {
+    target = SDL_CreateTexture( _d->renderer, SDL_PIXELFORMAT_RGBA8888,
+                                SDL_TEXTUREACCESS_TARGET, s.width(), s.height() );
+  }
+}
+
+void SdlEngine::setViewport(int index, bool render)
+{
+  SDL_Texture* target = _d->renderTargets.at( index );
+  if( target )
+  {
+    SDL_SetRenderTarget( _d->renderer, render ? target : 0 );
+    if( render )
+    {
+      SDL_RenderClear(_d->renderer);  // black background for a complete redraw
+    }
+  }
+}
+
+void SdlEngine::drawViewport(int index, Rect r)
+{
+  SDL_Texture* target = _d->renderTargets[ index ];
+  if( target )
+  {
+    SDL_RenderCopyEx(_d->renderer, target, 0, 0, 0, 0, SDL_FLIP_NONE );
+  }
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )
