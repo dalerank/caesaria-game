@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+﻿// This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,44 +19,73 @@
 #define __CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
 #include "construction.hpp"
 
 class ConstructionExtension : public ReferenceCounted
 {
 public:
-  virtual void run( ConstructionPtr parent, unsigned int time ) = 0;
-  virtual bool isDeleted() const = 0;
+  virtual void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
+  virtual void timeStep( ConstructionPtr parent, unsigned int time );
+  virtual bool isDeleted() const { return _isDeleted; }
+  virtual std::string type() const = 0;
+
+protected:
+  ConstructionExtension() : _isDeleted( false )
+  {}
+
+  bool _isDeleted;
+  DateTime _finishDate;
 };
 
 class FactoryProgressUpdater : public ConstructionExtension
 {
 public:
+  static ConstructionExtensionPtr create();
   static ConstructionExtensionPtr assignTo(FactoryPtr factory, float value, int week2finish );
 
-  virtual void run( ConstructionPtr parent, unsigned int time );
-  virtual bool isDeleted() const;
+  virtual void timeStep( ConstructionPtr parent, unsigned int time );
+  virtual std::string type() const;
+
+  virtual void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
 private:
   FactoryProgressUpdater();
 
   float _value;
-  bool _isDeleted;
-  DateTime _finishDate;
+
 };
 
 class FortCurseByMars : public ConstructionExtension
 {
+public:
+  static ConstructionExtensionPtr create();
   static ConstructionExtensionPtr assignTo( FortPtr fort, unsigned int monthsCurse );
 
-  virtual void run( ConstructionPtr parent, unsigned int time );
-  virtual bool isDeleted() const;
+  virtual void timeStep( ConstructionPtr parent, unsigned int time );
+  virtual std::string type() const;
 
+  virtual void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
 private:
   FortCurseByMars();
-
-  bool _isDeleted;
-  DateTime _finishDate;
 };
 
+class ExtensionFactory
+{
+public:
+  virtual ~ExtensionFactory();
+  static ExtensionFactory& instance();
+  static ConstructionExtensionPtr create(std::string type);
+  static ConstructionExtensionPtr create(const VariantMap& stream);
+
+private:
+  ExtensionFactory();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
 
 
 #endif //__CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__

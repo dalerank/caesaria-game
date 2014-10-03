@@ -22,6 +22,30 @@
 #include "core/logger.hpp"
 #include "walker/soldier.hpp"
 
+void ConstructionExtension::save(VariantMap &stream) const
+{
+  stream[ "type" ] = Variant( type() );
+  stream[ "deleted" ] = _isDeleted;
+}
+
+void ConstructionExtension::load(const VariantMap &stream)
+{
+  _isDeleted = stream.get( "deleted" );
+}
+
+void ConstructionExtension::timeStep(ConstructionPtr, unsigned int)
+{
+  _isDeleted = GameDate::current() > _finishDate;
+}
+
+ConstructionExtensionPtr FactoryProgressUpdater::create()
+{
+  ConstructionExtensionPtr ret( new FactoryProgressUpdater() );
+  ret->drop();
+
+  return ret;
+}
+
 ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, float value, int week2finish)
 {
   FactoryProgressUpdater* updater = new FactoryProgressUpdater();
@@ -39,7 +63,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   return ret;
 }
 
-void FactoryProgressUpdater::run( ConstructionPtr parent, unsigned int time)
+void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time)
 {
   if( GameDate::isWeekChanged() )
   {
@@ -47,18 +71,35 @@ void FactoryProgressUpdater::run( ConstructionPtr parent, unsigned int time)
     if( factory.isValid() )
     {
       factory->updateProgress( _value );
-    }
-
-    _isDeleted = GameDate::current() > _finishDate;
+    }    
   }
+
+  ConstructionExtension::timeStep( parent, time );
 }
 
-bool FactoryProgressUpdater::isDeleted() const { return _isDeleted; }
+std::string FactoryProgressUpdater::type() const { return CAESARIA_STR_EXT(FactoryProgressUpdater); }
 
-FactoryProgressUpdater::FactoryProgressUpdater() : _value( 0 ), _isDeleted( false )
+void FactoryProgressUpdater::save(VariantMap &stream) const
+{
+
+}
+
+void FactoryProgressUpdater::load(const VariantMap &stream)
+{
+
+}
+
+FactoryProgressUpdater::FactoryProgressUpdater() : _value( 0 )
 {
 }
 
+ConstructionExtensionPtr FortCurseByMars::create()
+{
+  ConstructionExtensionPtr ret( new FortCurseByMars() );
+  ret->drop();
+
+  return ret;
+}
 
 ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int monthsCurse)
 {
@@ -75,7 +116,7 @@ ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int mo
   return ret;
 }
 
-void FortCurseByMars::run(ConstructionPtr parent, unsigned int time)
+void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 {
   if( GameDate::isWeekChanged() )
   {
@@ -93,14 +134,99 @@ void FortCurseByMars::run(ConstructionPtr parent, unsigned int time)
     {
       (*it)->updateMorale( -100 );
     }
-
-    _isDeleted = GameDate::current() > _finishDate;
   }
+
+  ConstructionExtension::timeStep( parent, time );
 }
 
-bool FortCurseByMars::isDeleted() const { return _isDeleted; }
+std::string FortCurseByMars::type() const{ return CAESARIA_STR_EXT(FortCurseByMars); }
 
-FortCurseByMars::FortCurseByMars() :_isDeleted( false )
+void FortCurseByMars::save(VariantMap &stream) const
+{
+
+}
+
+void FortCurseByMars::load(const VariantMap &stream)
+{
+
+}
+
+FortCurseByMars::FortCurseByMars()
 {
 }
 
+class BaseExtensionCreator : public ReferenceCounted
+{
+public:
+  virtual ConstructionExtensionPtr create() = 0;
+};
+
+template<class T>
+class ExtensionCreator : public BaseExtensionCreator
+{
+public:
+  virtual ConstructionExtensionPtr create()
+  {
+    return T::create();
+  }
+};
+
+typedef SmartPtr<BaseExtensionCreator> ExtensionCreatorPtr;
+
+class ExtensionFactory::Impl
+{
+public:
+  typedef std::map<std::string, ExtensionCreatorPtr > Creators;
+  Creators creators;
+
+  template<class T>
+  void addCreator( std::string name )
+  {
+    ExtensionCreatorPtr cr( new ExtensionCreator<T>() );
+    cr->drop();
+
+    creators[ name ] = cr;
+  }
+};
+
+ExtensionFactory::~ExtensionFactory()
+{
+
+}
+
+ExtensionFactory& ExtensionFactory::instance()
+{
+  static ExtensionFactory inst;
+  return inst;
+}
+
+ConstructionExtensionPtr ExtensionFactory::create(std::string type)
+{
+  Impl::Creators::iterator it =  instance()._d->creators.find( type );
+
+  return it != instance()._d->creators.end()
+           ? it->second->create()
+           : ConstructionExtensionPtr();
+}
+
+ConstructionExtensionPtr ExtensionFactory::create(const VariantMap& stream)
+{
+  std::string type = stream.get( "type" ).toString();
+  ConstructionExtensionPtr ret = create( type );
+  if( ret.isValid() )
+  {
+    ret->load( stream );
+  }
+
+  return ret;
+}
+
+ExtensionFactory::ExtensionFactory() : _d( new Impl )
+{
+#define ADD_CREATOR(T) _d->addCreator<T>( CAESARIA_STR_EXT(T) );
+
+  ADD_CREATOR(FortCurseByMars)
+  ADD_CREATOR(FactoryProgressUpdater)
+
+#undef ADD_CREATOR
+}
