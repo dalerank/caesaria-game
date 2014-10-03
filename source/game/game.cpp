@@ -341,7 +341,7 @@ void Game::setScreenGame()
 
     if( _d->city->tilemap().direction() == constants::north )
     {
-       if( !_d->pauseCounter )
+      if( !_d->pauseCounter )
       {
         _d->timeX10 += _d->timeMultiplier / 10;
       }
