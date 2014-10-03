@@ -150,6 +150,7 @@ public:
   static Point tilepos2screen( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
+  static constants::Direction getDirection( const TilePos& b, const TilePos& e );
 };
 
 }//end namespace gfx

@@ -384,4 +384,15 @@ Tile& TileHelper::getInvalid()
   return invalidTile;
 }
 
+Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
+{
+  float t = (e - b).getAngleICW();
+  int angle = (int)ceil( t / 45.f);
+
+  Direction directions[] = { east, southEast, south, southWest,
+                             west, northWest, north, northEast, northEast };
+
+  return directions[ angle ];
+}
+
 }//end namespace gfx
