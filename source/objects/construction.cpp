@@ -26,6 +26,7 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "extension.hpp"
+#include "core/json.hpp"
 
 using namespace gfx;
 
@@ -206,6 +207,10 @@ void Construction::load( const VariantMap& stream )
     if( extension.isValid() )
     {
       addExtension( extension );
+    }
+    else
+    {
+      Logger::warning( "Construction: cant load extension from " + Json::serialize( it->second, " " ) );
     }
   }
 }
