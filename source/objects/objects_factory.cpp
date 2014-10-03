@@ -292,7 +292,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::cathedralNeptune, BigTempleNeptune, WorkingBuildingCreator );
   ADD_CREATOR(building::cathedralMars, BigTempleMars, WorkingBuildingCreator );
   ADD_CREATOR(building::cathedralVenus, BigTempleVenus, WorkingBuildingCreator );
-  ADD_CREATOR(building::cathedralMercury, BigTempleMercure, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralMercury, BigTempleMercury, WorkingBuildingCreator );
   ADD_CREATOR(building::oracle, TempleOracle, WorkingBuildingCreator );
 
   // health
