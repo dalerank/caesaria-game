@@ -114,8 +114,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
   return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : DirectRoute();
 }
 
-DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
-                                            SimpleGoodStore& basket )
+DirectRoute getWarehouse4Sells( Propagator &pathPropagator, SimpleGoodStore& basket )
 {
   DirectRoutes pathWayList = pathPropagator.getRoutes( building::warehouse );
 
@@ -124,7 +123,8 @@ DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range
-    WarehousePtr warehouse= ptr_cast<Warehouse>( pathWayIt->first );
+    WarehousePtr warehouse;
+    warehouse << pathWayIt->first;
 
     if( warehouse->store().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
     else { ++pathWayIt; }
@@ -226,6 +226,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( warehouse.isValid() )
       {
+        float tradeKoeff = warehouse->tradeBuff( Warehouse::sellGoodsBuff );
         city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
 
         city::TradeOptions& options = city->tradeOptions();
@@ -250,7 +251,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
               GoodStock& stock = buy.getStock( goodType );
               whStore.retrieve( stock, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy );
+              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, tradeKoeff, mayBuy );
               e->dispatch();
             }
           }
@@ -421,7 +422,7 @@ void Merchant::timeStep(const unsigned long time)
   Walker::timeStep( time );
 }
 
-std::string Merchant::getParentCity() const{  return _d->baseCityName; }
+std::string Merchant::parentCity() const{  return _d->baseCityName; }
 WalkerPtr Merchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
 
 WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )

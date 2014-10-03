@@ -23,6 +23,7 @@
 #include "walker/enemysoldier.hpp"
 #include "events/postpone.hpp"
 #include "core/saveadapter.hpp"
+#include "objects/fort.hpp"
 #include "game/settings.hpp"
 #include "objects/extension.hpp"
 
@@ -65,7 +66,7 @@ void Mars::_doWrath(PlayerCityPtr city)
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
   city::Helper helper( city );
-  FortList forts = helper.find<Fort>( constants::militaryGroup );
+  FortList forts = helper.find<Fort>( building::militaryGroup );
 
   std::string text, title;
   if( !forts.empty() )

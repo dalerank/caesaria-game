@@ -21,16 +21,19 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/soldier.hpp"
+#include "warehouse.hpp"
 
 void ConstructionExtension::save(VariantMap &stream) const
 {
   stream[ "type" ] = Variant( type() );
   stream[ "deleted" ] = _isDeleted;
+  stream[ "options" ] = _options;
 }
 
 void ConstructionExtension::load(const VariantMap &stream)
 {
   _isDeleted = stream.get( "deleted" );
+  _options = stream.get( "options" ).toMap();
 }
 
 void ConstructionExtension::timeStep(ConstructionPtr, unsigned int)
@@ -49,7 +52,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::create()
 ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, float value, int week2finish)
 {
   FactoryProgressUpdater* updater = new FactoryProgressUpdater();
-  updater->_value = value;
+  updater->_options[ "value" ] = value;
 
   DateTime gdate = GameDate::current();
   gdate.appendWeek( week2finish );
@@ -70,7 +73,7 @@ void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time
     FactoryPtr factory = ptr_cast<Factory>( parent );
     if( factory.isValid() )
     {
-      factory->updateProgress( _value );
+      factory->updateProgress( _options["value"] );
     }    
   }
 
@@ -79,17 +82,7 @@ void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time
 
 std::string FactoryProgressUpdater::type() const { return CAESARIA_STR_EXT(FactoryProgressUpdater); }
 
-void FactoryProgressUpdater::save(VariantMap &stream) const
-{
-
-}
-
-void FactoryProgressUpdater::load(const VariantMap &stream)
-{
-
-}
-
-FactoryProgressUpdater::FactoryProgressUpdater() : _value( 0 )
+FactoryProgressUpdater::FactoryProgressUpdater()
 {
 }
 
@@ -141,16 +134,6 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 
 std::string FortCurseByMars::type() const{ return CAESARIA_STR_EXT(FortCurseByMars); }
 
-void FortCurseByMars::save(VariantMap &stream) const
-{
-
-}
-
-void FortCurseByMars::load(const VariantMap &stream)
-{
-
-}
-
 FortCurseByMars::FortCurseByMars()
 {
 }
@@ -173,7 +156,7 @@ public:
 
 typedef SmartPtr<BaseExtensionCreator> ExtensionCreatorPtr;
 
-class ExtensionFactory::Impl
+class ExtensionsFactory::Impl
 {
 public:
   typedef std::map<std::string, ExtensionCreatorPtr > Creators;
@@ -189,18 +172,18 @@ public:
   }
 };
 
-ExtensionFactory::~ExtensionFactory()
+ExtensionsFactory::~ExtensionsFactory()
 {
 
 }
 
-ExtensionFactory& ExtensionFactory::instance()
+ExtensionsFactory& ExtensionsFactory::instance()
 {
-  static ExtensionFactory inst;
+  static ExtensionsFactory inst;
   return inst;
 }
 
-ConstructionExtensionPtr ExtensionFactory::create(std::string type)
+ConstructionExtensionPtr ExtensionsFactory::create(std::string type)
 {
   Impl::Creators::iterator it =  instance()._d->creators.find( type );
 
@@ -209,7 +192,7 @@ ConstructionExtensionPtr ExtensionFactory::create(std::string type)
            : ConstructionExtensionPtr();
 }
 
-ConstructionExtensionPtr ExtensionFactory::create(const VariantMap& stream)
+ConstructionExtensionPtr ExtensionsFactory::create(const VariantMap& stream)
 {
   std::string type = stream.get( "type" ).toString();
   ConstructionExtensionPtr ret = create( type );
@@ -221,12 +204,50 @@ ConstructionExtensionPtr ExtensionFactory::create(const VariantMap& stream)
   return ret;
 }
 
-ExtensionFactory::ExtensionFactory() : _d( new Impl )
+ExtensionsFactory::ExtensionsFactory() : _d( new Impl )
 {
 #define ADD_CREATOR(T) _d->addCreator<T>( CAESARIA_STR_EXT(T) );
 
   ADD_CREATOR(FortCurseByMars)
   ADD_CREATOR(FactoryProgressUpdater)
+  ADD_CREATOR(WarehouseBuff)
 
 #undef ADD_CREATOR
+}
+
+
+ConstructionExtensionPtr WarehouseBuff::create()
+{
+  ConstructionExtensionPtr ret( new WarehouseBuff() );
+  ret->drop();
+
+  return ret;
+}
+
+ConstructionExtensionPtr WarehouseBuff::assignTo(WarehousePtr warehouse, int group, float value, int week2finish)
+{
+  WarehouseBuff* buff = new WarehouseBuff();
+  buff->_options[ "value" ] = value;
+  buff->_options[ "group" ] = group;
+  buff->_finishDate = GameDate::current();
+  buff->_finishDate.appendWeek( week2finish );
+
+  warehouse->addExtension( buff );
+  buff->drop(); //automatic delete
+
+  return buff;
+}
+
+void WarehouseBuff::timeStep(ConstructionPtr parent, unsigned int time)
+{
+  ConstructionExtension::timeStep( parent, time );
+}
+
+std::string WarehouseBuff::type() const {  return CAESARIA_STR_EXT(WarehouseBuff); }
+float WarehouseBuff::value() const { return _options.get( "value" ).toFloat(); }
+int WarehouseBuff::group() const { return _options.get( "group" ).toInt(); }
+
+WarehouseBuff::WarehouseBuff()
+{
+
 }

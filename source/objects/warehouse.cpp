@@ -36,6 +36,7 @@
 #include "good/goodhelper.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
+#include "extension.hpp"
 
 #include <list>
 
@@ -470,6 +471,21 @@ bool Warehouse::isGettingFull() const
   }
 
   return true;
+}
+
+float Warehouse::tradeBuff(Warehouse::Buff type) const
+{
+  SmartList<WarehouseBuff> buffs;
+  buffs << extensions();
+
+  float res = 0;
+  foreach( it, buffs )
+  {
+    if( (*it)->group() == type )
+      res += (*it)->value();
+  }
+
+  return res;
 }
 
 std::string Warehouse::troubleDesc() const

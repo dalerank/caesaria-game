@@ -37,6 +37,22 @@ protected:
 
   bool _isDeleted;
   DateTime _finishDate;
+  VariantMap _options;
+};
+
+class WarehouseBuff : public ConstructionExtension
+{
+public:
+  static ConstructionExtensionPtr create();
+  static ConstructionExtensionPtr assignTo(WarehousePtr warehouse, int type, float value, int week2finish );
+
+  virtual void timeStep( ConstructionPtr parent, unsigned int time );
+  virtual std::string type() const;
+
+  float value() const;
+  int group() const;
+private:
+  WarehouseBuff();
 };
 
 class FactoryProgressUpdater : public ConstructionExtension
@@ -47,14 +63,8 @@ public:
 
   virtual void timeStep( ConstructionPtr parent, unsigned int time );
   virtual std::string type() const;
-
-  virtual void save( VariantMap& stream ) const;
-  virtual void load( const VariantMap& stream );
 private:
   FactoryProgressUpdater();
-
-  float _value;
-
 };
 
 class FortCurseByMars : public ConstructionExtension
@@ -65,27 +75,23 @@ public:
 
   virtual void timeStep( ConstructionPtr parent, unsigned int time );
   virtual std::string type() const;
-
-  virtual void save( VariantMap& stream ) const;
-  virtual void load( const VariantMap& stream );
 private:
   FortCurseByMars();
 };
 
-class ExtensionFactory
+class ExtensionsFactory
 {
 public:
-  virtual ~ExtensionFactory();
-  static ExtensionFactory& instance();
+  virtual ~ExtensionsFactory();
+  static ExtensionsFactory& instance();
   static ConstructionExtensionPtr create(std::string type);
   static ConstructionExtensionPtr create(const VariantMap& stream);
 
 private:
-  ExtensionFactory();
+  ExtensionsFactory();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
 
 #endif //__CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__

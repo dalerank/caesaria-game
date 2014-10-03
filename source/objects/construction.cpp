@@ -203,7 +203,7 @@ void Construction::load( const VariantMap& stream )
   VariantMap vm_extensions = stream.get( "extensions" ).toMap();
   foreach( it, vm_extensions )
   {
-    ConstructionExtensionPtr extension = ExtensionFactory::instance().create( it->second.toMap() );
+    ConstructionExtensionPtr extension = ExtensionsFactory::instance().create( it->second.toMap() );
     if( extension.isValid() )
     {
       addExtension( extension );
