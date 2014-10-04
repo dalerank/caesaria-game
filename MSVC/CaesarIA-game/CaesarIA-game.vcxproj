@@ -168,7 +168,7 @@
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -238,7 +238,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>CAESARIA_PLATFORM_WIN64;_DEBUG;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;_DEBUG;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -306,7 +306,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -376,7 +376,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>CAESARIA_PLATFORM_WIN64;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -444,7 +444,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Optimization>MinSpace</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -514,7 +514,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test
       <Optimization>MinSpace</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>CAESARIA_PLATFORM_WIN64;_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -580,7 +580,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test_x64
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -650,7 +650,7 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>CAESARIA_PLATFORM_WIN64;_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -707,8 +707,8 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test_x64
     <ClCompile Include="..\..\source\**\*.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\**\*.hpp" />
-  </ItemGroup>  
+    <ClInclude Include="..\..\source\**\*.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -83,9 +83,10 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
+#include "gfx/tilesarea.hpp"
 
 
-#include <set>
+#include <unordered_map>
 
 using namespace constants;
 using namespace gfx;
@@ -96,6 +97,17 @@ CAESARIA_LITERALCONST(walkerIdCount)
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
+
+namespace std {
+  template <>
+  class hash<TilePos>{
+  public:
+    size_t operator()(const TilePos &pos) const
+    {
+      return pos.HashValue();
+    }
+  };
+};
 
 class WGrid
 {
@@ -115,7 +127,7 @@ public:
     const TilePos& pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      _grid[ TileHelper::hash( pos ) ].push_back( a );
+      _grid[pos].push_back(a);
     }
   }
 
@@ -124,7 +136,7 @@ public:
     TilePos pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      WalkerList& d = _grid[ TileHelper::hash( pos ) ];
+      WalkerList& d = _grid[ pos ];
       foreach( it, d )
       {
         if( *it == a )
@@ -138,20 +150,23 @@ public:
 
   const WalkerList& at( TilePos pos )
   {
+    static WalkerList invalidList;    
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      return _grid[ TileHelper::hash( pos ) ];
+      if (_grid.find(pos) != _grid.end())
+      {
+        return _grid[pos];
+      }
     }
     else
     {
-      Logger::warning( "WalkersGrid incorrect" );
-      static WalkerList invalidList;
-      return invalidList;
+      Logger::warning( "WalkersGrid incorrect" );      
     }
+    return invalidList;
   }
 
 private:
-  typedef std::map< int, WalkerList > Grid;
+  typedef std::unordered_map< TilePos, WalkerList > Grid;
   Grid _grid;
 };
 
@@ -310,9 +325,16 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   funds.updateHistory( GameDate::current() );
 }
 
-WalkerList PlayerCity::walkers( walker::Type rtype )
+WalkerList PlayerCity::walkers(walker::Type  rtype)
 {
-  if( rtype == walker::all )
+  walker::VisibleWalkers types;
+  types.insert(rtype);
+  return walkers(types);
+}
+
+WalkerList PlayerCity::walkers(walker::VisibleWalkers  rtype)
+{
+  if (rtype.find(walker::all) != rtype.end())
   {
     return _d->walkerList;
   }
@@ -320,7 +342,7 @@ WalkerList PlayerCity::walkers( walker::Type rtype )
   WalkerList res;
   foreach( w, _d->walkerList )
   {
-    if( (*w)->type() == rtype  )
+    if (rtype.find((*w)->type()) != rtype.end())
     {
       res.push_back( *w );
     }
@@ -330,6 +352,14 @@ WalkerList PlayerCity::walkers( walker::Type rtype )
 }
 
 WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, const TilePos& stopP)
+{
+  walker::VisibleWalkers types;
+  types.insert(rtype);
+  return walkers(types, startPos, stopP);
+}
+
+
+WalkerList PlayerCity::walkers(std::set<walker::Type> rtype, const TilePos& startPos, const TilePos& stopP)
 {
   TilePos invalidPos( -1, -1 );
   TilePos stopPos = stopP;
@@ -343,9 +373,13 @@ WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, cons
     stopPos = startPos;
   }
 
-  TilesArray area = _d->tilemap.getArea( startPos, stopPos );
+  if (startPos == stopPos){
+    return _d->walkersGrid.at(startPos);
+  }
+
+  TilesArea area = TilesArea::GetArea(startPos, stopPos);
 	for (auto walker : _d->walkerList){
-		if (walker->type() == rtype || rtype == walker::any)
+    if (rtype.find(walker->type()) == rtype.end() || rtype.find(walker::any) != rtype.end())
 		{
 			if (area.contain(walker->pos())){
 				ret.push_back(walker);

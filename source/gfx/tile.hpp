@@ -146,7 +146,6 @@ public:
   static Picture& pictureFromId( const unsigned int imgId );
   static int encode( const Tile& tt );
   static int turnCoastTile(int imgid , constants::Direction newDirection);
-  static unsigned int hash( const TilePos& pos );
   static Point tilepos2screen( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();

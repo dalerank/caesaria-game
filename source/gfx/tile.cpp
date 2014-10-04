@@ -347,11 +347,6 @@ int TileHelper::turnCoastTile(int imgid, constants::Direction newDirection )
   return imgid + 372;
 }
 
-unsigned int TileHelper::hash(const TilePos& pos)
-{
-  return (pos.i() << 16) + pos.j();
-}
-
 Point TileHelper::tilepos2screen(const TilePos& pos)
 {
   return Point( 30 * (pos.i()+pos.j()), 15 * pos.z() );

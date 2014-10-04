@@ -57,7 +57,7 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
-  Layer::VisibleWalkers vwalkers;
+  walker::VisibleWalkers vwalkers;
 
   int posMode;
 
@@ -248,18 +248,9 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   }
 }
 
-WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos& pos)
+WalkerList Layer::_getVisibleWalkerList(const walker::VisibleWalkers& aw, const TilePos& pos)
 {
-  Layer::VisibleWalkers vWalkers = visibleWalkers();
-
-  WalkerList walkerList;
-  foreach( wtAct, vWalkers )
-  {
-    WalkerList foundWalkers = _city()->walkers( (walker::Type)*wtAct, pos );
-    walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
-  }
-
-  return walkerList;
+    return _city()->walkers( aw, pos );
 }
 
 void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
@@ -352,7 +343,7 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
   drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
 }
 
-const Layer::VisibleWalkers& Layer::visibleWalkers() const
+const walker::VisibleWalkers& Layer::visibleWalkers() const
 {
   return _dfunc()->vwalkers;
 }
