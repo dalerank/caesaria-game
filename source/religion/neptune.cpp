@@ -21,7 +21,9 @@
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
 #include "core/gettext.hpp"
+#include "objects/dock.hpp"
 #include "walker/ship.hpp"
+#include "walker/fishing_boat.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -31,7 +33,6 @@ namespace religion
 
 namespace rome
 {
-
 
 DivinityPtr Neptune::create()
 {
@@ -69,12 +70,34 @@ void Neptune::_doWrath(PlayerCityPtr city)
 
 void Neptune::_doSmallCurse(PlayerCityPtr city)
 {
+  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
+                                                            _("##smallcurse_of_neptune_description##"),
+                                                            events::ShowInfobox::send2scribe );
+  event->dispatch();
 
+  DockList docks;
+  docks << city->overlays();
+
+  DockPtr dock = docks.random();
+  if( dock.isValid() )
+  {
+    dock->collapse();
+  }
 }
 
 void Neptune::_doBlessing(PlayerCityPtr city)
 {
+  city::Helper helper( city );
+  FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
 
+  FishingBoatPtr boat = boats.random();
+  foreach( it, boats )
+  {
+    if( (*it)->fishQty() < boat->fishQty() )
+      boat = *it;
+  }
+
+  boat->addFish( boat->fishMax() - boat->fishQty() );
 }
 
 }//end namespace rome

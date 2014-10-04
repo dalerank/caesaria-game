@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_RELIGION_BIULDING_H_INCLUDED__
-#define __CAESARIA_RELIGION_BIULDING_H_INCLUDED__
+#ifndef __CAESARIA_RELIGION_BUILDING_H_INCLUDED__
+#define __CAESARIA_RELIGION_BUILDING_H_INCLUDED__
 
 #include "service.hpp"
 #include "religion/romedivinity.hpp"
@@ -111,10 +111,10 @@ public:
   BigTempleVenus();
 };
 
-class BigTempleMercure : public BigTemple
+class BigTempleMercury : public BigTemple
 {
 public:
-  BigTempleMercure();
+  BigTempleMercury();
 };
 
 class TempleOracle : public BigTemple

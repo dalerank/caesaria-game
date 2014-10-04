@@ -92,7 +92,7 @@ TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), buildin
 {
 }
 
-BigTempleMercure::BigTempleMercure() : BigTemple( rome::Pantheon::mercury(), building::cathedralMercury, 50 )
+BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), building::cathedralMercury, 50 )
 {
 }
 

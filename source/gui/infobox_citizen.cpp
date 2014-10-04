@@ -152,7 +152,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   case walker::merchant:
   {
     MerchantPtr m = ptr_cast<Merchant>( wlk );
-    setTitle( _("##trade_caravan_from##") + m->getParentCity() );
+    setTitle( _("##trade_caravan_from##") + m->parentCity() );
   }
   break;
 

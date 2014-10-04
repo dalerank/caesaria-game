@@ -683,7 +683,7 @@ void Level::handleEvent( NEvent& event )
 
     case _MET_TILES:
       _d->renderer.handleEvent( event );
-      _d->selectedTilePos = _d->renderer.getTilePos( event.mouse.pos() );
+      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
     break;
 
     default:
