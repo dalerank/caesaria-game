@@ -69,6 +69,7 @@ Pathway::Pathway() : _d( new Impl )
   _d->origin = NULL;
   _d->destination = TilePos( 0, 0 );
   _d->isReverse = false;
+  _d->directionIt = _d->directionList.begin();
 }
 
 Pathway::~Pathway(){}

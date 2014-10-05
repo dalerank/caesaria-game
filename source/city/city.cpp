@@ -374,12 +374,19 @@ WalkerList PlayerCity::walkers(std::set<walker::Type> rtype, const TilePos& star
   }
 
   if (startPos == stopPos){
-    return _d->walkersGrid.at(startPos);
+    WalkerList walkersAtTile = _d->walkersGrid.at(startPos);    
+    foreach(walker, walkersAtTile){
+      if (rtype.find(walker::any) != rtype.end() || rtype.find((*walker)->type()) != rtype.end())
+      {
+        ret.push_back(*walker);
+      }
+    }
+    return ret;
   }
 
   TilesArea area = TilesArea::GetArea(startPos, stopPos);
 	for (auto walker : _d->walkerList){
-    if (rtype.find(walker->type()) == rtype.end() || rtype.find(walker::any) != rtype.end())
+    if (rtype.find(walker::any) != rtype.end() || rtype.find(walker->type()) == rtype.end())
 		{
 			if (area.contain(walker->pos())){
 				ret.push_back(walker);
