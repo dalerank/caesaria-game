@@ -67,6 +67,18 @@ private:
   FactoryProgressUpdater();
 };
 
+class HouseSentimentUpdater : public ConstructionExtension
+{
+public:
+  static ConstructionExtensionPtr create();
+  static ConstructionExtensionPtr assignTo(HousePtr house, int value, int week2finish );
+
+  virtual void timeStep(ConstructionPtr parent, unsigned int time);
+  virtual std::string type() const;
+private:
+  HouseSentimentUpdater();
+};
+
 class FortCurseByMars : public ConstructionExtension
 {
 public:

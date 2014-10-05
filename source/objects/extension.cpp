@@ -20,6 +20,7 @@
 #include "fort.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects/house.hpp"
 #include "walker/soldier.hpp"
 #include "warehouse.hpp"
 
@@ -211,6 +212,7 @@ ExtensionsFactory::ExtensionsFactory() : _d( new Impl )
   ADD_CREATOR(FortCurseByMars)
   ADD_CREATOR(FactoryProgressUpdater)
   ADD_CREATOR(WarehouseBuff)
+  ADD_CREATOR(HouseSentimentUpdater)
 
 #undef ADD_CREATOR
 }
@@ -248,6 +250,49 @@ float WarehouseBuff::value() const { return _options.get( "value" ).toFloat(); }
 int WarehouseBuff::group() const { return _options.get( "group" ).toInt(); }
 
 WarehouseBuff::WarehouseBuff()
+{
+
+}
+
+ConstructionExtensionPtr HouseSentimentUpdater::create()
+{
+  ConstructionExtensionPtr ret( new HouseSentimentUpdater() );
+  ret->drop();
+
+  return ret;
+}
+
+ConstructionExtensionPtr HouseSentimentUpdater::assignTo(HousePtr house, int value, int week2finish)
+{
+  HouseSentimentUpdater* buff = new HouseSentimentUpdater();
+  buff->_options[ "value" ] = value;
+  buff->_finishDate = GameDate::current();
+  buff->_finishDate.appendWeek( week2finish );
+
+  house->addExtension( buff );
+  house->updateState( House::happinessBuff, value );
+  buff->drop(); //automatic delete
+
+  return buff;
+}
+
+void HouseSentimentUpdater::timeStep(ConstructionPtr parent, unsigned int time)
+{
+  ConstructionExtension::timeStep( parent,time );
+
+  if( isDeleted() )
+  {
+    HousePtr house;
+    house << parent;
+
+    if( house.isValid() )
+      house->updateState( House::happinessBuff, -_options[ "value" ].toInt() );
+  }
+}
+
+std::string HouseSentimentUpdater::type() const { return CAESARIA_STR_EXT(HouseSentimentUpdater); }
+
+HouseSentimentUpdater::HouseSentimentUpdater()
 {
 
 }

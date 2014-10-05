@@ -49,7 +49,7 @@ void Venus::_doWrath( PlayerCityPtr city )
                                                             _("##wrath_of_venus_description##"),
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
-
+  //city->addService( );
 }
 
 void Venus::_doBlessing(PlayerCityPtr city)

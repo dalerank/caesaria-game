@@ -25,12 +25,31 @@ using namespace constants;
 namespace city
 {
 
+struct BuffInfo
+{
+int value;
+int finishValue;
+bool relative;
+DateTime finishDate;
+
+BuffInfo()
+{
+  value = 0;
+  finishValue = 0;
+  relative = false;
+}
+};
+
 class Sentiment::Impl
 {
-public:
+public:  
+  typedef std::vector<BuffInfo> Buffs;
+
   int value;
   int finishValue;
   int affect;
+  int buffValue;
+  Buffs buff;
 };
 
 city::SrvcPtr Sentiment::create(PlayerCityPtr city )
@@ -47,6 +66,7 @@ Sentiment::Sentiment(PlayerCityPtr city )
   _d->value = 50;
   _d->finishValue = 50;
   _d->affect = 0;
+  _d->buffValue = 0;
 }
 
 void Sentiment::update( const unsigned int time )
@@ -58,8 +78,8 @@ void Sentiment::update( const unsigned int time )
 
   if( GameDate::isMonthChanged() )
   {
-    Helper helper( &_city );
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses;
+    houses << _city.overlays();
 
     unsigned int houseNumber = 0;
     _d->finishValue = 0;
@@ -76,10 +96,13 @@ void Sentiment::update( const unsigned int time )
 
     if( houseNumber > 0 )
       _d->finishValue /= houseNumber;
+    else
+      _d->finishValue = 50;
   }
 }
 
 int Sentiment::value() const { return _d->value + _d->affect; }
+int Sentiment::staticBuff() const { return _d->buffValue; }
 
 void Sentiment::append(int value)
 {
