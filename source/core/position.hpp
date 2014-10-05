@@ -67,8 +67,8 @@ inline PointF Point::toPointF() const
 class TilePos : Vector2<int>
 {
 public:
-  TilePos( const int i, const int j ) : Vector2<int>(i, j) {}
-  TilePos( const TilePos& other ) : Vector2<int>(other._x, other._y) {}
+  TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
+  TilePos( const TilePos& other ) : Vector2<int>( other._x, other._y ) {}
   TilePos() : Vector2<int>( 0, 0 ) {}
 
   int i() const { return _x; }
@@ -90,8 +90,6 @@ public:
     return (_x << 16) + _y;
   }
 
-  bool Equals(const TilePos& other) const { return *this == other; }
-
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
   int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
 
@@ -112,8 +110,8 @@ public:
   TilePos fit( const TilePos& lur, const TilePos& tbr ) const
   {
     TilePos ret = *this;
-    ret._x = math::clamp(ret._x, lur._x, tbr._x);
-    ret._y = math::clamp(ret._y, lur._y, tbr._y);
+    ret._x = math::clamp( ret._x, lur._x, tbr._x );
+    ret._y = math::clamp( ret._y, lur._y, tbr._y );
 
     return ret;
   }

@@ -85,9 +85,6 @@
 #include "events/showinfobox.hpp"
 #include "gfx/tilesarea.hpp"
 
-
-#include <unordered_map>
-
 using namespace constants;
 using namespace gfx;
 
@@ -97,17 +94,6 @@ CAESARIA_LITERALCONST(walkerIdCount)
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
-
-namespace std {
-  template <>
-  class hash<TilePos>{
-  public:
-    size_t operator()(const TilePos &pos) const
-    {
-      return pos.HashValue();
-    }
-  };
-};
 
 class WGrid
 {
@@ -166,7 +152,7 @@ public:
   }
 
 private:
-  typedef std::unordered_map< TilePos, WalkerList > Grid;
+  typedef std::map< TilePos, WalkerList > Grid;
   Grid _grid;
 };
 
