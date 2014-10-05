@@ -66,14 +66,10 @@ inline PointF Point::toPointF() const
 
 class TilePos : Vector2<int>
 {
-private:
-  int _hash;
-
-  void updateHash(){ _hash = (_x << 16) + _y; }
 public:
-  TilePos(const int i, const int j) : Vector2<int>(i, j) { updateHash(); }
-  TilePos(const TilePos& other) : Vector2<int>(other._x, other._y) { _hash = other._hash; }
-  TilePos() : Vector2<int>(0, 0) { _hash = 0; }
+  TilePos(const int i, const int j) : Vector2<int>(i, j) {}
+  TilePos(const TilePos& other) : Vector2<int>(other._x, other._y) {}
+  TilePos() : Vector2<int>(0, 0) {}
 
   int i() const { return _x; }
   int j() const { return _y; }
@@ -87,11 +83,11 @@ public:
   inline TilePos eastnb() const { return TilePos( _x+1, _y ); }
   inline TilePos westnb() const { return TilePos( _x-1, _y ); }  
 
-  void setI(const int i) { _x = i; updateHash(); }
-  void setJ(const int j) { _y = j; updateHash(); }
+  void setI(const int i) { _x = i; }
+  void setJ(const int j) { _y = j; }
 
   size_t HashValue() const{
-    return _hash;
+    return (_x << 16) + _y;
   }
 
   bool Equals(const TilePos& other) const { return *this == other; }
@@ -99,8 +95,8 @@ public:
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
   int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
 
-  TilePos& operator=(const TilePos& other) { set(other._x, other._y); _hash = other._hash; return *this; }
-  TilePos& operator+=(const TilePos& other) { set(_x + other._x, _y + other._y); updateHash(); return *this; }
+  TilePos& operator=(const TilePos& other) { set(other._x, other._y); return *this; }
+  TilePos& operator+=(const TilePos& other) { set(_x + other._x, _y + other._y); return *this; }
   TilePos operator+(const TilePos& other) const { return TilePos( _x + other._x, _y + other._y ); }
   TilePos operator-(const TilePos& other) const { return TilePos( _x - other._x, _y - other._y ); }
   TilePos operator*(int v) const { return TilePos( _x * v, _y * v ); }
