@@ -33,7 +33,7 @@ public:
 protected:
   void _doWrath( PlayerCityPtr city );
   void _doBlessing( PlayerCityPtr city );
-  void _doSmallCurse(PlayerCityPtr city);
+  void _doSmallCurse( PlayerCityPtr city );
 };
 
 }//end namespace rome

@@ -55,9 +55,8 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   FactoryProgressUpdater* updater = new FactoryProgressUpdater();
   updater->_options[ "value" ] = value;
 
-  DateTime gdate = GameDate::current();
-  gdate.appendWeek( week2finish );
-  updater->_finishDate = gdate;
+  updater->_finishDate = GameDate::current();
+  updater->_finishDate.appendWeek( week2finish );
 
   ConstructionExtensionPtr ret( updater );
   ret->drop();
@@ -135,9 +134,7 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 
 std::string FortCurseByMars::type() const{ return CAESARIA_STR_EXT(FortCurseByMars); }
 
-FortCurseByMars::FortCurseByMars()
-{
-}
+FortCurseByMars::FortCurseByMars() {}
 
 class BaseExtensionCreator : public ReferenceCounted
 {
@@ -212,7 +209,7 @@ ExtensionsFactory::ExtensionsFactory() : _d( new Impl )
   ADD_CREATOR(FortCurseByMars)
   ADD_CREATOR(FactoryProgressUpdater)
   ADD_CREATOR(WarehouseBuff)
-  ADD_CREATOR(HouseSentimentUpdater)
+  ADD_CREATOR(ConstructionParamUpdater)
 
 #undef ADD_CREATOR
 }
@@ -249,50 +246,49 @@ std::string WarehouseBuff::type() const {  return CAESARIA_STR_EXT(WarehouseBuff
 float WarehouseBuff::value() const { return _options.get( "value" ).toFloat(); }
 int WarehouseBuff::group() const { return _options.get( "group" ).toInt(); }
 
-WarehouseBuff::WarehouseBuff()
-{
+WarehouseBuff::WarehouseBuff() {}
 
-}
-
-ConstructionExtensionPtr HouseSentimentUpdater::create()
+ConstructionExtensionPtr ConstructionParamUpdater::create()
 {
-  ConstructionExtensionPtr ret( new HouseSentimentUpdater() );
+  ConstructionExtensionPtr ret( new ConstructionParamUpdater() );
   ret->drop();
 
   return ret;
 }
 
-ConstructionExtensionPtr HouseSentimentUpdater::assignTo(HousePtr house, int value, int week2finish)
+ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, int paramName, bool relative, int value, int week2finish)
 {
-  HouseSentimentUpdater* buff = new HouseSentimentUpdater();
+  ConstructionParamUpdater* buff = new ConstructionParamUpdater();
   buff->_options[ "value" ] = value;
+  buff->_options[ "relative" ] = relative;
+  buff->_options[ "param" ] = paramName;
   buff->_finishDate = GameDate::current();
   buff->_finishDate.appendWeek( week2finish );
 
-  house->addExtension( buff );
-  house->updateState( House::happinessBuff, value );
+  construction->addExtension( buff );
+  construction->updateState( paramName, value );
   buff->drop(); //automatic delete
 
   return buff;
 }
 
-void HouseSentimentUpdater::timeStep(ConstructionPtr parent, unsigned int time)
+void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int time)
 {
   ConstructionExtension::timeStep( parent,time );
 
-  if( isDeleted() )
+  if( GameDate::isWeekChanged() )
   {
-    HousePtr house;
-    house << parent;
-
-    if( house.isValid() )
-      house->updateState( House::happinessBuff, -_options[ "value" ].toInt() );
+    if( _options[ "relative" ].toBool() )
+      parent->updateState( _options[ "param" ], -_options[ "value" ].toInt() );
   }
 }
 
-std::string HouseSentimentUpdater::type() const { return CAESARIA_STR_EXT(HouseSentimentUpdater); }
+std::string ConstructionParamUpdater::type() const { return CAESARIA_STR_EXT(ConstructionParamUpdater); }
 
-HouseSentimentUpdater::HouseSentimentUpdater()
+void ConstructionParamUpdater::destroy(ConstructionPtr parent)
 {
-
+  if( parent.isValid() )
+    parent->updateState( _options[ "param" ], -_options[ "value" ].toInt() );
 }
+
+ConstructionParamUpdater::ConstructionParamUpdater() {}

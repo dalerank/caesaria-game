@@ -38,6 +38,25 @@ BuffInfo()
   finishValue = 0;
   relative = false;
 }
+
+VariantMap save()
+{
+  VariantMap ret;
+  VARIANT_SAVE_ANY( ret, value )
+  VARIANT_SAVE_ANY( ret, relative )
+  VARIANT_SAVE_ANY( ret, finishDate )
+  VARIANT_SAVE_ANY( ret, finishValue )
+
+  return ret;
+}
+
+void load( const VariantMap& stream )
+{
+  VARIANT_LOAD_ANY( value, stream )
+  VARIANT_LOAD_ANY( relative, stream )
+  VARIANT_LOAD_TIME( finishDate, stream )
+  VARIANT_LOAD_ANY( finishValue, stream )
+}
 };
 
 class Sentiment::Impl
@@ -49,7 +68,7 @@ public:
   int finishValue;
   int affect;
   int buffValue;
-  Buffs buff;
+  Buffs buffs;
 };
 
 city::SrvcPtr Sentiment::create(PlayerCityPtr city )
@@ -78,6 +97,25 @@ void Sentiment::update( const unsigned int time )
 
   if( GameDate::isMonthChanged() )
   {
+    _d->buffValue = 0;
+    DateTime current = GameDate::current();
+    for( Impl::Buffs::iterator it=_d->buffs.begin(); it != _d->buffs.end(); )
+    {
+      BuffInfo& buff = *it;
+      if( buff.finishDate > current )
+      {
+        it = _d->buffs.erase( it );
+      }
+      else
+      {
+        if( buff.relative ) { buff.finishValue += buff.value; }
+        else { buff.finishValue = buff.value; }
+
+        _d->buffValue += buff.value;
+        ++it;
+      }
+    }
+
     HouseList houses;
     houses << _city.overlays();
 
@@ -86,6 +124,7 @@ void Sentiment::update( const unsigned int time )
     foreach( it, houses )
     {
       HousePtr h = *it;
+      h->setState( House::happinessBuff, _d->buffValue );
 
       if( h->habitants().count() > 0 )
       {
@@ -135,6 +174,14 @@ VariantMap Sentiment::save() const
   VARIANT_SAVE_ANY_D( ret, _d, value );
   VARIANT_SAVE_ANY_D( ret, _d, finishValue );
   VARIANT_SAVE_ANY_D( ret, _d, affect );
+
+  VariantList vlBuffs;
+  foreach( it, _d->buffs )
+  {
+    vlBuffs.push_back( (*it).save() );
+  }
+
+  ret[ "buffs" ] = vlBuffs;
   return ret;
 }
 
@@ -144,6 +191,24 @@ void Sentiment::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, value, stream );
   VARIANT_LOAD_ANY_D( _d, finishValue, stream );
   VARIANT_LOAD_ANY_D( _d, affect, stream );
+
+  VariantList vlBuffs = stream.get( "buffs" ).toList();
+  foreach( it, vlBuffs )
+  {
+    BuffInfo buff;
+    buff.load( (*it).toMap() );
+  }
+}
+
+void Sentiment::addBuff(int value, bool relative, int month2finish)
+{
+  BuffInfo buff;
+  buff.value = value;
+  buff.relative = relative;
+  buff.finishDate = GameDate::current();
+  buff.finishDate.appendMonth( month2finish );
+
+  _d->buffs.push_back( buff );
 }
 
 }//end namespace city

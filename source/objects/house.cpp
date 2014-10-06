@@ -966,6 +966,7 @@ double House::state( ParameterType param) const
   switch( (int)param )
   {
   case House::food: return _d->getFoodLevel();
+  case House::health: return Building::state( House::health ) + Building::state( House::healthBuff );
 
   default: return Building::state( param );
   }

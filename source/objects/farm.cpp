@@ -194,7 +194,7 @@ void Farm::load( const VariantMap& stream )
 
 unsigned int Farm::getProduceQty() const
 {
-  return getProductRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
+  return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }
 
 Farm::~Farm() {}
