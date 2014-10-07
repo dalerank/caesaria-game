@@ -83,7 +83,7 @@ std::string WorkingBuilding::workersProblemDesc() const
 std::string WorkingBuilding::sound() const
 {
   return (isActive() && numberWorkers() > 0
-            ? WorkingBuilding::sound()
+            ? Building::sound()
             : "");
 }
 
