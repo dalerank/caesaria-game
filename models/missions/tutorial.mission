@@ -8,6 +8,7 @@
   finish : "-300.01.01"
   adviserEnabled : false
   fishPlaceEnabled : false
+  climate : 0
 	
   win :
   {

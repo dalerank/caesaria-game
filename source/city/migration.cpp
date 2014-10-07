@@ -128,10 +128,14 @@ void Migration::update( const unsigned int time )
                             ? params[ Info::tax ] * 2
                             : (possibleTaxLevel-params[ Info::tax ]) );
 
-  const int& monthWithourWar = params[ Info::monthWtWar ];
+  const int& monthWithourWar = _city.age() > 1
+                                  ? params[ Info::monthWtWar ]
+                                  : DateTime::monthsInYear;
+
   int warInfluence = ( monthWithourWar < DateTime::monthsInYear
                           ? (DateTime::monthsInYear - monthWithourWar) * 5
                           : -std::min( monthWithourWar, 10 ) );
+
   warInfluence += params[ Info::milthreat ];
 
   int slumsInfluence = ( _d->isPoorHousing( params[ Info::slumNumber ], params[ Info::houseNumber ] ) ? 20 : 0);
