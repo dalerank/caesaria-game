@@ -165,7 +165,7 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
   {
     for( int i = safe.height() - 1; i >= 0; i--)
     {
-      for( unsigned int j = 0; j < safe.width(); j++ )
+      for( int j = 0; j < safe.width(); j++ )
       {
         unsigned char index = image_data[i * smkfileWidth + j];
         unsigned int* bufp32;

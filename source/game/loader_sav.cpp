@@ -299,6 +299,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
       edgeData[ i ][ j ] = edgeGrid[index];
       TileHelper::decode( tile, terrainGrid[index] );
+      TileHelper::fixPlateauFlags( tile );
     }
   }    
 

@@ -90,7 +90,7 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
 unsigned int Pathway::length() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
-  return _d->tiles.size()-1;
+  return _d->tiles.size();
 }
 
 const Tile& Pathway::front() const { return _d->tilemap->at( _d->origin ); }

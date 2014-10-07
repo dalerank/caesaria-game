@@ -151,6 +151,8 @@ public:
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
   static constants::Direction getDirection( const TilePos& b, const TilePos& e );
+  static void fixPlateauFlags( Tile& tile );
+
 };
 
 }//end namespace gfx

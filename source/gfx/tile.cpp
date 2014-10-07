@@ -55,7 +55,7 @@ void Tile::Terrain::clearFlags()
   garden     = false;
   meadow     = false;
   wall       = false;
-  rubble     = false;
+  rubble     = false;  
   deepWater  = false;
 }
 
@@ -393,6 +393,15 @@ Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
                              west, northWest, north, northEast, northEast };
 
   return directions[ angle ];
+}
+
+void TileHelper::fixPlateauFlags(Tile& tile)
+{
+  if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
+  {
+    tile.setFlag( Tile::clearAll, true );
+    tile.setFlag( Tile::tlRock, true );
+  }
 }
 
 }//end namespace gfx
