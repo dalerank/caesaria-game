@@ -52,13 +52,6 @@ void Amphitheater::timeStep(const unsigned long time)
   EntertainmentBuilding::timeStep( time );
 }
 
-std::string Amphitheater::sound() const
-{
-  return (isActive() && numberWorkers() > 0
-            ? WorkingBuilding::sound()
-            : "");
-}
-
 Service::Type Amphitheater::serviceType() const
 {
   int gldValue = traineeValue( walker::gladiator );

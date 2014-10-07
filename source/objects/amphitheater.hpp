@@ -28,8 +28,7 @@ public:
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
   virtual void deliverService();
-  virtual void timeStep(const unsigned long time);
-  virtual std::string sound() const;
+  virtual void timeStep(const unsigned long time);  
   virtual Service::Type serviceType() const;
 
   virtual std::string workersStateDesc() const;

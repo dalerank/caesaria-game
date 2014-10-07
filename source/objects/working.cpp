@@ -80,6 +80,13 @@ std::string WorkingBuilding::workersProblemDesc() const
   return WorkingBuildingHelper::productivity2desc( const_cast<WorkingBuilding*>( this ) );
 }
 
+std::string WorkingBuilding::sound() const
+{
+  return (isActive() && numberWorkers() > 0
+            ? WorkingBuilding::sound()
+            : "");
+}
+
 std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
