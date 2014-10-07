@@ -71,7 +71,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   GET_DWIDGET_FROM_UI( _d, gbLegionParams )
   GET_DWIDGET_FROM_UI( _d, btnAttackAnimals )
 
-  WalkerList walkers = city->walkers( walker::any, pos );
+  WalkerList walkers = city->walkers( pos );
 
   if( walkers.empty() )
   {

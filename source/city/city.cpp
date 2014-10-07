@@ -164,8 +164,8 @@ public:
 
   PlayerPtr player;
 
-  TileOverlayList overlayList;
-  WalkerList walkerList;
+  TileOverlayList overlays;
+  WalkerList walkers;
   Picture empMapPicture;
 
   //walkers fast access map !!!
@@ -277,7 +277,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   //update walkers access map
   _d->walkersGrid.clear();
-  foreach( it, _d->walkerList )
+  foreach( it, _d->walkers )
   {
     _d->walkersGrid.append( *it );
   }
@@ -290,7 +290,7 @@ void PlayerCity::timeStep(unsigned int time)
   {
     setOption( updateRoads, 0 );
     // for each overlay
-    foreach( it, _d->overlayList )
+    foreach( it, _d->overlays )
     {
       ConstructionPtr construction = ptr_cast<Construction>( *it );
       if( construction != NULL )
@@ -321,11 +321,11 @@ WalkerList PlayerCity::walkers( walker::Type rtype )
 {
   if( rtype == walker::all )
   {
-    return _d->walkerList;
+    return _d->walkers;
   }
 
   WalkerList res;
-  foreach( w, _d->walkerList )
+  foreach( w, _d->walkers )
   {
     if( (*w)->type() == rtype  )
     {
@@ -336,36 +336,8 @@ WalkerList PlayerCity::walkers( walker::Type rtype )
   return res;
 }
 
-WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, const TilePos& stopP)
-{
-  TilePos invalidPos( -1, -1 );
-  TilePos stopPos = stopP;
-
-  if( startPos == invalidPos )
-    return walkers( rtype );
-
-  WalkerList ret;
-  if( stopPos == invalidPos )
-  {
-    stopPos = startPos;
-  }
-
-  TilesArray area = _d->tilemap.getArea( startPos, stopPos );
-  foreach( tile, area)
-  {
-    WalkerList current = _d->walkersGrid.at( (*tile)->pos() );
-
-    foreach( w, current )
-    {
-      if( (*w)->type() == rtype || rtype == walker::any )
-      {
-        ret.push_back( *w );
-      }
-    }
-  }
-
-  return ret;
-}
+const WalkerList&PlayerCity::walkers(const TilePos& pos) { return _d->walkersGrid.at( pos ); }
+const WalkerList&PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(const BorderInfo& info)
 {
@@ -378,7 +350,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
+TileOverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
@@ -476,8 +448,8 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 
 void PlayerCity::Impl::updateWalkers( unsigned int time )
 {
-  WalkerList::iterator walkerIt = walkerList.begin();
-  while( walkerIt != walkerList.end() )
+  WalkerList::iterator walkerIt = walkers.begin();
+  while( walkerIt != walkers.end() )
   {
  //   try
  //   {
@@ -488,7 +460,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
       {
         // remove the walker from the walkers list
         walkersGrid.remove( *walkerIt );
-        walkerIt = walkerList.erase(walkerIt);
+        walkerIt = walkers.erase(walkerIt);
       }
       else { ++walkerIt; }
  //   }
@@ -500,8 +472,8 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 {
-  TileOverlayList::iterator overlayIt = overlayList.begin();
-  while( overlayIt != overlayList.end() )
+  TileOverlayList::iterator overlayIt = overlays.begin();
+  while( overlayIt != overlays.end() )
   {
     //try
     //{
@@ -512,7 +484,7 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
         beforeOverlayDestroyed( city, *overlayIt );
         // remove the overlay from the overlay list
         (*overlayIt)->destroy();
-        overlayIt = overlayList.erase(overlayIt);
+        overlayIt = overlays.erase(overlayIt);
       }
       else
       {
@@ -577,7 +549,7 @@ void PlayerCity::save( VariantMap& stream) const
   Logger::warning( "City: save walkers information" );
   VariantMap vm_walkers;
   int walkedId = 0;
-  foreach( w, _d->walkerList )
+  foreach( w, _d->walkers )
   {
     VariantMap vm_walker;
     (*w)->save( vm_walker );
@@ -588,7 +560,7 @@ void PlayerCity::save( VariantMap& stream) const
 
   Logger::warning( "City: save overlays information" );
   VariantMap vm_overlays;
-  foreach( overlay, _d->overlayList )
+  foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
     (*overlay)->save( vm_overlay );
@@ -654,7 +626,7 @@ void PlayerCity::load( const VariantMap& stream )
     {
       overlay->build( this, pos );
       overlay->load( overlayParams );
-      _d->overlayList.push_back( overlay );
+      _d->overlays.push_back( overlay );
     }
     else
     {
@@ -673,7 +645,7 @@ void PlayerCity::load( const VariantMap& stream )
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
-      _d->walkerList.push_back( walker );
+      _d->walkers.push_back( walker );
     }
     else
     {
@@ -716,14 +688,14 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
+void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
-  _d->walkerList.push_back( walker );
+  _d->walkers.push_back( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }
@@ -739,7 +711,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
   return city::SrvcPtr();
 }
 
-city::SrvcList PlayerCity::services() const { return _d->services; }
+const city::SrvcList& PlayerCity::services() const { return _d->services; }
 
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {

@@ -21,10 +21,10 @@
 #include "smartptr.hpp"
 #include "foreach.hpp"
 #include "core/math.hpp"
-#include <list>
+#include <deque>
 
 template <class T>
-class SmartList : public std::list< SmartPtr< T > >
+class SmartList : public std::deque<SmartPtr< T > >
 {
 public:
   template< class Src >
@@ -46,18 +46,27 @@ public:
     return *this;
   }
 
-  SmartPtr<T> random()
+  SmartPtr<T> random() const
   {
     if( this->empty() )
       return SmartPtr<T>();
 
-    typename SmartList<T>::iterator it = this->begin();
+    typename SmartList<T>::const_iterator it = this->begin();
     std::advance( it, math::random( this->size() ) );
     return *it;
   }
 
+  void remove( const SmartPtr< T >& a )
+  {
+    for( typename SmartList<T>::iterator it = this->begin(); it != this->end();)
+    {
+      if( a == *it ) { it = this->erase( it ); }
+      else { ++it; }
+    }
+  }
+
   template< class W >
-  SmartList exclude()
+  SmartList exclude() const
   {
     SmartList<T> ret;
     foreach( it, *this )
