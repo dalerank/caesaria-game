@@ -27,6 +27,7 @@
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"
+#include "climate.hpp"
 
 namespace city
 {

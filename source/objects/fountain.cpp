@@ -144,15 +144,15 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return ret;
 }
 
-bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
+bool Fountain::build(PlayerCityPtr pcity, const TilePos& pos )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( pcity, pos );
 
   setPicture( ResourceGroup::utilitya, 10 );
   _d->lastPicId = simpleFountain;
   _initAnimation();
 
-  _d->fillDistance = (city->climate() == climateDesert)
+  _d->fillDistance = (pcity->climate() == city::climate::desert)
                      ? fillDistanceDesert
                      : fillDistanceNormal;
 

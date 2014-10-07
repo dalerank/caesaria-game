@@ -15,15 +15,21 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
-#define _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
+#ifndef __CAESARIA_CITY_CLIMATE_H_INCLUDED__
+#define __CAESARIA_CITY_CLIMATE_H_INCLUDED__
 
-#include "city/climate.hpp"
-
-class ClimateManager
+namespace city
 {
-public:
-  static void initialize( city::climate::Type climate );
-};
 
-#endif //_CAESARIA_CLIMATEMANAGER_INCLUDE_H_
+namespace climate
+{
+
+typedef enum { central=0, northen, desert } Type;
+
+}
+
+}
+
+typedef city::climate::Type ClimateType;
+
+#endif //__CAESARIA_CITY_CLIMATE_H_INCLUDED__

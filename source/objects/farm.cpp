@@ -216,6 +216,17 @@ std::string FarmWheat::troubleDesc() const
   return Factory::troubleDesc();
 }
 
+bool FarmWheat::build(PlayerCityPtr pcity, const TilePos& pos)
+{
+  bool ret = Farm::build( pcity, pos );
+  if( pcity->climate() == city::climate::central )
+  {
+    setProductRate( productRate() * 2 );
+  }
+
+  return ret;
+}
+
 FarmOlive::FarmOlive() : Farm(Good::olive, building::oliveFarm)
 {
 }

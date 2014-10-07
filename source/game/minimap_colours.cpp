@@ -18,7 +18,8 @@
 #include "minimap_colours.hpp"
 
 MinimapColors::MinimapColors(ClimateType climate) {
-	if (climate == climateCentral) {
+	if (climate == city::climate::central)
+	{
 		int colours[][8] = {
 			{0x000000}, // background
 			{0x6b8a31, 0x738231, 0x6b7129, 0x527929, 0x6b8231, 0x6b7931, 0x636918, 0x737931}, // empty 1
@@ -38,6 +39,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			{0xFFFBDE, 0xEFD34A, 0xFFEBB5, 0xFFF3C6}, // buildings
 			{0x000000, 0xF70000, 0x7B0000, 0x1800FF}, // sprites: wolves, soldiers, enemy1, enemy2
 		};
+
 		for (int i = 0; i < MAP_SIZE; i++)
 		{
 			for (int j = 0; j < 8; j++)
@@ -45,7 +47,9 @@ MinimapColors::MinimapColors(ClimateType climate) {
 				map[i][j] = colours[i][j];
 			}
 		}
-	} else if (climate == climateNorthen) {
+	}
+	else if (climate == city::climate::northen)
+	{
 		int colours[][8] = {{0x000000}, // background
 			{0x4A8231, 0x527929, 0x526929, 0x397121, 0x527931, 0x4A7129, 0x4A6918, 0x527929}, // empty 1
 			{0x4A7129, 0x4A7129, 0x5A8239, 0x4A6921, 0x5A7131, 0x5A7129, 0x316921, 0x527129}, // empty 2
@@ -64,6 +68,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			{0xFFFBDE, 0xEFD34A, 0xFFEBB5, 0xFFF3C6}, // buildings
 			{0x000000, 0xF70000, 0x7B0000, 0x1800FF}, // sprites: wolves, soldiers, enemy1, enemy2
 		};
+
 		for (int i = 0; i < MAP_SIZE; i++)
 		{
 			for (int j = 0; j < 8; j++)
@@ -71,7 +76,9 @@ MinimapColors::MinimapColors(ClimateType climate) {
 				map[i][j] = colours[i][j];
 			}
 		}
-	} else if (climate == climateDesert) {
+	}
+	else if (climate == city::climate::desert)
+	{
 		int colours[][8] = {{0x000000}, // background
 			{0xBDBA9C, 0xC6BAA5, 0xBDBA9C, 0xD6CBAD, 0xA59A7B, 0xCECBAD, 0xC6C3A5, 0xCECBAD}, // empty 1
 			{0xB5B294, 0xBDBAA5, 0xC6C3AD, 0xC6BA9C, 0xBDB294, 0xB5AA94, 0xDEDBBD, 0xD6D3B5}, // empty 2
@@ -90,6 +97,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			{0xFFFBDE, 0xEFD34A, 0xFFEBB5, 0xFFF3C6}, // buildings
 			{0x000000, 0xF70000, 0x7B0000, 0x1800FF}, // sprites: wolves, soldiers, enemy1, enemy2
 		};
+
 		for (int i = 0; i < MAP_SIZE; i++)
 		{
 			for (int j = 0; j < 8; j++)
@@ -100,6 +108,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 	}
 }
 
-int MinimapColors::colour(int type, int number) {
+int MinimapColors::colour(int type, int number)
+{
 	return map[type][number];
 }
