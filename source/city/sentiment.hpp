@@ -32,8 +32,7 @@ public:
   static std::string defaultName();
   virtual void update( const unsigned int time );
   int value() const;
-  int staticBuff() const;
-  void append( int value );
+  int buff() const;
   std::string reason() const;  
 
   virtual VariantMap save() const;

@@ -141,12 +141,7 @@ void Sentiment::update( const unsigned int time )
 }
 
 int Sentiment::value() const { return _d->value + _d->affect; }
-int Sentiment::staticBuff() const { return _d->buffValue; }
-
-void Sentiment::append(int value)
-{
-  _d->finishValue = math::clamp( _d->value + value, 0, 100 );
-}
+int Sentiment::buff() const { return _d->buffValue; }
 
 std::string Sentiment::reason() const
 {

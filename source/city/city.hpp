@@ -103,6 +103,8 @@ public:
   const city::BuildOptions& buildOptions() const;
   void setBuildOptions( const city::BuildOptions& options );
 
+  virtual unsigned int age() const;
+
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
 

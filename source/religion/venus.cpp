@@ -101,8 +101,9 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
     int rndCount = math::random( houses.size() / 5 );
     for( int i=0; i < rndCount; i++ )
     {
-      HousePtr house = houses.random();
-      ConstructionParamUpdater::assignTo(house, House::healthBuff, true, -1, DateTime::weekInMonth * 5 );
+      ConstructionPtr house;
+      house << houses.random();
+      ConstructionParamUpdater::assignTo( house, House::healthBuff, true, -2, DateTime::weekInMonth * 5 );
     }
   }
   break;

@@ -183,6 +183,7 @@ public:
   Options options;
   ClimateType climate;   
   UniqueId walkerIdCount;
+  unsigned int age;
   int sentiment;
 
 public:
@@ -213,6 +214,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
   _d->funds.setTaxRate( 7 );
+  _d->age = 0;
   _d->walkerIdCount = 0;
   _d->climate = climateCentral;
   _d->sentiment = 60;
@@ -258,6 +260,11 @@ void PlayerCity::_initAnimation()
 
 void PlayerCity::timeStep(unsigned int time)
 {
+  if( GameDate::isYearChanged() )
+  {
+    _d->age++;
+  }
+
   if( GameDate::isMonthChanged() )
   {
     _d->monthStep( this, GameDate::current() );    
@@ -598,6 +605,7 @@ void PlayerCity::save( VariantMap& stream) const
   }
 
   stream[ "services" ] = vm_services;
+  VARIANT_SAVE_ANY_D( stream, _d, age )
 
   Logger::warning( "City: finalize save map" );
 }
@@ -703,6 +711,7 @@ void PlayerCity::load( const VariantMap& stream )
   }
 
   setOption( PlayerCity::forceBuild, 0 );
+  VARIANT_LOAD_ANY_D( _d, age, stream )
 
   _initAnimation();
 }
@@ -738,6 +747,7 @@ void PlayerCity::setBuildOptions(const city::BuildOptions& options)
   emit _d->onChangeBuildingOptionsSignal();
 }
 
+unsigned int PlayerCity::age() const { return _d->age; }
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
@@ -754,12 +764,12 @@ const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.
 const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
-void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 
 int PlayerCity::prosperity() const
 {

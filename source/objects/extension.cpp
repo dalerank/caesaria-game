@@ -261,6 +261,7 @@ ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr cons
   ConstructionParamUpdater* buff = new ConstructionParamUpdater();
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
+  buff->_options[ "finishValue" ] = value;
   buff->_options[ "param" ] = paramName;
   buff->_finishDate = GameDate::current();
   buff->_finishDate.appendWeek( week2finish );
@@ -279,7 +280,12 @@ void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int tim
   if( GameDate::isWeekChanged() )
   {
     if( _options[ "relative" ].toBool() )
-      parent->updateState( _options[ "param" ], -_options[ "value" ].toInt() );
+    {
+      int value = _options[ "value" ];
+      int finishValue = _options[ "finishValue" ];
+      parent->updateState( _options[ "param" ], value );
+      finishValue += value;
+    }
   }
 }
 
@@ -288,7 +294,10 @@ std::string ConstructionParamUpdater::type() const { return CAESARIA_STR_EXT(Con
 void ConstructionParamUpdater::destroy(ConstructionPtr parent)
 {
   if( parent.isValid() )
-    parent->updateState( _options[ "param" ], -_options[ "value" ].toInt() );
+  {
+    int finishValue = _options[ "finishValue" ];
+    parent->updateState( _options[ "param" ], -finishValue );
+  }
 }
 
 ConstructionParamUpdater::ConstructionParamUpdater() {}
