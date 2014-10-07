@@ -316,7 +316,8 @@ void House::_updateCrime()
                   + taxInfluence4happiness
                   + foodAbundanceInfluence4happines
                   + foodStockInfluence4happines
-                  + poverity4happiness;
+                  + poverity4happiness
+                  + (int)state( happinessBuff );
 
   if( monthWithFood > 0 )
   {
@@ -332,7 +333,6 @@ void House::_updateCrime()
       desInfluence4happines -= 5;
     else if( averageDes > spec().maxDesirabilityLevel() )
       desInfluence4happines += 2;
-
 
     curHappiness += desInfluence4happines;
   }
@@ -966,6 +966,7 @@ double House::state( ParameterType param) const
   switch( (int)param )
   {
   case House::food: return _d->getFoodLevel();
+  case House::health: return Building::state( House::health ) + Building::state( House::healthBuff );
 
   default: return Building::state( param );
   }

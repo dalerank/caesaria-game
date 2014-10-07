@@ -213,24 +213,24 @@ int Dock::queueSize() const
 
 const Tile& Dock::queueTile() const
 {
-  city::Helper helper( _city() );
   TilePos offset( 3, 3 );
+  city::Helper helper( _city() );
   TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
 
-  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+  foreach( it, tiles )
   {
-    bool saveTile = false;
     if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
-      saveTile = _city()->walkers( walker::seaMerchant, (*it)->pos() ).empty();
+      bool needMove;
+      bool busyTile = helper.isTileBusy<SeaMerchant>( (*it)->pos(), WalkerPtr(), needMove );
+      if( !busyTile )
+      {
+        return *(*it);
+      }
     }
-
-    if( !saveTile ) { it = tiles.erase( it ); }
-    else { ++it; }
   }
 
-  TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles[ rand() % tiles.size() ]->pos();
-  return _city()->tilemap().at( pos );
+  return _city()->tilemap().at( TilePos( -1, -1 ) );
 }
 
 void Dock::requestGoods(GoodStock& stock)

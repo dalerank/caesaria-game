@@ -57,7 +57,7 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
-  walker::VisibleWalkers vwalkers;
+  Layer::WalkerTypes vwalkers;
 
   int posMode;
 
@@ -166,7 +166,9 @@ void Layer::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _d->camera->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
+
+    moveValue *= ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
@@ -248,21 +250,34 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   }
 }
 
-WalkerList Layer::_getVisibleWalkerList(const walker::VisibleWalkers& aw, const TilePos& pos)
+/*WalkerList Layer::_getVisibleWalkerList(const WalkerTypes& aw, const TilePos& pos)
 {
-    return _city()->walkers( aw, pos );
-}
+  Layer::WalkerTypes vWalkers = visibleWalkers();
+
+  WalkerList walkerList;
+  foreach( wtAct, vWalkers )
+  {
+    const WalkerList& foundWalker = _city()->walkers( pos );
+    walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
+  }
+
+  return walkerList;
+}*/
 
 void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
-  WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
+  const WalkerList& walkers = _city()->walkers( tile.pos() );
+  const Layer::WalkerTypes& vWalkers = visibleWalkers();
 
   foreach( w, walkers )
   {
-    pics.clear();
-    (*w)->getPictures( pics );
-    engine.draw( pics, (*w)->mappos() + camOffset );
+    if( vWalkers.count( (*w)->type() ) > 0 )
+    {
+      pics.clear();
+      (*w)->getPictures( pics );
+      engine.draw( pics, (*w)->mappos() + camOffset );
+    }
   }
 }
 
@@ -343,7 +358,7 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
   drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
 }
 
-const walker::VisibleWalkers& Layer::visibleWalkers() const
+const Layer::WalkerTypes& Layer::visibleWalkers() const
 {
   return _dfunc()->vwalkers;
 }

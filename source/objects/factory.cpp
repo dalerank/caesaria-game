@@ -277,8 +277,8 @@ Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
-void Factory::productRate( const float rate ){  _d->productionRate = rate;}
-float Factory::getProductRate() const{  return _d->productionRate;}
+void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
+float Factory::productRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
 

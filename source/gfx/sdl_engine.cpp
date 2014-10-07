@@ -281,8 +281,15 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
 
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
-  if( ioPicture.surface() ) SDL_FreeSurface( ioPicture.surface() );
-  if( ioPicture.texture() ) SDL_DestroyTexture( ioPicture.texture() );
+  try
+  {
+    if( ioPicture.surface() ) SDL_FreeSurface( ioPicture.surface() );
+    if( ioPicture.texture() ) SDL_DestroyTexture( ioPicture.texture() );
+  }
+  catch(...)
+  {
+
+  }
 
   ioPicture = Picture();
 }

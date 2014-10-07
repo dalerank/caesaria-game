@@ -83,7 +83,9 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
-#include "gfx/tilesarea.hpp"
+
+
+#include <set>
 
 using namespace constants;
 using namespace gfx;
@@ -113,7 +115,7 @@ public:
     const TilePos& pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      _grid[pos].push_back(a);
+      _grid[ TileHelper::hash( pos ) ].push_back( a );
     }
   }
 
@@ -122,7 +124,7 @@ public:
     TilePos pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      WalkerList& d = _grid[ pos ];
+      WalkerList& d = _grid[ TileHelper::hash( pos ) ];
       foreach( it, d )
       {
         if( *it == a )
@@ -136,23 +138,20 @@ public:
 
   const WalkerList& at( TilePos pos )
   {
-    static WalkerList invalidList;    
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      if (_grid.find(pos) != _grid.end())
-      {
-        return _grid[pos];
-      }
+      return _grid[ TileHelper::hash( pos ) ];
     }
     else
     {
-      Logger::warning( "WalkersGrid incorrect" );      
+      Logger::warning( "WalkersGrid incorrect" );
+      static WalkerList invalidList;
+      return invalidList;
     }
-    return invalidList;
   }
 
 private:
-  typedef std::map< TilePos, WalkerList > Grid;
+  typedef std::map< int, WalkerList > Grid;
   Grid _grid;
 };
 
@@ -165,8 +164,8 @@ public:
 
   PlayerPtr player;
 
-  TileOverlayList overlayList;
-  WalkerList walkerList;
+  TileOverlayList overlays;
+  WalkerList walkers;
   Picture empMapPicture;
 
   //walkers fast access map !!!
@@ -184,6 +183,7 @@ public:
   Options options;
   ClimateType climate;   
   UniqueId walkerIdCount;
+  unsigned int age;
   int sentiment;
 
 public:
@@ -214,8 +214,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
   _d->funds.setTaxRate( 7 );
+  _d->age = 0;
   _d->walkerIdCount = 0;
-  _d->climate = climateCentral;
+  _d->climate = city::climate::central;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
@@ -259,6 +260,11 @@ void PlayerCity::_initAnimation()
 
 void PlayerCity::timeStep(unsigned int time)
 {
+  if( GameDate::isYearChanged() )
+  {
+    _d->age++;
+  }
+
   if( GameDate::isMonthChanged() )
   {
     _d->monthStep( this, GameDate::current() );    
@@ -271,7 +277,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   //update walkers access map
   _d->walkersGrid.clear();
-  foreach( it, _d->walkerList )
+  foreach( it, _d->walkers )
   {
     _d->walkersGrid.append( *it );
   }
@@ -284,7 +290,7 @@ void PlayerCity::timeStep(unsigned int time)
   {
     setOption( updateRoads, 0 );
     // for each overlay
-    foreach( it, _d->overlayList )
+    foreach( it, _d->overlays )
     {
       ConstructionPtr construction = ptr_cast<Construction>( *it );
       if( construction != NULL )
@@ -311,24 +317,17 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   funds.updateHistory( GameDate::current() );
 }
 
-WalkerList PlayerCity::walkers(walker::Type  rtype)
+WalkerList PlayerCity::walkers( walker::Type rtype )
 {
-  walker::VisibleWalkers types;
-  types.insert(rtype);
-  return walkers(types);
-}
-
-WalkerList PlayerCity::walkers(walker::VisibleWalkers  rtype)
-{
-  if (rtype.find(walker::all) != rtype.end())
+  if( rtype == walker::all )
   {
-    return _d->walkerList;
+    return _d->walkers;
   }
 
   WalkerList res;
-  foreach( w, _d->walkerList )
+  foreach( w, _d->walkers )
   {
-    if (rtype.find((*w)->type()) != rtype.end())
+    if( (*w)->type() == rtype  )
     {
       res.push_back( *w );
     }
@@ -337,50 +336,8 @@ WalkerList PlayerCity::walkers(walker::VisibleWalkers  rtype)
   return res;
 }
 
-WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, const TilePos& stopP)
-{
-  walker::VisibleWalkers types;
-  types.insert(rtype);
-  return walkers(types, startPos, stopP);
-}
-
-
-WalkerList PlayerCity::walkers(std::set<walker::Type> rtype, const TilePos& startPos, const TilePos& stopP)
-{
-  TilePos invalidPos( -1, -1 );
-  TilePos stopPos = stopP;
-
-  if( startPos == invalidPos )
-    return walkers( rtype );
-
-  WalkerList ret;
-  if( stopPos == invalidPos )
-  {
-    stopPos = startPos;
-  }
-
-  if (startPos == stopPos){
-    WalkerList walkersAtTile = _d->walkersGrid.at(startPos);    
-    foreach(walker, walkersAtTile){
-      if (rtype.find(walker::any) != rtype.end() || rtype.find((*walker)->type()) != rtype.end())
-      {
-        ret.push_back(*walker);
-      }
-    }
-    return ret;
-  }
-
-  TilesArea area = TilesArea::GetArea(startPos, stopPos);
-	for (auto walker : _d->walkerList){
-    if (rtype.find(walker::any) != rtype.end() || rtype.find(walker->type()) == rtype.end())
-		{
-			if (area.contain(walker->pos())){
-				ret.push_back(walker);
-			}
-		}
-	}
-  return ret;
-}
+const WalkerList&PlayerCity::walkers(const TilePos& pos) { return _d->walkersGrid.at( pos ); }
+const WalkerList&PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(const BorderInfo& info)
 {
@@ -393,7 +350,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
+TileOverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
@@ -491,8 +448,8 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 
 void PlayerCity::Impl::updateWalkers( unsigned int time )
 {
-  WalkerList::iterator walkerIt = walkerList.begin();
-  while( walkerIt != walkerList.end() )
+  WalkerList::iterator walkerIt = walkers.begin();
+  while( walkerIt != walkers.end() )
   {
  //   try
  //   {
@@ -503,7 +460,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
       {
         // remove the walker from the walkers list
         walkersGrid.remove( *walkerIt );
-        walkerIt = walkerList.erase(walkerIt);
+        walkerIt = walkers.erase(walkerIt);
       }
       else { ++walkerIt; }
  //   }
@@ -515,8 +472,8 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 {
-  TileOverlayList::iterator overlayIt = overlayList.begin();
-  while( overlayIt != overlayList.end() )
+  TileOverlayList::iterator overlayIt = overlays.begin();
+  while( overlayIt != overlays.end() )
   {
     //try
     //{
@@ -527,7 +484,7 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
         beforeOverlayDestroyed( city, *overlayIt );
         // remove the overlay from the overlay list
         (*overlayIt)->destroy();
-        overlayIt = overlayList.erase(overlayIt);
+        overlayIt = overlays.erase(overlayIt);
       }
       else
       {
@@ -592,7 +549,7 @@ void PlayerCity::save( VariantMap& stream) const
   Logger::warning( "City: save walkers information" );
   VariantMap vm_walkers;
   int walkedId = 0;
-  foreach( w, _d->walkerList )
+  foreach( w, _d->walkers )
   {
     VariantMap vm_walker;
     (*w)->save( vm_walker );
@@ -603,7 +560,7 @@ void PlayerCity::save( VariantMap& stream) const
 
   Logger::warning( "City: save overlays information" );
   VariantMap vm_overlays;
-  foreach( overlay, _d->overlayList )
+  foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
     (*overlay)->save( vm_overlay );
@@ -620,6 +577,7 @@ void PlayerCity::save( VariantMap& stream) const
   }
 
   stream[ "services" ] = vm_services;
+  VARIANT_SAVE_ANY_D( stream, _d, age )
 
   Logger::warning( "City: finalize save map" );
 }
@@ -668,7 +626,7 @@ void PlayerCity::load( const VariantMap& stream )
     {
       overlay->build( this, pos );
       overlay->load( overlayParams );
-      _d->overlayList.push_back( overlay );
+      _d->overlays.push_back( overlay );
     }
     else
     {
@@ -687,7 +645,7 @@ void PlayerCity::load( const VariantMap& stream )
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
-      _d->walkerList.push_back( walker );
+      _d->walkers.push_back( walker );
     }
     else
     {
@@ -725,18 +683,19 @@ void PlayerCity::load( const VariantMap& stream )
   }
 
   setOption( PlayerCity::forceBuild, 0 );
+  VARIANT_LOAD_ANY_D( _d, age, stream )
 
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
+void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
-  _d->walkerList.push_back( walker );
+  _d->walkers.push_back( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }
@@ -752,7 +711,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
   return city::SrvcPtr();
 }
 
-city::SrvcList PlayerCity::services() const { return _d->services; }
+const city::SrvcList& PlayerCity::services() const { return _d->services; }
 
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {
@@ -760,6 +719,7 @@ void PlayerCity::setBuildOptions(const city::BuildOptions& options)
   emit _d->onChangeBuildingOptionsSignal();
 }
 
+unsigned int PlayerCity::age() const { return _d->age; }
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
@@ -776,12 +736,12 @@ const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.
 const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
-void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 
 int PlayerCity::prosperity() const
 {

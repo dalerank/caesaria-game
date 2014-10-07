@@ -797,7 +797,7 @@ void Level::_handleDebugEvent(int event)
 {
   switch( event )
   {
-  case city::debug_event::dec_mars_relation:
+  case city::debug_event::send_mars_wrath:
     religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
   break;
 
@@ -849,6 +849,10 @@ void Level::_handleDebugEvent(int event)
     events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
     e->dispatch();
   }
+  break;
+
+  case city::debug_event::send_venus_wrath:
+    religion::rome::Pantheon::venus()->updateRelation( -101.f, _d->game->city() );
   break;
   }
 }

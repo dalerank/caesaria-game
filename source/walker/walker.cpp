@@ -51,7 +51,7 @@ public:
   walker::Type type;
   bool isDeleted;
   float speed;
-  TilePos pos;
+  TilePos location;
   UniqueId uid;
   int waitInterval;
   float speedMultiplier;
@@ -144,7 +144,7 @@ void Walker::timeStep(const unsigned long time)
 
 void Walker::setPos( const TilePos& pos )
 {
-  _d->pos = pos;
+  _d->location = pos;
   //_d->tileOffset = _d->midTilePos;
   const Tile& tile =_d->city->tilemap().at( pos );
   _d->wpos = tile.center().toPointF();
@@ -224,7 +224,7 @@ void Walker::_walk()
 
   if( saveMpos != Mpos )
   {
-    _d->pos = Mpos;
+    _d->location = Mpos;
     _changeTile();
   }
 }
@@ -232,7 +232,7 @@ void Walker::_walk()
 void Walker::_changeTile()
 {
    Tilemap& tilemap = _d->city->tilemap();
-   Tile& currentTile = tilemap.at( _d->pos );
+   Tile& currentTile = tilemap.at( _d->location );
    _d->updateSpeedMultiplier( currentTile );
    _d->centerReached = false;
 }
@@ -323,7 +323,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->pos;}
+TilePos Walker::pos() const{ return _d->location;}
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 UniqueId Walker::uniqueId() const{ return _d->uid; }
@@ -346,7 +346,7 @@ void Walker::setFlag(Walker::Flag flag, bool value)
 
 Point Walker::tilesubpos() const
 {
-  Point tmp = Point( _d->pos.i(), _d->pos.j() ) * 15 + Point( 7, 7 );
+  Point tmp = Point( _d->location.i(), _d->location.j() ) * 15 + Point( 7, 7 );
   return tmp - _d->wpos.toPoint();
 }
 
@@ -422,12 +422,12 @@ const Picture& Walker::getMainPicture()
 void Walker::save( VariantMap& stream ) const
 {
   stream[ "name" ] = Variant( _d->name );
-  stream[ "type" ] = (int)_d->type;
+  VARIANT_SAVE_ANY_D( stream, _d, type )
   stream[ "pathway" ] =  _d->pathway.save();
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
-  stream[ "location" ] = _d->pos;
+  VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
   stream[ "wpos" ] = _d->wpos;
   stream[ "nextwpos" ] = _d->nextwpos;
@@ -437,6 +437,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "thinks" ] = Variant( _d->thinks );
   stream[ "subspeed" ] = _d->subSpeed;
   stream[ "lastCenterDst" ] = _d->lastCenterDst;
+  stream[ "showDebugInfo" ] = getFlag( showDebugInfo );
 }
 
 void Walker::load( const VariantMap& stream)
@@ -445,7 +446,7 @@ void Walker::load( const VariantMap& stream)
 
   _d->name = stream.get( "name" ).toString();
   _d->wpos = stream.get( "wpos" ).toPointF();
-  _d->pos = stream.get( "location" );
+  VARIANT_LOAD_ANY_D( _d, location, stream );
   _d->lastCenterDst = stream.get( "lastCenterDst" );
   _d->pathway.init( tmap, tmap.at( 0, 0 ) );
   _d->pathway.load( stream.get( "pathway" ).toMap() );
@@ -458,11 +459,12 @@ void Walker::load( const VariantMap& stream)
   _d->subSpeed = stream.get( "subspeed" ).toPointF();
   _d->speedMultiplier = (float)stream.get( lc_speedMultiplier, 1.f );
 
+
   if( !_d->pathway.isValid() )
   {
     Logger::warning( "Walker: wrong way for %s:%s at [%d,%d]",
                      WalkerHelper::getTypename( _d->type ).c_str(), _d->name.c_str(),
-                     _d->pos.i(), _d->pos.j() );
+                     _d->location.i(), _d->location.j() );
   }
   
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
@@ -473,19 +475,16 @@ void Walker::load( const VariantMap& stream)
 
   _d->speed = (float)stream.get( lc_speed );
   _d->health = (double)stream.get( "health" );
+  setFlag( showDebugInfo, stream.get( "showDebugInfo" ).toBool() );
 }
 
-void Walker::turn(TilePos p)
+void Walker::turn(TilePos p )
 {
-  float t = (p - pos()).getAngleICW();
-  int angle = (int)ceil( t / 45.f);
+  Direction direction = TileHelper::getDirection( pos(), p );
 
-  Direction directions[] = { east, southEast, south, southWest,
-                             west, northWest, north, northEast, northEast };
-
-  if( _d->action.direction != directions[ angle ] )
+  if( _d->action.direction != direction )
   {
-    _d->action.direction = directions[ angle ];
+    _d->action.direction = direction;
     _animationRef().clear();
   }
 }

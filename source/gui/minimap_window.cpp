@@ -248,22 +248,41 @@ void Minimap::Impl::updateImage()
     }
 
 
-    WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
-    foreach( it, walkers )
+    TilesArray tiles = city->tilemap().getArea( startPos, stopPos );
+    foreach( tile, tiles )
     {
-      WalkerPtr wlk = *it;
-      if( wlk->agressive() != 0 )
-      {
-        NColor c1 = wlk->agressive() > 0 ? DefaultColors::red : DefaultColors::blue;
+      const WalkerList& walkers = city->walkers( (*tile)->pos() );
 
-        Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
-        minimap->fill( c1, Rect( pnt, Size(2) ) );
+      NColor cl;
+      TilePos pos;
+      foreach( it, walkers )
+      {
+        WalkerPtr wlk = *it;
+        if( wlk->agressive() != 0 )
+        {
+          pos = wlk->pos();
+          if( wlk->agressive() > 0 )
+          {
+            cl = DefaultColors::red;
+            break;
+          }
+          else
+          {
+            cl = DefaultColors::blue;
+          }
+        }
+      }
+
+      if( cl.color != 0 )
+      {
+        Point pnt = getBitmapCoordinates( pos.i()-startPos.i() - 40, pos.j()-startPos.j()-60, mapsize);
+        minimap->fill( cl, Rect( pnt, Size(2) ) );
       }
     }
   }
 
   minimap->unlock();
-  //minimap->update();
+  minimap->update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it

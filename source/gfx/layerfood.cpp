@@ -110,7 +110,7 @@ void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
 void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
 {
   Pictures pics;
-  WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
+  const WalkerList& walkers = _city()->walkers( tile.pos() );
 
   foreach( w, walkers )
   {

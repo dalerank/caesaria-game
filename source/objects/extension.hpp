@@ -1,4 +1,4 @@
-﻿// This file is part of CaesarIA.
+// This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ public:
   virtual void timeStep( ConstructionPtr parent, unsigned int time );
   virtual bool isDeleted() const { return _isDeleted; }
   virtual std::string type() const = 0;
+  virtual void destroy( ConstructionPtr parent ) {}
 
 protected:
   ConstructionExtension() : _isDeleted( false )
@@ -65,6 +66,20 @@ public:
   virtual std::string type() const;
 private:
   FactoryProgressUpdater();
+};
+
+class ConstructionParamUpdater : public ConstructionExtension
+{
+public:
+  static ConstructionExtensionPtr create();
+  static ConstructionExtensionPtr assignTo(ConstructionPtr construction, int paramName,  bool relative, int value, int week2finish );
+
+  virtual void timeStep(ConstructionPtr parent, unsigned int time);
+  virtual std::string type() const;
+  virtual void destroy(ConstructionPtr parent);
+
+private:
+  ConstructionParamUpdater();
 };
 
 class FortCurseByMars : public ConstructionExtension

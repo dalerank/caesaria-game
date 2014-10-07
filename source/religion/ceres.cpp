@@ -93,12 +93,7 @@ void Ceres::_doSmallCurse(PlayerCityPtr city)
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -2, 4 * 12 );
-  }
-
-  foreach(farm, farms)
-  {
-    (*farm)->updateProgress( 100.f -  (*farm)->progress() );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -2, DateTime::weekInMonth * DateTime::monthsInYear );
   }
 }
 

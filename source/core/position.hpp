@@ -86,10 +86,6 @@ public:
   void setI( const int i ) { _x = i; }
   void setJ( const int j ) { _y = j; }
 
-  size_t HashValue() const{
-    return (_x << 16) + _y;
-  }
-
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
   int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
 

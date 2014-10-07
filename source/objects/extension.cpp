@@ -20,6 +20,7 @@
 #include "fort.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects/house.hpp"
 #include "walker/soldier.hpp"
 #include "warehouse.hpp"
 
@@ -54,9 +55,8 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   FactoryProgressUpdater* updater = new FactoryProgressUpdater();
   updater->_options[ "value" ] = value;
 
-  DateTime gdate = GameDate::current();
-  gdate.appendWeek( week2finish );
-  updater->_finishDate = gdate;
+  updater->_finishDate = GameDate::current();
+  updater->_finishDate.appendWeek( week2finish );
 
   ConstructionExtensionPtr ret( updater );
   ret->drop();
@@ -134,9 +134,7 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 
 std::string FortCurseByMars::type() const{ return CAESARIA_STR_EXT(FortCurseByMars); }
 
-FortCurseByMars::FortCurseByMars()
-{
-}
+FortCurseByMars::FortCurseByMars() {}
 
 class BaseExtensionCreator : public ReferenceCounted
 {
@@ -211,6 +209,7 @@ ExtensionsFactory::ExtensionsFactory() : _d( new Impl )
   ADD_CREATOR(FortCurseByMars)
   ADD_CREATOR(FactoryProgressUpdater)
   ADD_CREATOR(WarehouseBuff)
+  ADD_CREATOR(ConstructionParamUpdater)
 
 #undef ADD_CREATOR
 }
@@ -247,7 +246,58 @@ std::string WarehouseBuff::type() const {  return CAESARIA_STR_EXT(WarehouseBuff
 float WarehouseBuff::value() const { return _options.get( "value" ).toFloat(); }
 int WarehouseBuff::group() const { return _options.get( "group" ).toInt(); }
 
-WarehouseBuff::WarehouseBuff()
-{
+WarehouseBuff::WarehouseBuff() {}
 
+ConstructionExtensionPtr ConstructionParamUpdater::create()
+{
+  ConstructionExtensionPtr ret( new ConstructionParamUpdater() );
+  ret->drop();
+
+  return ret;
 }
+
+ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, int paramName, bool relative, int value, int week2finish)
+{
+  ConstructionParamUpdater* buff = new ConstructionParamUpdater();
+  buff->_options[ "value" ] = value;
+  buff->_options[ "relative" ] = relative;
+  buff->_options[ "finishValue" ] = value;
+  buff->_options[ "param" ] = paramName;
+  buff->_finishDate = GameDate::current();
+  buff->_finishDate.appendWeek( week2finish );
+
+  construction->addExtension( buff );
+  construction->updateState( paramName, value );
+  buff->drop(); //automatic delete
+
+  return buff;
+}
+
+void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int time)
+{
+  ConstructionExtension::timeStep( parent,time );
+
+  if( GameDate::isWeekChanged() )
+  {
+    if( _options[ "relative" ].toBool() )
+    {
+      int value = _options[ "value" ];
+      int finishValue = _options[ "finishValue" ];
+      parent->updateState( _options[ "param" ], value );
+      finishValue += value;
+    }
+  }
+}
+
+std::string ConstructionParamUpdater::type() const { return CAESARIA_STR_EXT(ConstructionParamUpdater); }
+
+void ConstructionParamUpdater::destroy(ConstructionPtr parent)
+{
+  if( parent.isValid() )
+  {
+    int finishValue = _options[ "finishValue" ];
+    parent->updateState( _options[ "param" ], -finishValue );
+  }
+}
+
+ConstructionParamUpdater::ConstructionParamUpdater() {}
