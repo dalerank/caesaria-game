@@ -605,14 +605,24 @@ void Game::exec()
 void Game::reset()
 {
   _d->empire = world::Empire::create();
+
   _d->player = Player::create();
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
   _d->manualTicksCounterX10 = 0;
+
   if( _d->city.isValid() )
   {
     _d->city->clean();
   }
+
   _d->city = PlayerCity::create( _d->empire, _d->player );
+}
+
+void Game::clear()
+{
+  //_d->empire = world::EmpirePtr();
+  _d->city->clean();
+  _d->city = PlayerCityPtr();
 }

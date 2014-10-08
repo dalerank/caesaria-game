@@ -57,12 +57,12 @@ public:
   TemplesMap templesCoverity;
   DateTime lastMessageDate;
 
-  void updateRelation( PlayerCity& city, DivinityPtr divn );
+  void updateRelation(PlayerCityPtr city, DivinityPtr divn );
 };
 
-SrvcPtr Religion::create(PlayerCityPtr city)
+SrvcPtr Religion::create()
 {
-  SrvcPtr ret( new Religion( city ) );
+  SrvcPtr ret( new Religion() );
   ret->drop();
 
   return ret;
@@ -70,16 +70,16 @@ SrvcPtr Religion::create(PlayerCityPtr city)
 
 std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
 
-Religion::Religion(PlayerCityPtr city )
-  : Srvc( *city.object(), Religion::defaultName() ), _d( new Impl )
+Religion::Religion()
+  : Srvc( Religion::defaultName() ), _d( new Impl )
 {
 }
 
-void Religion::update( const unsigned int time )
+void Religion::timeStep( PlayerCityPtr city, const unsigned int time )
 {  
   if( GameDate::isWeekChanged() )
   {
-    if( _city.getOption( PlayerCity::godEnabled ) == 0 )
+    if( city->getOption( PlayerCity::godEnabled ) == 0 )
       return;
 
     Logger::warning( "Religion: start update relations" );
@@ -89,7 +89,7 @@ void Religion::update( const unsigned int time )
     _d->templesCoverity.clear();
 
     //update temples info
-    Helper helper( &_city );
+    Helper helper( city );
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( it, temples)
     {
@@ -154,13 +154,13 @@ void Religion::update( const unsigned int time )
 
     foreach( it, divinities )
     {
-      _d->updateRelation( _city, *it );
+      _d->updateRelation( city, *it );
     }
   }
 
   if( GameDate::isMonthChanged() )
   {
-    if( _city.getOption( PlayerCity::godEnabled ) == 0 )
+    if( city->getOption( PlayerCity::godEnabled ) == 0 )
       return;
 
     int goddesRandom = math::random( 20 );
@@ -210,7 +210,7 @@ void Religion::update( const unsigned int time )
 
     if( randomGod.isValid() )
     {
-      randomGod->checkAction( &_city );
+      randomGod->checkAction( city );
     }
   }
 }
@@ -231,17 +231,17 @@ void Religion::load(const VariantMap& stream)
   _d->lastMessageDate = stream.get( lc_lastMessageDate, GameDate::current() ).toDateTime();
 }
 
-void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )
+void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
 {
   Impl::CoverageInfo& myTemples = templesCoverity[ divn ];
   unsigned int faithValue = 0;
-  if( city.population() > 0 )
+  if( city->population() > 0 )
   {
-    faithValue = math::clamp( 100 * myTemples.parishionerNumber / city.population(), 0u, 100u );
+    faithValue = math::clamp( 100 * myTemples.parishionerNumber / city->population(), 0u, 100u );
   }
 
   Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
-  divn->updateRelation( faithValue, &city );
+  divn->updateRelation( faithValue, city );
 
   if( divn->relation() < 30 && lastMessageDate.monthsTo( GameDate::current() ) > 6 )
   {

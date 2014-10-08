@@ -234,7 +234,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState()
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
   {
-    text = migration->reason();
+    text = migration->reason( city );
   }
 
   drawReportRow( migrationState, _( text ) );
@@ -377,7 +377,7 @@ void AdvisorChiefWindow::Impl::drawHealth()
   ds << city->findService( city::HealthCare::defaultName() );
   if( ds.isValid() )
   {
-    text = ds->reason();
+    text = ds->reason( city );
   }
 
   text = text.empty() ? "##advchief_health_good##" : text;

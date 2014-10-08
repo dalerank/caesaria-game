@@ -194,8 +194,8 @@ public:
   void calculatePopulation( PlayerCityPtr city );
   void beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay );
   void updateWalkers(unsigned int time);
-  void updateOverlays(PlayerCityPtr city, unsigned int time);
-  void updateServices( unsigned int time );
+  void updateOverlays( PlayerCityPtr city, unsigned int time);
+  void updateServices( PlayerCityPtr city, unsigned int time );
 
 signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -220,24 +220,24 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create( this ) );
-  addService( city::WorkersHire::create( this ) );
-  addService( city::ProsperityRating::create( this ) );
-  addService( city::Shoreline::create( this ) );
-  addService( city::Info::create( this ) );
-  addService( city::CultureRating::create( this ) );
-  addService( city::Animals::create( this ) );
-  addService( city::Religion::create( this ) );
-  addService( city::Festival::create( this ) );
-  addService( city::Roads::create( this ) );
-  addService( city::Fishery::create( this ) );
-  addService( city::Disorder::create( this ) );
-  addService( city::request::Dispatcher::create( this ) );
-  addService( city::Military::create( this ) );
-  addService( audio::Player::create( this ) );
-  addService( city::HealthCare::create( this ));
-  addService( city::Peace::create( this ) );
-  addService( city::Sentiment::create( this ) );
+  addService( city::Migration::create() );
+  addService( city::WorkersHire::create() );
+  addService( city::ProsperityRating::create() );
+  addService( city::Shoreline::create() );
+  addService( city::Info::create() );
+  addService( city::CultureRating::create() );
+  addService( city::Animals::create() );
+  addService( city::Religion::create() );
+  addService( city::Festival::create() );
+  addService( city::Roads::create() );
+  addService( city::Fishery::create() );
+  addService( city::Disorder::create() );
+  addService( city::request::Dispatcher::create() );
+  addService( city::Military::create() );
+  addService( audio::Player::create() );
+  addService( city::HealthCare::create());
+  addService( city::Peace::create() );
+  addService( city::Sentiment::create() );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
@@ -284,7 +284,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   _d->updateWalkers( time );
   _d->updateOverlays( this, time );
-  _d->updateServices( time );
+  _d->updateServices( this, time );
 
   if( getOption( updateRoads ) > 0 )
   {
@@ -336,8 +336,8 @@ WalkerList PlayerCity::walkers( walker::Type rtype )
   return res;
 }
 
-const WalkerList&PlayerCity::walkers(const TilePos& pos) { return _d->walkersGrid.at( pos ); }
-const WalkerList&PlayerCity::walkers() const { return _d->walkers; }
+const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkersGrid.at( pos ); }
+const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(const BorderInfo& info)
 {
@@ -498,17 +498,17 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
   }
 }
 
-void PlayerCity::Impl::updateServices(unsigned int time)
+void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
 {
   city::SrvcList::iterator serviceIt = services.begin();
   city::Timers::instance().update( time );
   while( serviceIt != services.end() )
   {
-    (*serviceIt)->update( time );
+    (*serviceIt)->timeStep( city, time );
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*serviceIt)->destroy();
+      (*serviceIt)->destroy( city );
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
@@ -664,7 +664,7 @@ void PlayerCity::load( const VariantMap& stream )
     {
       Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
 
-      srvc = city::ServiceFactory::create( item->first, this );
+      srvc = city::ServiceFactory::create( item->first );
       if( srvc.isValid() )
       {
         Logger::warning( "City: creating service " + item->first + " directly");

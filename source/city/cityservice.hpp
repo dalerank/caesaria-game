@@ -21,6 +21,7 @@
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
 #include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
 namespace city
 {
@@ -28,26 +29,26 @@ namespace city
 class Srvc : public ReferenceCounted
 {
 public:
-  virtual void update( const unsigned int time ) = 0;
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time ) = 0;
 
-  std::string name() const { return _name; }
-  void setName( const std::string& name  ) { _name = name; }
+  std::string name() const;
+  void setName( const std::string& name  );
 
-  virtual bool isDeleted() const { return false; }
+  virtual bool isDeleted() const;
   
-  virtual void destroy() {}
+  virtual void destroy( PlayerCityPtr city );
 
-  virtual VariantMap save() const { return VariantMap(); }
-  virtual void load(const VariantMap& stream) {}
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
+
+  virtual ~Srvc();
 
 protected:
-  Srvc( PlayerCity& city, const std::string& name )
-    : _name( name ), _city( city )
-  {
-  }
+  Srvc( const std::string& name );
 
-  std::string _name;
-  PlayerCity& _city;
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 typedef SmartPtr<Srvc> SrvcPtr;
