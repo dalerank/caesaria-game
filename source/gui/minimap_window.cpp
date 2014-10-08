@@ -248,20 +248,19 @@ void Minimap::Impl::updateImage()
     }
 
 
-    TilesArray tiles = city->tilemap().getArea( startPos, stopPos );
-    foreach( tile, tiles )
+    const WalkerList& walkers = city->walkers();
+    TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
+    TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
+    foreach(walker, walkers)
     {
-      const WalkerList& walkers = city->walkers( (*tile)->pos() );
-
-      NColor cl;
-      TilePos pos;
-      foreach( it, walkers )
+      TilePos pos = (*walker)->pos();
+      if (pos >= leftBottomPos && pos <= rightTopPos)
       {
-        WalkerPtr wlk = *it;
-        if( wlk->agressive() != 0 )
+        NColor cl;
+        if ((*walker)->agressive() != 0)
         {
-          pos = wlk->pos();
-          if( wlk->agressive() > 0 )
+
+          if ((*walker)->agressive() > 0)
           {
             cl = DefaultColors::red;
             break;
@@ -271,12 +270,12 @@ void Minimap::Impl::updateImage()
             cl = DefaultColors::blue;
           }
         }
-      }
 
-      if( cl.color != 0 )
-      {
-        Point pnt = getBitmapCoordinates( pos.i()-startPos.i() - 40, pos.j()-startPos.j()-60, mapsize);
-        minimap->fill( cl, Rect( pnt, Size(2) ) );
+        if (cl.color != 0)
+        {
+          Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
+          minimap->fill(cl, Rect(pnt, Size(2)));
+        }
       }
     }
   }
