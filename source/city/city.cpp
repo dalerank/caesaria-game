@@ -759,6 +759,8 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 void PlayerCity::clean()
 {
   _d->services.clear();
+  _d->walkers.clear();
+  _d->walkersGrid.clear();
 }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )

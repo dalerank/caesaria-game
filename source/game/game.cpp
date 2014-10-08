@@ -625,4 +625,10 @@ void Game::clear()
   //_d->empire = world::EmpirePtr();
   _d->city->clean();
   _d->city = PlayerCityPtr();
+
+  WalkerDebugQueue::print();
+  WalkerDebugQueue::instance().clear();
+
+  gfx::OverlayDebugQueue::print();
+  gfx::OverlayDebugQueue::instance().clear();
 }
