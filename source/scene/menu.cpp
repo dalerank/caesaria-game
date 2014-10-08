@@ -361,15 +361,6 @@ void StartMenu::Impl::showMainMenu()
 
   btn = menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::resolveQuitGame );
-
-  Label* lb = new Label( menu, Rect( 100, 100, 400, 200), "[1:04:29 AM] Iegor Sergieienkov: при загрузке сейва падает в constants::Direction Pathway::direction()"
-                         "[1:05:20 AM] Iegor Sergieienkov: та и при новой игре тоже"
-                         "[1:05:29 AM] Iegor Sergieienkov: но вот тут",
-                         false,
-                         Label::bgWhiteFrame
-                         );
-  lb->setTextAlignment( align::center, align::center );
-  lb->setWordwrap( true );
 }
 
 void StartMenu::Impl::showVideoOptions()

@@ -72,6 +72,7 @@ public:
   virtual void afterRender( Engine& engine);
   virtual void render( Engine& engine);
   virtual void renderPass( Engine& engine, Renderer::Pass pass);
+  virtual void renderUi( Engine& engine );
 
   virtual void registerTileForRendering(Tile&);
   virtual int nextLayer() const;

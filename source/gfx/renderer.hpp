@@ -26,7 +26,7 @@ public:
                   overWalker,
                   animations=48,
                   transparent = 56, //transparent overlays
-                  shadow = 64 //drawn after solid overlays
+                  shadow = 64 //drawn after solid overlays                  
                } Pass;
 
   typedef std::vector<Pass> PassQueue;

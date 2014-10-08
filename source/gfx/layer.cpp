@@ -95,6 +95,8 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   tiles.clear();
 }
 
+void Layer::renderUi(Engine& engine) {  }
+
 void Layer::handleEvent(NEvent& event)
 {
   __D_IMPL(_d,Layer)
@@ -473,7 +475,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
- void Layer::beforeRender(Engine&){}
+void Layer::beforeRender(Engine&){}
 
 void Layer::afterRender( Engine& engine)
 {
