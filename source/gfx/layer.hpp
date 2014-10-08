@@ -48,7 +48,7 @@ public:
   typedef std::set<int> WalkerTypes;
 
   virtual int type() const = 0;
-  virtual const WalkerTypes& visibleWalkers() const;
+  virtual const WalkerTypes& visibleTypes() const;
 
   //draw gfx before walkers
   virtual void drawTileR(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
