@@ -17,6 +17,7 @@
 
 #ifndef __CAESARIA_WALKER_CONSTANTS_H_INCLUDED__
 #define __CAESARIA_WALKER_CONSTANTS_H_INCLUDED__
+#include <set>
 
 namespace constants
 {
@@ -91,6 +92,8 @@ enum Type{
   all = 0xff,
   any = all
 };
+
+typedef std::set<Type> VisibleWalkers;
 
 } //end namespace walker
 
