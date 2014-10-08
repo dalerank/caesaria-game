@@ -41,27 +41,30 @@ public:
   std::map< walker::Type, unsigned int > maxAnimal;
 };
 
-SrvcPtr Animals::create(PlayerCityPtr city)
+SrvcPtr Animals::create()
 {
-  Animals* ret = new Animals( city );
+  SrvcPtr ret( new Animals() );
+  ret->drop();
 
   return ret;
 }
 
 std::string Animals::defaultName() { return CAESARIA_STR_EXT(Animals); }
 
-void Animals::update(const unsigned int time)
+void Animals::timeStep( PlayerCityPtr city, const unsigned int time)
 {
   if( !GameDate::isMonthChanged() )
     return;
 
   if( _d->maxAnimal.empty() )
   {
-    walker::Type currentTerrainAnimal = _city.climate() == city::climate::desert ? walker::zebra : walker::sheep;
+    walker::Type currentTerrainAnimal = city->climate() == city::climate::desert
+                                          ? walker::zebra
+                                          : walker::sheep;
     _d->maxAnimal[ currentTerrainAnimal ] = defaultMaxAnimals;
   }
 
-  Tilemap& tmap = _city.tilemap();
+  Tilemap& tmap = city->tilemap();
   TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
   border = border.walkableTiles( true );
 
@@ -72,10 +75,10 @@ void Animals::update(const unsigned int time)
 
     if( maxAnimalInCity > 0 )
     {
-      WalkerList animals = _city.walkers( walkerType );
+      WalkerList animals = city->walkers( walkerType );
       if( animals.size() < maxAnimalInCity )
       {
-        AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( walkerType, &_city ) );
+        AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( walkerType, city ) );
         if( animal.isValid() )
         {
           Tile* rndTile = border.random();
@@ -117,8 +120,8 @@ void Animals::load(const VariantMap& stream)
   }
 }
 
-Animals::Animals( PlayerCityPtr city )
-  : Srvc( *city.object(), Animals::defaultName() ), _d( new Impl )
+Animals::Animals()
+  : Srvc( Animals::defaultName() ), _d( new Impl )
 {
 }
 

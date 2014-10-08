@@ -28,8 +28,8 @@ namespace city
 class HealthUpdater : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
-  virtual void update( const unsigned int time);
+  static SrvcPtr create();
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time);
   static std::string defaultName();
   virtual bool isDeleted() const;
 
@@ -37,7 +37,7 @@ public:
   virtual VariantMap save() const;
 
 private:
-  HealthUpdater(PlayerCityPtr city);
+  HealthUpdater();
 
   class Impl;
   ScopedPtr<Impl> _d;

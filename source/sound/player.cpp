@@ -36,7 +36,7 @@ public:
   int lastIndex;
 };
 
-Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), defaultName()  ), _d( new Impl )
+Player::Player() : Srvc( defaultName()  ), _d( new Impl )
 { 
   vfs::Path path = SETTINGS_RC_PATH( soundThemesModel );
 
@@ -48,18 +48,17 @@ Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), defaultName()  ), _
   _d->lastIndex = 0;
 }
 
-city::SrvcPtr Player::create(PlayerCityPtr city)
+city::SrvcPtr Player::create()
 {
-  Player* pl = new Player( city );
-  city::SrvcPtr ret( pl );
-  pl->drop();
+  city::SrvcPtr ret( new Player() );
+  ret->drop();
 
   return ret;
 }
 
 std::string Player::defaultName() { return "audio_player"; }
 
-void Player::update( const unsigned int time )
+void Player::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( GameDate::isWeekChanged() )
   {

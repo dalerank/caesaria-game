@@ -95,6 +95,8 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   tiles.clear();
 }
 
+void Layer::renderUi(Engine& engine) {  }
+
 void Layer::handleEvent(NEvent& event)
 {
   __D_IMPL(_d,Layer)
@@ -268,11 +270,12 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
 {
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
-  const Layer::WalkerTypes& vWalkers = visibleWalkers();
+  const Layer::WalkerTypes& vWalkers = visibleTypes();
 
+  bool viewAll = vWalkers.count( walker::all );
   foreach( w, walkers )
   {
-    if( vWalkers.count( (*w)->type() ) > 0 )
+    if( viewAll || vWalkers.count( (*w)->type() ) > 0 )
     {
       pics.clear();
       (*w)->getPictures( pics );
@@ -358,7 +361,7 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
   drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
 }
 
-const Layer::WalkerTypes& Layer::visibleWalkers() const
+const Layer::WalkerTypes& Layer::visibleTypes() const
 {
   return _dfunc()->vwalkers;
 }
@@ -472,7 +475,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
- void Layer::beforeRender(Engine&){}
+void Layer::beforeRender(Engine&){}
 
 void Layer::afterRender( Engine& engine)
 {

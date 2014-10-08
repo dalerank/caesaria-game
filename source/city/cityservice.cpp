@@ -12,40 +12,45 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-
-#ifndef __CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
+#include "core/logger.hpp"
 
 namespace city
 {
 
-class Peace : public city::Srvc
+class Srvc::Impl
 {
 public:
-  static city::SrvcPtr create();
-
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
-  void addProtestor();
-  void addRioter();
-  void buildingDestroyed( gfx::TileOverlayPtr overlay );
-  int value() const;
-  static std::string getDefaultName();
-
-  virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream);
-private:
-  Peace();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  std::string name;
 };
 
-typedef SmartPtr<Peace> PeacePtr;
+std::string Srvc::name() const { return _d->name; }
 
-}//end namespace city
+void Srvc::setName(const std::string& name) { _d->name = name; }
 
-#endif //__CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
+bool Srvc::isDeleted() const { return false; }
+
+void Srvc::destroy( PlayerCityPtr ) {}
+
+VariantMap Srvc::save() const { return VariantMap(); }
+
+void Srvc::load(const VariantMap& stream) {}
+
+Srvc::~Srvc()
+{
+  Logger::warning( "CityServices: remove " + name() );
+}
+
+Srvc::Srvc(const std::string& name)
+  : _d( new Impl )
+{
+  _d->name = name;
+  Logger::warning( "CityServices: create " + name );
+}
+
+
+
+}

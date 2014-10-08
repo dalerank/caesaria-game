@@ -190,7 +190,7 @@ void PostponeEvent::Impl::executeCityService( Game& game, const std::string& typ
 {
   PlayerCityPtr city = game.city();
   std::string dtype = options.get( "type", Variant( type ) ).toString();
-  city::SrvcPtr srvc = city::ServiceFactory::create( dtype, city );
+  city::SrvcPtr srvc = city::ServiceFactory::create( dtype );
   if( srvc.isValid() )
   {
     srvc->load( options );

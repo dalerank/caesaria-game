@@ -37,9 +37,9 @@ public:
   unsigned int minHealthLevel;
 };
 
-city::SrvcPtr HealthCare::create(PlayerCityPtr city )
+city::SrvcPtr HealthCare::create()
 {
-  SrvcPtr ret( new HealthCare( city ) );
+  SrvcPtr ret( new HealthCare() );
   ret->drop();
 
   return ret;
@@ -50,18 +50,18 @@ std::string HealthCare::defaultName()
   return CAESARIA_STR_EXT(HealthCare);
 }
 
-HealthCare::HealthCare(PlayerCityPtr city )
-  : city::Srvc( *city.object(), "water" ), _d( new Impl )
+HealthCare::HealthCare()
+  : city::Srvc( HealthCare::defaultName() ), _d( new Impl )
 {
   _d->minHealthLevel = 0;
   _d->value = 0;
 }
 
-void HealthCare::update( const unsigned int time )
+void HealthCare::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( GameDate::isMonthChanged() )
   {
-    Helper helper( &_city );
+    Helper helper( city );
     HouseList houses = helper.find<House>( building::house );
 
     _d->value = 0;
@@ -77,7 +77,7 @@ void HealthCare::update( const unsigned int time )
 
 unsigned int HealthCare::value() const { return _d->value; }
 
-std::string HealthCare::reason() const
+std::string HealthCare::reason( PlayerCityPtr city ) const
 {
   StringArray reasons;
 
@@ -90,7 +90,7 @@ std::string HealthCare::reason() const
   int lvl = math::clamp<int>( _d->value / (100/maxDescriptionLevel), 0, maxDescriptionLevel-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  Helper helper( &_city );
+  Helper helper( city );
   BuildingList clinics = helper.find<Building>( building::doctor );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
@@ -108,7 +108,7 @@ std::string HealthCare::reason() const
       std::set<int> availableTypes;
       availableTypes.insert( avTypes[ i ] );
 
-      HouseList houses = Statistic::getEvolveHouseReadyBy( &_city, availableTypes );
+      HouseList houses = Statistic::getEvolveHouseReadyBy( city, availableTypes );
       if( houses.size() > 0 )
       {
         reasons << avReasons[i];

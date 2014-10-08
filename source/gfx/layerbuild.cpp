@@ -474,6 +474,9 @@ void LayerBuild::init(Point cursor)
   __D_IMPL(_d,LayerBuild);
   Layer::init( cursor );
 
+  _d->lastTilePos = TilePos(-1, -1);
+  _d->startTilePos = TilePos(-1, -1);
+
   BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
   _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
   _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;

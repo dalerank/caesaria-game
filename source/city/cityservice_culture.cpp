@@ -84,22 +84,22 @@ public:
   }
 };
 
-SrvcPtr CultureRating::create(PlayerCityPtr city )
+SrvcPtr CultureRating::create()
 {
-  SrvcPtr ret( new CultureRating( city ) );
+  SrvcPtr ret( new CultureRating() );
   ret->drop();
 
   return ret;
 }
 
-CultureRating::CultureRating(PlayerCityPtr city )
-  : Srvc( *city.object(), defaultName() ), _d( new Impl )
+CultureRating::CultureRating()
+  : Srvc( defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->culture = 0;
 }
 
-void CultureRating::update( const unsigned int time )
+void CultureRating::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( !GameDate::isMonthChanged() )
     return;
@@ -112,9 +112,9 @@ void CultureRating::update( const unsigned int time )
     _d->libraryVisitors = 0;
     _d->schoolVisitors = 0;
     _d->collegeVisitors = 0;
-    int cityPopulation = _city.population();
+    int cityPopulation = city->population();
 
-    Helper helper( &_city );
+    Helper helper( city );
 
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( temple, temples )

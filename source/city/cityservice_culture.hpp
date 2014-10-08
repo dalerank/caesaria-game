@@ -29,9 +29,9 @@ class CultureRating : public Srvc
 {
 public:
   typedef enum { covSchool=0, covLibrary, covAcademy, covReligion, covTheatres, covCount } Coverage;
-  static SrvcPtr create( PlayerCityPtr city );
+  static SrvcPtr create();
 
-  void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
   int value() const;
 
   int coverage( Coverage type ) const;
@@ -39,7 +39,7 @@ public:
   static std::string defaultName();
 
 private:
-  CultureRating( PlayerCityPtr city );
+  CultureRating();
 
   class Impl;
   ScopedPtr< Impl > _d;

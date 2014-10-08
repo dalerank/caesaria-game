@@ -308,6 +308,7 @@ void Prefect::_reachedPathway()
   case go2fire:
     if( !_figthFire() )
     {
+      _d->water = 0;
       _back2Patrol();
     }
   break;
@@ -315,6 +316,7 @@ void Prefect::_reachedPathway()
   case findFire:
     if( !_findFire() )
     {
+      _d->water = 0;
       _back2Patrol();
     }
   break;

@@ -41,6 +41,7 @@ public:
   void exec();
 
   void reset();
+  void clear();
 
   void setScreenMenu();
   void setScreenGame();

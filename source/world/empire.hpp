@@ -32,6 +32,7 @@ class Empire : public ReferenceCounted, public Serializable
 {
 public:
   static EmpirePtr create();
+
   virtual ~Empire();
   CityList cities() const;
 
@@ -71,6 +72,7 @@ public:
   void changePrice( Good::Type gtype, int buy, int sell );
   void getPrice( Good::Type gtype, int& buy, int& sell ) const;
 
+  void clear();
 private:
   Empire();
   void _loadObjects(const VariantMap& objects );

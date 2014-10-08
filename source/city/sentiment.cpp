@@ -71,16 +71,17 @@ public:
   Buffs buffs;
 };
 
-city::SrvcPtr Sentiment::create(PlayerCityPtr city )
+city::SrvcPtr Sentiment::create()
 {
-  Sentiment* ret = new Sentiment( city );
-  return city::SrvcPtr( ret );
+  SrvcPtr ret(new Sentiment());
+  ret->drop();
+  return ret;
 }
 
 std::string Sentiment ::defaultName() { return CAESARIA_STR_EXT(Sentiment);}
 
-Sentiment::Sentiment(PlayerCityPtr city )
-  : city::Srvc( *city.object(), defaultName() ), _d( new Impl )
+Sentiment::Sentiment()
+  : city::Srvc( defaultName() ), _d( new Impl )
 {
   _d->value = 50;
   _d->finishValue = 50;
@@ -88,7 +89,7 @@ Sentiment::Sentiment(PlayerCityPtr city )
   _d->buffValue = 0;
 }
 
-void Sentiment::update( const unsigned int time )
+void Sentiment::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( GameDate::isWeekChanged() )
   {
@@ -117,7 +118,7 @@ void Sentiment::update( const unsigned int time )
     }
 
     HouseList houses;
-    houses << _city.overlays();
+    houses << city->overlays();
 
     unsigned int houseNumber = 0;
     _d->finishValue = 0;
