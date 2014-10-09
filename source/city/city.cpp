@@ -762,6 +762,8 @@ void PlayerCity::clean()
   _d->services.clear();
   _d->walkers.clear();
   _d->walkersGrid.clear();
+  _d->overlays.clear();
+  _d->tilemap.resize( 0 );
 }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
