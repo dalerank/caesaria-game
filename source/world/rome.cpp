@@ -61,6 +61,11 @@ std::string Rome::name() const { return Rome::defaultName; }
 unsigned int Rome::population() const { return 45000; }
 bool Rome::isPaysTaxes() const { return true; }
 
+unsigned int Rome::age() const
+{
+  return 500;
+}
+
 void Rome::timeStep(const unsigned int time)
 {
   City::timeStep( time );

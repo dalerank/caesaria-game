@@ -23,7 +23,9 @@
 #include "walker/enemysoldier.hpp"
 #include "events/postpone.hpp"
 #include "core/saveadapter.hpp"
+#include "objects/fort.hpp"
 #include "game/settings.hpp"
+#include "objects/extension.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -62,10 +64,28 @@ void Mars::_doWrath(PlayerCityPtr city)
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
-{
-  events::GameEventPtr message = events::ShowInfobox::create( _("##smallcurse_of_mars_title##"),
-                                                            _("##smallcurse_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe );
+{  
+  city::Helper helper( city );
+  FortList forts = helper.find<Fort>( building::militaryGroup );
+
+  std::string text, title;
+  if( !forts.empty() )
+  {
+    title = "##smallcurse_of_mars_title##";
+    text = "##smallcurse_of_mars_text##";
+    FortPtr fort = forts.random();
+    FortCurseByMars::assignTo( fort, 12 );
+  }
+  else
+  {
+    title = "##smallcurse_of_mars_title##";
+    text = "##smallcurse_of_mars_failed_text##";
+  }
+
+  events::GameEventPtr message = events::ShowInfobox::create( _(title),
+                                                              _(text),
+                                                              events::ShowInfobox::send2scribe );
+
   message->dispatch();
 }
 

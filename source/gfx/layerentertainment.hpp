@@ -36,7 +36,7 @@ private:
   int _getLevelValue(HousePtr house);
 
   std::set<int> _flags;
-  VisibleWalkers _visibleWalkers;
+  WalkerTypes _visibleWalkers;
   int _type;
 };
 

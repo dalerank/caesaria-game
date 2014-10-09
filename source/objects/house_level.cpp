@@ -178,9 +178,10 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   {
     switch( _d->minReligionLevel )
     {
-    case 0: ref = "##missing_religion##"; break;
-    case 1: ref = "##missing_second_religion##"; break;
-    case 2: ref = "##missing_third_religion##"; break;
+    case 0: ref = "##religion_undef_reason##"; break;
+    case 1: ref = "##missing_religion##"; break;
+    case 2: ref = "##missing_second_religion##"; break;
+    case 3: ref = "##missing_third_religion##"; break;
     }
     needBuilding = building::oracle;
     return false;

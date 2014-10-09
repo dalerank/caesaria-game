@@ -27,6 +27,7 @@ public:
 
     static const DateTime invalid;
     static const int daysInWeek = 7;
+    static const int weekInMonth = 4;
     static const int monthsInYear = 12;
 
     unsigned char hour() const;

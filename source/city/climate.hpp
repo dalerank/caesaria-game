@@ -15,38 +15,21 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_FILM_WIDGET_H_INCLUDE_
-#define _CAESARIA_FILM_WIDGET_H_INCLUDE_
+#ifndef __CAESARIA_CITY_CLIMATE_H_INCLUDED__
+#define __CAESARIA_CITY_CLIMATE_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-
-namespace gui
+namespace city
 {
 
-class FilmWidget : public Window
+namespace climate
 {
-public:
-  FilmWidget( Widget* parent, const vfs::Path& film );
 
-  virtual ~FilmWidget(void);
+typedef enum { central=0, northen, desert } Type;
 
-  //virtual bool onEvent(const NEvent &event);
+}
 
-  virtual void setText(const std::string &text);
-  virtual void setReceiver(std::string text);
-  virtual void setTitle(std::string text);
-  virtual void setTime(DateTime time);
+}
 
-public signals:
-  Signal0<>& onClose();
+typedef city::climate::Type ClimateType;
 
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-} //end namespace gui
-
-#endif //_CAESARIA_FILM_WIDGET_H_INCLUDE_
+#endif //__CAESARIA_CITY_CLIMATE_H_INCLUDED__

@@ -222,9 +222,8 @@ void TraineeWalker::load( const VariantMap& stream )
 {
   Walker::load(stream);
 
-  city::Helper helper( _city() );
-  _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );
-  _d->destination = helper.find<Building>( building::any, stream.get( "destBldPos" ).toTilePos() );
+  _d->base << _city()->getOverlay( stream.get( "originBldPos" ).toTilePos() );
+  _d->destination << _city()->getOverlay( stream.get( "destBldPos" ).toTilePos() );
   _d->maxDistance = (int)stream.get( "maxDistance" );
   walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 

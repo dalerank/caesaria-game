@@ -38,24 +38,22 @@ public:
   int value;
 };
 
-SrvcPtr HealthUpdater::create( PlayerCityPtr city )
+SrvcPtr HealthUpdater::create()
 {
-  HealthUpdater* e = new HealthUpdater( city );
-
-  SrvcPtr ret( e );
+  SrvcPtr ret( new HealthUpdater() );
   ret->drop();
 
   return ret;
 }
 
-void HealthUpdater::update( const unsigned int time)
+void HealthUpdater::timeStep( PlayerCityPtr city, const unsigned int time)
 {
   if( GameDate::isMonthChanged() )
   {
     _d->isDeleted = (_d->endTime < GameDate::current());
 
     Logger::warning( "HealthUpdater: execute service" );
-    Helper helper( &_city );
+    Helper helper( city );
     HouseList houses = helper.find<House>( building::house );
     foreach( it, houses )
     {
@@ -82,8 +80,8 @@ VariantMap HealthUpdater::save() const
   return ret;
 }
 
-HealthUpdater::HealthUpdater( PlayerCityPtr city )
-  : Srvc( *city.object(), HealthUpdater::defaultName() ), _d( new Impl )
+HealthUpdater::HealthUpdater()
+  : Srvc( HealthUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

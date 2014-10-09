@@ -15,38 +15,42 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_FILM_WIDGET_H_INCLUDE_
-#define _CAESARIA_FILM_WIDGET_H_INCLUDE_
+#include "cityservice.hpp"
+#include "core/logger.hpp"
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-
-namespace gui
+namespace city
 {
 
-class FilmWidget : public Window
+class Srvc::Impl
 {
 public:
-  FilmWidget( Widget* parent, const vfs::Path& film );
-
-  virtual ~FilmWidget(void);
-
-  //virtual bool onEvent(const NEvent &event);
-
-  virtual void setText(const std::string &text);
-  virtual void setReceiver(std::string text);
-  virtual void setTitle(std::string text);
-  virtual void setTime(DateTime time);
-
-public signals:
-  Signal0<>& onClose();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  std::string name;
 };
 
-} //end namespace gui
+std::string Srvc::name() const { return _d->name; }
 
-#endif //_CAESARIA_FILM_WIDGET_H_INCLUDE_
+void Srvc::setName(const std::string& name) { _d->name = name; }
+
+bool Srvc::isDeleted() const { return false; }
+
+void Srvc::destroy( PlayerCityPtr ) {}
+
+VariantMap Srvc::save() const { return VariantMap(); }
+
+void Srvc::load(const VariantMap& stream) {}
+
+Srvc::~Srvc()
+{
+  Logger::warning( "CityServices: remove " + name() );
+}
+
+Srvc::Srvc(const std::string& name)
+  : _d( new Impl )
+{
+  _d->name = name;
+  Logger::warning( "CityServices: create " + name );
+}
+
+
+
+}

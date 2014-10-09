@@ -40,7 +40,9 @@ public:
   State state() const;
 
   bool isBusy() const;
-  int getFishQty() const;
+  int fishQty() const;
+  int fishMax() const;
+  void addFish( int qty );
 
   virtual bool die();
 protected:

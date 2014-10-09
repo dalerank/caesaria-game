@@ -75,7 +75,7 @@ public signals:
 TilemapCamera::TilemapCamera() : _d( new Impl )
 {
   _d->tilemap = NULL;
-  _d->scrollSpeed = 4;
+  _d->scrollSpeed = 10;
   _d->viewSize = Size( 0 );
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );

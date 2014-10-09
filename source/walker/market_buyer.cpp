@@ -312,8 +312,8 @@ void MarketBuyer::load( const VariantMap& stream)
   _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
-  city::Helper helper( _city() );
-  _d->market = helper.find<Market>( building::market, tpos );
+
+  _d->market << _city()->getOverlay( tpos );
 
   _d->basket.load( stream.get( "basket" ).toMap() );
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream );

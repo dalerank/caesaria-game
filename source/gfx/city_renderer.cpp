@@ -173,23 +173,29 @@ void CityRenderer::render()
     _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 
-  if( _d->currentLayer.isNull() )
+  LayerPtr layer = _d->currentLayer;
+  Engine& engine = *_d->engine;
+
+  if( layer.isNull() )
   {
     return;
   }
 
-  _d->engine->setViewport(0, true );
-  _d->currentLayer->beforeRender( *_d->engine );
+  engine.setViewport(0, true );
+  layer->beforeRender( engine );
 
-  _d->currentLayer->render( *_d->engine );
+  layer->render( engine );
 
-  _d->currentLayer->renderPass( *_d->engine, Renderer::animations );
+  layer->renderPass( engine, Renderer::animations );
 
-  _d->currentLayer->afterRender( *_d->engine );
-  _d->engine->setViewport( 0, false );
-  _d->engine->drawViewport( 0, Rect() );
+  layer->afterRender( engine );
 
-  if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
+  engine.setViewport( 0, false );
+  engine.drawViewport( 0, Rect() );
+
+  layer->renderUi( engine );
+
+  if( layer->type() != layer->nextLayer() )
   {
     _d->setLayer( _d->currentLayer->nextLayer() );
   }

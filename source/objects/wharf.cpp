@@ -119,7 +119,7 @@ std::string Wharf::workersProblemDesc() const
       switch( _d->boat->state() )
       {
       case FishingBoat::catchFish: ret = "##wharf_our_boat_fishing##"; break;
-      case FishingBoat::back2base: ret = _d->boat->getFishQty() > 0
+      case FishingBoat::back2base: ret = _d->boat->fishQty() > 0
                                             ? "##wharf_out_boat_return_with_fish##"
                                             : "##wharf_our_boat_return##";
       break;
