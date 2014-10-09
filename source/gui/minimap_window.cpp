@@ -270,13 +270,13 @@ void Minimap::Impl::updateImage()
           {
             cl = DefaultColors::blue;
           }
-        }
 
-        if (cl.color != 0)
-        {
-          Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
-          minimap->fill(cl, Rect(pnt, Size(2)));
-        }
+          if (cl.color != 0)
+          {
+            Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
+            minimap->fill(cl, Rect(pnt, Size(2)));
+          }
+        }        
       }
     }
   }
