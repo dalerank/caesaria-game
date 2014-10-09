@@ -253,16 +253,16 @@ void Minimap::Impl::updateImage()
     TileRect trect( startPos, stopPos );
     //TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
     //TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
-    foreach(walker, walkers)
+    foreach( w, walkers)
     {
-      TilePos pos = (*walker)->pos();
+      TilePos pos = (*w)->pos();
       if( trect.contain( pos ) )
       {
         NColor cl;
-        if ((*walker)->agressive() != 0)
+        if ((*w)->agressive() != 0)
         {
 
-          if ((*walker)->agressive() > 0)
+          if ((*w)->agressive() > 0)
           {
             cl = DefaultColors::red;
           }
