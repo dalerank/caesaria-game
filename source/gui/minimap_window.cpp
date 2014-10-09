@@ -28,6 +28,7 @@
 #include "objects/constants.hpp"
 #include "gfx/camera.hpp"
 #include "walker/walker.hpp"
+#include "gfx/tilesarea.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -249,12 +250,11 @@ void Minimap::Impl::updateImage()
 
 
     const WalkerList& walkers = city->walkers();
-    TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
-    TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
+	TilesArea area(startPos, stopPos);
     foreach(walker, walkers)
     {
       TilePos pos = (*walker)->pos();
-      if (pos >= leftBottomPos && pos <= rightTopPos)
+	  if (area.contain(pos))
       {
         NColor cl;
         if ((*walker)->agressive() != 0)
