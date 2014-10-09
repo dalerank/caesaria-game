@@ -28,7 +28,7 @@
 #include "objects/constants.hpp"
 #include "gfx/camera.hpp"
 #include "walker/walker.hpp"
-#include "core/tilerect.hpp"
+#include "gfx/tilesarea.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -250,13 +250,11 @@ void Minimap::Impl::updateImage()
 
 
     const WalkerList& walkers = city->walkers();
-    TileRect trect( startPos, stopPos );
-    //TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
-    //TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
+	TilesArea area(startPos, stopPos);
     foreach(walker, walkers)
     {
       TilePos pos = (*walker)->pos();
-      if( trect.contain( pos ) )
+	  if (area.contain(pos))
       {
         NColor cl;
         if ((*walker)->agressive() != 0)
@@ -270,13 +268,13 @@ void Minimap::Impl::updateImage()
           {
             cl = DefaultColors::blue;
           }
+        }
 
-          if (cl.color != 0)
-          {
-            Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
-            minimap->fill(cl, Rect(pnt, Size(2)));
-          }
-        }        
+        if (cl.color != 0)
+        {
+          Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
+          minimap->fill(cl, Rect(pnt, Size(2)));
+        }
       }
     }
   }
