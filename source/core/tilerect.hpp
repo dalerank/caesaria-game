@@ -13,13 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef _CAESARIA_TILESAREA_INCLUDE_H_
+#define _CAESARIA_TILESAREA_INCLUDE_H_
 
-#include "core/platform.hpp"
+#include "position.hpp"
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 4
-#define CAESARIA_VERSION_REVSN @rev_number@
+class TileRect
+{
+public:  
 
-#endif
+  TileRect();
+
+  TileRect(TilePos start, TilePos end);
+
+  TileRect(const TileRect& a);
+
+  bool contain( TilePos tilePos ) const;
+
+  TilePos leftUpCorner() const;
+
+  TilePos rightDownCorner() const;
+
+  TileRect& operator=(const TileRect& a);
+
+  TilePos random() const;
+private:
+  TilePos _leftBottomCorner;
+  TilePos _rightTopCorner;
+  TilePos _leftTopCorner;
+  TilePos _rightBottomCorner;
+};
+
+#endif //_CAESARIA_TILESAREA_INCLUDE_H_

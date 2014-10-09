@@ -162,7 +162,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
     THROW("Horizontal and vertical map sizes are different!");
   }
 
-  oTilemap.resize(map_size);
+  oCity->resize(map_size);
 
   // need to rewrite better
   ScopedPtr<short> pGraphicGrid( new short[26244] );

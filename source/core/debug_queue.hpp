@@ -15,46 +15,30 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "cityservice.hpp"
-#include "core/logger.hpp"
+#ifndef __CAESARIA_DEBUG_QUEUE_H_INCLUDED__
+#define __CAESARIA_DEBUG_QUEUE_H_INCLUDED__
 
-namespace city
-{
+#include <set>
 
-class Srvc::Impl
+template< class T>
+class DebugQueue
 {
 public:
-  std::string name;
+  static DebugQueue& instance()
+  {
+    static DebugQueue<T> inst;
+    return inst;
+  }
+
+  void add( T* wlk ) { _pointers.insert( (void*)wlk ); }
+  void rem( T* wlk ) { _pointers.erase( (void*)wlk ); }
+
+  void clear() { _pointers.clear(); }
+
+protected:
+  DebugQueue() {}
+  std::set< void* > _pointers;
 };
 
-std::string Srvc::name() const { return _d->name; }
+#endif // __CAESARIA_DEBUG_QUEUE_H_INCLUDED__
 
-void Srvc::setName(const std::string& name) { _d->name = name; }
-
-bool Srvc::isDeleted() const { return false; }
-
-void Srvc::destroy( PlayerCityPtr ) {}
-
-VariantMap Srvc::save() const { return VariantMap(); }
-
-void Srvc::load(const VariantMap& stream) {}
-
-Srvc::~Srvc()
-{
-#ifdef DEBUG
-  Logger::warning( "CityServices: remove " + name() );
-#endif
-}
-
-Srvc::Srvc(const std::string& name)
-  : _d( new Impl )
-{
-  _d->name = name;
-#ifdef DEBUG
-  Logger::warning( "CityServices: create " + name );
-#endif
-}
-
-
-
-}

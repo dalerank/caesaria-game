@@ -15,46 +15,38 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "cityservice.hpp"
-#include "core/logger.hpp"
+#ifndef __CAESARIA_WALKER_GRID_H_INCLUDED__
+#define __CAESARIA_WALKER_GRID_H_INCLUDED__
+
+#include "walker/predefinitions.hpp"
+#include "gfx/tile.hpp"
+#include <vector>
 
 namespace city
 {
 
-class Srvc::Impl
+class WalkerGrid
 {
 public:
-  std::string name;
+  void clear();
+
+  void append( WalkerPtr a );
+  void resize(Size size );
+  const Size& size() const;
+  void remove( WalkerPtr a );
+
+  const WalkerList& at(const TilePos &pos );
+
+private:
+  unsigned int _offset(const TilePos &pos);
+
+  typedef std::vector< WalkerList > Grid;
+
+  Size _size;
+  unsigned int _gsize;
+  Grid _grid;
 };
 
-std::string Srvc::name() const { return _d->name; }
-
-void Srvc::setName(const std::string& name) { _d->name = name; }
-
-bool Srvc::isDeleted() const { return false; }
-
-void Srvc::destroy( PlayerCityPtr ) {}
-
-VariantMap Srvc::save() const { return VariantMap(); }
-
-void Srvc::load(const VariantMap& stream) {}
-
-Srvc::~Srvc()
-{
-#ifdef DEBUG
-  Logger::warning( "CityServices: remove " + name() );
-#endif
 }
 
-Srvc::Srvc(const std::string& name)
-  : _d( new Impl )
-{
-  _d->name = name;
-#ifdef DEBUG
-  Logger::warning( "CityServices: create " + name );
-#endif
-}
-
-
-
-}
+#endif//__CAESARIA_WALKER_GRID_H_INCLUDED__

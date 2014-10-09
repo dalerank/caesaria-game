@@ -98,8 +98,6 @@ public:
   bool operator==(const TilePos& other) const{ return (_x == other._x) && ( _y == other._y ); }
   bool operator!=(const TilePos& other) const{ return (_x != other._x ) || ( _y != other._y ); }
   bool operator<(const TilePos& other) const{ return (_x<other._x) || (_x==other._x && _y<other._y); }
-  bool operator<=(const TilePos& other) const{ return (_x<other._x) || (_x == other._x && _y<=other._y); }
-  bool operator>=(const TilePos& other) const{ return (_x>other._x) || (_x == other._x && _y >= other._y); }
 
   double getAngleICW() const { return getAngle(); }
 

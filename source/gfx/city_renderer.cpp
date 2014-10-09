@@ -103,7 +103,6 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
 
   _d->engine->initViewport( 0, _d->engine->screenSize() );
 
-
   addLayer( LayerSimple::create( _d->camera, city ) );
   addLayer( LayerWater::create( _d->camera, city ) );
   addLayer( LayerFire::create( _d->camera, city ) );

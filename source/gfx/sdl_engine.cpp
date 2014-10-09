@@ -231,7 +231,10 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  SDL_SetWindowTitle( window, "CaesarIA: "CAESARIA_VERSION );
+  std::string versionStr = StringHelper::format(0xff, "CaesarIA: SDL %d.%d R%d [%s:%s]",
+                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
+                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
   _d->renderer = renderer;

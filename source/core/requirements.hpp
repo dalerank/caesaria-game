@@ -21,8 +21,8 @@
 #include "version.hpp"
 #include "platform.hpp"
 
-//see CMakeLists.txt for this define
-//#define NO_USE_SYSTEM_ZLIB
+#define CAESARIA_STR_EXT(__A) #__A
+#define CAESARIA_STR_A(__A) CAESARIA_STR_EXT(__A)
 
 #if defined(CAESARIA_PLATFORM_WIN)
   // alignment of a member was sensitive to packing
@@ -35,12 +35,6 @@
     #define _CRT_SECURE_NO_DEPRECATE
   #endif
 #endif
-
-/*#if defined(CAESARIA_PLATFORM_UNIX)
-  #ifdef __GNUC__
-    #define CAESARIA_COMPILER_NAME "gcc"
-  #endif
-#endif*/
 
 #ifndef CAESARIA_COMPILER_NAME
   #define CAESARIA_COMPILER_NAME "unknown"
