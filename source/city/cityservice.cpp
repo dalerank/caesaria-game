@@ -41,14 +41,18 @@ void Srvc::load(const VariantMap& stream) {}
 
 Srvc::~Srvc()
 {
+#ifdef DEBUG
   Logger::warning( "CityServices: remove " + name() );
+#endif
 }
 
 Srvc::Srvc(const std::string& name)
   : _d( new Impl )
 {
   _d->name = name;
+#ifdef DEBUG
   Logger::warning( "CityServices: create " + name );
+#endif
 }
 
 

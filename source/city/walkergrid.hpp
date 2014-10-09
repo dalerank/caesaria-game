@@ -20,7 +20,7 @@
 
 #include "walker/predefinitions.hpp"
 #include "gfx/tile.hpp"
-#include <map>
+#include <vector>
 
 namespace city
 {
@@ -30,14 +30,20 @@ class WalkerGrid
 public:
   void clear();
 
-  void append( WalkerPtr& a );
+  void append( WalkerPtr a );
+  void resize(Size size );
+  const Size& size() const;
+  void remove( WalkerPtr a );
 
-  void remove( WalkerPtr& a );
-
-  const WalkerList& at( TilePos pos );
+  const WalkerList& at(const TilePos &pos );
 
 private:
-  typedef std::map< int, WalkerList > Grid;
+  unsigned int _offset(const TilePos &pos);
+
+  typedef std::vector< WalkerList > Grid;
+
+  Size _size;
+  unsigned int _gsize;
   Grid _grid;
 };
 

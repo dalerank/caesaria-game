@@ -19,55 +19,72 @@
 #include "walker/walker.hpp"
 #include "core/logger.hpp"
 
-void city::WalkerGrid::clear()
+namespace city
 {
-  foreach( it, _grid )
-    {
-      it->second.clear();
-    }
 
-  _grid.clear();
+static const WalkerList invalidList;
+
+unsigned int WalkerGrid::_offset( const TilePos& pos )
+{
+  return ( pos.j() * _size.width() + pos.i() );
 }
 
-void city::WalkerGrid::append(WalkerPtr &a)
+void WalkerGrid::clear()
 {
-  const TilePos& pos = a->pos();
-  if( pos.i() >= 0 && pos.j() >= 0 )
-    {
-      _grid[ gfx::TileHelper::hash( pos ) ].push_back( a );
-    }
+  foreach(it, _grid)
+  {
+    (*it).clear();
+  }
 }
 
-void city::WalkerGrid::remove(WalkerPtr &a)
+void WalkerGrid::append( WalkerPtr a )
 {
-  TilePos pos = a->pos();
-  if( pos.i() >= 0 && pos.j() >= 0 )
-    {
-      WalkerList& d = _grid[ gfx::TileHelper::hash( pos ) ];
-      foreach( it, d )
-        {
-          if( *it == a )
-            {
-              d.erase( it );
-              return;
-            }
-        }
-    }
+  unsigned int offset = _offset( a->pos() );
+  if( offset < _gsize )
+  {
+    _grid[ offset ].push_back( a );
+  }
 }
 
-const WalkerList &city::WalkerGrid::at(TilePos pos)
+void WalkerGrid::resize( Size size )
 {
-  static WalkerList invalidList;
-  if( pos.i() >= 0 && pos.j() >= 0 )
+  _size = size;
+  _gsize = size.area();
+  _grid.resize( _gsize );
+}
+
+const Size& WalkerGrid::size() const
+{
+  return _size;
+}
+
+void WalkerGrid::remove( WalkerPtr a)
+{
+  unsigned int offset = _offset( a->pos() );
+  if( offset < _gsize )
+  {
+    WalkerList& d = _grid[ offset ];
+    foreach( it, d )
     {
-      if (_grid.find( gfx::TileHelper::hash(pos)) != _grid.end())
-        return _grid[ gfx::TileHelper::hash( pos ) ];
+      if( *it == a )
+      {
+        d.erase( it );
+        return;
+      }
     }
-  else
-    {
-      Logger::warning( "WalkersGrid incorrect" );
-    }
+  }
+}
+
+const WalkerList& WalkerGrid::at( const TilePos& pos)
+{
+  unsigned int offset = _offset( pos );
+  if( offset < _gsize  )
+  {
+    return _grid[ offset ];
+  }
+
+  Logger::warning( "WalkersGrid incorrect at pos [%d,%d]", pos.i(), pos.j() );
   return invalidList;
 }
 
-#include "walkergrid.hpp"
+}

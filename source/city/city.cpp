@@ -708,6 +708,12 @@ void PlayerCity::clean()
   _d->tilemap.resize( 0 );
 }
 
+void PlayerCity::resize( unsigned int size)
+{
+  _d->tilemap.resize( size );
+  _d->walkersGrid.resize( Size( size ) );
+}
+
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 {
   PlayerCityPtr ret( new PlayerCity( empire ) );
