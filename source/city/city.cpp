@@ -530,6 +530,7 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: start parse savemap" );
   City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
+  _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
   _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
   setOption( PlayerCity::forceBuild, 1 );
 
