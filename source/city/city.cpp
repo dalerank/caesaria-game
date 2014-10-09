@@ -509,7 +509,7 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*serviceIt)->destroy( /*city*/ );
+      (*serviceIt)->destroy( city );
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
