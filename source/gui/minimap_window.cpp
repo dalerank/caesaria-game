@@ -263,7 +263,6 @@ void Minimap::Impl::updateImage()
           if ((*walker)->agressive() > 0)
           {
             cl = DefaultColors::red;
-            break;
           }
           else
           {
