@@ -52,14 +52,19 @@ void Dispatcher::append(GameEventPtr event)
 
 void Dispatcher::update(Game& game, unsigned int time )
 {
+  std::vector<GameEventPtr> eventsToExecute;
   for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
 
-    e->tryExec( game, time );
+    eventsToExecute.push_back(e);
 
     if( e->isDeleted() ) { it = _d->events.erase( it ); }
     else { ++it; }
+  }
+
+  for (int i = 0; i < eventsToExecute.size(); i++){
+    eventsToExecute[i]->tryExec(game, time);
   }
 }
 

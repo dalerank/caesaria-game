@@ -138,16 +138,17 @@ public:
 
   const WalkerList& at( TilePos pos )
   {
+    static WalkerList invalidList;
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      return _grid[ TileHelper::hash( pos ) ];
+      if (_grid.find(TileHelper::hash(pos)) != _grid.end())
+        return _grid[ TileHelper::hash( pos ) ];
     }
     else
     {
-      Logger::warning( "WalkersGrid incorrect" );
-      static WalkerList invalidList;
-      return invalidList;
+      Logger::warning( "WalkersGrid incorrect" );      
     }
+    return invalidList;
   }
 
 private:
@@ -508,7 +509,7 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*serviceIt)->destroy( city );
+      (*serviceIt)->destroy( /*city*/ );
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
