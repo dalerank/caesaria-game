@@ -961,6 +961,13 @@ TilesArray House::enterArea() const
   }
 }
 
+bool House::build(PlayerCityPtr city, const TilePos &pos)
+{
+  bool ret = Building::build(city, pos);
+  _update( true );
+  return ret;
+}
+
 double House::state( ParameterType param) const
 {
   switch( (int)param )
