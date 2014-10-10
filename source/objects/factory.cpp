@@ -181,14 +181,14 @@ void Factory::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->produceGood )
+    if( _d->produceGood && GameDate::isDayChanged() )
     {
       //ok... factory is work, produce goods
-      float timeKoeff = _d->productionRate / (float)GameDate::days2ticks( 365 );
+      float timeKoeff = _d->productionRate / 365.f;
       float laborAccessKoeff = laborAccessPercent() / 100.f;
-      float work = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
+      float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
 
-      _d->progress += work;
+      _d->progress += dayProgress;
     }
   }
 
