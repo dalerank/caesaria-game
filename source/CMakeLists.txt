@@ -6,13 +6,13 @@ include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
+find_package(SDL REQUIRED)
+find_package(SDL_mixer REQUIRED)
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${SDL2_INCLUDE_DIR}
-  ${SDL2_MIXER_INCLUDE_DIR}
+  ${SDL_INCLUDE_DIR}
+  ${SDL_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
 )
 
@@ -47,8 +47,8 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST})
 
 target_link_libraries(${PROJECT_NAME}
-  ${SDL2_LIBRARY}
-  ${SDL2_MIXER_LIBRARY}
+  ${SDL_LIBRARY}
+  ${SDL_MIXER_LIBRARY}
 )
 
 if( BUILD_ZLIB )

@@ -111,7 +111,7 @@ unsigned int DebugTimer::ticks()
 void DebugTimer::reset(const std::string &name)
 {
   unsigned int namehash = StringHelper::hash( name );
-  instance()._d->timers[ namehash ].time = SDL_GetPerformanceCounter();
+  instance()._d->timers[ namehash ].time = SDL_GetTicks();
 }
 
 unsigned int DebugTimer::take(const std::string &name, bool reset)
@@ -121,7 +121,7 @@ unsigned int DebugTimer::take(const std::string &name, bool reset)
 
   unsigned int ret = tinfo.time;
   if( reset )
-    tinfo.time = SDL_GetPerformanceCounter();
+    tinfo.time = SDL_GetTicks();
 
   return ret;
 }
@@ -131,9 +131,9 @@ unsigned int DebugTimer::delta(const std::string &name, bool reset)
   unsigned int namehash = StringHelper::hash( name );
   Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
 
-  unsigned int ret = SDL_GetPerformanceCounter() - tinfo.time;
+  unsigned int ret = SDL_GetTicks() - tinfo.time;
   if( reset )
-    tinfo.time = SDL_GetPerformanceCounter();
+    tinfo.time = SDL_GetTicks();
 
   return ret;
 }

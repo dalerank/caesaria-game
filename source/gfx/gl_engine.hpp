@@ -35,6 +35,65 @@ namespace gfx
 #define CAESARIA_GL_RENDER
 #ifdef CAESARIA_GL_RENDER
 
+PREDEFINE_CLASS_SMARTLIST(PostprocFilter,List)
+typedef PostprocFilterList Effects;
+
+class PostprocFilter : public ReferenceCounted
+{
+public:
+  static PostprocFilterPtr create();
+  void setVariables( const VariantMap& variables );
+  void loadProgramm( vfs::Path fragmentShader );
+
+  void setUniformVar( const std::string& name, const Variant& var );
+
+  void begin();
+  void bindTexture();
+  void end();
+
+private:
+  PostprocFilter();
+  void _log( unsigned int program );
+  unsigned int _program;
+  unsigned int _vertexShader, _fragmentShader;
+  VariantMap _variables;
+};
+
+class EffectManager : public ReferenceCounted
+{
+public:
+  EffectManager();
+  void load( vfs::Path effectModel );
+
+  Effects& effects();
+
+private:
+  Effects _effects;
+};
+
+class FrameBuffer : public ReferenceCounted
+{
+public:
+  FrameBuffer();
+  void initialize( Size size );
+
+  void begin();
+  void end();
+
+  void draw();
+  void draw( Effects& effects );
+
+  bool isOk() const;
+
+private:
+  void _createFramebuffer( unsigned int& id );
+
+  unsigned int _framebuffer, _framebuffer2;
+  Size _size;
+  bool _isOk;
+};
+
+
 class GlEngine : public Engine
 {
 public:

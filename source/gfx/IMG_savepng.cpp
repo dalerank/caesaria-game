@@ -155,21 +155,23 @@ int get_format_usability(SDL_Surface *surf)
  */
 static SDL_Surface *make_usable_format(SDL_Surface *surf, int alpha)
 {
-    // Yes, it's probably horrible to just straight up declare these two, but ffs
-    // it takes up all of 80 bytes of stack space for these...
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  // Yes, it's probably horrible to just straight up declare these two, but ffs
+  // it takes up all of 80 bytes of stack space for these...
+  SDL_PixelFormat pf_temp24 = { NULL, 24, 3,
+                                0, 0, 0, 8,
+                                RSHIFT24, GSHIFT24, BSHIFT24, 0,
+                                RMASK24, GMASK24, BMASK24, 0,
+                                0, 255 };
+  SDL_PixelFormat pf_temp32 = { NULL, 32, 4,
+                                0, 0, 0, 0,
+                                RSHIFT32, GSHIFT32, BSHIFT32, ASHIFT32,
+                                RMASK32, GMASK32, BMASK32, AMASK32,
+                                0, 255 };
 
-    Uint32 f24 = SDL_PIXELFORMAT_BGR24;
-    Uint32 f32 = SDL_PIXELFORMAT_ABGR8888;
-#else
-    Uint32 f24 = SDL_PIXELFORMAT_RGB24;
-    Uint32 f32 = SDL_PIXELFORMAT_RGBA8888;
-#endif
+  // Make a copy of our errant surface
+  SDL_Surface *rgb_surf = SDL_ConvertSurface(surf, alpha ? &pf_temp32 : &pf_temp24, SDL_SWSURFACE);
 
-    // Make a copy of our errant surface
-    SDL_Surface *rgb_surf = SDL_ConvertSurfaceFormat(surf, alpha > 0 ? f32 : f24, 0);
-
-    return rgb_surf;
+  return rgb_surf;
 }
 
 
@@ -212,26 +214,23 @@ static int write_palette_chunk(png_structp png_ptr, png_infop info_ptr, SDL_Surf
     // Done with the palette now
     free(palette);
 
-    Uint32 colorkey;
-    int ck = SDL_GetColorKey(surf, &colorkey);
-
     // If we have a colour key, we need to set up the alphas for each palette colour
-    if(ck == 0) {
+    if(surf -> flags & SDL_SRCCOLORKEY) {
         // According the the PNG spec (section 4.2.1.1) we only need enough entries
         // to store transparencies up to the transparent pixel.
-        if(!(alphas = (Uint8 *)malloc((colorkey + 1) * sizeof(Uint8)))) {
+        if(!(alphas = (Uint8 *)malloc((fmt -> colorkey + 1) * sizeof(Uint8)))) {
             SDL_SetError("Unable to create memory for transparency storage");
             return -1;
         }
 
         // Set all of the alpha values to full
-        memset(alphas, 255, (colorkey + 1) * sizeof(Uint8));
+        memset(alphas, 255, (fmt -> colorkey + 1) * sizeof(Uint8));
 
         // And handle the transparent pixel
-        alphas[colorkey] = 0;
+        alphas[fmt -> colorkey] = 0;
 
         // Write the chunk, and then we're done with the transparencies
-        png_set_tRNS(png_ptr, info_ptr, alphas, colorkey + 1, NULL);
+        png_set_tRNS(png_ptr, info_ptr, alphas, fmt -> colorkey + 1, NULL);
         free(alphas);
     }
 

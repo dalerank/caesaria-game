@@ -6004,9 +6004,9 @@ int characterColor(SDL_Surface * dst, Sint16 x, Sint16 y, char c, Uint32 color)
 		/*
 		* Redraw character 
 		*/
-		SDL_SetSurfaceBlendMode(gfxPrimitivesFont[ci], SDL_BLENDMODE_ADD);
-		SDL_SetSurfaceAlphaMod(gfxPrimitivesFont[ci], 255);
-		//SDL_SetAlpha(gfxPrimitivesFont[ci], SDL_SRCALPHA, 255);
+    //SDL_SetSurfaceBlendMode(gfxPrimitivesFont[ci], SDL_BLENDMODE_ADD);
+    //SDL_SetSurfaceAlphaMod(gfxPrimitivesFont[ci], 255);
+    SDL_SetAlpha(gfxPrimitivesFont[ci], SDL_SRCALPHA, 255);
 
 		gfxPrimitivesFontColor[ci] = color;
 

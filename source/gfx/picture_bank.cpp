@@ -58,7 +58,7 @@ class PictureBank::Impl
 public:
   typedef std::map<unsigned int, Picture> CachedPictures;
   typedef std::vector< AtlasPreview > AtlasPreviews;
-  typedef std::map<SDL_Texture*, int> TextureCounter;
+  typedef std::map<SDL_Surface*, int> TextureCounter;
   typedef CachedPictures::iterator ItPicture;
 
   AtlasPreviews atlases;
@@ -82,8 +82,8 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   if( it != resources.end() )
   {
     //SDL_DestroyTexture( it->second.texture() );
-    if( it->second.texture() > 0 )
-      txCounters[ it->second.texture() ]--;
+    if( it->second.surface() > 0 )
+      txCounters[ it->second.surface() ]--;
 
     ptrPic = &it->second;
   }
@@ -94,8 +94,8 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   }
 
   *ptrPic = pic;
-  if( pic.texture() > 0 )
-    txCounters[ pic.texture() ]++;
+  if( pic.surface() > 0 )
+    txCounters[ pic.surface() ]++;
 
   int dot_pos = name.find('.');
   std::string rcname = name.substr(0, dot_pos);
@@ -126,7 +126,7 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
 
 void PictureBank::Impl::destroyUnusableTextures()
 {
-  for( TextureCounter::iterator it=txCounters.begin(); it != txCounters.end(); )
+  /*for( TextureCounter::iterator it=txCounters.begin(); it != txCounters.end(); )
   {
     if( it->second <= 0 )
     {
@@ -137,7 +137,7 @@ void PictureBank::Impl::destroyUnusableTextures()
     {
       ++it;
     }
-  }
+  }*/
 }
 
 PictureBank& PictureBank::instance()

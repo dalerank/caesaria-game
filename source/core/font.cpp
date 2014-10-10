@@ -19,12 +19,10 @@
 #include "gfx/picture.hpp"
 #include "logger.hpp"
 #include "exception.hpp"
-#include "ttf/SDL_ttf.h"
+#include <SDL_ttf.h>
 #include "color.hpp"
 #include "vfs/directory.hpp"
-#include "game/settings.hpp"
 #include "core/osystem.hpp"
-#include "gfx/engine.hpp"
 #include <map>
 
 using namespace gfx;
@@ -33,10 +31,48 @@ class Font::Impl
 {
 public:
   TTF_Font *ttfFont;
-  SDL_Color color; 
+  SDL_Color color;
+
+  void setSurfaceAlpha (SDL_Surface *surface, Uint8 alpha);    
 };
 
+void Font::Impl::setSurfaceAlpha( SDL_Surface *surface, Uint8 alpha )
+{
+  SDL_PixelFormat* fmt = surface->format;
 
+  // If surface has no alpha channel, just set the surface alpha.
+  if( fmt->Amask == 0 )
+  {
+    SDL_SetAlpha( surface, SDL_SRCALPHA, alpha );
+  }
+  // Else change the alpha of each pixel.
+  else 
+  {
+    unsigned bpp = fmt->BytesPerPixel;
+    // Scaling factor to clamp alpha to [0, alpha].
+    float scale = alpha / 255.0f;
+
+    SDL_LockSurface(surface);
+
+    for (int y = 0; y < surface->h; ++y) 
+    {
+      for (int x = 0; x < surface->w; ++x) 
+      {
+        // Get a pointer to the current pixel.
+        Uint32* pixel_ptr = (Uint32 *)( (Uint8 *)surface->pixels + y * surface->pitch + x * bpp );
+
+        // Get the old pixel components.
+        Uint8 r, g, b, a;
+        SDL_GetRGBA( *pixel_ptr, fmt, &r, &g, &b, &a );
+
+        // Set the pixel with the new alpha.
+        *pixel_ptr = SDL_MapRGBA( fmt, r, g, b, (Uint8)(scale * a) );
+      }   
+    }
+    
+    SDL_UnlockSurface(surface);
+  }
+}
 Font::Font() : _d( new Impl )
 {
   _d->ttfFont = 0;
@@ -52,6 +88,14 @@ Font Font::create( const std::string& family, const int size )
 {
   return Font();
 }
+
+// unsigned int Font::getKerningSize( )
+// {
+//   if( _d->ttfFont )
+//   {
+//     return TTF_GetFontKerningSize( );
+//   }
+// }
 
 unsigned int Font::getWidthFromCharacter( unsigned int c ) const
 {
@@ -84,7 +128,7 @@ int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 int Font::color() const
 {
   int ret = 0;
-  ret = (_d->color.a << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
+  ret = (_d->color.unused << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
   return ret;
 }
 
@@ -92,11 +136,8 @@ bool Font::isValid() const {  return _d->ttfFont != 0; }
 
 Size Font::getTextSize( const std::string& text ) const
 {
-  int w=0, h=0;
-  if( isValid() )
-  {
-    TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
-  }
+  int w, h;
+  TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
 
   return Size( w, h );
 }
@@ -157,33 +198,30 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
 
 void Font::setColor( NColor color )
 {
-#ifdef CAESARIA_PLATFORM_ANDROID
-  color = color.abgr();
-#endif
   _d->color.b = color.blue();
   _d->color.g = color.green();
   _d->color.r = color.red();
-  _d->color.a = color.alpha();
+  _d->color.unused = color.alpha();
 }
 
-void Font::draw( Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
+void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
 {
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  if( useAlpha )
+  if( sText && useAlpha )
   {
-    SDL_SetSurfaceBlendMode( sText, SDL_BLENDMODE_NONE );
+    SDL_SetAlpha( sText, 0, 0 );
   }
 
   if( sText )
   {
-    if( !dstpic.surface() )
-    {
-      Logger::warning("Font::draw dstpic surface is null");
-      return;
-    }
+    Picture pic;
+    pic.init( sText, 0 );
+
+    if( updatextTx )
+      dstpic.lock();
 
     SDL_Rect srcRect, dstRect;
 
@@ -197,26 +235,17 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
     dstRect.h = sText->h;
 
     SDL_BlitSurface( sText, &srcRect, dstpic.surface(), &dstRect );
-    SDL_FreeSurface( sText );
+
+    if( updatextTx )
+      dstpic.unlock();
   }
 
-  if( updatextTx )
-    dstpic.update();
+  SDL_FreeSurface( sText );
 }       
 
 void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha , bool updateTx)
 {
   draw( dstpic, text, pos.x(), pos.y(), useAlpha, updateTx );
-}
-
-Picture* Font::once(const std::string &text, bool mayChange)
-{
-  SDL_Surface* textSurface = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  Picture* ret = Picture::create( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange );
-  SDL_FreeSurface( textSurface );
-  ret->update();
-
-  return ret;
 }
 
 Font::~Font() {}
@@ -298,10 +327,7 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
   if( ttf == NULL )
   {
-    std::string errorStr = "Cririal error:\n" + std::string( TTF_GetError() );
-#ifdef CAESARIA_PLATFORM_WIN
-    errorStr += "\n Use only latin symbols in path. ";
-#endif
+    std::string errorStr = "Cannot load font file:" + pathFont.toString() + "\n, error:" + TTF_GetError();
     OSystem::error( "Critical error", errorStr );
     THROW( errorStr );
   }
@@ -317,28 +343,26 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
 void FontCollection::initialize(const std::string &resourcePath)
 {
   vfs::Directory resDir( resourcePath );
-  vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
-  vfs::Path absolutFontfilename = resDir/fontFilename;
+  vfs::Path fontDir( "FreeSerif.ttf" );
+  vfs::Path full_font_path = resDir/fontDir;
 
   NColor black( 255, 0, 0, 0 );
   NColor red( 255, 160, 0, 0 );  // dim red
   NColor white( 255, 215, 215, 215 );  // dim white
   NColor yellow( 255, 160, 160, 0 );
 
-  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      absolutFontfilename, 12, black );
-  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      absolutFontfilename, 16, black );
-  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),absolutFontfilename, 16, white );
-  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  absolutFontfilename, 16, red );
-  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      absolutFontfilename, 18, black );
-  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  absolutFontfilename, 18, red );
-  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),absolutFontfilename, 18, white );
-  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW),absolutFontfilename, 18, yellow );
-  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      absolutFontfilename, 20, black );
-  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      absolutFontfilename, 24, black );
-  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      absolutFontfilename, 28, black);
-  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      absolutFontfilename, 32, black);
-  addFont( FONT_7,       CAESARIA_STR_EXT(FONT_7),      absolutFontfilename, 36, black);
-  addFont( FONT_8,       CAESARIA_STR_EXT(FONT_8),      absolutFontfilename, 42, black);
+  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path.toString(), 12, black );
+  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path.toString(), 16, black );
+  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path.toString(), 16, white );
+  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path.toString(), 16, red );
+  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path.toString(), 18, black );
+  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path.toString(), 18, red );
+  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path.toString(), 18, white );
+  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path.toString(), 18, yellow );
+  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path.toString(), 28, black);
+  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      full_font_path.toString(), 32, black);
+  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      full_font_path.toString(), 36, black);
+  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      full_font_path.toString(), 42, black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )
@@ -403,8 +427,8 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getTextSize( rwhitespace ).width();
-					const int wordlgth = font.getTextSize( word ).width();
+          const int whitelgth = font.getTextSize( rwhitespace ).width();
+          const int wordlgth = font.getTextSize( word ).width();
 
 					if (wordlgth > elWidth)
 					{
@@ -417,7 +441,7 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 							std::string first  = word.substr(0, where);
 							std::string second = word.substr(where, word.size() - where);
 							brokenText.push_back(line + first + "-");
-							const int secondLength = font.getTextSize( second ).width();
+              const int secondLength = font.getTextSize( second ).width();
 
 							length = secondLength;
 							line = second;
@@ -504,8 +528,8 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getTextSize( rwhitespace ).width();
-					const int wordlgth = font.getTextSize( word ).width();
+          const int whitelgth = font.getTextSize( rwhitespace ).width();
+          const int wordlgth = font.getTextSize( word ).width();
 
 					if (length && (length + wordlgth + whitelgth > elWidth))
 					{

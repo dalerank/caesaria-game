@@ -57,9 +57,9 @@ public:
   std::string name() const;
   void setAlpha( unsigned char value );
 
-  void init( SDL_Texture* tx, SDL_Surface* srf, unsigned int ogltx );
+  void init(SDL_Surface* srf, unsigned int ogltx );
 
-  SDL_Texture* texture() const;  
+  //SDL_Texture* texture() const;
   SDL_Surface* surface() const;
   unsigned int& textureID();
   unsigned int textureID() const;

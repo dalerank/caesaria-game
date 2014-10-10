@@ -20,7 +20,6 @@
 #ifndef _CAESARIA_SDL_ENGINE_H_INCLUDE_
 #define _CAESARIA_SDL_ENGINE_H_INCLUDE_
 
-#include <SDL_surface.h>
 #include <SDL_video.h>
 #include "engine.hpp"
 #include "picture.hpp"
