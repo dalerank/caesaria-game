@@ -14,11 +14,12 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "steam.hpp"
+
+#ifdef CAESARIA_USE_STEAM
+
 #include "public/steam/steam_api.h"
 #include "core/osystem.hpp"
 #include "core/logger.hpp"
-
-#ifdef CAESARIA_USE_STEAM
 
 namespace steamapi
 {
