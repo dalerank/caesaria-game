@@ -15,8 +15,8 @@
 
 #include "pathway.hpp"
 #include "gfx/tile.hpp"
-#include "gfx/tilemap.hpp"
 #include "core/direction.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -29,15 +29,15 @@ static Tile invalidTile( TilePos(-1, -1) );
 class Directions : public std::vector<constants::Direction>
 {
 public:
-   Directions& operator =(const Directions& a )
-   {
-     size_type newSize = a.size();
-     resize( newSize );
-     clear();
-     insert(begin(), a.begin(), a.end());
+  Directions& operator =(const Directions& a )
+  {
+    size_type newSize = a.size();
+    resize( newSize );
+    clear();
+    insert(begin(), a.begin(), a.end());
 
-     return *this;
-   }
+    return *this;
+  }
 };
 
 bool operator<(const Pathway& v1, const Pathway& v2)
@@ -57,7 +57,6 @@ public:
   TilePos destination;
   TilePos origin;
   bool isReverse;
-  Tilemap* tilemap;
   TilesArray tiles;
   unsigned int step;
 };
@@ -77,14 +76,13 @@ Pathway::Pathway(const Pathway &copy) : _d( new Impl )
   *this = copy;
 }
 
-void Pathway::init( Tilemap& tilemap, Tile &origin)
+void Pathway::init(const gfx::Tile& origin)
 {
-  _d->tilemap = &tilemap;
   _d->origin = origin.pos();
   _d->isReverse = false;
   _d->destination = origin.pos();
   _d->tiles.clear();
-  _d->tiles.push_back(&origin);
+  _d->tiles.push_back( const_cast<Tile*>( &origin ) );
 }
 
 unsigned int Pathway::length() const
@@ -93,10 +91,10 @@ unsigned int Pathway::length() const
   return _d->tiles.size();
 }
 
-const Tile& Pathway::front() const { return _d->tilemap->at( _d->origin ); }
+const Tile& Pathway::front() const { return _d->tiles.empty() ? invalidTile : *_d->tiles.front(); }
 bool Pathway::isReverse() const {  return _d->isReverse; }
 const TilesArray& Pathway::allTiles() const {  return _d->tiles; }
-const Tile& Pathway::back() const { return _d->tilemap->at( _d->destination ); }
+const Tile& Pathway::back() const { return _d->tiles.empty() ? invalidTile : *_d->tiles.back(); }
 TilePos Pathway::startPos() const {  return _d->isReverse ? _d->destination : _d->origin;}
 TilePos Pathway::stopPos() const{  return _d->isReverse ? _d->origin : _d->destination; }
 
@@ -150,7 +148,7 @@ bool Pathway::isDestination() const
   }
 }
 
-void Pathway::setNextDirection(Direction direction)
+void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
 {
   switch (direction)
   {
@@ -168,13 +166,13 @@ void Pathway::setNextDirection(Direction direction)
   break;
   }
 
-  if( !_d->tilemap->isInside( TilePos( _d->destination ) ) )
+  if( !tmap.isInside( TilePos( _d->destination ) ) )
   {
     Logger::warning( "Destination[%d, %d] out of map", _d->destination.i(), _d->destination.j() );
   }
   else
   {
-    _d->tiles.push_back( &_d->tilemap->at( _d->destination ) );
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( _d->destination )) );
   }
 }
 
@@ -200,7 +198,7 @@ void Pathway::setNextTile( const Tile& tile )
     direction = noneDirection;
   }
 
-  setNextDirection(direction);
+  _d->tiles.push_back( const_cast<Tile*>( &tile ) );
 }
 
 bool Pathway::contains(Tile &tile)
@@ -277,7 +275,7 @@ VariantMap Pathway::save() const
 
 bool Pathway::isValid() const { return length() > 0; }
 
-void Pathway::load( const VariantMap& stream )
+void Pathway::load(const Tilemap& tmap, const VariantMap& stream )
 {
   if( stream.size() == 0 )
   {
@@ -289,7 +287,7 @@ void Pathway::load( const VariantMap& stream )
   VariantList vmTiles = stream.get( "tiles" ).toList();
   foreach( it, vmTiles )
   {
-    _d->tiles.push_back( &_d->tilemap->at( it->toTilePos() ) );
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it->toTilePos() )) );
   }
 
   _d->isReverse = stream.get( "reverse" ).toBool();
@@ -298,7 +296,6 @@ void Pathway::load( const VariantMap& stream )
 
 Pathway& Pathway::operator=( const Pathway& other )
 {
-  _d->tilemap             = other._d->tilemap;
   _d->origin              = other._d->origin;
   _d->destination         = other._d->destination;
   _d->isReverse           = other._d->isReverse;
@@ -316,7 +313,7 @@ Pathway Pathway::copy(unsigned int start, int stop) const
     return ret;
   }
 
-  ret.init( *_d->tilemap, *_d->tiles[ start ] );
+  ret.init( *_d->tiles[ start ] );
   stop = (stop == -1 ? _d->tiles.size() : stop );
   for( int i=start+1; i < stop; i++ )
   {

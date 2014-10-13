@@ -207,8 +207,8 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
                       : _d->camera->at( startPos );
   Tile* stopTile  = _d->camera->at( _d->lastCursorPos, true );
 
-  TilePos startPosTmp = startTile->pos();
-  TilePos stopPosTmp  = stopTile->pos();
+  TilePos startPosTmp = startTile->epos();
+  TilePos stopPosTmp  = stopTile->epos();
 
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
@@ -552,6 +552,7 @@ void Layer::afterRender( Engine& engine)
     else if( _d->currentTile->masterTile() != 0 )
     {
       pos = _d->currentTile->masterTile()->mappos();
+      size = (_d->currentTile->masterTile()->picture().width() + 2) / 60;
     }
 
     pos += offset;
