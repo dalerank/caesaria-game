@@ -4,6 +4,7 @@ CMakeLists.txt.user
 \#*#
 stdout.txt
 caesar3
+steam
 .travis.yml
 
 #coredump files
@@ -40,3 +41,15 @@ en/*
 # SDL for windows
 dep/SDL2/*
 dep/SDL2_mixer/*
+
+# MSVC ignore
+bin
+/MSVC/CaesarIA-game/Win32
+/MSVC/CaesarIA-game/source
+/MSVC/updater/Win32
+/MSVC/freetype/Win32
+Win32
+*.sdf
+*.suo
+*.opensdf
+*.user

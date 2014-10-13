@@ -12,15 +12,41 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef __CAESARIA_WALKER_GRID_H_INCLUDED__
+#define __CAESARIA_WALKER_GRID_H_INCLUDED__
 
-#include "core/platform.hpp"
+#include "walker/predefinitions.hpp"
+#include "gfx/tile.hpp"
+#include <vector>
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 4
-#define CAESRAIA_VERSION_REVSN 0
+namespace city
+{
 
+class WalkerGrid
+{
+public:
+  void clear();
 
-#endif
+  void append( WalkerPtr a );
+  void resize(Size size );
+  const Size& size() const;
+  void remove( WalkerPtr a );
+
+  const WalkerList& at(const TilePos &pos );
+
+private:
+  unsigned int _offset(const TilePos &pos);
+
+  typedef std::vector< WalkerList > Grid;
+
+  Size _size;
+  unsigned int _gsize;
+  Grid _grid;
+};
+
+}
+
+#endif//__CAESARIA_WALKER_GRID_H_INCLUDED__

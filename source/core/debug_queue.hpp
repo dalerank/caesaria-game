@@ -12,15 +12,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef __CAESARIA_DEBUG_QUEUE_H_INCLUDED__
+#define __CAESARIA_DEBUG_QUEUE_H_INCLUDED__
 
-#include "core/platform.hpp"
+#include <set>
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 4
-#define CAESRAIA_VERSION_REVSN 0
+template< class T>
+class DebugQueue
+{
+public:
+  static DebugQueue& instance()
+  {
+    static DebugQueue<T> inst;
+    return inst;
+  }
 
+  void add( T* wlk ) { _pointers.insert( (void*)wlk ); }
+  void rem( T* wlk ) { _pointers.erase( (void*)wlk ); }
 
-#endif
+  void clear() { _pointers.clear(); }
+
+protected:
+  DebugQueue() {}
+  std::set< void* > _pointers;
+};
+
+#endif // __CAESARIA_DEBUG_QUEUE_H_INCLUDED__
+

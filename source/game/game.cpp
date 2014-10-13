@@ -48,6 +48,7 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_level.hpp"
 #include "walker/name_generator.hpp"
+#include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
@@ -60,6 +61,7 @@
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
+#include "gfx/tileoverlay.hpp"
 
 #include <list>
 
@@ -625,4 +627,11 @@ void Game::clear()
   //_d->empire = world::EmpirePtr();
   _d->city->clean();
   _d->city = PlayerCityPtr();
+#ifdef DEBUG
+  WalkerDebugQueue::print();
+  WalkerDebugQueue::instance().clear();
+
+  gfx::OverlayDebugQueue::print();
+  gfx::OverlayDebugQueue::instance().clear();
+#endif
 }

@@ -621,7 +621,10 @@ void GlEngine::init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Logger::warning( "GrafixEngine: set caption");
-  SDL_SetWindowTitle( _d->window, "CaesarIA:gl "CAESARIA_VERSION );
+  std::string versionStr = StringHelper::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
+                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
+                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   //!!!!!
 #ifdef CAESARIA_USE_FRAMEBUFFER

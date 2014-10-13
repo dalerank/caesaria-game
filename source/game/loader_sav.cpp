@@ -244,7 +244,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     PlayerCityPtr oCity = game.city();
     Tilemap& oTilemap = oCity->tilemap();
 
-    oTilemap.resize(size);
+    oCity->resize(size);
     oCity->setCameraPos( TilePos( 0, 0 ) );
 
     initEntryExit( f, game.city() );

@@ -83,6 +83,7 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
+#include "walkergrid.hpp"
 
 
 #include <set>
@@ -96,65 +97,6 @@ CAESARIA_LITERALCONST(walkerIdCount)
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
-
-class WGrid
-{
-public:
-  void clear()
-  {
-    foreach( it, _grid )
-    {
-      it->second.clear();
-    }
-
-    _grid.clear();
-  }  
-
-  void append( WalkerPtr& a )
-  {
-    const TilePos& pos = a->pos();
-    if( pos.i() >= 0 && pos.j() >= 0 )
-    {
-      _grid[ TileHelper::hash( pos ) ].push_back( a );
-    }
-  }
-
-  void remove( WalkerPtr& a )
-  {
-    TilePos pos = a->pos();
-    if( pos.i() >= 0 && pos.j() >= 0 )
-    {
-      WalkerList& d = _grid[ TileHelper::hash( pos ) ];
-      foreach( it, d )
-      {
-        if( *it == a )
-        {
-          d.erase( it );
-          return;
-        }
-      }
-    }
-  }
-
-  const WalkerList& at( TilePos pos )
-  {
-    static WalkerList invalidList;
-    if( pos.i() >= 0 && pos.j() >= 0 )
-    {
-      if (_grid.find(TileHelper::hash(pos)) != _grid.end())
-        return _grid[ TileHelper::hash( pos ) ];
-    }
-    else
-    {
-      Logger::warning( "WalkersGrid incorrect" );      
-    }
-    return invalidList;
-  }
-
-private:
-  typedef std::map< int, WalkerList > Grid;
-  Grid _grid;
-};
 
 class PlayerCity::Impl
 {
@@ -170,7 +112,7 @@ public:
   Picture empMapPicture;
 
   //walkers fast access map !!!
-  WGrid walkersGrid;
+  city::WalkerGrid walkersGrid;
   //*********************** !!!
 
   city::SrvcList services;
@@ -509,7 +451,7 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*serviceIt)->destroy( /*city*/ );
+      (*serviceIt)->destroy( city );
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
@@ -588,6 +530,7 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: start parse savemap" );
   City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
+  _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
   _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
   setOption( PlayerCity::forceBuild, 1 );
 
@@ -760,6 +703,16 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 void PlayerCity::clean()
 {
   _d->services.clear();
+  _d->walkers.clear();
+  _d->walkersGrid.clear();
+  _d->overlays.clear();
+  _d->tilemap.resize( 0 );
+}
+
+void PlayerCity::resize( unsigned int size)
+{
+  _d->tilemap.resize( size );
+  _d->walkersGrid.resize( Size( size ) );
 }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
