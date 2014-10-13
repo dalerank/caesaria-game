@@ -85,7 +85,6 @@
 #include "events/showinfobox.hpp"
 #include "walkergrid.hpp"
 
-
 #include <set>
 
 using namespace constants;
@@ -394,22 +393,23 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
   WalkerList::iterator walkerIt = walkers.begin();
   while( walkerIt != walkers.end() )
   {
- //   try
- //   {
       WalkerPtr walker = *walkerIt;
       walker->timeStep( time );
+      ++walkerIt;
+  }
 
-      if( walker->isDeleted() )
-      {
-        // remove the walker from the walkers list
-        walkersGrid.remove( *walkerIt );
-        walkerIt = walkers.erase(walkerIt);
-      }
-      else { ++walkerIt; }
- //   }
- //   catch(...)
- //   {
- //   }
+  walkerIt = walkers.begin();
+  while (walkerIt != walkers.end())
+  {
+    if ((*walkerIt)->isDeleted())
+    {
+      // remove the walker from the walkers list
+      walkersGrid.remove(*walkerIt);
+      walkerIt = walkers.erase(walkerIt);
+    }
+    else{
+      ++walkerIt;
+    }
   }
 }
 
