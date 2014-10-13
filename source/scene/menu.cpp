@@ -449,7 +449,6 @@ void StartMenu::initialize()
 {
   Logger::warning( "ScreenMenu: initialize start");
   _d->bgPicture = Picture::load("title", 1);
-  _d->userImage = steamapi::Handler::userImage();
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
@@ -489,6 +488,7 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
+  _d->userImage = steamapi::Handler::userImage();
   std::string text = StringHelper::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
                                                                                CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
