@@ -94,7 +94,7 @@ bool Tile::isFlat() const
 }
 
 
-Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {

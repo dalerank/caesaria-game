@@ -269,7 +269,7 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
 void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
-  const WalkerList& walkers = _city()->walkers( tile.epos() );
+  const WalkerList& walkers = _city()->walkers( tile.pos() );
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );

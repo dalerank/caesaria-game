@@ -309,7 +309,7 @@ const Tile& Walker::_nextTile() const
 
 Point Walker::mappos() const
 {
-  const Tile& tile = _d->city->tilemap().at( pos() );
+  const Tile& tile = *_d->location;
   Point offset;
   if( tile.overlay().isValid() )
       offset = tile.overlay()->offset( tile, tilesubpos() );
