@@ -39,6 +39,7 @@ public:
 
   const gfx::Tile& front() const;
   const gfx::Tile& back() const;
+  const gfx::Tile& current() const;
 
   TilePos startPos() const;
   TilePos stopPos() const;

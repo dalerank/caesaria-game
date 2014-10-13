@@ -98,6 +98,13 @@ const Tile& Pathway::back() const { return _d->tiles.empty() ? invalidTile : *_d
 TilePos Pathway::startPos() const {  return _d->isReverse ? _d->destination : _d->origin;}
 TilePos Pathway::stopPos() const{  return _d->isReverse ? _d->origin : _d->destination; }
 
+const Tile& Pathway::current() const
+{
+  return _d->step < _d->tiles.size()
+           ? *_d->tiles[ _d->step ]
+           : invalidTile;
+}
+
 constants::Direction Pathway::direction()
 {
   if( !_d->tiles.empty() )
@@ -105,12 +112,12 @@ constants::Direction Pathway::direction()
     if(_d->isReverse )
     {
       if( _d->step > 0 )
-        return TileHelper::getDirection( _d->tiles[_d->step]->pos(),  _d->tiles[ _d->step-1]->pos() );
+        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
     }
     else
     {
       if( _d->step < _d->tiles.size()-1 )
-        return TileHelper::getDirection( _d->tiles[_d->step]->pos(),  _d->tiles[ _d->step+1]->pos() );
+        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
     }
   }
 

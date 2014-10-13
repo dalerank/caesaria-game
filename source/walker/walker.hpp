@@ -55,6 +55,8 @@ public:
   virtual Point mappos() const;
   Point tilesubpos() const;
 
+  const gfx::Tile& tile() const;
+
   virtual void setPathway(const Pathway& pathway);
   const Pathway& pathway() const;
 

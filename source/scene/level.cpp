@@ -112,6 +112,7 @@ public:
 
   int result;
 
+public:
   void showSaveDialog();
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
@@ -326,7 +327,7 @@ void Level::Impl::makeEnemy()
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
-  }
+    }
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
