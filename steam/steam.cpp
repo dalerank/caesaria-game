@@ -44,7 +44,6 @@ extern "C" void __cdecl SteamAPIDebugTextHook( int nSeverity, const char *pchDeb
   }
 }
 
-
 bool Handler::checkSteamRunning()
 {
   // if Steam is not running or the game wasn't started through Steam, SteamAPI_RestartAppIfNecessary starts the
