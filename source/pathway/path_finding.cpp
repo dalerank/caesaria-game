@@ -85,7 +85,7 @@ void Propagator::init(const TilesArray& origin)
     Tile* tile = *it;
     PathwayPtr pathWay( new Pathway() );
     pathWay->drop();
-    pathWay->init(*_d->tilemap, *tile);
+    pathWay->init( *tile );
     // init active branches
     _d->activeBranches.insert( pathWay );
     // init trivial completed branches

@@ -33,7 +33,7 @@ public:
 
   virtual ~Pathway();
 
-  void init( gfx::Tilemap& tilemap, gfx::Tile& origin );
+  void init( const gfx::Tile& origin );
 
   unsigned int length() const;
 
@@ -53,7 +53,7 @@ public:
   void next();
   constants::Direction direction();
 
-  void setNextDirection(constants::Direction direction);
+  void setNextDirection(const gfx::Tilemap& tmap, constants::Direction direction );
   void setNextTile( const gfx::Tile& tile);
   bool contains( gfx::Tile& tile);
   const gfx::TilesArray& allTiles() const;
@@ -65,7 +65,7 @@ public:
 
   Pathway copy(unsigned int start, int stop=-1) const;
 
-  void load( const VariantMap& stream );
+  void load( const gfx::Tilemap& tmap, const VariantMap& stream );
   VariantMap save() const;
 
   bool isValid() const;

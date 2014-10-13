@@ -93,7 +93,7 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.elevation || _terrain.tree) );
 }
 
-const TilePos& Tile::pos() const{ return _pos; }
+
 Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)

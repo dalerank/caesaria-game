@@ -458,8 +458,7 @@ void Walker::load( const VariantMap& stream)
   _d->wpos = stream.get( "wpos" ).toPointF();
   VARIANT_LOAD_ANY_D( _d, location, stream );
   _d->lastCenterDst = stream.get( "lastCenterDst" );
-  _d->pathway.init( tmap, tmap.at( 0, 0 ) );
-  _d->pathway.load( stream.get( "pathway" ).toMap() );
+  _d->pathway.load( tmap, stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
   _d->tileSpeedKoeff = stream.get( "tileSpdKoeff" );
   _d->nextwpos = stream.get( "nextwpos" ).toPointF();

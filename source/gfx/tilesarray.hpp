@@ -27,112 +27,27 @@ namespace gfx
 class TilesArray : public std::vector<Tile*>
 {
 public:
-  bool contain( TilePos tilePos ) const
-  {
-    foreach( it, *this )
-    {
-      if( (*it)->pos() == tilePos )
-        return true;
-    }
-
-    return false;
-  }
+  bool contain( TilePos tilePos ) const;
 
   TilesArray() {}
 
-  TilesArray( const TilesArray& a )
-  {
-    *this = a;
-  }
+  TilesArray( const TilesArray& a );
 
-  TilePos leftUpCorner() const
-  {
-    if( empty() )
-      return TilePos( -1, -1 );
+  TilePos leftUpCorner() const;
 
-    TilePos ret( 9999, 0 );
-    foreach( it, *this )
-    {
-      const TilePos& cpos = (*it)->pos();
-      if( cpos.i() < ret.i() ) { ret.setI( cpos.i() ); }
-      if( cpos.j() > ret.j() ) { ret.setJ( cpos.j() ); }
-    }
+  TilePos rightDownCorner() const;
 
-    return ret;
-  }
+  TilesArray& operator=(const TilesArray& a);
 
-  TilePos rightDownCorner() const
-  {
-    if( empty() )
-      return TilePos( -1, -1 );
+  TilesArray& append( const TilesArray& a );
 
-    TilePos ret( 0, 9999 );
-    foreach( it, *this )
-    {
-      const TilePos& cpos = (*it)->pos();
-      if( cpos.j() < ret.j() ) { ret.setJ( cpos.j() ); }
-      if( cpos.i() > ret.i() ) { ret.setI( cpos.i() ); }
-    }
+  TilesArray walkableTiles( bool alllands=false ) const;
 
-    return ret;
-  }
+  TilesArray& remove( TilePos pos );
 
-  TilesArray& operator=(const TilesArray& a)
-  {
-    clear();
-    insert(begin(), a.begin(), a.end());
-    return *this;
-  }
+  TileOverlayList overlays() const;
 
-  TilesArray& append( const TilesArray& a )
-  {
-    insert( end(), a.begin(), a.end() );
-
-    return *this;
-  }
-
-  TilesArray walkableTiles( bool alllands=false ) const
-  {
-    TilesArray ret;
-    foreach( i, *this)
-    {
-      if( (*i)->isWalkable( alllands ) )
-          ret.push_back( *i );
-    }
-
-    return ret;
-  }
-
-  TilesArray& remove( TilePos pos )
-  {
-    foreach( it, *this )
-    {
-      if( (*it)->pos() == pos )
-      {
-        erase( it );
-        break;
-      }
-    }
-
-    return *this;
-  }
-
-  TileOverlayList overlays() const
-  {
-    TileOverlayList ret;
-    foreach( i, *this)
-    {
-      if( (*i)->overlay().isValid() )
-        ret << (*i)->overlay();
-    }
-
-    return ret;
-  }
-
-  Tile* random() const
-  {
-    return size() > 0 ? (*this)[ math::random( size() ) ] : 0;
-  }
+  Tile* random() const;
 };
 
 }//end namespace
