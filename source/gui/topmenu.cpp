@@ -249,6 +249,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "screenshot", city::debug_event::screenshot );
   debugMenu->addItem( "add_empire_barbarian", city::debug_event::add_empire_barbarian );
   debugMenu->addItem( "send_venus_wrath", city::debug_event::send_venus_wrath );
+  debugMenu->addItem( "win_mission", city::debug_event::win_mission );
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
 
