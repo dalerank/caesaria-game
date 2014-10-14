@@ -152,7 +152,6 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
 
 Level::~Level()
 {
-  _d->game->clear();
 }
 
 void Level::initialize()
@@ -823,6 +822,20 @@ void Level::_handleDebugEvent(int event)
 
   case city::debug_event::add_player_money:
     _d->game->player()->appendMoney( 1000 );
+  break;
+
+  case city::debug_event::win_mission:
+  {
+    const city::VictoryConditions& wt = _d->game->city()->victoryConditions();
+
+    gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(),
+                                                            wt.newTitle(), wt.winText(),
+                                                            false );
+
+    _d->mapToLoad = wt.nextMission();
+
+    CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
+  }
   break;
 
   case city::debug_event::send_chastener:

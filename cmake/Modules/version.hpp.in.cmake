@@ -16,8 +16,6 @@
 #ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
 #define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
 
-#include "core/platform.hpp"
-
 #define CAESARIA_VERSION_MAJOR 0
 #define CAESARIA_VERSION_MINOR 4
 #define CAESARIA_VERSION_REVSN @rev_number@

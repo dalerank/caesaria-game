@@ -30,6 +30,7 @@ enum {
   add_empire_barbarian,
   add_wolves,
   send_mars_wrath,
+  win_mission,
   add_1000_dn,
   add_player_money,
   send_chastener,
