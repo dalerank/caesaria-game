@@ -86,6 +86,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->action.direction = constants::noneDirection;
   _d->type = walker::unknown;
   _d->health = 100;
+  _d->location = 0;
   _d->lastCenterDst = 99.f;
   _d->centerReached = false;
   _d->speed = 1.f; // default speed
