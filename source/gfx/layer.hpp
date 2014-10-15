@@ -45,10 +45,10 @@ private:
 class Layer : public ReferenceCounted
 {
 public:
-  typedef std::set<int> VisibleWalkers;
+  typedef std::set<int> WalkerTypes;
 
   virtual int type() const = 0;
-  virtual const VisibleWalkers& visibleWalkers() const;
+  virtual const WalkerTypes& visibleTypes() const;
 
   //draw gfx before walkers
   virtual void drawTileR(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
@@ -72,6 +72,7 @@ public:
   virtual void afterRender( Engine& engine);
   virtual void render( Engine& engine);
   virtual void renderPass( Engine& engine, Renderer::Pass pass);
+  virtual void renderUi( Engine& engine );
 
   virtual void registerTileForRendering(Tile&);
   virtual int nextLayer() const;
@@ -80,7 +81,7 @@ public:
 protected:
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
-  WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
+  //WalkerList _getVisibleWalkerList( const WalkerTypes& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
   Tile* _currentTile() const;

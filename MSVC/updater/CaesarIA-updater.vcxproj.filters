@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="http">
+      <UniqueIdentifier>{e68435dd-de07-45e6-9ee8-d2a2430e99d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vfs">
+      <UniqueIdentifier>{c9208212-9821-47fd-9c66-0e149dbc4f4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{c9909c55-dce9-433d-95aa-2608b0244840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{858bfa91-b593-4e6e-aa84-2c47dfffaa6a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\updater\http\download.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\updater\http\downloadmanager.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\updater\http\httpconnection.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\updater\http\httprequest.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\updater\http\mirrordownload.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\updater\util.cpp" />
+    <ClCompile Include="..\..\updater\updater.cpp" />
+    <ClCompile Include="..\..\updater\updatecontroller.cpp" />
+    <ClCompile Include="..\..\updater\releasefileset.cpp" />
+    <ClCompile Include="..\..\updater\inifile.cpp" />
+    <ClCompile Include="..\..\updater\main.cpp" />
+    <ClCompile Include="..\..\updater\packager.cpp" />
+    <ClCompile Include="..\..\updater\consoleupdater.cpp" />
+    <ClCompile Include="..\..\source\vfs\directory.cpp">
+      <Filter>vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\path.cpp">
+      <Filter>vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\entries.cpp">
+      <Filter>vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\bytearray.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\filesystem.cpp">
+      <Filter>vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\logger.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\stringhelper.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\time.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\stacktrace.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\file.cpp">
+      <Filter>vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\filenative_impl.cpp">
+      <Filter>vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\variant.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\mutex.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\threadevent.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\threadtask.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\updater\http\download.hpp">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\updater\http\downloadmanager.hpp">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\updater\http\httpconnection.hpp">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\updater\http\httprequest.hpp">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\updater\http\mirrordownload.hpp">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\updater\http\mirrorlist.hpp">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\updater\updateroptions.hpp" />
+    <ClInclude Include="..\..\updater\updatestep.hpp" />
+    <ClInclude Include="..\..\updater\updateview.hpp" />
+    <ClInclude Include="..\..\updater\util.hpp" />
+    <ClInclude Include="..\..\updater\version.hpp" />
+    <ClInclude Include="..\..\updater\updater.hpp" />
+    <ClInclude Include="..\..\updater\releasefileset.hpp" />
+    <ClInclude Include="..\..\updater\releaseversions.hpp" />
+    <ClInclude Include="..\..\updater\updatecontroller.hpp" />
+    <ClInclude Include="..\..\updater\packager.hpp" />
+    <ClInclude Include="..\..\updater\packageroptions.hpp" />
+    <ClInclude Include="..\..\updater\programoptions.hpp" />
+    <ClInclude Include="..\..\updater\progresshandler.hpp" />
+    <ClInclude Include="..\..\updater\inifile.hpp" />
+    <ClInclude Include="..\..\updater\consoleupdater.hpp" />
+    <ClInclude Include="..\..\updater\constants.hpp" />
+    <ClInclude Include="..\..\updater\exceptionsafethread.hpp" />
+    <ClInclude Include="..\..\updater\CRC.h" />
+    <ClInclude Include="..\..\source\vfs\path.hpp">
+      <Filter>vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\vfs\directory.hpp">
+      <Filter>vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\vfs\entries.hpp">
+      <Filter>vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\bytearray.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\vfs\filesystem.hpp">
+      <Filter>vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\stringhelper.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\time.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\stacktrace.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\vfs\file.hpp">
+      <Filter>vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\vfs\filenative_impl.hpp">
+      <Filter>vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\variant.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\thread\thread.hpp">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\thread\mutex.hpp">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\thread\threadevent.hpp">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\thread\threadtask.hpp">
+      <Filter>thread</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

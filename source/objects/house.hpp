@@ -31,10 +31,10 @@ class HouseLevel
 public:
   typedef enum { vacantLot=0,
                  hovel=1, tent,
-                 shack, hut,
-                 domus, bigDomus,
+                 shack, hut, //4
+                 domus, bigDomus, //6
                  mansion, bigMansion, //8
-                 insula, middleInsula, //10
+                 insula, middleInsula,   //10
                  bigInsula, beatyfullInsula, //12
                  smallVilla,  middleVilla,  bigVilla,  greatVilla,
                  smallPalace, middlePalace, bigPalace, greatPalace,
@@ -47,7 +47,7 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::paramCount, health, happiness };
+  enum { food=Construction::paramCount, health, happiness, happinessBuff, healthBuff };
 
   House( HouseLevel::ID level=HouseLevel::hovel );
 
@@ -67,6 +67,7 @@ public:
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
   virtual double state( ParameterType param) const;
 
@@ -116,13 +117,14 @@ private:
   void _levelDown();
   void _disaster();
   void _update(bool needChangeTexture);
-  void _tryEvolve_1_to_11_lvl(int level, int growSize, const char desirability );
-  void _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
-  void _tryDegrage_11_to_2_lvl( const char desirability );
+  bool _tryEvolve_1_to_12_lvl(int level, int growSize, const char desirability );
+  bool _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
+  void _tryDegrage_12_to_2_lvl( const char desirability );
   void _tryDegrade_20_to_12_lvl(int size, const char desirability);
   void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);
   void _checkEvolve();
+  void _checkPatricianDeals();
   void _updateTax();
   void _updateCrime();
   void _checkHomeless();

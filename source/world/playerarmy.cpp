@@ -34,16 +34,27 @@ using namespace gfx;
 namespace world
 {
 
+struct SoldierInfo
+{
+int strike;
+int resistance;
+VariantMap save;
+};
+
 class PlayerArmy::Impl
 {
 public:
   typedef enum { findAny, go2location, wait, go2home } Mode;
+  typedef std::vector<SoldierInfo> SoldiersInfo;
 
   Mode mode;
   RomeSoldierList waitSoldiers;
-  VariantList soldiersInfo;
+  SoldiersInfo soldiersInfo;
   TilePos fortPos;
   CityPtr base;
+
+public:
+  void updateStrength();
 };
 
 PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
@@ -68,10 +79,16 @@ void PlayerArmy::timeStep(const unsigned int time)
       {
         if( (*it)->isDeleted() )
         {
-          VariantMap vmSldr;
-          (*it)->save( vmSldr );
-          _d->soldiersInfo.push_back( vmSldr );
+          SoldierInfo sInfo;
+          (*it)->save( sInfo.save );
+          sInfo.strike = (*it)->strike();
+          sInfo.resistance = (*it)->resistance();
+
+          _d->soldiersInfo.push_back( sInfo );
+
           it = _d->waitSoldiers.erase( it );
+
+          _d->updateStrength();
         }
         else { ++it; }
       }
@@ -136,12 +153,34 @@ void PlayerArmy::load(const VariantMap& stream)
   MovableObject::load( stream );
 }
 
+void PlayerArmy::killSoldiers(int percent)
+{
+  if( percent >= 100 )
+  {
+    _d->soldiersInfo.clear();
+    deleteLater();
+  }
+
+  int curStrength = strength();
+  int finishStrength = curStrength * percent / 100;
+  while( !_d->soldiersInfo.empty() && curStrength > finishStrength )
+  {
+    _d->soldiersInfo.erase( _d->soldiersInfo.begin() );
+    curStrength = strength();
+  }
+}
+
 int PlayerArmy::viewDistance() const { return 30; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
   _d->mode = Impl::wait;
   _d->waitSoldiers.insert( _d->waitSoldiers.end(), soldiers.begin(), soldiers.end() );
+}
+
+bool PlayerArmy::_isAgressiveArmy(ArmyPtr other) const
+{
+  return !is_kind_of<PlayerArmy>( other );
 }
 
 void PlayerArmy::_check4attack()
@@ -220,10 +259,9 @@ void PlayerArmy::_reachedWay()
     {
       foreach( it, _d->soldiersInfo )
       {
-        VariantMap info = (*it).toMap();
-        int type = info[ "type" ];
+        int type = (*it).save[ "type" ];
         WalkerPtr walker = WalkerManager::instance().create( (constants::walker::Type)type, pCity );
-        walker->load( info );
+        walker->load( (*it).save );
         pCity->addWalker( walker );
       }
 
@@ -287,6 +325,15 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   _animation().load( ResourceGroup::empirebits, 72, 6 );
   _animation().setLoop( gfx::Animation::loopAnimation );
   _animation().setOffset( Point( 5, -10 ) );
+}
+
+void PlayerArmy::Impl::updateStrength()
+{
+  unsigned int result = 0;
+  foreach( it, soldiersInfo )
+  {
+    result += (*it).strike;
+  }
 }
 
 

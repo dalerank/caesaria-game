@@ -14,6 +14,7 @@ include_directories(
   ${SDL2_INCLUDE_DIR}
   ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
+  ${STEAM_API_DIR}
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -37,6 +38,7 @@ file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
+file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
@@ -44,7 +46,8 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${OBJECTS_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
-               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST})
+               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
+               ${STEAM_SOURCES_LIST} )
 
 target_link_libraries(${PROJECT_NAME}
   ${SDL2_LIBRARY}
@@ -108,6 +111,10 @@ if(UNIX)
   if(NOT APPLE)
     target_link_libraries(${PROJECT_NAME} "GL")
   endif()
+
+  if(USE_STEAM)
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux32/libsteam_api.so")
+  endif(USE_STEAM)
 endif(UNIX)
 
 if(APPLE)

@@ -33,6 +33,7 @@ public:
   unsigned int needWorkers() const;
   unsigned int productivity() const;
   unsigned int laborAccessPercent() const;
+  virtual std::string sound() const;
 
   void setWorkers( const unsigned int currentWorkers );
   unsigned int addWorkers( const unsigned int workers );

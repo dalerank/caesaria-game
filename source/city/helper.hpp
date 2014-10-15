@@ -26,6 +26,7 @@
 #include "gfx/tilemap.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/foreach.hpp"
+#include "walker/walker.hpp"
 #include "objects/service.hpp"
 #include "city/industry.hpp"
 
@@ -68,18 +69,14 @@ public:
   {
     needMeMove = false;
     SmartList<T> walkers;
-    walkers << _city->walkers( constants::walker::all, p );
-    foreach( it, walkers )
+    walkers << _city->walkers( p );
+
+    if( !walkers.empty() )
     {
-      if( *it == caller.object() )
-      {
-        needMeMove = (it != walkers.begin());
-        walkers.erase( it );
-        break;
-      }
+      needMeMove = (caller.object() != walkers.front().object());
     }
 
-    return !walkers.empty();
+    return walkers.empty() > 1;
   }
 
   template<class T>
@@ -95,7 +92,7 @@ public:
       foreach( itile, tiles )
       {
         SmartList<T> eslist;
-        eslist << _city->walkers( constants::walker::any, (*itile)->pos() );
+        eslist << _city->walkers( (*itile)->pos() );
 
         if( !eslist.empty() )
           continue;
@@ -130,23 +127,47 @@ public:
   SmartList< T > find( constants::walker::Type type,
                        TilePos start, TilePos stop=Helper::invalidPos )
   {
-    SmartList< T > ret;
+    WalkerList walkersInArea;
 
-    WalkerList walkers = _city->walkers( type, start, stop );
-    foreach( w, walkers )
+    TilePos invalidPos( -1, -1 );
+    TilePos stopPos = stop;
+
+    if( start == invalidPos )
     {
-      SmartPtr< T > ptr = ptr_cast<T>( *w );
-      if( ptr.isValid() )
+      const WalkerList& all = _city->walkers();
+      walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
+    }
+    else if( stopPos == invalidPos )
+    {
+      const WalkerList& wlkOnTile = _city->walkers( start );
+      walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
+    }
+    else
+    {
+      gfx::TilesArray area = _city->tilemap().getArea( start, stop );
+      foreach( tile, area)
       {
-        ret.push_back( ptr );
+        const WalkerList& wlkOnTile = _city->walkers( (*tile)->pos() );
+        walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
       }
     }
 
-    return ret;
+    SmartList< T > result;
+    foreach( w, walkersInArea )
+    {
+      if( (*w)->type() == type || type == constants::walker::any )
+      {
+        SmartPtr< T > ptr = ptr_cast<T>( *w );
+        if( ptr.isValid() )
+          result.push_back( ptr );
+      }
+    }
+
+    return result;
   }
 
   template< class T >
-  SmartList< T > find( const gfx::TileOverlay::Type type, TilePos start, TilePos stop )
+  SmartList< T > find( const constants::building::Type type, TilePos start, TilePos stop=TilePos(-1,-1) )
   {
     SmartList< T > ret;
 

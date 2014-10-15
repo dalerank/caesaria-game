@@ -29,13 +29,13 @@ namespace city
 class AmbientSound : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city, gfx::Camera* camera );
+  static SrvcPtr create( gfx::Camera* camera );
   virtual ~AmbientSound();
 
-  void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
   static std::string defaultName();
 private:
-  AmbientSound( PlayerCityPtr city );
+  AmbientSound( gfx::Camera* camera );
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -147,11 +147,8 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
     landingDate = GameDate::current();
 
-    WalkerList walkers = city->walkers( walker::any, wlk->pos() );
-    foreach( it, walkers )
-    {
-      if( *it == wlk ) { walkers.erase( it ); break; }
-    }
+    WalkerList walkers = city->walkers( wlk->pos() );
+    walkers.remove( wlk );
 
     bool emptyDock = walkers.empty();
 

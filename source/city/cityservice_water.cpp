@@ -28,33 +28,25 @@ namespace city
 
 const int waterDecreaseInterval = GameDate::days2ticks( 5 );
 
-class Water::Impl
+city::SrvcPtr Water::create()
 {
-public:
-  PlayerCityPtr city;
-  TilesArray tiles;
-};
-
-city::SrvcPtr Water::create(PlayerCityPtr city )
-{
-  city::SrvcPtr ret( new Water( city ) );
+  city::SrvcPtr ret( new Water() );
   ret->drop();
 
   return ret;
 }
 
-Water::Water(PlayerCityPtr city )
-  : city::Srvc( *city.object(), "water" ), _d( new Impl )
+Water::Water()
+  : city::Srvc( CAESARIA_STR_EXT(Water) )
 {
-  _d->city = city;
-  _d->tiles = city->tilemap().allTiles();
 }
 
-void Water::update( const unsigned int time )
-{
+void Water::timeStep( PlayerCityPtr city, const unsigned int time )
+{  
   if( time % waterDecreaseInterval == 0 )
   {
-    foreach( it, _d->tiles )
+    const TilesArray& tiles = city->tilemap().allTiles();
+    foreach( it, tiles )
     {
       Tile* tile = *it;
       int value = tile->param( Tile::pFountainWater );

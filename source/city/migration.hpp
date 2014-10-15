@@ -28,13 +28,13 @@ namespace city
 class Migration : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
+  static SrvcPtr create();
 
-  virtual void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
 
   int value() const;
-  std::string reason() const;
-  std::string leaveCityReason() const;
+  std::string reason(PlayerCityPtr city) const;
+  std::string leaveCityReason( PlayerCityPtr city ) const;
 
   static std::string defaultName();
 
@@ -43,7 +43,7 @@ public:
   virtual void load(const VariantMap& stream);
 
 private:
-  Migration( PlayerCityPtr city );
+  Migration();
 
   class Impl;
   ScopedPtr< Impl > _d;

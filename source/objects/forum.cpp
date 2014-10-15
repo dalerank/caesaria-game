@@ -98,9 +98,15 @@ void Forum::collapse()
 
 float Forum::collectTaxes()
 {
-  float taxes = _d->taxValue;
-  _d->taxValue = 0;
-  return taxes;
+  int save = 0;
+
+  if( _d->taxValue > 1 )
+  {
+    save = floor( _d->taxValue );
+    _d->taxValue -= save;
+  }
+
+  return save;
 }
 
 void Forum::Impl::removeMoney(PlayerCityPtr city)

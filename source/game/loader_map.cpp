@@ -94,7 +94,7 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
 
   _d->initClimate(f, game.city() );
 
-  _d->loadCity(f, game.city() );
+  _d->loadCity(f, game.city() );  
 
   _d->initEntryExit(f, game.city());
 
@@ -162,7 +162,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
     THROW("Horizontal and vertical map sizes are different!");
   }
 
-  oTilemap.resize(map_size);
+  oCity->resize(map_size);
 
   // need to rewrite better
   ScopedPtr<short> pGraphicGrid( new short[26244] );
@@ -214,6 +214,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
       TileHelper::decode( tile, pTerrainGrid.data()[index] );
+      TileHelper::fixPlateauFlags( tile );
     }
   }
 
