@@ -36,22 +36,22 @@ public:
   bool updateMilitaryThreat;
 };
 
-city::SrvcPtr Military::create(PlayerCityPtr city )
+city::SrvcPtr Military::create()
 {
-  SrvcPtr ret( new Military( city ) );
+  SrvcPtr ret( new Military() );
   ret->drop();
 
   return SrvcPtr( ret );
 }
 
-Military::Military(PlayerCityPtr city )
-  : city::Srvc( *city.object(), defaultName() ), _d( new Impl )
+Military::Military()
+  : city::Srvc( defaultName() ), _d( new Impl )
 {
   _d->updateMilitaryThreat = true;
   _d->threatValue = 0;
 }
 
-void Military::update( const unsigned int time )
+void Military::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( GameDate::isMonthChanged() )
   {
@@ -72,7 +72,7 @@ void Military::update( const unsigned int time )
     _d->updateMilitaryThreat = false;
 
     EnemySoldierList enSoldiers;
-    enSoldiers << _city.walkers( walker::any );
+    enSoldiers << city->walkers();
 
     _d->threatValue = enSoldiers.size() * 10;
   }  

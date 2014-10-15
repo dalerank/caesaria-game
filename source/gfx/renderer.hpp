@@ -26,7 +26,7 @@ public:
                   overWalker,
                   animations=48,
                   transparent = 56, //transparent overlays
-                  shadow = 64 //drawn after solid overlays
+                  shadow = 64 //drawn after solid overlays                  
                } Pass;
 
   typedef std::vector<Pass> PassQueue;
@@ -40,7 +40,7 @@ public:
 
   virtual void render() = 0;
   virtual Camera* camera() = 0;
-  virtual Renderer::ModePtr getMode() const = 0;
+  virtual Renderer::ModePtr mode() const = 0;
 };
 
 }//end namespace gfx

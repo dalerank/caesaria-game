@@ -28,6 +28,7 @@
 #include "objects/constants.hpp"
 #include "gfx/camera.hpp"
 #include "walker/walker.hpp"
+#include "core/tilerect.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -248,22 +249,40 @@ void Minimap::Impl::updateImage()
     }
 
 
-    WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
-    foreach( it, walkers )
+    const WalkerList& walkers = city->walkers();
+    TileRect trect( startPos, stopPos );
+    //TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
+    //TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
+    foreach( w, walkers)
     {
-      WalkerPtr wlk = *it;
-      if( wlk->agressive() != 0 )
+      TilePos pos = (*w)->pos();
+      if( trect.contain( pos ) )
       {
-        NColor c1 = wlk->agressive() > 0 ? DefaultColors::red : DefaultColors::blue;
+        NColor cl;
+        if ((*w)->agressive() != 0)
+        {
 
-        Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
-        minimap->fill( c1, Rect( pnt, Size(2) ) );
+          if ((*w)->agressive() > 0)
+          {
+            cl = DefaultColors::red;
+          }
+          else
+          {
+            cl = DefaultColors::blue;
+          }
+
+          if (cl.color != 0)
+          {
+            Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
+            minimap->fill(cl, Rect(pnt, Size(2)));
+          }
+        }        
       }
     }
   }
 
   minimap->unlock();
-  //minimap->update();
+  minimap->update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it

@@ -18,7 +18,9 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "warningmessage.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
+#include "objects/senate.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -48,6 +50,15 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   if( !advEnabled )
   {
     events::GameEventPtr e = events::WarningMessageEvent::create( "##not_available##" );
+    e->dispatch();
+    return;
+  }
+
+  city::Helper helper( game.city() );
+  SenateList senates = helper.find<Senate>( building::senate );
+  if( senates.empty() )
+  {
+    events::GameEventPtr e = events::WarningMessageEvent::create( "##build_senate_for_advisors##" );
     e->dispatch();
     return;
   }

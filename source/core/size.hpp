@@ -45,6 +45,7 @@ public:
     Size operator-(const Size& other) const { return Size( _x - other._x, _y - other._y ); }
     Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
     Size operator/(float delim) { return Size( int(_x/delim), int(_y/delim) ); }
+    Size operator*(float delim) { return Size( int(_x*delim), int(_y*delim) ); }
 };
 
 class SizeF : Vector2<float>

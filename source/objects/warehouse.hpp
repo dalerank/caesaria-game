@@ -31,6 +31,7 @@ class Warehouse: public WorkingBuilding
   friend class WarehouseStore;
 
 public:
+  typedef enum { sellGoodsBuff, buyGoodsBuff } Buff;
   Warehouse();
 
   virtual void timeStep(const unsigned long time);
@@ -43,6 +44,7 @@ public:
 
   bool onlyDispatchGoods() const;
   bool isGettingFull() const;
+  float tradeBuff( Buff type ) const;
 
   virtual std::string troubleDesc() const;
 

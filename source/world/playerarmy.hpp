@@ -36,12 +36,14 @@ public:
   virtual void return2fort();
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  virtual void killSoldiers(int percent);
 
   virtual int viewDistance() const;
 
   virtual void addSoldiers(RomeSoldierList soldiers);
 
 protected:
+  virtual bool _isAgressiveArmy(ArmyPtr other) const;
   virtual void _reachedWay();
   virtual void _check4attack();
   virtual void _noWay();

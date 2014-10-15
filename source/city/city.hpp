@@ -27,6 +27,7 @@
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"
+#include "climate.hpp"
 
 namespace city
 {
@@ -49,19 +50,22 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles } OptionType;
+
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 
   virtual void timeStep(unsigned int time);  // performs one simulation step
 
   WalkerList walkers(constants::walker::Type type );
-  WalkerList walkers(constants::walker::Type type, const TilePos& startPos, const TilePos& stopPos=TilePos( -1, -1 ) );
+  const WalkerList& walkers(const TilePos& pos);
+  const WalkerList& walkers() const;
 
   void addWalker( WalkerPtr walker );
 
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
-  city::SrvcList services() const;
+
+  const city::SrvcList& services() const;
 
   gfx::TileOverlayList& overlays();
 
@@ -103,6 +107,8 @@ public:
   const city::BuildOptions& buildOptions() const;
   void setBuildOptions( const city::BuildOptions& options );
 
+  virtual unsigned int age() const;
+
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
 
@@ -120,6 +126,7 @@ public:
   int getOption( OptionType opt ) const;
 
   void clean();
+  void resize(unsigned int size );
    
 signals public:
   Signal1<int>& onPopulationChanged();

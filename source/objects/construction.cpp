@@ -26,6 +26,7 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "extension.hpp"
+#include "core/json.hpp"
 
 using namespace gfx;
 
@@ -176,6 +177,16 @@ void Construction::save( VariantMap& stream) const
     vl_states.push_back( VariantList() << (int)it->first << (double)it->second );
   }
 
+  VariantMap vm_extensions;
+  int extIndex = 0;
+  foreach( it, _d->extensions )
+  {
+    VariantMap vmExt;
+    (*it)->save( vmExt );
+    vm_extensions[ StringHelper::i2str( extIndex++ ) ] = vmExt;
+  }
+
+  stream[ "extensions" ] = vm_extensions;
   stream[ "states" ] = vl_states;
 }
 
@@ -187,6 +198,20 @@ void Construction::load( const VariantMap& stream )
   {
     const VariantList& param = it->toList();
     _d->params[ (Construction::Param)param.get( 0 ).toInt() ] = param.get( 1, 0.f ).toDouble();
+  }
+
+  VariantMap vm_extensions = stream.get( "extensions" ).toMap();
+  foreach( it, vm_extensions )
+  {
+    ConstructionExtensionPtr extension = ExtensionsFactory::instance().create( it->second.toMap() );
+    if( extension.isValid() )
+    {
+      addExtension( extension );
+    }
+    else
+    {
+      Logger::warning( "Construction: cant load extension from " + Json::serialize( it->second, " " ) );
+    }
   }
 }
 
@@ -219,7 +244,7 @@ void Construction::timeStep(const unsigned long time)
   for( ConstructionExtensionList::iterator it=_d->extensions.begin();
        it != _d->extensions.end(); )
   {
-    (*it)->run( this, time );
+    (*it)->timeStep( this, time );
 
     if( (*it)->isDeleted() ) { it = _d->extensions.erase( it ); }
     else { ++it; }

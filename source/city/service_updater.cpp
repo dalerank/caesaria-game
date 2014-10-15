@@ -47,25 +47,24 @@ public:
   int value;
 };
 
-SrvcPtr ServiceUpdater::create( PlayerCityPtr city )
+SrvcPtr ServiceUpdater::create()
 {
-  ServiceUpdater* e = new ServiceUpdater( city );
-
-  SrvcPtr ret( e );
+  SrvcPtr ret( new ServiceUpdater() );
   ret->drop();
 
   return ret;
 }
 
-void ServiceUpdater::update( const unsigned int time)
+void ServiceUpdater::timeStep(PlayerCityPtr city, const unsigned int time)
 {
   if( GameDate::isWeekChanged() )
   {
     _d->isDeleted = (_d->endTime < GameDate::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
-    Helper helper( &_city );
+    Helper helper( city );
     HouseList houses = helper.find<House>( building::house );
+
     foreach( it, houses )
     {
       (*it)->setServiceValue( _d->stype, _d->value );
@@ -93,8 +92,8 @@ VariantMap ServiceUpdater::save() const
   return ret;
 }
 
-ServiceUpdater::ServiceUpdater( PlayerCityPtr city )
-  : Srvc( *city.object(), ServiceUpdater::defaultName() ), _d( new Impl )
+ServiceUpdater::ServiceUpdater()
+  : Srvc( ServiceUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
   _d->stype = Service::srvCount;

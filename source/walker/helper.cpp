@@ -98,6 +98,7 @@ public:
     __REG_WTYPE( romeChastenerElephant )
     __REG_WTYPE( zebra )
     __REG_WTYPE( supplier )
+    __REG_WTYPE( patrician )
   }
 #undef __REG_WTYPE
 };

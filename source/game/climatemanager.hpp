@@ -18,12 +18,12 @@
 #ifndef _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
 #define _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
 
-#include "enums.hpp"
+#include "city/climate.hpp"
 
 class ClimateManager
 {
 public:
-  static void initialize( ClimateType climate );
+  static void initialize( city::climate::Type climate );
 };
 
 #endif //_CAESARIA_CLIMATEMANAGER_INCLUDE_H_

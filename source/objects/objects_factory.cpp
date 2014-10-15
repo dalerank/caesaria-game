@@ -163,7 +163,7 @@ public:
     FactoryPtr f = ptr_cast<Factory>( a );
     if( f.isValid() )
     {
-      f->productRate( (float)info.getOption( "productRate", 9.6 ) );
+      f->setProductRate( (float)info.getOption( "productRate", 9.6 ) );
     }
   }
 };
@@ -292,7 +292,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::cathedralNeptune, BigTempleNeptune, WorkingBuildingCreator );
   ADD_CREATOR(building::cathedralMars, BigTempleMars, WorkingBuildingCreator );
   ADD_CREATOR(building::cathedralVenus, BigTempleVenus, WorkingBuildingCreator );
-  ADD_CREATOR(building::cathedralMercury, BigTempleMercure, WorkingBuildingCreator );
+  ADD_CREATOR(building::cathedralMercury, BigTempleMercury, WorkingBuildingCreator );
   ADD_CREATOR(building::oracle, TempleOracle, WorkingBuildingCreator );
 
   // health

@@ -17,10 +17,6 @@
 
 #ifdef _MSC_VER
 #include <cmath>
-float roundf(float x)
-{
-	return x >= 0.0f ? floorf(x + 0.5f) : ceilf(x - 0.5f);
-}
 #endif
 
 #include "widget.hpp"

@@ -25,12 +25,12 @@ namespace  city {
 class Shoreline : public city::Srvc
 {
 public:
-  static city::SrvcPtr create( PlayerCityPtr city );
+  static city::SrvcPtr create();
   static std::string defaultName();
-  void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
 
 private:
-  Shoreline( PlayerCityPtr city );
+  Shoreline();
 
   class Impl;
   ScopedPtr< Impl > _d;

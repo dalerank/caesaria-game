@@ -110,14 +110,14 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-bool Building::build(PlayerCityPtr city, const TilePos &pos)
+bool Building::build(PlayerCityPtr pcity, const TilePos &pos)
 {
-  Construction::build( city, pos );
+  Construction::build( pcity, pos );
 
-  switch( city->climate() )
+  switch( pcity->climate() )
   {
-  case climateNorthen: setState( Construction::inflammability, 0.5 ); break;
-  case climateDesert: setState( Construction::inflammability, 2 ); break;
+  case city::climate::northen: setState( Construction::inflammability, 0.5 ); break;
+  case city::climate::desert: setState( Construction::inflammability, 2 ); break;
   default: break;
   }
 

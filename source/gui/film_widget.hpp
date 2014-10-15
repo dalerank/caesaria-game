@@ -30,7 +30,6 @@ class FilmWidget : public Window
 public:
   FilmWidget( Widget* parent, const vfs::Path& film );
 
-  //! Деструктор
   virtual ~FilmWidget(void);
 
   //virtual bool onEvent(const NEvent &event);

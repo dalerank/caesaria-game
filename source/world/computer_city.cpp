@@ -42,6 +42,7 @@ public:
   bool available;
   int population;
   int strength;
+  unsigned int age;
   unsigned int tradeDelay;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
@@ -65,6 +66,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
+  _d->age = 0;
   _d->romecity = false;
 
   _initTextures();
@@ -131,6 +133,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
+  VARIANT_SAVE_ANY_D( options, _d, age )
   VARIANT_SAVE_ANY_D( options, _d, available )
   VARIANT_SAVE_ANY_D( options, _d, merchantsNumber )
   VARIANT_SAVE_ANY_D( options, _d, distantCity )
@@ -150,7 +153,8 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D( _d, available, options )
   VARIANT_LOAD_ANY_D( _d, merchantsNumber, options )
   VARIANT_LOAD_ANY_D( _d, distantCity, options )
-  VARIANT_LOAD_ANY_D( _d, romecity, options )
+  VARIANT_LOAD_ANY_D( _d, available, options )
+  VARIANT_LOAD_ANY_D( _d, age, options )
   VARIANT_LOAD_ANY_D( _d, tradeDelay, options )
   VARIANT_LOAD_TIME_D(_d, lastAttack, options )
   VARIANT_LOAD_ANY_D( _d, strength, options )
@@ -194,6 +198,8 @@ void ComputerCity::load( const VariantMap& options )
 
 const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
 const GoodStore& ComputerCity::exportingGoods() const{  return _d->buyStore;}
+
+unsigned int ComputerCity::age() const { return _d->age; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
 
 void ComputerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
@@ -280,6 +286,11 @@ void ComputerCity::timeStep( unsigned int time )
   if( GameDate::isWeekChanged() )
   {
     _d->strength = math::clamp<int>( _d->strength+1, 0, _d->population / 100 );
+  }
+
+  if( GameDate::isYearChanged() )
+  {
+    _d->age++;
   }
 
   //one year before step need
