@@ -7,7 +7,7 @@ LOCAL_MODULE := application
 SDL_PATH       := ../../libs/SDL
 SDL_MIXER_PATH := ../../libs/SDL_mixer
 SDL_NET_PATH   := ../../libs/SDL_net
-STEAM_PATH     := ../../steam
+STEAM_PATH     := ../steam
 GAME_PATH := $(LOCAL_PATH)
 DEP_PATH := ../dep
 
