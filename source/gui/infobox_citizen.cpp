@@ -103,7 +103,7 @@ AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos
   : Simple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
-  _d->walkers = city->walkers( walker::any, pos );
+  _d->walkers = city->walkers( pos );
   _d->city = city;
 
   Widget::setupUI( GameSettings::rcpath( ui_model ) );
@@ -152,7 +152,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   case walker::merchant:
   {
     MerchantPtr m = ptr_cast<Merchant>( wlk );
-    setTitle( _("##trade_caravan_from##") + m->getParentCity() );
+    setTitle( _("##trade_caravan_from##") + m->parentCity() );
   }
   break;
 
@@ -165,13 +165,13 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   }
   _d->screenshots.clear();
 
-  TilePos offset( 1, 1 );
+  //TilePos offset( 1, 1 );
   gfx::TilesArray tiles = _d->city->tilemap().getNeighbors(wlk->pos(), gfx::Tilemap::AllNeighbors);
   Rect lbRect( 25, 45, 25 + 52, 45 + 52 );
   Point lbOffset( 60, 0 );
   foreach( itTile, tiles )
   {
-    WalkerList tileWalkers = _d->city->walkers( walker::any, (*itTile)->pos() );
+    WalkerList tileWalkers = _d->city->walkers( (*itTile)->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here

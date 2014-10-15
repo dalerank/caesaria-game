@@ -145,7 +145,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
     walker::Type rtype;
     foreach( tile, tiles )
     {
-      WalkerList tileWalkers = _city()->walkers( walker::any, (*tile)->pos() );
+      const WalkerList& tileWalkers = _city()->walkers( (*tile)->pos() );
 
       foreach( i, tileWalkers )
       {

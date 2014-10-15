@@ -168,7 +168,9 @@ void FishingBoat::return2base(){  _d->mode = finishCatch; }
 void FishingBoat::setBase(CoastalFactoryPtr base){  _d->base = base;}
 FishingBoat::State FishingBoat::state() const{  return _d->mode;}
 bool FishingBoat::isBusy() const{  return _d->mode != wait; }
-int FishingBoat::getFishQty() const{  return _d->stock.qty(); }
+int FishingBoat::fishQty() const{  return _d->stock.qty(); }
+int FishingBoat::fishMax() const{  return _d->stock.capacity(); }
+void FishingBoat::addFish(int qty) { _d->stock.push(qty); }
 
 bool FishingBoat::die()
 {

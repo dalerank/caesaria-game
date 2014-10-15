@@ -49,14 +49,18 @@ public:
   virtual void unloadPicture(Picture &ioPicture);
   void deletePicture(Picture* pic);
 
-  void startRenderFrame();
+  virtual void startRenderFrame();
+  virtual void endRenderFrame();
+
+  virtual void initViewport( int, Size s) {}
+  virtual void setViewport( int, bool render) {}
+  virtual void drawViewport( int, Rect r) {}
+
   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
   void draw(const Picture &picture, const Rect& src, const Rect& dst, Rect* clipRect=0 );
   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
   void drawLine(const NColor &color, const Point &p1, const Point &p2);
-
-  void endRenderFrame();
 
   void setColorMask( int rmask, int gmask, int bmask, int amask );
   void resetColorMask();

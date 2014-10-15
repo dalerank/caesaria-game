@@ -87,7 +87,9 @@ CityList Empire::cities() const
   return ret;
 }
 
-Empire::~Empire(){}
+Empire::~Empire()
+{
+}
 
 void Empire::_initializeObjects( vfs::Path filename )
 {
@@ -286,6 +288,11 @@ void Empire::changePrice(Good::Type gtype, int buy, int sell)
 void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
 {
   _d->trading.getPrice( gtype, buy, sell );
+}
+
+void Empire::clear()
+{
+
 }
 
 TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )

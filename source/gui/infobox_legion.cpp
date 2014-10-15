@@ -21,7 +21,6 @@
 #include "infobox_legion.hpp"
 #include "environment.hpp"
 #include "core/foreach.hpp"
-#include "game/settings.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
@@ -53,13 +52,14 @@ public:
   Label* lbTrainedValue;
   Label* gbLegionParams;
   PushButton* btnReturn;
+  PushButton* btnAttackAnimals;
   FortPtr fort;
 };
 
 AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
   : Simple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
-  Widget::setupUI( GameSettings::rcpath( "/gui/legionopts.gui") );
+  Widget::setupUI( ":/gui/legionopts.gui" );
 
   GET_DWIDGET_FROM_UI( _d, lbFormationTitle )
   GET_DWIDGET_FROM_UI( _d, lbFormation )
@@ -69,8 +69,9 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   GET_DWIDGET_FROM_UI( _d, lbMoraleValue )
   GET_DWIDGET_FROM_UI( _d, lbTrainedValue )
   GET_DWIDGET_FROM_UI( _d, gbLegionParams )
+  GET_DWIDGET_FROM_UI( _d, btnAttackAnimals )
 
-  WalkerList walkers = city->walkers( walker::any, pos );
+  WalkerList walkers = city->walkers( pos );
 
   if( walkers.empty() )
   {
@@ -113,6 +114,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   _update();
 
   CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
+  CONNECT( _d->btnAttackAnimals, onClicked(), this, AboutLegion::_toggleAnimalsAttack );
 }
 
 AboutLegion::~AboutLegion() {}
@@ -148,6 +150,12 @@ void AboutLegion::_update()
   {
     _d->lbTrainedValue->setText( StringHelper::i2str( _d->fort->legionTrained() ) );
   }
+
+  if( _d->btnAttackAnimals )
+  {
+    std::string text = StringHelper::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
+    _d->btnAttackAnimals->setText( text );
+  }
 }
 
 void AboutLegion::_addAvailalbesFormation()
@@ -163,6 +171,15 @@ void AboutLegion::_addAvailalbesFormation()
   {
     _addFormationButton( index, *it, formationPicId[ *it ] );
     index++;
+  }
+}
+
+void AboutLegion::_toggleAnimalsAttack()
+{
+  if( _d->fort.isValid() )
+  {
+    _d->fort->setAttackAnimals( !_d->fort->isAttackAnimals() );
+    _update();
   }
 }
 

@@ -85,7 +85,8 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 WalkerPtr Prefect::_looks4Enemy( int range )
 {
   TilePos offset( range, range );
-  WalkerList walkers = _city()->walkers( walker::any, pos() - offset, pos() + offset );
+  city::Helper helper( _city() );
+  WalkerList walkers = helper.find<Walker>( walker::any, pos() - offset, pos() + offset );
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {
@@ -307,6 +308,7 @@ void Prefect::_reachedPathway()
   case go2fire:
     if( !_figthFire() )
     {
+      _d->water = 0;
       _back2Patrol();
     }
   break;
@@ -314,6 +316,7 @@ void Prefect::_reachedPathway()
   case findFire:
     if( !_findFire() )
     {
+      _d->water = 0;
       _back2Patrol();
     }
   break;

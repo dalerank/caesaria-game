@@ -48,6 +48,7 @@ class FarmWheat : public Farm
 public:
   FarmWheat();
   virtual std::string troubleDesc() const;
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 };
 
 class FarmOlive : public Farm

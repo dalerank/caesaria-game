@@ -112,6 +112,7 @@ public:
 
   int result;
 
+public:
   void showSaveDialog();
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
@@ -149,7 +150,9 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->engine = &engine;
 }
 
-Level::~Level() {}
+Level::~Level()
+{
+}
 
 void Level::initialize()
 {
@@ -190,7 +193,7 @@ void Level::initialize()
 
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
-  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
+  _d->game->city()->addService( city::AmbientSound::create( _d->renderer.camera() ) );
 
   //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID
@@ -323,7 +326,7 @@ void Level::Impl::makeEnemy()
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
-  }
+    }
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
@@ -683,7 +686,7 @@ void Level::handleEvent( NEvent& event )
 
     case _MET_TILES:
       _d->renderer.handleEvent( event );
-      _d->selectedTilePos = _d->renderer.getTilePos( event.mouse.pos() );
+      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
     break;
 
     default:
@@ -797,7 +800,7 @@ void Level::_handleDebugEvent(int event)
 {
   switch( event )
   {
-  case city::debug_event::dec_mars_relation:
+  case city::debug_event::send_mars_wrath:
     religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
   break;
 
@@ -819,6 +822,20 @@ void Level::_handleDebugEvent(int event)
 
   case city::debug_event::add_player_money:
     _d->game->player()->appendMoney( 1000 );
+  break;
+
+  case city::debug_event::win_mission:
+  {
+    const city::VictoryConditions& wt = _d->game->city()->victoryConditions();
+
+    gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(),
+                                                            wt.newTitle(), wt.winText(),
+                                                            false );
+
+    _d->mapToLoad = wt.nextMission();
+
+    CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
+  }
   break;
 
   case city::debug_event::send_chastener:
@@ -849,6 +866,10 @@ void Level::_handleDebugEvent(int event)
     events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
     e->dispatch();
   }
+  break;
+
+  case city::debug_event::send_venus_wrath:
+    religion::rome::Pantheon::venus()->updateRelation( -101.f, _d->game->city() );
   break;
   }
 }

@@ -28,16 +28,16 @@ namespace city
 class Disorder : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
+  static SrvcPtr create();
   static std::string defaultName();
-  virtual void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
   std::string reason() const;
   unsigned int value() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 private:
-  Disorder( PlayerCityPtr city );
+  Disorder();
 
   class Impl;
   ScopedPtr< Impl > _d;

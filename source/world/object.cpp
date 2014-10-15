@@ -57,10 +57,9 @@ std::string Object::name() const { return _d->name; }
 void Object::setName(const std::string& name) { _d->name = name; }
 Point Object::location() const { return _d->location;}
 
-void Object::addObject(ObjectPtr)
+void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "!!!Object: Not available addObject() function for base object");
-  Stacktrace::print();
+  Logger::warning( "WorldObjects: %s added to %s", obj->name().c_str(), name().c_str() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }

@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dep\curl\amigaos.c" />
+    <ClCompile Include="..\..\dep\curl\base64.c" />
+    <ClCompile Include="..\..\dep\curl\connect.c" />
+    <ClCompile Include="..\..\dep\curl\content_encoding.c" />
+    <ClCompile Include="..\..\dep\curl\cookie.c" />
+    <ClCompile Include="..\..\dep\curl\curl_addrinfo.c" />
+    <ClCompile Include="..\..\dep\curl\curl_fnmatch.c" />
+    <ClCompile Include="..\..\dep\curl\curl_memrchr.c" />
+    <ClCompile Include="..\..\dep\curl\curl_rand.c" />
+    <ClCompile Include="..\..\dep\curl\curl_rtmp.c" />
+    <ClCompile Include="..\..\dep\curl\curl_sspi.c" />
+    <ClCompile Include="..\..\dep\curl\curl_threads.c" />
+    <ClCompile Include="..\..\dep\curl\dict.c" />
+    <ClCompile Include="..\..\dep\curl\easy.c" />
+    <ClCompile Include="..\..\dep\curl\escape.c" />
+    <ClCompile Include="..\..\dep\curl\file.c" />
+    <ClCompile Include="..\..\dep\curl\fileinfo.c" />
+    <ClCompile Include="..\..\dep\curl\formdata.c" />
+    <ClCompile Include="..\..\dep\curl\ftp.c" />
+    <ClCompile Include="..\..\dep\curl\ftplistparser.c" />
+    <ClCompile Include="..\..\dep\curl\getenv.c" />
+    <ClCompile Include="..\..\dep\curl\getinfo.c" />
+    <ClCompile Include="..\..\dep\curl\gtls.c" />
+    <ClCompile Include="..\..\dep\curl\hash.c" />
+    <ClCompile Include="..\..\dep\curl\hmac.c" />
+    <ClCompile Include="..\..\dep\curl\hostares.c" />
+    <ClCompile Include="..\..\dep\curl\hostasyn.c" />
+    <ClCompile Include="..\..\dep\curl\hostip.c" />
+    <ClCompile Include="..\..\dep\curl\hostip4.c" />
+    <ClCompile Include="..\..\dep\curl\hostip6.c" />
+    <ClCompile Include="..\..\dep\curl\hostsyn.c" />
+    <ClCompile Include="..\..\dep\curl\hostthre.c" />
+    <ClCompile Include="..\..\dep\curl\http.c" />
+    <ClCompile Include="..\..\dep\curl\http_chunks.c" />
+    <ClCompile Include="..\..\dep\curl\http_digest.c" />
+    <ClCompile Include="..\..\dep\curl\http_negotiate.c" />
+    <ClCompile Include="..\..\dep\curl\http_ntlm.c" />
+    <ClCompile Include="..\..\dep\curl\if2ip.c" />
+    <ClCompile Include="..\..\dep\curl\imap.c" />
+    <ClCompile Include="..\..\dep\curl\inet_ntop.c" />
+    <ClCompile Include="..\..\dep\curl\inet_pton.c" />
+    <ClCompile Include="..\..\dep\curl\krb4.c" />
+    <ClCompile Include="..\..\dep\curl\krb5.c" />
+    <ClCompile Include="..\..\dep\curl\ldap.c" />
+    <ClCompile Include="..\..\dep\curl\llist.c" />
+    <ClCompile Include="..\..\dep\curl\md5.c" />
+    <ClCompile Include="..\..\dep\curl\memdebug.c" />
+    <ClCompile Include="..\..\dep\curl\mprintf.c" />
+    <ClCompile Include="..\..\dep\curl\multi.c" />
+    <ClCompile Include="..\..\dep\curl\netrc.c" />
+    <ClCompile Include="..\..\dep\curl\nonblock.c" />
+    <ClCompile Include="..\..\dep\curl\nss.c" />
+    <ClCompile Include="..\..\dep\curl\nwlib.c" />
+    <ClCompile Include="..\..\dep\curl\nwos.c" />
+    <ClCompile Include="..\..\dep\curl\openldap.c" />
+    <ClCompile Include="..\..\dep\curl\parsedate.c" />
+    <ClCompile Include="..\..\dep\curl\pingpong.c" />
+    <ClCompile Include="..\..\dep\curl\polarssl.c" />
+    <ClCompile Include="..\..\dep\curl\pop3.c" />
+    <ClCompile Include="..\..\dep\curl\progress.c" />
+    <ClCompile Include="..\..\dep\curl\qssl.c" />
+    <ClCompile Include="..\..\dep\curl\rawstr.c" />
+    <ClCompile Include="..\..\dep\curl\rtsp.c" />
+    <ClCompile Include="..\..\dep\curl\security.c" />
+    <ClCompile Include="..\..\dep\curl\select.c" />
+    <ClCompile Include="..\..\dep\curl\sendf.c" />
+    <ClCompile Include="..\..\dep\curl\share.c" />
+    <ClCompile Include="..\..\dep\curl\slist.c" />
+    <ClCompile Include="..\..\dep\curl\smtp.c" />
+    <ClCompile Include="..\..\dep\curl\socks.c" />
+    <ClCompile Include="..\..\dep\curl\socks_gssapi.c" />
+    <ClCompile Include="..\..\dep\curl\socks_sspi.c" />
+    <ClCompile Include="..\..\dep\curl\speedcheck.c" />
+    <ClCompile Include="..\..\dep\curl\splay.c" />
+    <ClCompile Include="..\..\dep\curl\ssh.c" />
+    <ClCompile Include="..\..\dep\curl\sslgen.c" />
+    <ClCompile Include="..\..\dep\curl\ssluse.c" />
+    <ClCompile Include="..\..\dep\curl\strdup.c" />
+    <ClCompile Include="..\..\dep\curl\strequal.c" />
+    <ClCompile Include="..\..\dep\curl\strerror.c" />
+    <ClCompile Include="..\..\dep\curl\strtok.c" />
+    <ClCompile Include="..\..\dep\curl\strtoofft.c" />
+    <ClCompile Include="..\..\dep\curl\telnet.c" />
+    <ClCompile Include="..\..\dep\curl\tftp.c" />
+    <ClCompile Include="..\..\dep\curl\timeval.c" />
+    <ClCompile Include="..\..\dep\curl\transfer.c" />
+    <ClCompile Include="..\..\dep\curl\url.c" />
+    <ClCompile Include="..\..\dep\curl\version.c" />
+    <ClCompile Include="..\..\dep\curl\warnless.c" />
+    <ClCompile Include="..\..\dep\curl\wildcard.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\dep\curl\amigaos.h" />
+    <ClInclude Include="..\..\dep\curl\arpa_telnet.h" />
+    <ClInclude Include="..\..\dep\curl\config-amigaos.h" />
+    <ClInclude Include="..\..\dep\curl\config-mac.h" />
+    <ClInclude Include="..\..\dep\curl\config-os400.h" />
+    <ClInclude Include="..\..\dep\curl\config-riscos.h" />
+    <ClInclude Include="..\..\dep\curl\config-symbian.h" />
+    <ClInclude Include="..\..\dep\curl\config-tpf.h" />
+    <ClInclude Include="..\..\dep\curl\config-vxworks.h" />
+    <ClInclude Include="..\..\dep\curl\config-win32.h" />
+    <ClInclude Include="..\..\dep\curl\config-win32ce.h" />
+    <ClInclude Include="..\..\dep\curl\connect.h" />
+    <ClInclude Include="..\..\dep\curl\content_encoding.h" />
+    <ClInclude Include="..\..\dep\curl\cookie.h" />
+    <ClInclude Include="..\..\dep\curl\curl.h" />
+    <ClInclude Include="..\..\dep\curl\curlbuild.h" />
+    <ClInclude Include="..\..\dep\curl\curlrules.h" />
+    <ClInclude Include="..\..\dep\curl\curlver.h" />
+    <ClInclude Include="..\..\dep\curl\curlx.h" />
+    <ClInclude Include="..\..\dep\curl\curl_addrinfo.h" />
+    <ClInclude Include="..\..\dep\curl\curl_base64.h" />
+    <ClInclude Include="..\..\dep\curl\curl_fnmatch.h" />
+    <ClInclude Include="..\..\dep\curl\curl_hmac.h" />
+    <ClInclude Include="..\..\dep\curl\curl_ldap.h" />
+    <ClInclude Include="..\..\dep\curl\curl_md5.h" />
+    <ClInclude Include="..\..\dep\curl\curl_memory.h" />
+    <ClInclude Include="..\..\dep\curl\curl_memrchr.h" />
+    <ClInclude Include="..\..\dep\curl\curl_rand.h" />
+    <ClInclude Include="..\..\dep\curl\curl_rtmp.h" />
+    <ClInclude Include="..\..\dep\curl\curl_sspi.h" />
+    <ClInclude Include="..\..\dep\curl\curl_threads.h" />
+    <ClInclude Include="..\..\dep\curl\dict.h" />
+    <ClInclude Include="..\..\dep\curl\easy.h" />
+    <ClInclude Include="..\..\dep\curl\easyif.h" />
+    <ClInclude Include="..\..\dep\curl\escape.h" />
+    <ClInclude Include="..\..\dep\curl\file.h" />
+    <ClInclude Include="..\..\dep\curl\fileinfo.h" />
+    <ClInclude Include="..\..\dep\curl\formdata.h" />
+    <ClInclude Include="..\..\dep\curl\ftp.h" />
+    <ClInclude Include="..\..\dep\curl\ftplistparser.h" />
+    <ClInclude Include="..\..\dep\curl\getinfo.h" />
+    <ClInclude Include="..\..\dep\curl\gtls.h" />
+    <ClInclude Include="..\..\dep\curl\hash.h" />
+    <ClInclude Include="..\..\dep\curl\hostip.h" />
+    <ClInclude Include="..\..\dep\curl\http.h" />
+    <ClInclude Include="..\..\dep\curl\http_chunks.h" />
+    <ClInclude Include="..\..\dep\curl\http_digest.h" />
+    <ClInclude Include="..\..\dep\curl\http_negotiate.h" />
+    <ClInclude Include="..\..\dep\curl\http_ntlm.h" />
+    <ClInclude Include="..\..\dep\curl\if2ip.h" />
+    <ClInclude Include="..\..\dep\curl\imap.h" />
+    <ClInclude Include="..\..\dep\curl\inet_ntop.h" />
+    <ClInclude Include="..\..\dep\curl\inet_pton.h" />
+    <ClInclude Include="..\..\dep\curl\krb4.h" />
+    <ClInclude Include="..\..\dep\curl\llist.h" />
+    <ClInclude Include="..\..\dep\curl\memdebug.h" />
+    <ClInclude Include="..\..\dep\curl\mprintf.h" />
+    <ClInclude Include="..\..\dep\curl\multi.h" />
+    <ClInclude Include="..\..\dep\curl\multiif.h" />
+    <ClInclude Include="..\..\dep\curl\netrc.h" />
+    <ClInclude Include="..\..\dep\curl\nonblock.h" />
+    <ClInclude Include="..\..\dep\curl\nssg.h" />
+    <ClInclude Include="..\..\dep\curl\parsedate.h" />
+    <ClInclude Include="..\..\dep\curl\pingpong.h" />
+    <ClInclude Include="..\..\dep\curl\polarssl.h" />
+    <ClInclude Include="..\..\dep\curl\pop3.h" />
+    <ClInclude Include="..\..\dep\curl\progress.h" />
+    <ClInclude Include="..\..\dep\curl\qssl.h" />
+    <ClInclude Include="..\..\dep\curl\rawstr.h" />
+    <ClInclude Include="..\..\dep\curl\rtsp.h" />
+    <ClInclude Include="..\..\dep\curl\select.h" />
+    <ClInclude Include="..\..\dep\curl\sendf.h" />
+    <ClInclude Include="..\..\dep\curl\setup-os400.h" />
+    <ClInclude Include="..\..\dep\curl\setup.h" />
+    <ClInclude Include="..\..\dep\curl\setup_once.h" />
+    <ClInclude Include="..\..\dep\curl\share.h" />
+    <ClInclude Include="..\..\dep\curl\slist.h" />
+    <ClInclude Include="..\..\dep\curl\smtp.h" />
+    <ClInclude Include="..\..\dep\curl\sockaddr.h" />
+    <ClInclude Include="..\..\dep\curl\socks.h" />
+    <ClInclude Include="..\..\dep\curl\speedcheck.h" />
+    <ClInclude Include="..\..\dep\curl\splay.h" />
+    <ClInclude Include="..\..\dep\curl\ssh.h" />
+    <ClInclude Include="..\..\dep\curl\sslgen.h" />
+    <ClInclude Include="..\..\dep\curl\ssluse.h" />
+    <ClInclude Include="..\..\dep\curl\stdcheaders.h" />
+    <ClInclude Include="..\..\dep\curl\strdup.h" />
+    <ClInclude Include="..\..\dep\curl\strequal.h" />
+    <ClInclude Include="..\..\dep\curl\strerror.h" />
+    <ClInclude Include="..\..\dep\curl\strtok.h" />
+    <ClInclude Include="..\..\dep\curl\strtoofft.h" />
+    <ClInclude Include="..\..\dep\curl\telnet.h" />
+    <ClInclude Include="..\..\dep\curl\tftp.h" />
+    <ClInclude Include="..\..\dep\curl\timeval.h" />
+    <ClInclude Include="..\..\dep\curl\transfer.h" />
+    <ClInclude Include="..\..\dep\curl\typecheck-gcc.h" />
+    <ClInclude Include="..\..\dep\curl\types.h" />
+    <ClInclude Include="..\..\dep\curl\url.h" />
+    <ClInclude Include="..\..\dep\curl\urldata.h" />
+    <ClInclude Include="..\..\dep\curl\warnless.h" />
+    <ClInclude Include="..\..\dep\curl\wildcard.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{510B352D-6F80-4C0B-BA4B-D6C6CA574E2E}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>curl</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">curl</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">curl</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">curl</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">curl</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">curl</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">curl</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">curl</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">curl</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS="Windows";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OS=\"Windows\";HAVE_WS2TCPIP_H;HAVE_WINSOCK2_H;HAVE_WINDOWS_H;HAVE_WINSOCK_H;HAVE_STDIO_H;HAVE_INTTYPES_H;HAVE_SYS_STAT_H;HAVE_SYS_TYPES_H;HAVE_SYS_UTIME_H;HAVE_ASSERT_H;HAVE_ERRNO_H;HAVE_FCNTL_H;HAVE_IO_H;HAVE_LIMITS_H;HAVE_LOCALE_H;HAVE_SETJMP_H;HAVE_SIGNAL_H;HAVE_STDBOOL_H;HAVE_BOOL_T;HAVE_STDINT_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_TIME_H;HAVE_PROCESS_H;HAVE_STDDEF_H;HAVE_MALLOC_H;HAVE_MEMORY_H;HAVE_STRUCT_TIMEVAL;SIZEOF_LONG=8;SIZEOF_SHORT=2;SIZEOF_INT=4;CURL_STATICLIB;CURL_DISABLE_LDAP;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

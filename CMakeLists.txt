@@ -22,8 +22,13 @@ option( DEBUG_TIMERS "Show debug timers" ON)
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )
 set(LOCALE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/locale" )
+set(STEAM_API_DIR "${CMAKE_CURRENT_SOURCE_DIR}/steam" )
 get_filename_component(WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
 set(WORK_DIR ${WORK_DIR}/caesaria-test)
+
+if(USE_STEAM)
+  add_definitions(-DCAESARIA_USE_STEAM)
+endif(USE_STEAM)
 
 if(BUILD_AUDIO)
   set( CAESARIA_USE_SDL_MIXER ON)

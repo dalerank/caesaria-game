@@ -45,7 +45,7 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
 
   if( srvc.isValid() )
   {
-    srvc->update( _value );
+    srvc->addBuff( _value, false, 12 );
   }
 }
 
