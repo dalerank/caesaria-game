@@ -17,6 +17,7 @@ LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/$(FREETYPE_PATH)/include \
   $(LOCAL_PATH)/$(GAME_PATH) \
   $(LOCAL_PATH)/$(DEP_PATH) \
+  $(LOCAL_PATH)/steam \
   $(LOCAL_PATH)/$(DEP_PATH)/libpng
 
 # Add your application source files here...
