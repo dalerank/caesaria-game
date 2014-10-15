@@ -37,10 +37,6 @@
 #include "core/saveadapter.hpp"
 #include "ttf/SDL_ttf.h"
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
@@ -82,8 +78,6 @@
     PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
-<<<<<<< HEAD
-=======
   #endif
 
   #ifndef CAESARIA_PLATFORM_MACOSX
@@ -96,7 +90,6 @@
     #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
     #define glCheckFramebufferStatus  glCheckFramebufferStatusEXT
     #define glFramebufferTexture2D    glFramebufferTexture2DEXT
->>>>>>> master
   #endif
 #else
   #undef CAESARIA_USE_SHADERS
