@@ -7,6 +7,7 @@ LOCAL_MODULE := application
 SDL_PATH       := ../../libs/SDL
 SDL_MIXER_PATH := ../../libs/SDL_mixer
 SDL_NET_PATH   := ../../libs/SDL_net
+STEAM_PATH     := ../../steam
 GAME_PATH := $(LOCAL_PATH)
 DEP_PATH := ../dep
 
@@ -17,7 +18,7 @@ LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/$(FREETYPE_PATH)/include \
   $(LOCAL_PATH)/$(GAME_PATH) \
   $(LOCAL_PATH)/$(DEP_PATH) \
-  $(LOCAL_PATH)/steam \
+  $(LOCAL_PATH)/$(STEAM_PATH) \
   $(LOCAL_PATH)/$(DEP_PATH)/libpng
 
 # Add your application source files here...
