@@ -35,7 +35,7 @@
 #include "vfs/file.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
-#include "ttf/SDL_ttf.h"
+#include <SDL_ttf.h>
 
 
 #ifndef CAESARIA_PLATFORM_WIN
