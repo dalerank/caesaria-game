@@ -82,7 +82,7 @@ void Animals::timeStep( PlayerCityPtr city, const unsigned int time)
         if( animal.isValid() )
         {
           Tile* rndTile = border.random();
-          animal->send2City( rndTile->pos() );
+          animal->send2City( rndTile->epos() );
         }
       }
     }

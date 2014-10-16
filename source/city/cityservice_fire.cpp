@@ -15,32 +15,43 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
-#define __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#include "cityservice_fire.hpp"
+#include "city.hpp"
+#include "gfx/tilemap.hpp"
+#include "game/gamedate.hpp"
+
+using namespace gfx;
 
 namespace city
 {
 
-namespace debug_event
+class Fire::Impl
 {
-
-enum {
-  add_enemy_archers=0,
-  add_enemy_soldiers,
-  add_empire_barbarian,
-  add_wolves,
-  send_mars_wrath,
-  win_mission,
-  add_1000_dn,
-  add_player_money,
-  send_chastener,
-  test_request,
-  send_player_army,
-  screenshot,
-  send_venus_wrath
+public:
+  Fire::Locations locations;
 };
 
+city::SrvcPtr Fire::create()
+{
+  city::SrvcPtr ret( new Fire() );
+  ret->drop();
+
+  return ret;
 }
 
+std::string Fire::defaultName() { return CAESARIA_STR_EXT(Fire); }
+
+Fire::Fire()
+  : city::Srvc( defaultName() ), _d( new Impl )
+{
+}
+
+void Fire::timeStep( PlayerCityPtr city, const unsigned int time )
+{  
+}
+
+void Fire::addLocation(const TilePos& location) { _d->locations.insert( location ); }
+void Fire::rmLocation(const TilePos& location) { _d->locations.erase( location ); }
+const Fire::Locations&Fire::locations() const { return _d->locations;  }
+
 }//end namespace city
-#endif //__CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__

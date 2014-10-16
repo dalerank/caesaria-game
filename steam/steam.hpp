@@ -13,14 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef _CAESARIA_STEAM_HANDLER_INCLUDE_H_
+#define _CAESARIA_STEAM_HANDLER_INCLUDE_H_
 
-#include "core/platform.hpp"
+#ifdef CAESARIA_USE_STEAM
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 4
-#define CAESRAIA_VERSION_REVSN 0
+#include <string>
+#include "gfx/picture.hpp"
 
+namespace steamapi
+{
 
-#endif
+class Handler
+{
+public:
+  static bool checkSteamRunning();
+  static bool init();
+  static void close();
+  static void frame();
+  static std::string userName();
+  static const gfx::Picture& userImage();
+};
+
+}
+
+#endif  //CAESARIA_USE_STEAM
+
+#endif  //_CAESARIA_STEAM_HANDLER_INCLUDE_H_

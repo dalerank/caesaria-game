@@ -41,6 +41,7 @@ using namespace gfx;
 namespace {
 CAESARIA_LITERALCONST(speed)
 CAESARIA_LITERALCONST(speedMultiplier)
+static const Tile invalidTile( TilePos(-1,-1) );
 }
 
 class Walker::Impl
@@ -51,7 +52,7 @@ public:
   walker::Type type;
   bool isDeleted;
   float speed;
-  TilePos location;
+  Tile* location;
   UniqueId uid;
   int waitInterval;
   float speedMultiplier;
@@ -85,6 +86,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->action.direction = constants::noneDirection;
   _d->type = walker::unknown;
   _d->health = 100;
+  _d->location = 0;
   _d->lastCenterDst = 99.f;
   _d->centerReached = false;
   _d->speed = 1.f; // default speed
@@ -154,10 +156,10 @@ void Walker::timeStep(const unsigned long time)
 
 void Walker::setPos( const TilePos& pos )
 {
-  _d->location = pos;
-  //_d->tileOffset = _d->midTilePos;
-  const Tile& tile =_d->city->tilemap().at( pos );
-  _d->wpos = tile.center().toPointF();
+  _d->location = &_d->city->tilemap().at( pos );
+  _d->wpos = _d->location->center().toPointF();
+
+  _computeDirection();
 }
 
 void Walker::setPathway( const Pathway& pathway)
@@ -234,16 +236,14 @@ void Walker::_walk()
 
   if( saveMpos != Mpos )
   {
-    _d->location = Mpos;
+    _d->location = &_d->city->tilemap().at( Mpos );
     _changeTile();
   }
 }
 
 void Walker::_changeTile()
 {
-   Tilemap& tilemap = _d->city->tilemap();
-   Tile& currentTile = tilemap.at( _d->location );
-   _d->updateSpeedMultiplier( currentTile );
+   _d->updateSpeedMultiplier( *_d->location );
    _d->centerReached = false;
 }
 
@@ -310,12 +310,12 @@ const Tile& Walker::_nextTile() const
 
 Point Walker::mappos() const
 {
-  const Tile& tile = _d->city->tilemap().at( pos() );
+  const Tile& tile = *_d->location;
   Point offset;
   if( tile.overlay().isValid() )
       offset = tile.overlay()->offset( tile, tilesubpos() );
 
-  const PointF p = _d->wpos;
+  const PointF& p = _d->wpos;
   return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset;
 }
 
@@ -333,7 +333,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->location;}
+TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : TilePos( -1, -1 ) ;}
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 UniqueId Walker::uniqueId() const{ return _d->uid; }
@@ -356,8 +356,13 @@ void Walker::setFlag(Walker::Flag flag, bool value)
 
 Point Walker::tilesubpos() const
 {
-  Point tmp = Point( _d->location.i(), _d->location.j() ) * 15 + Point( 7, 7 );
+  Point tmp = Point( _d->location->i(), _d->location->j() ) * 15 + Point( 7, 7 );
   return tmp - _d->wpos.toPoint();
+}
+
+const Tile& Walker::tile() const
+{
+  return _d->location ? *_d->location : invalidTile;
 }
 
 void Walker::_setAction( Walker::Action action )
@@ -437,7 +442,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
-  VARIANT_SAVE_ANY_D( stream, _d, location )
+  stream[ "location" ] = _d->location->pos();
   stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
   stream[ "wpos" ] = _d->wpos;
   stream[ "nextwpos" ] = _d->nextwpos;
@@ -456,10 +461,10 @@ void Walker::load( const VariantMap& stream)
 
   _d->name = stream.get( "name" ).toString();
   _d->wpos = stream.get( "wpos" ).toPointF();
-  VARIANT_LOAD_ANY_D( _d, location, stream );
+  TilePos pos = stream.get( "location" ).toTilePos();
+  _d->location = &tmap.at( pos );
   _d->lastCenterDst = stream.get( "lastCenterDst" );
-  _d->pathway.init( tmap, tmap.at( 0, 0 ) );
-  _d->pathway.load( stream.get( "pathway" ).toMap() );
+  _d->pathway.load( tmap, stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
   _d->tileSpeedKoeff = stream.get( "tileSpdKoeff" );
   _d->nextwpos = stream.get( "nextwpos" ).toPointF();
@@ -474,7 +479,7 @@ void Walker::load( const VariantMap& stream)
   {
     Logger::warning( "Walker: wrong way for %s:%s at [%d,%d]",
                      WalkerHelper::getTypename( _d->type ).c_str(), _d->name.c_str(),
-                     _d->location.i(), _d->location.j() );
+                     _d->location->i(), _d->location->j() );
   }
   
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file

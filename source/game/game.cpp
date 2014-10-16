@@ -367,6 +367,8 @@ void Game::setScreenGame()
     events::Dispatcher::instance().update( *this, _d->saveTime );
   }
 
+  clear();
+
   _d->nextFilename = screen.nextFilename();
   switch( screen.result() )
   {

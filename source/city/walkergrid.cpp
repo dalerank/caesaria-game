@@ -22,7 +22,7 @@
 namespace city
 {
 
-static const WalkerList invalidList;
+static const WalkerList invalidList = WalkerList();
 
 unsigned int WalkerGrid::_offset( const TilePos& pos )
 {

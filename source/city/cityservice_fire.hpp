@@ -15,32 +15,41 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
-#define __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#ifndef __CAESARIA_CITYSERVICE_FIRE_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_FIRE_H_INCLUDED__
+
+#include "cityservice.hpp"
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
+
+#include <set>
 
 namespace city
 {
 
-namespace debug_event
+class Fire : public city::Srvc
 {
+public:
+  typedef std::set<TilePos> Locations;
+  static city::SrvcPtr create();
+  static std::string defaultName();
 
-enum {
-  add_enemy_archers=0,
-  add_enemy_soldiers,
-  add_empire_barbarian,
-  add_wolves,
-  send_mars_wrath,
-  win_mission,
-  add_1000_dn,
-  add_player_money,
-  send_chastener,
-  test_request,
-  send_player_army,
-  screenshot,
-  send_venus_wrath
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+
+  void addLocation( const TilePos& location );
+  void rmLocation( const TilePos& location );
+
+  const Locations& locations() const;
+
+private:
+  Fire();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-}
+typedef SmartPtr<Fire> FirePtr;
 
 }//end namespace city
-#endif //__CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+
+#endif //__CAESARIA_CITYSERVICE_WATER_H_INCLUDED__

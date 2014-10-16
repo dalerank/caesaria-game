@@ -46,10 +46,10 @@ public:
   // tile coordinates
   int i() const;
   int j() const;
-  const TilePos& pos() const;
-
+  inline const TilePos& pos() const{ return _pos; }
   inline const TilePos& epos() const { return _epos; }
   inline const Point& mappos() const { return _mappos; }
+
   inline const TileOverlayPtr& rov() const { return _overlay; }
   void setEPos( const TilePos& epos );
 
@@ -134,6 +134,9 @@ private:
   int _height;
   gfx::Animation _animation;
   TileOverlayPtr _overlay;
+
+private:
+  Tile( const Tile& base );
 };
 
 

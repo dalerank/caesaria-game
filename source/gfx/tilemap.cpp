@@ -32,7 +32,7 @@ using namespace constants;
 namespace gfx
 {
 
-static Tile invalidTile = Tile( TilePos( -1, -1 ) );
+static Tile invalidTile( TilePos( -1, -1 ) );
 
 class TileRow : public TilesArray
 {
