@@ -12,3 +12,5 @@ set_target_properties(${PROJECT_NAME}
 # Expose public includes to other through cache variable.
 set(AES_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(AES_LIBRARY ${PROJECT_NAME})

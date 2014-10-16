@@ -42,7 +42,7 @@ if( BUILD_CURL )
   add_definitions( -DCURL_DISABLE_POP3 )
   add_definitions( -DCURL_DISABLE_SMTP )
   include_directories(${CURL_INCLUDE_DIR})
-  target_link_libraries(${PROJECT_NAME} curl-static)
+  target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARY})
 endif()
 
 if(WIN32)

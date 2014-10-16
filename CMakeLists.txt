@@ -42,6 +42,36 @@ else()
   message(" ")
 endif(BUILD_AUDIO)
 
+# Search for appropriate packages on linux, osx and not compile them
+if(UNIX AND NOT CYGWIN)
+
+  find_package( ZLIB )
+  if ( ZLIB_FOUND )
+    set(BUILD_ZLIB FALSE)
+  endif()
+
+  find_package( CURL )
+  if (CURL_FOUND)
+    set(BUILD_CURL FALSE)
+  endif()
+
+  find_package( PNG )
+  if (PNG_FOUND)
+    set(BUILD_PNG FALSE)
+  endif()
+
+  find_package( Freetype )
+  if (FREETYPE_FOUND)
+    set(BUILD_FREETYPE FALSE)
+  endif()
+
+  find_package( SDL2_ttf )
+  if (SDL2_TTF_FOUND)
+    set(BUILD_TTF FALSE)
+  endif()
+
+endif()
+
 if( BUILD_ZLIB )
   set(ZLIB_NAME "zlib")
   set(ZLIB_HOME "${DEP_SOURCE_DIR}/${ZLIB_NAME}" )

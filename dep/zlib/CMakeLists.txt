@@ -12,3 +12,5 @@ set_target_properties(${PROJECT_NAME}
 # Expose public includes to other through cache variable.
 set(ZLIB_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(ZLIB_LIBRARY ${PROJECT_NAME})

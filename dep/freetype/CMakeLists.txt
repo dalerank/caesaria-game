@@ -62,3 +62,5 @@ add_library(${FREETYPELIB_NAME} STATIC ${CFF_SOURCES} ${freetype_SRC} ${TYPE1_SO
 # Expose public includes to other through cache variable.
 set(FREETYPE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(FREETYPE_LIBRARY ${PROJECT_NAME})

@@ -23,7 +23,9 @@ set_target_properties(${PROJECT_NAME}
                       PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Expose public includes to other through cache variable.
-set(TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
+set(SDL2_TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
                                  ${LIBPNG_INCLUDE_DIR}
                                  ${FREETYPE_INCLUDE_DIR}
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(SDL2_TTF_LIBRARY ${PROJECT_NAME})

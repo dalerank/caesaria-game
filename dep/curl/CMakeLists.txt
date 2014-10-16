@@ -296,3 +296,5 @@ add_library(${CURLLIB_NAME} STATIC ${CURL_SOURCES_LIST})
 # Expose public includes to other through cache variable.
 set(CURL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(CURL_LIBRARY ${PROJECT_NAME})

@@ -15,5 +15,7 @@ set_target_properties(${PROJECT_NAME}
                       PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Expose public includes to other through cache variable.
-set(LIBPNG_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
+set(PNG_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(PNG_LIBRARY ${PROJECT_NAME})
