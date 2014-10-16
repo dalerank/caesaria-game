@@ -18,6 +18,7 @@ option( BUILD_TTF   "Static ttf"     ON )
 option( BUILD_GL_FRAMEBUFFER "Opengl framebuffer"     ON )
 option( BUILD_AUDIO "Use sdl_mixer"  ON )
 option( DEBUG_TIMERS "Show debug timers" ON)
+option( USE_CPP11 "Build with c++11 standart" OFF)
 
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )
