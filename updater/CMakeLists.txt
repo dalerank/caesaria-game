@@ -45,6 +45,12 @@ if( BUILD_CURL )
   target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARY})
 endif()
 
+find_package( CURL )
+if (CURL_FOUND)
+  include_directories(${CURL_INCLUDE_DIR})
+  target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARY})
+endif()
+
 if(WIN32)
   target_link_libraries( ${PROJECT_NAME} psapi ${CURLLIB_NAME} ws2_32 )
   set(EXECUTABLE_FILENAME "updater")

@@ -13,6 +13,13 @@ include_directories(
   ${FREETYPE_INCLUDE_DIR}
 )
 
+if (${FREETYPE_INCLUDE_DIR_ft2build})
+    include_directories(${FREETYPE_INCLUDE_DIR_ft2build})
+endif()
+if (${FREETYPE_INCLUDE_DIR_freetype2})
+    include_directories(${FREETYPE_INCLUDE_DIR_freetype2})
+endif()
+
 add_library(${PROJECT_NAME} ${TTF_SOURCES_LIST})
 
 target_link_libraries(${PROJECT_NAME} freetype)
