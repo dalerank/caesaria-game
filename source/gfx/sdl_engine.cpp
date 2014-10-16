@@ -76,6 +76,16 @@ public:
 
 Picture& SdlEngine::screen(){  return _d->screen; }
 
+unsigned int SdlEngine::format() const
+{
+  return 0;
+}
+
+void SdlEngine::debug(const std::string &text, const Point &pos)
+{
+
+}
+
 SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {
   resetColorMask();
@@ -130,6 +140,7 @@ void SdlEngine::init()
     
   Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( scr, 0 );
+  _d->screen.setOriginRect( Rect( 0, 0, _srcSize.width(), _srcSize.height() ) );
   
   if( !_d->screen.isValid() ) 
   {
@@ -261,6 +272,55 @@ void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   }
 }
 
+void SdlEngine::draw(const Picture &pic, const Rect &srcRect, const Rect &dstRect, Rect *clipRect)
+{
+  if( !pic.isValid() )
+        return;
+
+    int t = DateTime::elapsedTime();
+
+    _d->drawCall++;
+    SDL_Surface* ptx = pic.surface();
+
+    if( clipRect != 0 )
+    {
+      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+      SDL_SetClipRect( _d->screen.surface(), &r );
+    }
+
+    const Impl::MaskInfo& mask = _d->mask;
+    /*if( mask.enabled )
+    {
+      SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+      SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+    }*/
+
+    const Point& offset = pic.offset();
+
+    SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
+    SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
+
+    SDL_BlitSurface( ptx, &srcr, _d->screen.surface(), &dstr );
+
+    /*if( mask.enabled )
+    {
+      SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+      SDL_SetTextureAlphaMod( ptx, 0xff );
+    }*/
+
+    if( clipRect != 0 )
+    {
+      SDL_SetClipRect( _d->screen.surface(), 0 );
+    }
+
+    //drawTime += DateTime::elapsedTime() - t;
+}
+
+void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
+{
+  Decorator::drawLine( _d->screen, p1, p2, color );
+}
+
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
 {
   Impl::MaskInfo& mask = _d->mask;
@@ -271,6 +331,21 @@ void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
 }
 
 void SdlEngine::resetColorMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
+
+void SdlEngine::initViewport(int, Size s)
+{
+
+}
+
+void SdlEngine::setViewport(int, bool render)
+{
+
+}
+
+void SdlEngine::drawViewport(int, Rect r)
+{
+
+}
 
 /*Picture* SdlEngine::createPicture(const Size& size )
 {

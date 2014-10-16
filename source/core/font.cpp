@@ -248,6 +248,11 @@ void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool
   draw( dstpic, text, pos.x(), pos.y(), useAlpha, updateTx );
 }
 
+Picture *Font::once(const std::string &text, bool mayChange)
+{
+  return 0;
+}
+
 Font::~Font() {}
 
 Font& Font::operator=( const Font& other )

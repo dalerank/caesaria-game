@@ -253,11 +253,11 @@ Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
   }
 
   Engine::instance().loadPicture( *pic, mayChange );
-  if( !mayChange )
+ /* if( !mayChange )
   {
     SDL_FreeSurface( pic->_d->surface );
     pic->_d->surface = 0;
-  }
+  }*/
 
   return pic;
 }

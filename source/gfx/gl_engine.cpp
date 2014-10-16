@@ -235,6 +235,11 @@ Picture* GlEngine::createPicture(const Size& size )
 
 Picture& GlEngine::screen(){  return _screen; }
 
+void GlEngine::setFlag(int flag, int value)
+{
+
+}
+
 void FrameBuffer::_createFramebuffer( unsigned int& id )
 {
 #ifndef NO_FRAME_BUFFER
@@ -502,12 +507,22 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   foreach( it, pictures )
   {
     draw( *it, pos, clipRect );
-  }
+    }
+}
+
+void GlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
+{
+
 }
 
 void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 {
   draw( picture, pos.x(), pos.y() );
+}
+
+void GlEngine::draw(const Picture &picture, const Rect &src, const Rect &dst, Rect *clipRect)
+{
+
 }
 
 void GlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
