@@ -84,7 +84,7 @@
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
 #include "walkergrid.hpp"
-
+#include "cityservice_fire.hpp"
 
 #include <set>
 
@@ -181,6 +181,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   addService( city::HealthCare::create());
   addService( city::Peace::create() );
   addService( city::Sentiment::create() );
+  addService( city::Fire::create() );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();

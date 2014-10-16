@@ -473,7 +473,7 @@ void StartMenu::initialize()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   bool screenFitted = SETTINGS_VALUE( screenFitted );
-  if( !screenFitted )`
+  if( !screenFitted )
   {
     gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
                                                  "Information", "Is need autofit screen resolution?",
