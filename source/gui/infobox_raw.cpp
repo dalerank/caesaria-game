@@ -44,7 +44,7 @@ AboutRawMaterial::AboutRawMaterial( Widget* parent, const Tile& tile )
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
   _type = rawmb->type();
 
-  setConstruction( ptr_cast<Construction>( rawmb ) );
+  setBase( ptr_cast<Construction>( rawmb ) );
 
   Label* lbDamage;
   Label* lbProgress;

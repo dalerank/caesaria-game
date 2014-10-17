@@ -39,7 +39,7 @@ AboutTemple::AboutTemple( Widget* parent, const Tile& tile )
   TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
   DivinityPtr divn = temple->divinity();
 
-  setConstruction( ptr_cast<Construction>( temple ) );
+  setBase( ptr_cast<Construction>( temple ) );
 
   bool bigTemple = temple->size().width() > 2;
   std::string desc = _( divn->shortDescription() );

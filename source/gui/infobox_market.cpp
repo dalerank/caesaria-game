@@ -37,7 +37,7 @@ AboutMarket::AboutMarket( Widget* parent, const Tile& tile )
 {
    MarketPtr market = ptr_cast<Market>( tile.overlay() );
 
-   setConstruction( ptr_cast<Construction>( market ));
+   setBase( ptr_cast<Construction>( market ));
 
    Label* lbAbout = new Label( this, Rect( 15, 25, width() - 15, 36) );
    lbAbout->setWordwrap( true );
