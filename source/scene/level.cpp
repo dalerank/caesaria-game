@@ -871,6 +871,12 @@ void Level::_handleDebugEvent(int event)
   case city::debug_event::send_venus_wrath:
     religion::rome::Pantheon::venus()->updateRelation( -101.f, _d->game->city() );
   break;
+
+  case city::debug_event::all_sound_off:
+    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
+    audio::Engine::instance().setVolume( audio::themeSound, 0 );
+    audio::Engine::instance().setVolume( audio::gameSound, 0 );
+  break;
   }
 }
 

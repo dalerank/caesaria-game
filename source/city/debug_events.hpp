@@ -37,7 +37,8 @@ enum {
   test_request,
   send_player_army,
   screenshot,
-  send_venus_wrath
+  send_venus_wrath,
+  all_sound_off
 };
 
 }
