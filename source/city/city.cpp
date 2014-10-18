@@ -389,9 +389,10 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 }
 
 void PlayerCity::Impl::updateWalkers( unsigned int time )
-{
-  WalkerList::iterator walkerIt = walkers.begin();
-  while( walkerIt != walkers.end() )
+{  
+  WalkerList copyWalkers = walkers;
+  WalkerList::iterator walkerIt = copyWalkers.begin();
+  while (walkerIt != copyWalkers.end())
   {
       WalkerPtr walker = *walkerIt;
       walker->timeStep( time );
@@ -416,28 +417,26 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 {
   TileOverlayList::iterator overlayIt = overlays.begin();
-  while( overlayIt != overlays.end() )
+  TileOverlayList overlaysToDestroy;
+  while (overlayIt != overlays.end())
   {
-    //try
-    //{
-      (*overlayIt)->timeStep( time );
+    (*overlayIt)->timeStep( time );
 
-      if( (*overlayIt)->isDeleted() )
-      {
-        beforeOverlayDestroyed( city, *overlayIt );
-        // remove the overlay from the overlay list
-        (*overlayIt)->destroy();
-        overlayIt = overlays.erase(overlayIt);
-      }
-      else
-      {
-        ++overlayIt;
-      }
-    //}
-    //catch(...)
-    //{
-      //int i=0;
-    //}
+    if( (*overlayIt)->isDeleted() )
+    {
+      beforeOverlayDestroyed( city, *overlayIt );
+      // remove the overlay from the overlay list
+      overlaysToDestroy.push_back(*overlayIt);
+      overlayIt = overlays.erase(overlayIt);
+    }
+    else
+    {
+      ++overlayIt;
+    }
+  }
+  foreach(overlay, overlaysToDestroy)
+  {
+    (*overlay)->destroy();
   }
 }
 
