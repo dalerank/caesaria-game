@@ -160,6 +160,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           continue;
 
         const Tile& basicTile = tmap.at( rPos );
+        const bool isConstructible = basicTile.getFlag( Tile::isConstructible );
         Tile* tile = new Tile( basicTile.pos() );  // make a copy of tile
         tile->setEPos( basicTile.epos() );
 
@@ -169,11 +170,9 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
 
-        bool isConstructible = tile->getFlag( Tile::isConstructible );
         tile->setPicture( (!walkersOnTile && isConstructible) ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
-        //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         tile->setOverlay( 0 );
         d->buildTiles.push_back( tile );
       }
@@ -184,9 +183,6 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 void LayerBuild::_updatePreviewTiles( bool force )
 {
   __D_IMPL(d,LayerBuild);
-  if( !d->multiBuilding )
-    _setStartCursorPos( _lastCursorPos() );
-
   Tile* curTile = _camera()->at( _lastCursorPos(), true );
 
   if( !curTile )
@@ -194,6 +190,12 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
   if( !force && d->lastTilePos == curTile->epos() )
     return;
+
+  if( !d->multiBuilding )
+  {
+    _setStartCursorPos( _lastCursorPos() );
+    d->startTilePos = curTile->pos();
+  }
 
   d->lastTilePos = curTile->epos();
 
