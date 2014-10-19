@@ -93,6 +93,7 @@
 
     "wheat_upper#goods_updater" : {
       good : "wheat"
+      buildings : [ "market" ]
       date : "-350.01.01"
       endTime : "01.01.01"
       value : 80
