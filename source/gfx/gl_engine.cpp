@@ -37,7 +37,6 @@
 #include "core/saveadapter.hpp"
 #include "ttf/SDL_ttf.h"
 
-
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
