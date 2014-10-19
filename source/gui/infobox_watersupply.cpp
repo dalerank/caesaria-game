@@ -48,7 +48,7 @@ AboutFontain::AboutFontain(Widget* parent, const Tile& tile)
   FountainPtr fountain;
   fountain << tile.overlay();
 
-  setConstruction( ptr_cast<Construction>( fountain ) );
+  setBase( ptr_cast<Construction>( fountain ) );
 
   std::string text;
   if( fountain.isValid() )
@@ -90,7 +90,7 @@ AboutReservoir::AboutReservoir(Widget* parent, const Tile& tile)
   _lbTextRef()->setWordwrap( true );
 
   ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
-  setConstruction( ptr_cast<Construction>( reservoir ) );
+  setBase( ptr_cast<Construction>( reservoir ) );
 
   std::string text;
   if( reservoir.isValid() )
@@ -119,7 +119,7 @@ AboutWell::AboutWell(Widget* parent, const Tile& tile)
   _lbTextRef()->setWordwrap( true );
 
   WellPtr well = ptr_cast<Well>( tile.overlay() );
-  setConstruction( ptr_cast<Construction>( well ) );
+  setBase( ptr_cast<Construction>( well ) );
 
   std::string text;
   if( well.isValid() )

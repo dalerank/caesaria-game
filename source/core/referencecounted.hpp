@@ -46,10 +46,10 @@ public:
   }
 
   //! Get the reference count.
-  int getReferenceCount() const{ return _referenceCounter; }
+  int rcount() const{ return _referenceCounter; }
 
   //! Returns the debug name of the object.
-  std::string getDebugName() const{ return _debugName; }
+  std::string debugName() const{ return _debugName; }
 protected:
 
   //! Sets the debug name of the object.

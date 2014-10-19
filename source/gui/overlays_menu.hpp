@@ -35,7 +35,7 @@ public:
 
   bool onEvent(const NEvent& event);
 
-oc3_signals public:
+signals public:
   Signal1<int>& onSelectOverlayType();
 
 private:

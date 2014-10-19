@@ -32,7 +32,7 @@ public:
   bool loop;
   bool isActive;
 
-oc3_signals public:
+signals public:
   Signal1<int> onTimeoutASignal;
   Signal0<> onTimeoutSignal;
 };
@@ -69,8 +69,8 @@ void Timer::update( unsigned int time )
 
   if( _d->isActive && ( time - _d->startTime > _d->time) )
   {
-    oc3_emit _d->onTimeoutASignal( _d->id );
-    oc3_emit _d->onTimeoutSignal();
+    emit _d->onTimeoutASignal( _d->id );
+    emit _d->onTimeoutSignal();
 
     _d->isActive = false;
 

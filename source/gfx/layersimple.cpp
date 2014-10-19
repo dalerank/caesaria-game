@@ -44,9 +44,9 @@ LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
   return ret;
 }
 
-void LayerSimple::afterRender(Engine &engine)
+void LayerSimple::renderUi(Engine &engine)
 {
-  Layer::afterRender( engine );
+  Layer::renderUi( engine );
 
   Tile* lastTile = _currentTile();
   if( lastTile )

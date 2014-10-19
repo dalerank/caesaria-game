@@ -55,7 +55,7 @@ void Tile::Terrain::clearFlags()
   garden     = false;
   meadow     = false;
   wall       = false;
-  rubble     = false;
+  rubble     = false;  
   deepWater  = false;
 }
 
@@ -93,8 +93,8 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.elevation || _terrain.tree) );
 }
 
-const TilePos& Tile::pos() const{ return _pos; }
-Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
+
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
@@ -382,6 +382,26 @@ Tile& TileHelper::getInvalid()
 {
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
+}
+
+Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
+{
+  float t = (e - b).getAngleICW();
+  int angle = (int)ceil( t / 45.f);
+
+  Direction directions[] = { east, southEast, south, southWest,
+                             west, northWest, north, northEast, northEast };
+
+  return directions[ angle ];
+}
+
+void TileHelper::fixPlateauFlags(Tile& tile)
+{
+  if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
+  {
+    tile.setFlag( Tile::clearAll, true );
+    tile.setFlag( Tile::tlRock, true );
+  }
 }
 
 }//end namespace gfx

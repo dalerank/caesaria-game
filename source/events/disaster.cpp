@@ -149,7 +149,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
 
     std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",
                                   "##alarm_plague_in_city##", "##alarm_earthquake##" };
-    oc3_emit game.city()->onDisasterEvent()( _pos, _( dstr2string[_type] ) );
+    emit game.city()->onDisasterEvent()( _pos, _( dstr2string[_type] ) );
   }
 }
 

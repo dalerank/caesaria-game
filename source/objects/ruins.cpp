@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "walker/dustcloud.hpp"
+#include "city/cityservice_fire.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -109,6 +110,14 @@ void BurningRuins::destroy()
   p->drop();
   p->setInfo( info() );
 
+  city::FirePtr fire;
+  fire << _city()->findService( city::Fire::defaultName() );
+
+  if( fire.isValid() )
+  {
+    fire->rmLocation( pos() );
+  }
+
   events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
   event->dispatch();
 }
@@ -123,6 +132,14 @@ bool BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
+
+  city::FirePtr fire;
+  fire << city->findService( city::Fire::defaultName() );
+
+  if( fire.isValid() )
+  {
+    fire->addLocation( pos );
+  }
 
   return true;
 }   

@@ -32,8 +32,9 @@ namespace world
 
 class Traderoute::Impl
 {
-oc3_signals public:
+signals public:
   Signal1<MerchantPtr> onMerchantArrivedSignal;
+
 public:
   std::string begin;
   std::string end;
@@ -42,7 +43,7 @@ public:
   bool seaRoute;
   gfx::Pictures pictures;
 
-  typedef std::vector<MerchantPtr> MerchantList;
+  MerchantList newMerchants;
   MerchantList merchants;
 
   void resolveMerchantArrived( MerchantPtr merchant )
@@ -62,7 +63,7 @@ public:
       city->addObject( ptr_cast<Object>( merchant ) );
     }
 
-    oc3_emit onMerchantArrivedSignal( merchant );
+    emit onMerchantArrivedSignal( merchant );
   }
 };
 
@@ -72,11 +73,17 @@ std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
 
 void Traderoute::update( unsigned int time )
 {
-  Impl::MerchantList::iterator it=_d->merchants.begin();
+  MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )
   {
     if( (*it)->isDeleted() ) {  it = _d->merchants.erase( it ); }
     else  { (*it)->timeStep( time ); ++it;  }
+  }
+
+  if( !_d->newMerchants.empty() )
+  {
+    _d->merchants << _d->newMerchants;
+    _d->newMerchants.clear();
   }
 }
 
@@ -133,7 +140,7 @@ void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodSto
   }
 
   MerchantPtr merchant = Merchant::create( _d->empire, this, begin, sell, buy );
-  _d->merchants.push_back( merchant );  
+  _d->newMerchants.push_back( merchant );
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
 }
@@ -153,7 +160,7 @@ MerchantPtr Traderoute::merchant( unsigned int index )
   if( index >= _d->merchants.size() )
     return 0;
 
-  Impl::MerchantList::iterator it = _d->merchants.begin();
+  MerchantList::iterator it = _d->merchants.begin();
   std::advance( it, index );
   return *it;
 }

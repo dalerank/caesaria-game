@@ -130,7 +130,7 @@ Path Path::removeBeginSlash() const
   if( pathTo.empty() )
       return Path( "" ); 
 
-  wchar_t endsym = *pathTo.begin();
+  char endsym = *pathTo.begin();
   if( endsym == '/' || endsym == '\\' )
       pathTo.erase( 0, 1 );
 

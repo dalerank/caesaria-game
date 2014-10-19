@@ -23,5 +23,4 @@
 #include "locale.hpp"
 #define _(x) Locale::translate(x)
 
-
 #endif

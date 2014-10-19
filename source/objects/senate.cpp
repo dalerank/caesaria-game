@@ -144,8 +144,13 @@ void Senate::_updateUnemployers()
 
 float Senate::collectTaxes()
 {
-  float save = _d->taxValue;
-  _d->taxValue = 0;
+  int save = 0;
+
+  if( _d->taxValue > 1 )
+  {
+    save = floor( _d->taxValue );
+    _d->taxValue -= save;
+  }
   return save;
 }
 

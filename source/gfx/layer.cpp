@@ -57,7 +57,7 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
-  Layer::VisibleWalkers vwalkers;
+  Layer::WalkerTypes vwalkers;
 
   int posMode;
 
@@ -94,6 +94,8 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
 
   tiles.clear();
 }
+
+void Layer::renderUi(Engine& engine) {  }
 
 void Layer::handleEvent(NEvent& event)
 {
@@ -166,7 +168,9 @@ void Layer::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _d->camera->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
+
+    moveValue *= ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
@@ -203,8 +207,8 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
                       : _d->camera->at( startPos );
   Tile* stopTile  = _d->camera->at( _d->lastCursorPos, true );
 
-  TilePos startPosTmp = startTile->pos();
-  TilePos stopPosTmp  = stopTile->pos();
+  TilePos startPosTmp = startTile->epos();
+  TilePos stopPosTmp  = stopTile->epos();
 
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
@@ -248,30 +252,35 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   }
 }
 
-WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos& pos)
+/*WalkerList Layer::_getVisibleWalkerList(const WalkerTypes& aw, const TilePos& pos)
 {
-  Layer::VisibleWalkers vWalkers = visibleWalkers();
+  Layer::WalkerTypes vWalkers = visibleWalkers();
 
   WalkerList walkerList;
   foreach( wtAct, vWalkers )
   {
-    WalkerList foundWalkers = _city()->walkers( (walker::Type)*wtAct, pos );
+    const WalkerList& foundWalker = _city()->walkers( pos );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
   return walkerList;
-}
+}*/
 
 void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
-  WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
+  const WalkerList& walkers = _city()->walkers( tile.pos() );
+  const Layer::WalkerTypes& vWalkers = visibleTypes();
 
+  bool viewAll = vWalkers.count( walker::all );
   foreach( w, walkers )
   {
-    pics.clear();
-    (*w)->getPictures( pics );
-    engine.draw( pics, (*w)->mappos() + camOffset );
+    if( viewAll || vWalkers.count( (*w)->type() ) > 0 )
+    {
+      pics.clear();
+      (*w)->getPictures( pics );
+      engine.draw( pics, (*w)->mappos() + camOffset );
+    }
   }
 }
 
@@ -352,7 +361,7 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
   drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
 }
 
-const Layer::VisibleWalkers& Layer::visibleWalkers() const
+const Layer::WalkerTypes& Layer::visibleTypes() const
 {
   return _dfunc()->vwalkers;
 }
@@ -466,7 +475,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
- void Layer::beforeRender(Engine&){}
+void Layer::beforeRender(Engine&){}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -543,6 +552,7 @@ void Layer::afterRender( Engine& engine)
     else if( _d->currentTile->masterTile() != 0 )
     {
       pos = _d->currentTile->masterTile()->mappos();
+      size = (_d->currentTile->masterTile()->picture().width() + 2) / 60;
     }
 
     pos += offset;

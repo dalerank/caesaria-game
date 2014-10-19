@@ -32,7 +32,7 @@ public:
   virtual ~CityDonationWindow();
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
+public signals:
   Signal1<int>& onSendMoney();
 
 private:  

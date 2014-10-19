@@ -29,7 +29,7 @@ public:
                  frmNorthDblLine, frmWestDblLine,
                  frmRandomLocation, frmSquad,
                  frmParade } TroopsFormation;
-  typedef std::vector<TroopsFormation> TroopsFormations;
+  typedef std::vector<TroopsFormation> TroopsFormations;  
 
   Fort( constants::building::Type type, int picIdLogo );
   virtual ~Fort();
@@ -64,6 +64,11 @@ public:
 
   virtual SoldierList soldiers() const;
   virtual void returnSoldiers();
+  virtual void sendExpedition( Point location );
+  virtual void resetExpedition();  
+
+  bool isAttackAnimals() const;
+  void setAttackAnimals( bool value );
 
 protected:
   virtual void _readyNewSoldier() {}

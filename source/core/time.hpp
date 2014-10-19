@@ -24,10 +24,9 @@ class DateTime
 {
 public:
     typedef enum { dateLess=-1, dateEquale=0, dateMore=1 } DATE_EQUALE_FEEL;
+    enum { weekInMonth = 4, daysInWeek = 7, monthsInYear = 12 };
 
     static const DateTime invalid;
-    static const int daysInWeek = 7;
-    static const int monthsInYear = 12;
 
     unsigned char hour() const;
     unsigned char month() const;

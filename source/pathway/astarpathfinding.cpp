@@ -40,9 +40,9 @@ public:
   class Grid : std::vector< AStarPoint* >
   {
   public:
-    inline size_type hash( const TilePos& pos ) { return pos.j() * _size.width() + pos.i(); }
+    inline size_type hash( const TilePos& pos ) const { return pos.j() * _size.width() + pos.i(); }
     
-    AStarPoint* operator[](const TilePos& pos )
+    AStarPoint* operator[](const TilePos& pos ) const
     {
       return *(begin() + hash( pos ));
     }
@@ -68,13 +68,12 @@ public:
   };
 
   Grid grid;
-  Tilemap* tilemap;
   unsigned int maxLoopCount;
   int verbose;
 
   bool getTraversingPoints(TilePos start, TilePos stop, Pathway& oPathWay );
 
-  AStarPoint* at( const TilePos& pos )
+  AStarPoint* at( const TilePos& pos ) const
   {
     if( isValid( pos ) )
     {
@@ -87,7 +86,13 @@ public:
     }
   }
 
-  bool isValid( const TilePos& pos )
+  const Tile* tile( const TilePos& pos ) const
+  {
+    AStarPoint* ap = at( pos );
+    return ap ? ap->tile : 0;
+  }
+
+  bool isValid( const TilePos& pos ) const
   {
     return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < grid._size.width() && pos.j() < grid._size.height() );
   }
@@ -114,20 +119,18 @@ Pathfinder::Pathfinder() : _d( new Impl )
 {
   _d->maxLoopCount = 4800;
   _d->verbose = 0;
-  _d->tilemap = 0;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
 {
   Logger::warning( "Pathfinder: start updating" );
-  _d->tilemap = const_cast< Tilemap* >( &tilemap );
 
   Logger::warning( "Pathfinder: resizing grid to %d", tilemap.size() );
   int size = tilemap.size();
   _d->grid.reset( size, size );
 
   Logger::warning( "Pathfinder: allocation AStarPoints" );
-  TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.size() ) );
+  const TilesArray& tiles = tilemap.allTiles();
   foreach( tile, tiles )
   {
     _d->grid.init( *tile );
@@ -136,7 +139,7 @@ void Pathfinder::update( const Tilemap& tilemap )
 
 Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
 {
-  if( !_d->tilemap )
+  if( _d->grid._size.area() == 0 )
     return Pathway();
 
   Pathway oPathway;
@@ -169,19 +172,19 @@ void Pathfinder::setCondition(const TilePossibleCondition& condition)
 
 Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
 {
-  if( !_d->tilemap )
+  if( _d->grid._size.area() == 0 )
   {
     return Pathway();
   }
 
   TilesArray area;
-  area.push_back( &_d->tilemap->at(stop) );
+  area.push_back( const_cast<Tile*>( _d->tile( stop ) ) );
   return getPath( start, area, flags );
 }
 
 bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway& oPathway )
 {
-  oPathway.init( *tilemap, tilemap->at( start ) );
+  oPathway.init( *tile( start ) );
 
   if( start == stop )
     return false;
@@ -225,7 +228,14 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     return false;
   }  
 
-  oPathWay.init( *tilemap, tilemap->at( startPos ) );
+  AStarPoint* ap = at( startPos );
+  if( !ap || !ap->tile )
+  {
+    Logger::warning( "AStarPathfinder: wrong start pos at %d,%d", startPos.i(), startPos.j()  );
+    return false;
+  }
+
+  oPathWay.init( *(ap->tile) );
 
   foreach( tile, arrivedArea )
   {
@@ -393,7 +403,10 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     n++;
   }
 
-  foreach( pathPoint, lPath ) { oPathWay.setNextTile( tilemap->at( (*pathPoint)->getPos() ) ); }
+  foreach( pathPoint, lPath )
+  {
+    oPathWay.setNextTile( *((*pathPoint)->tile) );
+  }
 
   return oPathWay.length() > 0;
 }

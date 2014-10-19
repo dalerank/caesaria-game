@@ -60,12 +60,17 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   } 
   else if( tile.getFlag( Tile::tlWater ) )
   {
-    title = "##water_caption##";    
+    std::string typeStr = tile.getFlag( Tile::tlCoast )
+                            ? "##coast"
+                            : "##water";
+    title = typeStr + "_caption##";
 
     TilePos exitPos = city->borderInfo().boatEntry;
     Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
 
-    text = way.isValid() ? "##water_text##" : "##inland_lake_text##";
+    text = way.isValid()
+             ? (typeStr + "_text##")
+             : "##inland_lake_text##";
   }
   else if( tile.getFlag( Tile::tlRock ) )
   {

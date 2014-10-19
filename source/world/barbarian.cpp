@@ -77,6 +77,11 @@ void Barbarian::updateStrength(int value)
 
 int Barbarian::viewDistance() const { return 60; }
 
+bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
+{
+  return !is_kind_of<Barbarian>( other );
+}
+
 void Barbarian::_check4attack()
 {
   MovableObjectList mobjects;
@@ -195,6 +200,7 @@ bool Barbarian::_attackObject(ObjectPtr obj)
 
     return !pcity->strength();
   }
+  //else if( )
 
   return false;
 }

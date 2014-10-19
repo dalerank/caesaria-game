@@ -317,25 +317,25 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wndrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
   _d->btnCulture->setValue( _d->city->culture() );
-  _d->updateColumn( _d->btnCulture->relativeRect().getCenter(), 0 );
+  _d->updateColumn( _d->btnCulture->relativeRect().center(), 0 );
   CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
   _d->btnProsperity = new RatingButton( this, Point( 200, 290), "##wndrt_prosperity##", "##wndrt_prosperity_tooltip##" );
   _d->btnProsperity->setValue( _d->city->prosperity() );
   _d->btnProsperity->setTarget( targets.needProsperity() );
-  _d->updateColumn( _d->btnProsperity->relativeRect().getCenter(), _d->city->prosperity() );
+  _d->updateColumn( _d->btnProsperity->relativeRect().center(), _d->city->prosperity() );
   CONNECT( _d->btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
 
   _d->btnPeace      = new RatingButton( this, Point( 320, 290), "##wndrt_peace##", "##wndrt_peace_tooltip##" );
   _d->btnPeace->setValue( _d->city->peace() );
   _d->btnPeace->setTarget( targets.needPeace() );
-  _d->updateColumn( _d->btnPeace->relativeRect().getCenter(), 0 );
+  _d->updateColumn( _d->btnPeace->relativeRect().center(), 0 );
   CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
   _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
   _d->btnFavour->setValue( _d->city->favour() );
   _d->btnFavour->setTarget( targets.needFavour() );
-  _d->updateColumn( _d->btnFavour->relativeRect().getCenter(), 0 );
+  _d->updateColumn( _d->btnFavour->relativeRect().center(), 0 );
   CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );

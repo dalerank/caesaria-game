@@ -32,6 +32,8 @@
 #include "walker/helper.hpp"
 #include "walker/romearcher.hpp"
 #include "core/stacktrace.hpp"
+#include "world/playerarmy.hpp"
+#include "world/empire.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -67,6 +69,7 @@ static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
 
     newEmblem.name = vm_emblem[ lc_name ].toString();
     newEmblem.pic = Picture::load( vm_emblem[ lc_img ].toString() );
+
     if( !newEmblem.name.empty() && newEmblem.pic.isValid() )
     {
       availableEmblems.push_back( newEmblem );
@@ -102,6 +105,8 @@ public:
   std::map<unsigned int, TilePos> patrolAreaPos;
   Fort::TroopsFormations availableFormations;
   Fort::TroopsFormation formation;
+  std::string expeditionName;
+  bool attackAnimals;
 };
 
 class FortArea::Impl
@@ -162,6 +167,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   _d->flagIndex = 21;
   _d->maxSoldier = 16;
   _d->formation = frmSquad;
+  _d->attackAnimals = false;
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -329,7 +335,7 @@ TilePos Fort::freeSlot() const
   {
     foreach( it, tiles )
     {
-      unsigned int tilehash = TileHelper::hash( (*it)->pos() );
+      unsigned int tilehash = TileHelper::hash((*it)->pos());
 
       if( _d->patrolAreaPos.find( tilehash ) == _d->patrolAreaPos.end() )
       {
@@ -415,7 +421,9 @@ void Fort::save(VariantMap& stream) const
   {
     stream[ "patrolPoint" ] =  _d->patrolPoint->pos();
   }
-  stream[ "soldierNumber"  ] = _d->maxSoldier;
+
+  VARIANT_SAVE_ANY_D( stream, _d, maxSoldier )
+  VARIANT_SAVE_ANY_D( stream, _d, attackAnimals )
   stream[ lc_lastPatrolPos ] = _d->lastPatrolPos;
   stream[ lc_formation     ] = (int)_d->formation;
 }
@@ -427,7 +435,8 @@ void Fort::load(const VariantMap& stream)
   TilePos patrolPos = stream.get( "patrolPoint", pos() + TilePos( 3, 4 ) );
   _d->patrolPoint->setPos( patrolPos );
   _d->lastPatrolPos = stream.get( lc_lastPatrolPos, TilePos( -1, -1 ) );
-  _d->maxSoldier = stream.get( "soldierNumber", 16 ).toUInt();
+  VARIANT_LOAD_ANY_D( _d, maxSoldier, stream )
+  VARIANT_LOAD_ANY_D( _d, attackAnimals, stream )
   _d->formation = (TroopsFormation)stream.get( lc_formation, 0 ).toInt();
 }
 
@@ -446,8 +455,33 @@ void Fort::returnSoldiers()
     _d->patrolPoint->setPos( _d->area->pos() + TilePos( 0, 3 ) );
     changePatrolArea();
   }
+
 }
 
+void Fort::sendExpedition(Point location)
+{
+  world::PlayerArmyPtr army = world::PlayerArmy::create( _city()->empire(), ptr_cast<world::City>( _city() ) );
+  army->setFortPos( pos() );
+
+  RomeSoldierList soldiers;
+  soldiers << walkers();
+
+  army->move2location( location );
+  army->addSoldiers( soldiers );
+
+  army->attach();
+
+  _d->expeditionName = army->name();
+
+  foreach( it, soldiers )
+  {
+    (*it)->send2expedition( army->name() );
+  }
+}
+
+void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }
+void Fort::resetExpedition() { _d->expeditionName.clear(); }
+bool Fort::isAttackAnimals() const { return _d->attackAnimals; }
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
 void Fort::_setName(const std::string& name) { _d->emblem.name = name; }

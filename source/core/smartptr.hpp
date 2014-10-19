@@ -42,7 +42,7 @@ public:
     if (obj==0) return;
      
     //check if last reference
-    unsigned int lastRef = obj->getReferenceCount();
+    unsigned int lastRef = obj->rcount();
     obj->drop();
 
     if ( lastRef == 1)

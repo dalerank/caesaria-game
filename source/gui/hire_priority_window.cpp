@@ -37,7 +37,7 @@ public:
   std::set<PushButton*> prButtons;
 
 
-public oc3_signals:
+public signals:
   Signal2<city::Industry::Type, int> onAcceptPrioritySignal;
 };
 
@@ -94,7 +94,7 @@ bool HirePriorityWnd::onEvent(const NEvent& event)
         (*i)->setPressed( *i == event.gui.caller );
       }
       _d->priority = event.gui.caller->ID();
-      oc3_emit _d->onAcceptPrioritySignal( _d->type, _d->priority );
+      emit _d->onAcceptPrioritySignal( _d->type, _d->priority );
 
       deleteLater();
 

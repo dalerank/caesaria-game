@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{6522D808-5CFE-4863-910F-93E05639D6AD}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>CaesarIA-game</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">caesaria</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">caesaria</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.exe</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">caesaria</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">caesaria</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.exe</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">caesaria</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">caesaria</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.exe</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">caesaria</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">caesaria</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.exe</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;..\..\updater;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
+xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial  ..\..\game\$(Platform)\$(Configuration)\resources\tutorial\
+xcopy /E /I /Y ..\..\locale  ..\..\game\$(Platform)\$(Configuration)\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders  ..\..\game\$(Platform)\$(Configuration)\resources\shaders\
+xcopy /E /I /Y ..\..\dep\fonts\ds-greece.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\dep\fonts\FreeSerif.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Configuration)\
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X86 /debug %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\bin\$(Platform)\$(Configuration)\zlib.lib;..\..\bin\$(Platform)\$(Configuration)\aes.lib;..\..\bin\$(Platform)\$(Configuration)\\bzip2.lib;..\..\bin\$(Platform)\$(Configuration)\lzma.lib;..\..\bin\$(Platform)\$(Configuration)\smk.lib;..\..\bin\$(Platform)\$(Configuration)\ttf.lib;..\..\bin\$(Platform)\$(Configuration)\libpng.lib;..\..\bin\$(Platform)\$(Configuration)\freetype.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;_DEBUG;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
+xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial  ..\..\game\$(Platform)\$(Configuration)\resources\tutorial\
+xcopy /E /I /Y ..\..\locale  ..\..\game\$(Platform)\$(Configuration)\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders  ..\..\game\$(Platform)\$(Configuration)\resources\shaders\
+xcopy /E /I /Y ..\..\dep\fonts\ds-greece.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\dep\fonts\FreeSerif.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\SDL2\lib\x64\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2\lib\x64\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libFLAC-8.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libmikmod-2.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libmodplug-1.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libogg-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libvorbis-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libvorbisfile-3.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\SDL2_mixer.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\smpeg2.dll ..\..\game\$(Platform)\$(Configuration)\
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X64 /debug %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x64\SDL2main.lib;..\..\dep\SDL2\lib\x64\SDL2.lib;..\..\dep\SDL2_mixer\lib\x64\SDL2_mixer.lib;..\..\bin\$(Platform)\$(Configuration)\zlib.lib;..\..\bin\$(Platform)\$(Configuration)\aes.lib;..\..\bin\$(Platform)\$(Configuration)\\bzip2.lib;..\..\bin\$(Platform)\$(Configuration)\lzma.lib;..\..\bin\$(Platform)\$(Configuration)\smk.lib;..\..\bin\$(Platform)\$(Configuration)\ttf.lib;..\..\bin\$(Platform)\$(Configuration)\libpng.lib;..\..\bin\$(Platform)\$(Configuration)\freetype.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
+xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial  ..\..\game\$(Platform)\$(Configuration)\resources\tutorial\
+xcopy /E /I /Y ..\..\locale  ..\..\game\$(Platform)\$(Configuration)\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders  ..\..\game\$(Platform)\$(Configuration)\resources\shaders\
+xcopy /E /I /Y ..\..\dep\fonts\ds-greece.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\dep\fonts\FreeSerif.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Configuration)\
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X86 -static-libstdc++ -static-libgcc %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\bin\$(Platform)\$(Configuration)\zlib.lib;..\..\bin\$(Platform)\$(Configuration)\aes.lib;..\..\bin\$(Platform)\$(Configuration)\\bzip2.lib;..\..\bin\$(Platform)\$(Configuration)\lzma.lib;..\..\bin\$(Platform)\$(Configuration)\smk.lib;..\..\bin\$(Platform)\$(Configuration)\ttf.lib;..\..\bin\$(Platform)\$(Configuration)\libpng.lib;..\..\bin\$(Platform)\$(Configuration)\freetype.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
+xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial  ..\..\game\$(Platform)\$(Configuration)\resources\tutorial\
+xcopy /E /I /Y ..\..\locale  ..\..\game\$(Platform)\$(Configuration)\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders  ..\..\game\$(Platform)\$(Configuration)\resources\shaders\
+xcopy /E /I /Y ..\..\dep\fonts\ds-greece.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /E /I /Y ..\..\dep\fonts\FreeSerif.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\SDL2\lib\x64\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2\lib\x64\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libFLAC-8.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libmikmod-2.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libmodplug-1.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libogg-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libvorbis-0.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\libvorbisfile-3.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\SDL2_mixer.dll ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\smpeg2.dll ..\..\game\$(Platform)\$(Configuration)\
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X64 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x64\SDL2main.lib;..\..\dep\SDL2\lib\x64\SDL2.lib;..\..\dep\SDL2_mixer\lib\x64\SDL2_mixer.lib;..\..\bin\$(Platform)\$(Configuration)\zlib.lib;..\..\bin\$(Platform)\$(Configuration)\aes.lib;..\..\bin\$(Platform)\$(Configuration)\\bzip2.lib;..\..\bin\$(Platform)\$(Configuration)\lzma.lib;..\..\bin\$(Platform)\$(Configuration)\smk.lib;..\..\bin\$(Platform)\$(Configuration)\ttf.lib;..\..\bin\$(Platform)\$(Configuration)\libpng.lib;..\..\bin\$(Platform)\$(Configuration)\freetype.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\source\Debug\caesaria.exe ..\..-test\caesaria.exe
+xcopy /E /I /Y ..\..\models\game ..\..-test\resources\
+xcopy /E /I /Y ..\..\models\gui ..\..-test\resources\gui\
+xcopy /E /I /Y ..\..\models\missions ..\..-test\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial ..\..-test\resources\tutorial\
+xcopy /E /I /Y ..\..\locale ..\..-test\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders ..\..-test\resources\shaders\
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X86 -static-libstdc++ -static-libgcc %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\dep\zlib\MinSizeRel\zlib.lib;..\..\dep\aes\MinSizeRel\aes.lib;..\..\dep\bzip2\MinSizeRel\bzip2.lib;..\..\dep\lzma\MinSizeRel\lzma.lib;..\..\dep\smk\MinSizeRel\smk.lib;..\..\dep\ttf\MinSizeRel\ttf.lib;..\..\dep\libpng\MinSizeRel\libpng.lib;opengl32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;opengl32.lib;..\..\dep\freetype\MinSizeRel\freetype.lib;..\..\dep\zlib\MinSizeRel\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\source\Debug\caesaria.exe ..\..-test_x64\caesaria.exe
+xcopy /E /I /Y ..\..\models\game ..\..-test_x64\resources\
+xcopy /E /I /Y ..\..\models\gui ..\..-test_x64\resources\gui\
+xcopy /E /I /Y ..\..\models\missions ..\..-test_x64\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial ..\..-test_x64\resources\tutorial\
+xcopy /E /I /Y ..\..\locale ..\..-test_x64\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders ..\..-test_x64\resources\shaders\
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test_x64
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X86 -static-libstdc++ -static-libgcc %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x64\SDL2main.lib;..\..\dep\SDL2\lib\x64\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\dep\zlib\MinSizeRel\zlib.lib;..\..\dep\aes\MinSizeRel\aes.lib;..\..\dep\bzip2\MinSizeRel\bzip2.lib;..\..\dep\lzma\MinSizeRel\lzma.lib;..\..\dep\smk\MinSizeRel\smk.lib;..\..\dep\ttf\MinSizeRel\ttf.lib;..\..\dep\libpng\MinSizeRel\libpng.lib;opengl32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;opengl32.lib;..\..\dep\freetype\MinSizeRel\freetype.lib;..\..\dep\zlib\MinSizeRel\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\source\Debug\caesaria.exe ..\..-test\caesaria.exe
+xcopy /E /I /Y ..\..\models\game ..\..-test\resources\
+xcopy /E /I /Y ..\..\models\gui ..\..-test\resources\gui\
+xcopy /E /I /Y ..\..\models\missions ..\..-test\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial ..\..-test\resources\tutorial\
+xcopy /E /I /Y ..\..\locale ..\..-test\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders ..\..-test\resources\shaders\
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y \msdia80.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..-test
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X86 -static-libstdc++ -static-libgcc /debug %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\dep\zlib\RelWithDebInfo\zlib.lib;..\..\dep\aes\RelWithDebInfo\aes.lib;..\..\dep\bzip2\RelWithDebInfo\bzip2.lib;..\..\dep\lzma\RelWithDebInfo\lzma.lib;..\..\dep\smk\RelWithDebInfo\smk.lib;..\..\dep\ttf\RelWithDebInfo\ttf.lib;..\..\dep\libpng\RelWithDebInfo\libpng.lib;opengl32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;opengl32.lib;..\..\dep\freetype\RelWithDebInfo\freetype.lib;..\..\dep\zlib\RelWithDebInfo\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NOMINMAX;CAESARIA_PLATFORM_WIN64;_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;NDEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME=\"msvc\";CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\source;..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep;..\..\dep\zlib;..\..\dep\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>xcopy /Y ..\..\bin\source\Debug\caesaria.exe ..\..-test_x64\caesaria.exe
+xcopy /E /I /Y ..\..\models\game ..\..-test_x64\resources\
+xcopy /E /I /Y ..\..\models\gui ..\..-test_x64\resources\gui\
+xcopy /E /I /Y ..\..\models\missions ..\..-test_x64\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial ..\..-test_x64\resources\tutorial\
+xcopy /E /I /Y ..\..\locale ..\..-test_x64\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders ..\..-test_x64\resources\shaders\
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..-test_x64
+xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test_x64
+</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalOptions> /machine:X86 -static-libstdc++ -static-libgcc /debug %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x64\SDL2main.lib;..\..\dep\SDL2\lib\x64\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\dep\zlib\RelWithDebInfo\zlib.lib;..\..\dep\aes\RelWithDebInfo\aes.lib;..\..\dep\bzip2\RelWithDebInfo\bzip2.lib;..\..\dep\lzma\RelWithDebInfo\lzma.lib;..\..\dep\smk\RelWithDebInfo\smk.lib;..\..\dep\ttf\RelWithDebInfo\ttf.lib;..\..\dep\libpng\RelWithDebInfo\libpng.lib;opengl32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;opengl32.lib;..\..\dep\freetype\RelWithDebInfo\freetype.lib;..\..\dep\zlib\RelWithDebInfo\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
+      <ProgramDataBaseFile>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\**\*.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\source\**\*.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

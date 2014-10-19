@@ -46,7 +46,7 @@ class CityChartLegend : public Label
 public:
   CityChartLegend( Widget* parent, const Rect& rectangle, bool horizontal, int stepCount );
 
-public oc3_slots:
+public slots:
   void setMaxValue( int value );
 
 protected:
@@ -75,7 +75,7 @@ public:
   DrawMode mode() const { return _mode; }
   void setIsSmall( bool value ) { _isSmall = value; }
 
-public oc3_signals:
+public signals:
   Signal1<int> onMaxYChange;
   Signal1<int> onMaxXChange;
 
@@ -111,7 +111,7 @@ public:
   Label* lbTitle;
   Label* lbMigrationValue;
 
-public oc3_slots:
+public slots:
   void showNextChart();
   void showPrevChart();
 
@@ -242,7 +242,7 @@ void Population::Impl::updateStates()
 
       if( migration.isValid() )
       {
-        lbMigrationValue->setText( migration->leaveCityReason() );
+        lbMigrationValue->setText( migration->leaveCityReason( city ) );
       }
     }
   }
@@ -312,8 +312,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       _maxXValue = _values.size();
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
 
-      oc3_emit onMaxYChange( _maxValue );
-      oc3_emit onMaxXChange( _maxXValue );
+      emit onMaxYChange( _maxValue );
+      emit onMaxXChange( _maxXValue );
     }
   break;
 
@@ -335,8 +335,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
       _maxXValue = _values.size();
-      oc3_emit onMaxYChange( _maxValue );
-      oc3_emit onMaxXChange( _maxXValue );
+      emit onMaxYChange( _maxValue );
+      emit onMaxXChange( _maxXValue );
     }
   break;
 
@@ -372,8 +372,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
       _maxXValue = HouseLevel::count;
-      oc3_emit onMaxYChange( _maxValue );
-      oc3_emit onMaxXChange( _maxXValue );
+      emit onMaxYChange( _maxValue );
+      emit onMaxXChange( _maxXValue );
     }
   break;
 

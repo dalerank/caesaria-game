@@ -27,12 +27,18 @@ namespace debug_event
 enum {
   add_enemy_archers=0,
   add_enemy_soldiers,
+  add_empire_barbarian,
   add_wolves,
-  dec_mars_relation,
+  send_mars_wrath,
+  win_mission,
   add_1000_dn,
   add_player_money,
   send_chastener,
-  test_request
+  test_request,
+  send_player_army,
+  screenshot,
+  send_venus_wrath,
+  all_sound_off
 };
 
 }

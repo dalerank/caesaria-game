@@ -37,7 +37,6 @@ namespace {
 class Peace::Impl
 {
 public:
-  PlayerCityPtr city;
   unsigned int peaceYears;
   bool protestorOrMugglerSeen;
   bool rioterSeen;
@@ -47,17 +46,17 @@ public:
   Priorities<int> unsignificantBuildings;
 };
 
-city::SrvcPtr Peace::create(PlayerCityPtr city )
+city::SrvcPtr Peace::create()
 {
-  Peace* ret = new Peace( city );
+  city::SrvcPtr ret( new Peace() );
+  ret->drop();
 
-  return city::SrvcPtr( ret );
+  return ret;
 }
 
-Peace::Peace(PlayerCityPtr city )
-  : city::Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+Peace::Peace()
+  : city::Srvc( getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->peaceYears = 0;
   _d->protestorOrMugglerSeen = false;
   _d->rioterSeen = false;
@@ -80,7 +79,7 @@ Peace::Peace(PlayerCityPtr city )
                          << building::tower;
 }
 
-void Peace::update( const unsigned int time )
+void Peace::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( !GameDate::isYearChanged() )
     return;

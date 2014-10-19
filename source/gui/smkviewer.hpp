@@ -43,7 +43,7 @@ public:
 
   virtual void setFilename( const vfs::Path& path );
 
-public oc3_signals:
+public signals:
   Signal0<>& onFinish();
 
 protected:

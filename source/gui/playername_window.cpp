@@ -28,7 +28,7 @@ namespace gui
 
 class WindowPlayerName::Impl
 {
-public oc3_signals:
+public signals:
   Signal1<std::string> onNameChangeSignal;
   Signal0<> onCloseSignal;
 };
@@ -47,9 +47,9 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
   GET_WIDGET_FROM_UI( edPlayerName )
   GET_WIDGET_FROM_UI( btnContinue )
 
-  CONNECT( edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::emit );
-  CONNECT( btnContinue, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
-  CONNECT( edPlayerName, onEnterPressed(), &_d->onCloseSignal, Signal0<>::emit );
+  CONNECT( edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::_emit );
+  CONNECT( btnContinue, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
+  CONNECT( edPlayerName, onEnterPressed(), &_d->onCloseSignal, Signal0<>::_emit );
 
   if( edPlayerName )
   {

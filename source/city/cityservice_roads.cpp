@@ -43,29 +43,28 @@ public:
   int defaultDecreasePaved;
 
   DateTime lastTimeUpdate;
-  ScopedPtr< Propagator > propagator;
 
-  void updateRoadsAround( UpdateInfo info );
+  void updateRoadsAround(Propagator& propagator, UpdateInfo info );
 };
 
-SrvcPtr Roads::create(PlayerCityPtr city)
+SrvcPtr Roads::create()
 {
-  Roads* ret = new Roads( city );
-  return SrvcPtr( ret );
+  SrvcPtr ret( new Roads() );
+  ret->drop();
+  return ret;
 }
 
 std::string Roads::defaultName(){  return "roads";}
 
-Roads::Roads(PlayerCityPtr city )
-  : Srvc( *city.object(), Roads::defaultName() ), _d( new Impl )
+Roads::Roads()
+  : Srvc( Roads::defaultName() ), _d( new Impl )
 {
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
-  _d->lastTimeUpdate = GameDate::current();
-  _d->propagator.reset( new Propagator( city ) );
+  _d->lastTimeUpdate = GameDate::current();  
 }
 
-void Roads::update( const unsigned int time )
+void Roads::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( _d->lastTimeUpdate.month() == GameDate::current().month() )
     return;
@@ -80,8 +79,7 @@ void Roads::update( const unsigned int time )
   btypes.push_back( Impl::UpdateBuilding(building::templeNeptune, 4));
   btypes.push_back( Impl::UpdateBuilding(building::templeVenus, 4));
 
-  Helper helper( &_city );
-
+  Helper helper( city );
 
   Impl::Updates positions;
   foreach( it, btypes )
@@ -103,7 +101,11 @@ void Roads::update( const unsigned int time )
     }
   }
 
-  foreach( upos, positions ) { _d->updateRoadsAround( *upos ); }
+  Propagator propagator( city );
+  foreach( upos, positions )
+  {
+    _d->updateRoadsAround( propagator, *upos );
+  }
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
@@ -117,10 +119,10 @@ void Roads::update( const unsigned int time )
 
 Roads::~Roads() {}
 
-void Roads::Impl::updateRoadsAround( UpdateInfo info )
+void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
 {
-  propagator->init( info.first );
-  PathwayList pathWayList = propagator->getWays( info.second );
+  propagator.init( info.first );
+  PathwayList pathWayList = propagator.getWays( info.second );
 
   foreach( current, pathWayList )
   {

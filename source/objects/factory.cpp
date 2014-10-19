@@ -58,18 +58,18 @@ public:
   virtual void applyStorageReservation( GoodStock &stock, const int reservationID )
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
-    oc3_emit onChangeState();
+    emit onChangeState();
   }
 
   virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
-    oc3_emit onChangeState();
+    emit onChangeState();
   }
 
   Factory* factory;
 
-public oc3_signals:
+public signals:
   Signal0<> onChangeState;
 };
 
@@ -181,14 +181,14 @@ void Factory::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->produceGood )
+    if( _d->produceGood && GameDate::isDayChanged() )
     {
       //ok... factory is work, produce goods
-      float timeKoeff = _d->productionRate / (float)GameDate::days2ticks( 365 );
+      float timeKoeff = _d->productionRate / 365.f;
       float laborAccessKoeff = laborAccessPercent() / 100.f;
-      float work = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
+      float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
 
-      _d->progress += work;
+      _d->progress += dayProgress;
     }
   }
 
@@ -277,8 +277,8 @@ Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
-void Factory::productRate( const float rate ){  _d->productionRate = rate;}
-float Factory::getProductRate() const{  return _d->productionRate;}
+void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
+float Factory::productRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
 

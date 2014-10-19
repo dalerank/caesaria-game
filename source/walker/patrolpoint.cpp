@@ -19,13 +19,21 @@
 #include "game/resourcegroup.hpp"
 #include "objects/military.hpp"
 #include "city/city.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 using namespace gfx;
 
+namespace {
+  const Point extOffset( 15, 0 );
+  const Point animOffset( 0, 52 );
+  const Point embemOffset( 0, 18 );
+}
+
 class PatrolPoint::Impl
 {
 public:
+  Picture emblem;
   Animation animation;
   Picture standart;
   TilePos basePos;
@@ -35,27 +43,29 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
                                     std::string prefix, int startPos, int stepNumber, TilePos position)
 {
   PatrolPoint* pp = new PatrolPoint( city );
-  pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
   pp->_d->basePos = base->pos();
+  pp->updateMorale( base->legionMorale() );
 
-  Point extOffset( 15, 0 );
+  pp->_d->emblem = base->legionEmblem();
+  pp->_d->emblem.setOffset( animOffset + embemOffset + Point( -15, 30 ) );
+
   Animation anim;
   anim.load( prefix, startPos, stepNumber );
-  anim.setOffset( anim.offset() + Point( 0, 52 )  + extOffset );
-  pp->_d->standart.addOffset( extOffset.x(), extOffset.y() );
-
+  anim.setOffset( anim.offset() + animOffset  + extOffset );
   pp->_d->animation = anim;
+
   pp->setPos( position );
   PatrolPointPtr ptr( pp );
   ptr->drop();
 
-  city->addWalker( ptr.object() );
+  pp->attach();
   return ptr;
 }
 
 void PatrolPoint::getPictures( gfx::Pictures& oPics)
 {
   oPics.push_back( _d->standart );
+  oPics.push_back( _d->emblem );
   oPics.push_back( _d->animation.currentFrame() );
 }
 
@@ -89,4 +99,11 @@ void PatrolPoint::acceptPosition()
   {
     fort->changePatrolArea();
   }
+}
+
+void PatrolPoint::updateMorale(int morale)
+{
+  int mIndex = 20 - math::clamp( morale / 5, 0, 20);
+  _d->standart = Picture::load( ResourceGroup::sprites, 48 + mIndex );
+  _d->standart.addOffset( extOffset.x(), extOffset.y() );
 }

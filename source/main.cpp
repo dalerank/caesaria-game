@@ -24,6 +24,10 @@
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
 
+#ifdef CAESARIA_USE_STEAM
+  #include "steam.hpp"
+#endif
+
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
 #endif
@@ -35,7 +39,16 @@ int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
 #endif
-{
+{  
+
+#ifdef CAESARIA_USE_STEAM
+  if( !steamapi::Handler::checkSteamRunning() )
+    return EXIT_FAILURE;
+
+  if( !steamapi::Handler::init() )
+    return EXIT_FAILURE;
+#endif
+
   vfs::Directory workdir;
 #ifdef CAESARIA_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
@@ -86,6 +99,10 @@ int main(int argc, char* argv[])
     Logger::warning( "Critical error: " + e.getDescription() );
     Stacktrace::print();
   }
+
+#ifdef CAESARIA_USE_STEAM
+  steamapi::Handler::close();
+#endif
 
   return 0;
 }

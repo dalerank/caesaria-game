@@ -4,8 +4,7 @@
   funds : 6000
   city.name : "Carthago"
   player.rank : 5
-  date : "-170.01.01"
-  finish : "-100.01.01"
+  date : "-170.01.01"  
   climate : 2
   adviserEnabled : true
   fishPlaceEnabled : true
@@ -17,6 +16,7 @@
     prosperity : 30
     peace : 40
     favour : 30
+    finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
     title : "##win_procurator_title##"
     win.text : "##carthago_win_text##"

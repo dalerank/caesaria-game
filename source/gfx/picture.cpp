@@ -81,6 +81,7 @@ SDL_Surface*Picture::surface() const { return _d->surface;  }
 unsigned int Picture::textureID() const { return _d->opengltx; }
 unsigned int& Picture::textureID() { return _d->opengltx; }
 const Point& Picture::offset() const{  return _d->offset;}
+
 int Picture::width() const{  return _d->orect.width();}
 int Picture::height() const{  return _d->orect.height();}
 int Picture::pitch() const { return width() * 4; }
@@ -153,7 +154,7 @@ void Picture::draw(const Picture &srcpic, int x, int y, bool useAlpha )
 
 unsigned int* Picture::lock()
 {
-  if( _d->texture )
+  /*if( _d->texture )
   {
     int a;
     SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
@@ -170,8 +171,9 @@ unsigned int* Picture::lock()
 
       return pixels;
     }
-  }
-  else if( _d->surface )
+  }*/
+
+  if( _d->surface )
   {
     if( SDL_MUSTLOCK(_d->surface) )
     {
@@ -185,7 +187,7 @@ unsigned int* Picture::lock()
 
 void Picture::unlock()
 {
-  if( _d->texture )
+  /*if( _d->texture )
   {
     int a;
     SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
@@ -194,7 +196,7 @@ void Picture::unlock()
       SDL_UnlockTexture(_d->texture);
     }
   }
-  else if( _d->surface )
+  else if( _d->surface )*/
   {
     if( SDL_MUSTLOCK(_d->surface) )
     {
@@ -224,31 +226,15 @@ void Picture::destroy( Picture* ptr )
 
 void Picture::update()
 {
-  if( _d->surface )
+  if( _d->texture )
   {
-    if( _d->texture )
-    {
-      int access;
-      SDL_QueryTexture( _d->texture, 0, &access, 0, 0 );
-      /*if( access == SDL_TEXTUREACCESS_STREAMING )
-      {
-        void* pixels = 0;
-        int pitch;
-        int result = SDL_LockTexture(_d->texture, 0, &pixels, &pitch );
-        if( result == 0 )
-        {
-          memcpy( pixels, _d->surface->pixels, _d->surface->h * pitch );
-        }
-      }
-      else*/
-      {
-        SDL_UpdateTexture(_d->texture, 0, _d->surface->pixels, _d->surface->pitch );
-      }
-    }
-    else if( _d->opengltx > 0 )
-    {
-      Engine::instance().loadPicture( *this, false );
-    }
+    SDL_UpdateTexture(_d->texture, 0, _d->surface->pixels, _d->surface->pitch );
+    return;
+  }
+
+  if( _d->surface && _d->opengltx > 0 )
+  {    
+    Engine::instance().loadPicture( *this, false );
   }
 }
 

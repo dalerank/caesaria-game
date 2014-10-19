@@ -30,7 +30,6 @@ class FilmWidget : public Window
 public:
   FilmWidget( Widget* parent, const vfs::Path& film );
 
-  //! Деструктор
   virtual ~FilmWidget(void);
 
   //virtual bool onEvent(const NEvent &event);
@@ -40,7 +39,7 @@ public:
   virtual void setTitle(std::string text);
   virtual void setTime(DateTime time);
 
-public oc3_signals:
+public signals:
   Signal0<>& onClose();
 
 private:

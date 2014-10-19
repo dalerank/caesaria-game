@@ -53,24 +53,25 @@ public:
   void generateProtestor( PlayerCityPtr city, HousePtr house );
 };
 
-SrvcPtr Disorder::create( PlayerCityPtr city )
+SrvcPtr Disorder::create()
 {
-  Disorder* ret = new Disorder( city );
+  SrvcPtr ret( new Disorder() );
+  ret->drop();
 
   return SrvcPtr( ret );
 }
 
 std::string Disorder::defaultName(){  return "disorder";}
 
-Disorder::Disorder(PlayerCityPtr city )
-  : Srvc( *city.object(), Disorder::defaultName() ), _d( new Impl )
+Disorder::Disorder()
+  : Srvc( Disorder::defaultName() ), _d( new Impl )
 {
   _d->minCrimeLevel = defaultCrimeLevel;
   _d->currentCrimeLevel = 0;
   _d->maxCrimeLevel = 0;
 }
 
-void Disorder::update( const unsigned int time )
+void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( GameDate::isYearChanged() )
   {
@@ -81,10 +82,10 @@ void Disorder::update( const unsigned int time )
   if( !GameDate::isWeekChanged() )
     return;
 
-  Helper helper( &_city );
+  Helper helper( city );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = _city.walkers( walker::protestor );
+  WalkerList walkers = city->walkers( walker::protestor );
 
   HouseList criminalizedHouse;
   _d->currentCrimeLevel = 0;
@@ -112,7 +113,7 @@ void Disorder::update( const unsigned int time )
 
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
-    int sentiment = _city.sentiment();
+    int sentiment = city->sentiment();
     int randomValue = math::random( 100 );
     if (sentiment >= 60)
     {
@@ -120,7 +121,7 @@ void Disorder::update( const unsigned int time )
       {
         if ( hCrimeLevel > 50 )
         {
-          _d->generateProtestor( &_city, *it );
+          _d->generateProtestor( city, *it );
         }
       }
     }
@@ -130,11 +131,11 @@ void Disorder::update( const unsigned int time )
       {
         if ( hCrimeLevel >= 70 )
         {
-          _d->generateMugger( &_city, *it );
+          _d->generateMugger( city, *it );
         }
         else if ( hCrimeLevel > 50 )
         {
-          _d->generateProtestor( &_city, *it );
+          _d->generateProtestor( city, *it );
         }
       }
     }
@@ -144,15 +145,15 @@ void Disorder::update( const unsigned int time )
       {
         if ( hCrimeLevel >= 90 )
         {
-          _d->generateRioter( &_city, *it );
+          _d->generateRioter( city, *it );
         }
         else if ( hCrimeLevel >= 70 )
         {
-          _d->generateMugger( &_city, *it );
+          _d->generateMugger( city, *it );
         }
         else if ( hCrimeLevel > 50 )
         {
-          _d->generateProtestor( &_city, *it );
+          _d->generateProtestor( city, *it );
         }
       }
     }

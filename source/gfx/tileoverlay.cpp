@@ -54,6 +54,10 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
   _d->name = "unknown";
 
   setType( type );
+
+#ifdef DEBUG
+  OverlayDebugQueue::instance().add( this );
+#endif
 }
 
 Desirability TileOverlay::desirability() const
@@ -140,7 +144,7 @@ void TileOverlay::save( VariantMap& stream ) const
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
                       ? Variant( md.getData( _d->overlayType ).name() )
-                      : Variant( getDebugName() ) );
+                      : Variant( debugName() ) );
 
   config.push_back( tile().pos() );
 
@@ -207,7 +211,31 @@ Size TileOverlay::size() const{  return _d->size;}
 bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
 Renderer::PassQueue TileOverlay::passQueue() const{ return defaultPassQueue;}
 std::string TileOverlay::name(){  return _d->name;}
-TileOverlay::~TileOverlay(){}  // what we shall to do here?
 TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}
+
+TileOverlay::~TileOverlay()
+{
+#ifdef DEBUG
+  OverlayDebugQueue::instance().rem( this );
+#endif
+}  // what we shall to do here?
+
+#ifdef DEBUG
+void OverlayDebugQueue::print()
+{
+  OverlayDebugQueue& inst = (OverlayDebugQueue&)instance();
+  if( !inst._pointers.empty() )
+  {
+    Logger::warning( "PRINT OVERLAY DEBUG QUEUE" );
+    foreach( it, inst._pointers )
+    {
+      TileOverlay* ov = (TileOverlay*)*it;
+      Logger::warning( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
+                                          MetaDataHolder::findTypename( ov->type() ).c_str(),
+                                          ov->pos().i(), ov->pos().j(), ov->rcount() );
+    }
+  }
+}
+#endif
 
 }//end namespace gfx

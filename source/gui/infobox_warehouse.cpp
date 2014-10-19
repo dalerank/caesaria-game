@@ -41,7 +41,7 @@ AboutWarehouse::AboutWarehouse( Widget* parent, const Tile& tile )
   setupUI( ":/gui/warehouseinfo.gui" );
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
-  setConstruction( ptr_cast<Construction>( _warehouse ) );
+  setBase( ptr_cast<Construction>( _warehouse ) );
 
   /*StringArray warnings;
   if( _warehouse->onlyDispatchGoods() )  { warnings << "##warehouse_low_personal_warning##";  }

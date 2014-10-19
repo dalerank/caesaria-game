@@ -60,14 +60,14 @@ bool AboutConstruction::onEvent(const NEvent& event)
   return Simple::onEvent( event );
 }
 
-ConstructionPtr AboutConstruction::getConstruction() const { return _construction; }
-void AboutConstruction::setConstruction(ConstructionPtr construction) { _construction = construction; }
+ConstructionPtr AboutConstruction::base() const { return _construction; }
+void AboutConstruction::setBase(ConstructionPtr construction) { _construction = construction; }
 
 void AboutConstruction::_switch(int flag)
 {
   if( _construction.isValid() )
   {
-    events::GameEventPtr e = events::ShowTileInfo::create( getConstruction()->pos(), flag == KEY_PERIOD
+    events::GameEventPtr e = events::ShowTileInfo::create( base()->pos(), flag == KEY_PERIOD
                                                                                        ? events::ShowTileInfo::next
                                                                                        : events::ShowTileInfo::prew );
     deleteLater();

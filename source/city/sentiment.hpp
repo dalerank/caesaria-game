@@ -28,17 +28,20 @@ namespace city
 class Sentiment : public city::Srvc
 {
 public:
-  static city::SrvcPtr create( PlayerCityPtr city );
+  static city::SrvcPtr create();
   static std::string defaultName();
-  virtual void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+
   int value() const;
-  void append( int value );
-  std::string reason() const;
+  int buff() const;
+  std::string reason() const;  
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
+
+  void addBuff( int value, bool relative, int month2finish );
 private:
-  Sentiment( PlayerCityPtr city );
+  Sentiment();
 
   class Impl;
   ScopedPtr< Impl > _d;

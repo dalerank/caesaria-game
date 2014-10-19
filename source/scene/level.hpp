@@ -50,7 +50,7 @@ public:
 
   void setCameraPos( TilePos pos );
 
-private oc3_slots:
+private slots:
   void _exitToMainMenu();
   void _exitGame();
   void _resolveSwitchMap();
