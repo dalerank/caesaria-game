@@ -4,8 +4,7 @@
   funds : 8000
   city.name : "Capua"
   player.rank : 2
-  date : "-350.01.01"
-  finish : "-300.01.01"
+  date : "-350.01.01"  
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : 0
@@ -19,6 +18,7 @@
     prosperity : 10
     peace : 0
     favour : 60
+    finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##win_engineer_title##"
     may_continue : false

@@ -530,8 +530,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
 
       for( TilesArray::iterator it=area.begin(); it != area.end(); )
       {
-        TileOverlayPtr overlay = (*it)->overlay();
-        if( overlay == this ) { it = area.erase( it ); }
+        if( (*it)->overlay() == this ) { it = area.erase( it ); }
         else { ++it; }
       }
 

@@ -34,7 +34,11 @@ class Dispatcher::Impl
 {
 public:
   RequestList requests;
+  RequestList newRequests;
   DateTime lastRequestCancelDate;
+
+public:
+  void updateRequests();
 };
 
 Dispatcher::Dispatcher()
@@ -56,7 +60,7 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
   if( type == RqGood::typeName() )
   {
     RequestPtr r = RqGood::create( stream );
-    _d->requests.push_back( r );
+    _d->newRequests.push_back( r );
 
     if( showMessage )
     {
@@ -94,11 +98,7 @@ void Dispatcher::timeStep(PlayerCityPtr city, const unsigned int time)
       }
     }
 
-    for( RequestList::iterator i=_d->requests.begin(); i != _d->requests.end(); )
-    {
-      if( (*i)->isDeleted() ) { i = _d->requests.erase( i ); }
-      else { ++i; }
-    }
+    _d->updateRequests();
   }
 }
 
@@ -135,6 +135,18 @@ bool Dispatcher::haveCanceledRequest() const
 }
 
 RequestList Dispatcher::requests() const {  return _d->requests; }
+
+void Dispatcher::Impl::updateRequests()
+{
+  for( RequestList::iterator i=requests.begin(); i != requests.end(); )
+  {
+    if( (*i)->isDeleted() ) { i = requests.erase( i ); }
+    else { ++i; }
+  }
+
+  requests << newRequests;
+  newRequests.clear();
+}
 
 }//end namespace request
 

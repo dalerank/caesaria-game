@@ -55,8 +55,8 @@ void Neptune::_doWrath(PlayerCityPtr city)
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
 
-  city::Helper helper( city );
-  ShipList boats = helper.find<Ship>( walker::any, city::Helper::invalidPos );
+  ShipList boats;
+  boats << city->walkers();
 
   int destroyBoats = math::random( boats.size() );
   for( int i=0; i < destroyBoats; i++ )

@@ -724,16 +724,22 @@ void Level::Impl::makeScreenShot()
 void Level::Impl::checkFailedMission( Level* lvl )
 {
   PlayerCityPtr pcity = game->city();
+
+  const city::VictoryConditions& vc = pcity->victoryConditions();
   city::MilitaryPtr mil;
   city::InfoPtr info;
+
   info << pcity->findService( city::Info::defaultName() );
   mil << pcity->findService( city::Military::defaultName() );
 
-  if( mil.isValid() && info.isValid() )
+  if( mil.isValid() && info.isValid()  )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    if( mil->threadValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population() )
+    bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
+    bool failedByTime = ( !vc.isSuccess() && GameDate::current() > vc.finishDate() );
+
+    if( failedByDestroy || failedByTime )
     {
       game->pause();
       Window* wnd = new Window( game->gui()->rootWidget(),
@@ -870,6 +876,12 @@ void Level::_handleDebugEvent(int event)
 
   case city::debug_event::send_venus_wrath:
     religion::rome::Pantheon::venus()->updateRelation( -101.f, _d->game->city() );
+  break;
+
+  case city::debug_event::all_sound_off:
+    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
+    audio::Engine::instance().setVolume( audio::themeSound, 0 );
+    audio::Engine::instance().setVolume( audio::gameSound, 0 );
   break;
   }
 }

@@ -4,8 +4,7 @@
   funds : 120000
   city.name : "Lutetia"
   date : "-220.01.01"
-  player.rank : 4
-  finish : "-70.01.01"
+  player.rank : 4  
   climate : 0
   adviserEnabled : true
   fishPlaceEnabled : false
@@ -16,6 +15,7 @@
     culture : 45
     prosperity : 50
     peace : 50
+    finishDate : "-70.01.01"
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##win_procurator_title##"

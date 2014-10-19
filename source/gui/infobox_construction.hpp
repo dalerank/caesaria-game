@@ -34,8 +34,9 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 
-  virtual ConstructionPtr getConstruction() const;
-  virtual void setConstruction( ConstructionPtr construction );
+  virtual ConstructionPtr base() const;
+  virtual void setBase( ConstructionPtr base );
+
 private:
   void _switch( int flag );
   ConstructionPtr _construction;

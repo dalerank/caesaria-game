@@ -147,7 +147,7 @@ void Military::updateThreat(int value)
 }
 
 int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
-unsigned int Military::threadValue() const{ return _d->threatValue; }
+unsigned int Military::threatValue() const{ return _d->threatValue; }
 std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
 
 }//end namespace city

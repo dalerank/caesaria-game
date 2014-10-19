@@ -20,6 +20,7 @@
 #include "core/foreach.hpp"
 #include "postpone.hpp"
 #include "core/logger.hpp"
+#include "core/stacktrace.hpp"
 
 namespace events
 {
@@ -30,6 +31,7 @@ public:
   typedef SmartList< GameEvent > Events;
 
   Events events;
+  Events newEvents;
 };
 
 Dispatcher::Dispatcher() : _d( new Impl )
@@ -42,11 +44,12 @@ void Dispatcher::append(GameEventPtr event)
 {
   if( event.isValid() )
   {
-    _d->events.push_back( event );
+    _d->newEvents.push_back( event );
   }
   else
   {
-    Logger::warning( "Null event" );
+    Logger::warning( "EventsDispatcher: cant add event but is null" );
+    Stacktrace::print();
   }
 }
 
@@ -60,6 +63,12 @@ void Dispatcher::update(Game& game, unsigned int time )
 
     if( e->isDeleted() ) { it = _d->events.erase( it ); }
     else { ++it; }
+  }
+
+  if( !_d->newEvents.empty() )
+  {
+    _d->events << _d->newEvents;
+    _d->newEvents.clear();
   }
 }
 
@@ -85,7 +94,7 @@ void Dispatcher::load(const VariantMap& stream)
     {
       append( e );
     }
-    }
+  }
 }
 
 void Dispatcher::reset() { _d->events.clear(); }

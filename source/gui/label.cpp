@@ -628,16 +628,16 @@ void Label::setPrefixText( const string& prefix )
 
 void Label::setBackgroundPicture(const Picture& picture, Point offset )
 {
-    _d->bgPicture = picture;
-    _d->bgOffset = offset;
-    _d->needUpdatePicture = true;
+  _d->bgPicture = picture;
+  _d->bgOffset = offset;
+  _d->needUpdatePicture = true;
 }
 
 void Label::setIcon(const Picture& icon, Point offset )
 {
-    _d->icon = icon;
-    _d->iconOffset = offset;
-    _d->needUpdatePicture = true;
+  _d->icon = icon;
+  _d->iconOffset = offset;
+  _d->needUpdatePicture = true;
 }
 
 void Label::setFont( const Font& font )

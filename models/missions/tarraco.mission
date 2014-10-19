@@ -5,7 +5,6 @@
   city.name : "Tarraco"
   date : "-270.01.01"
   player.rank : 3
-  finish : "-170.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
 	
@@ -16,6 +15,7 @@
     prosperity : 25
     peace : 30
     favour : 70
+    finishDate : "-170.01.01"
     next : ":/missions/mission5.briefing"
     title : "##win_engineer_title##"
     win.text : "##tarraco_win_text##"
