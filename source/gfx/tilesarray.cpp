@@ -92,7 +92,7 @@ TilesArray TilesArray::walkableTiles(bool alllands) const
   return ret;
 }
 
-TilesArray&TilesArray::remove(TilePos pos)
+TilesArray& TilesArray::remove( const TilePos& pos)
 {
   foreach( it, *this )
   {

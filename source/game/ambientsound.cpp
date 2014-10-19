@@ -164,7 +164,7 @@ void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
 
       ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
-    }
+  }
 }
 
 std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }

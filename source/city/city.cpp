@@ -107,8 +107,12 @@ public:
 
   PlayerPtr player;
 
+  TileOverlayList newOverlays;
   TileOverlayList overlays;
+
+  WalkerList newWalkers;
   WalkerList walkers;
+
   Picture empMapPicture;
 
   //walkers fast access map !!!
@@ -395,23 +399,20 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
   WalkerList::iterator walkerIt = walkers.begin();
   while( walkerIt != walkers.end() )
   {
- //   try
- //   {
-      WalkerPtr walker = *walkerIt;
-      walker->timeStep( time );
+    WalkerPtr walker = *walkerIt;
+    walker->timeStep( time );
 
-      if( walker->isDeleted() )
-      {
-        // remove the walker from the walkers list
-        walkersGrid.remove( *walkerIt );
-        walkerIt = walkers.erase(walkerIt);
-      }
-      else { ++walkerIt; }
- //   }
- //   catch(...)
- //   {
- //   }
+    if( walker->isDeleted() )
+    {
+      // remove the walker from the walkers list
+      walkersGrid.remove( *walkerIt );
+      walkerIt = walkers.erase(walkerIt);
+    }
+    else { ++walkerIt; }
   }
+
+  walkers << newWalkers;
+  newWalkers.clear();
 }
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
@@ -419,27 +420,23 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
   TileOverlayList::iterator overlayIt = overlays.begin();
   while( overlayIt != overlays.end() )
   {
-    //try
-    //{
-      (*overlayIt)->timeStep( time );
+    (*overlayIt)->timeStep( time );
 
-      if( (*overlayIt)->isDeleted() )
-      {
-        beforeOverlayDestroyed( city, *overlayIt );
-        // remove the overlay from the overlay list
-        (*overlayIt)->destroy();
-        overlayIt = overlays.erase(overlayIt);
-      }
-      else
-      {
-        ++overlayIt;
-      }
-    //}
-    //catch(...)
-    //{
-      //int i=0;
-    //}
+    if( (*overlayIt)->isDeleted() )
+    {
+      beforeOverlayDestroyed( city, *overlayIt );
+      // remove the overlay from the overlay list
+      (*overlayIt)->destroy();
+      overlayIt = overlays.erase(overlayIt);
+    }
+    else
+    {
+      ++overlayIt;
+    }
   }
+
+  overlays << newOverlays;
+  newOverlays.clear();
 }
 
 void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
@@ -640,7 +637,7 @@ PlayerCity::~PlayerCity() {}
 void PlayerCity::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
-  _d->walkers.push_back( walker );
+  _d->newWalkers.push_back( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }

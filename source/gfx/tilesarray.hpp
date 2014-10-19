@@ -43,7 +43,7 @@ public:
 
   TilesArray walkableTiles( bool alllands=false ) const;
 
-  TilesArray& remove( TilePos pos );
+  TilesArray& remove(const TilePos &pos );
 
   TileOverlayList overlays() const;
 
