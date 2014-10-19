@@ -52,6 +52,7 @@ VictoryConditions::VictoryConditions() : _d( new Impl )
   _d->prosperity = 0;
   _d->favour = 0;
   _d->peace = 0;
+  _d->finishDate = DateTime( 500, 1, 1 );
 }
 
 VictoryConditions::~VictoryConditions(){}
