@@ -33,7 +33,7 @@ public:
 
   virtual void draw( gfx::Engine& painter );
 
-oc3_signals public:
+signals public:
   Signal1<std::string>& onFileSelected();
 
 private:

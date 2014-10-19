@@ -18,7 +18,7 @@
 
 #include "animals.hpp"
 #include "core/variant.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
@@ -183,34 +183,33 @@ void Wolf::_centerTile()
   Animal::_centerTile();
 
   TilePos offset(1,1);
-  WalkerList walkers = _city()->walkers( walker::any, pos() - offset, pos() + offset );
+  city::Helper helper( _city() );
+  WalkerList walkers = helper.find<Walker>( walker::any, pos() - offset, pos() + offset );
   walkers = walkers.exclude<Wolf>();
 
   if( !walkers.empty() )
   {
-    WalkerList::iterator it = walkers.begin();
-    std::advance( it, math::random( walkers.size() - 1 ) );
+    WalkerPtr wlk = walkers.random();
 
-    turn( (*it)->pos() );
+    turn( wlk->pos() );
     _setAction( acFight );
     //setSpeedMultiplier( 0.0 );
-    _d->attackPos = (*it)->pos();
+    _d->attackPos = wlk->pos();
   }
 }
 
 void Wolf::_findNewWay( const TilePos& start )
 {
   TilePos offset(10,10);
-  WalkerList walkers = _city()->walkers( walker::any, start - offset, start + offset );
+  city::Helper helper( _city() );
+  WalkerList walkers = helper.find<Walker>( walker::any, start - offset, start + offset );
   walkers = walkers.exclude<Wolf>();
 
   Pathway pathway;
   if( !walkers.empty() )
   {
-    WalkerList::iterator it = walkers.begin();
-    std::advance( it, math::random( walkers.size() - 1 ) );
-
-    pathway = PathwayHelper::create( start, (*it)->pos(), PathwayHelper::allTerrain );
+    WalkerPtr wlk = walkers.random();
+    pathway = PathwayHelper::create( start, wlk->pos(), PathwayHelper::allTerrain );
   }
 
   if( !pathway.isValid() )
@@ -247,7 +246,7 @@ void Wolf::timeStep(const unsigned long time)
   {
   case acFight:
   {
-    WalkerList walkers = _city()->walkers( walker::any, _d->attackPos );
+    WalkerList walkers = _city()->walkers( _d->attackPos );
     walkers = walkers.exclude<Wolf>();
 
     if( !walkers.empty() )

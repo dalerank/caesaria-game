@@ -31,6 +31,7 @@ public:
   virtual int type() const;
   virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
   virtual void render( Engine& engine);
+  virtual void init( Point cursor );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 

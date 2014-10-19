@@ -37,9 +37,14 @@ public:
   virtual void setBase( CityPtr base);
   virtual void attack( ObjectPtr obj );
   virtual void setStrength( int value );
-  virtual int strength() const;
+  virtual int strength() const;  
+  virtual void killSoldiers( int percent );
+  virtual void addObject(ObjectPtr);
+
+  static void battle(unsigned int attackers, unsigned int defenders, int &atcLoss, int &defLoss);
 
 protected:
+  virtual bool _isAgressiveArmy(ArmyPtr other) const;
   void _reachedWay();
   Army( EmpirePtr empire );
 

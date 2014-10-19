@@ -49,6 +49,8 @@ public:
   virtual const GoodStore& importingGoods() const;
   virtual const GoodStore& exportingGoods() const;
 
+  virtual unsigned int age() const;
+
   virtual void delayTrade(unsigned int month);
   virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 

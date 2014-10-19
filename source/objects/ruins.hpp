@@ -48,7 +48,7 @@ public:
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
-  virtual bool isFlat() const { return true; }
+  virtual bool isFlat() const { return false; }
   virtual void collapse();
   virtual bool canDestroy() const;
 

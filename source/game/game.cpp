@@ -48,6 +48,7 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_level.hpp"
 #include "walker/name_generator.hpp"
+#include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
@@ -60,6 +61,7 @@
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
+#include "gfx/tileoverlay.hpp"
 
 #include <list>
 
@@ -341,7 +343,7 @@ void Game::setScreenGame()
 
     if( _d->city->tilemap().direction() == constants::north )
     {
-       if( !_d->pauseCounter )
+      if( !_d->pauseCounter )
       {
         _d->timeX10 += _d->timeMultiplier / 10;
       }
@@ -364,6 +366,8 @@ void Game::setScreenGame()
 
     events::Dispatcher::instance().update( *this, _d->saveTime );
   }
+
+  clear();
 
   _d->nextFilename = screen.nextFilename();
   switch( screen.result() )
@@ -605,14 +609,31 @@ void Game::exec()
 void Game::reset()
 {
   _d->empire = world::Empire::create();
+
   _d->player = Player::create();
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
   _d->manualTicksCounterX10 = 0;
+
   if( _d->city.isValid() )
   {
     _d->city->clean();
   }
+
   _d->city = PlayerCity::create( _d->empire, _d->player );
+}
+
+void Game::clear()
+{
+  //_d->empire = world::EmpirePtr();
+  _d->city->clean();
+  _d->city = PlayerCityPtr();
+#ifdef DEBUG
+  WalkerDebugQueue::print();
+  WalkerDebugQueue::instance().clear();
+
+  gfx::OverlayDebugQueue::print();
+  gfx::OverlayDebugQueue::instance().clear();
+#endif
 }

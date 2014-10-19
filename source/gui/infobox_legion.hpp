@@ -36,6 +36,7 @@ public:
 private:
   void _addFormationButton(int index, int id, int picId );
   void _addAvailalbesFormation();
+  void _toggleAnimalsAttack();
   void _update();
   void _returnSoldiers2fort();
 

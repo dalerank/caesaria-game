@@ -83,6 +83,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
 #include "city/debug_events.hpp"
+#include "world/barbarian.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -111,6 +112,7 @@ public:
 
   int result;
 
+public:
   void showSaveDialog();
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
@@ -148,7 +150,9 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->engine = &engine;
 }
 
-Level::~Level() {}
+Level::~Level()
+{
+}
 
 void Level::initialize()
 {
@@ -189,7 +193,7 @@ void Level::initialize()
 
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
-  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
+  _d->game->city()->addService( city::AmbientSound::create( _d->renderer.camera() ) );
 
   //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID
@@ -322,7 +326,7 @@ void Level::Impl::makeEnemy()
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
-  }
+    }
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
@@ -625,7 +629,7 @@ void Level::handleEvent( NEvent& event )
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
 
-    case KEY_F10:
+    case KEY_SNAPSHOT:
       if( !event.keyboard.shift )
         _d->makeScreenShot();
       else
@@ -682,7 +686,7 @@ void Level::handleEvent( NEvent& event )
 
     case _MET_TILES:
       _d->renderer.handleEvent( event );
-      _d->selectedTilePos = _d->renderer.getTilePos( event.mouse.pos() );
+      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
     break;
 
     default:
@@ -720,16 +724,22 @@ void Level::Impl::makeScreenShot()
 void Level::Impl::checkFailedMission( Level* lvl )
 {
   PlayerCityPtr pcity = game->city();
+
+  const city::VictoryConditions& vc = pcity->victoryConditions();
   city::MilitaryPtr mil;
   city::InfoPtr info;
+
   info << pcity->findService( city::Info::defaultName() );
   mil << pcity->findService( city::Military::defaultName() );
 
-  if( mil.isValid() && info.isValid() )
+  if( mil.isValid() && info.isValid()  )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    if( mil->threadValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population() )
+    bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
+    bool failedByTime = ( !vc.isSuccess() && GameDate::current() > vc.finishDate() );
+
+    if( failedByDestroy || failedByTime )
     {
       game->pause();
       Window* wnd = new Window( game->gui()->rootWidget(),
@@ -796,7 +806,7 @@ void Level::_handleDebugEvent(int event)
 {
   switch( event )
   {
-  case city::debug_event::dec_mars_relation:
+  case city::debug_event::send_mars_wrath:
     religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
   break;
 
@@ -820,6 +830,20 @@ void Level::_handleDebugEvent(int event)
     _d->game->player()->appendMoney( 1000 );
   break;
 
+  case city::debug_event::win_mission:
+  {
+    const city::VictoryConditions& wt = _d->game->city()->victoryConditions();
+
+    gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(),
+                                                            wt.newTitle(), wt.winText(),
+                                                            false );
+
+    _d->mapToLoad = wt.nextMission();
+
+    CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
+  }
+  break;
+
   case city::debug_event::send_chastener:
   {
     world::CityPtr rome = _d->game->empire()->rome();
@@ -831,12 +855,33 @@ void Level::_handleDebugEvent(int event)
   }
   break;
 
+  case city::debug_event::screenshot:
+    _d->makeScreenShot();
+  break;
+
+  case city::debug_event::add_empire_barbarian:
+  {
+    world::BarbarianPtr brb = world::Barbarian::create( _d->game->empire(), Point( 1000, 0 ) );
+    _d->game->empire()->addObject( ptr_cast<world::Object>( brb ) );
+  }
+  break;
+
   case city::debug_event::test_request:
   {
     VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
     events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
     e->dispatch();
   }
+  break;
+
+  case city::debug_event::send_venus_wrath:
+    religion::rome::Pantheon::venus()->updateRelation( -101.f, _d->game->city() );
+  break;
+
+  case city::debug_event::all_sound_off:
+    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
+    audio::Engine::instance().setVolume( audio::themeSound, 0 );
+    audio::Engine::instance().setVolume( audio::gameSound, 0 );
   break;
   }
 }

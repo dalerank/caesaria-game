@@ -29,8 +29,8 @@ namespace city
 class GoodsUpdater : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
-  virtual void update( const unsigned int time);
+  static SrvcPtr create();
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time);
   static std::string defaultName();
   virtual bool isDeleted() const;
 
@@ -39,7 +39,7 @@ public:
   Good::Type goodType() const;
 
 private:
-  GoodsUpdater(PlayerCityPtr city);
+  GoodsUpdater();
 
   class Impl;
   ScopedPtr<Impl> _d;

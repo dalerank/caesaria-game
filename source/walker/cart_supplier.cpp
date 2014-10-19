@@ -77,7 +77,9 @@ void CartSupplier::_reachedPathway()
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
-    BuildingPtr building = helper.find<Building>( building::any, _d->baseBuildingPos );
+    BuildingPtr building;
+    building << _city()->getOverlay( _d->baseBuildingPos );
+
     GoodStore* storage = 0;
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
@@ -102,7 +104,9 @@ void CartSupplier::_reachedPathway()
   else
   {
     // get goods from destination building
-    BuildingPtr building = helper.find<Building>( building::any, _d->storageBuildingPos );
+    BuildingPtr building;
+    building << _city()->getOverlay( _d->storageBuildingPos );
+
     GoodStore* storage = 0;
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
@@ -268,8 +272,8 @@ void CartSupplier::send2city( BuildingPtr building, Good::Type what, const int q
 
 void CartSupplier::_reserveStorage()
 {
-  city::Helper helper( _city() );
-  BuildingPtr b = helper.find<Building>( building::any, _d->baseBuildingPos );
+  BuildingPtr b;
+  b << _city()->getOverlay( _d->baseBuildingPos );
 
   GoodStore* storage = 0;
   FactoryPtr f = ptr_cast<Factory>( b );

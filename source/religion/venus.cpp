@@ -19,6 +19,8 @@
 #include "events/showinfobox.hpp"
 #include "objects/extension.hpp"
 #include "core/gettext.hpp"
+#include "objects/house.hpp"
+#include "city/sentiment.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -50,6 +52,13 @@ void Venus::_doWrath( PlayerCityPtr city )
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
 
+  city::SentimentPtr sentiment;
+  sentiment << city->findService( city::Sentiment::defaultName() );
+
+  if( sentiment.isValid() )
+  {
+    sentiment->addBuff( -75, false, 12 );
+  }
 }
 
 void Venus::_doBlessing(PlayerCityPtr city)
@@ -61,23 +70,45 @@ void Venus::_doBlessing(PlayerCityPtr city)
 
 void Venus::_doSmallCurse(PlayerCityPtr city)
 {
-  int curseTupe = math::random( 2 );
+  int curseTupe = math::random( 3 );
 
   events::GameEventPtr e;
   switch( curseTupe )
   {
   case 0:
+  {
     e = events::ShowInfobox::create( _("##smcurse_of_venus_title##"),
                                      _("##smcurse_of_venus_description##"),
                                        events::ShowInfobox::send2scribe );
+    city::SentimentPtr sentiment;
+    sentiment << city->findService( city::Sentiment::defaultName() );
+    if( sentiment.isValid() )
+    {
+      sentiment->addBuff( -math::random( 5 ), true, 12 );
+    }
+  }
   break;
 
   case 1:
+  {
     e = events::ShowInfobox::create( _("##smcurse_of_venus_title##"),
                                      _("##smcurse2_of_venus_description##"),
                                      events::ShowInfobox::send2scribe );
+
+    HouseList houses;
+    houses << city->overlays();
+
+    int rndCount = math::random( houses.size() / 5 );
+    for( int i=0; i < rndCount; i++ )
+    {
+      ConstructionPtr house;
+      house << houses.random();
+      ConstructionParamUpdater::assignTo( house, House::healthBuff, true, -2, DateTime::weekInMonth * 5 );
+    }
+  }
   break;
   }
+
   e->dispatch();
 }
 

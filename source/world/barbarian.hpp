@@ -37,6 +37,7 @@ public:
   virtual int viewDistance() const;
 
 protected:
+  virtual bool _isAgressiveArmy(ArmyPtr other) const;
   virtual void _reachedWay();
   virtual void _check4attack();
   virtual void _goaway();

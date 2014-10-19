@@ -53,6 +53,7 @@ public:
   virtual DateTime lastAttack() const = 0;
   virtual int strength() const = 0;
   virtual SmartPtr<Player> player() const = 0;
+  virtual unsigned int age() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;

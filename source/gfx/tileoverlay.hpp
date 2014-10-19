@@ -27,6 +27,7 @@
 #include "gfx/renderer.hpp"
 #include "core/direction.hpp"
 #include "game/predefinitions.hpp"
+#include "core/debug_queue.hpp"
 
 struct Desirability
 {
@@ -105,6 +106,14 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#ifdef DEBUG
+class OverlayDebugQueue : public DebugQueue<TileOverlay>
+{
+public:
+  static void print();
+};
+#endif
 
 }//end namespace gfx
 

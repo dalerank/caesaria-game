@@ -252,7 +252,7 @@ public:
 	}
 
     //! Get the center of the rectangle
-	Vector2<T> getCenter() const
+  Vector2<T> center() const
 	{
 		return Vector2<T>(
 				(UpperLeftCorner.x() + LowerRightCorner.x()) / 2,

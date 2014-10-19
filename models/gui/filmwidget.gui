@@ -28,7 +28,8 @@
     disabled : [ "paneling", 535 ]
   }
 
-  lbBlackFrame#Label : {
+  lbBlackFrame#Label :
+  {
     geometry : [ 10, 310, 405, 400 ]
     bgtype : "blackFrame"    
 

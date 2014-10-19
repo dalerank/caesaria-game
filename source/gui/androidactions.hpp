@@ -30,7 +30,7 @@ public:
   virtual void beforeDraw( gfx::Engine& painter);
   AndroidActionsBar( Widget* parent );
 
-public oc3_signals:
+public signals:
   Signal0<>& onRequestTileHelp();
   Signal0<>& onEscapeClicked();
   Signal0<>& onEnterClicked();

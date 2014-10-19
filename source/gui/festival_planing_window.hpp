@@ -35,7 +35,7 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 
-public oc3_signals:
+public signals:
   Signal2<int,int>& onFestivalAssign();
 
 private:

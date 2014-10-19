@@ -28,13 +28,13 @@ namespace city
 class Roads : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
+  static SrvcPtr create();
   static std::string defaultName();
 
-  void update( const unsigned int time );
+  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
   virtual ~Roads();
 private:
-  Roads( PlayerCityPtr city );
+  Roads();
 
   class Impl;
   ScopedPtr< Impl > _d;

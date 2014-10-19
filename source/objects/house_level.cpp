@@ -71,7 +71,7 @@ public:
 
 int HouseSpecification::level() const {   return _d->houseLevel;}
 const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
-bool HouseSpecification::isPatrician() const{   return _d->houseLevel > 12;}
+bool HouseSpecification::isPatrician() const{   return _d->houseLevel >= HouseLevel::smallVilla;}
 int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
@@ -178,9 +178,10 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   {
     switch( _d->minReligionLevel )
     {
-    case 0: ref = "##missing_religion##"; break;
-    case 1: ref = "##missing_second_religion##"; break;
-    case 2: ref = "##missing_third_religion##"; break;
+    case 0: ref = "##religion_undef_reason##"; break;
+    case 1: ref = "##missing_religion##"; break;
+    case 2: ref = "##missing_second_religion##"; break;
+    case 3: ref = "##missing_third_religion##"; break;
     }
     needBuilding = building::oracle;
     return false;

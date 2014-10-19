@@ -29,12 +29,16 @@
 #include "enemysoldier.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "animals.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace  {
 static const int maxDistanceFromBase = 32;
+enum {
+  expedition=Soldier::userAction+1
+ };
 }
 
 class RomeSoldier::Impl
@@ -43,6 +47,7 @@ public:
   TilePos basePos;
   TilePos patrolPosition;
   double strikeForce, resistance;
+  std::string expedition;
 };
 
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
@@ -107,7 +112,9 @@ void RomeSoldier::timeStep(const unsigned long time)
     }
     else
     {
-      _tryAttack();
+      bool haveEnemy = _tryAttack();
+      if( !haveEnemy )
+        send2patrol();
     }
   }
   break;
@@ -170,16 +177,17 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   TilePos offset( range, range );
   TilesArray tiles = tmap.getArea( pos() - offset, pos() + offset );
 
+  FortPtr fort = base();
+  bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
+
   foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _city()->walkers( walker::any, (*tile)->pos() );
+    WalkerList tileWalkers = _city()->walkers( (*tile)->pos() );
 
     foreach( w, tileWalkers )
     {
-      if( is_kind_of<EnemySoldier>( *w ) )
-      {
-        walkers.push_back( *w );
-      }
+      if( (*w)->agressive() > 0 )  { walkers << *w; }
+      else if( attackAnimals && is_kind_of<Animal>( *w ) ) { walkers << *w; }
     }
   }
 
@@ -290,12 +298,20 @@ void RomeSoldier::_reachedPathway()
 {
   Soldier::_reachedPathway();
 
-  switch( _subAction() )
+  switch( (int)_subAction() )
   {
+
+  case expedition:
+    deleteLater();
+  break;
 
   case go2position:
   {
-    if( _city()->walkers( type(), pos() ).size() != 1 ) //only me in this tile
+    city::Helper helper( _city() );
+    WalkerList walkersOnTile = helper.find<Walker>( type(), pos() );
+    walkersOnTile.remove( this );
+
+    if( walkersOnTile.size() > 0 ) //only me in this tile
     {
       _back2base();
     }
@@ -370,5 +386,19 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
   if( !isDeleted() )
   {
     _city()->addWalker( this );
+  }
+}
+
+void RomeSoldier::send2expedition(const std::string& name)
+{
+  _d->expedition = name;
+  TilePos cityEnter = _city()->borderInfo().roadEntry;
+
+  Pathway way = PathwayHelper::create( pos(), cityEnter, PathwayHelper::allTerrain );
+  if( way.isValid() )
+  {
+    setPathway( way );
+    _setSubAction( (SldrAction)expedition );
+    go();
   }
 }

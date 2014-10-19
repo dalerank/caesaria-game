@@ -124,8 +124,8 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  city::Helper cityh( _city() );
-  MarketPtr market = cityh.find<Market>( building::market, _d->marketPos );
+  MarketPtr market;
+  market << _city()->getOverlay( _d->marketPos );
   if( market.isValid() )
   {
     market->goodStore().store( _d->basket, _d->basket.qty() );

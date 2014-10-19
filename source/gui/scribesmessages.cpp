@@ -70,7 +70,7 @@ public:
     return item;
   }
 
-public oc3_signals:
+public signals:
   Signal1<int> onShowMessage;
   Signal1<int> onRemoveMessage;
 
@@ -101,8 +101,8 @@ protected:
     {
       switch(event.mouse.type)
       {
-      case mouseLbtnRelease: oc3_emit onShowMessage( selected() ); break;
-      case mouseRbtnRelease: oc3_emit onRemoveMessage( selected() ); break;
+      case mouseLbtnRelease: emit onShowMessage( selected() ); break;
+      case mouseRbtnRelease: emit onRemoveMessage( selected() ); break;
       default: break;
 
       case mouseMoved:

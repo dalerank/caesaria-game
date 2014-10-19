@@ -68,7 +68,7 @@ void RomeArcher::timeStep(const unsigned long time)
     else
     {
       //_check4attack();
-      _setSubAction( patrol );
+      send2patrol();
     }
   }
   break;
@@ -91,9 +91,16 @@ void RomeArcher::timeStep(const unsigned long time)
     else
     {
       //_check4attack();
-      _setSubAction( patrol );
+      send2patrol();
     }
   }
+
+  case Soldier::patrol:
+    if( GameDate::current().day() % 2 == 0 )
+    {
+      _tryAttack();
+    }
+  break;
 
   default: break;
   } // end switch( _d->action )

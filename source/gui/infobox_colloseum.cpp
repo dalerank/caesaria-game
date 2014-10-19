@@ -37,7 +37,7 @@ AboutColosseum::AboutColosseum(Widget *parent, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
-  setConstruction( ptr_cast<Construction>( coloseum ) );
+  setBase( ptr_cast<Construction>( coloseum ) );
   setTitle( _( MetaDataHolder::findPrettyName( building::colloseum ) ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, coloseum->maximumWorkers(), coloseum->numberWorkers() );
