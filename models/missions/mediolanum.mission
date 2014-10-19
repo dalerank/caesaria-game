@@ -4,8 +4,7 @@
   funds : 8000
   city.name : "Mediolanum"
   date : "-220.01.01"
-  player.rank : 4
-  finish : "-100.01.01"
+  player.rank : 4  
   climate : 1
   adviserEnabled : true
   fishPlaceEnabled : false
@@ -17,6 +16,7 @@
     prosperity : 25
     peace : 40
     favour : 30
+    finishDate : "-100.01.01"
     next : ":/missions/mission6.briefing"
     title : "##win_procurator_title##"
     win.text : "##mediolanum_win_text##"

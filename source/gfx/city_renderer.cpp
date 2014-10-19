@@ -55,6 +55,7 @@
 #include "layertroubles.hpp"
 #include "layerindigene.hpp"
 #include "core/timer.hpp"
+#include "pathway/pathway.hpp"
 
 using namespace constants;
 
@@ -73,11 +74,15 @@ public:
   TilemapCamera camera;  // visible map area
   Layers layers;
   Point currentCursorPos;
+  int zoom;
+  bool zoomChanged;
 
   Renderer::ModePtr changeCommand;
 
+public:
   LayerPtr currentLayer;
   void setLayer( int type );
+  void resetWalkersAfterTurn();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -94,8 +99,12 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap );
+  _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
+  _d->zoom = 100;
+  _d->zoomChanged = false;
+
+  _d->engine->initViewport( 0, _d->engine->screenSize() );
 
   addLayer( LayerSimple::create( _d->camera, city ) );
   addLayer( LayerWater::create( _d->camera, city ) );
@@ -129,6 +138,17 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->setLayer( citylayer::simple );
 }
 
+void CityRenderer::Impl::resetWalkersAfterTurn()
+{
+  const WalkerList& walkers = city->walkers();
+
+  foreach( it, walkers )
+  {
+    WalkerPtr w = *it;
+    w->setPos( w->tile().epos() );
+  }
+}
+
 void CityRenderer::Impl::setLayer(int type)
 {
   currentLayer = 0;
@@ -152,26 +172,43 @@ void CityRenderer::Impl::setLayer(int type)
 
 void CityRenderer::render()
 {
+  if( _d->zoomChanged )
+  {
+    _d->zoomChanged = false;
+    Size s = _d->engine->screenSize() * _d->zoom / 100;
+    _d->engine->initViewport( 0, s );
+    _d->camera.setViewport( s );
+  }
+
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
   {
     _d->camera.refresh();
     _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 
-  if( _d->currentLayer.isNull() )
+  LayerPtr layer = _d->currentLayer;
+  Engine& engine = *_d->engine;
+
+  if( layer.isNull() )
   {
     return;
   }
 
-  _d->currentLayer->beforeRender( *_d->engine );
+  engine.setViewport(0, true );
+  layer->beforeRender( engine );
 
-  _d->currentLayer->render( *_d->engine );
+  layer->render( engine );
 
-  _d->currentLayer->renderPass( *_d->engine, Renderer::animations );
+  layer->renderPass( engine, Renderer::animations );
 
-  _d->currentLayer->afterRender( *_d->engine );
+  layer->afterRender( engine );
 
-  if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
+  engine.setViewport( 0, false );
+  engine.drawViewport( 0, Rect() );
+
+  layer->renderUi( engine );
+
+  if( layer->type() != layer->nextLayer() )
   {
     _d->setLayer( _d->currentLayer->nextLayer() );
   }
@@ -182,6 +219,13 @@ void CityRenderer::handleEvent( NEvent& event )
   if( event.EventType == sEventMouse )
   {
     _d->currentCursorPos = event.mouse.pos();
+
+    if( event.mouse.type == mouseWheel )
+    {
+      int lastZoom = _d->zoom;
+      _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10, 30, 300 );
+      _d->zoomChanged = (lastZoom != _d->zoom);
+    }
   }
 
   _d->currentLayer->handleEvent( event );
@@ -218,6 +262,7 @@ void CityRenderer::rotateRight()
   _d->tilemap->turnRight();
   _d->camera.refresh();
   _d->camera.tiles();
+  _d->resetWalkersAfterTurn();
 }
 
 void CityRenderer::rotateLeft()
@@ -225,15 +270,15 @@ void CityRenderer::rotateLeft()
   _d->tilemap->turnLeft();
   _d->camera.refresh();
   _d->camera.tiles();
+  _d->resetWalkersAfterTurn();
 }
 
 Camera* CityRenderer::camera() {  return &_d->camera; }
-Renderer::ModePtr CityRenderer::getMode() const {  return _d->changeCommand;}
+Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
 void CityRenderer::setLayer(int layertype) { _d->setLayer( layertype ); }
-TilePos CityRenderer::getTilePos( Point point ) const{  return _d->camera.at( point, true )->pos();}
+TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
-Tilemap& CityRenderer::getTilemap(){   return *_d->tilemap; }
 
 }//end namespace gfx

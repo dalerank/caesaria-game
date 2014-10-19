@@ -56,6 +56,10 @@ public:
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
+  virtual void initViewport( int, Size s) = 0;
+  virtual void setViewport( int, bool render) = 0;
+  virtual void drawViewport( int, Rect r) = 0;
+
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
 

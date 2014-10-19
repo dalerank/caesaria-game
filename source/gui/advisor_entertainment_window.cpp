@@ -120,7 +120,7 @@ public:
   Label* lbMonthFromLastFestival;
   city::FestivalPtr srvc;
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  InfrastructureInfo getInfo(const TileOverlay::Type service );
   void assignFestival(int divinityType, int festSize);
   void updateInfo();
   void updateFestivalInfo();
@@ -147,16 +147,16 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( city, building::theater );
+  info = _d->getInfo( building::theater );
   _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), building::theater, info );
 
-  info = _d->getInfo( city, building::amphitheater );
+  info = _d->getInfo( building::amphitheater );
   _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::amphitheater,
                                                         info );
-  info = _d->getInfo( city, building::colloseum );
+  info = _d->getInfo( building::colloseum );
   _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::colloseum, info );
 
-  info = _d->getInfo( city, building::hippodrome );
+  info = _d->getInfo( building::hippodrome );
   _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), building::hippodrome, info );
 
   CONNECT( _d->btnNewFestival, onClicked(), this, Entertainment::_showFestivalWindow );
@@ -179,7 +179,7 @@ void Entertainment::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::assignFestival );
 }
 
-InfrastructureInfo Entertainment::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
+InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service)
 {
   city::Helper helper( city );
 
@@ -222,7 +222,7 @@ void Entertainment::Impl::assignFestival(int divinityType, int festSize)
 {
   if( srvc.isValid() )
   {
-    srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
+    srvc->assignFestival( city, (religion::RomeDivinityType)divinityType, festSize );
     updateFestivalInfo();
   }
 }

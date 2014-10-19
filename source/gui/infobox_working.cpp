@@ -35,7 +35,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 {
   _working = building;
 
-  setConstruction( ptr_cast<Construction>( _working ) );
+  setBase( ptr_cast<Construction>( _working ) );
 
   std::string title = MetaDataHolder::findPrettyName( _working->type() );
   setTitle( _(title) );

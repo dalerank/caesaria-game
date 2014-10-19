@@ -35,16 +35,16 @@ SpearPtr Spear::create(PlayerCityPtr city)
 
 void Spear::_onTarget()
 {
-  WalkerList walkers = _city()->walkers( walker::any, dstPos() );
+  const WalkerList& walkers = _city()->walkers( dstPos() );
   foreach( w, walkers )
   {
     (*w)->updateHealth( -10 );
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
 
-  TileOverlayPtr overlay = _city()->getOverlay( dstPos() );
+  ConstructionPtr c;
+  c << _city()->getOverlay( dstPos() );
 
-  ConstructionPtr c = ptr_cast<Construction>( overlay );
   if( c.isValid() )
   {
     c->updateState( Construction::damage, 5 );

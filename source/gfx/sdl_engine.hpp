@@ -49,9 +49,13 @@ public:
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
 
+  virtual void initViewport( int, Size s);
+  virtual void setViewport( int, bool render);
+  virtual void drawViewport( int, Rect r);
+
   // deletes a picture (deallocate memory)
   virtual void deletePicture(Picture* pic);
-  virtual void loadPicture(Picture &ioPicture, bool streaming);
+  virtual void loadPicture(Picture& ioPicture, bool streaming);
   virtual void unloadPicture(Picture& ioPicture);
 
   virtual void draw(const Picture& picture, const int dx, const int dy, Rect* clipRect=0);

@@ -28,7 +28,7 @@ namespace city
 class ServiceCreator : public ReferenceCounted
 {
 public:
-  virtual SrvcPtr create( PlayerCityPtr city ) = 0;
+  virtual SrvcPtr create() = 0;
   virtual std::string serviceName() const = 0;
 };
 
@@ -38,10 +38,9 @@ template< class T >
 class BaseServiceCreator : public ServiceCreator
 {
 public:
-  virtual SrvcPtr create( PlayerCityPtr city )
+  virtual SrvcPtr create()
   {
-    SrvcPtr ret( T::create( city ) );
-    return ret;
+    return T::create();
   }
 
   virtual std::string serviceName() const { return T::defaultName(); }
@@ -51,7 +50,7 @@ public:
 class ServiceFactory
 {
 public:
-  static SrvcPtr create( const std::string& name, PlayerCityPtr city);
+  static SrvcPtr create(const std::string& name);
   static ServiceFactory& instance();
   void addCreator( ServiceCreatorPtr creator );
 

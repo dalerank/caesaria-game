@@ -15,8 +15,8 @@
 
 #include "pathway.hpp"
 #include "gfx/tile.hpp"
-#include "gfx/tilemap.hpp"
 #include "core/direction.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -29,15 +29,15 @@ static Tile invalidTile( TilePos(-1, -1) );
 class Directions : public std::vector<constants::Direction>
 {
 public:
-   Directions& operator =(const Directions& a )
-   {
-     size_type newSize = a.size();
-     resize( newSize );
-	 clear();
-	 insert(begin(), a.begin(), a.end());
+  Directions& operator =(const Directions& a )
+  {
+    size_type newSize = a.size();
+    resize( newSize );
+    clear();
+    insert(begin(), a.begin(), a.end());
 
-     return *this;
-   }
+    return *this;
+  }
 };
 
 bool operator<(const Pathway& v1, const Pathway& v2)
@@ -55,19 +55,17 @@ class Pathway::Impl
 {
 public:
   TilePos destination;
+  TilePos origin;
   bool isReverse;
-  Tilemap* tilemap;
-  Directions directionList;
-  Directions::iterator directionIt;
-  Directions::reverse_iterator directionIt_reverse;
-  TilesArray tileList;
-  Tile* origin;
+  TilesArray tiles;
+  unsigned int step;
 };
 
 Pathway::Pathway() : _d( new Impl )
 {
-  _d->origin = NULL;
+  _d->origin = TilePos( 0, 0 );
   _d->destination = TilePos( 0, 0 );
+  _d->step = 0;
   _d->isReverse = false;
 }
 
@@ -78,61 +76,49 @@ Pathway::Pathway(const Pathway &copy) : _d( new Impl )
   *this = copy;
 }
 
-void Pathway::init( Tilemap& tilemap, Tile &origin)
+void Pathway::init(const gfx::Tile& origin)
 {
-  _d->tilemap = &tilemap;
-  _d->origin = &origin;
+  _d->origin = origin.pos();
   _d->isReverse = false;
   _d->destination = origin.pos();
-  _d->directionList.clear();
-  _d->directionIt = _d->directionList.begin();
-  _d->directionIt_reverse = _d->directionList.rbegin();
-  _d->tileList.clear();
-  _d->tileList.push_back(&origin);
+  _d->tiles.clear();
+  _d->tiles.push_back( const_cast<Tile*>( &origin ) );
 }
 
 unsigned int Pathway::length() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
-  return _d->directionList.size();
+  return _d->tiles.size();
 }
 
-const Tile& Pathway::front() const { return _d->origin ? *_d->origin : invalidTile; }
+const Tile& Pathway::front() const { return _d->tiles.empty() ? invalidTile : *_d->tiles.front(); }
 bool Pathway::isReverse() const {  return _d->isReverse; }
-const TilesArray& Pathway::allTiles() const {  return _d->tileList; }
-const Tile& Pathway::back() const { return _d->tilemap->at( _d->destination ); }
+const TilesArray& Pathway::allTiles() const {  return _d->tiles; }
+const Tile& Pathway::back() const { return _d->tiles.empty() ? invalidTile : *_d->tiles.back(); }
+TilePos Pathway::startPos() const {  return _d->isReverse ? _d->destination : _d->origin;}
+TilePos Pathway::stopPos() const{  return _d->isReverse ? _d->origin : _d->destination; }
 
-TilePos Pathway::startPos() const
+const Tile& Pathway::current() const
 {
-  if( _d->isReverse )   {    return _d->destination;  }
-  else  {    return _d->origin ? _d->origin->pos() : invalidTile.pos();  }
-}
-
-TilePos Pathway::stopPos() const
-{
-  if( _d->isReverse )   {  return _d->origin ? _d->origin->pos() : invalidTile.pos();    }
-  else  { return _d->destination; }
+  return _d->step < _d->tiles.size()
+           ? *_d->tiles[ _d->step ]
+           : invalidTile;
 }
 
 constants::Direction Pathway::direction()
 {
-  if(_d->isReverse )
+  if( !_d->tiles.empty() )
   {
-    if( _d->directionIt_reverse != _d->directionList.rend() )
+    if(_d->isReverse )
     {
-     constants::Direction inverseDir[] = { noneDirection,
-                                           south, southEast,
-                                           east,  northEast,
-                                           north, northWest,
-                                           west,  southWest,
-                                           countDirection };
-     return inverseDir[ *_d->directionIt_reverse ];
+      if( _d->step > 0 )
+        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
     }
-  }
-  else
-  {
-    if( _d->directionIt != _d->directionList.end() )
-     return *_d->directionIt;
+    else
+    {
+      if( _d->step < _d->tiles.size()-1 )
+        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
+    }
   }
 
   return constants::noneDirection;
@@ -140,75 +126,36 @@ constants::Direction Pathway::direction()
 
 void Pathway::toggleDirection()
 {
-  if( _d->isReverse )
-  {
-    _d->isReverse = false;
-    _d->directionIt = _d->directionIt_reverse.base();
-  }
-  else
-  {
-    _d->isReverse = true;
-    _d->directionIt_reverse = Directions::reverse_iterator( _d->directionIt );
-  }
+  _d->isReverse = !_d->isReverse;
 }
 
 void Pathway::next()
 {
   if( _d->isReverse )
   {
-    if (_d->directionIt_reverse == _d->directionList.rend())
-    {
-      // end of path!
-      return;
-    }
-
-    /*int direction = (int) *_d->directionIt_reverse;
-    if( direction != (int) noneDirection )
-    {
-      if (direction + 4 < (int) countDirection)
-      {
-        res = (Direction) (direction+4);
-      }
-      else
-      {
-        res = (Direction) (direction-4);
-      }
-    }*/
-    _d->directionIt_reverse++;
+    if( _d->step > 0 )
+      _d->step--;
   }
   else
   {
-    if( _d->directionIt == _d->directionList.end())
-    {
-      // end of path!
-      return;
-    }
-
-    _d->directionIt++;
+    if( _d->step < _d->tiles.size()-1)
+      _d->step++;
   }
 }
 
 bool Pathway::isDestination() const
 {
-  bool res = false;
   if (_d->isReverse)
   {
-#if defined(CAESARIA_PLATFORM_WIN)
-    Directions::const_reverse_iterator convItReverse = _d->directionIt_reverse;
-    res = (convItReverse == _d->directionList.rend());
-#elif defined(CAESARIA_PLATFORM_UNIX)
-    res = (_d->directionIt_reverse == _d->directionList.rend());
-#endif //CAESARIA_PLATFORM_UNIX
+    return _d->step == 0;
   }
   else
   {
-    res = ( _d->directionIt == _d->directionList.end() );
+    return ( _d->step == _d->tiles.size()-1 );
   }
-
-  return res;
 }
 
-void Pathway::setNextDirection(Direction direction)
+void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
 {
   switch (direction)
   {
@@ -226,14 +173,13 @@ void Pathway::setNextDirection(Direction direction)
   break;
   }
 
-  if( !_d->tilemap->isInside( TilePos( _d->destination ) ) )
+  if( !tmap.isInside( TilePos( _d->destination ) ) )
   {
     Logger::warning( "Destination[%d, %d] out of map", _d->destination.i(), _d->destination.j() );
   }
   else
   {
-    _d->tileList.push_back( &_d->tilemap->at( _d->destination ) );
-    _d->directionList.push_back(direction);
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( _d->destination )) );
   }
 }
 
@@ -259,15 +205,15 @@ void Pathway::setNextTile( const Tile& tile )
     direction = noneDirection;
   }
 
-  setNextDirection(direction);
+  _d->tiles.push_back( const_cast<Tile*>( &tile ) );
 }
 
 bool Pathway::contains(Tile &tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
-  for( TilesArray::reverse_iterator itTile = _d->tileList.rbegin();
-       itTile != _d->tileList.rend(); ++itTile)
+  for( TilesArray::reverse_iterator itTile = _d->tiles.rbegin();
+       itTile != _d->tiles.rend(); ++itTile)
   {
     if (*itTile == &tile)
     {
@@ -281,42 +227,34 @@ bool Pathway::contains(Tile &tile)
 
 void Pathway::prettyPrint() const
 {
-  if (_d->origin == NULL)
-  {
-    Logger::warning( "pathWay is NULL" );
-  }
-  else
-  {
-    Logger::warning( "pathWay from [%d,%d] to [%d,%d]",
-                     _d->origin->i(), _d->origin->j(), _d->destination.i(), _d->destination.j() );
+  Logger::warning( "pathWay from [%d,%d] to [%d,%d]",
+                   _d->origin.i(), _d->origin.j(), _d->destination.i(), _d->destination.j() );
 
-    std::string strDir = "";
-    for( Directions::const_iterator itDir = _d->directionList.begin();
-         itDir != _d->directionList.end(); ++itDir)
+  std::string strDir = "";
+  for( unsigned int k=0; k < _d->tiles.size()-1; k++ )
+  {
+    Direction direction = TileHelper::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
+
+    switch (direction)
     {
-      Direction direction = *itDir;
-
-      switch (direction)
-      {
-      case north: strDir += "N";  break;
-      case northEast: strDir += "NE"; break;
-      case east: strDir += "E"; break;
-      case southEast: strDir += "SE"; break;
-      case south: strDir += "S";   break;
-      case southWest: strDir += "SW"; break;
-      case west: strDir += "W";  break;
-      case northWest: strDir += "NW"; break;
-      default:
-        //"Unexpected Direction:"
-        _CAESARIA_DEBUG_BREAK_IF( direction );
-      break;
-      }
-
-      strDir += " ";
+    case north: strDir += "N";  break;
+    case northEast: strDir += "NE"; break;
+    case east: strDir += "E"; break;
+    case southEast: strDir += "SE"; break;
+    case south: strDir += "S";   break;
+    case southWest: strDir += "SW"; break;
+    case west: strDir += "W";  break;
+    case northWest: strDir += "NW"; break;
+    default:
+      //"Unexpected Direction:"
+      _CAESARIA_DEBUG_BREAK_IF( direction );
+    break;
     }
 
-    Logger::warning( strDir.c_str() );
+    strDir += " ";
   }
+
+  Logger::warning( strDir );
 }
 
 VariantMap Pathway::save() const
@@ -327,59 +265,49 @@ VariantMap Pathway::save() const
     return VariantMap();
   }
 
-  stream[ "startPos" ] = _d->origin->pos();
-  stream[ "stopPos" ] = _d->destination;
-
   VariantList directions;
-  for( Directions::const_iterator itDir = _d->directionList.begin();
-       itDir != _d->directionList.end(); ++itDir)
+  foreach( it, _d->tiles )
   {
-    directions.push_back( (int)*itDir );
+    directions.push_back( (*it)->pos() );
   }
 
-  stream[ "directions" ] = directions;
+  stream[ "tiles" ] = directions;
   stream[ "reverse" ] = _d->isReverse;
   stream[ "step" ] = curStep();
+  stream[ "startPos" ] = _d->origin;
+  stream[ "endPos"] = _d->destination;
 
   return stream;
 }
 
 bool Pathway::isValid() const { return length() > 0; }
 
-void Pathway::load( const VariantMap& stream )
+void Pathway::load(const Tilemap& tmap, const VariantMap& stream )
 {
   if( stream.size() == 0 )
   {
     return;
   }
 
-  _d->origin = &_d->tilemap->at( stream.get( "startPos" ).toTilePos() );
-  _d->destination = _d->origin->pos(); //stream.get( "stopPos" ).toTilePos();
-  VariantList directions = stream.get( "directions" ).toList();
-  foreach( it, directions )
+  _d->origin = stream.get( "startPos" );
+  _d->destination = stream.get( "endPos" ); //stream.get( "stopPos" ).toTilePos();
+  VariantList vmTiles = stream.get( "tiles" ).toList();
+  foreach( it, vmTiles )
   {
-    Direction dir = (Direction)(*it).toInt();
-    setNextDirection( dir );
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it->toTilePos() )) );
   }
 
   _d->isReverse = stream.get( "reverse" ).toBool();
-  int off = stream.get( "step" ).toInt();
-  _d->directionIt = _d->directionList.begin();
-  _d->directionIt_reverse = _d->directionList.rbegin();
-  std::advance(_d->directionIt_reverse, off);
-  std::advance(_d->directionIt, off);
+  _d->step = stream.get( "step" ).toInt();
 }
 
 Pathway& Pathway::operator=( const Pathway& other )
 {
-  _d->tilemap             = other._d->tilemap;
   _d->origin              = other._d->origin;
   _d->destination         = other._d->destination;
   _d->isReverse           = other._d->isReverse;
-  _d->directionList       = other._d->directionList;
-  _d->directionIt         = _d->directionList.begin();
-  _d->directionIt_reverse = _d->directionList.rbegin();
-  _d->tileList            = other._d->tileList;
+  _d->step                = other._d->step;
+  _d->tiles               = other._d->tiles;
 
   return *this;
 }
@@ -392,11 +320,11 @@ Pathway Pathway::copy(unsigned int start, int stop) const
     return ret;
   }
 
-  ret.init( *_d->tilemap, *_d->tileList[ start ] );
-  stop = (stop == -1 ? _d->tileList.size() : stop );
+  ret.init( *_d->tiles[ start ] );
+  stop = (stop == -1 ? _d->tiles.size() : stop );
   for( int i=start+1; i < stop; i++ )
   {
-    ret.setNextTile( *_d->tileList[ i ] );
+    ret.setNextTile( *_d->tiles[ i ] );
   }
 
   return ret;
@@ -406,26 +334,24 @@ unsigned int Pathway::curStep() const
 {
   if(_d->isReverse)
   {
-    size_t pos = std::distance<Directions::const_reverse_iterator>(_d->directionList.rbegin(), _d->directionIt_reverse);
-    return static_cast<unsigned int>(pos);
+    return _d->tiles.size() - _d->step;
   }
   else
   {
-    size_t pos = std::distance<Directions::const_iterator>(_d->directionList.begin(), _d->directionIt);
-    return static_cast<unsigned int>(pos);
+    return _d->step;
   }
 }
 
-void Pathway::move(Pathway::DirectionType type)
+void Pathway::move( Pathway::DirectionType type )
 {
   if( type == forward )
   {
-    _d->directionIt = _d->directionList.begin();
+    _d->step = 0;
     _d->isReverse = false;
   }
   else
   {
-    _d->directionIt_reverse = _d->directionList.rbegin();
+    _d->step = _d->tiles.size() - 1;
     _d->isReverse = true;
   }
 }

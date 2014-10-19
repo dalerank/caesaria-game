@@ -637,7 +637,8 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   PlayerCityPtr oCity = game.city();
   Tilemap& oTilemap = oCity->tilemap();
   unsigned int mapSize = diamond_square.width();
-  oTilemap.resize( mapSize );
+
+  oCity->resize( mapSize );
 
   Logger::warning( "W:%d H:%d", diamond_square.width(), diamond_square.height() );
 

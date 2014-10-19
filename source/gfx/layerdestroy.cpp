@@ -38,6 +38,7 @@ namespace gfx
 class LayerDestroy::Impl
 {
 public:
+  Picture shovelPic;
   Picture clearPic;
   PictureRef textPic;
   unsigned int money4destroy;
@@ -50,7 +51,7 @@ void LayerDestroy::_clearAll()
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
   foreach( tile, tiles4clear )
   {
-    events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->pos() );
+    events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->epos() );
     event->dispatch();
   }
 }
@@ -114,15 +115,15 @@ void LayerDestroy::render( Engine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( TileHelper::hash( tile->pos() ) );
+    hashDestroyArea.insert( TileHelper::hash(tile->epos()));
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
-      TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->size() );
+      TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( TileHelper::hash( (*ovelayTile)->pos() ) );
+        hashDestroyArea.insert(TileHelper::hash((*ovelayTile)->epos()));
       }
     }
 
@@ -135,7 +136,7 @@ void LayerDestroy::render( Engine& engine )
     Tile* tile = *it;
     Tile* master = tile->masterTile();
 
-    int tilePosHash = TileHelper::hash( tile->pos() );
+    int tilePosHash = TileHelper::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -150,9 +151,9 @@ void LayerDestroy::render( Engine& engine )
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    int z = tile->pos().z();
+    int z = tile->epos().z();
 
-    int tilePosHash = TileHelper::hash( tile->pos() );
+    int tilePosHash = TileHelper::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
@@ -174,6 +175,7 @@ void LayerDestroy::render( Engine& engine )
     _d->textFont.draw( *_d->textPic, StringHelper::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
+  engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );
   engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
@@ -199,7 +201,7 @@ void LayerDestroy::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
 
        Tile* tile = _camera()->at( _lastCursorPos(), true );
-        _d->startTilePos = tile ? tile->pos() : TilePos( -1, -1 );
+        _d->startTilePos = tile ? tile->epos() : TilePos( -1, -1 );
       }
     }
     break;
@@ -273,6 +275,7 @@ LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
 LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
+  _d->shovelPic = Picture::load( "shovel", 1 );
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->textFont = Font::create( FONT_5 );
   _d->textPic.init( Size( 100, 30 ) );

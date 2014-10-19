@@ -44,7 +44,7 @@ AboutGranary::AboutGranary( Widget* parent, const Tile& tile )
   setupUI( ":/gui/granaryinfo.gui" );
   _granary = ptr_cast<Granary>( tile.overlay() );
 
-  setConstruction( ptr_cast<Construction>( _granary ) );
+  setBase( ptr_cast<Construction>( _granary ) );
 
   PushButton* btnOrders;
   Label* lbUnits;

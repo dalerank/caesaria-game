@@ -1,7 +1,9 @@
 #include "loader_png.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
-#include "png.h"
+#include "libpng/png.h"
+
+using namespace gfx;
 
 // PNG function for error handling
 static void png_cpexcept_error(png_structp png_ptr, png_const_charp msg)

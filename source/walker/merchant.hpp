@@ -36,7 +36,7 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void timeStep(const unsigned long time);
-  std::string getParentCity() const;
+  std::string parentCity() const;
 
 protected:
   virtual void _reachedPathway();

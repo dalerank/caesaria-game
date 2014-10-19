@@ -1,11 +1,6 @@
 {  
   geometry : [ 0, 0, 460, 350 ]
   
-  lbIcon#Label : {
-    geometry : [ 10, 10, 50, 50 ]
-    image : "paneling_00256"
-  }
-
   gbLegionParams#Label : {
     geometry : [ 0, 50, 445, 290 ]
 
@@ -86,5 +81,27 @@
     geometry : [ 60, "ph-40", "pw-60", "ph-12" ]
     bgtype : "whiteBorderUp"
     text : "##return_to_fort##"
+  }
+
+  btnAttackAnimals#PushButton : {
+    geometry : [ 60, "ph-60", 200, "ph-40" ]
+    bgtype : "whiteBorderUp"
+    text : "##attacK_animals_off##"
+  }
+
+  gbLegionParams2#Label : {
+    geometry : [ 10, 10, 42, 110 ]
+
+    lbIcon#Label : {
+      geometry : [ 0, 0, 32, 18 ]
+    }
+
+    lbFlag#Label : {
+      geometry : [ 0, 18, 32, 47 ]
+    }
+
+    lbMoraleStandart#Label : {
+      geometry : [ 0, 47, 32, 109 ]
+    }
   }
 }

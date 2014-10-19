@@ -34,11 +34,10 @@ public:
   {
     ServiceWalker::ReachedBuildings res = _walker.getReachedBuildings( pos );
 
-    ServiceWalker::ReachedBuildings::iterator it=res.begin();
-    while( it != res.end() )
+    for( ServiceWalker::ReachedBuildings::iterator it=res.begin();it != res.end(); )
     {
       if( (*it)->type() != type )      {        res.erase( it++ );      }
-      else      {        ++it;      }
+      else                             {        ++it;      }
     }
 
     return res;

@@ -30,20 +30,6 @@
 
 using namespace gfx;
 
-// comparison (for sorting list of tiles by their coordinates)
-bool
-compare_tiles_(const Tile * first, const Tile * second)
-{
-  if (first->i() < second->i())
-    return true;
-
-  else if (first->i() == second->i() &&
-           first->j() > second->j())
-    return true;
-
-  return false;
-}
-
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
                                       bool roadAssignment, bool returnRect )
 {  
@@ -82,8 +68,6 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
       ret.append( tileMap.getRectangle( midlPos, startPos ) );
     }
 
-    // sort tiles to be drawn in the rigth order on screen
-    //std::sort( ret.begin(), ret.end(), compare_tiles_ );
     foreach( it, ret )
     {
       if( !(*it)->isWalkable( true ) )
@@ -98,7 +82,9 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   {
     int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
     flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
-    Pathway way = Pathfinder::instance().getPath( startPos, stopPos, flags );
+    const Tile& stile = tileMap.at( startPos );
+    const Tile& ftile = tileMap.at( stopPos );
+    Pathway way = Pathfinder::instance().getPath( stile.pos(), ftile.pos(), flags );
 
     ret = way.allTiles();
   }

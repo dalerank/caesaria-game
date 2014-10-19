@@ -49,6 +49,8 @@
 #include "gui/widgetescapecloser.hpp"
 #include "core/event.hpp"
 #include "core/timer.hpp"
+#include "core/stringhelper.hpp"
+#include "steam.hpp"
 
 using namespace gfx;
 using namespace gui;
@@ -64,13 +66,19 @@ class StartMenu::Impl
 public:
   Picture bgPicture;
   gui::StartMenu* menu;         // menu to display
-  int result;
   bool isStopped;
   Game* game;
   Engine* engine;
   std::string fileMap;
   std::string playerName;
+  int result;
 
+#ifdef CAESARIA_USE_STEAM
+  Picture userImage;
+  gui::Label* lbSteamName;
+#endif
+
+public:
   void handleNewGame();
   void resolveCredits();
   void showLoadMenu();
@@ -83,7 +91,7 @@ public:
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
   void resolveSelectFile( std::string fileName );
   void setPlayerName( std::string name );
-  void openGreenlightPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
+  void openSteamPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
   void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
@@ -248,6 +256,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##graphics##"),
                          " ",
+                         "Dmitry Plotnikov",
                          "dimitrius (caesar-iii.ru)",
                          "aneurysm (4pda.ru)",
                          " ",
@@ -420,6 +429,10 @@ void StartMenu::draw()
   _d->engine->draw(_d->bgPicture, 0, 0);
 
   _d->game->gui()->draw();
+
+#ifdef CAESARIA_USE_STEAM
+  _d->engine->draw( _d->userImage, Point( 20, 20 ) );
+#endif
 }
 
 void StartMenu::handleEvent( NEvent& event )
@@ -437,7 +450,6 @@ void StartMenu::initialize()
   Logger::warning( "ScreenMenu: initialize start");
   _d->bgPicture = Picture::load("title", 1);
 
-
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
   _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
@@ -446,14 +458,15 @@ void StartMenu::initialize()
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
-  gui::TexturedButton* btnGreenlight = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point(), Size( 250, 155), -1,
-                                                                "greenlight", 1, 2, 2, 2 );
-  CONNECT( btnGreenlight, onClicked(), _d.data(), Impl::openGreenlightPage );
-
   Size scrSize = _d->engine->screenSize();
   gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
-                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1,
+                                                              Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
                                                               "logo_rdt", 1, 2, 2, 2 );
+
+  gui::TexturedButton* btnSteamPage = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
+                                                                "steam_icon", 1, 2, 2, 2 );
+
+  CONNECT( btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
   _d->showMainMenu();
@@ -472,6 +485,16 @@ void StartMenu::initialize()
   }
 #else
   _d->playMenuSoundTheme();
+#endif
+
+#ifdef CAESARIA_USE_STEAM
+  _d->userImage = steamapi::Handler::userImage();
+  std::string text = StringHelper::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
+                                                                               CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
+  _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
+  _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
+  _d->lbSteamName->setWordwrap( true );
+  _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
 #endif
 }
 

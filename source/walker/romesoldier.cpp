@@ -29,6 +29,7 @@
 #include "enemysoldier.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "animals.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -111,7 +112,9 @@ void RomeSoldier::timeStep(const unsigned long time)
     }
     else
     {
-      _tryAttack();
+      bool haveEnemy = _tryAttack();
+      if( !haveEnemy )
+        send2patrol();
     }
   }
   break;
@@ -174,16 +177,17 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   TilePos offset( range, range );
   TilesArray tiles = tmap.getArea( pos() - offset, pos() + offset );
 
+  FortPtr fort = base();
+  bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
+
   foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _city()->walkers( walker::any, (*tile)->pos() );
+    WalkerList tileWalkers = _city()->walkers( (*tile)->pos() );
 
     foreach( w, tileWalkers )
     {
-      if( is_kind_of<EnemySoldier>( *w ) )
-      {
-        walkers.push_back( *w );
-      }
+      if( (*w)->agressive() > 0 )  { walkers << *w; }
+      else if( attackAnimals && is_kind_of<Animal>( *w ) ) { walkers << *w; }
     }
   }
 
@@ -303,7 +307,11 @@ void RomeSoldier::_reachedPathway()
 
   case go2position:
   {
-    if( _city()->walkers( type(), pos() ).size() != 1 ) //only me in this tile
+    city::Helper helper( _city() );
+    WalkerList walkersOnTile = helper.find<Walker>( type(), pos() );
+    walkersOnTile.remove( this );
+
+    if( walkersOnTile.size() > 0 ) //only me in this tile
     {
       _back2base();
     }

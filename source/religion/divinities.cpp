@@ -134,6 +134,16 @@ void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
     _doWrath( city );
     return;
   }
+  else if( income == -102.f )
+  {
+    _doSmallCurse( city );
+    return;
+  }
+  else if( income == -103.f )
+  {
+    _doBlessing( city );
+    return;
+  }
 
   unsigned int minMood = 50 - math::clamp( city->population() / 10, 0u, 50u );
   int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );

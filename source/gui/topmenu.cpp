@@ -240,7 +240,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "add_enemy_archers", city::debug_event::add_enemy_archers );
   debugMenu->addItem( "add_enemy_soldiers", city::debug_event::add_enemy_soldiers );
   debugMenu->addItem( "add_wolves", city::debug_event::add_wolves );
-  debugMenu->addItem( "decrease_mars_relation", city::debug_event::dec_mars_relation );
+  debugMenu->addItem( "send_mars_wrath", city::debug_event::send_mars_wrath );
   debugMenu->addItem( "add_1000_dn", city::debug_event::add_1000_dn );
   debugMenu->addItem( "add_player_money", city::debug_event::add_player_money );
   debugMenu->addItem( "send_chastener", city::debug_event::send_chastener );
@@ -248,6 +248,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "send_player_army", city::debug_event::send_player_army );
   debugMenu->addItem( "screenshot", city::debug_event::screenshot );
   debugMenu->addItem( "add_empire_barbarian", city::debug_event::add_empire_barbarian );
+  debugMenu->addItem( "send_venus_wrath", city::debug_event::send_venus_wrath );
+  debugMenu->addItem( "win_mission", city::debug_event::win_mission );
+  debugMenu->addItem( "all_sound_off", city::debug_event::all_sound_off );
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
 

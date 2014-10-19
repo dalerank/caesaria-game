@@ -31,6 +31,7 @@
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
+#include "core/debug_queue.hpp"
 
 typedef unsigned int UniqueId;
 class Pathway;
@@ -39,7 +40,7 @@ class Walker : public Serializable, public ReferenceCounted
 {
 public:
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly } Flag;
+  typedef enum { showDebugInfo=1, vividly, userFlag, count=0xff } Flag;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();
@@ -53,6 +54,8 @@ public:
 
   virtual Point mappos() const;
   Point tilesubpos() const;
+
+  const gfx::Tile& tile() const;
 
   virtual void setPathway(const Pathway& pathway);
   const Pathway& pathway() const;
@@ -100,6 +103,8 @@ public:
   virtual void initialize( const VariantMap& options );
   virtual int agressive() const;
 
+  void attach();
+
 protected:
   void _walk();
   void _computeDirection();
@@ -135,5 +140,13 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+#ifdef DEBUG
+class WalkerDebugQueue : public DebugQueue<Walker>
+{
+public:
+  static void print();
+};
+#endif
 
 #endif //_CAESARIA_WALKER_H_INCLUDE_

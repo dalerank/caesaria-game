@@ -63,8 +63,8 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  virtual void productRate( const float rate );
-  virtual float getProductRate() const;
+  virtual void setProductRate( const float rate );
+  virtual float productRate() const;
 
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;

@@ -391,7 +391,7 @@ void WallGuard::send2city( TowerPtr tower, Pathway pathway )
 
   if( !isDeleted() )
   {
-    _city()->addWalker( this );
+    attach();
   }
 }
 

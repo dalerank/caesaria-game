@@ -23,6 +23,8 @@
 #include "vfs/path.hpp"
 #include "core/time.hpp"
 
+using namespace gfx;
+
 class PictureLoader::Impl
 {
 public:

@@ -34,7 +34,7 @@ public:
     Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
     Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
     Point operator -() const { return Point( -_x, -_y); }
-    Point operator*(int mul) const{ return Point( _x*mul, _y*mul ); }
+    Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
 
     void setX( const int nx ) { _x = nx; }
     void setY( const int ny ) { _y = ny; }
@@ -90,7 +90,7 @@ public:
   int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
 
   TilePos& operator=(const TilePos& other) { set( other._x, other._y ); return *this; }
-  TilePos& operator+=(const TilePos& other) { set( _x+other._x, _y+other._y ); return *this; }
+  TilePos& operator+=(const TilePos& other) { set( _x + other._x, _y + other._y ); return *this; }
   TilePos operator+(const TilePos& other) const { return TilePos( _x + other._x, _y + other._y ); }
   TilePos operator-(const TilePos& other) const { return TilePos( _x - other._x, _y - other._y ); }
   TilePos operator*(int v) const { return TilePos( _x * v, _y * v ); }

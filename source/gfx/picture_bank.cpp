@@ -39,6 +39,8 @@
 #include "vfs/file.hpp"
 #include "core/color.hpp"
 
+using namespace gfx;
+
 namespace {
 const char* framesSection = "frames";
 }
@@ -66,7 +68,7 @@ public:
 
 public:
   Picture tryLoadPicture( const std::string& name );
-  void loadAtlas( const AtlasPreview& info );
+  void loadAtlas(const vfs::Path& filename );
   void setPicture( const std::string &name, const Picture& pic );
   void destroyUnusableTextures();
 };
@@ -154,8 +156,9 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
   _d->setPicture( name, pic );
 }
 
-void PictureBank::addAtlas( const std::string& filename, const VariantMap& options )
+void PictureBank::addAtlas( const std::string& filename )
 {
+  VariantMap options = SaveAdapter::load( filename );
   if( !options.empty() )
   {
     Logger::warning( "PictureBank: load atlas " + filename );
@@ -172,6 +175,11 @@ void PictureBank::addAtlas( const std::string& filename, const VariantMap& optio
 
     _d->atlases.push_back( atlas );
   }
+}
+
+void PictureBank::loadAtlas(const std::string& filename)
+{
+  _d->loadAtlas( filename );
 }
 
 Picture& PictureBank::getPicture(const std::string &name)
@@ -244,7 +252,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     bool found = i->find( hash );
     if( found )
     {
-      loadAtlas( *i );
+      loadAtlas( (*i).filename );
       //unloadAtlas.erase( i );
       break;
     }
@@ -260,42 +268,43 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   return Picture::getInvalid();
 }
 
-void PictureBank::Impl::loadAtlas(const AtlasPreview& info)
+void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
 {
-  vfs::Path filePath( info.filename );
-
-  if( filePath.exist() )
+  if( !filePath.exist() )
   {
-    VariantMap info = SaveAdapter::load( filePath );
+    Logger::warning( "PictureBank: cant find atlas " + filePath.toString() );
+    return;
+  }
 
-    vfs::Path texturePath = info.get( "texture" ).toString();
+  VariantMap info = SaveAdapter::load( filePath );
 
-    vfs::NFile file = vfs::NFile::open( texturePath );
+  vfs::Path texturePath = info.get( "texture" ).toString();
 
-    Picture mainTexture;
-    if( file.isOpen() )
+  vfs::NFile file = vfs::NFile::open( texturePath );
+
+  Picture mainTexture;
+  if( file.isOpen() )
+  {
+    mainTexture = PictureLoader::instance().load( file );
+  }
+  else
+  {
+    Logger::warning( "PictureBank: load atlas failed for texture" + texturePath.toString() );
+    mainTexture = Picture::getInvalid();
+  }
+
+  if( !info.empty() )
+  {
+    VariantMap items = info.get( framesSection ).toMap();
+    foreach( i, items )
     {
-      mainTexture = PictureLoader::instance().load( file );
-    }
-    else
-    {
-      Logger::warning( "PictureBank: load atlas failed for texture" + texturePath.toString() );
-      mainTexture = Picture::getInvalid();
-    }
+      VariantList rInfo = i->second.toList();
+      Picture pic = mainTexture;
+      Point start(rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
+      Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
-    if( !info.empty() )
-    {
-      VariantMap items = info.get( framesSection ).toMap();
-      foreach( i, items )
-      {
-        VariantList rInfo = i->second.toList();
-        Picture pic = mainTexture;
-        Point start(rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
-        Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
-
-        pic.setOriginRect( Rect( start, size ) );
-        setPicture( i->first, pic );
-      }
+      pic.setOriginRect( Rect( start, size ) );
+      setPicture( i->first, pic );
     }
   }
 }

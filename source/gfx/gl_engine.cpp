@@ -37,13 +37,13 @@
 #include "core/saveadapter.hpp"
 #include "ttf/SDL_ttf.h"
 
+
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #define glOrtho glOrthof
-  #undef CAESARIA_USE_SHADERS
   #undef CAESARIA_USE_FRAMEBUFFER
   #include <SDL_opengles.h>
   #define USE_GLES
@@ -81,15 +81,17 @@
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
 
-  #define glGenFramebuffers  glGenFramebuffersEXT
-  #define glGenTextures     glGenTexturesEXT
-  #define glGenRenderbuffers glGenRenderbuffersEXT
-  #define glBindFramebuffer glBindFramebufferEXT
-  #define glBindRenderbuffer glBindRenderbufferEXT
-  #define glRenderbufferStorage glRenderbufferStorageEXT
-  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-  #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
-  #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #ifndef CAESARIA_PLATFORM_MACOSX
+    #define glGenFramebuffers         glGenFramebuffersEXT
+    #define glGenTextures             glGenTexturesEXT
+    #define glGenRenderbuffers        glGenRenderbuffersEXT
+    #define glBindFramebuffer         glBindFramebufferEXT
+    #define glBindRenderbuffer        glBindRenderbufferEXT
+    #define glRenderbufferStorage     glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus  glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D    glFramebufferTexture2DEXT
+  #endif
 #else
   #undef CAESARIA_USE_SHADERS
 #endif
@@ -565,33 +567,35 @@ void GlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-#ifndef GL_GLEXT_PROTOTYPES
-  ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
-  ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
-  ASSIGNGLFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader)
-  ASSIGNGLFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv)
-  ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM1FPROC,glUniform1f)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM2IPROC,glUniform2i)
-  ASSIGNGLFUNCTION(PFNGLUNIFORM2FPROC,glUniform2f)
-  ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
-  ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
-  ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
-  ASSIGNGLFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram)
-  ASSIGNGLFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader)
-  ASSIGNGLFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram)
-  ASSIGNGLFUNCTION(PFNGLGETPROGRAMIVPROC,glGetProgramiv)
-  ASSIGNGLFUNCTION(PFNGLGENFRAMEBUFFERSEXTPROC,glGenFramebuffersEXT)
-  ASSIGNGLFUNCTION(PFNGLGENTEXTURESEXTPROC,glGenTexturesEXT)
-  ASSIGNGLFUNCTION(PFNGLGENRENDERBUFFERSEXTPROC,glGenRenderbuffersEXT)
-  ASSIGNGLFUNCTION(PFNGLBINDFRAMEBUFFEREXTPROC,glBindFramebufferEXT)
-  ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC,glFramebufferTexture2DEXT)
-  ASSIGNGLFUNCTION(PFNGLBINDRENDERBUFFEREXTPROC,glBindRenderbufferEXT)
-  ASSIGNGLFUNCTION(PFNGLRENDERBUFFERSTORAGEEXTPROC,glRenderbufferStorageEXT)
-  ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
-  ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
-#endif
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  #ifndef GL_GLEXT_PROTOTYPES
+    ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
+    ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
+    ASSIGNGLFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader)
+    ASSIGNGLFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv)
+    ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
+    ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
+    ASSIGNGLFUNCTION(PFNGLUNIFORM1FPROC,glUniform1f)
+    ASSIGNGLFUNCTION(PFNGLUNIFORM2IPROC,glUniform2i)
+    ASSIGNGLFUNCTION(PFNGLUNIFORM2FPROC,glUniform2f)
+    ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
+    ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
+    ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
+    ASSIGNGLFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram)
+    ASSIGNGLFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader)
+    ASSIGNGLFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram)
+    ASSIGNGLFUNCTION(PFNGLGETPROGRAMIVPROC,glGetProgramiv)
+    ASSIGNGLFUNCTION(PFNGLGENFRAMEBUFFERSEXTPROC,glGenFramebuffersEXT)
+    ASSIGNGLFUNCTION(PFNGLGENTEXTURESEXTPROC,glGenTexturesEXT)
+    ASSIGNGLFUNCTION(PFNGLGENRENDERBUFFERSEXTPROC,glGenRenderbuffersEXT)
+    ASSIGNGLFUNCTION(PFNGLBINDFRAMEBUFFEREXTPROC,glBindFramebufferEXT)
+    ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC,glFramebufferTexture2DEXT)
+    ASSIGNGLFUNCTION(PFNGLBINDRENDERBUFFEREXTPROC,glBindRenderbufferEXT)
+    ASSIGNGLFUNCTION(PFNGLRENDERBUFFERSTORAGEEXTPROC,glRenderbufferStorageEXT)
+    ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
+    ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
+  #endif //GL_GLEXT_PROTOTYPES
+#endif //CAESARIA_USE_FRAMEBUFFER
 
   SDL_DisplayMode mode;
   SDL_GetCurrentDisplayMode(0, &mode);
@@ -617,7 +621,10 @@ void GlEngine::init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Logger::warning( "GrafixEngine: set caption");
-  SDL_SetWindowTitle( _d->window, "CaesarIA:gl "CAESARIA_VERSION );
+  std::string versionStr = StringHelper::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
+                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
+                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   //!!!!!
 #ifdef CAESARIA_USE_FRAMEBUFFER
@@ -653,7 +660,7 @@ void GlEngine::setFlag( int flag, int value )
   }
 }
 
-Picture* GlEngine::createPicture(const Size& size )
+Picture* GlEngine::createPicture( const Size& size )
 {
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
@@ -781,7 +788,7 @@ void GlEngine::startRenderFrame()
 }
 
 void GlEngine::endRenderFrame()
-{ 
+{
   if( getFlag( Engine::debugInfo ) )
   {
     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
@@ -792,7 +799,7 @@ void GlEngine::endRenderFrame()
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
-  {    
+  {
     _d->fb.draw( _d->effects.effects() );
     _d->fb.draw();
   }

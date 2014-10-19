@@ -80,6 +80,13 @@ std::string WorkingBuilding::workersProblemDesc() const
   return WorkingBuildingHelper::productivity2desc( const_cast<WorkingBuilding*>( this ) );
 }
 
+std::string WorkingBuilding::sound() const
+{
+  return (isActive() && numberWorkers() > 0
+            ? Building::sound()
+            : "");
+}
+
 std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
@@ -138,8 +145,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  WalkerList::iterator it=_d->walkerList.begin();
-  while( it != _d->walkerList.end() )
+  for( WalkerList::iterator it=_d->walkerList.begin(); it != _d->walkerList.end(); )
   {
     if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
     else { ++it; }

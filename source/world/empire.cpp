@@ -46,6 +46,7 @@ public:
   CityList cities;
   Trading trading;
   EmpireMap emap;
+  ObjectList newObjects;
   ObjectList objects;
   int rateInterest;
   Emperor emperor;
@@ -87,7 +88,9 @@ CityList Empire::cities() const
   return ret;
 }
 
-Empire::~Empire(){}
+Empire::~Empire()
+{
+}
 
 void Empire::_initializeObjects( vfs::Path filename )
 {
@@ -150,7 +153,7 @@ void Empire::addObject(ObjectPtr obj)
     obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );    
   }  
 
-  _d->objects.push_back( obj );
+  _d->newObjects.push_back( obj );
 }
 
 CityPtr Empire::addCity( CityPtr city )
@@ -288,6 +291,11 @@ void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
   _d->trading.getPrice( gtype, buy, sell );
 }
 
+void Empire::clear()
+{
+
+}
+
 TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 {
   CityPtr startCity = findCity( start );
@@ -364,6 +372,12 @@ void Empire::timeStep( unsigned int time )
     (*it)->timeStep( time );
     if( (*it)->isDeleted() ) { it =_d->objects.erase( it ); }
     else { ++it; }
+  }
+
+  if( !_d->newObjects.empty() )
+  {
+    _d->objects << _d->newObjects;
+    _d->newObjects.clear();
   }
 
   if( GameDate::isMonthChanged() )

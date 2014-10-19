@@ -228,9 +228,11 @@ Font& Font::operator=( const Font& other )
   return *this;
 }
 
-Font Font::create( FontType type )
+Font Font::create(FontType type , NColor color)
 {
-  return FontCollection::instance().getFont_( type );
+  Font ret = FontCollection::instance().getFont_( type );
+  ret.setColor( color );
+  return ret;
 }
 
 Font Font::create(const std::string& type)

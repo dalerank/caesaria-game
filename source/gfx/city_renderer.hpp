@@ -33,7 +33,7 @@ class CityRenderer : public gfx::Renderer
 {
 public:
   CityRenderer();
-  ~CityRenderer();
+  virtual ~CityRenderer();
 
   void initialize(PlayerCityPtr city, gfx::Engine* engine, gui::Ui *guienv);
 
@@ -45,11 +45,9 @@ public:
 
   void handleEvent( NEvent& event);
 
-  gfx::Tilemap& getTilemap();
-
   // sets the current command
   void setMode( Renderer::ModePtr command );
-  Renderer::ModePtr getMode() const;
+  Renderer::ModePtr mode() const;
 
   void animate( unsigned int time );
 
@@ -57,9 +55,7 @@ public:
   void setLayer( int layertype );
   int  layerType() const;
 
-  Point getOffset() const;
-
-  TilePos getTilePos( Point point ) const;
+  TilePos screen2tilepos( Point point ) const;
 
   void setViewport( const Size& size );
 

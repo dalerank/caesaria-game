@@ -52,7 +52,7 @@ AboutFort::AboutFort( Widget* parent, const Tile& tile )
   }
 
   Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
-  lb->setTextAlignment( align::center, align::center );
+  lb->setTextAlignment( align::upperLeft, align::center );
   lb->setWordwrap( true );
 }
 
