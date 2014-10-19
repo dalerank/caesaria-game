@@ -4,8 +4,7 @@
   funds : 8000
   city.name : "Brundisium"
   player.rank : 1
-  date : "-350.01.01"
-  finish : "-300.01.01"
+  date : "-350.01.01"  
   climate : 0
   adviserEnabled : false
   fishPlaceEnabled : false
@@ -17,6 +16,7 @@
     prosperity : 0
     peace : 0
     favour : 0
+    finishDate : "-300.01.01"
     next : ":/missions/mission3.briefing"
     title : "##win_clerk_title##"
     win.text : "##tutorial2_win_text##"

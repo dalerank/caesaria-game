@@ -32,6 +32,7 @@ public:
   int favour;
   int peace;
   bool success;
+  DateTime finishDate;
   StringArray overview;
   std::string shortDesc,
               caption,
@@ -69,6 +70,8 @@ bool VictoryConditions::isSuccess( int culture, int prosperity,
   return _d->success;
 }
 
+bool VictoryConditions::isSuccess() const {  return _d->success; }
+
 void VictoryConditions::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::instance().getLevel( stream.get( "maxHouseLevel" ).toString() );
@@ -78,6 +81,7 @@ void VictoryConditions::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, prosperity, stream )
   VARIANT_LOAD_ANY_D( _d, favour, stream )
   VARIANT_LOAD_ANY_D( _d, peace, stream )
+  VARIANT_LOAD_TIME_D( _d, finishDate, stream )
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
   _d->winText = stream.get( "win.text" ).toString();
@@ -96,6 +100,7 @@ VariantMap VictoryConditions::save() const
   VARIANT_SAVE_ANY_D( ret, _d, favour )
   VARIANT_SAVE_ANY_D( ret, _d, peace )
   VARIANT_SAVE_STR_D( ret, _d, overview )
+  VARIANT_SAVE_ANY_D( ret, _d, finishDate )
   ret[ "short"      ] = Variant( _d->shortDesc );
   ret[ "win.text"   ] = Variant( _d->winText );
   VARIANT_SAVE_STR_D( ret, _d, caption )
@@ -118,6 +123,7 @@ VictoryConditions&VictoryConditions::operator=(const VictoryConditions& a)
   _d->caption = a._d->caption;
   _d->next = a._d->next;
   _d->title = a._d->title;
+  _d->finishDate = a._d->finishDate;
   _d->winText = a._d->winText;
 
   return *this;
@@ -127,6 +133,7 @@ int VictoryConditions::needCulture() const{  return _d->culture;}
 int VictoryConditions::needProsperity() const{  return _d->prosperity;}
 int VictoryConditions::needFavour() const{  return _d->favour;}
 int VictoryConditions::needPeace() const{  return _d->peace;}
+const DateTime &VictoryConditions::finishDate() const { return _d->finishDate; }
 std::string VictoryConditions::shortDesc() const {  return _d->shortDesc;}
 std::string VictoryConditions::nextMission() const { return _d->next; }
 std::string VictoryConditions::newTitle() const { return _d->title; }

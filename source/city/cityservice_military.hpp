@@ -52,7 +52,7 @@ public:
   int monthFromLastAttack() const;
 
   void updateThreat( int value );
-  unsigned int threadValue() const;
+  unsigned int threatValue() const;
 
   static std::string defaultName();
 

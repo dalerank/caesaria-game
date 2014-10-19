@@ -724,16 +724,22 @@ void Level::Impl::makeScreenShot()
 void Level::Impl::checkFailedMission( Level* lvl )
 {
   PlayerCityPtr pcity = game->city();
+
+  const city::VictoryConditions& vc = pcity->victoryConditions();
   city::MilitaryPtr mil;
   city::InfoPtr info;
+
   info << pcity->findService( city::Info::defaultName() );
   mil << pcity->findService( city::Military::defaultName() );
 
-  if( mil.isValid() && info.isValid() )
+  if( mil.isValid() && info.isValid()  )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    if( mil->threadValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population() )
+    bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
+    bool failedByTime = ( !vc.isSuccess() && GameDate::current() > vc.finishDate() );
+
+    if( failedByDestroy || failedByTime )
     {
       game->pause();
       Window* wnd = new Window( game->gui()->rootWidget(),

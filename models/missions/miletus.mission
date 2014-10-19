@@ -3,8 +3,7 @@
   map : ":/maps/Miletus.sav"
   funds : 8000
   city.name : "Miletus"
-  date : "-220.01.01"
-  finish : "-100.01.01"
+  date : "-220.01.01"  
   player.rank : 4
   climate : 2
   adviserEnabled : true
@@ -16,6 +15,7 @@
     culture : 60
     prosperity : 35
     peace : 40
+    finishDate : "-100.01.01"
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##win_procurator_title##"
