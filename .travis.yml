@@ -18,7 +18,6 @@ before_script:
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 script:
 - cd $TRAVIS_BUILD_DIR
-# Build CaesarIA
 - make -j4
 after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
