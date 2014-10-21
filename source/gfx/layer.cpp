@@ -164,8 +164,19 @@ void Layer::handleEvent(NEvent& event)
     break;
     }
   }
+  else if( event.EventType == sAppEvent )
+  {
+    switch( event.app.type )
+    {
+    case appWindowFocusEnter:
+    case appWindowFocusLeave:
+      LayerDrawOptions::instance().setFlag( LayerDrawOptions::windowActive, event.app.type == appWindowFocusEnter );
+    break;
 
-  if( event.EventType == sEventKeyboard )
+    default: break;
+    }
+  }
+  else if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
     int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
@@ -486,14 +497,18 @@ void Layer::afterRender( Engine& engine)
   Point moveValue;
 
   //on edge cursor moving
-  if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
-  else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
-  if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
-  else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
-
-  if( moveValue.x() != 0 || moveValue.y() != 0 )
+  LayerDrawOptions& opts = LayerDrawOptions::instance();
+  if( opts.isFlag( LayerDrawOptions::windowActive ) )
   {
-    _d->camera->move( moveValue.toPointF() );
+    if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
+    else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+    if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
+    else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+
+    if( moveValue.x() != 0 || moveValue.y() != 0 )
+    {
+      _d->camera->move( moveValue.toPointF() );
+    }
   }
 
   if( !_d->tooltipText.empty() )
@@ -501,7 +516,7 @@ void Layer::afterRender( Engine& engine)
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }  
 
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
+
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    

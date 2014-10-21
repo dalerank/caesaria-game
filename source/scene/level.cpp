@@ -544,7 +544,7 @@ void Level::handleEvent( NEvent& event )
   //After MouseDown events are send to the same target till MouseUp
   Ui& gui = *_d->game->gui();
 
-  if (event.EventType == sEventQuit)
+  if( event.EventType == sEventQuit )
   {
     _requestExitGame();
     return;
