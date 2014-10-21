@@ -146,8 +146,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   {
     //bldCommand->setCanBuild(false);
 
-    Picture& grnPicture = Picture::load(lc_oc3_land, 1);
-    Picture& redPicture = Picture::load(lc_oc3_land, 2);
+    const Picture& grnPicture = Picture::load(lc_oc3_land, 1);
+    const Picture& redPicture = Picture::load(lc_oc3_land, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();

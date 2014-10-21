@@ -84,6 +84,7 @@
 #include "city/cityservice_info.hpp"
 #include "city/debug_events.hpp"
 #include "world/barbarian.hpp"
+#include "gfx/layer.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -883,6 +884,11 @@ void Level::_handleDebugEvent(int event)
     audio::Engine::instance().setVolume( audio::themeSound, 0 );
     audio::Engine::instance().setVolume( audio::gameSound, 0 );
   break;
+
+  case city::debug_event::toggle_grid_visibility: LayerDrawOptions::instance().toggle( LayerDrawOptions::drawGrid );  break;
+  case city::debug_event::toggle_overlay_base: LayerDrawOptions::instance().toggle( LayerDrawOptions::shadowOverlay );  break;
+  case city::debug_event::toggle_show_path: LayerDrawOptions::instance().toggle( LayerDrawOptions::showPath );  break;
+  case city::debug_event::toggle_show_roads: LayerDrawOptions::instance().toggle( LayerDrawOptions::showRoads );  break;
   }
 }
 

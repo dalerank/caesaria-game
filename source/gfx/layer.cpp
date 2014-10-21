@@ -413,7 +413,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
       registerTileForRendering( tile );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }
+    }       
   }
 }
 
@@ -533,7 +533,7 @@ void Layer::afterRender( Engine& engine)
       engine.drawLine( 0x80ff0000, rtile.mappos() + offset, ertile.mappos() + offset );
     }
 
-    std::string text;
+    /*std::string text;
     Font font = Font::create( FONT_0 );
     font.setColor( 0x80ffffff );
     switch( _d->posMode )
@@ -550,6 +550,18 @@ void Layer::afterRender( Engine& engine)
         }
       }
     break;
+    }*/
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showRoads ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->getFlag( Tile::tlRoad ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
     }
   }
 
