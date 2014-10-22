@@ -110,6 +110,7 @@ public:
   Label* lbPrevChart;
   Label* lbTitle;
   Label* lbMigrationValue;
+  Label* lbFoodValue;
 
 public slots:
   void showNextChart();
@@ -134,10 +135,11 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
-  GET_DWIDGET_FROM_UI( _d, lbNextChart  );
+  GET_DWIDGET_FROM_UI( _d, lbNextChart  )
   GET_DWIDGET_FROM_UI( _d, lbPrevChart )
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbMigrationValue )
+  GET_DWIDGET_FROM_UI( _d, lbFoodValue )
 
   Label* lbNextChartArea;
   Label* lbChart;
@@ -245,6 +247,18 @@ void Population::Impl::updateStates()
         lbMigrationValue->setText( migration->leaveCityReason( city ) );
       }
     }
+  }
+
+  if( lbFoodValue )
+  {
+    city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city );
+    int foodLevel = 0;
+    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    {
+      foodLevel += (goods[ (Good::Type)k ] > 0 ? 1 : 0);
+    }
+
+    lbFoodValue->setText( _( "##varieties_food_eaten##") + StringHelper::i2str( foodLevel ) );
   }
 }
 

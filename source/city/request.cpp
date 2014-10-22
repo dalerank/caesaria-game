@@ -77,7 +77,7 @@ void RqGood::exec( PlayerCityPtr city )
 
 bool RqGood::isReady( PlayerCityPtr city ) const
 {
-  city::Statistic::GoodsMap gm = city::Statistic::getGoodsMap( city );
+  city::Statistic::GoodsMap gm = city::Statistic::getGoodsMap( city, false );
 
   _d->description = StringHelper::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), gm[ _d->stock.type() ] / 100 );
   if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
