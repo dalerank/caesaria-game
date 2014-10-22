@@ -33,7 +33,7 @@ namespace gui
 namespace infobox
 {
 
-AboutColosseum::AboutColosseum(Widget *parent, const Tile &tile)
+AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());

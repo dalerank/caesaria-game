@@ -28,7 +28,7 @@ namespace infobox
 class AboutSenate : public Simple
 {
 public:
-  AboutSenate( Widget* parent, const gfx::Tile& tile );
+  AboutSenate( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutSenate();
 
 public signals:

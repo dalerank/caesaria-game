@@ -191,6 +191,27 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   }
   break;
 
+  case SDL_WINDOWEVENT:
+  {
+    ret.EventType = sAppEvent;
+    ret.app.type = appEventCount;
+    switch( sdlEvent.window.event )
+    {
+    //case SDL_WINDOWEVENT_LEAVE:
+    case SDL_WINDOWEVENT_FOCUS_LOST:
+      ret.app.type = appWindowFocusLeave;
+    break;
+
+    //case SDL_WINDOWEVENT_ENTER:
+    case SDL_WINDOWEVENT_FOCUS_GAINED:
+      ret.app.type = appWindowFocusEnter ;
+    break;
+
+    default: break;
+    }
+  }
+  break;
+
   /*case SDL_FINGERUP:
   case SDL_FINGERDOWN:
   {

@@ -30,7 +30,6 @@ using namespace gfx;
 
 namespace {
   const Point spanswOffset = Point( 12, -43 );
-
 }
 
 class HighBridgeSubTile : public Construction
@@ -68,7 +67,7 @@ public:
     {
       setSize( Size( 1, 2 ) );
     }
-    else if( _index == descentWest )
+    else if( _index == descentWest || _index == liftingWest )
     {
       setSize( Size( 2, 1 ) );
     }
@@ -99,6 +98,7 @@ public:
       Picture landPic = mt.picture();
       landPic.addOffset( TileHelper::tilepos2screen( TilePos( 0, 1 ) ) );
       _fgPicturesRef().push_back( landPic );
+
       _fgPicturesRef().push_back( pic );
     }
     else if( _index == descentWest )
@@ -107,10 +107,29 @@ public:
       Picture landPic = mt.picture();
       landPic.addOffset(  TileHelper::tilepos2screen( TilePos( 1, 0 ) )  );
       _fgPicturesRef().push_back( landPic );
+
+     pic.addOffset( 8, -14 );
       _fgPicturesRef().push_back( pic );
     }
-    else
+    else if(  _index == liftingWest )
+    {
+      Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
+      Picture landPic = mt.picture();
+      landPic.addOffset( TileHelper::tilepos2screen( TilePos( 1, 0 ) ) );
+      _fgPicturesRef().push_back( landPic );
+
+      pic.addOffset( 0, -15 );
+      _fgPicturesRef().push_back( pic );
+    }
+    else if( _index == footingWest || _index == spanWest )
+    {
+      pic.addOffset( 7, -14 );
       setPicture( pic );
+    }
+    else
+    {
+      setPicture( pic );
+    }
 
     _pos = pos;
 

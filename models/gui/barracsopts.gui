@@ -1,0 +1,9 @@
+{  
+  geometry : [ 0, 0, 510, 350 ]
+  bgtype : "whiteFrame"
+
+  lbWeaponQty#Label : {
+    geometry : [ "pw/2", 50, "pw-20", 74 ]
+    font : "FONT_3"
+  }
+}

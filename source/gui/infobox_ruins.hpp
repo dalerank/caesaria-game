@@ -27,7 +27,7 @@ namespace infobox
 class AboutRuins : public Simple
 {
 public:
-  AboutRuins( Widget* parent, const gfx::Tile& tile );
+  AboutRuins(Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutRuins();
 };
 

@@ -38,7 +38,7 @@ namespace gui
 namespace infobox
 {
 
-AboutGranary::AboutGranary( Widget* parent, const Tile& tile )
+AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   setupUI( ":/gui/granaryinfo.gui" );

@@ -34,6 +34,7 @@
 #include "core/stacktrace.hpp"
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
+#include "city/build_options.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -48,10 +49,8 @@ struct LegionEmblem
   Picture pic;
 };
 
-CAESARIA_LITERALCONST(lastPatrolPos)
 CAESARIA_LITERALCONST(name)
 CAESARIA_LITERALCONST(img)
-CAESARIA_LITERALCONST(formation)
 
 }
 
@@ -132,9 +131,7 @@ bool FortArea::isWalkable() const{  return true;}
 void FortArea::destroy()
 {
   Building::destroy();
-
-  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
-  if( fort.isValid() )
+  if( base().isValid() )
   {
     events::GameEventPtr e = events::ClearLandEvent::create( _d->basePos );
     e->dispatch();
@@ -147,6 +144,11 @@ void FortArea::setBase(FortPtr base)
   {
     _d->basePos = base->pos();
   }
+}
+
+FortPtr FortArea::base() const
+{
+  return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
 Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
@@ -206,11 +208,7 @@ void Fort::timeStep( const unsigned long time )
 
 bool Fort::canDestroy() const { return state( Construction::destroyable ) > 0; }
 Fort::TroopsFormation Fort::formation() const {  return _d->formation; }
-
-void Fort::setFormation(Fort::TroopsFormation formation)
-{
-  _d->formation = formation;
-}
+void Fort::setFormation(Fort::TroopsFormation formation){  _d->formation = formation; }
 
 TilesArray Fort::enterArea() const
 {
@@ -424,8 +422,8 @@ void Fort::save(VariantMap& stream) const
 
   VARIANT_SAVE_ANY_D( stream, _d, maxSoldier )
   VARIANT_SAVE_ANY_D( stream, _d, attackAnimals )
-  stream[ lc_lastPatrolPos ] = _d->lastPatrolPos;
-  stream[ lc_formation     ] = (int)_d->formation;
+  VARIANT_SAVE_ANY_D( stream, _d, lastPatrolPos )
+  VARIANT_SAVE_ENUM_D( stream, _d, formation )
 }
 
 void Fort::load(const VariantMap& stream)
@@ -434,10 +432,11 @@ void Fort::load(const VariantMap& stream)
 
   TilePos patrolPos = stream.get( "patrolPoint", pos() + TilePos( 3, 4 ) );
   _d->patrolPoint->setPos( patrolPos );
-  _d->lastPatrolPos = stream.get( lc_lastPatrolPos, TilePos( -1, -1 ) );
+
+  VARIANT_LOAD_ANYDEF_D( _d, lastPatrolPos, TilePos(-1, -1), stream )
   VARIANT_LOAD_ANY_D( _d, maxSoldier, stream )
   VARIANT_LOAD_ANY_D( _d, attackAnimals, stream )
-  _d->formation = (TroopsFormation)stream.get( lc_formation, 0 ).toInt();
+  VARIANT_LOAD_ENUM_D( _d, formation, stream )
 }
 
 SoldierList Fort::soldiers() const
@@ -502,6 +501,16 @@ bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 
 bool Fort::build(PlayerCityPtr city, const TilePos& pos)
 {
+  FortList forts;
+  forts << city->overlays();
+
+  const city::BuildOptions& bOpts = city->buildOptions();
+  if( forts.size() >= bOpts.getBuildingsQuote( type() ) )
+  {
+    _setError( "##not_enought_place_for_legion##" );
+    return false;
+  }
+
   Building::build( city, pos );
 
   _d->area->build( city, pos + TilePos( 3, 0 ) );
