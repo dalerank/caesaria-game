@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
+{"##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
 "##1_entertainment_access##":"Esta vivienda apenas tiene acceso a entretenimientos."
 "##2_entertainment_access##":"Esta vivienda tiene algo de acceso a actividades de entretenimiento."
 "##3_entertainment_access##":"Esta vivienda tiene acceso muy limitado a actividades de entretenimiento."
@@ -165,6 +164,7 @@
 "##awesome_doctor_access##":"Esta casa tiene acceso a una consulta."
 "##awesome_entertainment_access##":"Esta vivienda tiene acceso a varias actividades de entretenimiento."
 "##bad_house_quality##":"La calidad general de las construcciones de la ciudad está haciendo disminuir esta puntuación. Mejorar las construcciones de la ciudad aumentará esta puntuación."
+"##balance_between_migration##":"Hay un equilibrio entre la gente que viene y que se va de la ciudad."
 "##balance##":"Balance"
 "##ballista##":"Ballesta"
 "##barbarian_attack_text##":""
@@ -296,6 +296,7 @@
 "##city_fire_title##":""
 "##city_has_debt##":"La ciudad tiene una deuda con Roma de"
 "##city_has_runout_debt##":""
+"##city_have_defence##":"Nuestras defensas tendrían que haber rechazado el ataque."
 "##city_have_goods_for_request##":""
 "##city_have##":"El tesoro de la ciudad tiene un activo de"
 "##city_health##":"Sanidad de la ciudad"
@@ -303,6 +304,8 @@
 "##city_need_more_workers##":"La ciudad necesita más trabajadores."
 "##city_sounds_off##":"Sonidos ciudad desactivados"
 "##city_sounds_on##":"Sonidos de ciudad activados"
+"##city_under_barbarian_attack##":"La existencia de tropas enemigas en las cercanías de la ciudad afecta a su puntuación de paz."
+"##city_under_rome_attack##":"Las legiones imperiales que se acercan a la ciudad están asustando a los ciudadanos y afectarán a la puntuación de paz."
 "##city##":"Ciudad"
 "##citychart_census##":"Censo"
 "##citychart_population##":"Historia"
@@ -509,6 +512,9 @@
 "##emw_buy##":"Compra"
 "##emw_sell##":"Ventas"
 "##emw_sold##":"Vendido"
+"##enemies_hard_to_me##":"¡Este soldado es demasiado fuerte!"
+"##enemies_very_easy##":"¡Acabaremos pronto con esos blandengues!"
+"##enemies_very_hard##":"¡Vamos a hacer todo lo que podamos, pero hasta a los soldados romanos nos costará derrotar a este enemigo!"
 "##enemy_army_threating_a_city##":"Ejército enemigo que amenaza a una ciudad del Imperio"
 "##engineer_average_life##":"Todo parece ir bien."
 "##engineer_building_allok##":"Aquí no hago falta. Los edificios están en perfecto estado."
@@ -911,7 +917,6 @@
 "##marketKid_say_3##":"¡Saludos! Llevo esta cesta de comida al mercado de esa señora. ¡Espero llevarme una buena propina!"
 "##marketLady_no_food_on_market##":"El mercado se ha quedado sin alimentos así que me vuelvo a casa."
 "##mars_desc##":"Guerra"
-"##mars_watches_over_soldiers##":"Marte protege a los soldados y les otorga valor en el combate. Ningún hombre lucharía sin la bendición de Marte."
 "##massilia_preview_mission##":"Solamente hay agua disponible en el oasis, así que por desgracia, ésta es la única tierra cultivable. Los depósitos y las granjas deben disputarse el mismo espacio. Empléalo sabiamente."
 "##max_available##":"Entretiene a"
 "##maximizeBtnTooltip##":""
@@ -1107,6 +1112,7 @@
 "##none_damage_risk##":"Sin riesgo de derrumbamiento"
 "##northBtnTooltip##":""
 "##not_available##":"¡Aún no disponible!"
+"##not_enought_place_for_legion##":"Tu legión ya tiene suficientes fuertes."
 "##not_need_education##":"Aún no hay ciudadanos que soliciten instituciones educativas. Pero cuando la ciudad crezca, la gente solicitará colegios y academias, y posteriormente bibliotecas."
 "##numidian_warrior##":"Guerrero numidio"
 "##occupants##":"ocupantes"
@@ -1193,6 +1199,8 @@
 "##people##":"Denarios"
 "##percents##":"Interés en"
 "##person##":"Denario"
+"##playerarmy_gone_to_home##":"Tu legión vuelve a tu ciudad"
+"##playerarmy_gone_to_location##":"Tu legión va en auxilio de una ciudad del Imperio"
 "##plaza_caption##":"Plaza"
 "##plaza##":"Plaza"
 "##plname_continue##":"Continuar"
@@ -1422,6 +1430,7 @@
 "##small_venus_temple##":"Templo de Venus"
 "##small_villa##":"Villa pequeña"
 "##small##":"pequeño"
+"##smallcurse_of_mars_text##":"Marte protege a los soldados y les otorga valor en el combate. Ningún hombre lucharía sin la bendición de Marte."
 "##smallcurse_of_mars_text##":"Marte, protector de guerreros y talismán de victorias, está descontento. Las tropas temen perder una gran batalla si él no está satisfecho."
 "##smallcurse_of_mercury_description##":"Mercurio, mensajero de los dioses y patrón de los mercaderes, está descontento. Los comerciantes temen que su protección desaparezca."
 "##smcurse_of_venus_description##":"Venus, portavoz del amor y la armonía, está triste. Esto no es bueno para los prefectos de la ciudad."
@@ -1576,6 +1585,7 @@
 "##valencia_peacefully_province##":"Valencia: provincia bastante pacífica"
 "##valencia_win_text##":"La nueva capital de Hispania es exactamente lo que necesitábamos para amarrar esa provincia más estrechamente a Roma. La victoria aplastante sobre los etruscos restantes elimina la última amenaza del oeste."
 "##valentia_preview_mission##":"El gobernador se enfrentará a diversos riesgos y amenazas, y los íberos no serán los menores. No se han resignado a dar por perdida Hispania."
+"##varieties_food_eaten##":"Variedades de alimentos ingeridos,"
 "##vegetable_farm_bad_work##":"Con tan pocos granjeros para mantener la granja, apenas crecerá algo."
 "##vegetable_farm_full_work##":"Esta granja tiene todo el personal que necesita. Aquí, los cultivos crecen en abundancia."
 "##vegetable_farm_info##":"Los vegetales son importantes en la dieta equilibrada que tu gente necesita para estar sana y feliz. Los graneros almacenan verdura, y los almacenes conservan el excedente para la exportación."
@@ -1658,6 +1668,7 @@
 "##we_produce_more_than_eat##":"Producimos un poco más de lo que comemos"
 "##we_produce_much_than_eat##":"Producimos mucho más de lo que comemos"
 "##we_produce_some_than_eat##":"Producimos lo justo para alimentar a todos"
+"##weapon_store_of##":"Armas almacenadas:"
 "##weapon##":"Armas"
 "##weapons_workshop_bad_work##":"Con tan poco personal en este taller, la producción es casi inexistente. Producirá muy pocas armas el próximo año."
 "##weapons_workshop_full_work##":"Este taller tiene todo el personal que necesita. Se esmera en producir armas."
@@ -2166,17 +2177,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+"undefined":"undefined"
+"undefined":"undefined"}

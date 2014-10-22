@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
+{"##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
 "##1_entertainment_access##":"Cette habitation n'a accès à quasiment aucun divertissement"
 "##2_entertainment_access##":"Cette habitation a un faible niveau d'accès à des lieux de divertissement"
 "##3_entertainment_access##":"Cette habitation a un accès très limité à des lieux de divertissement"
@@ -165,6 +164,7 @@
 "##awesome_doctor_access##":""
 "##awesome_entertainment_access##":""
 "##bad_house_quality##":""
+"##balance_between_migration##":""
 "##balance##":"Balance"
 "##ballista##":"Balliste"
 "##barbarian_attack_text##":"Les ennemis de Rome sont aux portes de votre cité. Ils tenteront probablement d'en forcer l'entrée pour piller votre vin et tout ce qui pourrait les intéresser !"
@@ -296,6 +296,7 @@
 "##city_fire_title##":"Incendie dans la cité"
 "##city_has_debt##":"La cité a une dette envers Rome de"
 "##city_has_runout_debt##":"Les caisses de votre cité sont vides. César a décidé de vous accorder davantage de fonds, mais il ne sera pas aussi généreux la prochaine fois. Développez l'exportation pour rassembler des fonds."
+"##city_have_defence##":""
 "##city_have_goods_for_request##":"Vos entrepôts vous informent que vous disposez maintenant d'une quantité suffisante de produits pour répondre à la récente requête de l'Empereur."
 "##city_have##":"La trésorerie de la cité s'élève à "
 "##city_health##":"Hygiène de la cité"
@@ -303,6 +304,8 @@
 "##city_need_more_workers##":"La cité a besoin de plus de main-d'oeuvre"
 "##city_sounds_off##":"Son de la cité désactivé"
 "##city_sounds_on##":"Son de la cité activé"
+"##city_under_barbarian_attack##":""
+"##city_under_rome_attack##":""
 "##city##":"Cité"
 "##citychart_census##":""
 "##citychart_population##":"Histoire"
@@ -509,6 +512,9 @@
 "##emw_buy##":""
 "##emw_sell##":""
 "##emw_sold##":""
+"##enemies_hard_to_me##":""
+"##enemies_very_easy##":""
+"##enemies_very_hard##":""
 "##enemy_army_threating_a_city##":""
 "##engineer_average_life##":"Tout a l'air en ordre par ici."
 "##engineer_building_allok##":"Ces bâtiments sont en très bon état, et je fais surtout des inspections de routine"
@@ -911,7 +917,6 @@
 "##marketKid_say_3##":"Salut ! J'emporte ce panier de nourriture chez la dame du marché, J'espère que j'aurai un bon pourboire !"
 "##marketLady_no_food_on_market##":""
 "##mars_desc##":"Guerre"
-"##mars_watches_over_soldiers##":""
 "##massilia_preview_mission##":""
 "##max_available##":""
 "##maximizeBtnTooltip##":"Montrer le tableau"
@@ -1107,6 +1112,7 @@
 "##none_damage_risk##":""
 "##northBtnTooltip##":"Réorienter la vue vers le nord"
 "##not_available##":"Non disponible"
+"##not_enought_place_for_legion##":""
 "##not_need_education##":""
 "##numidian_warrior##":""
 "##occupants##":"occupants"
@@ -1193,6 +1199,8 @@
 "##people##":""
 "##percents##":""
 "##person##":""
+"##playerarmy_gone_to_home##":""
+"##playerarmy_gone_to_location##":""
 "##plaza_caption##":"Plaza"
 "##plaza##":"Plaza"
 "##plname_continue##":"Continuer"
@@ -1423,6 +1431,7 @@
 "##small_villa##":""
 "##small##":"Petit"
 "##smallcurse_of_mars_text##":""
+"##smallcurse_of_mars_text##":""
 "##smallcurse_of_mercury_description##":""
 "##smcurse_of_venus_description##":""
 "##smcurse2_of_venus_description##":""
@@ -1576,6 +1585,7 @@
 "##valencia_peacefully_province##":""
 "##valencia_win_text##":""
 "##valentia_preview_mission##":""
+"##varieties_food_eaten##":""
 "##vegetable_farm_bad_work##":""
 "##vegetable_farm_full_work##":"Cette ferme dispose de toute la main-d'oeuvre nécessaire. Les légumes y poussent en abondance."
 "##vegetable_farm_info##":"Les légumes sont importants pour l'équilibre alimentaire de votre peuple et pour son bien-être. Les greniers stockent les légumes destinés à la consommation, et les entrepôts emmagasinent les surplus destinés à l'exportation."
@@ -1658,6 +1668,7 @@
 "##we_produce_more_than_eat##":"Nous produisons un peu plus que ce que nous mangeons"
 "##we_produce_much_than_eat##":"Nous produisons plus que ce que nous mangeons"
 "##we_produce_some_than_eat##":""
+"##weapon_store_of##":""
 "##weapon##":"Armes"
 "##weapons_workshop_bad_work##":"Compte tenu du nombre d'employés de cette fabrique, la production est pratiquement inexistante. Très peu d'armes seront fabriquées cette année."
 "##weapons_workshop_full_work##":"Cette fabrique dispose de toute la main-d'oeuvre nécessaire et produit des armes de qualité."
@@ -2166,17 +2177,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+"undefined":"undefined"
+"undefined":"undefined"}
