@@ -32,7 +32,7 @@ namespace gui
 namespace infobox
 {
 
-AboutTheater::AboutTheater(Widget *parent, const Tile &tile)
+AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
 {
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );

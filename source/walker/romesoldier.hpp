@@ -38,6 +38,8 @@ public:
   virtual FortPtr base() const;
   virtual void load(const VariantMap &stream);
 
+  virtual std::string currentThinks() const;
+
   virtual ~RomeSoldier();
 
 protected:

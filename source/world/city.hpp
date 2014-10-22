@@ -35,6 +35,23 @@ namespace city
 namespace world
 {
 
+class CityParams : public std::map<int, int>
+{
+public:
+  typedef enum { culture=0, empireTaxPayed, overduePayment, ageYears, cityPopulation, maxForts, paramCount } ParamName;
+
+  int get( ParamName name ) const
+  {
+    const_iterator it = find( name );
+    return it != end() ? it->second : 0;
+  }
+
+  void set( ParamName name, int value )
+  {
+    (*this)[ name ] = value;
+  }
+};
+
 class City : public Object
 {
 public:

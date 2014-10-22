@@ -34,6 +34,7 @@ public:
   bool success;
   DateTime finishDate;
   StringArray overview;
+
   std::string shortDesc,
               caption,
               next,

@@ -37,6 +37,8 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
+  virtual std::string currentThinks() const;
+
 protected:
   virtual void _centerTile();
   virtual void _reachedPathway();

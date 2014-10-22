@@ -227,7 +227,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       if( warehouse.isValid() )
       {
         float tradeKoeff = warehouse->tradeBuff( Warehouse::sellGoodsBuff );
-        city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
+        city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
 
         city::TradeOptions& options = city->tradeOptions();
         GoodStore& whStore = warehouse->store();
