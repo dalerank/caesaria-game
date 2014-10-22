@@ -186,6 +186,22 @@ void WallGuard::load(const VariantMap& stream)
   }
 }
 
+std::string WallGuard::currentThinks() const
+{
+  city::Helper helper( _city() );
+
+  TilePos offset( 10, 10 );
+  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos - offset, pos + offset );
+  if( enemies.empty() )
+  {
+    return Soldier::currentThinks();
+  }
+  else
+  {
+    return "##city_have_defence##";
+  }
+}
+
 void WallGuard::setBase(TowerPtr tower)
 {
   _d->base = tower;

@@ -167,6 +167,54 @@ void RomeSoldier::load(const VariantMap& stream)
   }
 }
 
+std::string RomeSoldier::currentThinks() const
+{
+  city::Helper helper( _city() );
+
+  TilePos offset( 10, 10 );
+  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos - offset, pos + offset );
+  if( enemies.empty() )
+  {
+    return Soldier::currentThinks();
+  }
+  else
+  {
+    RomeSoldierList ourSoldiers = helper.find<RomeSoldier>( walker::any, pos - offset, pos + offset );
+    int enemyStrength = 0;
+    int ourStrength = 0;
+
+    foreach( it, enemies) { enemyStrength += (*it)->strike(); }
+    foreach( it, ourSoldiers ) { ourStrength += (*it)->strike(); }
+
+    if( ourStrength > enemyStrength )
+    {
+      int diff = enemyStrength > 0 ? ourStrength / enemyStrength : 99;
+      switch( diff )
+      {
+      case 1: return "";
+
+      case 4: return "##enemies_very_easy##";
+
+      default:
+      }
+    }
+    else
+    {
+      int diff = ourStrength > 0 ? enemyStrength / ourStrength : 99;
+      switch( diff )
+      {
+      case 1:
+
+      case 3: return "##enemies_hard_to_me##";
+      case 4: return "##enemies_very_hard##";
+
+
+      default:
+      }
+    }
+  }
+}
+
 RomeSoldier::~RomeSoldier(){}
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
