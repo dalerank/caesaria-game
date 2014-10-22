@@ -18,7 +18,7 @@
 #ifndef _CAESARIA_INFOBOX_FORT_H_INCLUDE_
 #define _CAESARIA_INFOBOX_FORT_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
@@ -26,11 +26,15 @@ namespace gui
 namespace infobox
 {
 
-class AboutFort : public Simple
+class AboutFort : public AboutConstruction
 {
 public:
-  AboutFort( Widget* parent, const gfx::Tile& tile );
+  AboutFort( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutFort();
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }

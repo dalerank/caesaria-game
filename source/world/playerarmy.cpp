@@ -43,11 +43,10 @@ VariantMap save;
 
 class PlayerArmy::Impl
 {
-public:
-  typedef enum { findAny, go2location, wait, go2home } Mode;
+public:  
   typedef std::vector<SoldierInfo> SoldiersInfo;
 
-  Mode mode;
+  PlayerArmy::Mode mode;
   RomeSoldierList waitSoldiers;
   SoldiersInfo soldiersInfo;
   TilePos fortPos;
@@ -71,7 +70,7 @@ std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
 
 void PlayerArmy::timeStep(const unsigned int time)
 {
-  if( _d->mode == Impl::wait )
+  if( _d->mode == PlayerArmy::wait )
   {
     if( GameDate::isDayChanged() )
     {
@@ -95,7 +94,7 @@ void PlayerArmy::timeStep(const unsigned int time)
 
       if( _d->waitSoldiers.empty() )
       {
-        _d->mode = Impl::go2location;
+        _d->mode = PlayerArmy::go2location;
       }
     }
   }
@@ -114,7 +113,7 @@ void PlayerArmy::move2location(Point point)
     deleteLater();
   }
 
-  _d->mode = Impl::go2location;
+  _d->mode = PlayerArmy::go2location;
 }
 
 void PlayerArmy::setFortPos(const TilePos& base)
@@ -134,7 +133,7 @@ void PlayerArmy::return2fort()
       deleteLater();
     }
 
-    _d->mode = Impl::go2home;
+    _d->mode = PlayerArmy::go2home;
   }
   else
   {
@@ -170,11 +169,13 @@ void PlayerArmy::killSoldiers(int percent)
   }
 }
 
+PlayerArmy::Mode PlayerArmy::mode() const { return _d->mode; }
+
 int PlayerArmy::viewDistance() const { return 30; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
-  _d->mode = Impl::wait;
+  _d->mode = PlayerArmy::wait;
   _d->waitSoldiers.insert( _d->waitSoldiers.end(), soldiers.begin(), soldiers.end() );
 }
 
@@ -209,7 +210,7 @@ void PlayerArmy::_check4attack()
       bool validWay = _findWay( location(), it->second->location() );
       if( validWay )
       {
-        _d->mode = Impl::go2location;
+        _d->mode = PlayerArmy::go2location;
         break;
       }
     }
@@ -233,7 +234,7 @@ void PlayerArmy::_check4attack()
        bool validWay = _findWay( location(), it->second->location() );
        if( validWay )
        {
-         _d->mode = Impl::go2location;
+         _d->mode = PlayerArmy::go2location;
          break;
        }
      }
@@ -247,12 +248,12 @@ void PlayerArmy::_noWay()
 
 void PlayerArmy::_reachedWay()
 {
-  if( _d->mode == Impl::go2location )
+  if( _d->mode == PlayerArmy::go2location )
   {
     _attackAny();
     return2fort();
   }
-  else if( _d->mode == Impl::go2home )
+  else if( _d->mode == PlayerArmy::go2home )
   {
     PlayerCityPtr pCity = ptr_cast<PlayerCity>( _d->base );
     if( pCity.isValid() )
@@ -313,7 +314,7 @@ bool PlayerArmy::_attackObject(ObjectPtr obj)
 PlayerArmy::PlayerArmy( EmpirePtr empire )
  : Army( empire ), _d( new Impl )
 {
-  _d->mode = Impl::wait;
+  _d->mode = PlayerArmy::wait;
   setSpeed( 4.f );
 
   Picture pic = Picture::load( ResourceGroup::empirebits, 37 );

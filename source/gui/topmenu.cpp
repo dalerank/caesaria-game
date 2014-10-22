@@ -255,6 +255,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "toggle_overlay_base", city::debug_event::toggle_overlay_base );
   debugMenu->addItem( "toggle_show_path", city::debug_event::toggle_show_path );
   debugMenu->addItem( "toggle_show_roads", city::debug_event::toggle_show_roads );
+  debugMenu->addItem( "toggle_show_object_area", city::debug_event::toggle_show_object_area );
+  debugMenu->addItem( "add_soldiers_in_fort", city::debug_event::add_soldiers_in_fort );
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
 

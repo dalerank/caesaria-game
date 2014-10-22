@@ -565,15 +565,15 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( _d->currentTile )
+  if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
   {
     Point pos = _d->currentTile->mappos();
-    int size = (_d->currentTile->picture().width() + 2) / 60;
+    Size size( (_d->currentTile->picture().width() + 2) / 60 );
 
     TileOverlayPtr ov = _d->currentTile->overlay();
     if( ov.isValid() )
     {
-      size = ov->size().width();
+      size = ov->size();
       pos = ov->tile().mappos();
     }
     else if( _d->currentTile->masterTile() != 0 )
@@ -583,10 +583,10 @@ void Layer::afterRender( Engine& engine)
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size, pos );
+    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
   }
 }
 

@@ -37,7 +37,7 @@ namespace gui
 namespace infobox
 {
 
-AboutFontain::AboutFontain(Widget* parent, const Tile& tile)
+AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
@@ -81,7 +81,7 @@ void AboutFontain::showDescription()
   DictionaryWindow::show( parent(), building::fountain );
 }
 
-AboutReservoir::AboutReservoir(Widget* parent, const Tile& tile)
+AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##reservoir##") );
@@ -110,7 +110,7 @@ void AboutReservoir::showDescription()
   DictionaryWindow::show( parent(), building::reservoir );
 }
 
-AboutWell::AboutWell(Widget* parent, const Tile& tile)
+AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
   setTitle( _("##well##") );

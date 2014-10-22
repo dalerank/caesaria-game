@@ -85,6 +85,7 @@
 #include "city/debug_events.hpp"
 #include "world/barbarian.hpp"
 #include "gfx/layer.hpp"
+#include "objects/fort.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -889,6 +890,19 @@ void Level::_handleDebugEvent(int event)
   case city::debug_event::toggle_overlay_base: LayerDrawOptions::instance().toggle( LayerDrawOptions::shadowOverlay );  break;
   case city::debug_event::toggle_show_path: LayerDrawOptions::instance().toggle( LayerDrawOptions::showPath );  break;
   case city::debug_event::toggle_show_roads: LayerDrawOptions::instance().toggle( LayerDrawOptions::showRoads );  break;
+  case city::debug_event::toggle_show_object_area: LayerDrawOptions::instance().toggle( LayerDrawOptions::showObjectArea );  break;
+
+  case city::debug_event::add_soldiers_in_fort:
+  {
+    FortList forts;
+    forts << _d->game->city()->overlays();
+
+    foreach( it, forts )
+    {
+      (*it)->setTraineeValue( walker::soldier, 100 );
+    }
+  }
+  break;
   }
 }
 

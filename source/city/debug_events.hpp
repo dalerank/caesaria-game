@@ -42,7 +42,9 @@ enum {
   toggle_grid_visibility,
   toggle_overlay_base,
   toggle_show_path,
-  toggle_show_roads
+  toggle_show_roads,
+  toggle_show_object_area,
+  add_soldiers_in_fort
 };
 
 }

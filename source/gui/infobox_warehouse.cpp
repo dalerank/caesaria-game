@@ -35,7 +35,7 @@ namespace gui
 namespace infobox
 {
 
-AboutWarehouse::AboutWarehouse( Widget* parent, const Tile& tile )
+AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   setupUI( ":/gui/warehouseinfo.gui" );

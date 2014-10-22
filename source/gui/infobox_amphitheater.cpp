@@ -33,7 +33,7 @@ namespace gui
 namespace infobox
 {
 
-AboutAmphitheater::AboutAmphitheater(Widget *parent, const Tile &tile)
+AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());

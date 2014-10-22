@@ -29,7 +29,7 @@ namespace infobox
 class AboutTheater : public AboutWorkingBuilding
 {
 public:
-  AboutTheater( Widget* parent, const gfx::Tile& tile );
+  AboutTheater( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutTheater();
 };
 
