@@ -18,6 +18,7 @@
 #include "migration.hpp"
 #include "objects/construction.hpp"
 #include "helper.hpp"
+#include "city/cityservice_military.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/immigrant.hpp"
@@ -168,6 +169,17 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
   {
     Logger::warning( "Migration: enemies in city migration broke" );
     return;
+  }
+
+  city::MilitaryPtr mil;
+  mil << city->findService( city::Military::defaultName() );
+
+  if( mil.isValid() )
+  {
+    bool cityUnderAttack = mil->isUnderAttack();
+
+    if( cityUnderAttack )
+      _d->emigrantsIndesirability *= 2;
   }
 
   int goddesRandom = math::random( maxIndesirability );

@@ -172,14 +172,14 @@ std::string RomeSoldier::currentThinks() const
   city::Helper helper( _city() );
 
   TilePos offset( 10, 10 );
-  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos - offset, pos + offset );
+  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
   if( enemies.empty() )
   {
     return Soldier::currentThinks();
   }
   else
   {
-    RomeSoldierList ourSoldiers = helper.find<RomeSoldier>( walker::any, pos - offset, pos + offset );
+    RomeSoldierList ourSoldiers = helper.find<RomeSoldier>( walker::any, pos() - offset, pos() + offset );
     int enemyStrength = 0;
     int ourStrength = 0;
 
@@ -195,7 +195,7 @@ std::string RomeSoldier::currentThinks() const
 
       case 4: return "##enemies_very_easy##";
 
-      default:
+      default: break;
       }
     }
     else
@@ -208,10 +208,12 @@ std::string RomeSoldier::currentThinks() const
       case 3: return "##enemies_hard_to_me##";
       case 4: return "##enemies_very_hard##";
 
-
-      default:
+      default: break;
       }
     }
+
+    Logger::warning( "RomeSoldier: current thinks unknown state" );
+    return "##enemies_unknown_state##";
   }
 }
 

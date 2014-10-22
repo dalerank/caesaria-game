@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "wallguard.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
@@ -191,7 +191,7 @@ std::string WallGuard::currentThinks() const
   city::Helper helper( _city() );
 
   TilePos offset( 10, 10 );
-  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos - offset, pos + offset );
+  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
   if( enemies.empty() )
   {
     return Soldier::currentThinks();

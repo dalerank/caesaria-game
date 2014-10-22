@@ -29,9 +29,10 @@ public:
   static city::SrvcPtr create();
 
   virtual void timeStep( PlayerCityPtr city, const unsigned int time );
-  void addProtestor();
-  void addRioter();
+  void addCriminal( WalkerPtr wlk );
+
   void buildingDestroyed( gfx::TileOverlayPtr overlay );
+
   int value() const;
   static std::string getDefaultName();
 

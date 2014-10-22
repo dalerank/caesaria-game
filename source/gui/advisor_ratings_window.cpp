@@ -229,15 +229,26 @@ void Ratings::Impl::checkPeaceRating()
   {
     unsigned int peace = city->peace();
 
-    if( ml->monthFromLastAttack() < 36 )
-    {
-      advices << "##province_has_peace_a_short_time##";
-    }
+    bool cityUnderRomeAttack = ml->haveNotification( city::Military::Notification::chastener );
+    bool cityUnderBarbarianAttack = ml->haveNotification( city::Military::Notification::barbarian );
 
-    if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
-    else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
-    else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
-    else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+    if( cityUnderBarbarianAttack || cityUnderRomeAttack )
+    {
+      if( cityUnderRomeAttack ) { advices << "##city_under_rome_attack##"; }
+      if( cityUnderBarbarianAttack ) { advices << "##city_under_barbarian_attack##"; }
+    }
+    else
+    {
+      if( ml->monthFromLastAttack() < 36 )
+      {
+        advices << "##province_has_peace_a_short_time##";
+      }
+
+      if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+      else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+      else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
+      else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+    }
 
     std::string text = advices.empty()
                         ? "##peace_rating_text##"
