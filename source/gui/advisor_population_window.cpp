@@ -229,13 +229,18 @@ void Population::Impl::updateStates()
 
     int migrationValue = currentPop - lastMonth[ Info::population ];
 
-    if( migrationValue >= 0 )
+    std::string migrationText = "##unknown_migration_reason##";
+    if( abs( migrationValue ) < 10 )
+    {
+      migrationText = "##balance_between_migration##";
+    }
+    else if( migrationValue >= 0 )
     {
       std::string suffix = ( migrationValue % 10 == 1 )
                              ? "##newcomer_this_month##"
                              : "##newcomers_this_month##";
 
-      lbMigrationValue->setText( StringHelper::i2str( migrationValue ) + " " + _( suffix ) );
+      migrationText = StringHelper::i2str( migrationValue ) + " " + _( suffix );
     }
     else
     {
@@ -244,14 +249,16 @@ void Population::Impl::updateStates()
 
       if( migration.isValid() )
       {
-        lbMigrationValue->setText( migration->leaveCityReason( city ) );
+        migrationText = migration->leaveCityReason( city );
       }
     }
+
+    lbMigrationValue->setText( _(migrationText) );
   }
 
   if( lbFoodValue )
   {
-    city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city );
+    city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, true );
     int foodLevel = 0;
     for( int k=Good::wheat; k <= Good::vegetable; k++ )
     {
