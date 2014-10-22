@@ -18,7 +18,10 @@
 #include "game/gamedate.hpp"
 #include "core/priorities.hpp"
 #include "objects/house.hpp"
+#include "cityservice_military.hpp"
 #include "objects/house_level.hpp"
+#include "walker/rioter.hpp"
+#include "core/logger.hpp"
 #include <set>
 
 using namespace constants;
@@ -27,7 +30,6 @@ namespace city
 {
 
 namespace {
-  CAESARIA_LITERALCONST(peaceYears)
   CAESARIA_LITERALCONST(protestorOrMugglerSeen)
   CAESARIA_LITERALCONST(rioterSeen)
   CAESARIA_LITERALCONST(value)
@@ -40,6 +42,7 @@ public:
   unsigned int peaceYears;
   bool protestorOrMugglerSeen;
   bool rioterSeen;
+  bool someCriminalSeen;
   int value;
   bool significantBuildingsDestroyed;
 
@@ -59,6 +62,7 @@ Peace::Peace()
 {
   _d->peaceYears = 0;
   _d->protestorOrMugglerSeen = false;
+  _d->someCriminalSeen = false;
   _d->rioterSeen = false;
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
@@ -84,9 +88,22 @@ void Peace::timeStep( PlayerCityPtr city, const unsigned int time )
   if( !GameDate::isYearChanged() )
     return;
 
-  int change = _d->protestorOrMugglerSeen ? -1: 0;
-  change = std::min( _d->rioterSeen ? -5 : 0, _d->value );
-  change = std::min( _d->significantBuildingsDestroyed ? -1 : 0, _d->value );
+  city::MilitaryPtr ml;
+  ml << city->findService( city::Military::defaultName() );
+
+  int change= _d->protestorOrMugglerSeen ? -1: 0;
+
+  if( ml.isValid() )
+  {
+    if( ml->haveNotification( city::Military::Notification::chastener ) )
+      change -= 1;
+
+    if( ml->haveNotification( city::Military::Notification::barbarian ) )
+      change -= 1;
+  }
+
+  change -= std::min( _d->rioterSeen ? -5 : 0, _d->value );
+  change -= std::min( _d->significantBuildingsDestroyed ? -1 : 0, _d->value );
 
   if( change == 0 )
   {
@@ -102,14 +119,30 @@ void Peace::timeStep( PlayerCityPtr city, const unsigned int time )
     _d->peaceYears++;
   }
 
-  _d->value = math::clamp( _d->value + change, 0, 100  );
+  change = math::clamp<int>( change, -5, 5 );
+
+  _d->value = math::clamp<int>( _d->value + change, 0, 100  );
   _d->protestorOrMugglerSeen  = false;
   _d->rioterSeen = false;
   _d->significantBuildingsDestroyed = false;
 }
 
-void Peace::addProtestor() {  _d->protestorOrMugglerSeen = true; }
-void Peace::addRioter() { _d->rioterSeen = true; }
+void Peace::addCriminal( WalkerPtr wlk )
+{
+  if( is_kind_of<Rioter>( wlk ) )
+  {
+    _d->rioterSeen = true;
+  }
+  /*else if( is_kind_of<Protestor>( wlk ) )
+  {
+    _d->protestorOrMugglerSeen = true;
+  }*/
+  else
+  {
+    Logger::warning( "Peace:addCrimianl unknown walker %d", wlk->type() );
+    _d->someCriminalSeen = true;
+  }
+}
 
 void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay)
 {
@@ -134,7 +167,8 @@ std::string Peace::getDefaultName()
 VariantMap Peace::save() const
 {
   VariantMap ret;
-  ret[ lc_peaceYears ] = (int)_d->peaceYears;
+  VARIANT_SAVE_ANY_D( ret, _d, peaceYears )
+  VARIANT_SAVE_ANY_D( ret, _d, someCriminalSeen )
   ret[ lc_protestorOrMugglerSeen ] = _d->protestorOrMugglerSeen;
   ret[ lc_rioterSeen ] = _d->rioterSeen;
   ret[ lc_value ] = _d->value;
@@ -145,7 +179,8 @@ VariantMap Peace::save() const
 
 void Peace::load(const VariantMap& stream)
 {
-  _d->peaceYears = stream.get( lc_peaceYears, 0 ).toUInt();
+  VARIANT_LOAD_ANY_D( _d, peaceYears, stream )
+  VARIANT_LOAD_ANY_D( _d, someCriminalSeen, stream )
   _d->protestorOrMugglerSeen = stream.get( lc_protestorOrMugglerSeen );
   _d->rioterSeen = stream.get( lc_rioterSeen );
   _d->value = stream.get( lc_value );

@@ -31,7 +31,7 @@ namespace infobox
 class AboutFontain : public AboutConstruction
 {
 public:
-   AboutFontain( Widget* parent, const gfx::Tile& tile );
+   AboutFontain( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
    virtual ~AboutFontain();
 
    virtual void showDescription();
@@ -40,7 +40,7 @@ public:
 class AboutWell : public AboutConstruction
 {
 public:
-  AboutWell( Widget* parent, const gfx::Tile& tile );
+  AboutWell( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutWell();
 
   virtual void showDescription();
@@ -49,7 +49,7 @@ public:
 class AboutReservoir : public AboutConstruction
 {
 public:
-  AboutReservoir( Widget* parent, const gfx::Tile& tile );
+  AboutReservoir( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutReservoir();
 
   virtual void showDescription();

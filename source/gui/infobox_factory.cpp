@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -27,6 +29,7 @@
 #include "objects/wharf.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "city/city.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,7 +40,7 @@ namespace gui
 namespace infobox
 {
 
-AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
+AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
@@ -115,8 +118,8 @@ void AboutFactory::_toggleWork()
   }
 }
 
-AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
-  : AboutFactory( parent, tile )
+AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& tile)
+  : AboutFactory( parent, city, tile )
 {
   ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
 
@@ -132,8 +135,8 @@ AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
 }
 
 
-AboutWharf::AboutWharf(Widget* parent, const Tile& tile)
-  : AboutFactory( parent, tile )
+AboutWharf::AboutWharf(Widget* parent, PlayerCityPtr city, const Tile& tile)
+  : AboutFactory( parent, city, tile )
 {
   WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
 

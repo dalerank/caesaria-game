@@ -63,7 +63,7 @@ namespace gui
 namespace infobox
 {
 
-AboutHouse::AboutHouse( Widget* parent, const Tile& tile )
+AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   setupUI( ":/gui/infoboxhouse.gui" );

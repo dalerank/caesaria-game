@@ -27,7 +27,7 @@ namespace infobox
 class AboutTemple : public AboutConstruction
 {
 public:
-  AboutTemple( Widget* parent, const gfx::Tile& tile );
+  AboutTemple( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutTemple();
 };
 

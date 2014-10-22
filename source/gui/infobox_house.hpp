@@ -32,7 +32,7 @@ namespace infobox
 class AboutHouse : public Simple
 {
 public:
-   AboutHouse( Widget* parent, const gfx::Tile& tile);
+   AboutHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile);
    virtual ~AboutHouse();
 
    void drawHabitants(HousePtr house);

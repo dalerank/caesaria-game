@@ -48,6 +48,7 @@
 #include "world/movableobject.hpp"
 #include "world/barbarian.hpp"
 #include "core/flagholder.hpp"
+#include "world/playerarmy.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -217,7 +218,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
       if( !way.empty() )
       {
         Point lastPos = way[ way.step ];
-        for( int k = way.step+1; k < way.size(); k++ )
+        for( world::Route::size_type k = way.step+1; k < way.size(); k++ )
         {
           painter.drawLine( DefaultColors::aliceBlue, offset + lastPos, offset + way[ k ] );
           lastPos = way[ k ];
@@ -516,7 +517,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
       bringToFront();
 
       if( _d->flags.isFlag( showCityInfo ) )
-        _d->checkCityOnMap( _d->dragStartPosition - _d->offset );
+        _d->checkCityOnMap( _d->dragStartPosition );
     break;
 
     case mouseRbtnRelease:
@@ -577,10 +578,10 @@ void EmpireMapWindow::_changePosition()
 
   std::string text;
   if( obj.isValid() )
-  {    
-    world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
-    if( cCity.isValid() )
+  {        
+    if( is_kind_of<world::ComputerCity>( obj ) )
     {
+      world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
       if( cCity->isDistantCity() )
         text = "##empmap_distant_romecity_tip##";
       else
@@ -594,6 +595,13 @@ void EmpireMapWindow::_changePosition()
     {
       text = "##enemy_army_threating_a_city##";
     }    
+    else if( is_kind_of<world::PlayerArmy>( obj ) )
+    {
+      world::PlayerArmyPtr pa = ptr_cast<world::PlayerArmy>( obj );
+      text = pa->mode() == world::PlayerArmy::go2home
+                ? "##playerarmy_gone_to_home##"
+                : "##playerarmy_gone_to_location##";
+    }
   }
 
   if( _d->tooltipLabel )

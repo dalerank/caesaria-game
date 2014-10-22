@@ -15,30 +15,29 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_BARRACKS_H_INCLUDED__
-#define __CAESARIA_BARRACKS_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOX_BARRACKS_H_INCLUDE_
+#define _CAESARIA_INFOBOX_BARRACKS_H_INCLUDE_
 
-#include "training.hpp"
-#include "good/goodstore.hpp"
+#include "infobox_construction.hpp"
 
-class Barracks : public TrainingBuilding
+namespace gui
+{
+
+namespace infobox
+{
+
+class AboutBarracks : public AboutConstruction
 {
 public:
-  Barracks();
-  virtual void deliverTrainee();
-  virtual void timeStep(const unsigned long time);
-
-  bool isNeedWeapons() const;
-  int goodQty( Good::Type type ) const;
-  virtual void storeGoods(GoodStock &stock, const int amount);  
-  virtual std::string workersProblemDesc() const;
-
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
+  AboutBarracks( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  virtual ~AboutBarracks();
 
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_BARRACKS_H_INCLUDED__
+}
+
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_BARRACKS_H_INCLUDE_

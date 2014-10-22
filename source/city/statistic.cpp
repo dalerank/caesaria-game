@@ -272,18 +272,34 @@ HouseList Statistic::getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<in
   return ret;
 }
 
-Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
+Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city, bool includeGranary)
 {
-  Helper helper( city );
   GoodsMap cityGoodsAvailable;
 
-  WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
+  WarehouseList warehouses;
+  warehouses << city->overlays();
+
   foreach( wh, warehouses )
   {
     for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type goodType = (Good::Type)i;
       cityGoodsAvailable[ goodType ] += (*wh)->store().qty( goodType );
+    }
+  }
+
+  if( includeGranary )
+  {
+    GranaryList granaries;
+    granaries << city->overlays();
+
+    foreach( gg, granaries )
+    {
+      for( int i=Good::wheat; i <= Good::vegetable; i++ )
+      {
+        Good::Type goodType = (Good::Type)i;
+        cityGoodsAvailable[ goodType ] += (*gg)->store().qty( goodType );
+      }
     }
   }
 

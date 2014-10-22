@@ -164,8 +164,19 @@ void Layer::handleEvent(NEvent& event)
     break;
     }
   }
+  else if( event.EventType == sAppEvent )
+  {
+    switch( event.app.type )
+    {
+    case appWindowFocusEnter:
+    case appWindowFocusLeave:
+      LayerDrawOptions::instance().setFlag( LayerDrawOptions::windowActive, event.app.type == appWindowFocusEnter );
+    break;
 
-  if( event.EventType == sEventKeyboard )
+    default: break;
+    }
+  }
+  else if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
     int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
@@ -402,7 +413,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
       registerTileForRendering( tile );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }
+    }       
   }
 }
 
@@ -486,14 +497,18 @@ void Layer::afterRender( Engine& engine)
   Point moveValue;
 
   //on edge cursor moving
-  if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
-  else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
-  if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
-  else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
-
-  if( moveValue.x() != 0 || moveValue.y() != 0 )
+  LayerDrawOptions& opts = LayerDrawOptions::instance();
+  if( opts.isFlag( LayerDrawOptions::windowActive ) )
   {
-    _d->camera->move( moveValue.toPointF() );
+    if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
+    else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+    if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
+    else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+
+    if( moveValue.x() != 0 || moveValue.y() != 0 )
+    {
+      _d->camera->move( moveValue.toPointF() );
+    }
   }
 
   if( !_d->tooltipText.empty() )
@@ -501,7 +516,7 @@ void Layer::afterRender( Engine& engine)
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }  
 
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
+
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    
@@ -518,7 +533,7 @@ void Layer::afterRender( Engine& engine)
       engine.drawLine( 0x80ff0000, rtile.mappos() + offset, ertile.mappos() + offset );
     }
 
-    std::string text;
+    /*std::string text;
     Font font = Font::create( FONT_0 );
     font.setColor( 0x80ffffff );
     switch( _d->posMode )
@@ -535,18 +550,30 @@ void Layer::afterRender( Engine& engine)
         }
       }
     break;
+    }*/
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showRoads ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->getFlag( Tile::tlRoad ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
     }
   }
 
-  if( _d->currentTile )
+  if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
   {
     Point pos = _d->currentTile->mappos();
-    int size = (_d->currentTile->picture().width() + 2) / 60;
+    Size size( (_d->currentTile->picture().width() + 2) / 60 );
 
     TileOverlayPtr ov = _d->currentTile->overlay();
     if( ov.isValid() )
     {
-      size = ov->size().width();
+      size = ov->size();
       pos = ov->tile().mappos();
     }
     else if( _d->currentTile->masterTile() != 0 )
@@ -556,10 +583,10 @@ void Layer::afterRender( Engine& engine)
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size, pos );
+    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
   }
 }
 

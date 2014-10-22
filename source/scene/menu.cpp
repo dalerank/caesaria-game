@@ -50,7 +50,9 @@
 #include "core/event.hpp"
 #include "core/timer.hpp"
 #include "core/stringhelper.hpp"
-#include "steam.hpp"
+#ifdef CAESARIA_USE_STEAM
+  #include "steam.hpp"
+#endif
 
 using namespace gfx;
 using namespace gui;

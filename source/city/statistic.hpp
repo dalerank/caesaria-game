@@ -55,7 +55,7 @@ public:
   static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
   static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );
-  static GoodsMap getGoodsMap( PlayerCityPtr city );
+  static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
   static float getBalanceKoeff( PlayerCityPtr city );
 };
 
