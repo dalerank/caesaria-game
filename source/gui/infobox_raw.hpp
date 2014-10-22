@@ -27,7 +27,7 @@ namespace infobox
 class AboutRawMaterial : public AboutConstruction
 {
 public:  
-  AboutRawMaterial( Widget* parent, const gfx::Tile& tile );
+  AboutRawMaterial( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutRawMaterial();
 
   virtual void showDescription();

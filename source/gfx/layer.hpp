@@ -35,7 +35,8 @@ namespace gfx
 class LayerDrawOptions : public FlagHolder<int>
 {
 public:
-  typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4 } Flags;
+  typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
+                 showObjectArea=0x20 } Flags;
   static LayerDrawOptions& instance();
 
 private:

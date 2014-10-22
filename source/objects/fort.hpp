@@ -96,6 +96,7 @@ public:
   virtual void destroy();
 
   void setBase( FortPtr base );
+  FortPtr base() const;
 private:
   class Impl;
 

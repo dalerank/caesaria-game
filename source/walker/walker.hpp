@@ -118,14 +118,14 @@ protected:
   virtual void _noWay();
   virtual void _waitFinished();
   virtual const gfx::Picture& getMainPicture();
-
-protected:
-  Pathway& _pathwayRef();
+  virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
+  virtual void _updateThinks();
+
+  Pathway& _pathwayRef();
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  virtual void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
 
   void _setType( constants::walker::Type type );
@@ -133,7 +133,6 @@ protected:
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos( Point pos );
-  virtual void _updateThinks();
   Point _wpos() const;
 
 private:

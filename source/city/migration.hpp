@@ -38,9 +38,14 @@ public:
 
   static std::string defaultName();
 
+  int lastMonthComing() const;
+  int lastMonthLeaving() const;
+
   int lastMonthMigration() const;
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
+
+  void citizenLeaveCity( WalkerPtr walker );
 
 private:
   Migration();

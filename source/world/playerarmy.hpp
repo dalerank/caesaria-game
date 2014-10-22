@@ -27,6 +27,8 @@ namespace world
 class PlayerArmy : public Army
 {
 public:
+  typedef enum { findAny, go2location, wait, go2home } Mode;
+
   static PlayerArmyPtr create(EmpirePtr empire, CityPtr city=CityPtr() );
   virtual std::string type() const;
 
@@ -38,6 +40,7 @@ public:
   virtual void load(const VariantMap &stream);
   virtual void killSoldiers(int percent);
 
+  Mode mode() const;
   virtual int viewDistance() const;
 
   virtual void addSoldiers(RomeSoldierList soldiers);

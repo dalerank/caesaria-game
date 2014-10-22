@@ -27,6 +27,7 @@
 #include "gfx/tilemap.hpp"
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
+#include "city/migration.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
 
@@ -117,6 +118,14 @@ void Emigrant::_reachedPathway()
 
   if( pos() == _city()->borderInfo().roadExit )
   {
+    city::MigrationPtr migration;
+    migration << _city()->findService( city::Migration::defaultName() );
+
+    if( migration.isValid() )
+    {
+      migration->citizenLeaveCity( this );
+    }
+
     deleteLater();
     return;
   }
@@ -283,7 +292,7 @@ bool Emigrant::send2city( const Tile& startTile )
   if( way.isValid() )
   {
     setPathway( way );
-    _city()->addWalker( this );
+    attach();
     return true;
   }
   else
@@ -317,7 +326,7 @@ Emigrant::~Emigrant(){}
 
 void Emigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
 const Picture& Emigrant::_cartPicture(){  return _d->cartPicture;}
-const CitizenGroup& Emigrant::_getPeoples() const{  return _d->peoples;}
+const CitizenGroup& Emigrant::peoples() const{  return _d->peoples;}
 void Emigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 
 void Emigrant::timeStep(const unsigned long time)

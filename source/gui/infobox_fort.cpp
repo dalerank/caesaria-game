@@ -19,6 +19,9 @@
 #include "objects/fort.hpp"
 #include "objects/extension.hpp"
 #include "core/gettext.hpp"
+#include "widget_helper.hpp"
+#include "core/logger.hpp"
+#include "walker/soldier.hpp"
 #include "label.hpp"
 
 using namespace constants;
@@ -30,17 +33,45 @@ namespace gui
 namespace infobox
 {
 
-AboutFort::AboutFort( Widget* parent, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 350 ) )
+class AboutFort::Impl
 {
-  FortPtr fort = ptr_cast<Fort>( tile.overlay() );
-  setTitle( MetaDataHolder::findPrettyName( fort->type() ) );
+public:
+  Label* lbWeaponQty;
+  Label* lbText;
+
+  FortPtr fort;
+
+public:
+  void update( Widget* parent );
+};
+
+AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect() ), _d( new Impl )
+{
+  setupUI( ":/gui/fortopts.gui" );
+
+  GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
+
+  if( is_kind_of<Fort>( tile.overlay() ) ) { _d->fort = ptr_cast<Fort>( tile.overlay() ); }
+  else if( is_kind_of<FortArea>( tile.overlay() ) )
+  {
+    FortAreaPtr area = ptr_cast<FortArea>( tile.overlay() );
+    _d->fort = area->base();
+  }
+  else
+  {
+    deleteLater();
+    Logger::warning( "AboutFort: cant find fort for [%d,%d]", tile.i(), tile.j() );
+    return;
+  }
+
+  setTitle( MetaDataHolder::findPrettyName( _d->fort->type() ) );
 
   std::string text = _("##fort_info##");
 
-  if( fort.isValid() )
+  if( _d->fort.isValid() )
   {
-    const ConstructionExtensionList& exts = fort->extensions();
+    const ConstructionExtensionList& exts = _d->fort->extensions();
     foreach( i, exts )
     {
       if( is_kind_of<FortCurseByMars>( *i ) )
@@ -51,13 +82,30 @@ AboutFort::AboutFort( Widget* parent, const Tile& tile )
     }
   }
 
-  Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
-  lb->setTextAlignment( align::upperLeft, align::center );
-  lb->setWordwrap( true );
+  _d->lbText = new Label( this, Rect( 20, 20, width() - 20, 120 ), text );
+  _d->lbText->setTextAlignment( align::upperLeft, align::center );
+  _d->lbText->setWordwrap( true );
+
+  _d->update( this );
 }
 
 AboutFort::~AboutFort()
 {
+}
+
+void AboutFort::Impl::update(Widget* parent)
+{
+  Point startPos = lbText->leftbottom();
+  const SoldierList& soldiers = fort->soldiers();
+  SoldierList::size_type k=0;
+  int lbWidth = (parent->width() - 40) / 2;
+  foreach( it, soldiers )
+  {
+    Label* lbSoldierName = new Label( parent, Rect( Point( k < 8 ? 0 : lbWidth, 0), Size( lbWidth, 24 ) ), (*it)->name() );
+    lbSoldierName->setTextAlignment( align::center, align::center );
+    lbSoldierName->move( startPos + Point( 0, 25 * k ) );
+    k++;
+  }
 }
 
 }

@@ -251,6 +251,12 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "send_venus_wrath", city::debug_event::send_venus_wrath );
   debugMenu->addItem( "win_mission", city::debug_event::win_mission );
   debugMenu->addItem( "all_sound_off", city::debug_event::all_sound_off );
+  debugMenu->addItem( "toggle_grid_visibility", city::debug_event::toggle_grid_visibility );
+  debugMenu->addItem( "toggle_overlay_base", city::debug_event::toggle_overlay_base );
+  debugMenu->addItem( "toggle_show_path", city::debug_event::toggle_show_path );
+  debugMenu->addItem( "toggle_show_roads", city::debug_event::toggle_show_roads );
+  debugMenu->addItem( "toggle_show_object_area", city::debug_event::toggle_show_object_area );
+  debugMenu->addItem( "add_soldiers_in_fort", city::debug_event::add_soldiers_in_fort );
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
 

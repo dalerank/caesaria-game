@@ -110,6 +110,7 @@ public:
   Label* lbPrevChart;
   Label* lbTitle;
   Label* lbMigrationValue;
+  Label* lbFoodValue;
 
 public slots:
   void showNextChart();
@@ -134,10 +135,11 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
-  GET_DWIDGET_FROM_UI( _d, lbNextChart  );
+  GET_DWIDGET_FROM_UI( _d, lbNextChart  )
   GET_DWIDGET_FROM_UI( _d, lbPrevChart )
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbMigrationValue )
+  GET_DWIDGET_FROM_UI( _d, lbFoodValue )
 
   Label* lbNextChartArea;
   Label* lbChart;
@@ -227,13 +229,18 @@ void Population::Impl::updateStates()
 
     int migrationValue = currentPop - lastMonth[ Info::population ];
 
-    if( migrationValue >= 0 )
+    std::string migrationText = "##unknown_migration_reason##";
+    if( abs( migrationValue ) < 10 )
+    {
+      migrationText = "##balance_between_migration##";
+    }
+    else if( migrationValue >= 0 )
     {
       std::string suffix = ( migrationValue % 10 == 1 )
                              ? "##newcomer_this_month##"
                              : "##newcomers_this_month##";
 
-      lbMigrationValue->setText( StringHelper::i2str( migrationValue ) + " " + _( suffix ) );
+      migrationText = StringHelper::i2str( migrationValue ) + " " + _( suffix );
     }
     else
     {
@@ -242,9 +249,23 @@ void Population::Impl::updateStates()
 
       if( migration.isValid() )
       {
-        lbMigrationValue->setText( migration->leaveCityReason( city ) );
+        migrationText = migration->leaveCityReason( city );
       }
     }
+
+    lbMigrationValue->setText( _(migrationText) );
+  }
+
+  if( lbFoodValue )
+  {
+    city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, true );
+    int foodLevel = 0;
+    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    {
+      foodLevel += (goods[ (Good::Type)k ] > 0 ? 1 : 0);
+    }
+
+    lbFoodValue->setText( _( "##varieties_food_eaten##") + StringHelper::i2str( foodLevel ) );
   }
 }
 
