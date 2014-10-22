@@ -143,7 +143,7 @@ bool BigTemple::build(PlayerCityPtr city, const TilePos& pos)
     return true;
   }
 
-  city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city );
+  city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, false );
   if( goods[ Good::marble ] >= 2 )
   {
     Temple::build( city, pos );

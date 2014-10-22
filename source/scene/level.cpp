@@ -84,6 +84,8 @@
 #include "city/cityservice_info.hpp"
 #include "city/debug_events.hpp"
 #include "world/barbarian.hpp"
+#include "gfx/layer.hpp"
+#include "objects/fort.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -544,7 +546,7 @@ void Level::handleEvent( NEvent& event )
   //After MouseDown events are send to the same target till MouseUp
   Ui& gui = *_d->game->gui();
 
-  if (event.EventType == sEventQuit)
+  if( event.EventType == sEventQuit )
   {
     _requestExitGame();
     return;
@@ -882,6 +884,24 @@ void Level::_handleDebugEvent(int event)
     audio::Engine::instance().setVolume( audio::ambientSound, 0 );
     audio::Engine::instance().setVolume( audio::themeSound, 0 );
     audio::Engine::instance().setVolume( audio::gameSound, 0 );
+  break;
+
+  case city::debug_event::toggle_grid_visibility: LayerDrawOptions::instance().toggle( LayerDrawOptions::drawGrid );  break;
+  case city::debug_event::toggle_overlay_base: LayerDrawOptions::instance().toggle( LayerDrawOptions::shadowOverlay );  break;
+  case city::debug_event::toggle_show_path: LayerDrawOptions::instance().toggle( LayerDrawOptions::showPath );  break;
+  case city::debug_event::toggle_show_roads: LayerDrawOptions::instance().toggle( LayerDrawOptions::showRoads );  break;
+  case city::debug_event::toggle_show_object_area: LayerDrawOptions::instance().toggle( LayerDrawOptions::showObjectArea );  break;
+
+  case city::debug_event::add_soldiers_in_fort:
+  {
+    FortList forts;
+    forts << _d->game->city()->overlays();
+
+    foreach( it, forts )
+    {
+      (*it)->setTraineeValue( walker::soldier, 100 );
+    }
+  }
   break;
   }
 }

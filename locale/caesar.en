@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
+{"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
 "##3_entertainment_access##":"This dwelling has very limited access to entertainment venues"
@@ -165,6 +164,7 @@
 "##awesome_doctor_access##":"This house has clinic access"
 "##awesome_entertainment_access##":"This dwelling has access to several entertainment venues"
 "##bad_house_quality##":"The overall quality of your city's housing holds this rating back. Improve the housing in your city to raise this rating."
+"##balance_between_migration##":"There is a balance between people coming to and leaving the city."
 "##balance##":"Balance"
 "##ballista##":"Ballista"
 "##barbarian_attack_text##":"Enemies of rome are at the outskirts of your city. Expect them to drop in for an urn or two of wine - and whatever else strikes their fancy!"
@@ -296,6 +296,7 @@
 "##city_fire_title##":"Fire in Your city"
 "##city_has_debt##":"City has a debt to Rome of"
 "##city_has_runout_debt##":"Your city has run out of money. Caesar has decided to give you more funds, but he will not so generous next time. Export goods to generate more funds for the city."
+"##city_have_defence##":"The city's defenses should never have let the enemy through!"
 "##city_have_goods_for_request##":"Your warehouses report that you now have enough of these goods to fullfil the request from the Emperor."
 "##city_have##":"City treasury has assets of"
 "##city_health##":"City health"
@@ -303,6 +304,8 @@
 "##city_need_more_workers##":"Your city needs more workers"
 "##city_sounds_off##":"City sounds are off"
 "##city_sounds_on##":"City sounds are on"
+"##city_under_barbarian_attack##":"The enemy soldiers in the city's environs do not help your peace rating!"
+"##city_under_rome_attack##":"The approaching Imperial legions are frightening your citizens, and will do no good to your peace rating."
 "##city##":"City"
 "##citychart_census##":"Census"
 "##citychart_population##":"History"
@@ -509,6 +512,9 @@
 "##emw_buy##":"Buys"
 "##emw_sell##":"Sells"
 "##emw_sold##":"Sold"
+"##enemies_hard_to_me##":"This soldier is too strong for me!"
+"##enemies_very_easy##":"We should see those wimps off easily! "
+"##enemies_very_hard##":"We'll do our best, but even Roman soldiers will find it tough to defeat this enemy!"
 "##enemy_army_threating_a_city##":"An enemy army, threatening a city of the Empire"
 "##engineer_average_life##":"Everything seems to be working well here"
 "##engineer_building_allok##":"I'm hardly needed; these buildings are in great condition."
@@ -911,7 +917,6 @@
 "##marketKid_say_3##":"Hail! I'm taking this basket to that lady's market. I'm hoping for a big tip!"
 "##marketLady_no_food_on_market##":"The market has run out of food, so I'm on my way home."
 "##mars_desc##":"War"
-"##mars_watches_over_soldiers##":"Mars watches over soldiers and encourages valor in combat. No man dares fight without the blessing of Mars."
 "##massilia_preview_mission##":"The only water is at the oasis. So, unfortunately, is the only farmland. Reservoirs and farms must compete for the same space. Use it wisely."
 "##max_available##":"Can entertain"
 "##maximizeBtnTooltip##":"Show panel"
@@ -1107,6 +1112,7 @@
 "##none_damage_risk##":"No risk of collapse"
 "##northBtnTooltip##":"North"
 "##not_available##":"Not available... Yet!"
+"##not_enought_place_for_legion##":"Your legion has its full complement of forts"
 "##not_need_education##":"No citizens are asking for educational facilities yet. As the city grows in stature, though, people will expect schools and academies, followed later by demands for libraries."
 "##numidian_warrior##":"A Numidian warrior"
 "##occupants##":"occupants"
@@ -1193,6 +1199,8 @@
 "##people##":"People"
 "##percents##":"Interest at"
 "##person##":"Person"
+"##playerarmy_gone_to_home##":"Your legion, returning to your city"
+"##playerarmy_gone_to_location##":"Your legion, marching to relieve a city of the Empire"
 "##plaza_caption##":"Plaza"
 "##plaza##":"Plaza"
 "##plname_continue##":"Continue"
@@ -1422,6 +1430,7 @@
 "##small_venus_temple##":"Temple to Venus"
 "##small_villa##":"Small villa"
 "##small##":"Small"
+"##smallcurse_of_mars_text##":"Mars watches over soldiers and encourages valor in combat. No man dares fight without the blessing of Mars."
 "##smallcurse_of_mars_text##":"Mars, protector of soldiers and grantor of victories, is displeased. Your troops fear that they will lose a great battle if he is not appeased!"
 "##smallcurse_of_mercury_description##":"Mercury, messenger of the gods and patron of merchants, is unhappy. Your traders worry that his protection is waning."
 "##smcurse_of_venus_description##":"Venus, bringer of love and harmony, is upset. This does not bode well for your city's prefects!"
@@ -1576,6 +1585,7 @@
 "##valencia_peacefully_province##":"Valentia: fairly peaceful province"
 "##valencia_win_text##":"Hispania's new capital is exactly what we needed to bind that far-off province more closely to Rome. Crushing the remnants of the Etruscans so thoroughly removes the last threat in the West."
 "##valentia_preview_mission##":"The governor will face various threats and hazards. The Iberians will not be the least of them! They are not resigned to giving up Hispania."
+"##varieties_food_eaten##":"Varieties of food eaten,"
 "##vegetable_farm_bad_work##":"With hardly any employees to maintain this farm, it will barely grow anything at all."
 "##vegetable_farm_full_work##":"This farm has all the employees it needs. Vegetables grow here in abundance."
 "##vegetable_farm_info##":"Vegetables are important to the balanced diet your people need for happiness and health. Granaries store vegetables for local consumption, and warehouses take surpluses for export."
@@ -1658,6 +1668,7 @@
 "##we_produce_more_than_eat##":"We produce a little more than we eat"
 "##we_produce_much_than_eat##":"We produce much more than we eat"
 "##we_produce_some_than_eat##":"We produce just enough to feed everyone"
+"##weapon_store_of##":"Weapon stores of"
 "##weapon##":"Weapons"
 "##weapons_workshop_bad_work##":"With hardly any employees at this workshop, production is at a virtual standstill. It will produce few weapons over the coming year."
 "##weapons_workshop_full_work##":"This workshop has all the employees it needs, it is working flat out to produce weapons."
@@ -2166,17 +2177,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 }

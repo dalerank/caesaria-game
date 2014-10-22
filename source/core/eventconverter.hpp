@@ -24,7 +24,7 @@ class EventConverter
 {
 public:
   static EventConverter& instance();
-  virtual ~EventConverter();
+  ~EventConverter();
 
   NEvent get( const SDL_Event& event );
 

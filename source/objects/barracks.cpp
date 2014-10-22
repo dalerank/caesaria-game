@@ -81,6 +81,7 @@ void Barracks::timeStep(const unsigned long time)
 }
 
 bool Barracks::isNeedWeapons() const {  return _d->store.freeQty() >= 100; }
+int Barracks::goodQty(Good::Type type) const{  return _d->store.qty( type ); }
 
 void Barracks::storeGoods(GoodStock& stock, const int amount)
 {

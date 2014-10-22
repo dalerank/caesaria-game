@@ -49,6 +49,7 @@
 #include "gui/infobox_theater.hpp"
 #include "gui/infobox_amphitheater.hpp"
 #include "gui/infobox_fort.hpp"
+#include "gui/infobox_barracks.hpp"
 #include <map>
 
 using namespace constants;
@@ -67,7 +68,7 @@ class BaseInfoboxCreator : public InfoboxCreator
 public:
   Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    return new T( parent, city->tilemap().at( pos ) );
+    return new T( parent, city, city->tilemap().at( pos ) );
   }
 };
 
@@ -79,7 +80,7 @@ public:
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house->habitants().count() > 0 )
     {
-      return new AboutHouse( parent, city->tilemap().at( pos ) );
+      return new AboutHouse( parent, city, city->tilemap().at( pos ) );
     }
     else
     {
@@ -247,6 +248,8 @@ Manager::Manager() : _d( new Impl )
   ADD_INFOBOX( building::fortLegionaire,   BaseInfoboxCreator<AboutFort>() )
   ADD_INFOBOX( building::fortJavelin,   BaseInfoboxCreator<AboutFort>() )
   ADD_INFOBOX( building::fortMounted,   BaseInfoboxCreator<AboutFort>() )
+  ADD_INFOBOX( building::fortArea, BaseInfoboxCreator<AboutFort>() );
+  ADD_INFOBOX( building::barracks, BaseInfoboxCreator<AboutBarracks>() );
 }
 
 Manager::~Manager() {}

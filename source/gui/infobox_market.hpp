@@ -28,7 +28,7 @@ namespace infobox
 class AboutMarket : public AboutConstruction
 {
 public:
-   AboutMarket( Widget* parent, const gfx::Tile& tile );
+   AboutMarket( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
    virtual ~AboutMarket();
    
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );

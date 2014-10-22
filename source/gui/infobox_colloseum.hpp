@@ -27,7 +27,7 @@ namespace infobox
 class AboutColosseum : public AboutConstruction
 {
 public:
-  AboutColosseum( Widget* parent, const gfx::Tile& tile );
+  AboutColosseum( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutColosseum();
 };
 

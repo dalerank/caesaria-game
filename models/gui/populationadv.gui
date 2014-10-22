@@ -20,7 +20,15 @@
         icon : "paneling_00048"
         icon.offset : [ 5, 5 ]
         text.offset : [ 20, 0 ]
-        font : "FONT_2_WHITE"
+        font : "FONT_3"
+      }
+
+      lbFoodValue#Label : {
+        geometry : [ 10, 30, "pw-10", 55 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_3"
       }
     }
 

@@ -38,7 +38,13 @@ enum {
   send_player_army,
   screenshot,
   send_venus_wrath,
-  all_sound_off
+  all_sound_off,
+  toggle_grid_visibility,
+  toggle_overlay_base,
+  toggle_show_path,
+  toggle_show_roads,
+  toggle_show_object_area,
+  add_soldiers_in_fort
 };
 
 }

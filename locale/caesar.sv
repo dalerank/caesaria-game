@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
+{"##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
 "##1_entertainment_access##":"Denna boning har knappt tillgång till underhållning"
 "##2_entertainment_access##":"Denna boning har viss tillgång till underhållning"
 "##3_entertainment_access##":"Denna boning har mycket begränsad tillgång till underhållning"
@@ -165,6 +164,7 @@
 "##awesome_doctor_access##":"Detta hus har tillgång till en klinik"
 "##awesome_entertainment_access##":"Denna boning har tillgång till flera platser för underhållning"
 "##bad_house_quality##":"Den totala kvaliteten på byggnaderna i din stad inverkar negativt på denna ställning."
+"##balance_between_migration##":"Det är lika många som kommer till, respektive lämnar staden"
 "##balance##":"Balans"
 "##ballista##":"Kastmaskin"
 "##barbarian_attack_text##":""
@@ -296,6 +296,7 @@
 "##city_fire_title##":""
 "##city_has_debt##":"Staden har en skuld till Rom på"
 "##city_has_runout_debt##":""
+"##city_have_defence##":"Stadens försvar skulle aldrig ha släppt igenom fienden!"
 "##city_have_goods_for_request##":""
 "##city_have##":"Stadens skattkammare har tillgångar på"
 "##city_health##":"Hälsosituation"
@@ -303,6 +304,8 @@
 "##city_need_more_workers##":"Din stad kräver fler arbetare"
 "##city_sounds_off##":"Stadsljud är AV"
 "##city_sounds_on##":"Stadsljud är PÅ"
+"##city_under_barbarian_attack##":"Fiendesoldaterna i stadens omgivning förbättrar inte din fredsställning!"
+"##city_under_rome_attack##":"De legioner från imperiet som närmar sig skrämmer dina invånare och förbättrar inte din fredsställning."
 "##city##":"Stad"
 "##citychart_census##":"Folkräkning"
 "##citychart_population##":"Historia"
@@ -509,6 +512,9 @@
 "##emw_buy##":"Inköp"
 "##emw_sell##":"Försäljningar"
 "##emw_sold##":"Sålt"
+"##enemies_hard_to_me##":"Denne soldat är för stark för mig!"
+"##enemies_very_easy##":"Vi ska nog skrämma bort veklingarna snabbt."
+"##enemies_very_hard##":"Vi ska göra vårt bästa, men även romerska soldater får svårt att besegra den här fienden."
 "##enemy_army_threating_a_city##":"En fiendearmé som hotar en av rikets städer"
 "##engineer_average_life##":"Allt tycks fungera väl här."
 "##engineer_building_allok##":"Jag behövs knappast. Dessa byggnader är i utmärkt skick."
@@ -911,7 +917,6 @@
 "##marketKid_say_3##":"Var hälsad! Jag bär korgen med mat till kvinnans marknad. Jag hoppas jag får bra med dricks!"
 "##marketLady_no_food_on_market##":"Marknaden har slut på livsmedel, så jag är på väg hem."
 "##mars_desc##":"Krig"
-"##mars_watches_over_soldiers##":"Mars vakar över soldater och belönar tapperhet i fält. Ingen man vågar kämpa utan Mars välsignelse."
 "##massilia_preview_mission##":"Det enda vattnet finns i oasen. Detsamma gäller tyvärr för odlingsbar mark. Reservoarer och lantgårdar konkurrerar om samma utrymme. Använd det med förstånd."
 "##max_available##":"Underhåller"
 "##maximizeBtnTooltip##":""
@@ -1107,6 +1112,7 @@
 "##none_damage_risk##":"Ingen risk för kollaps"
 "##northBtnTooltip##":""
 "##not_available##":"Ej tillgänglig... ännu!"
+"##not_enought_place_for_legion##":"Din legion har de fort som krävs"
 "##not_need_education##":"Inga medborgare kräver ännu utbildningsmöjligheter. Men när staden börjar växa kommer människor att förvänta sig skolor och högskolor, och senare även bibliotek."
 "##numidian_warrior##":"En numidisk soldat"
 "##occupants##":"invånare"
@@ -1193,6 +1199,8 @@
 "##people##":"denarer"
 "##percents##":"Ränta på"
 "##person##":"denarer"
+"##playerarmy_gone_to_home##":"Din legion på återtåg till din stad"
+"##playerarmy_gone_to_location##":"Din legion marscherar för att befria en stad från riket"
 "##plaza_caption##":"Torg"
 "##plaza##":"Torg"
 "##plname_continue##":"Fortsätt"
@@ -1422,6 +1430,7 @@
 "##small_venus_temple##":"Venustempel"
 "##small_villa##":"Liten villa"
 "##small##":"Litet"
+"##smallcurse_of_mars_text##":"Mars vakar över soldater och belönar tapperhet i fält. Ingen man vågar kämpa utan Mars välsignelse."
 "##smallcurse_of_mars_text##":"Mars, soldaternas beskyddare och segerförlänare, är missnöjd. Dina soldater fruktar att de kommer att förlora ett stort slag om han inte blidkas."
 "##smallcurse_of_mercury_description##":"Merkurius, gudarnas budbärare och handelsmännens beskyddare, är missnöjd. Dina handelsmän fruktar att hans beskydd viker."
 "##smcurse_of_venus_description##":"Venus, förmedlare av kärlek och harmoni, är upprörd. Detta bådar inget gott för prefekterna i din stad!"
@@ -1576,6 +1585,7 @@
 "##valencia_peacefully_province##":"Valentia: en relativt fredlig provins"
 "##valencia_win_text##":"Hispaniens nya huvudstad är precis vad vi behöver för att knyta den avlägsna provinsen tätare till Rom. Genom att krossa etruskerna så totalt försvinner det sista hotet i väst."
 "##valentia_preview_mission##":"Ståthållaren ställs inför olika hot och faror, och Iberierna utgör inte det minsta av dessa! De har inte för avsikt att ge upp Hispanien."
+"##varieties_food_eaten##":"Olika sorters livsmedel som ätits,"
 "##vegetable_farm_bad_work##":"Det finns knappt några anställda för att underhålla jordbruket, de få grönsakerna kommer att bli offer för insekter."
 "##vegetable_farm_full_work##":"Denna lantgård har alla anställda det behöver. Grönsaker växer här i överflöd."
 "##vegetable_farm_info##":"Grönsaker är en viktig del av den balanserad diet som ditt folk behöver för hälsa och glädje. I sädesmagasinen lagras grönsaker för lokal konsumtion, och i handelsmagasinen förvaras överskottet för export."
@@ -1658,6 +1668,7 @@
 "##we_produce_more_than_eat##":"Vi producerar något mer än vi äter"
 "##we_produce_much_than_eat##":"Vi producerar mycket mer än vi äter"
 "##we_produce_some_than_eat##":"Vi producerar lagom för att livnära alla"
+"##weapon_store_of##":"Vapenupplaget har"
 "##weapon##":"Vapen"
 "##weapons_workshop_bad_work##":"Med så få anställda står produktionen nästan still. Det kommer inte att produceras många vapen under det kommande året."
 "##weapons_workshop_full_work##":"Denna smedja har alla anställda den behöver, den arbetar fullt ut med att producera vapen."
@@ -2166,17 +2177,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+"undefined":"undefined"
+"undefined":"undefined"}

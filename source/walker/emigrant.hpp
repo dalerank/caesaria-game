@@ -34,6 +34,7 @@ public:
   void leaveCity( const gfx::Tile& tile );
 
   void setPeoples( const CitizenGroup& peoples );
+  const CitizenGroup& peoples() const;
   virtual void timeStep(const unsigned long time);
 
   virtual ~Emigrant();
@@ -55,7 +56,6 @@ protected:
   HousePtr _findBlankHouse();
   Pathway _findSomeWay(TilePos startPoint );
 
-  const CitizenGroup& _getPeoples() const;
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
   void _checkHouses(HouseList &hlist);
