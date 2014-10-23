@@ -60,6 +60,8 @@ protected:
   void _append2house(HousePtr house);
   void _checkHouses(HouseList &hlist);
   void _lockHouse(HousePtr house);
+  void _splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms);
+  void _findFinestHouses(HouseList& hlist);
 
 private:
   class Impl;

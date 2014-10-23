@@ -83,7 +83,7 @@ void Emigrant::_lockHouse( HousePtr house )
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( House::settleLock, uniqueId() );
+    house->setState( House::settleLock, TileHelper::hash( _d->housePosLock ) );
   }
 }
 
@@ -95,7 +95,9 @@ HousePtr Emigrant::_findBlankHouse()
 
   TilePos offset( 5, 5 );
   HouseList houses = hlp.find<House>( building::house, pos() - offset, pos() + offset );
+
   _checkHouses( houses );
+
   if( houses.empty() )
   {
     houses = hlp.find<House>( building::house );
@@ -117,9 +119,15 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
 
   Pathway pathway;
   if( house.isValid() )
-  {
-    pathway = PathwayHelper::create( startPoint, ptr_cast<Construction>(house),
-                                     PathwayHelper::roadFirst  );
+  {    
+    pathway = PathwayHelper::create( startPoint, house->pos(), PathwayHelper::roadFirst  );
+
+    if( !pathway.isValid() )
+    {
+      pathway = PathwayHelper::create( startPoint, ptr_cast<Construction>(house),
+                                       PathwayHelper::roadFirst  );
+    }
+
     if( pathway.isValid() )
     {
       _lockHouse( house );
@@ -206,9 +214,18 @@ bool Emigrant::_checkNearestHouse()
   {
     TilePos offset( k, k );
     HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
-    foreach( it, houses )  //have destination
+
+    std::map< int, HousePtr > vacantRoomPriority;
+    foreach( it, houses )
     {
       HousePtr house = *it;
+      unsigned int freeRoom = house->maxHabitants() - house->habitants().count();
+      vacantRoomPriority[ 1000 - freeRoom ] = house;
+    }
+
+    foreach( it, vacantRoomPriority )  //have destination
+    {
+      HousePtr house = it->second;
 
       int freeRoom = house->maxHabitants() - house->habitants().count();
       if( freeRoom > 0 )
@@ -268,15 +285,47 @@ void Emigrant::_noWay()
   }
 }
 
-void Emigrant::_checkHouses(HouseList &hlist)
+void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
+{
+  lessRooms.clear();
+
+  unsigned int myPeoples = _d->peoples.count();
+
+  HouseList::iterator itHouse = moreRooms.begin();
+  while( itHouse != moreRooms.end() )
+  {
+    HousePtr house = *itHouse;
+    unsigned int freeRoom = house->maxHabitants() - house->habitants().count();
+    if( freeRoom > 0 )
+    {
+      if( freeRoom > myPeoples )
+      {
+        ++itHouse;
+      }
+      else
+      {
+        lessRooms.push_back( *itHouse );
+        itHouse = moreRooms.erase( itHouse );
+      }
+    }
+    else
+    {
+      itHouse = moreRooms.erase( itHouse );
+    }
+  }
+}
+
+void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->population() > 300;
+  unsigned int houseLockId = TileHelper::hash( _d->housePosLock );
+
   while( itHouse != hlist.end() )
   {
     HousePtr house = *itHouse;
     bool haveRoad = !house->getAccessRoads().empty();
-    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());    
+    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
     bool normalDesirability = true;
     if( bigcity )
     {
@@ -284,7 +333,7 @@ void Emigrant::_checkHouses(HouseList &hlist)
     }
 
     unsigned int settleLockId = house->state( House::settleLock );
-    if( settleLockId == uniqueId() )
+    if( settleLockId == houseLockId )
     {
       hlist.clear();
       hlist.push_back( house );
@@ -295,6 +344,29 @@ void Emigrant::_checkHouses(HouseList &hlist)
 
     if( freeForSettle && haveRoad && haveVacantRoom && normalDesirability) { ++itHouse; }
     else { itHouse = hlist.erase( itHouse ); }
+  }
+}
+
+void Emigrant::_checkHouses(HouseList &hlist)
+{
+  if( hlist.empty() )
+    return;
+
+  HouseList lessRoomHouses;
+  _splitHouseFreeRoom( hlist, lessRoomHouses );
+
+  if( !hlist.empty() )
+  {
+    _findFinestHouses( hlist );
+  }
+
+  if( !hlist.empty() )
+    return;
+
+  if( !lessRoomHouses.empty() )
+  {
+    _findFinestHouses( lessRoomHouses );
+    hlist = lessRoomHouses;
   }
 }
 
@@ -358,7 +430,10 @@ void Emigrant::leaveCity( const Tile& tile )
 }
 
 
-Emigrant::~Emigrant(){}
+Emigrant::~Emigrant()
+{
+  _lockHouse( HousePtr() );
+}
 
 void Emigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
 const Picture& Emigrant::_cartPicture(){  return _d->cartPicture;}
