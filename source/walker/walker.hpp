@@ -33,12 +33,12 @@
 #include "predefinitions.hpp"
 #include "core/debug_queue.hpp"
 
-typedef unsigned int UniqueId;
 class Pathway;
 
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
+  typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
   typedef enum { showDebugInfo=1, vividly, userFlag, count=0xff } Flag;
 

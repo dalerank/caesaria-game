@@ -44,14 +44,16 @@ public:
   Picture cartPicture;
   CitizenGroup peoples;
   int failedWayCount;
+  TilePos housePosLock;
   bool leaveCity;
   float stamina;
 
+public:
   void mayWalk( const Tile* tile, bool& ret )
   {
     HousePtr f = ptr_cast<House>( tile->overlay() );
     ret = ( tile->isWalkable( true ) || f.isValid() );
-  }
+  }  
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
@@ -63,6 +65,26 @@ Emigrant::Emigrant(PlayerCityPtr city )
   _d->stamina = math::random( 80 ) + 20;
   _d->failedWayCount = 0;
   _d->leaveCity = false;
+  _d->housePosLock = TilePos( -1, -1 );
+}
+
+void Emigrant::_lockHouse( HousePtr house )
+{
+  if( _d->housePosLock.i() >= 0 )
+  {
+    HousePtr oldHouse = ptr_cast<House>( _city()->tilemap().at( _d->housePosLock ).overlay() );
+    if( oldHouse.isValid() )
+    {
+      _d->housePosLock = TilePos( -1, -1 );
+      oldHouse->setState( House::settleLock, 0 );
+    }
+  }
+
+  if( house.isValid() )
+  {
+    _d->housePosLock = house->pos();
+    house->setState( House::settleLock, uniqueId() );
+  }
 }
 
 HousePtr Emigrant::_findBlankHouse()
@@ -79,7 +101,6 @@ HousePtr Emigrant::_findBlankHouse()
     houses = hlp.find<House>( building::house );
     _checkHouses( houses );
   }
-
 
   if( houses.size() > 0 )
   {
@@ -99,6 +120,10 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
   {
     pathway = PathwayHelper::create( startPoint, ptr_cast<Construction>(house),
                                      PathwayHelper::roadFirst  );
+    if( pathway.isValid() )
+    {
+      _lockHouse( house );
+    }
   }
 
   if( !pathway.isValid() || _d->failedWayCount > 10 )
@@ -169,6 +194,7 @@ void Emigrant::_append2house( HousePtr house )
   if( freeRoom > 0 )
   {
     house->addHabitants( _d->peoples );
+    _lockHouse( HousePtr() );
   }
 }
 
@@ -250,14 +276,24 @@ void Emigrant::_checkHouses(HouseList &hlist)
   {
     HousePtr house = *itHouse;
     bool haveRoad = !house->getAccessRoads().empty();
-    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
+    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());    
     bool normalDesirability = true;
     if( bigcity )
     {
       normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
     }
 
-    if( haveRoad && haveVacantRoom && normalDesirability) { ++itHouse; }
+    unsigned int settleLockId = house->state( House::settleLock );
+    if( settleLockId == uniqueId() )
+    {
+      hlist.clear();
+      hlist.push_back( house );
+      return;
+    }
+
+    bool freeForSettle = ( 0 == settleLockId);
+
+    if( freeForSettle && haveRoad && haveVacantRoom && normalDesirability) { ++itHouse; }
     else { itHouse = hlist.erase( itHouse ); }
   }
 }
@@ -388,6 +424,8 @@ bool Emigrant::die()
     Corpse::create( _city(), pos(), ResourceGroup::citizen2, 1007, 1014 );
     return true;
   }
+
+  _lockHouse( HousePtr() );
 
   return created;
 }

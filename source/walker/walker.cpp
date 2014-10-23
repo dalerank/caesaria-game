@@ -336,7 +336,7 @@ void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability 
 TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : TilePos( -1, -1 ) ;}
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
-UniqueId Walker::uniqueId() const{ return _d->uid; }
+Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
 Pathway& Walker::_pathwayRef() {  return _d->pathway; }
 const Pathway& Walker::pathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}

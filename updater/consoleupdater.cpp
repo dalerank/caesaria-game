@@ -394,6 +394,7 @@ void ConsoleUpdater::OnWarning(const std::string& message)
 
 void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 {
+	bool progressPrinted = false;
 	switch (info.type)
 	{
 	case ProgressInfo::FileDownload:
@@ -407,12 +408,11 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 			// New file, finish the current download
 			_info.progressFraction = 1.0f;
 			_progressDone = false;
+			progressPrinted = true;
 			PrintProgress();
 
 			// Add a line break when a new file starts
-			Logger::warning( "\n" );
-
-			Logger::warning( StringHelper::format( 0xff, " Downloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
+			Logger::warning( StringHelper::format( 0xff, "\nDownloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
 		}
 		else if (_info.file.toString().empty())
 		{
@@ -423,7 +423,8 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 		_info = info;
 
 		// Print the new info
-		PrintProgress();
+		if( !progressPrinted )
+			PrintProgress();
 
 		// Add a new line if we're done here
 		if( info.progressFraction >= 1 && !_progressDone)
@@ -469,7 +470,7 @@ void ConsoleUpdater::PrintProgress()
 	{
 	case ProgressInfo::FileDownload:	
 	{
-		line += " at " + Util::GetHumanReadableBytes(static_cast<std::size_t>(_info.downloadSpeed)) + "/sec ";
+		line += " at " + Util::GetHumanReadableBytes( _info.downloadSpeed ) + "/sec ";
 	}
 	break;
 

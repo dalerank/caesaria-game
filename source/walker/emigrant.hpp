@@ -47,9 +47,9 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
+  virtual const gfx::Picture& _cartPicture();
 
   void _setCartPicture( const gfx::Picture& pic );
-  virtual const gfx::Picture& _cartPicture();
   
   Emigrant( PlayerCityPtr city );
 
@@ -59,6 +59,7 @@ protected:
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
   void _checkHouses(HouseList &hlist);
+  void _lockHouse(HousePtr house);
 
 private:
   class Impl;

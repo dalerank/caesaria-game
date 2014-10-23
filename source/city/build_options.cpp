@@ -138,7 +138,8 @@ bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
 
 unsigned int BuildOptions::getBuildingsQuote(const TileOverlay::Type type) const
 {
-
+  Impl::BuildingRules::const_iterator it = _d->rules.find( type );
+  return it != _d->rules.end() ? it->second.quotes : 0;
 }
 
 void BuildOptions::clear() {  _d->rules.clear(); }

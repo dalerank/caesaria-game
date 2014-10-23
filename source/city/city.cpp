@@ -129,7 +129,7 @@ public:
   city::VictoryConditions targets;
   Options options;
   ClimateType climate;   
-  UniqueId walkerIdCount;
+  Walker::UniqueId walkerIdCount;
   unsigned int age;
   int sentiment;
 
@@ -162,7 +162,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->population = 0;
   _d->funds.setTaxRate( 7 );
   _d->age = 0;
-  _d->walkerIdCount = 0;
+  _d->walkerIdCount = 1;
   _d->climate = city::climate::central;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
@@ -529,7 +529,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
   _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
-  _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
+  _d->walkerIdCount = (Walker::UniqueId)stream.get( lc_walkerIdCount ).toUInt();
   setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
@@ -778,7 +778,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
   else if( is_kind_of<world::Barbarian>( object ) )
   {
     world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
-    for( unsigned int k=0; k < brb->strength() / 2; k++ )
+    for( int k=0; k < brb->strength() / 2; k++ )
     {
       EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
       soldier->send2City( borderInfo().roadEntry );
