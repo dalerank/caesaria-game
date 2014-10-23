@@ -862,9 +862,18 @@ void Level::_handleDebugEvent(int event)
   break;
 
   case city::debug_event::add_empire_barbarian:
+  case city::debug_event::send_barbarian_to_player:
   {
     world::BarbarianPtr brb = world::Barbarian::create( _d->game->empire(), Point( 1000, 0 ) );
-    _d->game->empire()->addObject( ptr_cast<world::Object>( brb ) );
+
+    if( event == city::debug_event::send_barbarian_to_player )
+    {
+      brb->attack( ptr_cast<world::Object>( _d->game->city() ) );
+    }
+    else
+    {
+      brb->attach();
+    }
   }
   break;
 

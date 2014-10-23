@@ -17,6 +17,7 @@
 
 #include "romechastenerarmy.hpp"
 #include "empire.hpp"
+#include "events/notification.hpp"
 #include "city.hpp"
 
 namespace world
@@ -53,6 +54,14 @@ void RomeChastenerArmy::load(const VariantMap& stream)
   Army::load( stream );
 
   _d->soldiersNumber = stream.get( "soldiersNumber" );
+}
+
+void RomeChastenerArmy::attack(ObjectPtr obj)
+{
+  Army::attack( obj );
+
+  events::GameEventPtr e = events::Notification::attack( obj->name(), "##rome_attack_empire_city##", this );
+  e->dispatch();
 }
 
 RomeChastenerArmy::RomeChastenerArmy(EmpirePtr empire)

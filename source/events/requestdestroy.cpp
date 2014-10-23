@@ -22,6 +22,7 @@
 #include "gui/environment.hpp"
 #include "gui/gameautopause.hpp"
 #include "scene/level.hpp"
+#include "core/gettext.hpp"
 #include "core/logger.hpp"
 
 namespace events
@@ -45,7 +46,11 @@ void RequestDestroy::_exec(Game& game, unsigned int)
   if( !_alsoExec )
   {
     _alsoExec = true;
-    gui::DialogBox* dialog = new gui::DialogBox( game.gui()->rootWidget(), Rect(), "##warning##", "##destroy_this_building##", gui::DialogBox::btnOkCancel );
+    std::string constrQuestion = _reqConstruction->errorDesc();
+    std::string questionStr = constrQuestion.empty()
+                                  ? "##destroy_this_building##"
+                                  : constrQuestion;
+    gui::DialogBox* dialog = new gui::DialogBox( game.gui()->rootWidget(), Rect(), _("##warning##"), _(questionStr), gui::DialogBox::btnOkCancel );
     CONNECT(dialog, onOk(), this, RequestDestroy::_applyDestroy );
     CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
     CONNECT(dialog, onCancel(), this, RequestDestroy::_declineDestroy );

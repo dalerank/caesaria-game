@@ -15,35 +15,32 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
-#define __CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+#define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
 
-#include "army.hpp"
+#include "event.hpp"
 
-namespace world
+namespace events
 {
 
-class RomeChastenerArmy : public Army
+class Notification : public GameEvent
 {
 public:
-  static RomeChastenerArmyPtr create(EmpirePtr empire);
-  void setSoldiersNumber( unsigned int count );
-  virtual std::string type() const;
-  unsigned int soldiersNumber() const;
-
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
-
-  virtual void attack(ObjectPtr obj);
+  static GameEventPtr attack(const std::string& cityname, const std::string& message, world::ObjectPtr object );
 
 protected:
-  RomeChastenerArmy( EmpirePtr );
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  Notification();
+
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
+typedef SmartPtr<Notification> NotificationPtr;
+
 }
 
-#endif //__CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
+#endif //_CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_

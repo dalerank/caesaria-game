@@ -44,7 +44,8 @@ enum {
   toggle_show_path,
   toggle_show_roads,
   toggle_show_object_area,
-  add_soldiers_in_fort
+  add_soldiers_in_fort,
+  send_barbarian_to_player
 };
 
 }
