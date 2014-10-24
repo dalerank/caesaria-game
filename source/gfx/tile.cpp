@@ -354,7 +354,7 @@ unsigned int TileHelper::hash(const TilePos& pos)
 
 Point TileHelper::tilepos2screen(const TilePos& pos)
 {
-  return Point( 30 * (pos.i()+pos.j()), 15 * pos.z() );
+  return Point( x_tileBase * (pos.i()+pos.j()), y_tileBase * pos.z() );
 }
 
 void TileHelper::decode(Tile& tile, const int bitset)
@@ -382,6 +382,11 @@ Tile& TileHelper::getInvalid()
 {
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
+}
+
+Size TileHelper::baseSize()
+{
+  return Size( x_tileBase * 2 - 2, x_tileBase );
 }
 
 Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
