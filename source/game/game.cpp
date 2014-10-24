@@ -717,6 +717,8 @@ void Game::reset()
   _d->saveTime = 0;
   _d->manualTicksCounterX10 = 0;
 
+  WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
+
   if( _d->city.isValid() )
   {
     _d->city->clean();

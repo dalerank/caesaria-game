@@ -310,6 +310,9 @@ const Tile& Walker::_nextTile() const
 
 Point Walker::mappos() const
 {
+  if( !_d->location )
+    return Point( 0, 0 );
+
   const Tile& tile = *_d->location;
   Point offset;
   if( tile.overlay().isValid() )

@@ -58,6 +58,8 @@ public:
   std::string tooltipText;
   RenderQueue renderQueue;
   Layer::WalkerTypes vwalkers;
+  PictureRef tilePosText;
+  Font debugFont;
 
   int posMode;
 public:
@@ -440,7 +442,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine&){}
+void Layer::beforeRender(Engine&) {}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -519,21 +521,64 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
+  if( opts.isFlag( LayerDrawOptions::showWalkableTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->isWalkable( true ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showFlatTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->isFlat() )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showLockedTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 2);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( !(*it)->isWalkable( true ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
   if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
   {
-    Point pos = _d->currentTile->mappos();
-    Size size( (_d->currentTile->picture().width() + 2) / 60 );
+    Tile* tile = _d->currentTile;
+    Point pos = tile->mappos();
+    Size size( (tile->picture().width() + 2) / 60 );
 
-    TileOverlayPtr ov = _d->currentTile->overlay();
+    if( _d->tilePosText->isValid() )
+    {
+      _d->tilePosText->fill( 0x0 );
+      _d->debugFont.draw( *_d->tilePosText, StringHelper::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+    }
+
+    TileOverlayPtr ov = tile->overlay();
     if( ov.isValid() )
     {
       size = ov->size();
       pos = ov->tile().mappos();
     }
-    else if( _d->currentTile->masterTile() != 0 )
+    else if( tile->masterTile() != 0 )
     {
-      pos = _d->currentTile->masterTile()->mappos();
-      size = (_d->currentTile->masterTile()->picture().width() + 2) / 60;
+      pos = tile->masterTile()->mappos();
+      size = (tile->masterTile()->picture().width() + 2) / 60;
     }
 
     pos += offset;
@@ -541,6 +586,7 @@ void Layer::afterRender( Engine& engine)
     engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
+    engine.draw( *_d->tilePosText, pos );
   }
 }
 
@@ -550,10 +596,11 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   __D_IMPL(_d,Layer)
   _d->camera = camera;
   _d->city = city;
+  _d->debugFont = Font::create( FONT_1_WHITE );
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
+  _d->tilePosText.init( Size( 240, 80 ) );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)

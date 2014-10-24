@@ -133,7 +133,7 @@ public:
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
   void showSoundOptionsWindow();
-  void makeEnemy();
+  EnemySoldierPtr makeEnemy( walker::Type type );
   void makeFastSave();
   void showTileHelp();
   void showMessagesWindow();
@@ -321,14 +321,16 @@ void Level::Impl::showSoundOptionsWindow()
   e->dispatch();
 }
 
-void Level::Impl::makeEnemy()
+EnemySoldierPtr Level::Impl::makeEnemy( walker::Type type )
 {
-  WalkerPtr wlk = WalkerManager::instance().create( constants::walker::etruscanArcher, game->city() );
+  WalkerPtr wlk = WalkerManager::instance().create( type, game->city() );
   EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
-    }
+  }
+
+  return enemy;
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
@@ -750,8 +752,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       lb->setTextAlignment( align::center, align::center );
       lb->setFont( Font::create( FONT_6 ) );
 
-      PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 140), _("##restart_mission##") );
-      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 170), _("##exit_to_main_menu##") );
+      PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 142), _("##restart_mission##") );
+      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 172), _("##exit_to_main_menu##") );
 
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
@@ -825,10 +827,8 @@ void Level::_handleDebugEvent(int event)
   }
   break;
 
-  case city::debug_event::add_enemy_archers:
-  case city::debug_event::add_enemy_soldiers:
-     _d->makeEnemy();
-  break;
+  case city::debug_event::add_enemy_archers: _d->makeEnemy( walker::etruscanArcher ); break;
+  case city::debug_event::add_enemy_soldiers: _d->makeEnemy( walker::etruscanSoldier ); break;
 
   case city::debug_event::add_player_money:
     _d->game->player()->appendMoney( 1000 );
@@ -904,6 +904,9 @@ void Level::_handleDebugEvent(int event)
   case city::debug_event::toggle_show_path: LayerDrawOptions::instance().toggle( LayerDrawOptions::showPath );  break;
   case city::debug_event::toggle_show_roads: LayerDrawOptions::instance().toggle( LayerDrawOptions::showRoads );  break;
   case city::debug_event::toggle_show_object_area: LayerDrawOptions::instance().toggle( LayerDrawOptions::showObjectArea );  break;
+  case city::debug_event::toggle_show_walkable_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showWalkableTiles );  break;
+  case city::debug_event::toggle_show_locked_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showLockedTiles );  break;
+  case city::debug_event::toggle_show_flat_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showFlatTiles );  break;
 
   case city::debug_event::add_soldiers_in_fort:
   {

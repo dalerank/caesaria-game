@@ -34,6 +34,7 @@ public:
   static gfx::Picture getBigPicture( constants::walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const constants::walker::Type type );
+  static bool isHuman( WalkerPtr wlk );
 
   void load( const vfs::Path& filename );
 
@@ -43,6 +44,27 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class WalkerRelations
+{
+public:
+  typedef enum { enemy=-1, neitral=0, friendt=1 } Relation;
+  static WalkerRelations& instance();
+
+  static void addFriend( constants::walker::Type who, constants::walker::Type friendType );
+  static void addEnemy( constants::walker::Type who, constants::walker::Type enemyType );
+  static bool isNeutral( constants::walker::Type a, constants::walker::Type b );
+
+  void load( vfs::Path path );
+  void load( const VariantMap& stream );
+  VariantMap save() const;
+
+private:
+  WalkerRelations();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 template< class Wlk >

@@ -36,7 +36,7 @@ class LayerDrawOptions : public FlagHolder<int>
 {
 public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
-                 showObjectArea=0x20 } Flags;
+                 showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100 } Flags;
   static LayerDrawOptions& instance();
 
 private:
@@ -81,7 +81,6 @@ public:
 protected:
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
-  //WalkerList _getVisibleWalkerList( const WalkerTypes& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
   Tile* _currentTile() const;

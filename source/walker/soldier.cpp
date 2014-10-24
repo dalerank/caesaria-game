@@ -18,6 +18,7 @@
 
 #include "soldier.hpp"
 #include "city/helper.hpp"
+#include "helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -34,6 +35,7 @@ public:
   Soldier::SldrAction action;
   float strikeForce;
   float resistance;
+  std::set<int> friends;
 
   unsigned int attackDistance;
   int morale;
@@ -136,3 +138,15 @@ unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->action; }
 void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->action = action; }
 void Soldier::setAttackDistance(unsigned int distance) { _dfunc()->attackDistance = distance; }
+void Soldier::addFriend(walker::Type friendType){  _dfunc()->friends.insert( friendType );}
+
+bool Soldier::isFriendTo(WalkerPtr wlk) const
+{
+  bool isFriend = _dfunc()->friends.count( wlk->type() ) > 0;
+  if( !isFriend )
+  {
+    isFriend = WalkerRelations::isNeutral( type(), wlk->type() );
+  }
+
+  return isFriend;
+}

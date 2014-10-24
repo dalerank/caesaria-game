@@ -259,7 +259,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
   debugMenu->addItem( "add_soldiers_in_fort", city::debug_event::add_soldiers_in_fort );
   debugMenu->addItem( "send_barbarian_to_player", city::debug_event::send_barbarian_to_player );
   debugMenu->addItem( "fail_mission", city::debug_event::fail_mission );
-
+  debugMenu->addItem( "toggle_show_walkable_tiles", city::debug_event::toggle_show_walkable_tiles );
+  debugMenu->addItem( "toggle_show_locked_tiles", city::debug_event::toggle_show_locked_tiles );
+  debugMenu->addItem( "toggle_show_flat_tiles", city::debug_event::toggle_show_flat_tiles );
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
 

@@ -17,6 +17,7 @@
 
 #include "helper.hpp"
 
+#include "animals.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 
@@ -25,10 +26,12 @@ using namespace gfx;
 
 class WalkerHelper::Impl : public EnumsHelper<walker::Type>
 {
-public:
+public:    
   typedef std::map< walker::Type, std::string > PrettyNames;
+
   PrettyNames prettyTypenames;
   VariantMap options;
+
 
   void append( walker::Type type, const std::string& typeName )
   {
@@ -116,6 +119,14 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   return mapIt->second.toMap();
 }
 
+bool WalkerHelper::isHuman(WalkerPtr wlk)
+{
+  bool animal = (is_kind_of<Animal>( wlk ) || is_kind_of<Fish>( wlk ));
+  bool alive = wlk->getFlag( Walker::vividly );
+
+  return (alive && !animal);
+}
+
 void WalkerHelper::load( const vfs::Path& filename )
 {
   _d->options = SaveAdapter::load( filename );
@@ -186,3 +197,109 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
 
 WalkerHelper::~WalkerHelper(){}
 WalkerHelper::WalkerHelper() : _d( new Impl ){}
+
+
+struct WalkerRelationInfo
+{
+  std::set<walker::Type> friends;
+  std::set<walker::Type> enemies;
+};
+
+class WalkerRelations::Impl
+{
+public:
+  typedef std::map< walker::Type, WalkerRelationInfo > Relations;
+
+  Relations relations;
+};
+
+WalkerRelations& WalkerRelations::instance()
+{
+  static WalkerRelations inst;
+  return inst;
+}
+
+void WalkerRelations::addFriend(walker::Type who, walker::Type friendType)
+{
+  instance()._d->relations[ who ].friends.insert( friendType );
+  instance()._d->relations[ friendType ].friends.insert( who );
+
+  instance()._d->relations[ who ].enemies.erase( friendType );
+  instance()._d->relations[ friendType ].enemies.erase( who );
+}
+
+void WalkerRelations::addEnemy(walker::Type who, walker::Type enemyType)
+{
+  instance()._d->relations[ who ].friends.erase( enemyType );
+  instance()._d->relations[ enemyType ].friends.erase( who );
+
+  instance()._d->relations[ who ].enemies.insert( enemyType );
+  instance()._d->relations[ enemyType ].enemies.insert( who );
+}
+
+bool WalkerRelations::isNeutral(walker::Type a, walker::Type b)
+{
+  Impl::Relations& relations = instance()._d->relations;
+  Impl::Relations::iterator it = relations.find( a );
+
+  if( it != relations.end() )
+  {
+    return !(it->second.enemies.count( b ));
+  }
+
+  return true;
+}
+
+void WalkerRelations::load(vfs::Path path)
+{
+  VariantMap stream = SaveAdapter::load( path );
+  load( stream );
+}
+
+void WalkerRelations::load(const VariantMap& stream)
+{
+  _d->relations.clear();
+  foreach( it, stream )
+  {
+    VariantMap item = it->second.toMap();
+    walker::Type wtype = WalkerHelper::getType( it->first );
+
+    VariantList friends = item.get( "friend" ).toList();
+    foreach( itFriend, friends )
+    {
+      walker::Type ftype = WalkerHelper::getType( itFriend->toString() );
+
+      if( ftype == walker::unknown )
+      {
+        Logger::warning( "WalkerRelations: unknown friend %s for type %s", itFriend->toString().c_str(), it->first.c_str() );
+      }
+
+      addFriend( wtype, ftype );
+    }
+
+    VariantList enemies = item.get( "enemy" ).toList();
+    foreach( itEnemy, enemies )
+    {
+      walker::Type etype = WalkerHelper::getType( itEnemy->toString() );
+
+      if( etype == walker::unknown )
+      {
+        Logger::warning( "WalkerRelations: unknown enemy %s for type %s", itEnemy->toString().c_str(), it->first.c_str() );
+      }
+
+      addEnemy( wtype, etype );
+    }
+  }
+}
+
+VariantMap WalkerRelations::save() const
+{
+  VariantMap ret;
+
+  return ret;
+}
+
+WalkerRelations::WalkerRelations() : _d( new Impl )
+{
+
+}

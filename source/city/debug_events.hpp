@@ -45,7 +45,10 @@ enum {
   toggle_show_path,
   toggle_show_roads,
   toggle_show_object_area,
+  toggle_show_walkable_tiles,
+  toggle_show_locked_tiles,
   add_soldiers_in_fort,
+  toggle_show_flat_tiles,
   send_barbarian_to_player
 };
 

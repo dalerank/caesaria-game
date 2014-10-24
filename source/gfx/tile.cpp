@@ -405,7 +405,10 @@ void TileHelper::fixPlateauFlags(Tile& tile)
   if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
   {
     tile.setFlag( Tile::clearAll, true );
-    tile.setFlag( Tile::tlRock, true );
+    Picture pic = Picture::load( convId2PicName( tile.originalImgId() ) );
+    int size = (pic.width() + 2) / 60;
+    bool flat = pic.height() <= 30 * size;
+    tile.setFlag( Tile::tlRock, !flat );
   }
 }
 

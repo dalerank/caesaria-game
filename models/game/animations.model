@@ -10,6 +10,7 @@
   }
 
   etruscanSoldier : {
+    offset : [ -2, -2 ]
     move : { rc : "etruscan", start : 249, frames : 12, action : 1, step : 8 }
     fight : { rc : "etruscan", start : 345, frames : 6, action : 2, step : 8 }
     die : { rc : "etruscan", start : 393, frames : 8, action : 3, step : 0 }
