@@ -123,7 +123,7 @@ public:
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveSelectLayer( int type );
-  void checkFailedMission(Level *lvl);
+  void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission(Level *lvl);
   void resolveRemoveTool();
   void makeScreenShot();
@@ -723,7 +723,7 @@ void Level::Impl::makeScreenShot()
   e->dispatch();
 }
 
-void Level::Impl::checkFailedMission( Level* lvl )
+void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 {
   PlayerCityPtr pcity = game->city();
 
@@ -741,7 +741,7 @@ void Level::Impl::checkFailedMission( Level* lvl )
     bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
     bool failedByTime = ( !vc.isSuccess() && GameDate::current() > vc.finishDate() );
 
-    if( failedByDestroy || failedByTime )
+    if( failedByDestroy || failedByTime || forceFailed )
     {
       game->pause();
       Window* wnd = new Window( game->gui()->rootWidget(),
@@ -751,11 +751,13 @@ void Level::Impl::checkFailedMission( Level* lvl )
       lb->setFont( Font::create( FONT_6 ) );
 
       PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 140), _("##restart_mission##") );
+      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 170), _("##exit_to_main_menu##") );
 
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
 
       CONNECT( btn, onClicked(), lvl, Level::_restartMission );
+      CONNECT( btnMenu, onClicked(), lvl, Level::_exitToMainMenu );
     }
   }
 }
@@ -845,6 +847,8 @@ void Level::_handleDebugEvent(int event)
     CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
   }
   break;
+
+  case city::debug_event::fail_mission:   {    _d->checkFailedMission( this, true );  }  break;
 
   case city::debug_event::send_chastener:
   {
