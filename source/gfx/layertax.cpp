@@ -108,7 +108,8 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( taxLevel > 0 )
     {
-      drawColumn( engine, screenPos, taxLevel );
+      _addColumn( screenPos, taxLevel );
+      //drawColumn( engine, screenPos, taxLevel );
     }
   }
 
@@ -156,9 +157,8 @@ void LayerTax::handleEvent(NEvent& event)
 }
 
 LayerTax::LayerTax( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 9 )
 {
-  _loadColumnPicture( 9 );
   _addWalkerType( walker::taxCollector );
 }
 

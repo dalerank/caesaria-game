@@ -65,7 +65,6 @@ public:
   virtual void drawArea(Engine& engine, const TilesArray& area, const Point& offset,
                         const std::string& resourceGroup, int tileId );
 
-  virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
   virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
 
@@ -86,8 +85,7 @@ protected:
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
   Tile* _currentTile() const;
-  void _setTooltipText( const std::string& text );
-  void _loadColumnPicture( int picId );
+  void _setTooltipText( const std::string& text );  
   void _addWalkerType( constants::walker::Type wtype );
 
   TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );

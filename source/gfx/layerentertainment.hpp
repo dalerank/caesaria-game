@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_LAYERENTERTAINMENT_H_INCLUDED__
 #define __CAESARIA_LAYERENTERTAINMENT_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerEntertainment : public Layer
+class LayerEntertainment : public LayerInfo
 {
 public:
   virtual int type() const;

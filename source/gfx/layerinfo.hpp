@@ -15,28 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERFIRE_H_INCLUDED__
-#define __CAESARIA_LAYERFIRE_H_INCLUDED__
+#ifndef __CAESARIA_LAYER_INFO_H_INCLUDED__
+#define __CAESARIA_LAYER_INFO_H_INCLUDED__
 
-#include "layerinfo.hpp"
+#include "layer.hpp"
 #include "city_renderer.hpp"
 
 namespace gfx
 {
 
-class LayerFire : public LayerInfo
+class LayerInfo : public Layer
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
-  virtual void handleEvent( NEvent& event );
+  virtual void render(Engine &engine);
+  virtual void beforeRender(Engine &engine);
+  virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
 
-  static LayerPtr create( Camera& camera, PlayerCityPtr city );
+  virtual ~LayerInfo();
+
+protected:
+  void _addColumn( Point pos, int value );
+  void _addPicture( Point pos, const Picture& pic );
+  void _loadColumnPicture( int picId );
+
+  LayerInfo(Camera& camera, PlayerCityPtr city, int columnIndex);
 
 private:
-  LayerFire( Camera& camera, PlayerCityPtr city );
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gfx
-
-#endif //__CAESARIA_LAYERFIRE_H_INCLUDED__
+#endif //__CAESARIA_LAYER_INFO_H_INCLUDED__

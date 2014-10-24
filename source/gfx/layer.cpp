@@ -60,10 +60,6 @@ public:
   Layer::WalkerTypes vwalkers;
 
   int posMode;
-
-  Picture footColumn;
-  Picture bodyColumn;
-  Picture headerColumn;
 public:
   void updateOutlineTexture( Tile* tile );
 };
@@ -436,48 +432,6 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   }
 }
 
-void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
-{
-  __D_IMPL(_d,Layer)
-  // Column made of tree base parts and contains maximum 10 parts.
-  // Header (10)
-  // Body (10, max 8 pieces)
-  // Foot (10)
-  //
-  // In original game fire colomn may be in one of 12 (?) states: none, f, f+h, f+b+h, f+2b+h, ... f+8b+h
-
-
-  int clamped = math::clamp(percent, 0, 100);
-  int rounded = (clamped / 10) * 10;
-  // [0,  9] -> 0
-  // [10,19] -> 10
-  // ...
-  // [80,89] -> 80
-  // [90,99] -> 90
-  // [100] -> 100
-  // rounded == 0 -> nothing
-  // rounded == 10 -> header + footer
-  // rounded == 20 -> header + body + footer
-
-  if (percent == 0)
-  {
-    // Nothing to draw.
-    return;
-  }
-
-  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
-
-  if(rounded > 10)
-  {
-    for( int offsetY=7; offsetY < rounded; offsetY += 10 )
-    {
-      engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
-    }
-
-    engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
-  }
-}
-
 void Layer::init( Point cursor )
 {
   __D_IMPL(_d,Layer)
@@ -600,14 +554,6 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
   _d->posMode = 0;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
-}
-
-void Layer::_loadColumnPicture(int picId)
-{
-  __D_IMPL(_d,Layer)
-  _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
-  _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
-  _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)

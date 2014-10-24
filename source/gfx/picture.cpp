@@ -226,7 +226,7 @@ void Picture::destroy( Picture* ptr )
 
 void Picture::update()
 {
-  if( _d->texture )
+  if( _d->texture && _d->surface )
   {
     SDL_UpdateTexture(_d->texture, 0, _d->surface->pixels, _d->surface->pitch );
     return;

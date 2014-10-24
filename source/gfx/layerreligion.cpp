@@ -119,7 +119,7 @@ void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( religionLevel > 0 )
     {
-      drawColumn( engine, screenPos, religionLevel );
+      _addColumn( screenPos, religionLevel );
     }
   }
 
@@ -170,9 +170,8 @@ LayerPtr LayerReligion::create( Camera& camera, PlayerCityPtr city)
 }
 
 LayerReligion::LayerReligion( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 9 )
 {
-  _loadColumnPicture( 9 );
   _addWalkerType( walker::priest );
 }
 

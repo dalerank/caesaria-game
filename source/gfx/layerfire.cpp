@@ -110,7 +110,7 @@ void LayerFire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( fireLevel >= 0)
     {
-      drawColumn( engine, screenPos, fireLevel );
+      _addColumn( screenPos, fireLevel );
     }
   }
 
@@ -157,9 +157,8 @@ LayerPtr LayerFire::create( Camera& camera, PlayerCityPtr city)
 }
 
 LayerFire::LayerFire( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 18 )
 {
-  _loadColumnPicture( 18 );
   _addWalkerType( walker::prefect );
 }
 
