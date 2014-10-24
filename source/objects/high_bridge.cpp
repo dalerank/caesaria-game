@@ -139,7 +139,7 @@ public:
   void hide()
   {
     setPicture( Picture::getInvalid() );
-    _fgPicturesRef().clear();
+    //_fgPicturesRef().clear();
   }
 
   void setState( ParameterType name, double value )
