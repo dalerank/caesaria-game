@@ -26,6 +26,9 @@
 #ifdef CAESARIA_PLATFORM_MACOSX
   #include <stdlib.h>
 #endif
+#ifdef EMSCRIPTEN
+#include <cstdlib>
+#endif
 namespace math
 {
 
