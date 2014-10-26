@@ -24,7 +24,6 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_mixer.h>
-#include <mutex>
 #include "game/settings.hpp"
 #include "core/exception.hpp"
 #include "thread/mutex.hpp"
@@ -55,7 +54,6 @@ struct Sample
 class Engine::Impl
 {
 public:
-  std::mutex mtx;
   static const int maxSamplesNumner = 64;
   bool useSound;
 
@@ -169,15 +167,12 @@ bool Engine::_loadSound(vfs::Path filename)
 {
   if(_d->useSound && _d->samples.size()<Impl::maxSamplesNumner)
   {
-    _d->mtx.lock();
     Impl::Samples::iterator i = _d->samples.find( filename.toString() );    
 
     if( i != _d->samples.end() )
     {
-      _d->mtx.unlock();
       return true;
     }
-    _d->mtx.unlock();
 
     if( !filename.exist() )
     {
@@ -225,14 +220,12 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
 
     bool isLoading = _loadSound( filename );   
 
-    _d->mtx.lock();
     if( isLoading )
     {
       Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
       if( i == _d->samples.end() )
       {
-        _d->mtx.unlock();
         return -1;
       }
 
@@ -254,10 +247,8 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
 
       result = ( result * typeVolume * gameVolume ) * (2 * MIX_MAX_VOLUME);
       Mix_Volume( i->second.channel, (int)result);
-      _d->mtx.unlock();
       return i->second.channel;
     }
-    _d->mtx.unlock();
   }
 
   return -1;
@@ -289,34 +280,30 @@ void Engine::stop( vfs::Path filename )
 {
   if( !_d->useSound )
     return;
-  _d->mtx.lock();
+
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
   if( i == _d->samples.end() )
   {
-    _d->mtx.unlock();
     return;
   }
 
   Mix_HaltChannel( i->second.channel );
-  _d->mtx.lock();
 }
 
 void Engine::stop(int channel)
 {
   if( !_d->useSound )
     return;
-  _d->mtx.lock();
+
   foreach( it,_d->samples )
   {
     if( it->second.channel == channel )
     {
       it->second.finished = true;
-      _d->mtx.unlock();
       return;
     }
   }
-  _d->mtx.unlock();
 }
 
 void Engine::_updateSamplesVolume()
@@ -324,7 +311,6 @@ void Engine::_updateSamplesVolume()
   if( !_d->useSound )
     return;
 
-  _d->mtx.lock();
   foreach( it, _d->samples )
   {
     const Sample& sample = it->second;
@@ -338,7 +324,6 @@ void Engine::_updateSamplesVolume()
       Mix_Volume( sample.channel, (int)result );
     }
   }
-  _d->mtx.unlock();
 }
 
 void Helper::initTalksArchive(const vfs::Path& filename)
