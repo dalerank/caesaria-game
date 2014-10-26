@@ -47,6 +47,7 @@ public:
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
   virtual constants::walker::Type type() const;
+
   // position and movement
 
   TilePos pos() const;

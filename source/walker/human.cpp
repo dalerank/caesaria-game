@@ -13,38 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
-
-#ifndef __CAESARIA_MUGGER_H_INCLUDE_
-#define __CAESARIA_MUGGER_H_INCLUDE_
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "human.hpp"
+#include "city/city.hpp"
 
-class Mugger : public Human
+using namespace constants;
+
+class Human::Impl
 {
 public:
-  static MuggerPtr create( PlayerCityPtr city );
-  virtual ~Mugger();
-
-  virtual void timeStep(const unsigned long time);
-  void send2City( HousePtr house );
-
-  virtual bool die();
-
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
-
-  virtual int agressive() const;
-
-protected:
-  virtual void _reachedPathway();
-  virtual void _updateThinks();
-
-private:
-  Mugger( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  walker::Nation nation;
 };
 
-#endif//__CAESARIA_MUGGER_H_INCLUDE_
+walker::Nation Human::nation() const{ return _d->nation; }
+void Human::_setNation(walker::Nation nation) { _d->nation = nation; }
+
+Human::Human(PlayerCityPtr city)
+  : Walker( city ), _d( new Impl )
+{
+  _d->nation = walker::unknownNation;
+  setFlag( Walker::vividly, true );
+}
+
+Human::~Human()
+{
+
+}

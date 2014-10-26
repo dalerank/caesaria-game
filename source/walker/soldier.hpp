@@ -19,10 +19,10 @@
 #ifndef _CAESARIA_SOLDIER_INCLUDE_H_
 #define _CAESARIA_SOLDIER_INCLUDE_H_
 
-#include "walker.hpp"
+#include "human.hpp"
 
 /** Soldier, friend or enemy */
-class Soldier : public Walker
+class Soldier : public Human
 {
 public:
   typedef enum { check4attack=0,
@@ -58,6 +58,8 @@ public:
   virtual unsigned int attackDistance() const;
   virtual void setAttackDistance( unsigned int distance );
   virtual bool isFriendTo( WalkerPtr wlk ) const;
+  virtual void setTarget( TilePos location );
+  TilePos target() const;
   void addFriend( constants::walker::Type friendType);
 
 protected:

@@ -53,7 +53,7 @@ public:
   bool isDeleted;
   float speed;
   Tile* location;
-  UniqueId uid;
+  Walker::UniqueId uid;
   int waitInterval;
   float speedMultiplier;
   Animation animation;  // current animation
@@ -95,8 +95,6 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->centerReached = false;
   _d->waitInterval = 0;
 
-  setFlag( vividly, true );
-
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );
 #endif
@@ -108,8 +106,6 @@ Walker::~Walker()
   WalkerDebugQueue::instance().rem( this );
 #endif
 }
-
-walker::Type Walker::type() const{ return _d->type; }
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -322,14 +318,15 @@ Point Walker::mappos() const
   return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset;
 }
 
-bool Walker::isDeleted() const{   return _d->isDeleted;}
-void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
-
 void Walker::_waitFinished() { }
-Direction Walker::direction() const {  return _d->action.direction;}
+
 Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
+bool Walker::isDeleted() const{   return _d->isDeleted;}
+void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
+walker::Type Walker::type() const{ return _d->type; }
+Direction Walker::direction() const {  return _d->action.direction;}
 double Walker::health() const{  return _d->health;}
 void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
 void Walker::acceptAction(Walker::Action, TilePos){}

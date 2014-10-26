@@ -26,7 +26,6 @@ using namespace gfx;
 CAESARIA_LITERALCONST(sldAction)
 CAESARIA_LITERALCONST(strikeForce)
 CAESARIA_LITERALCONST(resistance)
-CAESARIA_LITERALCONST(morale)
 CAESARIA_LITERALCONST(attackDistance)
 
 class Soldier::Impl
@@ -35,6 +34,7 @@ public:
   Soldier::SldrAction action;
   float strikeForce;
   float resistance;
+  TilePos possibleAttackPos;
   std::set<int> friends;
 
   unsigned int attackDistance;
@@ -45,7 +45,7 @@ public:
 };
 
 Soldier::Soldier(PlayerCityPtr city, walker::Type type)
-    : Walker( city ), __INIT_IMPL(Soldier)
+    : Human( city ), __INIT_IMPL(Soldier)
 {
   _setType( type );
 }
@@ -119,7 +119,7 @@ void Soldier::save(VariantMap& stream) const
   stream[ lc_strikeForce  ] = d->strikeForce;
   stream[ lc_resistance ] = d->resistance;
   stream[ lc_attackDistance ] = (int)d->attackDistance;
-  stream[ lc_morale ] = d->morale;
+  VARIANT_SAVE_ANY_D( stream, d, morale )
 }
 
 void Soldier::load(const VariantMap& stream)
@@ -130,7 +130,7 @@ void Soldier::load(const VariantMap& stream)
   d->strikeForce = stream.get( lc_strikeForce );
   d->resistance = stream.get( lc_resistance );
   d->attackDistance = stream.get( lc_attackDistance ).toUInt();
-  d->morale = stream.get( lc_morale );
+  VARIANT_LOAD_ANY_D( d, morale, stream )
 }
 
 unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
@@ -150,3 +150,6 @@ bool Soldier::isFriendTo(WalkerPtr wlk) const
 
   return isFriend;
 }
+
+void Soldier::setTarget(TilePos location) { _dfunc()->possibleAttackPos = location; }
+TilePos Soldier::target() const { return _dfunc()->possibleAttackPos; }

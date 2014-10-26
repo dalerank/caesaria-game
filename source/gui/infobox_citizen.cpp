@@ -133,7 +133,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
 
   _d->lbName->setText( wlk->name() );
 
-  std::string walkerType = WalkerHelper::getPrettyTypeName( wlk->type() );
+  std::string walkerType = WalkerHelper::getPrettyTypename( wlk->type() );
   _d->lbType->setText( _(walkerType) );
   _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
 

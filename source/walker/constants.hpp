@@ -24,7 +24,8 @@ namespace constants
 namespace walker
 {
 
-enum Type{
+enum Type
+{
   unknown=0,
   immigrant,
   emigrant,
@@ -90,6 +91,15 @@ enum Type{
   supplier,
   all = 0xff,
   any = all
+};
+
+enum Nation
+{
+  unknownNation=0,
+  rome,
+  etruscan,
+  barbarian,
+  nationCount
 };
 
 } //end namespace walker

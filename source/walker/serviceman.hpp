@@ -18,11 +18,11 @@
 #ifndef __CAESARIA_SERVICEWALKER_H_INCLUDED__
 #define __CAESARIA_SERVICEWALKER_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "pathway/predefinitions.hpp"
 
 /** This walker gives a service to buildings along the road */
-class ServiceWalker : public Walker
+class ServiceWalker : public Human
 {
 public:
   typedef enum { goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;

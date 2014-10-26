@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_EMIGRANT_H_INCLUDED__
 #define __CAESARIA_EMIGRANT_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "core/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 
 /** This is an emigrant coming with his stuff */
-class Emigrant : public Walker
+class Emigrant : public Human
 {
 public:
   static EmigrantPtr create( PlayerCityPtr city );
