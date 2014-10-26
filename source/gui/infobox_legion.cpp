@@ -51,6 +51,12 @@ public:
   Label* lbMoraleValue;
   Label* lbTrainedValue;
   Label* gbLegionParams;
+  Label* gbLegionParams2;
+
+  Label* lbIcon;
+  Label* lbFlag;
+  Label* lbMoraleStandart;
+
   PushButton* btnReturn;
   PushButton* btnAttackAnimals;
   FortPtr fort;
@@ -69,24 +75,15 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   GET_DWIDGET_FROM_UI( _d, lbMoraleValue )
   GET_DWIDGET_FROM_UI( _d, lbTrainedValue )
   GET_DWIDGET_FROM_UI( _d, gbLegionParams )
+  GET_DWIDGET_FROM_UI( _d, gbLegionParams2 )
   GET_DWIDGET_FROM_UI( _d, btnAttackAnimals )
+  GET_DWIDGET_FROM_UI( _d, lbIcon )
+  GET_DWIDGET_FROM_UI( _d, lbFlag )
+  GET_DWIDGET_FROM_UI( _d, lbMoraleStandart )
 
   WalkerList walkers = city->walkers( pos );
 
-  if( walkers.empty() )
-  {
-    _d->gbLegionParams->hide();
-
-    city::Helper helper( city );
-    BuildingList barracks = helper.find<Building>( building::barracks );
-
-    std::string text = barracks.empty()
-                        ? "##legion_haveho_soldiers_and_barracks##"
-                        : "##legion_haveho_soldiers##";
-
-    setText( _( text ) );
-  }
-  else
+  if( !walkers.empty() )
   {
     foreach( i, walkers )
     {
@@ -103,14 +100,40 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
         _d->fort = pp->base();
         break;
       }
-    }
+    }       
   }
 
-  setTitle( _( _d->fort.isValid()
-                ? _d->fort->legionName()
-                : "##unknown_legion##" ) );
+  std::string fortTitle = "##unknown_legion##";
+  if( _d->fort.isValid() )
+  {
+    SoldierList soldiers = _d->fort->soldiers();
 
-  _addAvailalbesFormation();
+    if( soldiers.empty() )
+    {
+      _d->gbLegionParams->hide();
+      _d->btnAttackAnimals->hide();
+      //_d->gbLegionParams2->hide();
+      _d->btnReturn->hide();
+
+      city::Helper helper( city );
+      BuildingList barracks = helper.find<Building>( building::barracks );
+
+      std::string text = barracks.empty()
+                          ? "##legion_haveho_soldiers_and_barracks##"
+                          : "##legion_haveho_soldiers##";
+
+      _lbTextRef()->move( Point( 0, 20 ));
+      setText( _( text ) );
+    }
+    else
+    {
+      _addAvailalbesFormation();
+    }
+
+    fortTitle = _d->fort->legionName();
+  }
+
+  setTitle( _( fortTitle ) );
   _update();
 
   CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
@@ -139,9 +162,9 @@ void AboutLegion::_update()
   if( _d->lbMoraleValue )
   {
     const char* morale[] = { "##sldr_totally_distraught##", "##sldr_terrified##", "##sldr_very_frightened##",
-                            "##sldr_badly_shaken##", "##sldr_shaken##",
-                            "##sldr_extremely_scared##",
-                            "##sldr_daring##", "##sldr_encouraged##", "##sdlr_bold##" ,"##sldr_very_bold##" };
+                             "##sldr_badly_shaken##", "##sldr_shaken##",
+                             "##sldr_extremely_scared##",
+                             "##sldr_daring##", "##sldr_encouraged##", "##sdlr_bold##" ,"##sldr_very_bold##" };
     int index = math::clamp<unsigned int>( _d->fort->legionMorale() / 10, 0, 9 );
     _d->lbMoraleValue->setText( _( morale[ index ] ) );
   }
@@ -155,6 +178,33 @@ void AboutLegion::_update()
   {
     std::string text = StringHelper::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
     _d->btnAttackAnimals->setText( text );
+  }
+
+  if( _d->lbIcon ) { _d->lbIcon->setIcon( _d->fort->legionEmblem() ); }
+
+  if( _d->lbFlag )
+  {
+    int flIndex = 0;
+    switch( _d->fort->type() )
+    {
+    case building::fortJavelin: flIndex = 30; break;
+    case building::fortLegionaire: flIndex = 21; break;
+    case building::fortMounted: flIndex = 39; break;
+
+    default: break;
+    }
+
+    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, flIndex );
+    pic.setOffset( 0, 0 );
+    _d->lbFlag->setIcon( pic );
+  }
+
+  if( _d->lbMoraleStandart )
+  {
+    int mIndex = 20 - math::clamp<int>( _d->fort->legionMorale() / 5, 0, 20 );
+    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, mIndex+ 48 );
+    pic.setOffset( 0, 0 );
+    _d->lbMoraleStandart->setIcon( pic );
   }
 }
 

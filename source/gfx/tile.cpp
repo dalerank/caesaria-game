@@ -93,8 +93,8 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.elevation || _terrain.tree) );
 }
 
-const TilePos& Tile::pos() const{ return _pos; }
-Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
+
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
@@ -354,7 +354,7 @@ unsigned int TileHelper::hash(const TilePos& pos)
 
 Point TileHelper::tilepos2screen(const TilePos& pos)
 {
-  return Point( 30 * (pos.i()+pos.j()), 15 * pos.z() );
+  return Point( x_tileBase * (pos.i()+pos.j()), y_tileBase * pos.z() );
 }
 
 void TileHelper::decode(Tile& tile, const int bitset)
@@ -384,6 +384,11 @@ Tile& TileHelper::getInvalid()
   return invalidTile;
 }
 
+Size TileHelper::baseSize()
+{
+  return Size( x_tileBase * 2 - 2, x_tileBase );
+}
+
 Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
 {
   float t = (e - b).getAngleICW();
@@ -400,7 +405,10 @@ void TileHelper::fixPlateauFlags(Tile& tile)
   if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
   {
     tile.setFlag( Tile::clearAll, true );
-    tile.setFlag( Tile::tlRock, true );
+    Picture pic = Picture::load( convId2PicName( tile.originalImgId() ) );
+    int size = (pic.width() + 2) / 60;
+    bool flat = pic.height() <= 30 * size;
+    tile.setFlag( Tile::tlRock, !flat );
   }
 }
 

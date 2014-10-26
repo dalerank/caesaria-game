@@ -18,6 +18,7 @@
 
 #include "delegate.hpp"
 #include "list.hpp"
+#include "foreach.hpp"
 
 #define signals
 #define slots
@@ -602,12 +603,14 @@ public:
 
 	void disconnect( _Delegate delegate )
 	{
-		for (DelegateIterator it = delegateList.begin(); it != delegateList.end(); ++it)
-                        if( *it == delegate )
+    foreach( it, delegateList )
+    {
+      if( *it == delegate )
 			{
-                                delegateList.erase( it );
+        delegateList.erase( it );
 				return;
 			}
+    }
 	}
 
 	template< class X, class Y >

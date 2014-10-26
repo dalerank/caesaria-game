@@ -58,9 +58,11 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   _atExclude << building::disasterGroup
              << building::roadGroup
              << building::gardenGroup;
+
+  addFriend( type );
 }
 
-Priorities<int>&EnemySoldier::_excludeAttack() {  return _atExclude; }
+Priorities<int>& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
@@ -149,11 +151,9 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
       foreach( i, tileWalkers )
       {
-        rtype = (*i)->type();
-        bool vividlyObject = (*i)->getFlag( Walker::vividly );
-        if( rtype == type() || is_kind_of<Animal>(*i) || is_kind_of<Fish>( *i)
-            || !vividlyObject
-            || is_kind_of<EnemySoldier>(*i) )
+        WalkerPtr wlk = *i;
+        rtype = wlk->type();
+        if( rtype == type() || !WalkerHelper::isHuman( wlk ) || isFriendTo( wlk ) )
           continue;
 
         walkers.push_back( *i );

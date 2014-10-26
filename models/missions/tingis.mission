@@ -3,8 +3,7 @@
   map : ":/maps/Tingis.sav"
   funds : 6000
   city.name : "Tingis"
-  date : "-120.01.01"
-  finish : "-1.01.01"
+  date : "-120.01.01"  
   player.rank : 6
   climate : 2
   adviserEnabled : true
@@ -17,6 +16,7 @@
     prosperity : 60
     peace : 60
     favour : 80
+    finishDate : "-1.01.01"
     next : ":/missions/mission8.briefing"
     title : "##win_procurator_aedile##"
     win.text : "##tingis_win_text##"

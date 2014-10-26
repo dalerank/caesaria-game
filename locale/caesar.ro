@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
+{"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
 "##1_entertainment_access##":""
 "##2_entertainment_access##":""
 "##3_entertainment_access##":""
@@ -165,6 +164,7 @@
 "##awesome_doctor_access##":""
 "##awesome_entertainment_access##":""
 "##bad_house_quality##":""
+"##balance_between_migration##":""
 "##balance##":"Balans"
 "##ballista##":"Balistă"
 "##barbarian_attack_text##":""
@@ -296,6 +296,7 @@
 "##city_fire_title##":""
 "##city_has_debt##":"Orașul are o datorie către Roma de"
 "##city_has_runout_debt##":"Orașul tău a rămas fără bani. Caesar a decis să îți mai acorde fonduri, dar nu va mai fi la fel de generos a doua oară. Exportă bunuri pentru a genera bani pentru oraș."
+"##city_have_defence##":""
 "##city_have_goods_for_request##":"Depozitele au raportat că ai suficiente bunuri pentru a îndeplini cerea împăratului."
 "##city_have##":"Trezoreria orașului conține"
 "##city_health##":"Starea sănătății în oraș"
@@ -303,6 +304,8 @@
 "##city_need_more_workers##":"Orașul are nevoie de mai mulți muncitori"
 "##city_sounds_off##":"Sunetele orașului sunt dezactivate"
 "##city_sounds_on##":"Sunetele orașului sunt activate"
+"##city_under_barbarian_attack##":""
+"##city_under_rome_attack##":""
 "##city##":"Oraș"
 "##citychart_census##":""
 "##citychart_population##":""
@@ -509,6 +512,9 @@
 "##emw_buy##":""
 "##emw_sell##":""
 "##emw_sold##":""
+"##enemies_hard_to_me##":""
+"##enemies_very_easy##":""
+"##enemies_very_hard##":""
 "##enemy_army_threating_a_city##":""
 "##engineer_average_life##":""
 "##engineer_building_allok##":""
@@ -911,7 +917,6 @@
 "##marketKid_say_3##":""
 "##marketLady_no_food_on_market##":""
 "##mars_desc##":""
-"##mars_watches_over_soldiers##":""
 "##massilia_preview_mission##":""
 "##max_available##":""
 "##maximizeBtnTooltip##":""
@@ -1107,6 +1112,7 @@
 "##none_damage_risk##":""
 "##northBtnTooltip##":""
 "##not_available##":""
+"##not_enought_place_for_legion##":""
 "##not_need_education##":""
 "##numidian_warrior##":""
 "##occupants##":""
@@ -1193,6 +1199,8 @@
 "##people##":""
 "##percents##":""
 "##person##":""
+"##playerarmy_gone_to_home##":""
+"##playerarmy_gone_to_location##":""
 "##plaza_caption##":""
 "##plaza##":""
 "##plname_continue##":""
@@ -1423,6 +1431,7 @@
 "##small_villa##":""
 "##small##":""
 "##smallcurse_of_mars_text##":""
+"##smallcurse_of_mars_text##":""
 "##smallcurse_of_mercury_description##":""
 "##smcurse_of_venus_description##":""
 "##smcurse2_of_venus_description##":""
@@ -1576,6 +1585,7 @@
 "##valencia_peacefully_province##":""
 "##valencia_win_text##":""
 "##valentia_preview_mission##":""
+"##varieties_food_eaten##":""
 "##vegetable_farm_bad_work##":""
 "##vegetable_farm_full_work##":""
 "##vegetable_farm_info##":""
@@ -1658,6 +1668,7 @@
 "##we_produce_more_than_eat##":""
 "##we_produce_much_than_eat##":""
 "##we_produce_some_than_eat##":""
+"##weapon_store_of##":""
 "##weapon##":""
 "##weapons_workshop_bad_work##":""
 "##weapons_workshop_full_work##":""
@@ -2166,17 +2177,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+"undefined":"undefined"
+"undefined":"undefined"}

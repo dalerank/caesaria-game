@@ -57,6 +57,8 @@ public:
 
   virtual unsigned int attackDistance() const;
   virtual void setAttackDistance( unsigned int distance );
+  virtual bool isFriendTo( WalkerPtr wlk ) const;
+  void addFriend( constants::walker::Type friendType);
 
 protected:
   Soldier(PlayerCityPtr city, constants::walker::Type type);

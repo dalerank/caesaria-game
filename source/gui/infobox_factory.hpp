@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOXFACTORY_H_INCLUDE_
 #define _CAESARIA_INFOBOXFACTORY_H_INCLUDE_
@@ -29,25 +31,29 @@ namespace infobox
 class AboutFactory : public AboutConstruction
 {
 public:
-  AboutFactory( Widget* parent, const gfx::Tile& tile );
+  AboutFactory( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 
   virtual void showDescription();
 
 protected:
+  void _toggleWork();
+
+protected:
   gfx::TileOverlay::Type _type;
   Label* _lbProduction;
+  PushButton* _btnToggleWork;
 };
 
 class AboutShipyard : public AboutFactory
 {
 public:
-  AboutShipyard( Widget* parent, const gfx::Tile& tile );
+  AboutShipyard( Widget* parent, PlayerCityPtr city,  const gfx::Tile& tile );
 };
 
 class AboutWharf : public AboutFactory
 {
 public:
-  AboutWharf( Widget* parent, const gfx::Tile& tile );
+  AboutWharf( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 };
 
 }

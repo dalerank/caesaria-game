@@ -44,7 +44,7 @@ public:
   TilePos lastHousePos;
   Service::Type service;
   unsigned int reachDistance;
-  int maxDistance;
+  unsigned int maxDistance;
 };
 
 ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)

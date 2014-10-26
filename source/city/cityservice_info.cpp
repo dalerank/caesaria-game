@@ -126,7 +126,7 @@ void Info::timeStep( PlayerCityPtr city, const unsigned int time )
     mil << city->findService( Military::defaultName() );
     if( mil.isValid() )
     {
-      last[ Info::milthreat ] = mil->threadValue();
+      last[ Info::milthreat ] = mil->threatValue();
     }
 
     Helper helper( city );

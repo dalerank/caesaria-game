@@ -27,7 +27,7 @@ namespace gui
 class EmpireMapWindow : public Widget
 {
 public:
-  typedef enum { showCityInfo=0 } Flag;
+  typedef enum { showCityInfo=0x1 } Flag;
   static EmpireMapWindow* create( PlayerCityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
@@ -36,7 +36,7 @@ public:
   virtual void draw( gfx::Engine& engine );
   virtual void beforeDraw(gfx::Engine &painter);
 
-  void setFlag(Flag flag , bool value);
+  void setFlag(Flag flag, bool value);
 
   //resolve event
   virtual bool onEvent(const NEvent& event);

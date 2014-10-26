@@ -18,13 +18,13 @@
 #ifndef __CAESARIA_LAYERFIRE_H_INCLUDED__
 #define __CAESARIA_LAYERFIRE_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 #include "city_renderer.hpp"
 
 namespace gfx
 {
 
-class LayerFire : public Layer
+class LayerFire : public LayerInfo
 {
 public:
   virtual int type() const;

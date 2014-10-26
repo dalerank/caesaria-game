@@ -34,6 +34,7 @@ public:
   void leaveCity( const gfx::Tile& tile );
 
   void setPeoples( const CitizenGroup& peoples );
+  const CitizenGroup& peoples() const;
   virtual void timeStep(const unsigned long time);
 
   virtual ~Emigrant();
@@ -46,19 +47,21 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
+  virtual const gfx::Picture& _cartPicture();
 
   void _setCartPicture( const gfx::Picture& pic );
-  virtual const gfx::Picture& _cartPicture();
   
   Emigrant( PlayerCityPtr city );
 
   HousePtr _findBlankHouse();
   Pathway _findSomeWay(TilePos startPoint );
 
-  const CitizenGroup& _getPeoples() const;
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
   void _checkHouses(HouseList &hlist);
+  void _lockHouse(HousePtr house);
+  void _splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms);
+  void _findFinestHouses(HouseList& hlist);
 
 private:
   class Impl;

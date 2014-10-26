@@ -32,12 +32,12 @@ namespace gui
 namespace infobox
 {
 
-AboutMarket::AboutMarket( Widget* parent, const Tile& tile )
+AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
    MarketPtr market = ptr_cast<Market>( tile.overlay() );
 
-   setConstruction( ptr_cast<Construction>( market ));
+   setBase( ptr_cast<Construction>( market ));
 
    Label* lbAbout = new Label( this, Rect( 15, 25, width() - 15, 36) );
    lbAbout->setWordwrap( true );

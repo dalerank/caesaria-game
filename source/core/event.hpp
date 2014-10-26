@@ -240,92 +240,101 @@ enum GuiEventType
 //! Enumeration for all event types there are.
 enum SysEventType
 {
-    //! An event of the graphical user interface.
-    sEventGui = 0,
+  //! An event of the graphical user interface.
+  sEventGui = 0,
 
-    //! A mouse input event.
-    sEventMouse,
+  //! A mouse input event.
+  sEventMouse,
 
-    //! A key input event.
-    /** Like mouse events, keyboard events are created by the device and passed to
-    handleEvent. They take the same path as mouse events. */
-    sEventKeyboard,
+  //! A key input event.
+  /** Like mouse events, keyboard events are created by the device and passed to
+  handleEvent. They take the same path as mouse events. */
+  sEventKeyboard,
 
-    //! A keyboard symbol input event.
-    sTextInput,
+  //! A keyboard symbol input event.
+  sTextInput,
 
-    sEventUser,
+  sAppEvent,
 
-    sEventQuit = 0x400,
-    //! This enum is never used, it only forces the compiler to
-    //! compile these enumeration values to 32 bit.
-    sEventMax = 0x7fffffff
+  sEventUser,
+
+  sEventQuit = 0x400,
+  //! This enum is never used, it only forces the compiler to
+  //! compile these enumeration values to 32 bit.
+  sEventMax = 0x7fffffff
 };
 
 //! Enumeration for all mouse input events
 enum MouseEventType
 {
-    //! Left mouse button was pressed down.
-    mouseLbtnPressed = 0,
+  //! Left mouse button was pressed down.
+  mouseLbtnPressed = 0,
 
-    //! Middle mouse button was pressed down.
-    mouseMbtnPressed, //1
+  //! Middle mouse button was pressed down.
+  mouseMbtnPressed, //1
 
-    //! Right mouse button was pressed down.
-    mouseRbtnPressed, //2
+  //! Right mouse button was pressed down.
+  mouseRbtnPressed, //2
 
-    //! Left mouse button was left up.
-    mouseLbtnRelease, //3
+  //! Left mouse button was left up.
+  mouseLbtnRelease, //3
 
-    //! Middle mouse button was left up.
-    mouseMbtnRelease, //4
+  //! Middle mouse button was left up.
+  mouseMbtnRelease, //4
 
-    //! Right mouse button was left up.
-    mouseRbtnRelease, //5
+  //! Right mouse button was left up.
+  mouseRbtnRelease, //5
 
-    //! The mouse cursor changed its position.
-    mouseMoved, //6
+  //! The mouse cursor changed its position.
+  mouseMoved, //6
 
-    //! The mouse wheel was moved. Use Wheel value in event data to find out
-    //! in what direction and how fast.
-    mouseWheel,
+  //! The mouse wheel was moved. Use Wheel value in event data to find out
+  //! in what direction and how fast.
+  mouseWheel,
 
-    //! Left mouse button double click.
-    mouseLbtDblClick,
+  //! Left mouse button double click.
+  mouseLbtDblClick,
 
-    //! Right mouse button double click.
-    mouseRbtnDblClick,
+  //! Right mouse button double click.
+  mouseRbtnDblClick,
 
-    //! Middle mouse button double click.
-    mouseMbtnDblClick,
+  //! Middle mouse button double click.
+  mouseMbtnDblClick,
 
-    //! Left mouse button triple click.
-    mouseLbtnTrplClick,
+  //! Left mouse button triple click.
+  mouseLbtnTrplClick,
 
-    //! Right mouse button triple click.
-    mouseRbtnTrplClick,
+  //! Right mouse button triple click.
+  mouseRbtnTrplClick,
 
-    //! Middle mouse button triple click.
-    mouseMbtnTrplClick,
+  //! Middle mouse button triple click.
+  mouseMbtnTrplClick,
 
-    //! No real event. Just for convenience to get number of events
-    mouseEventCount
+  //! No real event. Just for convenience to get number of events
+  mouseEventCount
 };
 
 //! Masks for mouse button states
 enum MouseBtnStateMask
 {
-    mbsmLeft    = 0x01,
-    mbsmMiddle  = 0x02,
-    mbsmRight   = 0x04,
+  mbsmLeft    = 0x01,
+  mbsmMiddle  = 0x02,
+  mbsmRight   = 0x04,
 
-    //! currently only on windows
-    mbsmExtra1  = 0x08,
+  //! currently only on windows
+  mbsmExtra1  = 0x08,
 
-    //! currently only on windows
-    mbsmExtra2  = 0x10,
+  //! currently only on windows
+  mbsmExtra2  = 0x10,
 
-    mbsmMax = 0x7fffffff
+  mbsmMax = 0x7fffffff
+};
+
+enum AppEventType
+{
+  appWindowFocusLeave = 0,
+  appWindowFocusEnter,
+  appEventCount
 };
 
 //! NEvent hold information about an event
@@ -337,6 +346,11 @@ struct NEvent
     gui::Widget* caller; //! IGUIElement who called the event
     gui::Widget* element; //! If the event has something to do with another element, it will be held here.
     GuiEventType type; //! Type of GUI Event
+  };
+
+  struct _AppEvent
+  {
+    AppEventType type;
   };
 
   //! Any kind of mouse event.
@@ -396,6 +410,7 @@ struct NEvent
     struct _KeyboardEvent keyboard;
     struct _InputEvent text;
     struct _UserEvent user;
+    struct _AppEvent app;
   };
 
   static NEvent Gui( gui::Widget* caller, gui::Widget* elm, GuiEventType type )

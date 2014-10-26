@@ -114,6 +114,9 @@ GoodCaravan::GoodCaravan( CityPtr city )
  : MovableObject( city->empire() ), _d( new Impl )
 {
   _d->base = city;
+  _d->store.setCapacity( 10000 );
+  _d->store.setCapacity( Good::goodCount, 10000 );
+
   setSpeed( 3.f );
 
   setPicture( gfx::Picture::load( ResourceGroup::panelBackground, 108 ) );

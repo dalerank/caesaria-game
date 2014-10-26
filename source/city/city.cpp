@@ -84,6 +84,7 @@
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
 #include "walkergrid.hpp"
+#include "cityservice_fire.hpp"
 
 #include <set>
 
@@ -106,8 +107,12 @@ public:
 
   PlayerPtr player;
 
+  TileOverlayList newOverlays;
   TileOverlayList overlays;
+
+  WalkerList newWalkers;
   WalkerList walkers;
+
   Picture empMapPicture;
 
   //walkers fast access map !!!
@@ -124,7 +129,7 @@ public:
   city::VictoryConditions targets;
   Options options;
   ClimateType climate;   
-  UniqueId walkerIdCount;
+  Walker::UniqueId walkerIdCount;
   unsigned int age;
   int sentiment;
 
@@ -157,7 +162,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->population = 0;
   _d->funds.setTaxRate( 7 );
   _d->age = 0;
-  _d->walkerIdCount = 0;
+  _d->walkerIdCount = 1;
   _d->climate = city::climate::central;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
@@ -180,6 +185,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   addService( city::HealthCare::create());
   addService( city::Peace::create() );
   addService( city::Sentiment::create() );
+  addService( city::Fire::create() );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
@@ -389,36 +395,28 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 }
 
 void PlayerCity::Impl::updateWalkers( unsigned int time )
-{  
-  WalkerList copyWalkers = walkers;
-  WalkerList::iterator walkerIt = copyWalkers.begin();
-  while (walkerIt != copyWalkers.end())
+{
+  WalkerList::iterator walkerIt = walkers.begin();
+  while( walkerIt != walkers.end() )
   {
-      WalkerPtr walker = *walkerIt;
-      walker->timeStep( time );
-      ++walkerIt;
-  }
-
-  walkerIt = walkers.begin();
-  while (walkerIt != walkers.end())
-  {
-    if ((*walkerIt)->isDeleted())
+    WalkerPtr walker = *walkerIt;
+    walker->timeStep( time );
+    if( walker->isDeleted() )
     {
       // remove the walker from the walkers list
-      walkersGrid.remove(*walkerIt);
+      walkersGrid.remove( *walkerIt );
       walkerIt = walkers.erase(walkerIt);
     }
-    else{
-      ++walkerIt;
-    }
+    else { ++walkerIt; }
   }
+  walkers << newWalkers;
+  newWalkers.clear();
 }
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 {
   TileOverlayList::iterator overlayIt = overlays.begin();
-  TileOverlayList overlaysToDestroy;
-  while (overlayIt != overlays.end())
+  while( overlayIt != overlays.end() )
   {
     (*overlayIt)->timeStep( time );
 
@@ -426,7 +424,7 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
     {
       beforeOverlayDestroyed( city, *overlayIt );
       // remove the overlay from the overlay list
-      overlaysToDestroy.push_back(*overlayIt);
+      (*overlayIt)->destroy();
       overlayIt = overlays.erase(overlayIt);
     }
     else
@@ -434,10 +432,9 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
       ++overlayIt;
     }
   }
-  foreach(overlay, overlaysToDestroy)
-  {
-    (*overlay)->destroy();
-  }
+
+  overlays << newOverlays;
+  newOverlays.clear();
 }
 
 void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
@@ -530,7 +527,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
   _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
-  _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
+  _d->walkerIdCount = (Walker::UniqueId)stream.get( lc_walkerIdCount ).toUInt();
   setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
@@ -631,14 +628,14 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlays.push_back( overlay ); }
+void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
-  _d->walkers.push_back( walker );
+  _d->newWalkers.push_back( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }
@@ -779,7 +776,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
   else if( is_kind_of<world::Barbarian>( object ) )
   {
     world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
-    for( unsigned int k=0; k < brb->strength() / 2; k++ )
+    for( int k=0; k < brb->strength() / 2; k++ )
     {
       EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
       soldier->send2City( borderInfo().roadEntry );

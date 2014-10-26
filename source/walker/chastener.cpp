@@ -36,7 +36,7 @@ using namespace gfx;
 Chastener::Chastener( PlayerCityPtr city, walker::Type type )
     : EnemySoldier( city, type )
 {
-
+  addFriend( walker::romeChastenerElephant );
 }
 
 ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)

@@ -33,12 +33,12 @@
 #include "predefinitions.hpp"
 #include "core/debug_queue.hpp"
 
-typedef unsigned int UniqueId;
 class Pathway;
 
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
+  typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
   typedef enum { showDebugInfo=1, vividly, userFlag, count=0xff } Flag;
 
@@ -54,6 +54,8 @@ public:
 
   virtual Point mappos() const;
   Point tilesubpos() const;
+
+  const gfx::Tile& tile() const;
 
   virtual void setPathway(const Pathway& pathway);
   const Pathway& pathway() const;
@@ -116,14 +118,14 @@ protected:
   virtual void _noWay();
   virtual void _waitFinished();
   virtual const gfx::Picture& getMainPicture();
-
-protected:
-  Pathway& _pathwayRef();
+  virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
+  virtual void _updateThinks();
+
+  Pathway& _pathwayRef();
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  virtual void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
 
   void _setType( constants::walker::Type type );
@@ -131,7 +133,6 @@ protected:
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos( Point pos );
-  virtual void _updateThinks();
   Point _wpos() const;
 
 private:

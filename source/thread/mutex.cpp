@@ -55,8 +55,7 @@ Mutex::~Mutex(void)
  * more than once
  *
  **/
-void
-Mutex::lock()
+void Mutex::lock()
 {
 	ThreadID id = Thread::getID();
 	try

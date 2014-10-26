@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_LAYERDESIRABILITY_H_INCLUDED__
 #define __CAESARIA_LAYERDESIRABILITY_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerDesirability : public Layer
+class LayerDesirability : public LayerInfo
 {
 public:
   virtual int type() const;

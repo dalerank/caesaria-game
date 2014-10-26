@@ -33,11 +33,11 @@ namespace gui
 namespace infobox
 {
 
-AboutAmphitheater::AboutAmphitheater(Widget *parent, const Tile &tile)
+AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());
-  setConstruction( ptr_cast<Construction>( amph ) );
+  setBase( ptr_cast<Construction>( amph ) );
   setTitle( _( MetaDataHolder::findPrettyName( building::amphitheater ) ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );

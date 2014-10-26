@@ -32,6 +32,7 @@ public:
   virtual void save(VariantMap &stream) const;
 
   void acceptPosition();
+  void updateMorale( int value );
 
 protected:
   PatrolPoint( PlayerCityPtr city );

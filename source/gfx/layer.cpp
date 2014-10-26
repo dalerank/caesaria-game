@@ -58,12 +58,10 @@ public:
   std::string tooltipText;
   RenderQueue renderQueue;
   Layer::WalkerTypes vwalkers;
+  PictureRef tilePosText;
+  Font debugFont;
 
   int posMode;
-
-  Picture footColumn;
-  Picture bodyColumn;
-  Picture headerColumn;
 public:
   void updateOutlineTexture( Tile* tile );
 };
@@ -164,8 +162,19 @@ void Layer::handleEvent(NEvent& event)
     break;
     }
   }
+  else if( event.EventType == sAppEvent )
+  {
+    switch( event.app.type )
+    {
+    case appWindowFocusEnter:
+    case appWindowFocusLeave:
+      LayerDrawOptions::instance().setFlag( LayerDrawOptions::windowActive, event.app.type == appWindowFocusEnter );
+    break;
 
-  if( event.EventType == sEventKeyboard )
+    default: break;
+    }
+  }
+  else if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
     int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
@@ -207,8 +216,8 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
                       : _d->camera->at( startPos );
   Tile* stopTile  = _d->camera->at( _d->lastCursorPos, true );
 
-  TilePos startPosTmp = startTile->pos();
-  TilePos stopPosTmp  = stopTile->pos();
+  TilePos startPosTmp = startTile->epos();
+  TilePos stopPosTmp  = stopTile->epos();
 
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
@@ -402,7 +411,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
       registerTileForRendering( tile );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }
+    }       
   }
 }
 
@@ -425,48 +434,6 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   }
 }
 
-void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
-{
-  __D_IMPL(_d,Layer)
-  // Column made of tree base parts and contains maximum 10 parts.
-  // Header (10)
-  // Body (10, max 8 pieces)
-  // Foot (10)
-  //
-  // In original game fire colomn may be in one of 12 (?) states: none, f, f+h, f+b+h, f+2b+h, ... f+8b+h
-
-
-  int clamped = math::clamp(percent, 0, 100);
-  int rounded = (clamped / 10) * 10;
-  // [0,  9] -> 0
-  // [10,19] -> 10
-  // ...
-  // [80,89] -> 80
-  // [90,99] -> 90
-  // [100] -> 100
-  // rounded == 0 -> nothing
-  // rounded == 10 -> header + footer
-  // rounded == 20 -> header + body + footer
-
-  if (percent == 0)
-  {
-    // Nothing to draw.
-    return;
-  }
-
-  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
-
-  if(rounded > 10)
-  {
-    for( int offsetY=7; offsetY < rounded; offsetY += 10 )
-    {
-      engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
-    }
-
-    engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
-  }
-}
-
 void Layer::init( Point cursor )
 {
   __D_IMPL(_d,Layer)
@@ -475,7 +442,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine&){}
+void Layer::beforeRender(Engine&) {}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -486,14 +453,18 @@ void Layer::afterRender( Engine& engine)
   Point moveValue;
 
   //on edge cursor moving
-  if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
-  else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
-  if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
-  else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
-
-  if( moveValue.x() != 0 || moveValue.y() != 0 )
+  LayerDrawOptions& opts = LayerDrawOptions::instance();
+  if( opts.isFlag( LayerDrawOptions::windowActive ) )
   {
-    _d->camera->move( moveValue.toPointF() );
+    if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
+    else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+    if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
+    else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+
+    if( moveValue.x() != 0 || moveValue.y() != 0 )
+    {
+      _d->camera->move( moveValue.toPointF() );
+    }
   }
 
   if( !_d->tooltipText.empty() )
@@ -501,7 +472,7 @@ void Layer::afterRender( Engine& engine)
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }  
 
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
+
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    
@@ -518,7 +489,7 @@ void Layer::afterRender( Engine& engine)
       engine.drawLine( 0x80ff0000, rtile.mappos() + offset, ertile.mappos() + offset );
     }
 
-    std::string text;
+    /*std::string text;
     Font font = Font::create( FONT_0 );
     font.setColor( 0x80ffffff );
     switch( _d->posMode )
@@ -535,30 +506,87 @@ void Layer::afterRender( Engine& engine)
         }
       }
     break;
+    }*/
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showRoads ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->getFlag( Tile::tlRoad ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
     }
   }
 
-  if( _d->currentTile )
+  if( opts.isFlag( LayerDrawOptions::showWalkableTiles ) )
   {
-    Point pos = _d->currentTile->mappos();
-    int size = (_d->currentTile->picture().width() + 2) / 60;
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
-    TileOverlayPtr ov = _d->currentTile->overlay();
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->isWalkable( true ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showFlatTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->isFlat() )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showLockedTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 2);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( !(*it)->isWalkable( true ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
+  {
+    Tile* tile = _d->currentTile;
+    Point pos = tile->mappos();
+    Size size( (tile->picture().width() + 2) / 60 );
+
+    if( _d->tilePosText->isValid() )
+    {
+      _d->tilePosText->fill( 0x0 );
+      _d->debugFont.draw( *_d->tilePosText, StringHelper::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+    }
+
+    TileOverlayPtr ov = tile->overlay();
     if( ov.isValid() )
     {
-      size = ov->size().width();
+      size = ov->size();
       pos = ov->tile().mappos();
     }
-    else if( _d->currentTile->masterTile() != 0 )
+    else if( tile->masterTile() != 0 )
     {
-      pos = _d->currentTile->masterTile()->mappos();
+      pos = tile->masterTile()->mappos();
+      size = (tile->masterTile()->picture().width() + 2) / 60;
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size, pos );
+    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
+    engine.draw( *_d->tilePosText, pos );
   }
 }
 
@@ -568,18 +596,11 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   __D_IMPL(_d,Layer)
   _d->camera = camera;
   _d->city = city;
+  _d->debugFont = Font::create( FONT_1_WHITE );
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
-}
-
-void Layer::_loadColumnPicture(int picId)
-{
-  __D_IMPL(_d,Layer)
-  _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
-  _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
-  _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
+  _d->tilePosText.init( Size( 240, 80 ) );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)

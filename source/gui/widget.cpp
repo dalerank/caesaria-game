@@ -528,11 +528,27 @@ static int __convStr2RelPos( Widget* w, std::string s )
 
   if( !dd.empty() )
   {
-    int sign = s.substr( 2, 1 ) == "-" ? -1 : 1;
-    int value = StringHelper::toInt( s.substr( 3 ) );
-    return lenght + sign * value;
+    std::string opStr = s.substr( 2, 1 );
+    char operation = opStr.empty() ? 0 : opStr[ 0 ];
+    int value = StringHelper::toFloat( s.substr( 3 ) );
+    switch( operation )
+    {
+    case '-':
+    case '+':
+      return lenght + (operation == '-' ? -1 : 1) * value;
+    break;
+
+    case '/': return lenght/value; break;
+    case '*': return lenght*value; break;
+    }
+
+    Logger::warning( "Widget::__convStr2RelPos unknown operation " + s );
+    return 20;
   }
-  else { return StringHelper::toInt( s );  }
+  else
+  {
+    return StringHelper::toInt( s );
+  }
 }
 
 void Widget::setupUI( const VariantMap& options )

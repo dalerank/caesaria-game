@@ -55,6 +55,7 @@
 #include "layertroubles.hpp"
 #include "layerindigene.hpp"
 #include "core/timer.hpp"
+#include "pathway/pathway.hpp"
 
 using namespace constants;
 
@@ -78,8 +79,10 @@ public:
 
   Renderer::ModePtr changeCommand;
 
+public:
   LayerPtr currentLayer;
   void setLayer( int type );
+  void resetWalkersAfterTurn();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -133,6 +136,17 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( LayerIndigene::create( _d->camera, city ) );
 
   _d->setLayer( citylayer::simple );
+}
+
+void CityRenderer::Impl::resetWalkersAfterTurn()
+{
+  const WalkerList& walkers = city->walkers();
+
+  foreach( it, walkers )
+  {
+    WalkerPtr w = *it;
+    w->setPos( w->tile().epos() );
+  }
 }
 
 void CityRenderer::Impl::setLayer(int type)
@@ -248,6 +262,7 @@ void CityRenderer::rotateRight()
   _d->tilemap->turnRight();
   _d->camera.refresh();
   _d->camera.tiles();
+  _d->resetWalkersAfterTurn();
 }
 
 void CityRenderer::rotateLeft()
@@ -255,6 +270,7 @@ void CityRenderer::rotateLeft()
   _d->tilemap->turnLeft();
   _d->camera.refresh();
   _d->camera.tiles();
+  _d->resetWalkersAfterTurn();
 }
 
 Camera* CityRenderer::camera() {  return &_d->camera; }

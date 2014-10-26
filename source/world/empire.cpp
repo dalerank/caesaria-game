@@ -46,6 +46,7 @@ public:
   CityList cities;
   Trading trading;
   EmpireMap emap;
+  ObjectList newObjects;
   ObjectList objects;
   int rateInterest;
   Emperor emperor;
@@ -152,7 +153,16 @@ void Empire::addObject(ObjectPtr obj)
     obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );    
   }  
 
-  _d->objects.push_back( obj );
+  foreach( it, _d->objects )
+  {
+    if( *it == obj )
+    {
+      Logger::warning( "WARNING!!! Empire:addObject also have object with name " + obj->name() );
+      return;
+    }
+  }
+
+  _d->newObjects.push_back( obj );
 }
 
 CityPtr Empire::addCity( CityPtr city )
@@ -371,6 +381,12 @@ void Empire::timeStep( unsigned int time )
     (*it)->timeStep( time );
     if( (*it)->isDeleted() ) { it =_d->objects.erase( it ); }
     else { ++it; }
+  }
+
+  if( !_d->newObjects.empty() )
+  {
+    _d->objects << _d->newObjects;
+    _d->newObjects.clear();
   }
 
   if( GameDate::isMonthChanged() )

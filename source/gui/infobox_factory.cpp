@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -25,6 +27,9 @@
 #include "environment.hpp"
 #include "objects/shipyard.hpp"
 #include "objects/wharf.hpp"
+#include "core/logger.hpp"
+#include "widget_helper.hpp"
+#include "city/city.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -35,19 +40,37 @@ namespace gui
 namespace infobox
 {
 
-AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
+AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
-  setConstruction( ptr_cast<Construction>( factory ) );
+  setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );
   setTitle( _(title) );
+
+  if( !factory.isValid() )
+  {
+    Logger::warning( "AboutFactory: cant convert base to factory at [%d,%d]", tile.i(), tile.j() );
+    deleteLater();
+    return;
+  }
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
   _lbProduction = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   _lbProduction->setFont( Font::create( FONT_2 ) );
+
+  PushButton* btnPrev;
+  GET_WIDGET_FROM_UI( btnPrev )
+
+  if( btnPrev )
+  {
+    _btnToggleWork = new PushButton( this, btnPrev->relativeRect() - Point( btnPrev->width(), 0 ),
+                                     factory->isActive() ? "Z" : "A",
+                                     -1, PushButton::whiteBorderUp );
+    CONNECT( _btnToggleWork, onClicked(), this, AboutFactory::_toggleWork )
+  }
 
   if( factory->produceGoodType() != Good::none )
   {
@@ -85,8 +108,18 @@ void AboutFactory::showDescription()
   DictionaryWindow::show( ui()->rootWidget(), _type );
 }
 
-AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
-  : AboutFactory( parent, tile )
+void AboutFactory::_toggleWork()
+{
+  FactoryPtr factory = ptr_cast<Factory>( base() );
+  if( factory.isValid() )
+  {
+    factory->setActive( !factory->isActive() );
+    _btnToggleWork->setText( factory->isActive() ? "Z" : "A" );
+  }
+}
+
+AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& tile)
+  : AboutFactory( parent, city, tile )
 {
   ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
 
@@ -102,8 +135,8 @@ AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
 }
 
 
-AboutWharf::AboutWharf(Widget* parent, const Tile& tile)
-  : AboutFactory( parent, tile )
+AboutWharf::AboutWharf(Widget* parent, PlayerCityPtr city, const Tile& tile)
+  : AboutFactory( parent, city, tile )
 {
   WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
 

@@ -26,6 +26,7 @@
 #include "gfx/picture.hpp"
 #include "objects/service.hpp"
 #include "game/predefinitions.hpp"
+#include "city/city.hpp"
 
 namespace gui
 {

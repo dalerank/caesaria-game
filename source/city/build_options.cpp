@@ -27,52 +27,63 @@ using namespace gfx;
 namespace city
 {
 
-static const char* disableAll = "disable_all";
+static const char* disable_all = "disable_all";
+
+struct BuildingRule
+{
+  TileOverlay::Type type;
+  bool mayBuild;
+  unsigned int quotes;
+};
 
 class BuildOptions::Impl
 {
 public:
-  typedef std::map< TileOverlay::Type, bool > BuildingRules;
+  typedef std::map< TileOverlay::Type, BuildingRule > BuildingRules;
+
   BuildingRules rules;
 
   bool checkDesirability;
+  unsigned int maximumForts;
 };
 
 BuildOptions::BuildOptions() : _d( new Impl )
 {
   _d->checkDesirability = true;
+  _d->maximumForts = 999;
 }
 
 BuildOptions::~BuildOptions() {}
 
 void BuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
 {
-  _d->rules[ type ] = mayBuild;
+  _d->rules[ type ].mayBuild = mayBuild;
 }
 
 void BuildOptions::setBuildingAvailble( const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild )
 {
   for( int i=start; i <= stop; i++ )
-    _d->rules[ (TileOverlay::Type)i ] = mayBuild;
+    _d->rules[ (TileOverlay::Type)i ].mayBuild = mayBuild;
 }
 
 bool BuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const TileOverlay::Type stop ) const
 {
-  bool available = false;
+  bool mayBuild = false;
   for( int i=start; i <= stop; i++ )
-    available |= _d->rules[ (TileOverlay::Type)i ];
+    mayBuild |= _d->rules[ (TileOverlay::Type)i ].mayBuild;
 
-  return available;
+  return mayBuild;
 }
 
 bool BuildOptions::isCheckDesirability() const {  return _d->checkDesirability; }
+int BuildOptions::getMaximumForts() const { return _d->maximumForts; }
 
 void BuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
 {
   if( vmb.isNull() )
     return;
 
-  bool mayBuild = (vmb.toString() != disableAll);
+  bool mayBuild = (vmb.toString() != disable_all);
   switch( type )
   {
   case BM_FARM: setBuildingAvailble( building::wheatFarm, building::pigFarm, mayBuild ); break;
@@ -125,6 +136,12 @@ bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
   return false;
 }
 
+unsigned int BuildOptions::getBuildingsQuote(const TileOverlay::Type type) const
+{
+  Impl::BuildingRules::const_iterator it = _d->rules.find( type );
+  return it != _d->rules.end() ? it->second.quotes : 0;
+}
+
 void BuildOptions::clear() {  _d->rules.clear(); }
 
 void BuildOptions::load(const VariantMap& options)
@@ -149,21 +166,25 @@ void BuildOptions::load(const VariantMap& options)
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
-  Variant chDes = options.get( "check_desirability" );
-  if( chDes.isValid() )
-    _d->checkDesirability = (bool)chDes;
+  _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
+  _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
 }
 
 VariantMap BuildOptions::save() const
 {
   VariantMap blds;
+  VariantMap quotes;
   foreach( it, _d->rules )
   {
-    blds[ MetaDataHolder::findTypename( it->first ) ] = it->second;
+    std::string typeName = MetaDataHolder::findTypename( it->first );
+    blds[ typeName ] = it->second.mayBuild;
+    quotes[ typeName ] = it->second.quotes;
   }
 
   VariantMap ret;
   ret[ "buildings" ] = blds;
+  ret[ "quotes" ] = quotes;
+  ret[ "maximumForts" ] = _d->maximumForts;
   ret[ "check_desirability" ] = _d->checkDesirability;
   return ret;
 }
@@ -172,6 +193,7 @@ BuildOptions& BuildOptions::operator=(const city::BuildOptions& a)
 {
   _d->rules = a._d->rules;
   _d->checkDesirability = a._d->checkDesirability;
+  _d->maximumForts = a._d->maximumForts;
 
   return *this;
 }
@@ -179,7 +201,7 @@ BuildOptions& BuildOptions::operator=(const city::BuildOptions& a)
 bool BuildOptions::isBuildingAvailble(const TileOverlay::Type type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
-  return (it != _d->rules.end() ? (*it).second : true);
+  return (it != _d->rules.end() ? (*it).second.mayBuild : true);
 }
 
 }//end namespace city

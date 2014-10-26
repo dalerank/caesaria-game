@@ -207,13 +207,13 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
 void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
 {
   std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
+  PictureInfoBank& pib = PictureInfoBank::instance();
+
   foreach( ac, desc )
   {
     Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
 
-    VariantMap actionInfo = ac->second.toMap();
-
-    PictureInfoBank& pib = PictureInfoBank::instance();
+    VariantMap actionInfo = ac->second.toMap();    
     VARIANT_INIT_STR( rc, actionInfo )
     VARIANT_INIT_ANY( int, start, actionInfo )
     VARIANT_INIT_ANY( int, frames, actionInfo )
