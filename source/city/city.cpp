@@ -401,7 +401,6 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
   {
     WalkerPtr walker = *walkerIt;
     walker->timeStep( time );
-
     if( walker->isDeleted() )
     {
       // remove the walker from the walkers list
@@ -410,7 +409,6 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
     }
     else { ++walkerIt; }
   }
-
   walkers << newWalkers;
   newWalkers.clear();
 }
@@ -630,7 +628,7 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlays.push_back( overlay ); }
+void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
