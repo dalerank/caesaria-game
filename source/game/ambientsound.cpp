@@ -91,12 +91,13 @@ public:
   TilePos cameraPos;
 
   typedef std::set< SoundEmitter > Emitters;
+
   Emitters emitters;
 };
 
-SrvcPtr AmbientSound::create(gfx::Camera* camera )
+SrvcPtr AmbientSound::create( PlayerCityPtr city, gfx::Camera* camera )
 {
-  SrvcPtr p( new AmbientSound( camera ) );
+  SrvcPtr p( new AmbientSound( city, camera ) );
   p->drop();
 
   return p;
@@ -104,15 +105,18 @@ SrvcPtr AmbientSound::create(gfx::Camera* camera )
 
 AmbientSound::~AmbientSound() {}
 
-AmbientSound::AmbientSound( gfx::Camera* camera )
-: Srvc( defaultName() ), _d( new Impl )
+AmbientSound::AmbientSound( PlayerCityPtr city, gfx::Camera* camera )
+: Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->camera = camera;
 }
 
-void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
+void AmbientSound::timeStep( const unsigned int time )
 {
   if( time % 20 != 1 )
+    return;
+
+  if( !_d->camera )
     return;
 
   Tile* tile = _d->camera->centerTile();
@@ -126,7 +130,7 @@ void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
 
   //add new emitters
   TilePos offset( 3, 3 );
-  TilesArray tiles = city->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
+  TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 
@@ -165,6 +169,12 @@ void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
       ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
+}
+
+void AmbientSound::destroy()
+{
+  _d->emitters.clear();
+  _d->camera = 0;
 }
 
 std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }

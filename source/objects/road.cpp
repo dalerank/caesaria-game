@@ -53,16 +53,13 @@ bool Road::build( PlayerCityPtr city, const TilePos& pos )
 
   if( is_kind_of<Aqueduct>( overlay ) )
   {
-    if( overlay->tile().getFlag( Tile::tlRoad ) )
-      return false;
+    AqueductPtr aq = ptr_cast<Aqueduct>( overlay );
+    aq->addRoad();
+
+    return false;
   }
 
   Construction::build( city, pos );
-
-  if( is_kind_of<Aqueduct>( overlay ) )
-  {
-    overlay->build( city, pos );
-  }
 
   return true;
 }

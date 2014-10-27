@@ -60,9 +60,9 @@ public:
   void updateRelation(PlayerCityPtr city, DivinityPtr divn );
 };
 
-SrvcPtr Religion::create()
+SrvcPtr Religion::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Religion() );
+  SrvcPtr ret( new Religion( city ) );
   ret->drop();
 
   return ret;
@@ -70,16 +70,16 @@ SrvcPtr Religion::create()
 
 std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
 
-Religion::Religion()
-  : Srvc( Religion::defaultName() ), _d( new Impl )
+Religion::Religion( PlayerCityPtr city )
+  : Srvc( city, Religion::defaultName() ), _d( new Impl )
 {
 }
 
-void Religion::timeStep( PlayerCityPtr city, const unsigned int time )
+void Religion::timeStep( const unsigned int time )
 {  
   if( GameDate::isWeekChanged() )
   {
-    if( city->getOption( PlayerCity::godEnabled ) == 0 )
+    if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
       return;
 
     Logger::warning( "Religion: start update relations" );
@@ -89,7 +89,7 @@ void Religion::timeStep( PlayerCityPtr city, const unsigned int time )
     _d->templesCoverity.clear();
 
     //update temples info
-    Helper helper( city );
+    Helper helper( _city() );
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( it, temples)
     {
@@ -154,13 +154,13 @@ void Religion::timeStep( PlayerCityPtr city, const unsigned int time )
 
     foreach( it, divinities )
     {
-      _d->updateRelation( city, *it );
+      _d->updateRelation( _city(), *it );
     }
   }
 
   if( GameDate::isMonthChanged() )
   {
-    if( city->getOption( PlayerCity::godEnabled ) == 0 )
+    if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
       return;
 
     int goddesRandom = math::random( 20 );
@@ -210,7 +210,7 @@ void Religion::timeStep( PlayerCityPtr city, const unsigned int time )
 
     if( randomGod.isValid() )
     {
-      randomGod->checkAction( city );
+      randomGod->checkAction( _city() );
     }
   }
 }

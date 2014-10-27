@@ -30,12 +30,12 @@ public:
   virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual bool canDestroy() const;
   virtual void destroy();
-  virtual void setState(ParameterType name, double value);
   virtual std::string errorDesc() const;
   virtual bool isNeedRoadAccess() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  void hide();
 
 private:
   void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );

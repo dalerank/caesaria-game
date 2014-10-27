@@ -16,13 +16,12 @@
 #ifndef __CAESARIA_LAYERFOOD_H_INCLUDED__
 #define __CAESARIA_LAYERFOOD_H_INCLUDED__
 
-#include "layer.hpp"
-#include "city_renderer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerFood : public Layer
+class LayerFood : public LayerInfo
 {
 public:
   virtual int type() const;

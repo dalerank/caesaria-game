@@ -20,6 +20,8 @@
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
+#include "gfx/tilemap.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -83,16 +85,27 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
 {
   _d->from = start;
   _d->dst = stop;
-  _d->dstPos = Point( stop.i(), stop.j() ) * 15 + Point( 7, 7 );
-  _d->srcPos = Point( start.i(), start.j() ) * 15 + Point( 7, 7 );
+
+  if( _d->from == _d->dst )
+  {
+    Logger::warning( "WARNING!!! DustCloud: start equale destination" );
+    _d->dst = _d->from + TilePos( 1, 1 );
+  }
+
+  _d->dstPos = Point( _d->dst.i(), _d->dst.j() ) * 15 + Point( 7, 7 );
+  _d->srcPos = Point( _d->from.i(), _d->from.j() ) * 15 + Point( 7, 7 );
 
   float delim = 6.f + math::random( 8 );
-  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (stop.distanceFrom( start ) * delim);
+  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (_d->from.distanceFrom( _d->dst ) * delim);
   _d->currentPos = _d->srcPos.toPointF();
 
   _setWpos( _d->srcPos );
 
-  _city()->addWalker( this );
+  attach();
+
+  Tilemap& tmap = _city()->tilemap();
+  _pathwayRef().init( tmap.at( _d->from ) );
+  _pathwayRef().setNextTile( tmap.at( _d->from.nextStep( _d->dst ) ));
 }
 
 void DustCloud::timeStep(const unsigned long time)

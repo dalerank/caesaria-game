@@ -111,7 +111,7 @@ void LayerDamage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( damageLevel >= 0 )
     {
-      drawColumn( engine, screenPos, damageLevel );
+      _addColumn( screenPos, damageLevel );
     }
   }
 
@@ -158,9 +158,8 @@ void LayerDamage::handleEvent(NEvent& event)
 }
 
 LayerDamage::LayerDamage( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 15 )
 {
-  _loadColumnPicture( 15 );
   _addWalkerType( walker::engineer );
 }
 

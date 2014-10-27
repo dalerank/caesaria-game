@@ -74,6 +74,7 @@ public:
   std::string evolveInfo;
   CitizenGroup habitants;
   unsigned int taxesThisYear;
+  bool isFlat;
   int currentYear;
   int changeCondition;
 
@@ -395,6 +396,7 @@ void House::timeStep(const unsigned long time)
 
   if( GameDate::isMonthChanged() )
   {
+    setState( settleLock, 0 );
     _updateTax(); 
 
     if( _d->money > 0 ) { _d->poverity--; }
@@ -1003,6 +1005,8 @@ void House::_update( bool needChangeTexture )
     setPicture( pic );
   }
 
+  _d->isFlat = picture().height() > ( TileHelper::baseSize().height() * size().width() );
+
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->initGoodStore( size().area() );
 }
@@ -1272,7 +1276,7 @@ void House::appendMoney(float money) {  _d->money += money; }
 DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::evolveInfo() const{  return _d->evolveInfo;}
 bool House::isWalkable() const{  return size().width() == 1; }
-bool House::isFlat() const { return _d->hid == HouseLevel::vacantLot; }
+bool House::isFlat() const { return _d->isFlat; }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
 GoodStore& House::goodStore(){   return _d->goodStore;}
 const HouseSpecification& House::spec() const{   return _d->spec; }

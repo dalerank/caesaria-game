@@ -50,22 +50,22 @@ public:
   int value;
 };
 
-SrvcPtr GoodsUpdater::create()
+SrvcPtr GoodsUpdater::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new GoodsUpdater() );
+  SrvcPtr ret( new GoodsUpdater( city ) );
   ret->drop();
 
   return ret;
 }
 
-void GoodsUpdater::timeStep(PlayerCityPtr city, const unsigned int time)
+void GoodsUpdater::timeStep(const unsigned int time)
 {
   if( GameDate::isWeekChanged() )
   {
     _d->isDeleted = (_d->endTime < GameDate::current());
 
     Logger::warning( "GoodsUpdater: execute service" );
-    Helper helper( city );
+    Helper helper( _city() );
 
     foreach( bldType, _d->supportBuildings )
     {
@@ -119,8 +119,8 @@ VariantMap GoodsUpdater::save() const
 std::string GoodsUpdater::defaultName() { return "goods_updater"; }
 Good::Type GoodsUpdater::goodType() const {  return _d->gtype; }
 
-GoodsUpdater::GoodsUpdater()
-  : Srvc( GoodsUpdater::defaultName() ), _d( new Impl )
+GoodsUpdater::GoodsUpdater( PlayerCityPtr city )
+  : Srvc( city, GoodsUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

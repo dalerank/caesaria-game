@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_LAYERDAMAGE_H_INCLUDED__
 #define __CAESARIA_LAYERDAMAGE_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerDamage : public Layer
+class LayerDamage : public LayerInfo
 {
 public:
   virtual int type() const;

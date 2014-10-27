@@ -41,9 +41,9 @@ public:
   FishPlaceList places;
 };
 
-SrvcPtr Fishery::create()
+SrvcPtr Fishery::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Fishery() );
+  SrvcPtr ret( new Fishery( city ) );
   ret->drop();
 
   return ret;
@@ -51,28 +51,28 @@ SrvcPtr Fishery::create()
 
 std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery);}
 
-Fishery::Fishery()
-  : Srvc( Fishery::defaultName() ), _d( new Impl )
+Fishery::Fishery( PlayerCityPtr city )
+  : Srvc( city, Fishery::defaultName() ), _d( new Impl )
 {
   _d->failedCounter = 0;
   _d->maxFishPlace = 1;
 }
 
-void Fishery::timeStep( PlayerCityPtr city, const unsigned int time )
+void Fishery::timeStep(const unsigned int time )
 {  
   if( !GameDate::isMonthChanged() )
     return;
 
   if( _d->places.empty() )
   {
-    Helper helper( city );
+    Helper helper( _city() );
     _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = FishPlace::create( city );
-    TilePos travelingPoint = city->borderInfo().boatExit;
+    FishPlacePtr fishplace = FishPlace::create( _city() );
+    TilePos travelingPoint = _city()->borderInfo().boatExit;
     if( !_d->locations.empty() )
     {
       travelingPoint = _d->locations.size() > 1
@@ -80,7 +80,7 @@ void Fishery::timeStep( PlayerCityPtr city, const unsigned int time )
                          : _d->locations.front();
     }
 
-    fishplace->send2city( city->borderInfo().boatEntry, travelingPoint );
+    fishplace->send2city( _city()->borderInfo().boatEntry, travelingPoint );
 
     if( fishplace->isDeleted() )
     {

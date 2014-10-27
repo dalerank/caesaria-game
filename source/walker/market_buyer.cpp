@@ -47,7 +47,7 @@ public:
 };
 
 MarketBuyer::MarketBuyer(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
    _setType( walker::marketBuyer );
    _d->maxDistance = 25;

@@ -44,7 +44,8 @@ public:
   State state;
 };
 
-Mugger::Mugger(PlayerCityPtr city) : Walker( city ), _d( new Impl )
+Mugger::Mugger(PlayerCityPtr city)
+  : Human( city ), _d( new Impl )
 {    
   _setType( walker::mugger );
 

@@ -28,12 +28,12 @@ namespace city
 class Water : public city::Srvc
 {
 public:
-  static city::SrvcPtr create();
+  static city::SrvcPtr create( PlayerCityPtr city );
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep(const unsigned int time );
 
 private:
-  Water();
+  Water( PlayerCityPtr city );
 };
 
 }//end namespace city

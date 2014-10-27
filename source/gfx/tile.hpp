@@ -139,8 +139,6 @@ private:
   Tile( const Tile& base );
 };
 
-
-
 class TileHelper
 {
 public:
@@ -153,6 +151,7 @@ public:
   static Point tilepos2screen( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
+  static Size baseSize();
   static constants::Direction getDirection( const TilePos& b, const TilePos& e );
   static void fixPlateauFlags( Tile& tile );
 
