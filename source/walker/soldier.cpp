@@ -81,7 +81,7 @@ void Soldier::wait(int ticks)
 
 void Soldier::initialize(const VariantMap &options)
 {
-  Walker::initialize( options );
+  Human::initialize( options );
   setResistance( options.get( "resistance", 1.f ) );
   setStrike( options.get( "strike", 3.f ) );
 
@@ -146,11 +146,11 @@ bool Soldier::isFriendTo(WalkerPtr wlk) const
   if( !isFriend )
   {
     isFriend = WalkerRelations::isNeutral( type(), wlk->type() );
-  }
 
-  if( !isFriend && nation() != walker::unknownNation )
-  {
-    isFriend = WalkerRelations::isNeutral( nation(), wlk->nation() );
+    if( nation() != walker::unknownNation )
+    {
+      isFriend = WalkerRelations::isNeutral( nation(), wlk->nation() );
+    }
   }
 
   return isFriend;

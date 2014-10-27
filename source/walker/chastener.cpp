@@ -28,6 +28,7 @@
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
 #include "core/foreach.hpp"
+#include "helper.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
@@ -42,6 +43,7 @@ Chastener::Chastener( PlayerCityPtr city, walker::Type type )
 ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)
 {
   ChastenerPtr ret( new Chastener( city, type ) );
+  ret->initialize( WalkerHelper::getOptions( type ) );
   ret->drop();
 
   return ret;

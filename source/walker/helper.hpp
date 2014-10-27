@@ -56,6 +56,7 @@ public:
   static WalkerRelations& instance();
 
   static void addFriend( constants::walker::Type who, constants::walker::Type friendType );
+  static void remFriend( constants::walker::Type who, constants::walker::Type friendType );
   static void addFriend( constants::walker::Nation who, constants::walker::Nation friendType );
   static void addEnemy( constants::walker::Type who, constants::walker::Type enemyType );
   static void addEnemy( constants::walker::Nation who, constants::walker::Nation enemyType );

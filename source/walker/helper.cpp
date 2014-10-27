@@ -279,6 +279,9 @@ struct RelationInfo
     enemies.erase( friendt );
   }
 
+  void remFriend( int friendt )  { friends.erase( friendt );  }
+  void remEnemy( int enemyt )  { enemies.erase( enemyt );  }
+
   void addEnemy( int enemyt )
   {
     friends.erase( enemyt );
@@ -304,8 +307,16 @@ WalkerRelations& WalkerRelations::instance()
 
 void WalkerRelations::addFriend(walker::Type who, walker::Type friendType)
 {
-  instance()._d->walkers[ who ].addFriend( friendType );
-  instance()._d->walkers[ friendType ].addFriend( who );
+  WalkerRelations::Impl::WalkerRelations& r = instance()._d->walkers;
+  r[ who ].addFriend( friendType );
+  r[ friendType ].addFriend( who );
+}
+
+void WalkerRelations::remFriend(walker::Type who, walker::Type friendType)
+{
+  WalkerRelations::Impl::WalkerRelations& r = instance()._d->walkers;
+  r[ who ].remFriend( friendType );
+  r[ friendType ].remFriend( who );
 }
 
 void WalkerRelations::addFriend(walker::Nation who, walker::Nation friendType)
@@ -317,13 +328,13 @@ void WalkerRelations::addFriend(walker::Nation who, walker::Nation friendType)
 void WalkerRelations::addEnemy(walker::Type who, walker::Type enemyType)
 {
   instance()._d->walkers[ who ].addEnemy( enemyType );
-  instance()._d->walkers[ enemyType ].addEnemy( enemyType );
+  instance()._d->walkers[ enemyType ].addEnemy( who );
 }
 
 void WalkerRelations::addEnemy(walker::Nation who, walker::Nation enemyType)
 {
   instance()._d->nations[ who ].addEnemy( enemyType );
-  instance()._d->nations[ enemyType ].addEnemy( enemyType );
+  instance()._d->nations[ enemyType ].addEnemy( who );
 }
 
 template<class T, class Type>
@@ -333,7 +344,7 @@ bool __isNeutral( T& relations, Type a, Type b)
 
   if( it != relations.end() )
   {
-    return it->second.enemies.count( b ) > 0;
+    return it->second.enemies.count( b ) == 0;
   }
 
   return true;

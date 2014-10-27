@@ -11,7 +11,7 @@
     resistance : 1
   }
 
-  romeChasternerSoldier : {
+  romeChastenerSoldier : {
     nation : "rome"
     strike : 3
     resistance : 1
