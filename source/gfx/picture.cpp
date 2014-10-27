@@ -216,6 +216,15 @@ void Picture::destroy( Picture* ptr )
 
 void Picture::update()
 {
+<<<<<<< HEAD
+=======
+  if( _d->texture && _d->surface )
+  {
+    SDL_UpdateTexture(_d->texture, 0, _d->surface->pixels, _d->surface->pitch );
+    return;
+  }
+
+>>>>>>> master
   if( _d->surface && _d->opengltx > 0 )
   {    
     Engine::instance().loadPicture( *this, false );

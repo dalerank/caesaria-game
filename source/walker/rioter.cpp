@@ -49,7 +49,7 @@ public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
 };
 
-Rioter::Rioter(PlayerCityPtr city) : Walker( city ), _d( new Impl )
+Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
 {    
   _setType( walker::rioter );
 

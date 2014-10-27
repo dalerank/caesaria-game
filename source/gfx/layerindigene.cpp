@@ -97,7 +97,7 @@ void LayerIndigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( discontentLevel >= 0 )
     {
-      drawColumn( engine, screenPos, discontentLevel );
+      _addColumn( screenPos, discontentLevel );
     }
   }
 
@@ -138,10 +138,8 @@ void LayerIndigene::handleEvent(NEvent& event)
 }
 
 LayerIndigene::LayerIndigene( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 15 )
 {
-  _loadColumnPicture( 15 );
-
   _addWalkerType( walker::indigene );
   _addWalkerType( walker::missioner );
 }

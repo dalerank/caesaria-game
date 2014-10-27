@@ -48,7 +48,8 @@ class Font
 public:
   Font();
   static Font create( const std::string& family, const int size );
-  static Font create( FontType type, NColor color=DefaultColors::black );
+  static Font create( FontType type );
+  static Font create( FontType type, NColor color );
   static Font create( const std::string& type );  
   
   ~Font();

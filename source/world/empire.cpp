@@ -153,6 +153,15 @@ void Empire::addObject(ObjectPtr obj)
     obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );    
   }  
 
+  foreach( it, _d->objects )
+  {
+    if( *it == obj )
+    {
+      Logger::warning( "WARNING!!! Empire:addObject also have object with name " + obj->name() );
+      return;
+    }
+  }
+
   _d->newObjects.push_back( obj );
 }
 

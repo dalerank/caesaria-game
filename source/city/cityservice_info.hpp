@@ -77,9 +77,9 @@ public:
   typedef std::vector< Info::Parameters > History;
   typedef std::vector< Info::MaxParameterValue > MaxParameters;
 
-  static SrvcPtr create();
+  static SrvcPtr create( PlayerCityPtr city );
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
   Parameters lastParams() const;
   Parameters params( unsigned int monthAgo ) const;
   Parameters yearParams( unsigned int year ) const;
@@ -99,7 +99,7 @@ public:
   void addMessage( const ScribeMessage& message );
 
 private:
-  Info();
+  Info(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

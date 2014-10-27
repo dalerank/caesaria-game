@@ -31,9 +31,9 @@ public:
   Fire::Locations locations;
 };
 
-city::SrvcPtr Fire::create()
+city::SrvcPtr Fire::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Fire() );
+  city::SrvcPtr ret( new Fire( city ) );
   ret->drop();
 
   return ret;
@@ -41,12 +41,12 @@ city::SrvcPtr Fire::create()
 
 std::string Fire::defaultName() { return CAESARIA_STR_EXT(Fire); }
 
-Fire::Fire()
-  : city::Srvc( defaultName() ), _d( new Impl )
+Fire::Fire( PlayerCityPtr city )
+  : city::Srvc( city, defaultName() ), _d( new Impl )
 {
 }
 
-void Fire::timeStep( PlayerCityPtr city, const unsigned int time )
+void Fire::timeStep( const unsigned int time )
 {  
 }
 

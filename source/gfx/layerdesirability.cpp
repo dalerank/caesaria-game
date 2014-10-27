@@ -116,7 +116,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offse
     Picture* tx = _d->debugFont.once( StringHelper::format( 0xff, "%d", desirability) );
     _d->debugText.push_back( tx );
 
-    engine.draw( *tx, screenPos + Point( 20, -15 ) );
+    _addPicture( screenPos + Point( 20, -15 ), *tx );
   }
 
   tile.setWasDrawn();
@@ -127,7 +127,7 @@ void LayerDesirability::beforeRender( Engine& engine )
   foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
 
-  Layer::beforeRender( engine );
+  LayerInfo::beforeRender( engine );
 }
 
 void LayerDesirability::handleEvent(NEvent& event)
@@ -169,7 +169,7 @@ LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)
 }
 
 LayerDesirability::LayerDesirability( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city ), _d( new Impl )
+  : LayerInfo( camera, city, 0 ), _d( new Impl )
 {
   _d->debugFont = Font::create( "FONT_1" );
 }

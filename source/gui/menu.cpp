@@ -444,11 +444,11 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   
   _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip##") );
   _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
-  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##northBtnTooltip##") );
+  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##reorient_map_to_north##") );
   _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
-  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotateLeftBtnTooltip##") );
+  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotate_map_counter-clockwise##") );
   _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
-  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotateRightBtnTooltip##") );
+  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotate_map_clockwise##") );
   _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
   _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip##") );

@@ -107,7 +107,7 @@ void MovableObject::save(VariantMap& stream) const
   foreach( i, d->way ) { pointsVl.push_back( *i ); }
 
   stream[ "points" ] = pointsVl;
-  stream[ "step"   ] = d->way.step;
+  stream[ "step"   ] = (int)d->way.step;
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -119,7 +119,7 @@ void MovableObject::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( d, start, stream )
   VARIANT_LOAD_ANY_D( d, stop, stream )
 
-  d->way.step = stream.get( "step" );
+  d->way.step = (int)stream.get( "step" );
   VariantList points = stream.get( "points" ).toList();
   foreach( i, points ) { d->way.push_back( (*i).toPoint() ); }
 }

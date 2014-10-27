@@ -28,9 +28,9 @@ namespace city
 class Fishery : public Srvc
 {
 public:
-  static SrvcPtr create();
+  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
   virtual bool isDeleted() const;
 
   void addLocation( TilePos location );
@@ -39,7 +39,7 @@ public:
   virtual VariantMap save() const;
 
 private:
-  Fishery();
+  Fishery(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

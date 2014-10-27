@@ -25,7 +25,7 @@ class Chastener : public EnemySoldier
 {
 public:
   static ChastenerPtr create( PlayerCityPtr city,
-                              constants::walker::Type type=constants::walker::romeHorseman );
+                              constants::walker::Type type=constants::walker::romeChastenerSoldier );
 
   virtual int agressive() const;
   virtual bool die();
