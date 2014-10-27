@@ -249,7 +249,7 @@ void Population::Impl::updateStates()
 
       if( migration.isValid() )
       {
-        migrationText = migration->leaveCityReason( city );
+        migrationText = migration->leaveCityReason();
       }
     }
 

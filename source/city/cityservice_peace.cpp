@@ -49,16 +49,16 @@ public:
   Priorities<int> unsignificantBuildings;
 };
 
-city::SrvcPtr Peace::create()
+city::SrvcPtr Peace::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Peace() );
+  city::SrvcPtr ret( new Peace( city ) );
   ret->drop();
 
   return ret;
 }
 
-Peace::Peace()
-  : city::Srvc( getDefaultName() ), _d( new Impl )
+Peace::Peace( PlayerCityPtr city )
+  : city::Srvc( city, getDefaultName() ), _d( new Impl )
 {
   _d->peaceYears = 0;
   _d->protestorOrMugglerSeen = false;
@@ -83,13 +83,13 @@ Peace::Peace()
                          << building::tower;
 }
 
-void Peace::timeStep( PlayerCityPtr city, const unsigned int time )
+void Peace::timeStep(const unsigned int time )
 {
   if( !GameDate::isYearChanged() )
     return;
 
   city::MilitaryPtr ml;
-  ml << city->findService( city::Military::defaultName() );
+  ml << _city()->findService( city::Military::defaultName() );
 
   int change= _d->protestorOrMugglerSeen ? -1: 0;
 

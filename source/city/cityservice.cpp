@@ -25,6 +25,7 @@ namespace city
 class Srvc::Impl
 {
 public:
+  PlayerCityPtr city;
   std::string name;
 };
 
@@ -34,7 +35,7 @@ void Srvc::setName(const std::string& name) { _d->name = name; }
 
 bool Srvc::isDeleted() const { return false; }
 
-void Srvc::destroy( PlayerCityPtr ) {}
+void Srvc::destroy() {}
 
 VariantMap Srvc::save() const { return VariantMap(); }
 
@@ -47,14 +48,17 @@ Srvc::~Srvc()
 #endif
 }
 
-Srvc::Srvc(const std::string& name)
+Srvc::Srvc(PlayerCityPtr city, const std::string& name)
   : _d( new Impl )
 {
   _d->name = name;
+  _d->city = city;
   setDebugName( name );
 #ifdef DEBUG
   Logger::warning( "CityServices: create " + name );
 #endif
 }
+
+PlayerCityPtr Srvc ::_city() const { return _d->city; }
 
 }

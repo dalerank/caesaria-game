@@ -76,7 +76,7 @@ bool BuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const Til
 }
 
 bool BuildOptions::isCheckDesirability() const {  return _d->checkDesirability; }
-int BuildOptions::getMaximumForts() const { return _d->maximumForts; }
+unsigned int BuildOptions::getMaximumForts() const { return _d->maximumForts; }
 
 void BuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
 {
@@ -139,7 +139,7 @@ bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
 unsigned int BuildOptions::getBuildingsQuote(const TileOverlay::Type type) const
 {
   Impl::BuildingRules::const_iterator it = _d->rules.find( type );
-  return it != _d->rules.end() ? it->second.quotes : 0;
+  return it != _d->rules.end() ? it->second.quotes : 999;
 }
 
 void BuildOptions::clear() {  _d->rules.clear(); }

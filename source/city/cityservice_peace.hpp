@@ -26,9 +26,9 @@ namespace city
 class Peace : public city::Srvc
 {
 public:
-  static city::SrvcPtr create();
+  static city::SrvcPtr create(PlayerCityPtr city);
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
   void addCriminal( WalkerPtr wlk );
 
   void buildingDestroyed( gfx::TileOverlayPtr overlay );
@@ -39,7 +39,7 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 private:
-  Peace();
+  Peace(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -41,14 +41,14 @@ public:
   void updateRequests();
 };
 
-Dispatcher::Dispatcher()
-  : Srvc( defaultName() ), _d( new Impl )
+Dispatcher::Dispatcher( PlayerCityPtr city )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
 }
 
-city::SrvcPtr Dispatcher::create()
+city::SrvcPtr Dispatcher::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Dispatcher() );
+  SrvcPtr ret( new Dispatcher( city ) );
   ret->drop();
 
   return ret;
@@ -77,7 +77,7 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 Dispatcher::~Dispatcher() {}
 std::string Dispatcher::defaultName(){  return "requests";}
 
-void Dispatcher::timeStep(PlayerCityPtr city, const unsigned int time)
+void Dispatcher::timeStep(const unsigned int time)
 {
   if( GameDate::isWeekChanged() )
   {
@@ -86,11 +86,11 @@ void Dispatcher::timeStep(PlayerCityPtr city, const unsigned int time)
       RequestPtr request = *rq;
       if( request->finishedDate() <= GameDate::current() )
       {
-        request->fail( city );
+        request->fail( _city() );
         _d->lastRequestCancelDate = GameDate::current();
       }
 
-      if( !request->isAnnounced() && request->isReady( city ) )
+      if( !request->isAnnounced() && request->isReady( _city() ) )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
         request->setAnnounced( true );

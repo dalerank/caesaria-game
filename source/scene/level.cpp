@@ -186,7 +186,7 @@ void Level::initialize()
 
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
-  _d->game->city()->addService( city::AmbientSound::create( _d->renderer.camera() ) );
+  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
   //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID

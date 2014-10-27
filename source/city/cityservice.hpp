@@ -29,14 +29,14 @@ namespace city
 class Srvc : public ReferenceCounted
 {
 public:
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time ) = 0;
+  virtual void timeStep( const unsigned int time ) = 0;
 
   std::string name() const;
   void setName( const std::string& name  );
 
   virtual bool isDeleted() const;
   
-  virtual void destroy( PlayerCityPtr city );
+  virtual void destroy();
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
@@ -44,7 +44,8 @@ public:
   virtual ~Srvc();
 
 protected:
-  Srvc( const std::string& name );
+  Srvc( PlayerCityPtr city, const std::string& name );
+  PlayerCityPtr _city() const;
 
 private:
   class Impl;

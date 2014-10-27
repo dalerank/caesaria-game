@@ -99,6 +99,7 @@ enum Nation
   rome,
   etruscan,
   barbarian,
+  numidian,
   nationCount
 };
 

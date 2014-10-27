@@ -37,6 +37,7 @@ public:
 
 private:
   void _showFestivalWindow();
+  void _assignFestival(int divinityType, int festSize);
 
   class Impl;
   ScopedPtr< Impl > _d;

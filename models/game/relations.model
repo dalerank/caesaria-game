@@ -1,15 +1,23 @@
 {
-  etruscanSoldier : {
-    friend : [ "etruscanArcher" ]
-    enemy : [ "romeChastenerSoldier", "romeChastenerElephant" ]
+  walkers :
+  {
+    etruscanSoldier : {
+      friend : [ "etruscanArcher" ]
+      enemy : [ "romeChastenerSoldier", "romeChastenerElephant" ]
+    }
+
+    etruscanArcher : {
+      friend : [ "etruscanSoldier" ]
+      enemy : [ "romeChastenerSoldier", "romeChastenerElephant" ]
+    }
+
+    romeChastenerSoldier : {
+      friend : [ "romeChastenerElephant" ]
+    }
   }
 
-  etruscanArcher : {
-    friend : [ "etruscanSoldier" ]
-    enemy : [ "romeChastenerSoldier", "romeChastenerElephant" ]
-  }
+  nations :
+  {
 
-  romeChastenerSoldier : {
-    friend : [ "romeChastenerElephant" ]
   }
 }

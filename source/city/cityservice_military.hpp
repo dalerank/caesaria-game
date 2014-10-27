@@ -46,9 +46,9 @@ public:
   typedef std::vector< Notification > NotificationArray;
 
 
-  static city::SrvcPtr create();
+  static city::SrvcPtr create( PlayerCityPtr city );
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
 
   void addNotification( const std::string& text, const std::string& name, Notification::Type type );
 
@@ -64,13 +64,15 @@ public:
   const DateTime& lastAttack() const;
   int monthFromLastAttack() const;
 
+  world::PlayerArmyList legionInExpedition() const;
+
   void updateThreat( int value );
   unsigned int threatValue() const;
 
   static std::string defaultName();
 
 private:
-  Military();
+  Military(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

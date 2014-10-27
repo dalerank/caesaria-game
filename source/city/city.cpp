@@ -167,25 +167,25 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create() );
-  addService( city::WorkersHire::create() );
-  addService( city::ProsperityRating::create() );
-  addService( city::Shoreline::create() );
-  addService( city::Info::create() );
-  addService( city::CultureRating::create() );
-  addService( city::Animals::create() );
-  addService( city::Religion::create() );
-  addService( city::Festival::create() );
-  addService( city::Roads::create() );
-  addService( city::Fishery::create() );
-  addService( city::Disorder::create() );
-  addService( city::request::Dispatcher::create() );
-  addService( city::Military::create() );
-  addService( audio::Player::create() );
-  addService( city::HealthCare::create());
-  addService( city::Peace::create() );
-  addService( city::Sentiment::create() );
-  addService( city::Fire::create() );
+  addService( city::Migration::create( this ) );
+  addService( city::WorkersHire::create( this ) );
+  addService( city::ProsperityRating::create( this ) );
+  addService( city::Shoreline::create( this ) );
+  addService( city::Info::create( this ) );
+  addService( city::CultureRating::create( this ) );
+  addService( city::Animals::create( this ) );
+  addService( city::Religion::create( this ) );
+  addService( city::Festival::create( this ) );
+  addService( city::Roads::create( this ) );
+  addService( city::Fishery::create( this ) );
+  addService( city::Disorder::create( this ) );
+  addService( city::request::Dispatcher::create( this ) );
+  addService( city::Military::create( this ) );
+  addService( audio::Player::create( this ) );
+  addService( city::HealthCare::create( this ));
+  addService( city::Peace::create( this ) );
+  addService( city::Sentiment::create( this ) );
+  addService( city::Fire::create( this ) );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
@@ -443,11 +443,11 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
   city::Timers::instance().update( time );
   while( serviceIt != services.end() )
   {
-    (*serviceIt)->timeStep( city, time );
+    (*serviceIt)->timeStep( time );
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*serviceIt)->destroy( city );
+      (*serviceIt)->destroy();
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
@@ -604,7 +604,7 @@ void PlayerCity::load( const VariantMap& stream )
     {
       Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
 
-      srvc = city::ServiceFactory::create( item->first );
+      srvc = city::ServiceFactory::create( this, item->first );
       if( srvc.isValid() )
       {
         Logger::warning( "City: creating service " + item->first + " directly");
@@ -700,7 +700,7 @@ void PlayerCity::clean()
 {
   foreach( it, _d->services )
   {
-    (*it)->destroy( this );
+    (*it)->destroy();
   }
 
   _d->services.clear();

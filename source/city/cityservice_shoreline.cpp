@@ -63,9 +63,9 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
   }
 }
 
-city::SrvcPtr Shoreline::create()
+city::SrvcPtr Shoreline::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Shoreline() );
+  city::SrvcPtr ret( new Shoreline( city ) );
   ret->drop();
 
   return ret;
@@ -73,34 +73,34 @@ city::SrvcPtr Shoreline::create()
 
 std::string Shoreline::defaultName(){ return CAESARIA_STR_EXT(Shoreline); }
 
-Shoreline::Shoreline()
-  : city::Srvc( Shoreline::defaultName() ), _d( new Impl )
+Shoreline::Shoreline( PlayerCityPtr city )
+  : city::Srvc( city, Shoreline::defaultName() ), _d( new Impl )
 {
   _d->lastTimeUpdate = 0;  
   _d->nextWaterGarbage = 0;
 }
 
-void Shoreline::timeStep( PlayerCityPtr city, const unsigned int time )
+void Shoreline::timeStep( const unsigned int time )
 {
   //if( !GameDate::isWeekChanged() )
     return;
 
   if( _d->slTiles.empty() )
   {
-    _d->checkMap( city );
+    _d->checkMap( _city() );
   }
 
   if( time > _d->nextWaterGarbage )
   {
-    WaterGarbagePtr wg = WaterGarbage::create( city );
-    wg->send2City( city->borderInfo().boatEntry );
+    WaterGarbagePtr wg = WaterGarbage::create( _city() );
+    wg->send2City( _city()->borderInfo().boatEntry );
 
     _d->nextWaterGarbage = time + math::random( GameDate::days2ticks( 10 ) );
 
     for( int k=0; k < 20; k++ )
     {
       Tile* t = _d->dwTiles.random();
-      RiverWavePtr rw = RiverWave::create( city );
+      RiverWavePtr rw = RiverWave::create( _city() );
       rw->send2City( t->pos() );
     }
   }

@@ -76,6 +76,7 @@ public:
     __REG_WNATION( rome )
     __REG_WNATION( etruscan )
     __REG_WNATION( barbarian )
+    __REG_WNATION( numidian )
 #undef __REG_WNATION
 
       appendType( walker::all,        "unknown" );

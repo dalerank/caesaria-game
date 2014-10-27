@@ -95,9 +95,9 @@ public:
   Emitters emitters;
 };
 
-SrvcPtr AmbientSound::create(gfx::Camera* camera )
+SrvcPtr AmbientSound::create( PlayerCityPtr city, gfx::Camera* camera )
 {
-  SrvcPtr p( new AmbientSound( camera ) );
+  SrvcPtr p( new AmbientSound( city, camera ) );
   p->drop();
 
   return p;
@@ -105,13 +105,13 @@ SrvcPtr AmbientSound::create(gfx::Camera* camera )
 
 AmbientSound::~AmbientSound() {}
 
-AmbientSound::AmbientSound( gfx::Camera* camera )
-: Srvc( defaultName() ), _d( new Impl )
+AmbientSound::AmbientSound( PlayerCityPtr city, gfx::Camera* camera )
+: Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->camera = camera;
 }
 
-void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
+void AmbientSound::timeStep( const unsigned int time )
 {
   if( time % 20 != 1 )
     return;
@@ -130,7 +130,7 @@ void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
 
   //add new emitters
   TilePos offset( 3, 3 );
-  TilesArray tiles = city->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
+  TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 
@@ -171,7 +171,7 @@ void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
   }
 }
 
-void AmbientSound::destroy(PlayerCityPtr)
+void AmbientSound::destroy()
 {
   _d->emitters.clear();
   _d->camera = 0;
