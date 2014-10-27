@@ -32,6 +32,7 @@
 #include "events/movecamera.hpp"
 #include "widget_helper.hpp"
 #include "legion_target_window.hpp"
+#include "world/playerarmy.hpp"
 #include "dialogbox.hpp"
 #include "environment.hpp"
 
@@ -228,11 +229,32 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
   if( chasteners.size() || elephants.size() )
   {
     lbAlarm->setText( _("##emperror_legion_at_out_gates##") );
+    return;
   }
 
   if( mil->haveNotification( city::Military::Notification::barbarian ) )
   {
     lbAlarm->setText( _("##barbarian_are_closing_city##") );
+    return;
+  }
+
+  world::PlayerArmyList expeditions = mil->expeditions();
+  foreach( it, expeditions )
+  {
+    if( (*it)->mode() == world::PlayerArmy::go2location )
+    {
+      lbAlarm->setText( _("##out_legion_go_to_location##") );
+      return;
+    }
+  }
+
+  foreach( it, expeditions )
+  {
+    if( (*it)->mode() == world::PlayerArmy::go2home )
+    {
+      lbAlarm->setText( _("##out_legion_back_to_city##") );
+      return;
+    }
   }
 }
 

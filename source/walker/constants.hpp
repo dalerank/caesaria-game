@@ -100,6 +100,16 @@ enum Nation
   etruscan,
   barbarian,
   numidian,
+  pict,
+  samnite,
+  selecid,
+  carthaginian,
+  celt,
+  eygptian,
+  goth,
+  graeci,
+  judaean,
+  native,
   nationCount
 };
 

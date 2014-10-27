@@ -186,7 +186,7 @@ void Military::updateThreat(int value)
 
 int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
 
-world::PlayerArmyList Military::legionInExpedition() const
+world::PlayerArmyList Military::expeditions() const
 {
   FortList forts;
   forts << _city()->overlays();
@@ -200,6 +200,13 @@ world::PlayerArmyList Military::legionInExpedition() const
       ret.push_back( army );
     }
   }
+
+  return ret;
+}
+
+world::ObjectList Military::enemies() const
+{
+  world::ObjectList ret;
 
   return ret;
 }

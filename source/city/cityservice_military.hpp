@@ -64,7 +64,8 @@ public:
   const DateTime& lastAttack() const;
   int monthFromLastAttack() const;
 
-  world::PlayerArmyList legionInExpedition() const;
+  world::PlayerArmyList expeditions() const;
+  world::ObjectList enemies() const;
 
   void updateThreat( int value );
   unsigned int threatValue() const;

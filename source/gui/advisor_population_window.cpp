@@ -111,6 +111,7 @@ public:
   Label* lbTitle;
   Label* lbMigrationValue;
   Label* lbFoodValue;
+  Label* lbYearMigrationValue;
 
 public slots:
   void showNextChart();
@@ -140,6 +141,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbMigrationValue )
   GET_DWIDGET_FROM_UI( _d, lbFoodValue )
+  GET_DWIDGET_FROM_UI( _d, lbYearMigrationValue )
 
   Label* lbNextChartArea;
   Label* lbChart;
@@ -218,13 +220,13 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
+  InfoPtr info;
+  info << city->findService( city::Info::defaultName() );
+  int currentPop = city->population();
+
+
   if( lbMigrationValue )
   {
-    int currentPop = city->population();
-
-    InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
-
     Info::Parameters lastMonth = info->lastParams();
 
     int migrationValue = currentPop - lastMonth[ Info::population ];
@@ -266,6 +268,18 @@ void Population::Impl::updateStates()
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + StringHelper::i2str( foodLevel ) );
+  }
+
+  if( lbYearMigrationValue )
+  {
+    Info::Parameters params = info->yearParams( 1 );
+    std::string text = "##yearmigration_unknown##";
+    int lastPop = params[ Info::population ];
+    if( abs( lastPop - currentPop ) < 10 ) text = "##overall_city_population_static##";
+    else if( lastPop < currentPop ) text = "##overall_people_are_coming_city##";
+    else text = "##overall_people_are_leaving_city##";
+
+    lbYearMigrationValue->setText( _(text) );
   }
 }
 

@@ -77,6 +77,16 @@ public:
     __REG_WNATION( etruscan )
     __REG_WNATION( barbarian )
     __REG_WNATION( numidian )
+    __REG_WNATION( pict )
+    __REG_WNATION( samnite )
+    __REG_WNATION( selecid )
+    __REG_WNATION( carthaginian )
+    __REG_WNATION( celt )
+    __REG_WNATION( eygptian )
+    __REG_WNATION( goth )
+    __REG_WNATION( graeci )
+    __REG_WNATION( judaean )
+    __REG_WNATION( native )
 #undef __REG_WNATION
 
       appendType( walker::all,        "unknown" );
