@@ -66,14 +66,13 @@ bool Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
     road->setState( (Construction::Param)Road::lockTerrain, 1 );
   }
 
-  Construction::build( city, pos );
+  WaterSource::build( city, pos );
 
   city::Helper helper( city );
-  AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct );
+  TilePos offset( 2, 2 );
+  AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct, pos - offset, pos + offset );
 
   foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( city ); }
-
-  updatePicture( city );
   return true;
 }
 
@@ -171,46 +170,15 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   // and we can't build on intersections
   if ( terrain.getFlag( Tile::tlRoad ) )
   {
-    int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-
-    TilePos tile_pos_d[countDirection];
-    bool is_border[countDirection];
-
-    tile_pos_d[north] = pos + TilePos(  0,  1);
-    tile_pos_d[east]  = pos + TilePos(  1,  0);
-    tile_pos_d[south] = pos + TilePos(  0, -1);
-    tile_pos_d[west]  = pos + TilePos( -1,  0);
-
-    // all tiles must be in map range
-    for (int i = 0; i < countDirection; ++i) {
-      is_border[i] = !tilemap.isInside(tile_pos_d[i]);
-      if (is_border[i])
-        tile_pos_d[i] = pos;
-    }
-
-    if (tilemap.at(tile_pos_d[north]).getFlag( Tile::tlRoad )) { directionFlags += 1; } // road to the north
-    if (tilemap.at(tile_pos_d[east]).getFlag( Tile::tlRoad )) { directionFlags += 2; } // road to the east
-    if (tilemap.at(tile_pos_d[south]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
-    if (tilemap.at(tile_pos_d[west]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
-
-    Logger::warning( "direction flags=%d", directionFlags );
-
-    switch (directionFlags)
+    bool canBuildWithRoad = canAddRoad( city, pos );
+    if( canBuildWithRoad )
     {
-    case 0:  // no road!
-    case 1:  // North
-    case 2:  // East
-    case 4:  // South
-    case 8:  // West
-    case 5:  // North+South
-    case 10: // East+West
-      {
-        Picture pic = picture( city, pos, aroundTiles );
-        const_cast<Aqueduct*>( this )->setPicture( pic );
-      }
+      Picture pic = picture( city, pos, aroundTiles );
+      const_cast<Aqueduct*>( this )->setPicture( pic );
       return true;
     }
   }
+
   return false;
 }
 
@@ -377,6 +345,64 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
 void Aqueduct::updatePicture(PlayerCityPtr city)
 {
   setPicture( picture( city, _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() ) );
+}
+
+void Aqueduct::addRoad()
+{
+  bool canBuildWithRoad = canAddRoad( _city(), pos() );
+  if( canBuildWithRoad )
+  {
+    tile().setFlag( Tile::tlRoad, true );
+    updatePicture( _city() );
+  }
+}
+
+bool Aqueduct::canAddRoad( PlayerCityPtr city, TilePos pos) const
+{
+  if( !city.isValid() )
+    city = _city();
+
+  if( !city.isValid() )
+    return false;
+
+  Tilemap& tilemap = city->tilemap();
+  int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+
+  TilePos tile_pos_d[countDirection];
+  bool is_border[countDirection];
+
+  tile_pos_d[north] = pos + TilePos(  0,  1);
+  tile_pos_d[east]  = pos + TilePos(  1,  0);
+  tile_pos_d[south] = pos + TilePos(  0, -1);
+  tile_pos_d[west]  = pos + TilePos( -1,  0);
+
+  // all tiles must be in map range
+  for (int i = 0; i < countDirection; ++i) {
+    is_border[i] = !tilemap.isInside(tile_pos_d[i]);
+    if (is_border[i])
+      tile_pos_d[i] = pos;
+  }
+
+  if (tilemap.at(tile_pos_d[north]).getFlag( Tile::tlRoad )) { directionFlags += 1; } // road to the north
+  if (tilemap.at(tile_pos_d[east]).getFlag( Tile::tlRoad )) { directionFlags += 2; } // road to the east
+  if (tilemap.at(tile_pos_d[south]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
+  if (tilemap.at(tile_pos_d[west]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
+
+  Logger::warning( "direction flags=%d", directionFlags );
+
+  switch (directionFlags)
+  {
+  case 0:  // no road!
+  case 1:  // North
+  case 2:  // East
+  case 4:  // South
+  case 8:  // West
+  case 5:  // North+South
+  case 10: // East+West
+    return true;
+  }
+
+  return false;
 }
 
 bool Aqueduct::isNeedRoadAccess() const {  return false; }
