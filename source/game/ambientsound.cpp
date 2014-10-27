@@ -91,6 +91,7 @@ public:
   TilePos cameraPos;
 
   typedef std::set< SoundEmitter > Emitters;
+
   Emitters emitters;
 };
 
@@ -113,6 +114,9 @@ AmbientSound::AmbientSound( gfx::Camera* camera )
 void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
 {
   if( time % 20 != 1 )
+    return;
+
+  if( !_d->camera )
     return;
 
   Tile* tile = _d->camera->centerTile();
@@ -165,6 +169,12 @@ void AmbientSound::timeStep( PlayerCityPtr city, const unsigned int time )
       ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
+}
+
+void AmbientSound::destroy(PlayerCityPtr)
+{
+  _d->emitters.clear();
+  _d->camera = 0;
 }
 
 std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }

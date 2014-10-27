@@ -1,0 +1,15 @@
+{
+  etruscanSoldier : {
+    friend : [ "etruscanArcher" ]
+    enemy : [ "romeChastenerSoldier", "romeChastenerElephant" ]
+  }
+
+  etruscanArcher : {
+    friend : [ "etruscanSoldier" ]
+    enemy : [ "romeChastenerSoldier", "romeChastenerElephant" ]
+  }
+
+  romeChastenerSoldier : {
+    friend : [ "romeChastenerElephant" ]
+  }
+}

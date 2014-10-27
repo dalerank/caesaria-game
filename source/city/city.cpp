@@ -698,7 +698,13 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
+  foreach( it, _d->services )
+  {
+    (*it)->destroy( this );
+  }
+
   _d->services.clear();
+
   _d->walkers.clear();
   _d->walkersGrid.clear();
   _d->overlays.clear();

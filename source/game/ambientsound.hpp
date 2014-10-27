@@ -33,6 +33,8 @@ public:
   virtual ~AmbientSound();
 
   virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void destroy(PlayerCityPtr city);
+
   static std::string defaultName();
 private:
   AmbientSound( gfx::Camera* camera );

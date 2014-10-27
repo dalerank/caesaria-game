@@ -51,11 +51,10 @@ Srvc::Srvc(const std::string& name)
   : _d( new Impl )
 {
   _d->name = name;
+  setDebugName( name );
 #ifdef DEBUG
   Logger::warning( "CityServices: create " + name );
 #endif
 }
-
-
 
 }

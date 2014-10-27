@@ -315,7 +315,8 @@ public:
     return true;
   }
 
-  ~ScreenGameHolder() {
+  ~ScreenGameHolder()
+  {
     Game::Impl *_d = game->_d.data();
 
     game->clear();
@@ -718,11 +719,6 @@ void Game::reset()
   _d->manualTicksCounterX10 = 0;
 
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
-
-  if( _d->city.isValid() )
-  {
-    _d->city->clean();
-  }
 
   _d->city = PlayerCity::create( _d->empire, _d->player );
 }
