@@ -23,15 +23,10 @@
 class Human : public Walker
 {
 public:  
-  virtual constants::walker::Nation nation() const;
   virtual ~Human();
 
 protected:
   Human( PlayerCityPtr city );
-  void _setNation( constants::walker::Nation nation );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_WALKER_H_INCLUDE_

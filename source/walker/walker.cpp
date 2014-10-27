@@ -39,8 +39,6 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-CAESARIA_LITERALCONST(speed)
-CAESARIA_LITERALCONST(speedMultiplier)
 static const Tile invalidTile( TilePos(-1,-1) );
 }
 
@@ -69,6 +67,7 @@ public:
   std::string thinks;
   float tileSpeedKoeff;
   AbilityList abilities;
+  walker::Nation nation;
 
   float finalSpeed() const   {  return speedMultiplier * speed * tileSpeedKoeff;  }
 
@@ -94,6 +93,8 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->isDeleted = false;
   _d->centerReached = false;
   _d->waitInterval = 0;
+  _d->nation = walker::unknownNation;
+
 
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );
@@ -106,6 +107,9 @@ Walker::~Walker()
   WalkerDebugQueue::instance().rem( this );
 #endif
 }
+
+walker::Nation Walker::nation() const{ return _d->nation; }
+void Walker::_setNation(walker::Nation nation) { _d->nation = nation; }
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -376,8 +380,14 @@ void Walker::_setAction( Walker::Action action )
 
 void Walker::initialize(const VariantMap &options)
 {
-  _d->speed = options.get( lc_speed, 1.f ); // default speed
-  _d->speedMultiplier = options.get( lc_speedMultiplier, 0.8f + math::random( 40 ) / 100.f );
+  VARIANT_LOAD_ANYDEF_D( _d, speed, 1.f, options )
+
+  float tmpSpeedMultiplier = 0.8f + math::random( 40 ) / 100.f;
+  VARIANT_LOAD_ANYDEF_D( _d, speedMultiplier, tmpSpeedMultiplier, options )
+
+  std::string nation;
+  VARIANT_LOAD_STR( nation, options )
+  _d->nation = WalkerHelper::getNation( nation );
 }
 
 int Walker::agressive() const { return 0; }
@@ -436,18 +446,19 @@ const Picture& Walker::getMainPicture()
 
 void Walker::save( VariantMap& stream ) const
 {
-  stream[ "name" ] = Variant( _d->name );
+  VARIANT_SAVE_STR_D( stream, _d, name )
   VARIANT_SAVE_ANY_D( stream, _d, type )
+  VARIANT_SAVE_ENUM_D( stream, _d, nation )
   stream[ "pathway" ] =  _d->pathway.save();
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
   stream[ "location" ] = _d->location->pos();
   stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
-  stream[ "wpos" ] = _d->wpos;
+  VARIANT_SAVE_ANY_D( stream, _d, wpos )
   stream[ "nextwpos" ] = _d->nextwpos;
-  stream[ lc_speed ] = _d->speed;
-  stream[ lc_speedMultiplier ] = (float)_d->speedMultiplier;
+  VARIANT_SAVE_ANY_D( stream, _d, speed )
+  VARIANT_SAVE_ANY_D( stream, _d, speedMultiplier )
   stream[ "uid" ] = (unsigned int)_d->uid;
   stream[ "thinks" ] = Variant( _d->thinks );
   stream[ "subspeed" ] = _d->subSpeed;
@@ -459,8 +470,9 @@ void Walker::load( const VariantMap& stream)
 {
   Tilemap& tmap = _city()->tilemap();
 
-  _d->name = stream.get( "name" ).toString();
-  _d->wpos = stream.get( "wpos" ).toPointF();
+  VARIANT_LOAD_ENUM_D( _d, nation, stream )
+  VARIANT_LOAD_STR_D( _d, name, stream )
+  VARIANT_LOAD_ANY_D( _d, wpos, stream )
   TilePos pos = stream.get( "location" ).toTilePos();
   _d->location = &tmap.at( pos );
   _d->lastCenterDst = stream.get( "lastCenterDst" );
@@ -472,23 +484,23 @@ void Walker::load( const VariantMap& stream)
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->subSpeed = stream.get( "subspeed" ).toPointF();
-  _d->speedMultiplier = (float)stream.get( lc_speedMultiplier, 1.f );
+  VARIANT_LOAD_ANY_D( _d, speedMultiplier, stream )
 
 
   if( !_d->pathway.isValid() )
   {
-    Logger::warning( "Walker: wrong way for %s:%s at [%d,%d]",
+    Logger::warning( "WARNING!!! Walker: wrong way for %s:%s at [%d,%d]",
                      WalkerHelper::getTypename( _d->type ).c_str(), _d->name.c_str(),
                      _d->location->i(), _d->location->j() );
   }
   
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
   {
-    Logger::warning( "Walker: Wrong speed multiplier for %d", _d->uid );
+    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for %d", _d->uid );
     _d->speedMultiplier = 1;
   }
 
-  _d->speed = (float)stream.get( lc_speed );
+  VARIANT_LOAD_ANY_D( _d, speed, stream )
   _d->health = (double)stream.get( "health" );
   setFlag( showDebugInfo, stream.get( "showDebugInfo" ).toBool() );
 }

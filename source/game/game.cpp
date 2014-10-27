@@ -718,6 +718,7 @@ void Game::reset()
   _d->saveTime = 0;
   _d->manualTicksCounterX10 = 0;
 
+  WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
   _d->city = PlayerCity::create( _d->empire, _d->player );

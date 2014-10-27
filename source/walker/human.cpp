@@ -20,19 +20,9 @@
 
 using namespace constants;
 
-class Human::Impl
-{
-public:
-  walker::Nation nation;
-};
-
-walker::Nation Human::nation() const{ return _d->nation; }
-void Human::_setNation(walker::Nation nation) { _d->nation = nation; }
-
 Human::Human(PlayerCityPtr city)
-  : Walker( city ), _d( new Impl )
+  : Walker( city )
 {
-  _d->nation = walker::unknownNation;
   setFlag( Walker::vividly, true );
 }
 

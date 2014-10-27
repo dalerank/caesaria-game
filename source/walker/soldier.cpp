@@ -148,6 +148,11 @@ bool Soldier::isFriendTo(WalkerPtr wlk) const
     isFriend = WalkerRelations::isNeutral( type(), wlk->type() );
   }
 
+  if( !isFriend && nation() != walker::unknownNation )
+  {
+    isFriend = WalkerRelations::isNeutral( nation(), wlk->nation() );
+  }
+
   return isFriend;
 }
 

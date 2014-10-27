@@ -114,7 +114,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ opengl_opts         ] = Variant( std::string( "/opengl.model" ) );
   _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
-  _d->options[ walkerRelations     ] = Variant( std::string( "/freeplay.model" ) );
+  _d->options[ walkerRelations     ] = Variant( std::string( "/relations.model" ) );
   _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";

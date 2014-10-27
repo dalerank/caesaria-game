@@ -1,10 +1,18 @@
 {
   etruscanSoldier : {
+    nation : "barbarian"
     strike : 3
     resistance : 1
   }
 
   etruscanArcher : {
+    nation : "barbarian"
+    strike : 3
+    resistance : 1
+  }
+
+  romeChasternerSoldier : {
+    nation : "rome"
     strike : 3
     resistance : 1
   }
