@@ -737,3 +737,4 @@ void Game::clear()
   gfx::OverlayDebugQueue::instance().clear();
 #endif
 }
+

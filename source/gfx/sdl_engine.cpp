@@ -204,6 +204,10 @@ void SdlEngine::endRenderFrame()
   }
 
   SDL_Flip( _d->screen.surface() ); //Refresh the screen
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)  
+  SDL_LockSurface(_d->screen.surface());
+  SDL_UnlockSurface(_d->screen.surface());
+#endif  
   _d->fps++;
 
   if( DateTime::elapsedTime() - _d->lastUpdateFps > 1000 )
@@ -401,7 +405,12 @@ void SdlEngine::setFlag( int flag, int value )
   }
 }
 
-void SdlEngine::delay( const unsigned int msec ) { SDL_Delay( std::max<unsigned int>( msec, 0 ) ); }
+void SdlEngine::delay( const unsigned int msec ) 
+{ 
+#if !defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  SDL_Delay( std::max<unsigned int>( msec, 0 ) ); 
+#endif  
+}
 
 bool SdlEngine::haveEvent( NEvent& event )
 {

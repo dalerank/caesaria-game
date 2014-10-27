@@ -120,7 +120,9 @@ void Engine::init()
     if(Mix_OpenAudio(freq, format, channels, samples) != -1)
     {
       Logger::warning( "Game: sound check if we got the right audi format" );
+#if !defined(CAESARIA_PLATFORM_EMSCRIPTEN)      
       Mix_QuerySpec(&freq, &format, &channels);
+#endif
       if (format == AUDIO_S16SYS)
       {
         Logger::warning( "Game: finished sound initializing" );

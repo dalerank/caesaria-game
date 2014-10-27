@@ -1,13 +1,19 @@
 project(CaesarIA-game)
 
+if(EMSCRIPTEN)
+  set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Modules/")
+endif()
+
 # Find revision ID and hash of the sourcetree
 include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
-find_package(SDL REQUIRED)
-find_package(SDL_mixer REQUIRED)
+if( NOT EMSCRIPTEN )
+  find_package(SDL REQUIRED)
+  find_package(SDL_mixer REQUIRED)
+endif()
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -26,6 +32,11 @@ file(GLOB CITY_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/city/*.*")
 file(GLOB GOOD_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/good/*.*")
 file(GLOB VFS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/vfs/*.*")
 file(GLOB GFX_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/gfx/*.*")
+if (EMSCRIPTEN)
+# FIXME: Add IMG implementation for EMSCRIPTEN
+  file(GLOB IMG_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/gfx/IMG_*.*")
+  list(REMOVE_ITEM GFX_SOURCES_LIST ${IMG_SOURCES_LIST})
+endif()
 file(GLOB SOUND_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/sound/*.*")
 file(GLOB SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/*.*")
 file(GLOB OBJECTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/objects/*.*")
@@ -128,18 +139,27 @@ if(HAIKU)
   set(EXECUTABLE_FILENAME "caesaria.haiku")
 endif(HAIKU)
 
+if(EMSCRIPTEN)
+  set(EXECUTABLE_FILENAME "caesaria.js")
+endif(EMSCRIPTEN)
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if (EMSCRIPTEN)
+  message("CaesarIA-game: building for emscripten")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s -s TOTAL_MEMORY=268435456 -s DISABLE_EXCEPTION_CATCHING=0 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/../../vfs@/")
+  set(CMAKE_CXX_FLAGS_DEBUG "-O2")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in release mode")
   if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
   endif()
-else()
+else(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
   add_definitions( -DDEBUG )
-endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+endif(EMSCRIPTEN)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
