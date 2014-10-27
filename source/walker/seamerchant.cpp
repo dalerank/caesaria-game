@@ -66,7 +66,7 @@ public:
 };
 
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( walker::seaMerchant );
   _d->waitInterval = 0;

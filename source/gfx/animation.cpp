@@ -190,7 +190,7 @@ void Animation::addFrame(const std::string& resource, int index)
 
 const Picture& Animation::getFrame(int index) const
 {
-  return ( index >= 0 && index < _pictures.size() )
+  return ( index >= 0 && index < (int)_pictures.size() )
            ? _pictures[ index ]
            : Picture::getInvalid();
 }

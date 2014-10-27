@@ -133,7 +133,7 @@ void LayerEducation::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( educationLevel > 0 )
     {
-      drawColumn( engine, screenPos, educationLevel );
+      _addColumn( screenPos, educationLevel );
     }
   }
 
@@ -222,9 +222,8 @@ void LayerEducation::handleEvent(NEvent& event)
 }
 
 LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 9 )
 {
-  _loadColumnPicture( 9 );
   _type = type;
 
   switch( type )

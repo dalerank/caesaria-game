@@ -30,20 +30,20 @@ namespace city
 class Festival : public Srvc
 {
 public:
-  static SrvcPtr create();
+  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 
   DateTime lastFestivalDate() const;
   DateTime nextFestivalDate() const;
-  void assignFestival( PlayerCityPtr city, religion::RomeDivinityType name, int size);
+  void assignFestival( religion::RomeDivinityType name, int size);
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );
 
 private:
-  Festival();
+  Festival( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

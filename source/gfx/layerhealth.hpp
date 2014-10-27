@@ -16,12 +16,12 @@
 #ifndef __CAESARIA_LAYERHEALTH_H_INCLUDED__
 #define __CAESARIA_LAYERHEALTH_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerHealth : public Layer
+class LayerHealth : public LayerInfo
 {
 public:
   virtual int type() const;

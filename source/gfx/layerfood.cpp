@@ -100,7 +100,7 @@ void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( foodLevel >= 0 )
     {
-      drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
+      _addColumn( screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
 
@@ -186,10 +186,8 @@ LayerPtr LayerFood::create( Camera& camera, PlayerCityPtr city)
 }
 
 LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 18 )
 {
-  _loadColumnPicture( 18 );
-
   _addWalkerType( walker::marketLady );
   _addWalkerType( walker::marketKid );
   _addWalkerType( walker::fishingBoat );

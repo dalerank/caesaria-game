@@ -28,13 +28,13 @@ namespace audio
 class Player : public city::Srvc
 {
 public:
-  static city::SrvcPtr create();
+  static city::SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
 
   virtual ~Player();
 private:
-  Player();
+  Player(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

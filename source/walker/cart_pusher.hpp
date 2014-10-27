@@ -19,11 +19,11 @@
 #ifndef _CAESARIA_CART_PUSHER_H_INCLUDE_
 #define _CAESARIA_CART_PUSHER_H_INCLUDE_
 
-#include "walker/walker.hpp"
+#include "human.hpp"
 #include "core/predefinitions.hpp"
 
 /** This walker delivers goods */
-class CartPusher : public Walker
+class CartPusher : public Human
 {
 public:
   typedef enum { simpleCart = 100,

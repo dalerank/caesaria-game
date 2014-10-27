@@ -66,6 +66,7 @@ __REG_PROPERTY(pic_offsets)
 __REG_PROPERTY(picsArchive)
 __REG_PROPERTY(opengl_opts)
 __REG_PROPERTY(font)
+__REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
 #undef __REG_PROPERTY
 
@@ -113,6 +114,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ opengl_opts         ] = Variant( std::string( "/opengl.model" ) );
   _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
+  _d->options[ walkerRelations     ] = Variant( std::string( "/relations.model" ) );
   _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";

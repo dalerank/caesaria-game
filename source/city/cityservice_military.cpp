@@ -21,7 +21,9 @@
 #include "walker/enemysoldier.hpp"
 #include "core/stringhelper.hpp"
 #include "city/cityservice_info.hpp"
+#include "world/playerarmy.hpp"
 #include "world/empire.hpp"
+#include "objects/fort.hpp"
 #include "core/flagholder.hpp"
 
 using namespace constants;
@@ -38,22 +40,22 @@ public:
   bool updateMilitaryThreat;
 };
 
-city::SrvcPtr Military::create()
+city::SrvcPtr Military::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Military() );
+  SrvcPtr ret( new Military( city ) );
   ret->drop();
 
   return SrvcPtr( ret );
 }
 
-Military::Military()
-  : city::Srvc( defaultName() ), _d( new Impl )
+Military::Military( PlayerCityPtr city )
+  : city::Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->updateMilitaryThreat = true;
   _d->threatValue = 0;
 }
 
-void Military::timeStep( PlayerCityPtr city, const unsigned int time )
+void Military::timeStep(const unsigned int time )
 {
   if( GameDate::isMonthChanged() )
   {
@@ -71,7 +73,7 @@ void Military::timeStep( PlayerCityPtr city, const unsigned int time )
 
   if( GameDate::isWeekChanged() )
   {
-    world::EmpirePtr empire = city->empire();
+    world::EmpirePtr empire = _city()->empire();
 
     for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
@@ -94,7 +96,7 @@ void Military::timeStep( PlayerCityPtr city, const unsigned int time )
     _d->updateMilitaryThreat = false;
 
     EnemySoldierList enSoldiers;
-    enSoldiers << city->walkers();
+    enSoldiers << _city()->walkers();
 
     _d->threatValue = enSoldiers.size() * 10;
   }  
@@ -183,6 +185,32 @@ void Military::updateThreat(int value)
 }
 
 int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
+
+world::PlayerArmyList Military::expeditions() const
+{
+  FortList forts;
+  forts << _city()->overlays();
+
+  world::PlayerArmyList ret;
+  foreach( it, forts )
+  {
+    world::PlayerArmyPtr army = (*it)->expedition();
+    if( army.isValid() )
+    {
+      ret.push_back( army );
+    }
+  }
+
+  return ret;
+}
+
+world::ObjectList Military::enemies() const
+{
+  world::ObjectList ret;
+
+  return ret;
+}
+
 unsigned int Military::threatValue() const{ return _d->threatValue; }
 std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
 

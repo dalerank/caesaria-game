@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_LAYERTAX_H_INCLUDED__
 #define __CAESARIA_LAYERTAX_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerTax : public Layer
+class LayerTax : public LayerInfo
 {
 public:
   virtual int type() const;

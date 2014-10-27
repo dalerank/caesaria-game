@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_LAYERINDIGENE_H_INCLUDED__
 #define __CAESARIA_LAYERINDIGENE_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 
 namespace gfx
 {
 
-class LayerIndigene : public Layer
+class LayerIndigene : public LayerInfo
 {
 public:
   virtual int type() const;

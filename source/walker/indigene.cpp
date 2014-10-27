@@ -184,7 +184,7 @@ void Indigene::_updateState()
 }
 
 Indigene::Indigene(PlayerCityPtr city)
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( walker::indigene );
   _d->wheatQty = 0;

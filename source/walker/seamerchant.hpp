@@ -16,11 +16,11 @@
 #ifndef _CAESARIA_SEAMERCHANT_INCLUDE_H_
 #define _CAESARIA_SEAMERCHANT_INCLUDE_H_
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "world/trading.hpp"
 
 /** This is the empire merchant which buy/sell goods at warehouses */
-class SeaMerchant : public Walker
+class SeaMerchant : public Human
 {
 public:
   static WalkerPtr create( PlayerCityPtr city );

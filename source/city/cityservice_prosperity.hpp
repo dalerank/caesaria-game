@@ -30,9 +30,9 @@ class ProsperityRating : public Srvc
 public:
   typedef enum { cmHousesCap, cmHaveProfit, cmWorkless,
                  cmWorkersSalary, cmChange, cmPercentPlebs } Mark;
-  static SrvcPtr create();
+  static SrvcPtr create(PlayerCityPtr city);
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
   int value() const;
 
   int getMark( Mark type ) const;
@@ -43,7 +43,7 @@ public:
   virtual void load(const VariantMap &stream);
 
 private:
-  ProsperityRating();
+  ProsperityRating(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

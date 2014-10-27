@@ -35,7 +35,7 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
     Pathway ret = p.getPath( startPos, stopPos, Pathfinder::roadOnly );
     if( !ret.isValid() )
     {
-      ret = p.getPath( startPos, stopPos, Pathfinder::roadOnly );
+      ret = p.getPath( startPos, stopPos, Pathfinder::terrainOnly );
     }
 
     return ret;

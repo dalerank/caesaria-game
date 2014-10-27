@@ -18,11 +18,11 @@
 #ifndef __CAESARIA_PATRICIAN_H_INCLUDED__
 #define __CAESARIA_PATRICIAN_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
-class Patrician : public Walker
+class Patrician : public Human
 {
 public:
   static PatricianPtr create( PlayerCityPtr city );

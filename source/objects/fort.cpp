@@ -457,6 +457,15 @@ void Fort::returnSoldiers()
 
 }
 
+world::PlayerArmyPtr Fort::expedition() const
+{
+  world::PlayerArmyPtr ret;
+  ret << _city()->empire()->findObject( _d->expeditionName );
+
+  return ret;
+}
+
+
 void Fort::sendExpedition(Point location)
 {
   world::PlayerArmyPtr army = world::PlayerArmy::create( _city()->empire(), ptr_cast<world::City>( _city() ) );
@@ -480,6 +489,7 @@ void Fort::sendExpedition(Point location)
 
 void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }
 void Fort::resetExpedition() { _d->expeditionName.clear(); }
+
 bool Fort::isAttackAnimals() const { return _d->attackAnimals; }
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
@@ -505,7 +515,7 @@ bool Fort::build(PlayerCityPtr city, const TilePos& pos)
   forts << city->overlays();
 
   const city::BuildOptions& bOpts = city->buildOptions();
-  if( forts.size() >= bOpts.getBuildingsQuote( type() ) )
+  if( forts.size() >= bOpts.getMaximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;

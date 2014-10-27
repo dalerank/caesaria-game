@@ -64,6 +64,8 @@ public:
 
   virtual SoldierList soldiers() const;
   virtual void returnSoldiers();
+
+  virtual world::PlayerArmyPtr expedition() const;
   virtual void sendExpedition( Point location );
   virtual void resetExpedition();  
 

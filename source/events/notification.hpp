@@ -15,39 +15,32 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
-#define __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+#define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
 
-namespace city
+#include "event.hpp"
+
+namespace events
 {
 
-namespace debug_event
+class Notification : public GameEvent
 {
+public:
+  static GameEventPtr attack(const std::string& cityname, const std::string& message, world::ObjectPtr object );
 
-enum {
-  add_enemy_archers=0,
-  add_enemy_soldiers,
-  add_empire_barbarian,
-  add_wolves,
-  send_mars_wrath,
-  win_mission,
-  add_1000_dn,
-  add_player_money,
-  send_chastener,
-  test_request,
-  send_player_army,
-  screenshot,
-  send_venus_wrath,
-  all_sound_off,
-  toggle_grid_visibility,
-  toggle_overlay_base,
-  toggle_show_path,
-  toggle_show_roads,
-  toggle_show_object_area,
-  add_soldiers_in_fort
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
+
+private:
+  Notification();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
+
+typedef SmartPtr<Notification> NotificationPtr;
 
 }
 
-}//end namespace city
-#endif //__CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#endif //_CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
