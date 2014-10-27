@@ -109,6 +109,12 @@ public:
 
     return ret;
   }
+
+  TilePos nextStep( const TilePos& dst ) const
+  {
+    return TilePos( math::signnum( dst.i() - i() ),
+                    math::signnum( dst.j() - j() ) );
+  }
 };
 
 #endif //__CAESARIA_POSITION_H_INCLUDED__

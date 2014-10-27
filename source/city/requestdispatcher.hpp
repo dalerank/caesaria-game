@@ -31,14 +31,14 @@ namespace request
 class Dispatcher : public Srvc
 {
 public:
-  static SrvcPtr create();
+  static SrvcPtr create( PlayerCityPtr city );
 
   bool add(const VariantMap& stream , bool showMessage=true);
   virtual ~Dispatcher();
 
   static std::string defaultName();
 
-  virtual void timeStep(PlayerCityPtr city, const unsigned int time);
+  virtual void timeStep( const unsigned int time);
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 
@@ -47,7 +47,7 @@ public:
   RequestList requests() const;
 
 private:
-  Dispatcher();
+  Dispatcher(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr<Impl> _d;

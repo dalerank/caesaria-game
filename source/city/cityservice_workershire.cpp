@@ -63,9 +63,9 @@ public:
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
-SrvcPtr WorkersHire::create()
+SrvcPtr WorkersHire::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new WorkersHire() );
+  SrvcPtr ret( new WorkersHire( city ) );
   ret->drop();
 
   return ret;
@@ -73,8 +73,8 @@ SrvcPtr WorkersHire::create()
 
 std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
 
-WorkersHire::WorkersHire()
-  : Srvc( WorkersHire::defaultName() ), _d( new Impl )
+WorkersHire::WorkersHire(PlayerCityPtr city)
+  : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
 {
   _d->lastMessageDate = GameDate::current();
   _d->excludeTypes.insert( building::fountain );
@@ -137,17 +137,17 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
   }
 }
 
-void WorkersHire::timeStep( PlayerCityPtr city, const unsigned int time )
+void WorkersHire::timeStep( const unsigned int time )
 {
   if( !GameDate::isWeekChanged() )
     return;
 
-  if( city->population() == 0 )
+  if( _city()->population() == 0 )
     return;
 
-  _d->hrInCity = city->walkers( walker::recruter );
+  _d->hrInCity = _city()->walkers( walker::recruter );
 
-  city::Helper helper( city );
+  city::Helper helper( _city() );
   WorkingBuildingList buildings = helper.find< WorkingBuilding >( building::any );
 
   if( !_d->priorities.empty() )
@@ -162,7 +162,7 @@ void WorkersHire::timeStep( PlayerCityPtr city, const unsigned int time )
         {
           if( (*it)->group() == *grIt )
           {
-            _d->hireWorkers( city, *it );
+            _d->hireWorkers( _city(), *it );
             it = buildings.erase( it );
           }
           else { ++it; }
@@ -173,14 +173,14 @@ void WorkersHire::timeStep( PlayerCityPtr city, const unsigned int time )
 
   foreach( it, buildings )
   {    
-    _d->hireWorkers( city, *it );
+    _d->hireWorkers( _city(), *it );
   }
 
   if( _d->lastMessageDate.monthsTo( GameDate::current() ) > DateTime::monthsInYear / 2 )
   {
     _d->lastMessageDate = GameDate::current();
 
-    int workersNeed = Statistic::getWorkersNeed( city );
+    int workersNeed = Statistic::getWorkersNeed( _city() );
     if( workersNeed > 20 )
     {
       events::GameEventPtr e = events::ShowInfobox::create( "##city_need_workers_title##", "##city_need_workers_text##",

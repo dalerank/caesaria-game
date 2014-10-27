@@ -136,15 +136,18 @@ public:
     return true;
   }
 
+  void hide()
+  {
+    setPicture( Picture::getInvalid() );
+    //_fgPicturesRef().clear();
+  }
+
   void setState( ParameterType name, double value )
   {
-    if( name == Construction::destroyable )
+    if( _parent && name == Construction::destroyable && value )
     {
-      if( _parent )
-         _parent->setState( name, value );
-      value = _parent ? (_parent->canDestroy() ? 1 : 0) : 0;
+      _parent->hide();
     }
-    Construction::setState( name, value );
   }
 
   void initTerrain( Tile& terrain )
@@ -573,5 +576,14 @@ void HighBridge::load(const VariantMap& stream)
   for( unsigned int i=0; i < vl_tinfo.size(); i++ )
   {
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
+  }
+}
+
+void HighBridge::hide()
+{
+  setState( Construction::destroyable, 1);
+  foreach( it, _d->subtiles )
+  {
+    (*it)->hide();
   }
 }

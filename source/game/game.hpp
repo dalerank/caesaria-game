@@ -38,14 +38,10 @@ public:
 
   void initialize();
 
-  void exec();
+  bool exec();
 
   void reset();
   void clear();
-
-  void setScreenMenu();
-  void setScreenGame();
-  void setScreenBriefing();
 
   PlayerPtr player() const;
   PlayerCityPtr city() const;

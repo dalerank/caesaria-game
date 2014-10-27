@@ -10,4 +10,5 @@
   smlmercury : { start : 1, stop : 1, offset : [ -1, -1] }
   smlneptune : { start : 1, stop : 1, offset : [ -1, -1] }
   smlvenus : { start : 1, stop : 1, offset : [ -1, -1] }
+  etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
 }

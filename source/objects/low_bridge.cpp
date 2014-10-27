@@ -1,3 +1,4 @@
+
 // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
@@ -66,18 +67,36 @@ public:
     return true;
   }
 
+  virtual void setState(ParameterType name, double value)
+  {
+    if( _parent && name == Construction::destroyable && value )
+    {
+      _parent->hide();
+    }
+  }
+
+  void hide()
+  {
+    _picture = Picture::getInvalid();
+    _fgPicturesRef().clear();
+  }
+
   void initTerrain( Tile& terrain )
   {
     terrain.setFlag( Tile::tlRoad, true );
   }
 
-  bool canDestroy() const  {  return _parent ? _parent->canDestroy() : true;  }
+  bool canDestroy() const
+  {
+    return _parent ? _parent->canDestroy() : true;
+  }
 
   void destroy()
   {
     if( _parent )
     {
       _parent->deleteLater();
+      _parent = 0;
     }
   }
 
@@ -433,7 +452,13 @@ bool LowBridge::canDestroy() const
     }
   }
 
-  return true;
+  bool mayDestroy = state( Construction::destroyable );
+  if( !mayDestroy )
+  {
+    _d->error = "##really_destroy_bridge_qst##";
+  }
+
+  return mayDestroy;
 }
 
 void LowBridge::destroy()
@@ -448,18 +473,6 @@ void LowBridge::destroy()
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
     TileHelper::decode( mapTile, (*it)->_info );
-  }
-}
-
-void LowBridge::setState(Construction::ParameterType name, double value)
-{
-  Construction::setState( name, value );
-  if( name == Construction::destroyable )
-  {
-    foreach( it, _d->subtiles )
-    {
-      (*it)->setState( name, value );
-    }
   }
 }
 
@@ -487,6 +500,15 @@ void LowBridge::load(const VariantMap& stream)
   for( unsigned int i=0; i < vl_tinfo.size(); i++ )
   {
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
+  }
+}
+
+void LowBridge::hide()
+{
+  setState( Construction::destroyable, 1);
+  foreach( it, _d->subtiles )
+  {
+    (*it)->hide();
   }
 }
 

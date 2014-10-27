@@ -58,7 +58,7 @@ MarketKidPtr MarketKid::create(PlayerCityPtr city, MarketBuyerPtr lady )
 }
 
 MarketKid::MarketKid(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _d->delay = 0;
   _d->birthTime = 0;

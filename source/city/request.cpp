@@ -66,11 +66,13 @@ void RqGood::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
-    events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() * 100 );
+    GoodStock stock( _d->stock.type(), _d->stock.capacity() * 100 );
+    events::GameEventPtr e = events::RemoveGoods::create( stock.type(), stock.capacity() );
     e->dispatch();
     success( city );
 
-    world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );
+    world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );    
+    caravan->store().store( stock, -1 );
     caravan->sendTo( city->empire()->rome() );
   }
 }

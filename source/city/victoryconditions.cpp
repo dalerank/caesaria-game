@@ -84,6 +84,11 @@ void VictoryConditions::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, favour, stream )
   VARIANT_LOAD_ANY_D( _d, peace, stream )
   VARIANT_LOAD_TIME_D( _d, finishDate, stream )
+  if( _d->finishDate.year() < -9000 )
+  {
+    _d->finishDate = DateTime( 500, 1, 1 );
+  }
+
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
   _d->winText = stream.get( "win.text" ).toString();

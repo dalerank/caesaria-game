@@ -164,8 +164,8 @@ void AboutLegion::_update()
     const char* morale[] = { "##sldr_totally_distraught##", "##sldr_terrified##", "##sldr_very_frightened##",
                              "##sldr_badly_shaken##", "##sldr_shaken##",
                              "##sldr_extremely_scared##",
-                             "##sldr_daring##", "##sldr_encouraged##", "##sdlr_bold##" ,"##sldr_very_bold##" };
-    int index = math::clamp<unsigned int>( _d->fort->legionMorale() / 10, 0, 9 );
+                             "##sldr_daring##", "##sld_quite_daring##", "##sldr_encouraged##", "##sdlr_bold##" ,"##sldr_very_bold##" };
+    int index = math::clamp<unsigned int>( _d->fort->legionMorale() / 9, 0, 9 );
     _d->lbMoraleValue->setText( _( morale[ index ] ) );
   }
 

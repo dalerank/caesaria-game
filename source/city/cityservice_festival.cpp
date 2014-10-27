@@ -51,9 +51,9 @@ public:
   int festivalType;
 };
 
-SrvcPtr Festival::create()
+SrvcPtr Festival::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Festival() );
+  SrvcPtr ret( new Festival( city ) );
   ret->drop();
 
   return ret;
@@ -63,26 +63,26 @@ std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
 DateTime Festival::lastFestivalDate() const { return _d->lastFestivalDate; }
 DateTime Festival::nextFestivalDate() const { return _d->festivalDate; }
 
-void Festival::assignFestival( PlayerCityPtr city, RomeDivinityType name, int size )
+void Festival::assignFestival( RomeDivinityType name, int size )
 {
   _d->festivalType = size;
   _d->festivalDate = GameDate::current();
   _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
 
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::Statistic::getFestivalCost( city, (FestivalType)size ) );
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::Statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
-Festival::Festival()
-: Srvc( defaultName() ), _d( new Impl )
+Festival::Festival(PlayerCityPtr city)
+: Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->lastFestivalDate = GameDate::current();
   _d->festivalDate = DateTime( -550, 0, 0 );
   _d->prevFestivalDate = DateTime( -550, 0, 0 );
 }
 
-void Festival::timeStep( PlayerCityPtr city, const unsigned int time )
+void Festival::timeStep(const unsigned int time )
 {
   if( !GameDate::isWeekChanged() )
     return;
@@ -109,7 +109,7 @@ void Festival::timeStep( PlayerCityPtr city, const unsigned int time )
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
-    events::GameEventPtr e = events::ShowFeastWindow::create( festivalDesc[ id ], festivalTitles[ id ], city->player()->name() );
+    events::GameEventPtr e = events::ShowFeastWindow::create( festivalDesc[ id ], festivalTitles[ id ], _city()->player()->name() );
     e->dispatch();
 
     e = events::UpdateCitySentiment::create( sentimentValue );

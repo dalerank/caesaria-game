@@ -50,7 +50,7 @@ public:
   void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
   bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
   bool isCheckDesirability() const;
-  int getMaximumForts() const;
+  unsigned int getMaximumForts() const;
 
 private:
   class Impl;

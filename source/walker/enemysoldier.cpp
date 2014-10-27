@@ -58,19 +58,20 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   _atExclude << building::disasterGroup
              << building::roadGroup
              << building::gardenGroup;
+
+  addFriend( type );
 }
 
-Priorities<int>&EnemySoldier::_excludeAttack() {  return _atExclude; }
+Priorities<int>& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
   WalkerList enemies = _findEnemiesInRange( attackDistance() );
 
-  TilePos targetPos;
   if( !enemies.empty() )
   {
     _setSubAction( Soldier::fightEnemy );
-    targetPos = enemies.front()->pos();
+    setTarget( enemies.front()->pos() );
     fight();
   }
   else
@@ -79,7 +80,7 @@ bool EnemySoldier::_tryAttack()
     if( !constructions.empty() )
     {
       _setSubAction( Soldier::destroyBuilding );
-      targetPos = constructions.front()->pos();
+      setTarget( constructions.front()->pos() );
       fight();
     }
   }
@@ -89,9 +90,10 @@ bool EnemySoldier::_tryAttack()
     city::Helper helper( _city() );
     bool needMeMove = false;
     helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
+
     if( needMeMove )
     {
-      _move2freePos( targetPos );
+      _move2freePos( target() );
     }
   }
 
@@ -149,11 +151,9 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
       foreach( i, tileWalkers )
       {
-        rtype = (*i)->type();
-        bool vividlyObject = (*i)->getFlag( Walker::vividly );
-        if( rtype == type() || is_kind_of<Animal>(*i) || is_kind_of<Fish>( *i)
-            || !vividlyObject
-            || is_kind_of<EnemySoldier>(*i) )
+        WalkerPtr wlk = *i;
+        rtype = wlk->type();
+        if( rtype == type() || !WalkerHelper::isHuman( wlk ) || isFriendTo( wlk ) )
           continue;
 
         walkers.push_back( *i );
@@ -168,17 +168,14 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 {
   Pathway ret;
 
-  for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
-  {
-    WalkerList walkers = _findEnemiesInRange( tmpRange );
+  WalkerList walkers = _findEnemiesInRange( range );
 
-    foreach( it, walkers)
+  foreach( it, walkers)
+  {
+    ret = PathwayHelper::create( pos(), (*it)->pos(), PathwayHelper::allTerrain );
+    if( ret.isValid() )
     {
-      ret = PathwayHelper::create( pos(), (*it)->pos(), PathwayHelper::allTerrain );
-      if( ret.isValid() )
-      {
-        return ret;
-      }
+      return ret;
     }
   }
 
@@ -200,17 +197,19 @@ void EnemySoldier::_check4attack()
   {
     pathway = PathwayHelper::create( pos(), _city()->borderInfo().roadExit,
                                      PathwayHelper::allTerrain );
+    setTarget( TilePos( -1, -1) );
   }
 
   if( !pathway.isValid() )
   {
     pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
+    setTarget( TilePos( -1, -1) );
   }
 
   if( pathway.isValid() )
   {
     _setSubAction( go2position );
-    setPathway( pathway );
+    _updatePathway( pathway );
     go();
   }
   else
@@ -319,6 +318,7 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
       ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
+        setTarget( c->pos() );
         return ret;
       }
     }
@@ -337,10 +337,15 @@ void EnemySoldier::_centerTile()
   case check4attack: _check4attack(); break;
 
   case go2position:
+  {
+    if( _tryAttack() )
+      return;
+
+    if( target().i() < 0 )
     {
-      if( _tryAttack() )
-        return;
+      _check4attack();
     }
+  }
   break;
 
   default:

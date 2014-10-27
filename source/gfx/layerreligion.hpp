@@ -16,13 +16,13 @@
 #ifndef __CAESARIA_LAYERRELIGION_H_INCLUDED__
 #define __CAESARIA_LAYERRELIGION_H_INCLUDED__
 
-#include "layer.hpp"
+#include "layerinfo.hpp"
 #include "city_renderer.hpp"
 
 namespace gfx
 {
 
-class LayerReligion : public Layer
+class LayerReligion : public LayerInfo
 {
 public:
   virtual int type() const;

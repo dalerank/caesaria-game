@@ -47,24 +47,24 @@ public:
   void updateRoadsAround(Propagator& propagator, UpdateInfo info );
 };
 
-SrvcPtr Roads::create()
+SrvcPtr Roads::create(PlayerCityPtr city)
 {
-  SrvcPtr ret( new Roads() );
+  SrvcPtr ret( new Roads( city ) );
   ret->drop();
   return ret;
 }
 
 std::string Roads::defaultName(){  return "roads";}
 
-Roads::Roads()
-  : Srvc( Roads::defaultName() ), _d( new Impl )
+Roads::Roads( PlayerCityPtr city )
+  : Srvc( city, Roads::defaultName() ), _d( new Impl )
 {
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
   _d->lastTimeUpdate = GameDate::current();  
 }
 
-void Roads::timeStep( PlayerCityPtr city, const unsigned int time )
+void Roads::timeStep( const unsigned int time )
 {
   if( _d->lastTimeUpdate.month() == GameDate::current().month() )
     return;
@@ -79,7 +79,7 @@ void Roads::timeStep( PlayerCityPtr city, const unsigned int time )
   btypes.push_back( Impl::UpdateBuilding(building::templeNeptune, 4));
   btypes.push_back( Impl::UpdateBuilding(building::templeVenus, 4));
 
-  Helper helper( city );
+  Helper helper( _city() );
 
   Impl::Updates positions;
   foreach( it, btypes )
@@ -101,7 +101,7 @@ void Roads::timeStep( PlayerCityPtr city, const unsigned int time )
     }
   }
 
-  Propagator propagator( city );
+  Propagator propagator( _city() );
   foreach( upos, positions )
   {
     _d->updateRoadsAround( propagator, *upos );

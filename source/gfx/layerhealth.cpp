@@ -122,7 +122,8 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( healthLevel > 0 )
     {
-      drawColumn( engine, screenPos, healthLevel );
+      _addColumn( screenPos, healthLevel );
+      //drawColumn( engine, screenPos, healthLevel );
     }
   }
 
@@ -189,9 +190,8 @@ void LayerHealth::handleEvent(NEvent& event)
 }
 
 LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 9 )
 {
-  _loadColumnPicture( 9 );
   _type = type;
 
   switch( type )

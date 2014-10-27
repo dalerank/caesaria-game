@@ -65,7 +65,7 @@ public:
 };
 
 Merchant::Merchant(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( walker::merchant );
   _d->maxDistance = 60;

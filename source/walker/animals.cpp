@@ -43,6 +43,7 @@ public:
 Animal::Animal(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
+  setFlag( Walker::vividly, true );
   _setType( walker::unknown );
 
   setName( _("##animal##") );
@@ -131,7 +132,7 @@ Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
  : Animal( city )
 {
   _setType( type );
-  setName( WalkerHelper::getPrettyTypeName( type ) );
+  setName( WalkerHelper::getPrettyTypename( type ) );
 
   addAbility( Illness::create( 0.2, 4 ) );
   _noWayCount = 0;
@@ -279,6 +280,7 @@ void Wolf::send2City(const TilePos &start )
 Fish::Fish(PlayerCityPtr city)
  : Walker( city )
 {
+  setFlag( Walker::vividly, true );
   _setType( walker::unknown );
 
   setName( _("##fish##") );

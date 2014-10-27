@@ -33,12 +33,12 @@
 #include "predefinitions.hpp"
 #include "core/debug_queue.hpp"
 
-typedef unsigned int UniqueId;
 class Pathway;
 
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
+  typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
   typedef enum { showDebugInfo=1, vividly, userFlag, count=0xff } Flag;
 
@@ -47,6 +47,7 @@ public:
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
   virtual constants::walker::Type type() const;
+
   // position and movement
 
   TilePos pos() const;
@@ -103,6 +104,8 @@ public:
   virtual void initialize( const VariantMap& options );
   virtual int agressive() const;
 
+  virtual constants::walker::Nation nation() const;
+
   void attach();
 
 protected:
@@ -127,7 +130,7 @@ protected:
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
   void _setDirection( constants::Direction direction );
-
+  void _setNation( constants::walker::Nation nation );
   void _setType( constants::walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );
