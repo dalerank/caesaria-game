@@ -36,6 +36,8 @@ public:
   virtual std::string sound() const;
 
   void updatePicture(PlayerCityPtr city);
+  void addRoad();
+  bool canAddRoad( PlayerCityPtr city, TilePos pos ) const;
 
   virtual const gfx::Picture& picture( PlayerCityPtr city,
                                        TilePos pos,

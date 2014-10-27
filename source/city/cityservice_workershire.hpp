@@ -31,9 +31,9 @@ namespace city
 class WorkersHire : public Srvc
 {
 public:
-  static SrvcPtr create();
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
+  virtual void timeStep( const unsigned int time );
   void setRecruterDistance( const unsigned int distance );
   void setIndustryPriority( Industry::Type industry, int priority );
   int getPriority( Industry::Type industry );
@@ -42,7 +42,7 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 private:
-  WorkersHire();
+  WorkersHire( PlayerCityPtr city );
  
   class Impl;
   ScopedPtr< Impl > _d;

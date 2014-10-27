@@ -129,7 +129,7 @@ public:
   city::VictoryConditions targets;
   Options options;
   ClimateType climate;   
-  UniqueId walkerIdCount;
+  Walker::UniqueId walkerIdCount;
   unsigned int age;
   int sentiment;
 
@@ -162,30 +162,30 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->population = 0;
   _d->funds.setTaxRate( 7 );
   _d->age = 0;
-  _d->walkerIdCount = 0;
+  _d->walkerIdCount = 1;
   _d->climate = city::climate::central;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create() );
-  addService( city::WorkersHire::create() );
-  addService( city::ProsperityRating::create() );
-  addService( city::Shoreline::create() );
-  addService( city::Info::create() );
-  addService( city::CultureRating::create() );
-  addService( city::Animals::create() );
-  addService( city::Religion::create() );
-  addService( city::Festival::create() );
-  addService( city::Roads::create() );
-  addService( city::Fishery::create() );
-  addService( city::Disorder::create() );
-  addService( city::request::Dispatcher::create() );
-  addService( city::Military::create() );
-  addService( audio::Player::create() );
-  addService( city::HealthCare::create());
-  addService( city::Peace::create() );
-  addService( city::Sentiment::create() );
-  addService( city::Fire::create() );
+  addService( city::Migration::create( this ) );
+  addService( city::WorkersHire::create( this ) );
+  addService( city::ProsperityRating::create( this ) );
+  addService( city::Shoreline::create( this ) );
+  addService( city::Info::create( this ) );
+  addService( city::CultureRating::create( this ) );
+  addService( city::Animals::create( this ) );
+  addService( city::Religion::create( this ) );
+  addService( city::Festival::create( this ) );
+  addService( city::Roads::create( this ) );
+  addService( city::Fishery::create( this ) );
+  addService( city::Disorder::create( this ) );
+  addService( city::request::Dispatcher::create( this ) );
+  addService( city::Military::create( this ) );
+  addService( audio::Player::create( this ) );
+  addService( city::HealthCare::create( this ));
+  addService( city::Peace::create( this ) );
+  addService( city::Sentiment::create( this ) );
+  addService( city::Fire::create( this ) );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
@@ -401,7 +401,6 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
   {
     WalkerPtr walker = *walkerIt;
     walker->timeStep( time );
-
     if( walker->isDeleted() )
     {
       // remove the walker from the walkers list
@@ -410,7 +409,6 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
     }
     else { ++walkerIt; }
   }
-
   walkers << newWalkers;
   newWalkers.clear();
 }
@@ -445,11 +443,11 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
   city::Timers::instance().update( time );
   while( serviceIt != services.end() )
   {
-    (*serviceIt)->timeStep( city, time );
+    (*serviceIt)->timeStep( time );
 
     if( (*serviceIt)->isDeleted() )
     {
-      (*serviceIt)->destroy( city );
+      (*serviceIt)->destroy();
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
@@ -529,7 +527,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
   _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
-  _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
+  _d->walkerIdCount = (Walker::UniqueId)stream.get( lc_walkerIdCount ).toUInt();
   setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
@@ -606,7 +604,7 @@ void PlayerCity::load( const VariantMap& stream )
     {
       Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
 
-      srvc = city::ServiceFactory::create( item->first );
+      srvc = city::ServiceFactory::create( this, item->first );
       if( srvc.isValid() )
       {
         Logger::warning( "City: creating service " + item->first + " directly");
@@ -630,7 +628,7 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlays.push_back( overlay ); }
+void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
@@ -700,7 +698,13 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
+  foreach( it, _d->services )
+  {
+    (*it)->destroy();
+  }
+
   _d->services.clear();
+
   _d->walkers.clear();
   _d->walkersGrid.clear();
   _d->overlays.clear();
@@ -778,7 +782,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
   else if( is_kind_of<world::Barbarian>( object ) )
   {
     world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
-    for( unsigned int k=0; k < brb->strength() / 2; k++ )
+    for( int k=0; k < brb->strength() / 2; k++ )
     {
       EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
       soldier->send2City( borderInfo().roadEntry );

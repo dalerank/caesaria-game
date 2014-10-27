@@ -139,7 +139,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
 
-  if( lbTitle ) lbTitle->setText( GoodHelper::name( type ) );
+  if( lbTitle ) lbTitle->setText( _( GoodHelper::name( type ) ) );
   if( lbStackedQty )
   {
     std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
@@ -217,15 +217,19 @@ bool GoodOrderManageWindow::isIndustryEnabled()
 
 void GoodOrderManageWindow::updateIndustryState()
 {
-  bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
-  _d->btnIndustryState->setVisible( industryActive );
-
-  if( !industryActive )
-    {
-      return;
-    }
-
   city::Helper helper( _d->city );
+  BuildingList items = helper.find<Building>( _d->type );
+
+  bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
+  if( items.empty() )
+  {
+    _d->btnIndustryState->setEnabled( false );
+    _d->btnIndustryState->setBackgroundStyle( PushButton::noBackground );
+    _d->btnIndustryState->setText( _("##no_industries_in_city##" ) );
+    return;
+  }
+
+
   int workFactoryCount=0, idleFactoryCount=0;
 
   FactoryList factories = helper.getProducers<Factory>( _d->type );

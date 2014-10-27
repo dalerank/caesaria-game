@@ -18,10 +18,10 @@
 #ifndef __CAESARIA_INDIGENE_H_INCLUDED__
 #define __CAESARIA_INDIGENE_H_INCLUDED__
 
-#include "animals.hpp"
+#include "human.hpp"
 #include "core/predefinitions.hpp"
 
-class Indigene : public Walker
+class Indigene : public Human
 {
 public:
   static IndigenePtr create( PlayerCityPtr city );

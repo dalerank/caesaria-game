@@ -34,6 +34,8 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
+  virtual void attack(ObjectPtr obj);
+
 protected:
   RomeChastenerArmy( EmpirePtr );
 

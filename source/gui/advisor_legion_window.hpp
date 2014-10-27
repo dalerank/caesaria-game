@@ -32,7 +32,7 @@ namespace advisorwnd
 class Legion : public Window
 {
 public:
-  Legion(Widget* parent, int id, PlayerCityPtr city, FortList forts);
+  Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts);
 
   virtual void draw( gfx::Engine& painter );
 

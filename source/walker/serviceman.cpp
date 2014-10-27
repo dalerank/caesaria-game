@@ -48,7 +48,7 @@ public:
 };
 
 ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
   _d->maxDistance = defaultServiceDistance;

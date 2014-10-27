@@ -159,7 +159,7 @@ void LayerTroubles::handleEvent(NEvent& event)
 LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city, int type )
   : Layer( &camera, city ), _type( type )
 {
-  _loadColumnPicture( 9 );
+  //_loadColumnPicture( 9 );
 }
 
 }//end namespace gfx

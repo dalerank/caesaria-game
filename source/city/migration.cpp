@@ -71,16 +71,16 @@ public:
   bool isPoorHousing( int shacks, int houses );
 };
 
-SrvcPtr Migration::create()
+SrvcPtr Migration::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Migration() );
+  SrvcPtr ret( new Migration( city ) );
   ret->drop();
 
   return ret;
 }
 
-Migration::Migration()
-  : Srvc( defaultName() ), _d( new Impl )
+Migration::Migration( PlayerCityPtr city )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {  
   VariantMap options = SaveAdapter::load( ":/migration.model" );
   VARIANT_LOAD_ANYDEF_D( _d, checkRange, DateTime::daysInWeek, options )
@@ -94,7 +94,7 @@ Migration::Migration()
   _d->emigrantsIndesirability = 0;
 }
 
-void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
+void Migration::timeStep( const unsigned int time )
 {  
   if( time % _d->updateTickInerval != 1 )
     return;
@@ -102,15 +102,15 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
   Logger::warning( "MigrationSrvc: start calculate" );
   const int worklessCitizenAway = SETTINGS_VALUE( worklessCitizenAway );
 
-  float migrationKoeff = _d->getMigrationKoeff( city );
-  Info::Parameters params = _d->lastMonthParams( city );
+  float migrationKoeff = _d->getMigrationKoeff( _city() );
+  Info::Parameters params = _d->lastMonthParams( _city() );
   Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
 
   _d->emigrantsIndesirability = defaultEmIndesirability; //base indesirability value
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
-  const int diffSalary = city->empire()->workerSalary() - city->funds().workerSalary();
+  const int diffSalary = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
   int diffSalaryInfluence = diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city
@@ -131,7 +131,7 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
                             ? params[ Info::tax ] * 2
                             : (possibleTaxLevel-params[ Info::tax ]) );
 
-  const int& monthWithourWar = city->age() > 1
+  const int& monthWithourWar = _city()->age() > 1
                                   ? params[ Info::monthWtWar ]
                                   : DateTime::monthsInYear;
 
@@ -146,7 +146,7 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
 
   if( _d->worklessMinInfluence > 0 )
   {
-    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( city->population(), 150 ) / _d->worklessMinInfluence;
+    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city()->population(), 150 ) / _d->worklessMinInfluence;
   }
   else
   {
@@ -172,7 +172,7 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
   }
 
   city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  mil << _city()->findService( city::Military::defaultName() );
 
   if( mil.isValid() )
   {
@@ -185,7 +185,7 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
   int goddesRandom = math::random( maxIndesirability );
   if( goddesRandom > _d->emigrantsIndesirability )
   {
-    _d->createMigrationToCity( city );
+    _d->createMigrationToCity( _city() );
     _d->updateTickInerval = math::random( GameDate::days2ticks( _d->checkRange ) ) + 10;
   }
   else
@@ -207,21 +207,21 @@ void Migration::timeStep( PlayerCityPtr city, const unsigned int time )
     if( curWorklessValue * migrationKoeff > worklessCitizenAway
         || _d->emigrantsIndesirability * migrationKoeff > maxIndesirability )
     {
-      _d->createMigrationFromCity( city );
+      _d->createMigrationFromCity( _city() );
     }
   }
 }
 
-std::string Migration::reason( PlayerCityPtr city ) const
+std::string Migration::reason() const
 {
-  unsigned int vacantHouse = _d->calcVacantHouse( city );
+  unsigned int vacantHouse = _d->calcVacantHouse( _city() );
   if( vacantHouse == 0 )
     return "##migration_lack_empty_house##";
 
   StringArray troubles;
   if( _d->emigrantsIndesirability > defaultEmIndesirability )
   {
-    Info::Parameters params = _d->lastMonthParams( city );
+    Info::Parameters params = _d->lastMonthParams( _city() );
     if( params[ Info::monthWtWar ] < DateTime::monthsInYear )
     {
       troubles << "##migration_war_deterring##";
@@ -265,11 +265,11 @@ std::string Migration::reason( PlayerCityPtr city ) const
            : troubles.random();
 }
 
-std::string Migration::leaveCityReason( PlayerCityPtr city ) const
+std::string Migration::leaveCityReason() const
 {
   if( lastMonthMigration() < 0 )
   {
-    Info::Parameters lastParams = _d->lastMonthParams( city );
+    Info::Parameters lastParams = _d->lastMonthParams( _city() );
     if( lastParams[ Info::tax ] > insaneTaxLevel )
       return "##people_leave_city_insane_tax##";
 

@@ -68,7 +68,7 @@ public:
 };
 
 CartPusher::CartPusher(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( walker::cartPusher );
   _d->producerBuilding = NULL;

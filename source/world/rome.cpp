@@ -99,7 +99,7 @@ void Rome::addObject(ObjectPtr obj)
                                                           gtype,
                                                           !events::ShowInfobox::send2scribe);
     e->dispatch();
-  }
+  }  
   else if( is_kind_of<Barbarian>( obj ) )
   {
     BarbarianPtr brb = ptr_cast<Barbarian>( obj );

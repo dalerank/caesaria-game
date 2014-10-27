@@ -55,23 +55,23 @@ public:
   Info::MaxParameters maxParams;
 };
 
-SrvcPtr Info::create()
+SrvcPtr Info::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Info() );
+  SrvcPtr ret( new Info( city ) );
   ret->drop();
 
   return ret;
 }
 
-Info::Info()
-  : Srvc( defaultName() ), _d( new Impl )
+Info::Info( PlayerCityPtr city )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->lastYearHistory.resize( 12 );
   _d->maxParams.resize( paramsCount );
 }
 
-void Info::timeStep( PlayerCityPtr city, const unsigned int time )
+void Info::timeStep(const unsigned int time )
 {
   if( !GameDate::isMonthChanged() )
     return;
@@ -86,50 +86,50 @@ void Info::timeStep( PlayerCityPtr city, const unsigned int time )
 
     Parameters& last = _d->lastYearHistory.back();
     last.date = _d->lastDate;
-    last[ population  ] = city->population();
-    last[ funds       ] = city->funds().treasury();
+    last[ population  ] = _city()->population();
+    last[ funds       ] = _city()->funds().treasury();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
-    last[ foodStock   ] = city::Statistic::getFoodStock( city );
-    last[ foodMontlyConsumption ] = city::Statistic::getFoodMonthlyConsumption( city );
+    last[ foodStock   ] = city::Statistic::getFoodStock( _city() );
+    last[ foodMontlyConsumption ] = city::Statistic::getFoodMonthlyConsumption( _city() );
     last[ monthWithFood ] = last[ foodMontlyConsumption ] > 0 ? (last[ foodStock ] / last[ foodMontlyConsumption ]) : 0;
 
-    int foodProducing = city::Statistic::getFoodProducing( city );
+    int foodProducing = city::Statistic::getFoodProducing( _city() );
     int yearlyFoodConsumption = last[ foodMontlyConsumption ] * DateTime::monthsInYear;
     last[ foodKoeff   ] = ( foodProducing - yearlyFoodConsumption > 0 )
                             ? foodProducing / (yearlyFoodConsumption+1)
                             : -(yearlyFoodConsumption / (foodProducing+1) );
 
     int currentWorkers, rmaxWorkers;
-    city::Statistic::getWorkersNumber( city, currentWorkers, rmaxWorkers );
+    city::Statistic::getWorkersNumber( _city(), currentWorkers, rmaxWorkers );
 
     last[ needWorkers ] = rmaxWorkers - currentWorkers;
     last[ maxWorkers  ] = rmaxWorkers;
-    last[ workless    ] = city::Statistic::getWorklessPercent( city );
-    last[ payDiff     ] = city->empire()->workerSalary() - city->funds().workerSalary();
-    last[ tax         ] = city->funds().taxRate();
-    last[ cityWages   ] = city->funds().workerSalary();
-    last[ romeWages   ] = city->empire()->workerSalary();
-    last[ crimeLevel  ] = city::Statistic::getCrimeLevel( city );
-    last[ favour      ] = city->favour();
-    last[ prosperity  ] = city->prosperity();
-    last[ monthWtWar  ] = city::Statistic::months2lastAttack( city );
+    last[ workless    ] = city::Statistic::getWorklessPercent( _city() );
+    last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
+    last[ tax         ] = _city()->funds().taxRate();
+    last[ cityWages   ] = _city()->funds().workerSalary();
+    last[ romeWages   ] = _city()->empire()->workerSalary();
+    last[ crimeLevel  ] = city::Statistic::getCrimeLevel( _city() );
+    last[ favour      ] = _city()->favour();
+    last[ prosperity  ] = _city()->prosperity();
+    last[ monthWtWar  ] = city::Statistic::months2lastAttack( _city() );
     last[ peace       ] = 0;
 
     PeacePtr peaceSrvc;
-    peaceSrvc << city->findService( Peace::getDefaultName() );
+    peaceSrvc << _city()->findService( Peace::getDefaultName() );
     if( peaceSrvc.isValid() )
     {
       last[ peace ] = peaceSrvc->value();
     }
 
     MilitaryPtr mil;
-    mil << city->findService( Military::defaultName() );
+    mil << _city()->findService( Military::defaultName() );
     if( mil.isValid() )
     {
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    Helper helper( city );
+    Helper helper( _city() );
     HouseList houses = helper.find<House>( building::house );
 
     last[ houseNumber ] = 0;
@@ -148,7 +148,7 @@ void Info::timeStep( PlayerCityPtr city, const unsigned int time )
     }
 
     SentimentPtr st;
-    st << city->findService( Sentiment::defaultName() );
+    st << _city()->findService( Sentiment::defaultName() );
 
     last[ sentiment ] = st->value();
 

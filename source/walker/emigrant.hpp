@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_EMIGRANT_H_INCLUDED__
 #define __CAESARIA_EMIGRANT_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "core/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 
 /** This is an emigrant coming with his stuff */
-class Emigrant : public Walker
+class Emigrant : public Human
 {
 public:
   static EmigrantPtr create( PlayerCityPtr city );
@@ -47,9 +47,9 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
+  virtual const gfx::Picture& _cartPicture();
 
   void _setCartPicture( const gfx::Picture& pic );
-  virtual const gfx::Picture& _cartPicture();
   
   Emigrant( PlayerCityPtr city );
 
@@ -59,6 +59,9 @@ protected:
   bool _checkNearestHouse();
   void _append2house(HousePtr house);
   void _checkHouses(HouseList &hlist);
+  void _lockHouse(HousePtr house);
+  void _splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms);
+  void _findFinestHouses(HouseList& hlist);
 
 private:
   class Impl;

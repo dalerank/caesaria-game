@@ -89,22 +89,22 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       //houses
     case building::house:
-      {
-        HousePtr house = ptr_cast<House>( overlay );
-        crime = (int)house->getServiceValue( Service::crime );
-        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
+    {
+      HousePtr house = ptr_cast<House>( overlay );
+      crime = (int)house->getServiceValue( Service::crime );
+      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
 
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
-      }
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+    }
     break;
 
       //other buildings
     default:
-      {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
-      }
+    {
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+    }
     break;
     }
 
@@ -115,7 +115,7 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else if( crime >= 0)
     {
-      drawColumn( engine, screenPos, crime);
+      _addColumn( screenPos, crime );
     }
   }
 
@@ -164,9 +164,8 @@ void LayerCrime::handleEvent(NEvent& event)
 }
 
 LayerCrime::LayerCrime( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 18 )
 {
-  _loadColumnPicture( 18 );
   _addWalkerType( walker::prefect );
 }
 

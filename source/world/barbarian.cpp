@@ -24,6 +24,7 @@
 #include "gfx/animation.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
+#include "events/notification.hpp"
 
 namespace world
 {
@@ -133,6 +134,10 @@ void Barbarian::_check4attack()
        if( validWay )
        {
          _d->mode = Impl::go2object;
+
+         events::GameEventPtr e = events::Notification::attack( it->second->name(), "##barbaria_attack_empire_city##", this );
+         e->dispatch();
+
          break;
        }
      }

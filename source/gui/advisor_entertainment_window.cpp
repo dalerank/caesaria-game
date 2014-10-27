@@ -121,7 +121,6 @@ public:
   city::FestivalPtr srvc;
 
   InfrastructureInfo getInfo(const TileOverlay::Type service );
-  void assignFestival(int divinityType, int festSize);
   void updateInfo();
   void updateFestivalInfo();
 };
@@ -176,7 +175,7 @@ void Entertainment::draw( Engine& painter )
 void Entertainment::_showFestivalWindow()
 {
   FestivalPlaningWindow* wnd = FestivalPlaningWindow::create( this, _d->city, -1 );
-  CONNECT( wnd, onFestivalAssign(), _d.data(), Impl::assignFestival );
+  CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
 InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service)
@@ -218,12 +217,12 @@ InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service
   return ret;
 }
 
-void Entertainment::Impl::assignFestival(int divinityType, int festSize)
+void Entertainment::_assignFestival( int divinityType, int festSize)
 {
-  if( srvc.isValid() )
+  if( _d->srvc.isValid() )
   {
-    srvc->assignFestival( city, (religion::RomeDivinityType)divinityType, festSize );
-    updateFestivalInfo();
+    _d->srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
+    _d->updateFestivalInfo();
   }
 }
 

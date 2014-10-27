@@ -18,10 +18,10 @@
 #ifndef __CAESARIA_RIOTER_H_INCLUDE_
 #define __CAESARIA_RIOTER_H_INCLUDE_
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "objects/constants.hpp"
 
-class Rioter : public Walker
+class Rioter : public Human
 {
 public:
   static RioterPtr create( PlayerCityPtr city );

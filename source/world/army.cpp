@@ -128,14 +128,12 @@ void Army::attack(ObjectPtr obj)
     d->destination = obj->name();
     _findWay( d->base->location(), obj->location() );
 
-    if( !_way().empty() )
-    {
-      empire()->addObject( this );
-    }
-    else
+    if( _way().empty() )
     {
       Logger::warning( "Army: cannot find way from %s to %s", d->base->name().c_str(), obj->name().c_str() );
     }
+
+    attach();
   }
   else
   {

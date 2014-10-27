@@ -18,11 +18,11 @@
 #ifndef __CAESARIA_MARKETLADY_H_INCLUDED__
 #define __CAESARIA_MARKETLADY_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "objects/warehouse.hpp"
 
 /** This is the market lady buying goods at granaries and warehouses */
-class MarketBuyer : public Walker
+class MarketBuyer : public Human
 {
 public:
   static MarketBuyerPtr create( PlayerCityPtr city );

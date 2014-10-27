@@ -30,6 +30,14 @@
         text.offset : [ 20, 0 ]
         font : "FONT_3"
       }
+
+      lbYearMigrationValue#Label : {
+        geometry : [ 10, 60, "pw-10", 85 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_3"
+      }
     }
 
     lbChart#Label : {

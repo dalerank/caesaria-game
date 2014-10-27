@@ -129,7 +129,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
     }
     else if( entertainmentLevel > 0 )
     {
-      drawColumn( engine, screenPos, entertainmentLevel );
+      _addColumn( screenPos, entertainmentLevel );
     }
   }
 
@@ -208,9 +208,8 @@ void LayerEntertainment::handleEvent(NEvent& event)
 }
 
 LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int type )
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 9 )
 {
-  _loadColumnPicture( 9 );
   _type = type;
 
   switch( type )
