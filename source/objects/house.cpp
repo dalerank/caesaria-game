@@ -568,7 +568,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         buildPos = itArea->first;
         helper.updateDesirability( this, city::Helper::offDesirability );
         setSize( minSize );
-        _update( false );
+        _update( true );
         build( _city(), buildPos );
 
         _d->desirability.base = desirability;

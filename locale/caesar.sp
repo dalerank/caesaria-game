@@ -167,6 +167,7 @@
 "##balance_between_migration##":"Hay un equilibrio entre la gente que viene y que se va de la ciudad."
 "##balance##":"Balance"
 "##ballista##":"Ballesta"
+"##barbarian_are_closing_city##":"Se acercan enemigos a la ciudad"
 "##barbarian_attack_text##":""
 "##barbarian_attack_title##":"Los enemigos están atacando la ciudad"
 "##barbarian_warrior##":"Guerrero bárbaro"
@@ -820,6 +821,7 @@
 "##legion_formation_tooltip##":"Haz clic aquí para cambiar la formación de la legión"
 "##legion_haveho_soldiers_and_barracks##":"Esta legión no tiene soldados actualmente. Solamente existe sobre el papel, y al no tener barracones operativos en la ciudad, no puede recibir nuevas tropas."
 "##legion_haveho_soldiers##":"Esta legión no tiene soldados actualmente. Solamente existe sobre el papel. Se convertirá en una unidad de combate en el momento en que lleguen tropas recién entrenadas de los barracones."
+"##legion_morale_is_too_low##":"¡La legión no responde porque su moral es demasiado baja!"
 "##legion##":"Legión"
 "##legionadv_no_legions##":"No tienes legiones sobre las que mandar. Debes construir primero un fuerte para que albergue a una nueva legión."
 "##legionary_average_life##":"¡Lucharé hasta morir! ¡La ciudad estará a salvo mientras siga vivo!"
@@ -1100,6 +1102,7 @@
 "##no_fishplace_in_city##":"Nuestros pescadores esperan que alguien descubra bancos de peces en las aguas de esta provincia algún día. No se pueden ganar la vida sin peces."
 "##no_food_stored_last_month##":"Comemos mucho más de lo que cultivamos"
 "##no_goods_for_request##":"No tienes bienes suficientes en los almacenes."
+"##no_industries_in_city##":"No hay industrias en la ciudad"
 "##no_people_in_city##":"¡No hay gente en la ciudad!"
 "##no_priority##":"Sin prioridad."
 "##no_space_for_evolve##":"Si tuviese más espacio hacia donde expandirse, esta vivienda pronto se convertiría en una de mayor categoría."
@@ -1147,8 +1150,13 @@
 "##oracles##":"Oráculos"
 "##other##":"Varios"
 "##our_foods_level_are_low##":"Nuestros niveles de alimentos son bajos"
+"##out_legion_back_to_city##":"Nuestra legión está de vuelta hacia nuestra ciudad."
+"##out_legion_go_to_location##":"Nuestra legión está en marcha para salvar a una ciudad imperial."
 "##out_of_credit##":"¡Sin fondos!"
 "##overall_city_become_a_sleepy_province##":"Esta provincia se ha convertido en un lugar tranquilo con pocas amenazas reales, justo como les gusta a sus habitantes."
+"##overall_city_population_static##":"En general, la población de la ciudad permanece estática."
+"##overall_people_are_coming_city##":"En general, la gente viene o quiere venir a la ciudad."
+"##overall_people_are_leaving_city##":"En general, la gente está abandonando la ciudad."
 "##overlays##":"Capas"
 "##ovrm_aborigen##":""
 "##ovrm_academy##":""
@@ -1256,7 +1264,7 @@
 "##profit##":"Flujo neto int./ext."
 "##prosperity_lack_that_you_pay_less_rome##":"El pago de salarios más bajos que los de Roma empaña la imagen de prosperidad de la ciudad."
 "##province_has_peace_a_short_time##":"Esta provincia ha estado en paz durante un breve período de tiempo, pero los ciudadanos no se sienten todavía muy seguros. Esta condición mejorará con más años de paz."
-"##qty_stacked_in_city_warehouse##":"en almacenes"
+"##qty_stacked_in_city_warehouse##":"en los almacenes de la ciudad"
 "##quaestor_salary##":"Salario de cuestor de"
 "##quarry_bad_work##":"Con tan pocos empleados, la producción es inexistente. Se extraerá muy poco mármol el próximo año."
 "##quarry_full_work##":"Esta cantera tiene todo el personal que necesita y se esmera en extraer mármol."
@@ -1292,6 +1300,7 @@
 "##religionadv_need_basic_religion##":"Cada vez más ciudadanos demandan por lo menos un lugar de culto en sus barrios para mejorar la visión de los dioses respecto a ellos."
 "##religionadv_need_second_religion##":"Algunos ciudadanos quieren acceder a otrasreligiones cerca de sus hogares. La falta de diversidad religiosa limita el desarrollo urbano en determinadas zonas de la ciudad."
 "##religionadv_need_third_religion##":"Algunos ciudadanos quieren que se establezca una tercera religión cerca de su zona. Creen que esto atraería a patricios de más alta clase social."
+"##reorient_map_to_north##":"Orientar la visión al norte"
 "##replay_game##":"Volver a jugar el mapa"
 "##request_btn_tooltip##":"Haz clic aquí para hacer una solicitud."
 "##request_failed##":"El hecho de no haber atendido la última solicitud imperial, ya sea conscientemente o por torpeza, ha dañado un poco tu imagen en Roma. Tu puntuación de favor habría aumentado si hubieses conseguido los objetivos."
@@ -1323,6 +1332,8 @@
 "##romeGuard_low_entertainment##":"Si hubiera más diversiones en la ciudad, mi trabajo no resultaría tan aburrido."
 "##romeGuard_need_workers##":"¡La ciudad necesita muchos más trabajadores!"
 "##romeGuard_so_hungry##":"¿Cómo va a luchar un soldado con el estómago vacío?"
+"##rotate_map_clockwise##":"Rotar el mapa en sentido horario"
+"##rotate_map_counter-clockwise##":"Girar el mapa en sentido contrario a las agujas del reloj"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":"Soldado samnita"
@@ -1400,6 +1411,7 @@
 "##showing_odyssey_homer##":"En cartel: 'La Odisea', de Homero"
 "##showing_thecrito_plato##":"En cartel: 'El Critón', de Platón"
 "##simple_formation_text##":"Formación simple, que ofrece cierta ventaja a las tropas en actitud defensiva."
+"##sld_quite_daring##":"Bastante audaces"
 "##sldh_health_sparse##":"Escasa"
 "##sldh_health_strong##":"Fuertes"
 "##sldh_health_strongest##":"Muy fuertes"
@@ -1708,6 +1720,18 @@
 "##wine_workshops_need_some_workers##":"Esta bodega tiene muy poco personal, por lo que la producción de vino es más lenta de lo deseado."
 "##wine_workshops_patrly_workers##":"Esta bodega está trabajando por debajo de su capacidad máxima. Como resultado, la producción de vino será algo inferior."
 "##wine##":"Vino"
+"##wn_barbarian##":"Bárbaro"
+"##wn_carthaginians##":"Cartaginenses"
+"##wn_celts##":"Celtas"
+"##wn_eygptians##":"Egipcios"
+"##wn_goth##":"Godos"
+"##wn_graeci##":"Griegos"
+"##wn_indigene##":"Nativo"
+"##wn_judaean##":"Judíos"
+"##wn_numidian##":"Numidios"
+"##wn_picts##":"Pictos"
+"##wn_samnites##":"Samnitas"
+"##wn_selecids##":"Seleucidas"
 "##wnd_ratings_title##":"Puntuaciones"
 "##wndrt_culture##":"Cultura"
 "##wndrt_favor_tooltip##":"Haz clic aquí para asesorarte sobre la puntuación de favor imperial"
@@ -1745,9 +1769,11 @@
 "##wt_missionary##":"Misionero"
 "##wt_missioner_average_life##":"¡Salve! ¡Veo que dar a conocer a estos bárbaros el valor de la benevolencia romana va a ser un trabajo ingente!"
 "##wt_missioner_normal_life##":"Me alegra tanto ser romano. Deberías ver lo que hacen estos bárbaros en sus chozas."
+"##wt_patrician##":"Patricio"
 "##wt_prefect##":"Prefecto"
 "##wt_priest##":"Sacerdote"
 "##wt_rioter##":"Amotinado"
+"##wt_rprotestor##":"Manifestante"
 "##wt_sheep##":"Ovejas"
 "##wt_surgeon##":"Cirujano"
 "##wt_taxCollector##":"Recaudador de impuestos"
@@ -2101,82 +2127,4 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-"undefined":"undefined"
-"undefined":"undefined"}

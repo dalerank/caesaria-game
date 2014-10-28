@@ -575,13 +575,13 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
 
 void Empire::Impl::takeTaxes()
 {
-  foreach( it, cities)
+  foreach( it, cities )
   {
     CityPtr city = *it;
 
     int empireTax = 0;
 
-    if( is_kind_of<Rome>( city ) )
+    if( is_kind_of<Rome>( city ) || city->age() < 2 )
     {
       continue;
     }
