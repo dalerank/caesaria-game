@@ -33,6 +33,14 @@ namespace gfx
 class AnimationBank
 {
 public:
+  typedef enum {
+    simpleCart=100,
+    bigCart = 200,
+    megaCart = 300,
+    imigrantCart = 400,
+    circusCart = 500
+  } CartCapacity;
+
   typedef std::map< DirectedAction, Animation > MovementAnimation;
 
   static AnimationBank& instance();

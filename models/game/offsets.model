@@ -11,4 +11,6 @@
   smlneptune : { start : 1, stop : 1, offset : [ -1, -1] }
   smlvenus : { start : 1, stop : 1, offset : [ -1, -1] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
+  circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
+  circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
 }

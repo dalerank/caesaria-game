@@ -248,20 +248,6 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   }
 }
 
-/*WalkerList Layer::_getVisibleWalkerList(const WalkerTypes& aw, const TilePos& pos)
-{
-  Layer::WalkerTypes vWalkers = visibleWalkers();
-
-  WalkerList walkerList;
-  foreach( wtAct, vWalkers )
-  {
-    const WalkerList& foundWalker = _city()->walkers( pos );
-    walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
-  }
-
-  return walkerList;
-}*/
-
 void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;

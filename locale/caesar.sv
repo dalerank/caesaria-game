@@ -167,6 +167,7 @@
 "##balance_between_migration##":"Det är lika många som kommer till, respektive lämnar staden"
 "##balance##":"Balans"
 "##ballista##":"Kastmaskin"
+"##barbarian_are_closing_city##":"Fiender närmar sig staden"
 "##barbarian_attack_text##":""
 "##barbarian_attack_title##":"Fiender attackerar staden"
 "##barbarian_warrior##":"En barbarisk soldat"
@@ -820,6 +821,7 @@
 "##legion_formation_tooltip##":"Klicka här för att ändra legionens formation"
 "##legion_haveho_soldiers_and_barracks##":"Denna legion har för närvarande inga soldater. Den existerar bara till namnet och utan förläggningar i staden kan den inte ta emot några nya trupper."
 "##legion_haveho_soldiers##":"Denna legion har för närvarande inga soldater. Den existerar bara till namnet. Endast när nyligen utbildade trupper anländer från förläggningarna kommer den att förvandlas till en stridande enhet."
+"##legion_morale_is_too_low##":"Legionens stridsmoral är för dålig för att kunna svara!"
 "##legion##":"Militär"
 "##legionadv_no_legions##":"Du har inga legioner att leda. Du måste först bygga ett fort"
 "##legionary_average_life##":"Jag slåss intill döden! Staden är trygg så länge jag lever!"
@@ -1100,6 +1102,7 @@
 "##no_fishplace_in_city##":"Vår fiskebåt hoppas snart kunna hitta en fiskeplats. Det blir svårt att försörja sig om vi inte hittar fisk..."
 "##no_food_stored_last_month##":"Inga livsmedel lagrades förra månaden"
 "##no_goods_for_request##":"Du har inte tillräckligt med varor i dina handelsmagasin"
+"##no_industries_in_city##":"Inga industrier i staden"
 "##no_people_in_city##":"Inga människor i staden!"
 "##no_priority##":"Ingen prioritet"
 "##no_space_for_evolve##":"Denna boning skulle kunna få ännu högre status om den hade mer utrymme att expandera."
@@ -1147,8 +1150,13 @@
 "##oracles##":"Orakel"
 "##other##":"Diverse"
 "##our_foods_level_are_low##":"Våra livsmedelsförråd är små"
+"##out_legion_back_to_city##":"Vår legion marscherar tillbaka till vår stad"
+"##out_legion_go_to_location##":"Vår legion marscherar för att rädda en av rikets städer"
 "##out_of_credit##":"Kredit saknas!"
 "##overall_city_become_a_sleepy_province##":"Detta är på det hela taget en provins med få verkliga hot - precis så som invånarna vill ha det!"
+"##overall_city_population_static##":"Invånarantalet i din stad är i stort sett statiskt"
+"##overall_people_are_coming_city##":"Människor kommer, eller vill i allmänhet komma till din stad"
+"##overall_people_are_leaving_city##":"Totalt sett lämnar människor din stad"
 "##overlays##":"Översikt"
 "##ovrm_aborigen##":""
 "##ovrm_academy##":""
@@ -1256,7 +1264,7 @@
 "##profit##":"Nettoflöde in/ut"
 "##prosperity_lack_that_you_pay_less_rome##":"Att betala lägre löner än Rom ger din stad rykte att vara mindre blomstrande."
 "##province_has_peace_a_short_time##":"Denna provins har haft fred en kort tid, men dina invånare känner sig fortfarande inte helt säkra. Fler fredsår kommer att förbättra detta."
-"##qty_stacked_in_city_warehouse##":"i handelsmagasin"
+"##qty_stacked_in_city_warehouse##":"förvaras i stadens handelsmagasin"
 "##quaestor_salary##":"Kvestorslön på"
 "##quarry_bad_work##":"Det finns nästan inga anställda vid det här brottet, och produktionen står nästan stilla."
 "##quarry_full_work##":"Detta brott har alla anställda det behöver, det arbetar fullt ut med att producera marmor."
@@ -1292,6 +1300,7 @@
 "##religionadv_need_basic_religion##":"Fler och fler medborgare kräver minst en gudstjänstplats i sitt bostadsområde, för att förbättra gudarnas uppfattning om dem."
 "##religionadv_need_second_religion##":"Medborgarna i vissa områden vill ha tillgång till en annan religion nära hemmet. Bristen på religioner hindrar stadens utveckling i vissa områden."
 "##religionadv_need_third_religion##":"Vissa medborgare vill ha en tredje religion etablerad nära sitt område. De anser att detta skulle attrahera bättre patricierklasser."
+"##reorient_map_to_north##":"Ändra visningen norrut"
 "##replay_game##":"Börja om"
 "##request_btn_tooltip##":"Klicka här för att sända iväg begäran"
 "##request_failed##":"Din nyligen visade oförmåga eller ovilja att utföra en kejserlig begäran har skadat din ställning i Rom en aning."
@@ -1323,6 +1332,8 @@
 "##romeGuard_low_entertainment##":"Om det fanns bättre underhållning i staden skulle vakttjänsten inte kännas så betungande."
 "##romeGuard_need_workers##":"Den här staden behöver många fler arbetare."
 "##romeGuard_so_hungry##":"Hur ska en soldat kunna slåss utan mat?"
+"##rotate_map_clockwise##":"Rotera kartan medurs"
+"##rotate_map_counter-clockwise##":"Rotera kartan moturs"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":"En samnitisk soldat"
@@ -1400,6 +1411,7 @@
 "##showing_odyssey_homer##":"Uppför: 'Platons filosofi'"
 "##showing_thecrito_plato##":"Uppför: 'Oidipus', av Sofokles"
 "##simple_formation_text##":"En enkel formation, som ger fördelar åt försvarstrupper."
+"##sld_quite_daring##":"Mycket djärv"
 "##sldh_health_sparse##":"Gles"
 "##sldh_health_strong##":"Stark"
 "##sldh_health_strongest##":"Extremt stark"
@@ -1708,6 +1720,18 @@
 "##wine_workshops_need_some_workers##":"Denna vingård är underbemannad och det tar mycket längre tid att producera vin än vad det borde."
 "##wine_workshops_patrly_workers##":"Denna vingård utnyttjar inte full kapacitet. Vinproduktionen något långsammare än vad den borde vara."
 "##wine##":"Vin"
+"##wn_barbarian##":"Barbar"
+"##wn_carthaginians##":"Karthager"
+"##wn_celts##":"Kelter"
+"##wn_eygptians##":"Eygptier"
+"##wn_goth##":"Goter"
+"##wn_graeci##":"Greker"
+"##wn_indigene##":"Infödingar"
+"##wn_judaean##":"Judeér"
+"##wn_numidian##":"Numidier"
+"##wn_picts##":"Pikter"
+"##wn_samnites##":"Samniter"
+"##wn_selecids##":"Selucider"
 "##wnd_ratings_title##":"Ställning"
 "##wndrt_culture##":"Kultur"
 "##wndrt_favor_tooltip##":"Klicka här för information om din popularitetsställning"
@@ -1745,9 +1769,11 @@
 "##wt_missionary##":"Missionär"
 "##wt_missioner_average_life##":"Var hälsad! Jag ser att det finns mycket att göra med att lära dessa barbarer fördelarna med Roms välvilja."
 "##wt_missioner_normal_life##":"Jag är så glad att vara romare. Du skulle se vad dessa barbarer håller på med i sina hyddor!"
+"##wt_patrician##":"Patricier"
 "##wt_prefect##":"Prefekt"
 "##wt_priest##":"Präst"
 "##wt_rioter##":"Upprorsman"
+"##wt_rprotestor##":"Demonstrant"
 "##wt_sheep##":"Får"
 "##wt_surgeon##":"Kirurg"
 "##wt_taxCollector##":"Skatteindrivare"
@@ -2101,82 +2127,4 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-"undefined":"undefined"
-"undefined":"undefined"}
