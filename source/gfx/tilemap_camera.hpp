@@ -73,7 +73,7 @@ public signals:
   virtual Signal1<Point>& onPositionChanged();
   
 private:
-  void setCenter(Point pos);
+  void _setCenter(Point pos, bool checkBorder);
 
   class Impl;
   ScopedPtr< Impl > _d;

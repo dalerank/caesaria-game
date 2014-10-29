@@ -124,6 +124,12 @@ Tile* Tilemap::at( const Point& pos, bool overborder)
   }
 }
 
+TilePos Tilemap::p2tp(const Point &pos)
+{
+  return TilePos( (pos.x() + 2 * pos.y()) / 60,
+                  (pos.x() - 2 * pos.y()) / 60 );
+}
+
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
 const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
 Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }

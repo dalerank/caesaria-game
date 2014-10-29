@@ -40,8 +40,10 @@ class BuildOptions::Impl
 {
 public:
   typedef std::map< TileOverlay::Type, BuildingRule > BuildingRules;
+  typedef std::vector< TilePos > MemPoints;
 
   BuildingRules rules;
+  MemPoints memPoints;
 
   bool checkDesirability;
   unsigned int maximumForts;
@@ -51,6 +53,7 @@ BuildOptions::BuildOptions() : _d( new Impl )
 {
   _d->checkDesirability = true;
   _d->maximumForts = 999;
+  _d->memPoints.resize( 10 );
 }
 
 BuildOptions::~BuildOptions() {}
@@ -142,6 +145,18 @@ unsigned int BuildOptions::getBuildingsQuote(const TileOverlay::Type type) const
   return it != _d->rules.end() ? it->second.quotes : 999;
 }
 
+TilePos BuildOptions::memPoint(unsigned int index) const
+{
+  index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
+  return _d->memPoints[ index ];
+}
+
+void BuildOptions::setMemPoint(unsigned int index, TilePos point)
+{
+  index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
+  _d->memPoints[ index ] = point;
+}
+
 void BuildOptions::clear() {  _d->rules.clear(); }
 
 void BuildOptions::load(const VariantMap& options)
@@ -166,6 +181,14 @@ void BuildOptions::load(const VariantMap& options)
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
+  VariantList points = options.get("points").toList();
+  unsigned int index=0;
+  foreach( it, points )
+  {
+    setMemPoint( index, it->toTilePos() );
+    index++;
+  }
+
   _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
   _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
 }
@@ -181,11 +204,18 @@ VariantMap BuildOptions::save() const
     quotes[ typeName ] = it->second.quotes;
   }
 
+  VariantList points;
+  foreach( it, _d->memPoints )
+  {
+    points.push_back( *it );
+  }
+
   VariantMap ret;
   ret[ "buildings" ] = blds;
   ret[ "quotes" ] = quotes;
   ret[ "maximumForts" ] = _d->maximumForts;
   ret[ "check_desirability" ] = _d->checkDesirability;
+  ret[ "points" ] = points;
   return ret;
 }
 
@@ -194,6 +224,7 @@ BuildOptions& BuildOptions::operator=(const city::BuildOptions& a)
   _d->rules = a._d->rules;
   _d->checkDesirability = a._d->checkDesirability;
   _d->maximumForts = a._d->maximumForts;
+  _d->memPoints = a._d->memPoints;
 
   return *this;
 }

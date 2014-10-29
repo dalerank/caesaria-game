@@ -190,19 +190,6 @@ void Layer::handleEvent(NEvent& event)
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
     default: break;
     }
-
-    if( event.keyboard.control && event.keyboard.shift && event.keyboard.pressed )
-    {
-      LayerDrawOptions& opts = LayerDrawOptions::instance();
-      switch( event.keyboard.key )
-      {
-      case KEY_KEY_1: opts.toggle( LayerDrawOptions::drawGrid ); break;
-      case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
-      case KEY_KEY_3: opts.toggle( LayerDrawOptions::shadowOverlay ); break;
-      case KEY_KEY_4: opts.toggle( LayerDrawOptions::showPath ); break;
-      default: break;
-      }
-    }
   }
 }
 
