@@ -37,6 +37,10 @@
     move : { rc : "citizen01", start : 417, frames : 12, action : 1, step : 8 }
   }
 
+  circusCharioter : {
+    move : { rc : "carts", start : 537, frames : 8, action : 1, step : 8 }
+  }
+
   taxCollector : {
     move : { rc : "citizen01", start : 617, frames : 12, action : 1, step : 8 }
   }

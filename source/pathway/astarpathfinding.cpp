@@ -281,6 +281,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
 
   while( n == 0 || ( !_inArea( endPoints, current ) && n < maxLoopCount ))
   {
+    n++;
     // Look for the smallest F value in the openList and make it the current point
     foreach( point, openList)
     {
@@ -375,8 +376,6 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
         }
       }
     }
-
-    n++;
   }
 
   // Reset

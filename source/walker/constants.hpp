@@ -89,6 +89,7 @@ enum Type
   zebra,
   riverWave,
   supplier,
+  circusCharioter,
   all = 0xff,
   any = all
 };

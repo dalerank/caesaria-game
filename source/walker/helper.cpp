@@ -150,6 +150,7 @@ public:
     __REG_WTYPE( zebra      )
     __REG_WTYPE( supplier   )
     __REG_WTYPE( patrician  )
+    __REG_WTYPE( circusCharioter )
 #undef __REG_WTYPE
   }
 };

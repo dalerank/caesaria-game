@@ -13,39 +13,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_IMMIGRANT_H_INCLUDE_
-#define __CAESARIA_IMMIGRANT_H_INCLUDE_
+#ifndef _CAESARIA_CIRCUS_CHARIOTER_H_INCLUDE_
+#define _CAESARIA_CIRCUS_CHARIOTER_H_INCLUDE_
 
-#include "emigrant.hpp"
-#include "core/predefinitions.hpp"
+#include "walker.hpp"
 
-class Immigrant;
-typedef SmartPtr< Immigrant > ImmigrantPtr;
-
-/** This is an immigrant coming with his stuff */
-class Immigrant : public Emigrant
+class CircusCharioter : public Walker
 {
-public:
-  typedef enum { G_EMIGRANT_CART1=0, G_EMIGRANT_CART2, CT_MAX } CartType;
-
-  static ImmigrantPtr create( PlayerCityPtr city);
-
-  virtual void getPictures( gfx::Pictures &oPics);
+public:  
+  static WalkerPtr create(PlayerCityPtr city, HippodromePtr circus );
+  virtual ~CircusCharioter();
+  virtual void getPictures(gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);
 
-  virtual bool die();
-
-  virtual ~Immigrant();
 protected:
+  virtual void _reachedPathway();
   virtual void _changeDirection();
-  virtual void _updateThinks();
 
-protected:
-  const gfx::Picture& _cartPicture();
+private:
+  CircusCharioter( PlayerCityPtr city );
 
-  Immigrant( PlayerCityPtr city );
+  void _addToCircus(HippodromePtr circus );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_IMMIGRANT_H_INCLUDE_
+#endif //_CAESARIA_CIRCUS_CHARIOTER_H_INCLUDE_

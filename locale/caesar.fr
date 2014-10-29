@@ -167,6 +167,7 @@
 "##balance_between_migration##":""
 "##balance##":"Balance"
 "##ballista##":"Balliste"
+"##barbarian_are_closing_city##":""
 "##barbarian_attack_text##":"Les ennemis de Rome sont aux portes de votre cité. Ils tenteront probablement d'en forcer l'entrée pour piller votre vin et tout ce qui pourrait les intéresser !"
 "##barbarian_attack_title##":""
 "##barbarian_warrior##":"Un guerrier barbare"
@@ -820,6 +821,7 @@
 "##legion_formation_tooltip##":"Cliquez ici pour changer la formation des légions"
 "##legion_haveho_soldiers_and_barracks##":""
 "##legion_haveho_soldiers##":""
+"##legion_morale_is_too_low##":""
 "##legion##":"Légion"
 "##legionadv_no_legions##":""
 "##legionary_average_life##":""
@@ -1100,6 +1102,7 @@
 "##no_fishplace_in_city##":""
 "##no_food_stored_last_month##":""
 "##no_goods_for_request##":""
+"##no_industries_in_city##":""
 "##no_people_in_city##":""
 "##no_priority##":""
 "##no_space_for_evolve##":""
@@ -1147,8 +1150,13 @@
 "##oracles##":"Oracles"
 "##other##":"Divers"
 "##our_foods_level_are_low##":""
+"##out_legion_back_to_city##":""
+"##out_legion_go_to_location##":""
 "##out_of_credit##":""
 "##overall_city_become_a_sleepy_province##":""
+"##overall_city_population_static##":""
+"##overall_people_are_coming_city##":""
+"##overall_people_are_leaving_city##":""
 "##overlays##":""
 "##ovrm_aborigen##":"Aborigène"
 "##ovrm_academy##":"Universités"
@@ -1256,7 +1264,7 @@
 "##profit##":"Bénéfice / Pertes"
 "##prosperity_lack_that_you_pay_less_rome##":""
 "##province_has_peace_a_short_time##":""
-"##qty_stacked_in_city_warehouse##":"en stock dans les entrepôts de la cité"
+"##qty_stacked_in_city_warehouse##":""
 "##quaestor_salary##":"Salaire de questeur de"
 "##quarry_bad_work##":""
 "##quarry_full_work##":""
@@ -1292,6 +1300,7 @@
 "##religionadv_need_basic_religion##":""
 "##religionadv_need_second_religion##":""
 "##religionadv_need_third_religion##":""
+"##reorient_map_to_north##":""
 "##replay_game##":""
 "##request_btn_tooltip##":""
 "##request_failed##":""
@@ -1323,6 +1332,8 @@
 "##romeGuard_low_entertainment##":"Garder ce mur est le passe-temps le plus intéressant qu'on puisse trouver dans cette cité..."
 "##romeGuard_need_workers##":"Cette cité manque d'ouvriers !"
 "##romeGuard_so_hungry##":"Comment un soldat est-il sensé se battre s'il n'a rien dans le ventre ?"
+"##rotate_map_clockwise##":""
+"##rotate_map_counter-clockwise##":""
 "##rotateLeftBtnTooltip##":"Tourner la carte vers la gauche"
 "##rotateRightBtnTooltip##":"Tourner la carte vers la droite"
 "##samnite_soldier##":""
@@ -1400,6 +1411,7 @@
 "##showing_odyssey_homer##":""
 "##showing_thecrito_plato##":""
 "##simple_formation_text##":"Une formation simple qui donne un avantage au défenseur."
+"##sld_quite_daring##":""
 "##sldh_health_sparse##":""
 "##sldh_health_strong##":""
 "##sldh_health_strongest##":""
@@ -1708,6 +1720,18 @@
 "##wine_workshops_need_some_workers##":"Cette fabrique ne dispose pas de suffisamment d'ouvriers. La production s'en trouve réduite."
 "##wine_workshops_patrly_workers##":"Cette fabrique manque de main-d'oeuvre, et la production de vin est donc plus longue que prévue."
 "##wine##":"Vin"
+"##wn_barbarian##":""
+"##wn_carthaginians##":""
+"##wn_celts##":""
+"##wn_eygptians##":""
+"##wn_goth##":""
+"##wn_graeci##":""
+"##wn_indigene##":""
+"##wn_judaean##":""
+"##wn_numidian##":""
+"##wn_picts##":""
+"##wn_samnites##":""
+"##wn_selecids##":""
 "##wnd_ratings_title##":""
 "##wndrt_culture##":""
 "##wndrt_favor_tooltip##":""
@@ -1745,9 +1769,11 @@
 "##wt_missionary##":""
 "##wt_missioner_average_life##":""
 "##wt_missioner_normal_life##":""
+"##wt_patrician##":""
 "##wt_prefect##":"Préfet"
 "##wt_priest##":""
 "##wt_rioter##":""
+"##wt_rprotestor##":""
 "##wt_sheep##":"Mouton"
 "##wt_surgeon##":"Chirurgien"
 "##wt_taxCollector##":"Percépteur"
@@ -2101,82 +2127,4 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-"undefined":"undefined"
-"undefined":"undefined"}
