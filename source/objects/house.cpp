@@ -999,13 +999,13 @@ void House::_update( bool needChangeTexture )
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "House: failed change texture for size %d", size().width() );
+      Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
       pic = Picture::getInvalid();
     }
     setPicture( pic );
   }
 
-  _d->isFlat = picture().height() > ( TileHelper::baseSize().height() * size().width() );
+  _d->isFlat = picture().height() <= ( TileHelper::baseSize().height() * size().width() );
 
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->initGoodStore( size().area() );
@@ -1015,7 +1015,7 @@ int House::roadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
-  bool needUpdate = _d->hid <= HouseLevel::hovel;
+  bool needUpdate = _d->habitants.empty();
 
   int peoplesCount = math::max(_d->maxHabitants - _d->habitants.count(), 0u);
   CitizenGroup newState = _d->habitants;

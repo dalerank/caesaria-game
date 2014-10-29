@@ -34,6 +34,12 @@ Pictures& Pictures::operator<<(const Picture& pic)
   return *this;
 }
 
+Pictures& Pictures::append(const Pictures& pics)
+{
+  this->insert( this->end(), pics.begin(), pics.end() );
+  return *this;
+}
+
 void Pictures::append(const Picture &pic, const Point &offset)
 {
   this->push_back( pic );

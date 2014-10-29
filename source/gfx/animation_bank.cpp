@@ -22,7 +22,6 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
 #include "core/logger.hpp"
-#include "walker/immigrant.hpp"
 #include "core/saveadapter.hpp"
 #include "walker/helper.hpp"
 #include "picture_info_bank.hpp"
@@ -32,14 +31,6 @@ using namespace constants;
 
 namespace gfx
 {
-
-namespace {
-  typedef enum {
-    simpleCart=100,
-    bigCart = 200,
-    megaCart = 400
-  } CartCapacity;
-}
 
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
@@ -158,8 +149,11 @@ void AnimationBank::Impl::loadCarts()
   carts[megaCart+Good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
   carts[megaCart+Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
 
-  carts[Immigrant::G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
-  carts[Immigrant::G_EMIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
+  carts[imigrantCart + 0] = fillCart( ResourceGroup::carts, 129, !frontCart);
+  carts[imigrantCart + 1] = fillCart( ResourceGroup::carts, 137, !frontCart);
+
+  carts[circusCart + 0] = fillCart( ResourceGroup::carts, 601, !frontCart);
+  carts[circusCart + 1] = fillCart( ResourceGroup::carts, 609, !frontCart);
 }
 
 AnimationBank& AnimationBank::instance()
