@@ -133,6 +133,7 @@ public:
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
+  void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
   vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
@@ -226,21 +227,23 @@ void Level::initialize()
   CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );
   CONNECT( _d->extMenu, onRotateLeft(), &_d->renderer, CityRenderer::rotateLeft );
   CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectLayer );
-  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
-  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow );
-  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow );
-  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
+  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow )
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow )
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow )
+  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow )
+  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next )
 
-  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter );
-  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
+  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add )
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter )
+  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled )
 
-  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
-  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
+  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
+  CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
+
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
@@ -392,6 +395,14 @@ void Level::Impl::makeFullScreenshot()
 
   std::string filename = getScreenshotName();
   PictureConverter::save( *fullPic, filename, "PNG" );
+}
+
+void Level::Impl::handleDirectionChange(Direction direction)
+{
+  DirectionHelper dHelper;
+
+  events::GameEventPtr e = events::WarningMessageEvent::create( _(dHelper.findName( direction ) ) );
+  e->dispatch();
 }
 
 std::string Level::Impl::getScreenshotName()

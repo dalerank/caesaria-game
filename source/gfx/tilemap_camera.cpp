@@ -28,6 +28,8 @@
 
 #include <set>
 
+using namespace constants;
+
 namespace gfx
 {
 
@@ -70,6 +72,7 @@ public:
 
 public signals:
   Signal1<Point> onPositionChangedSignal;
+  Signal1<Direction> onDirectionChangedSignal;
 };
 
 TilemapCamera::TilemapCamera() : _d( new Impl )
@@ -83,9 +86,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->borderSize = Size( 90 );
 }
 
-TilemapCamera::~TilemapCamera()
-{
-}
+TilemapCamera::~TilemapCamera() {}
 
 void TilemapCamera::init(Tilemap &tilemap, Size size)
 {
@@ -189,6 +190,7 @@ void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
 int TilemapCamera::scrollSpeed() const{ return _d->scrollSpeed; }
 Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tilemap->at( pos ); }
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
+Signal1<Direction>& TilemapCamera::onDirectionChanged(){  return _d->onDirectionChangedSignal;}
 void TilemapCamera::moveRight(const int amount){  _setCenter( Point( centerX() + amount, centerZ() ), true );}
 void TilemapCamera::moveLeft(const int amount){  _setCenter( Point( centerX() - amount, centerZ() ), true );}
 void TilemapCamera::moveUp(const int amount){  _setCenter( Point( centerX(), centerZ() + amount ), true );}

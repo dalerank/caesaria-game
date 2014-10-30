@@ -262,7 +262,7 @@ void CityRenderer::rotateRight()
   _d->tilemap->turnRight();
   _d->camera.refresh();
   _d->camera.tiles();
-  _d->resetWalkersAfterTurn();
+  _d->resetWalkersAfterTurn();  
 }
 
 void CityRenderer::rotateLeft()

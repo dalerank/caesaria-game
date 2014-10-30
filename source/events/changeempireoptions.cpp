@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "city/build_options.hpp"
+#include "events/showinfobox.hpp"
 #include "world/empire.hpp"
 
 namespace events

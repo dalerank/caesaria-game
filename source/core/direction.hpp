@@ -16,6 +16,8 @@
 #ifndef _CAESARIA_DIRECTION_INCLUDE_H_
 #define _CAESARIA_DIRECTION_INCLUDE_H_
 
+#include "enumerator.hpp"
+
 namespace constants
 {
 
@@ -32,6 +34,25 @@ typedef enum
   northEast,
   countDirection
 } Direction;
+
+class DirectionHelper : public EnumsHelper<Direction>
+{
+public:
+  DirectionHelper() : EnumsHelper<Direction>( noneDirection )
+  {
+#define ADD_DIRECTION(a) append(a, "##"#a"##" );
+    ADD_DIRECTION(noneDirection)
+    ADD_DIRECTION(north)
+    ADD_DIRECTION(northWest)
+    ADD_DIRECTION(west)
+    ADD_DIRECTION(southWest)
+    ADD_DIRECTION(south)
+    ADD_DIRECTION(southEast)
+    ADD_DIRECTION(east)
+    ADD_DIRECTION(northEast)
+#undef ADD_DIRECTION
+  }
+};
 
 } //end namespace constants
 
