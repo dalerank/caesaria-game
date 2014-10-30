@@ -188,13 +188,14 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
+
   case win_mission:
   case fail_mission:
   {
     scene::Level* l = safety_cast<scene::Level*>( game->scene() );
     if( l )
     {
-      Signal2<scene::Level*,bool>& signal = event == win_mission ? winMissionSignal : failedMissionSignal;
+      Signal2<scene::Level*,bool>& signal = (event == win_mission ? winMissionSignal : failedMissionSignal);
       emit signal( l, true);
     }
   }

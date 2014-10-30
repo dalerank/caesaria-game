@@ -133,6 +133,7 @@ public:
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
+  void extendReign( int years );
   void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
@@ -250,8 +251,8 @@ void Level::initialize()
 
   DebugHandler& debug = DebugHandler::instance();
   debug.insertTo( _d->game, _d->topMenu );
-  CONNECT( &debug, onWinMission(), _d.data(), Impl::checkFailedMission )
-  CONNECT( &debug, onFailedMission(), _d.data(), Impl::checkWinMission )
+  CONNECT( &debug, onWinMission(), _d.data(), Impl::checkWinMission )
+  CONNECT( &debug, onFailedMission(), _d.data(), Impl::checkFailedMission )
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
@@ -395,6 +396,15 @@ void Level::Impl::makeFullScreenshot()
 
   std::string filename = getScreenshotName();
   PictureConverter::save( *fullPic, filename, "PNG" );
+}
+
+void Level::Impl::extendReign(int years)
+{
+  city::VictoryConditions vc;
+  vc = game->city()->victoryConditions();
+  vc.addReignYears( years );
+
+  game->city()->setVictoryConditions( vc );
 }
 
 void Level::Impl::handleDirectionChange(Direction direction)
@@ -779,13 +789,14 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       lb->setTextAlignment( align::center, align::center );
       lb->setFont( Font::create( FONT_6 ) );
 
-      PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 142), _("##restart_mission##") );
+      PushButton* btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 142), _("##restart_mission##") );
+      btnRestart->setTooltipText( _("##restart_mission_tip##") );
       PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 172), _("##exit_to_main_menu##") );
 
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
 
-      CONNECT( btn, onClicked(), lvl, Level::_restartMission );
+      CONNECT( btnRestart, onClicked(), lvl, Level::_restartMission );
       CONNECT( btnMenu, onClicked(), lvl, Level::_exitToMainMenu );
     }
   }
@@ -812,6 +823,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
     mapToLoad = wt.nextMission();
 
     CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
+    CONNECT( wnd, onContinueRules(), this, Impl::extendReign )
   }
 }
 
