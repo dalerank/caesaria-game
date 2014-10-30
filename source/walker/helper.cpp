@@ -87,6 +87,7 @@ public:
     __REG_WNATION( graeci )
     __REG_WNATION( judaean )
     __REG_WNATION( native )
+    __REG_WNATION( visigoth )
 #undef __REG_WNATION
 
       appendType( walker::all,        "unknown" );

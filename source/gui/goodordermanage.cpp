@@ -146,7 +146,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
     lbStackedQty->setText( text );
   }
 
-  _d->btnTradeState = new TradeStateButton( this, Rect( 50, 85, width() - 60, 85 + 30), -1 );
+  _d->btnTradeState = new TradeStateButton( this, Rect( 50, 90, width() - 60, 90 + 30), -1 );
 
   updateTradeState();
   updateIndustryState();
@@ -208,9 +208,9 @@ bool GoodOrderManageWindow::isIndustryEnabled()
   bool anyFactoryWork = false;
   FactoryList factories = helper.getProducers<Factory>( _d->type );
   foreach( factory, factories )
-    {
-      anyFactoryWork |= (*factory)->isActive();
-    }
+  {
+    anyFactoryWork |= (*factory)->isActive();
+  }
 
   return factories.empty() ? true : anyFactoryWork;
 }
@@ -218,27 +218,25 @@ bool GoodOrderManageWindow::isIndustryEnabled()
 void GoodOrderManageWindow::updateIndustryState()
 {
   city::Helper helper( _d->city );
-  BuildingList items = helper.find<Building>( _d->type );
-
-  bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
-  if( items.empty() )
-  {
-    _d->btnIndustryState->setEnabled( false );
-    _d->btnIndustryState->setBackgroundStyle( PushButton::noBackground );
-    _d->btnIndustryState->setText( _("##no_industries_in_city##" ) );
-    return;
-  }
-
-
   int workFactoryCount=0, idleFactoryCount=0;
-
   FactoryList factories = helper.getProducers<Factory>( _d->type );
   foreach( factory, factories )
   {
     ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
   }
 
-  std::string text = StringHelper::format( 0xff, "%d %s, %d %s", workFactoryCount, _("##work##"),
+  //bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
+  if( factories.empty() )
+  {
+    _d->btnIndustryState->setEnabled( false );
+    _d->btnIndustryState->setBackgroundStyle( PushButton::noBackground );
+    _d->btnIndustryState->setText( _("##no_industries_in_city##" ) );
+    return;
+  }  
+
+  std::string postfix = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
+
+  std::string text = StringHelper::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfix),
                                            idleFactoryCount, _("##idle_factory_in_city##") );
   _d->lbIndustryInfo->setText( text );
 

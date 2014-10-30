@@ -111,6 +111,7 @@ enum Nation
   graeci,
   judaean,
   native,
+  visigoth,
   nationCount
 };
 
