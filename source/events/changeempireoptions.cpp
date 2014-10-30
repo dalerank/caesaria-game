@@ -52,7 +52,19 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
 
   if( !em_opts.empty() )
   {
-    game.empire()->load( em_opts );
+    world::EmpirePtr empire = game.empire();
+
+    unsigned int lastWorkerSalary = empire->workerSalary();
+
+    empire->load( em_opts );
+
+    if( empire->workerSalary() != lastWorkerSalary )
+    {
+      bool raiseSalary = empire->workerSalary() - lastWorkerSalary;
+
+      events::GameEventPtr e = events::ShowInfobox::create( "##rome##", raiseSalary ? "##rome_raises_wages##" : "##rome_lowers_wages##");
+      e->dispatch();
+    }
   }
 
   Variant adv_enabled = adv_options.get( lc_enabled );

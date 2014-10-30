@@ -252,6 +252,7 @@ void Empire::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, objUid, _d->objUid, stream )
   VARIANT_LOAD_ANYDEF_D( _d, enabled, _d->enabled, stream )
   VARIANT_LOAD_ANYDEF_D( _d, maxBarbariansGroups, _d->maxBarbariansGroups, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, _d->workerSalary, stream )
   VARIANT_LOAD_ANYDEF_D( _d, rateInterest, _d->rateInterest, stream )
 
   _d->trading.load( stream.get( "trade").toMap() );
@@ -276,6 +277,8 @@ void Empire::setCitiesAvailable(bool value)
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
+void Empire::setWorkerSalary(unsigned int value){ _d->workerSalary = math::clamp<unsigned int>( value, 10, 50); }
+
 bool Empire::isAvailable() const{  return _d->enabled; }
 void Empire::setAvailable(bool value) { _d->enabled = value; }
 
