@@ -78,6 +78,8 @@
 #include "city/cityservice_info.hpp"
 #include "gfx/layer.hpp"
 #include "game/debug_handler.hpp"
+#include "city/build_options.hpp"
+#include "events/movecamera.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -546,7 +548,7 @@ void Level::handleEvent( NEvent& event )
 
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
-    if( event.keyboard.control && !event.keyboard.shift )
+    if( !event.keyboard.shift )
     {
       bool handled = true;
       switch( event.keyboard.key )
@@ -576,6 +578,7 @@ void Level::handleEvent( NEvent& event )
       case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
       case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
       case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
+
       default:
         handled = false;
       break;
@@ -613,8 +616,38 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
-    case KEY_F5: _d->makeFastSave(); break;
-    case KEY_F9: _resolveLoadGame( "" ); break;
+    case KEY_F5:
+      if( event.keyboard.control )
+        _d->makeFastSave();
+    break;
+
+    case KEY_F9:
+      if( event.keyboard.control )
+        _resolveLoadGame( "" );
+    break;
+
+    case KEY_KEY_1: case KEY_KEY_2:
+    case KEY_KEY_3: case KEY_KEY_4:
+    {
+      if( event.keyboard.control )
+      {
+        unsigned int index = event.keyboard.key - KEY_KEY_1;
+        city::BuildOptions bopts;
+        bopts = _d->game->city()->buildOptions();
+        if( event.keyboard.shift )
+        {
+          TilePos camPos = _d->renderer.camera()->center();
+          bopts.setMemPoint( index, camPos );
+          _d->game->city()->setBuildOptions( bopts );
+        }
+        else
+        {
+          TilePos camPos = bopts.memPoint( index );
+          _d->renderer.camera()->setCenter( camPos );
+        }
+      }
+    }
+    break;
 
     case KEY_SNAPSHOT:
       if( !event.keyboard.shift )
