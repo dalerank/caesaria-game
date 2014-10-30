@@ -105,6 +105,7 @@ public:
   std::string mapToLoad;
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
+  DebugHandler dhandler;
 
   int result;
 
@@ -249,10 +250,9 @@ void Level::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
-  DebugHandler& debug = DebugHandler::instance();
-  debug.insertTo( _d->game, _d->topMenu );
-  CONNECT( &debug, onWinMission(), _d.data(), Impl::checkWinMission )
-  CONNECT( &debug, onFailedMission(), _d.data(), Impl::checkFailedMission )
+  _d->dhandler.insertTo( _d->game, _d->topMenu );
+  CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
+  CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}

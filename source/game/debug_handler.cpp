@@ -84,12 +84,6 @@ public signals:
   Signal2<scene::Level*, bool> winMissionSignal;
 };
 
-DebugHandler &DebugHandler::instance()
-{
-  static DebugHandler inst;
-  return inst;
-}
-
 void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
 {
   _d->game = game;
@@ -130,10 +124,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
 #undef ADD_DEBUG_EVENT
 }
 
-DebugHandler::~DebugHandler()
-{
-
-}
+DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
