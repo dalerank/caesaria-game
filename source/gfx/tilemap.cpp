@@ -263,7 +263,7 @@ TilesArray Tilemap::getArea(int range, const TilePos& center) const
 void Tilemap::save( VariantMap& stream ) const
 {
   // saves the graphics map
-  std::vector<int> bitsetInfo;
+  std::vector<long> bitsetInfo;
   std::vector<short> desInfo;
   std::vector<short> idInfo;
 
@@ -279,7 +279,7 @@ void Tilemap::save( VariantMap& stream ) const
   ByteArray baBitset;
   ByteArray baDes;
   ByteArray baId;
-  baBitset.resize( bitsetInfo.size() * sizeof(int) );
+  baBitset.resize( bitsetInfo.size() * sizeof(long) );
   baDes.resize( desInfo.size() * sizeof(short) );
   baId.resize( idInfo.size() * sizeof(short) );
 
