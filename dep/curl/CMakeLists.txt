@@ -290,7 +290,7 @@ include_directories( ${DEP_SOURCE_DIR} )
 add_definitions( -DCURL_STATICLIB )
 add_definitions( -DCURL_DISABLE_LDAP )
 
-add_library(${CURLLIB_NAME} STATIC ${CURL_SOURCES_LIST})
+add_library(${PROJECT_NAME} STATIC ${CURL_SOURCES_LIST})
 
 
 # Expose public includes to other through cache variable.

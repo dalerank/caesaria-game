@@ -52,7 +52,7 @@ if (CURL_FOUND)
 endif()
 
 if(WIN32)
-  target_link_libraries( ${PROJECT_NAME} psapi ${CURLLIB_NAME} ws2_32 )
+  target_link_libraries( ${PROJECT_NAME} psapi ${CURL_LIBRARY} ws2_32 )
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
@@ -62,7 +62,7 @@ if(HAIKU)
 endif(HAIKU)
 
 if(UNIX)
-  target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
+  target_link_libraries( ${PROJECT_NAME} ${CURL_LIBRARY} )
   target_link_libraries( ${PROJECT_NAME} pthread )
   set(EXECUTABLE_FILENAME "updater.linux")
 endif(UNIX)
