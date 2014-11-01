@@ -234,10 +234,11 @@ void GoodOrderManageWindow::updateIndustryState()
     return;
   }  
 
-  std::string postfix = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
+  std::string postfixWork = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
+  std::string postfixIdle = (workFactoryCount%10 == 1) ? "##idle_factory_in_city##" : "##idle_factories_in_city##";
 
-  std::string text = StringHelper::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfix),
-                                           idleFactoryCount, _("##idle_factory_in_city##") );
+  std::string text = StringHelper::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfixWork),
+                                           idleFactoryCount, _(postfixIdle) );
   _d->lbIndustryInfo->setText( text );
 
   bool industryEnabled = isIndustryEnabled();

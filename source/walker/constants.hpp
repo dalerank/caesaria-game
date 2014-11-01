@@ -112,6 +112,7 @@ enum Nation
   judaean,
   native,
   visigoth,
+  gaul,
   nationCount
 };
 
