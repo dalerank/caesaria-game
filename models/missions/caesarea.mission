@@ -8,7 +8,7 @@
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : 1
-  preview.text : "##capua_preview_mission##"
+  preview.text : "##caesarea_preview_mission##"
   preview.image : ""
 	
   win : {
