@@ -74,7 +74,6 @@ class Briefing::Impl
 {
 public:
   static const int currentVesion=1;
-  int result;
   bool isStopped;
   gui::Label* missionTitle;
   gui::Label* cityCaption;
@@ -83,8 +82,13 @@ public:
   gfx::Engine* engine;
   std::string fileMap;
   std::string filename;
+  Briefing::Result result;
 
-  void resolvePlayMission() {    isStopped = true;  }
+  void resolvePlayMission()
+  {
+    result = Briefing::loadMission;
+    isStopped = true;
+  }
 
   void resolveSelecMission( std::string mission, std::string title )
   {
@@ -153,9 +157,14 @@ void Briefing::initialize()
     _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }
+  else
+  {
+    _d->isStopped = true;
+    _d->result = Briefing::mainMenu;
+  }
 }
 
-int Briefing::result() const{  return Briefing::loadMission;}
+int Briefing::result() const{  return _d->result; }
 bool Briefing::isStopped() const{  return _d->isStopped;}
 std::string Briefing::getMapName() const{  return _d->fileMap;}
 

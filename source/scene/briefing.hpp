@@ -36,6 +36,7 @@ public:
   typedef enum
   {
     loadMission,
+    mainMenu,
     unlknowState=0xff
   } Result;
 
