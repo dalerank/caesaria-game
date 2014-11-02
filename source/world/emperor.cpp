@@ -89,10 +89,13 @@ public:
   typedef std::map< std::string, Relation > Relations;
   Relations relations;
   Empire* empire;
+  std::string name;
 };
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
 {
+  __D_IMPL(d,Emperor)
+  d->name = "Emperor";
 }
 
 Emperor::~Emperor(){}
@@ -231,17 +234,53 @@ void Emperor::soldierDie(const std::string& cityname)
   d->relations[ cityname ].removeSoldier();
 }
 
+std::string Emperor::name() const { return _dfunc()->name; }
+
 void Emperor::cityTax(const std::string &cityname, unsigned int money)
 {
   __D_IMPL(d,Emperor)
   d->relations[ cityname ].lastTaxDate = GameDate::current();
 }
 
+void Emperor::resetRelations(const StringArray& cities)
+{
+  __D_IMPL(d,Emperor)
+  CityList empCities;
+  if( !cities.empty() )
+  {
+    if( cities.front() == "all" )
+    {
+      empCities = d->empire->cities();
+    }
+    else
+    {
+      foreach( it, cities )
+      {
+        CityPtr pCity = d->empire->findCity( *it );
+        if( pCity.isValid() )
+          empCities << pCity;
+      }
+    }
+
+    foreach( it, empCities )
+    {
+      Relation& r = d->relations[ (*it)->name() ];
+
+      r.value = 50;
+      r.lastGiftValue = 0;
+      r.lastTaxDate = GameDate::current();
+      r.lastGiftDate = GameDate::current();
+    }
+  }
+
+}
+
 VariantMap Emperor::save() const
 {
+  __D_IMPL_CONST(d,Emperor)
   VariantMap ret;
 
-  Impl::Relations r = _dfunc()->relations;
+  Impl::Relations r = d->relations;
   VariantMap vm_relations;
   foreach( it, r )
   {
@@ -249,20 +288,24 @@ VariantMap Emperor::save() const
   }
 
   ret[ "relations" ] = vm_relations;
+  VARIANT_SAVE_STR_D( ret, d, name )
   return ret;
 }
 
 void Emperor::load(const VariantMap& stream)
 {
+  __D_IMPL(d,Emperor)
   VariantMap vm_relations = stream.get( "relations" ).toMap();
 
-  Impl::Relations& relations = _dfunc()->relations;
+  Impl::Relations& relations = d->relations;
   foreach( it, vm_relations )
   {
     Relation r;
     r.load( it->second.toMap() );
     relations[ it->first ] = r;
   }
+
+  VARIANT_LOAD_STR_D( d, name, stream )
 }
 
 void Emperor::init(Empire &empire) { _dfunc()->empire = &empire; }

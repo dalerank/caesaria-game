@@ -39,8 +39,10 @@ public:
   void timeStep( unsigned int time );
 
   void soldierDie( const std::string& cityname );
+  std::string name() const;
 
   void cityTax( const std::string& cityname, unsigned int money );
+  void resetRelations( const StringArray& cities );
 
   VariantMap save() const;
   void load( const VariantMap& stream );

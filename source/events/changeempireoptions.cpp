@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "city/build_options.hpp"
+#include "world/emperor.hpp"
 #include "events/showinfobox.hpp"
 #include "world/empire.hpp"
 
@@ -48,16 +49,17 @@ bool ChangeEmpireOptions::_mayExec(Game& game, unsigned int time) const {  retur
 
 void ChangeEmpireOptions::_exec(Game& game, unsigned int)
 {
-  VariantMap em_opts = _vars.get( "empire" ).toMap();
-  VariantMap adv_options = _vars.get( "adviser" ).toMap();
+  VariantMap emOpts = _vars.get( "empire" ).toMap();
+  VariantMap advOptions = _vars.get( "adviser" ).toMap();
+  VariantMap newEmperorOpts = _vars.get( "new_emperor" ).toMap();
 
-  if( !em_opts.empty() )
+  if( !emOpts.empty() )
   {
     world::EmpirePtr empire = game.empire();
 
     unsigned int lastWorkerSalary = empire->workerSalary();
 
-    empire->load( em_opts );
+    empire->load( emOpts );
 
     if( empire->workerSalary() != lastWorkerSalary )
     {
@@ -68,10 +70,28 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
     }
   }
 
-  Variant adv_enabled = adv_options.get( lc_enabled );
+  Variant adv_enabled = advOptions.get( lc_enabled );
   if( adv_enabled.isValid() )
   {
     game.city()->setOption( PlayerCity::adviserEnabled, adv_enabled );
+  }
+
+  if( !newEmperorOpts.empty() )
+  {
+    world::Emperor& emperor = game.empire()->emperor();
+    StringArray resetCities = newEmperorOpts.get( "reset_relations" ).toStringArray();
+    if( resetCities.empty() )
+      resetCities << "all";
+
+    emperor.resetRelations( resetCities );
+
+    std::string text = newEmperorOpts.get( "text" ).toString();
+
+    if( text.empty() )
+      text = "##emperor_changed_text##";
+
+    GameEventPtr e = events::ShowInfobox::create( "##rome##", "##emperor_changed_title##", _(text) );
+    e->dispatch();
   }
 }
 

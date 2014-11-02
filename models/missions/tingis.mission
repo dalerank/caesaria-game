@@ -57,6 +57,14 @@
   		
   events :
   {
+    emperor_changed#empire_options : {
+      date : "-27.02.01"
+      new_emperor : {
+        reset_relations : "all"
+        text : "##octaviant_august_our_new_emperor##"
+      }
+    }
+
     population_milestone_500#messagebox : {
       date : "-350.01.01"
       population : 500
