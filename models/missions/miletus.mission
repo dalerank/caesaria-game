@@ -108,7 +108,7 @@
       }
     }
 
-    ity_indebt#city_indebt : {
+    city_indebt#city_indebt : {
       date : "-350.01.01"
       type : "city_indebt"
       count : 2
@@ -533,6 +533,22 @@
       exec : {
         message#messagebox : {
           good : "wine"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_rising5#trading_options : {
+      date : "-200.07.01"
+      goods : {
+        marble : { relative : true, buy : 35, sell : 35 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "marble"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
           send2scribe : true

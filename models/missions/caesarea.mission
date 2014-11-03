@@ -97,7 +97,7 @@
       }
     }
 
-	  weapon_price_down#trading_options : {
+    weapon_price_rising#trading_options : {
       date : "3.08.01"
       goods : {
         weapon : { relative : true, buy : -55, sell : -55 }
@@ -106,22 +106,22 @@
       exec : {
         message#messagebox : {
           good : "weapon"
-          title : "##a_price_down_title##"
-          text : "##a_price_down_text##"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
           send2scribe : true
         }
       }
     }
 
-	  wine_price_rising#trading_options : {
+    grape_price_rising#trading_options : {
       date : "8.04.01"
       goods : {
-        pottery : { realtive: true, buy : 20, sell : 20 }
+        grape : { realtive: true, buy : 20, sell : 20 }
       }
 
       exec : {
         message#messagebox : {
-          good : "wine"
+          good : "grape"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
           send2scribe : true

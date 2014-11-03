@@ -141,7 +141,7 @@
       fail : { favour : -10, appendMonth : 12 }
     }
     
-	emperor_request_pottery2#city_request : {
+    emperor_request_pottery2#city_request : {
       date : "-267.04.01"
       reqtype : "good_request"
       video : "/smk/Urgent_message2.smk"
@@ -231,7 +231,7 @@
       fail : { favour : -10, appendMonth : 12 }
     }
 
-	price_rising1#trading_options : {
+    price_rising1#trading_options : {
       date : "-265.04.01"
       goods : {
         fruit : { relative : true, buy : 20, sell : 15 }
@@ -279,10 +279,10 @@
       }
     }
 
-	price_rising4#trading_options : {
+    pottery_price_down#trading_options : {
       date : "-250.04.01"
       goods : {
-        pottery : { relative : true, buy : 70, sell : 50 }
+        pottery : { relative : true, buy : -15, sell : -15 }
       }
 
       exec : {
