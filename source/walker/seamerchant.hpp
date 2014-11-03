@@ -37,7 +37,8 @@ public:
 
   bool isWaitFreeDock() const;
 
-  virtual std::string currentThinks() const;
+  virtual std::string thoughts(Thought th) const;
+  virtual TilePos places(Place type) const;
 
 protected:
   virtual void _reachedPathway();

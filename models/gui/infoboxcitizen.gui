@@ -1,0 +1,28 @@
+{  
+  geometry : [ 0, 0, 460, 350 ]
+  bgtype : "whiteFrame"
+
+  lbCurrentAction#Label : {
+    geometry : [ 40, "ph-80", "pw-20", "ph-60" ]
+    font : "FONT_2"
+  }
+
+  lbBaseBuilding#Label : {
+    geometry : [ 40, "ph-60", "pw-20", "ph-40" ]
+    font : "FONT_2"
+  }
+
+  btnMove2dst#PushButton : {
+    geometry : [ 16, "ph-80", 40, "ph-60" ]
+    font : "FONT_2"
+    bgtype : "whiteBorderUp"
+    text : ">"
+  }
+
+  btnMove2base#PushButton : {
+    geometry : [ 16, "ph-60", 40, "ph-40" ]
+    font : "FONT_2"
+    bgtype : "whiteBorderUp"
+    text : ">"
+  }
+}

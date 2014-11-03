@@ -38,7 +38,7 @@ public:
   virtual bool die();
 
 protected: 
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
   virtual void _reachedPathway();
 
 private:
