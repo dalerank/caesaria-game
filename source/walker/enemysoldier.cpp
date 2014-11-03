@@ -121,6 +121,7 @@ void EnemySoldier::_reachedPathway()
   switch( _subAction() )
   {
   case check4attack:
+  case go2enemy:
   case go2position:
   {
     bool findAny4attack = _tryAttack();
@@ -208,7 +209,7 @@ void EnemySoldier::_check4attack()
 
   if( pathway.isValid() )
   {
-    _setSubAction( go2position );
+    _setSubAction( target().i() > 0 ? go2enemy : go2position );
     _updatePathway( pathway );
     go();
   }
@@ -307,20 +308,16 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
 {
   Pathway ret;
 
-  for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
-  {
-    ConstructionList constructions = _findContructionsInRange( tmpRange );
+  ConstructionList constructions = _findContructionsInRange( range );
 
-    ConstructionPtr c = constructions.random();
-    //foreach( it, constructions )
+  foreach( it, constructions )
+  {
+    ConstructionPtr c = ptr_cast<Construction>( *it );
+    ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
+    if( ret.isValid() )
     {
-      //ConstructionPtr c = ptr_cast<Construction>( *it );
-      ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
-      if( ret.isValid() )
-      {
-        setTarget( c->pos() );
-        return ret;
-      }
+      setTarget( c->pos() );
+      return ret;
     }
   }
 
@@ -379,15 +376,26 @@ void EnemySoldier::timeStep(const unsigned long time)
   break;
 
   case destroyBuilding:
-  {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+  {    
+    ConstructionList constructions;
+    ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( target() ) );
+
+    if( c.isValid() && !_atExclude.count( c->group() ) )
+    {
+      constructions << c;
+    }
+
+    if( constructions.empty() )
+    {
+      constructions = _findContructionsInRange( attackDistance() );
+    }
 
     if( !constructions.empty() )
     {
       ConstructionPtr b = constructions.front();
 
       turn( b->pos() );
-      b->updateState( Construction::damage, 1 );     
+      b->updateState( Construction::damage, 1 );
     }
     else
     {

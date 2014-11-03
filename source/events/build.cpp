@@ -66,7 +66,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
   city::Helper helper( game.city() );
   TilePos offset(10, 10);
   EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() )
+  if( !enemies.empty() && _overlay->group() != building::disasterGroup )
   {
     GameEventPtr e = WarningMessageEvent::create( "##too_close_to_enemy_troops##" );
     e->dispatch();
