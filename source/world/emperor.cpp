@@ -22,6 +22,7 @@
 #include "events/showinfobox.hpp"
 #include "romechastenerarmy.hpp"
 #include "city.hpp"
+#include "core/saveadapter.hpp"
 #include "empire.hpp"
 #include <map>
 
@@ -235,6 +236,7 @@ void Emperor::soldierDie(const std::string& cityname)
 }
 
 std::string Emperor::name() const { return _dfunc()->name; }
+void Emperor::setName(const std::string& name){ _dfunc()->name = name; }
 
 void Emperor::cityTax(const std::string &cityname, unsigned int money)
 {
@@ -309,5 +311,70 @@ void Emperor::load(const VariantMap& stream)
 }
 
 void Emperor::init(Empire &empire) { _dfunc()->empire = &empire; }
+
+struct EmperorInfo
+{
+  std::string name;
+  DateTime beginReign;
+  VariantMap options;
+};
+
+class EmperorLine::Impl
+{
+public:
+  typedef std::map< DateTime, EmperorInfo> ChangeInfo;
+
+  ChangeInfo changes;
+};
+
+EmperorLine& EmperorLine::instance()
+{
+  static EmperorLine inst;
+  return inst;
+}
+
+std::string EmperorLine::getEmperor(DateTime time)
+{
+  foreach( it, _d->changes )
+  {
+    if( it->first >= time )
+      return it->second.name;
+  }
+
+  return "";
+}
+
+VariantMap EmperorLine::getInfo(std::string name) const
+{
+  foreach( it, _d->changes )
+  {
+    if( name == it->second.name )
+      return it->second.options;
+  }
+
+  return VariantMap();
+}
+
+void EmperorLine::load(vfs::Path filename)
+{
+  _d->changes.clear();
+
+  VariantMap opts = SaveAdapter::load( filename );
+  foreach( it, opts )
+  {
+    VariantMap opts = it->second.toMap();
+    EmperorInfo info;
+    info.beginReign = opts.get( "date" ).toDateTime();
+    info.name = opts.get( "name" ).toString();
+    info.options = opts;
+
+    _d->changes[ info.beginReign ] = info;
+  }
+}
+
+EmperorLine::EmperorLine() : _d( new Impl )
+{
+
+}
 
 }

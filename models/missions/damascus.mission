@@ -55,22 +55,6 @@
 
 	events :
   {
-    emperor_changed#empire_options : {
-      date : "-27.02.01"
-      new_emperor : {
-        reset_relations : "all"
-        text : "##octaviant_august_our_new_emperor##"
-      }
-    }
-
-    emperor_changed#empire_options : {
-      date : "14.02.01"
-      new_emperor : {
-        reset_relations : "all"
-        text : "##tiberii_our_new_emperor##"
-      }
-    }
-
     clay_price_rising#trading_options : {
       date : "62.08.01"
       goods : {

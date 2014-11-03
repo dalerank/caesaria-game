@@ -21,6 +21,8 @@
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
+#include "core/signals.hpp"
+#include "vfs/path.hpp"
 
 namespace world
 {
@@ -40,6 +42,7 @@ public:
 
   void soldierDie( const std::string& cityname );
   std::string name() const;
+  void setName( const std::string& name );
 
   void cityTax( const std::string& cityname, unsigned int money );
   void resetRelations( const StringArray& cities );
@@ -50,6 +53,23 @@ public:
   void init( Empire& empire );
 private:
   __DECLARE_IMPL(Emperor)
+};
+
+class EmperorLine
+{
+public:
+  static EmperorLine& instance();
+
+  std::string getEmperor( DateTime time );
+  VariantMap getInfo( std::string name ) const;
+
+  void load(vfs::Path filename );
+
+private:
+  EmperorLine();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }

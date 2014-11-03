@@ -22,6 +22,7 @@
 #include "world/emperor.hpp"
 #include "events/showinfobox.hpp"
 #include "world/empire.hpp"
+#include "core/gettext.hpp"
 
 namespace events
 {
@@ -51,7 +52,6 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
 {
   VariantMap emOpts = _vars.get( "empire" ).toMap();
   VariantMap advOptions = _vars.get( "adviser" ).toMap();
-  VariantMap newEmperorOpts = _vars.get( "new_emperor" ).toMap();
 
   if( !emOpts.empty() )
   {
@@ -74,24 +74,6 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
   if( adv_enabled.isValid() )
   {
     game.city()->setOption( PlayerCity::adviserEnabled, adv_enabled );
-  }
-
-  if( !newEmperorOpts.empty() )
-  {
-    world::Emperor& emperor = game.empire()->emperor();
-    StringArray resetCities = newEmperorOpts.get( "reset_relations" ).toStringArray();
-    if( resetCities.empty() )
-      resetCities << "all";
-
-    emperor.resetRelations( resetCities );
-
-    std::string text = newEmperorOpts.get( "text" ).toString();
-
-    if( text.empty() )
-      text = "##emperor_changed_text##";
-
-    GameEventPtr e = events::ShowInfobox::create( "##rome##", "##emperor_changed_title##", _(text) );
-    e->dispatch();
   }
 }
 

@@ -1,7 +1,7 @@
 {
   ulius_caesar : {
     date : "-49.02.01"
-    name : "Ocatvian August"
+    name : "Ulius Caesar"
     image : "no_image.png"
     reset_relations : "all"
   }

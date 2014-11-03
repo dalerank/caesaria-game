@@ -36,6 +36,7 @@
 #include "game/gamedate.hpp"
 #include "city/funds.hpp"
 #include "barbarian.hpp"
+#include "events/changeemperor.hpp"
 
 namespace world
 {
@@ -62,6 +63,7 @@ public:
   void takeTaxes();
   void checkLoans();
   void checkBarbarians(EmpirePtr empire);
+  void checkEmperorChanged();
 };
 
 Empire::Empire() : _d( new Impl )
@@ -396,6 +398,7 @@ void Empire::timeStep( unsigned int time )
   {
     _d->checkLoans();
     _d->checkBarbarians( this );
+    _d->checkEmperorChanged();
   }
 
   if( GameDate::isYearChanged() )
@@ -573,6 +576,20 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
   {
     BarbarianPtr brb = Barbarian::create( empire, Point( 1000, 0 ) );
     empire->addObject( ptr_cast<Object>( brb ) );
+  }
+}
+
+void Empire::Impl::checkEmperorChanged()
+{
+  EmperorLine& emperors = EmperorLine::instance();
+  std::string emperorName = emperors.getEmperor( GameDate::current() );
+  if( emperorName != emperor.name() )
+  {
+    VariantMap vm = emperors.getInfo( emperorName );
+
+    events::GameEventPtr e = events::ChangeEmperor::create();
+    e->load( vm );
+    e->dispatch();
   }
 }
 

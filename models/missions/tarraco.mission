@@ -125,7 +125,7 @@
       text : "##city_has_runout_money##"
     }
 
-	earthquake#earthquake : {
+    earthquake#earthquake : {
       date : "-268.03.01"
       start : [ 14, 77 ]
       end : [ 44, 57 ]
