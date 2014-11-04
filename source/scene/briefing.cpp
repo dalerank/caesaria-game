@@ -74,7 +74,6 @@ class Briefing::Impl
 {
 public:
   static const int currentVesion=1;
-  int result;
   bool isStopped;
   gui::Label* missionTitle;
   gui::Label* cityCaption;
@@ -83,8 +82,13 @@ public:
   gfx::Engine* engine;
   std::string fileMap;
   std::string filename;
+  Briefing::Result result;
 
-  void resolvePlayMission() {    isStopped = true;  }
+  void resolvePlayMission()
+  {
+    result = Briefing::loadMission;
+    isStopped = true;
+  }
 
   void resolveSelecMission( std::string mission, std::string title )
   {
@@ -145,17 +149,22 @@ void Briefing::initialize()
     }
 
     std::string missionTt = vm.get( "title" ).toString();
-    _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 500, 600 ), missionTt );
+    _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 200 + img->width(), 600 ), missionTt );
     _d->missionTitle->setFont( Font::create( FONT_5 ));
-    _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 500, 630 ) );
+    _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + img->width(), 630 ) );
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
 
     _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }
+  else
+  {
+    _d->isStopped = true;
+    _d->result = Briefing::mainMenu;
+  }
 }
 
-int Briefing::result() const{  return Briefing::loadMission;}
+int Briefing::result() const{  return _d->result; }
 bool Briefing::isStopped() const{  return _d->isStopped;}
 std::string Briefing::getMapName() const{  return _d->fileMap;}
 

@@ -37,6 +37,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   std::string parentCity() const;
+  virtual TilePos places(Place type) const;
 
 protected:
   virtual void _reachedPathway();

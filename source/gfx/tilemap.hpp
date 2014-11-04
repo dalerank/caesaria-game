@@ -84,6 +84,7 @@ public:
   TilePos fit( const TilePos& pos ) const;
 
   Tile* at(const Point& pos, bool overborder);
+  TilePos p2tp( const Point& pos );
 private: 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -162,7 +162,7 @@ void LayerDestroy::render( Engine& engine )
       }
     }
 
-    drawTileR( engine, *tile, cameraOffset, z, false );
+    drawProminentTile( engine, *tile, cameraOffset, z, false );
 
     drawWalkers( engine, *tile, cameraOffset );
     engine.resetColorMask();

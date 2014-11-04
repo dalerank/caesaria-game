@@ -167,6 +167,7 @@
 "##balance_between_migration##":"There is a balance between people coming to and leaving the city."
 "##balance##":"Balance"
 "##ballista##":"Ballista"
+"##barbarian_are_closing_city##":"Enemies are closing on the city"
 "##barbarian_attack_text##":"Enemies of rome are at the outskirts of your city. Expect them to drop in for an urn or two of wine - and whatever else strikes their fancy!"
 "##barbarian_attack_title##":"Enemies are attacking the city"
 "##barbarian_warrior##":"A barbarian warrior"
@@ -820,6 +821,7 @@
 "##legion_formation_tooltip##":"Click here to change the legion's formation"
 "##legion_haveho_soldiers_and_barracks##":"This legion currently has no soldiers. It exists in name only, and with no operating barracks in the city it cannot receive new troops."
 "##legion_haveho_soldiers##":"This legion currently has no soldiers. It exists in name only. Only when newly-trained troops arrive from the barracks will it become a fighting unit."
+"##legion_morale_is_too_low##":"Legion's morale is too low to respond!"
 "##legion##":"Legion"
 "##legionadv_no_legions##":"You have no legions to command. You must first build a fort to house a new legion."
 "##legionary_average_life##":"I'll fight to the death! This city's safe while I'm still alive!"
@@ -1100,6 +1102,7 @@
 "##no_fishplace_in_city##":"Our fishermen hope that someone discovers fishing grounds in this province someday. They can't earn much of a living with the waters depleted."
 "##no_food_stored_last_month##":"NO FOOD stored last month!"
 "##no_goods_for_request##":"You do not have enough goods in your warehouses"
+"##no_industries_in_city##":"No industries in the city"
 "##no_people_in_city##":"No people in the city!"
 "##no_priority##":"No priority"
 "##no_space_for_evolve##":"This dwelling would soon evolve to one of greater stature if it had more space to expand into."
@@ -1147,8 +1150,13 @@
 "##oracles##":"Oracles"
 "##other##":"Sundries"
 "##our_foods_level_are_low##":"Our food levels are low"
+"##out_legion_back_to_city##":"Our legion is marching back to our city."
+"##out_legion_go_to_location##":"Our legion is marching to save an Imperial city."
 "##out_of_credit##":"Out of credit!"
 "##overall_city_become_a_sleepy_province##":"Overall, this has become a sleepy province with few real threats - just how the inhabitants like it!"
+"##overall_city_population_static##":"Overall, your city population is static."
+"##overall_people_are_coming_city##":"Overall, people are coming, or wish to come to, your city."
+"##overall_people_are_leaving_city##":"Overall, people are leaving your city."
 "##overlays##":"Overlays"
 "##ovrm_aborigen##":"Aborigine"
 "##ovrm_academy##":"Academy"
@@ -1256,7 +1264,7 @@
 "##profit##":"Net in/out flow"
 "##prosperity_lack_that_you_pay_less_rome##":"Paying wages lower than Rome's tarnishes your city's image as a prosperous one."
 "##province_has_peace_a_short_time##":"This province has been peaceful for a short time, but your citizens do not yet feel very safe. More peaceful years will improve this."
-"##qty_stacked_in_city_warehouse##":"in warehouses"
+"##qty_stacked_in_city_warehouse##":"stored in the city's warehouses"
 "##quaestor_salary##":"Quaestor's salary of"
 "##quarry_bad_work##":"With hardly any employees at this quarry, production is at a virtual standstill. It will produce little marble over the coming year."
 "##quarry_full_work##":"This quarry has all the employees it needs, it is working flat out to produce marble."
@@ -1292,6 +1300,7 @@
 "##religionadv_need_basic_religion##":"More and more citizens demand at least one place of worship in their neighborhoods to raise the gods' opinions of them."
 "##religionadv_need_second_religion##":"Some citizens want access to another religion close to home. Lack of religious diversity limits city development in certain areas."
 "##religionadv_need_third_religion##":"Some citizens want a third religion established near their locale. They feel that this would help to attract a better class of patrician."
+"##reorient_map_to_north##":"Re-orient your view to Due North"
 "##replay_game##":"Replay map"
 "##request_btn_tooltip##":"Click here to dispatch request"
 "##request_failed##":"Missing the recent Imperial request, through inability or willful neglect, harmed your standing in Rome a little. Your Favor rating would have risen had you complied."
@@ -1323,6 +1332,8 @@
 "##romeGuard_low_entertainment##":"If there was more entertainment in this city, guard duty wouldn't seem so dull!"
 "##romeGuard_need_workers##":"This city needs a lot more workers!"
 "##romeGuard_so_hungry##":"How's a soldier supposed to fight without food?"
+"##rotate_map_clockwise##":"Rotate the map clockwise"
+"##rotate_map_counter-clockwise##":"Rotate the map counter-clockwise"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":"A Samnite soldier"
@@ -1400,6 +1411,7 @@
 "##showing_odyssey_homer##":"Showing: Homer's 'The Odyssey'"
 "##showing_thecrito_plato##":"Showing: 'The Crito' by Plato"
 "##simple_formation_text##":"A simple formation, giving some advantage to defending troops."
+"##sld_quite_daring##":"Quite daring"
 "##sldh_health_sparse##":"Sparse"
 "##sldh_health_strong##":"Strong"
 "##sldh_health_strongest##":"Extremely strong"
@@ -1708,6 +1720,18 @@
 "##wine_workshops_need_some_workers##":"This winery is understaffed, and takes much longer to produce wine than it should."
 "##wine_workshops_patrly_workers##":"This winery is working below maximum capacity. Wine output is slightly slower than it could be."
 "##wine##":"Wine"
+"##wn_barbarian##":"Barbarian"
+"##wn_carthaginians##":"Carthaginians"
+"##wn_celts##":"Celts"
+"##wn_eygptians##":"Eygptians"
+"##wn_goth##":"Goths"
+"##wn_graeci##":"Graeci"
+"##wn_indigene##":"Native"
+"##wn_judaean##":"Judaeans"
+"##wn_numidian##":"Numidians"
+"##wn_picts##":"Picts"
+"##wn_samnites##":"Samnites"
+"##wn_selecids##":"Seleucids"
 "##wnd_ratings_title##":"Ratings"
 "##wndrt_culture##":"Culture"
 "##wndrt_favor_tooltip##":"Click here for advice about your Favor rating"
@@ -1745,9 +1769,11 @@
 "##wt_missionary##":"Missionary"
 "##wt_missioner_average_life##":"Hail! I can see there's lots to be done teaching barbarians Rome's benevolence!"
 "##wt_missioner_normal_life##":"I'm so glad to be Roman. You should see what these barbarians get up to in their huts"
+"##wt_patrician##":"Patrician"
 "##wt_prefect##":"Prefect"
 "##wt_priest##":"Priest"
 "##wt_rioter##":"Rioter"
+"##wt_rprotestor##":"Protestor"
 "##wt_sheep##":"Sheep"
 "##wt_surgeon##":"Surgeon"
 "##wt_taxCollector##":"Tax collector"
@@ -2100,83 +2126,5 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 
 }

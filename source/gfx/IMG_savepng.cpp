@@ -38,7 +38,7 @@ extern "C" {
 #endif
 
 #include <stdlib.h>
-#include "libpng/png.h"
+#include <png.h>
 
 #include "IMG_savepng.h"
 #include "IMG_saveend.h"

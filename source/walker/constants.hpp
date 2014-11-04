@@ -89,6 +89,7 @@ enum Type
   zebra,
   riverWave,
   supplier,
+  circusCharioter,
   all = 0xff,
   any = all
 };
@@ -110,6 +111,8 @@ enum Nation
   graeci,
   judaean,
   native,
+  visigoth,
+  gaul,
   nationCount
 };
 

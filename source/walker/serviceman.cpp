@@ -482,6 +482,17 @@ bool ServiceWalker::die()
 void ServiceWalker::setMaxDistance( const int distance ) { _d->maxDistance = distance; }
 float ServiceWalker::serviceValue() const { return 100; }
 
+TilePos ServiceWalker::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return base().isValid() ? base()->pos() : TilePos( -1, -1 );
+  default: break;
+  }
+
+  return ServiceWalker::places( type );
+}
+
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
 {
   ServiceWalkerPtr ret( new ServiceWalker( city, service ) );

@@ -28,7 +28,7 @@ class Emigrant : public Human
 public:
   static EmigrantPtr create( PlayerCityPtr city );
   static EmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
-                                 const gfx::Tile& startTile, std::string thinks );
+                                 const gfx::Tile& startTile, std::string thoughts );
 
   bool send2city( const gfx::Tile& startTile );
   void leaveCity( const gfx::Tile& tile );
@@ -36,6 +36,7 @@ public:
   void setPeoples( const CitizenGroup& peoples );
   const CitizenGroup& peoples() const;
   virtual void timeStep(const unsigned long time);
+  virtual TilePos places(Place type) const;
 
   virtual ~Emigrant();
 

@@ -21,6 +21,7 @@
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
+#include "core/event.hpp"
 #include "widget_deleter.hpp"
 
 namespace gui
@@ -32,8 +33,8 @@ public:
   GameAutoPause locker;
 
 public signals:
-  Signal0<> onNextMissionSignal;
-  Signal1<int> onContinueRulesSignal;
+  Signal0<> nextMissionSignal;
+  Signal1<int> continueRulesSignal;
 };
 
 WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const std::string& winText, bool mayContinue )
@@ -47,14 +48,10 @@ WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const
   setCenter( p->center() );
 
   Label* lbNewTitle;
+
   GET_WIDGET_FROM_UI( lbNewTitle )
+
   if( lbNewTitle ) lbNewTitle->setText( _( newTitle ) );
-
-  PushButton* btnAccept;
-  GET_WIDGET_FROM_UI( btnAccept )
-
-  CONNECT( btnAccept, onClicked(), &_d->onNextMissionSignal, Signal0<>::_emit );
-  CONNECT( btnAccept, onClicked(), this, WinMissionWindow::deleteLater );
 
   if( !winText.empty() )
   {
@@ -66,7 +63,22 @@ WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const
 }
 
 WinMissionWindow::~WinMissionWindow(){}
-Signal0<>& WinMissionWindow::onAcceptAssign(){  return _d->onNextMissionSignal; }
-Signal1<int>& WinMissionWindow::onContinueRules(){  return _d->onContinueRulesSignal; }
+
+bool WinMissionWindow::onEvent(const NEvent &event)
+{
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  {
+    switch( event.gui.caller->ID() )
+    {
+    case 0xff: emit _d->nextMissionSignal(); deleteLater(); break;
+    default: emit _d->continueRulesSignal( event.gui.caller->ID()); deleteLater(); break;
+    }
+  }
+
+  return Window::onEvent( event );
+}
+
+Signal0<>& WinMissionWindow::onAcceptAssign(){  return _d->nextMissionSignal; }
+Signal1<int>& WinMissionWindow::onContinueRules(){  return _d->continueRulesSignal; }
 
 }//end namespace gui

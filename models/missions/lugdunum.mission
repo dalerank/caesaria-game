@@ -121,6 +121,38 @@
       video : "city_indebt.bik"
       text : "##city_has_runout_money##"
     }
+
+    price_rising1#trading_options : {
+      date : "-155.04.01"
+      goods : {
+        pottery : { relative : true, buy : -20, sell : -20 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "pottery"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_rising2#trading_options : {
+      date : "-150.04.01"
+      goods : {
+        wine : { relative : true, buy : 20, sell : 20 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "wine"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
        
     cursed_water#contaminated_water : {
       date : "-169.01.01"

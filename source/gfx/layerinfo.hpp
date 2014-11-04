@@ -29,6 +29,7 @@ class LayerInfo : public Layer
 public:
   virtual void render(Engine &engine);
   virtual void beforeRender(Engine &engine);
+  virtual void afterRender(Engine &engine);
   virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
 
   virtual ~LayerInfo();

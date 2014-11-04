@@ -37,6 +37,7 @@ public:
 
   virtual void send2City( BuildingPtr base, int orders=goLowerService );
   virtual float serviceValue() const;
+  virtual TilePos places(Place type) const;
 
   // evaluates the service demand on the given pathWay
   float evaluatePath( PathwayPtr pathWay);

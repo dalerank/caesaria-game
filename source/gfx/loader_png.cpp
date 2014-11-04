@@ -1,7 +1,7 @@
 #include "loader_png.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
-#include "libpng/png.h"
+#include <png.h>
 
 using namespace gfx;
 

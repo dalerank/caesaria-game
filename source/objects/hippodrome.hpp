@@ -46,9 +46,13 @@ public:
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
   virtual void deliverService();
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  constants::Direction direction() const;
+  virtual void timeStep(const unsigned long time);
+  virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
   virtual void destroy();
 
   bool isRacesCarry() const;
+  ~Hippodrome();
 protected:
   virtual WalkerList _specificWorkers() const;
 

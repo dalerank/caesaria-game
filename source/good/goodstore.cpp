@@ -54,7 +54,7 @@ int GoodStore::getMaxRetrieve(const Good::Type goodType)
 
 int GoodStore::reserveStorage(GoodStock &stock, DateTime time)
 {
-  if( getMaxStore(stock.type() ) <= stock.qty() )   // current free capacity
+  if( getMaxStore(stock.type() ) < stock.qty() )   // current free capacity
     return 0;
 
   // the stock can be stored!

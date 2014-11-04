@@ -28,20 +28,16 @@
 using namespace gfx;
 using namespace constants;
 
-class IronMine::Impl
-{
-public:
-  unsigned int lowWorkerWeeksNumber;
-};
-
-IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(2) ),
-  _d( new Impl )
+IronMine::IronMine()
+  : Factory(Good::none, Good::iron, building::ironMine, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 54 );
 
   _animationRef().load( ResourceGroup::commerce, 55, 6 );
   _animationRef().setDelay( 5 );
   _fgPicturesRef().resize( 2 );
+
+  _setUnworkingInterval( 8 );
 }
 
 bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -62,36 +58,12 @@ bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& arou
 void IronMine::timeStep(const unsigned long time)
 {
   Factory::timeStep( time );
-
-  if( GameDate::isWeekChanged() )
-  {
-    if( numberWorkers() < maximumWorkers() / 3 )
-    {
-      _d->lowWorkerWeeksNumber++;
-    }
-    else
-    {
-      _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
-    }
-
-    if( _d->lowWorkerWeeksNumber > 8 &&  _d->lowWorkerWeeksNumber > (unsigned int)math::random( 42 ) )
-    {
-      collapse();
-
-      events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collpase_by_low_support##");
-      e->dispatch();
-    }
-  }
 }
 
-void IronMine::save(VariantMap& stream) const
+void IronMine::_reachUnworkingTreshold()
 {
-  Factory::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber );
-}
+  Factory::_reachUnworkingTreshold();
 
-void IronMine::load(const VariantMap& stream)
-{
-  Factory::load( stream );
-  VARIANT_LOAD_ANY_D( _d, lowWorkerWeeksNumber, stream );
+  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collpase_by_low_support##");
+  e->dispatch();
 }

@@ -87,6 +87,8 @@ public:
     __REG_WNATION( graeci )
     __REG_WNATION( judaean )
     __REG_WNATION( native )
+    __REG_WNATION( visigoth )
+    __REG_WNATION( gaul )
 #undef __REG_WNATION
 
       appendType( walker::all,        "unknown" );
@@ -150,6 +152,7 @@ public:
     __REG_WTYPE( zebra      )
     __REG_WTYPE( supplier   )
     __REG_WTYPE( patrician  )
+    __REG_WTYPE( circusCharioter )
 #undef __REG_WTYPE
   }
 };

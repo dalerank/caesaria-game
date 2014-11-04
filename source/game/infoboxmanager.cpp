@@ -155,12 +155,12 @@ public:
 class Manager::Impl
 {
 public:
-    bool showDebugInfo;
+  bool showDebugInfo;
 
-    typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
-    std::map< std::string, TileOverlay::Type > name2typeMap;
+  typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
+  std::map< std::string, TileOverlay::Type > name2typeMap;
 
-    InfoboxCreators constructors;
+  InfoboxCreators constructors;
 };
 
 Manager::Manager() : _d( new Impl )

@@ -107,7 +107,7 @@
       }
     }
 
-	 oil_price_rising#trading_options : {
+   pottery_price_rising#trading_options : {
       date : "-343.04.01"
       goods : {
         pottery : { buy : 210, sell : 170 }

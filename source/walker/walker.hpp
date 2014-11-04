@@ -40,7 +40,9 @@ class Walker : public Serializable, public ReferenceCounted
 public:
   typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly, userFlag, count=0xff } Flag;
+  typedef enum { showDebugInfo=1, vividly, userFlag=0x80, count=0xff } Flag;
+  typedef enum { thCurrent, thAction, thCount } Thought;
+  typedef enum { plOrigin, plDestination, pcCount } Place;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();
@@ -83,8 +85,10 @@ public:
   virtual void setName( const std::string& name );
   virtual const std::string& name() const;
 
-  virtual std::string currentThinks() const;
+  virtual std::string thoughts( Thought about ) const;
   virtual void setThinks( std::string newThinks );
+
+  virtual TilePos places( Place type ) const;
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
@@ -123,7 +127,7 @@ protected:
   virtual const gfx::Picture& getMainPicture();
   virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
   Pathway& _pathwayRef();
 
