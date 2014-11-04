@@ -107,6 +107,38 @@
       }
     }
 
+    price_rising1#trading_options : {
+      date : "-216.04.01"
+      goods : {
+        furniture : { relative : true, buy : 20, sell : 20 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "furniture"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_rising2#trading_options : {
+      date : "-212.04.01"
+      goods : {
+        weapon : { relative : true, buy : 35, sell : 35 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "weapon"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
     random_wolves#random_animals : {
       count : 10
       maxAnimals : 6

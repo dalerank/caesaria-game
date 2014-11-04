@@ -32,7 +32,7 @@ public:
 
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
-  virtual std::string currentThinks() const;  
+  virtual std::string thoughts(Thought th) const;
 
 protected:
   virtual void _centerTile();

@@ -511,9 +511,9 @@ Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSe
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }
 Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
 Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked(); }
-Signal0<>&ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
-Signal0<>&ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
-Signal0<>&ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
+Signal0<>& ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
+Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
+Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
 void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}

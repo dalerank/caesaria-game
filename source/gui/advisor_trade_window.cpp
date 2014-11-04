@@ -41,6 +41,7 @@
 #include "empireprices.hpp"
 #include "goodordermanage.hpp"
 #include "widget_helper.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -145,9 +146,9 @@ public:
   PushButton* btnPrices; 
   GroupBox* gbInfo;
   PlayerCityPtr city;
+  city::Statistic::GoodsMap allgoods;
 
   bool getWorkState( Good::Type gtype );
-  int  getStackedGoodsQty( Good::Type gtype );
   void updateGoodsInfo();
   void showGoodOrderManageWindow( Good::Type type );
   void showGoodsPriceWindow();
@@ -175,12 +176,11 @@ void Trade::Impl::updateGoodsInfo()
       continue;
     }
 
-    int stackedQty = getStackedGoodsQty( gtype );
     bool workState = getWorkState( gtype );
     int tradeQty = copt.exportLimit( gtype );
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            gtype, stackedQty, workState, tradeState, tradeQty );
+                                            gtype, allgoods[ gtype ], workState, tradeState, tradeQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   }
@@ -198,23 +198,11 @@ bool Trade::Impl::getWorkState(Good::Type gtype )
   return producers.empty() ? true : industryActive;
 }
 
-int Trade::Impl::getStackedGoodsQty( Good::Type gtype )
-{
-  city::Helper helper( city );
-
-  int goodsQty = 0;
-  WarehouseList warehouses = helper.find< Warehouse >( building::warehouse );
-  foreach( it, warehouses ) { goodsQty += (*it)->store().qty( gtype ); }
-
-  return goodsQty;
-}
-
 void Trade::Impl::showGoodOrderManageWindow(Good::Type type )
 {
   Widget* parent = gbInfo->parent();
-  int stackedGoods = getStackedGoodsQty( type ) ;
   GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->height() -60 ), 
-                                                          city, type, stackedGoods );
+                                                          city, type, allgoods[ type ] );
 
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
@@ -234,6 +222,7 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
+  _d->allgoods = city::Statistic::getGoodsMap( city, false );
 
   GET_DWIDGET_FROM_UI( _d, btnEmpireMap  )
   GET_DWIDGET_FROM_UI( _d, btnPrices )

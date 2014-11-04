@@ -354,8 +354,11 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
   if( ttf == NULL )
   {
-    std::string errorStr = "Cannot load font file:" + pathFont.toString() + "\n, error:" + TTF_GetError();
-    OSystem::error( "Critical error", errorStr );
+    std::string errorStr = "CRITICAL!!! " + std::string( TTF_GetError() );
+#ifdef CAESARIA_PLATFORM_WIN
+    errorStr += "\n Is it only latin symbols in path to game?";
+#endif
+    OSystem::error( "ERROR!", errorStr );
     THROW( errorStr );
   }
 

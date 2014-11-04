@@ -47,7 +47,7 @@ public:
                  stWaitGoods,
                  stBackToBaseCity } State;
 
-  TilePos destBuildingPos;  // warehouse
+  TilePos destBuildingPos;  // dock
   SimpleGoodStore sell;
   SimpleGoodStore buy;
   int tryDockCount;
@@ -449,18 +449,37 @@ void SeaMerchant::timeStep(const unsigned long time)
 
 bool SeaMerchant::isWaitFreeDock() const {  return Impl::stWaitFreeDock == _d->nextState; }
 
-std::string SeaMerchant::currentThinks() const
+std::string SeaMerchant::thoughts(Thought th) const
 {
-  switch( _d->nextState )
+  switch( th )
   {
-  case Impl::stWaitFreeDock: return "##waiting_for_free_dock##";
-  case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
+  case thCurrent:
+    switch( _d->nextState )
+    {
+    case Impl::stWaitFreeDock: return "##waiting_for_free_dock##";
+    case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
+
+    default: break;
+    }
+  break;
 
   default: break;
   }
 
-  return Walker::currentThinks();
+  return Walker::thoughts(th);
 }
+
+TilePos SeaMerchant::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plDestination: return _d->destBuildingPos;
+  default: break;
+  }
+
+  return Human::places( type );
+}
+
 
 WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
 

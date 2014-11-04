@@ -3,19 +3,20 @@
   static : true
 
   lbTitle#Label : {
-    geometry : [ 40, 10, "pw-10", 40 ]
+    geometry : [ 40, 10, "pw-10", 35 ]
     font : "FONT_5"
     text.align : [ "center", "center" ]
   }
 
   lbIndustryInfo#Label : {
-    geometry : [ 40, 40, "pw-10", 60 ]
-    font : "FONT_2"
+    geometry : [ 40, 35, "pw-10", 70 ]
+    font : "FONT_1"
+    multiline : true
   }
 
   lbStackedQty#Label : {
-    geometry : [ 40, 60, "pw-10", 80 ]
-    font : "FONT_2"
+    geometry : [ 40, 70, "pw-10", 85 ]
+    font : "FONT_1"
   }
 
   btnIndustryState#PushButton : {

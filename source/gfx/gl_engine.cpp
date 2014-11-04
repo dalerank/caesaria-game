@@ -34,6 +34,12 @@
 #include "vfs/file.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
+#include <SDL_ttf.h>
+
+
+#ifndef CAESARIA_PLATFORM_WIN
+  #define GL_GLEXT_PROTOTYPES
+#endif
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #include <GLES/gl.h>

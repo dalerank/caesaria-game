@@ -21,10 +21,10 @@
 #include "memfile.hpp"
 #include "core/logger.hpp"
 
-#include "zlib/zlib.h"
-#include "lzma/LzmaDec.h"
-#include "bzip2/bzlib.h"
-#include "aes/fileenc.h"
+#include <zlib.h>
+#include <LzmaDec.h>
+#include <bzlib.h>
+#include <fileenc.h>
 #include "core/stringhelper.hpp"
 
 namespace vfs

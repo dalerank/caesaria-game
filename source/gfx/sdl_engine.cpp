@@ -25,6 +25,7 @@
 #include <list>
 #include <vector>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "ttf/SDL_ttf.h"
 #include "IMG_savepng.h"

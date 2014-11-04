@@ -22,6 +22,7 @@
 #include "city/helper.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
+#include "walker/circus_charioter.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -103,6 +104,7 @@ void HippodromeSection::destroy()
   }
 }
 
+
 void HippodromeSection::setAnimationVisible(bool visible)
 {
   _fgPicture( 0 ) = !visible
@@ -115,8 +117,36 @@ class Hippodrome::Impl
 public:
   Direction direction;
   HippodromeSectionPtr sectionMiddle, sectionEnd;
-  Picture fullyPic;
+  Picture fullyPic;  
+  WalkerList charioters;
 };
+
+Direction Hippodrome::direction() const { return _d->direction; }
+
+void Hippodrome::timeStep(const unsigned long time)
+{
+  EntertainmentBuilding::timeStep( time );
+
+  int index = 0;
+  foreach( it, _d->charioters )
+  {
+    (*it)->timeStep( time );
+    Pictures rpics;
+    (*it)->getPictures( rpics );
+    _fgPicture( 2 + index ) = rpics[0];
+    _fgPicture( 2 + index + 1 ) = rpics[1];
+    const Point mp = (*it)->mappos();
+    const Point& xp = tile().mappos();
+    _fgPicture( 2 + index ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
+    _fgPicture( 2 + index + 1 ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
+    index+=2;
+  }
+}
+
+const Pictures& Hippodrome::pictures(Renderer::Pass pass) const
+{
+  return EntertainmentBuilding::pictures( pass );
+}
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(15,5) ), _d( new Impl )
 {
@@ -199,6 +229,9 @@ bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   _d->sectionMiddle->setAnimationVisible( false );
   _animationRef().start();
 
+  WalkerPtr wlk = CircusCharioter::create( _city(), this );
+  _d->charioters.push_back( wlk );
+
   return true;
 }
 
@@ -222,6 +255,11 @@ void Hippodrome::destroy()
 }
 
 bool Hippodrome::isRacesCarry() const { return animation().isRunning(); }
+
+Hippodrome::~Hippodrome()
+{
+
+}
 
 WalkerList Hippodrome::_specificWorkers() const
 {

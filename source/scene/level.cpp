@@ -78,6 +78,8 @@
 #include "city/cityservice_info.hpp"
 #include "gfx/layer.hpp"
 #include "game/debug_handler.hpp"
+#include "city/build_options.hpp"
+#include "events/movecamera.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -103,6 +105,7 @@ public:
   std::string mapToLoad;
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
+  DebugHandler dhandler;
 
   int result;
 
@@ -131,6 +134,8 @@ public:
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
+  void extendReign( int years );
+  void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
   vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
@@ -224,29 +229,30 @@ void Level::initialize()
   CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );
   CONNECT( _d->extMenu, onRotateLeft(), &_d->renderer, CityRenderer::rotateLeft );
   CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectLayer );
-  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
-  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow );
-  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow );
-  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
+  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow )
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow )
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow )
+  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow )
+  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next )
 
-  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter );
-  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
+  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add )
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter )
+  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled )
 
-  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
-  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
+  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
+  CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
 
+
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
-  DebugHandler& debug = DebugHandler::instance();
-  debug.insertTo( _d->game, _d->topMenu );
-  CONNECT( &debug, onWinMission(), _d.data(), Impl::checkFailedMission )
-  CONNECT( &debug, onFailedMission(), _d.data(), Impl::checkWinMission )
+  _d->dhandler.insertTo( _d->game, _d->topMenu );
+  CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
+  CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
@@ -390,6 +396,23 @@ void Level::Impl::makeFullScreenshot()
 
   std::string filename = getScreenshotName();
   PictureConverter::save( *fullPic, filename, "PNG" );
+}
+
+void Level::Impl::extendReign(int years)
+{
+  city::VictoryConditions vc;
+  vc = game->city()->victoryConditions();
+  vc.addReignYears( years );
+
+  game->city()->setVictoryConditions( vc );
+}
+
+void Level::Impl::handleDirectionChange(Direction direction)
+{
+  DirectionHelper dHelper;
+
+  events::GameEventPtr e = events::WarningMessageEvent::create( _(dHelper.findName( direction ) ) );
+  e->dispatch();
 }
 
 std::string Level::Impl::getScreenshotName()
@@ -546,7 +569,7 @@ void Level::handleEvent( NEvent& event )
 
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
-    if( event.keyboard.control && !event.keyboard.shift )
+    if( !event.keyboard.shift )
     {
       bool handled = true;
       switch( event.keyboard.key )
@@ -576,6 +599,7 @@ void Level::handleEvent( NEvent& event )
       case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
       case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
       case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
+
       default:
         handled = false;
       break;
@@ -613,8 +637,38 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
-    case KEY_F5: _d->makeFastSave(); break;
-    case KEY_F9: _resolveLoadGame( "" ); break;
+    case KEY_F5:
+      if( event.keyboard.control )
+        _d->makeFastSave();
+    break;
+
+    case KEY_F9:
+      if( event.keyboard.control )
+        _resolveLoadGame( "" );
+    break;
+
+    case KEY_KEY_1: case KEY_KEY_2:
+    case KEY_KEY_3: case KEY_KEY_4:
+    {
+      if( event.keyboard.control )
+      {
+        unsigned int index = event.keyboard.key - KEY_KEY_1;
+        city::BuildOptions bopts;
+        bopts = _d->game->city()->buildOptions();
+        if( event.keyboard.shift )
+        {
+          TilePos camPos = _d->renderer.camera()->center();
+          bopts.setMemPoint( index, camPos );
+          _d->game->city()->setBuildOptions( bopts );
+        }
+        else
+        {
+          TilePos camPos = bopts.memPoint( index );
+          _d->renderer.camera()->setCenter( camPos );
+        }
+      }
+    }
+    break;
 
     case KEY_SNAPSHOT:
       if( !event.keyboard.shift )
@@ -735,13 +789,14 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       lb->setTextAlignment( align::center, align::center );
       lb->setFont( Font::create( FONT_6 ) );
 
-      PushButton* btn = new PushButton( wnd, Rect( 20, 120, 380, 142), _("##restart_mission##") );
+      PushButton* btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 142), _("##restart_mission##") );
+      btnRestart->setTooltipText( _("##restart_mission_tip##") );
       PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 172), _("##exit_to_main_menu##") );
 
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
 
-      CONNECT( btn, onClicked(), lvl, Level::_restartMission );
+      CONNECT( btnRestart, onClicked(), lvl, Level::_restartMission );
       CONNECT( btnMenu, onClicked(), lvl, Level::_exitToMainMenu );
     }
   }
@@ -768,6 +823,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
     mapToLoad = wt.nextMission();
 
     CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
+    CONNECT( wnd, onContinueRules(), this, Impl::extendReign )
   }
 }
 

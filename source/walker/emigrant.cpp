@@ -473,7 +473,18 @@ void Emigrant::timeStep(const unsigned long time)
 
   default:
   break;
+    }
+}
+
+TilePos Emigrant::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plDestination: return _d->housePosLock;
+  default: break;
   }
+
+  return Human::places( type );
 }
 
 void Emigrant::save( VariantMap& stream ) const

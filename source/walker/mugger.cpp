@@ -70,7 +70,7 @@ void Mugger::_reachedPathway()
   }
 }
 
-void Mugger::_updateThinks()
+void Mugger::_updateThoughts()
 {
   StringArray ret;
   ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";

@@ -231,6 +231,19 @@ void TraineeWalker::load( const VariantMap& stream )
   _init( wtype );
 }
 
+TilePos TraineeWalker::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1 );
+  default: break;
+  }
+
+  return Human::places( type );
+}
+
+
 TraineeWalker::~TraineeWalker(){}
 
 TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeType )

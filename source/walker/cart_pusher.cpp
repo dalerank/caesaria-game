@@ -458,12 +458,34 @@ bool CartPusher::die()
   return created;
 }
 
-std::string CartPusher::currentThinks() const
+std::string CartPusher::thoughts( Thought th ) const
 {
-  if( !pathway().isValid() )
+  switch( th )
   {
-    return "##cartpusher_cantfind_destination##";
+  case thCurrent:
+    if( !pathway().isValid() )
+    {
+      return "##cartpusher_cantfind_destination##";
+    }
+  break;
+
+  case thAction:
+
+  break;
   }
 
-  return Walker::currentThinks();
+  return Walker::thoughts( th );
 }
+
+TilePos CartPusher::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
+  default: break;
+  }
+
+  return Human::places( type );
+}
+

@@ -29,6 +29,7 @@
 #include "distant_battle.hpp"
 #include "trading_options.hpp"
 #include "contaminated_water.hpp"
+#include "changeemperor.hpp"
 #include "random_animals.hpp"
 
 namespace events
@@ -81,6 +82,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<ShowTutorialWindow>( "tutorial_window" );
   addCreator<ChangeBuildingOptions>( "building_options" );
   addCreator<ChangeEmpireOptions>( "empire_options" );
+  addCreator<ChangeEmperor>( "change_emperor" );
   addCreator<RandomDamage>( "random_collapse" );
   addCreator<RandomFire>( "random_fire" );
   addCreator<CityIndebt>( "city_indebt" );

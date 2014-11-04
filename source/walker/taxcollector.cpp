@@ -74,25 +74,29 @@ void TaxCollector::_centerTile()
   }
 }
 
-std::string TaxCollector::currentThinks() const
+std::string TaxCollector::thoughts(Thought th) const
 {
-  city::Helper helper( _city() );
-  TilePos offset( 2, 2 );
-  HouseList houses = helper.find<House>( building::house, pos() - offset, pos() + offset );
-  unsigned int poorHouseCounter=0;
-  unsigned int richHouseCounter=0;
-
-  foreach( h, houses )
+  if( th == thCurrent )
   {
-    HouseLevel::ID level = (HouseLevel::ID)(*h)->spec().level();
-    if( level < HouseLevel::bigDomus ) poorHouseCounter++;
-    else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
+    city::Helper helper( _city() );
+    TilePos offset( 2, 2 );
+    HouseList houses = helper.find<House>( building::house, pos() - offset, pos() + offset );
+    unsigned int poorHouseCounter=0;
+    unsigned int richHouseCounter=0;
+
+    foreach( h, houses )
+    {
+      HouseLevel::ID level = (HouseLevel::ID)(*h)->spec().level();
+      if( level < HouseLevel::bigDomus ) poorHouseCounter++;
+      else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
+    }
+
+    if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
+    if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
+
   }
 
-  if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
-  if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
-
-  return ServiceWalker::currentThinks();
+  return ServiceWalker::thoughts(th);
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )

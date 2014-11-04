@@ -37,6 +37,7 @@
 #include "sound/engine.hpp"
 #include "objects/fort.hpp"
 #include "world/goodcaravan.hpp"
+#include "events/changeemperor.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -68,7 +69,8 @@ enum {
   add_soldiers_in_fort,
   toggle_show_flat_tiles,
   send_barbarian_to_player,
-  comply_rome_request
+  comply_rome_request,
+  change_emperor
 };
 
 class DebugHandler::Impl
@@ -84,12 +86,6 @@ public signals:
   Signal2<scene::Level*, bool> winMissionSignal;
 };
 
-DebugHandler &DebugHandler::instance()
-{
-  static DebugHandler inst;
-  return inst;
-}
-
 void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
 {
   _d->game = game;
@@ -99,41 +95,39 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
 
 #define ADD_DEBUG_EVENT(ev) debugMenu->addItem( #ev, ev );
   ADD_DEBUG_EVENT( add_enemy_archers )
-  ADD_DEBUG_EVENT( add_enemy_soldiers );
-  ADD_DEBUG_EVENT( add_chastener_soldiers );
-  ADD_DEBUG_EVENT( comply_rome_request );
-  ADD_DEBUG_EVENT( add_wolves );
-  ADD_DEBUG_EVENT( send_mars_wrath );
-  ADD_DEBUG_EVENT( add_1000_dn );
-  ADD_DEBUG_EVENT( add_player_money );
-  ADD_DEBUG_EVENT( send_chastener );
-  ADD_DEBUG_EVENT( test_request );
-  ADD_DEBUG_EVENT( send_player_army );
-  ADD_DEBUG_EVENT( screenshot );
-  ADD_DEBUG_EVENT( add_empire_barbarian );
-  ADD_DEBUG_EVENT( send_venus_wrath );
-  ADD_DEBUG_EVENT( win_mission );
-  ADD_DEBUG_EVENT( all_sound_off );
-  ADD_DEBUG_EVENT( toggle_grid_visibility );
-  ADD_DEBUG_EVENT( toggle_overlay_base );
-  ADD_DEBUG_EVENT( toggle_show_path );
-  ADD_DEBUG_EVENT( toggle_show_roads );
-  ADD_DEBUG_EVENT( toggle_show_object_area );
-  ADD_DEBUG_EVENT( add_soldiers_in_fort );
-  ADD_DEBUG_EVENT( send_barbarian_to_player );
-  ADD_DEBUG_EVENT( fail_mission );
-  ADD_DEBUG_EVENT( toggle_show_walkable_tiles );
-  ADD_DEBUG_EVENT( toggle_show_locked_tiles );
-  ADD_DEBUG_EVENT( toggle_show_flat_tiles );
+  ADD_DEBUG_EVENT( add_enemy_soldiers )
+  ADD_DEBUG_EVENT( add_chastener_soldiers )
+  ADD_DEBUG_EVENT( comply_rome_request )
+  ADD_DEBUG_EVENT( add_wolves )
+  ADD_DEBUG_EVENT( send_mars_wrath )
+  ADD_DEBUG_EVENT( add_1000_dn )
+  ADD_DEBUG_EVENT( add_player_money )
+  ADD_DEBUG_EVENT( send_chastener )
+  ADD_DEBUG_EVENT( test_request )
+  ADD_DEBUG_EVENT( send_player_army )
+  ADD_DEBUG_EVENT( screenshot )
+  ADD_DEBUG_EVENT( add_empire_barbarian )
+  ADD_DEBUG_EVENT( send_venus_wrath )
+  ADD_DEBUG_EVENT( win_mission )
+  ADD_DEBUG_EVENT( all_sound_off )
+  ADD_DEBUG_EVENT( toggle_grid_visibility )
+  ADD_DEBUG_EVENT( toggle_overlay_base )
+  ADD_DEBUG_EVENT( toggle_show_path )
+  ADD_DEBUG_EVENT( toggle_show_roads )
+  ADD_DEBUG_EVENT( toggle_show_object_area )
+  ADD_DEBUG_EVENT( add_soldiers_in_fort )
+  ADD_DEBUG_EVENT( send_barbarian_to_player )
+  ADD_DEBUG_EVENT( fail_mission )
+  ADD_DEBUG_EVENT( toggle_show_walkable_tiles )
+  ADD_DEBUG_EVENT( toggle_show_locked_tiles )
+  ADD_DEBUG_EVENT( toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( change_emperor )
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
 #undef ADD_DEBUG_EVENT
 }
 
-DebugHandler::~DebugHandler()
-{
-
-}
+DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
@@ -188,13 +182,14 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
+
   case win_mission:
   case fail_mission:
   {
     scene::Level* l = safety_cast<scene::Level*>( game->scene() );
     if( l )
     {
-      Signal2<scene::Level*,bool>& signal = event == win_mission ? winMissionSignal : failedMissionSignal;
+      Signal2<scene::Level*,bool>& signal = (event == win_mission ? winMissionSignal : failedMissionSignal);
       emit signal( l, true);
     }
   }
@@ -208,6 +203,15 @@ void DebugHandler::Impl::handleEvent(int event)
     world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( game->empire() );
     army->setBase( rome );
     army->attack( ptr_cast<world::Object>( plCity ) );
+  }
+  break;
+
+  case change_emperor:
+  {
+    events::GameEventPtr e = events::ChangeEmperor::create();
+    VariantMap vm = SaveAdapter::load( ":/test_emperor.model" );
+    e->load( vm );
+    e->dispatch();
   }
   break;
 

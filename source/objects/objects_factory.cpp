@@ -75,6 +75,7 @@
 #include "missionarypost.hpp"
 #include "ironmine.hpp"
 #include "river.hpp"
+#include "timber_logger.hpp"
 #include <map>
 
 using namespace constants;

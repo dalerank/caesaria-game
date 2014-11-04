@@ -39,10 +39,10 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
    setBase( ptr_cast<Construction>( market ));
 
-   Label* lbAbout = new Label( this, Rect( 15, 25, width() - 15, 36) );
+   Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
    lbAbout->setWordwrap( true );
    lbAbout->setFont( Font::create( FONT_1 ) );
-   lbAbout->setTextAlignment( align::upperLeft, align::center );
+   lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
 
    std::string title = MetaDataHolder::findPrettyName( market->type() );
    setTitle( _( title ) );
