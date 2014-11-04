@@ -32,7 +32,7 @@ ServiceWalkerPtr MarketLady::create(PlayerCityPtr city)
   return ret;
 }
 
-void MarketLady::_updateThinks()
+void MarketLady::_updateThoughts()
 {
   if( pathway().isReverse() )
   {
@@ -47,7 +47,7 @@ void MarketLady::_updateThinks()
     }
   }
 
-  ServiceWalker::_updateThinks();
+  ServiceWalker::_updateThoughts();
 }
 
 void MarketLady::_centerTile()

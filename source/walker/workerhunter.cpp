@@ -168,6 +168,17 @@ void Recruter::timeStep(const unsigned long time)
   ServiceWalker::timeStep( time );
 }
 
+TilePos Recruter::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return base().isValid() ? base()->pos() : TilePos( -1, -1 );
+  default: break;
+  }
+
+  return ServiceWalker::places( type );
+}
+
 unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 
 void Recruter::save(VariantMap& stream) const

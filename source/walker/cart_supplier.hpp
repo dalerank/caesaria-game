@@ -43,6 +43,7 @@ public:
   virtual bool die();
 
   virtual void timeStep(const unsigned long time);
+  virtual TilePos places(Place type) const;
 
 protected:
   CartSupplier( PlayerCityPtr city );

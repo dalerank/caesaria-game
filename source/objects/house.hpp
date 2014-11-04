@@ -49,7 +49,7 @@ class House : public Building
 public:
   enum { food=Construction::paramCount, health, happiness, happinessBuff, healthBuff, settleLock };
 
-  House( HouseLevel::ID level=HouseLevel::hovel );
+  House( HouseLevel::ID level=HouseLevel::vacantLot );
 
   virtual void timeStep(const unsigned long time);
 

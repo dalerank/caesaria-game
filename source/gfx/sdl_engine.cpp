@@ -24,7 +24,7 @@
 #include <list>
 #include <vector>
 #include <SDL.h>
-#include <ttf/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 #include "IMG_savepng.h"
 #include "core/exception.hpp"

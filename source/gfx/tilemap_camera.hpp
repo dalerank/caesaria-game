@@ -71,9 +71,10 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged();
+  virtual Signal1<constants::Direction>& onDirectionChanged();
   
 private:
-  void setCenter(Point pos);
+  void _setCenter(Point pos, bool checkBorder);
 
   class Impl;
   ScopedPtr< Impl > _d;

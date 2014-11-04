@@ -38,7 +38,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
 private:
   Mugger( PlayerCityPtr city );

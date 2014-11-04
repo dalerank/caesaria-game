@@ -86,7 +86,7 @@ void Immigrant::_changeDirection()
   _setCartPicture( Picture() );  // need to get the new graphic
 }
 
-void Immigrant::_updateThinks()
+void Immigrant::_updateThoughts()
 {
   StringArray thinks;
   thinks << "##immigrant_where_my_home##";

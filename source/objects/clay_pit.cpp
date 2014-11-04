@@ -23,17 +23,30 @@
 #include "gfx/tilemap.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
+#include "events/showinfobox.hpp"
 
 using namespace gfx;
 
-ClayPit::ClayPit() : Factory( Good::none, Good::clay, constants::building::clayPit, Size(2) )
+
+ClayPit::ClayPit()
+  : Factory( Good::none, Good::clay, constants::building::clayPit, Size(2) )
 {
   _fgPicturesRef().resize(2);
+
+  _setUnworkingInterval( 8 );
 }
 
 void ClayPit::timeStep( const unsigned long time )
 {
   Factory::timeStep( time );
+}
+
+void ClayPit::_reachUnworkingTreshold()
+{
+  Factory::_reachUnworkingTreshold();
+
+  events::GameEventPtr e = events::ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
+  e->dispatch();
 }
 
 bool ClayPit::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const

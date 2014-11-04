@@ -27,6 +27,9 @@ public:
   
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
   virtual void timeStep( const unsigned long time );
+
+protected:
+  virtual void _reachUnworkingTreshold();
 };
 
 #endif //__CAESARIA_CLAY_PIT_H_INCLUDED__

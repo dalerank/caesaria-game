@@ -172,17 +172,38 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   }
 }
 
-std::string MarketBuyer::currentThinks() const
+std::string MarketBuyer::thoughts( Thought th) const
 {
-  if( !pathway().isReverse() )
+  switch( th )
   {
-    return "##marketBuyer_find_goods##";
-  }
-  else
-  {
-    return "##marketBuyer_return##";
-  }
+  case thCurrent:
+    if( !pathway().isReverse() )
+    {
+      return "##marketBuyer_find_goods##";
+    }
+    else
+    {
+      return "##marketBuyer_return##";
+    }
+  break;
+
+  default:
+      break;
+    }
 }
+
+TilePos MarketBuyer::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->market.isValid() ? _d->market->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->destBuildingPos;
+  default: break;
+  }
+
+  return Human::places( type );
+}
+
 
 void MarketBuyer::_reachedPathway()
 {

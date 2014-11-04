@@ -26,7 +26,7 @@
 class DebugHandler
 {
 public:
-  static DebugHandler& instance();
+  DebugHandler();
   void insertTo( Game* game, gui::MainMenu* menu );
 
   ~DebugHandler();
@@ -36,8 +36,6 @@ public signals:
   Signal2<scene::Level*,bool>& onWinMission();
 
 private:
-  DebugHandler();
-
   class Impl;
   ScopedPtr<Impl> _d;
 };

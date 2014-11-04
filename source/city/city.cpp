@@ -211,6 +211,7 @@ void PlayerCity::timeStep(unsigned int time)
   if( GameDate::isYearChanged() )
   {
     _d->age++;
+    _d->targets.decreaseReignYear();
   }
 
   if( GameDate::isMonthChanged() )

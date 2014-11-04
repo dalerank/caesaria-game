@@ -52,6 +52,7 @@ public:
   void animate( unsigned int time );
 
   void addLayer( LayerPtr layer );
+  LayerPtr currentLayer() const;
   void setLayer( int layertype );
   int  layerType() const;
 

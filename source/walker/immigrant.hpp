@@ -40,7 +40,7 @@ public:
   virtual ~Immigrant();
 protected:
   virtual void _changeDirection();
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
 protected:
   const gfx::Picture& _cartPicture();

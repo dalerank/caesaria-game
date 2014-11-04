@@ -99,7 +99,7 @@
       value : 30
     }
 
-    oil_price_rising#trading_options : {
+    furniture_price_rising#trading_options : {
       date : "-345.04.01"
       goods : {
         furniture : { relative : true, buy : 40, sell : 30 }
@@ -107,7 +107,7 @@
 
       exec : {
         message#messagebox : {
-          good : "oil"
+          good : "furniture"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
           send2scribe : true
@@ -254,7 +254,7 @@
     "barbarian_invasion0#enemy_attack" : {
       date : "-349.07.01"
       type : "enemy_attack"
-	  target : "food"
+      target : "food"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -270,12 +270,12 @@
       }
 		
       exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
-		}
-	  }
+        barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
     }
 
     barbarian_invasion1#enemy_attack : {

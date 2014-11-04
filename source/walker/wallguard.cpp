@@ -186,21 +186,45 @@ void WallGuard::load(const VariantMap& stream)
   }
 }
 
-std::string WallGuard::currentThinks() const
+std::string WallGuard::thoughts(Thought th) const
 {
-  city::Helper helper( _city() );
+  switch( th )
+  {
+  case thCurrent:
+  {
+    city::Helper helper( _city() );
 
-  TilePos offset( 10, 10 );
-  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
-  if( enemies.empty() )
-  {
-    return Soldier::currentThinks();
+    TilePos offset( 10, 10 );
+    EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    if( enemies.empty() )
+    {
+      return Soldier::thoughts(th);
+    }
+    else
+    {
+      return "##city_have_defence##";
+    }
   }
-  else
-  {
-    return "##city_have_defence##";
+  break;
+
+  default: break;
   }
+
+  return "";
 }
+
+TilePos WallGuard::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->patrolPosition;
+  default: break;
+  }
+
+  return RomeSoldier::places( type );
+}
+
 
 void WallGuard::setBase(TowerPtr tower)
 {
