@@ -195,12 +195,9 @@ void CityRenderer::render()
   }
 
   engine.setViewport(0, true );
+
   layer->beforeRender( engine );
-
   layer->render( engine );
-
-  layer->renderPass( engine, Renderer::animations );
-
   layer->afterRender( engine );
 
   engine.setViewport( 0, false );
@@ -276,6 +273,7 @@ void CityRenderer::rotateLeft()
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
+LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 void CityRenderer::setLayer(int layertype) { _d->setLayer( layertype ); }
 TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }

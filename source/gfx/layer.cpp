@@ -43,8 +43,8 @@ namespace gfx
 class Layer::Impl
 {
 public:
-  typedef std::vector<Tile*> TileQueue;
-  typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
+  //typedef std::vector<Tile*> TileQueue;
+  //typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
 
   Point lastCursorPos;
   Point startCursorPos;
@@ -56,7 +56,7 @@ public:
   PictureRef tooltipPic;
   int nextLayer;
   std::string tooltipText;
-  RenderQueue renderQueue;
+  //RenderQueue renderQueue;
   Layer::WalkerTypes vwalkers;
   PictureRef tilePosText;
   Font debugFont;
@@ -68,7 +68,7 @@ public:
 
 void Layer::registerTileForRendering(Tile& tile)
 {
-  __D_IMPL(_d,Layer)
+  /*__D_IMPL(_d,Layer)
   if( tile.rov() != 0 )
   {
     Renderer::PassQueue passQueue = tile.rov()->passQueue();
@@ -76,10 +76,10 @@ void Layer::registerTileForRendering(Tile& tile)
     {
       _d->renderQueue[ *pass ].push_back( &tile );
     }
-  }
+  }*/
 }
 
-void Layer::renderPass( Engine& engine, Renderer::Pass pass )
+/*void Layer::renderPass( Engine& engine, Renderer::Pass pass )
 {
   // building foregrounds and animations
   __D_IMPL(_d,Layer)
@@ -91,7 +91,7 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   }
 
   tiles.clear();
-}
+}*/
 
 void Layer::renderUi(Engine& engine) {  }
 
@@ -315,9 +315,9 @@ void Layer::render( Engine& engine)
     tile = *it;
     int z = tile->epos().z();
 
-    drawTileR( engine, *tile, camOffset, z, false );
+    drawProminentTile( engine, *tile, camOffset, z, false );
     drawWalkers( engine, *tile, camOffset );
-    drawTileW( engine, *tile, camOffset, z );
+    drawWalkerOverlap( engine, *tile, camOffset, z );
   }
 
   engine.resetColorMask();
@@ -333,7 +333,7 @@ void Layer::render( Engine& engine)
   }
 }
 
-void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)
+void Layer::drawWalkerOverlap( Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
   Tile* master = tile.masterTile();
 
@@ -348,7 +348,7 @@ const Layer::WalkerTypes& Layer::visibleTypes() const
   return _dfunc()->vwalkers;
 }
 
-void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
@@ -444,7 +444,6 @@ void Layer::afterRender( Engine& engine)
   {
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }  
-
 
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {

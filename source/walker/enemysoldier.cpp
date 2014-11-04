@@ -209,7 +209,7 @@ void EnemySoldier::_check4attack()
 
   if( pathway.isValid() )
   {
-    _setSubAction( target().i() > 0 ? go2enemy : go2position );
+    _setSubAction( target().i() >= 0 ? go2enemy : go2position );
     _updatePathway( pathway );
     go();
   }
