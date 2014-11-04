@@ -38,6 +38,7 @@ public:
   void once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance);
   void timeStep(const unsigned long time);
 
+  virtual TilePos places(Place type) const;
   virtual unsigned int reachDistance() const;
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

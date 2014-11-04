@@ -41,7 +41,7 @@ public:
 protected:
   Rioter( PlayerCityPtr city );
   virtual void _reachedPathway();
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
 private:
   class Impl;

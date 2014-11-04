@@ -145,7 +145,7 @@ bool MarketKid::die()
   return created;
 }
 
-void MarketKid::_updateThinks()
+void MarketKid::_updateThoughts()
 {
   StringArray ownThinks;
   ownThinks << "##market_kid_say_1##";

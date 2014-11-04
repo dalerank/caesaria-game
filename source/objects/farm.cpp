@@ -114,7 +114,7 @@ bool Farm::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
     on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
   }
 
-  const_cast< Farm* >( this )->_setError( on_meadow ? _("##farm_need_farmland##") : "" );
+  const_cast< Farm* >( this )->_setError( on_meadow ? "" : _("##farm_need_farmland##") );
 
   return (is_constructible && on_meadow);  
 }

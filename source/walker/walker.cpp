@@ -347,6 +347,7 @@ Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
+TilePos Walker::places(Walker::Place type) const { return TilePos(-1,-1); }
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
@@ -398,14 +399,19 @@ void Walker::attach()
     _city()->addWalker( this );
 }
 
-std::string Walker::currentThinks() const
+std::string Walker::thoughts(Thought about) const
 {
-  if( _d->thinks.empty() )
+  if( thCurrent )
   {
-    const_cast< Walker* >( this )->_updateThinks( );
+    if( _d->thinks.empty() )
+    {
+      const_cast< Walker* >( this )->_updateThoughts();
+    }
+
+    return _d->thinks;
   }
 
-  return _d->thinks;
+  return "";
 }
 
 void Walker::getPictures(gfx::Pictures& oPics)
@@ -533,7 +539,7 @@ void Walker::_updateAnimation( const unsigned int time )
 
 void Walker::_setWpos( Point pos) { _d->wpos = pos.toPointF(); }
 
-void Walker::_updateThinks()
+void Walker::_updateThoughts()
 {
   _d->thinks = WalkerThinks::check( this, _city() );
 }

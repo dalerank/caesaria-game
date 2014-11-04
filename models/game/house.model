@@ -4,7 +4,7 @@
 		{
 			level : 0,
       title : "##freehouse_caption##",
-			habitants : 0,
+      habitants : 5,
 			minDesirability : 0,
 		  maxDesirability : 0,
 			entertainment : 0,

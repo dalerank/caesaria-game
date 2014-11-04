@@ -71,7 +71,15 @@ void Animal::load( const VariantMap& stream )
   _d->destination = stream.get( lc_destination ).toTilePos();
 }
 
-std::string Animal::currentThinks() const{  return "##sheep_baa##";}
+std::string Animal::thoughts(Thought th) const
+{
+  if( th == thCurrent )
+  {
+    return "##sheep_baa##";
+  }
+
+  return "";
+}
 
 void Animal::_findNewWay( const TilePos& start )
 {

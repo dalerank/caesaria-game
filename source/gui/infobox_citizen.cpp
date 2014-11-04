@@ -22,7 +22,6 @@
 #include "label.hpp"
 #include "walker/walker.hpp"
 #include "walker/merchant.hpp"
-#include "game/settings.hpp"
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "gfx/picture.hpp"
@@ -32,6 +31,8 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"
+#include "widget_helper.hpp"
+#include "events/movecamera.hpp"
 
 using namespace constants;
 
@@ -45,7 +46,6 @@ namespace citizen
 {
 
 namespace {
-static const char* ui_model = "/gui/infoboxcitizen.gui";
 static const char* sound_ext = ".ogg";
 }
 
@@ -77,7 +77,7 @@ public:
       painter.draw( *_wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &absoluteClippingRectRef() );
       gfx::Pictures pics;
       _walker->getPictures( pics );
-      painter.draw( pics, absoluteRect().lefttop() + Point( 15, 15 ), &absoluteClippingRectRef() );
+      painter.draw( pics, absoluteRect().lefttop() + Point( 30, 30 ), &absoluteClippingRectRef() );
     }
   }
 
@@ -94,9 +94,18 @@ public:
   Label* lbType;
   Label* lbThinks;
   Label* lbCitizenPic;
+  Label* lbCurrentAction;
+  Label* lbBaseBuilding;
+  Label* btnMove2base;
   PlayerCityPtr city;
 
   std::vector<CitizenScreenshot*> screenshots;
+  TilePos baseBuildingPos;
+
+public:
+  void updateCurrentAction( const std::string& action );
+  void updateBaseBuilding(TilePos pos );
+  void moveCamera2base();
 };
 
 AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos )
@@ -106,11 +115,10 @@ AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos
   _d->walkers = city->walkers( pos );
   _d->city = city;
 
-  Widget::setupUI( GameSettings::rcpath( ui_model ) );
+  Widget::setupUI( ":/gui/infoboxcitizen.gui" );
 
   new Label( this, Rect( 25, 100, width() - 25, height() - 130), "", false, Label::bgWhiteBorderA );
   new Label( this, Rect( 28, 103, width() - 28, height() - 133), "", false, Label::bgBlack );
-
 
   _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
   _d->lbName->setFont( Font::create( FONT_2 ));
@@ -119,8 +127,15 @@ AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos
 
   _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
                             "##citizen_thoughts_will_be_placed_here##" );
+
   _d->lbThinks->setWordwrap( true );
   _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+
+  GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
+  GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
+  GET_DWIDGET_FROM_UI( _d, btnMove2base )
+
+  CONNECT( _d->btnMove2base, onClicked(), _d.data(), Impl::moveCamera2base )
 
   if( !_d->walkers.empty() )
    _setWalker( _d->walkers.front() );
@@ -137,7 +152,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   _d->lbType->setText( _(walkerType) );
   _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
 
-  std::string thinks = wlk->currentThinks();
+  std::string thinks = wlk->thoughts( Walker::thCurrent );
   _d->lbThinks->setText( _( thinks ) );
 
   if( !thinks.empty() )
@@ -165,7 +180,6 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   }
   _d->screenshots.clear();
 
-  //TilePos offset( 1, 1 );
   gfx::TilesArray tiles = _d->city->tilemap().getNeighbors(wlk->pos(), gfx::Tilemap::AllNeighbors);
   Rect lbRect( 25, 45, 25 + 52, 45 + 52 );
   Point lbOffset( 60, 0 );
@@ -182,9 +196,45 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
       CONNECT( lb, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
+
+  _d->updateCurrentAction( wlk->thoughts( Walker::thAction ) );
+  _d->updateBaseBuilding( wlk->places( Walker::plDestination ) );
 }
 
 AboutPeople::~AboutPeople() {}
+
+void AboutPeople::Impl::updateCurrentAction(const std::string& action)
+{
+  if( lbCurrentAction )
+  {
+    lbCurrentAction->setPrefixText( _("##wlk_state##") );
+    lbCurrentAction->setText( action );
+  }
+}
+
+void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
+{
+  if( lbBaseBuilding )
+  {
+    baseBuildingPos = pos;
+    gfx::TileOverlayPtr ov = city->getOverlay( pos );
+    if( ov.isValid() )
+    {
+      std::string text = MetaDataHolder::findPrettyName( ov->type() );
+      lbBaseBuilding->setText( text );
+      btnMove2base->setVisible( !text.empty() );
+    }
+  }
+}
+
+void AboutPeople::Impl::moveCamera2base()
+{
+  if( baseBuildingPos != TilePos( -1, -1 ) )
+  {
+    events::GameEventPtr e = events::MoveCamera::create( baseBuildingPos );
+    e->dispatch();
+  }
+}
 
 }
 

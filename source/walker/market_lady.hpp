@@ -27,7 +27,7 @@ public:
   static ServiceWalkerPtr create( PlayerCityPtr city  );
 
 protected:
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
   virtual void _centerTile();
 
 private:

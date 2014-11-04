@@ -28,7 +28,7 @@ typedef SmartPtr< Immigrant > ImmigrantPtr;
 class Immigrant : public Emigrant
 {
 public:
-  typedef enum { G_EMIGRANT_CART1 = Good::goodCount, G_EMIGRANT_CART2, CT_MAX } CartType;
+  typedef enum { G_EMIGRANT_CART1=0, G_EMIGRANT_CART2, CT_MAX } CartType;
 
   static ImmigrantPtr create( PlayerCityPtr city);
 
@@ -40,7 +40,7 @@ public:
   virtual ~Immigrant();
 protected:
   virtual void _changeDirection();
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
 protected:
   const gfx::Picture& _cartPicture();

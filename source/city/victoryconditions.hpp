@@ -47,6 +47,9 @@ public:
   int needPopulation() const;
   const StringArray& overview() const;
 
+  void addReignYears( int value );
+  void decreaseReignYear();
+
   bool isSuccess( int culture, int prosperity,
                   int favour, int peace,
                   int population ) const;

@@ -1,0 +1,148 @@
+{
+  ulius_caesar : {
+    date : "-49.02.01"
+    name : "Ulius Caesar"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  octavian : {
+    date : "-27.02.01"
+    name : "Octavian August"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  tiberii : {
+    date : "14.02.01"
+    name : "Tiberi, Claudea Neron"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  caligula : {
+    date : "37.02.01"
+    name : "Caligula"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  cladia_one : {
+    date : "41.02.01"
+    name : "Claudii"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  neron : {
+    date : "54.02.01"
+    name : "Neron"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  vespasian : {
+    date : "69.02.01"
+    name : "Vespasian"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  tit : {
+    date : "79.02.01"
+    name : "Tit"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  domician : {
+    date : "81.02.01"
+    name : "Domician"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  nerva : {
+    date : "96.02.01"
+    name : "Nerva"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  traian : {
+    date : "98.02.01"
+    name : "Traian"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  adrian : {
+    date : "117.02.01"
+    name : "Adrian"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  antoni_pii : {
+    date : "138.02.01"
+    name : "Antoni Pii"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  mark_aurelii : {
+    date : "161.02.01"
+    name : "Mark Aurely"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  kassi : {
+    date : "169.02.01"
+    name : "Kassii"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  commod : {
+    date : "176.02.01"
+    name : "Commod"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  septimi_sever : {
+    date : "193.02.01"
+    name : "Septimi Sever"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  karakal : {
+    date : "211.02.01"
+    name : "Karakala"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  elagobal : {
+    date : "218.02.01"
+    name : "Elagobal"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  aleksandr_sever : {
+    date : "222.02.01"
+    name : "Aleksand Sever"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+
+  end : {
+    date : "222.02.01"
+    name : "end"
+    image : "no_image.png"
+    reset_relations : "all"
+  }
+}

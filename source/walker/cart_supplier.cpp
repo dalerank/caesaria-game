@@ -335,3 +335,16 @@ void CartSupplier::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );
 }
+
+TilePos CartSupplier::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->baseBuildingPos;
+  case plDestination: return _d->storageBuildingPos;
+  default: break;
+  }
+
+  return Human::places( type );
+}
+

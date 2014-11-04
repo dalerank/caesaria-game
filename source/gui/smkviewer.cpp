@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "smkviewer.hpp"
-#include "smk/smacker.h"
+#include <smacker.h>
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"

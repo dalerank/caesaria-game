@@ -423,6 +423,18 @@ void Merchant::timeStep(const unsigned long time)
 }
 
 std::string Merchant::parentCity() const{  return _d->baseCityName; }
+
+TilePos Merchant::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plDestination: return _d->destBuildingPos;
+  default: break;
+  }
+
+  return Human::places( type );
+}
+
 WalkerPtr Merchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
 
 WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
