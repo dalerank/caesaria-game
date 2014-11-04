@@ -51,17 +51,7 @@ public:
 
 void LayerInfo::render(Engine& engine)
 {
-  Layer::render( engine );
-
-  foreach( it, _d->columns )
-  {
-    drawColumn( engine, it->pos, it->value );
-  }
-
-  foreach( it, _d->pictures )
-  {
-    engine.draw( it->pic, it->pos );
-  }
+  Layer::render( engine );  
 }
 
 void LayerInfo::_loadColumnPicture(int picId)
@@ -112,16 +102,27 @@ void LayerInfo::drawColumn( Engine& engine, const Point& pos, const int percent)
   }
 }
 
-LayerInfo::~LayerInfo()
-{
-
-}
-
+LayerInfo::~LayerInfo() {  }
 
 void LayerInfo::beforeRender(Engine& engine)
 {
   _d->columns.clear();
   _d->pictures.clear();
+}
+
+void LayerInfo::afterRender(Engine& engine)
+{
+  foreach( it, _d->columns )
+  {
+    drawColumn( engine, it->pos, it->value );
+  }
+
+  foreach( it, _d->pictures )
+  {
+    engine.draw( it->pic, it->pos );
+  }
+
+  Layer::afterRender( engine );
 }
 
 LayerInfo::LayerInfo( Camera& camera, PlayerCityPtr city, int columnIndex )

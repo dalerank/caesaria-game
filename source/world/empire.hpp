@@ -32,8 +32,8 @@ class Empire : public ReferenceCounted, public Serializable
 {
 public:
   static EmpirePtr create();
-
   virtual ~Empire();
+
   CityList cities() const;
 
   CityPtr findCity( const std::string& name ) const;
@@ -65,6 +65,8 @@ public:
 
   void setCitiesAvailable( bool value );
   unsigned int workerSalary() const;
+  void setWorkerSalary( unsigned int value );
+
   bool isAvailable() const;
   void setAvailable( bool value );
 

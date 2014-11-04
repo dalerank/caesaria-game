@@ -36,6 +36,8 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
+  virtual TilePos places(Place type) const;
+
   virtual ~TraineeWalker();
 protected:
   TraineeWalker( PlayerCityPtr city, constants::walker::Type traineeType);

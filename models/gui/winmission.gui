@@ -29,5 +29,22 @@
     bgtype : "whiteBorderUp"
     text : "##accept_promotion##"
     font : "FONT_2"
+    id : 255
+  }
+
+  btnContinue2years#PushButton : {
+    geometry : [ 35, 140, "pw-35", 160 ]
+    bgtype : "whiteBorderUp"
+    text : "##continue_2_years##"
+    font : "FONT_2"
+    id : 2
+  }
+
+  btnContinue5years#PushButton : {
+    geometry : [ 35, 165, "pw-35", 185 ]
+    bgtype : "whiteBorderUp"
+    text : "##continue_5_years##"
+    font : "FONT_2"
+    id : 5
   }
 }

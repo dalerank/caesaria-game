@@ -578,16 +578,35 @@ bool Prefect::die()
   return created;
 }
 
-std::string Prefect::currentThinks() const
+std::string Prefect::thoughts(Thought th) const
 {
-  switch( _d->action )
+  switch( th )
   {
-  case go2fire: return "##prefect_goto_fire##";
-  case fightFire: return "##prefect_fight_fire##";
+  case thCurrent:
+    switch( _d->action )
+    {
+    case go2fire: return "##prefect_goto_fire##";
+    case fightFire: return "##prefect_fight_fire##";
+    default: break;
+    }
+  break;
+
+  default:
+  break;
+  }
+
+  return ServiceWalker::thoughts(th);
+}
+
+TilePos Prefect::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plDestination: return _d->endPatrolPoint;
   default: break;
   }
 
-  return ServiceWalker::currentThinks();
+  return ServiceWalker::places( type );
 }
 
 void Prefect::load( const VariantMap& stream )

@@ -51,14 +51,14 @@ public:
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
 
-  //draw gfx before walkers
-  virtual void drawTileR(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
+  //draw gfx tprominent ile
+  virtual void drawProminentTile(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
 
   //draw gfx active tile
   virtual void drawTile(Engine& engine, Tile& tile, const Point& offset );
 
   //draw gfx after walkers
-  virtual void drawTileW(Engine& engine, Tile& tile, const Point& offset, const int depth );
+  virtual void drawWalkerOverlap(Engine& engine, Tile& tile, const Point& offset, const int depth );
 
   virtual void handleEvent( NEvent& event );
   virtual void drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass );
@@ -71,7 +71,7 @@ public:
   virtual void beforeRender( Engine& engine);
   virtual void afterRender( Engine& engine);
   virtual void render( Engine& engine);
-  virtual void renderPass( Engine& engine, Renderer::Pass pass);
+  //virtual void renderPass( Engine& engine, Renderer::Pass pass);
   virtual void renderUi( Engine& engine );
 
   virtual void registerTileForRendering(Tile&);

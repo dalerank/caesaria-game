@@ -19,6 +19,7 @@
 #define __CAESARIA_GFX_CAMERA_H_INCLUDED__
 
 #include "engine.hpp"
+#include "core/direction.hpp"
 #include "core/signals.hpp"
 
 namespace gfx
@@ -54,6 +55,7 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
+  virtual Signal1<constants::Direction>& onDirectionChanged() = 0;
 };
 
 } //end namespace gfx

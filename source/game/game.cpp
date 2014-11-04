@@ -161,7 +161,7 @@ class Game::Impl::ScreenBriefingHolder: public ScreenHolder
 public:
   ScreenBriefingHolder(Game *game, gfx::Engine* engine, const std::string &file):
     ScreenHolder(game),
-    briefing(new scene::Briefing( *game, *engine, GameSettings::rcpath(file).toString() ))
+    briefing(new scene::Briefing( *game, *engine, file ))
   {
     initialize(briefing, SCREEN_BRIEFING);
   }
@@ -697,7 +697,7 @@ bool Game::exec()
     } break;
     case SCREEN_BRIEFING:
     {
-      _d->currentScreen = new Impl::ScreenBriefingHolder(this, _d->engine, GameSettings::rcpath( _d->nextFilename ).toString());
+      _d->currentScreen = new Impl::ScreenBriefingHolder(this, _d->engine, _d->nextFilename );
     } break;
 
     default:

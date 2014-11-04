@@ -167,6 +167,7 @@
 "##balance_between_migration##":"Es gibt etwa gleich viele Ein- und Auswanderer in Ihrer Stadt"
 "##balance##":"Kontostand"
 "##ballista##":"Ballista"
+"##barbarian_are_closing_city##":"Feinde nähern sich der Stadt."
 "##barbarian_attack_text##":""
 "##barbarian_attack_title##":"Feinde greifen die Stadt an."
 "##barbarian_warrior##":"Ein Barbarenkrieger"
@@ -820,6 +821,7 @@
 "##legion_formation_tooltip##":"Klicken Sie hier, um die Aufstellung der Legion zu ändern."
 "##legion_haveho_soldiers_and_barracks##":"Diese Legion hat zur Zeit keine Soldaten. Sie existiert nur dem Namen nach. Und da es in der Stadt keine funktionierende Kaserne gibt, wird sie auch keine neuen Truppen erhalten."
 "##legion_haveho_soldiers##":"Diese Legion hat zur Zeit keine Soldaten. Sie existiert nur dem Namen nach. Erst wenn neu ausgebildete Truppen aus der Kaserne eintreffen, kann sie zu einer Kampfeinheit werden."
+"##legion_morale_is_too_low##":"Die Moral der Legion ist zu niedrig. Sie wird nicht reagieren!"
 "##legion##":"Legion"
 "##legionadv_no_legions##":"Es gibt keine Legionen, denen Sie Befehle erteilen könnten. Zuerst muss ein Fort gebaut werden, um eine neue Legion dort unterbringen zu können."
 "##legionary_average_life##":"Ich werde bis zum letzten Atemzug kämpfen! Solange ich am Leben bin, ist diese Stadt sicher!"
@@ -1100,6 +1102,7 @@
 "##no_fishplace_in_city##":"Unsere Fischer hoffen, dass irgendwann einmal auch in dieser Provinz reiche Fischgründe entdeckt werden. Sie können ihren Lebensunterhalt nur schwer bestreiten, da die Gewässer leer gefischt sind."
 "##no_food_stored_last_month##":"KEINE NAHRUNG im letzten Monat eingelagert!"
 "##no_goods_for_request##":"In Euren Lagerhäusern sind nicht genügend Güter."
+"##no_industries_in_city##":"Keine Gewerbestätten in der Stadt"
 "##no_people_in_city##":"Keine Menschen in der Stadt!"
 "##no_priority##":"Keine Priorität"
 "##no_space_for_evolve##":"Dieses Gebäude würde sich bald weiterentwickeln, wenn es mehr Platz dafür hätte."
@@ -1147,8 +1150,13 @@
 "##oracles##":"Orakel"
 "##other##":"Verschiedenes"
 "##our_foods_level_are_low##":"Unsere Nahrungsmittelbestände sind niedrig"
+"##out_legion_back_to_city##":"Unsere Legion marschiert zu unserer Stadt zurück."
+"##out_legion_go_to_location##":"Unsere Legion ist auf dem Marsch, um eine Imperiumsstadt zu retten."
 "##out_of_credit##":"Kredit überschritten!"
 "##overall_city_become_a_sleepy_province##":"Insgesamt ist diese Provinz sehr ruhig geworden, sie ist kaum echten Gefahren ausgesetzt - und genau das gefällt den Einwohnern!"
+"##overall_city_population_static##":"Insgeamt gesehen ist die Einwohnerzahl Ihrer Stadt konstant."
+"##overall_people_are_coming_city##":"Insgesamt gesehen zieht es die Menschen in Ihre Stadt."
+"##overall_people_are_leaving_city##":"Insgesamt gesehen nimmt die Bevölkerungszahl Ihrer Stadt ab."
 "##overlays##":"Spezialkarten"
 "##ovrm_aborigen##":"Ureinwohner"
 "##ovrm_academy##":"Akademie"
@@ -1256,7 +1264,7 @@
 "##profit##":"Netto-Ein-/Ausgang"
 "##prosperity_lack_that_you_pay_less_rome##":"Die im Vergleich zu Rom niedrigen Löhne schaden dem Ruf Ihrer als reich geltenden Stadt."
 "##province_has_peace_a_short_time##":"Diese Provinz ist seit kurzem friedlich, Ihre Bürger fühlen sich jedoch noch nicht sehr sicher. Weitere Friedensjahre werden dies ändern."
-"##qty_stacked_in_city_warehouse##":"in Lagernhäusern"
+"##qty_stacked_in_city_warehouse##":"in den Lagerhäusern der Stadt gelagert"
 "##quaestor_salary##":"Quaestorengehalt von"
 "##quarry_bad_work##":"Mit kaum Angestellten in diesem Steinbruch ist die Produktion praktisch zum Stillstand gekommen. Im Verlauf des nächsten Jahres wird nur wenig Marmor abgebaut werden."
 "##quarry_full_work##":"Dieser Steinbruch hat alle Angestellten, die er benötigt, und die Marmorgewinnung läuft auf vollen Touren."
@@ -1292,6 +1300,7 @@
 "##religionadv_need_basic_religion##":"Mehr und mehr Bürger verlangen mindestens eine Kultstätte in ihrer Nachbarschaft, um das Wohlwollen der Götter zu erbitten."
 "##religionadv_need_second_religion##":"Einige Bürger wollen Zugang zu anderen Religionen in der Nähe ihres Hauses. Das Fehlen unterschiedlicher Glaubensrichtungen hemmt die Stadtentwicklung auf bestimmten Gebieten."
 "##religionadv_need_third_religion##":"Einige Bürger wollen in ihrer Nähe eine dritte Religion. Sie denken, dass dies eine bessere Klasse Patrizier anziehen könnte."
+"##reorient_map_to_north##":"Ansicht nach Norden ausrichten"
 "##replay_game##":"Karte erneut spielen"
 "##request_btn_tooltip##":"Klicken Sie hier, um die Ware abzuschicken"
 "##request_failed##":"Ihr Unvermögen, die letzte Forderung des Imperators zu erfüllen - ganz gleich ob durch Unfähigkeit oder mit Absicht - hat Ihrem Ansehen in Rom etwas geschadet. Ihre Gunstwertung wäre gestiegen, wenn Sie den Wunsch erfüllt hätten."
@@ -1323,6 +1332,8 @@
 "##romeGuard_low_entertainment##":"Wenn es in dieser Stadt mehr Unterhaltung gäbe, wäre der Wachdienst nicht so langweilig!"
 "##romeGuard_need_workers##":"Diese Stadt braucht sehr viel mehr Arbeiter!"
 "##romeGuard_so_hungry##":"Wie soll ein Soldat ohne Essen kämpfen?"
+"##rotate_map_clockwise##":"Karte im Uhrzeigersinn drehen"
+"##rotate_map_counter-clockwise##":"Karte gegen den Uhrzeigersinn drehen"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":"Ein samnitischer Soldat"
@@ -1400,6 +1411,7 @@
 "##showing_odyssey_homer##":"Heute: 'Die Odyssee' von Homer"
 "##showing_thecrito_plato##":"Heute: 'Gorgias' von Platon"
 "##simple_formation_text##":"Eine einfache Formation, bietet verteidigenden Truppen einen kleinen Vorteil."
+"##sld_quite_daring##":"Ziemlich mutig"
 "##sldh_health_sparse##":"Spärlich"
 "##sldh_health_strong##":"Stark"
 "##sldh_health_strongest##":"Extrem stark"
@@ -1708,6 +1720,18 @@
 "##wine_workshops_need_some_workers##":"Diese Kellerei ist unterbesetzt und braucht für die Weinproduktion viel länger als sie sollte."
 "##wine_workshops_patrly_workers##":"Diese Kellerei arbeitet unter ihrer maximalen Kapazität. Die Weinerzeugung läuft deshalb etwas langsamer als nötig wäre."
 "##wine##":"Wein"
+"##wn_barbarian##":"Barbar"
+"##wn_carthaginians##":"Karthager"
+"##wn_celts##":"Kelten"
+"##wn_eygptians##":"Ägypter"
+"##wn_goth##":"Goten"
+"##wn_graeci##":"Griechen"
+"##wn_indigene##":"Eingeborene"
+"##wn_judaean##":"Judäer"
+"##wn_numidian##":"Numider"
+"##wn_picts##":"Pikten"
+"##wn_samnites##":"Samniter"
+"##wn_selecids##":"Seleukiden"
 "##wnd_ratings_title##":"Wertungen"
 "##wndrt_culture##":"Kultur"
 "##wndrt_favor_tooltip##":"Klicken Sie hier für Hinweise zu Ihrer Gunstwertung."
@@ -1745,9 +1769,11 @@
 "##wt_missionary##":"Missionar"
 "##wt_missioner_average_life##":"Salve! Ich sehe schon, es gibt eine Menge zu tun, bis wir diesen Barbaren die Segnungen von Roms Güte nähergebracht haben."
 "##wt_missioner_normal_life##":"Ich bin ja so froh, Römer zu sein. Ihr solltet einmal sehen, was diese Barbaren in ihren Hütten so alles treiben!"
+"##wt_patrician##":"Patrizier"
 "##wt_prefect##":"Präfekt"
 "##wt_priest##":"Priester"
 "##wt_rioter##":"Randalierer"
+"##wt_rprotestor##":"Demonstrant"
 "##wt_sheep##":"Schaf"
 "##wt_surgeon##":"Chirurg"
 "##wt_taxCollector##":"Steuereintreiber"
@@ -2101,82 +2127,4 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-"undefined":"undefined"
-"undefined":"undefined"}

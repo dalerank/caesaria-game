@@ -19,7 +19,7 @@
 #include "gfx/picture.hpp"
 #include "logger.hpp"
 #include "exception.hpp"
-#include "ttf/SDL_ttf.h"
+#include <SDL_ttf.h>
 #include "color.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
@@ -306,11 +306,11 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
   if( ttf == NULL )
   {
-    std::string errorStr = "Cririal error:\n" + std::string( TTF_GetError() );
+    std::string errorStr = "CRITICAL!!! " + std::string( TTF_GetError() );
 #ifdef CAESARIA_PLATFORM_WIN
-    errorStr += "\n Use only latin symbols in path. ";
+    errorStr += "\n Is it only latin symbols in path to game?";
 #endif
-    OSystem::error( "Critical error", errorStr );
+    OSystem::error( "ERROR!", errorStr );
     THROW( errorStr );
   }
 

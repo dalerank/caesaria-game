@@ -37,6 +37,8 @@ public:
   void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
   bool isGroupAvailable(const BuildMenuType type ) const;
   unsigned int getBuildingsQuote( const gfx::TileOverlay::Type type ) const;
+  TilePos memPoint( unsigned int index ) const;
+  void setMemPoint(unsigned int index, TilePos point );
 
   bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
 

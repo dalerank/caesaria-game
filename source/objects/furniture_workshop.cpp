@@ -21,6 +21,7 @@
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
+#include "timber_logger.hpp"
 
 using namespace constants;
 using namespace gfx;

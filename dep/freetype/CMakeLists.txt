@@ -58,3 +58,11 @@ add_library(${FREETYPELIB_NAME} STATIC ${CFF_SOURCES} ${freetype_SRC} ${TYPE1_SO
 				       ${PSHINTER_SOURCES} ${RASTER_SOURCES} ${SMOOTH_SOURCES}
 				       ${SFNT_SOURCES} ${TTF_SOURCES} ${BDF_SOURCES} )
 #target_link_libraries(${FREETYPELIB_NAME} ${ZLIB_NAME})
+
+
+# Expose public includes to other through cache variable.
+set(FREETYPE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
+    CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(FREETYPE_LIBRARY ${PROJECT_NAME}
+    CACHE INTERNAL "${PROJECT_NAME}: Library Name" FORCE)

@@ -157,18 +157,50 @@
       }
     }
     
-    storm_seas#messagebox : {
-      date : "-268.11.01"
+    storm_seas_1#messagebox : {
+      date : "-265.11.01"
       title : "##stormy_seas_title##"
       text : "##stormy_seas_text##"
       send2scribe : true
-    }
+    }        
     
-    stop_sea_trading#trading_options : {
-      date : "-268.11.01"
+    stop_sea_trading_1#trading_options : {
+      date : "-265.11.01"
       cities : {
         Tarentum : { delay_trade : 12 }
         Capua : { delay_trade : 12 }
+      }
+    }
+
+    oil_price_rising#trading_options : {
+      date : "-267.04.01"
+      goods : {
+        oil : { relative : true, buy : 40, sell : 30 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    furniture_price_rising#trading_options : {
+      date : "-250.04.01"
+      goods : {
+        furniture : { relative : true, buy : 20, sell : 30 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "furniture"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
       }
     }
     

@@ -3,7 +3,7 @@
   map : ":/maps/Lutetia.sav"
   funds : 120000
   city.name : "Lutetia"
-  date : "-220.01.01"
+  date : "-70.01.01"
   player.rank : 4  
   climate : 0
   adviserEnabled : true
@@ -15,7 +15,7 @@
     culture : 45
     prosperity : 50
     peace : 50
-    finishDate : "-70.01.01"
+    finishDate : "70.01.01"
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##win_procurator_title##"
@@ -111,6 +111,54 @@
       count : 10
       maxAnimals : 6
       animalType : "wolf"
+    }
+
+    price_changes_1#trading_options : {
+      date : "-57.04.01"
+      goods : {
+        furniture : { relative : true, buy : -35, sell : -35 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "furniture"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_changes_2#trading_options : {
+      date : "-54.04.01"
+      goods : {
+        wine : { relative : true, buy : 35, sell : 35 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "wine"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_changes_3#trading_options : {
+      date : "-52.04.01"
+      goods : {
+        grape : { relative : true, buy : 15, sell : 15 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "grape"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
     }
 
     city_indebt#city_indebt : {
