@@ -19,7 +19,7 @@
 #include "gfx/picture.hpp"
 #include "logger.hpp"
 #include "exception.hpp"
-#include <SDL_ttf.h>
+#include "SDL_ttf.h"
 #include "color.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
