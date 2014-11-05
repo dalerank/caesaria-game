@@ -46,7 +46,6 @@ public:
                                        const gfx::TilesArray& tmp ) const;
 protected:
   virtual void _waterStateChanged();
-  bool _overlapPic;
 };
 
 #endif // __CAESARIA_AQUEDUCT_H_INCLUDED__
