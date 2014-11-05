@@ -188,8 +188,10 @@ std::string MarketBuyer::thoughts( Thought th) const
   break;
 
   default:
-      break;
-    }
+  break;
+  }
+
+  return "";
 }
 
 TilePos MarketBuyer::places(Walker::Place type) const

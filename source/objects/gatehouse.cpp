@@ -158,6 +158,16 @@ bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
   _d->gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, _d->direction == north ? 224 : 225 );
   _d->gatehouseSprite[ 0 ].setOffset( _d->direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
 
+  TilesArray tiles = city->tilemap().getArea( pos, size() );
+  foreach( it, tiles )
+  {
+    RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
+    if( road.isValid() )
+    {
+      road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    }
+  }
+
   return Building::build( city, pos );
 }
 
