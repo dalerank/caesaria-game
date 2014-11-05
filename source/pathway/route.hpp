@@ -34,6 +34,6 @@ public:
   const Pathway& way() const { return second; }
 };
 
-typedef std::map < ConstructionPtr, PathwayPtr > DirectRoutes;
+typedef std::map < ConstructionPtr, PathwayPtr > DirectPRoutes;
 
 #endif //_CAESARIA_APPOINTEDWAY_H_INCLUDE_

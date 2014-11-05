@@ -167,7 +167,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
 void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
 {
-  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   foreach( item, pathWayList )
   {
