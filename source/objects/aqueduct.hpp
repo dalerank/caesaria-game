@@ -33,7 +33,9 @@ public:
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const; 
+  virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
   virtual std::string sound() const;
+  virtual const gfx::Picture& picture() const;
 
   void updatePicture(PlayerCityPtr city);
   void addRoad();
@@ -44,6 +46,7 @@ public:
                                        const gfx::TilesArray& tmp ) const;
 protected:
   virtual void _waterStateChanged();
+  bool _overlapPic;
 };
 
 #endif // __CAESARIA_AQUEDUCT_H_INCLUDED__

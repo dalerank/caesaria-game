@@ -490,7 +490,7 @@ TilePos ServiceWalker::places(Walker::Place type) const
   default: break;
   }
 
-  return ServiceWalker::places( type );
+  return Human::places( type );
 }
 
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )

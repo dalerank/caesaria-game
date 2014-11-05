@@ -96,7 +96,7 @@ public:
   Label* lbCitizenPic;
   Label* lbCurrentAction;
   Label* lbBaseBuilding;
-  Label* btnMove2base;
+  PushButton* btnMove2base;
   PlayerCityPtr city;
 
   std::vector<CitizenScreenshot*> screenshots;
@@ -214,16 +214,13 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action)
 
 void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 {
-  if( lbBaseBuilding )
+  baseBuildingPos = pos;
+  gfx::TileOverlayPtr ov = city->getOverlay( pos );
+  if( ov.isValid() )
   {
-    baseBuildingPos = pos;
-    gfx::TileOverlayPtr ov = city->getOverlay( pos );
-    if( ov.isValid() )
-    {
-      std::string text = MetaDataHolder::findPrettyName( ov->type() );
-      lbBaseBuilding->setText( text );
-      btnMove2base->setVisible( !text.empty() );
-    }
+    std::string text = MetaDataHolder::findPrettyName( ov->type() );
+    if( lbBaseBuilding ) lbBaseBuilding->setText( text );
+    if( btnMove2base ) btnMove2base->setVisible( !text.empty() );
   }
 }
 
