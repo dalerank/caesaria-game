@@ -76,7 +76,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 {
   SmartPtr< T > res;
 
-  DirectRoutes pathWayList = pathPropagator.getRoutes( type );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 

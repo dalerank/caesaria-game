@@ -151,9 +151,9 @@ void Propagator::propagate(const unsigned int maxDistance)
    }
 }
 
-DirectRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
+DirectPRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
 {
-  DirectRoutes ret;
+  DirectPRoutes ret;
   // init the building list
   city::Helper helper( _d->city );
   ConstructionList constructionList = helper.find<Construction>( buildingType );
@@ -282,7 +282,7 @@ PathwayList Propagator::getWays(const unsigned int maxDistance)
 
 Propagator::~Propagator(){}
 
-DirectRoute Propagator::getShortestRoute(const DirectRoutes& routes )
+DirectRoute Propagator::getShortestRoute(const DirectPRoutes& routes )
 {
   DirectRoute ret;
   unsigned int minLength = 999;
@@ -304,7 +304,7 @@ DirectRoute Propagator::getShortestRoute(const DirectRoutes& routes )
 
 DirectRoute Propagator::getShortestRoute(const TileOverlay::Type buildingType )
 {
-  DirectRoutes routes = getRoutes( buildingType );
+  DirectPRoutes routes = getRoutes( buildingType );
 
   return getShortestRoute( routes );
 }

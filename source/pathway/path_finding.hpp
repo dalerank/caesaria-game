@@ -47,9 +47,9 @@ public:
 
   /** returns all paths starting at origin */
   PathwayList getWays(const unsigned int maxDistance);
-  DirectRoutes getRoutes(const gfx::TileOverlay::Type buildingType);
+  DirectPRoutes getRoutes(const gfx::TileOverlay::Type buildingType);
 
-  DirectRoute getShortestRoute( const DirectRoutes& routes );
+  DirectRoute getShortestRoute( const DirectPRoutes& routes );
   DirectRoute getShortestRoute( const gfx::TileOverlay::Type buildingType );
 
 private:

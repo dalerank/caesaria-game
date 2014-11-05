@@ -79,14 +79,14 @@ Merchant::~Merchant(){}
 
 DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket, PlayerCityPtr city)
 {
-  DirectRoutes routes = pathPropagator.getRoutes( building::warehouse );
+  DirectPRoutes routes = pathPropagator.getRoutes( building::warehouse );
 
   std::map< int, DirectRoute > warehouseRating;
 
   city::TradeOptions& options = city->tradeOptions();
 
   // select the warehouse with the max quantity of requested goods
-  DirectRoutes::iterator routeIt = routes.begin();
+  DirectPRoutes::iterator routeIt = routes.begin();
   while( routeIt != routes.end() )
   {
     // for every warehouse within range
@@ -116,10 +116,10 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
 
 DirectRoute getWarehouse4Sells( Propagator &pathPropagator, SimpleGoodStore& basket )
 {
-  DirectRoutes pathWayList = pathPropagator.getRoutes( building::warehouse );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( building::warehouse );
 
   // select the warehouse with the max quantity of requested goods
-  DirectRoutes::iterator pathWayIt = pathWayList.begin();
+  DirectPRoutes::iterator pathWayIt = pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range

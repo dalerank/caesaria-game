@@ -275,10 +275,10 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
-  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   //remove factories with improrer storage
-  DirectRoutes::iterator pathWayIt= pathWayList.begin();
+  DirectPRoutes::iterator pathWayIt= pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
