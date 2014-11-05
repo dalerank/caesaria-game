@@ -38,7 +38,6 @@ Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _setIsRoad( false );
-  _overlapPic = false;
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -60,7 +59,6 @@ bool Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
     return false;
   }
 
-  _overlapPic = false;
   _setIsRoad( terrain.getFlag( Tile::tlRoad ) );
   RoadPtr road = ptr_cast<Road>( terrain.overlay() );
   if( road.isValid() )
@@ -117,7 +115,6 @@ void Aqueduct::destroy()
 
 void Aqueduct::timeStep(const unsigned long time)
 {
-  _overlapPic = false;
   WaterSource::timeStep( time );
 }
 
@@ -222,8 +219,6 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
   overlay_d[west ] = tmap.at( tile_pos_d[west]  ).overlay();
 
   // if we have a TMP array with aqueducts, calculate them
-  const_cast<Aqueduct*>( this )->_overlapPic = !tmp.empty();
-
   if (!tmp.empty())
   {
     foreach( it, tmp )
@@ -316,7 +311,7 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
       index = 119; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
-    index += ( mapDirection == west || mapDirection == east ) ? 1 : 0;
+    //index += ( mapDirection == west || mapDirection == east ) ? 1 : 0;
   }
   break;
     
@@ -334,12 +329,15 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
   case 2:  // E
   case 8:  // W
   case 10: // E + W
+  {
     index = 122; 
     if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 120; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
+    //index -= ( mapDirection == west || mapDirection == east ) ? 1 : 0;
+  }
   break;
    
   case 11: // N + E + W
@@ -440,5 +438,5 @@ std::string Aqueduct::sound() const
 
 const Picture& Aqueduct::picture() const
 {
-  return _overlapPic ? Picture::getInvalid() : WaterSource::picture();
+  return WaterSource::picture();
 }
