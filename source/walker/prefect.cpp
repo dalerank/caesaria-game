@@ -62,6 +62,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
   _setSubAction( doNothing );
+  _addObsoleteOverlays( building::gatehouse );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }

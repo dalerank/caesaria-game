@@ -472,6 +472,8 @@ std::string CartPusher::thoughts( Thought th ) const
   case thAction:
 
   break;
+
+  default: break;
   }
 
   return Walker::thoughts( th );

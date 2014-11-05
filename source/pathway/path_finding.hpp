@@ -25,15 +25,20 @@
 #include "pathway.hpp"
 #include "gfx/tileoverlay.hpp"
 #include "route.hpp"
+#include "objects/constants.hpp"
 
 class Propagator
 {
 public:
+  typedef std::set<gfx::TileOverlay::Type> ObsoleteOverlays;
+
   Propagator( PlayerCityPtr city );
   ~Propagator();
 
   void setAllLands(const bool value);
   void setAllDirections(const bool value);
+  void setObsoleteOverlay( gfx::TileOverlay::Type type );
+  void setObsoleteOverlays( const ObsoleteOverlays& ovs );
 
   /** propagate some data in the road network
   * param origin : propagation origin
