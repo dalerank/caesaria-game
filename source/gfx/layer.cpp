@@ -93,7 +93,14 @@ void Layer::registerTileForRendering(Tile& tile)
   tiles.clear();
 }*/
 
-void Layer::renderUi(Engine& engine) {  }
+void Layer::renderUi(Engine& engine)
+{
+  __D_IMPL(_d,Layer)
+  if( !_d->tooltipText.empty() )
+  {
+    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
+  }
+}
 
 void Layer::handleEvent(NEvent& event)
 {
@@ -269,13 +276,13 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
 void Layer::_setTooltipText(const std::string& text)
 {
   __D_IMPL(_d,Layer)
-  if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
+  if( _d->tooltipText != text )
   {
     Font font = Font::create( FONT_2 );
     _d->tooltipText = text;
     Size size = font.getTextSize( text );
 
-    if( _d->tooltipPic->size() != size )
+    if( _d->tooltipPic.isNull() || (_d->tooltipPic->size() != size) )
     {
       _d->tooltipPic.reset( Picture::create( size, 0, true ) );
     }
@@ -439,11 +446,6 @@ void Layer::afterRender( Engine& engine)
       _d->camera->move( moveValue.toPointF() );
     }
   }
-
-  if( !_d->tooltipText.empty() )
-  {
-    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
-  }  
 
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {
