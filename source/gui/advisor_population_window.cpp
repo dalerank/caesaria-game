@@ -154,6 +154,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   {
     _d->chartNext = new CityChart( lbNextChartArea, Rect( 0, 0, 100, 50 ) );
     _d->chartNext->setIsSmall( true );
+    _d->chartNext->setTooltipText( _("##select_this_graph##") );
     CONNECT( lbNextChartArea, onClicked(), _d.data(), Impl::showNextChart );
   }
 
@@ -161,6 +162,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   {
     _d->chartPrev = new CityChart( lbPrevChartArea, Rect( 0, 0, 100, 50 ) );
     _d->chartPrev->setIsSmall( true );
+    _d->chartPrev->setTooltipText( _("##select_this_graph##") );
     CONNECT( lbPrevChartArea, onClicked(), _d.data(), Impl::showPrevChart );
   }
 

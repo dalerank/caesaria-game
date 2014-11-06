@@ -31,6 +31,7 @@
 #include "gfx/decorator.hpp"
 #include "walker/enemysoldier.hpp"
 #include "gfx/engine.hpp"
+#include "walker/seamerchant.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "events/movecamera.hpp"
@@ -231,7 +232,14 @@ void AboutPeople::_updateTitle()
     case walker::merchant:
     {
       MerchantPtr m = ptr_cast<Merchant>( _d->object );
-      setTitle( _("##trade_caravan_from##") + m->parentCity() );
+      title = _("##trade_caravan_from##") + m->parentCity();
+    }
+    break;
+
+    case walker::seaMerchant:
+    {
+      SeaMerchantPtr m = ptr_cast<SeaMerchant>( _d->object );
+      title = _("##trade_ship_from##") + m->parentCity();
     }
     break;
 

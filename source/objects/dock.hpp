@@ -45,8 +45,8 @@ public:
 
   void requestGoods( GoodStock& stock );
 
-  void importingGoods( GoodStock& stock );
-  void exportingGoods( GoodStock& stock, int qty );
+  int importingGoods( GoodStock& stock );
+  int exportingGoods( GoodStock& stock, int qty );
   void storeGoods(GoodStock& stock, const int amount);
 
 private:

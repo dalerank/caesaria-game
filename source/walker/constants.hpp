@@ -115,6 +115,7 @@ enum Nation
   visigoth,
   gaul,
   iberian,
+  helveti,
   nationCount
 };
 

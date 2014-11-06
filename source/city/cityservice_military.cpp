@@ -139,7 +139,7 @@ bool Military::haveNotification(Military::Notification::Type type) const
 bool Military::isUnderAttack() const
 {
   return haveNotification( Notification::barbarian )
-         || haveNotification( Notification::chastener );
+      || haveNotification( Notification::chastener );
 }
 
 VariantMap Military::save() const

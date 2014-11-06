@@ -44,7 +44,8 @@ using namespace gfx;
 class Merchant::Impl
 {
 public:
-  typedef enum { stFindWarehouseForSelling=0,    
+  typedef enum { stUnknown=0,
+                 stFindWarehouseForSelling,
                  stFindWarehouseForBuying,
                  stGoOutFromCity,
                  stSellGoods,
@@ -384,27 +385,28 @@ void Merchant::send2city()
 void Merchant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destBuildPos" ] = _d->destBuildingPos;
+  VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos )
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
+  VARIANT_SAVE_STR_D( stream, _d, baseCityName )
+  VARIANT_SAVE_ANY_D( stream, _d, waitInterval )
+  VARIANT_SAVE_ENUM_D( stream, _d, nextState )
+
   stream[ "sell" ] = _d->sell.save();
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "baseCity" ] = Variant( _d->baseCityName );
-  stream[ "wait" ] = _d->waitInterval;
-  stream[ "nextState" ] = (int)_d->nextState;
 }
 
 void Merchant::load( const VariantMap& stream)
 {
   Walker::load( stream );
-  _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
   _d->sell.load( stream.get( "sell" ).toMap() );
-  _d->maxDistance = stream.get( "maxDistance" );
-  _d->baseCityName = stream.get( "baseCity" ).toString();
-  _d->waitInterval = stream.get( "wait" );
 
-  Variant vNext = stream.get( "nextState" );
-  if( vNext.isValid() )
-    _d->nextState = (Impl::State)vNext.toInt();
-  else
+  VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream )
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
+  VARIANT_LOAD_STR_D( _d, baseCityName, stream )
+  VARIANT_LOAD_ANY_D( _d, waitInterval, stream )
+
+  VARIANT_LOAD_ENUM_D( _d, nextState, stream );
+
+  if( _d->nextState == Impl::stUnknown )
   {
     _d->nextState = Impl::stBackToBaseCity;
     _d->resolveState( _city(), this, pos() );
@@ -422,7 +424,7 @@ void Merchant::timeStep(const unsigned long time)
   Walker::timeStep( time );
 }
 
-std::string Merchant::parentCity() const{  return _d->baseCityName; }
+std::string Merchant::parentCity() const{ return _d->baseCityName; }
 
 TilePos Merchant::places(Walker::Place type) const
 {

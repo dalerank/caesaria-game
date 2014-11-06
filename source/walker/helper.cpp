@@ -90,6 +90,7 @@ public:
     __REG_WNATION( visigoth )
     __REG_WNATION( gaul )
     __REG_WNATION( iberian )
+    __REG_WNATION( helveti )
 #undef __REG_WNATION
 
       appendType( walker::all,        "unknown" );
