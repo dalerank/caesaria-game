@@ -270,11 +270,18 @@ void CityRenderer::rotateLeft()
   _d->resetWalkersAfterTurn();
 }
 
+void CityRenderer::setLayer(int layertype)
+{
+  if( _d->currentLayer == layertype )
+    layertype = citylayer::simple;
+
+  _d->setLayer( layertype );
+}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-void CityRenderer::setLayer(int layertype) { _d->setLayer( layertype ); }
 TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }

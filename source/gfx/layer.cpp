@@ -190,10 +190,10 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.keyboard.key )
     {
-    case KEY_UP:    case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
-    case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
-    case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
+    case KEY_UP:    /*case KEY_KEY_W:*/ _d->camera->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  /*case KEY_KEY_S:*/ _d->camera->moveDown ( moveValue ); break;
+    case KEY_RIGHT: /*case KEY_KEY_D:*/ _d->camera->moveRight( moveValue ); break;
+    case KEY_LEFT:  /*case KEY_KEY_A:*/ _d->camera->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
     default: break;
     }
@@ -331,11 +331,25 @@ void Layer::render( Engine& engine)
 
   if( opts.isFlag( LayerDrawOptions::showPath ) )
   {
+    WalkerList overDrawWalkers;
+
     const WalkerList& walkers = _city()->walkers( walker::all );
     foreach( it, walkers )
     {
-      if( (*it)->getFlag( Walker::showDebugInfo ) )
-        WalkerDebugInfo::showPath( *it, engine, _d->camera );
+      if( (*it)->getFlag( Walker::showPath ) )
+      {
+        overDrawWalkers << *it;
+      }
+      else
+      {
+        if( (*it)->getFlag( Walker::showDebugInfo ) )
+          WalkerDebugInfo::showPath( *it, engine, _d->camera );
+      }
+    }
+
+    foreach ( it, overDrawWalkers )
+    {
+      WalkerDebugInfo::showPath( *it, engine, _d->camera, DefaultColors::yellow );
     }
   }
 }
