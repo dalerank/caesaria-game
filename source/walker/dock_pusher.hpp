@@ -13,44 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
+#ifndef _CAESARIA_DOCKER_H_INCLUDE_
+#define _CAESARIA_DOCKER_H_INCLUDE_
 
-#ifndef _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
-#define _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
+#include "cart_pusher.hpp"
 
-#include <string>
-#include <list>
-
-#include "info_box.hpp"
-
-namespace gui
-{
-
-namespace infobox
-{
-
-namespace citizen
-{
-
-// Simple info box with static text on plain background
-class AboutPeople : public Simple
+/** This walker delivers goods */
+class Docker : public CartPusher
 {
 public:
-  AboutPeople(Widget* parent, PlayerCityPtr city, const TilePos& pos);
-  virtual ~AboutPeople();
+  static DockerPtr create( PlayerCityPtr city );
 
 protected:
-  void _setWalker(WalkerPtr walker);
-  void _updateTitle();
-  void _updateNeighbors();
-  class Impl;
-  ScopedPtr<Impl> _d;
+  Docker( PlayerCityPtr city );
 };
 
-}
-
-}
-
-}//end namespace gui
-#endif //_CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
+#endif //_CAESARIA_DOCKER_H_INCLUDE_

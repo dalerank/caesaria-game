@@ -29,6 +29,7 @@
 #include "core/gettext.hpp"
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
+#include "walker/enemysoldier.hpp"
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
@@ -174,17 +175,17 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
     e->dispatch();
   }
 
-  switch( wlk->type() )
-  {
-  case walker::merchant:
-  {
-    MerchantPtr m = ptr_cast<Merchant>( wlk );
-    setTitle( _("##trade_caravan_from##") + m->parentCity() );
-  }
-  break;
+  _updateTitle();
+  _updateNeighbors();
 
-  default: setTitle( _("##citizen##") );
-  }
+  _d->updateCurrentAction( wlk->thoughts( Walker::thAction ), wlk->places( Walker::plDestination ) );
+  _d->updateBaseBuilding( wlk->places( Walker::plOrigin ) );
+}
+
+void AboutPeople::_updateNeighbors()
+{
+  if( _d->object.isNull() )
+    return;
 
   foreach( it, _d->screenshots )
   {
@@ -192,7 +193,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   }
   _d->screenshots.clear();
 
-  gfx::TilesArray tiles = _d->city->tilemap().getNeighbors(wlk->pos(), gfx::Tilemap::AllNeighbors);
+  gfx::TilesArray tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
   Rect lbRect( 25, 45, 25 + 52, 45 + 52 );
   Point lbOffset( 60, 0 );
   foreach( itTile, tiles )
@@ -202,15 +203,43 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
     {
       //mini screenshot from citizen pos need here
       CitizenScreenshot* lb = new CitizenScreenshot( this, lbRect, tileWalkers.front() );
+      lb->setTooltipText( _("##click_here_to_talk_person##") );
       _d->screenshots.push_back( lb );
       lbRect += lbOffset;
+
 
       CONNECT( lb, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
+}
 
-  _d->updateCurrentAction( wlk->thoughts( Walker::thAction ), wlk->places( Walker::plDestination ) );
-  _d->updateBaseBuilding( wlk->places( Walker::plOrigin ) );
+void AboutPeople::_updateTitle()
+{
+  if( _d->object.isNull() )
+    return;
+
+  std::string title;
+  if( is_kind_of<EnemySoldier>( _d->object ) )
+  {
+    title = WalkerHelper::getNationName( _d->object->nation() );
+    title.insert( title.size()-2, "_soldier" );
+  }
+  else
+  {
+    switch( _d->object->type() )
+    {
+    case walker::merchant:
+    {
+      MerchantPtr m = ptr_cast<Merchant>( _d->object );
+      setTitle( _("##trade_caravan_from##") + m->parentCity() );
+    }
+    break;
+
+    default: title = "##citizen##";
+    }
+  }
+
+  setTitle( _( title ) );
 }
 
 AboutPeople::~AboutPeople()

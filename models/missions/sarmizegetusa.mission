@@ -771,7 +771,7 @@
 
       wheat_farm : true
       fig_farm : true
-			pig_farm : true
+      meat_farm : true
       vinard : true
 
       senate_1 : true

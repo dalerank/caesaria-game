@@ -89,6 +89,7 @@ public:
     __REG_WNATION( native )
     __REG_WNATION( visigoth )
     __REG_WNATION( gaul )
+    __REG_WNATION( iberian )
 #undef __REG_WNATION
 
       appendType( walker::all,        "unknown" );
@@ -153,6 +154,7 @@ public:
     __REG_WTYPE( supplier   )
     __REG_WTYPE( patrician  )
     __REG_WTYPE( circusCharioter )
+    __REG_WTYPE( docker )
 #undef __REG_WTYPE
   }
 };

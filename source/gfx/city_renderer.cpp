@@ -272,7 +272,7 @@ void CityRenderer::rotateLeft()
 
 void CityRenderer::setLayer(int layertype)
 {
-  if( _d->currentLayer == layertype )
+  if( _d->currentLayer->type() == layertype )
     layertype = citylayer::simple;
 
   _d->setLayer( layertype );

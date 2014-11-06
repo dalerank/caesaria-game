@@ -125,15 +125,6 @@ void LayerTroubles::handleEvent(NEvent& event)
 
           if( text.empty() )
           {
-            FactoryPtr fb = ptr_cast<Factory>( constr );
-            if( fb.isValid())
-            {
-              if( !fb->isActive() )
-              {
-                text = StringHelper::format( 0xff, "##trade_advisor_blocked_%s_production##", fb->produceGoodType() );
-              }
-            }
-
             WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( constr );
             if( text.empty() && wb.isValid() )
             {

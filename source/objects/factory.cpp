@@ -313,6 +313,8 @@ bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) 
 void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
 float Factory::productRate() const{  return _d->productionRate;}
+
+unsigned int Factory::effciency() const { return laborAccessPercent() * productivity() / 100; }
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
 

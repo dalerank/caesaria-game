@@ -400,6 +400,8 @@ CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
   return ret;
 }
 
+CartPusher::~CartPusher(){}
+
 void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
