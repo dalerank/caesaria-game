@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/logger.hpp"
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 
@@ -36,6 +37,8 @@ class Gatehouse::Impl
 public:
   Pictures gatehouseSprite;
   Direction direction;
+
+  void updateSprite();
 };
 
 Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ), _d( new Impl )
@@ -117,11 +120,17 @@ bool Gatehouse::_update( PlayerCityPtr city, TilePos pos )
 void Gatehouse::save(VariantMap& stream) const
 {
   Building::save( stream );
+
+  VARIANT_SAVE_ENUM_D( stream, _d, direction )
 }
 
 void Gatehouse::load(const VariantMap& stream)
 {
   Building::load( stream );
+
+  VARIANT_LOAD_ENUM_D( _d, direction, stream )
+
+  _d->updateSprite();
 }
 
 bool Gatehouse::isWalkable() const {  return true; }
@@ -154,9 +163,7 @@ void Gatehouse::destroy()
 bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
 {
   _update( city, pos );
-
-  _d->gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, _d->direction == north ? 224 : 225 );
-  _d->gatehouseSprite[ 0 ].setOffset( _d->direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
+  _d->updateSprite();
 
   TilesArray tiles = city->tilemap().getArea( pos, size() );
   foreach( it, tiles )
@@ -174,4 +181,18 @@ bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
 bool Gatehouse::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
   return const_cast< Gatehouse* >( this )->_update( city, pos );
+}
+
+
+void Gatehouse::Impl::updateSprite()
+{
+  if( direction != noneDirection )
+  {
+    gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, direction == north ? 224 : 225 );
+    gatehouseSprite[ 0 ].setOffset( direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
+  }
+  else
+  {
+    Logger::warning( "WARNING!!! Gatehouse::updateSprite none direction used" );
+  }
 }

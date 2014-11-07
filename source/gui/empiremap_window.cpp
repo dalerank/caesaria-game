@@ -94,6 +94,7 @@ public:
   void drawMovable( Engine& painter );
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
+  void drawCell(Engine& e, Point start, int side , NColor color);
   world::ObjectPtr findObject( Point pos );
 };
 
@@ -153,6 +154,7 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
   {
     Point location = (*it)->location();
     painter.draw( (*it)->pictures(), offset + location );
+    drawCell( painter, offset + location - Point( 10, 10 ), 20, DefaultColors::red );
   }
 }
 
@@ -179,13 +181,22 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
-      painter.draw( pictures[ index ], offset + points[ index ] );
+      Point pos = offset + points[ index ];
+      painter.draw( pictures[ index ], pos );
+      drawCell( painter, pos - Point( 10, 10 ), 20, DefaultColors::green );
     }
 
-    world::MerchantPtr merchant = route->merchant( 0 );
-    if( merchant != 0 )
+    for( unsigned int index=1; index < pictures.size(); index++ )
     {
-      painter.draw( merchant->picture(), offset + merchant->location() );
+      Point pos1 = offset + points[ index-1 ];
+      Point pos2 = offset + points[ index ];
+      painter.drawLine( DefaultColors::blue, pos1, pos2 );
+    }
+
+    world::MerchantList merchants = route->merchants();
+    foreach ( it, merchants )
+    {
+      painter.draw( (*it)->picture(), offset + (*it)->location() );
     }
   }
 }
@@ -281,9 +292,19 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
                                        -p->height() + (120 + centerPicture.height() - 20)) );
 }
 
+void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor color)
+{
+#ifdef DEBUG
+  e.drawLine( color, start, start + Point( side, 0 ) );
+  e.drawLine( color, start + Point( side, 0 ), start + Point( side, side ) );
+  e.drawLine( color, start + Point( side, side ), start + Point( 0, side ) );
+  e.drawLine( color, start + Point( 0, side ), start );
+#endif
+}
+
 world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
 {
-  world::ObjectList objs = city->empire()->findObjects( -offset + pos, 30 );
+  world::ObjectList objs = city->empire()->findObjects( -offset + pos, 20 );
 
   return objs.empty() ? world::ObjectPtr() : objs.front();
 }

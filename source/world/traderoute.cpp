@@ -49,6 +49,7 @@ public:
 
   void resolveMerchantArrived( MerchantPtr merchant );
   void updateBoundingBox();
+  void updatePictures();
 };
 
 CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin );}
@@ -103,29 +104,7 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
   _d->points = points;
   _d->seaRoute = seaRoute;
 
-  for( unsigned int i=1; i < points.size(); i++ )
-  {
-    Point offset;
-    Point p1 = points[ i ];
-    Point p2 = points[ i - 1 ];
-
-    int angle = (int)((p2-p1).getAngle() / 45.f);
-    switch( angle )
-    {
-    case 0: angle = 91; offset = Point( -10, -2 ); break;
-    case 1: angle = 89; offset = Point( -10, -5 ); break;
-    case 2: angle = 88; offset = Point( 0, -5 );break;
-    case 3: angle = 93; offset = Point( 0, -10 ); break;
-    case 4: angle = 91; offset = Point( 0, -10 ); break;
-    case 5: angle = 89; offset = Point( 0, 5 ); break;
-    case 6: angle = 94; offset = Point( 0, 12 );break;
-    case 7: angle = 93; offset = Point( -10, 12 ); break;
-    }
-
-    Picture pic = Picture::load( ResourceGroup::empirebits, angle + (seaRoute ? 8 : 0) );
-    pic.setOffset( offset );
-    _d->pictures.push_back( pic );
-  }
+  _d->updatePictures();
 
   _d->updateBoundingBox();
 }
@@ -161,11 +140,16 @@ Traderoute::~Traderoute() {}
 MerchantPtr Traderoute::merchant( unsigned int index )
 {
   if( index >= _d->merchants.size() )
-    return 0;
+    return MerchantPtr();
 
   MerchantList::iterator it = _d->merchants.begin();
   std::advance( it, index );
   return *it;
+}
+
+MerchantList Traderoute::merchants() const
+{
+  return _d->merchants;
 }
 
 VariantMap Traderoute::save() const
@@ -185,13 +169,13 @@ VariantMap Traderoute::save() const
   foreach( p, _d->points ) { vl_points.push_back( *p ); }
   ret[ "points" ] = vl_points;
 
-  VariantList vl_pictures;
+ /* VariantList vl_pictures;
   foreach( pic, _d->pictures )
   {
     vl_pictures.push_back( Variant( pic->name() ) );
   }
-  ret[ "pictures" ] = vl_pictures;
-  ret[ "seaRoute" ] = _d->seaRoute;
+  ret[ "pictures" ] = vl_pictures; */
+  VARIANT_SAVE_ANY_D( ret, _d, seaRoute )
 
   return ret;
 }
@@ -204,12 +188,13 @@ void Traderoute::load(const VariantMap& stream)
     _d->points.push_back( (*i).toPoint() );
   }
   _d->updateBoundingBox();
+  _d->updatePictures();
 
-  VariantList pictures = stream.get( "pictures" ).toList();
+ /* VariantList pictures = stream.get( "pictures" ).toList();
   foreach( i, pictures )
   {
     _d->pictures.push_back( Picture::load( (*i).toString() ) );
-  }
+  } */
 
   VariantMap merchants = stream.get( "merchants" ).toMap();
   foreach( it, merchants )
@@ -226,7 +211,8 @@ void Traderoute::load(const VariantMap& stream)
       Logger::warning( "WARNING !!!: Traderoute::load cant load merchant index %d", std::distance( merchants.begin(), it) );
     }
   }
-  _d->seaRoute = stream.get( "seaRoute" );
+
+  VARIANT_LOAD_ANY_D( _d, seaRoute, stream )
 }
 
 Signal1<MerchantPtr>& Traderoute::onMerchantArrived()
@@ -266,6 +252,36 @@ void Traderoute::Impl::updateBoundingBox()
   foreach ( it, points )
   {
     boundingBox.addInternalPoint( it->x(), it->y() );
+  }
+}
+
+void Traderoute::Impl::updatePictures()
+{
+  pictures.clear();
+  for( unsigned int i=0; i < points.size(); i++ )
+  {
+    Point offset;
+    Point p = points[ i ];
+    Point pNext = points[ math::clamp<unsigned int>( i+1, 0, points.size() ) ];
+
+    int angle = (int)((pNext-p).getAngle() / 45.f);
+    int picIndex = 91;
+
+    switch( angle )
+    {
+    case 0: picIndex = 91; break;
+    case 1: picIndex = 93; break;
+    case 2: picIndex = 95; break;
+    case 3: picIndex = 89; offset = Point( -19, 0 ); break;
+    case 4: picIndex = 92; offset = Point( -21, -9); break;
+    case 5: picIndex = 93; offset = Point( -19, -15); break;
+    case 6: picIndex = 94; offset = Point( -9, -21); break;
+    case 7: picIndex = 89; offset = Point( -19, -15); break;
+    }
+
+    Picture pic = Picture::load( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
+    pic.setOffset( offset );
+    pictures.push_back( pic );
   }
 }
 
