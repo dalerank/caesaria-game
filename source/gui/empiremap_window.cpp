@@ -154,7 +154,9 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
   {
     Point location = (*it)->location();
     painter.draw( (*it)->pictures(), offset + location );
+#ifdef DEBUG
     drawCell( painter, offset + location - Point( 10, 10 ), 20, DefaultColors::red );
+#endif
   }
 }
 
@@ -179,18 +181,20 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     const PointsArray& points = route->points();
     const Pictures& pictures = route->pictures();
 
-    for( unsigned int index=0; index < pictures.size(); index++ )
-    {
-      Point pos = offset + points[ index ];
-      painter.draw( pictures[ index ], pos );
-      drawCell( painter, pos - Point( 10, 10 ), 20, DefaultColors::green );
-    }
-
+#ifdef DEBUG
     for( unsigned int index=1; index < pictures.size(); index++ )
     {
       Point pos1 = offset + points[ index-1 ];
       Point pos2 = offset + points[ index ];
       painter.drawLine( DefaultColors::blue, pos1, pos2 );
+      drawCell( painter, pos1 - Point( 10, 10 ), 20, DefaultColors::green );
+    }
+#endif
+
+    for( unsigned int index=0; index < pictures.size(); index++ )
+    {
+      Point pos = offset + points[ index ];
+      painter.draw( pictures[ index ], pos );
     }
 
     world::MerchantList merchants = route->merchants();

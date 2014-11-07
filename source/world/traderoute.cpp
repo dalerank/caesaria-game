@@ -258,11 +258,11 @@ void Traderoute::Impl::updateBoundingBox()
 void Traderoute::Impl::updatePictures()
 {
   pictures.clear();
-  for( unsigned int i=0; i < points.size(); i++ )
+  for( unsigned int i=1; i < points.size(); i++ )
   {
     Point offset;
-    Point p = points[ i ];
-    Point pNext = points[ math::clamp<unsigned int>( i+1, 0, points.size() ) ];
+    Point p = points[ i-1 ];
+    Point pNext = points[ i ];
 
     int angle = (int)((pNext-p).getAngle() / 45.f);
     int picIndex = 91;
@@ -270,13 +270,13 @@ void Traderoute::Impl::updatePictures()
     switch( angle )
     {
     case 0: picIndex = 91; break;
-    case 1: picIndex = 93; break;
-    case 2: picIndex = 95; break;
-    case 3: picIndex = 89; offset = Point( -19, 0 ); break;
-    case 4: picIndex = 92; offset = Point( -21, -9); break;
-    case 5: picIndex = 93; offset = Point( -19, -15); break;
-    case 6: picIndex = 94; offset = Point( -9, -21); break;
-    case 7: picIndex = 89; offset = Point( -19, -15); break;
+    case 7: picIndex = 93; break;
+    case 6: picIndex = 95; break;
+    case 5: picIndex = 89; offset = Point( -19, 0 ); break;
+    case 4: picIndex = 92; offset = Point( -21, 3); break;
+    case 3: picIndex = 93; offset = Point( -19, 15); break;
+    case 2: picIndex = 94; offset = Point( -4, 21); break;
+    case 1: picIndex = 89; offset = Point( 0, 15); break;
     }
 
     Picture pic = Picture::load( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
