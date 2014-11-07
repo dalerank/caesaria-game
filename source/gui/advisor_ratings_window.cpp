@@ -160,10 +160,7 @@ void Ratings::Impl::checkCultureRating()
       }
     }
 
-    if( !troubles.empty() )
-    {
-      lbRatingInfo->setText( _( troubles.random() ) );
-    }
+    lbRatingInfo->setText( _( troubles.random() ) );
   }
 }
 

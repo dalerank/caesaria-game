@@ -25,6 +25,7 @@
 #include "core/signals.hpp"
 #include "scene/base.hpp"
 #include "gfx/engine.hpp"
+#include "enums.hpp"
 
 class Scene;
 
@@ -61,12 +62,13 @@ public:
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier(int percent);
   int timeMultiplier() const;
+  void setNextScreen(ScreenType screen);
+  bool load(std::string filename);
 
 public signals:
   Signal1<std::string>& onSaveAccepted();
 
 private:
-  bool load(std::string filename);
 
   class Impl;
   ScopedPtr< Impl > _d;

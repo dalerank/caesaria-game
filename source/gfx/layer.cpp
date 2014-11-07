@@ -93,7 +93,14 @@ void Layer::registerTileForRendering(Tile& tile)
   tiles.clear();
 }*/
 
-void Layer::renderUi(Engine& engine) {  }
+void Layer::renderUi(Engine& engine)
+{
+  __D_IMPL(_d,Layer)
+  if( !_d->tooltipText.empty() )
+  {
+    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
+  }
+}
 
 void Layer::handleEvent(NEvent& event)
 {
@@ -183,10 +190,10 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.keyboard.key )
     {
-    case KEY_UP:    case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
-    case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
-    case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
+    case KEY_UP:    /*case KEY_KEY_W:*/ _d->camera->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  /*case KEY_KEY_S:*/ _d->camera->moveDown ( moveValue ); break;
+    case KEY_RIGHT: /*case KEY_KEY_D:*/ _d->camera->moveRight( moveValue ); break;
+    case KEY_LEFT:  /*case KEY_KEY_A:*/ _d->camera->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
     default: break;
     }
@@ -269,13 +276,13 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
 void Layer::_setTooltipText(const std::string& text)
 {
   __D_IMPL(_d,Layer)
-  if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
+  if( _d->tooltipText != text )
   {
     Font font = Font::create( FONT_2 );
     _d->tooltipText = text;
     Size size = font.getTextSize( text );
 
-    if( _d->tooltipPic->size() != size )
+    if( _d->tooltipPic.isNull() || (_d->tooltipPic->size() != size) )
     {
       _d->tooltipPic.reset( Picture::create( size, 0, true ) );
     }
@@ -324,11 +331,25 @@ void Layer::render( Engine& engine)
 
   if( opts.isFlag( LayerDrawOptions::showPath ) )
   {
+    WalkerList overDrawWalkers;
+
     const WalkerList& walkers = _city()->walkers( walker::all );
     foreach( it, walkers )
     {
-      if( (*it)->getFlag( Walker::showDebugInfo ) )
-        WalkerDebugInfo::showPath( *it, engine, _d->camera );
+      if( (*it)->getFlag( Walker::showPath ) )
+      {
+        overDrawWalkers << *it;
+      }
+      else
+      {
+        if( (*it)->getFlag( Walker::showDebugInfo ) )
+          WalkerDebugInfo::showPath( *it, engine, _d->camera );
+      }
+    }
+
+    foreach ( it, overDrawWalkers )
+    {
+      WalkerDebugInfo::showPath( *it, engine, _d->camera, DefaultColors::yellow );
     }
   }
 }
@@ -439,11 +460,6 @@ void Layer::afterRender( Engine& engine)
       _d->camera->move( moveValue.toPointF() );
     }
   }
-
-  if( !_d->tooltipText.empty() )
-  {
-    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
-  }  
 
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {

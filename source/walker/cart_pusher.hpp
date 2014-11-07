@@ -32,6 +32,7 @@ public:
                } CartCapacity;
 
   static CartPusherPtr create( PlayerCityPtr city, CartCapacity cap=simpleCart );
+  virtual ~CartPusher();
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );

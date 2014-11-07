@@ -40,6 +40,8 @@ public:
   virtual std::string thoughts(Thought th) const;
   virtual TilePos places(Place type) const;
 
+  std::string parentCity() const;
+
 protected:
   virtual void _reachedPathway();
 
@@ -49,5 +51,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+
 
 #endif //_CAESARIA_SEAMERCHANT_INCLUDE_H_

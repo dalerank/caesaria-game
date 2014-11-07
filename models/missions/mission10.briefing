@@ -1,13 +1,13 @@
 {
   version : 1
   image : "europe02_00002"
-  title : "70 AD - Expanding north"
+  title : "50 AD - Expanding north"
 	
   items : {
     londinium : {
       title : "##londinium2_peace_province##"
       location : [ 570, 280 ]
-      mission : ":/missions/londinium2.mission"
+      mission : ":/missions/londinium.mission"
     }
 
     sarmizegetusa : {

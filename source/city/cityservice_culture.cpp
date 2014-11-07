@@ -63,6 +63,7 @@ public:
   float libraryCoverage;
   float schoolCoverage;
   float collegeCoverage;
+  float hippodromeCoverage;
   int religionPoints;
   int theatresPoints;
   int libraryPoints;
@@ -133,7 +134,6 @@ void CultureRating::timeStep(const unsigned int time )
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
 
-
     LibraryList libraries = helper.find<Library>( building::library );
     foreach( library, libraries )
     {
@@ -159,7 +159,7 @@ void CultureRating::timeStep(const unsigned int time )
     _d->collegePoints = _d->convCoverage2Points( academiesPoints, _d->collegeCoverage );
 
     _d->culture = ( _d->culture + _d->religionPoints + _d->theatresPoints + 
-                    _d->libraryPoints + _d->schoolPoints + _d->collegePoints ) / 2;
+                    _d->libraryPoints + _d->schoolPoints + _d->collegePoints ) / 2;    
   }
 }
 

@@ -452,25 +452,27 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, const Point& offset )
 
   if( _d->drawTileBasicPicture )
   {
-    if( _d->lastLayer.isValid() )
+    const Picture* picBasic = 0;
+    const Picture* picOver = 0;
+    if( cntr.isValid() && postTiles.size() > 0 )
+    {
+      picBasic = &cntr->picture();
+      picOver = &cntr->picture( _city(), tile.epos(), postTiles );
+    }
+
+    if( picOver && picBasic != picOver )
+    {
+      drawPass( engine, tile, offset, Renderer::ground );
+      engine.draw( *picOver, screenPos );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
+    }
+    else if( _d->lastLayer.isValid() )
     {
       _d->lastLayer->drawTile( engine, tile, offset );
     }
     else
     {
       Layer::drawTile( engine, tile, offset );
-    }
-
-    if( cntr.isValid() && postTiles.size() > 0 )
-    {
-      const Picture& picBasic = cntr->picture();
-      const Picture& picOver = cntr->picture( _city(), tile.epos(), postTiles );
-
-      if( &picBasic != &picOver )
-      {
-        engine.draw( picOver, screenPos );
-        drawPass( engine, tile, offset, Renderer::overlayAnimation );
-      }
     }
   }
   else

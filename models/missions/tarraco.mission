@@ -131,6 +131,19 @@
       end : [ 44, 57 ]
     }
 
+    earthquake#earthquake : {
+      date : "-268.03.01"
+      start : [ 14, 77 ]
+      end : [ 44, 57 ]
+    }
+
+    earthquake_message#messagebox : {
+      date : "-268.03.01"
+      title : "##earthquake_title##"
+      text : "##earthquake_text##"
+      send2scribe : true
+    }
+
     emperor_request_pottery1#city_request : {
       date : "-269.05.01"
       reqtype : "good_request"

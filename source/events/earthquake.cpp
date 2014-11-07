@@ -38,6 +38,19 @@ public:
   TilePos startPoint, endPoint, currentPoint;
 };
 
+GameEventPtr EarthQuake::create(TilePos start, TilePos stop)
+{
+  EarthQuake* eq = new EarthQuake();
+  eq->_d->startPoint = start;
+  eq->_d->endPoint = stop;
+  eq->_d->currentPoint = start;
+
+  GameEventPtr ret( eq );
+  ret->drop();
+
+  return ret;
+}
+
 GameEventPtr EarthQuake::create()
 {
   GameEventPtr ret( new EarthQuake() );
@@ -96,7 +109,6 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     {
       _d->currentPoint = nextPoints.random()->pos();
     }
-
 
     if( _d->currentPoint == _d->endPoint )
     {

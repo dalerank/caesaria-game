@@ -64,9 +64,9 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
 {
   _d->locker.activate();
 
-  std::string uiFile = _d->video.empty() ? "/gui/request.gui" : "/gui/request_video.gui";
+  std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
-  setupUI( GameSettings::rcpath( uiFile ) );
+  setupUI( uiFile );
 
   setCenter( parent->center() );
 

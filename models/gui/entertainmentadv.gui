@@ -93,7 +93,7 @@
 
   lbFestIcon#Label : {
     geometry : [ 460, 260, 586, 348 ]
-    image : "panelwindows_00016.png"
+    image : "panelwindows_00016"
   }
 }
 

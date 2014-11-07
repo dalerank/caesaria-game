@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"Diese Behausung hat keinen Zugang zu Unterhaltungseinrichtungen."
+{"##seamrchant_another_successful_voyage##":"Das war eine weitere erfolgreiche Reise! Der Profit an diesem Ort ist die Seekrankheit wert!"
+"##0_entertainment_access##":"Diese Behausung hat keinen Zugang zu Unterhaltungseinrichtungen."
 "##1_entertainment_access##":"Diese Behausung hat kaum Zugang zu Unterhaltungseinrichtungen."
 "##2_entertainment_access##":"Diese Behausung hat etwas Zugang zu Unterhaltungseinrichtungen."
 "##3_entertainment_access##":"Diese Behausung hat nur sehr begrenzten Zugang zu Unterhaltungseinrichtungen."
@@ -8,7 +9,7 @@
 "##7_entertainment_access##":"Diese Behausung hat sehr guten Zugang zu Unterhaltungseinrichtungen."
 "##8_entertainment_access##":"Diese Behausung hat ausgezeichneten Zugang zu Unterhaltungseinrichtungen."
 "##9_entertainment_access##":"Diese Wohnung hat Zugang zu allen möglichen Unterhaltungsrichtungen."
-"##academies##":"Akademien"
+"##a_price_rise_title##":"Preis ändern"
 "##academy_full_work##":"Diese Akademie arbeitet. Die ansässigen Jugendlichen eignen sich die gesellschaftlichen Feinheiten an."
 "##academy_info##":"Einige Jugendliche, die die Schule abgeschlossen haben, beginnen ein Studium in fortgeschrittener Rhetorik und Geschichte auf der Akademie. Kultivierte Bürger haben alle einen akademischen Hintergrund."
 "##academy_no_workers##":"Diese Akademie arbeitet nicht und ist daher der hiesigen Nachbarschaft nicht nützlich."
@@ -225,6 +226,7 @@
 "##bldm_farm##":"Farmen"
 "##bldm_raw_materials##":"Rohmaterial"
 "##bldm_raw##":"Rohmaterial"
+"##blood_sports_add_spice_to_life##":"Hetzjagden bringen Pep ins Leben der Leute."
 "##bolt##":"Bolzen"
 "##bridge_extends_city_area##":"Diese Brücke erweitert unser Land und kann von unseren Bürgern, aber auch von unseren Feinden überquert werden!"
 "##bridge##":"Brücke"
@@ -291,6 +293,10 @@
 "##citizen_salary##":"Bürgergehalt von"
 "##citizen##":"Bürger"
 "##citizens_additional_rooms_for##":"Zusätzlicher Platz für"
+"##citizens_enjoy_drama_and_comedy##":"Die Bürger lieben Dramen und Komödien nach griechischer Art."
+"##citizens_grumble_lack_festivals_held##":"Die Bürger murren, weil kaum Feste in Ihrer Stadt abgehalten werden."
+"##citizens_here_are_bored_for_chariot_races##":"Die Bürger hier langweilen sich! Wagenrennen gibt es hier zwar, aber das reicht nicht zur Ablenkung!"
+"##citizens_like_chariot_races##":"Die Bürger lieben nichts mehr als Wagenrennen."
 "##city_cyrene##":"Kyrene"
 "##city_damascus##":"Damaskus"
 "##city_fire_text##":"Die Präfekten konnten diese Stelle nicht rechtzeitig erreichen, um das Gebäude zu retten. Sobald das Feuer erloschen ist, bleibt auf diesem Platz nur noch Schutt übrig."
@@ -301,6 +307,7 @@
 "##city_have_goods_for_request##":"Eure Warenhäuser berichten, dass ihr genügend dieser Güter habt um die Nachfrage des Imperators zu erfüllen."
 "##city_have##":"Stadtkasse verfügt über"
 "##city_health##":"Gesundheitsstatus der Stadt"
+"##city_is_besieged##":"Stadt wird belagert"
 "##city_loathed_you##":"Sie werden in der ganzen Stadt verachtet"
 "##city_need_more_workers##":"Ihre Stadt braucht mehr Arbeitskräfte"
 "##city_sounds_off##":"Stadtgeräusche ausgeschaltet"
@@ -329,6 +336,7 @@
 "##clerk##":"Sekretär"
 "##click_here_that_stacking##":"Hier klicken, um das horten einzuschalten"
 "##click_here_that_use_it##":"Hier klicken, um das horten auszuschalten"
+"##click_here_to_talk_person##":"Klicken Sie hier, um mit dieser Person zu sprechen."
 "##click_item_for_start_trade##":"Zum Handeln Ware anklicken"
 "##click_on_city_for_info##":"Klicken Sie auf eine Stadt, um Informationen darüber zu erhalten"
 "##clinic_full_work##":"Diese Klinik arbeitet und dient der hiesigen Nachbarschaft."
@@ -340,6 +348,7 @@
 "##collapse_available_damage_risk##":"Sehr hohe Einsturzgefahr"
 "##collapse_immitent##":"Einsturz droht"
 "##collapsed_ruins_info##":"Diese zerfallenen Überreste alter Gebäude verringern die Attraktivität der in ihrer Nähe liegenden Grundstücke."
+"##colleges##":"Akademien"
 "##colloseum_haveno_animal_bouts##":"Momentan keine Tierkämpfe"
 "##colloseum_haveno_gladiator_bouts##":"Momentan keine Gladiatorenkämpfe"
 "##colloseum_haveno_gladiatorpit##":"Gründen Sie eine Gladiatorenschule, um hier Kämpfe auszurichten"
@@ -355,6 +364,8 @@
 "##consul_salary##":"Konsulgehalt von"
 "##consul##":"Konsul"
 "##contaminted_water##":"Verschmutztes Wasser"
+"##continue_2_years##":"Weitere 2 Jahre regieren"
+"##continue_5_years##":"Für 5 weitere Jahre fortfahren"
 "##continue##":"Fortfahren"
 "##corinthus##":"Corinthus"
 "##cost_2_open##":"Kosten für Eröffnung"
@@ -364,6 +375,8 @@
 "##crack##":"Riss"
 "##credit##":"Ausgaben"
 "##current_game_speed_is##":"Aktuelle Spielgeschwindigkeit"
+"##current_play_runs_for_another##":"Aktuelle Aufführung läuft noch"
+"##current_races_runs_for_another##":"Aktuelle Rennen laufen noch"
 "##current_year_notpay_tribute_warning##":"Sie konnten den diesjährigen Tribut nicht bezahlen, das hat Ihrer Gunstwertung geschadet. Sorgen Sie dafür, dass am Ende eines Jahres etwas Geld in der Stadtkasse ist, damit Sie Ihre jährlichen Zahlungen an Rom leisten können."
 "##cursed_by_mars##":"Von Mars verflucht!"
 "##damage##":"Schäden"
@@ -439,6 +452,7 @@
 "##donations##":"Gespendet"
 "##donationwnd_exit_tip##":"Spenden-Fenster verlassen"
 "##donot_organize_festival##":"Organisieren Sie kein Fest"
+"##earthquake_title##":"Erdbeben"
 "##east##":"Osten"
 "##edadv_need_better_access_school_or_colege##":"Besserer Zugang zu Schulen, Akademien oder Bibliotheken würde einige Bezirke der Stadt aufwerten. Die Leute sollten zum Lernen nicht so weit laufen müssen!"
 "##edil_salary##":"Aedilgehalt von"
@@ -452,6 +466,7 @@
 "##education_objects##":"Bildungseinrichtungen"
 "##education##":"Bildung"
 "##educationBtnTooltip##":"Bildung"
+"##effciency##":"Effizienz"
 "##egift_chest_of_sapphire##":"Eine Saphirtruhe"
 "##egift_educated_slave##":"Gebildeter Sklave"
 "##egift_egyptian_glassware##":"Ägyptische Glaswaren"
@@ -473,6 +488,7 @@
 "##empbutton_low_work##":"Arbeitet schlecht. Ordnen Sie dem Sektor mehr Arbeiter zu."
 "##empbutton_simple_work##":"Arbeitet gut, es sollten diesem Sektor jedoch mehr Arbeitskräfte zugewiesen werden."
 "##empbutton_tooltip##":"Klicken Sie hier, um die Priorität für diese Kategorie vorzugeben"
+"##emperor_changed_title##":"Wechsel auf dem Kaiserthron"
 "##emperor_favour_00##":"Der Imperator ist wütend auf Sie."
 "##emperor_favour_01##":"Der Imperator ist unglaublich wütend und erwägt, Sie ins Exil zu schicken."
 "##emperor_favour_02##":"Der Imperator ist ausgesprochen böse auf Sie."
@@ -639,6 +655,7 @@
 "##getting_reports_about_enemies##":"Wir erhalten Berichte, dass sich Feinde der Stadt nähern."
 "##give_money_tip##":"Klicken Sie hier, um der Stadt Geld zu spenden"
 "##give_money##":"Geld geben"
+"##gladiator_bouts_runs_for_another##":"Gladiatorenkämpfe laufen noch weitere"
 "##gladiator_gods_angry##":"Salve, Bürger. Habt Ihr es schon gehört? Die Götter sind ernzürnt."
 "##gladiator_good_life##":"Seid gegrüßt! Hier lebt es sich gut, nicht wahr?"
 "##gladiator_high_workless##":"Hier gibt es so viele arbeitslose Leute. Wenn wir doch bloß ein paar von denen als Trainingsobjekte benutzen könnten!"
@@ -723,6 +740,7 @@
 "##have_no_legions##":"Es gibt keine Legionen, die ausgeschickt werden könnten."
 "##have_no_requests##":"Momentan liegen keine Nachrichten für Sie vor. Während die Stadt wächst, oder wenn der Imperator Sie um Güter bittet, werden hier die Mitteilungen bekanntgegeben"
 "##having_some_slums_lack_migration##":"Die Elendsviertel hemmen die Immigration."
+"##heading_to_city_warehouses##":"Fährt zu den Lagerhäusern der Stadt."
 "##health_advisor##":"Gesundheitsstatus der Stadt"
 "##health_advisor##":"Gesundheitseinrichtungen"
 "##health##":"Gesundheit"
@@ -750,6 +768,7 @@
 "##hippodrome_no_workers##":"In diesem Hippodrom läuft gar nichts ab. Ohne Arbeiter kann es der hiesigen Nachbarschaft keine Unterhaltung bieten."
 "##hippodrome##":"Hippodrom"
 "##hippodromes##":"Hippodrome"
+"##hlth_care_of##":"Pflege für"
 "##hold_ceres_festival##":"Feier zu Ceres' Ehren abhalten"
 "##hold_mars_festival##":"Feier zu Mars' Ehren abhalten"
 "##hold_mercury_festival##":"Feier zu Merkurs Ehren abhalten"
@@ -773,6 +792,8 @@
 "##houseBtnTooltip##":"Haus"
 "##how_to_grow_prosperity##":"Dieses Jahr gibt es keine Veränderung bei der Wertung. Wenn Sie auf dem Konto Ihrer Stadt dieses Jahr einen Gewinn verbuchen können, ist das die beste Möglichkeit, Ihre Wohlstandswertung zu verbessern."
 "##hun_warrior##":"Ein Hunnen-Krieger"
+"##idle_factories_in_city##":"inaktive Gewerbestätten in der Stadt"
+"##idle_factory_in_city##":"inaktive Gewerbestätten"
 "##immigrant_much_food_here##":"Man hat mir gesagt, dass es hier zu Essen gäbe. Lässt es sich hier wirklich gut leben?"
 "##immigrant_so_hungry##":"Wenn ich noch länger hierbleibe, werde ich unter Garantie sterben. Es gibt nirgendwo irgendwas zu essen."
 "##immigrant_want_to_be_liontamer##":"Ich habe gehört, dass es hier Arbeit geben soll. Ich möchte Löwenbändiger werden!"
@@ -780,6 +801,7 @@
 "##imperial_request_cance_badly_affected##":"Die kaiserliche Forderung, die Sie kürzlich storniert haben, hat Ihrer Stellung in Rom schwer geschadet."
 "##import_fn##":"Importe"
 "##import##":"Importiert"
+"##increase_trading_title##":"Nachfrage ändern"
 "##industry_disabled##":"Gewerbe ist AUS"
 "##industry_enabled##":"Gewerbe ist EIN"
 "##infobox_construction_comma_tip##":"Tip: Mit den Punkt- und Komma-Tasten bewegen Sie sich schnell durch diese und andere Themen/Objekte."
@@ -806,6 +828,8 @@
 "##its_very_peacefull_province##":"Nie zuvor hat es im Imperium eine friedlichere Stadt gegeben als diese hier!"
 "##judaean_warrior##":"Ein Krieger aus Judaea"
 "##labor##":"Arbeit"
+"##land_route##":"Landweg"
+"##land_trade_problem_title##":"Probleme beim Landhandel"
 "##landmerchant_good_deals##":"Ich komme gerne hierher! Die Geschäfte laufen sehr gut!"
 "##landmerchant_noany_trade##":"Ich weiß gar nicht, warum ich mich mit dieser Route abmühe. Sie kaufen nichts und haben nichts, was sie mir verkaufen könnten!"
 "##landmerchant_say_about_store_goods##":"Vorsicht!!! Oh Ihr Götter, wenn diese Arbeiter beim Beladen der Tiere mit meinen Neuerwerbungen doch nur etwas vorsichtiger wären."
@@ -822,6 +846,7 @@
 "##legion_haveho_soldiers_and_barracks##":"Diese Legion hat zur Zeit keine Soldaten. Sie existiert nur dem Namen nach. Und da es in der Stadt keine funktionierende Kaserne gibt, wird sie auch keine neuen Truppen erhalten."
 "##legion_haveho_soldiers##":"Diese Legion hat zur Zeit keine Soldaten. Sie existiert nur dem Namen nach. Erst wenn neu ausgebildete Truppen aus der Kaserne eintreffen, kann sie zu einer Kampfeinheit werden."
 "##legion_morale_is_too_low##":"Die Moral der Legion ist zu niedrig. Sie wird nicht reagieren!"
+"##legion_morale##":"Moral"
 "##legion##":"Legion"
 "##legionadv_no_legions##":"Es gibt keine Legionen, denen Sie Befehle erteilen könnten. Zuerst muss ein Fort gebaut werden, um eine neue Legion dort unterbringen zu können."
 "##legionary_average_life##":"Ich werde bis zum letzten Atemzug kämpfen! Solange ich am Leben bin, ist diese Stadt sicher!"
@@ -874,6 +899,7 @@
 "##low_wage_broke_migration##":"Niedrige Gehälter verhindern Einwanderung"
 "##low_wage_broke_migration##":"Niedrige Löhne verringern die Einwanderung in Ihre Stadt."
 "##low_wage_lack_migration##":"Die niedrigen Löhne sind ein Problem."
+"##lowgrade_housing_want_better_conditions##":"Die Bewohner einfacher Häuser wünschen sich bessere Lebensbedingungen."
 "##lugdunum_win_text##":"Die Art, wie Ihr die Gallier in Lugdunum behandelt, und die Pracht dieser schönen Stadt sind gute Vorzeichen für Roms Expansion in die Wildnis des Nordens. Gut gemacht!"
 "##lumber_mill_bad_work##":"Mit kaum Holzfällern ist die Produktion praktisch zum Erliegen gekommen."
 "##lumber_mill_full_work##":"Dieses Sägewerk hat alle Angestellten, die es benötigt. Die Baumfällungen laufen auf vollen Touren."
@@ -934,6 +960,9 @@
 "##meat_farm##":"Tier-Farm"
 "##meat##":"Fleisch"
 "##mediolanum_win_text##":"Dass Hannibal mit seinen Elefanten die Alpen überschreiten konnte war einfach erstaunlich. Dass Mediolanum trotz seines Angriffs blühen und gedeihen konnte, ist ein Wunder. Euer Erfolg wendet die Wogen des punischen Krieges in eine für Rom günstige Richtung. Ganz Rom ist Euch zu Dank verpflichtet."
+"##merchant_little_busy_now##":"Ich bin im Moment ziemlich beschäftigt."
+"##merchant_notbad_city##":"Ich habe schon in viel schlechteren Städten als dieser hier Rennen gefahren."
+"##merchant_wait_for_deal##":"Ich kann es nicht erwarten, hier etwas Handel zu treiben. Ich liebe ein gutes Geschäft!"
 "##mercury_desc##":"Handel"
 "##mercury##":"Merkur"
 "##message##":"Nachricht"
@@ -1030,6 +1059,7 @@
 "##missionaryPost_full_work##":"Wir arbeiten daran, die Eingeborenen zu zivilisieren. Indem wir ihnen ein paar Grundlagen des Lateinischen beibringen, hoffen wir, sie zu motivieren, für uns zu arbeiten anstatt gegen uns."
 "##missionaryPost##":"Eingeborenenmission"
 "##missionBtnTooltip##":"Kurze Beschreibung"
+"##missioner_high_barbarian_risk##":"Seid gegrüßt! Meine Lehren über die Segnungen aus Rom scheinen diese furchterregenden Barbaren ziemlich zu beeindrucken."
 "##moment_fire_risk##":"Dieses Gebäude könnte jederzeit in Brand geraten."
 "##month_1_short##":"Jan"
 "##month_10_short##":"Okt"
@@ -1058,12 +1088,13 @@
 "##more_salary_dispeasure_senate##":"Das Gehalt, das Sie sich zahlen, entspricht in keiner Weise Ihrem Rang und ist die Quelle großer Unzufriedenheit in Rom."
 "##much_plebs##":"Die hohe Konzentration von Slumbewohnern bringt Ihre Stadt in den Ruf, arm zu sein."
 "##my_rome##":"Mein Rom"
+"##native_center_info##":"Treffpunkt der Eingeborenen"
+"##native_center##":"Eingeborenenhütte"
+"##native_field##":"Eingeborenenfeld"
+"##native_hut##":"Eingeborenenhütte"
 "##nativeCenter_info##":"Dieses schmucklose Gebäude ist der Treffpunkt für alle Eingeborenen, die hier zusammenkommen, um mit allem Möglichen zu handeln. Wenn man dem Anführer wenigstens ein paar Brocken Latein beibringen könnte!"
-"##nativeCenter##":"Eingeborenenhütte"
 "##nativeField_info##":"Diese halbwilden Feldfrüchte bilden die Hauptnahrung der Eingeborenen hier. Römer würden das als ungenießbar empfinden."
-"##nativeField##":"Eingeborenenfeld"
 "##nativeHut_info##":"Hier leben einige Einheimische, die friedlich ihr einfaches Leben führen. Sie wollen einfach nur in Ruhe gelassen werden."
-"##nativeHut##":"Eingeborenenhütte"
 "##nearby_building_negative_effect_degrade##":"Ein nahegelegenes Gebäude wirkt sich nachteilig auf die Attraktivität dieses Gebietes aus. Wie wäre es mit ein paar Gärten, Statuen oder Plätzen?"
 "##nearby_building_negative_effect##":"Ein nahegelegenes Gebäude wirkt sich nachteilig auf die Attraktivität dieses Gebietes aus. Wie wäre es mit ein paar Gärten, Statuen oder Plätzen?"
 "##need_access_to_full_reservoir##":"Benötigt Zugang zu einem vollen Reservoir, um zu funktionieren"
@@ -1105,6 +1136,7 @@
 "##no_industries_in_city##":"Keine Gewerbestätten in der Stadt"
 "##no_people_in_city##":"Keine Menschen in der Stadt!"
 "##no_priority##":"Keine Priorität"
+"##no_room_for_citizens##":"zuviel"
 "##no_space_for_evolve##":"Dieses Gebäude würde sich bald weiterentwickeln, wenn es mehr Platz dafür hätte."
 "##no_target_population##":"(Kein Bevölkerungziel)"
 "##no_tax_in_this_year##":"In diesem Jahr wurden hier noch keine Steuern eingetrieben."
@@ -1113,6 +1145,7 @@
 "##nomoney_for_gift_text##":"Ihre persönliche Barschaft reicht nicht aus, um ein Geschenk für den Imperator bezahlen zu können. Versuchen Sie, sich ein besseres Gehalt zu zahlen!"
 "##none_crime_risk##":"Keine Spur von Verbrechen hier."
 "##none_damage_risk##":"Keine Einsturzgefahr"
+"##north##":"Norden"
 "##northBtnTooltip##":"Norden"
 "##not_available##":"Noch nicht verfügbar!"
 "##not_enought_place_for_legion##":"Ihre Legion ist mit allen nötigen Forts ausgestattet."
@@ -1308,6 +1341,7 @@
 "##reservoir_info##":"Diese gigantische Zisterne speichert sauberes Trinkwasser, das durch Tonrohre über weite Stadtgebiete verteilt wird. Aquädukte können Reservoire über lange Strecken miteinander verbinden."
 "##reservoir_no_water##":"Dieses Reservoir muss sich neben einem Gewässer befinden oder über ein Aquädukt mit einem funktionieren Reservoir verbunden sein, bevor es seinen Aufgaben nachkommen kann."
 "##reservoir##":"Reservoirs"
+"##restart_mission_tip##":"Klicken Sie hier, um diese Provinz neu aufzubauen"
 "##restocking_fishing_boat##":"Wir füllen unser Fischerboot so schnell wieder auf, wie es unsere derzeitige Mannschaftsstärke erlaubt."
 "##return_2_fort##":"Zurück zum Fort"
 "##return_to_main_map##":"Zurück zur Haupt-Spielkarte"
@@ -1324,7 +1358,9 @@
 "##rock_caption##":"Felsen"
 "##rock_text##":"Felsen sind unpassierbar und können nicht weggeräumt werden. Marmorsteinbrüche und Eisenerzbergwerke können nur in der Nähe von Felsen eingerichtet werden."
 "##roman_city##":"Eine römische Stadt"
+"##rome_lowers_wages##":"Rom senkt die Gehälter"
 "##rome_prices##":"Durch Rom festgelegte Preise"
+"##rome_raises_wages##":"Rom erhöht die Gehälter"
 "##romeGuard_average_life##":"Hier scheint alles ruhig zu sein ..."
 "##romeGuard_gods_angry##":"Die Götter sind böse auf diesen Ort!"
 "##romeGuard_good_live##":"Ich mag ja vielleicht nur ein einfacher Soldat sein, aber sogar ich kann sehen, daß das hier eine großartige Stadt ist!"
@@ -1337,6 +1373,7 @@
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":"Ein samnitischer Soldat"
+"##sarmizegetusa_dangerous_province##":"Sarmizegetusa: eine sehr gefährliche Provinz"
 "##save_city##":"Spiel speichern"
 "##save_game_here##":"Aktuelles Spiel unter diesem Dateinamen speichern"
 "##save_map##":"Karte speichern"
@@ -1365,6 +1402,7 @@
 "##seamerchant_noany_trade##":"Wenn es nach mir ginge, dann würde ich bestimmt nicht in hierher segeln. Diese Stadt kauft und verkauft absolut nichts!"
 "##select_city_layer##":"Einen Stadtbericht auswählen"
 "##select_location##":"Ort wählen"
+"##select_this_graph##":"Wählen Sie dieses Diagramm"
 "##seleucid_soldier##":"Ein seleukidischer Soldat"
 "##sell_price##":"Verk. erhalten"
 "##senate_1_info##":"Der Senat gehört zu den attraktivsten Gebäuden der Stadt. Er beherbergt Steuereintreiber und bewahrt die eingesammelten Steuergelder auf, hält aber auch die lebenswichtigen Statistiken der Stadt immer auf dem neuesten Stand."
@@ -1462,6 +1500,9 @@
 "##some_houses_need_library_or_colege_access##":"Bestimmte Bereiche der Stadt benötigen jetzt Zugang zu einer Schule oder Akademie. Fehlender Zugang zu Bildungseinrichtungen verhindert die Entwicklung besserer Wohnungen in Teilen der Stadt."
 "##some_low_fire_risk##":"Bei diesem Gebäude besteht eine geringe Brandgefahr."
 "##sound_settings##":"Sound"
+"##south##":"Süden"
+"##southEast##":"Südosten"
+"##southWest##":"Südwesten"
 "##spear##":"Speer"
 "##special_orders##":""
 "##speed_settings##":"Geschwindigkeit"
@@ -1535,6 +1576,7 @@
 "##to_empire_road##":"Zum Imperium"
 "##to_rome_road##":"Nach Rom"
 "##to_trade_advisor##":"Zum Handelsberater"
+"##too_close_to_enemy_troops##":"Zu nahe bei feindlichen Truppen!"
 "##tooltip_full##":"Maushilfe VOLL"
 "##tooltip_some##":"Maushilfe EINIGE"
 "##tower_have_workers_no_soldiers##":"Wir haben genügend Angestellte für die Instandhaltung der Stadt, benötigen aber Wachen aus einer Kaserne, um sie zu verteidigen."
@@ -1560,6 +1602,7 @@
 "##trade_advisor##":"Handelsberater"
 "##trade_btn_notrade_text##":"Kein Handel"
 "##trade_caravan_from##":"Händlerkarawane aus"
+"##trade_ship_from##":"Handelsschiff aus"
 "##trade##":"Handel"
 "##tradeadv_industrystate_tip##":"Produktion für diese Aktivität in der gesamten Stadt ein- oder ausschalten"
 "##trees_and_forest_caption##":"Bäume und Waldland"
@@ -1694,6 +1737,7 @@
 "##well_haveno_houses_inarea##":"Dieser Ziehbrunnen ist momentan überflüssig, da sich in seinem Bereich keine Häuser befinden."
 "##well_info##":"Bürger ohne Brunnenzugang können ihr Wasser aus Ziehbrunnen fördern. Wohngegenden mit Ziehbrunnen sind jedoch nicht gerade begehrt."
 "##well##":"Ziehbrunnen"
+"##west##":"Westen"
 "##wharf_full_work##":"Wenn wir mit voller Mannschaftsstärke arbeiten, können wir das angedockte Schiff schnell und effizient be- und entladen."
 "##wharf_info##":"Von der Werft aus segeln die Boote hierher, um Mannschaften an Bord zu nehmen. Dann gehen sie in den umliegenden Gewässern dem Fischfang nach. Jedes Boot benötigt einen eigenen Kai."
 "##wharf_our_boat_fishing##":"Unser Boot ist bei den Fischgründen und holt viele Fische aus dem Wasser."
@@ -1722,16 +1766,25 @@
 "##wine##":"Wein"
 "##wn_barbarian##":"Barbar"
 "##wn_carthaginians##":"Karthager"
+"##wn_celt_soldier##":"Kelten-Krieger"
 "##wn_celts##":"Kelten"
+"##wn_etruscan_soldier##":"Ein etruskischer Soldat"
+"##wn_eygptian_soldier##":"Ein ägyptischer Soldat"
 "##wn_eygptians##":"Ägypter"
+"##wn_gaul_soldier##":"Ein gallischer Krieger"
+"##wn_gaul##":"Gallier"
 "##wn_goth##":"Goten"
 "##wn_graeci##":"Griechen"
+"##wn_helveti_soldier##":"Ein Krieger der Helvetii"
+"##wn_iberian_soldier##":"Ein iberischer Krieger"
 "##wn_indigene##":"Eingeborene"
 "##wn_judaean##":"Judäer"
 "##wn_numidian##":"Numider"
 "##wn_picts##":"Pikten"
 "##wn_samnites##":"Samniter"
 "##wn_selecids##":"Seleukiden"
+"##wn_visigoth_soldier##":"Ein Westgoten-Krieger"
+"##wn_visigoth##":"Westgoten"
 "##wnd_ratings_title##":"Wertungen"
 "##wndrt_culture##":"Kultur"
 "##wndrt_favor_tooltip##":"Klicken Sie hier für Hinweise zu Ihrer Gunstwertung."
@@ -1751,9 +1804,12 @@
 "##working_have_no_labor_access##":"Dieses Gebäude hat momentan keine Möglichkeit, Arbeitskräfte für den nötigen Betrieb zu erhalten."
 "##working_have_some_labor_access##":"Dieses Gebäude hat momentan einige Möglichkeiten, Arbeitskräfte für den Betrieb zu erhalten."
 "##working_have_very_little_labor_access##":"Dieses Gebäude hat momentan nur geringe Möglichkeiten, Arbeitskräfte für den Betrieb zu erhalten."
+"##working_industries##":"aktive Gewerbestätten in der Stadt"
+"##working_industry##":"aktive Gewerbestätte in der Stadt"
 "##wrath_of_neptune_title##":"Neptuns Zorn"
 "##wt_cartPusher##":"Karrenschieber"
 "##wt_criminal##":"Krimineller"
+"##wt_docker##":"Dockarbeiter"
 "##wt_emigrant##":"Auswanderer"
 "##wt_endeavor##":"Endeavor"
 "##wt_engineer##":""
@@ -1770,9 +1826,13 @@
 "##wt_missioner_average_life##":"Salve! Ich sehe schon, es gibt eine Menge zu tun, bis wir diesen Barbaren die Segnungen von Roms Güte nähergebracht haben."
 "##wt_missioner_normal_life##":"Ich bin ja so froh, Römer zu sein. Ihr solltet einmal sehen, was diese Barbaren in ihren Hütten so alles treiben!"
 "##wt_patrician##":"Patrizier"
+"##wt_pict_soldier##":"Pikten-Krieger"
 "##wt_prefect##":"Präfekt"
 "##wt_priest##":"Priester"
 "##wt_rioter##":"Randalierer"
+"##wt_romeGuard##":"Wächter"
+"##wt_romeHorseman##":"Berittene Hilfstruppen"
+"##wt_romeSpearman##":"Speerwerfer"
 "##wt_rprotestor##":"Demonstrant"
 "##wt_sheep##":"Schaf"
 "##wt_surgeon##":"Chirurg"
@@ -1790,233 +1850,6 @@
 "##your_salary_frowned_senate##":"Die Dreistigkeit, mit der Sie sich ein Gehalt zahlen, das nicht Ihrem Rang entspricht, erregt Missfallen in Rom."
 "#winning_population##":"Siegzahl Bevölkerung"
 "Variable":"DEUTSCH (v1.1)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
