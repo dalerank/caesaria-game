@@ -212,7 +212,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         if( needQty > 0 )
         {
           GoodStock& stock = buy.getStock( goodType );
-          currentBuys = myDock->exportingGoods( stock, needQty );
+          currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
       }
@@ -280,9 +280,10 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         {
           continue;
         }
+
         if( sell.qty(type) > 0 && importing.capacity(type) > 0)
         {
-          currentSell = myDock->importingGoods( sell.getStock(type) );
+          currentSell += myDock->importingGoods( sell.getStock(type) );
           anySell = true;
         }
       }
@@ -471,9 +472,13 @@ std::string SeaMerchant::thoughts(Thought th) const
     case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
     case Impl::stBackToBaseCity:
     {
-      if( _d->currentSell - _d->currentBuys )
+      if( _d->currentSell - _d->currentBuys > 100 )
       {
-        return "##seamrc_another_successful_voyage##";
+        return "##seamrchant_another_successful_voyage##";
+      }
+      else if( abs( _d->currentSell - _d->currentBuys ) < 100 )
+      {
+        return "##seamerchant_noany_trade##";
       }
     }
     break;

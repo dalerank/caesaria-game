@@ -25,7 +25,7 @@ namespace gui
 {
 
 EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
-                                  const std::string& message, DateTime time, Good::Type gtype)
+                                  const std::string& message, DateTime time, Good::Type gtype, const std::string& additional)
   : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
@@ -38,10 +38,17 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   _lbTextRef()->setText( message );
 
   Rect rect = _lbTextRef()->relativeRect();
-  rect.LowerRightCorner.setY( rect.top() + 30 );
+  rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
 
   Label* lbTime = new Label( this, rect, DateTimeHelper::toStr( time ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
+
+  if( !additional.empty() )
+  {
+    Label* lbAdditional = new Label( this, rect + Point( rect.width() / 2, 0 ), additional );
+    lbAdditional->setTextAlignment( align::upperLeft, align::center );
+    lbAdditional->setTextOffset( Point( 30, 0 ) );
+  }
 
   _lbTextRef()->setTop( _lbTextRef()->top() + 30 );
 
@@ -56,7 +63,7 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
     goodLabel->setTextAlignment( align::upperLeft, align::center );
     goodLabel->setTextOffset( Point( 30, 0 ) );
     goodLabel->setIcon( GoodHelper::picture( gtype ), Point( 0, 7 ) );
-  }
+  }    
 }
 
 EventMessageBox::~EventMessageBox() {}

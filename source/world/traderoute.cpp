@@ -40,31 +40,15 @@ public:
   std::string end;
   EmpirePtr empire;
   PointsArray points;
+  Rect boundingBox;
   bool seaRoute;
   gfx::Pictures pictures;
 
   MerchantList newMerchants;
   MerchantList merchants;
 
-  void resolveMerchantArrived( MerchantPtr merchant )
-  {
-    foreach( m, merchants )
-    {
-      if( *m == merchant )
-      {
-        (*m)->deleteLater();
-        break;
-      }
-    }
-
-    CityPtr city = empire->findCity( merchant->destinationCity() );
-    if( city.isValid() )
-    {
-      city->addObject( ptr_cast<Object>( merchant ) );
-    }
-
-    emit onMerchantArrivedSignal( merchant );
-  }
+  void resolveMerchantArrived( MerchantPtr merchant );
+  void updateBoundingBox();
 };
 
 CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin );}
@@ -98,6 +82,22 @@ PointsArray Traderoute::points( bool reverse ) const
   return _d->points;
 }
 
+bool Traderoute::containPoint(Point pos, int devianceDistance)
+{
+  if( !_d->boundingBox.isPointInside( pos ) )
+    return false;
+
+  foreach( it, _d->points )
+  {
+    if( it->distanceTo( pos ) < devianceDistance )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
 {
   _d->points = points;
@@ -126,23 +126,26 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
     pic.setOffset( offset );
     _d->pictures.push_back( pic );
   }
+
+  _d->updateBoundingBox();
 }
 
 const gfx::Pictures& Traderoute::pictures() const {  return _d->pictures;}
 bool Traderoute::isSeaRoute() const{  return _d->seaRoute;}
 
-void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
+MerchantPtr Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
 {
   if( _d->points.empty() )
   {
     Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [" + _d->begin + "<->" +_d->end  + "]" );
-    return;
+    return MerchantPtr();
   }
 
   MerchantPtr merchant = Merchant::create( _d->empire, this, begin, sell, buy );
   _d->newMerchants.push_back( merchant );
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
+  return merchant;
 }
 
 Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
@@ -200,6 +203,7 @@ void Traderoute::load(const VariantMap& stream)
   {
     _d->points.push_back( (*i).toPoint() );
   }
+  _d->updateBoundingBox();
 
   VariantList pictures = stream.get( "pictures" ).toList();
   foreach( i, pictures )
@@ -211,9 +215,16 @@ void Traderoute::load(const VariantMap& stream)
   foreach( it, merchants )
   {
     SimpleGoodStore sell, buy;
-    addMerchant( _d->begin, sell, buy );
+    MerchantPtr m = addMerchant( _d->begin, sell, buy );
 
-    _d->merchants.back()->load( it->second.toMap() );
+    if( m.isValid() )
+    {
+      m->load( it->second.toMap() );
+    }
+    else
+    {
+      Logger::warning( "WARNING !!!: Traderoute::load cant load merchant index %d", std::distance( merchants.begin(), it) );
+    }
   }
   _d->seaRoute = stream.get( "seaRoute" );
 }
@@ -221,6 +232,41 @@ void Traderoute::load(const VariantMap& stream)
 Signal1<MerchantPtr>& Traderoute::onMerchantArrived()
 {
   return _d->onMerchantArrivedSignal;
+}
+
+void Traderoute::Impl::resolveMerchantArrived(MerchantPtr merchant)
+{
+  foreach( m, merchants )
+  {
+    if( *m == merchant )
+    {
+      (*m)->deleteLater();
+      break;
+    }
+  }
+
+  CityPtr city = empire->findCity( merchant->destinationCity() );
+  if( city.isValid() )
+  {
+    city->addObject( ptr_cast<Object>( merchant ) );
+  }
+
+  emit onMerchantArrivedSignal( merchant );
+}
+
+void Traderoute::Impl::updateBoundingBox()
+{
+  if( points.empty() )
+  {
+    boundingBox = Rect();
+    return;
+  }
+
+  boundingBox = Rect( points.front(), points.front() );
+  foreach ( it, points )
+  {
+    boundingBox.addInternalPoint( it->x(), it->y() );
+  }
 }
 
 } // end namespace world

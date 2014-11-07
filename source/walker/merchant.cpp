@@ -31,6 +31,7 @@
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
+#include "good/goodhelper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
@@ -59,6 +60,8 @@ public:
   int attemptCount;
   int waitInterval;
   std::string baseCityName;
+  int currentSell;
+  int currentBuys;
   int maxDistance;
   State nextState;
 
@@ -72,6 +75,8 @@ Merchant::Merchant(PlayerCityPtr city )
   _d->maxDistance = 60;
   _d->waitInterval = 0;
   _d->attemptCount = 0;
+  _d->currentBuys = 0;
+  _d->currentSell = 0;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -252,6 +257,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
               GoodStock& stock = buy.getStock( goodType );
               whStore.retrieve( stock, mayBuy );
 
+              currentBuys += GoodHelper::exportPrice( city, goodType, mayBuy );
+
               events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, tradeKoeff, mayBuy );
               e->dispatch();
             }
@@ -330,6 +337,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
               GoodStock& stock = sell.getStock( goodType );
               warehouse->store().store( stock, maySells );
               
+              currentSell += GoodHelper::importPrice( city, goodType, maySells );
+
               events::GameEventPtr e = events::FundIssueEvent::import( goodType, maySells );
               e->dispatch();
             }
@@ -389,6 +398,8 @@ void Merchant::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_STR_D( stream, _d, baseCityName )
   VARIANT_SAVE_ANY_D( stream, _d, waitInterval )
+  VARIANT_SAVE_ANY_D( stream, _d, currentSell )
+  VARIANT_SAVE_ANY_D( stream, _d, currentBuys )
   VARIANT_SAVE_ENUM_D( stream, _d, nextState )
 
   stream[ "sell" ] = _d->sell.save();
@@ -403,7 +414,8 @@ void Merchant::load( const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_STR_D( _d, baseCityName, stream )
   VARIANT_LOAD_ANY_D( _d, waitInterval, stream )
-
+  VARIANT_LOAD_ANY_D( _d, currentSell, stream )
+  VARIANT_LOAD_ANY_D( _d, currentBuys, stream )
   VARIANT_LOAD_ENUM_D( _d, nextState, stream );
 
   if( _d->nextState == Impl::stUnknown )
@@ -422,6 +434,46 @@ void Merchant::timeStep(const unsigned long time)
   }
 
   Walker::timeStep( time );
+}
+
+std::string Merchant::thoughts(Walker::Thought th) const
+{
+  switch( th )
+  {
+  case thCurrent:
+    switch( _d->nextState )
+    {
+    case Impl::stFindWarehouseForSelling:
+    case Impl::stFindWarehouseForBuying:
+      return "##heading_to_city_warehouses##";
+    break;
+
+    case Impl::stBuyGoods:
+    case Impl::stSellGoods:
+      return "##merchant_wait_for_deal##";
+    break;
+
+    case Impl::stGoOutFromCity:
+    case Impl::stBackToBaseCity:
+      if( _d->currentSell - _d->currentBuys < 0 )
+      {
+        return "##merchant_notbad_city##";
+      }
+      else
+      {
+        return "##merchant_little_busy_now##";
+      }
+    break;
+
+    default: break;
+    }
+
+  break;
+
+  default: break;
+  }
+
+  return Human::thoughts( th );
 }
 
 std::string Merchant::parentCity() const{ return _d->baseCityName; }

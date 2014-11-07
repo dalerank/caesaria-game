@@ -574,7 +574,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
 void EmpireMapWindow::_changePosition()
 {
-  world::ObjectPtr obj = _d->findObject( const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() );
+  Point cursorPos = const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() ;
+  world::ObjectPtr obj = _d->findObject( cursorPos );
 
   std::string text;
   if( obj.isValid() )
@@ -601,6 +602,19 @@ void EmpireMapWindow::_changePosition()
       text = pa->mode() == world::PlayerArmy::go2home
                 ? "##playerarmy_gone_to_home##"
                 : "##playerarmy_gone_to_location##";
+    }
+  }
+  else
+  {
+    world::EmpirePtr empire = _d->city->empire();
+    world::TraderouteList routes = empire->tradeRoutes();
+
+    foreach( it, routes )
+    {
+      if( (*it)->containPoint( -_d->offset + cursorPos, 4 ) )
+      {
+        text = (*it)->isSeaRoute() ? "##sea_route##" : "##land_route##";
+      }
     }
   }
 

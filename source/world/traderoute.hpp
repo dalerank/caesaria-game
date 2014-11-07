@@ -42,12 +42,13 @@ public:
 
   void update( unsigned int time );
   PointsArray points( bool reverse=false ) const;
+  bool containPoint( Point pos, int devianceDistance=1 );
   void setPoints(const PointsArray& points , bool seaRoute);
   const gfx::Pictures& pictures() const;
 
   bool isSeaRoute() const;
 
-  void addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
+  MerchantPtr addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
   MerchantPtr merchant( unsigned int index );
 
   VariantMap save() const;
