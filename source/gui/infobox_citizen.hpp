@@ -42,6 +42,8 @@ public:
 
 protected:
   void _setWalker(WalkerPtr walker);
+  void _updateTitle();
+  void _updateNeighbors();
   class Impl;
   ScopedPtr<Impl> _d;
 };

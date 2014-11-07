@@ -275,10 +275,10 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
-  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   //remove factories with improrer storage
-  DirectRoutes::iterator pathWayIt= pathWayList.begin();
+  DirectPRoutes::iterator pathWayIt= pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
@@ -400,6 +400,8 @@ CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
   return ret;
 }
 
+CartPusher::~CartPusher(){}
+
 void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
@@ -472,6 +474,8 @@ std::string CartPusher::thoughts( Thought th ) const
   case thAction:
 
   break;
+
+  default: break;
   }
 
   return Walker::thoughts( th );

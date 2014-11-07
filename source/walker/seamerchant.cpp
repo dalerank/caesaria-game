@@ -53,6 +53,8 @@ public:
   int tryDockCount;
   int maxTryDockCount;
   int waitInterval;
+  int currentSell;
+  int currentBuys;
   DateTime landingDate;
   std::string baseCityName;
   State nextState;
@@ -72,6 +74,8 @@ SeaMerchant::SeaMerchant(PlayerCityPtr city )
   _d->waitInterval = 0;
   _d->tryDockCount = 0;
   _d->maxTryDockCount = 3;
+  _d->currentSell = 0;
+  _d->currentBuys = 0;
   _d->anyBuy = false;
   _d->anySell = false;
 
@@ -202,12 +206,13 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         {
           continue;
         }
+
         int needQty = buy.freeQty( goodType );
 
         if( needQty > 0 )
         {
           GoodStock& stock = buy.getStock( goodType );
-          myDock->exportingGoods( stock, needQty );
+          currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
       }
@@ -275,9 +280,10 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         {
           continue;
         }
+
         if( sell.qty(type) > 0 && importing.capacity(type) > 0)
         {
-          myDock->importingGoods( sell.getStock(type) );
+          currentSell += myDock->importingGoods( sell.getStock(type) );
           anySell = true;
         }
       }
@@ -407,23 +413,29 @@ void SeaMerchant::send2city()
 void SeaMerchant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destBuildPos" ] = _d->destBuildingPos;
-  stream[ "sell"  ] = _d->sell.save();
-  stream[ "baseCity" ] = Variant( _d->baseCityName );
-  stream[ "wait"  ] = _d->waitInterval;
+  VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos )
+  VARIANT_SAVE_STR_D( stream, _d, baseCityName )
+  VARIANT_SAVE_ANY_D( stream, _d, waitInterval )
+  VARIANT_SAVE_ANY_D( stream, _d, currentSell )
+  VARIANT_SAVE_ANY_D( stream, _d, currentBuys )
+  VARIANT_SAVE_ENUM_D( stream, _d, nextState )
+
   stream[ "buy"   ] = _d->buy.save();
-  stream[ "state" ] = (int)_d->nextState;
+  stream[ "sell"  ] = _d->sell.save();
 }
 
 void SeaMerchant::load( const VariantMap& stream)
 {
   Walker::load( stream );
-  _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
-  _d->sell.load( stream.get( "sell" ).toMap() );
+  VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream )
+  VARIANT_LOAD_STR_D( _d, baseCityName, stream )
+  VARIANT_LOAD_ANY_D( _d, waitInterval, stream )
+  VARIANT_LOAD_ENUM_D( _d, nextState, stream )
+  VARIANT_LOAD_ANY_D( _d, currentBuys, stream )
+  VARIANT_LOAD_ANY_D( _d, currentSell, stream )
+
   _d->buy.load( stream.get( "buy").toMap() );
-  _d->baseCityName = stream.get( "baseCity" ).toString();
-  _d->waitInterval = stream.get( "wait" );
-  _d->nextState = (Impl::State)stream.get( "state" ).toInt();
+  _d->sell.load( stream.get( "sell" ).toMap() );
 }
 
 void SeaMerchant::timeStep(const unsigned long time)
@@ -458,6 +470,18 @@ std::string SeaMerchant::thoughts(Thought th) const
     {
     case Impl::stWaitFreeDock: return "##waiting_for_free_dock##";
     case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
+    case Impl::stBackToBaseCity:
+    {
+      if( _d->currentSell - _d->currentBuys > 100 )
+      {
+        return "##seamrchant_another_successful_voyage##";
+      }
+      else if( abs( _d->currentSell - _d->currentBuys ) < 100 )
+      {
+        return "##seamerchant_noany_trade##";
+      }
+    }
+    break;
 
     default: break;
     }
@@ -500,3 +524,5 @@ WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 
   return ret;
 }
+
+std::string SeaMerchant::parentCity() const { return _d->baseCityName; }

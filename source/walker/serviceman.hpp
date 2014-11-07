@@ -72,6 +72,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
+  void _addObsoleteOverlays( gfx::TileOverlay::Type type );
 
 private:
   class Impl;

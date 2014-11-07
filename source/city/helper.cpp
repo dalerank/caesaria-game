@@ -19,6 +19,7 @@
 #include "city/helper.hpp"
 #include "cityservice_workershire.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -59,6 +60,12 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
 
 TilesArray Helper::getArea(TileOverlayPtr overlay)
 {
+  if( !_city.isValid() )
+  {
+    Logger::warning( "WARNING !!!: Helper::getArea city is null" );
+    return TilesArray();
+  }
+
   return _city->tilemap().getArea( overlay->pos(), overlay->size() );
 }
 

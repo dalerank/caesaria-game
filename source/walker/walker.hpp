@@ -40,7 +40,7 @@ class Walker : public Serializable, public ReferenceCounted
 public:
   typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly, userFlag=0x80, count=0xff } Flag;
+  typedef enum { showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
   typedef enum { thCurrent, thAction, thCount } Thought;
   typedef enum { plOrigin, plDestination, pcCount } Place;
 

@@ -183,12 +183,12 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
 {
   SmartPtr< T > res;
 
-  DirectRoutes pathWayList = pathPropagator.getRoutes( type );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( DirectRoutes::iterator pathWayIt= pathWayList.begin();
+  for( DirectPRoutes::iterator pathWayIt= pathWayList.begin();
        pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range

@@ -65,6 +65,27 @@ float Statistic::getBalanceKoeff(PlayerCityPtr city)
   return atan( city->population() / 1000.f );
 }
 
+int Statistic::getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
+{
+  int need = 0, have = 0;
+  city::Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+  foreach( it, houses )
+  {
+    HousePtr house = *it;
+    if( house->isEntertainmentNeed( service ) )
+    {
+      int habitants = house->habitants().count();
+      need += habitants;
+      have += (house->hasServiceAccess( service) ? habitants : 0);
+    }
+  }
+
+  return ( have == 0
+            ? 0
+            : math::percentage( need, have) );
+}
+
 CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
 {
   Helper helper( city );

@@ -36,7 +36,9 @@
 #include "gfx/layer.hpp"
 #include "sound/engine.hpp"
 #include "objects/fort.hpp"
+#include "gfx/tilemap.hpp"
 #include "world/goodcaravan.hpp"
+#include "events/earthquake.hpp"
 #include "events/changeemperor.hpp"
 
 using namespace constants;
@@ -70,7 +72,8 @@ enum {
   toggle_show_flat_tiles,
   send_barbarian_to_player,
   comply_rome_request,
-  change_emperor
+  change_emperor,
+  earthquake
 };
 
 class DebugHandler::Impl
@@ -122,6 +125,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( toggle_show_flat_tiles )
   ADD_DEBUG_EVENT( change_emperor )
+  ADD_DEBUG_EVENT( earthquake )
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
 #undef ADD_DEBUG_EVENT
@@ -228,6 +232,16 @@ void DebugHandler::Impl::handleEvent(int event)
     {
       brb->attach();
     }
+  }
+  break;
+
+  case earthquake:
+  {
+    int mapsize = game->city()->tilemap().size();
+    TilePos start( math::random(mapsize), math::random(mapsize) );
+    TilePos stop( math::random(mapsize), math::random(mapsize) );
+    events::GameEventPtr e = events::EarthQuake::create( start, stop );
+    e->dispatch();
   }
   break;
 

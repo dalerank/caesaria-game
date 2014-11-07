@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
+{"##seamrchant_another_successful_voyage##":""
+"##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
 "##1_entertainment_access##":"Cette habitation n'a accès à quasiment aucun divertissement"
 "##2_entertainment_access##":"Cette habitation a un faible niveau d'accès à des lieux de divertissement"
 "##3_entertainment_access##":"Cette habitation a un accès très limité à des lieux de divertissement"
@@ -8,7 +9,7 @@
 "##7_entertainment_access##":"Cette habitation a un très bon accès à des lieux de divertissement"
 "##8_entertainment_access##":"Cette habitation a un excellent accès à des lieux de divertissement"
 "##9_entertainment_access##":"Cette habitation a accès à tout le divertissement qu'elle pourrait désirer"
-"##academies##":"Académies"
+"##a_price_rise_title##":""
 "##academy_full_work##":"Cette académie fonctionne. Les jeunes du quartier y apprennent les bonnes manières."
 "##academy_info##":""
 "##academy_no_workers##":"Cette académie ne fonctionne pas, et est inutile aux gens de ce quartier."
@@ -225,6 +226,7 @@
 "##bldm_farm##":"Fermes"
 "##bldm_raw_materials##":"Matériaux bruts"
 "##bldm_raw##":""
+"##blood_sports_add_spice_to_life##":""
 "##bolt##":"Projectile"
 "##bridge_extends_city_area##":""
 "##bridge##":"Pont"
@@ -291,6 +293,10 @@
 "##citizen_salary##":""
 "##citizen##":"Citoyen"
 "##citizens_additional_rooms_for##":"occupants. Espace disponible pour"
+"##citizens_enjoy_drama_and_comedy##":""
+"##citizens_grumble_lack_festivals_held##":""
+"##citizens_here_are_bored_for_chariot_races##":""
+"##citizens_like_chariot_races##":""
 "##city_cyrene##":"Cyrène"
 "##city_damascus##":"Damascus"
 "##city_fire_text##":""
@@ -301,6 +307,7 @@
 "##city_have_goods_for_request##":"Vos entrepôts vous informent que vous disposez maintenant d'une quantité suffisante de produits pour répondre à la récente requête de l'Empereur."
 "##city_have##":"La trésorerie de la cité s'élève à "
 "##city_health##":"Hygiène de la cité"
+"##city_is_besieged##":""
 "##city_loathed_you##":""
 "##city_need_more_workers##":"La cité a besoin de plus de main-d'oeuvre"
 "##city_sounds_off##":"Son de la cité désactivé"
@@ -329,6 +336,7 @@
 "##clerk##":"Fonctionnaire"
 "##click_here_that_stacking##":"Cliquez ici pour la stocker"
 "##click_here_that_use_it##":"Cliquez ici pour cesser de stocker cette ressource"
+"##click_here_to_talk_person##":""
 "##click_item_for_start_trade##":"Pas d'échange"
 "##click_on_city_for_info##":""
 "##clinic_full_work##":"Ce dispensaire est opérationnel et soulage les habitants de leurs maux."
@@ -340,6 +348,7 @@
 "##collapse_available_damage_risk##":""
 "##collapse_immitent##":"Effondrement imminent"
 "##collapsed_ruins_info##":"Ces gravats ne font rien pour améliorer l'attrait de ce quartier."
+"##colleges##":"Académies"
 "##colloseum_haveno_animal_bouts##":"Pas de combats d'animaux actuellement"
 "##colloseum_haveno_gladiator_bouts##":"Pas de combat de gladiateurs actuellement"
 "##colloseum_haveno_gladiatorpit##":"Le colisée ne propose pas de spectacles, car il n'y a ni gladiateur, ni dompteur dans la cité."
@@ -355,6 +364,8 @@
 "##consul_salary##":"Salaire de consul de"
 "##consul##":"Consul"
 "##contaminted_water##":"Eau contaminée"
+"##continue_2_years##":""
+"##continue_5_years##":""
 "##continue##":"Continuer"
 "##corinthus##":"Corinthus"
 "##cost_2_open##":"Coût d'ouverture"
@@ -364,6 +375,8 @@
 "##crack##":""
 "##credit##":"Couteux"
 "##current_game_speed_is##":"La vitesse du jeu est"
+"##current_play_runs_for_another##":""
+"##current_races_runs_for_another##":""
 "##current_year_notpay_tribute_warning##":""
 "##cursed_by_mars##":""
 "##damage##":"Dégât"
@@ -439,6 +452,7 @@
 "##donations##":"Donations"
 "##donationwnd_exit_tip##":""
 "##donot_organize_festival##":""
+"##earthquake_title##":""
 "##east##":"Est"
 "##edadv_need_better_access_school_or_colege##":""
 "##edil_salary##":"Salaire d'édile de"
@@ -452,6 +466,7 @@
 "##education_objects##":"Structures en rapport avec l'éducation"
 "##education##":"Education"
 "##educationBtnTooltip##":"Education"
+"##effciency##":""
 "##egift_chest_of_sapphire##":"Un coffre de saphirs"
 "##egift_educated_slave##":"Un esclave cultivé"
 "##egift_egyptian_glassware##":"De la verroterie égyptienne"
@@ -473,6 +488,7 @@
 "##empbutton_low_work##":""
 "##empbutton_simple_work##":""
 "##empbutton_tooltip##":"Clique ic pour mettre une priorité à cette catégorie de travail"
+"##emperor_changed_title##":""
 "##emperor_favour_00##":"L'empereur est furieux contre vous."
 "##emperor_favour_01##":"L'empereur est totalement exaspéré. Il parle de vous exiler."
 "##emperor_favour_02##":"L'empereur est dans une colère noire contre vous."
@@ -639,6 +655,7 @@
 "##getting_reports_about_enemies##":""
 "##give_money_tip##":"Faire un don à la cité"
 "##give_money##":"Donner de l'argent"
+"##gladiator_bouts_runs_for_another##":""
 "##gladiator_gods_angry##":"Ave citoyen ! Etes-vous au courant de la colère des dieux ?"
 "##gladiator_good_life##":"La vie est plutôt agréable par ici, non ?"
 "##gladiator_high_workless##":"Tous ces chômeurs dans les rues... C'est bête qu'on puisse pas un peu s'entraîner sur eux !"
@@ -723,6 +740,7 @@
 "##have_no_legions##":""
 "##have_no_requests##":"L'empereur ne vous demande rien pour l'instant."
 "##having_some_slums_lack_migration##":""
+"##heading_to_city_warehouses##":""
 "##health_advisor##":"Hygiène"
 "##health_advisor##":"Hygiène de la cité"
 "##health##":"Hygiène"
@@ -750,6 +768,7 @@
 "##hippodrome_no_workers##":"Pas un grain de sable ne bougera ici tant qu'il n'y aura aucun employé."
 "##hippodrome##":"Hippodrome"
 "##hippodromes##":"Hippodromes"
+"##hlth_care_of##":""
 "##hold_ceres_festival##":""
 "##hold_mars_festival##":""
 "##hold_mercury_festival##":""
@@ -773,6 +792,8 @@
 "##houseBtnTooltip##":""
 "##how_to_grow_prosperity##":""
 "##hun_warrior##":"Un guerrier hun"
+"##idle_factories_in_city##":""
+"##idle_factory_in_city##":""
 "##immigrant_much_food_here##":"Il paraît qu'on manque de nourriture dans cette cité. Les rumeurs sont-elles vraies ?"
 "##immigrant_so_hungry##":"Si je reste ici je vais finir par mourir. Il n'y a plus rien à manger dans cette cité"
 "##immigrant_want_to_be_liontamer##":"J'ai entendu dire qu'il y a des postes à pourvoir dans cette cité. Je veux devenir dompteur !"
@@ -780,6 +801,7 @@
 "##imperial_request_cance_badly_affected##":""
 "##import_fn##":""
 "##import##":""
+"##increase_trading_title##":""
 "##industry_disabled##":""
 "##industry_enabled##":""
 "##infobox_construction_comma_tip##":""
@@ -806,6 +828,8 @@
 "##its_very_peacefull_province##":""
 "##judaean_warrior##":"Un guerrier judéen"
 "##labor##":"Emploi"
+"##land_route##":""
+"##land_trade_problem_title##":""
 "##landmerchant_good_deals##":"J'adore venir ici ! Les affaires y sont florissantes !"
 "##landmerchant_noany_trade##":"Je me demande vraiment pourquoi je continue de passer par ici. Ils ne m'achètent rien, et ne veulent rien me vendre !"
 "##landmerchant_say_about_store_goods##":"Faites attention ! Ces ouvriers pourraient être un peu plus soigneux en chargeant mes chameaux avec les biens que je viens d'acheter."
@@ -822,6 +846,7 @@
 "##legion_haveho_soldiers_and_barracks##":""
 "##legion_haveho_soldiers##":""
 "##legion_morale_is_too_low##":""
+"##legion_morale##":""
 "##legion##":"Légion"
 "##legionadv_no_legions##":""
 "##legionary_average_life##":""
@@ -874,6 +899,7 @@
 "##low_wage_broke_migration##":""
 "##low_wage_broke_migration##":"Les faibles revenus réduisent l'immigration dans votre cité."
 "##low_wage_lack_migration##":""
+"##lowgrade_housing_want_better_conditions##":""
 "##lugdunum_win_text##":""
 "##lumber_mill_bad_work##":"Compte tenu du nombre de bûcherons, la production est pratiquement nulle. Les bois redeviennent sauvages."
 "##lumber_mill_full_work##":"Ce chantier dispose de toute la main-d'oeuvre nécessaire. La production de bois est abondante."
@@ -934,6 +960,9 @@
 "##meat_farm##":"Porcherie"
 "##meat##":"Viande"
 "##mediolanum_win_text##":""
+"##merchant_little_busy_now##":""
+"##merchant_notbad_city##":""
+"##merchant_wait_for_deal##":""
 "##mercury_desc##":"(Commerce)"
 "##mercury##":"Mercure"
 "##message##":"Message"
@@ -1030,6 +1059,7 @@
 "##missionaryPost_full_work##":""
 "##missionaryPost##":""
 "##missionBtnTooltip##":"Revoir vos objectifs"
+"##missioner_high_barbarian_risk##":""
 "##moment_fire_risk##":""
 "##month_1_short##":"Jan"
 "##month_10_short##":"Oct"
@@ -1058,12 +1088,13 @@
 "##more_salary_dispeasure_senate##":""
 "##much_plebs##":""
 "##my_rome##":""
+"##native_center_info##":""
+"##native_center##":""
+"##native_field##":""
+"##native_hut##":""
 "##nativeCenter_info##":""
-"##nativeCenter##":""
 "##nativeField_info##":""
-"##nativeField##":""
 "##nativeHut_info##":""
-"##nativeHut##":""
 "##nearby_building_negative_effect_degrade##":"La proximité de cet édifice a un effet négatif sur l'attrait de ce secteur. Placez des jardins, des statues ou des plazas, par exemple."
 "##nearby_building_negative_effect##":"La proximité de cet édifice a un effet négatif sur l'attrait de ce secteur. Placez des jardins, des statues ou des plazas, par exemple."
 "##need_access_to_full_reservoir##":"Accès à un réservoir plein nécessaire."
@@ -1105,6 +1136,7 @@
 "##no_industries_in_city##":""
 "##no_people_in_city##":""
 "##no_priority##":""
+"##no_room_for_citizens##":""
 "##no_space_for_evolve##":""
 "##no_target_population##":""
 "##no_tax_in_this_year##":""
@@ -1113,6 +1145,7 @@
 "##nomoney_for_gift_text##":""
 "##none_crime_risk##":""
 "##none_damage_risk##":""
+"##north##":""
 "##northBtnTooltip##":"Réorienter la vue vers le nord"
 "##not_available##":"Non disponible"
 "##not_enought_place_for_legion##":""
@@ -1308,6 +1341,7 @@
 "##reservoir_info##":""
 "##reservoir_no_water##":""
 "##reservoir##":"Réservoir"
+"##restart_mission_tip##":""
 "##restocking_fishing_boat##":""
 "##return_2_fort##":""
 "##return_to_main_map##":""
@@ -1324,7 +1358,9 @@
 "##rock_caption##":"Rochers"
 "##rock_text##":"Les rochers sont infranchissables. Les structures d'extraction de marbre et de fer ne fonctionneront qu'à proximité de rochers."
 "##roman_city##":""
+"##rome_lowers_wages##":""
 "##rome_prices##":""
+"##rome_raises_wages##":""
 "##romeGuard_average_life##":"Tout est calme par ici."
 "##romeGuard_gods_angry##":"Les dieux sont furieux contre nous !"
 "##romeGuard_good_live##":"Je ne suis qu'un simple soldat, mais je peux vous dire que cette cité est vraiment superbe !"
@@ -1337,6 +1373,7 @@
 "##rotateLeftBtnTooltip##":"Tourner la carte vers la gauche"
 "##rotateRightBtnTooltip##":"Tourner la carte vers la droite"
 "##samnite_soldier##":""
+"##sarmizegetusa_dangerous_province##":""
 "##save_city##":"Sauvegarder votre cité"
 "##save_game_here##":""
 "##save_map##":"Sauvegarder la carte"
@@ -1365,6 +1402,7 @@
 "##seamerchant_noany_trade##":"Si cela ne tenait qu'à moi je ne viendrais jamais par ici. Cette cité n'achète rien et n'a rien à vendre !"
 "##select_city_layer##":"Sélectionner la carte à visualiser"
 "##select_location##":""
+"##select_this_graph##":""
 "##seleucid_soldier##":"Un soldat séleucide"
 "##sell_price##":""
 "##senate_1_info##":""
@@ -1462,6 +1500,9 @@
 "##some_houses_need_library_or_colege_access##":""
 "##some_low_fire_risk##":""
 "##sound_settings##":"Son"
+"##south##":""
+"##southEast##":""
+"##southWest##":""
 "##spear##":""
 "##special_orders##":""
 "##speed_settings##":"Vitesse"
@@ -1535,6 +1576,7 @@
 "##to_empire_road##":""
 "##to_rome_road##":""
 "##to_trade_advisor##":""
+"##too_close_to_enemy_troops##":""
 "##tooltip_full##":""
 "##tooltip_some##":""
 "##tower_have_workers_no_soldiers##":""
@@ -1560,6 +1602,7 @@
 "##trade_advisor##":"Conseiller commercial"
 "##trade_btn_notrade_text##":""
 "##trade_caravan_from##":""
+"##trade_ship_from##":""
 "##trade##":""
 "##tradeadv_industrystate_tip##":""
 "##trees_and_forest_caption##":"Arbres et bosquets"
@@ -1694,6 +1737,7 @@
 "##well_haveno_houses_inarea##":"Ce puits est inutile car aucune maison ne se trouve à proximité."
 "##well_info##":"Les citoyens n'ayant pas accès à une fontaine peuvent tirer l'eau d'un puits, mais peu de personnes souhaiteront vivre ainsi."
 "##well##":"Puits"
+"##west##":""
 "##wharf_full_work##":""
 "##wharf_info##":""
 "##wharf_our_boat_fishing##":""
@@ -1722,16 +1766,25 @@
 "##wine##":"Vin"
 "##wn_barbarian##":""
 "##wn_carthaginians##":""
+"##wn_celt_soldier##":""
 "##wn_celts##":""
+"##wn_etruscan_soldier##":""
+"##wn_eygptian_soldier##":""
 "##wn_eygptians##":""
+"##wn_gaul_soldier##":""
+"##wn_gaul##":""
 "##wn_goth##":""
 "##wn_graeci##":""
+"##wn_helveti_soldier##":""
+"##wn_iberian_soldier##":""
 "##wn_indigene##":""
 "##wn_judaean##":""
 "##wn_numidian##":""
 "##wn_picts##":""
 "##wn_samnites##":""
 "##wn_selecids##":""
+"##wn_visigoth_soldier##":""
+"##wn_visigoth##":""
 "##wnd_ratings_title##":""
 "##wndrt_culture##":""
 "##wndrt_favor_tooltip##":""
@@ -1751,9 +1804,12 @@
 "##working_have_no_labor_access##":""
 "##working_have_some_labor_access##":""
 "##working_have_very_little_labor_access##":""
+"##working_industries##":""
+"##working_industry##":""
 "##wrath_of_neptune_title##":"Courroux de Neptune"
 "##wt_cartPusher##":""
 "##wt_criminal##":"Criminel"
+"##wt_docker##":""
 "##wt_emigrant##":"Émigrant"
 "##wt_endeavor##":""
 "##wt_engineer##":"Ingénieur"
@@ -1770,9 +1826,13 @@
 "##wt_missioner_average_life##":""
 "##wt_missioner_normal_life##":""
 "##wt_patrician##":""
+"##wt_pict_soldier##":""
 "##wt_prefect##":"Préfet"
 "##wt_priest##":""
 "##wt_rioter##":""
+"##wt_romeGuard##":""
+"##wt_romeHorseman##":""
+"##wt_romeSpearman##":""
 "##wt_rprotestor##":""
 "##wt_sheep##":"Mouton"
 "##wt_surgeon##":"Chirurgien"
@@ -1790,233 +1850,6 @@
 "##your_salary_frowned_senate##":""
 "#winning_population##":""
 "Variable":"FRENCH(v1.0)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

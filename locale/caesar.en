@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
+{"##seamrchant_another_successful_voyage##":"Another successful voyage! The profit makes the sea-sickness bearable!"
+"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
 "##3_entertainment_access##":"This dwelling has very limited access to entertainment venues"
@@ -8,7 +9,7 @@
 "##7_entertainment_access##":"This dwelling has very good access to entertainment venues"
 "##8_entertainment_access##":"This dwelling has excellent access to entertainment venues"
 "##9_entertainment_access##":"This dwelling has access to all the entertainment it could ever desire"
-"##academies##":"Academies"
+"##a_price_rise_title##":"Price changes"
 "##academy_full_work##":"This academy is operational. Local youths are learning social niceties."
 "##academy_info##":"Some youths who graduate from the schools go on to study advanced rhetoric and history at the academy. Cultured citizens all have an academic background."
 "##academy_no_workers##":"This academy is not operational, and is of no use to the local community."
@@ -225,6 +226,7 @@
 "##bldm_farm##":"Farms"
 "##bldm_raw_materials##":"Raw materials"
 "##bldm_raw##":"Raw materials"
+"##blood_sports_add_spice_to_life##":"Blood sports add spice to everyone's life."
 "##bolt##":"Bolt"
 "##bridge_extends_city_area##":"This bridge extends our lands, but allows the passage of not only our citizens but also our enemies!"
 "##bridge##":"Bridge"
@@ -291,6 +293,10 @@
 "##citizen_salary##":"Citizen's salary of"
 "##citizen##":"Citizen"
 "##citizens_additional_rooms_for##":"Extra room for"
+"##citizens_enjoy_drama_and_comedy##":"Citizens enjoy drama and comedy in the Greek tradition."
+"##citizens_grumble_lack_festivals_held##":"Citizens grumble at the lack of festivals held in your city."
+"##citizens_here_are_bored_for_chariot_races##":"Citizens here are bored! Even with chariot racing, there's not enough fun here!"
+"##citizens_like_chariot_races##":"Citizens like nothing better than chariot races."
 "##city_cyrene##":"Cyrene"
 "##city_damascus##":"Damascus"
 "##city_fire_text##":"Prefects could not reach this location in time to save the building. When the fires burn themselves out, only rubble will be left on this site."
@@ -301,6 +307,7 @@
 "##city_have_goods_for_request##":"Your warehouses report that you now have enough of these goods to fullfil the request from the Emperor."
 "##city_have##":"City treasury has assets of"
 "##city_health##":"City health"
+"##city_is_besieged##":"City is besieged"
 "##city_loathed_you##":"You are loathed throughout the city"
 "##city_need_more_workers##":"Your city needs more workers"
 "##city_sounds_off##":"City sounds are off"
@@ -329,6 +336,7 @@
 "##clerk##":"Clerk"
 "##click_here_that_stacking##":"Click here to stockpile it"
 "##click_here_that_use_it##":"Click here to turn off stockpiling"
+"##click_here_to_talk_person##":"Click here to talk to this person"
 "##click_item_for_start_trade##":"Click on an item to trade"
 "##click_on_city_for_info##":"Click on a city to get information on it"
 "##clinic_full_work##":"This clinic is operational and is servicing the local community."
@@ -340,6 +348,7 @@
 "##collapse_available_damage_risk##":"Very high risk of collapse"
 "##collapse_immitent##":"Collapse imminent"
 "##collapsed_ruins_info##":"These crumbled remains of old buildings lower the desirability of land in their vicinity."
+"##colleges##":"Academies"
 "##colloseum_haveno_animal_bouts##":"No current animal bouts"
 "##colloseum_haveno_gladiator_bouts##":"No current gladiator combat"
 "##colloseum_haveno_gladiatorpit##":"Build a gladiator school to stage fights here"
@@ -355,6 +364,8 @@
 "##consul_salary##":"Consul's salary of"
 "##consul##":"Consul"
 "##contaminted_water##":"Contaminated water"
+"##continue_2_years##":"Continue governing for 2 more years"
+"##continue_5_years##":"Continue for 5 more years"
 "##continue##":"Continue"
 "##corinthus##":"Corinthus"
 "##cost_2_open##":"Cost to open"
@@ -364,6 +375,8 @@
 "##crack##":"Crack"
 "##credit##":"Expenses"
 "##current_game_speed_is##":"Current game speed: "
+"##current_play_runs_for_another##":"Current play runs for another"
+"##current_races_runs_for_another##":"Current races runs for another"
 "##current_year_notpay_tribute_warning##":"You could not pay your tribute this year, which reduced your Favor. Keep some money in your treasury at year's end, so that you can make your annual payment to Rome."
 "##cursed_by_mars##":"Cursed by Mars!"
 "##damage##":"Damage"
@@ -439,6 +452,7 @@
 "##donations##":"Donated"
 "##donationwnd_exit_tip##":"Exit the donation screen"
 "##donot_organize_festival##":"Do not organize festival"
+"##earthquake_title##":"Earthquake"
 "##east##":"East"
 "##edadv_need_better_access_school_or_colege##":"Better school or academy and library access would enhance some areas of the city. People should not have to walk so far for learning!"
 "##edil_salary##":"Aedile's salary of"
@@ -452,6 +466,7 @@
 "##education_objects##":"Education structures"
 "##education##":"Education"
 "##educationBtnTooltip##":"Education"
+"##effciency##":"Efficiency"
 "##egift_chest_of_sapphire##":"A chest of sapphires"
 "##egift_educated_slave##":"An educated slave"
 "##egift_egyptian_glassware##":"Egyptian glassware"
@@ -473,6 +488,7 @@
 "##empbutton_low_work##":"Working poorly. Assign more workers to our sector"
 "##empbutton_simple_work##":"Working well, but more workers could to be allocated to our sector"
 "##empbutton_tooltip##":"Click here to set a priority for this labor category"
+"##emperor_changed_title##":"Change of Emperor"
 "##emperor_favour_00##":"The Emperor is furious with you."
 "##emperor_favour_01##":"The Emperor is so incredibly angry, he is talking about exiling you."
 "##emperor_favour_02##":"The Emperor is extremely angry with you."
@@ -639,6 +655,7 @@
 "##getting_reports_about_enemies##":"We are getting reports of enemies moving toward the city."
 "##give_money_tip##":"Click here to donate money to the city"
 "##give_money##":"Give money"
+"##gladiator_bouts_runs_for_another##":"Gladiator bouts run for another"
 "##gladiator_gods_angry##":"Hail, citizen. Have you heard? The gods are angry."
 "##gladiator_good_life##":"Salutations! Life here is all right, isn't it?"
 "##gladiator_high_workless##":"There's so much unemployment here. I wish we could practice on some of them! "
@@ -723,6 +740,7 @@
 "##have_no_legions##":"You do not have any legions to send"
 "##have_no_requests##":"You currently have no messages to read. As your city grows or the Emperor asks you for goods, messages will be posted here"
 "##having_some_slums_lack_migration##":"Having some slums prevents immigration"
+"##heading_to_city_warehouses##":"Heading to city warehouses"
 "##health_advisor##":"City health"
 "##health_advisor##":"Health-related structures"
 "##health##":"Health"
@@ -750,6 +768,7 @@
 "##hippodrome_no_workers##":"Nothing moves in the hippodrome. Without workers, the local community draws no entertainment from it."
 "##hippodrome##":"Hippodrome"
 "##hippodromes##":"Hippodromes"
+"##hlth_care_of##":"Care for"
 "##hold_ceres_festival##":"Hold festival to Ceres"
 "##hold_mars_festival##":"Hold festival to Mars"
 "##hold_mercury_festival##":"Hold festival to Mercury"
@@ -773,6 +792,8 @@
 "##houseBtnTooltip##":"House"
 "##how_to_grow_prosperity##":"There is no change in this rating this year. Showing a profit in your city's annual accounts is the best way to increase your Prosperity rating."
 "##hun_warrior##":"A Hun warrior"
+"##idle_factories_in_city##":"idle industries in the city"
+"##idle_factory_in_city##":"idle industry in the city"
 "##immigrant_much_food_here##":"They say there's food here. Is it a good place to live?"
 "##immigrant_so_hungry##":"If I stay any longer I think I'll die. There's no food anywhere."
 "##immigrant_want_to_be_liontamer##":"I've heard there are jobs here. I want to be a lion tamer!"
@@ -780,6 +801,7 @@
 "##imperial_request_cance_badly_affected##":"The Imperial request you recently cancelled has badly affected your standing in Rome."
 "##import_fn##":"Imports"
 "##import##":"Importing"
+"##increase_trading_title##":"Demand changes"
 "##industry_disabled##":"Industry is OFF"
 "##industry_enabled##":"Industry is ON"
 "##infobox_construction_comma_tip##":"TIP: Use the comma and full stop keys to quickly move through these and other objects."
@@ -806,6 +828,8 @@
 "##its_very_peacefull_province##":"The Empire has never seen a city this peaceful before!"
 "##judaean_warrior##":"A Judaean warrior"
 "##labor##":"Labor"
+"##land_route##":"Land route"
+"##land_trade_problem_title##":"Land trade problem"
 "##landmerchant_good_deals##":"I love coming here! Business is going very well!"
 "##landmerchant_noany_trade##":"I don't know why I come here; they buy nothing and have nothing to sell me!"
 "##landmerchant_say_about_store_goods##":"I wish these workers would take more care loading my beasts up with my purchases."
@@ -822,6 +846,7 @@
 "##legion_haveho_soldiers_and_barracks##":"This legion currently has no soldiers. It exists in name only, and with no operating barracks in the city it cannot receive new troops."
 "##legion_haveho_soldiers##":"This legion currently has no soldiers. It exists in name only. Only when newly-trained troops arrive from the barracks will it become a fighting unit."
 "##legion_morale_is_too_low##":"Legion's morale is too low to respond!"
+"##legion_morale##":"Morale"
 "##legion##":"Legion"
 "##legionadv_no_legions##":"You have no legions to command. You must first build a fort to house a new legion."
 "##legionary_average_life##":"I'll fight to the death! This city's safe while I'm still alive!"
@@ -874,6 +899,7 @@
 "##low_wage_broke_migration##":"Low wages prevent immigration"
 "##low_wage_broke_migration##":"Low wages reduce immigration to your city."
 "##low_wage_lack_migration##":"Poor wages are a problem"
+"##lowgrade_housing_want_better_conditions##":"Inhabitants of low grade housing want better conditions"
 "##lugdunum_win_text##":"Your treatment of the native Gauls in Lugdunum, and that fair city's splendor, bodes well for Rome's expansion into the northern wilderness. Well done!"
 "##lumber_mill_bad_work##":"With hardly any tree-cutters, output is at a virtual standstill."
 "##lumber_mill_full_work##":"This yard has all the employees it needs. It is working flat out to harvest timber."
@@ -934,6 +960,9 @@
 "##meat_farm##":"Animal farm"
 "##meat##":"Meat"
 "##mediolanum_win_text##":"That Hannibal could cross the Alps with his elephants was amazing. That Mediolanum would prosper despite his assault is a miracle. Your success turns the tide of the Punic War in Rome's favor. All Rome thanks you."
+"##merchant_little_busy_now##":"I'm a little busy right now"
+"##merchant_notbad_city##":"I've raced in many worse cities than this"
+"##merchant_wait_for_deal##":"I can't wait to do some trading here. I love a good deal!"
 "##mercury_desc##":"Commerce"
 "##mercury##":"Mercury"
 "##message##":"Message"
@@ -1030,6 +1059,7 @@
 "##missionaryPost_full_work##":"We are working to civilize the locals. By teaching them basic Latin, we hope to encourage them to work with us, rather than against us."
 "##missionaryPost##":"Native mission"
 "##missionBtnTooltip##":"Brief description"
+"##missioner_high_barbarian_risk##":"My teaching Rome's benefits seems to be sinking in to these barbarians!"
 "##moment_fire_risk##":"This building could catch fire at any moment!"
 "##month_1_short##":"Jan"
 "##month_10_short##":"Oct"
@@ -1058,12 +1088,13 @@
 "##more_salary_dispeasure_senate##":"The salary that you pay yourself, far exceeding your rank, is a source of great displeasure in Rome."
 "##much_plebs##":"The high concentration of slum dwellers in your city lends it the appearance of a poor one."
 "##my_rome##":"My Rome"
+"##native_center_info##":"Native meeting place"
+"##native_center##":"Native center"
+"##native_field##":"Native field"
+"##native_hut##":"Native hut"
 "##nativeCenter_info##":"This crude hall is the focal point for the local people, who come here to trade basic commodities. If the headman could only be taught a few words of Latin..."
-"##nativeCenter##":"Native center"
 "##nativeField_info##":"These half-wild crops are the locals' main source of food, but Romans would find them inedible."
-"##nativeField##":"Native field"
 "##nativeHut_info##":"Some local people live here, carrying on peacefully with their simple lives. They wish only to be left alone."
-"##nativeHut##":"Native hut"
 "##nearby_building_negative_effect_degrade##":"A nearby building is having a detrimental effect on the desirability of the location. Try placing gardens, statues or plazas, for example."
 "##nearby_building_negative_effect##":"A nearby building is having a detrimental effect on the desirability of the location. Try placing gardens, statues or plazas, for example."
 "##need_access_to_full_reservoir##":"Needs access to a full reservoir to operate"
@@ -1105,6 +1136,7 @@
 "##no_industries_in_city##":"No industries in the city"
 "##no_people_in_city##":"No people in the city!"
 "##no_priority##":"No priority"
+"##no_room_for_citizens##":"too many"
 "##no_space_for_evolve##":"This dwelling would soon evolve to one of greater stature if it had more space to expand into."
 "##no_target_population##":"( No target population )"
 "##no_tax_in_this_year##":"No tax collected from this house, so far this year."
@@ -1113,6 +1145,7 @@
 "##nomoney_for_gift_text##":"You do not have enough personal savings to pay for a gift to the Emperor. Try paying yourself a bigger salary!"
 "##none_crime_risk##":"No sign of crime around here"
 "##none_damage_risk##":"No risk of collapse"
+"##north##":"North"
 "##northBtnTooltip##":"North"
 "##not_available##":"Not available... Yet!"
 "##not_enought_place_for_legion##":"Your legion has its full complement of forts"
@@ -1308,6 +1341,7 @@
 "##reservoir_info##":"This giant cistern holds clean drinking water, which it distributes through clay pipes over a wide radius in the city. Aqueducts can link reservoirs over long distances."
 "##reservoir_no_water##":"This reservoir needs to be adjacent to water, or connected by aqueduct to a working reservoir, before it will function."
 "##reservoir##":"Reservoir"
+"##restart_mission_tip##":"Click here to rebuild this province"
 "##restocking_fishing_boat##":"We are re-stocking our fishing boat as quickly as we can, given our level of employment."
 "##return_2_fort##":"Return to fort"
 "##return_to_main_map##":"Return to main game map"
@@ -1324,7 +1358,9 @@
 "##rock_caption##":"Rocks"
 "##rock_text##":"Rocks are impassable and may not be cleared. Marble quarries and iron mines only work if they are built adjacent to rocks."
 "##roman_city##":"A Roman city"
+"##rome_lowers_wages##":"Rome lowers wages"
 "##rome_prices##":"Prices set by Rome"
+"##rome_raises_wages##":"Rome raises wages"
 "##romeGuard_average_life##":"Everything seems calm here.."
 "##romeGuard_gods_angry##":"The gods are angry with this place!"
 "##romeGuard_good_live##":"I may only be a lowly soldier, but even I can see what a great city this is!"
@@ -1337,6 +1373,7 @@
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":"A Samnite soldier"
+"##sarmizegetusa_dangerous_province##":"Sarmizegetusa: very dangerous province"
 "##save_city##":"Save game"
 "##save_game_here##":"Save the current game to this file"
 "##save_map##":"Save map"
@@ -1365,6 +1402,7 @@
 "##seamerchant_noany_trade##":"I shouldn't bother sailing here; this city never buys or sells anything!"
 "##select_city_layer##":"Select a city overlay report"
 "##select_location##":"Choose location"
+"##select_this_graph##":"Select this graph"
 "##seleucid_soldier##":"A Seleucid soldier"
 "##sell_price##":"Sellers receive"
 "##senate_1_info##":"The senate is among your city's most desirable buildings. It employs tax collectors and stores their revenues, while keeping track of the city's vital statistics."
@@ -1462,6 +1500,9 @@
 "##some_houses_need_library_or_colege_access##":"Certain areas of the city now need school or academy access. Lack of educational access prevents parts of the city from developing better housing."
 "##some_low_fire_risk##":"This building is a negligible fire risk"
 "##sound_settings##":"Sound settings"
+"##south##":"South"
+"##southEast##":"Southeast"
+"##southWest##":"Southwest"
 "##spear##":"Spear"
 "##special_orders##":"Special orders"
 "##speed_settings##":"Speed settings"
@@ -1535,6 +1576,7 @@
 "##to_empire_road##":"To the Empire"
 "##to_rome_road##":"To Rome"
 "##to_trade_advisor##":"To Trade Advisor"
+"##too_close_to_enemy_troops##":"Too close to enemy troops!"
 "##tooltip_full##":"Mouse help - FULL"
 "##tooltip_some##":"Mouse help - SOME"
 "##tower_have_workers_no_soldiers##":"We have maintenance staff, but we need guards from a barracks to defend the city."
@@ -1560,6 +1602,7 @@
 "##trade_advisor##":"Trade Advisor"
 "##trade_btn_notrade_text##":"Not trading"
 "##trade_caravan_from##":"Caravan of merchants from"
+"##trade_ship_from##":"Trade ship from"
 "##trade##":"Trade"
 "##tradeadv_industrystate_tip##":"Turn production on or off for this activity throughout the city"
 "##trees_and_forest_caption##":"Trees and woodland"
@@ -1694,6 +1737,7 @@
 "##well_haveno_houses_inarea##":"This well is unnecessary at the moment, as there are no houses within its service range."
 "##well_info##":"Citizens without fountain access can draw water from wells, but well-water neighborhoods are not desirable places to live."
 "##well##":"Well"
+"##west##":"West"
 "##wharf_full_work##":"With full employment, we can service the docked ship quickly and efficiently."
 "##wharf_info##":"Boats sail here from the shipyard to take on crews and begin fishing local waters. Each wharf can service one fishing boat."
 "##wharf_our_boat_fishing##":"Our boat is at the fishing grounds, hauling in fish."
@@ -1722,16 +1766,25 @@
 "##wine##":"Wine"
 "##wn_barbarian##":"Barbarian"
 "##wn_carthaginians##":"Carthaginians"
+"##wn_celt_soldier##":"Celtic warrior"
 "##wn_celts##":"Celts"
+"##wn_etruscan_soldier##":"An Etruscan soldier"
+"##wn_eygptian_soldier##":"An Egyptian soldier"
 "##wn_eygptians##":"Eygptians"
+"##wn_gaul_soldier##":"Gaulish warrior"
+"##wn_gaul##":"Gauls"
 "##wn_goth##":"Goths"
 "##wn_graeci##":"Graeci"
+"##wn_helveti_soldier##":"A warrior of the Helvetii"
+"##wn_iberian_soldier##":"An Iberian warrior"
 "##wn_indigene##":"Native"
 "##wn_judaean##":"Judaeans"
 "##wn_numidian##":"Numidians"
 "##wn_picts##":"Picts"
 "##wn_samnites##":"Samnites"
 "##wn_selecids##":"Seleucids"
+"##wn_visigoth_soldier##":"A Visigoth warrior"
+"##wn_visigoth##":"Visigoths"
 "##wnd_ratings_title##":"Ratings"
 "##wndrt_culture##":"Culture"
 "##wndrt_favor_tooltip##":"Click here for advice about your Favor rating"
@@ -1751,9 +1804,12 @@
 "##working_have_no_labor_access##":"This building currently has no access to people to supply it with labor"
 "##working_have_some_labor_access##":"This building currently has some access to people to supply it with labor"
 "##working_have_very_little_labor_access##":"This building currently has very little access to people to supply it with labor"
+"##working_industries##":"working industries in the city"
+"##working_industry##":"working industry in the city"
 "##wrath_of_neptune_title##":"Wrath of Neptune"
 "##wt_cartPusher##":"Cart pusher"
 "##wt_criminal##":"Criminal"
+"##wt_docker##":"Docker"
 "##wt_emigrant##":"Emigrant"
 "##wt_endeavor##":"Endeavor"
 "##wt_engineer##":""
@@ -1770,9 +1826,13 @@
 "##wt_missioner_average_life##":"Hail! I can see there's lots to be done teaching barbarians Rome's benevolence!"
 "##wt_missioner_normal_life##":"I'm so glad to be Roman. You should see what these barbarians get up to in their huts"
 "##wt_patrician##":"Patrician"
+"##wt_pict_soldier##":"Pictish warrior"
 "##wt_prefect##":"Prefect"
 "##wt_priest##":"Priest"
 "##wt_rioter##":"Rioter"
+"##wt_romeGuard##":"Sentry"
+"##wt_romeHorseman##":"Mounted auxiliary"
+"##wt_romeSpearman##":"Javelin thrower"
 "##wt_rprotestor##":"Protestor"
 "##wt_sheep##":"Sheep"
 "##wt_surgeon##":"Surgeon"
@@ -1790,233 +1850,6 @@
 "##your_salary_frowned_senate##":"Your cheek in paying yourself a salary higher than your rank entitles you to is frowned upon in Rome."
 "#winning_population##":"Winning population"
 "Variable":"ENGLISH (v1.1)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

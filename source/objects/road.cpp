@@ -123,8 +123,8 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
   if( city.isValid() )
   {
     int mapBorder = city->tilemap().size()-1;
-    if( p.i() == 0 ) { directionFlags |= road2east; }
-    if( p.i() == mapBorder ) { directionFlags |= road2west; }
+    if( p.i() == 0 ) { directionFlags |= road2west; }
+    if( p.i() == mapBorder ) { directionFlags |= road2east; }
     if( p.j() == 0 ) { directionFlags |= road2south; }
     if( p.j() == mapBorder ) { directionFlags |= road2north; }
   }

@@ -13,25 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WALKER_DEBUG_INFO_H_INCLUDED__
-#define __CAESARIA_WALKER_DEBUG_INFO_H_INCLUDED__
+#include "dock_pusher.hpp"
+#include "city/city.hpp"
 
-#include "core/scopedptr.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/camera.hpp"
-#include "game/predefinitions.hpp"
+using namespace constants;
 
-namespace gfx
+Docker::Docker( PlayerCityPtr city )
+  : CartPusher( city )
 {
+  _setType( walker::docker );
+  stock().setCapacity( bigCart );
+}
 
-class WalkerDebugInfo
+DockerPtr Docker::create(PlayerCityPtr city )
 {
-public:
-  static void showPath(WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera, NColor color=0);
-};
+  DockerPtr ret( new Docker( city ) );
+  ret->drop(); //delete automatically
 
-}//end namespace gfx
-
-#endif //__CAESARIA_WALKER_DEBUG_INFO_H_INCLUDED__
+  return ret;
+}

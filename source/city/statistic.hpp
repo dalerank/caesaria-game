@@ -26,6 +26,7 @@
 #include "objects/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 #include "game/enums.hpp"
+#include "game/service.hpp"
 #include <set>
 
 namespace city
@@ -57,6 +58,7 @@ public:
   static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
   static float getBalanceKoeff( PlayerCityPtr city );
+  static int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 };
 
 }//end namespace city
