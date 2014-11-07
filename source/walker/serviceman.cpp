@@ -43,6 +43,7 @@ public:
   BuildingPtr base;
   TilePos lastHousePos;
   Service::Type service;
+  Propagator::ObsoleteOverlays obsoleteOvs;
   unsigned int reachDistance;
   unsigned int maxDistance;
 };
@@ -128,6 +129,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
   Propagator pathPropagator( _city() );
   pathPropagator.init( ptr_cast<Construction>( _d->base ) );
   pathPropagator.setAllDirections( false );
+  pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
   PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
 
@@ -196,6 +198,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
+void ServiceWalker::_addObsoleteOverlays(TileOverlay::Type type) { _d->obsoleteOvs.insert( type ); }
 unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
@@ -490,7 +493,7 @@ TilePos ServiceWalker::places(Walker::Place type) const
   default: break;
   }
 
-  return ServiceWalker::places( type );
+  return Human::places( type );
 }
 
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )

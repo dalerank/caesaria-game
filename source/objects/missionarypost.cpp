@@ -17,6 +17,7 @@
 
 #include "missionarypost.hpp"
 #include "game/resourcegroup.hpp"
+#include "walker/walker.hpp"
 #include "constants.hpp"
 
 using namespace constants;
@@ -37,6 +38,15 @@ void MissionaryPost::deliverService()
   if( mayWork() )
   {
     ServiceBuilding::deliverService();
+
+    WalkerList ws = walkers();
+    if( !ws.empty() )
+    {
+      if( ws.front()->type() == walker::missioner )
+      {
+        ws.front()->setThinks( "##missioner_high_barbarian_risk##" );
+      }
+    }
   }
 }
 

@@ -19,6 +19,7 @@
 #include "city/funds.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "good/goodhelper.hpp"
 #include "city/trade_options.hpp"
 
 using namespace constants;
@@ -69,13 +70,13 @@ void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == city::Funds::importGoods )
   {
-    int price = game.city()->tradeOptions().sellPrice( _gtype );
-    _value = -price * ( 1+_buff ) * _qty / 100;
+    int price = GoodHelper::importPrice( game.city(), _gtype, _qty );
+    _value = -price * ( 1+_buff );
   }
   else if( _type == city::Funds::exportGoods )
   {
-    int price = game.city()->tradeOptions().buyPrice( _gtype );
-    _value = price * ( 1+_buff ) * _qty / 100;
+    int price = GoodHelper::exportPrice( game.city(), _gtype, _qty );
+    _value = price * ( 1+_buff );
   }
 
   game.city()->funds().resolveIssue( FundIssue( _type, _value ) );

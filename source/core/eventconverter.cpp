@@ -15,6 +15,7 @@
 
 #include "eventconverter.hpp"
 #include "time.hpp"
+#include "SDL_version.h"
 #include "logger.hpp"
 #include <map>
 
@@ -191,6 +192,8 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   }
   break;
 
+
+#if SDL_MAJOR_VERSION>1
   case SDL_WINDOWEVENT:
   {
     ret.EventType = sAppEvent;
@@ -211,6 +214,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     }
   }
   break;
+#endif
 
   /*case SDL_FINGERUP:
   case SDL_FINGERDOWN:

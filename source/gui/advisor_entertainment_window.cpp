@@ -119,6 +119,7 @@ public:
   TexturedButton* btnHelp;
   Label* lbMonthFromLastFestival;
   city::FestivalPtr srvc;
+  int monthFromLastFestival;
 
   InfrastructureInfo getInfo(const TileOverlay::Type service );
   void updateInfo();
@@ -132,9 +133,17 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->srvc << city->findService( city::Festival::defaultName() );
 
+  if( _d->srvc.isNull() )
+  {
+    Logger::warning( "WARNING!!!: city have no entertainment service" );
+    return;
+  }
+
   setupUI( ":/gui/entertainmentadv.gui" );
 
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
+
+  _d->monthFromLastFestival = _d->srvc->lastFestivalDate().monthsTo( GameDate::current() );
 
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
@@ -302,13 +311,16 @@ void Entertainment::Impl::updateInfo()
 
   int entertCoverage = math::percentage( allServed, allNeed);
 
-  if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles << "##entertainment_80_100##"; }
+  if( hpdNeed > hpdServed ) { troubles << "##citizens_here_are_bored_for_chariot_races##"; }
+
+  if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles << "##citizens_like_chariot_races##"; }
   else if( entertCoverage > 50 && entertCoverage <= 80 ) { troubles << "##entertainment_50_80##"; }
   else if( allNeed > 0 && entertCoverage <= 50 )         { troubles << "##entertainment_less_50##"; }
 
   if( minTheaterSrvc < 30 )   { troubles << "##some_houses_inadequate_entertainment##"; }
   if( thInfo.partlyWork > 0 ) { troubles << "##some_theaters_need_actors##"; }
   if( amthInfo.partlyWork > 0){ troubles << "##some_amphitheaters_no_actors##"; }
+  if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
   HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
@@ -321,28 +333,24 @@ void Entertainment::Impl::updateInfo()
   if( nextLevelAmph > 0 ) { troubles << "##some_houses_need_amph_for_grow##"; }
   if( theatersNeed == 0 ) { troubles << "##entertainment_not_need##";  }
 
-  std::string text;
-
   if( troubles.empty() )
   {
-    if( maxHouseLevel < HouseLevel::bigDomus ) { text = "##entadv_small_city_not_need_entert##"; }
-    else if( maxHouseLevel < HouseLevel::mansion ) { text = "##small_city_not_need_entertainment##"; }
-    else if( maxHouseLevel < HouseLevel::insula ) { text = "##etertadv_as_city_grow_you_need_more_entert##"; }
-    else { text = "##entertainment_full##"; }
-  }
-  else
-  {
-    text = troubles.random();
+    if( maxHouseLevel < HouseLevel::bigDomus ) { troubles << "##entadv_small_city_not_need_entert##"; }
+    else if( maxHouseLevel < HouseLevel::mansion ) { troubles << "##small_city_not_need_entertainment##"; }
+    else if( maxHouseLevel < HouseLevel::insula ) { troubles << "##etertadv_as_city_grow_you_need_more_entert##"; }
+
+    if( thInfo.buildingCount > 0 ) { troubles << "##citizens_enjoy_drama_and_comedy##"; }
+
+    troubles << "##entertainment_full##";
   }
 
-  lbTroubleInfo->setText( _( text ) );
+  lbTroubleInfo->setText( _( troubles.random() ) );
 }
 
 void Entertainment::Impl::updateFestivalInfo()
 {
   if( srvc.isValid() )
-  {
-    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( GameDate::current() );
+  {    
     std::string text = StringHelper::format( 0xff, "%d %s", monthFromLastFestival, _("##month_from_last_festival##") );
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }

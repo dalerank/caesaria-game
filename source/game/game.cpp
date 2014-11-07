@@ -62,6 +62,7 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "gamestate.hpp"
 
 #include <list>
 
@@ -70,14 +71,9 @@ using namespace gfx;
 class Game::Impl
 {
 public:
-  class ScreenHolder;
-  class ScreenMenuHolder;
-  class ScreenBriefingHolder;
-  class ScreenGameHolder;
-
   ScreenType nextScreen;
   std::string nextFilename;
-  ScreenHolder* currentScreen;
+  gamestate::BaseState* currentScreen;
   gfx::Engine* engine;
   gui::Ui* gui;
 
@@ -108,253 +104,6 @@ public:
       currentScreen(0), engine(0), gui(0)
   {}
 };
-
-class Game::Impl::ScreenHolder
-{
-protected:
-  Game *game;
-  scene::Base* screen;
-  ScreenType screenType;
-
-  void initialize(scene::Base* screen, ScreenType screenType) {
-    this->screen = screen;
-    this->screenType = screenType;
-    this->screen->initialize();
-  }
-
-public:
-  ScreenHolder(Game *game): game(game), screen(0), screenType(SCREEN_NONE)
-  {
-  }
-
-  virtual ~ScreenHolder()
-  {
-    delete screen;
-  }
-
-  virtual bool update(gfx::Engine* engine)
-  {
-    if (screen->isStopped())
-    {
-      return false;
-    }
-
-    screen->update(*engine);
-    return true;
-  }
-
-  ScreenType getScreenType()
-  {
-    return screenType;
-  }
-
-  scene::Base* toBase()
-  {
-    return screen;
-  }
-};
-
-class Game::Impl::ScreenBriefingHolder: public ScreenHolder
-{
-  scene::Briefing *briefing;
-
-public:
-  ScreenBriefingHolder(Game *game, gfx::Engine* engine, const std::string &file):
-    ScreenHolder(game),
-    briefing(new scene::Briefing( *game, *engine, file ))
-  {
-    initialize(briefing, SCREEN_BRIEFING);
-  }
-
-  virtual ~ScreenBriefingHolder()
-  {
-    Game::Impl *_d = game->_d.data();
-
-    switch( screen->result() )
-    {
-      case scene::Briefing::loadMission:
-      {
-        bool loadOk = game->load( briefing->getMapName() );
-        Logger::warning( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + briefing->getMapName() );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      default:
-        _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
-     }
-  }
-};
-
-class Game::Impl::ScreenMenuHolder: public ScreenHolder
-{
-  scene::StartMenu *startMenu;
-public:
-  ScreenMenuHolder(Game *game, gfx::Engine* engine):
-    ScreenHolder(game),
-    startMenu(new scene::StartMenu( *game, *engine ))
-  {
-    initialize(startMenu, SCREEN_MENU);
-  }
-
-  ~ScreenMenuHolder()
-  {
-    Game::Impl *_d = game->_d.data();
-    game->reset();
-
-    switch( screen->result() )
-    {
-      case scene::StartMenu::startNewGame:
-      {
-        std::srand( DateTime::elapsedTime() );
-        std::string startMission = "/missions/tutorial.mission";
-
-        bool loadOk = game->load( startMission );
-        _d->player->setName( startMenu->playerName() );
-
-        Logger::warning( (loadOk ? "Career: start mission " : "Career: cant load mission") + startMission );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      case scene::StartMenu::reloadScreen:
-        _d->nextScreen = SCREEN_MENU;
-      break;
-
-      case scene::StartMenu::loadSavedGame:
-      case scene::StartMenu::loadMission:
-      {
-        bool loadOk = game->load( startMenu->mapName() );
-        Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + startMenu->mapName()  );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      case scene::StartMenu::loadMap:
-      {
-        bool loadOk = game->load( startMenu->mapName() );
-        Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
-
-        FreeplayFinalizer::addPopulationMilestones( _d->city );
-        FreeplayFinalizer::initBuildOptions( _d->city );
-        FreeplayFinalizer::addEvents( _d->city );
-        FreeplayFinalizer::resetFavour( _d->city );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      case scene::StartMenu::closeApplication:
-      {
-        _d->nextScreen = SCREEN_QUIT;
-      }
-      break;
-
-      default:
-        _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
-     }
-  }
-};
-
-
-class Game::Impl::ScreenGameHolder: public ScreenHolder
-{
-  scene::Level *level;
-public:
-  ScreenGameHolder(Game *game, gfx::Engine* engine):
-    ScreenHolder(game),
-    level(new scene::Level( *game, *engine ))
-  {
-    initialize(level, SCREEN_GAME);
-
-    game->_d->timeX10 = 0;
-    game->_d->saveTime = game->_d->timeX10;
-
-    Logger::warning( "game: prepare for game loop" );
-  }
-
-  virtual bool update(gfx::Engine* engine)
-  {
-    if (screen->isStopped())
-    {
-      return false;
-    }
-
-    Game::Impl *_d = game->_d.data();
-    GameDate& cdate = GameDate::instance();
-
-    screen->update( *_d->engine );
-
-    if( _d->city->tilemap().direction() == constants::north )
-    {
-      if( !_d->pauseCounter )
-      {
-        _d->timeX10 += _d->timeMultiplier / 10;
-      }
-      else if ( _d->manualTicksCounterX10 > 0 )
-      {
-        unsigned int add = math::min( _d->timeMultiplier / 10, _d->manualTicksCounterX10 );
-        _d->timeX10 += add;
-        _d->manualTicksCounterX10 -= add;
-      }
-      while ( _d->timeX10 > _d->saveTime * 10 + 1 )
-      {
-        _d->saveTime++;
-
-        cdate.timeStep( _d->saveTime );
-        _d->empire->timeStep( _d->saveTime );
-
-        level->animate( _d->saveTime );
-      }
-    }
-
-    events::Dispatcher::instance().update( *game, _d->saveTime );
-    return true;
-  }
-
-  ~ScreenGameHolder()
-  {
-    Game::Impl *_d = game->_d.data();
-
-    game->clear();
-
-    _d->nextFilename = level->nextFilename();
-    switch( screen->result() )
-    {
-      case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
-      case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  game->load( level->nextFilename() ); break;
-
-      case scene::Level::restart:
-      {
-        Logger::warning( "ScreenGame: restart game " + _d->restartFile );
-        bool loadOk = game->load( _d->restartFile );
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-
-        Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " )+ _d->restartFile );
-
-        if( loadOk )
-        {
-          std::string ext = vfs::Path( _d->restartFile ).extension();
-          if( ext == ".map" || ext == ".sav" )
-          {
-            FreeplayFinalizer::addPopulationMilestones( _d->city );
-            FreeplayFinalizer::initBuildOptions( _d->city );
-            FreeplayFinalizer::addEvents( _d->city );
-          }
-        }
-      }
-      break;
-
-      case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
-      case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
-      default: _d->nextScreen = SCREEN_QUIT;
-    }
-  }
-};
-
 
 void Game::Impl::initLocale( std::string localePath )
 {
@@ -517,6 +266,7 @@ Game::Game() : _d( new Impl )
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
 void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
+
 Game::~Game(){}
 
 void Game::save(std::string filename) const
@@ -688,16 +438,21 @@ bool Game::exec()
   {
     case SCREEN_MENU:
     {
-      _d->currentScreen = new Impl::ScreenMenuHolder(this, _d->engine);
+      _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
     } break;
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
-      _d->currentScreen = new Impl::ScreenGameHolder(this, _d->engine);
+      _d->timeX10 = 0;
+      _d->saveTime = _d->timeX10;
+      _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
+                                                          _d->saveTime, _d->timeX10,
+                                                          _d->timeMultiplier, _d->manualTicksCounterX10,
+                                                          _d->nextFilename, _d->restartFile );
     } break;
     case SCREEN_BRIEFING:
     {
-      _d->currentScreen = new Impl::ScreenBriefingHolder(this, _d->engine, _d->nextFilename );
+      _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
     } break;
 
     default:
@@ -736,4 +491,9 @@ void Game::clear()
   gfx::OverlayDebugQueue::print();
   gfx::OverlayDebugQueue::instance().clear();
 #endif
+}
+
+void Game::setNextScreen(ScreenType screen)
+{
+  _d->nextScreen = screen;
 }

@@ -44,7 +44,10 @@ void NativeBuilding::save( VariantMap& stream) const
   Building::save(stream);
 }
 
-void NativeBuilding::load( const VariantMap& stream) {Building::load(stream);}
+void NativeBuilding::load( const VariantMap& stream)
+{
+  Building::load(stream);
+}
 
 bool NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
 {

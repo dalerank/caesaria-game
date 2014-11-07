@@ -90,6 +90,7 @@ enum Type
   riverWave,
   supplier,
   circusCharioter,
+  docker,
   all = 0xff,
   any = all
 };
@@ -113,6 +114,8 @@ enum Nation
   native,
   visigoth,
   gaul,
+  iberian,
+  helveti,
   nationCount
 };
 

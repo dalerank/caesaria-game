@@ -26,12 +26,26 @@
 namespace gfx
 {
 
-void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera )
+void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera, NColor color )
 {
   Point camOffset = camera->offset();
   const Pathway& pathway = walker->pathway();
 
-  const TilesArray& tiles = pathway.allTiles();
+  const TilesArray& tiles = pathway.allTiles();   
+
+  NColor pathColor = color;
+
+  if( color == 0)
+  {
+    if( walker->agressive() > 0 )
+    {
+      pathColor = DefaultColors::red;
+    }
+    else
+    {
+      pathColor = pathway.isReverse() ? DefaultColors::blue : DefaultColors::green;
+    }
+  }
 
   Point pos = walker->mappos();
   if( pathway.isReverse() )
@@ -39,7 +53,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
     int rStart = pathway.length() - pathway.curStep();
     for( int step=rStart-1; step >= 0; step-- )
     {
-      engine.drawLine(  0xff0000ff, pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ) );
+      engine.drawLine(  pathColor, pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ) );
       pos = tiles[ step ]->mappos() + Point( 30, 0 );
     }
   }
@@ -48,7 +62,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
     for( unsigned int step=pathway.curStep()+1; step < tiles.size(); step++ )
     {
       Tile* tile = tiles[ step ];
-      engine.drawLine(  0xff00ff00, pos + camOffset, tile->mappos() + camOffset + Point( 30, 0 ) );
+      engine.drawLine(  pathColor, pos + camOffset, tile->mappos() + camOffset + Point( 30, 0 ) );
       pos = tile->mappos() + Point( 30, tile->height() * 15 );
     }
   }

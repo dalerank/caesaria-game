@@ -65,6 +65,7 @@ public:
 
   virtual void setProductRate( const float rate );
   virtual float productRate() const;
+  virtual unsigned int effciency() const;
 
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;

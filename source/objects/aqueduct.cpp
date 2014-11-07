@@ -189,7 +189,7 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp.empty()) ? pos() : p;
+  const TilePos tile_pos = (tmp.empty()) ? tile().epos() : p;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
@@ -199,9 +199,9 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
   bool is_busy[countDirection] = { false };
 
   tile_pos_d[north] = tile_pos + TilePos(  0,  1);
-  tile_pos_d[east]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[east ]  = tile_pos + TilePos(  1,  0);
   tile_pos_d[south] = tile_pos + TilePos(  0, -1);
-  tile_pos_d[west]  = tile_pos + TilePos( -1,  0);
+  tile_pos_d[west ]  = tile_pos + TilePos( -1,  0);
 
   // all tiles must be in map range
   for (int i = 0; i < countDirection; ++i)
@@ -214,17 +214,17 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
   // get overlays for all directions
   TileOverlayPtr overlay_d[countDirection];
   overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
-  overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
+  overlay_d[east ] = tmap.at( tile_pos_d[east]  ).overlay();
   overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
-  overlay_d[west] = tmap.at( tile_pos_d[west]  ).overlay();
+  overlay_d[west ] = tmap.at( tile_pos_d[west]  ).overlay();
 
   // if we have a TMP array with aqueducts, calculate them
   if (!tmp.empty())
   {
     foreach( it, tmp )
     {
-      int i = (*it)->i();
-      int j = (*it)->j();
+      int i = (*it)->epos().i();
+      int j = (*it)->epos().j();
 
       if( !is_kind_of<Aqueduct>( (*it)->overlay() ) )
         continue;
@@ -233,7 +233,7 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
       else if (i == p.i() && j == (p.j() - 1))is_busy[south] = true;
       else if (j == p.j() && i == (p.i() + 1))is_busy[east] = true;
       else if (j == p.j() && i == (p.i() - 1))is_busy[west] = true;
-    }
+    }    
   }
 
   // calculate directions
@@ -256,7 +256,7 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
       }
       else
       {
-        switch (i)
+        switch( i )
         {
         case north: directionFlags += 1; break;
         case east:  directionFlags += 2; break;
@@ -269,6 +269,8 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
   }
 
   int index;
+  Direction mapDirection = city->tilemap().direction();
+
   switch (directionFlags)
   {
   case 0:  // no neighbours!
@@ -290,7 +292,11 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
       else if( rsouth != NULL || rnorth != NULL )
       {
         index = 128;
-      }
+      }           
+    }
+    else
+    {
+      index += ( mapDirection == west || mapDirection == east ) ? 1 : 0;
     }
   }
   break;
@@ -298,31 +304,40 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
   case 1:  // N
   case 4:  // S
   case 5:  // N + S
+  {
     index = 121; 
     if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 119; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
-    break;
+    //index += ( mapDirection == west || mapDirection == east ) ? 1 : 0;
+  }
+  break;
     
   case 3:  // N + E
     index = 123; break;
+
   case 6:  // E + S
     index = 124; break;
   case 7:  // N + E + S
-    index = 129; break;
+    index = 129;
+  break;
+
   case 9:  // N + W
     index = 126; break;
   case 2:  // E
   case 8:  // W
   case 10: // E + W
+  {
     index = 122; 
     if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
     {
       index = 120; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
     }
+    //index -= ( mapDirection == west || mapDirection == east ) ? 1 : 0;
+  }
   break;
    
   case 11: // N + E + W
@@ -339,7 +354,8 @@ const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArra
     index = 121; // it's impossible, but ...
   }
 
-  return Picture::load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
+  const Picture& pic = Picture::load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
+  return pic;
 }
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
@@ -409,7 +425,18 @@ bool Aqueduct::isNeedRoadAccess() const {  return false; }
 void Aqueduct::_waterStateChanged(){  updatePicture( _city() ); }
 bool Aqueduct::isWalkable() const {  return _isRoad(); }
 
+void Aqueduct::changeDirection(Tile* masterTile, Direction direction)
+{
+  Construction::changeDirection( masterTile, direction );
+  updatePicture( _city() );
+}
+
 std::string Aqueduct::sound() const
 {
   return ( water() == 0 ? "" : WaterSource::sound() );
+}
+
+const Picture& Aqueduct::picture() const
+{
+  return WaterSource::picture();
 }

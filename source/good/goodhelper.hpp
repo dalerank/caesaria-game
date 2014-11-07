@@ -21,6 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "gfx/picture.hpp"
 #include "good.hpp"
+#include "city/predefinitions.hpp"
 #include "core/direction.hpp"
 
 class GoodStock;
@@ -34,6 +35,9 @@ public:
   static gfx::Picture picture( Good::Type type, bool emp=false );
   static Good::Type getType( const std::string& name );
   static std::string getTypeName( Good::Type type );
+  static float convQty2Units( int qty );
+  static float exportPrice( PlayerCityPtr city, Good::Type gtype, int qty );
+  static float importPrice( PlayerCityPtr city, Good::Type gtype, int qty );
   static gfx::Picture getCartPicture( const GoodStock& stock, constants::Direction direction );
   ~GoodHelper();
 private:

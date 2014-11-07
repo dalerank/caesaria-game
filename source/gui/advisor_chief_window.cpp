@@ -39,9 +39,12 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
+#include "city/cityservice_festival.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
 #include "world/barbarian.hpp"
+#include "game/gamedate.hpp"
+#include "city/cityservice_culture.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 
@@ -330,26 +333,39 @@ void AdvisorChiefWindow::Impl::drawMilitary()
   StringArray reasons;
   city::MilitaryPtr mil;
   mil << city->findService( city::Military::defaultName() );
+  bool isBesieged = false;
 
   if( mil.isValid() )
   {
-    city::Military::Notification n = mil->priorityNotification();
-    reasons << n.message;
-  }
+    isBesieged = mil->threatValue() > 100;
 
-  world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
-  foreach( i, objs )
-  {
-    if( is_kind_of<world::Barbarian>( *i ) ||
-        is_kind_of<world::RomeChastenerArmy>( *i ) )
+    if( !isBesieged )
     {
-      reasons << "##getting_reports_about_enemies##";
-      break;
+      city::Military::Notification n = mil->priorityNotification();
+      reasons << n.message;
     }
   }
 
-  std::string text = reasons.empty() ? "##no_warning_for_us##" : reasons.random();
-  drawReportRow( atMilitary, _(text) );
+  if( reasons.empty() )
+  {
+    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
+    foreach( i, objs )
+    {
+      if( is_kind_of<world::Barbarian>( *i ) ||
+          is_kind_of<world::RomeChastenerArmy>( *i ) )
+      {
+        reasons << "##getting_reports_about_enemies##";
+        break;
+      }
+    }
+  }
+
+  if( reasons.empty() )
+  {
+    reasons << "##no_warning_for_us##";
+  }
+
+  drawReportRow( atMilitary, _(reasons.random()) );
 }
 
 void AdvisorChiefWindow::Impl::drawCrime()
@@ -424,8 +440,39 @@ void AdvisorChiefWindow::Impl::drawReligion()
 
 void AdvisorChiefWindow::Impl::drawEntertainment()
 {
-  std::string text;
-  drawReportRow( atEntertainment, text );
+  StringArray reasons;
+
+  city::FestivalPtr srvc;
+  srvc << city->findService( city::Festival::defaultName() );
+
+  city::CultureRatingPtr cltr;
+  cltr << city->findService( city::CultureRating::defaultName() );
+
+  if( srvc.isValid() )
+  {
+    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( GameDate::current() );
+    if( monthFromLastFestival > 6 )
+    {
+      reasons << "##citizens_grumble_lack_festivals_held##";
+    }
+  }
+
+  if( cltr.isValid() )
+  {
+    int theaterCoverage = cltr->coverage( city::CultureRating::covTheatres );
+    if( theaterCoverage >= 100 )
+    {
+      reasons << "##current_play_runs_for_another##";
+    }
+  }
+
+  int hippodromeCoverage = city::Statistic::getEntertainmentCoverage( city, Service::hippodrome );
+  if( hippodromeCoverage >= 100 )
+  {
+    reasons << "##current_races_runs_for_another##";
+  }
+
+  drawReportRow( atEntertainment, _( reasons.random() ) );
 }
 
 void AdvisorChiefWindow::Impl::drawSentiment()

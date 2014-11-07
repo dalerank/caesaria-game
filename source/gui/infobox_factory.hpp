@@ -41,6 +41,7 @@ protected:
 protected:
   gfx::TileOverlay::Type _type;
   Label* _lbProduction;
+  Label* _lbEffciency;
   PushButton* _btnToggleWork;
 };
 

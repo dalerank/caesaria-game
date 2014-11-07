@@ -13,7 +13,7 @@
       "Shift+F11(test): add wolves in city",
       "Esc      : close active window,layer or break current action",
       "Ctrl+Shift+1..4: switch position",
-      "W,A,S,D and arrows : move map",
+      "Arrows : move map",
       "Shift on building mode : build road by rectangle",
       "F1  : visit labor advisor",
       "F2  : visit military advisor",
