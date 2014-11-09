@@ -468,7 +468,14 @@ std::string SeaMerchant::thoughts(Thought th) const
   case thCurrent:
     switch( _d->nextState )
     {
-    case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
+    case Impl::stSellGoods:
+    case Impl::stBuyGoods:
+      if( _d->anySell || _d->anyBuy )
+      {
+        return "##dockers_taking_our_goods##";
+      }
+    break;
+
     case Impl::stBackToBaseCity:
     {
       if( _d->currentSell - _d->currentBuys > 100 )
@@ -479,6 +486,12 @@ std::string SeaMerchant::thoughts(Thought th) const
       {
         return "##seamerchant_noany_trade##";
       }
+    }
+    break;
+
+    case Impl::stWaitGoods:
+    {
+      return "##docked_buying_selling_goods##";
     }
     break;
 

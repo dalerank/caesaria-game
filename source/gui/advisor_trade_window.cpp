@@ -201,11 +201,12 @@ bool Trade::Impl::getWorkState(Good::Type gtype )
 void Trade::Impl::showGoodOrderManageWindow(Good::Type type )
 {
   Widget* parent = gbInfo->parent();
-  bool canImport = city::Statistic::canImport( city, type );
-  bool canProduce = city::Statistic::canProduce( city, type );
+  int gmode = GoodOrderManageWindow::gmUnknown;
+  gmode |= (city::Statistic::canImport( city, type ) ? GoodOrderManageWindow::gmImport : 0);
+  gmode |= (city::Statistic::canProduce( city, type ) ? GoodOrderManageWindow::gmProduce : 0);
 
   GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->height() -60 ), 
-                                                          city, type, allgoods[ type ], canImport || canProduce );
+                                                          city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
 
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }

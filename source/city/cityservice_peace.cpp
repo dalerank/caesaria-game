@@ -29,13 +29,6 @@ using namespace constants;
 namespace city
 {
 
-namespace {
-  CAESARIA_LITERALCONST(protestorOrMugglerSeen)
-  CAESARIA_LITERALCONST(rioterSeen)
-  CAESARIA_LITERALCONST(value)
-  CAESARIA_LITERALCONST(significantBuildingsDestroyed)
-}
-
 class Peace::Impl
 {
 public:
@@ -58,7 +51,7 @@ city::SrvcPtr Peace::create( PlayerCityPtr city )
 }
 
 Peace::Peace( PlayerCityPtr city )
-  : city::Srvc( city, getDefaultName() ), _d( new Impl )
+  : city::Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->peaceYears = 0;
   _d->protestorOrMugglerSeen = false;
@@ -139,7 +132,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   }*/
   else
   {
-    Logger::warning( "Peace:addCrimianl unknown walker %d", wlk->type() );
+    Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
     _d->someCriminalSeen = true;
   }
 }
@@ -158,10 +151,11 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay)
 }
 
 int Peace::value() const { return _d->value; }
+std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
 
-std::string Peace::getDefaultName()
+std::string Peace::reason() const
 {
-  return CAESARIA_STR_EXT(Peace);
+  if( _d->rioterSeen ) { return "##last_riots_bad_for_peace_rating##"; }
 }
 
 VariantMap Peace::save() const
@@ -169,10 +163,10 @@ VariantMap Peace::save() const
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, peaceYears )
   VARIANT_SAVE_ANY_D( ret, _d, someCriminalSeen )
-  ret[ lc_protestorOrMugglerSeen ] = _d->protestorOrMugglerSeen;
-  ret[ lc_rioterSeen ] = _d->rioterSeen;
-  ret[ lc_value ] = _d->value;
-  ret[ lc_significantBuildingsDestroyed ] = _d->significantBuildingsDestroyed;
+  VARIANT_SAVE_ANY_D( ret, _d, protestorOrMugglerSeen)
+  VARIANT_SAVE_ANY_D( ret, _d, rioterSeen )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  VARIANT_SAVE_ANY_D( ret, _d, significantBuildingsDestroyed )
 
   return ret;
 }
@@ -181,10 +175,10 @@ void Peace::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANY_D( _d, peaceYears, stream )
   VARIANT_LOAD_ANY_D( _d, someCriminalSeen, stream )
-  _d->protestorOrMugglerSeen = stream.get( lc_protestorOrMugglerSeen );
-  _d->rioterSeen = stream.get( lc_rioterSeen );
-  _d->value = stream.get( lc_value );
-  _d->significantBuildingsDestroyed = stream.get( lc_significantBuildingsDestroyed );
+  VARIANT_LOAD_ANY_D( _d, protestorOrMugglerSeen, stream )
+  VARIANT_LOAD_ANY_D( _d, rioterSeen, stream )
+  VARIANT_LOAD_ANY_D( _d, value, stream )
+  VARIANT_LOAD_ANY_D( _d, significantBuildingsDestroyed, stream )
 }
 
 }

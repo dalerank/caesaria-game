@@ -25,11 +25,12 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
 #include "city/funds.hpp"
+#include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "city/migration.hpp"
@@ -384,6 +385,28 @@ void AdvisorChiefWindow::Impl::drawMilitary()
           reasons << "##getting_reports_about_enemies##";
         }
       }
+    }
+  }
+
+  if( reasons.empty() )
+  {
+    city::Helper helper( city );
+
+    BarracksList barracks = helper.find<Barracks>( building::barracks );
+
+    bool needWeapons = false;
+    foreach( it, barracks )
+    {
+      if( (*it)->isNeedWeapons() )
+      {
+        needWeapons = true;
+        break;
+      }
+    }
+
+    if( needWeapons )
+    {
+      reasons << "##some_soldiers_need_weapon##";
     }
   }
 

@@ -243,10 +243,10 @@ bool AboutLegion::onEvent(const NEvent& event)
       std::string text;
       switch( id )
       {
-      case Fort::frmNorthLine: text = "##defensive_formation"; break;
-      case Fort::frmWestLine: text = "##defensive_formation2"; break;
-      case Fort::frmNorthDblLine: text = "##simple_formation"; break;
-      case Fort::frmWestDblLine: text = "##simple_formation2"; break;
+      case Fort::frmNorthLine: text = "##line_formation"; break;
+      case Fort::frmWestLine: text = "##line_formation"; break;
+      case Fort::frmNorthDblLine: text = "##mopup_formation"; break;
+      case Fort::frmWestDblLine: text = "##mopup_formation"; break;
       case Fort::frmOpen: text = "##open_formation"; break;
 
       default:

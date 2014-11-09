@@ -26,6 +26,7 @@ namespace city
 class Peace : public city::Srvc
 {
 public:
+  typedef enum { rskNone, rskRiots } Risk;
   static city::SrvcPtr create(PlayerCityPtr city);
 
   virtual void timeStep( const unsigned int time );
@@ -34,7 +35,8 @@ public:
   void buildingDestroyed( gfx::TileOverlayPtr overlay );
 
   int value() const;
-  static std::string getDefaultName();
+  static std::string defaultName();
+  std::string reason() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);

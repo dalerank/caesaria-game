@@ -45,7 +45,6 @@ public:
 
   void send2city( BuildingPtr building, GoodStock& carry );
 
- 
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;

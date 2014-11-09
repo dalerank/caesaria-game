@@ -737,7 +737,7 @@ int PlayerCity::culture() const
 int PlayerCity::peace() const
 {
   city::PeacePtr p;
-  p << findService( city::Peace::getDefaultName() );
+  p << findService( city::Peace::defaultName() );
   return p.isValid() ? p->value() : 0;
 }
 
