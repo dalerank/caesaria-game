@@ -232,13 +232,13 @@ void Road::save(VariantMap& stream) const
 {
   Construction::save( stream );
 
-  stream[ "paved" ] = _paved;
+  VARIANT_SAVE_ANY( stream, _paved )
 }
 
 void Road::load(const VariantMap& stream)
 {
   Construction::load( stream );
-  _paved  = (int)stream.get( "paved", 0 );
+  VARIANT_LOAD_ANY( _paved, stream )
 
   updatePicture();
 }

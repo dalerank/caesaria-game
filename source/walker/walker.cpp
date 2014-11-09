@@ -172,6 +172,7 @@ void Walker::setPathway( const Pathway& pathway)
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
 float Walker::speed() const{ return _d->speed;}
+float Walker::speedMultiplier() const { return _d->speedMultiplier; }
 void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 void Walker::_walk()

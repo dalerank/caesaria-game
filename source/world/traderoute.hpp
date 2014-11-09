@@ -38,6 +38,7 @@ public:
 
   CityPtr beginCity() const;
   CityPtr endCity() const;
+  CityPtr partner( const std::string& name ) const;
   std::string getName() const;
 
   void update( unsigned int time );

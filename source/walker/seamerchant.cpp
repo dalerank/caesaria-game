@@ -468,7 +468,6 @@ std::string SeaMerchant::thoughts(Thought th) const
   case thCurrent:
     switch( _d->nextState )
     {
-    case Impl::stWaitFreeDock: return "##waiting_for_free_dock##";
     case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
     case Impl::stBackToBaseCity:
     {
@@ -481,6 +480,18 @@ std::string SeaMerchant::thoughts(Thought th) const
         return "##seamerchant_noany_trade##";
       }
     }
+    break;
+
+    case Impl::stWaitFreeDock:
+    case Impl::stRequestGoods:
+      if( action() == acMove )
+      {
+        return "##sailing_to_city_docks##";
+      }
+      else
+      {
+        return "##waiting_for_free_dock##";
+      }
     break;
 
     default: break;
