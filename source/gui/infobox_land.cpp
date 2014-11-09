@@ -23,6 +23,8 @@
 #include "core/stringhelper.hpp"
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "dictionary.hpp"
+#include "environment.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -57,7 +59,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   else if( tile.getFlag( Tile::tlTree ) )
   {
     title = "##trees_and_forest_caption##";
-    text = "##trees_and_forest_text##";
+    text = "##trees_and_forest_text##";    
   } 
   else if( tile.getFlag( Tile::tlWater ) )
   {
@@ -127,6 +129,11 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
+void AboutLand::showDescription()
+{
+
+}
+
 AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
     : AboutLand( parent, city, tile )
 {
@@ -140,7 +147,12 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
   else
   {
     setText( _("##freehouse_text##") );
-  }
+    }
+}
+
+void AboutFreeHouse::showDescription()
+{
+  DictionaryWindow::show( ui()->rootWidget(), "vacant_lot" );
 }
 
 }

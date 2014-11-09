@@ -8,14 +8,7 @@
     text : "##title##"
     textAlign : [ "center", "center" ]
   }
-    
-  lbText#Label : {
-    font : "FONT_2_WHITE"
-    geometryf : [ 0.05, 0.1, 0.95, 0.9 ]
-    textAlign : [ "center", "center" ]
-    bgtype : "blackFrame"
-  }
-           
+
   btnExit#TexturedButton : {
     geometry : [ 374, 408, 398, 432 ]
     normal : [ "paneling", 532 ]

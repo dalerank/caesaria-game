@@ -29,9 +29,12 @@ class DictionaryWindow : public Window
 {
 public:
   static void show( Widget* parent, gfx::TileOverlay::Type type );
+  static void show( Widget* parent, const std::string& uri );
 
   virtual ~DictionaryWindow();
   virtual bool onEvent(const NEvent &event);
+
+  virtual void load( const std::string& uri );
 
 private:
   DictionaryWindow( Widget* parent );

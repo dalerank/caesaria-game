@@ -20,6 +20,8 @@
 #include "core/stringhelper.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
+#include "core/saveadapter.hpp"
+#include "dictionary_text.hpp"
 #include "core/logger.hpp"
 #include "objects/metadata.hpp"
 #include "core/event.hpp"
@@ -34,7 +36,7 @@ class DictionaryWindow::Impl
 {
 public:
   Label* lbTitle;
-  Label* lbText;
+  DictionaryText* lbText;
   TexturedButton* btnExit;
 };
 
@@ -46,7 +48,7 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 
   GET_DWIDGET_FROM_UI( _d, btnExit )
-  GET_DWIDGET_FROM_UI( _d, lbText )
+  _d->lbText = new DictionaryText( this, Rect( 20, 40, width() - 20, height() - 40 ) );
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater );
 }
@@ -57,6 +59,15 @@ void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
   if( wnd->_d->lbText )
   {
     wnd->_d->lbText->setText( MetaDataHolder::findDescription( type ) );
+  }
+}
+
+void DictionaryWindow::show(Widget* parent, const std::string& uri)
+{
+  DictionaryWindow* wnd = new DictionaryWindow( parent );
+  if( wnd->_d->lbText )
+  {
+    wnd->load( uri );
   }
 }
 
@@ -83,6 +94,16 @@ bool DictionaryWindow::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
+void DictionaryWindow::load(const std::string& uri)
+{
+  std::string ruri = ":/help/" + uri + ".en";
+  VariantMap vm = SaveAdapter::load( ruri );
+
+  std::string text = vm.get( "text" ).toString();
+
+  _d->lbText->setText( text );
 }
 
 }//end namespace gui
