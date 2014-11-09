@@ -45,7 +45,6 @@ public:
 
   void send2city( BuildingPtr building, GoodStock& carry );
 
-  void computeWalkerDestination();
  
   virtual void timeStep(const unsigned long time);
 
@@ -62,6 +61,7 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
 
+  void _computeWalkerDestination();
 private:
   class Impl;
   ScopedPtr< Impl > _d;

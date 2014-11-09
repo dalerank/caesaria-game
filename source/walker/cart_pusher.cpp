@@ -208,7 +208,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    foreach( it, oPics ) { it->addOffset( offset ); }
 }
 
-void CartPusher::computeWalkerDestination()
+void CartPusher::_computeWalkerDestination()
 {
    // get the list of buildings within reach
    Pathway pathWay;
@@ -261,10 +261,11 @@ void CartPusher::computeWalkerDestination()
      }
      else
      {
-       _setDirection( constants::north );
        Walker::wait( -1 );
        setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
-       _walk();
+       _changeDirection();
+       turn( _d->producerBuilding->pos() );
+       getMainPicture();
      }
    }
 }
@@ -373,7 +374,7 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
   _d->stock.append( carry );
   setProducerBuilding( building  );
 
-  computeWalkerDestination();
+  _computeWalkerDestination();
 
   if( !isDeleted() )
   {
@@ -385,7 +386,7 @@ void CartPusher::timeStep( const unsigned long time )
 {
   if( GameDate::isWeekChanged() && !_pathwayRef().isValid() )
   {
-    computeWalkerDestination();
+    _computeWalkerDestination();
   }
 
   Walker::timeStep( time );
@@ -413,8 +414,8 @@ void CartPusher::save( VariantMap& stream ) const
   stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
                                 ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
 
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reservationID" ] = static_cast<int>(_d->reservationID);
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
+  VARIANT_SAVE_ENUM_D( stream, _d, reservationID )
 }
 
 void CartPusher::load( const VariantMap& stream )
@@ -440,8 +441,8 @@ void CartPusher::load( const VariantMap& stream )
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
   _d->consumerBuilding = ptr_cast<Building>( _city()->getOverlay( cnsmPos ) );
 
-  _d->maxDistance = stream.get( "maxDistance" ).toInt();
-  _d->reservationID = stream.get( "reservationID" ).toInt();
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
+  VARIANT_LOAD_ENUM_D( _d, reservationID, stream )
 }
 
 bool CartPusher::die()

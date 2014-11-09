@@ -1005,7 +1005,11 @@ void House::_update( bool needChangeTexture )
     setPicture( pic );
   }
 
+  bool lastFlat = _d->isFlat;
+
   _d->isFlat = picture().height() <= ( TileHelper::baseSize().height() * size().width() );
+  if(lastFlat != _d->isFlat )
+    _city()->setOption( PlayerCity::updateTiles, true );
 
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->initGoodStore( size().area() );
