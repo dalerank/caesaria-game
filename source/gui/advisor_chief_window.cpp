@@ -341,21 +341,48 @@ void AdvisorChiefWindow::Impl::drawMilitary()
 
     if( !isBesieged )
     {
-      city::Military::Notification n = mil->priorityNotification();
+      city::Military::Notification n = mil->priorityNotification();          
       reasons << n.message;
-    }
+    }    
   }
 
   if( reasons.empty() )
   {
-    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
-    foreach( i, objs )
+    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );   
+
+    if( !objs.empty() )
     {
-      if( is_kind_of<world::Barbarian>( *i ) ||
-          is_kind_of<world::RomeChastenerArmy>( *i ) )
+      int minDistance = 999;
+      world::ObjectPtr maxThreat;
+      foreach( i, objs )
       {
-        reasons << "##getting_reports_about_enemies##";
-        break;
+        if( is_kind_of<world::Barbarian>( *i ) ||
+            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        {
+          int distance = city->location().distanceTo( (*i)->location() );
+          if( minDistance > distance )
+          {
+            maxThreat = *i;
+            minDistance = distance;
+          }
+        }
+      }
+
+      if( maxThreat.isValid() )
+      {
+        if( minDistance <= 40 )
+        {
+          std::string threatText = StringHelper::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          reasons << threatText;
+        }
+        else if( minDistance <= 100 )
+        {
+          reasons << "##our_enemies_near_city##";
+        }
+        else
+        {
+          reasons << "##getting_reports_about_enemies##";
+        }
       }
     }
   }
