@@ -19,6 +19,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "objects/road.hpp"
 #include "core/stringhelper.hpp"
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -86,10 +87,11 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
     else if( tile.overlay()->type() == construction::road )
     {
-      title = "##road_caption##";
+      RoadPtr road = ptr_cast<Road>( tile.overlay() );
+      title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
       if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
       else if( tile.pos() == city->borderInfo().roadExit ) { text = "##road_to_distant_region##"; }
-      else text = "##road_text##";
+      else text = road->pavedValue() > 0 ? "##road_paved_text##" : "##road_text##";
     }
     else
     {

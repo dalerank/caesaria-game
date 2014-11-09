@@ -33,7 +33,8 @@ namespace advisorwnd
 class GoodOrderManageWindow : public Window
 {
 public:
-  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods );
+  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, PlayerCityPtr city,
+                         Good::Type type, int stackedGoods, bool haveInCity );
 
   virtual void draw( gfx::Engine& painter );
 
