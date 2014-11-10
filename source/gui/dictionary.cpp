@@ -26,6 +26,7 @@
 #include "objects/metadata.hpp"
 #include "core/event.hpp"
 #include "widget_helper.hpp"
+#include "core/gettext.hpp"
 
 using namespace gfx;
 
@@ -38,6 +39,9 @@ public:
   Label* lbTitle;
   DictionaryText* lbText;
   TexturedButton* btnExit;
+
+  typedef std::map<std::string,std::string> Aliases;
+  Aliases aliases;
 };
 
 DictionaryWindow::DictionaryWindow( Widget* parent )
@@ -52,7 +56,28 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
   _d->lbText = new DictionaryText( this, Rect( 20, 40, width() - 20, height() - 40 ) );
   _d->lbText->setFont( Font::create( FONT_1 ) );
 
-  CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater );
+  CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )
+  CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
+}
+
+void DictionaryWindow::_handleUriChange(std::string value)
+{
+  Impl::Aliases::iterator it = _d->aliases.find( value );
+
+  if( it != _d->aliases.end() )
+  {
+    load( it->second );
+  }
+}
+
+vfs::Path DictionaryWindow::_convUri2path(std::string uri)
+{
+  vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
+
+  if( fpath.exist() )
+    fpath = fpath.changeExtension( ".en" );
+
+  return fpath;
 }
 
 void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
@@ -100,13 +125,21 @@ bool DictionaryWindow::onEvent(const NEvent& event)
 
 void DictionaryWindow::load(const std::string& uri)
 {
-  std::string ruri = ":/help/" + uri + ".en";
-  VariantMap vm = SaveAdapter::load( ruri );
+  vfs::Path filePath = _convUri2path( uri );
+
+  VariantMap vm = SaveAdapter::load( filePath );
 
   std::string text = vm.get( "text" ).toString();
   std::string title = vm.get( "title" ).toString();
 
-  _d->lbTitle->setText( title );
+  _d->aliases.clear();
+  VariantMap uris = vm.get( "uri" ).toMap();
+  foreach( it, uris )
+  {
+    _d->aliases[ it->first ] = it->second.toString();
+  }
+
+  _d->lbTitle->setText( _(title) );
   _d->lbText->setText( text );
 }
 

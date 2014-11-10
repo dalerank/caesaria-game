@@ -38,6 +38,8 @@ public:
 
 private:
   DictionaryWindow( Widget* parent );
+  void _handleUriChange(std::string);
+  vfs::Path _convUri2path(std::string uri);
 
   class Impl;
   ScopedPtr< Impl > _d;

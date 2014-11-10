@@ -475,6 +475,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 				dline.clear();
 
 				richText = RichText();
+				richText.font = font;
 				line = "";
 				word = "";
 				whitespace = "";
