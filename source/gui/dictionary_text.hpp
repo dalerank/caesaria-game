@@ -83,17 +83,18 @@ public:
   virtual void setTextOffset( Point offset );
     
 signals public:
-  virtual Signal0<>& onClicked();
+  Signal1<std::string>& onWordClick();
 
 protected:
   virtual void _resizeEvent();
   virtual void _updateTexture( gfx::Engine& painter );
-  virtual void _handleClick();
+  virtual void _handleClick(const Point& p);
 
   gfx::PictureRef& _textPictureRef();
   gfx::Pictures& _backgroundRef();
 
 private:
+  void _init();
 
   class Impl;
   ScopedPtr< Impl > _d;

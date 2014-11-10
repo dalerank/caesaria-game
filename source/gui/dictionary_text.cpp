@@ -18,15 +18,19 @@
 #include "dictionary_text.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
+#include "scrollbar.hpp"
 #include "core/event.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
+#include "core/logger.hpp"
 
 using namespace std;
 using namespace gfx;
 
 namespace gui
 {
+
+static const int DEFAULT_SCROLLBAR_SIZE = 39;
 
 struct RichText
 {
@@ -71,12 +75,14 @@ public:
   Point bgOffset;
   bool RestrainTextInside;
   bool lmbPressed;
+  ScrollBar* scrollbar;
   bool needUpdatePicture;
   int lineIntervalOffset;
   Point textOffset;
   Picture bgPicture;
   PictureRef textPicture;
   unsigned int opaque;
+  int yoffset;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
            isBorderVisible( false ),
@@ -86,6 +92,7 @@ public:
   {
     font = Font::create( FONT_2 );
     lmbPressed = false;
+    yoffset = 0;
     opaque = 0xff;
   }
 
@@ -95,9 +102,10 @@ public:
   }
 
   void breakText( const std::string& text, const Size& size );
+  void setOffset( int value );
 
 public signals:
-  Signal0<> onClickedSignal;
+  Signal1<std::string> onClickedSignal;
 };
 
 //! constructor
@@ -106,6 +114,7 @@ DictionaryText::DictionaryText( Widget* parent ) : Widget( parent, -1, Rect( 0, 
   _d->isBorderVisible = false;
   _d->needUpdatePicture = true;
 
+  _init();
   setTextAlignment( align::automatic, align::automatic );
 }
 
@@ -116,6 +125,8 @@ DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const stri
   _d->isBorderVisible = border;
   _d->needUpdatePicture = true;
 
+  _init();
+
   #ifdef _DEBUG
     setDebugName( "label");
   #endif
@@ -124,7 +135,7 @@ DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const stri
   setText( text );
 }
 
-void DictionaryText::_updateTexture(gfx::Engine& painter )
+void DictionaryText::_updateTexture( gfx::Engine& painter )
 {
   if( _d->textPicture && _d->textPicture->size() != size() )
   {
@@ -154,10 +165,10 @@ void DictionaryText::_updateTexture(gfx::Engine& painter )
       //eColor = GetResultColor( eColor );
       if( _d->font != _d->lastBreakFont )
       {
-          _d->breakText( text(), size() );
+        _d->breakText( text(), size() );
       }
 
-      Rect r = frameRect;
+      Rect r = frameRect + Point( 0, -_d->yoffset );
       int height = _d->font.getTextSize("A").height();
 
       if( verticalTextAlign() == align::center )
@@ -194,9 +205,32 @@ void DictionaryText::_updateTexture(gfx::Engine& painter )
   }
 }
 
-void DictionaryText::_handleClick()
+void DictionaryText::_handleClick( const Point& p)
 {
-  emit _d->onClickedSignal();
+  Point localPoint = screenToLocal( p );
+  int rowHeight = _d->font.getTextSize( "A" ).height() + _d->lineIntervalOffset;
+  int rowIndex = (_d->yoffset + localPoint.y()) / rowHeight;
+  const RichLine& rline = _d->brokenText[ rowIndex ];
+  std::string currentText;
+
+  int offset = 0;
+  for( RichLine::size_type index=0; index < rline.size(); index++ )
+  {
+    int leftLimit = offset + rline[index].offset;
+    int rightLimit = index+1 < rline.size()
+                       ? offset + leftLimit + rline[ index + 1].offset
+                       : width();
+
+    if( leftLimit < localPoint.x() && localPoint.x() < rightLimit )
+    {
+      currentText = rline[ index ].uri ? rline[ index ].text : "";
+      break;
+    }
+    offset += rline[index].offset;
+  }
+
+  if( !currentText.empty() )
+    emit _d->onClickedSignal( currentText );
 }
 
 //! destructor
@@ -243,7 +277,7 @@ Font DictionaryText::font() const
 //! Sets whether to draw the border
 void DictionaryText::setBorderVisible(bool draw) {  _d->isBorderVisible = draw;}
 void DictionaryText::setTextRestrainedInside(bool restrainTextInside){  _d->RestrainTextInside = restrainTextInside;}
-bool DictionaryText::isTextRestrainedInside() const{  return _d->RestrainTextInside;}
+bool DictionaryText::isTextRestrainedInside() const { return _d->RestrainTextInside;}
 
 //! Breaks the single text line.
 void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSize )
@@ -263,7 +297,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
   string rText = text;
 	int size = rText.size();
 	int length = 0;
-	int elWidth = wdgSize.width();
+	int elWidth = wdgSize.width() - DEFAULT_SCROLLBAR_SIZE;
 
 	char c;
 
@@ -295,6 +329,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 
 		if( c == '@' )
 		{
+			richText.text += whitespace;
 			dline.push_back( richText );
 			const int linewidth = richText.width();
 			richText = RichText();
@@ -303,23 +338,53 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 			richText.uri = true;
 			richText.font.setColor( DefaultColors::blue );
 			richText.text = "";
+			whitespace = "";
 		}
 
 		if( c == '&' )
-		{
-			line += word;
-			richText.text += word;
-			dline.push_back( richText );
-			const int linewidth = richText.width();
-			richText = RichText();
-			richText.offset = linewidth;
-			richText.font = font;
-			richText.text = "";
-			word = "";
+		{				
+			const int whitelgth = font.getTextSize( whitespace ).width();
+			const int wordlgth = font.getTextSize( word ).width();
+
+			if(length && (length + wordlgth + whitelgth > elWidth) )
+			{
+				// break to next line
+				brokenText.push_back( dline );
+				dline.clear();
+
+				richText.text = word;
+				richText.offset = 0;
+				dline.push_back( richText );
+
+				length = wordlgth;
+				line = word;
+
+				richText = RichText();
+				richText.font = font;
+				richText.offset = length;
+				word = "";
+			}
+			else
+			{
+				line += whitespace;
+				line += word;
+				richText.text += whitespace;
+				richText.text += word;
+				dline.push_back( richText );
+				const int linewidth = richText.width();
+				richText = RichText();
+				richText.offset = linewidth;
+				richText.font = font;
+				richText.text = "";
+
+				length += whitelgth + wordlgth;
+				word = "";
+			}
 		}
 
+		bool specSymbol = (c == '@' || c == '&');
 		bool isWhitespace = (c == ' ' || c == 0);
-		if ( !isWhitespace )
+		if ( !isWhitespace && !specSymbol )
 		{
 			// part of a word
 			word += c;
@@ -371,8 +436,11 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 					dline.push_back( richText );
 					brokenText.push_back( dline );
 					dline.clear();
+
 					length = wordlgth;
 					line = word;
+					richText.text = word;
+					richText.offset = 0;
 				}
 				else
 				{
@@ -381,6 +449,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 					line += word;
 					richText.text += whitespace;
 					richText.text += word;
+
 					length += whitelgth + wordlgth;
 				}
 
@@ -422,8 +491,18 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 
 	dline.push_back( richText );
 	brokenText.push_back( dline );
+
+  int lineHeight = font.getTextSize("A").height() + lineIntervalOffset;
+  int maxValue = math::clamp<int>( brokenText.size() * lineHeight - wdgSize.height(), 0, wdgSize.height() );
+  scrollbar->setMaxValue( maxValue );
+  scrollbar->setEnabled( maxValue > 0  );
 }
 
+void DictionaryText::Impl::setOffset( int value)
+{
+  yoffset = value;
+  needUpdatePicture = true;
+}
 
 //! Sets the new caption of this element.
 void DictionaryText::setText(const string& newText)
@@ -434,7 +513,7 @@ void DictionaryText::setText(const string& newText)
   _d->needUpdatePicture = true;
 }
 
-Signal0<>& DictionaryText::onClicked() {  return _d->onClickedSignal; }
+Signal1<std::string>& DictionaryText::onWordClick() {  return _d->onClickedSignal; }
 
 //! Returns the height of the text in pixels when it is drawn.
 int DictionaryText::textHeight() const
@@ -496,7 +575,7 @@ bool DictionaryText::onEvent(const NEvent& event)
     case mouseLbtnRelease:
     {
       _d->lmbPressed = false;
-      _handleClick();
+      _handleClick( event.mouse.pos() );
     }
     break;
 
@@ -555,5 +634,19 @@ void DictionaryText::setupUI(const VariantMap& ui)
 
 void DictionaryText::setTextOffset(Point offset) {  _d->textOffset = offset;}
 PictureRef& DictionaryText::_textPictureRef(){  return _d->textPicture; }
+
+void DictionaryText::_init()
+{
+  _d->scrollbar = new ScrollBar( this, Rect( width() - DEFAULT_SCROLLBAR_SIZE, 0, width(), height()), false );
+  _d->scrollbar->setNotClipped( false );
+  _d->scrollbar->setSubElement(true);
+  _d->scrollbar->setVisibleFilledArea( false );
+  _d->scrollbar->setTabStop(false);
+  _d->scrollbar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
+  _d->scrollbar->setVisible(true);
+  _d->scrollbar->setValue(0);
+
+  CONNECT( _d->scrollbar, onPositionChanged(), _d.data(), Impl::setOffset )
+}
 
 }//end namespace gui

@@ -47,8 +47,10 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
   _d->lbText = new DictionaryText( this, Rect( 20, 40, width() - 20, height() - 40 ) );
+  _d->lbText->setFont( Font::create( FONT_1 ) );
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater );
 }
@@ -102,7 +104,9 @@ void DictionaryWindow::load(const std::string& uri)
   VariantMap vm = SaveAdapter::load( ruri );
 
   std::string text = vm.get( "text" ).toString();
+  std::string title = vm.get( "title" ).toString();
 
+  _d->lbTitle->setText( title );
   _d->lbText->setText( text );
 }
 
