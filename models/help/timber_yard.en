@@ -1,0 +1,12 @@
+{  
+ title : "##timner_yard##"
+ sound : "fanfare"
+ text  : "Establish a timber yard to cut wood for export, or so that you can manufacture @furniture&. Timber yards must be adjacent to trees.\n Like most industries, timber cutting makes an undesirable neighbor for housing. Timber yards need road access to a nearby source of labor. When they have a full cartload of timber, @workers wheel& it to the nearest furniture workshop that has space available. If all workshops are fully supplied, or if they are not working, timber goes to the nearest @warehouse& with empty space, from which you may export it if you have an appropriate @trade route&. Timber yards are animated while working. Right-click on a yard to check its status, especially if you notice that activity has ceased.\n Furniture is one of the commodities your own citizens need to advance to higher levels of housing.\n Click @here& to read further about timber cutting in the Roman Empire."
+ uri : {
+  "furniture" : "furniture"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "workers wheel" : "cart_pusher"
+  "here" : "http://wikipedia.ru"
+ }
+}
