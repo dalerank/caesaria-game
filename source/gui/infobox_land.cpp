@@ -24,7 +24,6 @@
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "dictionary.hpp"
-#include "environment.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -152,7 +151,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 
 void AboutFreeHouse::showDescription()
 {
-  DictionaryWindow::show( ui()->rootWidget(), "vacant_lot" );
+  DictionaryWindow::show( this, "vacant_lot" );
 }
 
 }

@@ -27,6 +27,7 @@
 #include "core/event.hpp"
 #include "widget_helper.hpp"
 #include "core/gettext.hpp"
+#include "environment.hpp"
 
 using namespace gfx;
 
@@ -44,12 +45,12 @@ public:
   Aliases aliases;
 };
 
-DictionaryWindow::DictionaryWindow( Widget* parent )
-  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
+DictionaryWindow::DictionaryWindow( Widget* p )
+  : Window( p->ui()->rootWidget(), Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/dictionary.gui" );
 
-  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
+  setPosition( Point( parent()->width() - width(), parent()->height() - height() ) / 2 );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
@@ -64,17 +65,18 @@ void DictionaryWindow::_handleUriChange(std::string value)
 {
   Impl::Aliases::iterator it = _d->aliases.find( value );
 
-  if( it != _d->aliases.end() )
-  {
-    load( it->second );
-  }
+  value = (it != _d->aliases.end()
+            ? it->second
+            : "table_content");
+
+  load( value );
 }
 
 vfs::Path DictionaryWindow::_convUri2path(std::string uri)
 {
   vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
 
-  if( fpath.exist() )
+  if( !fpath.exist() )
     fpath = fpath.changeExtension( ".en" );
 
   return fpath;

@@ -297,6 +297,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
   string rText = text;
 	int size = rText.size();
 	int length = 0;
+	int tabWidth = font.getTextSize( "A" ).width();
 	int elWidth = wdgSize.width() - DEFAULT_SCROLLBAR_SIZE;
 
 	char c;
@@ -325,6 +326,11 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 		{
 			lineBreak = true;
 			c = '\0';
+		}
+		else if( c == '\t' )
+		{
+			richText.offset += tabWidth;
+			continue;
 		}
 
 		if( c == '@' )
@@ -494,7 +500,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 	brokenText.push_back( dline );
 
   int lineHeight = font.getTextSize("A").height() + lineIntervalOffset;
-  int maxValue = math::clamp<int>( brokenText.size() * lineHeight - wdgSize.height(), 0, wdgSize.height() );
+  int maxValue = std::max<int>( brokenText.size() * lineHeight - wdgSize.height(), 0);
   scrollbar->setMaxValue( maxValue );
   scrollbar->setEnabled( maxValue > 0  );
 }
@@ -510,6 +516,8 @@ void DictionaryText::setText(const string& newText)
 {
   Widget::setText( newText );
 
+  _d->yoffset = 0;
+  _d->scrollbar->setValue( 0 );
   _d->breakText( text(), size() );
   _d->needUpdatePicture = true;
 }
