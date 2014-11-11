@@ -1,0 +1,14 @@
+{  
+ title : "##history##"
+ sound : "fanfare"
+ text  : "The origins of granaries are lost in prehistory, but they were surely invented concurrently with agriculture. Their function is easily described: protecting the harvest from pests and the elements, and storing surpluses against times of shortage. Granaries have taken many forms over the millennia in the attempt to achieve that function. Timber, brick and concrete (the latter pioneered by the Romans) are all common building materials. Urban granaries, which stored more grain longer than those located on farms, had solid foundations of brick or stone and superstructures that made them the earliest large public structures. Granaries aren't architectural treasures, but they were crucial to the development of large cities, and were needed in even the simplest village or military outpost."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

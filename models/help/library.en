@@ -1,0 +1,13 @@
+{  
+ title : "##library##"
+ sound : "fanfare"
+ text  : "Romans want access to libraries throughout their lives. Housing needs access to a library to reach its highest levels. Librarians bestow library access as they walk their routes. Use the @Education Overlay& to watch librarians on their rounds. Libraries are desirable neighbors.\n Ask your @Education Advisor& about the city's overall need for libraries. Each library serves only a limited number of readers before it becomes overcrowded. As your city's population density increases, even houses that already have library access will ask for more libraries, to reduce crowding.\n Libraries affect your @Culture Rating&. Keep them quiet and uncrowded to enhance Culture in your city. Compare the number of people in the city with the number that your libraries can accommodate to see how many readers each library in your city serves. Click @here(1)& to explore the concept of education in Caesar III.\n Click @here(2)& to check out the history of libraries in the Roman Empire."
+ uri : {
+  "schools" : "school"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+  "here(1)" : "http://wikipedia.ru"
+  "here(2)" : "http://wikipedia.ru"
+ }
+}

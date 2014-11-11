@@ -1,0 +1,15 @@
+{  
+ title : "##road##"
+ sound : "fanfare"
+ text  : "New roads begin as plain dirt paths. As surrounding property values rise, citizens pave these paths and create true roads. In your richest areas, enhance property values further by covering roads with @plazas&.\n Long, straight roads are better for smooth traffic than are short ones with many curves and intersections.\n @Working citizens& spread their influence as they travel the city's roads. Any building that sends citizens into the neighborhoods must connect to a road, and other buildings must be within two squares of a road to gain the influence of these walkers. Only a few structures - notably water buildings, forts, walls, gardens and statues - can be far from a road. Buildings that need road access warn you if they lack it when you right-click on them.\n Your only control over citizens' walking routes lies in your road network. If employees of a particular building cannot reach a certain property, you need to either move the walker's source building, or add or remove intersections from your road network.\n Click @here& to go to a history of roads in the Roman Empire."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}
