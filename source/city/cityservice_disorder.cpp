@@ -24,6 +24,7 @@
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
 #include "game/gamedate.hpp"
+#include "events/event.hpp"
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
 
@@ -46,6 +47,7 @@ public:
   int maxCrimeLevel;
   int rioterInThisYear;
   int rioterInLastYear;
+  DateTime lastMessageDate;
 
 public:
   void generateMugger( PlayerCityPtr city, HousePtr house );
@@ -61,7 +63,7 @@ SrvcPtr Disorder::create( PlayerCityPtr city )
   return SrvcPtr( ret );
 }
 
-std::string Disorder::defaultName(){  return "disorder";}
+std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
 
 Disorder::Disorder( PlayerCityPtr city )
   : Srvc( city, Disorder::defaultName() ), _d( new Impl )
@@ -166,7 +168,7 @@ std::string Disorder::reason() const
   std::string crimeDesc[ crimeDescLimiter ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
                                                 "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
                                                 "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
-                                                "##advchief_veryhigh_crime##"};
+                                                "##advchief_veryhigh_crime##" };
 
   StringArray troubles;
   troubles << crimeDesc[ crimeLevel ];
@@ -192,16 +194,17 @@ unsigned int Disorder::value() const { return _d->currentCrimeLevel; }
 VariantMap Disorder::save() const
 {
   VariantMap ret;
-  ret[ "lastRioter" ] = _d->rioterInLastYear;
-  ret[ "curRioter"  ] = _d->rioterInThisYear;
-
+  VARIANT_SAVE_ANY_D( ret, _d, rioterInLastYear )
+  VARIANT_SAVE_ANY_D( ret, _d, rioterInThisYear )
+  VARIANT_SAVE_ANY_D( ret, _d, lastMessageDate )
   return ret;
 }
 
 void Disorder::load(const VariantMap &stream)
 {
-  _d->rioterInLastYear = stream.get( "lastRioter" );
-  _d->rioterInThisYear = stream.get( "curRioter" );
+  VARIANT_LOAD_ANY_D( _d, rioterInLastYear, stream )
+  VARIANT_LOAD_ANY_D( _d, rioterInThisYear, stream )
+  VARIANT_LOAD_TIME_D( _d, lastMessageDate, stream )
 }
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )

@@ -21,6 +21,8 @@
 #include "cityservice_military.hpp"
 #include "objects/house_level.hpp"
 #include "walker/rioter.hpp"
+#include "events/disaster.hpp"
+#include "events/showinfobox.hpp"
 #include "core/logger.hpp"
 #include <set>
 
@@ -38,6 +40,7 @@ public:
   bool someCriminalSeen;
   int value;
   bool significantBuildingsDestroyed;
+  DateTime lastMessageDate;
 
   Priorities<int> unsignificantBuildings;
 };
@@ -137,8 +140,14 @@ void Peace::addCriminal( WalkerPtr wlk )
   }
 }
 
-void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay)
+void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
 {
+  if( overlay.isNull() )
+  {
+    Logger::warning( "WARNING!!! Peace::buildingDestroyed overlay is null" );
+    return;
+  }
+
   HousePtr house = ptr_cast<House>( overlay );
   if( house.isValid() && house->spec().level() > HouseLevel::tent )
   {
@@ -147,6 +156,35 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay)
   else
   {
     _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.count( overlay->type() );
+  }
+
+  if( _d->lastMessageDate.monthsTo( GameDate::current() ) > 1 )
+  {
+    std::string title;
+    std::string text;
+    std::string video;
+
+    _d->lastMessageDate = GameDate::current();
+
+    switch( why )
+    {
+    case events::DisasterEvent::collapse:
+      title = "##collapsed_building_title##";
+      text = "##collapsed_building_text##";
+    break;
+
+    case events::DisasterEvent::fire:
+      title = "##city_fire_title##";
+      text = "##city_fire_text##";
+      video = ":/smk/city_fire.smk";
+    break;
+    }
+
+    if( !title.empty() )
+    {
+      events::GameEventPtr e = events::ShowInfobox::create( title, text, false, video );
+      e->dispatch();
+    }
   }
 }
 
