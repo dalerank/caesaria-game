@@ -1,10 +1,19 @@
-{"##seamrchant_another_successful_voyage##":""
-"##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
+{"##0_entertainment_access##":"Cette habitation n'a accès à aucun divertissement"
 "##1_entertainment_access##":"Cette habitation n'a accès à quasiment aucun divertissement"
+"##100_citizens_in_city##":""
+"##1000_citizens_in_city##":""
+"##10000_citizens_in_city##":""
+"##15000_citizens_in_city##":""
 "##2_entertainment_access##":"Cette habitation a un faible niveau d'accès à des lieux de divertissement"
+"##2000_citizens_in_city##":""
+"##20000_citizens_in_city##":""
+"##25000_citizens_in_city##":""
 "##3_entertainment_access##":"Cette habitation a un accès très limité à des lieux de divertissement"
+"##3000_citizens_in_city##":""
 "##4_entertainment_access##":"Cette habitation a un accès raisonnable à des lieux de divertissement"
 "##5_entertainment_access##":"Cette habitation a un accès partiel à des lieux de divertissement"
+"##500_citizens_in_city##":""
+"##5000_citizens_inc_city##":""
 "##6_entertainment_access##":"Cette habitation a un bon accès à des lieux de divertissement"
 "##7_entertainment_access##":"Cette habitation a un très bon accès à des lieux de divertissement"
 "##8_entertainment_access##":"Cette habitation a un excellent accès à des lieux de divertissement"
@@ -169,7 +178,7 @@
 "##balance##":"Balance"
 "##ballista##":"Balliste"
 "##barbarian_are_closing_city##":""
-"##barbarian_attack_text##":"Les ennemis de Rome sont aux portes de votre cité. Ils tenteront probablement d'en forcer l'entrée pour piller votre vin et tout ce qui pourrait les intéresser !"
+"##barbarian_attack_text##":""
 "##barbarian_attack_title##":""
 "##barbarian_warrior##":"Un guerrier barbare"
 "##barber_access##":"Accès au barbier"
@@ -214,8 +223,8 @@
 "##beatyfull_insula##":""
 "##become_trade_center##":"Convertir en centre de commerce"
 "##below_average##":"Sous la moyenne"
-"##better_class_road##":"Un meilleur type de route"
 "##big_domus##":"Grande insula"
+"##big_fest_description##":""
 "##big_hovel##":""
 "##big_hut##":"Grande maison"
 "##big_palace##":"Grand palace"
@@ -242,6 +251,7 @@
 "##build_road_tlp##":"Construire des routes"
 "##building_need_road_access##":"Ce batiment nécessite un accès par la route"
 "##buildings##":"Construction"
+"##burning_ruins_info##":""
 "##burning_ruins##":"Ruines en feu"
 "##buy_price##":""
 "##caesar_assign_new_title##":"César vous a promu au rang de"
@@ -253,16 +263,23 @@
 "##cant_calc_prosperity##":""
 "##cant_demolish_bridge_with_people##":"Impossible de détruire un pont avec des gens dessus"
 "##captured_city##":"Une cité capturée"
+"##capua_win_text##":""
 "##carthaginian_soldier##":"Un soldat Carthaginois."
 "##carthago_win_text##":""
 "##cartPusher_average_life##":"Cette cité n'est pas mal."
+"##cartpusher_cant_unload_goods_in_factory##":""
 "##cartPusher_cantfind_destination##":"Il n' y a plus de place dans la cité pour stocker ces biens !"
 "##cartPusher_gods_angry##":"Je ne suis pas trop porté sur la religion, mais jamais ne n'aurais osé traiter les dieux avec tant de mépris !"
 "##cartPusher_good_life##":"Pousser des charrettes à longueur de journée n'est pas vraiment passionnant, mais le fait de vivre dans une si belle cité compense largement !"
 "##cartPusher_high_workless##":"Le chômage est tellement élevé que ma femme a même arrêté de me bassiner pour que je trouve un meilleur travail !"
 "##cartPusher_low_entertainment##":"Ca m'occupe de pousser une charrette. Cette cité est tellement ennuyeuse..."
 "##cartPusher_need_workers##":"Tout le monde par ici cherche de la main-d'œuvre !"
+"##cartPusher_normal_life##":""
 "##cartPusher_so_hungry##":"Pousser des charrettes à longueur de journée réclame de l'énergie. Comment suis-je sensé pouvoir travailler sans rien dans le ventre ?"
+"##cartSupplier_average_life##":""
+"##cartSupplier_good_life##":""
+"##centurion_new_order_to_save_player##":""
+"##centurion_send_army_to_player##":""
 "##ceres_badmood_info##":"Le courroux de Cérès est dangereux, car elle protège le peuple des maigres récoltes et des famines"
 "##ceres_desc##":"(Agriculture)"
 "##ceres_goodmood_info##":"Cérès apporte de la fertilité à la terre, et permet aux plantes de pousser. Apaisez-la, ou préparez vous à avoir faim."
@@ -303,15 +320,21 @@
 "##city_fire_title##":"Incendie dans la cité"
 "##city_has_debt##":"La cité a une dette envers Rome de"
 "##city_has_runout_debt##":"Les caisses de votre cité sont vides. César a décidé de vous accorder davantage de fonds, mais il ne sera pas aussi généreux la prochaine fois. Développez l'exportation pour rassembler des fonds."
+"##city_has_runout_money_again##":""
+"##city_has_runout_money##":""
 "##city_have_defence##":""
 "##city_have_goods_for_request##":"Vos entrepôts vous informent que vous disposez maintenant d'une quantité suffisante de produits pour répondre à la récente requête de l'Empereur."
 "##city_have##":"La trésorerie de la cité s'élève à "
 "##city_health##":"Hygiène de la cité"
+"##city_in_debt_again##":""
+"##city_in_debt##":""
 "##city_is_besieged##":""
 "##city_loathed_you##":""
 "##city_need_more_workers##":"La cité a besoin de plus de main-d'oeuvre"
 "##city_sounds_off##":"Son de la cité désactivé"
 "##city_sounds_on##":"Son de la cité activé"
+"##city_still_in_debt_text##":""
+"##city_still_in_debt##":""
 "##city_under_barbarian_attack##":""
 "##city_under_rome_attack##":""
 "##city##":"Cité"
@@ -347,6 +370,8 @@
 "##colege_access_perfectly##":""
 "##collapse_available_damage_risk##":""
 "##collapse_immitent##":"Effondrement imminent"
+"##collapsed_building_text##":""
+"##collapsed_building_title##":""
 "##collapsed_ruins_info##":"Ces gravats ne font rien pour améliorer l'attrait de ce quartier."
 "##colleges##":"Académies"
 "##colloseum_haveno_animal_bouts##":"Pas de combats d'animaux actuellement"
@@ -410,10 +435,12 @@
 "##destroy_bridge_warning##":"Soyez prudent lorsque vous supprimez un pont. Les communautés isolées de la route vers Rome ne tarderont pas à dépérir."
 "##destroy_bridge##":"Destruction d'un pont"
 "##destroy_fort##":"Destruction d'un fort"
+"##destroyed_building_title##":""
 "##devastate_granary##":"Vider le grenier"
 "##devastate_warehouse##":""
 "##developers##":"DEVELOPPEURS :"
 "##difficulty##":"Difficulté"
+"##disabled_draw_salary_for_free_reign##":""
 "##disasterBtnTooltip##":"Aller vers les zones de troubles"
 "##dispatch_force##":"Envoyer une force de soutien ?"
 "##dispatch_gift##":"Envoyer un cadeau"
@@ -440,6 +467,7 @@
 "##dock_no_workers##":"Tout navire accostant ici ne trouvera personne pour s'occuper de sa cargaison."
 "##dock##":"Dock"
 "##docked_buying_selling_goods##":""
+"##dockers_taking_our_goods##":""
 "##doctor_average_life##":"La cité se porte bien."
 "##doctor_gods_angry##":"Les dieux sont irrités. Si nous ne les respectons pas, leur vengeance sera terrible !"
 "##doctor_good_life##":"Quelle magnifique cité !"
@@ -488,6 +516,8 @@
 "##empbutton_low_work##":""
 "##empbutton_simple_work##":""
 "##empbutton_tooltip##":"Clique ic pour mettre une priorité à cette catégorie de travail"
+"##emperor_anger_text##":""
+"##emperor_anger##":""
 "##emperor_changed_title##":""
 "##emperor_favour_00##":"L'empereur est furieux contre vous."
 "##emperor_favour_01##":"L'empereur est totalement exaspéré. Il parle de vous exiler."
@@ -510,7 +540,8 @@
 "##emperor_favour_18##":"L'empereur est comblé par votre performance."
 "##emperor_favour_19##":"L'empereur est plus que satisfait de votre performance."
 "##emperor_favour_20##":"L'empereur est béat d'admiration et parle de faire de vous son successeur."
-"##emperor_request##":"Requête imperial"
+"##emperor_request_money##":""
+"##emperor_request##":""
 "##emperor_send_money_to_you_nearest_time##":""
 "##emperor_wrath_by_debt_text##":""
 "##emperor##":"Empereur"
@@ -529,9 +560,12 @@
 "##emw_buy##":""
 "##emw_sell##":""
 "##emw_sold##":""
+"##enemies_at_the_door##":""
+"##enemies_attack_title##":""
 "##enemies_hard_to_me##":""
 "##enemies_very_easy##":""
 "##enemies_very_hard##":""
+"##enemy_army_attack_city##":""
 "##enemy_army_threating_a_city##":""
 "##engineer_average_life##":"Tout a l'air en ordre par ici."
 "##engineer_building_allok##":"Ces bâtiments sont en très bon état, et je fais surtout des inspections de routine"
@@ -798,6 +832,8 @@
 "##immigrant_so_hungry##":"Si je reste ici je vais finir par mourir. Il n'y a plus rien à manger dans cette cité"
 "##immigrant_want_to_be_liontamer##":"J'ai entendu dire qu'il y a des postes à pourvoir dans cette cité. Je veux devenir dompteur !"
 "##immigrant_where_my_home##":"Je suis nouveau par ici. Connaissez-vous un endroit où je peux m'installer ?"
+"##imperial_reminder_text##":""
+"##imperial_reminder##":""
 "##imperial_request_cance_badly_affected##":""
 "##import_fn##":""
 "##import##":""
@@ -826,6 +862,7 @@
 "##iron_mine##":"Mine de fer"
 "##iron##":"Fer"
 "##its_very_peacefull_province##":""
+"##ive_asked_senate_proclaim_you_a_god##":""
 "##judaean_warrior##":"Un guerrier judéen"
 "##labor##":"Emploi"
 "##land_route##":""
@@ -837,6 +874,7 @@
 "##large_temple##":"Grand temple"
 "##large_temples##":"Grands temples"
 "##large##":"grand"
+"##last_riots_bad_for_peace_rating##":""
 "##last_year##":""
 "##lawless_area##":""
 "##layer_crime##":"Criminalité"
@@ -869,6 +907,8 @@
 "##library_no_workers##":"Les étagères de cette bibliothèque sont vides. Elle n'est donc d'aucune utilité pour vos citoyens."
 "##library##":"Bibliothèque"
 "##lindum_extremely_dangerous_province##":""
+"##line_formation_text##":"Une formation simple qui donne un avantage au défenseur."
+"##line_formation_title##":""
 "##lion_pit_bad_work##":"Je n'ai aucun employé ! Dans ces conditions, je pourrai peut-être dompter un lion d'ici trois mois, et encore..."
 "##lion_pit_need_some_workers##":"Nous ne pouvons dompter plus de deux lions par mois, car nous manquons d'effectifs."
 "##lion_pit_no_workers##":"Sans dompteur disponible, aucun lion ne peut être dressé ici."
@@ -960,14 +1000,17 @@
 "##meat_farm##":"Porcherie"
 "##meat##":"Viande"
 "##mediolanum_win_text##":""
+"##merchant_just_unloading_my_goods##":""
 "##merchant_little_busy_now##":""
 "##merchant_notbad_city##":""
 "##merchant_wait_for_deal##":""
 "##mercury_desc##":"(Commerce)"
 "##mercury##":"Mercure"
+"##message_from_centurion##":""
 "##message##":"Message"
 "##messageBtnTooltip##":"Messages de vos scribes"
 "##messages##":"Messages"
+"##middle_fest_description##":""
 "##middle_festival##":""
 "##middle_file_risk##":""
 "##middle_insula##":""
@@ -986,6 +1029,7 @@
 "##migration_middle_lack_workless##":""
 "##migration_middle_lack_workless##":"Le chômage freine l'immigration"
 "##migration_people_away##":"Le manque d'emplois fait partir votre population."
+"##migration_peoples_arrived_in_city##":""
 "##migration_war_deterring##":""
 "##miletus_win_text##":""
 "##military_academy_patrly_workers##":"Quand les nouvelles recrues sortent de la caserne, elles désirent améliorer leurs techniques de combat à l'académie. Ce ne sera possible que quand cette dernière aura tous les employés dont elle a besoin."
@@ -1061,6 +1105,8 @@
 "##missionBtnTooltip##":"Revoir vos objectifs"
 "##missioner_high_barbarian_risk##":""
 "##moment_fire_risk##":""
+"##money_stolen_text##":""
+"##money_stolen_title##":""
 "##month_1_short##":"Jan"
 "##month_10_short##":"Oct"
 "##month_11_short##":"Nov"
@@ -1078,6 +1124,8 @@
 "##months_until_defeat##":"Mois jusqu'à la défaite"
 "##months_until_victory##":"Mois jusqu'à la victoire"
 "##months##":"Mois"
+"##mopup_formation_text##":""
+"##mopup_formation_title##":""
 "##more_0_month_from_festival##":""
 "##more_12_month_from_festival##":""
 "##more_16_month_from_festival##":""
@@ -1118,7 +1166,6 @@
 "##need_vines_farm##":"Plantez des vignes."
 "##neptune_desc##":"(La mer)"
 "##neptune_despleasure_tip##":""
-"##neptune_wrath_of_you##":""
 "##new_festival##":"Organiser un festival"
 "##new_governor##":"Nouveau gouverneur"
 "##new_map##":"Nouvelle carte"
@@ -1135,6 +1182,7 @@
 "##no_goods_for_request##":""
 "##no_industries_in_city##":""
 "##no_people_in_city##":""
+"##no_people_in_this_locality##":""
 "##no_priority##":""
 "##no_room_for_citizens##":""
 "##no_space_for_evolve##":""
@@ -1174,6 +1222,8 @@
 "##olive_farm_slow_work##":""
 "##olive_farm##":""
 "##olive##":""
+"##open_formation_text##":""
+"##open_formation_title##":""
 "##open_trade_route##":""
 "##options##":"Options"
 "##oracle_info##":""
@@ -1182,6 +1232,7 @@
 "##oracles_in_city##":"Oracles dans la ville"
 "##oracles##":"Oracles"
 "##other##":"Divers"
+"##our_enemies_near_city##":""
 "##our_foods_level_are_low##":""
 "##out_legion_back_to_city##":""
 "##out_legion_go_to_location##":""
@@ -1250,6 +1301,7 @@
 "##poor_city_mood_lack_migration##":""
 "##poor_housing_discourages_migration##":""
 "##pop##":"Pop"
+"##population_milestone##":""
 "##population_registered_as_taxpayers##":"de la population est redevable de taxes"
 "##population_tooltip##":""
 "##population##":"Population"
@@ -1283,9 +1335,9 @@
 "##prefecture##":"Préfecture"
 "##prepare_to_festival##":""
 "##press_escape_to_exit##":""
+"##priest_average_life##":"Cette cité est assez agréable"
 "##priest_gods_angry##":"Nous sommes en danger ! Le gouverneur a offensé les dieux !"
 "##priest_good_life##":"La vie vaut la peine d'être vécue dans cette belle cité."
-"##priest_good_life##":"Cette cité est assez agréable"
 "##priest_high_workless##":"Le manque d'emploi inquiète les citoyens."
 "##priest_low_entertainment##":"Quelle cité ennuyeuse ! Même les prêtres apprécient un bon combat de gladiateurs de temps en temps !"
 "##priest_need_workers##":"Cette cité a vraiment besoin d'employés"
@@ -1336,6 +1388,7 @@
 "##reorient_map_to_north##":""
 "##replay_game##":""
 "##request_btn_tooltip##":""
+"##request_faild_text#":""
 "##request_failed##":""
 "##requierd##":"requis"
 "##reservoir_info##":""
@@ -1347,20 +1400,31 @@
 "##return_to_main_map##":""
 "##rift_info##":""
 "##right_click_to_exit##":""
+"##rioter_in_city_text##":""
+"##rioter_in_city_title##":""
+"##rioter_rampaging_accross_city##":""
 "##rioter_say_1##":"Alors comme ça, le gouverneur n'en a rien à faire de moi..."
 "##rioter_say_3##":"Vous voulez savoir à quoi ressemble une cité en flammes ? Regardez bien !"
 "##rladv_mood##":"Les dieux sont"
 "##road_caption##":"Route"
 "##road_from_rome##":""
+"##road_paved_text##":""
+"##road_paved_title##":"Un meilleur type de route"
 "##road_text##":"Les routes sont vitales au bon fonctionnement de la cité, car ses habitants ne s'aventureront pas à l'extérieur s'il n'y a pas de route."
 "##road_to_distant_region##":""
-"##roadBtnTooltip##":""
 "##rock_caption##":"Rochers"
 "##rock_text##":"Les rochers sont infranchissables. Les structures d'extraction de marbre et de fer ne fonctionneront qu'à proximité de rochers."
 "##roman_city##":""
+"##rome_gratitude_request_text##":""
+"##rome_gratitude_request_title##":""
 "##rome_lowers_wages##":""
+"##rome_need_some_goods##":""
+"##rome_need_some_money##":""
 "##rome_prices##":""
 "##rome_raises_wages##":""
+"##romechastener_attack_text##":""
+"##romechastener_attack_title##":""
+"##RomeChastenerArmy_troops_at_our_gates##":""
 "##romeGuard_average_life##":"Tout est calme par ici."
 "##romeGuard_gods_angry##":"Les dieux sont furieux contre nous !"
 "##romeGuard_good_live##":"Je ne suis qu'un simple soldat, mais je peux vous dire que cette cité est vraiment superbe !"
@@ -1372,6 +1436,7 @@
 "##rotate_map_counter-clockwise##":""
 "##rotateLeftBtnTooltip##":"Tourner la carte vers la gauche"
 "##rotateRightBtnTooltip##":"Tourner la carte vers la droite"
+"##sailing_to_city_docks##":""
 "##samnite_soldier##":""
 "##sarmizegetusa_dangerous_province##":""
 "##save_city##":"Sauvegarder votre cité"
@@ -1400,6 +1465,7 @@
 "##scrw_subject##":""
 "##sdlr_bold##":""
 "##seamerchant_noany_trade##":"Si cela ne tenait qu'à moi je ne viendrais jamais par ici. Cette cité n'achète rien et n'a rien à vendre !"
+"##seamrchant_another_successful_voyage##":""
 "##select_city_layer##":"Sélectionner la carte à visualiser"
 "##select_location##":""
 "##select_this_graph##":""
@@ -1435,6 +1501,7 @@
 "##sentiment_people_veryupset_you##":""
 "##set_amount_to_donate##":""
 "##set_mayor_salary##":""
+"##setup_traderoute_to_import##":""
 "##several_crimes_but_area_secure##":""
 "##shipyard_info##":""
 "##shipyard_notneed_ours_boat##":""
@@ -1448,7 +1515,6 @@
 "##showing_lisistrata_aristopanes##":""
 "##showing_odyssey_homer##":""
 "##showing_thecrito_plato##":""
-"##simple_formation_text##":"Une formation simple qui donne un avantage au défenseur."
 "##sld_quite_daring##":""
 "##sldh_health_sparse##":""
 "##sldh_health_strong##":""
@@ -1465,6 +1531,7 @@
 "##small_ceres_temple##":"Temple à Cérès"
 "##small_colloseum_show##":""
 "##small_domus##":""
+"##small_fest_description##":""
 "##small_festival##":""
 "##small_food_on_next_month##":""
 "##small_hovel##":""
@@ -1483,6 +1550,7 @@
 "##smallcurse_of_mars_text##":""
 "##smallcurse_of_mars_text##":""
 "##smallcurse_of_mercury_description##":""
+"##smallcurse_of_neptune##":""
 "##smcurse_of_venus_description##":""
 "##smcurse2_of_venus_description##":""
 "##soldier##":"Soldat"
@@ -1499,6 +1567,7 @@
 "##some_houses_need_better_library_access##":""
 "##some_houses_need_library_or_colege_access##":""
 "##some_low_fire_risk##":""
+"##some_soldiers_need_weapon##":""
 "##sound_settings##":"Son"
 "##south##":""
 "##southEast##":""
@@ -1561,10 +1630,12 @@
 "##theater_no_workers##":"Ce théâtre offre un bien triste spectacle : sans employés, il ne peut accueillir que les mauvaises herbes."
 "##theater##":"Théatre"
 "##theaters##":"Théatres"
+"##these_goods_import_only##":""
 "##these_rift_info##":""
 "##this_fire_can_spread##":""
 "##this_is_ruins##":""
 "##this_lawab_province_become_very_peacefull##":""
+"##this_province_feels_peaceful##":""
 "##this_time_you_city_not_need_religion##":""
 "##this_year##":""
 "##timber_factory_stock##":""
@@ -1629,7 +1700,6 @@
 "##trouble_too_far_from_water##":"Ce batiment ne se trouve pas proche d'un point d'eau!"
 "##try_reduce_your_high_salary##":""
 "##try_reduce_your_salary##":""
-"##tutorial_prefecture_info##":""
 "##tutorial_win_text##":""
 "##tutorial2_win_text##":""
 "##unable_fullfill_request##":""
@@ -1764,6 +1834,7 @@
 "##wine_workshops_need_some_workers##":"Cette fabrique ne dispose pas de suffisamment d'ouvriers. La production s'en trouve réduite."
 "##wine_workshops_patrly_workers##":"Cette fabrique manque de main-d'oeuvre, et la production de vin est donc plus longue que prévue."
 "##wine##":"Vin"
+"##winning_population##":""
 "##wn_barbarian##":""
 "##wn_carthaginians##":""
 "##wn_celt_soldier##":""
@@ -1806,7 +1877,16 @@
 "##working_have_very_little_labor_access##":""
 "##working_industries##":""
 "##working_industry##":""
+"##wrath_of_ceres_description##":""
+"##wrath_of_ceres_title##":""
+"##wrath_of_mars_text##":""
+"##wrath_of_mars_title##":""
+"##wrath_of_mercury_description##":""
+"##wrath_of_mercury_title##":""
+"##wrath_of_neptune_description##":""
 "##wrath_of_neptune_title##":"Courroux de Neptune"
+"##wrath_of_venus_description##":""
+"##wrath_of_venus_title##":""
 "##wt_cartPusher##":""
 "##wt_criminal##":"Criminel"
 "##wt_docker##":""
@@ -1848,7 +1928,6 @@
 "##your_prosperity_raising##":""
 "##your_province_quiet_and_secure##":""
 "##your_salary_frowned_senate##":""
-"#winning_population##":""
 "Variable":"FRENCH(v1.0)"
 
 
@@ -1878,86 +1957,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 }
