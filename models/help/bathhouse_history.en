@@ -1,0 +1,14 @@
+{  
+ title : "##bathhouse##"
+ sound : "fanfare"
+ text  : "Roman baths were about far more than keeping clean. They were centers for entertainment, healing and socializing, much like today's sports clubs. The largest bathhouses covered 30 acres and could accommodate 1,600 people at a time in great vaulted halls as well as intimate lounges. Roman baths were lavish affairs with mirrored walls, mosaic floors and marble-lined pools. Slaves moved on their errands through miles of tunnels under the floor, so as not to disturb bathers, but were always nearby to satisfy any whim. Baths were segregated by gender. \n After entering, a citizen paid any fee in the main hall, then disrobed in a changing room and left his clothes with his slave. He might start by working up a sweat playing at sports in the exercise yard. When he tired of this he went on to the cold water pool ('frigidarium'), warm room ('tepidarium'), hot room ('caldarium'), and steam room ('sudatorium') - traditionally in that sequence, or according to personal preference. After bathing he visited the 'unctuaria' to have his skin scraped and oiled. Now thoroughly cleansed and relaxed, he could choose further diversion in on-site reading rooms, gaming parlors, food and wine shops, or even theaters, art galleries and museums.\n Wealthy Romans made private baths a centerpiece of their homes. Villas had furnaces primarily to heat water for their baths. Men sometimes bathed in wine, and women in milk. Even permanent @forts& in far corners of the Empire included baths for soldiers stationed there.\n Most public baths were free, although the nicer ones charged a small fee to exclude slaves and the poor. The baths were either built at public expense or from the privy purses of emperors, to curry favor with the populace."
+ uri : {
+  "forts" : "fort"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}
