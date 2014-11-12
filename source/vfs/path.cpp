@@ -180,7 +180,7 @@ bool Path::isFolder() const
 
 bool Path::isDirectoryEntry() const
 {
-  const std::string& bn = baseName().toString();
+  std::string bn = baseName().toString();
   return (bn == firstEntry || bn == secondEntry);
 }
 
