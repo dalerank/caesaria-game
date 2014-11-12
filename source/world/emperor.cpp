@@ -193,24 +193,10 @@ void Emperor::timeStep(unsigned int time)
       CityPtr city = d->empire->findCity( it->first );
       Relation& relation = d->relations[ it->first ];
 
-      if( ( city->funds().treasury() < -5500 || relation.value < 20 )
-          && relation.soldiersSent == 0 )
+      if( city.isValid() && relation.value < 20 && relation.soldiersSent == 0 )
       {
-        if( city->funds().treasury() < -5500 && !relation.debtMessageSent )
-        {
-          relation.debtMessageSent = true;
-          events::GameEventPtr e = events::ShowInfobox::create( "##emperor_wrath_by_debt_title##",
-                                                                "##emperor_wrath_by_debt_text##",
-                                                                true );
-          e->dispatch();
-        }
-
-        if( city.isValid() )
-        {
-          troubleCities << city;
-        }
+        troubleCities << city;
       }
-
     }
 
     foreach( it, troubleCities )
@@ -219,20 +205,31 @@ void Emperor::timeStep(unsigned int time)
       relation.soldiersSent = relation.lastSoldiersSent * 2;
 
       unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
-      relation.soldiersSent = sldrNumber;
-      relation.lastSoldiersSent = sldrNumber;
 
       RomeChastenerArmyPtr army = RomeChastenerArmy::create( d->empire );
+      army->setCheckFavor( true );
       army->setSoldiersNumber( sldrNumber );
       army->attack( ptr_cast<Object>( *it ) );
+
+      relation.lastSoldiersSent = sldrNumber;
     }
   }
 }
 
-void Emperor::soldierDie(const std::string& cityname)
+void Emperor::remSoldiers(const std::string& cityname, int value)
 {
   __D_IMPL(d,Emperor)
-  d->relations[ cityname ].removeSoldier();
+  for( int i=0; i < value; i++ )
+  {
+    d->relations[ cityname ].removeSoldier();
+  }
+}
+
+void Emperor::addSoldiers(const std::string& name, int value)
+{
+  __D_IMPL(d,Emperor)
+  Relation& relation = d->relations[ name ];
+  relation.soldiersSent += value;
 }
 
 std::string Emperor::name() const { return _dfunc()->name; }
