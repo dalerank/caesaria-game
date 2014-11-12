@@ -54,7 +54,8 @@ void Mars::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr message = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
                                                             _("##wrath_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe );  
+                                                            events::ShowInfobox::send2scribe,
+                                                            ":/smk/God_Mars.smk" );
   message->dispatch();
 
 
