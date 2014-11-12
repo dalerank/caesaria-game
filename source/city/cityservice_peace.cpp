@@ -178,6 +178,12 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
       text = "##city_fire_text##";
       video = ":/smk/city_fire.smk";
     break;
+
+    case events::DisasterEvent::riots:
+      title = "##destroyed_building_title##";
+      text = "##rioter_rampaging_accross_city##";
+      video = ":/smk/riot.smk";
+    break;
     }
 
     if( !title.empty() )
