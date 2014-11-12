@@ -40,7 +40,8 @@ public:
   DateTime lastGiftDate( const std::string& cityname );
   void timeStep( unsigned int time );
 
-  void soldierDie( const std::string& cityname );
+  void remSoldiers(const std::string& cityname, int value);
+  void addSoldiers( const std::string& name, int value );
   std::string name() const;
   void setName( const std::string& name );
 

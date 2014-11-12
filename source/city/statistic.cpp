@@ -32,6 +32,7 @@
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
 #include "cityservice_health.hpp"
+#include "world/traderoute.hpp"
 #include "core/logger.hpp"
 #include <map>
 
@@ -84,6 +85,33 @@ int Statistic::getEntertainmentCoverage(PlayerCityPtr city, Service::Type servic
   return ( have == 0
             ? 0
             : math::percentage( need, have) );
+}
+
+bool Statistic::canImport(PlayerCityPtr city, Good::Type type)
+{
+  world::EmpirePtr empire = city->empire();
+  world::TraderouteList routes = empire->tradeRoutes( city->name() );
+  bool haveImportWay = false;
+  foreach( it, routes )
+  {
+    world::CityPtr partner = (*it)->partner( city->name() );
+    const GoodStore& goods = partner->exportingGoods();
+    if( goods.capacity( type ) > 0 )
+    {
+      haveImportWay = true;
+      break;
+    }
+  }
+
+  return haveImportWay;
+}
+
+bool Statistic::canProduce(PlayerCityPtr city, Good::Type type)
+{
+  Helper helper( city );
+
+  FactoryList buildings = helper.getProducers<Factory>( type );
+  return !buildings.empty();
 }
 
 CitizenGroup Statistic::getPopulation(PlayerCityPtr city)

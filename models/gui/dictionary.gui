@@ -1,23 +1,16 @@
 {  
-  geometry : [ 0, 0, 415, 450 ]
+  geometry : [ 0, 0, 445, 450 ]
   bgtype : "whiteFrame"
     
   lbTitle#Label : {
-    font : "FONT_2"
+    font : "FONT_3"
     geometryf : [ 0.05, 0.02, 0.95, 0.08 ]
-    text : "##title##"
+    text : "##title##"    
     textAlign : [ "center", "center" ]
   }
-    
-  lbText#Label : {
-    font : "FONT_2_WHITE"
-    geometryf : [ 0.05, 0.1, 0.95, 0.9 ]
-    textAlign : [ "center", "center" ]
-    bgtype : "blackFrame"
-  }
-           
+
   btnExit#TexturedButton : {
-    geometry : [ 374, 408, 398, 432 ]
+    geometry : [ "pw-36", "ph-36", "pw-10", "ph-10" ]
     normal : [ "paneling", 532 ]
     hovered : [ "paneling", 533 ]
     pressed : [ "paneling", 534 ]

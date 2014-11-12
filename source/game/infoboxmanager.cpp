@@ -211,6 +211,7 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_middle_info##") );
   addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_big_info##") );
   addInfobox( building::nativeHut,        CAESARIA_STR_EXT(NativeHut),   new InfoboxBasicCreator( "", "##nativeHut_info##") );
+  ADD_INFOBOX( building::gatehouse,   InfoboxBasicCreator( "", "##gatehouse_info##") );
   ADD_INFOBOX( building::nativeField, InfoboxBasicCreator( "", "##nativeField_info##") );
   addInfobox( building::nativeCenter,     CAESARIA_STR_EXT(NativeCenter),   new InfoboxBasicCreator( "", "##nativeCenter_info##") );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<AboutFactory>() );

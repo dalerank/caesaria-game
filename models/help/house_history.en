@@ -1,0 +1,13 @@
+{  
+ title : "##house##"
+ sound : "fanfare"
+ text  : "The earliest Roman houses were simple mud huts, but as Rome evolved from an agrarian village to a city of one million people, its housing stock kept pace. Villas, the first truly comfortable homes in Europe, spread throughout the provinces, although in Rome only two of every 10 citizens could afford one. Typical villas had plaster walls, mosaic floors, colonnades, running water and elaborate @baths&. Central heating systems under the floor kept the chill and damp out of some rooms and provided hot water. Larger villas were built around a courtyard containing a @fountain& or ornamental pool and adorned with @statues& and columns.\n Even the nicest villas were sparsely furnished, containing only a few wooden chairs, stools and beds. Dining rooms usually had a low, central table, and meals were eaten while reclining on cushions. Glass drinking cups and high-quality @pottery& called Samian ware filled cupboards, and some households even used silverware. Pleasant-smelling olive @oil& lamps illuminated the night for those who could afford them, but for those Romans whose day didn't end at sundown, cheaper, dirtier candles were routinely used for lighting.\n The wealthiest Romans built palatial country villas on sprawling estates with multiple buildings and neat parks and @gardens&.\n The 80 percent of Romans who only aspired to homeownership rented apartments in crowded blocks (insulae) that could reach seven stories high - without elevators. Thanks to its stone construction, the ground floor was most desirable and expensive, and usually rented to businesses. Each progressively higher floor used more wood and less stone to make it lighter and easier to build. The top floors were flimsy, porous to weather, prone to collapse and a major fire hazard in a city where all heating, lighting and cooking used open flames."
+ uri : {
+  "baths" : "bath"
+  "fountain" : "fountain"
+  "statues" : "statue"
+  "pottery" : "pottery"
+  "oil" : "oil"
+  "gardens" : "garden"
+ }
+}

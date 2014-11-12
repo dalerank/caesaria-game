@@ -1,0 +1,14 @@
+{  
+ title : "##reservoir##"
+ sound : "fanfare"
+ text  : "@Aqueducts& brought their water to reservoirs, from which it was distributed via clay, wooden or lead pipes to @fountains&, @baths& and private residences throughout the city. By AD 270, Rome had about 250 reservoirs, with settling tanks to remove solid debris and elaborate systems of sluices and taps to control the outflow of water. Taxing pipes to private homes and businesses provided a major source of income for the treasury, and the permissible diameter of pipes to private homes was set by law. Emperors recognized the crucial role of abundant clean water in maintaining civil order and periodically ordered inspections of the water system, ostensibly to find and fix leaks, but also to find illegal pipe hook-ups. Citizens of more modest means collected free water from public fountains."
+ uri : {
+  "Forum" : "forum"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}

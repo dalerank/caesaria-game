@@ -1,0 +1,11 @@
+{  
+ title : "##temple##"
+ sound : "fanfare"
+ text  : "The main purpose of temples is to please the god to whom they are dedicated. They also serve three other functions: they enhance desirability in their immediate neighborhood; they give houses access to their god as their priest walks through neighborhoods; and they improve your @Culture rating&.\n The gods are jealous of one another, and each will punish your city in a unique way if you do not keep them happy. You can keep them happy by building temples dedicated to them, and by holding regular @festivals& in their honor. As your population grows larger, the gods expect you to build new temples to them. A small temple will satisfy a god for populations of 750 people, while a large temple will be enough for 1500 people. Very large cities may well need several large and small temples, therefore, to each god.\n Large temples are more expensive, but can serve many more citizens and yield a far higher desirability benefit. They also require two cartloads of marble to build.\n Oracles have a more generalized religious function. They enhance local property values, just as temples do, and they contribute to your Culture rating. Because they are devoted to all deities, they placate all the gods equally. Like large temples, oracles need two cartloads of marble. Oracles don't employ priests or bestow access to any god.\n Exalted gods sometimes bestow a boon on their worshippers.\n For housing to reach its full potential, priests from temples honoring a different god must pass it.\n Click @here(1)& for more about the concept of religion in Caesar III. Click @here(2)& to learn about the role of temples, oracles and the gods in the Roman Empire."
+ uri : {
+  "Culture rating" : "culture_rating"
+  "festivals" : "festival"
+  "here(1)" : "http://wikipedia.ru"
+  "here(2)" : "http://wikipedia.ru"
+ }
+}

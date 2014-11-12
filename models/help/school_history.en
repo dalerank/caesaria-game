@@ -1,0 +1,14 @@
+{  
+ title : "##school##"
+ sound : "fanfare"
+ text  : "Although Romans were well educated and literacy was common, education was neither compulsory nor publicly supported in Rome. Wealthy families hired a tutor ('paedagogus'), whose cost was proportional to his reputation, but most parents sent their children to a private school ('ludus litterarius') founded by an independent teacher ('magister'). Only the poorest Romans educated their own children.\n Instruction began at age 7 and ended at 13 for girls, 15 for boys. All the pupils of a magister were taught together, often crowded under a shop awning. This primary schooling taught the rudiments of reading, writing and arithmetic. Teachers were usually slaves or freedmen and received little respect.\n Upper-class boys went on to the grammaticus to learn the Greek classics. Instruction was in Greek, and most teachers were of Greek origin. The Romans noticed, when they started having regular contact with Greek soldiers and diplomats in the second century BC, that their own education was inferior to that of their subject people. They adopted the Greek educational system wholesale, and it remained dominant until the end of the first century AD. At that time, one school popularized the teaching of recently-dead Roman authors, in Latin. Latin instruction grew common in the years of Empire, although Greek studies never lost their cachet.\n The grammaticus emphasized wordplay and literature above all else. What little instruction existed in geography, mythology, history or astronomy was to enhance literary comprehension.\n Pupils being groomed for political and legal careers went on to the 'rhetor'. In republican times, when citizens could vote and the Senate held real power, rhetoric was a vital skill. In the days of Empire, knowing the rules of eloquence became more academic than practical. Rhetoric was another Greek invention that the Romans adopted enthusiastically, and even improved upon. Rhetoricians were state-appointed and enjoyed considerable wealth and social standing. Well-born Romans were still expected to speak beautifully and persuasively, but rhetoric grew increasingly archaic from the second century AD onwards."
+ uri : {
+  "Forum" : "forum"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "doctors" : "doctor"
+ }
+}

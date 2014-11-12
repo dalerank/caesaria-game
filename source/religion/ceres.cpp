@@ -50,7 +50,8 @@ void Ceres::_doWrath( PlayerCityPtr city )
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
                                                             _("##wrath_of_ceres_description##"),
-                                                            events::ShowInfobox::send2scribe );
+                                                            events::ShowInfobox::send2scribe,
+                                                            ":/smk/God_Ceres.smk");
   event->dispatch();
 
   FarmList farms;

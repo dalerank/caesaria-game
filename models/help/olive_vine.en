@@ -1,0 +1,14 @@
+{  
+ title : "##olive_vine##"
+ sound : "fanfare"
+ text  : "Olives and vines differ from other agricultural commodities in that their produce is not eaten, but serves as raw material for @oil& and @wine& workshops. Productivity is equal to that of @meat,fruit or vegetable& farms. The climate in your province might preclude growing these crops. Don't grow olives or vines until you have established at least one trade route that demands them or their end products, or until your own citizens demand wine and oil.\n Olive groves and vineyards are actually quite pleasant, and people like to live near them. They may only be built on arable land, which is visible on the map as yellow tufts of vegetation. When you select any type of farm from the buildings buttons, a ghostly green image of the farm appears when your cursor is over agricultural land.\n Olive and vine farms need a local source of labor, and road access to the proper workshops. When the harvest is in, a farmer pushes a full cart to the nearest oil or wine workshop if one has room, or @warehouse& if workshops aren't available. Crops taken to a warehouse may be exported if you have open trade routes for them. As long as the farm is working, you will see crops growing in its fields; right-click a farm for information about its productivity.\n It's important that you understand how @trade& works before you farm olives or vines, and you might want to read up on @food and farming& as well.\n Follow these links to read about the historical role of @olives or vines& in the Roman Empire."
+ uri : {
+  "granary" : "granary"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "olives or vines" : "history_olives"
+  "meat,fruit or vegetable" : "meat"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

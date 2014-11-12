@@ -1,0 +1,14 @@
+{  
+ title : "##colossem##"
+ sound : "fanfare"
+ text  : "The Colosseum was to ancient Rome what the Eiffel Tower is to Paris, the Statue of Liberty to New York or Big Ben to London. It was begun in AD 70 on the site where Nero's hated @Domus Aureleus& had once stood. Eager to soothe harsh memories of his unpopular predecessor, the Emperor Vespasian drained Nero's artificial lake and ordered the construction of the Flavian Amphitheater (Vespasian's family name was Flavius) to provide free games for the citizens of Rome. This @amphitheater& acquired its popular name because of its proximity to Nero's giant statue, @Colossus Neronis&. The name remained long after the statue was gone. Upon the Colosseum's completion by Vespasian's son Titus in AD 80, 100 consecutive days of free games took place.\n The Colosseum held 50,000 Romans for gladiatorial contests, wild animal fights, war games and even the mock naval battles for which the amphitheater could be flooded. After the games, the entire crowd could leave through 80 exits within five minutes. Experienced sailors manned a canvas awning that could shield most of the seats from rain or sun. Beneath the arena floor was a maze of cells, cages and passages for animals and prisoners."
+ uri : {
+  "amphitheater" : "amphitheater"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "doctors" : "doctor"
+ }
+}

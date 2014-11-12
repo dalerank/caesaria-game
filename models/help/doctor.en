@@ -1,0 +1,10 @@
+{  
+ title : "##doctor##"
+ sound : "fanfare"
+ text  : "Wealthier neighborhoods expect regular visits from a doctor. Doctors contribute to the @health& of the area they serve. Use the @Health Overlay& to view housing's access to a clinic and to watch the doctor make house calls - perhaps your only chance to observe this practice! Right-click on a doctor's clinic to see its status.\n Click @here& to read more about Roman doctors."
+ uri : {
+  "Health Overlay" : "health_overlay"
+  "health" : "health"
+  "here" : "http://wikipedia.ru"
+ }
+}

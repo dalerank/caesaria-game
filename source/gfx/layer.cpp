@@ -465,7 +465,7 @@ void Layer::afterRender( Engine& engine)
   {
     Tilemap& tmap = _d->city->tilemap();    
     int size = tmap.size();
-    Picture& screen = engine.screen();
+    //Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
     {
       const Tile& tile = tmap.at( 0, k );

@@ -70,7 +70,7 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
     return true;
   }
 
-  Logger::warning( "CityRequestDispatcher: cannot load request with type " + type );
+  Logger::warning( "WARNING!!! CityRequestDispatcher: cannot load request with type " + type );
   return false;
 }
 
@@ -90,12 +90,15 @@ void Dispatcher::timeStep(const unsigned int time)
         _d->lastRequestCancelDate = GameDate::current();
       }
 
-      if( !request->isAnnounced() && request->isReady( _city() ) )
+      bool isReady = request->isReady( _city() );
+      if( !request->isAnnounced() )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
         request->setAnnounced( true );
         e->dispatch();
       }
+
+      request->update();
     }
 
     _d->updateRequests();

@@ -1,0 +1,12 @@
+{  
+ title : "##iron_mine##"
+ sound : "fanfare"
+ text  : "Establish an iron mine to dig iron for trade, or so that you can manufacture @weapons&. Iron mines must be adjacent to rocks.\n Like most industries, iron mining makes an undesirable neighbor for housing. Iron mines need a nearby source of labor, and road access to weapons workshops or warehouses. When they have a full cartload of iron, @workers wheel& it to the nearest weapons workshop that has space available. If all workshops are fully supplied, or if they are not working, iron goes to the nearest @warehouse& with empty space, from which you may export it if you have an appropriate @trade route&. Iron mines are animated while working. Right-click on a mine to check its status, especially if you notice that activity has ceased.\n Click @here& to read further about iron mining in the Roman Empire."
+ uri : {
+  "weapons" : "weapons"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "workers wheel" : "cart_pusher"
+  "here" : "http://wikipedia.ru"
+ }
+}

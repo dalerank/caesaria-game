@@ -113,17 +113,20 @@ public:
   PushButton* btnIndustryState;
   Label* lbIndustryInfo;
   Picture icon;
+  GoodOrderManageWindow::GoodMode gmode;
   PushButton* btnStackingState;
 
 signals public:
   Signal0<> onOrderChangedSignal;
 };
 
-GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods)
+GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city,
+                                             Good::Type type, int stackedGoods, GoodMode gmode )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {  
   _d->city = city;
   _d->type = type;
+  _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
 
@@ -188,10 +191,30 @@ void GoodOrderManageWindow::decreaseQty()
 
 void GoodOrderManageWindow::updateTradeState()
 {
-  city::TradeOptions& ctrade = _d->city->tradeOptions();
-  city::TradeOptions::Order order = ctrade.getOrder( _d->type );
-  int qty = ctrade.exportLimit( _d->type );
-  _d->btnTradeState->setTradeState( order, qty );
+  switch( _d->gmode )
+  {
+  case gmImport|gmProduce:
+    {
+      city::TradeOptions& ctrade = _d->city->tradeOptions();
+      city::TradeOptions::Order order = ctrade.getOrder( _d->type );
+      int qty = ctrade.exportLimit( _d->type );
+      _d->btnTradeState->setTradeState( order, qty );
+    }
+  break;
+
+  case gmImport:
+  case gmProduce:
+  {      
+    _d->btnTradeState->setText( _d->gmode == gmImport
+                                    ? _("##these_goods_import_only##")
+                                    : _("##setup_traderoute_to_import##" ) );
+    _d->btnTradeState->setEnabled( false );
+    _d->btnTradeState->setBackgroundStyle( PushButton::noBackground );
+  }
+  break;
+
+  default: break;
+  }
 }
 
 void GoodOrderManageWindow::changeTradeState()

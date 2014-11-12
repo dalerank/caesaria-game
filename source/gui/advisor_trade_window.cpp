@@ -201,8 +201,12 @@ bool Trade::Impl::getWorkState(Good::Type gtype )
 void Trade::Impl::showGoodOrderManageWindow(Good::Type type )
 {
   Widget* parent = gbInfo->parent();
+  int gmode = GoodOrderManageWindow::gmUnknown;
+  gmode |= (city::Statistic::canImport( city, type ) ? GoodOrderManageWindow::gmImport : 0);
+  gmode |= (city::Statistic::canProduce( city, type ) ? GoodOrderManageWindow::gmProduce : 0);
+
   GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->height() -60 ), 
-                                                          city, type, allgoods[ type ] );
+                                                          city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
 
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
@@ -242,10 +246,7 @@ void Trade::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-Signal0<>& Trade::onEmpireMapRequest()
-{
-  return _d->btnEmpireMap->onClicked();
-}
+Signal0<>& Trade::onEmpireMapRequest() { return _d->btnEmpireMap->onClicked(); }
 
 }
 

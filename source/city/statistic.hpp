@@ -59,6 +59,8 @@ public:
   static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
   static float getBalanceKoeff( PlayerCityPtr city );
   static int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
+  static bool canImport( PlayerCityPtr city, Good::Type type );
+  static bool canProduce( PlayerCityPtr city, Good::Type type );
 };
 
 }//end namespace city
