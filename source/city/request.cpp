@@ -177,8 +177,8 @@ void RqGood::fail( PlayerCityPtr city )
   {
     _startDate = _finishDate;
 
-    std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    e = events::ShowInfobox::create( "##request_failed##", text );
+    //std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
+    e = events::ShowInfobox::create( "##emperor_anger##", "##emperor_anger_text##" );
     e->dispatch();
 
     _finishDate.appendMonth( _d->failAppendMonth );
@@ -189,9 +189,9 @@ void RqGood::fail( PlayerCityPtr city )
   {
     Request::fail( city );
 
-    e = events::ShowInfobox::create( "##request_failed_title##", "##request_faild_text##" );
+    e = events::ShowInfobox::create( "##emperor_anger##", "##request_faild_text##" );
     e->dispatch();
-    }
+  }
 }
 
 void RqGood::update()
