@@ -87,14 +87,6 @@ bool RqGood::isReady( PlayerCityPtr city ) const
     return true;
   }
 
-  if( !_d->alsoRemind && (_startDate.monthsTo( GameDate::current() ) > 12) )
-  {
-    const_cast<RqGood*>( this )->_d->alsoRemind = true;
-
-    events::GameEventPtr e = events::ShowRequestInfo::create( const_cast<RqGood*>( this ), true );
-    e->dispatch();
-  }
-
   _d->description += std::string( "      " ) + _( "##unable_fullfill_request##" );
   return false;
 }
@@ -198,6 +190,19 @@ void RqGood::fail( PlayerCityPtr city )
     Request::fail( city );
 
     e = events::ShowInfobox::create( "##request_failed_title##", "##request_faild_text##" );
+    e->dispatch();
+    }
+}
+
+void RqGood::update()
+{
+  Request::update();
+
+  if( !_d->alsoRemind && (_startDate.monthsTo( GameDate::current() ) > 12) )
+  {
+    _d->alsoRemind = true;
+
+    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, "##imperial_reminder##", "", "##imperial_reminder_text##" );
     e->dispatch();
   }
 }
