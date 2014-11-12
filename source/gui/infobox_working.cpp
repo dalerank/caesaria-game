@@ -80,7 +80,7 @@ void AboutWorkingBuilding::setText(const std::string& text)
 
 void AboutWorkingBuilding::showDescription()
 {
-  DictionaryWindow::show( ui()->rootWidget(), _working->type() );
+  DictionaryWindow::show( this, _working->type() );
 }
 
 WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()

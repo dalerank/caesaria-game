@@ -1,0 +1,15 @@
+{  
+ title : "##aqueduct##"
+ sound : "fanfare"
+ text  : "Aqueducts can link @reservoirs& together. They do not supply water themselves, and do not need road access or employees. There is no limit on the length of an aqueduct. Aqueducts may not intersect with each other, but roads may pass under them. To create an instant aqueduct, click the reservoir building button as if you were going to build a new reservoir. Now, left-click on an existing reservoir. Holding the mouse button down, 'drag' the cursor to where you want your new reservoir. If you've chosen a buildable site, and there is no blocking terrain between them, an aqueduct will automatically link the new reservoir to the old one. Click @here& to learn about the history of aqueducts in the Roman Empire."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

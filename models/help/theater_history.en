@@ -1,0 +1,14 @@
+{  
+ title : "##theater##"
+ sound : "fanfare"
+ text  : "Rome had several large theaters to host plays, which were an important form of entertainment. Theater occupied the citizens' minds and placated them. Like the Greeks, Romans built most of their theaters outdoors to provide ample lighting, with semicircular tiered seating to keep the audience as near the stage as possible so that they could hear.\n Roman plays carried forth their Greek origins with very little innovation, although the Romans did write original scripts. Troupes followed conventions that compensated for their audiences' limited ability to see and hear the action. Actors wore masks colored brown for male characters or white for female (women were not allowed to perform). The masks carried exaggerated smiles or frowns to convey humor or pathos. Purple gowns denoted aristocracy, short cloaks meant soldiers, red togas represented poor men, and so on. One actor orated the character's lines while another mimed stylized gestures to act them out.\n Playwrights must have felt pressured to compete with the games in the @amphitheaters&. In one play about the story of Icarus, an actor leaped from a tall platform, fell to earth and died. This made the play highly successful (and introduced considerable turnover in Rome's actor corps).\n Emperors sometimes used theaters to showcase their own talents, or lack thereof. Nero used to take the stage and sing songs of his own composition, and no one could leave the theater until he finished. He invariably received thunderous acclaim."
+ uri : {
+  "amphitheaters" : "amphitheater"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "doctors" : "doctor"
+ }
+}

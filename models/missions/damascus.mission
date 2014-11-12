@@ -251,7 +251,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -278,7 +278,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -305,7 +305,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -332,7 +332,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -359,7 +359,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -386,7 +386,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -413,7 +413,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -440,7 +440,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -467,7 +467,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -494,7 +494,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -521,7 +521,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -548,7 +548,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -575,7 +575,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -602,7 +602,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -629,7 +629,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -656,7 +656,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -683,7 +683,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }

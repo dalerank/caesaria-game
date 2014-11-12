@@ -454,6 +454,12 @@ std::string Merchant::thoughts(Walker::Thought th) const
     break;
 
     case Impl::stGoOutFromCity:
+      if( _d->currentBuys >0 || _d->currentSell > 0 )
+      {
+        return "##merchant_just_unloading_my_goods##";
+      }
+    break;
+
     case Impl::stBackToBaseCity:
       if( _d->currentSell - _d->currentBuys < 0 )
       {

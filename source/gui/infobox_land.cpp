@@ -19,9 +19,11 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "objects/road.hpp"
 #include "core/stringhelper.hpp"
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -56,7 +58,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   else if( tile.getFlag( Tile::tlTree ) )
   {
     title = "##trees_and_forest_caption##";
-    text = "##trees_and_forest_text##";
+    text = "##trees_and_forest_text##";    
   } 
   else if( tile.getFlag( Tile::tlWater ) )
   {
@@ -86,10 +88,11 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
     else if( tile.overlay()->type() == construction::road )
     {
-      title = "##road_caption##";
+      RoadPtr road = ptr_cast<Road>( tile.overlay() );
+      title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
       if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
       else if( tile.pos() == city->borderInfo().roadExit ) { text = "##road_to_distant_region##"; }
-      else text = "##road_text##";
+      else text = road->pavedValue() > 0 ? "##road_paved_text##" : "##road_text##";
     }
     else
     {
@@ -125,6 +128,11 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
+void AboutLand::showDescription()
+{
+
+}
+
 AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
     : AboutLand( parent, city, tile )
 {
@@ -138,7 +146,12 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
   else
   {
     setText( _("##freehouse_text##") );
-  }
+    }
+}
+
+void AboutFreeHouse::showDescription()
+{
+  DictionaryWindow::show( this, "vacant_lot" );
 }
 
 }

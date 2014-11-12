@@ -49,7 +49,8 @@ void Venus::_doWrath( PlayerCityPtr city )
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_venus_title##"),
                                                             _("##wrath_of_venus_description##"),
-                                                            events::ShowInfobox::send2scribe );
+                                                            events::ShowInfobox::send2scribe,
+                                                            ":/smk/God_Venus.smk");
   event->dispatch();
 
   city::SentimentPtr sentiment;

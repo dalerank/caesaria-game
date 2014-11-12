@@ -1,0 +1,14 @@
+{  
+ title : "##well##"
+ sound : "fanfare"
+ text  : "Early Rome obtained all of its drinking water from wells. The Tiber was a turbid river even before the Cloaca Maxima, Rome's main sewer, polluted it. Rome's watershed had plenty of groundwater, naturally filtered as it percolated through the soil, and wells sufficed until the city's population grew quite large. Wells continued to supplement the sweet water brought from the hills throughout Roman history, but they supplied mostly poor outlying areas far from the abundant free water provided by Rome's many @fountains&."
+ uri : {
+  "reservoirs" : "reservoir"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}

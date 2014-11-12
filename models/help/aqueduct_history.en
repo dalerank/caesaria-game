@@ -1,0 +1,14 @@
+{  
+ title : "##aqueduct##"
+ sound : "fanfare"
+ text  : "As Rome's population grew, so did its thirst. By the fifth century BC @wells& were inadequate to meet the demand for clean water. The Tiber, which had always been a murky river, was heavily polluted from accepting Rome's sewage. The Romans' solution - an aqueduct built in 343 BC - was among their first monumental public works.\n Bringing water down from the hills was a substantial engineering challenge, partly because of the tiny slope involved. For every kilometer that an aqueduct traveled, its slope fell just one meter. That slope had to be maintained consistently, and the water's source had to be chosen carefully to ensure that it would flow plentifully long after the expensive aqueduct was finished. Moreover, the aqueduct had to be reasonably water-tight and resistant to erosion by continuously running water, all while minimizing evaporation. Although the popular image of aqueducts is of graceful arches and tall structures, the aqueducts flow mostly underground.\n Rome eventually required ten aqueducts, each a greater engineering feat than its predecessor as the city cast further afield for reliable water sources. At one time the aqueducts covered a combined distance of 403 kilometers and carried over 560,000 litters of water daily. Some of these structures are still in service."
+ uri : {
+  "wells" : "well"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}

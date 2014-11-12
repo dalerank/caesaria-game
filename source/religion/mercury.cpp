@@ -58,7 +58,8 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),
-                                                              events::ShowInfobox::send2scribe );
+                                                              events::ShowInfobox::send2scribe,
+                                                              ":/smk/God_Mercury.smk");
     event->dispatch();
   }
 

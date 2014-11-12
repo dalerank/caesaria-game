@@ -1,0 +1,15 @@
+{  
+ title : "##content##"
+ sound : "fanfare"
+ text  : "@Common Problems&\n Game Concepts\n @\tPopulation and Mood&\n @\tPlebeians&\n @\tPatricians&\n @\tWorkers&\n @\tEmployment&\n @\tWater Supply&\n @\tFood and Farming&\n @\tIndustry&\n @\tTrade&\n @\tMoney&\n @\tEntertainment&\n @\tEducation&\n @\tReligion&\n @\tPeace and War&\n @\tHealth and Disease&\n @\tCrime&\n @\tRatings&\n The Main Map\n Buildings\n @Housing&\n @Roads&\n Water Structures\n @Reservoir&\n @Aqueduct&\n @Fountain&\n @Well&\n Health and Sanitation\n @Barber&\n @Bathhouse&\n @Doctor's Clinic&\n @Hospital&\n Religion Buildings\n @Temples and Oracle&\n Education Establishments\n @School&\n @Academy&\n @Library&\n @Mission&Post&\n Entertainment Buildings\n @Theater&\n @Amphitheater&\n @Colosseum&\n @Hippodrome&\n @Gladiator School&\n @Lion House&\n @Actors' Colony&\n @Charioteer School&\n Government Structures\n @Forum&\n @Senate&\n @Governor's Residences&\n @Statues and Triumphal Arch&\n Engineering and Other Buildings\n @Gardens and Plaza&\n @Engineer's Post&\n @Bridges&\n @Shipyard&\n @Dock&\n @Wharf&\n Security Buildings\n @Wall,Tower and Gatehouse&\n @Prefecture&\n @Fort&\n @Barracks&\n @Military Academy @\n Industrial Structures\n Farms\n @Wheat&\n @Meat,Vegetables and Fruit&\n @Olives andVines&\n Raw Materials\n @Clay Pit&\n @Iron Mine&\n @Timber Yard&\n @Marble Quarry&\n Workshops\n @Wine&\n @Oil&\n @Weapons&\n @Furniture&\n @Pottery&\n @Market&\n @Granary&\n @Warehouse&\n Advisors Menu\n @Labor Advisor&\n @Military Advisor&\n @Emperor Advisor&\n @City Progress Advisor&\n @Trade Advisor&\n @Population Advisor&\n @Health Advisor&\n @Education Advisor&\n @Entertainment Advisor&\n @Festivals&\n @Religion Advisor&\n @Finances Advisor&\n @Chief Advisor&\n @Empire Map&\n @Messages from Your Scribes&\n"
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

@@ -84,6 +84,7 @@
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
 #include "walkergrid.hpp"
+#include "events/showinfobox.hpp"
 #include "cityservice_fire.hpp"
 
 #include <set>
@@ -737,7 +738,7 @@ int PlayerCity::culture() const
 int PlayerCity::peace() const
 {
   city::PeacePtr p;
-  p << findService( city::Peace::getDefaultName() );
+  p << findService( city::Peace::defaultName() );
   return p.isValid() ? p->value() : 0;
 }
 
@@ -779,6 +780,9 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( GameDate::days2ticks( k ) );
       }
     }
+
+    events::GameEventPtr e = events::ShowInfobox::create( "##romechastener_attack_title##", "##romechastener_attack_text##", true );
+    e->dispatch();
   }
   else if( is_kind_of<world::Barbarian>( object ) )
   {

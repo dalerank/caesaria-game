@@ -14,13 +14,14 @@
   win :
   {
     population : 2500
-    culture : 35
+    culture : 35_
     prosperity : 10
     peace : 0
     favour : 60
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##win_engineer_title##"
+    win.text : "##capua_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"

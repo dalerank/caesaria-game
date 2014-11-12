@@ -1,0 +1,9 @@
+{  
+ title : "##hospital##"
+ sound : "fanfare"
+ text  : "Only high levels of houses need access to hospitals individually. But the city as a whole needs a particular number of hospital beds in case of disease or plague.\n Your @City Health Advisor& knows how many citizens your city's hospitals can serve. If disease or a plague strikes, citizens who find room in a hospital recover. Any who can't get into the hospital die. Hospitals lose some of their power to cure if they aren't at full employment. Right-click on the hospital to see how many workers it has.\n Click @here& to read a history of hospitals in the Roman Empire."
+ uri : {
+  "City Health Advisor" : "health_advisor"
+  "here" : "http://wikipedia.ru"
+ }
+}
