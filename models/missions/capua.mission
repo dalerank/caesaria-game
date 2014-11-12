@@ -14,7 +14,7 @@
   win :
   {
     population : 2500
-    culture : 35
+    culture : 35_
     prosperity : 10
     peace : 0
     favour : 60

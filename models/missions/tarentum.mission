@@ -115,13 +115,13 @@
       }
     }
 
-    "city_indebt#city_indebt" : {
+    city_indebt#city_indebt : {
       date : "-350.01.01"
       type : "city_indebt"
-      count : 2
-      emperorMoney : 5000
-      video : "city_indebt.bik"
-      text : "##city_has_runout_money##"
+      emperorMoney : [ 8000, 5000, 0 ]
+      video : [ ":/smk/Emp_2nd_chance.bik", ":/smk/Emp_displeased.smk", ":/smk/Emp_angry.smk" ]
+      title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
+      text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
 
     "emperor_request_vines#city_request" : {
@@ -273,7 +273,7 @@
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -300,7 +300,7 @@
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -327,7 +327,7 @@
 		barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		}
 	  }
     }
@@ -354,7 +354,7 @@
 		barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		}
 	  }
     }
@@ -381,7 +381,7 @@
 		barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		}
 	  }
     }
@@ -408,7 +408,7 @@
 		barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		}
 	  }
     }
