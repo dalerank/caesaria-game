@@ -221,7 +221,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
       moneyStolen = math::random( 400 );
 
     events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                                          events::ShowInfobox::send2scribe, "/smk/mugging.smk" );
+                                                          events::ShowInfobox::send2scribe, ":/smk/mugging.smk" );
     e->dispatch();
 
     city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );

@@ -59,7 +59,6 @@ void ShowFeastWindow::_exec(Game& game, unsigned int)
   dlg->setTitle( _title );
   dlg->setReceiver( _receiver );
   dlg->setTime( GameDate::current() );
-
 }
 
 }

@@ -32,10 +32,11 @@ namespace gui
 
 static const int DEFAULT_SCROLLBAR_SIZE = 39;
 
-struct RichText
+struct TextToken
 {
   Font font;
   std::string text;
+  std::string alias;
   bool uri;
   int offset;
 
@@ -44,14 +45,14 @@ struct RichText
     return font.getTextSize( text ).width();
   }
 
-  RichText()
+  TextToken()
   {
     uri = false;
     offset = 0;
   }
 };
 
-struct RichLine : std::vector<RichText>
+struct Tokens : std::vector<TextToken>
 {
   const std::string text() const
   {
@@ -61,12 +62,12 @@ struct RichLine : std::vector<RichText>
   }
 };
 
-typedef std::vector<RichLine> RichLines;
+typedef std::vector<Tokens> TokensArray;
 
 class DictionaryText::Impl
 {
 public:
-  RichLines brokenText;
+  TokensArray brokenText;
   Rect textMargin;
   Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
   Font font;
@@ -178,7 +179,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
 
       foreach( it, _d->brokenText )
       {
-        RichLine& dline = *it;
+        Tokens& dline = *it;
         std::string tmpString = dline.text();
 
         Rect textRect = _d->font.getTextRect( tmpString, r, horizontalTextAlign(), verticalTextAlign() );
@@ -210,20 +211,29 @@ void DictionaryText::_handleClick( const Point& p)
   Point localPoint = screenToLocal( p );
   int rowHeight = _d->font.getTextSize( "A" ).height() + _d->lineIntervalOffset;
   int rowIndex = (_d->yoffset + localPoint.y()) / rowHeight;
-  const RichLine& rline = _d->brokenText[ rowIndex ];
+  const Tokens& rline = _d->brokenText[ rowIndex ];
   std::string currentText;
 
   int offset = 0;
-  for( RichLine::size_type index=0; index < rline.size(); index++ )
+  for( Tokens::size_type index=0; index < rline.size(); index++ )
   {
     int leftLimit = offset + rline[index].offset;
     int rightLimit = index+1 < rline.size()
-                       ? offset + leftLimit + rline[ index + 1].offset
+                       ? leftLimit + rline[ index + 1 ].offset
                        : width();
 
     if( leftLimit < localPoint.x() && localPoint.x() < rightLimit )
     {
-      currentText = rline[ index ].uri ? rline[ index ].text : "";
+      if( rline[ index ].uri )
+      {
+        currentText = rline[ index ].alias.empty()
+                        ? rline[ index ].text
+                        : rline[ index ].alias;
+      }
+      else
+      {
+        currentText = "";
+      }
       break;
     }
     offset += rline[index].offset;
@@ -271,7 +281,7 @@ Font DictionaryText::font() const
 
 	return Widget::getFont( index );*/
 
-    return _d->font;
+	return _d->font;
 }
 
 //! Sets whether to draw the border
@@ -289,8 +299,8 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 
   lastBreakFont = font;
 
-  RichLine dline;
-  RichText richText;
+  Tokens dline;
+  TextToken richText;
   std::string line;
   string word;
   string whitespace;
@@ -338,7 +348,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 			richText.text += whitespace;
 			dline.push_back( richText );
 			const int linewidth = richText.width();
-			richText = RichText();
+			richText = TextToken();
 			richText.offset = linewidth;
 			richText.font = font;
 			richText.uri = true;
@@ -355,6 +365,14 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 			if(length && (length + wordlgth + whitelgth > elWidth) )
 			{
 				// break to next line
+				std::string alias;
+				if( !richText.text.empty() )
+				{
+					richText.alias = richText.text + whitespace + word;
+					alias = richText.alias;
+					dline.push_back( richText );
+				}
+
 				brokenText.push_back( dline );
 				dline.clear();
 
@@ -365,9 +383,10 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 				length = wordlgth;
 				line = word;
 
-				richText = RichText();
+				richText = TextToken();
 				richText.font = font;
 				richText.offset = length;
+				richText.alias = alias;
 				word = "";
 			}
 			else
@@ -378,7 +397,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 				richText.text += word;
 				dline.push_back( richText );
 				const int linewidth = richText.width();
-				richText = RichText();
+				richText = TextToken();
 				richText.offset = linewidth;
 				richText.font = font;
 				richText.text = "";
@@ -480,7 +499,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
 				brokenText.push_back( dline );
 				dline.clear();
 
-				richText = RichText();
+				richText = TextToken();
 				richText.font = font;
 				line = "";
 				word = "";
