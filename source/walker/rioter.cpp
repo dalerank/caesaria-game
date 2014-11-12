@@ -29,6 +29,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
+#include "events/disaster.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "game/gamedate.hpp"
@@ -192,12 +193,14 @@ void Rioter::timeStep(const unsigned long time)
         foreach( it, constructions )
         {
           ConstructionPtr c = *it;
-          //if( c->group() != building::disasterGroup && c->type() != construction::road )
-          //{
-            c->updateState( Construction::fire, 1 );
-            c->updateState( Construction::damage, 1 );
-            break;
-          //}
+          c->updateState( Construction::fire, 1 );
+          c->updateState( Construction::damage, 1 );
+          if( c->state( Construction::damage ) < 10 || c->state( Construction::fire ) < 10 )
+          {
+            events::GameEventPtr e = events::DisasterEvent::create( c->tile(), events::DisasterEvent::riots );
+            e->dispatch();
+          }
+          break;
         }
       }
     }
