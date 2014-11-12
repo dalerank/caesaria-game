@@ -1,0 +1,14 @@
+{  
+ title : "##doctor##"
+ sound : "fanfare"
+ text  : "Clean drinking water, sanitation, frequent bathing, nutritious diets and regular exercise bestowed good health on most Romans. When forced to seek a doctor's care, though, citizens were in trouble. Physicians were good at treating wounds, thanks to @gladiatorial games& and frequent warfare, but diseased Romans usually left recovery or death up to the gods. \n Elite citizens who sought doctors were lucky if they did no harm. Some of their nostrums, using such herbs as garlic, opium poppies and mustard, probably had some merit; others, relying on cat's dung or owl toes, owed more to mysticism than to medicine.\n Even caesarian sections cannot be credited to the Romans. Folklore holds that the c-section was so named because Julius Caesar was born surgically, but this is doubtful; Caesar's mother reputedly lived to see her son grow to adulthood. Roman law under Caesar mandated surgical births only when the mother was dead or dying, and the name 'caesarian' might have originated because of this law. The procedure itself was known, and successfully performed, before Roman times, but the mother's survival was not even attempted until the 19th century.\n Many doctors were freed Greek slaves, and their social standing was correspondingly low. Cures were rare and there was no formal medical education or licensing. Anyone could call himself a doctor. If his methods succeeded, he attracted more patients; if not, he found another profession. This status quo persisted throughout the Republic and into the waning days of Empire, until the arrival in Rome of a Greek named Galen.\n Galen brought a scientific approach to Roman medicine. He emphasized observation and systematic learning from failure and success - ideas that seem obvious today, but were unheard of then. Barred by law and custom from dissecting humans, Galen advanced the knowledge of anatomy by dissecting apes. Galen rapidly gained a reputation for success and was called upon to treat the emperors Marcus Aurelius, Lucius Verus, Commodus and Septimius Severus. Galen's lasting contribution was to raise medicine to a respectable profession and establish reputable state-financed schools of medicine.\n After his death, medical research stopped, and Galen's teachings endured - errors and all - for the next 13 centuries. Until Europe's Renaissance, Galen's successors felt that further research was pointless and irreverent."
+ uri : {
+  "gladiatorial games" : "gladiator"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}

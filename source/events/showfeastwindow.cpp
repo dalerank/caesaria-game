@@ -31,12 +31,13 @@
 namespace events
 {
 
-GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::string receiver)
+GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::string receiver, std::string video)
 {
   ShowFeastWindow* e = new ShowFeastWindow();
   e->_text = text;
   e->_receiver = receiver;
   e->_title = title;
+  e->_video = video;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -53,12 +54,11 @@ void ShowFeastWindow::_exec(Game& game, unsigned int)
 {
   gui::Ui* env = game.gui();
 
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Festival3_Glad.smk" );
+  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), _video );
   dlg->setText( _text );
   dlg->setTitle( _title );
   dlg->setReceiver( _receiver );
   dlg->setTime( GameDate::current() );
-
 }
 
 }

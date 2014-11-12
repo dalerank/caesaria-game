@@ -1,0 +1,14 @@
+{  
+ title : "##barber##"
+ sound : "fanfare"
+ text  : "Barbers were second in importance only to @baths& for a Roman's personal care. The wealthy were groomed daily by a personal barber, who was an important member of the household staff.\n Low-class citizens patronized open-air barber shops in public squares, which were a favorite place to socialize and swap news and gossip. Romans of better means went to indoor barbershops ('tonstrinae') with mirrored walls and benches for waiting customers. The person being groomed sat on a stool with a cape draped over him to protect his clothes.\n Iron scissors were not especially sharp or precise, so haircuts were crude and curls were perennially popular. Romans wore the hairstyle favored by their emperors, most of whom followed the simple example set by Augustus. Haircuts were remarkably uniform and changed very little over the years, although individual emperors did set minor variations on the Augustan style.\n Romans never shaved until the first century BC, when Julius Caesar put beards out of fashion. Razors were dull and Romans didn't use shaving creams or soaps, so even the poor left the task of shaving to professional barbers. Being shaved at an open-air shop, with the ever-present risk of serious injury should the barber's attention be distracted by some street diversion, should have encouraged some resurgence in wearing beards, but fashion is powerful. Beards were associated strictly with barbarians; civilized men were clean-shaven. Shaving was so ingrained in Roman culture that it became part of a man's coming-of-age, and a religious ceremony accompanied a boy's first shave.\n By the second century AD, barbers added some cosmetic arts to their basic repertoire of cutting and shaving. Tonsors treated customers' hair with paint and perfume, hid their skin blemishes under sticking plasters and rubbed their cheeks with various creams and lotions."
+ uri : {
+  "reservoirs" : "reservoir"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}

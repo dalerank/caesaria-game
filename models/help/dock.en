@@ -1,0 +1,12 @@
+{  
+ title : "##dock##"
+ sound : "fanfare"
+ text  : "If your city is to engage in seaborne @trade&, it needs at least one dock to receive trading vessels. Docks must have one side on a waterfront, and can only be built on stretches of relatively straight coastline. At 'legal' building sites, the dock will appear as a ghostly green image attached to your cursor. Make sure that you build it on your navigation channel (the body of water that has moving flotsam). For further advice about situating docks, see the Help entry on @bridges&.\n Docks need road access and labor like most buildings. You will be able to see three dockers on the dock when it is fully employed. If you see just one or two dockers, the dock is understaffed, and while it will still operate, it will only have one cart to load and unload goods. Docks have no storage space of their own, and so need to draw trade goods from a nearby @warehouse&. When you plan to build a dock, consider also building @roads& and warehouses nearby. \n Like most commercial buildings, docks lower the desirability of nearby housing. When a trade ship moors at a dock, the dock's workers unload any imports and cart them off to the nearest working warehouse with space. The same carts then pick up any waiting exports at the nearest warehouse. Ships remain moored at the dock until their cargo hold is full, or there are no more goods to trade. Your treasury pays for imports and collects payment for exports as the goods are transferred to or from the ship.\n Click @here& to learn more about shipping and port facilities in the Roman Empire."
+ uri : {
+  "trade" : "trade"
+  "bridges" : "bridge"
+  "warehouse" : "warehouse"
+  "roads" : "road"
+  "here" : "http://wikipedia.ru"
+ }
+}

@@ -53,6 +53,7 @@
 #include "game/settings.hpp"
 #include "image.hpp"
 #include "game/gamedate.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -223,6 +224,11 @@ bool AboutHouse::onEvent(const NEvent& event)
   }
 
   return Simple::onEvent( event );
+}
+
+void AboutHouse::showDescription()
+{
+  DictionaryWindow::show( this, "house" );
 }
 
 }

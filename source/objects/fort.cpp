@@ -271,7 +271,7 @@ TilePos Fort::freeSlot() const
   Tilemap& tmap = _city()->tilemap();
   switch( formation )
   {
-  case frmRandomLocation:
+  case frmOpen:
     offset = TilePos( 3, 3 );
     tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
   break;

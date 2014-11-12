@@ -116,7 +116,7 @@ void Info::timeStep(const unsigned int time )
     last[ peace       ] = 0;
 
     PeacePtr peaceSrvc;
-    peaceSrvc << _city()->findService( Peace::getDefaultName() );
+    peaceSrvc << _city()->findService( Peace::defaultName() );
     if( peaceSrvc.isValid() )
     {
       last[ peace ] = peaceSrvc->value();

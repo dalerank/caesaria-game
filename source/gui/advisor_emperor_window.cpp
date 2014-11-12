@@ -35,6 +35,7 @@
 #include "game/gamedate.hpp"
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"
+#include "city/victoryconditions.hpp"
 #include "city/requestdispatcher.hpp"
 #include "game/player.hpp"
 #include "dialogbox.hpp"
@@ -151,6 +152,13 @@ public:
 
 void Emperor::_showChangeSalaryWindow()
 {
+  if( GameDate::current() > _d->city->victoryConditions().finishDate() )
+  {
+    DialogBox* dialog = new DialogBox( this, Rect(), "", _("##disabled_draw_salary_for_free_reign##"), DialogBox::btnYes );
+    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
+    return;
+  }
+
   PlayerPtr pl = _d->city->player();
   ChangeSalaryWindow* dialog = new ChangeSalaryWindow( parent(), pl->salary() );
   dialog->show();

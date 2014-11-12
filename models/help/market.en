@@ -1,0 +1,11 @@
+{  
+ title : "##market##"
+ sound : "fanfare"
+ text  : "Markets are crucial to distribute the produce of your city's industries to its people. @Housing& needs food to grow beyond the lowest levels, and this comes from markets. A market trader goes to a granary to collect food, and takes it back to her market. She is often followed by a line of granary boys who help her carry all the food back to the market. Once a market has food, another market trader goes out and delivers it to any house in the neighborhood which needs it. All dwellings other than tents need food from markets. Markets need road access and labor in order to operate. They have a small negative effect on the desirability of their immediate neighbors, and a small beneficial effect on those houses just beyond that. Higher levels of housing require goods such as pottery or furniture, and even additional varieties of food. As soon as a market trader passes a house which is requesting a good, the market sends out a worker to go and get supplies of that item, so long as there is some in range of the market. Sometimes, you may find it helpful to build a granary to store food, or a warehouse to store non-food items, close to a residential area, so that the market workers can collect everything they need easily. You may want to use Special Orders for the granary or warehouse to ensure that they store the goods needed in their neighborhood. All this market buying and selling is private, and does not affect your treasury. Topics relating to markets are @industry&, @population&, @citizens& and @housing&. Read about @granaries& and @warehouses& for tips on Special Orders for redistributing goods. To read about markets in the Roman Empire, click @here&."
+ uri : {
+  "Housing" : "house"
+  "industry" : "industry"
+  "population" : "population"
+  "housing" : "house"
+ }
+}

@@ -44,7 +44,7 @@ FortLegionary::FortLegionary()
   _addFormation( frmNorthDblLine );
   _addFormation( frmWestDblLine );
   _addFormation( frmSquad );
-  _addFormation( frmRandomLocation );
+  _addFormation( frmOpen );
 }
 
 void FortLegionary::_readyNewSoldier()
@@ -69,7 +69,7 @@ FortMounted::FortMounted()
   _addFormation( frmWestLine );
   _addFormation( frmNorthDblLine );
   _addFormation( frmWestDblLine );
-  _addFormation( frmRandomLocation );
+  _addFormation( frmOpen );
 }
 
 bool FortMounted::build(PlayerCityPtr city, const TilePos& pos)
@@ -97,7 +97,7 @@ FortJaveline::FortJaveline()
 
   _addFormation( frmNorthDblLine );
   _addFormation( frmWestDblLine );
-  _addFormation( frmRandomLocation );
+  _addFormation( frmOpen );
 }
 
 void FortJaveline::_readyNewSoldier()

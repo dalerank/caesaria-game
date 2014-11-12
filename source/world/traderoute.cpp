@@ -56,6 +56,11 @@ CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin 
 CityPtr Traderoute::endCity() const{  return _d->empire->findCity( _d->end );}
 std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
 
+CityPtr Traderoute::partner(const std::string& name) const
+{
+  return _d->empire->findCity( _d->begin == name ? _d->end : _d->begin );
+}
+
 void Traderoute::update( unsigned int time )
 {
   MerchantList::iterator it=_d->merchants.begin();

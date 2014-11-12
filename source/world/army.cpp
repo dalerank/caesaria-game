@@ -171,8 +171,10 @@ void Army::addObject(ObjectPtr obj )
 
     otherArmy->killSoldiers(attackersLoss);
     killSoldiers(selfLoss);
-  }
+    }
 }
+
+std::string Army::target() const { return _dfunc()->destination; }
 
 void Army::battle(unsigned int attackers, unsigned int defenders, int& attackersLoss, int& deffLoss )
 {

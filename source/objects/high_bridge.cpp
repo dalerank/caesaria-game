@@ -525,6 +525,11 @@ bool HighBridge::canDestroy() const
     }
   }
 
+  if( !state( Construction::destroyable ) )
+  {
+    _d->error = "##destroy_bridge_warning##";
+  }
+
   return state( Construction::destroyable );
 }
 

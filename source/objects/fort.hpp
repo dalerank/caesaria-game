@@ -27,7 +27,7 @@ class Fort : public WorkingBuilding
 public:
   typedef enum { frmNorthLine=0, frmWestLine,
                  frmNorthDblLine, frmWestDblLine,
-                 frmRandomLocation, frmSquad,
+                 frmOpen, frmSquad,
                  frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;  
 

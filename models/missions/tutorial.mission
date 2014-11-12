@@ -39,23 +39,17 @@
       population : 30
       strong : 25
       exec : {
-        "step_1.video#messagebox" : {
-          title : "##city_fire_title##"
-          text : "##city_fire_text##"
-          video : ":/smk/city_fire.smk"
-        }
-
-        "step_2.fire#tutorial_window" : {
+        "step_1.fire#tutorial_window" : {
           tutorial : ":/tutorial/first_fire.tutorial"
         }
 
-        "step_3.prefecture#building_options" :  {
+        "step_2.prefecture#building_options" :  {
           buildings : { prefecture : true }
         }
       }
     }
 
-    "tutorial#random_collapse" : {
+    tutorial#random_collapse : {
       population : 60
       strong : 25
       exec : {

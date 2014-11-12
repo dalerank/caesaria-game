@@ -1,0 +1,14 @@
+{  
+ title : "##fountain##"
+ sound : "fanfare"
+ text  : "@Aqueducts& brought water from remote hills to @reservoirs&, which distributed it through ceramic, wooden or lead pipes to public @fountains&. These provided free water for most of Rome's citizens, and were often elaborate monuments to famous people and events, real and mythical. Constructing a fountain in someone's honor was such a common form of tribute that Rome eventually had more than 1,200 public fountains, most of them works of art."
+ uri : {
+  "reservoirs" : "reservoir"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "baths" : "bath"
+ }
+}

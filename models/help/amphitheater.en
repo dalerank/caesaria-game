@@ -1,0 +1,13 @@
+{  
+ title : "##amphitheater##"
+ sound : "fanfare"
+ text  : "Amphitheaters are larger than theaters, and can house both plays and gladiatorial games. To fully utilize an amphitheater, build both an @actors colony& and a gladiator school to supply performers. Note that all entertainment buildings need regular laborers as well as their special type of performers.\n Amphitheaters spread their influence as their actors and gladiators circulate through surrounding neighborhoods. The more venues that send entertainers past a particular plot of housing, the higher it can evolve. Moderately nice neighborhoods will typically need both a theater and an amphitheater nearby. Amphitheaters enhance the desirability of nearby housing.\n Ask your @Entertainment Advisor& about your city's overall amphitheater coverage. To see a particular amphitheater's performers walk their routes, choose the @Entertainment Overlay&. Right-click on an amphitheater to see its status and find out what's playing there. If either of its shows are of short duration, its performers are probably walking from too far away. Time spent commuting is time stolen from performing.\n Click @here& to read a history of amphitheaters in the Roman Empire."
+ uri : {
+  "entertainment" : "entertainment"
+  "actors colonies" : "actor_colony" 
+  "Culture Rating" : "culture_rating"
+  "Entertainment Advisor" : "entertainment_advisor"
+  "Entertainment Overlay" : "entertainment_overlay"
+  "here" : "http://wikipedia.ru"
+ }
+}

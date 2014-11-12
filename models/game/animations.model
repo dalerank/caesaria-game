@@ -58,6 +58,7 @@
   }
 
   cartPusher : {
+    none : { rc : "citizen01", start : 929, frames : 1, action : 0, step : 8 }
     move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
   }
 

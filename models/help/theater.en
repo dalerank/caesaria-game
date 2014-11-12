@@ -1,0 +1,13 @@
+{  
+ title : "##theater##"
+ sound : "fanfare"
+ text  : "Theaters are the smallest, least expensive @entertainment& venues you can build. They house only one type of event - plays - and therefore need only @actors colonies& to supply performers. Note that all entertainment buildings need regular laborers as well as their special type of performers.\n Theaters spread their influence as actors circulate through the surrounding neighborhoods. Housing needs at least one entertainment source to reach even moderate value, and having a theater nearby enhances desirability.\n Theaters also contribute to your @Culture Rating&.\n Check your city's overall theater coverage with your @Entertainment Advisor&; to view a particular theater's coverage and watch its actors walk the streets, choose the @Entertainment Overlay&. Right-click on a theater to see its status and find out what's playing there. If the plays staged there always have a short run, the actors' colony providing performers is probably too far from the theater.\n Click @here& to learn what role Theaters played in the Roman Empire."
+ uri : {
+  "entertainment" : "entertainment"
+  "actors colonies" : "actor_colony" 
+  "Culture Rating" : "culture_rating"
+  "Entertainment Advisor" : "entertainment_advisor"
+  "Entertainment Overlay" : "entertainment_overlay"
+  "here" : "http://wikipedia.ru"
+ }
+}

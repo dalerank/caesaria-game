@@ -1,0 +1,11 @@
+{  
+ title : "##forum##"
+ sound : "fanfare"
+ text  : "Roman cities can have only one senate building, which often lies in the most desirable area. The senate enhances surrounding housing's desirability a lot, and employs tax collectors who walk around the neighborhood collecting taxes. Tax money is stored in vaults under the senate until collection at the end of a year, which can make it a target for criminals. Be sure to have frequent patrols by prefects to protect your senate. @Forums& also collect taxes.\n Unemployed laborers assemble on the steps of the senate. The more people you see sitting around its steps, the higher unemployment is in your city. As a rough guide, each figure on the steps represents up to 5 percent unemployment.\n The flags in front of the senate reflect your @ratings& in Culture, Prosperity, Peace and Favor. From here, you can get a rough idea of your progress without leaving the city map. Mouse help for the Senate shows some of your city's important statistics.\n Follow these links to learn more about the role of @money&, or read a short @history of Rome's Senate& building."
+ uri : {
+  "history of Rome's Senate" : "history_senate"
+  "Forums" : "forum"
+  "Finances Advisor" : "finance_advisor"
+  "here" : "http://wikipedia.ru"
+ }
+}

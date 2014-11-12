@@ -1,0 +1,15 @@
+{  
+ title : "##bridge##"
+ sound : "fanfare"
+ text  : "Do not construct a bridge until you have a definite plan to settle the far bank. Then, choose either 'Low Bridge' or 'Ship Bridge' from the build options and move your cursor along the riverbanks. When you reach a part of the river that can be forded, the cursor changes from a red square to a green, ghosted image of a bridge. These are the only locations that may be bridged. \n Build the proper type of bridge at the proper location. Ships can't sail under a low bridge, so do not build one between your docks and your river's navigation channel. Trade ships arrive and depart from upstream, which is the direction from which flotsam enters the map (usually the same direction from which immigrants arrive).\n As you plan bridges, remember that docks are also restricted as to where they may be built. Read up on @docks& for tips on locating them. Don't build any low bridges until you know where your docks will be. Low bridges are cheaper, and may be built at more locations, than ship bridges.\n The cost listed for building a bridge applies to each segment. The longer the bridge, the more it will cost.\n Click @here& to read the history of bridges and roads in the Roman Empire."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

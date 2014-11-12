@@ -1,10 +1,19 @@
-{"##seamrchant_another_successful_voyage##":"Das war eine weitere erfolgreiche Reise! Der Profit an diesem Ort ist die Seekrankheit wert!"
-"##0_entertainment_access##":"Diese Behausung hat keinen Zugang zu Unterhaltungseinrichtungen."
+{"##0_entertainment_access##":"Diese Behausung hat keinen Zugang zu Unterhaltungseinrichtungen."
 "##1_entertainment_access##":"Diese Behausung hat kaum Zugang zu Unterhaltungseinrichtungen."
+"##100_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 100-Marke erreicht."
+"##1000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 1000-Marke erreicht."
+"##10000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 10000-Marke erreicht."
+"##15000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 15000-Marke erreicht."
 "##2_entertainment_access##":"Diese Behausung hat etwas Zugang zu Unterhaltungseinrichtungen."
+"##2000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 2000-Marke erreicht."
+"##20000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 20000-Marke erreicht."
+"##25000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 25000-Marke erreicht."
 "##3_entertainment_access##":"Diese Behausung hat nur sehr begrenzten Zugang zu Unterhaltungseinrichtungen."
+"##3000_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 3000-Marke erreicht."
 "##4_entertainment_access##":"Diese Behausung hat mäßigen Zugang zu Unterhaltungseinrichtungen."
 "##5_entertainment_access##":"Diese Behausung hat begrenzten Zugang zu Unterhaltungseinrichtungen."
+"##500_citizens_in_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 500-Marke erreicht."
+"##5000_citizens_inc_city##":"Die Bevölkerungszahl dieser Stadt hat zum ersten Mal in der Geschichte die 5000-Marke erreicht."
 "##6_entertainment_access##":"Diese Behausung hat guten Zugang zu Unterhaltungseinrichtungen."
 "##7_entertainment_access##":"Diese Behausung hat sehr guten Zugang zu Unterhaltungseinrichtungen."
 "##8_entertainment_access##":"Diese Behausung hat ausgezeichneten Zugang zu Unterhaltungseinrichtungen."
@@ -169,8 +178,8 @@
 "##balance##":"Kontostand"
 "##ballista##":"Ballista"
 "##barbarian_are_closing_city##":"Feinde nähern sich der Stadt."
-"##barbarian_attack_text##":""
-"##barbarian_attack_title##":"Feinde greifen die Stadt an."
+"##barbarian_attack_text##":"Roms Feinde stehen an den Grenzen der Stadt. Sie werden wohl bald mal auf einen Kelch Wein hereinschauen - oder auch auf zwei oder drei - oder was immer ihnen gerade in den Sinn kommt."
+"##barbarian_attack_title##":"Angriff der Barbaren!"
 "##barbarian_warrior##":"Ein Barbarenkrieger"
 "##barber_access##":"Barbierzugang"
 "##barber_average_life##":"Ist diese Stadt nicht einfach reizend?"
@@ -214,8 +223,8 @@
 "##beatyfull_insula##":"Herrschaftliche Insula"
 "##become_trade_center##":"Handelszentrum werden"
 "##below_average##":"Unterdurchschnittlich"
-"##better_class_road##":"Eine besser ausgebaute Straße"
 "##big_domus##":"Großes Mietshaus"
+"##big_fest_description##":"Das zwei Tage währende Fest ist vorüber. Der mit diesem Fest geehrte Gott ist zufrieden, die Bewohner umjubeln ihren Herrscher, und überall ist Freundlichkeit und guter Wille zu spüren."
 "##big_hovel##":"Großes Haus"
 "##big_hut##":"Großes Anwesen"
 "##big_palace##":"Großer Palast"
@@ -242,6 +251,7 @@
 "##build_road_tlp##":"Straßen bauen"
 "##building_need_road_access##":"Dieses Gebäude braucht einen Anschluss an die Straße."
 "##buildings##":"Bau"
+"##burning_ruins_info##":"Die Präfekten konnten diese Stelle nicht rechtzeitig erreichen, um das Gebäude zu retten. Sobald das Feuer erloschen ist, bleibt auf diesem Platz nur noch Schutt übrig."
 "##burning_ruins##":"Brennende Ruine"
 "##buy_price##":"Käufer zahlen"
 "##caesar_assign_new_title##":"Caesar hat Sie befördert, und zwar zum"
@@ -253,16 +263,23 @@
 "##cant_calc_prosperity##":"Ihre Stadt blüht auf. Wir hatten noch keine Möglichkeit, Ihren Wohlstand einzuschätzen!"
 "##cant_demolish_bridge_with_people##":"Brücke kann nicht zerstört werden, wenn sich Leute darauf befinden."
 "##captured_city##":"Eine eroberte Stadt"
+"##capua_win_text##":"Eure organisatorischen Fähigkeiten beeindrucken mich. Die Karriere von vielen Gouverneuren nimmt ein abruptes Ende, wenn ich sie auffordere, ihre erste echte Kolonie aufzubauen. Führernaturen wie Ihr sichern Roms Zukunft. Und jetzt - könnt Ihr Euren Erfolg wiederholen, oder war das alles einfach nur Glück?"
 "##carthaginian_soldier##":"Ein karthagischer Soldat"
 "##carthago_win_text##":"Dank Eurer ausgezeichneten Leistung ist die karthagische Bedrohung ein für allemal ausgelöscht. Unsere einstigen Feinde sind jetzt loyale römische Bürger - zumindest die, die noch atmen!"
 "##cartPusher_average_life##":"Den ganzen Tag Karren schieben ist wahrhaftig kein Zuckerschlecken, aber in dieser tollen Stadt zu wohnen wiegt das alles wieder auf."
+"##cartpusher_cant_unload_goods_in_factory##":"Der Empfänger dieser Waren wird sie nicht annehmen! Sieht so aus, als bräuchten sie da mehr Arbeiter."
 "##cartPusher_cantfind_destination##":"Diese Waren könnte man schneller nach Rom schieben, als nach dort, wohin ich unterwegs bin!"
 "##cartPusher_gods_angry##":"Ich bin kein sehr religiöser Mensch, aber sogar ich würde die Götter nicht so schlecht behandeln!"
 "##cartPusher_good_life##":"Was Städte angeht scheint die hier in Ordnung zu sein."
 "##cartPusher_high_workless##":"Die Arbeitslosigkeit ist so hoch, daß sogar meine Frau aufgehört hat rumzunörgeln, ich soll mir eine Stelle zu suchen!"
 "##cartPusher_low_entertainment##":"Es macht mir nichts aus, Karren zu schieben. Das ist jedenfalls unterhaltsamer als der Rest dieser Stadt!"
 "##cartPusher_need_workers##":"Wo man in dieser auch Stadt hinschaut, überall sieht man Stellenangebote!"
+"##cartPusher_normal_life##":"Alles scheint hier bestens zu funktionieren."
 "##cartPusher_so_hungry##":"Den ganzen Tag Karren zu schieben verbraucht Kraft. Wie soll ein Karrenschieber ohne Essen arbeiten?"
+"##cartSupplier_average_life##":"Das ist eine gute Stadt. Die Menschen leben gerne hier."
+"##cartSupplier_good_life##":"Das ist eine einfach großartige Stadt!"
+"##centurion_new_order_to_save_player##":"Gerade sind neue Befehle eingetroffen. Wie es scheint, hat der Imperator seine Meinung über Euch geändert, und so kann ich, den Göttern sei Dank, wieder nach Rom zurückkehren. Ich sage Euch daher Lebwohl ... fürs Erste."
+"##centurion_send_army_to_player##":"Meine Geduld mit Euch ist zu Ende. Da Ihr Euer Verhältnis zum Imperator nicht ausreichend verbessern konntet, sehe ich mich leider gezwungen, die mir aufgetragenen Befehle auszuführen, so unangenehm diese Pflicht auch sein mag. Ergebt Euch jetzt oder tragt die Konsequenzen!"
 "##ceres_badmood_info##":"Ceres' Unzufriedenheit ist sehr gefährlich, da sie die Menschen vor schlechten Ernten und Hungersnöten beschützt."
 "##ceres_desc##":"Landwirtschaft"
 "##ceres_goodmood_info##":"Ceres bringt Fruchtbarkeit für das Land und lässt das Getreide wachsen. Besänftigen Sie sie, oder bereiten Sie sich darauf vor zu hungern."
@@ -299,19 +316,25 @@
 "##citizens_like_chariot_races##":"Die Bürger lieben nichts mehr als Wagenrennen."
 "##city_cyrene##":"Kyrene"
 "##city_damascus##":"Damaskus"
-"##city_fire_text##":"Die Präfekten konnten diese Stelle nicht rechtzeitig erreichen, um das Gebäude zu retten. Sobald das Feuer erloschen ist, bleibt auf diesem Platz nur noch Schutt übrig."
+"##city_fire_text##":"Aufgrund von unzureichenden Feuerschutzmaßnahmen konnten viele Brände ausbrechen. In diesem Augenblick wüten die Flammen bereits in mehreren Teilen der Stadt."
 "##city_fire_title##":"Feuer in der Stadt"
 "##city_has_debt##":"Die Stadt schuldet Rom"
 "##city_has_runout_debt##":"Eurer Stadt ist das Geld ausgegangen. Caesar hat entschieden Euch mehr Gelder zu geben, aber er wird das nächste mal nicht so wohlwollend sein. Exportiert mehr Güter um Einnahmequellen für die Stadt zu erzeugen."
+"##city_has_runout_money_again##":"Ihr habt die von Rom geschickten Gelder verschwendet. Caesar ist wütend, hat sich aber bereit erklärt, Euch für die Dauer von 12 Monaten bis zu 5000 Denarii zu leihen. Ihr müsst mit Hilfe von Steuern und Exporten für Geld in der Stadtkasse sorgen."
+"##city_has_runout_money##":"Die Stadt hat kein Geld mehr. Caesar hat sich zwar bereit erklärt, mehr Geld zu schicken, beim nächsten Mal wird er allerdings nicht mehr so großzügig sein. Durch den Export von Waren könnte die Stadt mehr Geld verdienen."
 "##city_have_defence##":"Die Verteidigungsanlagen dieser Stadt hätten den Feind niemals durchlassen dürfen!"
 "##city_have_goods_for_request##":"Eure Warenhäuser berichten, dass ihr genügend dieser Güter habt um die Nachfrage des Imperators zu erfüllen."
 "##city_have##":"Stadtkasse verfügt über"
 "##city_health##":"Gesundheitsstatus der Stadt"
+"##city_in_debt_again##":"Stadt hat wieder Schulden"
+"##city_in_debt##":"Stadt hat Schulden"
 "##city_is_besieged##":"Stadt wird belagert"
 "##city_loathed_you##":"Sie werden in der ganzen Stadt verachtet"
 "##city_need_more_workers##":"Ihre Stadt braucht mehr Arbeitskräfte"
 "##city_sounds_off##":"Stadtgeräusche ausgeschaltet"
 "##city_sounds_on##":"Stadtgeräusche eingeschaltet"
+"##city_still_in_debt_text##":"Der Kaiser ist außer sich vor Wut, dass Ihr Rom noch immer Geld schuldet. Er gibt Euch 12 Monate Zeit, alle Eure Schulden zu begleichen, anderenfalls wird Eure Misswirtschaft Euch teuer zu stehen kommen."
+"##city_still_in_debt##":"Stadt hat immernoch Schulden"
 "##city_under_barbarian_attack##":"Die feindlichen Soldaten, die sich in der Nähe der Stadt herumtreiben, tragen nicht gerade zu einer guten Friedenswertung bei!"
 "##city_under_rome_attack##":"Die herannahenden kaiserlichen Legionen verängstigen Ihre Bürger, und das tut Ihrer Friedenswertung nicht gerade gut."
 "##city##":"Stadt"
@@ -347,6 +370,8 @@
 "##colege_access_perfectly##":"Alle Viertel, die Bildungseinrichtungen wünschen, haben diese. Jedoch könnte der Bau weiterer Akademien die Größe der Klassen herabsetzen."
 "##collapse_available_damage_risk##":"Sehr hohe Einsturzgefahr"
 "##collapse_immitent##":"Einsturz droht"
+"##collapsed_building_text##":"Ein Gebäude ist eingestürzt. Da das Gebäude von den Ingenieuren der Stadt nicht gut genug gewartet wurde, ist es instabil geworden und unter seinem eigenen Gewicht zusammengebrochen."
+"##collapsed_building_title##":"Eingestürztes Gebäude"
 "##collapsed_ruins_info##":"Diese zerfallenen Überreste alter Gebäude verringern die Attraktivität der in ihrer Nähe liegenden Grundstücke."
 "##colleges##":"Akademien"
 "##colloseum_haveno_animal_bouts##":"Momentan keine Tierkämpfe"
@@ -410,10 +435,12 @@
 "##destroy_bridge_warning##":"Vorsicht beim Abriss von Brücken. Isolierte Orte können sich nicht lange halten, wenn sie von der Straße nach Rom abgeschnitten sind."
 "##destroy_bridge##":"Brücke abreißen"
 "##destroy_fort##":"Fort abreißen"
+"##destroyed_building_title##":"Zerstörtes Gebäude "
 "##devastate_granary##":"Silo leeren"
 "##devastate_warehouse##":"Leerung des Lagerhauses STARTEN"
 "##developers##":"ENTWICKLER:"
 "##difficulty##":"Schwierigkeitsgrad"
+"##disabled_draw_salary_for_free_reign##":"Der Senat gestattet Ihnen nicht, auch jetzt noch ein Gehalt zu beziehen, da Sie Ihre Regierung auf eigenen Wunsch fortsetzen."
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"Entsatztruppe losschicken?"
 "##dispatch_gift##":"Ein Geschenk schicken"
@@ -440,6 +467,7 @@
 "##dock_no_workers##":"Wenn hier ein Schiff anlegt, wird es keine Arbeiter finden, die es be- oder entladen."
 "##dock##":"Dock"
 "##docked_buying_selling_goods##":"Angelegt, kauft und verkauft Güter."
+"##dockers_taking_our_goods##":"Die Dockarbeiter bringen unsere Waren jetzt ins Lagerhaus."
 "##doctor_average_life##":"Das ist eine wunderbare Stadt."
 "##doctor_gods_angry##":"Wenn wir den Göttern nicht mehr Respekt zollen, dann werden wir ihren Zorn zu spüren bekommen!"
 "##doctor_good_life##":"Die Stadt scheint bei guter Gesundheit zu sein."
@@ -488,6 +516,8 @@
 "##empbutton_low_work##":"Arbeitet schlecht. Ordnen Sie dem Sektor mehr Arbeiter zu."
 "##empbutton_simple_work##":"Arbeitet gut, es sollten diesem Sektor jedoch mehr Arbeitskräfte zugewiesen werden."
 "##empbutton_tooltip##":"Klicken Sie hier, um die Priorität für diese Kategorie vorzugeben"
+"##emperor_anger_text##":"Ihr weigert Euch, mir zu senden, was ich forderte? Wollt Ihr mich beleidigen?"
+"##emperor_anger##":"Wut des Imperators"
 "##emperor_changed_title##":"Wechsel auf dem Kaiserthron"
 "##emperor_favour_00##":"Der Imperator ist wütend auf Sie."
 "##emperor_favour_01##":"Der Imperator ist unglaublich wütend und erwägt, Sie ins Exil zu schicken."
@@ -510,7 +540,8 @@
 "##emperor_favour_18##":"Der Imperator ist außer sich vor Freude über Ihre Leistung."
 "##emperor_favour_19##":"Der Imperator ist mit Ihrer Leistung mehr als zufrieden."
 "##emperor_favour_20##":"Der Imperator ist unglaublich angetan von Ihrer Leistung und erwägt, Sie als seinen Nachfolger zu bestimmen."
-"##emperor_request##":"Kaiserliche Forderung"
+"##emperor_request_money##":"Imperator fordert Geld"
+"##emperor_request##":"Imperator fordert Waren"
 "##emperor_send_money_to_you_nearest_time##":"Ihr Ruf einer wohlhabenden Stadt wurde dadurch sehr in Mitleidenschaft gezogen, dass Ihnen der Imperator unlängst aus der Patsche helfen musste."
 "##emperor_wrath_by_debt_text##":"Ich bin zutiefst unzufrieden. Trotz all der Gelder, die ich in Eure Stadt investiert habe, und der Großzügigkeit des Senats, was Kredite anbetrifft, habt Ihr mich enttäuscht. Eure Stadt hat das geborgte Geld nicht zurückgezahlt. Mein Vertrauen in Euch war fehl am Platze, und ich werde mir an Eurer Stelle einen neuen Gouverneur suchen müssen. Vielleicht ergeht es Euch ja auf dem neuen Posten besser, den ich für Euch vorgesehen habe..."
 "##emperor##":"Imperator"
@@ -529,9 +560,12 @@
 "##emw_buy##":"kauft"
 "##emw_sell##":"verkauft"
 "##emw_sold##":"Verkauft"
+"##enemies_at_the_door##":"Feinde vor den Toren"
+"##enemies_attack_title##":"Feinde greifen die Stadt an."
 "##enemies_hard_to_me##":"Dieser Soldat ist zu stark für mich!"
 "##enemies_very_easy##":"Mit diesen Schlappschwänzen sollten wir locker fertigwerden!"
 "##enemies_very_hard##":"Wir werden unser Bestes tun, aber selbst für römische Soldaten ist schwierig, diesen Feind zu besiegen!"
+"##enemy_army_attack_city##":"Zur Stunde marschiert eine feindliche Armee direkt auf die Stadt zu. Einige in der Nähe liegende Dörfer wurden von ihr bereits geplündert, und ein Angriff auf die Stadt ist innerhalb eines Jahr zu erwarten."
 "##enemy_army_threating_a_city##":"Eine feindliche Armee, die eine Stadt des Imperiums bedroht"
 "##engineer_average_life##":"Alles scheint hier bestens zu funktionieren."
 "##engineer_building_allok##":"Ich werde kaum gebraucht, diese Gebäude sind in fabelhaftem Zustand."
@@ -798,6 +832,8 @@
 "##immigrant_so_hungry##":"Wenn ich noch länger hierbleibe, werde ich unter Garantie sterben. Es gibt nirgendwo irgendwas zu essen."
 "##immigrant_want_to_be_liontamer##":"Ich habe gehört, dass es hier Arbeit geben soll. Ich möchte Löwenbändiger werden!"
 "##immigrant_where_my_home##":"Ich bin neu hier. Wisst Ihr einen Platz, wo ich wohnen könnte?"
+"##imperial_reminder_text##":"Habt Ihr meine letzte Forderung vergessen? Ich warte zunehmend ungeduldig auf die Lieferung."
+"##imperial_reminder##":"Kaiserliche Mahnung"
 "##imperial_request_cance_badly_affected##":"Die kaiserliche Forderung, die Sie kürzlich storniert haben, hat Ihrer Stellung in Rom schwer geschadet."
 "##import_fn##":"Importe"
 "##import##":"Importiert"
@@ -826,6 +862,7 @@
 "##iron_mine##":"Eisenmine"
 "##iron##":"Eisen"
 "##its_very_peacefull_province##":"Nie zuvor hat es im Imperium eine friedlichere Stadt gegeben als diese hier!"
+"##ive_asked_senate_proclaim_you_a_god##":"In jeder Eurer Aufgaben habt ihr alle Hindernisse überwunden und jeden Feinde besiegt, sogar wenn ich selbst gegen Euch gewettet hatte. Niemand kann Euch das Recht zu herrschen absprechen. Ich habe den Senat bereits gebeten, Euch zum Gott erklären zu lassen."
 "##judaean_warrior##":"Ein Krieger aus Judaea"
 "##labor##":"Arbeit"
 "##land_route##":"Landweg"
@@ -837,6 +874,7 @@
 "##large_temple##":"Großer Tempel"
 "##large_temples##":"Große Tempel"
 "##large##":"Groß"
+"##last_riots_bad_for_peace_rating##":"Die kürzlichen Unruhen in der Stadt hatten einen negativen Effekt auf die allgemeine Friedenswertung."
 "##last_year##":"Letztes Jahr"
 "##lawless_area##":"Ein gesetzloses Gebiet. Die Leute sind völlig verängstigt."
 "##layer_crime##":"Kriminalität"
@@ -869,6 +907,8 @@
 "##library_no_workers##":"Die Regale dieser Bibliothek sind leer und der hiesigen Nachbarschaft nicht von Nutzen."
 "##library##":"Bibliothek"
 "##lindum_extremely_dangerous_province##":"Lindum: eine extrem gefährliche Provinz"
+"##line_formation_text##":"Eine einfache Formation, bietet verteidigenden Truppen einen kleinen Vorteil."
+"##line_formation_title##":"Linienformation"
 "##lion_pit_bad_work##":"Außer mir sind keine Angestellten da. Unter solchen Umständen kann ich nicht arbeiten! Bestenfalls kann ich in drei Monaten einen Löwen ausbilden."
 "##lion_pit_need_some_workers##":"Wir sind leicht unterbesetzt und können daher höchstens zwei Löwen pro Monat anbieten."
 "##lion_pit_no_workers##":"Ohne Tierpfleger kann dieses Löwenhaus keine neuen Löwen für die Spiele ausbilden."
@@ -960,14 +1000,17 @@
 "##meat_farm##":"Tier-Farm"
 "##meat##":"Fleisch"
 "##mediolanum_win_text##":"Dass Hannibal mit seinen Elefanten die Alpen überschreiten konnte war einfach erstaunlich. Dass Mediolanum trotz seines Angriffs blühen und gedeihen konnte, ist ein Wunder. Euer Erfolg wendet die Wogen des punischen Krieges in eine für Rom günstige Richtung. Ganz Rom ist Euch zu Dank verpflichtet."
+"##merchant_just_unloading_my_goods##":"Das Lagerhaus lässt gerade Waren abladen, die ich mit meinen Tieren hier hergebracht habe."
 "##merchant_little_busy_now##":"Ich bin im Moment ziemlich beschäftigt."
 "##merchant_notbad_city##":"Ich habe schon in viel schlechteren Städten als dieser hier Rennen gefahren."
 "##merchant_wait_for_deal##":"Ich kann es nicht erwarten, hier etwas Handel zu treiben. Ich liebe ein gutes Geschäft!"
 "##mercury_desc##":"Handel"
 "##mercury##":"Merkur"
+"##message_from_centurion##":"Vom Zenturio der Legion ..."
 "##message##":"Nachricht"
 "##messageBtnTooltip##":"Nachrichten von Ihren Schreibern"
 "##messages##":"Nachrichten"
+"##middle_fest_description##":"Nun, da sich das den ganzen Tag über währende Fest dem Ende zuneigt, wanken müde, aber glückliche Bürger frohen Mutes nach Hause, während der so geehrte Gott gütig lächelnd auf sie herabschaut."
 "##middle_festival##":"Großes Fest"
 "##middle_file_risk##":"Bei diesem Gebäude besteht eine gewisse Brandgefahr."
 "##middle_insula##":"Mittlere Insula"
@@ -986,6 +1029,7 @@
 "##migration_middle_lack_workless##":"Die hohe Arbeitslosigkeit ist ein Problem."
 "##migration_middle_lack_workless##":"Arbeitsplatzmangel verhindert Einwanderung"
 "##migration_people_away##":"Fehlende Arbeitsplätze treiben die Leute fort."
+"##migration_peoples_arrived_in_city##":"Menschen wandern in die Stadt ein"
 "##migration_war_deterring##":"Der Krieg schreckt Immigranten ab!"
 "##miletus_win_text##":"Es ist genau, wie ich erwartet hatte. Dem Beispiel von Miletus folgend sind jetzt auch andere Städte im Osten in Verhandlungen um Aufnahme in unser Imperium eingetreten. Und die Erfahrungen, die Ihr mit dem Fischfang gemacht habt, waren eine Lektion für alle meine Gouverneure!"
 "##military_academy_patrly_workers##":"Wenn neue Soldaten ihre Grundausbildung in der Kaserne abgeschlossen haben, möchten sie ihre Qualität und ihre Fähigkeiten an dieser Akademie weiter verbessern. Das geht aber erst, wenn die Akademie den vollen Personalstand erreicht hat."
@@ -1061,6 +1105,8 @@
 "##missionBtnTooltip##":"Kurze Beschreibung"
 "##missioner_high_barbarian_risk##":"Seid gegrüßt! Meine Lehren über die Segnungen aus Rom scheinen diese furchterregenden Barbaren ziemlich zu beeindrucken."
 "##moment_fire_risk##":"Dieses Gebäude könnte jederzeit in Brand geraten."
+"##money_stolen_text##":"In ihrer Verzweiflung sind einige Bürger zu Dieben geworden. Gesetzestreue Bürger dagegen überlegen laut, ob sie nicht lieber wegziehen sollten. Tut umgehend etwas, um die Stimmung der Menschen zu verbessern."
+"##money_stolen_title##":"Leute sind wütend"
 "##month_1_short##":"Jan"
 "##month_10_short##":"Okt"
 "##month_11_short##":"Nov"
@@ -1078,6 +1124,8 @@
 "##months_until_defeat##":"Monate bis Niederlage"
 "##months_until_victory##":"Monate bis Sieg"
 "##months##":"Monate"
+"##mopup_formation_text##":"Diese Formation ist die effizienteste Art, mit den Überbleibseln einer aufgeriebenen Armee umzugehen."
+"##mopup_formation_title##":"Aufräum-Formation"
 "##more_0_month_from_festival##":"Ihre Bürger, einige immer noch trunken von der letzten Festivität, feiern Ihre Großzügigkeit."
 "##more_12_month_from_festival##":"Ihre Leute sind sehr unglücklich über die Aussicht, ein weiteres Jahr ohne Feste leben zu müssen."
 "##more_16_month_from_festival##":"Die Leute können sich nicht mehr an das letzte Fest in der Stadt erinnern."
@@ -1118,7 +1166,6 @@
 "##need_vines_farm##":"Weinberg anlegen"
 "##neptune_desc##":"Seefahrt"
 "##neptune_despleasure_tip##":"Seeleute halten Neptun für einen kapriziösen Gott, selbst wenn er gut gelaunt ist. Niemand sollte, wenn er der Fischerei oder dem Seehandel nachgehen will, Neptuns Zorn erregen."
-"##neptune_wrath_of_you##":"Neptun beschützt die Seeleute und ihre Schiffe vor den Unbilden der Meere. Verärgern Sie ihn, und Sie setzen das Leben Ihrer Seeleute aufs Spiel."
 "##new_festival##":"Ein neues Fest abhalten"
 "##new_governor##":"Der neue Gouverneur"
 "##new_map##":"Neue Karte"
@@ -1135,6 +1182,7 @@
 "##no_goods_for_request##":"In Euren Lagerhäusern sind nicht genügend Güter."
 "##no_industries_in_city##":"Keine Gewerbestätten in der Stadt"
 "##no_people_in_city##":"Keine Menschen in der Stadt!"
+"##no_people_in_this_locality##":"Keine Menschen an dieser Stelle."
 "##no_priority##":"Keine Priorität"
 "##no_room_for_citizens##":"zuviel"
 "##no_space_for_evolve##":"Dieses Gebäude würde sich bald weiterentwickeln, wenn es mehr Platz dafür hätte."
@@ -1174,6 +1222,8 @@
 "##olive_farm_slow_work##":"Hier arbeiten nur wenig Leute. Die Olivenproduktion geht deshalb nur langsam vonstatten."
 "##olive_farm##":"Oliven-Farm"
 "##olive##":"Oliven"
+"##open_formation_text##":"Die offene Formation ermöglicht es den Truppen, ein weites Gebiet abzudecken, bietet ihnen jedoch keinen Formationsbonus."
+"##open_formation_title##":"Offene Formation"
 "##open_trade_route##":"Handelsroute öffnen"
 "##options##":"Optionen"
 "##oracle_info##":"Dieser Marmortempel erhöht die Attraktivität der umgebenden Häuser und erfreut alle Götter. Er bietet jedoch weder Priestern eine Arbeitsstelle noch ermöglicht er Häusern Zugang zu einem bestimmten Gott."
@@ -1182,6 +1232,7 @@
 "##oracles_in_city##":"Orakel in der Stadt"
 "##oracles##":"Orakel"
 "##other##":"Verschiedenes"
+"##our_enemies_near_city##":"Unsere Feinde befinden sich in Sichtweite der Stadt."
 "##our_foods_level_are_low##":"Unsere Nahrungsmittelbestände sind niedrig"
 "##out_legion_back_to_city##":"Unsere Legion marschiert zu unserer Stadt zurück."
 "##out_legion_go_to_location##":"Unsere Legion ist auf dem Marsch, um eine Imperiumsstadt zu retten."
@@ -1250,6 +1301,7 @@
 "##poor_city_mood_lack_migration##":"Schlechte Stimmung verhindert Immigration."
 "##poor_housing_discourages_migration##":"Ihr habt viel Geld, aber schlechte Wohnungen schrecken Leute ab"
 "##pop##":"Bev"
+"##population_milestone##":"Neuer Bevölkerungsrekord"
 "##population_registered_as_taxpayers##":"der Bevölkerung sind steuertechnisch erfasst"
 "##population_tooltip##":"Aktuelle Bevölkerungszahl der Stadt"
 "##population##":"Bevölkerung"
@@ -1283,9 +1335,9 @@
 "##prefecture##":"Präfektur"
 "##prepare_to_festival##":"Vorbereitung für das kommende Fest"
 "##press_escape_to_exit##":"Mit Rechtsklick verlassen"
+"##priest_average_life##":"Diese Stadt ist ein ganz netter Ort."
 "##priest_gods_angry##":"Wir sind in Gefahr! Die Stadt hat keinen Respekt vor den Göttern!"
 "##priest_good_life##":"In dieser Stadt lebt man sehr gut."
-"##priest_good_life##":"Diese Stadt ist ein ganz netter Ort."
 "##priest_high_workless##":"Die Arbeitslosenquote ist hier beunruhigend hoch."
 "##priest_low_entertainment##":"Diese Stadt ist langweilig. Sogar ein Priester schätzt schließlich von Zeit zu Zeit einen guten Gladiatorenkampf!"
 "##priest_need_workers##":"Diese Stadt braucht dringend noch mehr Arbeiter."
@@ -1336,6 +1388,7 @@
 "##reorient_map_to_north##":"Ansicht nach Norden ausrichten"
 "##replay_game##":"Karte erneut spielen"
 "##request_btn_tooltip##":"Klicken Sie hier, um die Ware abzuschicken"
+"##request_faild_text#":"Ihr trotzt mir noch immer? Vergesst meine Forderung. Ich werde mich anderweitig umsehen. Wenn Ihr Glück habt, werde ich Euch vielleicht mal wieder beehren."
 "##request_failed##":"Ihr Unvermögen, die letzte Forderung des Imperators zu erfüllen - ganz gleich ob durch Unfähigkeit oder mit Absicht - hat Ihrem Ansehen in Rom etwas geschadet. Ihre Gunstwertung wäre gestiegen, wenn Sie den Wunsch erfüllt hätten."
 "##requierd##":"Nötig"
 "##reservoir_info##":"Diese gigantische Zisterne speichert sauberes Trinkwasser, das durch Tonrohre über weite Stadtgebiete verteilt wird. Aquädukte können Reservoire über lange Strecken miteinander verbinden."
@@ -1347,20 +1400,31 @@
 "##return_to_main_map##":"Zurück zur Haupt-Spielkarte"
 "##rift_info##":"Risse im Boden"
 "##right_click_to_exit##":"Mit Rechtsklick verlassen"
+"##rioter_in_city_text##":"Aufgestachelte Pöbelbanden treiben in Teilen der Stadt ihr Unwesen. Die Leute schreien nach Rache, weil der Gouverneur ihre Beschwerden und ihre verzweifelte Situation ignoriert."
+"##rioter_in_city_title##":"Aufstände in der Stadt"
+"##rioter_rampaging_accross_city##":"Randalierer ziehen durch die Stadt. Sie plündern und brennen alles nieder, was sie zwischen die Finger bekommen."
 "##rioter_say_1##":"Der Gouverneur kümmert sich nicht um mich, deshalb werde ich ihm mal zeigen, wie ich mich um seine Stadt kümmere!"
 "##rioter_say_3##":"Wenn Ihr wissen wollt, wie brennende Städte aussehen, dann passt mal gut auf!"
 "##rladv_mood##":"Die Götter sind"
 "##road_caption##":"Straße"
 "##road_from_rome##":"Das ist die Straße nach Rom. Von hier aus treffen die Immigranten ein, daher ist es wichtig, die Straße offenzuhalten. Auch die Händler ziehen auf dieser kaiserlichen Straße durch Ihre Provinz."
+"##road_paved_text##":"Die Leute mögen Plätze lieber!"
+"##road_paved_title##":"Eine besser ausgebaute Straße"
 "##road_text##":"Straßen sind für das reibungslose Funktionieren der Stadt lebenswichtig, da die Bewohner nur so ihre Häuser verlassen können."
 "##road_to_distant_region##":"Diese Straße führt in die entlegeneren Gegenden des Imperiums. Es handelt sich dabei um eine kaiserlicher Straße, auf der das ungehinderte Fließen des Verkehrs gewährleistet sein muss."
-"##roadBtnTooltip##":""
 "##rock_caption##":"Felsen"
 "##rock_text##":"Felsen sind unpassierbar und können nicht weggeräumt werden. Marmorsteinbrüche und Eisenerzbergwerke können nur in der Nähe von Felsen eingerichtet werden."
 "##roman_city##":"Eine römische Stadt"
+"##rome_gratitude_request_text##":"Rom dankt Euch für Eure kürzliche Unterstützung. Eure Loyalität soll nicht vergessen werden."
+"##rome_gratitude_request_title##":"Dank des Imperators"
 "##rome_lowers_wages##":"Rom senkt die Gehälter"
+"##rome_need_some_goods##":"Rom benötigt folgende Waren. Bitte sorgt für eine prompte Lieferung."
+"##rome_need_some_money##":"Hiermit gewähre ich Euch das Privileg, zum Wohle Roms zusätzliche Gelder spenden zu dürfen. Schickt sie bald, und ich werde vielleicht Euch zu Ehren eine Statue errichten lassen."
 "##rome_prices##":"Durch Rom festgelegte Preise"
 "##rome_raises_wages##":"Rom erhöht die Gehälter"
+"##romechastener_attack_text##":"Eine römische Legion, der die Regierung dieser Stadt nicht gefällt, ist in Sichtweite vor den Stadtmauern. Das sieht gar nicht gut aus, wirklich nicht."
+"##romechastener_attack_title##":"Angriff der Legion "
+"##RomeChastenerArmy_troops_at_our_gates##":"Vor den Toren stehen Truppen des Kaisers."
 "##romeGuard_average_life##":"Hier scheint alles ruhig zu sein ..."
 "##romeGuard_gods_angry##":"Die Götter sind böse auf diesen Ort!"
 "##romeGuard_good_live##":"Ich mag ja vielleicht nur ein einfacher Soldat sein, aber sogar ich kann sehen, daß das hier eine großartige Stadt ist!"
@@ -1372,6 +1436,7 @@
 "##rotate_map_counter-clockwise##":"Karte gegen den Uhrzeigersinn drehen"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
+"##sailing_to_city_docks##":"Segelt zu den Docks in der Stadt."
 "##samnite_soldier##":"Ein samnitischer Soldat"
 "##sarmizegetusa_dangerous_province##":"Sarmizegetusa: eine sehr gefährliche Provinz"
 "##save_city##":"Spiel speichern"
@@ -1400,6 +1465,7 @@
 "##scrw_subject##":"Betreff"
 "##sdlr_bold##":"Draufgängerisch"
 "##seamerchant_noany_trade##":"Wenn es nach mir ginge, dann würde ich bestimmt nicht in hierher segeln. Diese Stadt kauft und verkauft absolut nichts!"
+"##seamrchant_another_successful_voyage##":"Das war eine weitere erfolgreiche Reise! Der Profit an diesem Ort ist die Seekrankheit wert!"
 "##select_city_layer##":"Einen Stadtbericht auswählen"
 "##select_location##":"Ort wählen"
 "##select_this_graph##":"Wählen Sie dieses Diagramm"
@@ -1435,6 +1501,7 @@
 "##sentiment_people_veryupset_you##":"Die Leute sind sehr ungehalten über Sie"
 "##set_amount_to_donate##":"Geben Sie die Höhe der Spende ein."
 "##set_mayor_salary##":"Klicken Sie hier, um Ihr persönliches Gehalt festzulegen"
+"##setup_traderoute_to_import##":"Errichten Sie eine Handelsroute für den Import"
 "##several_crimes_but_area_secure##":"Hier wurde kürzlich von mehreren Straftaten berichtet, im Großen und Ganzen ist das Viertel jedoch einigermaßen sicher."
 "##shipyard_info##":"Mit ein paar Wagenladungen Holz und genügend Arbeitskräften baut die Werft Fischerboote für die Kais der Stadt."
 "##shipyard_notneed_ours_boat##":"Momentan gibt es keine Fischereihäfen, die nach unseren Booten verlangen."
@@ -1448,7 +1515,6 @@
 "##showing_lisistrata_aristopanes##":"Heute: 'Lysistrata' von Aristophanes"
 "##showing_odyssey_homer##":"Heute: 'Die Odyssee' von Homer"
 "##showing_thecrito_plato##":"Heute: 'Gorgias' von Platon"
-"##simple_formation_text##":"Eine einfache Formation, bietet verteidigenden Truppen einen kleinen Vorteil."
 "##sld_quite_daring##":"Ziemlich mutig"
 "##sldh_health_sparse##":"Spärlich"
 "##sldh_health_strong##":"Stark"
@@ -1465,6 +1531,7 @@
 "##small_ceres_temple##":"Tempel der Ceres"
 "##small_colloseum_show##":"Ihre Kolosseen brauchen mehr Attraktionen! Bieten Sie ihnen Gladiatoren oder Löwen an, das könnte den Unterhaltungswert in Teilen der Stadt steigern."
 "##small_domus##":"Kleine Insula"
+"##small_fest_description##":"Am Abend fand ein kleines Fest statt. Alle haben sich über diese Unterbrechung des täglichen Einerleis gefreut."
 "##small_festival##":"Kleines Fest"
 "##small_food_on_next_month##":"- wenige Nahrungsmittel im kommenden Monat"
 "##small_hovel##":"Kleines Haus"
@@ -1483,6 +1550,7 @@
 "##smallcurse_of_mars_text##":"Mars wacht über Soldaten und gibt ihnen Mut im Gefecht. Niemand wagt es, ohne Mars' Segen zu kämpfen."
 "##smallcurse_of_mars_text##":"Mars, Beschützer der Soldaten und Garant großer Siege, ist ungehalten. Ihre Truppen befürchten, dass sie eine schwere Schlacht verlieren könnten, falls er nicht beschwichtigt wird!"
 "##smallcurse_of_mercury_description##":"Merkur, Götterbote und Beschützer der Kaufleute, ist unzufrieden. Ihre Händler befürchten, dass sein Schutz schwindet."
+"##smallcurse_of_neptune##":"Neptun beschützt die Seeleute und ihre Schiffe vor den Unbilden der Meere. Verärgern Sie ihn, und Sie setzen das Leben Ihrer Seeleute aufs Spiel."
 "##smcurse_of_venus_description##":"Venus, die Überbringerin von Liebe und Harmonie, ist aufgebracht. Das verheißt für die Präfekten Ihrer Stadt nichts Gutes!"
 "##smcurse2_of_venus_description##":"Wenn Venus unzufrieden ist, lässt sie die Stimmung der Menschen sinken. Es wird auch behauptet, dass sie Krankheiten schickt."
 "##soldier##":"Soldat"
@@ -1499,6 +1567,7 @@
 "##some_houses_need_better_library_access##":"Einige Bereiche der Stadt verlangen nach besserem Zugang zu Bibliotheken. Wohlhabendere Bürger lesen gerne und schätzen es nicht, bis zu einer Bibliothek weit laufen zu müssen."
 "##some_houses_need_library_or_colege_access##":"Bestimmte Bereiche der Stadt benötigen jetzt Zugang zu einer Schule oder Akademie. Fehlender Zugang zu Bildungseinrichtungen verhindert die Entwicklung besserer Wohnungen in Teilen der Stadt."
 "##some_low_fire_risk##":"Bei diesem Gebäude besteht eine geringe Brandgefahr."
+"##some_soldiers_need_weapon##":"Einige Soldaten werden Waffen benötigen"
 "##sound_settings##":"Sound"
 "##south##":"Süden"
 "##southEast##":"Südosten"
@@ -1561,10 +1630,12 @@
 "##theater_no_workers##":"Der Wind ist das einzige, was sich in diesem Theater bewegt. Ohne Arbeiter kann es den Leuten keine Dramen bieten."
 "##theater##":"Theater"
 "##theaters##":"Theater"
+"##these_goods_import_only##":"Diese Waren sind nur durch Import zu bekommen"
 "##these_rift_info##":"Diese Spalten wurden durch Erdbeben verursacht. Sie können weder passiert noch aufgefüllt werden, und niemand wohnt gerne direkt daneben."
 "##this_fire_can_spread##":"Diese Feuer breiten sich immer weiter aus, wenn man sie nicht schnell genug löscht."
 "##this_is_ruins##":"Das sind die Überreste des obigen Gebäudes. Verwahrloste Stellen wie diese tragen nicht dazu bei, die Gegend aufzuwerten."
 "##this_lawab_province_become_very_peacefull##":"Dies ist eine gesetzestreue Provinz, die mit der Zeit sehr friedlich werden kann."
+"##this_province_feels_peaceful##":"Diese Provinz fühlt sich einigermaßen sicher, ein Gefühl, das sich mit der Zeit steigern wird."
 "##this_time_you_city_not_need_religion##":"Bis jetzt sind Ihre Bürger mit anderen Aspekten des Stadtlebens beschäftigt. Wenn Ihre Stadt wächst, werden sie ungehinderten Zugang zu verschiedenen Tempeln verlangen."
 "##this_year##":"Bis jetzt in diesem Jahr"
 "##timber_factory_stock##":"Gelagertes Holz,"
@@ -1629,7 +1700,6 @@
 "##trouble_too_far_from_water##":"Dieses Gebäude befindet sich nicht neben einem Gewässer!"
 "##try_reduce_your_high_salary##":"Rom findet, dass Ihr Gehalt für Ihren momentanen Rang zu hoch ist. Ihre Gunstwertung wird steigen, wenn Sie das Gehalt etwas reduzieren."
 "##try_reduce_your_salary##":"Rom empfindet Ihr Gehalt für Ihren momentanen Rang als zu hoch. Sie täten gut daran, es ein wenig zu reduzieren."
-"##tutorial_prefecture_info##":""
 "##tutorial_win_text##":"Ganz herzlichen Glückwunsch! Ihr habt die Grundlagen zu meiner Zufriedenheit gemeistert. Um Eure Ausbildung aber voranzutreiben, habe ich jetzt noch eine weitere hübsche kleine Aufgabe für Euch. Auf nach Brundisium!"
 "##tutorial2_win_text##":"Ihr lernt schnell! Jetzt könnt Ihr bereits eine echte Aufgabe erfüllen. Von nun an dürft Ihr selbst wählen, in welche Richtung Euch Eure Karriere führen soll. Wagt Euch an die eher friedlichen Provinzen, wenn Ihr Euch auf Verwaltung und Politik konzentrieren wollt, oder an die gefährlicheren, wenn Ihr Roms Feinden die Stirn bieten wollt."
 "##unable_fullfill_request##":"Erfüllung der Forderung nicht möglich"
@@ -1764,6 +1834,7 @@
 "##wine_workshops_need_some_workers##":"Diese Kellerei ist unterbesetzt und braucht für die Weinproduktion viel länger als sie sollte."
 "##wine_workshops_patrly_workers##":"Diese Kellerei arbeitet unter ihrer maximalen Kapazität. Die Weinerzeugung läuft deshalb etwas langsamer als nötig wäre."
 "##wine##":"Wein"
+"##winning_population##":"Siegzahl Bevölkerung"
 "##wn_barbarian##":"Barbar"
 "##wn_carthaginians##":"Karthager"
 "##wn_celt_soldier##":"Kelten-Krieger"
@@ -1806,7 +1877,16 @@
 "##working_have_very_little_labor_access##":"Dieses Gebäude hat momentan nur geringe Möglichkeiten, Arbeitskräfte für den Betrieb zu erhalten."
 "##working_industries##":"aktive Gewerbestätten in der Stadt"
 "##working_industry##":"aktive Gewerbestätte in der Stadt"
+"##wrath_of_ceres_description##":"Durch den fehlenden Respekt erzürnt, bringt Ceres eine Heuschreckenplage über die Bürger der Stadt. Es wird einige Zeit dauern, bis es auf den Farmen wieder etwas zu ernten gibt."
+"##wrath_of_ceres_title##":"Wenn Ceres zürnt"
+"##wrath_of_mars_text##":"Mars' bitterer Zorn ist über Euch gekommen. Lächelt ruhig, wenn Ihr dies wagt, doch auch wenn Ihr heute keine Waffen besitzt, lässt Mars sich nicht gern ungestraft beleidigen. Seid gewarnt!"
+"##wrath_of_mars_title##":"Wenn Mars zürnt"
+"##wrath_of_mercury_description##":"Rasend vor Zorn lässt Merkur Feuer und Steine vom Himmel regnen. Alle Gebäude, in denen Güter gelagert werden, fallen mit allen darin befindlichen Waren der Vernichtung anheim!"
+"##wrath_of_mercury_title##":"Wenn Merkur zürnt"
+"##wrath_of_neptune_description##":"Ihr habt meinen Zorn auf Euch gezogen! Ich freue mich schon auf den Tag, an dem Eure Stadt Schiffe benutzt, denn dann wird die Rache mein sein! "
 "##wrath_of_neptune_title##":"Neptuns Zorn"
+"##wrath_of_venus_description##":"Eure unglücklichen Bürger füllen Venus' Herz mit Trauer. Sie kann nicht anders - sie muss ihre Traurigkeit mit ihnen teilen und lässt die Stadt in Krankheit und Elend versinken."
+"##wrath_of_venus_title##":"Wenn Venus zürnt"
 "##wt_cartPusher##":"Karrenschieber"
 "##wt_criminal##":"Krimineller"
 "##wt_docker##":"Dockarbeiter"
@@ -1848,7 +1928,6 @@
 "##your_prosperity_raising##":"Ihre Wohlstandswertung steigt."
 "##your_province_quiet_and_secure##":"Das sichere und ruhige Leben in dieser Provinz ist schon geradezu legendär. Andere Gouverneure spielen wahrscheinlich bereits mit dem Gedanken, sich hier zur Ruhe zu setzen!"
 "##your_salary_frowned_senate##":"Die Dreistigkeit, mit der Sie sich ein Gehalt zahlen, das nicht Ihrem Rang entspricht, erregt Missfallen in Rom."
-"#winning_population##":"Siegzahl Bevölkerung"
 "Variable":"DEUTSCH (v1.1)"
 
 
@@ -1878,86 +1957,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 }

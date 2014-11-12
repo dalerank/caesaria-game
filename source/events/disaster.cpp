@@ -26,6 +26,7 @@
 #include "objects/ruins.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/tilesarray.hpp"
+#include "city/cityservice_peace.hpp"
 #include "build.hpp"
 #include "core/foreach.hpp"
 
@@ -102,6 +103,13 @@ void DisasterEvent::_exec( Game& game, unsigned int )
     break;
     }
 
+    city::PeacePtr peaceSrvc;
+    peaceSrvc << game.city()->findService( city::Peace::defaultName() );
+    if( peaceSrvc.isValid() )
+    {
+      peaceSrvc->buildingDestroyed( overlay, _type );
+    }
+
     TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( tile, clearedTiles )
     {
@@ -111,7 +119,8 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       if( needBuildRuins )
       {
         TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins,
-                                            building::plagueRuins, building::collapsedRuins };
+                                            building::plagueRuins, building::collapsedRuins,
+                                            building::collapsedRuins };
 
         ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
 

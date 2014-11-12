@@ -25,11 +25,12 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
 #include "city/funds.hpp"
+#include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "city/migration.hpp"
@@ -341,22 +342,71 @@ void AdvisorChiefWindow::Impl::drawMilitary()
 
     if( !isBesieged )
     {
-      city::Military::Notification n = mil->priorityNotification();
+      city::Military::Notification n = mil->priorityNotification();          
       reasons << n.message;
+    }    
+  }
+
+  if( reasons.empty() )
+  {
+    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );   
+
+    if( !objs.empty() )
+    {
+      int minDistance = 999;
+      world::ObjectPtr maxThreat;
+      foreach( i, objs )
+      {
+        if( is_kind_of<world::Barbarian>( *i ) ||
+            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        {
+          int distance = city->location().distanceTo( (*i)->location() );
+          if( minDistance > distance )
+          {
+            maxThreat = *i;
+            minDistance = distance;
+          }
+        }
+      }
+
+      if( maxThreat.isValid() )
+      {
+        if( minDistance <= 40 )
+        {
+          std::string threatText = StringHelper::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          reasons << threatText;
+        }
+        else if( minDistance <= 100 )
+        {
+          reasons << "##our_enemies_near_city##";
+        }
+        else
+        {
+          reasons << "##getting_reports_about_enemies##";
+        }
+      }
     }
   }
 
   if( reasons.empty() )
   {
-    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
-    foreach( i, objs )
+    city::Helper helper( city );
+
+    BarracksList barracks = helper.find<Barracks>( building::barracks );
+
+    bool needWeapons = false;
+    foreach( it, barracks )
     {
-      if( is_kind_of<world::Barbarian>( *i ) ||
-          is_kind_of<world::RomeChastenerArmy>( *i ) )
+      if( (*it)->isNeedWeapons() )
       {
-        reasons << "##getting_reports_about_enemies##";
+        needWeapons = true;
         break;
       }
+    }
+
+    if( needWeapons )
+    {
+      reasons << "##some_soldiers_need_weapon##";
     }
   }
 

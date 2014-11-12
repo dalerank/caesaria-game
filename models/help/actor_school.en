@@ -1,0 +1,14 @@
+{  
+ title : "##actor_school##"
+ sound : "fanfare"
+ text  : "Besides normal laborers needed to run @entertainment& venues, theaters, amphitheaters, colosseums and hippodromes all need performers, too.\n LActors are trained at an actors' colony. Gladiators are trained at a gladiator school, lions at a lion house, and charioteers at a charioteer school.\n All these buildings need road and labor access. If they have only partial labor, they will be able to operate at a reduced capacity, training fewer performers in a month than if they were fully staffed.\n When a performer has been trained, he walks from his school to a venue, informing all the houses along the way that they now have access to his special brand of entertainment. When he arrives at the venue, he puts on a show there for a set amount of time. When that time is up, he returns home, and unless a new performer has arrived to put on a new show, the venue ceases providing its entertainment value.\n Most performer schools are undesirable neighbors, due to the noise they make and the odd hours that they keep. People find actors' colonies desirable, though.\n The @Entertainment Overlay& lets you watch schools supply venues with performers. Right-click a performer school to evaluate its status.\n Follow these links to read historical entries about @actors colonies&, @gladiator schools&, @lion pits& and @chariot makers&, and to learn more about these forms of entertainment in the Roman Empire."
+ uri : {
+  "gladiator school" : "gladiator_school"
+  "charioteers" : "charioteer_school"
+  "Entertainment Overlay" : "entertainment_overlay"
+  "entertainment" : "entertainment"
+  "amphitheater" : "amphitheater"
+  "Entertainment Advisor" : "entertainment_advisor"
+  "here" : "http://wikipedia.ru"
+ }
+}

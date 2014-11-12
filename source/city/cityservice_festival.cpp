@@ -38,6 +38,7 @@ namespace {
 
   const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
   const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
+  const char* festivalVideo[ftCount] = { "", ":/smk/festival1_feast.smk", ":/smk/festival3_Glad.smk", ":/smk/festival2_chariot.smk" };
 }
 
 class Festival::Impl
@@ -109,7 +110,8 @@ void Festival::timeStep(const unsigned int time )
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
-    events::GameEventPtr e = events::ShowFeastWindow::create( festivalDesc[ id ], festivalTitles[ id ], _city()->player()->name() );
+    events::GameEventPtr e = events::ShowFeastWindow::create( festivalDesc[ id ], festivalTitles[ id ],
+                                                              _city()->player()->name(), festivalVideo[ id ] );
     e->dispatch();
 
     e = events::UpdateCitySentiment::create( sentimentValue );
