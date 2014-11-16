@@ -142,6 +142,7 @@ private:
 class TileHelper
 {
 public:
+  static void initTileWidth( int width );
   static std::string convId2PicName( const unsigned int imgId );
   static int convPicName2Id( const std::string &pic_name);
   static Picture& pictureFromId( const unsigned int imgId );
@@ -151,10 +152,11 @@ public:
   static Point tilepos2screen( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
-  static Size baseSize();
+  static Point tileCenterOffset();
+  static Size tilePicSize();
+  static Size cellSize();
   static constants::Direction getDirection( const TilePos& b, const TilePos& e );
   static void fixPlateauFlags( Tile& tile );
-
 };
 
 }//end namespace gfx

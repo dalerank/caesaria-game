@@ -1007,7 +1007,7 @@ void House::_update( bool needChangeTexture )
 
   bool lastFlat = _d->isFlat;
 
-  _d->isFlat = picture().height() <= ( TileHelper::baseSize().height() * size().width() );
+  _d->isFlat = picture().height() <= ( TileHelper::tilePicSize().height() * size().width() );
   if( lastFlat != _d->isFlat && _city().isValid() )
     _city()->setOption( PlayerCity::updateTiles, true );
 

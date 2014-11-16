@@ -46,6 +46,7 @@ struct MovableOrders
 class TilemapCamera::Impl
 {
 public:
+  Size tileMapSize;
   Size virtualSize;
   Size screeSize;
   Size borderSize;
@@ -64,8 +65,8 @@ public:
 
   Point getOffset( const PointF& center )
   {
-    return Point( virtualSize.width() / 2 - 30 * (center.x() + 1) + 1,
-                  virtualSize.height()/ 2 + 15 * (center.y() - tilemap->size() + 1) - 30 );   
+    return Point( virtualSize.width() / 2 - tileMapSize.width() * (center.x() + 1) + 1,
+                  virtualSize.height()/ 2 + tileMapSize.height() * (center.y() - tilemap->size() + 1) - tileMapSize.width() );
   } 
 
   void cacheFlatTiles();
@@ -77,6 +78,7 @@ public signals:
 
 TilemapCamera::TilemapCamera() : _d( new Impl )
 {
+  _d->tileMapSize = TileHelper::cellSize();
   _d->tilemap = NULL;
   _d->scrollSpeed = 10;
   _d->viewSize = Size( 0 );
@@ -104,7 +106,7 @@ void TilemapCamera::setViewport(Size newSize)
   _d->virtualSize = newSize;
 
   newSize += _d->borderSize;
-  Size vpSize( TileHelper::baseSize().height() * 2, TileHelper::baseSize().height() );
+  Size vpSize( TileHelper::tilePicSize().height() * 2, TileHelper::tilePicSize().height() );
   _d->viewSize = Size( (newSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( newSize.height() + (vpSize.height()-1)) / vpSize.height() );
   

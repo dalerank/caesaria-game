@@ -215,11 +215,12 @@ void Walker::_walk()
   delta.ry() = delta.y() * _d->finalSpeed() * speedKoeff;
 
   PointF tmp = _d->wpos;
-  TilePos saveMpos( tmp.x() / 15, tmp.y() / 15 );
+  const int wcell = TileHelper::cellSize().height();
+  TilePos saveMpos( tmp.x() / wcell , tmp.y() / wcell );
   _d->wpos += delta;
 
   tmp = _d->wpos;
-  TilePos Mpos( tmp.x() / 15, tmp.y() / 15 );
+  TilePos Mpos( tmp.x() / wcell, tmp.y() / wcell );
 
   if( !_d->centerReached  )
   {

@@ -67,7 +67,7 @@
   }
 
   immigrant :
-    move : { rc : "citizen01", start : 1033, frames : 12, action : 1, step : 8 }
+    move : { rc : "ww", start : 1, frames : 1, action : 1, step : 8 }
   }
 
   engineer : {

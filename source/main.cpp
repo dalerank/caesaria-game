@@ -20,6 +20,7 @@
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
+#include "gfx/tile.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
@@ -82,6 +83,14 @@ int main(int argc, char* argv[])
       const char* opts = argv[i+1];
       Logger::warning( "Options: using native C3 resources from %s", opts );
       GameSettings::set( GameSettings::c3gfx, Variant( opts ) );
+      i++;
+    }
+    else if( !strcmp( argv[i], "-cellw" ) )
+    {
+      const char* opts = argv[i+1];
+      int cellWidth = StringHelper::toInt( opts );
+      Logger::warning( "Options: set cell width %d", cellWidth  );
+      gfx::TileHelper::initTileWidth( cellWidth );
       i++;
     }
   }

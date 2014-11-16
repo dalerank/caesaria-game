@@ -549,7 +549,10 @@ void Layer::afterRender( Engine& engine)
   {
     Tile* tile = _d->currentTile;
     Point pos = tile->mappos();
-    Size size( (tile->picture().width() + 2) / 60 );
+    int rwidth = TileHelper::tilePicSize().width();
+    int halfRWidth = rwidth / 2;
+    Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
+
 
     if( _d->tilePosText->isValid() )
     {
@@ -566,14 +569,14 @@ void Layer::afterRender( Engine& engine)
     else if( tile->masterTile() != 0 )
     {
       pos = tile->masterTile()->mappos();
-      size = (tile->masterTile()->picture().width() + 2) / 60;
+      size = (tile->masterTile()->picture().width() + 2) / rwidth;
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
+    engine.drawLine( DefaultColors::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
     engine.draw( *_d->tilePosText, pos );
   }
 }

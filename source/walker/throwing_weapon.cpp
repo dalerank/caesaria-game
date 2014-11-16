@@ -81,7 +81,10 @@ void ThrowingWeapon::timeStep(const unsigned long time)
     PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
     _d->height += _d->deltaHeight;
-    TilePos ij( (_d->currentPos.x() - 7) / 15, (_d->currentPos.y() - 7) / 15 );
+    const int wcell = TileHelper::cellSize().height();
+
+    Point tp = (_d->currentPos.toPoint() - TileHelper::tileCenterOffset()) / wcell;
+    TilePos ij( tp.x(), tp.y() );
     setPos( ij );
     _setWpos( _d->currentPos.toPoint() );
 

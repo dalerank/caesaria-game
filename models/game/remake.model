@@ -13,4 +13,7 @@
   gardens : ":/gfx/pics_gardens.zip"
   well : ":/gfx/pics_well.zip"
   fountain : ":/gfx/pics_fountain.zip"
+  land1a : ":/gfx/pics_land1a.zip"
+  worker : ":/gfx/pics_worker.zip"
+  tree : ":/gfx/pics_tree.zip"
 }

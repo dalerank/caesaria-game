@@ -293,6 +293,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     mainTexture = Picture::getInvalid();
   }
 
+  //SizeF mainRectSize = mainTexture.size().toSizeF();
   if( !info.empty() )
   {
     VariantMap items = info.get( framesSection ).toMap();
@@ -300,10 +301,12 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     {
       VariantList rInfo = i->second.toList();
       Picture pic = mainTexture;
-      Point start(rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
+      Point start( rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
       Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
-      pic.setOriginRect( Rect( start, size ) );
+      Rect orect( start, size );
+      pic.setOriginRect( orect );
+      //pic.setOriginRectf( );
       setPicture( i->first, pic );
     }
   }

@@ -76,13 +76,13 @@ Pathway::Pathway(const Pathway &copy) : _d( new Impl )
   *this = copy;
 }
 
-void Pathway::init(const gfx::Tile& origin)
+void Pathway::init( const Tile& origin)
 {
   _d->origin = origin.pos();
   _d->isReverse = false;
   _d->destination = origin.pos();
   _d->tiles.clear();
-  _d->tiles.push_back( const_cast<Tile*>( &origin ) );
+  _d->tiles.push_back( &const_cast<Tile&>( origin ) );
 }
 
 unsigned int Pathway::length() const
@@ -198,7 +198,7 @@ void Pathway::setNextTile( const Tile& tile )
   else if (dI==0 && dJ==-1){ direction = south; }
   else if (dI==-1 && dJ==-1){ direction = southWest;}
   else if (dI==-1 && dJ==0) {direction = west;}
-  else if (dI==-1 && dJ==1){direction = northWest; }
+  else if (dI==-1 && dJ==1){ direction = northWest; }
   else
   {
     Logger::warning( "Destination[%d, %d] out of map", dI, dJ );

@@ -24,7 +24,7 @@ namespace city
 namespace climate
 {
 
-typedef enum { central=0, northen, desert } Type;
+typedef enum { central=0, northen, desert, count } Type;
 
 }
 

@@ -61,8 +61,9 @@ public:
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
 
-  int size;
+  int size;  
   Direction direction;
+  int virtWidth;
 
   Tile* ate(const TilePos& pos);
   Tile* ate( const int i, const int j );
@@ -80,6 +81,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = north;
+  _d->virtWidth = TileHelper::cellSize().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -103,8 +105,8 @@ TilePos Tilemap::fit( const TilePos& pos ) const
 Tile* Tilemap::at( const Point& pos, bool overborder)
 {
   // x relative to the left most pixel of the tilemap
-  int i = (pos.x() + 2 * pos.y()) / 60;
-  int j = (pos.x() - 2 * pos.y()) / 60;
+  int i = (pos.x() + 2 * pos.y()) / _d->virtWidth;
+  int j = (pos.x() - 2 * pos.y()) / _d->virtWidth;
 
   if( overborder )
   {
@@ -126,8 +128,8 @@ Tile* Tilemap::at( const Point& pos, bool overborder)
 
 TilePos Tilemap::p2tp(const Point &pos)
 {
-  return TilePos( (pos.x() + 2 * pos.y()) / 60,
-                  (pos.x() - 2 * pos.y()) / 60 );
+  return TilePos( (pos.x() + 2 * pos.y()) / _d->virtWidth,
+                  (pos.x() - 2 * pos.y()) / _d->virtWidth );
 }
 
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
@@ -340,7 +342,9 @@ void Tilemap::load( const VariantMap& stream )
 
       tile->setOriginalImgId( imgId );
 
-      int tile_size = (pic.width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
+      int tile_size = (pic.width()+2) / _d->virtWidth;  // size of the multi-tile. the multi-tile is a square.
+
+      tile_size = math::clamp<int>( tile_size, 1, 10 );
 
       // master is the left-most subtile
       Tile* master = (tile_size == 1) ? NULL : tile;
@@ -396,7 +400,9 @@ void Tilemap::turnRight()
     const Impl::TurnInfo& ti = it->second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
-    int pSize = (pic.width() + 2) / 60;
+    int pSize = (pic.width() + 2) / _d->virtWidth;
+
+    pSize = math::clamp<int>( pSize, 1, 10 );
 
     TilePos mTilePos = ti.tile->epos() - TilePos( 0, pSize - 1 );
     Tile* mTile = _d->ate( mTilePos );
@@ -451,7 +457,9 @@ void Tilemap::turnLeft()
     const Impl::TurnInfo& ti = it->second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
-    int pSize = (pic.width() + 2) / 60;
+    int pSize = (pic.width() + 2) / _d->virtWidth;
+
+    pSize = math::clamp<int>( pSize, 1, 10);
 
     TilePos mTilePos = ti.tile->epos() - TilePos( pSize - 1, 0 );
     Tile* mTile = _d->ate( mTilePos );
@@ -554,7 +562,9 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
 
           mtiles[ masterTile ] = ti;
 
-          int pSize = (ti.pic.width() + 2) / 60;
+          int pSize = (ti.pic.width() + 2) / virtWidth;
+
+          pSize = math::clamp<int>(  pSize, 1, 10 );
 
           for( int i=0; i < pSize; i++ )
           {

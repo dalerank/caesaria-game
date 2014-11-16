@@ -44,7 +44,7 @@ public:
   PlayerCityPtr city;
   Camera const* camera;
 
-  MinimapColors* colors;
+  minimap::Colors* colors;
 
   int lastTimeUpdate;
   Point center;
@@ -64,7 +64,7 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
-  _d->colors = new MinimapColors( (ClimateType)city->climate() );
+  _d->colors = new minimap::Colors( (ClimateType)city->climate() );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -89,43 +89,43 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
   if (tile.getFlag( Tile::tlTree ))
   {
-    c1 = colors->colour(MinimapColors::MAP_TREE1, num3);
-    c2 = colors->colour(MinimapColors::MAP_TREE2, num7);
+    c1 = colors->colour(minimap::Colors::MAP_TREE1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_TREE2, num7);
   }
   else if (tile.getFlag( Tile::tlRock ))
   {
-    c1 = colors->colour(MinimapColors::MAP_ROCK1, num3);
-    c2 = colors->colour(MinimapColors::MAP_ROCK2, num3);
+    c1 = colors->colour(minimap::Colors::MAP_ROCK1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_ROCK2, num3);
   }
   else if(tile.getFlag( Tile::tlDeepWater) )
   {
-    c1 = colors->colour(MinimapColors::MAP_WATER1, num3);
-    c2 = colors->colour(MinimapColors::MAP_WATER2, num3);
+    c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_WATER2, num3);
   }
   else if(tile.getFlag( Tile::tlWater ))
   {
-    c1 = colors->colour(MinimapColors::MAP_WATER1, num3);
-    c2 = colors->colour(MinimapColors::MAP_WATER2, num7);
+    c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_WATER2, num7);
   }
   else if (tile.getFlag( Tile::tlRoad ))
   {
-    c1 = colors->colour(MinimapColors::MAP_ROAD, 0);
-    c2 = colors->colour(MinimapColors::MAP_ROAD, 1);
+    c1 = colors->colour(minimap::Colors::MAP_ROAD, 0);
+    c2 = colors->colour(minimap::Colors::MAP_ROAD, 1);
   }
   else if (tile.getFlag( Tile::tlMeadow ))
   {
-    c1 = colors->colour(MinimapColors::MAP_FERTILE1, num3);
-    c2 = colors->colour(MinimapColors::MAP_FERTILE2, num7);
+    c1 = colors->colour(minimap::Colors::MAP_FERTILE1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_FERTILE2, num7);
   }
   else if (tile.getFlag( Tile::tlWall ))
   {
-    c1 = colors->colour(MinimapColors::MAP_WALL, 0);
-    c2 = colors->colour(MinimapColors::MAP_WALL, 1);
+    c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
+    c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
   }
   else if( ovType == building::aqueduct  )
   {
-    c1 = colors->colour(MinimapColors::MAP_AQUA, 0);
-    c2 = colors->colour(MinimapColors::MAP_AQUA, 1);
+    c1 = colors->colour(minimap::Colors::MAP_AQUA, 0);
+    c2 = colors->colour(minimap::Colors::MAP_AQUA, 1);
   }
   else if (tile.getFlag( Tile::tlBuilding ))
   {
@@ -133,8 +133,8 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   }
   else // plain terrain
   {
-    c1 = colors->colour(MinimapColors::MAP_EMPTY1, num3);
-    c2 = colors->colour(MinimapColors::MAP_EMPTY2, num7);
+    c1 = colors->colour(minimap::Colors::MAP_EMPTY1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_EMPTY2, num7);
   }
 
   c1 |= 0xff000000;
@@ -163,38 +163,51 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
       {
         case 1:
           {
-            c1 = colors->colour(MinimapColors::MAP_HOUSE, 0);
-            c2 = colors->colour(MinimapColors::MAP_HOUSE, 1);
-            break;
+            c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
+            c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
           }
+        break;
+
         default:
           {
-            c1 = colors->colour(MinimapColors::MAP_HOUSE, 2);
-            c2 = colors->colour(MinimapColors::MAP_HOUSE, 0);
+            c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
+            c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
           }
         }
         break;
-        }
+      }
+      break;
+
       case building::reservoir:
-        {
-          c1 = colors->colour(MinimapColors::MAP_AQUA, 1);
-          c2 = colors->colour(MinimapColors::MAP_AQUA, 0);
-          break;
-        }
+      {
+        c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
+        c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
+      }
+      break;
+
+      case building::fortJavelin:
+      case building::fortLegionaire:
+      case building::fortMounted:
+      {
+        c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+        c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+      }
+      break;
+
       default:
         {
           switch (overlay->size().width())
           {
           case 1:
           {
-            c1 = colors->colour(MinimapColors::MAP_BUILDING, 0);
-            c2 = colors->colour(MinimapColors::MAP_BUILDING, 1);
+            c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
+            c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
             break;
           }
           default:
           {
-            c1 = colors->colour(MinimapColors::MAP_BUILDING, 0);
-            c2 = colors->colour(MinimapColors::MAP_BUILDING, 2);
+            c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
+            c2 = colors->colour(minimap::Colors::MAP_BUILDING, 2);
           }
         }
     }

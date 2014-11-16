@@ -21,13 +21,19 @@
 #include "enums.hpp"
 #include "city/climate.hpp"
 
-class MinimapColors {
+namespace constants
+{
+
+namespace minimap
+{
+
+class Colors {
 	public:
 		/**
 		* Constants for the different terrain and building elements
 		*/
 		const static int
-			MAP_BACKGROUND = 0,
+			background = 0,
 			MAP_EMPTY1     = 1,
 			MAP_EMPTY2     = 2,
 			MAP_TREE1      = 3,
@@ -45,7 +51,7 @@ class MinimapColors {
 			MAP_BUILDING   = 15,
 			MAP_SPRITES    = 16,
 			MAP_SIZE       = 17;
-		
+
 		/**
 		* Constants for the different walkers / sprites
 		*/
@@ -56,14 +62,14 @@ class MinimapColors {
 			SPRITE_ENEMY     = 3;
 	private:
 		int map[MAP_SIZE][8];
-		
+
 	public:
 		/**
 		* Constructor - creates a new colour set with the given climate
 		* @param climate - one of the CLIMATE_* constants
 		*/
-		MinimapColors(ClimateType climate);
-		
+		Colors(ClimateType climate);
+
 		/**
 		* Retrieves a specified colour from this set.
 		* @param type - one of the MAP_* constants
@@ -72,5 +78,9 @@ class MinimapColors {
 		*/
 		int colour(int type, int number);
 };
+
+}//end namespace minimap
+
+}//end namespace constants
 
 #endif // __CAESARIA_MINIMAP_COLOURS_H_INCLUDE_

@@ -175,9 +175,16 @@ void FrameBuffer::_createFramebuffer( unsigned int& id )
 {
   unsigned int colorbuffer, depthbuffer;
 
+  if( id != 0 )
+  {
+    glDeleteTextures( 1, &id );
+    id = 0;
+  }
+
 #ifndef GL_DRAW_FRAMEBUFFER
   #define GL_DRAW_FRAMEBUFFER               0x8CA9
 #endif
+
   glGenFramebuffers(1, &id);
   glGenTextures(1, &colorbuffer);
   glGenRenderbuffers(1, &depthbuffer);
@@ -480,6 +487,8 @@ class GlEngine::Impl
 public:
   SDL_GLContext context;
   SDL_Window* window;
+  Size viewportSize;
+  bool useViewport;
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
   FrameBuffer fb;
@@ -558,6 +567,8 @@ void GlEngine::init()
   }
 
   _d->throwIfnoWindow();
+  _d->viewportSize = _srcSize;
+  _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -693,7 +704,7 @@ void GlEngine::unloadPicture(Picture& ioPicture)
   ioPicture = Picture();
 }
 
-static int power_of_2(int input)
+/*static int power_of_2(int input)
 {
     int value = 1;
 
@@ -702,7 +713,7 @@ static int power_of_2(int input)
         value <<= 1;
     }
     return value;
-}
+}*/
 
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
@@ -818,19 +829,60 @@ void GlEngine::endRenderFrame()
   _drawCall = 0;
 }
 
-void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect)
+void GlEngine::initViewport(int index, Size s)
+{
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  _d->viewportSize = s;
+#endif
+}
+
+void GlEngine::setViewport(int, bool render)
+{
+  _d->useViewport = render;
+}
+
+void GlEngine::drawViewport(int, Rect r)
+{
+
+}
+
+void GlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect)
 {
   const GLuint& aTextureID( picture.textureID() );
   if( aTextureID == 0 )
     return;
 
   _drawCall++;
-  float x0 = (float)( dx+picture.offset().x());
-  float x1 = x0+picture.width();
-  float y0 = (float)(dy-picture.offset().y());
-  float y1 = y0+picture.height();
+
+  const Rect& orect = picture.originRect();
+  Size picSize = orect.size();
+  const Point& offset = picture.offset();
+
+  PointF scale( 1.f, 1.f );
+
+  if( _d->useViewport )
+  {
+    scale = PointF( _d->viewportSize.width() / (float)_srcSize.width(),
+                    _d->viewportSize.height() / (float)_srcSize.height() );
+  }
+
+  float x0 = (float)( dx + offset.x() ) * scale.x();
+  float x1 = x0 + picSize.width() * scale.x();
+  float y0 = (float)(dy - offset.y()) * scale.y();
+  float y1 = y0 + picSize.height() * scale.y();
 
   glBindTexture( GL_TEXTURE_2D, aTextureID);
+  float imageWidth, imageHeight;
+  glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH,&imageWidth);
+  glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&imageHeight);
+
+  if( imageWidth <= 0 || imageHeight <= 0 )
+    return;
+
+  float ox0 = orect.left() / imageWidth;
+  float oy0 = orect.top() / imageHeight;
+  float ox1 = orect.right() / imageWidth;
+  float oy1 = orect.bottom() / imageHeight;
 #ifdef USE_GLES
   GLfloat vtx1[] = {
     x0, y0,
@@ -861,10 +913,10 @@ void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* cl
   glBegin( GL_QUADS );
 
   //Bottom-left vertex (corner)
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 0 ); glVertex2f( x0, y0 );
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 0 ); glVertex2f( x1, y0 );
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 1 ); glVertex2f( x1, y1 );
-  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 1 ); glVertex2f( x0, y1 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox0, oy0 ); glVertex2f( x0, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox1, oy0 ); glVertex2f( x1, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox1, oy1 ); glVertex2f( x1, y1 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox0, oy1 ); glVertex2f( x0, y1 );
 
   glEnd();
 #endif
@@ -890,7 +942,68 @@ void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 
 void GlEngine::draw(const Picture& picture, const Rect& src, const Rect& dst, Rect* clipRect)
 {
-  int i=0;
+  const GLuint& aTextureID( picture.textureID() );
+  if( aTextureID == 0 )
+    return;
+
+  _drawCall++;
+  const Point& offset = picture.offset();
+
+  float x0 = dst.left() + offset.x();
+  float x1 = dst.right() + offset.x();
+  float y0 = dst.top() - offset.y();
+  float y1 = dst.bottom() - offset.y();
+
+  glBindTexture( GL_TEXTURE_2D, aTextureID);
+
+  float imageWidth, imageHeight;
+  glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH,&imageWidth);
+  glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&imageHeight);
+
+  if( imageWidth <= 0 || imageHeight <= 0 )
+    return;
+
+  float ox0 = src.left() / imageWidth;
+  float oy0 = src.top() / imageHeight;
+  float ox1 = src.right() / imageWidth;
+  float oy1 = src.bottom() / imageHeight;
+#ifdef USE_GLES
+  GLfloat vtx1[] = {
+    x0, y0,
+    x1, y0,
+    x1, y1,
+    x0, y1
+  };
+
+  GLfloat tex1[] = {
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1
+  };
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  glVertexPointer(3, GL_FLOAT, 0, vtx1 );
+  glTexCoordPointer(2, GL_FLOAT, 0, tex1 );
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4 );
+
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+#else
+  // Bind the texture to which subsequent calls refer to
+
+  glBegin( GL_QUADS );
+
+  //Bottom-left vertex (corner)
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox0, oy0 ); glVertex2f( x0, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox1, oy0 ); glVertex2f( x1, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox1, oy1 ); glVertex2f( x1, y1 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2f( ox0, oy1 ); glVertex2f( x0, y1 );
+
+  glEnd();
+#endif
 }
 
 void GlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )

@@ -172,6 +172,12 @@ void Pathfinder::setCondition(const TilePossibleCondition& condition)
 
 Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
 {
+  if( start == stop )
+  {
+    Logger::warning( "WARNING!!! Pathfinder::getPath start==stop" );
+    return Pathway();
+  }
+
   if( _d->grid._size.area() == 0 )
   {
     return Pathway();

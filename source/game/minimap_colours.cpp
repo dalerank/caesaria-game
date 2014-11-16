@@ -17,7 +17,13 @@
 
 #include "minimap_colours.hpp"
 
-MinimapColors::MinimapColors(ClimateType climate) {
+namespace constants
+{
+
+namespace minimap
+{
+
+Colors::Colors(ClimateType climate) {
 	if (climate == city::climate::central)
 	{
 		int colours[][8] = {
@@ -108,7 +114,12 @@ MinimapColors::MinimapColors(ClimateType climate) {
 	}
 }
 
-int MinimapColors::colour(int type, int number)
+int Colors::colour(int type, int number)
 {
 	return map[type][number];
 }
+
+
+}//end namespace minimap
+
+}//end namespace constants

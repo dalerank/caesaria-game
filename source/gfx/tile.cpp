@@ -30,9 +30,12 @@ namespace gfx
 {
 
 namespace {
-  const int x_tileBase = 30;
-  const int y_tileBase = x_tileBase / 2;
-  Animation invalidAnimation;
+static int x_tileBase = 60;
+static int y_tileBase = x_tileBase / 2;
+static Size tileBaseSize( x_tileBase * 2 - 2, x_tileBase );
+static Size tileCellSize( x_tileBase, y_tileBase );
+static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
+static Animation invalidAnimation;
 }
 
 void Tile::Terrain::reset()
@@ -94,7 +97,7 @@ bool Tile::isFlat() const
 }
 
 
-Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * y_tileBase + Point( 7, 7); }
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * y_tileBase + centerOffset; }
 bool Tile::isMasterTile() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
@@ -211,6 +214,15 @@ int Tile::param( Param param) const
   return it != _terrain.params.end() ? it->second : 0;
 }
 
+void TileHelper::initTileWidth(int width)
+{
+  x_tileBase = width;
+  y_tileBase = x_tileBase / 2;
+  tileBaseSize = Size( x_tileBase * 2 - 2, x_tileBase );
+  tileCellSize = Size( x_tileBase, y_tileBase );
+  centerOffset = Point( y_tileBase / 2, y_tileBase / 2 );
+}
+
 std::string TileHelper::convId2PicName( const unsigned int imgId )
 {
   // example: for land1a_00004, pfx=land1a and id=4
@@ -226,6 +238,10 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
   {
     res_pfx = ResourceGroup::land1a;
     res_id = imgId - 244;
+
+    if( (res_id < 10) || (res_id > 61 && res_id < 120)
+        || (res_id > 229 && res_id < 290))
+      res_id = 1;
   }
   else if( imgId < 779 )
   {
@@ -384,10 +400,9 @@ Tile& TileHelper::getInvalid()
   return invalidTile;
 }
 
-Size TileHelper::baseSize()
-{
-  return Size( x_tileBase * 2 - 2, x_tileBase );
-}
+Point TileHelper::tileCenterOffset() { return centerOffset;}
+Size TileHelper::tilePicSize() { return tileBaseSize; }
+Size TileHelper::cellSize() { return tileCellSize; }
 
 Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
 {
