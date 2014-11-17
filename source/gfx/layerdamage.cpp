@@ -57,25 +57,25 @@ void LayerDamage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
       //fire buildings and roads
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
-    case building::engineerPost:
+    case objects::engineerPost:
       needDrawAnimations = true;
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         damageLevel = (int)house->state( Construction::damage );

@@ -23,6 +23,7 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "city/helper.hpp"
+#include "gfx/helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "name_generator.hpp"
@@ -94,13 +95,13 @@ HousePtr Emigrant::_findBlankHouse()
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = hlp.find<House>( building::house, pos() - offset, pos() + offset );
+  HouseList houses = hlp.find<House>( objects::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
   if( houses.empty() )
   {
-    houses = hlp.find<House>( building::house );
+    houses = hlp.find<House>( objects::house );
     _checkHouses( houses );
   }
 
@@ -213,7 +214,7 @@ bool Emigrant::_checkNearestHouse()
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+    HouseList houses = helper.find<House>( objects::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
     foreach( it, houses )

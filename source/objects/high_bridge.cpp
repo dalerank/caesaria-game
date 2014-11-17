@@ -16,7 +16,7 @@
 #include "high_bridge.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
@@ -40,7 +40,7 @@ public:
           liftingWestL=173, descentWestL=175,
           liftingNorthL=176, descentNorthL=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
-    : Construction( building::highBridge, Size( 1 ) )
+    : Construction( objects::highBridge, Size( 1 ) )
   {
     _pos = pos;
     _index = index;
@@ -255,7 +255,7 @@ bool HighBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) c
   return (_d->direction != noneDirection );
 }
 
-HighBridge::HighBridge() : Construction( building::highBridge, Size(1) ), _d( new Impl )
+HighBridge::HighBridge() : Construction( objects::highBridge, Size(1) ), _d( new Impl )
 {
   Picture tmp;
   setPicture( tmp );

@@ -60,7 +60,7 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, constants::building::market, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, constants::objects::market, Size(2) ),
   _d( new Impl )
 {
   _fgPicturesRef().resize(1);  // animation

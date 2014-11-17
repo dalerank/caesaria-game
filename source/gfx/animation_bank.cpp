@@ -64,15 +64,16 @@ struct ActionAnimation
 class AnimationBank::Impl
 {
 public:
-  typedef std::map< int, ActionAnimation > Animations;
+  typedef std::map< int, Animation > SimpleAnimations;
+  typedef std::map< int, ActionAnimation > DirectedAnimations;
   typedef std::map< int, Pictures > CartPictures;
   typedef std::map< int, VariantMap > AnimationConfigs;
 
   CartPictures carts;
   AnimationConfigs animConfigs;
   
-  Animations animations;
-
+  DirectedAnimations directedAnimations;
+  SimpleAnimations simpleAnimations;
 
   // fills the cart pictures
   // prefix: image prefix
@@ -111,49 +112,49 @@ void AnimationBank::Impl::loadCarts()
   carts[Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
   carts[Good::fish]     = fillCart( ResourceGroup::carts, 697, frontCart);
 
-  carts[bigCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
-  carts[bigCart+Good::wheat]    = fillCart( ResourceGroup::carts, 617, frontCart);
-  carts[bigCart+Good::vegetable]= fillCart( ResourceGroup::carts, 625, frontCart);
-  carts[bigCart+Good::fruit]    = fillCart( ResourceGroup::carts, 633, frontCart);
-  carts[bigCart+Good::meat]     = fillCart( ResourceGroup::carts, 641, frontCart);
-  carts[bigCart+Good::fish]     = fillCart( ResourceGroup::carts, 649, frontCart);
+  carts[animBigCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[animBigCart+Good::wheat]    = fillCart( ResourceGroup::carts, 617, frontCart);
+  carts[animBigCart+Good::vegetable]= fillCart( ResourceGroup::carts, 625, frontCart);
+  carts[animBigCart+Good::fruit]    = fillCart( ResourceGroup::carts, 633, frontCart);
+  carts[animBigCart+Good::meat]     = fillCart( ResourceGroup::carts, 641, frontCart);
+  carts[animBigCart+Good::fish]     = fillCart( ResourceGroup::carts, 649, frontCart);
 
-  carts[bigCart+Good::olive]    = fillCart( ResourceGroup::citizen5, 97, frontCart);
-  carts[bigCart+Good::grape]    = fillCart( ResourceGroup::carts, 105, frontCart);
-  carts[bigCart+Good::wine]     = fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[bigCart+Good::oil]      = fillCart( ResourceGroup::carts, 121, frontCart);
-  carts[bigCart+Good::iron]     = fillCart( ResourceGroup::carts, 129, frontCart);
-  carts[bigCart+Good::timber]   = fillCart( ResourceGroup::carts, 137, frontCart);
-  carts[bigCart+Good::clay]     = fillCart( ResourceGroup::carts, 145, frontCart);
-  carts[bigCart+Good::marble]   = fillCart( ResourceGroup::carts, 153, frontCart);
-  carts[bigCart+Good::weapon]   = fillCart( ResourceGroup::carts, 161, frontCart);
-  carts[bigCart+Good::furniture]= fillCart( ResourceGroup::carts, 169, frontCart);
-  carts[bigCart+Good::pottery]  = fillCart( ResourceGroup::carts, 177, frontCart);
+  carts[animBigCart+Good::olive]    = fillCart( ResourceGroup::citizen5, 97, frontCart);
+  carts[animBigCart+Good::grape]    = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[animBigCart+Good::wine]     = fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[animBigCart+Good::oil]      = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[animBigCart+Good::iron]     = fillCart( ResourceGroup::carts, 129, frontCart);
+  carts[animBigCart+Good::timber]   = fillCart( ResourceGroup::carts, 137, frontCart);
+  carts[animBigCart+Good::clay]     = fillCart( ResourceGroup::carts, 145, frontCart);
+  carts[animBigCart+Good::marble]   = fillCart( ResourceGroup::carts, 153, frontCart);
+  carts[animBigCart+Good::weapon]   = fillCart( ResourceGroup::carts, 161, frontCart);
+  carts[animBigCart+Good::furniture]= fillCart( ResourceGroup::carts, 169, frontCart);
+  carts[animBigCart+Good::pottery]  = fillCart( ResourceGroup::carts, 177, frontCart);
 
-  carts[megaCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
-  carts[megaCart+Good::wheat]    = fillCart( ResourceGroup::carts, 547, frontCart);
-  carts[megaCart+Good::vegetable]= fillCart( ResourceGroup::carts, 665, frontCart);
-  carts[megaCart+Good::fruit]    = fillCart( ResourceGroup::carts, 673, frontCart);
-  carts[megaCart+Good::meat]     = fillCart( ResourceGroup::carts, 681, frontCart);
-  carts[megaCart+Good::fish]     = fillCart( ResourceGroup::carts, 689, frontCart);
+  carts[animMegaCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
+  carts[animMegaCart+Good::wheat]    = fillCart( ResourceGroup::carts, 547, frontCart);
+  carts[animMegaCart+Good::vegetable]= fillCart( ResourceGroup::carts, 665, frontCart);
+  carts[animMegaCart+Good::fruit]    = fillCart( ResourceGroup::carts, 673, frontCart);
+  carts[animMegaCart+Good::meat]     = fillCart( ResourceGroup::carts, 681, frontCart);
+  carts[animMegaCart+Good::fish]     = fillCart( ResourceGroup::carts, 689, frontCart);
 
-  carts[megaCart+Good::grape]    = fillCart( ResourceGroup::carts, 41, frontCart);
-  carts[megaCart+Good::olive]    = fillCart( ResourceGroup::carts, 33, frontCart);
-  carts[megaCart+Good::wine]     = fillCart( ResourceGroup::carts, 57, frontCart);
-  carts[megaCart+Good::oil]      = fillCart( ResourceGroup::carts, 65, frontCart);
-  carts[megaCart+Good::iron]     = fillCart( ResourceGroup::carts, 73, frontCart);
-  carts[megaCart+Good::timber]   = fillCart( ResourceGroup::carts, 81, frontCart);
-  carts[megaCart+Good::clay]     = fillCart( ResourceGroup::carts, 89, frontCart);
-  carts[megaCart+Good::marble]   = fillCart( ResourceGroup::carts, 97, frontCart);
-  carts[megaCart+Good::weapon]   = fillCart( ResourceGroup::carts, 105, frontCart);
-  carts[megaCart+Good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[megaCart+Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[animMegaCart+Good::grape]    = fillCart( ResourceGroup::carts, 41, frontCart);
+  carts[animMegaCart+Good::olive]    = fillCart( ResourceGroup::carts, 33, frontCart);
+  carts[animMegaCart+Good::wine]     = fillCart( ResourceGroup::carts, 57, frontCart);
+  carts[animMegaCart+Good::oil]      = fillCart( ResourceGroup::carts, 65, frontCart);
+  carts[animMegaCart+Good::iron]     = fillCart( ResourceGroup::carts, 73, frontCart);
+  carts[animMegaCart+Good::timber]   = fillCart( ResourceGroup::carts, 81, frontCart);
+  carts[animMegaCart+Good::clay]     = fillCart( ResourceGroup::carts, 89, frontCart);
+  carts[animMegaCart+Good::marble]   = fillCart( ResourceGroup::carts, 97, frontCart);
+  carts[animMegaCart+Good::weapon]   = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[animMegaCart+Good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[animMegaCart+Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
 
-  carts[imigrantCart + 0] = fillCart( ResourceGroup::carts, 129, !frontCart);
-  carts[imigrantCart + 1] = fillCart( ResourceGroup::carts, 137, !frontCart);
+  carts[animImigrantCart + 0] = fillCart( ResourceGroup::carts, 129, !frontCart);
+  carts[animImigrantCart + 1] = fillCart( ResourceGroup::carts, 137, !frontCart);
 
-  carts[circusCart + 0] = fillCart( ResourceGroup::carts, 601, !frontCart);
-  carts[circusCart + 1] = fillCart( ResourceGroup::carts, 609, !frontCart);
+  carts[animCircusCart + 0] = fillCart( ResourceGroup::carts, 601, !frontCart);
+  carts[animCircusCart + 1] = fillCart( ResourceGroup::carts, 609, !frontCart);
 }
 
 AnimationBank& AnimationBank::instance()
@@ -164,6 +165,25 @@ AnimationBank& AnimationBank::instance()
 
 AnimationBank::AnimationBank() : _d( new Impl )
 {
+  Animation water;
+  water.setDelay( 12 );
+  water.load( ResourceGroup::land1a, 121, 7 );
+  water.load( ResourceGroup::land1a, 127, 7, true );
+
+  _d->simpleAnimations[ animWater ] = water;
+
+  Animation meadow;
+  meadow.setDelay( 12 );
+  meadow.load( ResourceGroup::land1a, 29, 1 );
+  _d->simpleAnimations[ animMeadow ] = meadow;
+
+  for( int i=0; i < 7; i++)
+  {
+    Animation tree;
+    tree.setDelay( 12 );
+    tree.load( ResourceGroup::land1a, 10+i, 1 );
+    _d->simpleAnimations[ animTree+i ] = tree;
+  }
 }
 
 void AnimationBank::loadCarts()
@@ -178,7 +198,7 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
                                          Walker::Action wa, const int step,
                                          int delay )
 {
-  MovementAnimation& ioMap = animations[ who ].actions;
+  MovementAnimation& ioMap = directedAnimations[ who ].actions;
   DirectedAction action= { wa, noneDirection };
 
   if( step == 0 )
@@ -234,13 +254,13 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(i
     animConfigs.erase( configIt );
   }
 
-  Animations::iterator it = animations.find( wtype );
-  if( it == animations.end() )
+  DirectedAnimations::iterator it = directedAnimations.find( wtype );
+  if( it == directedAnimations.end() )
   {
     Logger::warning( "WARNING !!!: AnimationBank can't find config for type %d", wtype );
-    const AnimationBank::MovementAnimation& elMuleta = animations[ walker::unknown ].actions;
-    animations[ wtype ].ownerType = wtype;
-    animations[ wtype ].actions = elMuleta;
+    const AnimationBank::MovementAnimation& elMuleta = directedAnimations[ walker::unknown ].actions;
+    directedAnimations[ wtype ].ownerType = wtype;
+    directedAnimations[ wtype ].actions = elMuleta;
     return elMuleta;
   }
 
@@ -249,12 +269,12 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(i
 
 const AnimationBank::MovementAnimation& AnimationBank::find( int type )
 {
-  AnimationBank& inst = instance();
+  Impl::DirectedAnimations& dAnim = instance()._d->directedAnimations;
 
-  Impl::Animations::iterator it = inst._d->animations.find( type );
-  if( it == inst._d->animations.end() )
+  Impl::DirectedAnimations::iterator it = dAnim.find( type );
+  if( it == dAnim.end() )
   {
-    const AnimationBank::MovementAnimation& ret = inst._d->tryLoadAnimations( type );
+    const AnimationBank::MovementAnimation& ret = instance()._d->tryLoadAnimations( type );
     return ret;
   }
 
@@ -314,10 +334,23 @@ Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int sta
 const Picture& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
 {
   int index = 0;
-  if( capacity > bigCart ) index = megaCart;
-  else if( capacity > simpleCart ) index = bigCart;
+  if( capacity > animBigCart ) index = animMegaCart;
+  else if( capacity > animSimpleCart ) index = animBigCart;
 
   return instance()._d->carts[ index + good ][ direction ];
+}
+
+const Animation& AnimationBank::simple(int type)
+{
+  Impl::SimpleAnimations& sAnim = instance()._d->simpleAnimations;
+
+  Impl::SimpleAnimations::iterator it = sAnim.find( type );
+  if( it != sAnim.end() )
+  {
+    return it->second;
+  }
+
+  return sAnim[ animUnknown ];
 }
 
 }//end namespace gfx

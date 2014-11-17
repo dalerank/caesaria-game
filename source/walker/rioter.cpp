@@ -55,7 +55,7 @@ Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
   _setType( walker::rioter );
 
   addAbility( Illness::create( 0.3, 4) );
-  excludeAttack( building::disasterGroup );
+  excludeAttack( objects::disasterGroup );
 }
 
 void Rioter::_reachedPathway()
@@ -93,7 +93,7 @@ void Rioter::timeStep(const unsigned long time)
   case Impl::searchHouse:
   {
     city::Helper helper( _city() );
-    ConstructionList constructions = helper.find<Construction>( building::house );
+    ConstructionList constructions = helper.find<Construction>( objects::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       HousePtr h = ptr_cast<House>( *it );
@@ -120,13 +120,13 @@ void Rioter::timeStep(const unsigned long time)
   case Impl::searchAnyBuilding:
   {
     city::Helper helper( _city() );
-    ConstructionList constructions = helper.find<Construction>( building::house );
+    ConstructionList constructions = helper.find<Construction>( objects::house );
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       TileOverlay::Type type = (*it)->type();
       TileOverlay::Group group = (*it)->group();
-      if( type == building::house || type == construction::road
+      if( type == objects::house || type == objects::road
           || _d->excludeGroups.count( group ) > 0 ) { it=constructions.erase( it ); }
       else { it++; }
     }
@@ -173,11 +173,11 @@ void Rioter::timeStep(const unsigned long time)
     if( GameDate::isDayChanged() )
     {
       city::Helper helper( _city() );
-      ConstructionList constructions = helper.find<Construction>( building::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      ConstructionList constructions = helper.find<Construction>( objects::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
-        if( (*it)->type() == construction::road || _d->excludeGroups.count( (*it)->group() ) > 0  )
+        if( (*it)->type() == objects::road || _d->excludeGroups.count( (*it)->group() ) > 0  )
         { it=constructions.erase( it ); }
         else { ++it; }
       }
@@ -273,7 +273,7 @@ void Rioter::load(const VariantMap& stream)
 }
 
 int Rioter::agressive() const { return 1; }
-void Rioter::excludeAttack(building::Group group) { _d->excludeGroups.insert( group ); }
+void Rioter::excludeAttack(objects::Group group) { _d->excludeGroups.insert( group ); }
 
 Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
 {  
@@ -309,5 +309,5 @@ NativeRioter::NativeRioter(PlayerCityPtr city)
   : Rioter( city )
 {
   _setType( walker::indigeneRioter );
-  excludeAttack( building::nativeGroup );
+  excludeAttack( objects::nativeGroup );
 }

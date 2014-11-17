@@ -38,7 +38,7 @@ GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
 }
 
 template<class T>
-void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what, int& qty )
+void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, Good::Type what, int& qty )
 {
   SmartList<T> bList;	
 #ifdef CAESARIA_PLATFORM_HAIKU
@@ -66,8 +66,8 @@ void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what,
 
 void RemoveGoods::_exec( Game& game, unsigned int time )
 {
-  _removeGoodFrom<Warehouse>( game.city(), building::warehouse, _type, _qty );
-  _removeGoodFrom<Granary>( game.city(), building::granary, _type, _qty );
+  _removeGoodFrom<Warehouse>( game.city(), objects::warehouse, _type, _qty );
+  _removeGoodFrom<Granary>( game.city(), objects::granary, _type, _qty );
 }
 
 bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }

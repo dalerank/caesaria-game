@@ -55,24 +55,24 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     //water buildings
-    case building::reservoir:
-    case building::fountain:
-    case building::well:
-    case building::aqueduct:
+    case objects::reservoir:
+    case objects::fountain:
+    case objects::well:
+    case objects::aqueduct:
       needDrawAnimations = true;
       areaSize = overlay->size();      
     break;
@@ -83,7 +83,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
       bool haveWater = tile.param( Tile::pFountainWater ) > 0 || tile.param( Tile::pWellWater ) > 0;
       needDrawAnimations = false;
 
-      if ( overlay->type() == building::house )
+      if ( overlay->type() == objects::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
         needDrawAnimations = (h->spec().level() == 1) && h->habitants().empty();

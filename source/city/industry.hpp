@@ -28,7 +28,7 @@ namespace city
 class Industry
 {
 public:
-  typedef std::vector<constants::building::Group> BuildingGroups;
+  typedef std::vector<constants::objects::Group> BuildingGroups;
   typedef enum
   {
     factoryAndTrade=0,

@@ -77,24 +77,24 @@ void LayerEducation::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
       needDrawAnimations = true;
     break;
 
-    case building::school:
-    case building::library:
-    case building::academy:
+    case objects::school:
+    case objects::library:
+    case objects::academy:
       needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
@@ -104,7 +104,7 @@ void LayerEducation::drawTile(Engine& engine, Tile& tile, const Point& offset)
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
 
@@ -229,9 +229,9 @@ LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::education:
-  case citylayer::school: _flags.insert( building::school ); _addWalkerType( walker::scholar ); break;
-  case citylayer::library: _flags.insert( building::library ); _addWalkerType( walker::librarian ); break;
-  case citylayer::academy: _flags.insert( building::academy ); _addWalkerType( walker::teacher ); break;
+  case citylayer::school: _flags.insert( objects::school ); _addWalkerType( walker::scholar ); break;
+  case citylayer::library: _flags.insert( objects::library ); _addWalkerType( walker::librarian ); break;
+  case citylayer::academy: _flags.insert( objects::academy ); _addWalkerType( walker::teacher ); break;
   }
 }
 

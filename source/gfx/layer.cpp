@@ -20,6 +20,7 @@
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
 #include "tilesarray.hpp"
+#include "gfx/helper.hpp"
 #include "core/event.hpp"
 #include "city_renderer.hpp"
 #include "events/showtileinfo.hpp"

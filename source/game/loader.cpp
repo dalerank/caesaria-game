@@ -27,6 +27,7 @@
 #include "core/stringhelper.hpp"
 #include "gfx/tile.hpp"
 #include "resourcegroup.hpp"
+#include "gfx/animation_bank.hpp"
 #include "core/foreach.hpp"
 #include "game.hpp"
 #include "city/city.hpp"
@@ -49,7 +50,7 @@ public:
 
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit );
-  void initWaterTileAnimation( Tilemap& tmap );
+  void initTilesAnimation( Tilemap& tmap );
   void finalize( Game& game );
   bool maySetSign( const Tile& tile )
   {
@@ -105,14 +106,13 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
   }
 }
 
-void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
+void GameLoader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
 
-  Animation water;
-  water.setDelay( 12 );
-  water.load( ResourceGroup::land1a, 121, 7 );
-  water.load( ResourceGroup::land1a, 127, 7, true );
+  Animation water = AnimationBank::simple( AnimationBank::animWater );
+  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+
   foreach( tile, area )
   {
     int rId = (*tile)->originalImgId() - 364;
@@ -121,6 +121,11 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
       water.setIndex( rId );
       (*tile)->setAnimation( water );
       (*tile)->setFlag( Tile::tlDeepWater, true );
+    }
+
+    if( (*tile)->getFlag( Tile::tlMeadow ) )
+    {
+      (*tile)->setAnimation( meadow );
     }
   }
 }
@@ -135,7 +140,7 @@ void GameLoader::Impl::finalize( Game& game )
   initEntryExitTile( border.roadEntry, tileMap, 89, false );
   initEntryExitTile( border.roadExit,  tileMap, 85, true  );
 
-  initWaterTileAnimation( tileMap );
+  initTilesAnimation( tileMap );
 }
 
 void GameLoader::Impl::initLoaders()

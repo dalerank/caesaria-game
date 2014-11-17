@@ -15,38 +15,20 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "missionarypost.hpp"
-#include "game/resourcegroup.hpp"
-#include "walker/walker.hpp"
-#include "constants.hpp"
+#ifndef __CAESARIA_TREE_H_INCLUDED__
+#define __CAESARIA_TREE_H_INCLUDED__
 
-using namespace constants;
+#include "gfx/tileoverlay.hpp"
 
-MissionaryPost::MissionaryPost()
-  : ServiceBuilding( Service::missionary, objects::missionaryPost, Size(2) )
+class Tree : public gfx::TileOverlay
 {
-  setMaximumWorkers(20);
-  setWorkers( 0 );
-  setPicture( ResourceGroup::transport, 93 );
+public:
+  Tree();
+  
+  virtual void timeStep( const unsigned long time );
+  void initTerrain(gfx::Tile &terrain);
+  bool build(PlayerCityPtr city, const TilePos &pos);
+  void destroy();
+};
 
-  setState( inflammability, 0 );
-  setState( collapsibility, 0 );
-}
-
-void MissionaryPost::deliverService()
-{
-  if( mayWork() )
-  {
-    ServiceBuilding::deliverService();
-
-    WalkerList ws = walkers();
-    if( !ws.empty() )
-    {
-      if( ws.front()->type() == walker::missioner )
-      {
-        ws.front()->setThinks( "##missioner_high_barbarian_risk##" );
-      }
-    }
-  }
-}
-
+#endif //__CAESARIA_TREE_H_INCLUDED__

@@ -35,15 +35,15 @@ const char* MetaDataOptions::cost = "cost";
 const char* MetaDataOptions::requestDestroy = "requestDestroy";
 const char* MetaDataOptions::employers = "employers";
 
-MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
+MetaData MetaData::invalid = MetaData( objects::unknown, "unknown" );
 
 class BuildingTypeHelper : public EnumsHelper<TileOverlay::Type>
 {
 public:
-  BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( building::unknown )
+  BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( objects::unknown )
   {
-#define __REG_TOTYPE(a) append(building::a, CAESARIA_STR_EXT(a) );
-#define __REG_ALTTYPE(a, b) append(building::a, b );
+#define __REG_TOTYPE(a) append(objects::a, CAESARIA_STR_EXT(a) );
+#define __REG_ALTTYPE(a, b) append(objects::a, b );
     __REG_TOTYPE( amphitheater )
     __REG_TOTYPE( theater )
     __REG_TOTYPE( hippodrome )
@@ -53,21 +53,21 @@ public:
     __REG_TOTYPE( lionsNursery )    __REG_ALTTYPE( lionsNursery,   "lion_pit" )
     __REG_TOTYPE( chariotSchool )   __REG_ALTTYPE( chariotSchool,  "chatioteer_school" )
     __REG_TOTYPE( house )
-    append( construction::road,       "road" );
-    append( construction::plaza,      "plaza" );
-    append( construction::garden,     "garden" );
-    append( building::senate,         "senate_1" );
-    append( building::forum,          "forum_1" );
-    append( building::governorHouse,  "governor_palace_1" );
-    append( building::governorVilla,  "governor_palace_2" );
-    append( building::governorPalace, "governor_palace_3" );
-    append( building::fortLegionaire, "fort_legionaries" );
-    append( building::fortJavelin,    "fort_javelin" );
-    append( building::fortMounted,    "fort_horse" );
+    append( objects::road,       "road" );
+    append( objects::plaza,      "plaza" );
+    append( objects::garden,     "garden" );
+    append( objects::senate,         "senate_1" );
+    append( objects::forum,          "forum_1" );
+    append( objects::governorHouse,  "governor_palace_1" );
+    append( objects::governorVilla,  "governor_palace_2" );
+    append( objects::governorPalace, "governor_palace_3" );
+    append( objects::fortLegionaire, "fort_legionaries" );
+    append( objects::fortJavelin,    "fort_javelin" );
+    append( objects::fortMounted,    "fort_horse" );
     __REG_TOTYPE( prefecture )
     __REG_TOTYPE( barracks )
-    append( building::militaryAcademy,"military_academy" );
-    append( building::doctor,         "clinic" );
+    append( objects::militaryAcademy,"military_academy" );
+    append( objects::doctor,         "clinic" );
     __REG_TOTYPE( hospital )
     __REG_TOTYPE( baths )
     __REG_TOTYPE( barber )
@@ -75,59 +75,59 @@ public:
     __REG_TOTYPE( academy );
     __REG_TOTYPE( library )
     __REG_TOTYPE( missionaryPost )
-    append( building::templeCeres,    "small_ceres_temple" );
-    append( building::templeNeptune,  "small_neptune_temple" );
-    append( building::templeMars,     "small_mars_temple" );
-    append( building::templeMercury,  "small_mercury_temple" );
-    append( building::templeVenus,    "small_venus_temple" );
-    append( building::cathedralCeres,  "big_ceres_temple" );
-    append( building::cathedralNeptune,"big_neptune_temple" );
-    append( building::cathedralMars,   "big_mars_temple");
-    append( building::cathedralMercury,"big_mercury_temple");
-    append( building::cathedralVenus,  "big_venus_temple");
+    append( objects::templeCeres,    "small_ceres_temple" );
+    append( objects::templeNeptune,  "small_neptune_temple" );
+    append( objects::templeMars,     "small_mars_temple" );
+    append( objects::templeMercury,  "small_mercury_temple" );
+    append( objects::templeVenus,    "small_venus_temple" );
+    append( objects::cathedralCeres,  "big_ceres_temple" );
+    append( objects::cathedralNeptune,"big_neptune_temple" );
+    append( objects::cathedralMars,   "big_mars_temple");
+    append( objects::cathedralMercury,"big_mercury_temple");
+    append( objects::cathedralVenus,  "big_venus_temple");
     __REG_TOTYPE( oracle )
     __REG_TOTYPE( market )
-    append( building::granary,        "granery");
+    append( objects::granary,        "granery");
     __REG_TOTYPE( warehouse )
-    append( building::wheatFarm,      "wheat_farm");
-    append( building::fruitFarm,      "fig_farm");
-    append( building::vegetableFarm,  "vegetable_farm");
-    append( building::oliveFarm,      "olive_farm");
-    append( building::grapeFarm,      "vinard");
-    append( building::pigFarm,        "meat_farm");
-    append( building::marbleQuarry,   "quarry");
-    append( building::ironMine,       "iron_mine");
-    append( building::timberLogger,   "lumber_mill");
-    append( building::clayPit,        "clay_pit");
-    append( building::winery,         "wine_workshop");
-    append( building::creamery,       "oil_workshop");
-    append( building::weaponsWorkshop,"weapons_workshop");
-    append( building::furnitureWorkshop, "furniture_workshop");
-    append( building::pottery,        "pottery_workshop");
-    append( building::engineerPost,   "engineering_post");
-    append( building::smallStatue,    "statue_small");
-    append( building::middleStatue,   "statue_middle");
-    append( building::bigStatue,      "statue_big");
-    append( building::lowBridge,      "low_bridge");
-    append( building::highBridge,     "high_bridge");
+    append( objects::wheatFarm,      "wheat_farm");
+    append( objects::fruitFarm,      "fig_farm");
+    append( objects::vegetableFarm,  "vegetable_farm");
+    append( objects::oliveFarm,      "olive_farm");
+    append( objects::grapeFarm,      "vinard");
+    append( objects::pigFarm,        "meat_farm");
+    append( objects::marbleQuarry,   "quarry");
+    append( objects::ironMine,       "iron_mine");
+    append( objects::timberLogger,   "lumber_mill");
+    append( objects::clayPit,        "clay_pit");
+    append( objects::winery,         "wine_workshop");
+    append( objects::creamery,       "oil_workshop");
+    append( objects::weaponsWorkshop,"weapons_workshop");
+    append( objects::furnitureWorkshop, "furniture_workshop");
+    append( objects::pottery,        "pottery_workshop");
+    append( objects::engineerPost,   "engineering_post");
+    append( objects::smallStatue,    "statue_small");
+    append( objects::middleStatue,   "statue_middle");
+    append( objects::bigStatue,      "statue_big");
+    append( objects::lowBridge,      "low_bridge");
+    append( objects::highBridge,     "high_bridge");
     __REG_TOTYPE( dock )
     __REG_TOTYPE( shipyard )
     __REG_TOTYPE( wharf )
-    append( building::triumphalArch,  "triumphal_arch");
+    append( objects::triumphalArch,  "triumphal_arch");
     __REG_TOTYPE( well )
     __REG_TOTYPE( fountain )
     __REG_TOTYPE( aqueduct )
     __REG_TOTYPE( reservoir )
-    append( building::nativeHut,      "native_hut");
-    append( building::nativeCenter,   "native_center");
-    append( building::nativeField,    "native_field");
-    append( building::burningRuins,   "burning_ruins");
-    append( building::burnedRuins,    "burned_ruins");
-    append( building::plagueRuins,    "plague_ruins");
-    append( building::collapsedRuins, "collapsed_ruins");
-    append( building::forum2,         "forum_2" );
+    append( objects::nativeHut,      "native_hut");
+    append( objects::nativeCenter,   "native_center");
+    append( objects::nativeField,    "native_field");
+    append( objects::burningRuins,   "burning_ruins");
+    append( objects::burnedRuins,    "burned_ruins");
+    append( objects::plagueRuins,    "plague_ruins");
+    append( objects::collapsedRuins, "collapsed_ruins");
+    append( objects::forum2,         "forum_2" );
     __REG_TOTYPE( gatehouse )
-    append( building::senate2,        "senate_2" );
+    append( objects::senate2,        "senate_2" );
     __REG_TOTYPE( tower )
     __REG_TOTYPE( wall )
     __REG_TOTYPE( fortification )
@@ -135,7 +135,7 @@ public:
     __REG_TOTYPE( rift )
     __REG_TOTYPE( river )
 
-    append( building::unknown,        "" );
+    append( objects::unknown,        "" );
 #undef __REG_TOTYPE
  }
 };
@@ -143,32 +143,32 @@ public:
 class BuildingClassHelper : public EnumsHelper<TileOverlay::Group>
 {
 public:
-  BuildingClassHelper() : EnumsHelper<TileOverlay::Group>( building::unknownGroup )
+  BuildingClassHelper() : EnumsHelper<TileOverlay::Group>( objects::unknownGroup )
   {
-    append( building::industryGroup, "industry" );
-    append( building::obtainGroup, "rawmaterial" );
-    append( building::foodGroup, "food" );
-    append( building::disasterGroup, "disaster" );
-    append( building::religionGroup, "religion" );
-    append( building::militaryGroup, "military" );
-    append( building::nativeGroup, "native" );
-    append( building::waterGroup, "water" );
-    append( building::administrationGroup, "administration" );
-    append( building::bridgeGroup, "bridge" );
-    append( building::engineeringGroup, "engineer" );
-    append( building::tradeGroup, "trade" );
-    append( building::tower, "tower" );
-    append( building::gateGroup, "gate" );
-    append( building::securityGroup, "security" );
-    append( building::educationGroup, "education" );
-    append( building::healthGroup, "health" );
-    append( building::sightGroup, "sight" );
-    append( building::gardenGroup, "garden" );
-    append( building::roadGroup, "road" );
-    append( building::entertainmentGroup, "entertainment" );
-    append( building::houseGroup, "house" );
-    append( building::wallGroup, "wall" );
-    append( building::unknown, "" );
+    append( objects::industryGroup, "industry" );
+    append( objects::obtainGroup, "rawmaterial" );
+    append( objects::foodGroup, "food" );
+    append( objects::disasterGroup, "disaster" );
+    append( objects::religionGroup, "religion" );
+    append( objects::militaryGroup, "military" );
+    append( objects::nativeGroup, "native" );
+    append( objects::waterGroup, "water" );
+    append( objects::administrationGroup, "administration" );
+    append( objects::bridgeGroup, "bridge" );
+    append( objects::engineeringGroup, "engineer" );
+    append( objects::tradeGroup, "trade" );
+    append( objects::tower, "tower" );
+    append( objects::gateGroup, "gate" );
+    append( objects::securityGroup, "security" );
+    append( objects::educationGroup, "education" );
+    append( objects::healthGroup, "health" );
+    append( objects::sightGroup, "sight" );
+    append( objects::gardenGroup, "garden" );
+    append( objects::roadGroup, "road" );
+    append( objects::entertainmentGroup, "entertainment" );
+    append( objects::houseGroup, "house" );
+    append( objects::wallGroup, "wall" );
+    append( objects::unknown, "" );
   }
 };
 
@@ -192,7 +192,7 @@ MetaData::MetaData(const gfx::TileOverlay::Type buildingType, const std::string&
 {
   _d->prettyName = "##" + name + "##";
   _d->tileovType = buildingType;
-  _d->group = building::unknownGroup;
+  _d->group = objects::unknownGroup;
   _d->name = name;  
 }
 
@@ -267,7 +267,7 @@ MetaDataHolder& MetaDataHolder::instance()
 
 TileOverlay::Type MetaDataHolder::getConsumerType(const Good::Type inGoodType) const
 {
-  TileOverlay::Type res = building::unknown;
+  TileOverlay::Type res = objects::unknown;
 
   Impl::FactoryInMap::iterator mapIt;
   mapIt = _d->mapBuildingByInGood.find(inGoodType);
@@ -330,11 +330,11 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 void MetaDataHolder::initialize( vfs::Path filename )
 {
   // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[Good::iron  ] = building::weaponsWorkshop;
-  _d->mapBuildingByInGood[Good::timber] = building::furnitureWorkshop;
-  _d->mapBuildingByInGood[Good::clay  ] = building::pottery;
-  _d->mapBuildingByInGood[Good::olive ] = building::creamery;
-  _d->mapBuildingByInGood[Good::grape ] = building::winery;
+  _d->mapBuildingByInGood[Good::iron  ] = objects::weaponsWorkshop;
+  _d->mapBuildingByInGood[Good::timber] = objects::furnitureWorkshop;
+  _d->mapBuildingByInGood[Good::clay  ] = objects::pottery;
+  _d->mapBuildingByInGood[Good::olive ] = objects::creamery;
+  _d->mapBuildingByInGood[Good::grape ] = objects::winery;
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 
@@ -343,7 +343,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
     VariantMap options = mapItem->second.toMap();
 
     const TileOverlay::Type btype = findType( mapItem->first );
-    if( btype == building::unknown )
+    if( btype == objects::unknown )
     {
       Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
       continue;
@@ -422,7 +422,7 @@ TileOverlay::Type MetaDataHolder::findType( const std::string& name )
   if( type == instance()._d->typeHelper.getInvalid() )
   {
     Logger::warning( "MetaDataHolder: can't find type for typeName " + ( name.empty() ? "null" : name) );
-    return building::unknown;
+    return objects::unknown;
   }
 
   return type;
@@ -440,7 +440,7 @@ TileOverlay::Group MetaDataHolder::findGroup( const std::string& name )
   if( type == instance()._d->classHelper.getInvalid() )
   {
     Logger::warning( "MetaDataHolder: can't find building class for building className %s", name.c_str() );
-    return building::unknownGroup;
+    return objects::unknownGroup;
   }
 
   return type;

@@ -46,7 +46,7 @@ const Point hippodromeSectionOffset[] = {
 };
 
 HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction direction, Type type )
-  : Building( building::fortArea, Size(5) )
+  : Building( objects::fortArea, Size(5) )
 {
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -148,7 +148,7 @@ const Pictures& Hippodrome::pictures(Renderer::Pass pass) const
   return EntertainmentBuilding::pictures( pass );
 }
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(15,5) ), _d( new Impl )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, objects::hippodrome, Size(15,5) ), _d( new Impl )
 {
   _fgPicturesRef().resize(5);
   _d->direction = west;
@@ -178,7 +178,7 @@ bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aro
   }
 
   city::Helper helper( city );
-  HippodromeList hpList = helper.find<Hippodrome>( building::hippodrome );
+  HippodromeList hpList = helper.find<Hippodrome>( objects::hippodrome );
   if( !hpList.empty() )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");

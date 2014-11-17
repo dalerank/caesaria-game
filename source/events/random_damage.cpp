@@ -60,14 +60,14 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     _d->isDeleted = true;
 
     Priorities<int> exclude;
-    exclude << building::waterGroup
-            << building::roadGroup
-            << building::disasterGroup;
+    exclude << objects::waterGroup
+            << objects::roadGroup
+            << objects::disasterGroup;
 
     ConstructionList ctrs;
     ctrs << game.city()->overlays();
 
-    if( _d->priority != construction::unknown )
+    if( _d->priority != objects::unknown )
     {
       for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
       {

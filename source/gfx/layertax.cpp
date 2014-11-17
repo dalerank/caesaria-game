@@ -51,27 +51,27 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     // Tax-related
-    case building::senate:
-    case building::forum:
+    case objects::senate:
+    case objects::forum:
       needDrawAnimations = true;
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         //taxLevel = house->getServiceValue( Service::forum );

@@ -392,7 +392,7 @@ void AdvisorChiefWindow::Impl::drawMilitary()
   {
     city::Helper helper( city );
 
-    BarracksList barracks = helper.find<Barracks>( building::barracks );
+    BarracksList barracks = helper.find<Barracks>( objects::barracks );
 
     bool needWeapons = false;
     foreach( it, barracks )
@@ -456,11 +456,11 @@ void AdvisorChiefWindow::Impl::drawEducation()
   std::string text;
 
   StringArray reasons;
-  int avTypes[] = { building::school, building::library, building::academy, building::unknown };
+  int avTypes[] = { objects::school, objects::library, objects::academy, objects::unknown };
   std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
                               "##advchief_some_need_academy##", "" };
 
-  for( int i=0; avTypes[ i ] != building::unknown; i++ )
+  for( int i=0; avTypes[ i ] != objects::unknown; i++ )
   {
     std::set<int> availableTypes;
     availableTypes.insert( avTypes[ i ] );

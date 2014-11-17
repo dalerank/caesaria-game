@@ -40,7 +40,7 @@ public:
 };
 
 Prefecture::Prefecture()
-  : ServiceBuilding(Service::prefect, constants::building::prefecture, Size(1)),
+  : ServiceBuilding(Service::prefect, constants::objects::prefecture, Size(1)),
     _d( new Impl )
 {
   _d->fireDetect = TilePos( -1, -1 );

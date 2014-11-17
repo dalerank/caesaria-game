@@ -39,7 +39,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, objects::amphitheater, Size(3)), _d( new Impl )
 {
   _fgPicturesRef().resize(2);
 
@@ -75,13 +75,13 @@ bool Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
   EntertainmentBuilding::build( city, pos );
 
   city::Helper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
+  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::gladiatorSchool );
+  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( objects::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );

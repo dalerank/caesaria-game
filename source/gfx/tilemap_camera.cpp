@@ -22,7 +22,7 @@
 #include "core/size.hpp"
 #include "core/exception.hpp"
 #include "core/logger.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "core/foreach.hpp"
 #include "tileoverlay.hpp"
 

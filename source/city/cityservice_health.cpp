@@ -62,7 +62,7 @@ void HealthCare::timeStep(const unsigned int time )
   if( GameDate::isMonthChanged() )
   {
     Helper helper( _city() );
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses = helper.find<House>( objects::house );
 
     _d->value = 0;
     _d->minHealthLevel = 0;
@@ -91,19 +91,19 @@ std::string HealthCare::reason() const
   std::string mainReason = healthDescription[ lvl ];
 
   Helper helper( _city() );
-  BuildingList clinics = helper.find<Building>( building::doctor );
+  BuildingList clinics = helper.find<Building>( objects::doctor );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 
   reasons << mainReason;
   if( lvl > maxDescriptionLevel / 3 )
   {
-    int avTypes[] = { building::barber, building::baths, building::doctor, building::hospital, building::unknown };
+    int avTypes[] = { objects::barber, objects::baths, objects::doctor, objects::hospital, objects::unknown };
     std::string avReasons[] = { "##advchief_some_need_barber##", "##advchief_some_need_baths##",
                                 "##advchief_some_need_doctors##", "##advchief_some_need_hospital##",
                                 "" };
 
-    for( int i=0; avTypes[ i ] != building::unknown; i++ )
+    for( int i=0; avTypes[ i ] != objects::unknown; i++ )
     {
       std::set<int> availableTypes;
       availableTypes.insert( avTypes[ i ] );

@@ -56,47 +56,47 @@ unsigned int Temple::walkerDistance() const { return 26;}
 
 Temple::~Temple(){}
 
-TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), building::templeCeres, 45 )
+TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), objects::templeCeres, 45 )
 {
 }
 
-BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), building::cathedralCeres, 46 )
+BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), objects::cathedralCeres, 46 )
 {
 }
 
-TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), building::templeNeptune, 47 )
+TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), objects::templeNeptune, 47 )
 {
 }
 
-BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), building::cathedralNeptune, 48 )
+BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), objects::cathedralNeptune, 48 )
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), building::templeMars, 51 )
+TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), objects::templeMars, 51 )
 {
 }
 
-BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), building::cathedralMars, 52 )
+BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), objects::cathedralMars, 52 )
 {
 }
 
-TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), building::templeVenus, 53 )
+TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), objects::templeVenus, 53 )
 {
 }
 
-BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), building::cathedralVenus, 54 )
+BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), objects::cathedralVenus, 54 )
 {
 }
 
-TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), building::templeMercury, 49 )
+TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), objects::templeMercury, 49 )
 {
 }
 
-BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), building::cathedralMercury, 50 )
+BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), objects::cathedralMercury, 50 )
 {
 }
 
-TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
+TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), objects::oracle, 55 )
 {
   setSize( Size( 2 ) );
   _animationRef().load( ResourceGroup::security, 56, 6);

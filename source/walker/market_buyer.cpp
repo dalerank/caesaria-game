@@ -138,19 +138,19 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
           || _d->priorityGood == Good::vegetable)
       {
         // try get that good from a granary
-        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granary, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
         if( _d->destBuildingPos.i() < 0 )
         {
-          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, objects::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
       }
       else
       {
         // try get that good from a warehouse
-        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, objects::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
       }
 

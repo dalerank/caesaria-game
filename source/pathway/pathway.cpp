@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "pathway.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "core/direction.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"

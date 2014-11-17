@@ -42,7 +42,7 @@ const Picture& Immigrant::_cartPicture()
 {
   if( !Emigrant::_cartPicture().isValid() )
   {
-    _setCartPicture( AnimationBank::getCart( AnimationBank::imigrantCart + G_EMIGRANT_CART1, 0, direction()) );
+    _setCartPicture( AnimationBank::getCart( AnimationBank::animImigrantCart + G_EMIGRANT_CART1, 0, direction()) );
   }
 
   return Emigrant::_cartPicture();

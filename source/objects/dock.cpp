@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "dock.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
@@ -56,7 +56,7 @@ public:
   void initStores();
 };
 
-Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
+Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
 {
   // dock pictures
   // transport 5        animation = 6~16

@@ -63,20 +63,20 @@ Peace::Peace( PlayerCityPtr city )
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
 
-  _d->unsignificantBuildings << building::prefecture
-                         << building::engineerPost
-                         << building::well
-                         << building::fortArea
-                         << building::fortJavelin
-                         << building::fortLegionaire
-                         << building::fortMounted
-                         << building::gatehouse
-                         << building::fortification
-                         << construction::road
-                         << construction::plaza
-                         << building::highBridge
-                         << building::lowBridge
-                         << building::tower;
+  _d->unsignificantBuildings << objects::prefecture
+                         << objects::engineerPost
+                         << objects::well
+                         << objects::fortArea
+                         << objects::fortJavelin
+                         << objects::fortLegionaire
+                         << objects::fortMounted
+                         << objects::gatehouse
+                         << objects::fortification
+                         << objects::road
+                         << objects::plaza
+                         << objects::highBridge
+                         << objects::lowBridge
+                         << objects::tower;
 }
 
 void Peace::timeStep(const unsigned int time )

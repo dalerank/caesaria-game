@@ -34,7 +34,7 @@ public:
   FishingBoatPtr boat;
 };
 
-Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, building::wharf, Size(2)), _d( new Impl )
+Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, objects::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northPic );

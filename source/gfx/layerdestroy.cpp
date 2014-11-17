@@ -23,6 +23,7 @@
 #include "core/foreach.hpp"
 #include "tilemap_camera.hpp"
 #include "city/city.hpp"
+#include "gfx/helper.hpp"
 #include "core/event.hpp"
 #include "core/stringhelper.hpp"
 #include "objects/metadata.hpp"

@@ -51,7 +51,7 @@ public:
 
 Fortification::Fortification() : Wall(), _d( new Impl )
 {
-  setType( building::fortification );
+  setType( objects::fortification );
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 
   setState( Construction::inflammability, 0 );
@@ -79,11 +79,11 @@ bool Fortification::build(PlayerCityPtr city, const TilePos& pos )
   Building::build( city, pos );
 
   city::Helper helper( city );
-  FortificationList fortifications = helper.find<Fortification>( building::fortification );  
+  FortificationList fortifications = helper.find<Fortification>( objects::fortification );  
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( city ); }
 
-  TowerList towers = helper.find<Tower>( building::tower );
+  TowerList towers = helper.find<Tower>( objects::tower );
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( city );
@@ -186,7 +186,7 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
     foreach( it, tmp )
     {
       if( (*it)->overlay().isNull()
-          || (*it)->overlay()->type() != building::fortification )
+          || (*it)->overlay()->type() != objects::fortification )
         continue;
 
       TilePos rpos = (*it)->pos();
@@ -208,7 +208,7 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   for (int i = 0; i < countDirection; ++i)
   {
     if (!is_border[i] &&
-        ( (overlay_d[i].isValid() && overlay_d[i]->type() == building::fortification) || is_busy[i]))
+        ( (overlay_d[i].isValid() && overlay_d[i]->type() == objects::fortification) || is_busy[i]))
     {
       switch (i)
       {

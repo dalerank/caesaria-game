@@ -67,7 +67,7 @@ void Mars::_doWrath(PlayerCityPtr city)
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
   city::Helper helper( city );
-  FortList forts = helper.find<Fort>( building::militaryGroup );
+  FortList forts = helper.find<Fort>( objects::militaryGroup );
 
   std::string text, title;
   if( !forts.empty() )

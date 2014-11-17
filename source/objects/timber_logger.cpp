@@ -27,7 +27,7 @@ using namespace constants;
 using namespace gfx;
 
 TimberLogger::TimberLogger()
-  : Factory(Good::none, Good::timber, building::timberLogger, Size(2) )
+  : Factory(Good::none, Good::timber, objects::timberLogger, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 72 );
 

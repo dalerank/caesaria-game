@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "coastalbuilding.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"

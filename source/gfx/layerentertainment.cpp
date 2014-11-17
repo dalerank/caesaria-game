@@ -71,28 +71,28 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
       needDrawAnimations = true;
     break;
 
-    case building::theater:
-    case building::amphitheater:
-    case building::colloseum:
-    case building::hippodrome:
-    case building::lionsNursery:
-    case building::actorColony:
-    case building::gladiatorSchool:
+    case objects::theater:
+    case objects::amphitheater:
+    case objects::colloseum:
+    case objects::hippodrome:
+    case objects::lionsNursery:
+    case objects::actorColony:
+    case objects::gladiatorSchool:
       needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
@@ -102,7 +102,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         entertainmentLevel = _getLevelValue( house );
@@ -215,11 +215,11 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
   switch( type )
   {
   case citylayer::entertainment:
-    _flags.insert( building::unknown ); _flags.insert( building::theater );
-    _flags.insert( building::amphitheater ); _flags.insert( building::colloseum );
-    _flags.insert( building::hippodrome ); _flags.insert( building::actorColony );
-    _flags.insert( building::gladiatorSchool ); _flags.insert( building::lionsNursery );
-    _flags.insert( building::chariotSchool );
+    _flags.insert( objects::unknown ); _flags.insert( objects::theater );
+    _flags.insert( objects::amphitheater ); _flags.insert( objects::colloseum );
+    _flags.insert( objects::hippodrome ); _flags.insert( objects::actorColony );
+    _flags.insert( objects::gladiatorSchool ); _flags.insert( objects::lionsNursery );
+    _flags.insert( objects::chariotSchool );
 
     _addWalkerType( walker::actor );
     _addWalkerType( walker::gladiator );
@@ -228,25 +228,25 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
   break;
 
   case citylayer::theater:
-    _flags.insert( building::theater );
-    _flags.insert( building::actorColony );
+    _flags.insert( objects::theater );
+    _flags.insert( objects::actorColony );
 
     _addWalkerType( walker::actor );
   break;
 
   case citylayer::amphitheater:
-    _flags.insert( building::amphitheater );
-    _flags.insert( building::actorColony );
-    _flags.insert( building::gladiatorSchool );
+    _flags.insert( objects::amphitheater );
+    _flags.insert( objects::actorColony );
+    _flags.insert( objects::gladiatorSchool );
 
     _addWalkerType( walker::actor );
     _addWalkerType( walker::gladiator );
   break;
 
   case citylayer::colloseum:
-    _flags.insert( building::colloseum );
-    _flags.insert( building::gladiatorSchool );
-    _flags.insert( building::lionsNursery );
+    _flags.insert( objects::colloseum );
+    _flags.insert( objects::gladiatorSchool );
+    _flags.insert( objects::lionsNursery );
 
     _addWalkerType( walker::gladiator );
     _addWalkerType( walker::lionTamer );
@@ -254,8 +254,8 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
 
 
   case citylayer::hippodrome:
-    _flags.insert( building::hippodrome );
-    _flags.insert( building::chariotSchool );
+    _flags.insert( objects::hippodrome );
+    _flags.insert( objects::chariotSchool );
 
     _addWalkerType( walker::charioteer );
   break;

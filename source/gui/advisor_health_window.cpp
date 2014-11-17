@@ -67,10 +67,10 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case building::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
-    case building::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
-    case building::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case building::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
+    case objects::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
+    case objects::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
+    case objects::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
+    case objects::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
@@ -128,20 +128,20 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
   Size labelSize( lbBlackframe->width() - 6, 20 );
 
-  Impl::InfrastructureInfo info = _d->getInfo( city, building::baths );
-  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), building::baths,
+  Impl::InfrastructureInfo info = _d->getInfo( city, objects::baths );
+  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), objects::baths,
                                              info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, building::barber );
-  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), building::barber,
+  info = _d->getInfo( city, objects::barber );
+  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), objects::barber,
                                               info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, building::doctor );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), building::doctor,
+  info = _d->getInfo( city, objects::doctor );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), objects::doctor,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, building::hospital );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), building::hospital,
+  info = _d->getInfo( city, objects::hospital );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), objects::hospital,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -203,7 +203,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     else
     {
       city::Helper helper( c );
-      HouseList houses =  helper.find<House>( building::house );
+      HouseList houses =  helper.find<House>( objects::house );
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;

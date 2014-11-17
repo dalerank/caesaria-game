@@ -45,7 +45,7 @@ GameEventPtr ContaminatedWater::create()
   return ret;
 }
 
-void _decreaseHousesHealth( building::Type btype, PlayerCityPtr city, int value )
+void _decreaseHousesHealth( objects::Type btype, PlayerCityPtr city, int value )
 {
   city::Helper helper( city );
   TilePos offset( 2, 2 );
@@ -57,7 +57,7 @@ void _decreaseHousesHealth( building::Type btype, PlayerCityPtr city, int value 
     if( (*itB)->type() != btype )
         continue;
 
-    HouseList houses = helper.find<House>( building::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
+    HouseList houses = helper.find<House>( objects::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
 
     foreach( itHouse, houses )
     {
@@ -75,8 +75,8 @@ void ContaminatedWater::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute contaminated water service" );
     _d->isDeleted = _d->endDate < GameDate::current();
 
-    _decreaseHousesHealth( building::well, game.city(), -_d->value );
-    _decreaseHousesHealth( building::fountain, game.city(), -_d->value );
+    _decreaseHousesHealth( objects::well, game.city(), -_d->value );
+    _decreaseHousesHealth( objects::fountain, game.city(), -_d->value );
   }
 }
 

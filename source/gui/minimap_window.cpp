@@ -77,7 +77,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
-  TileOverlay::Type ovType = construction::unknown;
+  TileOverlay::Type ovType = objects::unknown;
   if( tile.overlay().isValid() )
     ovType = tile.overlay()->type();
 
@@ -122,7 +122,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
     c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
   }
-  else if( ovType == building::aqueduct  )
+  else if( ovType == objects::aqueduct  )
   {
     c1 = colors->colour(minimap::Colors::MAP_AQUA, 0);
     c2 = colors->colour(minimap::Colors::MAP_AQUA, 1);
@@ -157,7 +157,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 
   switch(type)
   {
-    case building::house:
+    case objects::house:
     {
       switch (overlay->size().width())
       {
@@ -178,16 +178,16 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
       }
       break;
 
-      case building::reservoir:
+      case objects::reservoir:
       {
         c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
         c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
       }
       break;
 
-      case building::fortJavelin:
-      case building::fortLegionaire:
-      case building::fortMounted:
+      case objects::fortJavelin:
+      case objects::fortLegionaire:
+      case objects::fortMounted:
       {
         c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
         c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);

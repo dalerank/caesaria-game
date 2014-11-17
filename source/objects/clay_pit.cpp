@@ -29,7 +29,7 @@ using namespace gfx;
 
 
 ClayPit::ClayPit()
-  : Factory( Good::none, Good::clay, constants::building::clayPit, Size(2) )
+  : Factory( Good::none, Good::clay, constants::objects::clayPit, Size(2) )
 {
   _fgPicturesRef().resize(2);
 

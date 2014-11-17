@@ -32,7 +32,7 @@ public:
   bool notNeedSoldiers;
 };
 
-Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
+Barracks::Barracks() : TrainingBuilding( objects::barracks, Size( 3 ) ),
   _d( new Impl )
 {
   setMaximumWorkers(5);

@@ -24,6 +24,7 @@
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
 #include "core/gettext.hpp"
+#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
@@ -358,7 +359,7 @@ int WarehouseStore::capacity() const{  return 400 * _warehouse->_d->subTiles.siz
 void WarehouseStore::setCapacity(const int){}
 int WarehouseStore::capacity( const Good::Type& goodType ) const{  return capacity();}
 
-Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 3 )), _d( new Impl )
+Warehouse::Warehouse() : WorkingBuilding( constants::objects::warehouse, Size( 3 )), _d( new Impl )
 {
    // _name = _("Entrepot");
   setPicture( ResourceGroup::warehouse, 19 );

@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_sav.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
@@ -286,7 +286,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
       else
       {
         TileOverlay::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
-        if( ovType == constants::construction::unknown )
+        if( ovType == constants::objects::unknown )
         {
           Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
         }

@@ -37,7 +37,7 @@ public:
   DateTime lastDateGl, lastDateLion;
 };
 
-Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, building::colloseum, Size(5) ), _d( new Impl )
+Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, objects::colloseum, Size(5) ), _d( new Impl )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
@@ -85,8 +85,8 @@ bool Colosseum::build(PlayerCityPtr city, const TilePos& pos)
   ServiceBuilding::build( city, pos );
 
   city::Helper helper( city );
-  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( building::gladiatorSchool );
-  LionsNurseryList lionsNs = helper.find<LionsNursery>( building::lionsNursery );
+  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  LionsNurseryList lionsNs = helper.find<LionsNursery>( objects::lionsNursery );
 
   _d->lastDateGl = GameDate::current();
   _d->lastDateLion = GameDate::current();
@@ -126,7 +126,7 @@ std::string Colosseum::troubleDesc() const
 bool Colosseum::isNeedGladiators() const
 {
   city::Helper helper( _city() );
-  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( building::gladiatorSchool );
+  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( objects::gladiatorSchool );
 
   return colloseums.empty();
 }

@@ -24,18 +24,18 @@ namespace city
 
 Industry::BuildingGroups city::Industry::toGroups( Type type )
 {
-  std::vector<constants::building::Group> ret;
+  std::vector<constants::objects::Group> ret;
   switch( type )
   {
-  case factoryAndTrade: ret.push_back( building::industryGroup ); ret.push_back( building::tradeGroup ); break;
-  case food: ret.push_back( building::foodGroup ); break;
-  case engineering: ret.push_back( building::engineeringGroup ); break;
-  case water: ret.push_back( building::waterGroup ); break;
-  case prefectures: ret.push_back( building::securityGroup ); break;
-  case military: ret.push_back( building::militaryGroup ); break;
-  case entertainment: ret.push_back( building::entertainmentGroup ); break;
-  case healthAndEducation: ret.push_back( building::healthGroup ); ret.push_back( building::educationGroup ); break;
-  case administrationAndReligion: ret.push_back( building::administrationGroup ); ret.push_back( building::religionGroup ); break;
+  case factoryAndTrade: ret.push_back( objects::industryGroup ); ret.push_back( objects::tradeGroup ); break;
+  case food: ret.push_back( objects::foodGroup ); break;
+  case engineering: ret.push_back( objects::engineeringGroup ); break;
+  case water: ret.push_back( objects::waterGroup ); break;
+  case prefectures: ret.push_back( objects::securityGroup ); break;
+  case military: ret.push_back( objects::militaryGroup ); break;
+  case entertainment: ret.push_back( objects::entertainmentGroup ); break;
+  case healthAndEducation: ret.push_back( objects::healthGroup ); ret.push_back( objects::educationGroup ); break;
+  case administrationAndReligion: ret.push_back( objects::administrationGroup ); ret.push_back( objects::religionGroup ); break;
     default: break;
   }
 

@@ -82,10 +82,10 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case building::theater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
-    case building::amphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
-    case building::colloseum: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
-    case building::hippodrome: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
+    case objects::theater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
+    case objects::amphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
+    case objects::colloseum: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
+    case objects::hippodrome: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
     default:
     break;
     }
@@ -155,17 +155,17 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( building::theater );
-  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), building::theater, info );
+  info = _d->getInfo( objects::theater );
+  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), objects::theater, info );
 
-  info = _d->getInfo( building::amphitheater );
-  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::amphitheater,
+  info = _d->getInfo( objects::amphitheater );
+  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), objects::amphitheater,
                                                         info );
-  info = _d->getInfo( building::colloseum );
-  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::colloseum, info );
+  info = _d->getInfo( objects::colloseum );
+  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), objects::colloseum, info );
 
-  info = _d->getInfo( building::hippodrome );
-  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), building::hippodrome, info );
+  info = _d->getInfo( objects::hippodrome );
+  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), objects::hippodrome, info );
 
   CONNECT( _d->btnNewFestival, onClicked(), this, Entertainment::_showFestivalWindow );
 
@@ -210,9 +210,9 @@ InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service
       int maxServing = 0;
       switch( service )
       {
-      case building::theater: maxServing = 500; break;
-      case building::amphitheater: maxServing = 800; break;
-      case building::colloseum: maxServing = 1500; break;
+      case objects::theater: maxServing = 500; break;
+      case objects::amphitheater: maxServing = 800; break;
+      case objects::colloseum: maxServing = 1500; break;
       default:
       break;
       }
@@ -255,7 +255,7 @@ void Entertainment::Impl::updateInfo()
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -323,7 +323,7 @@ void Entertainment::Impl::updateInfo()
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
-  HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
+  HippodromeList hippodromes = helper.find<Hippodrome>( objects::hippodrome );
   foreach( h, hippodromes )
   {
     if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }

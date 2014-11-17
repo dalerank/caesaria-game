@@ -337,7 +337,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropa
   Good::Type goodType = stock.type();
   TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
 
-  if (buildingType == building::unknown)
+  if (buildingType == objects::unknown)
   {
      // no factory can use this good
      return 0;
@@ -352,7 +352,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
   BuildingPtr res;
 
-  res = reserveShortestPath<Warehouse>( building::warehouse, stock, reservationID, pathPropagator, oPathWay );
+  res = reserveShortestPath<Warehouse>( objects::warehouse, stock, reservationID, pathPropagator, oPathWay );
 
   return res;
 }
@@ -369,7 +369,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( building::granary, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( objects::granary, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }

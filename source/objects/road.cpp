@@ -34,7 +34,7 @@ typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 
 }
 
 Road::Road()
-  : Construction( construction::road, Size(1) )
+  : Construction( objects::road, Size(1) )
 {
   _paved = 0;
 }
@@ -250,7 +250,7 @@ Plaza::Plaza()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(construction::plaza);
+  setType(objects::plaza);
   setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
   setSize( Size( 1 ) );
 }

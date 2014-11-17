@@ -130,7 +130,7 @@ void Info::timeStep(const unsigned int time )
     }
 
     Helper helper( _city() );
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses = helper.find<House>( objects::house );
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;

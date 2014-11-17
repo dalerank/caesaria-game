@@ -156,7 +156,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
     city::Helper helper( _city() );
     TilePos offset( 8, 8 );
     TilePos myPos = pos();
-    HouseList houses = helper.find<House>( building::house, myPos - offset, myPos + offset );
+    HouseList houses = helper.find<House>( objects::house, myPos - offset, myPos + offset );
     float averageDistance = 0;
     foreach( it, houses )
     {

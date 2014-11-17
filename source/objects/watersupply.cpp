@@ -76,7 +76,7 @@ void Reservoir::addWater(const WaterSource& source)
 }
 
 Reservoir::Reservoir()
-    : WaterSource( building::reservoir, Size( 3 ) )
+    : WaterSource( objects::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
   setPicture( ResourceGroup::utilitya, 34 );

@@ -41,7 +41,7 @@ public:
   void updateSprite();
 };
 
-Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ), _d( new Impl )
+Gatehouse::Gatehouse() : Building( objects::gatehouse, Size( 2 ) ), _d( new Impl )
 {
   setPicture( ResourceGroup::land2a, 150 );
   _d->gatehouseSprite.resize( 1 );

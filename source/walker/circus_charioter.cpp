@@ -85,7 +85,7 @@ const Picture& CircusCharioter::Impl::getCartPicture( Direction direction )
 {
   if( !cartPicture.isValid() )
   {
-    cartPicture = AnimationBank::getCart( AnimationBank::circusCart, 0, direction );
+    cartPicture = AnimationBank::getCart( AnimationBank::animCircusCart, 0, direction );
     cartPicture.addOffset( 8, -12 );
   }
 

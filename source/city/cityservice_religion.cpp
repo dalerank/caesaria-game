@@ -90,7 +90,7 @@ void Religion::timeStep( const unsigned int time )
 
     //update temples info
     Helper helper( _city() );
-    TempleList temples = helper.find<Temple>( building::religionGroup );
+    TempleList temples = helper.find<Temple>( objects::religionGroup );
     foreach( it, temples)
     {
       if( (*it)->divinity().isValid() )

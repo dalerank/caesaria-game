@@ -16,4 +16,6 @@
   land1a : ":/gfx/pics_land1a.zip"
   worker : ":/gfx/pics_worker.zip"
   tree : ":/gfx/pics_tree.zip"
+  grass : ":/gfx/pics_grass.zip"
+  meadow : ":/gfx/pics_meadow.zip"
 }

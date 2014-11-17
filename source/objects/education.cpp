@@ -21,7 +21,7 @@
 #include "pathway/pathway.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
@@ -35,7 +35,7 @@ public:
   unsigned int maxMonthVisitors;
 };
 
-School::School() : ServiceBuilding(Service::school, building::school, Size(2)), _d( new Impl )
+School::School() : ServiceBuilding(Service::school, objects::school, Size(2)), _d( new Impl )
 {
   setPicture( ResourceGroup::commerce, 83 );
   _d->maxMonthVisitors = 75;
@@ -93,14 +93,14 @@ int School::_getWalkerOrders() const
   return ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
 }
 
-Library::Library() : ServiceBuilding(Service::library, building::library, Size(2))
+Library::Library() : ServiceBuilding(Service::library, objects::library, Size(2))
 {
   setPicture( ResourceGroup::commerce, 84 );
 }
 
 int Library::getVisitorsNumber() const {  return 800; }
 
-Academy::Academy() : ServiceBuilding(Service::academy, building::academy, Size(3))
+Academy::Academy() : ServiceBuilding(Service::academy, objects::academy, Size(3))
 {
   setPicture( ResourceGroup::commerce, 85 );
 }

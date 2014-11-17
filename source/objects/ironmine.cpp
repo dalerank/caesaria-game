@@ -29,7 +29,7 @@ using namespace gfx;
 using namespace constants;
 
 IronMine::IronMine()
-  : Factory(Good::none, Good::iron, building::ironMine, Size(2) )
+  : Factory(Good::none, Good::iron, objects::ironMine, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 54 );
 

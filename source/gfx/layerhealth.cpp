@@ -62,25 +62,25 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
       needDrawAnimations = true;
     break;
 
-    case building::doctor:
-    case building::hospital:
-    case building::barber:
-    case building::baths:
+    case objects::doctor:
+    case objects::hospital:
+    case objects::barber:
+    case objects::baths:
       needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
@@ -90,7 +90,7 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
 
@@ -198,22 +198,22 @@ LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
   {
   case citylayer::health:
   case citylayer::doctor:
-    _flags.insert( building::doctor );
+    _flags.insert( objects::doctor );
     _addWalkerType( walker::doctor );
   break;
 
   case citylayer::hospital:
-    _flags.insert( building::hospital );
+    _flags.insert( objects::hospital );
     _addWalkerType( walker::surgeon );
   break;
 
   case citylayer::barber:
-    _flags.insert( building::barber );
+    _flags.insert( objects::barber );
     _addWalkerType( walker::barber );
   break;
 
   case citylayer::baths:
-    _flags.insert( building::baths );
+    _flags.insert( objects::baths );
     _addWalkerType( walker::bathlady );
   break;
   }

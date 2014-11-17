@@ -57,7 +57,7 @@ bool NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
 
 bool NativeBuilding::canDestroy() const { return false; }
 
-NativeHut::NativeHut() : NativeBuilding( building::nativeHut, Size(1) )
+NativeHut::NativeHut() : NativeBuilding( objects::nativeHut, Size(1) )
 {
   setPicture( ResourceGroup::housing, 49 );
   _discontent = 0;
@@ -122,7 +122,7 @@ float NativeHut::evaluateService(ServiceWalkerPtr walker)
 
 float NativeHut::discontent() const { return _discontent; }
 
-NativeCenter::NativeCenter() : NativeBuilding( building::nativeCenter, Size(2) )
+NativeCenter::NativeCenter() : NativeBuilding( objects::nativeCenter, Size(2) )
 {
   setPicture( ResourceGroup::housing, 51 );
 }
@@ -139,7 +139,7 @@ void NativeCenter::store(unsigned int qty)
 
 }
 
-NativeField::NativeField() : NativeBuilding( building::nativeField, Size(1) )
+NativeField::NativeField() : NativeBuilding( objects::nativeField, Size(1) )
 {
   _progress = 0;
   setPicture( ResourceGroup::commerce, 13 );

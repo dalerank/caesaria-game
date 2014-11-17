@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "game/game.hpp"
+#include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "vfs/file.hpp"
 #include "vfs/path.hpp"
@@ -540,7 +541,7 @@ static void __createRivers(Game& game )
 
       foreach( it, wayTiles )
       {
-        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::building::river );
+        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::river );
 
         //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
         (*it)->setPicture( Picture::getInvalid() );
@@ -591,7 +592,7 @@ static void __createRoad(Game& game )
 
     foreach( it, wayTiles )
     {
-      TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::construction::road );
+      TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::road );
 
       Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );

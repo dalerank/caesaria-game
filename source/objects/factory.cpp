@@ -366,7 +366,7 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
+Winery::Winery() : Factory(Good::grape, Good::wine, objects::winery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
 
@@ -385,7 +385,7 @@ bool Winery::build(PlayerCityPtr city, const TilePos& pos)
   Factory::build( city, pos );
 
   city::Helper helper( city );
-  bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
+  bool haveVinegrad = !helper.find<Building>( objects::grapeFarm ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -398,7 +398,7 @@ void Winery::_storeChanged()
   _fgPicturesRef()[1].setOffset( 40, -10 );
 }
 
-Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(2) )
+Creamery::Creamery() : Factory(Good::olive, Good::oil, objects::creamery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 99 );
 
@@ -417,7 +417,7 @@ bool Creamery::build(PlayerCityPtr city, const TilePos& pos)
   Factory::build( city, pos );
 
   city::Helper helper( city );
-  bool haveOliveFarm = !helper.find<Building>( building::oliveFarm ).empty();
+  bool haveOliveFarm = !helper.find<Building>( objects::oliveFarm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

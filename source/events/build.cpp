@@ -66,7 +66,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
   city::Helper helper( game.city() );
   TilePos offset(10, 10);
   EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() && _overlay->group() != building::disasterGroup )
+  if( !enemies.empty() && _overlay->group() != objects::disasterGroup )
   {
     GameEventPtr e = WarningMessageEvent::create( "##too_close_to_enemy_troops##" );
     e->dispatch();
@@ -90,7 +90,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
       game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                     -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
-      if( construction->group() != building::disasterGroup )
+      if( construction->group() != objects::disasterGroup )
       {
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
         e->dispatch();

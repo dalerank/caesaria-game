@@ -116,7 +116,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       _d->btnReturn->hide();
 
       city::Helper helper( city );
-      BuildingList barracks = helper.find<Building>( building::barracks );
+      BuildingList barracks = helper.find<Building>( objects::barracks );
 
       std::string text = barracks.empty()
                           ? "##legion_haveho_soldiers_and_barracks##"
@@ -187,9 +187,9 @@ void AboutLegion::_update()
     int flIndex = 0;
     switch( _d->fort->type() )
     {
-    case building::fortJavelin: flIndex = 30; break;
-    case building::fortLegionaire: flIndex = 21; break;
-    case building::fortMounted: flIndex = 39; break;
+    case objects::fortJavelin: flIndex = 30; break;
+    case objects::fortLegionaire: flIndex = 21; break;
+    case objects::fortMounted: flIndex = 39; break;
 
     default: break;
     }

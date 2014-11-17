@@ -30,7 +30,7 @@
 using namespace constants;
 using namespace gfx;
 
-Wall::Wall() : Building( building::wall, Size(1) )
+Wall::Wall() : Building( objects::wall, Size(1) )
 {
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }
@@ -50,7 +50,7 @@ bool Wall::build(PlayerCityPtr city, const TilePos& pos )
   Construction::build( city, pos );
 
   city::Helper helper( city );
-  WallList walls = helper.find<Wall>( building::wall );
+  WallList walls = helper.find<Wall>( objects::wall );
 
   foreach( wall, walls ) { (*wall)->updatePicture( city ); }
 
@@ -147,7 +147,7 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
     for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
       if( (*it)->overlay().isNull()
-          || (*it)->overlay()->type() != building::wall)
+          || (*it)->overlay()->type() != objects::wall)
       {
         continue;
       }
@@ -169,7 +169,7 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
   for (int i = 0; i < countDirection; ++i) {
     if( !is_border[i] &&
        ( (overlay_d[i].isValid() &&
-          (overlay_d[i]->type() == building::wall || overlay_d[i]->type() == building::gatehouse ) )
+          (overlay_d[i]->type() == objects::wall || overlay_d[i]->type() == objects::gatehouse ) )
         || is_busy[i] ) )
     {
       switch (i)

@@ -92,7 +92,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   foreach( it, vl_buildings )
   {
     gfx::TileOverlay::Type type = MetaDataHolder::findType( it->toString() );
-    if( type != building::unknown )
+    if( type != objects::unknown )
     {
       _d->supportBuildings.insert( type );
     }

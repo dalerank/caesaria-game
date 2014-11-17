@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
 #include "events/event.hpp"
@@ -114,7 +115,7 @@ public:
   TilePos basePos;
 };
 
-FortArea::FortArea() : Building( building::fortArea, Size(4) ),
+FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -151,7 +152,7 @@ FortPtr FortArea::base() const
   return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
-Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
+Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
   Picture logo = Picture::load(ResourceGroup::security, picIdLogo );

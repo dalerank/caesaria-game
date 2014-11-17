@@ -24,7 +24,7 @@
 class Ruins : public Building
 {
 public:
-  Ruins( constants::building::Type type );
+  Ruins( constants::objects::Type type );
   void setInfo( std::string parent ) { _parent = parent; }
   std::string info() const { return _parent; }
 

@@ -118,9 +118,9 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       TileOverlayPtr ov;
       if( needBuildRuins )
       {
-        TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins,
-                                            building::plagueRuins, building::collapsedRuins,
-                                            building::collapsedRuins };
+        TileOverlay::Type dstr2constr[] = { objects::burningRuins, objects::collapsedRuins,
+                                            objects::plagueRuins, objects::collapsedRuins,
+                                            objects::collapsedRuins };
 
         ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
 
@@ -139,7 +139,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       }
       else
       {
-        ov = TileOverlayFactory::instance().create( building::rift );
+        ov = TileOverlayFactory::instance().create( objects::rift );
 
         TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 

@@ -47,6 +47,7 @@
 #include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
+#include "gfx/helper.hpp"
 #include "core/gettext.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"

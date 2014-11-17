@@ -41,7 +41,7 @@ public:
   std::string errorStr;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
@@ -65,7 +65,7 @@ bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& around
   if( mayBuild )
   {
     city::Helper helper( city );
-    bool isSenatePresent = !helper.find<Building>(building::senate).empty();
+    bool isSenatePresent = !helper.find<Building>(objects::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }

@@ -99,7 +99,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( tryDockCount < maxTryDockCount )
     {
       city::Helper helper( city );
-      DockList docks = helper.find<Dock>( building::dock );
+      DockList docks = helper.find<Dock>( objects::dock );
 
       if( !docks.empty() )
       {
@@ -386,7 +386,7 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
   city::Helper helper( city );
-  DockList docks = helper.find<Dock>( building::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  DockList docks = helper.find<Dock>( objects::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
     if( (*dock)->landingTile().pos() == walker->pos() )

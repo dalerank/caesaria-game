@@ -35,7 +35,7 @@ public:
   static Pathway create(TilePos statrPos, TilePos stopPos,
                         const TilePossibleCondition& condition );
 
-  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, constants::building::Type buildingType, WayType type );
+  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
 

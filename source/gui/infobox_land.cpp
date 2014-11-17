@@ -81,12 +81,12 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.overlay()->type() == construction::plaza )
+    if( tile.overlay()->type() == objects::plaza )
     {
       title = "##plaza_caption##";
       text = "##plaza_text##";
     }
-    else if( tile.overlay()->type() == construction::road )
+    else if( tile.overlay()->type() == objects::road )
     {
       RoadPtr road = ptr_cast<Road>( tile.overlay() );
       title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";

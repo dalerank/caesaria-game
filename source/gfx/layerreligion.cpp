@@ -53,38 +53,38 @@ void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     // Religion-related
-    case building::templeCeres:
-    case building::templeMars:
-    case building::templeMercury:
-    case building::templeNeptune:
-    case building::templeVenus:
+    case objects::templeCeres:
+    case objects::templeMars:
+    case objects::templeMercury:
+    case objects::templeNeptune:
+    case objects::templeVenus:
 
-    case building::cathedralCeres:
-    case building::cathedralMars:
-    case building::cathedralMercury:
-    case building::cathedralNeptune:
-    case building::cathedralVenus:
+    case objects::cathedralCeres:
+    case objects::cathedralMars:
+    case objects::cathedralMercury:
+    case objects::cathedralNeptune:
+    case objects::cathedralVenus:
 
-    case building::oracle:
+    case objects::oracle:
       needDrawAnimations = true;      
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         religionLevel = (int) house->getServiceValue(Service::religionMercury);

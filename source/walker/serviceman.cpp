@@ -171,7 +171,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
       ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
       foreach( it, reachedBuildings )
       {
-        if( (*it)->type() == building::house )
+        if( (*it)->type() == objects::house )
         {
           _d->lastHousePos = (*itTile)->pos();
         }

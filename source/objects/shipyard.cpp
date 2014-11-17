@@ -42,7 +42,7 @@ public:
   WharfPtr findFreeWharf( PlayerCityPtr city );
 };
 
-Shipyard::Shipyard() : CoastalFactory(Good::timber, Good::none, building::shipyard, Size(2)),
+Shipyard::Shipyard() : CoastalFactory(Good::timber, Good::none, objects::shipyard, Size(2)),
   _d( new Impl )
 {
   // transport 1 2 3 4
@@ -151,7 +151,7 @@ WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
 {
   city::Helper helper( city );
 
-  WharfList wharfs = helper.find<Wharf>( building::wharf );
+  WharfList wharfs = helper.find<Wharf>( objects::wharf );
   foreach( wharf, wharfs )
   {
     if( (*wharf)->getBoat().isNull() )

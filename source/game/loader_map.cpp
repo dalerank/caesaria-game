@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_map.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "game.hpp"
 #include "core/exception.hpp"

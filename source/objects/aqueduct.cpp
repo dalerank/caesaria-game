@@ -34,7 +34,7 @@
 using namespace constants;
 using namespace gfx;
 
-Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
+Aqueduct::Aqueduct() : WaterSource( objects::aqueduct, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _setIsRoad( false );
@@ -70,7 +70,7 @@ bool Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
 
   city::Helper helper( city );
   TilePos offset( 2, 2 );
-  AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct, pos - offset, pos + offset );
+  AqueductList aqueducts = helper.find<Aqueduct>( objects::aqueduct, pos - offset, pos + offset );
 
   foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( city ); }
   return true;

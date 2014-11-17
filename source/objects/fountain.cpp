@@ -56,7 +56,7 @@ public:
 };
 
 Fountain::Fountain()
-  : ServiceBuilding(Service::fountain, building::fountain, Size(1)),
+  : ServiceBuilding(Service::fountain, objects::fountain, Size(1)),
     _d( new Impl )
 {  
   setPicture( ResourceGroup::utilitya, 10 );
@@ -169,7 +169,7 @@ bool Fountain::haveReservoirAccess() const
   foreach( tile, reachedTiles )
   {
     TileOverlayPtr overlay = (*tile)->overlay();
-    if( overlay.isValid() && (building::reservoir == overlay->type()) )
+    if( overlay.isValid() && (objects::reservoir == overlay->type()) )
     {
       return true;
     }

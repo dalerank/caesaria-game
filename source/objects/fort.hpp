@@ -31,7 +31,7 @@ public:
                  frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;  
 
-  Fort( constants::building::Type type, int picIdLogo );
+  Fort( constants::objects::Type type, int picIdLogo );
   virtual ~Fort();
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;

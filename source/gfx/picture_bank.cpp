@@ -208,6 +208,11 @@ Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
   return getPicture(resource_name);
 }
 
+bool PictureBank::present(const std::string& prefix, const int idx) const
+{
+  return false;
+}
+
 PictureBank::PictureBank() : _d( new Impl )
 {
   _d->picExentions << ".png";

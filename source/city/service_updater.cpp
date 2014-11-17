@@ -63,7 +63,7 @@ void ServiceUpdater::timeStep( const unsigned int time)
 
     Logger::warning( "ServiceUpdater: execute service" );
     Helper helper( _city() );
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses = helper.find<House>( objects::house );
 
     foreach( it, houses )
     {

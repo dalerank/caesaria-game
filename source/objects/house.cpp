@@ -17,8 +17,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
-
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "objects/house_level.hpp"
 #include "core/stringhelper.hpp"
 #include "core/exception.hpp"
@@ -86,7 +85,7 @@ public:
   int getFoodLevel() const;
 };
 
-House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl )
+House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl )
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
@@ -559,7 +558,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         }
         else
         {
-          if( overlay->type() != construction::garden )
+          if( overlay->type() != objects::garden )
           {
             mayGrow = false; //not garden, can't grow
             break;
@@ -758,7 +757,7 @@ void House::_levelDown()
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( building::house ) );
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( objects::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         //house->_d->houseId = HouseLevel::smallHovel;
         //house->_update( true );

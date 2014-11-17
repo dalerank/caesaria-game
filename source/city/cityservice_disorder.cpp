@@ -85,7 +85,7 @@ void Disorder::timeStep( const unsigned int time )
     return;
 
   Helper helper( _city() );
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
 
   WalkerList walkers = _city()->walkers( walker::protestor );
 

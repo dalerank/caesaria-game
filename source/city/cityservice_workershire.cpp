@@ -59,7 +59,7 @@ public:
 
 public:
   void fillIndustryMap();
-  bool haveRecruter( WorkingBuildingPtr building );
+  bool haveRecruter( WorkingBuildingPtr objects );
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
@@ -77,7 +77,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
 {
   _d->lastMessageDate = GameDate::current();
-  _d->excludeTypes.insert( building::fountain );
+  _d->excludeTypes.insert( objects::fountain );
   _d->fillIndustryMap();
   _d->distance = defaultHireDistance;
 
@@ -148,7 +148,7 @@ void WorkersHire::timeStep( const unsigned int time )
   _d->hrInCity = _city()->walkers( walker::recruter );
 
   city::Helper helper( _city() );
-  WorkingBuildingList buildings = helper.find< WorkingBuilding >( building::any );
+  WorkingBuildingList buildings = helper.find< WorkingBuilding >( objects::any );
 
   if( !_d->priorities.empty() )
   {

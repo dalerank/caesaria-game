@@ -25,7 +25,7 @@
 using namespace constants;
 using namespace gfx;
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, Size(2))
 {
   _fgPicturesRef().resize(2);
 
@@ -37,7 +37,7 @@ bool Theater::build(PlayerCityPtr city, const TilePos& pos)
   ServiceBuilding::build( city, pos );
 
   city::Helper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
+  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
 
   if( actors.empty() )
   {

@@ -51,27 +51,27 @@ void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     // Food-related
-    case building::market:
-    case building::granary:
+    case objects::market:
+    case objects::granary:
       needDrawAnimations = true;     
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );

@@ -264,7 +264,7 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type type )
 {
-  std::vector<building::Group> bldGroups = city::Industry::toGroups( type );
+  std::vector<objects::Group> bldGroups = city::Industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );

@@ -55,9 +55,9 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   setAttackPriority( attackAll );
   setAttackDistance( 1 );
 
-  _atExclude << building::disasterGroup
-             << building::roadGroup
-             << building::gardenGroup;
+  _atExclude << objects::disasterGroup
+             << objects::roadGroup
+             << objects::gardenGroup;
 
   addFriend( type );
 }
@@ -253,11 +253,11 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
     TileOverlay::Group needGroup;
     switch( _atPriority )
     {
-    case attackIndustry: needGroup = building::industryGroup; break;
-    case attackFood: needGroup = building::foodGroup; break;
-    case attackCitizen:  needGroup = building::houseGroup; break;
-    case attackSenate: needGroup = building::administrationGroup; break;
-    default: needGroup = building::unknownGroup; break;
+    case attackIndustry: needGroup = objects::industryGroup; break;
+    case attackFood: needGroup = objects::foodGroup; break;
+    case attackCitizen:  needGroup = objects::houseGroup; break;
+    case attackSenate: needGroup = objects::administrationGroup; break;
+    default: needGroup = objects::unknownGroup; break;
     }
 
     foreach( it, ret )

@@ -24,7 +24,7 @@
 using namespace constants;
 using namespace gfx;
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, building::doctor, Size(1))
+Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::doctor, Size(1))
 {
 }
 
@@ -38,11 +38,11 @@ void Doctor::deliverService()
   }
 }
 
-Hospital::Hospital() : ServiceBuilding(Service::hospital, building::hospital, Size(3 ) )
+Hospital::Hospital() : ServiceBuilding(Service::hospital, objects::hospital, Size(3 ) )
 {
 }
 
-Baths::Baths() : ServiceBuilding(Service::baths, building::baths, Size(2) )
+Baths::Baths() : ServiceBuilding(Service::baths, objects::baths, Size(2) )
 {
   _haveReservorWater = false;
   _fgPicturesRef().resize(1);
@@ -80,7 +80,7 @@ void Baths::deliverService()
   }
 }
 
-Barber::Barber() : ServiceBuilding(Service::barber, building::barber, Size(1))
+Barber::Barber() : ServiceBuilding(Service::barber, objects::barber, Size(1))
 {
 }
 

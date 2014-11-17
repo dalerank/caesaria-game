@@ -22,21 +22,7 @@
 namespace constants
 {
 
-namespace construction
-{
-
-enum Type
-{
-  unknown=0,
-  road,
-  plaza,
-  garden,
-  count
-};
-
-}
-
-namespace building
+namespace objects
 {
 
 enum Group
@@ -72,11 +58,14 @@ enum Group
 enum Type
 {
 //unknown building
-  unknown=construction::unknown,
-  any=unknown,
+  unknown=0,
+  any=0,
+  road,
+  plaza,
+  garden,
 
 // entertainment
-  amphitheater=construction::count,
+  amphitheater,
   theater,
   hippodrome,
   colloseum,
@@ -197,6 +186,8 @@ enum Type
   elevation,
   rift,//90
   river,
+  tree,
+
   typeCount,
   userType=1000
 }; //end Type

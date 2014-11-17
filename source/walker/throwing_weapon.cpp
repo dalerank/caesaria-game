@@ -17,6 +17,7 @@
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
+#include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 
@@ -83,7 +84,7 @@ void ThrowingWeapon::timeStep(const unsigned long time)
     _d->height += _d->deltaHeight;
     const int wcell = TileHelper::cellSize().height();
 
-    Point tp = (_d->currentPos.toPoint() - TileHelper::tileCenterOffset()) / wcell;
+    Point tp = (_d->currentPos.toPoint() - TileHelper::cellCenter()) / wcell;
     TilePos ij( tp.x(), tp.y() );
     setPos( ij );
     _setWpos( _d->currentPos.toPoint() );

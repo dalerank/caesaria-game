@@ -15,37 +15,45 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "engineer_post.hpp"
+#include "tree.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/position.hpp"
-#include "constants.hpp"
+#include "gfx/helper.hpp"
+#include "city/helper.hpp"
+#include "core/foreach.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace gfx;
 
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineerPost, Size(1) )
-{
-  setPicture( ResourceGroup::buildingEngineer, 56 );
 
-  _animationRef().load( ResourceGroup::buildingEngineer, 57, 10 );
-  _animationRef().setDelay( 4 );
-  _animationRef().setOffset( Point( 10, 42 ) );
-  _fgPicturesRef().resize(1);
+Tree::Tree()
+  : TileOverlay( constants::objects::tree, Size(1) )
+{
+
 }
 
-void EngineerPost::timeStep(const unsigned long time)
+void Tree::timeStep( const unsigned long time )
 {
-  ServiceBuilding::timeStep( time );
+  TileOverlay::timeStep( time );
 }
 
-void EngineerPost::deliverService()
+void Tree::initTerrain(Tile& terrain)
 {
-  if( numberWorkers() > 0 && walkers().size() == 0 )
+  terrain.setFlag( Tile::tlTree, true );
+}
+
+bool Tree::build(PlayerCityPtr city, const TilePos& pos)
+{
+  std::string picname = TileHelper::convId2PicName( city->tilemap().at( pos ).originalImgId() );
+  setPicture( Picture::load( picname ) );
+  return TileOverlay::build( city, pos );
+}
+
+void Tree::destroy()
+{
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getArea( this );
+  foreach( it, tiles )
   {
-    ServiceBuilding::deliverService();
+    (*it)->setFlag( Tile::tlTree, false );
   }
-}
-
-unsigned int EngineerPost::walkerDistance() const
-{
-  return 26;
 }

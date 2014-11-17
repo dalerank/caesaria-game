@@ -30,6 +30,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "thinks.hpp"
+#include "gfx/helper.hpp"
 #include "ability.hpp"
 #include "helper.hpp"
 #include "core/foreach.hpp"

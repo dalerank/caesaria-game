@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "core/exception.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "city/helper.hpp"
 #include "good/goodhelper.hpp"
 #include "city/city.hpp"
@@ -199,7 +199,7 @@ unsigned int Farm::getProduceQty() const
 
 Farm::~Farm() {}
 
-FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
+FarmWheat::FarmWheat() : Farm(Good::wheat, objects::wheatFarm)
 {
 }
 
@@ -227,22 +227,22 @@ bool FarmWheat::build(PlayerCityPtr pcity, const TilePos& pos)
   return ret;
 }
 
-FarmOlive::FarmOlive() : Farm(Good::olive, building::oliveFarm)
+FarmOlive::FarmOlive() : Farm(Good::olive, objects::oliveFarm)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(Good::grape, building::grapeFarm)
+FarmGrape::FarmGrape() : Farm(Good::grape, objects::grapeFarm)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(Good::meat, building::pigFarm)
+FarmMeat::FarmMeat() : Farm(Good::meat, objects::pigFarm)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(Good::fruit, building::fruitFarm)
+FarmFruit::FarmFruit() : Farm(Good::fruit, objects::fruitFarm)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(Good::vegetable, building::vegetableFarm)
+FarmVegetable::FarmVegetable() : Farm(Good::vegetable, objects::vegetableFarm)
 {
 }

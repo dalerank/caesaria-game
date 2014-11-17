@@ -26,7 +26,7 @@ using namespace gfx;
 using namespace constants;
 
 MarbleQuarry::MarbleQuarry()
-  : Factory(Good::none, Good::marble, building::marbleQuarry, Size(2) )
+  : Factory(Good::none, Good::marble, objects::marbleQuarry, Size(2) )
 {
   _animationRef().load( ResourceGroup::commerce, 44, 10);
   _animationRef().setDelay( 4 );

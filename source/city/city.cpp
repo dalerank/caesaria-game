@@ -315,7 +315,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 int PlayerCity::strength() const
 {
   city::Helper helper( const_cast<PlayerCity*>( this ) );
-  FortList forts = helper.find<Fort>( building::any );
+  FortList forts = helper.find<Fort>( objects::any );
 
   int ret = 0;
   foreach( i, forts )
@@ -340,10 +340,10 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   city::Helper hlp( city );
   float lastMonthTax = 0;
   
-  ForumList forums = hlp.find< Forum >( building::forum );
+  ForumList forums = hlp.find< Forum >( objects::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = hlp.find< Senate >( building::senate );
+  SenateList senates = hlp.find< Senate >( objects::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
@@ -382,7 +382,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
   city::Helper helper( city );
 
-  HouseList houseList = helper.find<House>( building::house );
+  HouseList houseList = helper.find<House>( objects::house );
 
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   

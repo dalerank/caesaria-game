@@ -85,7 +85,7 @@ Merchant::~Merchant(){}
 
 DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket, PlayerCityPtr city)
 {
-  DirectPRoutes routes = pathPropagator.getRoutes( building::warehouse );
+  DirectPRoutes routes = pathPropagator.getRoutes( objects::warehouse );
 
   std::map< int, DirectRoute > warehouseRating;
 
@@ -122,7 +122,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
 
 DirectRoute getWarehouse4Sells( Propagator &pathPropagator, SimpleGoodStore& basket )
 {
-  DirectPRoutes pathWayList = pathPropagator.getRoutes( building::warehouse );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( objects::warehouse );
 
   // select the warehouse with the max quantity of requested goods
   DirectPRoutes::iterator pathWayIt = pathWayList.begin();
@@ -169,7 +169,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       if( !route.first.isValid() )
       {
         Logger::warning( "Walker_LandMerchant: can't found path to nearby warehouse. BaseCity=" + baseCityName );
-        route = PathwayHelper::shortWay( city, position, building::warehouse, PathwayHelper::roadOnly );
+        route = PathwayHelper::shortWay( city, position, objects::warehouse, PathwayHelper::roadOnly );
       }
 
       if( route.first.isValid()  )

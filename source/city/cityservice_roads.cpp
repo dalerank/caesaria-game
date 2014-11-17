@@ -72,12 +72,12 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = GameDate::current();
 
   std::vector< Impl::UpdateBuilding > btypes;
-  btypes.push_back( Impl::UpdateBuilding(building::senate, 10) );
-  btypes.push_back( Impl::UpdateBuilding(building::templeCeres, 4));
-  btypes.push_back( Impl::UpdateBuilding(building::templeMars, 4));
-  btypes.push_back( Impl::UpdateBuilding(building::templeMercury, 4));
-  btypes.push_back( Impl::UpdateBuilding(building::templeNeptune, 4));
-  btypes.push_back( Impl::UpdateBuilding(building::templeVenus, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::senate, 10) );
+  btypes.push_back( Impl::UpdateBuilding(objects::templeCeres, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::templeMars, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::templeMercury, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::templeNeptune, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::templeVenus, 4));
 
   Helper helper( _city() );
 
@@ -92,7 +92,7 @@ void Roads::timeStep( const unsigned int time )
     }
   }
 
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
   foreach( house, houses )
   {
     if( (*house)->spec().level() >= HouseLevel::bigMansion )
@@ -109,7 +109,7 @@ void Roads::timeStep( const unsigned int time )
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = helper.find<Road>( construction::road );
+    RoadList roads = helper.find<Road>( objects::road );
     foreach( road, roads )
     {
       (*road)->appendPaved( _d->defaultDecreasePaved );

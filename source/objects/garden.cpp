@@ -25,7 +25,7 @@
 
 using namespace gfx;
 
-Garden::Garden() : Construction(constants::construction::garden, Size(1) )
+Garden::Garden() : Construction(constants::objects::garden, Size(1) )
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed

@@ -62,7 +62,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
   _setSubAction( doNothing );
-  _addObsoleteOverlays( building::gatehouse );
+  _addObsoleteOverlays( objects::gatehouse );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -73,7 +73,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
   foreach( it, buildings )
   {
-    if( (*it)->type() == building::burningRuins )
+    if( (*it)->type() == objects::burningRuins )
     {
       p = (*it)->pos();
       return true;
@@ -105,7 +105,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->type() != building::burningRuins )
+    if( building->type() != objects::burningRuins )
       continue;
 
     if( building->pos().distanceFrom( pos() ) < 1.5f )
@@ -121,7 +121,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->type() != building::burningRuins )
+    if( building->type() != objects::burningRuins )
       continue;
 
     Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
@@ -235,7 +235,7 @@ bool Prefect::_figthFire()
   foreach( it, tiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
-    if( building.isValid() && building->type() == building::burningRuins )
+    if( building.isValid() && building->type() == objects::burningRuins )
     {
       turn( building->pos() );
       _setSubAction( fightFire );
@@ -265,7 +265,7 @@ bool Prefect::_findFire()
 void Prefect::_brokePathway(TilePos p)
 {
   TileOverlayPtr overlay = _city()->getOverlay( p );
-  if( overlay.isValid() && overlay->type() == building::burningRuins )
+  if( overlay.isValid() && overlay->type() == objects::burningRuins )
   {
     setSpeed( 0.f );
     _setAction( acFightFire );
@@ -450,7 +450,7 @@ void Prefect::timeStep(const unsigned long time)
   case fightFire:
   {    
     BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
-    bool inFire = (building.isValid() && building->type() == building::burningRuins );
+    bool inFire = (building.isValid() && building->type() == objects::burningRuins );
 
     if( inFire )
     {

@@ -232,13 +232,13 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, building::granary,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, objects::granary,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
-    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, building::warehouse,
+    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, objects::warehouse,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 

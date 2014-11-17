@@ -36,7 +36,7 @@ using namespace constants;
 using namespace gfx;
 
 FortLegionary::FortLegionary()
-  : Fort( building::fortLegionaire, 16 )
+  : Fort( objects::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 21 );
@@ -60,7 +60,7 @@ void FortLegionary::_readyNewSoldier()
 }
 
 FortMounted::FortMounted()
-  : Fort( constants::building::fortMounted, 15 )
+  : Fort( constants::objects::fortMounted, 15 )
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 39 );
@@ -90,7 +90,7 @@ void FortMounted::_readyNewSoldier()
 }
 
 FortJaveline::FortJaveline()
-  : Fort( building::fortJavelin, 14 )
+  : Fort( objects::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 30 );

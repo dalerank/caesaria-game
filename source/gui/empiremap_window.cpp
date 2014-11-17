@@ -326,7 +326,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       city::Helper helper( city );
-      DockList docks = helper.find<Dock>( constants::building::dock );
+      DockList docks = helper.find<Dock>( constants::objects::dock );
       if( docks.empty() )
       {
         events::GameEventPtr e = events::ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );

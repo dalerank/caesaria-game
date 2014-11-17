@@ -18,6 +18,7 @@
 #include "walker_debuginfo.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
+#include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "gfx/decorator.hpp"
 
@@ -55,7 +56,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
     for( int step=rStart-1; step >= 0; step-- )
     {
       engine.drawLine(  pathColor, pos + camOffset, tiles[ step ]->mappos() + camOffset + xOffset );
-      pos = tiles[ step ]->mappos() + Point( 30, 0 );
+      pos = tiles[ step ]->mappos() + xOffset;
     }
   }
   else
@@ -64,7 +65,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
     {
       Tile* tile = tiles[ step ];
       engine.drawLine(  pathColor, pos + camOffset, tile->mappos() + camOffset + xOffset );
-      pos = tile->mappos() + Point( 30, tile->height() * 15 );
+      pos = tile->mappos() + xOffset;
     }
   }
 }

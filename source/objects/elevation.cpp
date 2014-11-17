@@ -17,7 +17,7 @@
 
 #include "elevation.hpp"
 #include "constants.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
@@ -35,7 +35,7 @@ public:
 };
 
 Elevation::Elevation()
-  : TileOverlay( constants::building::elevation, Size( 2 ) ), _d( new Impl )
+  : TileOverlay( constants::objects::elevation, Size( 2 ) ), _d( new Impl )
 {
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }

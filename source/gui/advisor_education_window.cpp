@@ -75,9 +75,9 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case building::school: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
-    case building::academy: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
-    case building::library: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
+    case objects::school: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
+    case objects::academy: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
+    case objects::library: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
@@ -135,20 +135,20 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( city, building::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), building::school, info );
+  info = _d->getInfo( city, objects::school );
+  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), objects::school, info );
 
-  info = _d->getInfo( city, building::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::academy, info );
+  info = _d->getInfo( city, objects::academy );
+  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), objects::academy, info );
 
-  info = _d->getInfo( city, building::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::library, info );
+  info = _d->getInfo( city, objects::library );
+  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), objects::library, info );
 
   city::Helper helper( city );
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
   foreach( house, houses )
   {
     sumScholars += (*house)->habitants().count( CitizenGroup::scholar );
@@ -193,9 +193,9 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
   CitizenGroup::Age age;
   switch( bType )
   {
-  case building::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
-  case building::academy: service = Service::academy; maxStuding = 100; age = CitizenGroup::student; break;
-  case building::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
+  case objects::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
+  case objects::academy: service = Service::academy; maxStuding = 100; age = CitizenGroup::student; break;
+  case objects::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
   default:
     age=CitizenGroup::newborn;
     service=Service::srvCount;
@@ -213,7 +213,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
     }
   }
 
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
   int minAccessLevel = 100;
   foreach( it, houses )
   {
