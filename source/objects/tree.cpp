@@ -36,6 +36,8 @@ void Tree::timeStep( const unsigned long time )
   TileOverlay::timeStep( time );
 }
 
+bool Tree::isFlat() const { return _isFlat; }
+
 void Tree::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::tlTree, true );
@@ -45,6 +47,7 @@ bool Tree::build(PlayerCityPtr city, const TilePos& pos)
 {
   std::string picname = TileHelper::convId2PicName( city->tilemap().at( pos ).originalImgId() );
   setPicture( Picture::load( picname ) );
+  _isFlat = picture().height() <= TileHelper::tilePicSize().height();
   return TileOverlay::build( city, pos );
 }
 

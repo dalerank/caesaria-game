@@ -26,9 +26,12 @@ public:
   Tree();
   
   virtual void timeStep( const unsigned long time );
+  bool isFlat() const;
   void initTerrain(gfx::Tile &terrain);
   bool build(PlayerCityPtr city, const TilePos &pos);
   void destroy();
+private:
+  bool _isFlat;
 };
 
 #endif //__CAESARIA_TREE_H_INCLUDED__

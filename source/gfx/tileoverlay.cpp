@@ -173,7 +173,7 @@ void TileOverlay::load( const VariantMap& stream )
 
 bool TileOverlay::isWalkable() const{  return false;}
 bool TileOverlay::isDestructible() const { return true; }
-bool TileOverlay::isFlat() const{  return false;}
+bool TileOverlay::isFlat() const { return false;}
 
 TilePos TileOverlay::pos() const
 {
