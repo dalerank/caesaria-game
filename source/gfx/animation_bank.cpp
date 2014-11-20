@@ -174,7 +174,7 @@ AnimationBank::AnimationBank() : _d( new Impl )
 
   Animation meadow;
   meadow.setDelay( 12 );
-  meadow.load( ResourceGroup::land1a, 29, 1 );
+  meadow.load( ResourceGroup::meadow, 1, 1 );
   _d->simpleAnimations[ animMeadow ] = meadow;
 
   for( int i=0; i < 7; i++)

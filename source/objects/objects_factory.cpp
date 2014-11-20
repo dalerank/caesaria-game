@@ -77,6 +77,7 @@
 #include "ironmine.hpp"
 #include "river.hpp"
 #include "timber_logger.hpp"
+#include "waymark.hpp"
 #include <map>
 
 using namespace constants;
@@ -324,6 +325,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR( objects::elevation, Elevation, BaseCreator );
   ADD_CREATOR( objects::rift, Rift, BaseCreator );
   ADD_CREATOR( objects::tree, Tree, BaseCreator );
+  ADD_CREATOR( objects::waymark, Waymark, BaseCreator );
   ADD_CREATOR( objects::river, River, BaseCreator );
 }
 

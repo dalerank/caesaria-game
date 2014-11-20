@@ -35,7 +35,7 @@ class Tile
 {
 public:
   typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pBasicCount } Param;
-  typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding,
+  typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
                  wasDrawn } Type;

@@ -36,6 +36,7 @@ public:
   static Point tilepos2screen( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
+  static void clear( Tile& tile );
   static const Point& cellCenter();
   static const Size& tilePicSize();
   static const Size& cellSize();

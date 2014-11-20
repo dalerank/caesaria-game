@@ -50,8 +50,8 @@
       prosperity : 5,
       tax : 1
       txs : {
-        s1: [ "housng1a_00001", "housng1a_00002", "housng1b_00001", "housng1b_00002" ]
-        s2: [ "housng1a_00005", "housng1b_00005" ]
+        s1: [ "housng1a_00001", "housng1a_00002", "housng1c_00001", "housng1d_00001" ]
+        s2: [ "housng1a_00005" ]
       }
     },
 

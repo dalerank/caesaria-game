@@ -158,7 +158,7 @@ bool Tile::getFlag(Tile::Type type) const
   }
   case tlMeadow: return _terrain.meadow;
   case tlRock: return _terrain.rock;
-  case tlBuilding: return _overlay.isValid();
+  case tlOverlay: return _overlay.isValid();
   case tlCoast: return _terrain.coast;
   case tlRubble: return _terrain.rubble;
   case isDestructible:

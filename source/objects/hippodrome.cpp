@@ -22,6 +22,7 @@
 #include "city/helper.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
+#include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
 
 using namespace constants;

@@ -136,7 +136,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
+  if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlOverlay ) ) )
   {
     Tilemap& tilemap = _city()->tilemap();
     TilesArray area = tilemap.getArea( tile.pos(), areaSize );

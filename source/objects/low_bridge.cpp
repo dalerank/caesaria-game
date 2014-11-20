@@ -21,10 +21,9 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
+#include "events/clearland.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
-
-#include <vector>
 
 using namespace constants;
 using namespace gfx;

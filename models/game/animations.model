@@ -67,7 +67,8 @@
   }
 
   immigrant :
-    move : { rc : "ww", start : 1, frames : 1, action : 1, step : 8 }
+    move : { rc : "we", start : 1, frames : 13, action : 1, step : 8 }
+    die : { rc : "wd", start : 1, frames : 9, action : 3, step : 0 }
   }
 
   engineer : {

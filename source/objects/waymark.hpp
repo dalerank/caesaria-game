@@ -12,24 +12,27 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "gameautopause.hpp"
-#include "events/changespeed.hpp"
+#ifndef __CAESARIA_WAYMARK_H_INCLUDED__
+#define __CAESARIA_WAYMARK_H_INCLUDED__
 
-using namespace events;
+#include "gfx/tileoverlay.hpp"
 
-GameAutoPause::GameAutoPause()
+class Waymark : public gfx::TileOverlay
 {
-}
+public:
+  Waymark();
+  
+  virtual void timeStep( const unsigned long time );
+  virtual bool isFlat() const;
+  virtual bool isDestructible() const;
+  virtual void initTerrain(gfx::Tile &terrain);
 
-void GameAutoPause::activate()
-{
-  GameEventPtr e = Pause::create( Pause::hidepause );
-  e->dispatch();
-}
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+private:
+  bool _isFlat;
+};
 
-GameAutoPause::~GameAutoPause()
-{
-  GameEventPtr e = Pause::create( Pause::hideplay );
-  e->dispatch();
-}
+#endif //__CAESARIA_WAYMARK_H_INCLUDED__

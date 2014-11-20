@@ -15,40 +15,28 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_GAME_EVENT_H_INCLUDE_
-#define _CAESARIA_GAME_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_CLEAR_LAND_EVENT_H_INCLUDE_
+#define _CAESARIA_CLEAR_LAND_EVENT_H_INCLUDE_
 
-#include "core/referencecounted.hpp"
-#include "core/smartptr.hpp"
-#include "core/position.hpp"
-#include "objects/building.hpp"
-#include "predefinitions.hpp"
+#include "event.hpp"
 
 class Game;
 
 namespace events
 {
 
-class GameEvent : public ReferenceCounted
+class ClearLandEvent : public GameEvent
 {
 public:
-  virtual bool isDeleted() const;
-  virtual bool tryExec( Game& game, unsigned int time );
-
-  void dispatch();
-
-  virtual VariantMap save() const;
-  virtual void load( const VariantMap& );
+  static GameEventPtr create( const TilePos& );
 
 protected:
-  virtual void _exec( Game& game, unsigned int time ) = 0;
-  virtual bool _mayExec( Game& game, unsigned int time ) const = 0;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
-  std::string _type,
-              _name;
-
-  GameEvent() {}
+private:
+  TilePos _pos;
 };
 
 } //end namespace events
-#endif //_CAESARIA_GAME_EVENT_H_INCLUDE_
+#endif //_CAESARIA_CLEAR_LAND_EVENT_H_INCLUDE_

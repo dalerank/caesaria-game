@@ -1,18 +1,55 @@
 language: cpp
 compiler:
-- clang
 - gcc
+branches:
+- windows-build
 before_install:
 # Get build dependencies
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
-#- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
-- sudo apt-get install -qq cmake build-essential libsdl2-dev libsdl2-mixer-dev
-#- sudo apt-get install -qq gcc-multilib g++-multilib
+- sudo apt-get -qq install cmake p7zip-full build-essential
+- sudo apt-get -qq install binutils-mingw-w64-i686
+- sudo apt-get -qq install gcc-mingw-w64-i686
+- sudo apt-get -qq install g++-mingw-w64-i686
+- sudo apt-get -qq install sshpass
+# Get SDL
+- wget https://www.libsdl.org/release/SDL2-devel-2.0.3-mingw.tar.gz
+- tar xfz SDL2-devel-2.0.3-mingw.tar.gz
+- sudo cp SDL2-2.0.3/lib/x86/* /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL2-2.0.3/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
+- sudo cp -r SDL2-2.0.3/i686-w64-mingw32/lib/* /usr/i686-w64-mingw32/lib/
+#- sudo chmod +x /usr/i586-mingw32msvc/bin/sdl-config
+# fix winapifamily.h
+- wget https://hg.libsdl.org/SDL/raw-file/9ecf775ead1b/include/SDL_platform.h
+- sudo cp SDL_platform.h /usr/i686-w64-mingw32/include/SDL2
+# Get SDL Mixer
+- wget https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.0-mingw.tar.gz
+- tar xfz SDL2_mixer-devel-2.0.0-mingw.tar.gz
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/include/* /usr/i686-w64-mingw32/include/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/lib/*.a /usr/i686-w64-mingw32/lib/
+- sudo cp -r SDL2_mixer-2.0.0/i686-w64-mingw32/bin/*.dll /usr/i686-w64-mingw32/lib/
 install:
+- cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release .
+- cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=xcompile/win32-cross.cmake
+before_script:
+# Don't ask for confirmation when using scp
+- echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
+- mkdir $TRAVIS_BUILD_DIR/../caesaria-test
+- unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 script:
 # Build CaesarIA
 - make -j4
-
+after_success:
+- export REVISION_NUMBER=`git rev-list HEAD --count`
+- cd $TRAVIS_BUILD_DIR/../caesaria-test
+# Prepare ZIP archive
+- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- echo Compress to $ZIPNAME
+- zip -r $ZIPNAME *
+- chmod 666 $ZIPNAME
+# Upload to server
+- sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- sshpass -p "$SCP_PASS" scp -v *.exe dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
+env:

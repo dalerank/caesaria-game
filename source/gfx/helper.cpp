@@ -63,10 +63,6 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
   {
     res_pfx = ResourceGroup::land1a;
     res_id = imgId - 244;
-
-    /*if( (res_id < 10) || (res_id > 61 && res_id < 120)
-        || (res_id > 229 && res_id < 290))
-      res_id = 1; */
   }
   else if( imgId < 779 )
   {
@@ -131,7 +127,7 @@ int TileHelper::encode(const Tile& tt)
   int res = tt.getFlag( Tile::tlTree )   ? 0x00011 : 0;
   res += tt.getFlag( Tile::tlRock )      ? 0x00002 : 0;
   res += tt.getFlag( Tile::tlWater )     ? 0x00004 : 0;
-  res += tt.getFlag( Tile::tlBuilding )  ? 0x00008 : 0;
+  res += tt.getFlag( Tile::tlOverlay )   ? 0x00008 : 0;
   res += tt.getFlag( Tile::tlRoad )      ? 0x00040 : 0;
   res += tt.getFlag( Tile::tlCoast )     ? 0x00100 : 0;
   res += tt.getFlag( Tile::tlElevation ) ? 0x00200 : 0;
@@ -205,7 +201,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x00001) { tile.setFlag( Tile::tlTree, true);      }
   if(bitset & 0x00002) { tile.setFlag( Tile::tlRock, true);      }
   if(bitset & 0x00004) { tile.setFlag( Tile::tlWater, true);     }
-  //if(bitset & 0x8)   { tile.setFlag( Tile::tlBuilding, true);  }
+  //if(bitset & 0x8)   { tile.setFlag( Tile::tlOverlay, true);  }
   if(bitset & 0x00010) { tile.setFlag( Tile::tlTree, true);      }
   if(bitset & 0x00020) { tile.setFlag( Tile::tlGarden, true);    }
   if(bitset & 0x00040) { tile.setFlag( Tile::tlRoad, true);      }
@@ -223,6 +219,16 @@ Tile& TileHelper::getInvalid()
 {
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
+}
+
+void TileHelper::clear(Tile& tile)
+{
+  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
+  int imgId = math::random( 58 );
+
+  Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
+  tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
+  tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
 }
 
 const Point& TileHelper::cellCenter() { return centerOffset;}

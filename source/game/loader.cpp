@@ -25,13 +25,15 @@
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/stringhelper.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
 #include "core/foreach.hpp"
 #include "game.hpp"
+#include "objects/objects_factory.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
+#include "objects/waymark.hpp"
 #include "climatemanager.hpp"
 
 #include <vector>
@@ -49,7 +51,7 @@ public:
   std::string restartFile;
 
   void initLoaders();
-  void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit );
+  void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
   void finalize( Game& game );
   bool maySetSign( const Tile& tile )
@@ -65,44 +67,36 @@ GameLoader::GameLoader() : _d( new Impl )
 
 GameLoader::~GameLoader() {}
 
-void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit )
+void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 {
-  unsigned int idOffset = 0;
   TilePos tlOffset;
-  if( tlPos.i() == 0 || tlPos.i() == tileMap.size() - 1 )
+  Tilemap& tmap = city->tilemap();
+  if( tlPos.i() == 0 || tlPos.i() == tmap.size() - 1 )
   {    
     tlOffset = TilePos( 0, 1 );
-    idOffset = (tlPos.i() == 0 ? 1 : 3 );
   }
-
-  else if( tlPos.j() == 0 || tlPos.j() == tileMap.size() - 1 )
+  else if( tlPos.j() == 0 || tlPos.j() == tmap.size() - 1 )
   {
     tlOffset = TilePos( 1, 0 );
-    idOffset = (tlPos.j() == 0 ? 2 : 0 );
   }
 
-  Tile& tmpTile = tileMap.at( tlPos + tlOffset );
+  Tile& tmpTile = tmap.at( tlPos + tlOffset );
   if( !maySetSign( tmpTile ) )
   {
     tlOffset = -tlOffset;
   }
 
-  Tile& signTile = tileMap.at( tlPos + tlOffset );  
+  Tile& signTile = tmap.at( tlPos + tlOffset );
 
   Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
   Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
-    signTile.setPicture( ResourceGroup::land3a, picIdStart + idOffset );
-    signTile.setFlag( Tile::clearAll, true );
-    signTile.setFlag( Tile::tlRock, true );
-
-    if( signTile.overlay().isValid() )
-    {
-      signTile.overlay()->deleteLater();
-      signTile.setOverlay( 0 );
-    }
+    TileHelper::clear( signTile );
+    gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
+    waymark->build( city, tlPos + tlOffset );
+    city->addOverlay( waymark );
   }
 }
 
@@ -137,8 +131,8 @@ void GameLoader::Impl::finalize( Game& game )
   // exit and entry can't point to one tile or .... can!
   const BorderInfo& border = game.city()->borderInfo();
 
-  initEntryExitTile( border.roadEntry, tileMap, 89, false );
-  initEntryExitTile( border.roadExit,  tileMap, 85, true  );
+  initEntryExitTile( border.roadEntry, game.city() );
+  initEntryExitTile( border.roadExit,  game.city() );
 
   initTilesAnimation( tileMap );
 }

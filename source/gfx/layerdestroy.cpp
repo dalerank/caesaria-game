@@ -25,6 +25,7 @@
 #include "city/city.hpp"
 #include "gfx/helper.hpp"
 #include "core/event.hpp"
+#include "events/clearland.hpp"
 #include "core/stringhelper.hpp"
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"

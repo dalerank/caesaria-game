@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _CAESARIA_BUILDING_CONSTANTS_INCLUDE_H_
-#define _CAESARIA_BUILDING_CONSTANTS_INCLUDE_H_
+#ifndef _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
+#define _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 
 namespace constants
 {
@@ -187,6 +187,7 @@ enum Type
   rift,//90
   river,
   tree,
+  waymark,
 
   typeCount,
   userType=1000
@@ -196,4 +197,4 @@ enum Type
 
 } //end namespace constants
 
-#endif  //_CAESARIA_BUILDING_CONSTANTS_INCLUDE_H_
+#endif  //_CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_

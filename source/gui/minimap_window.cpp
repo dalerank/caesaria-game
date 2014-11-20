@@ -127,7 +127,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     c1 = colors->colour(minimap::Colors::MAP_AQUA, 0);
     c2 = colors->colour(minimap::Colors::MAP_AQUA, 1);
   }
-  else if (tile.getFlag( Tile::tlBuilding ))
+  else if (tile.getFlag( Tile::tlOverlay ))
   {
     getBuildingColours(tile, c1, c2);
   }

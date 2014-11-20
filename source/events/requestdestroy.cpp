@@ -23,6 +23,7 @@
 #include "gui/gameautopause.hpp"
 #include "scene/level.hpp"
 #include "core/gettext.hpp"
+#include "clearland.hpp"
 #include "core/logger.hpp"
 
 namespace events
