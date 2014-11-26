@@ -3,8 +3,7 @@
   map : ":/maps/Miletus.sav"
   funds : 8000
   city.name : "Miletus"
-  date : "-220.01.01"
-  finish : "-100.01.01"
+  date : "-220.01.01"  
   player.rank : 4
   climate : 2
   adviserEnabled : true
@@ -16,6 +15,7 @@
     culture : 60
     prosperity : 35
     peace : 40
+    finishDate : "-100.01.01"
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##win_procurator_title##"
@@ -108,13 +108,13 @@
       }
     }
 
-    ity_indebt#city_indebt : {
+    city_indebt#city_indebt : {
       date : "-350.01.01"
       type : "city_indebt"
-      count : 2
-      emperorMoney : 5000
-      video : "city_indebt.bik"
-      text : "##city_has_runout_money##"
+      emperorMoney : [ 8000, 5000, 0 ]
+      video : [ ":/smk/Emp_2nd_chance.bik", ":/smk/Emp_displeased.smk", ":/smk/Emp_angry.smk" ]
+      title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
+      text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
        
     cursed_water#contaminated_water : {
@@ -153,7 +153,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -180,7 +180,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -207,7 +207,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -234,7 +234,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -261,7 +261,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -288,7 +288,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -315,7 +315,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -342,7 +342,7 @@
 		  barbarian_attack#messagebox : {
     	  	title : "##barbarian_attack_title##"
 	      	text : "##barbarian_attack_text##"
-      	  video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
 	  	}
     }
@@ -533,6 +533,22 @@
       exec : {
         message#messagebox : {
           good : "wine"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_rising5#trading_options : {
+      date : "-200.07.01"
+      goods : {
+        marble : { relative : true, buy : 35, sell : 35 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "marble"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
           send2scribe : true

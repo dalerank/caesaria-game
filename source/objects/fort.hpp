@@ -27,7 +27,7 @@ class Fort : public WorkingBuilding
 public:
   typedef enum { frmNorthLine=0, frmWestLine,
                  frmNorthDblLine, frmWestDblLine,
-                 frmRandomLocation, frmSquad,
+                 frmOpen, frmSquad,
                  frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;  
 
@@ -64,6 +64,8 @@ public:
 
   virtual SoldierList soldiers() const;
   virtual void returnSoldiers();
+
+  virtual world::PlayerArmyPtr expedition() const;
   virtual void sendExpedition( Point location );
   virtual void resetExpedition();  
 
@@ -96,6 +98,7 @@ public:
   virtual void destroy();
 
   void setBase( FortPtr base );
+  FortPtr base() const;
 private:
   class Impl;
 

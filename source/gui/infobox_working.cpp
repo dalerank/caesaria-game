@@ -35,7 +35,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 {
   _working = building;
 
-  setConstruction( ptr_cast<Construction>( _working ) );
+  setBase( ptr_cast<Construction>( _working ) );
 
   std::string title = MetaDataHolder::findPrettyName( _working->type() );
   setTitle( _(title) );
@@ -80,7 +80,7 @@ void AboutWorkingBuilding::setText(const std::string& text)
 
 void AboutWorkingBuilding::showDescription()
 {
-  DictionaryWindow::show( ui()->rootWidget(), _working->type() );
+  DictionaryWindow::show( this, _working->type() );
 }
 
 WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()

@@ -23,7 +23,10 @@
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
-#include "steam.hpp"
+
+#ifdef CAESARIA_USE_STEAM
+  #include "steam.hpp"
+#endif
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
@@ -89,7 +92,7 @@ int main(int argc, char* argv[])
   {
     Game game;
     game.initialize();
-    game.exec();
+    while( game.exec() );
   }
   catch( Exception& e )
   {

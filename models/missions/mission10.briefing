@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe02_00002"
+  title : "50 AD - Expanding north"
+	
+  items : {
+    londinium : {
+      title : "##londinium2_peace_province##"
+      location : [ 570, 280 ]
+      mission : ":/missions/londinium.mission"
+    }
+
+    sarmizegetusa : {
+      title : "##sarmizegetusa_dangerous_province##"
+      mission : ":/missions/sarmizegetusa.mission"
+      location : [ 20, 320 ]
+    }
+  }
+}

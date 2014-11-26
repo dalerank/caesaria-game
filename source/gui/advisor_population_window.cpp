@@ -110,6 +110,9 @@ public:
   Label* lbPrevChart;
   Label* lbTitle;
   Label* lbMigrationValue;
+  Label* lbFoodValue;
+  Label* lbYearMigrationValue;
+  Label* lbAdvice;
 
 public slots:
   void showNextChart();
@@ -134,10 +137,13 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
-  GET_DWIDGET_FROM_UI( _d, lbNextChart  );
+  GET_DWIDGET_FROM_UI( _d, lbNextChart  )
   GET_DWIDGET_FROM_UI( _d, lbPrevChart )
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbMigrationValue )
+  GET_DWIDGET_FROM_UI( _d, lbFoodValue )
+  GET_DWIDGET_FROM_UI( _d, lbYearMigrationValue )
+  GET_DWIDGET_FROM_UI( _d, lbAdvice )
 
   Label* lbNextChartArea;
   Label* lbChart;
@@ -150,6 +156,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   {
     _d->chartNext = new CityChart( lbNextChartArea, Rect( 0, 0, 100, 50 ) );
     _d->chartNext->setIsSmall( true );
+    _d->chartNext->setTooltipText( _("##select_this_graph##") );
     CONNECT( lbNextChartArea, onClicked(), _d.data(), Impl::showNextChart );
   }
 
@@ -157,6 +164,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   {
     _d->chartPrev = new CityChart( lbPrevChartArea, Rect( 0, 0, 100, 50 ) );
     _d->chartPrev->setIsSmall( true );
+    _d->chartPrev->setTooltipText( _("##select_this_graph##") );
     CONNECT( lbPrevChartArea, onClicked(), _d.data(), Impl::showPrevChart );
   }
 
@@ -216,24 +224,29 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
+  InfoPtr info;
+  info << city->findService( city::Info::defaultName() );
+  int currentPop = city->population();
+
+
   if( lbMigrationValue )
   {
-    int currentPop = city->population();
-
-    InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
-
     Info::Parameters lastMonth = info->lastParams();
 
     int migrationValue = currentPop - lastMonth[ Info::population ];
 
-    if( migrationValue >= 0 )
+    std::string migrationText = "##unknown_migration_reason##";
+    if( abs( migrationValue ) < 10 )
+    {
+      migrationText = "##balance_between_migration##";
+    }
+    else if( migrationValue >= 0 )
     {
       std::string suffix = ( migrationValue % 10 == 1 )
                              ? "##newcomer_this_month##"
                              : "##newcomers_this_month##";
 
-      lbMigrationValue->setText( StringHelper::i2str( migrationValue ) + " " + _( suffix ) );
+      migrationText = StringHelper::i2str( migrationValue ) + " " + _( suffix );
     }
     else
     {
@@ -242,9 +255,64 @@ void Population::Impl::updateStates()
 
       if( migration.isValid() )
       {
-        lbMigrationValue->setText( migration->leaveCityReason( city ) );
+        migrationText = migration->leaveCityReason();
       }
     }
+
+    lbMigrationValue->setText( _(migrationText) );
+  }
+
+  if( lbFoodValue )
+  {
+    city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, true );
+    int foodLevel = 0;
+    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    {
+      foodLevel += (goods[ (Good::Type)k ] > 0 ? 1 : 0);
+    }
+
+    lbFoodValue->setText( _( "##varieties_food_eaten##") + StringHelper::i2str( foodLevel ) );
+  }
+
+  if( lbYearMigrationValue )
+  {
+    Info::Parameters params = info->yearParams( 1 );
+    std::string text = "##yearmigration_unknown##";
+    int lastPop = params[ Info::population ];
+    if( abs( lastPop - currentPop ) < 10 ) text = "##overall_city_population_static##";
+    else if( lastPop < currentPop ) text = "##overall_people_are_coming_city##";
+    else text = "##overall_people_are_leaving_city##";
+
+    lbYearMigrationValue->setText( _(text) );
+  }
+
+  if( lbAdvice )
+  {
+    city::Helper helper( city );
+
+    int maxHabitants = 0;
+    int currentHabitants = 0;
+    HouseList houses = helper.find<House>( building::house );
+    foreach( it, houses )
+    {
+      HousePtr house = *it;
+
+      int houseLevel = house->spec().level();
+
+      if( houseLevel < HouseLevel::mansion )
+      {
+        currentHabitants += house->habitants().count();
+        maxHabitants += house->maxHabitants();
+      }
+    }
+
+    StringArray reasons;
+    if( math::percentage( currentHabitants, maxHabitants ) > 90 )
+    {
+      reasons << "##lowgrade_housing_want_better_conditions##";
+    }
+
+    lbAdvice->setText( _( reasons.random() ) );
   }
 }
 

@@ -15,32 +15,29 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
-#define __CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOX_BARRACKS_H_INCLUDE_
+#define _CAESARIA_INFOBOX_BARRACKS_H_INCLUDE_
 
-namespace city
+#include "infobox_construction.hpp"
+
+namespace gui
 {
 
-namespace debug_event
+namespace infobox
 {
 
-enum {
-  add_enemy_archers=0,
-  add_enemy_soldiers,
-  add_empire_barbarian,
-  add_wolves,
-  send_mars_wrath,
-  win_mission,
-  add_1000_dn,
-  add_player_money,
-  send_chastener,
-  test_request,
-  send_player_army,
-  screenshot,
-  send_venus_wrath
+class AboutBarracks : public AboutConstruction
+{
+public:
+  AboutBarracks( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  virtual ~AboutBarracks();
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }
 
-}//end namespace city
-#endif //__CAESARIA_CITY_DEBUG_EVENTS_H_INCLUDED__
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_BARRACKS_H_INCLUDE_

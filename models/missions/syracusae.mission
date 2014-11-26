@@ -5,7 +5,6 @@
   city.name : "Syracusae"
   date : "-270.01.01"
   player.rank : 3
-  finish : "-100.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
 	
@@ -16,6 +15,7 @@
     prosperity : 20
     peace : 25
     favour : 20
+    finishDate : "-100.01.01"
     next : ":/missions/mission5.briefing"
     title : "##win_engineer_title##"
     win.text : "##win_syracusae_text##"
@@ -157,18 +157,59 @@
       }
     }
     
-    storm_seas#messagebox : {
-      date : "-268.11.01"
+    storm_seas_1#messagebox : {
+      date : "-265.11.01"
       title : "##stormy_seas_title##"
       text : "##stormy_seas_text##"
       send2scribe : true
-    }
+    }        
     
-    stop_sea_trading#trading_options : {
-      date : "-268.11.01"
+    stop_sea_trading_1#trading_options : {
+      date : "-265.11.01"
       cities : {
         Tarentum : { delay_trade : 12 }
         Capua : { delay_trade : 12 }
+      }
+
+      exec : {
+        message#messagebox : {
+          tip :  "Tarentum, Capua"
+          title : "##land_trade_problem_title##"
+          text : "##land_trade_problem_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    oil_price_rising#trading_options : {
+      date : "-267.04.01"
+      goods : {
+        oil : { relative : true, buy : 40, sell : 30 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    furniture_price_rising#trading_options : {
+      date : "-250.04.01"
+      goods : {
+        furniture : { relative : true, buy : 20, sell : 30 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "furniture"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
       }
     }
     
@@ -220,7 +261,7 @@
         greeck_attack#messagebox : {
           title : "##greeck_attack_title##"
           text : "##greeck_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
           send2scribe : true
         }
       }
@@ -253,6 +294,7 @@
 
       exec : {
         message#messagebox : {
+          tip : "Tarentum, Capua"
           title : "##stormy_seas_title##"
           text : "##stormy_seas_text##"
           send2scribe : true
@@ -282,7 +324,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -310,7 +352,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -338,7 +380,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -366,7 +408,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -394,7 +436,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -422,7 +464,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -450,7 +492,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -478,7 +520,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }
@@ -506,7 +548,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
+      video : ":/smk/Spy_Barbarian.smk"
 		  send2scribe : true
 		}
 	  }

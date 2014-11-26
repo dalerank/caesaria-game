@@ -1,0 +1,14 @@
+{  
+ title : "##military_academy##"
+ sound : "fanfare"
+ text  : "A military academy improves the training soldiers receive from a @barracks&. Besides improving their overall combat capabilities, the military academy also allows legionaries to use the tortoise formation. Read about @peace and war& for more information about formations.\n If you have accepted an assignment that is very dangerous, the edge imparted by a military academy might mean the difference between victory and defeat for your legions. The military academy is an undesirable neighbor to housing. It requires road access and labor, just like most other buildings."
+ uri : {
+  "peace and war" : "peace_and_war"
+  "barracks" : "barracks"
+  "Military Advisor" : "military_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "Crime" : "crime"
+  "historical role of Prefects" : "history_prefect"
+  "here" : "http://wikipedia.ru"
+ }
+}

@@ -4,8 +4,7 @@
   funds : 24000
   city.name : "Valentia"
   player.rank : 4
-  date : "-70.01.01"
-  finish : "150.01.01"
+  date : "-70.01.01"  
   adviserEnabled : true
   fishPlaceEnabled : true
   climate : 0
@@ -19,6 +18,7 @@
     prosperity : 65
     peace : 60
     favour : 60
+    finishDate : "150.01.01"
     next : ":/missions/mission9.briefing"
     title : "##win_praetor_title##"
     win.text : "##valencia_win_text##"
@@ -239,7 +239,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -266,7 +266,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -293,7 +293,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -320,7 +320,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -347,7 +347,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -374,7 +374,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -401,7 +401,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -428,7 +428,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -455,7 +455,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }
@@ -482,7 +482,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
+          video : ":/smk/Spy_Barbarian.smk"
         }
       }
     }

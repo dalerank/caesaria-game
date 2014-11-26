@@ -26,7 +26,7 @@ class DisasterEvent : public GameEvent
 public:
   typedef enum
   {
-    fire, collapse, plague, rift, count
+    fire, collapse, plague, rift, riots, count
   } Type;
   static GameEventPtr create(const gfx::Tile& tile, Type type );
 

@@ -31,8 +31,13 @@ public:
   virtual std::string type() const;
   unsigned int soldiersNumber() const;
 
+  virtual void timeStep(const unsigned int time);
+
+  void setCheckFavor( bool value );
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
+  virtual void attack(ObjectPtr obj);
 
 protected:
   RomeChastenerArmy( EmpirePtr );

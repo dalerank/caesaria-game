@@ -47,7 +47,7 @@ public:
 };
 
 MarketBuyer::MarketBuyer(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
    _setType( walker::marketBuyer );
    _d->maxDistance = 25;
@@ -76,7 +76,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 {
   SmartPtr< T > res;
 
-  DirectRoutes pathWayList = pathPropagator.getRoutes( type );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
@@ -172,17 +172,40 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   }
 }
 
-std::string MarketBuyer::currentThinks() const
+std::string MarketBuyer::thoughts( Thought th) const
 {
-  if( !pathway().isReverse() )
+  switch( th )
   {
-    return "##marketBuyer_find_goods##";
+  case thCurrent:
+    if( !pathway().isReverse() )
+    {
+      return "##marketBuyer_find_goods##";
+    }
+    else
+    {
+      return "##marketBuyer_return##";
+    }
+  break;
+
+  default:
+  break;
   }
-  else
-  {
-    return "##marketBuyer_return##";
-  }
+
+  return "";
 }
+
+TilePos MarketBuyer::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->market.isValid() ? _d->market->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->destBuildingPos;
+  default: break;
+  }
+
+  return Human::places( type );
+}
+
 
 void MarketBuyer::_reachedPathway()
 {

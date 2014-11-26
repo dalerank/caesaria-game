@@ -25,11 +25,12 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
 #include "city/funds.hpp"
+#include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "city/migration.hpp"
@@ -39,9 +40,12 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
+#include "city/cityservice_festival.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
 #include "world/barbarian.hpp"
+#include "game/gamedate.hpp"
+#include "city/cityservice_culture.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 
@@ -234,7 +238,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState()
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
   {
-    text = migration->reason( city );
+    text = migration->reason();
   }
 
   drawReportRow( migrationState, _( text ) );
@@ -330,26 +334,88 @@ void AdvisorChiefWindow::Impl::drawMilitary()
   StringArray reasons;
   city::MilitaryPtr mil;
   mil << city->findService( city::Military::defaultName() );
+  bool isBesieged = false;
 
   if( mil.isValid() )
   {
-    city::Military::Notification n = mil->priorityNotification();
-    reasons << n.message;
+    isBesieged = mil->threatValue() > 100;
+
+    if( !isBesieged )
+    {
+      city::Military::Notification n = mil->priorityNotification();          
+      reasons << n.message;
+    }    
   }
 
-  world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );
-  foreach( i, objs )
+  if( reasons.empty() )
   {
-    if( is_kind_of<world::Barbarian>( *i ) ||
-        is_kind_of<world::RomeChastenerArmy>( *i ) )
+    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );   
+
+    if( !objs.empty() )
     {
-      reasons << "##getting_reports_about_enemies##";
-      break;
+      int minDistance = 999;
+      world::ObjectPtr maxThreat;
+      foreach( i, objs )
+      {
+        if( is_kind_of<world::Barbarian>( *i ) ||
+            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        {
+          int distance = city->location().distanceTo( (*i)->location() );
+          if( minDistance > distance )
+          {
+            maxThreat = *i;
+            minDistance = distance;
+          }
+        }
+      }
+
+      if( maxThreat.isValid() )
+      {
+        if( minDistance <= 40 )
+        {
+          std::string threatText = StringHelper::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          reasons << threatText;
+        }
+        else if( minDistance <= 100 )
+        {
+          reasons << "##our_enemies_near_city##";
+        }
+        else
+        {
+          reasons << "##getting_reports_about_enemies##";
+        }
+      }
     }
   }
 
-  std::string text = reasons.empty() ? "##no_warning_for_us##" : reasons.random();
-  drawReportRow( atMilitary, _(text) );
+  if( reasons.empty() )
+  {
+    city::Helper helper( city );
+
+    BarracksList barracks = helper.find<Barracks>( building::barracks );
+
+    bool needWeapons = false;
+    foreach( it, barracks )
+    {
+      if( (*it)->isNeedWeapons() )
+      {
+        needWeapons = true;
+        break;
+      }
+    }
+
+    if( needWeapons )
+    {
+      reasons << "##some_soldiers_need_weapon##";
+    }
+  }
+
+  if( reasons.empty() )
+  {
+    reasons << "##no_warning_for_us##";
+  }
+
+  drawReportRow( atMilitary, _(reasons.random()) );
 }
 
 void AdvisorChiefWindow::Impl::drawCrime()
@@ -373,11 +439,11 @@ void AdvisorChiefWindow::Impl::drawHealth()
 {
   std::string text;
 
-  city::HealthCarePtr ds;
-  ds << city->findService( city::HealthCare::defaultName() );
-  if( ds.isValid() )
+  city::HealthCarePtr cityHealth;
+  cityHealth << city->findService( city::HealthCare::defaultName() );
+  if( cityHealth.isValid() )
   {
-    text = ds->reason( city );
+    text = cityHealth->reason();
   }
 
   text = text.empty() ? "##advchief_health_good##" : text;
@@ -424,8 +490,39 @@ void AdvisorChiefWindow::Impl::drawReligion()
 
 void AdvisorChiefWindow::Impl::drawEntertainment()
 {
-  std::string text;
-  drawReportRow( atEntertainment, text );
+  StringArray reasons;
+
+  city::FestivalPtr srvc;
+  srvc << city->findService( city::Festival::defaultName() );
+
+  city::CultureRatingPtr cltr;
+  cltr << city->findService( city::CultureRating::defaultName() );
+
+  if( srvc.isValid() )
+  {
+    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( GameDate::current() );
+    if( monthFromLastFestival > 6 )
+    {
+      reasons << "##citizens_grumble_lack_festivals_held##";
+    }
+  }
+
+  if( cltr.isValid() )
+  {
+    int theaterCoverage = cltr->coverage( city::CultureRating::covTheatres );
+    if( theaterCoverage >= 100 )
+    {
+      reasons << "##current_play_runs_for_another##";
+    }
+  }
+
+  int hippodromeCoverage = city::Statistic::getEntertainmentCoverage( city, Service::hippodrome );
+  if( hippodromeCoverage >= 100 )
+  {
+    reasons << "##current_races_runs_for_another##";
+  }
+
+  drawReportRow( atEntertainment, _( reasons.random() ) );
 }
 
 void AdvisorChiefWindow::Impl::drawSentiment()

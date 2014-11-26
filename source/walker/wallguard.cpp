@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "wallguard.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
@@ -185,6 +185,46 @@ void WallGuard::load(const VariantMap& stream)
     die();
   }
 }
+
+std::string WallGuard::thoughts(Thought th) const
+{
+  switch( th )
+  {
+  case thCurrent:
+  {
+    city::Helper helper( _city() );
+
+    TilePos offset( 10, 10 );
+    EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    if( enemies.empty() )
+    {
+      return Soldier::thoughts(th);
+    }
+    else
+    {
+      return "##city_have_defence##";
+    }
+  }
+  break;
+
+  default: break;
+  }
+
+  return "";
+}
+
+TilePos WallGuard::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->patrolPosition;
+  default: break;
+  }
+
+  return RomeSoldier::places( type );
+}
+
 
 void WallGuard::setBase(TowerPtr tower)
 {

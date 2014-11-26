@@ -42,7 +42,7 @@ public:
 };
 
 TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( traineeType );
   _d->maxDistance = 30;
@@ -167,7 +167,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
 void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
 {
-  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   foreach( item, pathWayList )
   {
@@ -230,6 +230,19 @@ void TraineeWalker::load( const VariantMap& stream )
   _setType( wtype );
   _init( wtype );
 }
+
+TilePos TraineeWalker::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1 );
+  default: break;
+  }
+
+  return Human::places( type );
+}
+
 
 TraineeWalker::~TraineeWalker(){}
 

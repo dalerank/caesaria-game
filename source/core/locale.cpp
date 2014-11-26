@@ -57,6 +57,11 @@ void Locale::setLanguage(std::string language)
   addTranslation( "caesar" );
 }
 
+std::string Locale::current()
+{
+  return currentLanguage;
+}
+
 void Locale::addTranslation(std::string filename)
 {
   vfs::Path realPath = filename + "." + currentLanguage;

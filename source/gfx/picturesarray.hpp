@@ -30,6 +30,8 @@ public:
   void load( const std::string& rc, int startIndex, int number, int multiplier=1 );
 
   Pictures& operator << ( const Picture& pic );
+  Pictures& append( const Pictures& pics );
+
   void append( const gfx::Picture& pic, const Point& offset );
 };
 

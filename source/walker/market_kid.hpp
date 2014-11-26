@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_MARKET_KID_H_INCLUDED__
 #define __CAESARIA_MARKET_KID_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 
-class MarketKid : public Walker
+class MarketKid : public Human
 {
 public:
   static MarketKidPtr create( PlayerCityPtr city );
@@ -38,7 +38,7 @@ public:
   virtual bool die();
 
 protected: 
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
   virtual void _reachedPathway();
 
 private:

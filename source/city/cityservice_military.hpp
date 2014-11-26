@@ -31,19 +31,31 @@ class Military : public city::Srvc
 public:  
   struct Notification
   {
+    typedef enum { unknown, barbarian=0x1, chastener, attack } Type;
+
     DateTime date;
+    Type type;
     std::string message;
+    std::string objectName;
     Point location;
+
+    VariantList save() const;
+    void load(const VariantList &stream);
   };
 
   typedef std::vector< Notification > NotificationArray;
 
-  static city::SrvcPtr create();
+  static city::SrvcPtr create( PlayerCityPtr city );
 
-  virtual void timeStep( PlayerCityPtr city, const unsigned int time );
-  void addNotification( const std::string& text, const Point& location );
+  virtual void timeStep( const unsigned int time );
+
+  void addNotification( const std::string& text, const std::string& name, Notification::Type type );
+
   Notification priorityNotification() const;
   const NotificationArray& notifications() const;
+
+  bool haveNotification(Notification::Type type) const;
+  bool isUnderAttack() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
@@ -51,13 +63,16 @@ public:
   const DateTime& lastAttack() const;
   int monthFromLastAttack() const;
 
+  world::PlayerArmyList expeditions() const;
+  world::ObjectList enemies() const;
+
   void updateThreat( int value );
-  unsigned int threadValue() const;
+  unsigned int threatValue() const;
 
   static std::string defaultName();
 
 private:
-  Military();
+  Military(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -167,6 +167,73 @@ void RomeSoldier::load(const VariantMap& stream)
   }
 }
 
+std::string RomeSoldier::thoughts(Thought th) const
+{
+  if( th == thCurrent )
+  {
+    city::Helper helper( _city() );
+
+    TilePos offset( 10, 10 );
+    EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    if( enemies.empty() )
+    {
+      return Soldier::thoughts( th );
+    }
+    else
+    {
+      RomeSoldierList ourSoldiers = helper.find<RomeSoldier>( walker::any, pos() - offset, pos() + offset );
+      int enemyStrength = 0;
+      int ourStrength = 0;
+
+      foreach( it, enemies) { enemyStrength += (*it)->strike(); }
+      foreach( it, ourSoldiers ) { ourStrength += (*it)->strike(); }
+
+      if( ourStrength > enemyStrength )
+      {
+        int diff = enemyStrength > 0 ? ourStrength / enemyStrength : 99;
+        switch( diff )
+        {
+        case 1: return "";
+
+        case 4: return "##enemies_very_easy##";
+
+        default: break;
+        }
+      }
+      else
+      {
+        int diff = ourStrength > 0 ? enemyStrength / ourStrength : 99;
+        switch( diff )
+        {
+        case 1:
+
+        case 3: return "##enemies_hard_to_me##";
+        case 4: return "##enemies_very_hard##";
+
+        default: break;
+        }
+      }
+
+      Logger::warning( "RomeSoldier: current thinks unknown state" );
+      return "##enemies_unknown_state##";
+    }
+  }
+
+  return "";
+}
+
+TilePos RomeSoldier::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->basePos;
+  case plDestination: return _d->patrolPosition;
+  default: break;
+  }
+
+  return Soldier::places( type );
+}
+
 RomeSoldier::~RomeSoldier(){}
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )

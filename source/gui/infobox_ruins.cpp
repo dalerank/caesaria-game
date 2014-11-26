@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-AboutRuins::AboutRuins( Widget* parent, const Tile& tile )
+AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )
 {
   RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );

@@ -30,7 +30,6 @@ using namespace gfx;
 
 namespace {
   const Point spanswOffset = Point( 12, -43 );
-
 }
 
 class HighBridgeSubTile : public Construction
@@ -68,7 +67,7 @@ public:
     {
       setSize( Size( 1, 2 ) );
     }
-    else if( _index == descentWest )
+    else if( _index == descentWest || _index == liftingWest )
     {
       setSize( Size( 2, 1 ) );
     }
@@ -99,6 +98,7 @@ public:
       Picture landPic = mt.picture();
       landPic.addOffset( TileHelper::tilepos2screen( TilePos( 0, 1 ) ) );
       _fgPicturesRef().push_back( landPic );
+
       _fgPicturesRef().push_back( pic );
     }
     else if( _index == descentWest )
@@ -107,25 +107,47 @@ public:
       Picture landPic = mt.picture();
       landPic.addOffset(  TileHelper::tilepos2screen( TilePos( 1, 0 ) )  );
       _fgPicturesRef().push_back( landPic );
+
+     pic.addOffset( 8, -14 );
       _fgPicturesRef().push_back( pic );
     }
-    else
+    else if(  _index == liftingWest )
+    {
+      Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
+      Picture landPic = mt.picture();
+      landPic.addOffset( TileHelper::tilepos2screen( TilePos( 1, 0 ) ) );
+      _fgPicturesRef().push_back( landPic );
+
+      pic.addOffset( 0, -15 );
+      _fgPicturesRef().push_back( pic );
+    }
+    else if( _index == footingWest || _index == spanWest )
+    {
+      pic.addOffset( 7, -14 );
       setPicture( pic );
+    }
+    else
+    {
+      setPicture( pic );
+    }
 
     _pos = pos;
 
     return true;
   }
 
+  void hide()
+  {
+    setPicture( Picture::getInvalid() );
+    //_fgPicturesRef().clear();
+  }
+
   void setState( ParameterType name, double value )
   {
-    if( name == Construction::destroyable )
+    if( _parent && name == Construction::destroyable && value )
     {
-      if( _parent )
-         _parent->setState( name, value );
-      value = _parent ? (_parent->canDestroy() ? 1 : 0) : 0;
+      _parent->hide();
     }
-    Construction::setState( name, value );
   }
 
   void initTerrain( Tile& terrain )
@@ -503,6 +525,11 @@ bool HighBridge::canDestroy() const
     }
   }
 
+  if( !state( Construction::destroyable ) )
+  {
+    _d->error = "##destroy_bridge_warning##";
+  }
+
   return state( Construction::destroyable );
 }
 
@@ -554,5 +581,14 @@ void HighBridge::load(const VariantMap& stream)
   for( unsigned int i=0; i < vl_tinfo.size(); i++ )
   {
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
+  }
+}
+
+void HighBridge::hide()
+{
+  setState( Construction::destroyable, 1);
+  foreach( it, _d->subtiles )
+  {
+    (*it)->hide();
   }
 }

@@ -30,7 +30,8 @@ public:
   static GameEventPtr create( city::request::RequestPtr request,
                               bool available4exec=false,
                               const std::string& message="",
-                              const std::string& video="");
+                              const std::string& video="",
+                              const std::string& title="" );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -41,7 +42,7 @@ private:
 
   city::request::RequestPtr _request;
   bool _reqAvailable;
-  std::string _message, _video;
+  std::string _message, _video, _title;
 };
 
 }

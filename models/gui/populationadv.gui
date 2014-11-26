@@ -16,11 +16,35 @@
       bgtype : "blackFrame"
 
       lbMigrationValue#Label : {
-        geometry : [ 10, 5, "pw-10", 25 ]
+        geometry : [ 10, 2, "pw-10", 20 ]
         icon : "paneling_00048"
         icon.offset : [ 5, 5 ]
         text.offset : [ 20, 0 ]
-        font : "FONT_2_WHITE"
+        font : "FONT_1"
+      }
+
+      lbFoodValue#Label : {
+        geometry : [ 10, 20, "pw-10", 42 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
+      }
+
+      lbYearMigrationValue#Label : {
+        geometry : [ 10, 40, "pw-10", 62 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
+      }
+
+      lbAdvice#Label : {
+        geometry : [ 10, 62, "pw-10", 84 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
       }
     }
 

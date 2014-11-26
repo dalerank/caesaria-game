@@ -52,11 +52,12 @@ void Neptune::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
                                                             _("##wrath_of_neptune_description##"),
-                                                            events::ShowInfobox::send2scribe );
+                                                            events::ShowInfobox::send2scribe,
+                                                            ":/smk/God_Neptune.smk");
   event->dispatch();
 
-  city::Helper helper( city );
-  ShipList boats = helper.find<Ship>( walker::any, city::Helper::invalidPos );
+  ShipList boats;
+  boats << city->walkers();
 
   int destroyBoats = math::random( boats.size() );
   for( int i=0; i < destroyBoats; i++ )

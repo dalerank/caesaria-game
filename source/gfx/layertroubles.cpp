@@ -28,6 +28,7 @@
 #include "objects/watersupply.hpp"
 #include "tilemap_camera.hpp"
 #include "objects/factory.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 
@@ -125,13 +126,13 @@ void LayerTroubles::handleEvent(NEvent& event)
           if( text.empty() )
           {
             WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( constr );
-            if( wb.isValid() )
+            if( text.empty() && wb.isValid() )
             {
               int laborAccess = wb->laborAccessPercent();
               if( wb->getAccessRoads().empty() || laborAccess == 0 )
               {
                 text = "##working_have_no_labor_access##";
-              }
+              }              
               else
               {
                 if( laborAccess < 20 ) { text = "##working_have_bad_labor_access##"; }
@@ -159,7 +160,7 @@ void LayerTroubles::handleEvent(NEvent& event)
 LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city, int type )
   : Layer( &camera, city ), _type( type )
 {
-  _loadColumnPicture( 9 );
+  //_loadColumnPicture( 9 );
 }
 
 }//end namespace gfx

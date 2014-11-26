@@ -64,9 +64,9 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
 {
   _d->locker.activate();
 
-  std::string uiFile = _d->video.empty() ? "/gui/request.gui" : "/gui/request_video.gui";
+  std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
-  setupUI( GameSettings::rcpath( uiFile ) );
+  setupUI( uiFile );
 
   setCenter( parent->center() );
 
@@ -76,19 +76,43 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     Label* lbQty;
     Image* imgIcon;
     Label* lbInterval;
+    Label* lbTitle;
+    Label* lbText;
     SmkViewer* smkViewer;
     GET_WIDGET_FROM_UI( lbQty )
+    GET_WIDGET_FROM_UI( lbText )
     GET_WIDGET_FROM_UI( imgIcon )
     GET_WIDGET_FROM_UI( lbInterval )
     GET_WIDGET_FROM_UI( smkViewer )
+    GET_WIDGET_FROM_UI( lbTitle )
 
     if( lbQty ) { lbQty->setText( StringHelper::format( 0xff, "%d", gr->qty() ) ); }
     if( imgIcon ) { imgIcon->setPicture( GoodHelper::picture( gr->goodType() )); }
 
+    std::string title, text, video;
+    switch( gr->goodType() )
+    {
+    case Good::denaries:
+        text = "##rome_need_some_goods##";
+        title = "##emperor_request_money##";
+        video = ":/smk/Urgent_message1.smk";
+    break;
+
+    default:
+        text = "##rome_need_some_money##";
+        title = "##emperor_request##";
+        video = ":/smk/Urgent_message2.smk";
+    break;
+    }
+
+    if( lbText ) { lbText->setText( _( text ) ); }
+    if( lbTitle ) { lbTitle->setText( _( title ) ); }
+
     int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );
     if( lbInterval ) { lbInterval->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
 
-    if( smkViewer ) { smkViewer->setFilename( GameSettings::rcpath( _d->video ) ); }
+    video = _d->video.empty() ? video : _d->video;
+    if( smkViewer ) { smkViewer->setFilename( video ); }
   }
 
   TexturedButton* btnExit;
@@ -113,7 +137,14 @@ void EmperrorRequestWindow::setText(const std::string& text)
 {
   Label* lbText;
   GET_WIDGET_FROM_UI( lbText )
-  if( lbText )   {  lbText->setText( text );  }
+  if( lbText ) { lbText->setText( text );  }
+}
+
+void EmperrorRequestWindow::setTitle(const std::string& text)
+{
+  Label* lbTitle;
+  GET_WIDGET_FROM_UI( lbTitle )
+  if( lbTitle ) { lbTitle->setText( text );  }
 }
 
 bool EmperrorRequestWindow::onEvent(const NEvent& event)

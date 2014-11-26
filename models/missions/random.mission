@@ -9,7 +9,6 @@
   funds : 8000
   city.name : "Brundisium"
   date : "-350.01.01"
-  finish : "-300.01.01"
   adviserEnabled : true
 	
   win :
@@ -21,6 +20,7 @@
     favour : 0
     next : ""
     title : "##clerk##"
+    finish : "300.01.01"
     may_continue : false
     short : "##build_some_houses##"
     maxHouseLevel : "big_villa"

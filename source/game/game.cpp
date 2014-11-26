@@ -62,6 +62,7 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "gamestate.hpp"
 
 #include <list>
 
@@ -72,7 +73,7 @@ class Game::Impl
 public:
   ScreenType nextScreen;
   std::string nextFilename;
-  scene::Base* currentScreen;
+  gamestate::BaseState* currentScreen;
   gfx::Engine* engine;
   gui::Ui* gui;
 
@@ -98,6 +99,10 @@ public:
   void initFontCollection( vfs::Path resourcePath );
   void mountArchives( ResourceLoader& loader );
   void createSaveDir();
+
+  Impl(): nextScreen(SCREEN_NONE),
+      currentScreen(0), engine(0), gui(0)
+  {}
 };
 
 void Game::Impl::initLocale( std::string localePath )
@@ -228,186 +233,12 @@ void Game::Impl::initPictures()
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
 }
 
-void Game::setScreenBriefing()
-{
-  scene::Briefing screen( *this, *_d->engine, _d->nextFilename );
-  screen.initialize();
-  _d->currentScreen = &screen;
-
-  while( !screen.isStopped() )
-  {
-    screen.update( *_d->engine );
-  }
-
-  switch( screen.result() )
-  {
-    case scene::Briefing::loadMission:
-    {
-      bool loadOk = load( screen.getMapName() );
-      Logger::warning( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + screen.getMapName() );
-
-      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-    }
-    break;
-
-    default:
-      _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
-   }
-}
-
-void Game::setScreenMenu()
-{
-  scene::StartMenu screen( *this, *_d->engine );
-  screen.initialize();
-  _d->currentScreen = &screen;
-
-  while( !screen.isStopped() )
-  {
-    screen.update( *_d->engine );
-  }
-
-  reset();
-
-  switch( screen.result() )
-  {
-    case scene::StartMenu::startNewGame:
-    {
-      std::srand( DateTime::elapsedTime() );
-      std::string startMission = "/missions/tutorial.mission";    
-
-      bool loadOk = load( startMission );
-      _d->player->setName( screen.playerName() );
-
-      Logger::warning( (loadOk ? "Career: start mission " : "Career: cant load mission") + startMission );
-
-      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-    }
-    break;
-
-    case scene::StartMenu::reloadScreen:
-      _d->nextScreen = SCREEN_MENU;
-    break;
-
-    case scene::StartMenu::loadSavedGame:
-    case scene::StartMenu::loadMission:
-    {
-      bool loadOk = load( screen.mapName() );
-      Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + screen.mapName()  );
-
-      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-    }
-    break;
-
-    case scene::StartMenu::loadMap:
-    {
-      bool loadOk = load( screen.mapName() );
-      Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + screen.mapName() );
-
-      FreeplayFinalizer::addPopulationMilestones( _d->city );
-      FreeplayFinalizer::initBuildOptions( _d->city );
-      FreeplayFinalizer::addEvents( _d->city );
-      FreeplayFinalizer::resetFavour( _d->city );
-
-      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-    }
-    break;
-
-    case scene::StartMenu::closeApplication:
-    {
-      _d->nextScreen = SCREEN_QUIT;
-    }
-    break;
-
-    default:
-      _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
-   }
-}
-
-void Game::setScreenGame()
-{
-  Logger::warning( "game: enter setScreenGame" );
-  scene::Level screen( *this, *_d->engine );
-
-  Logger::warning( "game: start initialize" );
-  screen.initialize();
-  _d->currentScreen = &screen;
-  GameDate& cdate = GameDate::instance();
-  _d->timeX10 = 0;
-  _d->saveTime = _d->timeX10;
-
-  Logger::warning( "game: prepare for game loop" );
-  // Game Loop
-  while( !screen.isStopped() )
-  {
-    screen.update( *_d->engine );
-
-    if( _d->city->tilemap().direction() == constants::north )
-    {
-      if( !_d->pauseCounter )
-      {
-        _d->timeX10 += _d->timeMultiplier / 10;
-      }
-      else if ( _d->manualTicksCounterX10 > 0 )
-      {
-        unsigned int add = math::min( _d->timeMultiplier / 10, _d->manualTicksCounterX10 );
-        _d->timeX10 += add;
-        _d->manualTicksCounterX10 -= add;
-      }
-      while ( _d->timeX10 > _d->saveTime * 10 + 1 )
-      {
-        _d->saveTime++;
-
-        cdate.timeStep( _d->saveTime );
-        _d->empire->timeStep( _d->saveTime );
-
-        screen.animate( _d->saveTime );
-      }
-    }
-
-    events::Dispatcher::instance().update( *this, _d->saveTime );
-  }
-
-  clear();
-
-  _d->nextFilename = screen.nextFilename();
-  switch( screen.result() )
-  {
-    case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
-    case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
-
-    case scene::Level::restart:
-    {
-      Logger::warning( "ScreenGame: restart game " + _d->restartFile );      
-      bool loadOk = load( _d->restartFile );
-      _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-
-      Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " )+ _d->restartFile );
-
-      if( loadOk )
-      {
-        std::string ext = vfs::Path( _d->restartFile ).extension();
-        if( ext == ".map" || ext == ".sav" )
-        {
-          FreeplayFinalizer::addPopulationMilestones( _d->city );
-          FreeplayFinalizer::initBuildOptions( _d->city );
-          FreeplayFinalizer::addEvents( _d->city );
-        }
-      }
-    }
-    break;
-
-    case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
-    case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
-    default: _d->nextScreen = SCREEN_QUIT;
-  }
-}
-
 PlayerPtr Game::player() const { return _d->player; }
 PlayerCityPtr Game::city() const { return _d->city; }
 world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
-scene::Base* Game::scene() const { return _d->currentScreen; }
+scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -435,6 +266,7 @@ Game::Game() : _d( new Impl )
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
 void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
+
 Game::~Game(){}
 
 void Game::save(std::string filename) const
@@ -583,27 +415,52 @@ void Game::initialize()
 
   if( GameSettings::get( "no-fade" ).isNull() )
     screen.exitScene();
-}
 
-void Game::exec()
-{
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
+}
 
-  while( _d->nextScreen != SCREEN_QUIT )
+bool Game::exec()
+{
+  if (_d->currentScreen && _d->currentScreen->getScreenType() == _d->nextScreen)
   {
-    Logger::warning( "Game: exec switch to screen %d", _d->nextScreen );
-    switch( _d->nextScreen )
+    if (!_d->currentScreen->update(_d->engine))
     {
-      case SCREEN_MENU:        setScreenMenu();     break;
-      case SCREEN_GAME:        setScreenGame();     break;
-      case SCREEN_BRIEFING:    setScreenBriefing(); break;
-
-      default:
-        Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-        //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+      delete _d->currentScreen;
+      _d->currentScreen = 0;
     }
+
+    return true;
   }
+
+  Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  switch(_d->nextScreen)
+  {
+    case SCREEN_MENU:
+    {
+      _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
+    } break;
+    case SCREEN_GAME:
+    {
+      Logger::warning( "game: enter setScreenGame" );
+      _d->timeX10 = 0;
+      _d->saveTime = _d->timeX10;
+      _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
+                                                          _d->saveTime, _d->timeX10,
+                                                          _d->timeMultiplier, _d->manualTicksCounterX10,
+                                                          _d->nextFilename, _d->restartFile );
+    } break;
+    case SCREEN_BRIEFING:
+    {
+      _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
+    } break;
+
+    default:
+    Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
+    //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+  }
+
+  return _d->nextScreen != SCREEN_QUIT;
 }
 
 void Game::reset()
@@ -616,10 +473,8 @@ void Game::reset()
   _d->saveTime = 0;
   _d->manualTicksCounterX10 = 0;
 
-  if( _d->city.isValid() )
-  {
-    _d->city->clean();
-  }
+  WalkerRelations::instance().clear();
+  WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
   _d->city = PlayerCity::create( _d->empire, _d->player );
 }
@@ -636,4 +491,9 @@ void Game::clear()
   gfx::OverlayDebugQueue::print();
   gfx::OverlayDebugQueue::instance().clear();
 #endif
+}
+
+void Game::setNextScreen(ScreenType screen)
+{
+  _d->nextScreen = screen;
 }

@@ -18,10 +18,10 @@
 #ifndef __CAESARIA_RIOTER_H_INCLUDE_
 #define __CAESARIA_RIOTER_H_INCLUDE_
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "objects/constants.hpp"
 
-class Rioter : public Walker
+class Rioter : public Human
 {
 public:
   static RioterPtr create( PlayerCityPtr city );
@@ -41,7 +41,7 @@ public:
 protected:
   Rioter( PlayerCityPtr city );
   virtual void _reachedPathway();
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
 private:
   class Impl;

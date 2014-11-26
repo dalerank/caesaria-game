@@ -37,6 +37,7 @@ public:
   TilesArray accessRoads;
   Params params;
 
+  ConstructionExtensionList newExtensions;
   ConstructionExtensionList extensions;
 };
 
@@ -215,7 +216,7 @@ void Construction::load( const VariantMap& stream )
   }
 }
 
-void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->extensions.push_back( ext ); }
+void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->newExtensions.push_back( ext ); }
 const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
 
 double Construction::state( ParameterType param) const { return _d->params[ param ]; }
@@ -248,6 +249,12 @@ void Construction::timeStep(const unsigned long time)
 
     if( (*it)->isDeleted() ) { it = _d->extensions.erase( it ); }
     else { ++it; }
+  }
+
+  if( !_d->newExtensions.empty() )
+  {
+    _d->extensions << _d->newExtensions;
+    _d->newExtensions.clear();
   }
 
   TileOverlay::timeStep( time );

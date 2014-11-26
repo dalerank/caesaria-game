@@ -63,27 +63,27 @@
                   "timber", "clay", "marble" ]
 	}
   
-  Toletum : {
+    Toletum : {
  		location : [ 100, 600 ]
     
-    sea : true
-    land : true
-    
-    resources : [ "wheat", "vegetable", "fish",
-                  "timber", "clay", "iron" ]
+		sea : true
+		land : true
+		
+		resources : [ "wheat", "vegetable", "fish",
+		              "timber", "clay", "iron" ]
 	}
 	
 	Valentia : {
-    location : [ 240, 740 ]
-    
-    sea : true
-    land : true
-    
-    resources : [ "wheat", "fruit", "olive", "wine", "fish",
-                  "timber", "clay", "marble", "iron" ]
-                  
-    sells : { fruit : 40, iron : 15, timber : 40 }
-    buys : { wine : 25, oil : 40, pottery : 40 } 
+		location : [ 240, 740 ]
+		
+		sea : true
+		land : true
+		
+		resources : [ "wheat", "fruit", "olive", "wine", "fish",
+		              "timber", "clay", "marble", "iron" ]
+		              
+		sells : { fruit : 40, iron : 15, timber : 40 }
+		buys : { wine : 25, oil : 40, pottery : 40 } 
 	}
 	
 	Caesarea : {
@@ -188,13 +188,13 @@
   Tingis : { 
 		location : [ 120, 840 ]
     
-    sea : true
-    land : true
-    
-    sells : { fruit : 25, clay : 40 }
-    buys : { wine : 40, oil : 40, marble : 15 } 
-    
-    resources : [ "wheat", "vegetable", "fish", "wine", "clay" ]
+		sea : true
+		land : true
+		
+		sells : { fruit : 25, clay : 40 }
+		buys : { wine : 40, oil : 40, marble : 15 } 
+		
+		resources : [ "wheat", "vegetable", "fish", "wine", "clay" ]
 	}
 	
 	"Augusta Trevorum" : {
@@ -210,11 +210,11 @@
 	"Carthago Nova" : {
 		location : [ 220, 760 ] 
     
-    sea : true
-    land : true
-    
-    resources : [ "vegetable", "fruit", "olive", "wine", "fish", 
-                  "clay" ]
+		sea : true
+		land : true
+		
+		resources : [ "vegetable", "fruit", "olive", "wine", "fish", 
+		              "clay" ]
 	}
 	
 	"Leptis Magna" : {

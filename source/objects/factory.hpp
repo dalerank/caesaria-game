@@ -65,6 +65,7 @@ public:
 
   virtual void setProductRate( const float rate );
   virtual float productRate() const;
+  virtual unsigned int effciency() const;
 
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
@@ -75,17 +76,12 @@ protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
+  void _setUnworkingInterval( unsigned int weeks );
+  virtual void _reachUnworkingTreshold();
 
 protected:
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-class TimberLogger : public Factory
-{
-public:
-  TimberLogger();
-  virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
 };
 
 class Winery : public Factory

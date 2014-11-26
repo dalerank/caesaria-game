@@ -21,6 +21,7 @@
 #include "good/goodstore_simple.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
+#include "merchant.hpp"
 #include "core/logger.hpp"
 #include "good/goodhelper.hpp"
 #include "game/gamedate.hpp"
@@ -105,7 +106,15 @@ void Trading::load(const VariantMap& stream)
       std::string beginCity = routeName.substr( 0, delimPos );
       std::string endCity = routeName.substr( delimPos+3 );
       TraderoutePtr route = createRoute( beginCity, endCity );
-      route->load( it->second.toMap() );
+      if( route.isValid() )
+      {
+        route->load( it->second.toMap() );
+      }
+      else
+      {
+        Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
+                         beginCity.c_str(), endCity.c_str() );
+      }
     }
   }
 

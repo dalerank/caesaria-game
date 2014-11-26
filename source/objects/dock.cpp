@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "good/goodhelper.hpp"
 #include "core/foreach.hpp"
 #include "walker/seamerchant.hpp"
 #include "core/foreach.hpp"
@@ -244,7 +245,7 @@ void Dock::requestGoods(GoodStock& stock)
   }
 }
 
-void Dock::importingGoods(GoodStock& stock)
+int Dock::importingGoods(GoodStock& stock)
 {
   const GoodStore& cityOrders = _city()->importingGoods();
 
@@ -253,13 +254,18 @@ void Dock::importingGoods(GoodStock& stock)
   int dockMayStore = _d->importGoods.freeQty( stock.type() );
 
   traderMaySell = std::min( traderMaySell, dockMayStore );
+  int cost = 0;
   if( traderMaySell > 0 )
   {
     _d->importGoods.store( stock, traderMaySell );
 
     events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), traderMaySell );
     e->dispatch();
+
+    cost = GoodHelper::importPrice( _city(), stock.type(), traderMaySell );
   }
+
+  return cost;
 }
 
 void Dock::storeGoods(GoodStock &stock, const int)
@@ -267,16 +273,21 @@ void Dock::storeGoods(GoodStock &stock, const int)
   _d->exportGoods.store( stock, stock.qty() );
 }
 
-void Dock::exportingGoods( GoodStock& stock, int qty )
+int Dock::exportingGoods( GoodStock& stock, int qty )
 {
   qty = std::min( qty, _d->exportGoods.getMaxRetrieve( stock.type() ) );
   _d->exportGoods.retrieve( stock, qty );
 
+  int cost = 0;
   if( qty > 0 )
   {
     events::GameEventPtr e = events::FundIssueEvent::exportg( stock.type(), qty );
     e->dispatch();
+
+    cost = GoodHelper::exportPrice( _city(), stock.type(), qty );
   }
+
+  return cost;
 }
 
 Dock::~Dock(){}

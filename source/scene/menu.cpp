@@ -50,7 +50,9 @@
 #include "core/event.hpp"
 #include "core/timer.hpp"
 #include "core/stringhelper.hpp"
-#include "steam.hpp"
+#ifdef CAESARIA_USE_STEAM
+  #include "steam.hpp"
+#endif
 
 using namespace gfx;
 using namespace gui;
@@ -473,7 +475,7 @@ void StartMenu::initialize()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   bool screenFitted = SETTINGS_VALUE( screenFitted );
-  if( !screenFitted )`
+  if( !screenFitted )
   {
     gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
                                                  "Information", "Is need autofit screen resolution?",

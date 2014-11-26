@@ -50,6 +50,7 @@ namespace {
 const int defaultDeliverDistance = 40;
 CAESARIA_LITERALCONST(stock)
 CAESARIA_LITERALCONST(producerPos)
+CAESARIA_LITERALCONST(consumerPos)
 }
 
 class CartPusher::Impl
@@ -61,6 +62,7 @@ public:
   Picture cartPicture;
   int maxDistance;
   long reservationID;
+  bool cantUnloadGoods;
 
   BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, Pathway& oPathWay);
   BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, Pathway& oPathWay);
@@ -68,11 +70,12 @@ public:
 };
 
 CartPusher::CartPusher(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Human( city ), _d( new Impl )
 {
   _setType( walker::cartPusher );
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
+  _d->cantUnloadGoods = false;
   _d->maxDistance = defaultDeliverDistance;
   _d->stock.setCapacity( simpleCart );
 
@@ -96,11 +99,13 @@ void CartPusher::_reachedPathway()
     else if( factory.isValid() ) { goodStore = &factory->store(); }
 
     if( goodStore )
-    {
+    {              
+      int saveQty = _d->stock.qty();
       wait( _d->stock.qty() );
       goodStore->applyStorageReservation(_d->stock, _d->reservationID);      
-      _d->reservationID = 0;
-    }
+      _d->reservationID = 0;      
+      _d->cantUnloadGoods = (saveQty == _d->stock.qty());
+    }    
   }
   //
   if( !_pathwayRef().isReverse() )
@@ -108,7 +113,7 @@ void CartPusher::_reachedPathway()
     _pathwayRef().toggleDirection();
     _centerTile();
     go();
-    _d->consumerBuilding = 0;
+    _d->consumerBuilding = NULL;
   }
   else
   {
@@ -208,13 +213,13 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    foreach( it, oPics ) { it->addOffset( offset ); }
 }
 
-void CartPusher::computeWalkerDestination()
+void CartPusher::_computeWalkerDestination()
 {
    // get the list of buildings within reach
    Pathway pathWay;
    Propagator pathPropagator( _city() );
    pathPropagator.setAllDirections( false );
-   _d->consumerBuilding = 0;
+   _d->consumerBuilding = NULL;
 
    if( _d->producerBuilding.isNull() )
    {
@@ -261,10 +266,11 @@ void CartPusher::computeWalkerDestination()
      }
      else
      {
-       _setDirection( constants::north );
        Walker::wait( -1 );
        setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
-       _walk();
+       _changeDirection();
+       turn( _d->producerBuilding->pos() );
+       getMainPicture();
      }
    }
 }
@@ -275,10 +281,10 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
-  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   //remove factories with improrer storage
-  DirectRoutes::iterator pathWayIt= pathWayList.begin();
+  DirectPRoutes::iterator pathWayIt= pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
@@ -373,7 +379,7 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
   _d->stock.append( carry );
   setProducerBuilding( building  );
 
-  computeWalkerDestination();
+  _computeWalkerDestination();
 
   if( !isDeleted() )
   {
@@ -385,7 +391,7 @@ void CartPusher::timeStep( const unsigned long time )
 {
   if( GameDate::isWeekChanged() && !_pathwayRef().isValid() )
   {
-    computeWalkerDestination();
+    _computeWalkerDestination();
   }
 
   Walker::timeStep( time );
@@ -400,6 +406,8 @@ CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
   return ret;
 }
 
+CartPusher::~CartPusher(){}
+
 void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
@@ -408,11 +416,12 @@ void CartPusher::save( VariantMap& stream ) const
   stream[ lc_producerPos ] = _d->producerBuilding.isValid()
                                 ? _d->producerBuilding->pos() : TilePos( -1, -1 );
 
-  stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
+  stream[ lc_consumerPos ] = _d->consumerBuilding.isValid()
                                 ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
 
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reservationID" ] = static_cast<int>(_d->reservationID);
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
+  VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
+  VARIANT_SAVE_ENUM_D( stream, _d, reservationID )
 }
 
 void CartPusher::load( const VariantMap& stream )
@@ -435,11 +444,12 @@ void CartPusher::load( const VariantMap& stream )
     Logger::warning( "WARNING: cartPusher producer building is NULL uid=[%d]", uniqueId() );
   }
 
-  TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
+  TilePos cnsmPos( stream.get( lc_consumerPos ).toTilePos() );
   _d->consumerBuilding = ptr_cast<Building>( _city()->getOverlay( cnsmPos ) );
 
-  _d->maxDistance = stream.get( "maxDistance" ).toInt();
-  _d->reservationID = stream.get( "reservationID" ).toInt();
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
+  VARIANT_LOAD_ANY_D( _d, cantUnloadGoods, stream )
+  VARIANT_LOAD_ENUM_D( _d, reservationID, stream )
 }
 
 bool CartPusher::die()
@@ -458,12 +468,46 @@ bool CartPusher::die()
   return created;
 }
 
-std::string CartPusher::currentThinks() const
+std::string CartPusher::thoughts( Thought th ) const
 {
-  if( !pathway().isValid() )
+  switch( th )
   {
-    return "##cartpusher_cantfind_destination##";
+  case thCurrent:
+    if( !pathway().isValid() )
+    {
+      return "##cartpusher_cantfind_destination##";
+    }
+    else
+    {
+      if( pathway().isReverse() && _d->cantUnloadGoods )
+      {
+        if( is_kind_of<Factory>( _d->consumerBuilding ) )
+        {
+          return "##cartpusher_cant_unload_goods_in_factory##";
+        }
+      }
+    }
+  break;
+
+  case thAction:
+
+  break;
+
+  default: break;
   }
 
-  return Walker::currentThinks();
+  return Walker::thoughts( th );
 }
+
+TilePos CartPusher::places(Walker::Place type) const
+{
+  switch( type )
+  {
+  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : TilePos( -1, -1 );
+  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
+  default: break;
+  }
+
+  return Human::places( type );
+}
+

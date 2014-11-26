@@ -32,6 +32,7 @@ public:
                    const std::string& winText,
                    bool mayContinue);
   virtual ~WinMissionWindow();
+  virtual bool onEvent(const NEvent &event);
 
 public signals:
   Signal0<>& onAcceptAssign();

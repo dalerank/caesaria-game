@@ -4,8 +4,7 @@
   funds : 8000
   city.name : "Capua"
   player.rank : 2
-  date : "-350.01.01"
-  finish : "-300.01.01"
+  date : "-350.01.01"  
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : 0
@@ -15,12 +14,14 @@
   win :
   {
     population : 2500
-    culture : 35
+    culture : 35_
     prosperity : 10
     peace : 0
     favour : 60
+    finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##win_engineer_title##"
+    win.text : "##capua_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"
@@ -107,7 +108,7 @@
       }
     }
 
-	 oil_price_rising#trading_options : {
+   pottery_price_rising#trading_options : {
       date : "-343.04.01"
       goods : {
         pottery : { buy : 210, sell : 170 }

@@ -18,11 +18,11 @@
 #ifndef __CAESARIA_SERVICEWALKER_H_INCLUDED__
 #define __CAESARIA_SERVICEWALKER_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "pathway/predefinitions.hpp"
 
 /** This walker gives a service to buildings along the road */
-class ServiceWalker : public Walker
+class ServiceWalker : public Human
 {
 public:
   typedef enum { goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;
@@ -37,6 +37,7 @@ public:
 
   virtual void send2City( BuildingPtr base, int orders=goLowerService );
   virtual float serviceValue() const;
+  virtual TilePos places(Place type) const;
 
   // evaluates the service demand on the given pathWay
   float evaluatePath( PathwayPtr pathWay);
@@ -71,6 +72,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
+  void _addObsoleteOverlays( gfx::TileOverlay::Type type );
 
 private:
   class Impl;

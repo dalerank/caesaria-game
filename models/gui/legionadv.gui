@@ -14,6 +14,7 @@
   lbBlackframe#Label : {
     geometry : [ 32, 70, "pw-32", 340 ]
     bgtype : "blackFrame"
+    text.align : [ "center", "center" ]
     multiline : true
     font : "FONT_2"
   }
@@ -46,7 +47,7 @@
     font : "FONT_1"
   }
 
-  alarm#Label : {
+  lbAlarm#Label : {
     geometry : [ 60, "ph-60", "pw-0", "ph-40" ]
     text : "##advlegion_noalarm##"
     font : "FONT_2"

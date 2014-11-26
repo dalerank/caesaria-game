@@ -1,0 +1,13 @@
+{  
+ title : "##colege##"
+ sound : "fanfare"
+ text  : "Academies educate Roman youths aged 13-21 after they graduate from @schools&. To evolve to high levels, housing needs access to this more advanced education. Teachers give academy access as they walk their routes. Use the @Education Overlay& to watch an academy's teachers walk through neighborhoods. Right-click on an academy to see its status. Academies are desirable neighbors. \n Ask your @Education Advisor& about the city's overall need for academies. Each academy can serve only a limited number of youths before its classrooms become overcrowded. As your city's population density increases, keep building more academies to keep the number of classrooms stable. Even houses with access to an academy will want more academies if their classroom size grows too large.\n Academies affect your @Culture Rating&. Keep classrooms small to enhance Culture in your city. Compare the number of youths who need schooling to the number that your academies can accommodate to see how many young people each academy in your city serves. Click @here(1)& to explore the concept of education in Caesar III.\n For a short lesson on the history of academies in the Roman Empire, click @here(2)&."
+ uri : {
+  "schools" : "school"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+  "here(1)" : "http://wikipedia.ru"
+  "here(2)" : "http://wikipedia.ru"
+ }
+}

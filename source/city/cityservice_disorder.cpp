@@ -24,6 +24,7 @@
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
 #include "game/gamedate.hpp"
+#include "events/event.hpp"
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
 
@@ -46,6 +47,7 @@ public:
   int maxCrimeLevel;
   int rioterInThisYear;
   int rioterInLastYear;
+  DateTime lastMessageDate;
 
 public:
   void generateMugger( PlayerCityPtr city, HousePtr house );
@@ -53,25 +55,25 @@ public:
   void generateProtestor( PlayerCityPtr city, HousePtr house );
 };
 
-SrvcPtr Disorder::create()
+SrvcPtr Disorder::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new Disorder() );
+  SrvcPtr ret( new Disorder( city ) );
   ret->drop();
 
   return SrvcPtr( ret );
 }
 
-std::string Disorder::defaultName(){  return "disorder";}
+std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
 
-Disorder::Disorder()
-  : Srvc( Disorder::defaultName() ), _d( new Impl )
+Disorder::Disorder( PlayerCityPtr city )
+  : Srvc( city, Disorder::defaultName() ), _d( new Impl )
 {
   _d->minCrimeLevel = defaultCrimeLevel;
   _d->currentCrimeLevel = 0;
   _d->maxCrimeLevel = 0;
 }
 
-void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
+void Disorder::timeStep( const unsigned int time )
 {
   if( GameDate::isYearChanged() )
   {
@@ -82,10 +84,10 @@ void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
   if( !GameDate::isWeekChanged() )
     return;
 
-  Helper helper( city );
+  Helper helper( _city() );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = city->walkers( walker::protestor );
+  WalkerList walkers = _city()->walkers( walker::protestor );
 
   HouseList criminalizedHouse;
   _d->currentCrimeLevel = 0;
@@ -113,7 +115,7 @@ void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
 
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
-    int sentiment = city->sentiment();
+    int sentiment = _city()->sentiment();
     int randomValue = math::random( 100 );
     if (sentiment >= 60)
     {
@@ -121,7 +123,7 @@ void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
       {
         if ( hCrimeLevel > 50 )
         {
-          _d->generateProtestor( city, *it );
+          _d->generateProtestor( _city(), *it );
         }
       }
     }
@@ -131,11 +133,11 @@ void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
       {
         if ( hCrimeLevel >= 70 )
         {
-          _d->generateMugger( city, *it );
+          _d->generateMugger( _city(), *it );
         }
         else if ( hCrimeLevel > 50 )
         {
-          _d->generateProtestor( city, *it );
+          _d->generateProtestor( _city(), *it );
         }
       }
     }
@@ -145,15 +147,15 @@ void Disorder::timeStep( PlayerCityPtr city, const unsigned int time )
       {
         if ( hCrimeLevel >= 90 )
         {
-          _d->generateRioter( city, *it );
+          _d->generateRioter( _city(), *it );
         }
         else if ( hCrimeLevel >= 70 )
         {
-          _d->generateMugger( city, *it );
+          _d->generateMugger( _city(), *it );
         }
         else if ( hCrimeLevel > 50 )
         {
-          _d->generateProtestor( city, *it );
+          _d->generateProtestor( _city(), *it );
         }
       }
     }
@@ -166,7 +168,7 @@ std::string Disorder::reason() const
   std::string crimeDesc[ crimeDescLimiter ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
                                                 "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
                                                 "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
-                                                "##advchief_veryhigh_crime##"};
+                                                "##advchief_veryhigh_crime##" };
 
   StringArray troubles;
   troubles << crimeDesc[ crimeLevel ];
@@ -192,16 +194,17 @@ unsigned int Disorder::value() const { return _d->currentCrimeLevel; }
 VariantMap Disorder::save() const
 {
   VariantMap ret;
-  ret[ "lastRioter" ] = _d->rioterInLastYear;
-  ret[ "curRioter"  ] = _d->rioterInThisYear;
-
+  VARIANT_SAVE_ANY_D( ret, _d, rioterInLastYear )
+  VARIANT_SAVE_ANY_D( ret, _d, rioterInThisYear )
+  VARIANT_SAVE_ANY_D( ret, _d, lastMessageDate )
   return ret;
 }
 
 void Disorder::load(const VariantMap &stream)
 {
-  _d->rioterInLastYear = stream.get( "lastRioter" );
-  _d->rioterInThisYear = stream.get( "curRioter" );
+  VARIANT_LOAD_ANY_D( _d, rioterInLastYear, stream )
+  VARIANT_LOAD_ANY_D( _d, rioterInThisYear, stream )
+  VARIANT_LOAD_TIME_D( _d, lastMessageDate, stream )
 }
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
@@ -218,7 +221,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
       moneyStolen = math::random( 400 );
 
     events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                                          events::ShowInfobox::send2scribe, "/smk/mugging.smk" );
+                                                          events::ShowInfobox::send2scribe, ":/smk/mugging.smk" );
     e->dispatch();
 
     city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );

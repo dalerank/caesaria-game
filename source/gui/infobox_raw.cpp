@@ -37,14 +37,14 @@ namespace gui
 namespace infobox
 {
 
-AboutRawMaterial::AboutRawMaterial( Widget* parent, const Tile& tile )
+AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
   _type = rawmb->type();
 
-  setConstruction( ptr_cast<Construction>( rawmb ) );
+  setBase( ptr_cast<Construction>( rawmb ) );
 
   Label* lbDamage;
   Label* lbProgress;

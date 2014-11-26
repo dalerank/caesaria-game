@@ -18,11 +18,11 @@
 #ifndef __CAESARIA_CART_SUPPLIER_H_INCLUDED__
 #define __CAESARIA_CART_SUPPLIER_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "core/predefinitions.hpp"
 
 /** This walker delivers goods */
-class CartSupplier : public Walker
+class CartSupplier : public Human
 {
 public:
   static CartSupplierPtr create( PlayerCityPtr city );
@@ -43,6 +43,7 @@ public:
   virtual bool die();
 
   virtual void timeStep(const unsigned long time);
+  virtual TilePos places(Place type) const;
 
 protected:
   CartSupplier( PlayerCityPtr city );

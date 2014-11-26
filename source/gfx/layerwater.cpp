@@ -160,7 +160,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerWater::drawTileW(Engine& engine, Tile& tile, const Point& offset, const int depth)
+void LayerWater::drawWalkerOverlap(Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
 
 }

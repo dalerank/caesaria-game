@@ -32,13 +32,14 @@ namespace infobox
 class AboutHouse : public Simple
 {
 public:
-   AboutHouse( Widget* parent, const gfx::Tile& tile);
+   AboutHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile);
    virtual ~AboutHouse();
 
    void drawHabitants(HousePtr house);
    void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );
 
    virtual bool onEvent(const NEvent &event);
+   virtual void showDescription();
 
 private:
    HousePtr _house;

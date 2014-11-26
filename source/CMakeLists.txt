@@ -35,6 +35,7 @@ file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/game/*.model")
 file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.gui")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
+file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
 file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
@@ -47,49 +48,33 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} )
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} )
 
 target_link_libraries(${PROJECT_NAME}
   ${SDL2_LIBRARY}
   ${SDL2_MIXER_LIBRARY}
 )
 
-if( BUILD_ZLIB )
-  link_directories(${ZLIB_HOME})
-  include_directories(${ZLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${ZLIB_NAME})
-endif()
+include_directories(${ZLIB_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 
-if( BUILD_AES )
-  link_directories(${AESLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
-endif()
+include_directories(${AES_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${AES_LIBRARY})
 
-if( BUILD_BZIP )
-  link_directories(${BZIPLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
-endif()
+include_directories(${BZIP_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${BZIP_LIBRARY})
 
-if( BUILD_LZMA )
-  link_directories(${LZMALIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${LZMALIB_NAME})
-endif()
+include_directories(${LZMA_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${LZMA_LIBRARY})
 
-if( BUILD_SMK )
-  link_directories(${SMKLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
-endif()
+include_directories(${SMK_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${SMK_LIBRARY})
 
-if( BUILD_TTF )
-  link_directories(${TTFLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${TTFLIB_NAME})
-endif()
+include_directories(${SDL2_TTF_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
-if( BUILD_PNG )
-  link_directories(${PNGLIB_HOME})
-  include_directories(${PNGLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
-endif()
+include_directories(${PNG_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
@@ -170,9 +155,15 @@ endif()
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  if(USE_CPP11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  endif()
 else()
-  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+  if(USE_CPP11)
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Use proper compiler or disable USE_CPP11 option.")
+  else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+  endif()
 endif()
 
 if(WIN32)
@@ -208,6 +199,12 @@ ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/missions" "${WORK_DIR}/resources/missions"
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/help" "${WORK_DIR}/resources/help"
 )
 
 ADD_CUSTOM_COMMAND(

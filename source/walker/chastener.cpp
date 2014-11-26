@@ -28,6 +28,7 @@
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
 #include "core/foreach.hpp"
+#include "helper.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
@@ -36,12 +37,13 @@ using namespace gfx;
 Chastener::Chastener( PlayerCityPtr city, walker::Type type )
     : EnemySoldier( city, type )
 {
-
+  addFriend( walker::romeChastenerElephant );
 }
 
 ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)
 {
   ChastenerPtr ret( new Chastener( city, type ) );
+  ret->initialize( WalkerHelper::getOptions( type ) );
   ret->drop();
 
   return ret;
@@ -51,7 +53,7 @@ int Chastener::agressive() const { return -2; }
 
 bool Chastener::die()
 {
-  _city()->empire()->emperor().soldierDie( _city()->name() );
+  _city()->empire()->emperor().remSoldiers( _city()->name(), 1 );
 
   return EnemySoldier::die();
 }

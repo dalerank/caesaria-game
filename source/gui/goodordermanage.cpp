@@ -21,8 +21,8 @@
 #include "core/gettext.hpp"
 #include "good/goodhelper.hpp"
 #include "label.hpp"
-#include "city/helper.hpp"
 #include "objects/factory.hpp"
+#include "city/helper.hpp"
 #include "gfx/engine.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
@@ -113,17 +113,20 @@ public:
   PushButton* btnIndustryState;
   Label* lbIndustryInfo;
   Picture icon;
+  GoodOrderManageWindow::GoodMode gmode;
   PushButton* btnStackingState;
 
 signals public:
   Signal0<> onOrderChangedSignal;
 };
 
-GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods)
+GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city,
+                                             Good::Type type, int stackedGoods, GoodMode gmode )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {  
   _d->city = city;
   _d->type = type;
+  _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
 
@@ -139,14 +142,14 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
 
-  if( lbTitle ) lbTitle->setText( GoodHelper::name( type ) );
+  if( lbTitle ) lbTitle->setText( _( GoodHelper::name( type ) ) );
   if( lbStackedQty )
   {
     std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
     lbStackedQty->setText( text );
   }
 
-  _d->btnTradeState = new TradeStateButton( this, Rect( 50, 85, width() - 60, 85 + 30), -1 );
+  _d->btnTradeState = new TradeStateButton( this, Rect( 50, 90, width() - 60, 90 + 30), -1 );
 
   updateTradeState();
   updateIndustryState();
@@ -188,10 +191,30 @@ void GoodOrderManageWindow::decreaseQty()
 
 void GoodOrderManageWindow::updateTradeState()
 {
-  city::TradeOptions& ctrade = _d->city->tradeOptions();
-  city::TradeOptions::Order order = ctrade.getOrder( _d->type );
-  int qty = ctrade.exportLimit( _d->type );
-  _d->btnTradeState->setTradeState( order, qty );
+  switch( _d->gmode )
+  {
+  case gmImport|gmProduce:
+    {
+      city::TradeOptions& ctrade = _d->city->tradeOptions();
+      city::TradeOptions::Order order = ctrade.getOrder( _d->type );
+      int qty = ctrade.exportLimit( _d->type );
+      _d->btnTradeState->setTradeState( order, qty );
+    }
+  break;
+
+  case gmImport:
+  case gmProduce:
+  {      
+    _d->btnTradeState->setText( _d->gmode == gmImport
+                                    ? _("##these_goods_import_only##")
+                                    : _("##setup_traderoute_to_import##" ) );
+    _d->btnTradeState->setEnabled( false );
+    _d->btnTradeState->setBackgroundStyle( PushButton::noBackground );
+  }
+  break;
+
+  default: break;
+  }
 }
 
 void GoodOrderManageWindow::changeTradeState()
@@ -208,34 +231,37 @@ bool GoodOrderManageWindow::isIndustryEnabled()
   bool anyFactoryWork = false;
   FactoryList factories = helper.getProducers<Factory>( _d->type );
   foreach( factory, factories )
-    {
-      anyFactoryWork |= (*factory)->isActive();
-    }
+  {
+    anyFactoryWork |= (*factory)->isActive();
+  }
 
   return factories.empty() ? true : anyFactoryWork;
 }
 
 void GoodOrderManageWindow::updateIndustryState()
 {
-  bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
-  _d->btnIndustryState->setVisible( industryActive );
-
-  if( !industryActive )
-    {
-      return;
-    }
-
   city::Helper helper( _d->city );
   int workFactoryCount=0, idleFactoryCount=0;
-
   FactoryList factories = helper.getProducers<Factory>( _d->type );
   foreach( factory, factories )
   {
     ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
   }
 
-  std::string text = StringHelper::format( 0xff, "%d %s, %d %s", workFactoryCount, _("##work##"),
-                                           idleFactoryCount, _("##idle_factory_in_city##") );
+  //bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
+  if( factories.empty() )
+  {
+    _d->btnIndustryState->setEnabled( false );
+    _d->btnIndustryState->setBackgroundStyle( PushButton::noBackground );
+    _d->btnIndustryState->setText( _("##no_industries_in_city##" ) );
+    return;
+  }  
+
+  std::string postfixWork = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
+  std::string postfixIdle = (workFactoryCount%10 == 1) ? "##idle_factory_in_city##" : "##idle_factories_in_city##";
+
+  std::string text = StringHelper::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfixWork),
+                                           idleFactoryCount, _(postfixIdle) );
   _d->lbIndustryInfo->setText( text );
 
   bool industryEnabled = isIndustryEnabled();

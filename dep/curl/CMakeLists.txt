@@ -212,7 +212,7 @@ if(HAVE_SYS_SOCKET_H)
                   -DSEND_TYPE_RETV -DSEND_QUAL_ARG2 -DHAVE_FCNTL_O_NONBLOCK )
 endif()
 
-SET(CMAKE_EXTRA_INCLUDE_FILES "curl.h")
+SET(CMAKE_EXTRA_INCLUDE_FILES "include/curl/curl.h")
 
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
   MESSAGE( "64 bits compiler detected" )
@@ -290,4 +290,12 @@ include_directories( ${DEP_SOURCE_DIR} )
 add_definitions( -DCURL_STATICLIB )
 add_definitions( -DCURL_DISABLE_LDAP )
 
-add_library(${CURLLIB_NAME} STATIC ${CURL_SOURCES_LIST})
+add_library(${PROJECT_NAME} STATIC ${CURL_SOURCES_LIST})
+
+
+# Expose public includes to other through cache variable.
+set(CURL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
+    CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+set(CURL_LIBRARY ${PROJECT_NAME}
+    CACHE INTERNAL "${PROJECT_NAME}: Library Name" FORCE)

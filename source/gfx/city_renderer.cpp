@@ -195,12 +195,9 @@ void CityRenderer::render()
   }
 
   engine.setViewport(0, true );
+
   layer->beforeRender( engine );
-
   layer->render( engine );
-
-  layer->renderPass( engine, Renderer::animations );
-
   layer->afterRender( engine );
 
   engine.setViewport( 0, false );
@@ -262,7 +259,7 @@ void CityRenderer::rotateRight()
   _d->tilemap->turnRight();
   _d->camera.refresh();
   _d->camera.tiles();
-  _d->resetWalkersAfterTurn();
+  _d->resetWalkersAfterTurn();  
 }
 
 void CityRenderer::rotateLeft()
@@ -273,10 +270,18 @@ void CityRenderer::rotateLeft()
   _d->resetWalkersAfterTurn();
 }
 
+void CityRenderer::setLayer(int layertype)
+{
+  if( _d->currentLayer->type() == layertype )
+    layertype = citylayer::simple;
+
+  _d->setLayer( layertype );
+}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
-void CityRenderer::setLayer(int layertype) { _d->setLayer( layertype ); }
+LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }

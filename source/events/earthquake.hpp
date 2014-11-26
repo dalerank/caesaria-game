@@ -29,6 +29,7 @@ class EarthQuake : public GameEvent
 {
 public:
   static GameEventPtr create();
+  static GameEventPtr create( TilePos start, TilePos stop );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

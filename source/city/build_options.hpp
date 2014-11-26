@@ -36,6 +36,9 @@ public:
   void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
   void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
   bool isGroupAvailable(const BuildMenuType type ) const;
+  unsigned int getBuildingsQuote( const gfx::TileOverlay::Type type ) const;
+  TilePos memPoint( unsigned int index ) const;
+  void setMemPoint(unsigned int index, TilePos point );
 
   bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
 
@@ -49,6 +52,7 @@ public:
   void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
   bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
   bool isCheckDesirability() const;
+  unsigned int getMaximumForts() const;
 
 private:
   class Impl;

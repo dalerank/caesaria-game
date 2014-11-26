@@ -82,6 +82,8 @@ public:
   Picture stockPicture; // stock of input good
   FactoryStore store;
   Good::Type inGoodType;
+  unsigned int lowWorkerWeeksNumber;
+  unsigned int maxUnworkingWeeks;
   Good::Type outGoodType;
   bool produceGood;
   unsigned int finishedQty;
@@ -98,6 +100,8 @@ Factory::Factory( const Good::Type inType, const Good::Type outType,
   _d->inGoodType = inType;
   _d->outGoodType = outType;
   _d->finishedQty = 100;
+  _d->maxUnworkingWeeks = 0;
+  _d->lowWorkerWeeksNumber = 0;
   _d->store.factory = this;
   _d->store.setCapacity( 1000 );
   _d->store.setCapacity(_d->inGoodType, 200);
@@ -139,6 +143,16 @@ void Factory::_removeSpoiledGoods()
   store().removeExpired( GameDate::current() );
 }
 
+void Factory::_setUnworkingInterval(unsigned int weeks)
+{
+  _d->maxUnworkingWeeks = weeks;
+}
+
+void Factory::_reachUnworkingTreshold()
+{
+  collapse();
+}
+
 bool Factory::haveMaterial() const {  return (consumeGoodType() != Good::none && !inStockRef().empty()); }
 
 void Factory::timeStep(const unsigned long time)
@@ -157,6 +171,23 @@ void Factory::timeStep(const unsigned long time)
     if( GameDate::current().month() % 3 == 1 )
     {
       _removeSpoiledGoods();
+    }
+
+    if( _d->maxUnworkingWeeks > 0 )
+    {
+      if( numberWorkers() < maximumWorkers() / 3 )
+      {
+        _d->lowWorkerWeeksNumber++;
+      }
+      else
+      {
+        _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
+      }
+
+      if( _d->lowWorkerWeeksNumber > 8 &&  _d->lowWorkerWeeksNumber > (unsigned int)math::random( 42 ) )
+      {
+        _reachUnworkingTreshold();
+      }
     }
   }
 
@@ -258,17 +289,20 @@ std::string Factory::troubleDesc() const
 void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
-  stream[ "productionRate" ] = _d->productionRate;
+  VARIANT_SAVE_ANY_D( stream, _d, productionRate )
   stream[ "goodStore" ] = _d->store.save();
-  stream[ "progress" ] = _d->progress; 
+  VARIANT_SAVE_ANY_D( stream, _d, progress )
+  VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
 }
 
 void Factory::load( const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
   _d->store.load( stream.get( "goodStore" ).toMap() );
-  _d->progress = (float)stream.get( "progress", 0.f );
-  _d->productionRate = (float)stream.get( "productionRate", 9.6f );
+  VARIANT_LOAD_ANYDEF_D( _d, progress, 0.f, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, productionRate, 9.6f, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
 
   _storeChanged();
 }
@@ -279,6 +313,8 @@ bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) 
 void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
 float Factory::productRate() const{  return _d->productionRate;}
+
+unsigned int Factory::effciency() const { return laborAccessPercent() * productivity() / 100; }
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
 
@@ -329,31 +365,6 @@ void Factory::receiveGood()
 bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
-
-TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::timberLogger, Size(2) )
-{
-  setPicture( ResourceGroup::commerce, 72 );
-
-  _animationRef().load( ResourceGroup::commerce, 73, 10);
-  _fgPicturesRef().resize(2);
-}
-
-bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
-{
-   bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
-   bool near_forest = false;  // tells if the factory is next to a forest
-
-   Tilemap& tilemap = city->tilemap();
-   TilesArray area = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
-   foreach( tile, area )
-   {
-     near_forest |= (*tile)->getFlag( Tile::tlTree );
-   }
-
-   const_cast< TimberLogger* >( this )->_setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
-
-   return (is_constructible && near_forest);
-}
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
 {

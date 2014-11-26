@@ -108,7 +108,8 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( taxLevel > 0 )
     {
-      drawColumn( engine, screenPos, taxLevel );
+      _addColumn( screenPos, taxLevel );
+      //drawColumn( engine, screenPos, taxLevel );
     }
   }
 
@@ -135,12 +136,21 @@ void LayerTax::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
-        if( house.isValid() )
+        BuildingPtr bld = ptr_cast<Building>( tile->overlay() );
+
+        if( bld.isNull() )
         {
-          int taxAccess = house->hasServiceAccess( Service::forum );
-          if( taxAccess < 25 )
-            text = "##house_not_registered_for_taxes##";
+          text = "##no_people_in_this_locality##";
+        }
+        else
+        {
+          HousePtr house = ptr_cast<House>( tile->overlay() );
+          if( house.isValid() )
+          {
+            int taxAccess = house->hasServiceAccess( Service::forum );
+            if( taxAccess < 25 )
+              text = "##house_not_registered_for_taxes##";
+          }
         }
       }
 
@@ -156,9 +166,8 @@ void LayerTax::handleEvent(NEvent& event)
 }
 
 LayerTax::LayerTax( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : LayerInfo( camera, city, 9 )
 {
-  _loadColumnPicture( 9 );
   _addWalkerType( walker::taxCollector );
 }
 

@@ -19,11 +19,11 @@
 #ifndef _CAESARIA_CART_PUSHER_H_INCLUDE_
 #define _CAESARIA_CART_PUSHER_H_INCLUDE_
 
-#include "walker/walker.hpp"
+#include "human.hpp"
 #include "core/predefinitions.hpp"
 
 /** This walker delivers goods */
-class CartPusher : public Walker
+class CartPusher : public Human
 {
 public:
   typedef enum { simpleCart = 100,
@@ -32,6 +32,7 @@ public:
                } CartCapacity;
 
   static CartPusherPtr create( PlayerCityPtr city, CartCapacity cap=simpleCart );
+  virtual ~CartPusher();
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
@@ -44,14 +45,13 @@ public:
 
   void send2city( BuildingPtr building, GoodStock& carry );
 
-  void computeWalkerDestination();
- 
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual bool die();
-  virtual std::string currentThinks() const;
+  virtual std::string thoughts( Thought th ) const;
+  virtual TilePos places(Place type) const;
 
 protected:
   CartPusher( PlayerCityPtr city );
@@ -60,6 +60,7 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
 
+  void _computeWalkerDestination();
 private:
   class Impl;
   ScopedPtr< Impl > _d;

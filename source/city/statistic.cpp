@@ -32,6 +32,7 @@
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
 #include "cityservice_health.hpp"
+#include "world/traderoute.hpp"
 #include "core/logger.hpp"
 #include <map>
 
@@ -63,6 +64,54 @@ float Statistic::getBalanceKoeff(PlayerCityPtr city)
   }
 
   return atan( city->population() / 1000.f );
+}
+
+int Statistic::getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
+{
+  int need = 0, have = 0;
+  city::Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+  foreach( it, houses )
+  {
+    HousePtr house = *it;
+    if( house->isEntertainmentNeed( service ) )
+    {
+      int habitants = house->habitants().count();
+      need += habitants;
+      have += (house->hasServiceAccess( service) ? habitants : 0);
+    }
+  }
+
+  return ( have == 0
+            ? 0
+            : math::percentage( need, have) );
+}
+
+bool Statistic::canImport(PlayerCityPtr city, Good::Type type)
+{
+  world::EmpirePtr empire = city->empire();
+  world::TraderouteList routes = empire->tradeRoutes( city->name() );
+  bool haveImportWay = false;
+  foreach( it, routes )
+  {
+    world::CityPtr partner = (*it)->partner( city->name() );
+    const GoodStore& goods = partner->exportingGoods();
+    if( goods.capacity( type ) > 0 )
+    {
+      haveImportWay = true;
+      break;
+    }
+  }
+
+  return haveImportWay;
+}
+
+bool Statistic::canProduce(PlayerCityPtr city, Good::Type type)
+{
+  Helper helper( city );
+
+  FactoryList buildings = helper.getProducers<Factory>( type );
+  return !buildings.empty();
 }
 
 CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
@@ -272,18 +321,34 @@ HouseList Statistic::getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<in
   return ret;
 }
 
-Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
+Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city, bool includeGranary)
 {
-  Helper helper( city );
   GoodsMap cityGoodsAvailable;
 
-  WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
+  WarehouseList warehouses;
+  warehouses << city->overlays();
+
   foreach( wh, warehouses )
   {
     for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type goodType = (Good::Type)i;
       cityGoodsAvailable[ goodType ] += (*wh)->store().qty( goodType );
+    }
+  }
+
+  if( includeGranary )
+  {
+    GranaryList granaries;
+    granaries << city->overlays();
+
+    foreach( gg, granaries )
+    {
+      for( int i=Good::wheat; i <= Good::vegetable; i++ )
+      {
+        Good::Type goodType = (Good::Type)i;
+        cityGoodsAvailable[ goodType ] += (*gg)->store().qty( goodType );
+      }
     }
   }
 

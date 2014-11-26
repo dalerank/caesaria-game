@@ -23,17 +23,21 @@
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
-#include "city/city.hpp"
-#include "texturedbutton.hpp"
 #include "objects/military.hpp"
+#include "city/helper.hpp"
+#include "city/cityservice_military.hpp"
+#include "texturedbutton.hpp"
 #include "walker/soldier.hpp"
 #include "core/logger.hpp"
 #include "events/movecamera.hpp"
 #include "widget_helper.hpp"
 #include "legion_target_window.hpp"
+#include "world/playerarmy.hpp"
+#include "dialogbox.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 namespace gui
 {
@@ -83,7 +87,7 @@ public:
 
     if( _fort.isValid() )
     {
-      fontW.draw( *pic, _fort->legionName(), 70, 4 );
+      fontW.draw( *pic, _( _fort->legionName() ), 70, 4 );
 
       std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
       fontB.draw( *pic, qtyStr, 70, 22 );
@@ -118,11 +122,14 @@ private:
 class Legion::Impl
 {
 public:
-  gui::Label* alarm;
+  gui::Label* lbAlarm;
   gui::Label* helpRequest;
   gui::Label* lbBlackframe;
   FortPtr currentFort;
   PlayerCityPtr city;
+
+public:
+  void updateAlarms( PlayerCityPtr city );
 };
 
 Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
@@ -135,7 +142,7 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   Point startLegionArea( 32, 70 );
   _d->city = city;
 
-  GET_DWIDGET_FROM_UI( _d, alarm )
+  GET_DWIDGET_FROM_UI( _d, lbAlarm )
   GET_DWIDGET_FROM_UI( _d, helpRequest )
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
 
@@ -153,6 +160,8 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   {
     _d->lbBlackframe->setText( _("##legionadv_no_legions##") );
   }
+
+  _d->updateAlarms( city );
 }
 
 void Legion::draw( Engine& painter )
@@ -178,10 +187,75 @@ void Legion::_handleRetreaLegion(FortPtr fort)
 
 void Legion::_handleServiceEmpire(FortPtr fort)
 {
+  bool maySendExpedition = true;
+  std::string reasonFailed;
+  if( fort->legionMorale() < 25 )
+  {
+    reasonFailed = "##legion_morale_is_too_low##";
+    maySendExpedition = false;
+  }
+
+  if( fort->soldiers().empty() )
+  {
+    reasonFailed = "##legion_havenot_soldiers##";
+    maySendExpedition = false;
+  }
+
+  if( !maySendExpedition )
+  {
+    DialogBox* dialog = new DialogBox( this, Rect(), "", _(reasonFailed), DialogBox::btnOk );
+
+    dialog->show();
+    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
+    return;
+  }
+
   LegionTargetWindow* dlg = LegionTargetWindow::create( _d->city, ui()->rootWidget(), -1 );
   dlg->show();
 
   CONNECT( dlg, onSelectLocation(), fort.object(), Fort::sendExpedition );
+}
+
+void Legion::Impl::updateAlarms(PlayerCityPtr city)
+{
+  city::MilitaryPtr mil;
+  mil << city->findService( city::Military::defaultName() );
+
+  city::Helper helper( city );
+
+  WalkerList chasteners = helper.find<Walker>( walker::romeChastenerSoldier );
+  WalkerList elephants = helper.find<Walker>( walker::romeChastenerElephant );
+
+  if( chasteners.size() || elephants.size() )
+  {
+    lbAlarm->setText( _("##emperror_legion_at_out_gates##") );
+    return;
+  }
+
+  if( mil->haveNotification( city::Military::Notification::barbarian ) )
+  {
+    lbAlarm->setText( _("##barbarian_are_closing_city##") );
+    return;
+  }
+
+  world::PlayerArmyList expeditions = mil->expeditions();
+  foreach( it, expeditions )
+  {
+    if( (*it)->mode() == world::PlayerArmy::go2location )
+    {
+      lbAlarm->setText( _("##out_legion_go_to_location##") );
+      return;
+    }
+  }
+
+  foreach( it, expeditions )
+  {
+    if( (*it)->mode() == world::PlayerArmy::go2home )
+    {
+      lbAlarm->setText( _("##out_legion_back_to_city##") );
+      return;
+    }
+  }
 }
 
 }

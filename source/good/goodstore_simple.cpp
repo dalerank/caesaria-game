@@ -66,8 +66,7 @@ int SimpleGoodStore::capacity() const {  return _gsd->capacity; }
 int SimpleGoodStore::qty() const
 {
   int qty = 0;
-  for( Impl::StockList::const_iterator goodIt = _gsd->stocks.begin();
-       goodIt != _gsd->stocks.end(); ++goodIt)
+  foreach( goodIt, _gsd->stocks )
   {
     qty += (*goodIt)->qty();
   }

@@ -29,6 +29,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
+#include "events/disaster.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "game/gamedate.hpp"
@@ -49,7 +50,7 @@ public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
 };
 
-Rioter::Rioter(PlayerCityPtr city) : Walker( city ), _d( new Impl )
+Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
 {    
   _setType( walker::rioter );
 
@@ -75,7 +76,7 @@ void Rioter::_reachedPathway()
   }
 }
 
-void Rioter::_updateThinks()
+void Rioter::_updateThoughts()
 {
   StringArray ret;
   ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
@@ -192,12 +193,14 @@ void Rioter::timeStep(const unsigned long time)
         foreach( it, constructions )
         {
           ConstructionPtr c = *it;
-          //if( c->group() != building::disasterGroup && c->type() != construction::road )
-          //{
-            c->updateState( Construction::fire, 1 );
-            c->updateState( Construction::damage, 1 );
-            break;
-          //}
+          c->updateState( Construction::fire, 1 );
+          c->updateState( Construction::damage, 1 );
+          if( c->state( Construction::damage ) < 10 || c->state( Construction::fire ) < 10 )
+          {
+            events::GameEventPtr e = events::DisasterEvent::create( c->tile(), events::DisasterEvent::riots );
+            e->dispatch();
+          }
+          break;
         }
       }
     }

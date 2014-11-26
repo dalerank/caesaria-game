@@ -16,11 +16,11 @@
 #ifndef _CAESARIA_SEAMERCHANT_INCLUDE_H_
 #define _CAESARIA_SEAMERCHANT_INCLUDE_H_
 
-#include "walker.hpp"
+#include "human.hpp"
 #include "world/trading.hpp"
 
 /** This is the empire merchant which buy/sell goods at warehouses */
-class SeaMerchant : public Walker
+class SeaMerchant : public Human
 {
 public:
   static WalkerPtr create( PlayerCityPtr city );
@@ -37,7 +37,10 @@ public:
 
   bool isWaitFreeDock() const;
 
-  virtual std::string currentThinks() const;
+  virtual std::string thoughts(Thought th) const;
+  virtual TilePos places(Place type) const;
+
+  std::string parentCity() const;
 
 protected:
   virtual void _reachedPathway();
@@ -48,5 +51,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+
 
 #endif //_CAESARIA_SEAMERCHANT_INCLUDE_H_

@@ -23,6 +23,8 @@
 class RoadPropagator
 {
 public:
+  static RoadPropagator& instance();
+
   /** finds the shortest path between origin and destination
   * returns True if a path exists
   * the path is returned in oPathWay
@@ -30,6 +32,11 @@ public:
   static gfx::TilesArray createPath(gfx::Tilemap& tileMap,
                                 TilePos startTile, TilePos destination,
                                 bool roadAssignment=false, bool returnRect=false);
+
+  void canBuildRoad(const gfx::Tile* tile, bool& ret);
+
+private:
+  RoadPropagator();
 };
 
 #endif //__CAESARIA_ROADPROPAGATOR_H_INCLUDE_

@@ -33,20 +33,23 @@
 #include "predefinitions.hpp"
 #include "core/debug_queue.hpp"
 
-typedef unsigned int UniqueId;
 class Pathway;
 
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
+  typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly, userFlag, count=0xff } Flag;
+  typedef enum { showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
+  typedef enum { thCurrent, thAction, thCount } Thought;
+  typedef enum { plOrigin, plDestination, pcCount } Place;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
   virtual constants::walker::Type type() const;
+
   // position and movement
 
   TilePos pos() const;
@@ -62,8 +65,10 @@ public:
 
   virtual void turn( TilePos pos );
 
-  void setSpeed(const float speed);
   float speed() const;
+  void setSpeed(const float speed);
+
+  float speedMultiplier() const;
   void setSpeedMultiplier( float koeff );
 
   void setUniqueId( const UniqueId uid );
@@ -82,8 +87,10 @@ public:
   virtual void setName( const std::string& name );
   virtual const std::string& name() const;
 
-  virtual std::string currentThinks() const;
+  virtual std::string thoughts( Thought about ) const;
   virtual void setThinks( std::string newThinks );
+
+  virtual TilePos places( Place type ) const;
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
@@ -103,6 +110,8 @@ public:
   virtual void initialize( const VariantMap& options );
   virtual int agressive() const;
 
+  virtual constants::walker::Nation nation() const;
+
   void attach();
 
 protected:
@@ -118,22 +127,21 @@ protected:
   virtual void _noWay();
   virtual void _waitFinished();
   virtual const gfx::Picture& getMainPicture();
-
-protected:
-  Pathway& _pathwayRef();
+  virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
+  virtual void _updateThoughts();
+
+  Pathway& _pathwayRef();
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  virtual void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
-
+  void _setNation( constants::walker::Nation nation );
   void _setType( constants::walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos( Point pos );
-  virtual void _updateThinks();
   Point _wpos() const;
 
 private:

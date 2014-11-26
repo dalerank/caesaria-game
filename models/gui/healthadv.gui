@@ -16,7 +16,7 @@
   lbMaxAv#Label : {
     font : "FONT_1"
     geometry : [ 290, 72, 470, 92 ]
-    text : "##max_available##"
+    text : "##hlth_care_of##"
   }
 
   lbCoverage#Label : {

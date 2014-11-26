@@ -37,7 +37,7 @@ namespace gui
 namespace infobox
 {
 
-AboutFontain::AboutFontain(Widget* parent, const Tile& tile)
+AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
@@ -48,7 +48,7 @@ AboutFontain::AboutFontain(Widget* parent, const Tile& tile)
   FountainPtr fountain;
   fountain << tile.overlay();
 
-  setConstruction( ptr_cast<Construction>( fountain ) );
+  setBase( ptr_cast<Construction>( fountain ) );
 
   std::string text;
   if( fountain.isValid() )
@@ -81,7 +81,7 @@ void AboutFontain::showDescription()
   DictionaryWindow::show( parent(), building::fountain );
 }
 
-AboutReservoir::AboutReservoir(Widget* parent, const Tile& tile)
+AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##reservoir##") );
@@ -90,7 +90,7 @@ AboutReservoir::AboutReservoir(Widget* parent, const Tile& tile)
   _lbTextRef()->setWordwrap( true );
 
   ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
-  setConstruction( ptr_cast<Construction>( reservoir ) );
+  setBase( ptr_cast<Construction>( reservoir ) );
 
   std::string text;
   if( reservoir.isValid() )
@@ -110,7 +110,7 @@ void AboutReservoir::showDescription()
   DictionaryWindow::show( parent(), building::reservoir );
 }
 
-AboutWell::AboutWell(Widget* parent, const Tile& tile)
+AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
   setTitle( _("##well##") );
@@ -119,7 +119,7 @@ AboutWell::AboutWell(Widget* parent, const Tile& tile)
   _lbTextRef()->setWordwrap( true );
 
   WellPtr well = ptr_cast<Well>( tile.overlay() );
-  setConstruction( ptr_cast<Construction>( well ) );
+  setBase( ptr_cast<Construction>( well ) );
 
   std::string text;
   if( well.isValid() )

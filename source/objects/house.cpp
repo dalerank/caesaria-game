@@ -62,7 +62,6 @@ class House::Impl
 public:
   typedef std::map< Service::Type, Service > Services;
   int houseLevel;
-  int hid;
   float money, tax;
   int poverity;
   HouseSpecification spec;  // characteristics of the current house level
@@ -74,6 +73,7 @@ public:
   std::string evolveInfo;
   CitizenGroup habitants;
   unsigned int taxesThisYear;
+  bool isFlat;
   int currentYear;
   int changeCondition;
 
@@ -90,7 +90,6 @@ House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
-  _d->hid = HouseLevel::vacantLot;
   _d->spec = helper.getSpec( _d->houseLevel );
   _d->desirability.base = -3;
   _d->desirability.range = 3;
@@ -367,7 +366,13 @@ void House::_checkHomeless()
 void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
+  {
+    if( GameDate::isMonthChanged() )
+    {
+      _levelDown();
+    }
     return; 
+  }
 
   if( _d->currentYear != GameDate::current().year() )
   {
@@ -395,6 +400,7 @@ void House::timeStep(const unsigned long time)
 
   if( GameDate::isMonthChanged() )
   {
+    setState( settleLock, 0 );
     _updateTax(); 
 
     if( _d->money > 0 ) { _d->poverity--; }
@@ -530,8 +536,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
 
       for( TilesArray::iterator it=area.begin(); it != area.end(); )
       {
-        TileOverlayPtr overlay = (*it)->overlay();
-        if( overlay == this ) { it = area.erase( it ); }
+        if( (*it)->overlay() == this ) { it = area.erase( it ); }
         else { ++it; }
       }
 
@@ -567,7 +572,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         buildPos = itArea->first;
         helper.updateDesirability( this, city::Helper::offDesirability );
         setSize( minSize );
-        _update( false );
+        _update( true );
         build( _city(), buildPos );
 
         _d->desirability.base = desirability;
@@ -604,7 +609,7 @@ void House::_levelUp()
   if( _d->houseLevel >= HouseLevel::greatPalace )
     return;
 
-  int nextLevel = math::clamp<int>( _d->houseLevel+1, 0, HouseLevel::greatPalace );
+  int nextLevel = math::clamp<int>( _d->houseLevel+1, HouseLevel::vacantLot, HouseLevel::greatPalace );
   bool mayUpgrade = false;
 
   switch( nextLevel )
@@ -612,6 +617,7 @@ void House::_levelUp()
   case HouseLevel::hovel:
     _d->desirability.base = -3;
     _d->desirability.step = 1;
+    mayUpgrade = true;
   break;
 
   case HouseLevel::tent:        mayUpgrade = _tryEvolve_1_to_12_lvl( HouseLevel::hovel, HouseLevel::maxSize2, -3); break;
@@ -705,10 +711,10 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
 
 void House::_levelDown()
 {
-  if( _d->houseLevel <= HouseLevel::hovel )
+  if( _d->houseLevel <= HouseLevel::vacantLot )
     return;
 
-  _d->houseLevel = math::clamp<int>( _d->houseLevel-1, HouseLevel::hovel, 0xff );
+  _d->houseLevel = math::clamp<int>( _d->houseLevel-1, HouseLevel::vacantLot, 0xff );
 
   if( _d->houseLevel == HouseLevel::beatyfullInsula )
   {
@@ -735,6 +741,13 @@ void House::_levelDown()
 
   switch (_d->houseLevel)
   {
+  case HouseLevel::vacantLot:
+  {
+    city::Helper helper( _city() );
+    helper.updateDesirability( this, city::Helper::offDesirability );
+  }
+  break;
+
   case HouseLevel::hovel:
   {
     Tilemap& tmap = _city()->tilemap();
@@ -981,28 +994,22 @@ double House::state( ParameterType param) const
 
 void House::_update( bool needChangeTexture )
 {
-  const bool emptyHouse = ( HouseLevel::vacantLot == _d->hid );
-
-  _d->hid = ( _d->houseLevel == HouseLevel::hovel && _d->habitants.count() == 0 )
-                                             ? HouseLevel::vacantLot
-                                             : (HouseLevel::ID)_d->houseLevel;
-
-  if( emptyHouse && _d->hid != HouseLevel::vacantLot )
-  {
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::onDesirability );
-  }
-
-  Picture pic = HouseSpecHelper::instance().getPicture( _d->hid, size().width() );
+  Picture pic = HouseSpecHelper::instance().getPicture( _d->houseLevel, size().width() );
   if( needChangeTexture )
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "House: failed change texture for size %d", size().width() );
+      Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
       pic = Picture::getInvalid();
     }
     setPicture( pic );
   }
+
+  bool lastFlat = _d->isFlat;
+
+  _d->isFlat = picture().height() <= ( TileHelper::baseSize().height() * size().width() );
+  if( lastFlat != _d->isFlat && _city().isValid() )
+    _city()->setOption( PlayerCity::updateTiles, true );
 
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->initGoodStore( size().area() );
@@ -1012,14 +1019,21 @@ int House::roadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
-  bool needUpdate = _d->hid <= HouseLevel::hovel;
-
   int peoplesCount = math::max(_d->maxHabitants - _d->habitants.count(), 0u);
   CitizenGroup newState = _d->habitants;
   newState += habitants.retrieve( peoplesCount );
 
   _updateHabitants( newState );
-  _update( needUpdate );
+
+  if( _d->houseLevel == HouseLevel::vacantLot )
+  {
+    _d->houseLevel = HouseLevel::hovel;
+    _d->spec = _d->spec.next();
+    _update( true );
+
+    city::Helper helper( _city() );
+    helper.updateDesirability( this, city::Helper::onDesirability );
+  }
 }
 
 CitizenGroup House::remHabitants(int count)
@@ -1100,7 +1114,6 @@ void House::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D(stream, _d, poverity)
   VARIANT_SAVE_ANY_D(stream, _d, money)
   VARIANT_SAVE_ANY_D(stream, _d, tax)
-  VARIANT_SAVE_ANY_D(stream, _d, hid)
 
   VariantList vl_services;
   foreach( mapItem, _d->services )
@@ -1128,7 +1141,6 @@ void House::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D(_d,poverity, stream)
   VARIANT_LOAD_ANY_D(_d,money, stream)
   VARIANT_LOAD_ANY_D(_d,tax, stream )
-  VARIANT_LOAD_ANY_D(_d,hid, stream )
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
@@ -1273,7 +1285,7 @@ void House::appendMoney(float money) {  _d->money += money; }
 DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::evolveInfo() const{  return _d->evolveInfo;}
 bool House::isWalkable() const{  return size().width() == 1; }
-bool House::isFlat() const { return _d->hid == HouseLevel::vacantLot; }
+bool House::isFlat() const { return _d->isFlat; }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
 GoodStore& House::goodStore(){   return _d->goodStore;}
 const HouseSpecification& House::spec() const{   return _d->spec; }

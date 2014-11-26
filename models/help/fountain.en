@@ -1,0 +1,15 @@
+{  
+ title : "##fountain##"
+ sound : "fanfare"
+ text  : "Housing requires fountain access if it is to evolve much beyond tents. When you are building a new fountain, the green image attached to your mouse pointer shows water when you are over an area with pipe access, but looks empty if the fountain won't have a water supply. @Fountains& with pipe access from a @reservoir& distribute water over a medium-sized radius. To see a fountain's area of supply, select the @Water Overlay& and look for the dark blue patch. Only housing needs fountain access, and multiple fountains serving the same homes provide no additional benefit. There is no reason to overlap fountain coverage.\n Fountains do not need road access or employees, but do increase the overall labor requirement for your @water supply&. Click @here& to learn about the history of fountains in the Roman Empire."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

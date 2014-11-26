@@ -25,6 +25,7 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
+#include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
 
 using namespace gfx;
@@ -33,6 +34,9 @@ class Prefecture::Impl
 {
 public:
   TilePos fireDetect;
+
+public:
+  TilePos checkFireDetect(PlayerCityPtr city , const TilePos& pos);
 };
 
 Prefecture::Prefecture()
@@ -59,7 +63,8 @@ void Prefecture::deliverService()
 {
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
-    bool fireDetect = _d->fireDetect.i() >= 0;
+    TilePos fireDetectPos = _d->checkFireDetect( _city(), pos() );
+    bool fireDetect = fireDetectPos.i() >= 0;
     PrefectPtr prefect = Prefect::create( _city() );
     prefect->setMaxDistance( walkerDistance() );
 
@@ -93,5 +98,30 @@ void Prefecture::deliverService()
 }
 
 unsigned int Prefecture::walkerDistance() const { return 26; }
+void Prefecture::fireDetect( const TilePos& pos ){ _d->fireDetect = pos; }
 
-void Prefecture::fireDetect( const TilePos& pos ) {  _d->fireDetect = pos; }
+TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& pos )
+{
+  if( fireDetect.i() >= 0 )
+    return fireDetect;
+
+  city::FirePtr fire;
+  fire << city->findService( city::Fire::defaultName() );
+
+  fireDetect = TilePos( -1, -1 );
+  if( city.isValid() )
+  {
+    int minDistance = 9999;
+    foreach ( it, fire->locations() )
+    {
+      int currentDistance = pos.distanceFrom( *it );
+      if( currentDistance < minDistance )
+      {
+        minDistance = currentDistance;
+        fireDetect = *it;
+      }
+    }
+  }
+
+  return fireDetect;
+}

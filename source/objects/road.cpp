@@ -53,16 +53,13 @@ bool Road::build( PlayerCityPtr city, const TilePos& pos )
 
   if( is_kind_of<Aqueduct>( overlay ) )
   {
-    if( overlay->tile().getFlag( Tile::tlRoad ) )
-      return false;
+    AqueductPtr aq = ptr_cast<Aqueduct>( overlay );
+    aq->addRoad();
+
+    return false;
   }
 
   Construction::build( city, pos );
-
-  if( is_kind_of<Aqueduct>( overlay ) )
-  {
-    overlay->build( city, pos );
-  }
 
   return true;
 }
@@ -126,8 +123,8 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
   if( city.isValid() )
   {
     int mapBorder = city->tilemap().size()-1;
-    if( p.i() == 0 ) { directionFlags |= road2east; }
-    if( p.i() == mapBorder ) { directionFlags |= road2west; }
+    if( p.i() == 0 ) { directionFlags |= road2west; }
+    if( p.i() == mapBorder ) { directionFlags |= road2east; }
     if( p.j() == 0 ) { directionFlags |= road2south; }
     if( p.j() == mapBorder ) { directionFlags |= road2north; }
   }
@@ -235,13 +232,13 @@ void Road::save(VariantMap& stream) const
 {
   Construction::save( stream );
 
-  stream[ "paved" ] = _paved;
+  VARIANT_SAVE_ANY( stream, _paved )
 }
 
 void Road::load(const VariantMap& stream)
 {
   Construction::load( stream );
-  _paved  = (int)stream.get( "paved", 0 );
+  VARIANT_LOAD_ANY( _paved, stream )
 
   updatePicture();
 }

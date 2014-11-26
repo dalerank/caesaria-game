@@ -39,6 +39,7 @@ public:
   int needProsperity() const;
   int needFavour() const;
   int needPeace() const;
+  const DateTime& finishDate() const;
   std::string shortDesc() const;
   std::string nextMission() const;
   std::string newTitle() const;
@@ -46,9 +47,14 @@ public:
   int needPopulation() const;
   const StringArray& overview() const;
 
+  void addReignYears( int value );
+  void decreaseReignYear();
+
   bool isSuccess( int culture, int prosperity,
                   int favour, int peace,
                   int population ) const;
+
+  bool isSuccess() const;
 
   void load( const VariantMap& stream );
   VariantMap save() const;

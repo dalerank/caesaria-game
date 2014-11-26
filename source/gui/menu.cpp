@@ -444,15 +444,17 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   
   _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip##") );
   _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
-  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##northBtnTooltip##") );
+  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##reorient_map_to_north##") );
   _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
-  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotateLeftBtnTooltip##") );
+  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotate_map_counter-clockwise##") );
   _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
-  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotateRightBtnTooltip##") );
+  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotate_map_clockwise##") );
   _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
   _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip##") );
   _d->cancelButton->setGeometry( Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
+  _d->cancelButton->setEnabled( false );
+
   _d->messageButton = _addButton( 115, false, 0, -1, false, -1, _("##messageBtnTooltip##") );
   _d->messageButton->setGeometry( Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip##") );
@@ -511,9 +513,9 @@ Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSe
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }
 Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
 Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked(); }
-Signal0<>&ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
-Signal0<>&ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
-Signal0<>&ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
+Signal0<>& ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
+Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
+Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
 void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}

@@ -30,10 +30,14 @@ public:
 
   static std::string getTypename( constants::walker::Type type );
   static constants::walker::Type getType( const std::string& name );
-  static std::string getPrettyTypeName( constants::walker::Type type );
+  static std::string getPrettyTypename( constants::walker::Type type );
+  static std::string getNationName( constants::walker::Nation type );
+  static constants::walker::Nation getNation( const std::string& name );
   static gfx::Picture getBigPicture( constants::walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const constants::walker::Type type );
+  static bool isHuman( WalkerPtr wlk );
+  static bool isAnimal( WalkerPtr wlk );
 
   void load( const vfs::Path& filename );
 
@@ -43,6 +47,34 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class WalkerRelations
+{
+public:
+  typedef enum { enemy=-1, neitral=0, friendt=1 } Relation;
+  static WalkerRelations& instance();
+
+  static void addFriend( constants::walker::Type who, constants::walker::Type friendType );
+  static void remFriend( constants::walker::Type who, constants::walker::Type friendType );
+  static void addFriend( constants::walker::Nation who, constants::walker::Nation friendType );
+  static void addEnemy( constants::walker::Type who, constants::walker::Type enemyType );
+  static void addEnemy( constants::walker::Nation who, constants::walker::Nation enemyType );
+  static bool isNeutral( constants::walker::Type a, constants::walker::Type b );
+  static bool isNeutral( constants::walker::Nation a, constants::walker::Nation b);
+
+  void load( vfs::Path path );
+  void load( const VariantMap& stream );
+
+  void clear();
+
+  VariantMap save() const;
+
+private:
+  WalkerRelations();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 template< class Wlk >

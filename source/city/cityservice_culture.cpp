@@ -63,6 +63,7 @@ public:
   float libraryCoverage;
   float schoolCoverage;
   float collegeCoverage;
+  float hippodromeCoverage;
   int religionPoints;
   int theatresPoints;
   int libraryPoints;
@@ -84,22 +85,22 @@ public:
   }
 };
 
-SrvcPtr CultureRating::create()
+SrvcPtr CultureRating::create( PlayerCityPtr city )
 {
-  SrvcPtr ret( new CultureRating() );
+  SrvcPtr ret( new CultureRating( city ) );
   ret->drop();
 
   return ret;
 }
 
-CultureRating::CultureRating()
-  : Srvc( defaultName() ), _d( new Impl )
+CultureRating::CultureRating( PlayerCityPtr city )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->culture = 0;
 }
 
-void CultureRating::timeStep( PlayerCityPtr city, const unsigned int time )
+void CultureRating::timeStep(const unsigned int time )
 {
   if( !GameDate::isMonthChanged() )
     return;
@@ -112,9 +113,9 @@ void CultureRating::timeStep( PlayerCityPtr city, const unsigned int time )
     _d->libraryVisitors = 0;
     _d->schoolVisitors = 0;
     _d->collegeVisitors = 0;
-    int cityPopulation = city->population();
+    int cityPopulation = _city()->population();
 
-    Helper helper( city );
+    Helper helper( _city() );
 
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( temple, temples )
@@ -132,7 +133,6 @@ void CultureRating::timeStep( PlayerCityPtr city, const unsigned int time )
     }
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
-
 
     LibraryList libraries = helper.find<Library>( building::library );
     foreach( library, libraries )
@@ -159,7 +159,7 @@ void CultureRating::timeStep( PlayerCityPtr city, const unsigned int time )
     _d->collegePoints = _d->convCoverage2Points( academiesPoints, _d->collegeCoverage );
 
     _d->culture = ( _d->culture + _d->religionPoints + _d->theatresPoints + 
-                    _d->libraryPoints + _d->schoolPoints + _d->collegePoints ) / 2;
+                    _d->libraryPoints + _d->schoolPoints + _d->collegePoints ) / 2;    
   }
 }
 

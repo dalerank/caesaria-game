@@ -38,6 +38,9 @@ public:
   virtual FortPtr base() const;
   virtual void load(const VariantMap &stream);
 
+  virtual std::string thoughts(Thought th) const;
+  virtual TilePos places(Place type) const;
+
   virtual ~RomeSoldier();
 
 protected:

@@ -53,6 +53,7 @@
 #include "game/settings.hpp"
 #include "image.hpp"
 #include "game/gamedate.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -63,7 +64,7 @@ namespace gui
 namespace infobox
 {
 
-AboutHouse::AboutHouse( Widget* parent, const Tile& tile )
+AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
@@ -223,6 +224,11 @@ bool AboutHouse::onEvent(const NEvent& event)
   }
 
   return Simple::onEvent( event );
+}
+
+void AboutHouse::showDescription()
+{
+  DictionaryWindow::show( this, "house" );
 }
 
 }

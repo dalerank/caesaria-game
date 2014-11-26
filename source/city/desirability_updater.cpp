@@ -43,9 +43,9 @@ public:
   void update(PlayerCityPtr city, bool positive );
 };
 
-SrvcPtr DesirabilityUpdater::create()
+SrvcPtr DesirabilityUpdater::create( PlayerCityPtr city )
 {
-  DesirabilityUpdater* e = new DesirabilityUpdater();
+  DesirabilityUpdater* e = new DesirabilityUpdater( city );
 
   SrvcPtr ret( e );
   ret->drop();
@@ -53,7 +53,7 @@ SrvcPtr DesirabilityUpdater::create()
   return ret;
 }
 
-void DesirabilityUpdater::timeStep( PlayerCityPtr city, const unsigned int time)
+void DesirabilityUpdater::timeStep( const unsigned int time )
 {
   if( GameDate::isMonthChanged() )
   {
@@ -62,7 +62,7 @@ void DesirabilityUpdater::timeStep( PlayerCityPtr city, const unsigned int time)
     if( !_d->alsoInfluence )
     {      
       _d->alsoInfluence = true;
-      _d->update( city, true );
+      _d->update( _city(), true );
     }
   }
 }
@@ -89,8 +89,8 @@ VariantMap DesirabilityUpdater::save() const
   return ret;
 }
 
-DesirabilityUpdater::DesirabilityUpdater()
-  : Srvc( DesirabilityUpdater::defaultName() ), _d( new Impl )
+DesirabilityUpdater::DesirabilityUpdater(PlayerCityPtr city)
+  : Srvc( city, DesirabilityUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
   _d->alsoInfluence = false;

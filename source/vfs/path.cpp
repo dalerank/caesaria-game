@@ -130,7 +130,7 @@ Path Path::removeBeginSlash() const
   if( pathTo.empty() )
       return Path( "" ); 
 
-  wchar_t endsym = *pathTo.begin();
+  char endsym = *pathTo.begin();
   if( endsym == '/' || endsym == '\\' )
       pathTo.erase( 0, 1 );
 
@@ -180,7 +180,7 @@ bool Path::isFolder() const
 
 bool Path::isDirectoryEntry() const
 {
-  const std::string& bn = baseName().toString();
+  std::string bn = baseName().toString();
   return (bn == firstEntry || bn == secondEntry);
 }
 

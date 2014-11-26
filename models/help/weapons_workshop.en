@@ -1,0 +1,13 @@
+{  
+ title : "##weapons_workshop##"
+ sound : "fanfare"
+ text  : "Armorers forge iron from your @ron mines& into weapons here.\n One iron mine can fully supply two weapons workshops with iron. Like most industries, weapons workshops are undesirable neighbors for housing. Workshops need a nearby labor source, and road access to a @warehouse& and to the iron mine that supplies them. Workers take finished weapons to the @barracks& if it needs weapons to equip legionaries, or to a @warehouse if the barracks is full. You may export them if you have an appropriate @trade route&.\n Sometimes you may not be able to mine iron in your province, but you may be able to import it. It is usually far cheaper to import iron and build workshops to turn it into weapons, than to import the weapons themselves. Weapons are usually very profitable exports.\n You cannot garrison @forts& with legionaries until you have weapons, whether locally produced or imported. Auxiliaries provide their own weapons.\n Weapon workshops are animated while working. Right-click on a workshop to see its status, particularly if you notice that activity has stopped. Follow these links to read more about @52peace&and&war or @defensive works&.\n To read more about Roman weaponry, click @here&."
+ uri : {
+  "olive farms" : "olive_farms"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "festivals" : "festival"
+  "housing" : "house"
+  "here" : "http://wikipedia.ru"
+ }
+}

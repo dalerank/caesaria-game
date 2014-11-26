@@ -1,0 +1,15 @@
+{  
+ title : "##reservoir##"
+ sound : "fanfare"
+ text  : "Reservoirs are the foundation of your city's @water supply&. They must adjacent to a river or coast, or be linked by an @aqueduct& to another reservoir that is properly supplied. When you move your cursor over a location that supplies water, the green image attached to the cursor appears full of water.\n Reservoirs supply pipe access over a large radius. @Fountains& and @bathhouses& both need access to these pipes in order to function. When you build a new reservoir, and it has a water supply and laborers allocated to water, choose the @Water Overlay& to view its pipe network. Reservoirs are among the few buildings that don't need road access or workers. Reservoirs are very undesirable neighbors. Click @here& to read about the history of reservoirs in the Roman Empire."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

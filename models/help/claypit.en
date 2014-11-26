@@ -1,0 +1,12 @@
+{  
+ title : "##claypit##"
+ sound : "fanfare"
+ text  : "Establish a clay pit to dig clay to export it, or so that you can manufacture @pottery&. Clay pits must be close to water.\n Like most industries, clay production makes an undesirable neighbor for housing. Clay pits need a nearby source of labor, and road access to their customers. When they have a full cartload of clay, @workers cart& it to the nearest pottery workshop that has space available. If all workshops are fully supplied, or if they are not working, clay goes to the nearest @warehouse& with empty space, from which you may export it if you have an appropriate @trade route&. Clay pits are animated while working. Right-click on a pit to check its status, especially if you notice that activity has ceased.\n Pottery is one of the commodities your own citizens need to advance to higher levels of housing.\n Click @here& to read further about clay digging in the Roman Empire."
+ uri : {
+  "pottery" : "pottery"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "workers cart" : "cart_pusher"
+  "here" : "http://wikipedia.ru"
+ }
+}

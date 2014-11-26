@@ -21,6 +21,8 @@
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/animation_bank.hpp"
+#include "city/trade_options.hpp"
+#include "city/city.hpp"
 #include "core/logger.hpp"
 #include <vector>
 
@@ -161,6 +163,23 @@ Good::Type GoodHelper::getType( const std::string& name )
 std::string GoodHelper::getTypeName( Good::Type type )
 {
   return getInstance()._d->findName( type );
+}
+
+float GoodHelper::convQty2Units(int qty)
+{
+  return qty / 100.f;
+}
+
+float GoodHelper::exportPrice(PlayerCityPtr city, Good::Type gtype, int qty)
+{
+  int price = city->tradeOptions().buyPrice( gtype );
+  return price * GoodHelper::convQty2Units( qty );
+}
+
+float GoodHelper::importPrice(PlayerCityPtr city, Good::Type gtype, int qty)
+{
+  int price = city->tradeOptions().sellPrice( gtype );
+  return price * GoodHelper::convQty2Units( qty );
 }
 
 Picture GoodHelper::getCartPicture(const GoodStock& stock, constants::Direction direction)

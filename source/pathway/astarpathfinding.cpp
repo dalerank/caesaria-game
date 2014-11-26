@@ -40,9 +40,9 @@ public:
   class Grid : std::vector< AStarPoint* >
   {
   public:
-    inline size_type hash( const TilePos& pos ) { return pos.j() * _size.width() + pos.i(); }
+    inline size_type hash( const TilePos& pos ) const { return pos.j() * _size.width() + pos.i(); }
     
-    AStarPoint* operator[](const TilePos& pos )
+    AStarPoint* operator[](const TilePos& pos ) const
     {
       return *(begin() + hash( pos ));
     }
@@ -73,7 +73,7 @@ public:
 
   bool getTraversingPoints(TilePos start, TilePos stop, Pathway& oPathWay );
 
-  AStarPoint* at( const TilePos& pos )
+  AStarPoint* at( const TilePos& pos ) const
   {
     if( isValid( pos ) )
     {
@@ -86,13 +86,13 @@ public:
     }
   }
 
-  const Tile* tile( const TilePos& pos )
+  const Tile* tile( const TilePos& pos ) const
   {
     AStarPoint* ap = at( pos );
-    return ap ? ap->tile : NULL;
+    return ap ? ap->tile : 0;
   }
 
-  bool isValid( const TilePos& pos )
+  bool isValid( const TilePos& pos ) const
   {
     return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < grid._size.width() && pos.j() < grid._size.height() );
   }
@@ -228,7 +228,14 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     return false;
   }  
 
-  oPathWay.init( *tile( startPos ) );
+  AStarPoint* ap = at( startPos );
+  if( !ap || !ap->tile )
+  {
+    Logger::warning( "AStarPathfinder: wrong start pos at %d,%d", startPos.i(), startPos.j()  );
+    return false;
+  }
+
+  oPathWay.init( *(ap->tile) );
 
   foreach( tile, arrivedArea )
   {
@@ -274,6 +281,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
 
   while( n == 0 || ( !_inArea( endPoints, current ) && n < maxLoopCount ))
   {
+    n++;
     // Look for the smallest F value in the openList and make it the current point
     foreach( point, openList)
     {
@@ -368,8 +376,6 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
         }
       }
     }
-
-    n++;
   }
 
   // Reset

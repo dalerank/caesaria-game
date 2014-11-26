@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_MUGGER_H_INCLUDE_
 #define __CAESARIA_MUGGER_H_INCLUDE_
 
-#include "walker.hpp"
+#include "human.hpp"
 
-class Mugger : public Walker
+class Mugger : public Human
 {
 public:
   static MuggerPtr create( PlayerCityPtr city );
@@ -38,7 +38,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
-  virtual void _updateThinks();
+  virtual void _updateThoughts();
 
 private:
   Mugger( PlayerCityPtr city );

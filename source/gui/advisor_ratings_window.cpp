@@ -36,6 +36,7 @@
 #include "widget_helper.hpp"
 #include "world/emperor.hpp"
 #include "city/funds.hpp"
+#include "city/cityservice_peace.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
 #include "city/cityservice_info.hpp"
@@ -160,10 +161,7 @@ void Ratings::Impl::checkCultureRating()
       }
     }
 
-    if( !troubles.empty() )
-    {
-      lbRatingInfo->setText( _( troubles.random() ) );
-    }
+    lbRatingInfo->setText( _( troubles.random() ) );
   }
 }
 
@@ -229,22 +227,38 @@ void Ratings::Impl::checkPeaceRating()
   {
     unsigned int peace = city->peace();
 
-    if( ml->monthFromLastAttack() < 36 )
+    bool cityUnderRomeAttack = ml->haveNotification( city::Military::Notification::chastener );
+    bool cityUnderBarbarianAttack = ml->haveNotification( city::Military::Notification::barbarian );
+
+    if( cityUnderBarbarianAttack || cityUnderRomeAttack )
     {
-      advices << "##province_has_peace_a_short_time##";
+      if( cityUnderRomeAttack ) { advices << "##city_under_rome_attack##"; }
+      if( cityUnderBarbarianAttack ) { advices << "##city_under_barbarian_attack##"; }
     }
+    else
+    {
+      if( ml->monthFromLastAttack() < 36 )
+      {
+        advices << "##province_has_peace_a_short_time##";
+      }
 
-    if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
-    else if(peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
-    else if(peace > 70 ) { advices << "##its_very_peacefull_province##"; }
-    else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
-
-    std::string text = advices.empty()
-                        ? "##peace_rating_text##"
-                        : advices.random();
-
-    lbRatingInfo->setText( _(text) );
+      if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+      else if( peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+      else if( peace > 70 ) { advices << "##its_very_peacefull_province##"; }
+      else if( peace > 60 ) { advices << "##this_province_feels_peaceful##"; }
+      else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+    }
   }
+
+  city::PeacePtr peaceRt;
+  peaceRt << city->findService( city::Peace::defaultName() );
+  if( peaceRt.isValid() )
+  {
+    advices << peaceRt->reason();
+  }
+
+  if( advices.empty() ) { advices << "##peace_rating_text##"; }
+  lbRatingInfo->setText( _(advices.random()) );
 }
 
 void Ratings::Impl::checkFavourRating()
@@ -292,11 +306,9 @@ void Ratings::Impl::checkFavourRating()
     }
   }
 
-  std::string text = problems.empty()
-                      ? _("##no_favour_problem##")
-                      : problems.random();
+  if( problems.empty() ) { problems << "##no_favour_problem##"; }
 
-  lbRatingInfo->setText( _(text) );
+  lbRatingInfo->setText( _(problems.random()) );
 }
 
 Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )

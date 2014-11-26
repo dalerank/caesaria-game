@@ -20,10 +20,14 @@
 #include "core/stringhelper.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
+#include "core/saveadapter.hpp"
+#include "dictionary_text.hpp"
 #include "core/logger.hpp"
 #include "objects/metadata.hpp"
 #include "core/event.hpp"
 #include "widget_helper.hpp"
+#include "core/gettext.hpp"
+#include "environment.hpp"
 
 using namespace gfx;
 
@@ -34,21 +38,48 @@ class DictionaryWindow::Impl
 {
 public:
   Label* lbTitle;
-  Label* lbText;
+  DictionaryText* lbText;
   TexturedButton* btnExit;
+
+  typedef std::map<std::string,std::string> Aliases;
+  Aliases aliases;
 };
 
-DictionaryWindow::DictionaryWindow( Widget* parent )
-  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
+DictionaryWindow::DictionaryWindow( Widget* p )
+  : Window( p->ui()->rootWidget(), Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/dictionary.gui" );
 
-  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
+  setPosition( Point( parent()->width() - width(), parent()->height() - height() ) / 2 );
 
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
-  GET_DWIDGET_FROM_UI( _d, lbText )
+  _d->lbText = new DictionaryText( this, Rect( 20, 40, width() - 20, height() - 40 ) );
+  _d->lbText->setFont( Font::create( FONT_1 ) );
 
-  CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater );
+  CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )
+  CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
+}
+
+void DictionaryWindow::_handleUriChange(std::string value)
+{
+  Impl::Aliases::iterator it = _d->aliases.find( value );
+
+  value = (it != _d->aliases.end()
+            ? it->second
+            : "table_content");
+
+  load( value );
+}
+
+vfs::Path DictionaryWindow::_convUri2path(std::string uri)
+{
+  vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
+
+  if( !fpath.exist() )
+    fpath = fpath.changeExtension( ".en" );
+
+  return fpath;
 }
 
 void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
@@ -56,7 +87,16 @@ void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
   DictionaryWindow* wnd = new DictionaryWindow( parent );
   if( wnd->_d->lbText )
   {
-    wnd->_d->lbText->setText( MetaDataHolder::findDescription( type ) );
+    wnd->load( MetaDataHolder::findTypename( type ) );
+  }
+}
+
+void DictionaryWindow::show(Widget* parent, const std::string& uri)
+{
+  DictionaryWindow* wnd = new DictionaryWindow( parent );
+  if( wnd->_d->lbText )
+  {
+    wnd->load( uri );
   }
 }
 
@@ -83,6 +123,26 @@ bool DictionaryWindow::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
+void DictionaryWindow::load(const std::string& uri)
+{
+  vfs::Path filePath = _convUri2path( uri );
+
+  VariantMap vm = SaveAdapter::load( filePath );
+
+  std::string text = vm.get( "text" ).toString();
+  std::string title = vm.get( "title" ).toString();
+
+  _d->aliases.clear();
+  VariantMap uris = vm.get( "uri" ).toMap();
+  foreach( it, uris )
+  {
+    _d->aliases[ it->first ] = it->second.toString();
+  }
+
+  _d->lbTitle->setText( _(title) );
+  _d->lbText->setText( text );
 }
 
 }//end namespace gui

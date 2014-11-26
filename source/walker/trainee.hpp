@@ -18,12 +18,12 @@
 #ifndef __CAESARIA_TRAINEEWALKER_H_INCLUDED__
 #define __CAESARIA_TRAINEEWALKER_H_INCLUDED__
 
-#include "walker.hpp"
+#include "human.hpp"
 
 class Propagator;
 
 /** This walker goes to work */
-class TraineeWalker : public Walker
+class TraineeWalker : public Human
 {
 public:
   static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
@@ -35,6 +35,8 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
+
+  virtual TilePos places(Place type) const;
 
   virtual ~TraineeWalker();
 protected:

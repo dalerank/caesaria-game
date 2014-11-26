@@ -26,6 +26,7 @@
 #include "objects/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 #include "game/enums.hpp"
+#include "game/service.hpp"
 #include <set>
 
 namespace city
@@ -55,8 +56,11 @@ public:
   static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
   static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );
-  static GoodsMap getGoodsMap( PlayerCityPtr city );
+  static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
   static float getBalanceKoeff( PlayerCityPtr city );
+  static int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
+  static bool canImport( PlayerCityPtr city, Good::Type type );
+  static bool canProduce( PlayerCityPtr city, Good::Type type );
 };
 
 }//end namespace city

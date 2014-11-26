@@ -43,8 +43,8 @@ namespace gfx
 class Layer::Impl
 {
 public:
-  typedef std::vector<Tile*> TileQueue;
-  typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
+  //typedef std::vector<Tile*> TileQueue;
+  //typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
 
   Point lastCursorPos;
   Point startCursorPos;
@@ -56,21 +56,19 @@ public:
   PictureRef tooltipPic;
   int nextLayer;
   std::string tooltipText;
-  RenderQueue renderQueue;
+  //RenderQueue renderQueue;
   Layer::WalkerTypes vwalkers;
+  PictureRef tilePosText;
+  Font debugFont;
 
   int posMode;
-
-  Picture footColumn;
-  Picture bodyColumn;
-  Picture headerColumn;
 public:
   void updateOutlineTexture( Tile* tile );
 };
 
 void Layer::registerTileForRendering(Tile& tile)
 {
-  __D_IMPL(_d,Layer)
+  /*__D_IMPL(_d,Layer)
   if( tile.rov() != 0 )
   {
     Renderer::PassQueue passQueue = tile.rov()->passQueue();
@@ -78,10 +76,10 @@ void Layer::registerTileForRendering(Tile& tile)
     {
       _d->renderQueue[ *pass ].push_back( &tile );
     }
-  }
+  }*/
 }
 
-void Layer::renderPass( Engine& engine, Renderer::Pass pass )
+/*void Layer::renderPass( Engine& engine, Renderer::Pass pass )
 {
   // building foregrounds and animations
   __D_IMPL(_d,Layer)
@@ -93,9 +91,16 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   }
 
   tiles.clear();
-}
+}*/
 
-void Layer::renderUi(Engine& engine) {  }
+void Layer::renderUi(Engine& engine)
+{
+  __D_IMPL(_d,Layer)
+  if( !_d->tooltipText.empty() )
+  {
+    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
+  }
+}
 
 void Layer::handleEvent(NEvent& event)
 {
@@ -164,8 +169,19 @@ void Layer::handleEvent(NEvent& event)
     break;
     }
   }
+  else if( event.EventType == sAppEvent )
+  {
+    switch( event.app.type )
+    {
+    case appWindowFocusEnter:
+    case appWindowFocusLeave:
+      LayerDrawOptions::instance().setFlag( LayerDrawOptions::windowActive, event.app.type == appWindowFocusEnter );
+    break;
 
-  if( event.EventType == sEventKeyboard )
+    default: break;
+    }
+  }
+  else if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
     int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
@@ -174,25 +190,12 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.keyboard.key )
     {
-    case KEY_UP:    case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
-    case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
-    case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
+    case KEY_UP:    /*case KEY_KEY_W:*/ _d->camera->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  /*case KEY_KEY_S:*/ _d->camera->moveDown ( moveValue ); break;
+    case KEY_RIGHT: /*case KEY_KEY_D:*/ _d->camera->moveRight( moveValue ); break;
+    case KEY_LEFT:  /*case KEY_KEY_A:*/ _d->camera->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
     default: break;
-    }
-
-    if( event.keyboard.control && event.keyboard.shift && event.keyboard.pressed )
-    {
-      LayerDrawOptions& opts = LayerDrawOptions::instance();
-      switch( event.keyboard.key )
-      {
-      case KEY_KEY_1: opts.toggle( LayerDrawOptions::drawGrid ); break;
-      case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
-      case KEY_KEY_3: opts.toggle( LayerDrawOptions::shadowOverlay ); break;
-      case KEY_KEY_4: opts.toggle( LayerDrawOptions::showPath ); break;
-      default: break;
-      }
     }
   }
 }
@@ -252,20 +255,6 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   }
 }
 
-/*WalkerList Layer::_getVisibleWalkerList(const WalkerTypes& aw, const TilePos& pos)
-{
-  Layer::WalkerTypes vWalkers = visibleWalkers();
-
-  WalkerList walkerList;
-  foreach( wtAct, vWalkers )
-  {
-    const WalkerList& foundWalker = _city()->walkers( pos );
-    walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
-  }
-
-  return walkerList;
-}*/
-
 void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
@@ -287,13 +276,13 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
 void Layer::_setTooltipText(const std::string& text)
 {
   __D_IMPL(_d,Layer)
-  if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
+  if( _d->tooltipText != text )
   {
     Font font = Font::create( FONT_2 );
     _d->tooltipText = text;
     Size size = font.getTextSize( text );
 
-    if( _d->tooltipPic->size() != size )
+    if( _d->tooltipPic.isNull() || (_d->tooltipPic->size() != size) )
     {
       _d->tooltipPic.reset( Picture::create( size, 0, true ) );
     }
@@ -333,25 +322,39 @@ void Layer::render( Engine& engine)
     tile = *it;
     int z = tile->epos().z();
 
-    drawTileR( engine, *tile, camOffset, z, false );
+    drawProminentTile( engine, *tile, camOffset, z, false );
     drawWalkers( engine, *tile, camOffset );
-    drawTileW( engine, *tile, camOffset, z );
+    drawWalkerOverlap( engine, *tile, camOffset, z );
   }
 
   engine.resetColorMask();
 
   if( opts.isFlag( LayerDrawOptions::showPath ) )
   {
+    WalkerList overDrawWalkers;
+
     const WalkerList& walkers = _city()->walkers( walker::all );
     foreach( it, walkers )
     {
-      if( (*it)->getFlag( Walker::showDebugInfo ) )
-        WalkerDebugInfo::showPath( *it, engine, _d->camera );
+      if( (*it)->getFlag( Walker::showPath ) )
+      {
+        overDrawWalkers << *it;
+      }
+      else
+      {
+        if( (*it)->getFlag( Walker::showDebugInfo ) )
+          WalkerDebugInfo::showPath( *it, engine, _d->camera );
+      }
+    }
+
+    foreach ( it, overDrawWalkers )
+    {
+      WalkerDebugInfo::showPath( *it, engine, _d->camera, DefaultColors::yellow );
     }
   }
 }
 
-void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)
+void Layer::drawWalkerOverlap( Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
   Tile* master = tile.masterTile();
 
@@ -366,7 +369,7 @@ const Layer::WalkerTypes& Layer::visibleTypes() const
   return _dfunc()->vwalkers;
 }
 
-void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
@@ -402,7 +405,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
       registerTileForRendering( tile );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }
+    }       
   }
 }
 
@@ -425,48 +428,6 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   }
 }
 
-void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
-{
-  __D_IMPL(_d,Layer)
-  // Column made of tree base parts and contains maximum 10 parts.
-  // Header (10)
-  // Body (10, max 8 pieces)
-  // Foot (10)
-  //
-  // In original game fire colomn may be in one of 12 (?) states: none, f, f+h, f+b+h, f+2b+h, ... f+8b+h
-
-
-  int clamped = math::clamp(percent, 0, 100);
-  int rounded = (clamped / 10) * 10;
-  // [0,  9] -> 0
-  // [10,19] -> 10
-  // ...
-  // [80,89] -> 80
-  // [90,99] -> 90
-  // [100] -> 100
-  // rounded == 0 -> nothing
-  // rounded == 10 -> header + footer
-  // rounded == 20 -> header + body + footer
-
-  if (percent == 0)
-  {
-    // Nothing to draw.
-    return;
-  }
-
-  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
-
-  if(rounded > 10)
-  {
-    for( int offsetY=7; offsetY < rounded; offsetY += 10 )
-    {
-      engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
-    }
-
-    engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
-  }
-}
-
 void Layer::init( Point cursor )
 {
   __D_IMPL(_d,Layer)
@@ -475,7 +436,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine&){}
+void Layer::beforeRender(Engine&) {}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -486,27 +447,25 @@ void Layer::afterRender( Engine& engine)
   Point moveValue;
 
   //on edge cursor moving
-  if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
-  else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
-  if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
-  else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
-
-  if( moveValue.x() != 0 || moveValue.y() != 0 )
+  LayerDrawOptions& opts = LayerDrawOptions::instance();
+  if( opts.isFlag( LayerDrawOptions::windowActive ) )
   {
-    _d->camera->move( moveValue.toPointF() );
+    if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
+    else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+    if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
+    else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+
+    if( moveValue.x() != 0 || moveValue.y() != 0 )
+    {
+      _d->camera->move( moveValue.toPointF() );
+    }
   }
 
-  if( !_d->tooltipText.empty() )
-  {
-    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
-  }  
-
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
   if( opts.isFlag( LayerDrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    
     int size = tmap.size();
-    Picture& screen = engine.screen();
+    //Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
     {
       const Tile& tile = tmap.at( 0, k );
@@ -518,7 +477,7 @@ void Layer::afterRender( Engine& engine)
       engine.drawLine( 0x80ff0000, rtile.mappos() + offset, ertile.mappos() + offset );
     }
 
-    std::string text;
+    /*std::string text;
     Font font = Font::create( FONT_0 );
     font.setColor( 0x80ffffff );
     switch( _d->posMode )
@@ -535,31 +494,87 @@ void Layer::afterRender( Engine& engine)
         }
       }
     break;
+    }*/
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showRoads ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->getFlag( Tile::tlRoad ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
     }
   }
 
-  if( _d->currentTile )
+  if( opts.isFlag( LayerDrawOptions::showWalkableTiles ) )
   {
-    Point pos = _d->currentTile->mappos();
-    int size = (_d->currentTile->picture().width() + 2) / 60;
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
-    TileOverlayPtr ov = _d->currentTile->overlay();
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->isWalkable( true ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showFlatTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( (*it)->isFlat() )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( opts.isFlag( LayerDrawOptions::showLockedTiles ) )
+  {
+    const Picture& grnPicture = Picture::load( "oc3_land", 2);
+
+    TilesArray tiles = _d->city->tilemap().allTiles();
+    foreach( it, tiles )
+    {
+      if( !(*it)->isWalkable( true ) )
+        engine.draw( grnPicture , offset + (*it)->mappos() );
+    }
+  }
+
+  if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
+  {
+    Tile* tile = _d->currentTile;
+    Point pos = tile->mappos();
+    Size size( (tile->picture().width() + 2) / 60 );
+
+    if( _d->tilePosText->isValid() )
+    {
+      _d->tilePosText->fill( 0x0 );
+      _d->debugFont.draw( *_d->tilePosText, StringHelper::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+    }
+
+    TileOverlayPtr ov = tile->overlay();
     if( ov.isValid() )
     {
-      size = ov->size().width();
+      size = ov->size();
       pos = ov->tile().mappos();
     }
-    else if( _d->currentTile->masterTile() != 0 )
+    else if( tile->masterTile() != 0 )
     {
-      pos = _d->currentTile->masterTile()->mappos();
-      size = (_d->currentTile->masterTile()->picture().width() + 2) / 60;
+      pos = tile->masterTile()->mappos();
+      size = (tile->masterTile()->picture().width() + 2) / 60;
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size, pos + Point( 58, 0) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size, pos + Point( 29, -15 ) * size );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size, pos );
+    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
+    engine.draw( *_d->tilePosText, pos );
   }
 }
 
@@ -569,18 +584,11 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   __D_IMPL(_d,Layer)
   _d->camera = camera;
   _d->city = city;
+  _d->debugFont = Font::create( FONT_1_WHITE );
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
-}
-
-void Layer::_loadColumnPicture(int picId)
-{
-  __D_IMPL(_d,Layer)
-  _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
-  _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
-  _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
+  _d->tilePosText.init( Size( 240, 80 ) );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)

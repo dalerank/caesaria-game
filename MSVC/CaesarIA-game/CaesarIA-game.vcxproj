@@ -190,6 +190,8 @@
       <Message>
       </Message>
       <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\FreeSerif.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\ds-greece.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
 xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
@@ -258,6 +260,8 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Message>
       </Message>
       <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\FreeSerif.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\ds-greece.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
 xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
@@ -328,6 +332,8 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x64\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Message>
       </Message>
       <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\FreeSerif.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\ds-greece.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
 xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
@@ -396,6 +402,8 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Config
       <Message>
       </Message>
       <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
+xcopy /Y ..\..\dep\FreeSerif.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
+xcopy /Y ..\..\dep\ds-greece.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
 xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
 xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\

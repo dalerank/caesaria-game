@@ -38,6 +38,7 @@ namespace gfx
 class LayerDestroy::Impl
 {
 public:
+  Picture shovelPic;
   Picture clearPic;
   PictureRef textPic;
   unsigned int money4destroy;
@@ -161,7 +162,7 @@ void LayerDestroy::render( Engine& engine )
       }
     }
 
-    drawTileR( engine, *tile, cameraOffset, z, false );
+    drawProminentTile( engine, *tile, cameraOffset, z, false );
 
     drawWalkers( engine, *tile, cameraOffset );
     engine.resetColorMask();
@@ -174,6 +175,7 @@ void LayerDestroy::render( Engine& engine )
     _d->textFont.draw( *_d->textPic, StringHelper::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
+  engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );
   engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
@@ -273,6 +275,7 @@ LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
 LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
+  _d->shovelPic = Picture::load( "shovel", 1 );
   _d->clearPic = Picture::load( "oc3_land", 2 );
   _d->textFont = Font::create( FONT_5 );
   _d->textPic.init( Size( 100, 30 ) );

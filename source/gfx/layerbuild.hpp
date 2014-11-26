@@ -33,6 +33,9 @@ public:
   virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
   virtual void render( Engine &engine);
   virtual void init(Point cursor);
+  virtual void beforeRender(Engine &engine);
+  virtual void afterRender(Engine &engine);
+  virtual const WalkerTypes& visibleTypes() const;
 
   static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
 
@@ -44,6 +47,7 @@ private:
   void _buildAll();
   void _finishBuild();
   void _drawBuildTiles( Engine& engine );
+  void _handeLayerSwitch(int layer);
 
   LayerBuild( Renderer* renderer, PlayerCityPtr city );
 

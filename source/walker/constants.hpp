@@ -24,7 +24,8 @@ namespace constants
 namespace walker
 {
 
-enum Type{
+enum Type
+{
   unknown=0,
   immigrant,
   emigrant,
@@ -88,8 +89,34 @@ enum Type{
   zebra,
   riverWave,
   supplier,
+  circusCharioter,
+  docker,
   all = 0xff,
   any = all
+};
+
+enum Nation
+{
+  unknownNation=0,
+  rome,
+  etruscan,
+  barbarian,
+  numidian,
+  pict,
+  samnite,
+  selecid,
+  carthaginian,
+  celt,
+  eygptian,
+  goth,
+  graeci,
+  judaean,
+  native,
+  visigoth,
+  gaul,
+  iberian,
+  helveti,
+  nationCount
 };
 
 } //end namespace walker

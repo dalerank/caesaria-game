@@ -28,21 +28,13 @@
 
 using namespace constants;
 
-namespace {
-CAESARIA_LITERALCONST(title)
-CAESARIA_LITERALCONST(text)
-CAESARIA_LITERALCONST(video)
-CAESARIA_LITERALCONST(good)
-CAESARIA_LITERALCONST(position)
-}
-
 namespace events
 {
 
 class ShowInfobox::Impl
 {
 public:
-  std::string title, text;
+  std::string title, text, tip;
   bool send2scribe;
   vfs::Path video;
   Point position;
@@ -87,12 +79,13 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
 
 void ShowInfobox::load(const VariantMap& stream)
 {
-  _d->title = stream.get( lc_title ).toString();
-  _d->text = stream.get( lc_text ).toString();
-  _d->gtype = GoodHelper::getType( stream.get( lc_good ).toString() );
-  _d->position = stream.get( lc_position ).toPoint();
-  _d->video = stream.get( lc_video ).toString();
-  VARIANT_LOAD_ANY_D(_d,send2scribe,stream);
+  VARIANT_LOAD_STR_D( _d, title, stream )
+  VARIANT_LOAD_STR_D( _d, text, stream )
+  VARIANT_LOAD_ANY_D( _d, position, stream )
+  VARIANT_LOAD_STR_D( _d, video, stream )
+  VARIANT_LOAD_ANY_D( _d, send2scribe, stream)
+  VARIANT_LOAD_STR_D( _d, tip, stream )
+  _d->gtype = GoodHelper::getType( stream.get( "good" ).toString() );
 }
 
 VariantMap ShowInfobox::save() const
@@ -112,7 +105,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
   if( _d->video.toString().empty() )
   {
     gui::EventMessageBox* msgWnd = new gui::EventMessageBox( game.gui()->rootWidget(), _d->title, _d->text,
-                                                             GameDate::current(), _d->gtype );
+                                                             GameDate::current(), _d->gtype, _d->tip );
     msgWnd->show();
   }
   else

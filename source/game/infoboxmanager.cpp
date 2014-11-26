@@ -49,6 +49,7 @@
 #include "gui/infobox_theater.hpp"
 #include "gui/infobox_amphitheater.hpp"
 #include "gui/infobox_fort.hpp"
+#include "gui/infobox_barracks.hpp"
 #include <map>
 
 using namespace constants;
@@ -67,7 +68,7 @@ class BaseInfoboxCreator : public InfoboxCreator
 public:
   Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    return new T( parent, city->tilemap().at( pos ) );
+    return new T( parent, city, city->tilemap().at( pos ) );
   }
 };
 
@@ -79,7 +80,7 @@ public:
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house->habitants().count() > 0 )
     {
-      return new AboutHouse( parent, city->tilemap().at( pos ) );
+      return new AboutHouse( parent, city, city->tilemap().at( pos ) );
     }
     else
     {
@@ -154,12 +155,12 @@ public:
 class Manager::Impl
 {
 public:
-    bool showDebugInfo;
+  bool showDebugInfo;
 
-    typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
-    std::map< std::string, TileOverlay::Type > name2typeMap;
+  typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
+  std::map< std::string, TileOverlay::Type > name2typeMap;
 
-    InfoboxCreators constructors;
+  InfoboxCreators constructors;
 };
 
 Manager::Manager() : _d( new Impl )
@@ -210,6 +211,7 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_middle_info##") );
   addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_big_info##") );
   addInfobox( building::nativeHut,        CAESARIA_STR_EXT(NativeHut),   new InfoboxBasicCreator( "", "##nativeHut_info##") );
+  ADD_INFOBOX( building::gatehouse,   InfoboxBasicCreator( "", "##gatehouse_info##") );
   ADD_INFOBOX( building::nativeField, InfoboxBasicCreator( "", "##nativeField_info##") );
   addInfobox( building::nativeCenter,     CAESARIA_STR_EXT(NativeCenter),   new InfoboxBasicCreator( "", "##nativeCenter_info##") );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<AboutFactory>() );
@@ -247,6 +249,8 @@ Manager::Manager() : _d( new Impl )
   ADD_INFOBOX( building::fortLegionaire,   BaseInfoboxCreator<AboutFort>() )
   ADD_INFOBOX( building::fortJavelin,   BaseInfoboxCreator<AboutFort>() )
   ADD_INFOBOX( building::fortMounted,   BaseInfoboxCreator<AboutFort>() )
+  ADD_INFOBOX( building::fortArea, BaseInfoboxCreator<AboutFort>() );
+  ADD_INFOBOX( building::barracks, BaseInfoboxCreator<AboutBarracks>() );
 }
 
 Manager::~Manager() {}

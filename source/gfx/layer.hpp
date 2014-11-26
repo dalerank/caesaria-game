@@ -35,7 +35,8 @@ namespace gfx
 class LayerDrawOptions : public FlagHolder<int>
 {
 public:
-  typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4 } Flags;
+  typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
+                 showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100 } Flags;
   static LayerDrawOptions& instance();
 
 private:
@@ -50,28 +51,27 @@ public:
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
 
-  //draw gfx before walkers
-  virtual void drawTileR(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
+  //draw gfx tprominent ile
+  virtual void drawProminentTile(Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
 
   //draw gfx active tile
   virtual void drawTile(Engine& engine, Tile& tile, const Point& offset );
 
   //draw gfx after walkers
-  virtual void drawTileW(Engine& engine, Tile& tile, const Point& offset, const int depth );
+  virtual void drawWalkerOverlap(Engine& engine, Tile& tile, const Point& offset, const int depth );
 
   virtual void handleEvent( NEvent& event );
   virtual void drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass );
   virtual void drawArea(Engine& engine, const TilesArray& area, const Point& offset,
                         const std::string& resourceGroup, int tileId );
 
-  virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
   virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
 
   virtual void beforeRender( Engine& engine);
   virtual void afterRender( Engine& engine);
   virtual void render( Engine& engine);
-  virtual void renderPass( Engine& engine, Renderer::Pass pass);
+  //virtual void renderPass( Engine& engine, Renderer::Pass pass);
   virtual void renderUi( Engine& engine );
 
   virtual void registerTileForRendering(Tile&);
@@ -81,12 +81,10 @@ public:
 protected:
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
-  //WalkerList _getVisibleWalkerList( const WalkerTypes& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
   Tile* _currentTile() const;
-  void _setTooltipText( const std::string& text );
-  void _loadColumnPicture( int picId );
+  void _setTooltipText( const std::string& text );  
   void _addWalkerType( constants::walker::Type wtype );
 
   TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );

@@ -1,0 +1,12 @@
+{  
+ title : "##colosseum##"
+ sound : "fanfare"
+ text  : "The colosseum is a very special, large amphitheater that just puts on gladiator and lion fights, with no plays at all. A colosseum needs a @gladiator school& and a lion pit to supply performers, in addition to the normal laborers that most buildings need.\n The colosseum's gladiators and lion tamers bestow access as they walk through surrounding neighborhoods. The more entertainers that pass a particular plot of housing, the higher it can evolve. Very nice neighborhoods need visits by actors, gladiators and lion tamers from a @theater&, an @amphitheater& and a colosseum. Colosseums reduce nearby property's desirability, thanks to the traffic and noise they generate.\n To see your city's overall colosseum coverage, check with your @Entertainment Advisor&; to watch a particular colosseum's performers walk the streets, choose the @Entertainment Overlay&. Right-click on a colosseum to see its status, including what games it is hosting. If its games are of short duration, the colosseum's performers probably have to walk too far to get to work.\n Click @here& to read about the historical Colosseum in Rome."
+ uri : {
+  "gladiator school" : "gladiator_school"
+  "theater" : "theater"
+  "amphitheater" : "amphitheater"
+  "Entertainment Advisor" : "entertainment_advisor"
+  "here" : "http://wikipedia.ru"
+ }
+}

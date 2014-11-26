@@ -128,14 +128,12 @@ void Army::attack(ObjectPtr obj)
     d->destination = obj->name();
     _findWay( d->base->location(), obj->location() );
 
-    if( !_way().empty() )
-    {
-      empire()->addObject( this );
-    }
-    else
+    if( _way().empty() )
     {
       Logger::warning( "Army: cannot find way from %s to %s", d->base->name().c_str(), obj->name().c_str() );
     }
+
+    attach();
   }
   else
   {
@@ -173,8 +171,10 @@ void Army::addObject(ObjectPtr obj )
 
     otherArmy->killSoldiers(attackersLoss);
     killSoldiers(selfLoss);
-  }
+    }
 }
+
+std::string Army::target() const { return _dfunc()->destination; }
 
 void Army::battle(unsigned int attackers, unsigned int defenders, int& attackersLoss, int& deffLoss )
 {

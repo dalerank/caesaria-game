@@ -36,6 +36,7 @@
 #include "game/gamedate.hpp"
 #include "city/funds.hpp"
 #include "barbarian.hpp"
+#include "events/changeemperor.hpp"
 
 namespace world
 {
@@ -46,6 +47,7 @@ public:
   CityList cities;
   Trading trading;
   EmpireMap emap;
+  ObjectList newObjects;
   ObjectList objects;
   int rateInterest;
   Emperor emperor;
@@ -61,6 +63,7 @@ public:
   void takeTaxes();
   void checkLoans();
   void checkBarbarians(EmpirePtr empire);
+  void checkEmperorChanged();
 };
 
 Empire::Empire() : _d( new Impl )
@@ -152,7 +155,16 @@ void Empire::addObject(ObjectPtr obj)
     obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );    
   }  
 
-  _d->objects.push_back( obj );
+  foreach( it, _d->objects )
+  {
+    if( *it == obj )
+    {
+      Logger::warning( "WARNING!!! Empire:addObject also have object with name " + obj->name() );
+      return;
+    }
+  }
+
+  _d->newObjects.push_back( obj );
 }
 
 CityPtr Empire::addCity( CityPtr city )
@@ -242,6 +254,7 @@ void Empire::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, objUid, _d->objUid, stream )
   VARIANT_LOAD_ANYDEF_D( _d, enabled, _d->enabled, stream )
   VARIANT_LOAD_ANYDEF_D( _d, maxBarbariansGroups, _d->maxBarbariansGroups, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, _d->workerSalary, stream )
   VARIANT_LOAD_ANYDEF_D( _d, rateInterest, _d->rateInterest, stream )
 
   _d->trading.load( stream.get( "trade").toMap() );
@@ -266,6 +279,8 @@ void Empire::setCitiesAvailable(bool value)
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
+void Empire::setWorkerSalary(unsigned int value){ _d->workerSalary = math::clamp<unsigned int>( value, 10, 50); }
+
 bool Empire::isAvailable() const{  return _d->enabled; }
 void Empire::setAvailable(bool value) { _d->enabled = value; }
 
@@ -373,10 +388,17 @@ void Empire::timeStep( unsigned int time )
     else { ++it; }
   }
 
+  if( !_d->newObjects.empty() )
+  {
+    _d->objects << _d->newObjects;
+    _d->newObjects.clear();
+  }
+
   if( GameDate::isMonthChanged() )
   {
     _d->checkLoans();
     _d->checkBarbarians( this );
+    _d->checkEmperorChanged();
   }
 
   if( GameDate::isYearChanged() )
@@ -557,15 +579,29 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
   }
 }
 
+void Empire::Impl::checkEmperorChanged()
+{
+  EmperorLine& emperors = EmperorLine::instance();
+  std::string emperorName = emperors.getEmperor( GameDate::current() );
+  if( emperorName != emperor.name() )
+  {
+    VariantMap vm = emperors.getInfo( emperorName );
+
+    events::GameEventPtr e = events::ChangeEmperor::create();
+    e->load( vm );
+    e->dispatch();
+  }
+}
+
 void Empire::Impl::takeTaxes()
 {
-  foreach( it, cities)
+  foreach( it, cities )
   {
     CityPtr city = *it;
 
     int empireTax = 0;
 
-    if( is_kind_of<Rome>( city ) )
+    if( is_kind_of<Rome>( city ) || city->age() < 2 )
     {
       continue;
     }

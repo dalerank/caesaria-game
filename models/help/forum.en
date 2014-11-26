@@ -1,0 +1,11 @@
+{  
+ title : "##forum##"
+ sound : "fanfare"
+ text  : "Forums provide government offices in the outer regions of your city. Their main function is to employ tax collectors, so use the @Commerce Overlay& to find housing with inadequate tax coverage, and build a forum to send out tax collectors to plug any gaps.\n Ask your @Finances Advisor& what percentage of your populace is on the tax rolls. If it is much below 100 percent, check that your senate and forums are functioning, and use the overlay to see which houses are not paying their dues.\n Money collected in taxes is stored in vaults under forums until its removal at the end of a year. This can make forums a target for criminals, so guard them well.\n Forums are desirable neighbors, and need road and labor access.\n Follow these links to learn more about the role of @money&, or read a short @history of forums& in the Roman Empire."
+ uri : {
+  "history of forums" : "history_forum"
+  "Commerce Overlay" : "commerce_overlay"
+  "Finances Advisor" : "finance_advisor"
+  "here" : "http://wikipedia.ru"
+ }
+}

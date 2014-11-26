@@ -37,6 +37,9 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
+  virtual std::string thoughts(Thought th) const;
+  virtual TilePos places(Place type) const;
+
 protected:
   virtual void _centerTile();
   virtual void _reachedPathway();

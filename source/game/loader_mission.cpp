@@ -120,12 +120,12 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     Logger::warning( "GameLoaderMission: load empire state" );
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    city::VictoryConditions targets;
+    city::VictoryConditions winConditions;
     Variant winOptions = vm[ "win" ];
     Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
-    targets.load( winOptions.toMap() );
-    city->setVictoryConditions( targets );
+    winConditions.load( winOptions.toMap() );
+    city->setVictoryConditions( winConditions );
 
     city::BuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );

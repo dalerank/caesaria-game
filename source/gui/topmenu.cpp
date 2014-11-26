@@ -35,7 +35,6 @@
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
 #include "listbox.hpp"
-#include "city/debug_events.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -79,7 +78,6 @@ signals public:
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
   Signal0<> onShowCityOptionsSignal;
-  Signal1<int> onDebugEventSignal;
   Signal1<advisor::Type> onRequestAdvisorSignal;
 };
 
@@ -235,24 +233,6 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
-  tmp = addItem( _("Debug"), -1, true, true, false, false );
-  ContextMenu* debugMenu = tmp->addSubMenu();
-  debugMenu->addItem( "add_enemy_archers", city::debug_event::add_enemy_archers );
-  debugMenu->addItem( "add_enemy_soldiers", city::debug_event::add_enemy_soldiers );
-  debugMenu->addItem( "add_wolves", city::debug_event::add_wolves );
-  debugMenu->addItem( "send_mars_wrath", city::debug_event::send_mars_wrath );
-  debugMenu->addItem( "add_1000_dn", city::debug_event::add_1000_dn );
-  debugMenu->addItem( "add_player_money", city::debug_event::add_player_money );
-  debugMenu->addItem( "send_chastener", city::debug_event::send_chastener );
-  debugMenu->addItem( "test_request", city::debug_event::test_request );
-  debugMenu->addItem( "send_player_army", city::debug_event::send_player_army );
-  debugMenu->addItem( "screenshot", city::debug_event::screenshot );
-  debugMenu->addItem( "add_empire_barbarian", city::debug_event::add_empire_barbarian );
-  debugMenu->addItem( "send_venus_wrath", city::debug_event::send_venus_wrath );
-  debugMenu->addItem( "win_mission", city::debug_event::win_mission );
-
-  CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleDebugEvent );
-
   _d->updateDate();
 }
 
@@ -266,8 +246,6 @@ Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; 
 Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
 Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
-Signal1<int> &TopMenu::onDebugEvent() { return _d->onDebugEventSignal; }
 void TopMenu::Impl::resolveAdvisorShow(int id) { emit onRequestAdvisorSignal( (advisor::Type)id ); }
-void TopMenu::Impl::handleDebugEvent(int id) { emit onDebugEventSignal( id ); }
 
 }//end namespace gui

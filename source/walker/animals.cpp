@@ -43,6 +43,7 @@ public:
 Animal::Animal(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
+  setFlag( Walker::vividly, true );
   _setType( walker::unknown );
 
   setName( _("##animal##") );
@@ -70,7 +71,15 @@ void Animal::load( const VariantMap& stream )
   _d->destination = stream.get( lc_destination ).toTilePos();
 }
 
-std::string Animal::currentThinks() const{  return "##sheep_baa##";}
+std::string Animal::thoughts(Thought th) const
+{
+  if( th == thCurrent )
+  {
+    return "##sheep_baa##";
+  }
+
+  return "";
+}
 
 void Animal::_findNewWay( const TilePos& start )
 {
@@ -131,7 +140,7 @@ Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
  : Animal( city )
 {
   _setType( type );
-  setName( WalkerHelper::getPrettyTypeName( type ) );
+  setName( WalkerHelper::getPrettyTypename( type ) );
 
   addAbility( Illness::create( 0.2, 4 ) );
   _noWayCount = 0;
@@ -279,6 +288,7 @@ void Wolf::send2City(const TilePos &start )
 Fish::Fish(PlayerCityPtr city)
  : Walker( city )
 {
+  setFlag( Walker::vividly, true );
   _setType( walker::unknown );
 
   setName( _("##fish##") );

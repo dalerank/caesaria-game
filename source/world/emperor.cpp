@@ -22,6 +22,7 @@
 #include "events/showinfobox.hpp"
 #include "romechastenerarmy.hpp"
 #include "city.hpp"
+#include "core/saveadapter.hpp"
 #include "empire.hpp"
 #include <map>
 
@@ -89,10 +90,13 @@ public:
   typedef std::map< std::string, Relation > Relations;
   Relations relations;
   Empire* empire;
+  std::string name;
 };
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
 {
+  __D_IMPL(d,Emperor)
+  d->name = "Emperor";
 }
 
 Emperor::~Emperor(){}
@@ -189,24 +193,10 @@ void Emperor::timeStep(unsigned int time)
       CityPtr city = d->empire->findCity( it->first );
       Relation& relation = d->relations[ it->first ];
 
-      if( ( city->funds().treasury() < -5500 || relation.value < 20 )
-          && relation.soldiersSent == 0 )
+      if( city.isValid() && relation.value < 20 && relation.soldiersSent == 0 )
       {
-        if( city->funds().treasury() < -5500 && !relation.debtMessageSent )
-        {
-          relation.debtMessageSent = true;
-          events::GameEventPtr e = events::ShowInfobox::create( "##emperor_wrath_by_debt_title##",
-                                                                "##emperor_wrath_by_debt_text##",
-                                                                true );
-          e->dispatch();
-        }
-
-        if( city.isValid() )
-        {
-          troubleCities << city;
-        }
+        troubleCities << city;
       }
-
     }
 
     foreach( it, troubleCities )
@@ -215,21 +205,35 @@ void Emperor::timeStep(unsigned int time)
       relation.soldiersSent = relation.lastSoldiersSent * 2;
 
       unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
-      relation.soldiersSent = sldrNumber;
-      relation.lastSoldiersSent = sldrNumber;
 
       RomeChastenerArmyPtr army = RomeChastenerArmy::create( d->empire );
+      army->setCheckFavor( true );
       army->setSoldiersNumber( sldrNumber );
       army->attack( ptr_cast<Object>( *it ) );
+
+      relation.lastSoldiersSent = sldrNumber;
     }
   }
 }
 
-void Emperor::soldierDie(const std::string& cityname)
+void Emperor::remSoldiers(const std::string& cityname, int value)
 {
   __D_IMPL(d,Emperor)
-  d->relations[ cityname ].removeSoldier();
+  for( int i=0; i < value; i++ )
+  {
+    d->relations[ cityname ].removeSoldier();
+  }
 }
+
+void Emperor::addSoldiers(const std::string& name, int value)
+{
+  __D_IMPL(d,Emperor)
+  Relation& relation = d->relations[ name ];
+  relation.soldiersSent += value;
+}
+
+std::string Emperor::name() const { return _dfunc()->name; }
+void Emperor::setName(const std::string& name){ _dfunc()->name = name; }
 
 void Emperor::cityTax(const std::string &cityname, unsigned int money)
 {
@@ -237,11 +241,45 @@ void Emperor::cityTax(const std::string &cityname, unsigned int money)
   d->relations[ cityname ].lastTaxDate = GameDate::current();
 }
 
+void Emperor::resetRelations(const StringArray& cities)
+{
+  __D_IMPL(d,Emperor)
+  CityList empCities;
+  if( !cities.empty() )
+  {
+    if( cities.front() == "all" )
+    {
+      empCities = d->empire->cities();
+    }
+    else
+    {
+      foreach( it, cities )
+      {
+        CityPtr pCity = d->empire->findCity( *it );
+        if( pCity.isValid() )
+          empCities << pCity;
+      }
+    }
+
+    foreach( it, empCities )
+    {
+      Relation& r = d->relations[ (*it)->name() ];
+
+      r.value = 50;
+      r.lastGiftValue = 0;
+      r.lastTaxDate = GameDate::current();
+      r.lastGiftDate = GameDate::current();
+    }
+  }
+
+}
+
 VariantMap Emperor::save() const
 {
+  __D_IMPL_CONST(d,Emperor)
   VariantMap ret;
 
-  Impl::Relations r = _dfunc()->relations;
+  Impl::Relations r = d->relations;
   VariantMap vm_relations;
   foreach( it, r )
   {
@@ -249,22 +287,91 @@ VariantMap Emperor::save() const
   }
 
   ret[ "relations" ] = vm_relations;
+  VARIANT_SAVE_STR_D( ret, d, name )
   return ret;
 }
 
 void Emperor::load(const VariantMap& stream)
 {
+  __D_IMPL(d,Emperor)
   VariantMap vm_relations = stream.get( "relations" ).toMap();
 
-  Impl::Relations& relations = _dfunc()->relations;
+  Impl::Relations& relations = d->relations;
   foreach( it, vm_relations )
   {
     Relation r;
     r.load( it->second.toMap() );
     relations[ it->first ] = r;
   }
+
+  VARIANT_LOAD_STR_D( d, name, stream )
 }
 
 void Emperor::init(Empire &empire) { _dfunc()->empire = &empire; }
+
+struct EmperorInfo
+{
+  std::string name;
+  DateTime beginReign;
+  VariantMap options;
+};
+
+class EmperorLine::Impl
+{
+public:
+  typedef std::map< DateTime, EmperorInfo> ChangeInfo;
+
+  ChangeInfo changes;
+};
+
+EmperorLine& EmperorLine::instance()
+{
+  static EmperorLine inst;
+  return inst;
+}
+
+std::string EmperorLine::getEmperor(DateTime time)
+{
+  foreach( it, _d->changes )
+  {
+    if( it->first >= time )
+      return it->second.name;
+  }
+
+  return "";
+}
+
+VariantMap EmperorLine::getInfo(std::string name) const
+{
+  foreach( it, _d->changes )
+  {
+    if( name == it->second.name )
+      return it->second.options;
+  }
+
+  return VariantMap();
+}
+
+void EmperorLine::load(vfs::Path filename)
+{
+  _d->changes.clear();
+
+  VariantMap opts = SaveAdapter::load( filename );
+  foreach( it, opts )
+  {
+    VariantMap opts = it->second.toMap();
+    EmperorInfo info;
+    info.beginReign = opts.get( "date" ).toDateTime();
+    info.name = opts.get( "name" ).toString();
+    info.options = opts;
+
+    _d->changes[ info.beginReign ] = info;
+  }
+}
+
+EmperorLine::EmperorLine() : _d( new Impl )
+{
+
+}
 
 }
