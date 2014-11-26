@@ -24,7 +24,8 @@ using namespace gfx;
 
 EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineerPost, Size(1) )
 {
-  setPicture( ResourceGroup::buildingEngineer, 56 );
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  //setPicture( ResourceGroup::buildingEngineer, 56 );
 
   _animationRef().load( ResourceGroup::buildingEngineer, 57, 10 );
   _animationRef().setDelay( 4 );

@@ -6,7 +6,8 @@
   }
 
   recruter : {
-    move : { rc : "citizen01", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen", start : 1, frames : 11, action : 1, step : 8 }
+    die : { rc : "citizen", start : 100, frames : 8, action : 3, step : 0 }
   }
 
   etruscanSoldier : {
@@ -67,7 +68,7 @@
   }
 
   immigrant :
-    move : { rc : "we", start : 1, frames : 13, action : 1, step : 8 }
+    move : { rc : "we", start : 1, frames : 11, action : 1, step : 8 }
     die : { rc : "wd", start : 1, frames : 9, action : 3, step : 0 }
   }
 

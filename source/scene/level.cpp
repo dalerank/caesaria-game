@@ -791,9 +791,9 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       lb->setTextAlignment( align::center, align::center );
       lb->setFont( Font::create( FONT_6 ) );
 
-      PushButton* btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 142), _("##restart_mission##") );
+      PushButton* btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 144), _("##restart_mission##") );
       btnRestart->setTooltipText( _("##restart_mission_tip##") );
-      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 172), _("##exit_to_main_menu##") );
+      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();

@@ -167,7 +167,7 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
   foreach( it, languages )
   {
     lbx->addItem( it->first );
-    std::string ext = it->second.toMap().get( "ext" ).toString();
+    std::string ext = it->second.toMap().get( lc_ext ).toString();
     if( ext == currentLang )
       currentIndex = std::distance( languages.begin(), it );
   }
@@ -330,7 +330,7 @@ void StartMenu::Impl::showLoadMenu()
 void StartMenu::Impl::resolveLoadRandommap()
 {
   result = StartMenu::loadMission;
-  fileMap = GameSettings::rcpath( "/missions/random.mission" ).toString();
+  fileMap = ":/missions/random.mission";
   isStopped = true;
 }
 
@@ -403,9 +403,9 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
   gui::Widget* parent = game->gui()->rootWidget();
 
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                    Rect(),
-                                                    GameSettings::rcpath( "/maps/" ), ".map",
-                                                    -1 );
+                                                      Rect(),
+                                                      vfs::Path( ":/maps/" ), ".map",
+                                                      -1 );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( false );
 

@@ -26,7 +26,7 @@
     },
 
   /* 1;Petite tente;5;-99;-10;0;0;0;0;0;0;0;0;0;0;3;5;1 */
-  small_tent :
+  hovel :
     {
       level : 1,
       title : "##small_hovel##",
@@ -50,13 +50,13 @@
       prosperity : 5,
       tax : 1
       txs : {
-        s1: [ "housng1a_00001", "housng1a_00002", "housng1c_00001", "housng1d_00001" ]
-        s2: [ "housng1a_00005" ]
+        s1: [ "housng1a_00001", "housng1b_00001", "housng1c_00001", "housng1d_00001" ]
+        s2: [ "housng1a_00005", "housng1b_00005", "housng1c_00005", "housng1d_00005" ]
       }
     },
 
   /*2;Grande tente;7;-12;-5;0;1;0;0;0;0;0;0;0;0;3;10;1*/
-  big_tent :
+  tent :
     {
       level : 2,
       title : "##small_tent##",
@@ -80,13 +80,13 @@
       prosperity : 10,
       tax : 1
       txs : {
-        s1: [ "housng1a_00003", "housng1a_00004", "housng1b_00003", "housng1b_00004" ]
-        s2: [ "housng1a_00006", "housng1b_00006" ]
+        s1: [ "housng1a_00003", "housng1b_00003", "housng1c_00003", "housng1d_00003" ]
+        s2: [ "housng1a_00006", "housng1b_00006", "housng1c_00006", "housng1d_00006" ]
       }
     },
 
   /* 3;Petite hutte;9;-7;0;0;1;0;0;0;1;0;0;0;0;3;15;1 */
-  small_hut :
+  shack :
     {
       level : 3,
       title : "##small_shack##",
@@ -110,13 +110,13 @@
       prosperity : 15,
       tax : 1
       txs : {
-        s1: [ "housng1a_00007", "housng1a_00008", "housng1b_00007", "housng1b_00008" ]
-        s2: [ "housng1a_00011", "housng1b_00011" ]
+        s1: [ "housng1a_00007", "housng1b_00007", "housng1c_00007", "housng1d_00007" ]
+        s2: [ "housng1a_00011", "housng1b_00011", "housng1c_00011", "housng1d_00011" ]
       }
     },
 
   /*4;Grande hutte;11;-2;4;0;1;1;0;0;1;0;0;0;0;3;20;1*/
-  big_hut :
+  hut :
     {
       level : 4,
       title : "##small_hut##",
@@ -140,8 +140,8 @@
       prosperity : 20,
       tax : 1
       txs : {
-        s1: [ "housng1a_00009", "housng1a_00010", "housng1b_00009", "housng1b_00010" ]
-        s2: [ "housng1a_00012", "housng1b_00012" ]
+        s1: [ "housng1a_00009", "housng1b_00009", "housng1c_00009", "housng1d_00009" ]
+        s2: [ "housng1a_00012", "housng1b_00012", "housng1c_00012", "housng1d_00012" ]
       }
     },
 
