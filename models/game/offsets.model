@@ -3,6 +3,7 @@
   housng1c : { start : 1, stop : 45, offset : [-1,-1] }
   housng1d : { start : 1, stop : 45, offset : [-1,-1] }
   engineering : { start : 1, stop : 5, offset : [-1,-1] }
+  prefecture : { start : 1, stop : 5, offset : [-1,-1] }
   land1a : { start: 160, stop : 199, offset : [-1,-1] }
   meadow : { start: 1, stop : 1, offset : [-1,-1] }
   land1a : { start: 1188, stop : 1198, offset : [-1,-1] }

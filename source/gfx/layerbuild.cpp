@@ -141,7 +141,6 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
-        //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         d->buildTiles.push_back( tile );
       }
     }

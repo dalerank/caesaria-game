@@ -79,7 +79,7 @@ void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name 
 
 const Picture& Tile::picture() const {  return _picture; }
 Tile* Tile::masterTile() const{  return _master;}
-void Tile::setMasterTile(Tile* master){  _master = master;}
+void Tile::setMasterTile(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
 {

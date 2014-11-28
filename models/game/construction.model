@@ -263,6 +263,9 @@
     cost : 30,
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 6
+    image.ext : {
+      s1 : { size: 1, rc : "prefecture", start : 1, count : 4 }
+    }
     class : "security"
   },  
  

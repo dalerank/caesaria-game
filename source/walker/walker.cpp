@@ -284,7 +284,7 @@ void Walker::_computeDirection()
   _d->action.direction = _d->pathway.direction();
   _d->nextwpos = _nextTile().center().toPointF();
   _d->lastCenterDst = _d->wpos.getDistanceFrom( _d->nextwpos );
-  _d->subSpeed = ( _d->nextwpos - _d->wpos ) / 15.f;
+  _d->subSpeed = ( _d->nextwpos - _d->wpos ) / TileHelper::cellSize().height();
 
   if( lastDirection != _d->action.direction )
   {

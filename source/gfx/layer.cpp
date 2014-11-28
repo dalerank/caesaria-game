@@ -403,10 +403,22 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
     if( tile.rov().isValid() )
     {
-      registerTileForRendering( tile );
+      Size size = tile.rov()->size();
+      if( size.width() > 1 )
+      {
+        __D_IMPL(_d,Layer)
+        Tilemap& tmap = _d->city->tilemap();
+        for( int i=0; i < size.width(); i++ )
+          for( int j=0; j < size.height(); j++ )
+          {
+            drawPass( engine, tmap.at( tile.pos() + TilePos( i, j ) ), offset, Renderer::ground );
+          }
+      }
+
+      registerTileForRendering( tile );     
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }       
+    }
   }
 }
 
