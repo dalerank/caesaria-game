@@ -29,6 +29,7 @@ class LayerSimple : public Layer
 public:
   virtual int type() const;
   static LayerPtr create(Camera& camera, PlayerCityPtr city );
+  virtual void afterRender(Engine &engine);
   virtual void renderUi(Engine &engine);
 
 protected:

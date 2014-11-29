@@ -20,6 +20,7 @@
 #include "walker/constants.hpp"
 #include "city_renderer.hpp"
 #include "city/city.hpp"
+#include "camera.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
 
@@ -32,6 +33,8 @@ class LayerSimple::Impl
 {
 public:
   SenatePopupInfo senateInfo;
+  PictureRef selectedBuildingPic;
+  TileOverlayPtr lastOverlay;
 };
 
 int LayerSimple::type() const { return citylayer::simple; }
@@ -42,6 +45,25 @@ LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
   ret->drop();
 
   return ret;
+}
+
+void LayerSimple::afterRender(Engine& engine)
+{
+  Layer::afterRender( engine );
+
+  Tile* tile = _currentTile();
+  if( tile )
+  {
+    TileOverlayPtr curOverlay = tile->overlay();
+    if( is_kind_of<Building>( curOverlay ) )
+    {
+      _d->lastOverlay = curOverlay;
+      engine.setColorMask( 0x003f0000, 0x00003f00, 0x0000003f, 0xff000000 );
+      curOverlay->tile().resetWasDrawn();
+      drawPass( engine, curOverlay->tile(), _camera()->offset(), Renderer::overlay );
+      engine.resetColorMask();
+    }
+  }
 }
 
 void LayerSimple::renderUi(Engine &engine)

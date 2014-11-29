@@ -566,7 +566,6 @@ void Layer::afterRender( Engine& engine)
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
-
     if( _d->tilePosText->isValid() )
     {
       _d->tilePosText->fill( 0x0 );
@@ -578,6 +577,8 @@ void Layer::afterRender( Engine& engine)
     {
       size = ov->size();
       pos = ov->tile().mappos();
+
+
     }
     else if( tile->masterTile() != 0 )
     {
