@@ -32,6 +32,7 @@
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "dictionary.hpp"
 #include "city/cityservice_health.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
@@ -147,6 +148,9 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
   _d->updateAdvice( city );
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Health::_showHelp );
 }
 
 void Health::draw( gfx::Engine& painter )
@@ -155,6 +159,11 @@ void Health::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+void Health::_showHelp()
+{
+  DictionaryWindow::show( this, "health_advisor" );
 }
 
 Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)

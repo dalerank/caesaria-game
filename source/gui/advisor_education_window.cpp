@@ -27,6 +27,8 @@
 #include "game/enums.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"
+#include "dictionary.hpp"
+#include "texturedbutton.hpp"
 #include "core/foreach.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
@@ -161,6 +163,9 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
 
   std::string advice = _d->getTrouble( city );
   if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _(advice) ); }
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Education::_showHelp );
 }
 
 void Education::draw( gfx::Engine& painter )
@@ -169,6 +174,11 @@ void Education::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+void Education::_showHelp()
+{
+  DictionaryWindow::show( this, "education_advisor" );
 }
 
 InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)

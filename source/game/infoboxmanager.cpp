@@ -251,6 +251,7 @@ Manager::Manager() : _d( new Impl )
   ADD_INFOBOX( objects::fortMounted,   BaseInfoboxCreator<AboutFort>() )
   ADD_INFOBOX( objects::fortArea, BaseInfoboxCreator<AboutFort>() );
   ADD_INFOBOX( objects::barracks, BaseInfoboxCreator<AboutBarracks>() );
+  ADD_INFOBOX( objects::tree, BaseInfoboxCreator<AboutLand>() );
 }
 
 Manager::~Manager() {}

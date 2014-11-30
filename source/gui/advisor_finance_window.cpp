@@ -36,6 +36,7 @@
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
+#include "dictionary.hpp"
 #include "widget_helper.hpp"
 
 using namespace constants;
@@ -44,12 +45,15 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 namespace {
   const Point startPoint( 75, 145 );
   Point offset( 0, 17 );
 }
 
-class AdvisorFinanceWindow::Impl
+class Finance::Impl
 {
 public:
   PlayerCityPtr city;
@@ -63,7 +67,7 @@ public:
   int calculateTaxValue();
 };
 
-AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, int id )
+Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
 : Window( parent, Rect( 0, 0, 640, 420 ), "", id ), _d( new Impl )
 {
   _d->city = city;
@@ -112,9 +116,10 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   TexturedButton* btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, 605 );
   CONNECT( btnDecreaseTax, onClicked(), _d.data(), Impl::decreaseTax );
   CONNECT( btnIncreaseTax, onClicked(), _d.data(), Impl::increaseTax );
+  CONNECT( _d->btnHelp, onClicked(), this, Finance::_showHelp );
 }
 
-void AdvisorFinanceWindow::draw(gfx::Engine& painter )
+void Finance::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -134,7 +139,12 @@ void AdvisorFinanceWindow::draw(gfx::Engine& painter )
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 }
 
-void AdvisorFinanceWindow::_drawReportRow(const Point& pos, const std::string& title, int type)
+void Finance::_showHelp()
+{
+  DictionaryWindow::show( this, "finance_advisor" );
+}
+
+void Finance::_drawReportRow(const Point& pos, const std::string& title, int type)
 {
   Font font = Font::create( FONT_1 );
 
@@ -152,7 +162,7 @@ void AdvisorFinanceWindow::_drawReportRow(const Point& pos, const std::string& t
   lb->setFont( font );
 }
 
-void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
+void Finance::Impl::updateTaxRateNowLabel()
 {
   if( !lbTaxRateNow )
     return;
@@ -164,16 +174,18 @@ void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
   lbTaxRateNow->setText( strCurretnTax );
 }
 
-void AdvisorFinanceWindow::Impl::decreaseTax()
+void Finance::Impl::decreaseTax()
 {
   city->funds().setTaxRate( city->funds().taxRate() - 1 );
   updateTaxRateNowLabel();
 }
 
-void AdvisorFinanceWindow::Impl::increaseTax()
+void Finance::Impl::increaseTax()
 {
   city->funds().setTaxRate( city->funds().taxRate() + 1 );
   updateTaxRateNowLabel();
 }
+
+}//end namespace advisorwnd
 
 }//end namespace gui

@@ -36,6 +36,7 @@
 #include "widget_helper.hpp"
 #include "world/emperor.hpp"
 #include "city/funds.hpp"
+#include "dictionary.hpp"
 #include "city/cityservice_peace.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
@@ -351,6 +352,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( _d->btnHelp, onClicked(), this, Ratings::_showHelp );
 }
 
 void Ratings::draw( gfx::Engine& painter )
@@ -361,6 +363,11 @@ void Ratings::draw( gfx::Engine& painter )
   Window::draw( painter );
 
   painter.draw( _d->columns, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+}
+
+void Ratings::_showHelp()
+{
+  DictionaryWindow::show( this, "ratings_advisor" );
 }
 
 }

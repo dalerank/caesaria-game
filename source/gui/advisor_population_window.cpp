@@ -28,6 +28,8 @@
 #include "objects/house_level.hpp"
 #include "city/migration.hpp"
 #include "label.hpp"
+#include "texturedbutton.hpp"
+#include "dictionary.hpp"
 #include "widget_helper.hpp"
 #include "core/stringhelper.hpp"
 
@@ -180,6 +182,8 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
   _d->updateStates();
 
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Population::_showHelp );
   CONNECT( _d->lbNextChart, onClicked(), _d.data(), Impl::showNextChart );
   CONNECT( _d->lbPrevChart, onClicked(), _d.data(), Impl::showPrevChart );
 }
@@ -192,6 +196,10 @@ void Population::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
+void Population::_showHelp()
+{
+  DictionaryWindow::show( this, "population_advisor" );
+}
 
 void Population::Impl::switch2nextChart( int change )
 {

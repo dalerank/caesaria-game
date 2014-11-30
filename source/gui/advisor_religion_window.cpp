@@ -31,6 +31,7 @@
 #include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
+#include "dictionary.hpp"
 #include "religion/pantheon.hpp"
 #include "game/gamedate.hpp"
 #include "objects/constants.hpp"
@@ -183,6 +184,7 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, btnHelp );
 
   _d->updateReligionAdvice( city );
+  CONNECT( _d->btnHelp, onClicked(), this, Religion::_showHelp );
 }
 
 void Religion::draw(gfx::Engine& painter )
@@ -191,6 +193,11 @@ void Religion::draw(gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+void Religion::_showHelp()
+{
+  DictionaryWindow::show( this, "religion_advisor" );
 }
 
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
