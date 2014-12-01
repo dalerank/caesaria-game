@@ -172,7 +172,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   case advisor::entertainment: _d->advisorPanel = new advisorwnd::Entertainment( _d->city, this, -1 ); break;
   case advisor::religion: _d->advisorPanel = new advisorwnd::Religion( _d->city, this, -1 ); break;
   case advisor::finance: _d->advisorPanel = new advisorwnd::Finance( _d->city, this, -1 ); break;
-  case advisor::main: _d->advisorPanel = new AdvisorChiefWindow( _d->city, this, -1 );
+  case advisor::main: _d->advisorPanel = new advisorwnd::AdvisorChief( _d->city, this, -1 );
 
   default:
   break;

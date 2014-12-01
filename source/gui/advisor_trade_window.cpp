@@ -42,6 +42,7 @@
 #include "goodordermanage.hpp"
 #include "widget_helper.hpp"
 #include "city/statistic.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -183,7 +184,7 @@ void Trade::Impl::updateGoodsInfo()
                                             gtype, allgoods[ gtype ], workState, tradeState, tradeQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
-  }
+  } 
 }
 
 bool Trade::Impl::getWorkState(Good::Type gtype )
@@ -236,6 +237,9 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
 
   _d->updateGoodsInfo();
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Trade::_showHelp );
 }
 
 void Trade::draw(gfx::Engine& painter )
@@ -247,6 +251,11 @@ void Trade::draw(gfx::Engine& painter )
 }
 
 Signal0<>& Trade::onEmpireMapRequest() { return _d->btnEmpireMap->onClicked(); }
+
+void Trade::_showHelp()
+{
+  DictionaryWindow::show( this, "trade_advisor" );
+}
 
 }
 

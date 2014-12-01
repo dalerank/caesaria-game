@@ -49,6 +49,7 @@
 #include "world/barbarian.hpp"
 #include "core/flagholder.hpp"
 #include "world/playerarmy.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -494,6 +495,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow );
+  CONNECT( _d->btnHelp, onClicked(), this, EmpireMapWindow::_showHelp );
 
   setFlag( showCityInfo, true );
 }
@@ -675,6 +677,11 @@ void EmpireMapWindow::_changePosition()
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
+
+void EmpireMapWindow::_showHelp()
+{
+  DictionaryWindow::show( this, "empiremap" );
+}
 
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {

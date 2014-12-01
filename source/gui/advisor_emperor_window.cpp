@@ -48,6 +48,8 @@
 #include "emperorgiftwindow.hpp"
 #include "gui/environment.hpp"
 #include "gui/dialogbox.hpp"
+#include "texturedbutton.hpp"
+#include "dictionary.hpp"
 #include "gui/widget_helper.hpp"
 
 using namespace gfx;
@@ -163,6 +165,8 @@ void Emperor::_showChangeSalaryWindow()
   dialog::ChangeSalary* dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Emperor::_showHelp );
   CONNECT( dialog, onChangeSalary(), _d.data(), Impl::changeSalary )
 }
 
@@ -228,6 +232,11 @@ void Emperor::_updateRequests()
     }
   }
   _d->isRequestsUpdated = false;
+}
+
+void Emperor::_showHelp()
+{
+  DictionaryWindow::show( this, "emperor_advisor" );
 }
 
 Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )

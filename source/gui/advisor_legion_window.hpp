@@ -40,6 +40,7 @@ private:
   void _handleMove2Legion( FortPtr fort );
   void _handleRetreaLegion( FortPtr fort );
   void _handleServiceEmpire( FortPtr fort );
+  void _showHelp();
 
   class Impl;
   ScopedPtr< Impl > _d;

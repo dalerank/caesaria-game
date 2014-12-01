@@ -34,6 +34,7 @@
 #include "legion_target_window.hpp"
 #include "world/playerarmy.hpp"
 #include "dialogbox.hpp"
+#include "dictionary.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
@@ -162,6 +163,9 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   }
 
   _d->updateAlarms( city );
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Legion::_showHelp );
 }
 
 void Legion::draw( Engine& painter )
@@ -214,6 +218,11 @@ void Legion::_handleServiceEmpire(FortPtr fort)
   dlg->show();
 
   CONNECT( dlg, onSelectLocation(), fort.object(), Fort::sendExpedition );
+}
+
+void Legion::_showHelp()
+{
+  DictionaryWindow::show( this, "legion_advisor" );
 }
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
