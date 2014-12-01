@@ -130,7 +130,7 @@ void Game::Impl::initVideo()
   engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  engine->setScreenSize(Size(640,480));
 
   bool fullscreen = SETTINGS_VALUE( fullscreen );
   if( fullscreen )
