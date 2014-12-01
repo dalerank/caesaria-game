@@ -279,10 +279,16 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF )
   int mapSize = tilemap->size();
   Point mapOffset = getOffset( centerMapXZ );
 
-  ret.left = !( (tilemap->at( 0, 0 ).mappos() + mapOffset ).x() > 0);
+/*ret.left = !( (tilemap->at( 0, 0 ).mappos() + mapOffset ).x() > 0);
   ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mappos() + mapOffset).x() > virtualSize.width();
   ret.down = ( (tilemap->at( 0, mapSize - 1 ).mappos() + mapOffset ).y() < 0 );
-  ret.up = (tilemap->at( mapSize - 1, 0 ).mappos() + mapOffset ).y() > virtualSize.height();
+  ret.up = (tilemap->at( mapSize - 1, 0 ).mappos() + mapOffset ).y() > virtualSize.height();*/
+
+  ret.left = !( (tilemap->at( 0, 0 ).mappos() + mapOffset ).x() > 100);
+  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mappos() + mapOffset).x() > (virtualSize.width()+100);
+  ret.down = ( (tilemap->at( 0, mapSize - 1 ).mappos() + mapOffset ).y() < 100 );
+  ret.up = (tilemap->at( mapSize - 1, 0 ).mappos() + mapOffset ).y() > (virtualSize.height()+100);
+
 
   return ret;
 }
