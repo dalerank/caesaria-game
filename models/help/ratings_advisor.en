@@ -1,0 +1,8 @@
+{  
+ title : "##ratings_advisor##"
+ sound : "fanfare"
+ text  : "Your Ratings Advisor displays your current ratings in Culture, Prosperity, Peace and Favor, along with any requirements for promotion to the next assignment. When you build a Senate, the flags in front of the building rise and fall in concert with your ratings, giving you a rough idea of how you're faring without having to consult this panel. Click on these numbers for brief advice on how to improve them. See the @Ratings& entry for detailed information on what each means."
+ uri : {
+  "Ratings" : "ratings"
+ }
+}
