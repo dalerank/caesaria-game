@@ -84,6 +84,7 @@ signals public:
   Signal0<>& onRotateRight();
   Signal0<>& onRotateLeft();
   Signal0<>& onMissionTargetsWindowShow();
+  Signal0<>& onRotateNorth();
 
 protected:
   ExtentMenu( Widget* parent, int id, const Rect& rectangle );

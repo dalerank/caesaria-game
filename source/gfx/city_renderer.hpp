@@ -66,6 +66,7 @@ public signals:
 public slots:
   void rotateRight();
   void rotateLeft();
+  void rotateNorth();
 
 private:
   class Impl;
