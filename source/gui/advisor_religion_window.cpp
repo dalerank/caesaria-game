@@ -54,6 +54,7 @@ public:
                      int smallTempleCount, int bigTempleCount  )
     : Label( parent, rect )
   {
+	_lastFestival = 0;
     _divinity = divinity;
     _smallTempleCount = smallTempleCount;
     _bigTempleCount = bigTempleCount;

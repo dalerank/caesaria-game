@@ -26,6 +26,11 @@ namespace events
 class RequestDestroy : public GameEvent
 {
 public:
+  RequestDestroy()
+  {
+	  _mayDelete = false;
+	  _alsoExec = false;
+  }
   static GameEventPtr create( ConstructionPtr constr );
   virtual bool isDeleted() const;
 

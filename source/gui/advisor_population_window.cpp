@@ -63,6 +63,10 @@ public:
   typedef enum { dm_census, dm_population, dm_society, dm_count } DrawMode;
   CityChart( Widget* parent, const Rect& rectangle ) : Label( parent, rectangle )
   {
+	_picIndex = 0;
+	_maxValue = 0;
+	_maxXValue = 0;
+	_minXValue = 0;
     _isSmall = false;
   }
 
@@ -320,6 +324,7 @@ CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool hor
   : Label( parent, rectangle )
 {
   setFont( Font::create( FONT_1 ) );
+  _maxValue = 0;
   _stepCount = stepCount;
   _horizontal = horizontal;
 }

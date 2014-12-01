@@ -69,14 +69,14 @@ CityOptionsWindow::~CityOptionsWindow() {}
 
 void CityOptionsWindow::Impl::toggleGods()
 {
-  bool value = city->getOption( PlayerCity::godEnabled );
+  int value = city->getOption( PlayerCity::godEnabled );
   city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
   update();
 }
 
 void CityOptionsWindow::Impl::toggleWarnings()
 {
-  bool value = city->getOption( PlayerCity::warningsEnabled );
+  int value = city->getOption( PlayerCity::warningsEnabled );
   city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
   update();
 }

@@ -27,7 +27,14 @@ namespace city
 
 class WalkerGrid
 {
+
 public:
+
+  WalkerGrid()
+  {
+	  _gsize = 0;
+  }
+
   void clear();
 
   void append( WalkerPtr a );
