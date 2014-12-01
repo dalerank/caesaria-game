@@ -98,7 +98,7 @@ void CommandDispatcher::deregisterAllCommands()
 {
 	CommandIterator iter = commands_.begin();
 	
-	for(; iter != commands_.end(); ++iter)
+	for(; iter != commands_.end(); iter++)
 		delete iter->second;
 
 	commands_.clear();
@@ -111,7 +111,7 @@ unsigned int  CommandDispatcher::GetRegisteredCommands( StringArray& cmdNames)
 
 	CommandIterator iter = commands_.begin();
 	
-	for(; iter != commands_.end(); ++iter )
+	for(; iter != commands_.end(); iter++ )
 		cmdNames.push_back( iter->first );
 
 	return cmdNames.size();

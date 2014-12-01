@@ -92,7 +92,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
 
   for( int i=0; i < 3; i++ )
   {
-    bool execOk = true;
+    bool execOk;
     workers[i]( game, _type, execOk );
     if( execOk )
     {

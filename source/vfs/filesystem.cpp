@@ -656,9 +656,9 @@ Entries FileSystem::getFileList()
 		//! create file list for the virtual filesystem
 		ret.setSensType( Path::equaleCase );
 
-		//! add relative navigation these are currently not being used and are commented out
-	//	EntryInfo e2;
-	//	EntryInfo e3;
+		//! add relative navigation
+		EntryInfo e2;
+		EntryInfo e3;
 
 		//! PWD
 		ret.addItem( Path( rpath.toString() + "." ), 0, 0, true, 0);

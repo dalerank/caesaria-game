@@ -442,7 +442,7 @@ bool ServiceWalker::die()
 
   case Service::doctor:
   case Service::hospital:
-    start=913; stop=920; rcGroup=ResourceGroup::citizen3;
+    start=913; stop=920; rcGroup=ResourceGroup::citizen3; break;
   break;
 
   case Service::barber: start=559; stop=566; rcGroup=ResourceGroup::citizen2; break;
@@ -463,7 +463,7 @@ bool ServiceWalker::die()
 
   case Service::forum:
   case Service::senate:
-    start=713; stop=720; rcGroup = ResourceGroup::citizen1;
+    start=713; stop=720; rcGroup = ResourceGroup::citizen1; break;
   break;
 
   default:

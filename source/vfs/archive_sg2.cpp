@@ -269,7 +269,6 @@ ByteArray Sg2ArchiveReader::_readData(const SgFileEntry& rec )
 	}
 
 	z5file.seek( start );
-	// This if statement will never execute since data_length is unsigned and therefore not negative. Intended?
 	if( data_length <= 0 )
 	{
 		Logger::warning( "Data length: %d", data_length); // not an error per se

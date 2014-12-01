@@ -102,13 +102,7 @@ public:
 
   Impl(): nextScreen(SCREEN_NONE),
       currentScreen(0), engine(0), gui(0)
-  {
-	  saveTime = 0;
-	  timeX10 = 0;
-	  timeMultiplier = 100;
-	  pauseCounter = 0;
-	  manualTicksCounterX10 = 0;
-  }
+  {}
 };
 
 void Game::Impl::initLocale( std::string localePath )
@@ -130,7 +124,8 @@ void Game::Impl::initVideo()
   engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize(Size(640,480));
+  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize());
+//  engine->setScreenSize(Size(640,480));
 
   bool fullscreen = SETTINGS_VALUE( fullscreen );
   if( fullscreen )

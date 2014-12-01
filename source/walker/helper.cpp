@@ -264,6 +264,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   case walker::recruter: index=13; break;
   case walker::lionTamer: index=11; break;
   default: index=8; break;
+  break;
   }
 
   return index >= 0 ? Picture::load( "bigpeople", index ) : Picture::getInvalid();

@@ -370,7 +370,7 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   case 0x3b: index = 153; break;
   case 0x31: index = 168; break;
   case 0x37: index = 171; _d->offset = Point( 0, 12 ); break;
-  case 0xed: case 0xe5: index = 156; break;
+  case 0xed: case 0xe5: index = 156;
   case 0xcd: index = 156; break;
   case 0xc8: index = 167; break;
   case 0x27: index = 159; _d->offset = Point( 0, 12 ); break;

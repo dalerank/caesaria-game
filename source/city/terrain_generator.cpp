@@ -46,8 +46,6 @@ MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float sm
   shallow_mountains_threshold_ = 2.92;
   high_mountains_threshold_ = 0;
   random_ = Random();
-  width_ = 10;
-  height_ = 10;
 }
 
 int MidpointDisplacement::CoordinatesToVectorIndex(int x, int y)

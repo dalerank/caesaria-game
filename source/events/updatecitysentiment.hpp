@@ -26,10 +26,6 @@ namespace events
 class UpdateCitySentiment : public GameEvent
 {
 public:
-  UpdateCitySentiment()
-  {
-	  _value = 0;
-  }
   static GameEventPtr create( int value );
 
 protected:
