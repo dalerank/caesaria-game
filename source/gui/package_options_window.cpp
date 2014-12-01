@@ -17,6 +17,11 @@
 
 #include "package_options_window.hpp"
 #include "core/stringhelper.hpp"
+#include "widget_helper.hpp"
+#include "texturedbutton.hpp"
+#include "game/settings.hpp"
+#include "editbox.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -26,14 +31,32 @@ namespace gui
 namespace dialog
 {
 
+class PackageOptions::Impl
+{
+public:
+  EditBox* edResourcesPath;
+  TexturedButton* btnApply;
+};
+
 PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
-  : Window( parent, rectangle, "" )
+  : Window( parent, rectangle, "" ), _d( new Impl )
 {
   setupUI( ":/gui/packageopts.gui" );
+
+  GET_DWIDGET_FROM_UI(_d,edResourcesPath)
+  GET_DWIDGET_FROM_UI(_d,btnApply)
+
+  if( _d->edResourcesPath ) { _d->edResourcesPath->setText( SETTINGS_VALUE( resourcePath ).toString() ); }
+
+  CONNECT( _d->btnApply, onClicked(), this, PackageOptions::deleteLater );
+  CONNECT( _d->edResourcesPath, onTextChanged(), this, PackageOptions::_setResourcesPath );
 }
 
-PackageOptions::~PackageOptions()
+PackageOptions::~PackageOptions() {}
+
+void PackageOptions::_setResourcesPath(std::string path)
 {
+  SETTINGS_SET_VALUE( resourcePath, Variant(path) );
 }
 
 }//end namespace dialog

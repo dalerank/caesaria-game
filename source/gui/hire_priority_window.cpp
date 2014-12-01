@@ -28,7 +28,10 @@
 namespace gui
 {
 
-class HirePriorityWnd::Impl
+namespace dialog
+{
+
+class HirePriority::Impl
 {
 public:
   GameAutoPause locker;
@@ -41,7 +44,7 @@ public signals:
   Signal2<city::Industry::Type, int> onAcceptPrioritySignal;
 };
 
-HirePriorityWnd::HirePriorityWnd(Widget* p, city::Industry::Type type, int priority)
+HirePriority::HirePriority(Widget* p, city::Industry::Type type, int priority)
   : Window( p,  Rect( 0, 0, 416, 144 ), "" ), _d( new Impl )
 {
   Logger::warning( "HirePriorityWnd: show" );
@@ -81,9 +84,9 @@ HirePriorityWnd::HirePriorityWnd(Widget* p, city::Industry::Type type, int prior
   setModal();
 }
 
-HirePriorityWnd::~HirePriorityWnd(){}
+HirePriority::~HirePriority(){}
 
-bool HirePriorityWnd::onEvent(const NEvent& event)
+bool HirePriority::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -111,6 +114,8 @@ bool HirePriorityWnd::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<city::Industry::Type, int>& HirePriorityWnd::onAcceptPriority() { return _d->onAcceptPrioritySignal; }
+Signal2<city::Industry::Type, int>& HirePriority::onAcceptPriority() { return _d->onAcceptPrioritySignal; }
+
+}//end namespace dialog
 
 }//end namespace gui

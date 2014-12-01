@@ -29,6 +29,12 @@ class PackageOptions : public Window
 public:
   PackageOptions(Widget* parent, const Rect& rectangle);
   virtual ~PackageOptions();
+
+private:
+  void _setResourcesPath(std::string);
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace dialog

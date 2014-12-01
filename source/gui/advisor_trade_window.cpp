@@ -215,7 +215,7 @@ void Trade::Impl::showGoodsPriceWindow()
 {
   Widget* parent = gbInfo->parent();
   Size size( 610, 180 );
-  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
+  new EmpirePrices( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
                                                    ( parent->height() - size.height() ) / 2), size ), city );
 }
 

@@ -160,7 +160,7 @@ void Emperor::_showChangeSalaryWindow()
   }
 
   PlayerPtr pl = _d->city->player();
-  ChangeSalaryWindow* dialog = new ChangeSalaryWindow( parent(), pl->salary() );
+  dialog::ChangeSalary* dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
   CONNECT( dialog, onChangeSalary(), _d.data(), Impl::changeSalary )
@@ -169,7 +169,7 @@ void Emperor::_showChangeSalaryWindow()
 void Emperor::_showSend2CityWindow()
 {
   PlayerPtr pl = _d->city->player();
-  CityDonationWindow* dialog = new CityDonationWindow( parent(), pl->money() );
+  dialog::CityDonation* dialog = new dialog::CityDonation( parent(), pl->money() );
   dialog->show();
 
   CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
@@ -180,9 +180,9 @@ void Emperor::_showGiftWindow()
   PlayerPtr pl = _d->city->player();
   world::Emperor& emperor = _d->city->empire()->emperor();
 
-  EmperorGiftWindow* dialog = new EmperorGiftWindow( parent(),
-                                                     pl->money(),
-                                                     emperor.lastGiftDate( _d->city->name() ) );
+  dialog::EmperorGift* dialog = new dialog::EmperorGift( parent(),
+                                                         pl->money(),
+                                                         emperor.lastGiftDate( _d->city->name() ) );
   dialog->show();
 
   CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );

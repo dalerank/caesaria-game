@@ -30,7 +30,10 @@
 namespace gui
 {
 
-class EmperorGiftWindow::Impl
+namespace dialog
+{
+
+class EmperorGift::Impl
 {
 public:
   typedef enum { modest, generous, lavish } GiftType;
@@ -47,8 +50,8 @@ public signals:
   Signal1<int> sendGiftSignal;
 };
 
-EmperorGiftWindow::EmperorGiftWindow(Widget* p, int money , const DateTime &lastgift)
-  : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(EmperorGiftWindow)
+EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
+  : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(EmperorGift)
 {
   _dfunc()->maxMoney = money;
   _dfunc()->wantSend = 0;
@@ -67,8 +70,8 @@ EmperorGiftWindow::EmperorGiftWindow(Widget* p, int money , const DateTime &last
 
   CONNECT( lbxGifts, onItemSelected(), _dfunc().data(), Impl::selectGift );
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendGift );
-  CONNECT( btnSend, onClicked(), this, EmperorGiftWindow::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, EmperorGiftWindow::deleteLater );
+  CONNECT( btnSend, onClicked(), this, EmperorGift::deleteLater );
+  CONNECT( btnCancel, onClicked(), this, EmperorGift::deleteLater );
 
   _dfunc()->fillGifts( lbxGifts );
 
@@ -83,11 +86,11 @@ EmperorGiftWindow::EmperorGiftWindow(Widget* p, int money , const DateTime &last
   }
 }
 
-EmperorGiftWindow::~EmperorGiftWindow() {}
+EmperorGift::~EmperorGift() {}
 
-Signal1<int>& EmperorGiftWindow::onSendGift() { return _dfunc()->sendGiftSignal; }
+Signal1<int>& EmperorGift::onSendGift() { return _dfunc()->sendGiftSignal; }
 
-void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
+void EmperorGift::Impl::fillGifts(ListBox* lbx)
 {
   if( !lbx )
     return;
@@ -107,7 +110,7 @@ void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
   }
 }
 
-unsigned int EmperorGiftWindow::Impl::getGiftCost(EmperorGiftWindow::Impl::GiftType type, unsigned int money)
+unsigned int EmperorGift::Impl::getGiftCost(EmperorGift::Impl::GiftType type, unsigned int money)
 {
   switch( type )
   {
@@ -119,9 +122,11 @@ unsigned int EmperorGiftWindow::Impl::getGiftCost(EmperorGiftWindow::Impl::GiftT
   return 100;
 }
 
-void EmperorGiftWindow::Impl::selectGift(const ListBoxItem& item)
+void EmperorGift::Impl::selectGift(const ListBoxItem& item)
 {
   wantSend = item.tag();
 }
+
+}//end namespace dialog
 
 }//end namespace gui

@@ -25,11 +25,14 @@
 namespace gui
 {
 
-class FestivalPlaningWindow : public Window
+namespace dialog
+{
+
+class FestivalPlaning : public Window
 {
 public:
-  static FestivalPlaningWindow* create( Widget* parent, PlayerCityPtr city, int id );
-  virtual ~FestivalPlaningWindow();
+  static FestivalPlaning* create( Widget* parent, PlayerCityPtr city, int id );
+  virtual ~FestivalPlaning();
 
   virtual void draw( gfx::Engine& painter );
 
@@ -39,11 +42,13 @@ public signals:
   Signal2<int,int>& onFestivalAssign();
 
 private:
-  FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
+  FestivalPlaning( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_FESTIVAL_PLANING_WINDOW_H_INCLUDED__

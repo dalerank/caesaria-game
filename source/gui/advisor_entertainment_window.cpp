@@ -183,7 +183,7 @@ void Entertainment::draw( Engine& painter )
 
 void Entertainment::_showFestivalWindow()
 {
-  FestivalPlaningWindow* wnd = FestivalPlaningWindow::create( this, _d->city, -1 );
+  dialog::FestivalPlaning* wnd = dialog::FestivalPlaning::create( this, _d->city, -1 );
   CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 

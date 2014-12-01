@@ -39,7 +39,10 @@ using namespace gfx;
 namespace gui
 {
 
-class FestivalPlaningWindow::Impl
+namespace dialog
+{
+
+class FestivalPlaning::Impl
 {
 public:
   typedef enum { divId=0x200, festId=0x400 } FestID;
@@ -93,16 +96,16 @@ public:
   }
 };
 
-FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityPtr city, int id )
+FestivalPlaning* FestivalPlaning::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, Rect( 0, 0, 1, 1 ), city);
+  FestivalPlaning* ret = new FestivalPlaning( parent, id, Rect( 0, 0, 1, 1 ), city);
 
   return ret;
 }
 
-FestivalPlaningWindow::~FestivalPlaningWindow(){}
+FestivalPlaning::~FestivalPlaning(){}
 
-FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
+FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
   setupUI( ":/gui/festivalplaning.gui" );
@@ -157,13 +160,13 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
   _d->btnNo->setTooltipText( "##donot_organize_festival##" );
 
-  CONNECT( _d->btnExit,onClicked(), this, FestivalPlaningWindow::deleteLater );
-  CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaningWindow::deleteLater );
+  CONNECT( _d->btnExit,onClicked(), this, FestivalPlaning::deleteLater );
+  CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaning::deleteLater );
   CONNECT( _d->btnYes, onClicked(), _d.data(), Impl::assignFestival );
-  CONNECT( _d->btnYes, onClicked(), this, FestivalPlaningWindow::deleteLater );
+  CONNECT( _d->btnYes, onClicked(), this, FestivalPlaning::deleteLater );
 }
 
-void FestivalPlaningWindow::draw( gfx::Engine& painter )
+void FestivalPlaning::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -171,7 +174,7 @@ void FestivalPlaningWindow::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-bool FestivalPlaningWindow::onEvent(const NEvent& event)
+bool FestivalPlaning::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -205,6 +208,8 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<int,int>& FestivalPlaningWindow::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
+Signal2<int,int>& FestivalPlaning::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
+
+}//end namespace dialog
 
 }//end namespace gui

@@ -177,7 +177,8 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
     if( !testPics.exist() )
     {
-      errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
+      SETTINGS_SET_VALUE( resourcePath, Variant("") );
+      errorStr = "Not found graphics package. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }

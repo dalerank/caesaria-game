@@ -27,7 +27,10 @@
 namespace gui
 {
 
-class CityDonationWindow::Impl
+namespace dialog
+{
+
+class CityDonation::Impl
 {
 public:
   int wantSend, maxMoney;
@@ -42,7 +45,7 @@ public signals:
   Signal1<int> sendMoneySignal;
 };
 
-CityDonationWindow::CityDonationWindow( Widget* p, int money )
+CityDonation::CityDonation( Widget* p, int money )
   : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(CityDonationWindow)
 {
   __D_IMPL(d,CityDonationWindow)
@@ -63,8 +66,8 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
   d->updateDonationText();
 
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendMoney );
-  CONNECT( btnSend, onClicked(), this, CityDonationWindow::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, CityDonationWindow::deleteLater );
+  CONNECT( btnSend, onClicked(), this, CityDonation::deleteLater );
+  CONNECT( btnCancel, onClicked(), this, CityDonation::deleteLater );
 
   if( money == 0 )
   {
@@ -76,9 +79,9 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
   }
 }
 
-CityDonationWindow::~CityDonationWindow() {}
+CityDonation::~CityDonation() {}
 
-bool CityDonationWindow::onEvent(const NEvent& event)
+bool CityDonation::onEvent(const NEvent& event)
 {
   __D_IMPL(d,CityDonationWindow)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
@@ -109,12 +112,14 @@ bool CityDonationWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>& CityDonationWindow::onSendMoney() { return _dfunc()->sendMoneySignal; }
+Signal1<int>& CityDonation::onSendMoney() { return _dfunc()->sendMoneySignal; }
 
-void CityDonationWindow::Impl::updateDonationText()
+void CityDonation::Impl::updateDonationText()
 {
   std::string text = StringHelper::format( 0xff, "%s %d from %d dn", _("##donation_is##"), wantSend, maxMoney );
   if( lbDonation ) lbDonation->setText( text );
 }
+
+}//end namespace dialog
 
 }//end namespace gui

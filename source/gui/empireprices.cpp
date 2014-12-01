@@ -33,7 +33,7 @@ namespace gui
 namespace advisorwnd
 {
 
-EmpirePricesWindow::EmpirePricesWindow(Widget *parent, int id, const Rect &rectangle, PlayerCityPtr city)
+EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, PlayerCityPtr city)
   : Window( parent, rectangle, "", id )
 {
   setupUI( ":/gui/empireprices.gui" );
@@ -64,7 +64,7 @@ EmpirePricesWindow::EmpirePricesWindow(Widget *parent, int id, const Rect &recta
     }
 }
 
-void EmpirePricesWindow::draw(Engine &painter)
+void EmpirePrices::draw(Engine &painter)
 {
   if( !visible() )
     return;
@@ -72,7 +72,7 @@ void EmpirePricesWindow::draw(Engine &painter)
   Window::draw( painter );
 }
 
-bool EmpirePricesWindow::onEvent(const NEvent &event)
+bool EmpirePrices::onEvent(const NEvent &event)
 {
   if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
     {

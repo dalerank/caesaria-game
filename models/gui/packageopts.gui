@@ -11,7 +11,7 @@
     text.align : [ "center", "center" ]
   }
 	
-	lbTitle#Label : {
+  lbResourcesPath#Label : {
     geometry : [ 12, 50, 70, 82 ]
     font : "FONT_3"
 		text : "Resources: "
