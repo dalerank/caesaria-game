@@ -40,7 +40,7 @@ int SDL_main(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {  
-  std::cout<<"SAURABH VISHWAKARMA"<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
+
 #ifdef CAESARIA_USE_STEAM
   if( !steamapi::Handler::checkSteamRunning() )
     return EXIT_FAILURE;
