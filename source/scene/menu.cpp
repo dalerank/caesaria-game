@@ -48,6 +48,7 @@
 #include "gui/loadmissiondialog.hpp"
 #include "gui/widgetescapecloser.hpp"
 #include "core/event.hpp"
+#include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
 #include "core/stringhelper.hpp"
 #ifdef CAESARIA_USE_STEAM
@@ -98,7 +99,8 @@ public:
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
   void handleStartCareer();
-  void resolveShowChangeLanguageWindow();
+  void showLanguageOptions();
+  void showPackageOptions();
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
   void playMenuSoundTheme();
@@ -146,7 +148,7 @@ void StartMenu::Impl::showSoundOptions()
   e->dispatch();
 }
 
-void StartMenu::Impl::resolveShowChangeLanguageWindow()
+void StartMenu::Impl::showLanguageOptions()
 {
   gui::Widget* parent = game->gui()->rootWidget();
   Size rootSize = parent->size();
@@ -178,6 +180,12 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
   CONNECT( btn, onClicked(), this, Impl::reload );
 }
 
+void StartMenu::Impl::showPackageOptions()
+{
+  dialog::PackageOptions* dlg = new dialog::PackageOptions( game->gui()->rootWidget(), Rect() );
+  dlg->setModal();
+}
+
 void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
@@ -203,7 +211,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
 void StartMenu::Impl::handleStartCareer()
 {
-  gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->gui()->rootWidget() );
+  dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
   dlg->setModal();
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
@@ -339,7 +347,7 @@ void StartMenu::Impl::showOptionsMenu()
   menu->clear();
 
   gui::PushButton* btn = menu->addButton( _("##mainmenu_language##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  CONNECT( btn, onClicked(), this, Impl::showLanguageOptions );
 
   btn = menu->addButton( _("##mainmenu_video##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showVideoOptions );
@@ -347,8 +355,8 @@ void StartMenu::Impl::showOptionsMenu()
   btn = menu->addButton( _("##mainmenu_sound##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showSoundOptions );
 
-  //btn = menu->addButton( _("##mainmenu_game##"), -1 );
-  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  btn = menu->addButton( _("##mainmenu_package##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showLanguageOptions );
 
   btn = menu->addButton( _("##cancel##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );
@@ -385,7 +393,7 @@ void StartMenu::Impl::showMissionSelector()
   Widget* parent = game->gui()->rootWidget();
 
   result = StartMenu::loadMission;
-  LoadMissionDialog* wnd = LoadMissionDialog::create( parent, vfs::Path( ":/missions/" ) );
+  dialog::LoadMission* wnd = dialog::LoadMission::create( parent, vfs::Path( ":/missions/" ) );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
 }

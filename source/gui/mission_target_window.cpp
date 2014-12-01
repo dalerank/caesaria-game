@@ -40,7 +40,10 @@ using namespace gfx;
 namespace gui
 {
 
-class MissionTargetsWindow::Impl
+namespace dialog
+{
+
+class MissionTargets::Impl
 {
 public:
   GameAutoPause locker;
@@ -57,9 +60,9 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr city, int id )
+MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, Rect( 0, 0, 610, 430 ) );
+  MissionTargets* ret = new MissionTargets( parent, id, Rect( 0, 0, 610, 430 ) );
   ret->setCenter( parent->center() );
   ret->setCity( city );
   ret->setModal();
@@ -67,9 +70,9 @@ MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr
   return ret;
 }
 
-MissionTargetsWindow::~MissionTargetsWindow() {}
+MissionTargets::~MissionTargets() {}
 
-MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle ) 
+MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/targets.gui" );
@@ -79,7 +82,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   TexturedButton* btnExit;
   GET_WIDGET_FROM_UI( btnExit )
-  CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
+  CONNECT( btnExit, onClicked(), this, MissionTargets::deleteLater );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
@@ -91,7 +94,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   GET_DWIDGET_FROM_UI( _d, lbxHelp )
 }
 
-void MissionTargetsWindow::draw( gfx::Engine& painter )
+void MissionTargets::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -99,7 +102,7 @@ void MissionTargetsWindow::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void MissionTargetsWindow::setCity(PlayerCityPtr city)
+void MissionTargets::setCity(PlayerCityPtr city)
 {
   _d->city = city;
   const city::VictoryConditions& wint = _d->city->victoryConditions();
@@ -169,5 +172,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
     _d->lbShortDesc->setVisible( !wint.shortDesc().empty() );
   }
 }
+
+}//end namespace dialog
 
 }//end namespace gui

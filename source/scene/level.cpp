@@ -284,10 +284,10 @@ void Level::Impl::setVideoOptions()
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
-  GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->gui()->rootWidget(),
-                                                               game->timeMultiplier(),                                                               
-                                                               0,
-                                                               GameSettings::get( GameSettings::autosaveInterval ) );
+  dialog::GameSpeedOptions* dialog = new dialog::GameSpeedOptions( game->gui()->rootWidget(),
+                                                                   game->timeMultiplier(),
+                                                                   0,
+                                                                   SETTINGS_VALUE( autosaveInterval ) );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
@@ -340,7 +340,7 @@ void Level::Impl::showMessagesWindow()
 
 void Level::Impl::setAutosaveInterval(int value)
 {
-  GameSettings::set( GameSettings::autosaveInterval, value );
+  SETTINGS_SET_VALUE( autosaveInterval, value );
   GameSettings::save();
 }
 
@@ -818,9 +818,9 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success || force )
   {
-    gui::WinMissionWindow* wnd = new gui::WinMissionWindow( game->gui()->rootWidget(),
-                                                            wt.newTitle(), wt.winText(),
-                                                            false );
+    dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
+                                                      wt.newTitle(), wt.winText(),
+                                                      false );
 
     mapToLoad = wt.nextMission();
 
@@ -854,7 +854,7 @@ void Level::Impl::showMissionTaretsWindow()
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {
-    MissionTargetsWindow* wnd = MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() );
+    dialog::MissionTargets* wnd = dialog::MissionTargets::create( game->gui()->rootWidget(), game->city() );
     wnd->show();
     wnd->setID( id );
   }

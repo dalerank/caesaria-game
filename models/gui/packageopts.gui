@@ -1,0 +1,54 @@
+{  
+  geometry : [ 0, 0, 380, 300 ]
+  buttons : "off"
+  static : true
+  bgtype : "whiteFrame"
+
+  lbTitle#Label : {
+    geometry : [ 10, 10, "pw-10", 50 ]
+    font : "FONT_5"
+		text : "##package_options##"
+    text.align : [ "center", "center" ]
+  }
+	
+	lbTitle#Label : {
+    geometry : [ 12, 50, 70, 82 ]
+    font : "FONT_3"
+		text : "Resources: "
+    text.align : [ "center", "center" ]
+  }
+	
+	edResourcesPath#EditBox :
+  {
+    geometry : [ 72, 50, "pw-15", 82 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_2"
+    text : ""
+    text.offset : [ 20, 0 ]
+  }
+	
+	lbApply#Label :
+  {
+    geometry : [ 180, "ph-35", "pw-40", "ph-15" ]
+    text : "##plname_continue##"
+    font : "FONT_2"
+    textAlign : [ "lowerRight", "center" ]
+  }
+	
+	btnApply#TexturedButton :
+  {
+    geometry : [ "pw-40", "ph-40", "pw-13", "ph-13" ]
+    normal : [ "paneling", 179 ]
+    hovered : [ "paneling", 180 ]
+    pressed : [ "paneling", 181 ]
+    disabled : [ "paneling", 179 ]
+  }
+
+  lbExitHelp#Label :
+  {
+    geometry : [ 18, "ph-35", 180, "ph-15" ]
+    text : "##press_escape_to_exit##"
+    font : "FONT_1"
+  }
+
+}

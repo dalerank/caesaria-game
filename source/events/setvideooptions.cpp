@@ -24,6 +24,8 @@
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 
+using namespace gui;
+
 namespace events
 {
 
@@ -37,9 +39,9 @@ GameEventPtr SetVideoSettings::create()
 
 void SetVideoSettings::_exec(Game& game, unsigned int)
 {
-  gui::VideoOptionsWindow* dialog = new gui::VideoOptionsWindow( game.gui()->rootWidget(),
-                                                                 game.engine()->modes(),
-                                                                 game.engine()->isFullscreen() );
+  dialog::VideoOptions* dialog = new dialog::VideoOptions( game.gui()->rootWidget(),
+                                                           game.engine()->modes(),
+                                                           game.engine()->isFullscreen() );
 
   CONNECT( dialog, onSreenSizeChange(), this, SetVideoSettings::_setResolution );
   CONNECT( dialog, onFullScreenChange(), this, SetVideoSettings::_setFullscreen );
@@ -49,13 +51,13 @@ bool SetVideoSettings::_mayExec(Game&, unsigned int) const { return true; }
 
 void SetVideoSettings::_setResolution(Size newSize)
 {
-  GameSettings::set( GameSettings::resolution, newSize );
+  SETTINGS_SET_VALUE( resolution, newSize );
   GameSettings::save();
 }
 
 void SetVideoSettings::_setFullscreen(bool fullscreen)
 {
-  GameSettings::set( GameSettings::fullscreen, fullscreen );
+  SETTINGS_SET_VALUE( fullscreen, fullscreen );
   GameSettings::save();
 }
 

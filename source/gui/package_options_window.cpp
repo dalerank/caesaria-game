@@ -12,15 +12,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
-#define __CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
+#include <cstdio>
 
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
-#include "window.hpp"
+#include "package_options_window.hpp"
+#include "core/stringhelper.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -28,23 +26,16 @@ namespace gui
 namespace dialog
 {
 
-class MissionTargets : public Window
+PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
+  : Window( parent, rectangle, "" )
 {
-public:
-  static MissionTargets* create( Widget* parent, PlayerCityPtr city , int id=-1 );
-  virtual ~MissionTargets();
+  setupUI( ":/gui/packageopts.gui" );
+}
 
-  virtual void draw( gfx::Engine& painter );
-  void setCity( PlayerCityPtr city );
-
-private:
-  MissionTargets( Widget* parent, int id, const Rect& rectangle );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
+PackageOptions::~PackageOptions()
+{
+}
 
 }//end namespace dialog
 
 }//end namespace gui
-#endif //__CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
