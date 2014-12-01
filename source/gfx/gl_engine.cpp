@@ -502,6 +502,14 @@ public:
 
 GlEngine::GlEngine() : Engine(), _d( new Impl )
 {
+	_fps = 0;
+	_lastFps = 0;
+	_lastUpdateFps = 0;
+	_rmask = 0;
+	_gmask = 0;
+	_bmask = 0;
+	_amask = 0;
+	_drawCall = 0;
 }
 
 GlEngine::~GlEngine() {}

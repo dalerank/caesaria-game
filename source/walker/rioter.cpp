@@ -128,7 +128,7 @@ void Rioter::timeStep(const unsigned long time)
       TileOverlay::Group group = (*it)->group();
       if( type == building::house || type == construction::road
           || _d->excludeGroups.count( group ) > 0 ) { it=constructions.erase( it ); }
-      else { it++; }
+      else { ++it; }
     }
 
     Pathway pathway = _d->findTarget( _city(), constructions, pos() );

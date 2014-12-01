@@ -517,6 +517,8 @@ Signal0<>& ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked()
 Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
+Signal0<>& ExtentMenu::onRotateNorth(){  return _d->northButton->onClicked(); }
+
 
 void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
 }

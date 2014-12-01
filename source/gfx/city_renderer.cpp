@@ -76,6 +76,7 @@ public:
   Point currentCursorPos;
   int zoom;
   bool zoomChanged;
+  int sumClockwiseTurns=0;
 
   Renderer::ModePtr changeCommand;
 
@@ -83,6 +84,7 @@ public:
   LayerPtr currentLayer;
   void setLayer( int type );
   void resetWalkersAfterTurn();
+  int clockwiseRotationsToUndo = 0;
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -254,8 +256,28 @@ void CityRenderer::animate(unsigned int time)
   }
 }
 
+void CityRenderer::rotateNorth()
+{
+//  int rotationsToUndo = &(_d->sumClockwiseTurns%4);
+  if(_d->sumClockwiseTurns>0){
+	  while(_d->sumClockwiseTurns!=0){
+		  _d->tilemap->turnLeft();
+		  _d->sumClockwiseTurns--;
+	  }
+  } else if(_d->sumClockwiseTurns<0){
+	  while(_d->sumClockwiseTurns!=0){
+	  		  _d->tilemap->turnRight();
+	  		_d->sumClockwiseTurns++;
+	  }
+  }
+  _d->camera.refresh();
+  _d->camera.tiles();
+  _d->resetWalkersAfterTurn();
+}
+
 void CityRenderer::rotateRight()
 {
+  _d->sumClockwiseTurns++;
   _d->tilemap->turnRight();
   _d->camera.refresh();
   _d->camera.tiles();
@@ -264,6 +286,7 @@ void CityRenderer::rotateRight()
 
 void CityRenderer::rotateLeft()
 {
+  _d->sumClockwiseTurns--;
   _d->tilemap->turnLeft();
   _d->camera.refresh();
   _d->camera.tiles();
