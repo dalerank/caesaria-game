@@ -20,7 +20,7 @@
 #include "game/settings.hpp"
 #include "game/game.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 

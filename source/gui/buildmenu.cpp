@@ -25,7 +25,7 @@
 #include "core/event.hpp"
 #include "environment.hpp"
 #include "core/time.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "city/build_options.hpp"
 #include "core/foreach.hpp"
@@ -116,7 +116,7 @@ void BuildMenu::initialize()
         textSize = font.getTextSize( button->text());
         max_text_width = std::max(max_text_width, textSize.width() );
 
-        std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
+        std::string text = utils::format( 0xff, "%i", button->getCost() );
         textSize = font.getTextSize( text );
         max_cost_width = std::max(max_cost_width, textSize.width());
     }

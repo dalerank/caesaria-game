@@ -18,7 +18,7 @@
 #include "animation.hpp"
 #include "core/position.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 
 namespace gfx

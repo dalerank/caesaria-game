@@ -25,7 +25,7 @@
 #include "core/event.hpp"
 #include "gfx/renderermode.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/house_level.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"

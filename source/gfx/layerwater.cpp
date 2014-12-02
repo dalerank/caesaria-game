@@ -28,7 +28,7 @@
 #include "tilemap_camera.hpp"
 #include "objects/aqueduct.hpp"
 #include "core/font.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 
@@ -118,7 +118,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
           Font f = Font::create( FONT_2 );
           f.setColor( 0xffff0000 );
           int df = aq->water();
-          f.draw( engine.screen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
+          f.draw( engine.screen(), utils::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
 
         int wellValue = tile.param( Tile::pWellWater );
@@ -126,7 +126,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
         int reservoirWater = tile.param( Tile::pReservoirWater );
         if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
         {
-          std::string text = StringHelper::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
+          std::string text = utils::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
           Font f = Font::create( FONT_2 );
           f.setColor( 0xffff0000 );
           f.draw( engine.screen(), text, screenPos + Point( 20, -80 ), false );

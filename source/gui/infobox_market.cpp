@@ -21,7 +21,7 @@
 #include "good/goodstore.hpp"
 #include "core/gettext.hpp"
 #include "good/goodhelper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -98,7 +98,7 @@ void AboutMarket::drawGood( MarketPtr market, const Good::Type &goodType, int in
 
   int offset = ( width() - startOffset * 2 ) / 5;
   std::string goodName = GoodHelper::name( goodType );
-  std::string outText = StringHelper::format( 0xff, "%d", market->goodStore().qty( goodType ) );
+  std::string outText = utils::format( 0xff, "%d", market->goodStore().qty( goodType ) );
 
   // pictures of goods
   Picture pic = GoodHelper::picture( goodType );

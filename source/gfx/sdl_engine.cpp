@@ -33,7 +33,7 @@
 #include "pictureconverter.hpp"
 #include "core/time.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
@@ -116,7 +116,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
+    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -124,7 +124,7 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
+    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -156,7 +156,7 @@ void SdlEngine::init()
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #else
   unsigned int flags = SDL_WINDOW_OPENGL;
-  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
   if(isFullscreen())
   {
@@ -178,7 +178,7 @@ void SdlEngine::init()
 
   if (window == NULL)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
     THROW("Failed to create window");
   }
 
@@ -190,7 +190,7 @@ void SdlEngine::init()
 
   if (renderer == NULL)
   {
-    Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
+    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
     THROW("Failed to create renderer");
   }
 
@@ -231,7 +231,7 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  std::string versionStr = StringHelper::format(0xff, "CaesarIA: SDL %d.%d R%d [%s:%s]",
+  std::string versionStr = utils::format(0xff, "CaesarIA: SDL %d.%d R%d [%s:%s]",
                                                  CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
                                                  CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   SDL_SetWindowTitle( window, versionStr.c_str() );
@@ -253,7 +253,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+    Logger::warning( utils::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
   }
 
   SDL_Texture* tx = 0;
@@ -308,7 +308,7 @@ void SdlEngine::endRenderFrame()
 {
   if( getFlag( Engine::debugInfo ) )
   {
-    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
+    std::string debugText = utils::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
     _d->fpsText->fill( 0, Rect() );
     _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );

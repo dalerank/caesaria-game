@@ -98,7 +98,7 @@
 
 #include "core/font.hpp"
 #include "pictureconverter.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/time.hpp"
 #include "IMG_savepng.h"
 
@@ -503,7 +503,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( StringHelper::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+      Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
       THROW("Failed to create window");
     }
   }
@@ -525,7 +525,7 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Logger::warning( StringHelper::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
 #ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
@@ -632,7 +632,7 @@ void GlEngine::init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Logger::warning( "GrafixEngine: set caption");
-  std::string versionStr = StringHelper::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
+  std::string versionStr = utils::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
                                                  CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
                                                  CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
@@ -676,7 +676,7 @@ Picture* GlEngine::createPicture( const Size& size )
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
 
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
 
   Picture *pic = new Picture();
   pic->init( 0, img, 0 );  // no offset
@@ -802,7 +802,7 @@ void GlEngine::endRenderFrame()
 {
   if( getFlag( Engine::debugInfo ) )
   {
-    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
+    std::string debugText = utils::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
     _d->fpsText->fill( 0, Rect() );
     _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
     draw( *_d->fpsText, Point( _srcSize.width() / 2, 2 ) );

@@ -19,7 +19,7 @@
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "listbox.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "dialogbox.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"
@@ -64,7 +64,7 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
     std::string modeStr;
     foreach( mode, modes )
     {
-      modeStr = StringHelper::format( 0xff, "%dx%d", mode->width(), mode->height() );
+      modeStr = utils::format( 0xff, "%dx%d", mode->width(), mode->height() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
       item.setTag( (mode->width() << 16) + mode->height());
     }

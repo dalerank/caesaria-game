@@ -22,7 +22,7 @@
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
@@ -77,17 +77,17 @@ public:
 
       rfont.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
-      fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
-      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
-      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
-      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
+      fontBlack.draw( *texture, utils::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
+      rfont.draw( *texture, utils::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, utils::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
+      rfont.draw( *texture, utils::format( 0xff, "%d", _lastFestival ), 350, 0 );
 
       rfont.draw( *texture, _( _divinity->moodDescription() ), _xWrathOffset + _divinity->wrathPoints() / 15 * 15, 0 );
     }
     else
     {
       rfont.draw( *texture, _("##oracles_in_city##"), 0, 0 );
-      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, utils::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
     }
   }
 

@@ -21,7 +21,7 @@
 #include "gui/pushbutton.hpp"
 #include "gui/label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "objects/military.hpp"
 #include "city/helper.hpp"
@@ -90,11 +90,11 @@ public:
     {
       fontW.draw( *pic, _( _fort->legionName() ), 70, 4 );
 
-      std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
+      std::string qtyStr = utils::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
       fontB.draw( *pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
-      std::string moraleStr = StringHelper::format( 0xff, "##legion_morale_%d##", moraleValue );
+      std::string moraleStr = utils::format( 0xff, "##legion_morale_%d##", moraleValue );
       fontB.draw( *pic, _( moraleStr ), 180, 15 );
     }    
   }

@@ -21,7 +21,7 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace gfx;
 
@@ -96,7 +96,7 @@ Desirability Garden::desirability() const
 
 std::string Garden::sound() const
 {
-  return StringHelper::format( 0xff, "garden_%05d", size().area() );
+  return utils::format( 0xff, "garden_%05d", size().area() );
 }
 
 void Garden::destroy()

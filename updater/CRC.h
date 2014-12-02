@@ -24,7 +24,7 @@
 
 #include "vfs/path.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 namespace updater
 {
@@ -41,7 +41,7 @@ public:
 
 		std::stringstream ss;
 
-		if (!StringHelper::startsWith(hexaStr, "0x"))
+		if (!utils::startsWith(hexaStr, "0x"))
 		{
 			ss << ("0x" + hexaStr);
 		}
@@ -57,7 +57,7 @@ public:
 
 	static std::string ToString(unsigned int crc)
 	{
-		return StringHelper::format( 0xff, "%x", crc );
+		return utils::format( 0xff, "%x", crc );
 	}
 
 	/**

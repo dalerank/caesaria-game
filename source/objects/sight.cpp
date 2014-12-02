@@ -23,7 +23,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/trainee.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"

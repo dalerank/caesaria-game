@@ -21,7 +21,7 @@
 #include "game.hpp"
 #include "core/exception.hpp"
 #include "objects/objects_factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"

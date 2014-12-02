@@ -22,7 +22,7 @@
 #include "game/resourcegroup.hpp"
 #include "contextmenuitem.hpp"
 #include "gfx/picturesarray.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
@@ -95,13 +95,13 @@ void TopMenu::draw(gfx::Engine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( StringHelper::format( 0xff, "%s %d", _("##pop##"), value ) );
+    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
+    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()

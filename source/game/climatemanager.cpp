@@ -20,7 +20,7 @@
 #include "vfs/filesystem.hpp"
 #include "gfx/loader.hpp"
 #include "resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/picture_bank.hpp"
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"

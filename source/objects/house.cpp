@@ -19,7 +19,7 @@
 #include "house.hpp"
 #include "gfx/helper.hpp"
 #include "objects/house_level.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "walker/workerhunter.hpp"
 #include "walker/immigrant.hpp"
@@ -1074,7 +1074,7 @@ std::string House::sound() const
   if( !_d->habitants.count() )
     return "";
 
-  return StringHelper::format( 0xff, "house_%05d", _d->houseLevel*10+1 );
+  return utils::format( 0xff, "house_%05d", _d->houseLevel*10+1 );
 }
 
 std::string House::troubleDesc() const
@@ -1322,7 +1322,7 @@ std::string House::levelName() const
 
   if( big )
   {
-    ret = StringHelper::replace( ret, "small", "big" );
+    ret = utils::replace( ret, "small", "big" );
   }
 
   return ret;

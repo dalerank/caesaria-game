@@ -17,7 +17,7 @@
 
 #include "changespeed.hpp"
 #include "dispatcher.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
@@ -34,7 +34,7 @@ using namespace gfx;
 namespace events
 {
 
-static const int windowGamePausedId = StringHelper::hash( "gamepause" );
+static const int windowGamePausedId = utils::hash( "gamepause" );
 
 GameEventPtr Pause::create( Mode mode )
 {
@@ -133,7 +133,7 @@ void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );  
 
-  GameEventPtr e = WarningMessageEvent::create( _("##current_game_speed_is##") + StringHelper::i2str( game.timeMultiplier() ) + "%" );
+  GameEventPtr e = WarningMessageEvent::create( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%" );
   e->dispatch();
 }
 

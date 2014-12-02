@@ -21,7 +21,7 @@
 #include <map>
 #include "core/gettext.hpp"
 #include "core/saveadapter.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/enumerator.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
@@ -405,7 +405,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
     VariantList soundVl = options[ "sound" ].toList();
     if( !soundVl.empty() )
     {
-      bData._d->sound = StringHelper::format( 0xff, "%s_%05d",
+      bData._d->sound = utils::format( 0xff, "%s_%05d",
                                               soundVl.get( 0 ).toString().c_str(), soundVl.get( 1 ).toInt() );
     }
 

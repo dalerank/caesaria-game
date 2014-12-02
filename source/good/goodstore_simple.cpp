@@ -17,7 +17,7 @@
 #include "core/math.hpp"
 #include "core/foreach.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 
 class SmStock : public GoodStock, public ReferenceCounted

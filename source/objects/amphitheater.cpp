@@ -21,7 +21,7 @@
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "training.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 #include "walker/serviceman.hpp"

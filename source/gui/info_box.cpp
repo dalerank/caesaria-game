@@ -31,7 +31,7 @@
 #include "gui/label.hpp"
 #include "city/city.hpp"
 #include "objects/market.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "good/goodhelper.hpp"
 #include "objects/farm.hpp"
 #include "objects/entertainment.hpp"
@@ -208,7 +208,7 @@ void Simple::_updateWorkersLabel(const Point &pos, int picId, int need, int have
     return;
 
   // number of workers
-  std::string text = StringHelper::format( 0xff, "%d %s (%d %s)",
+  std::string text = utils::format( 0xff, "%d %s (%d %s)",
                                            have, _("##employers##"),
                                            need, _("##requierd##") );
   _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );

@@ -3,7 +3,7 @@
 #include "environment.hpp"
 #include "core/saveadapter.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/event.hpp"
 
 namespace gui

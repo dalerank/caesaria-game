@@ -18,7 +18,7 @@
 #include "playername_window.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widgetescapecloser.hpp"
 #include "widget_helper.hpp"

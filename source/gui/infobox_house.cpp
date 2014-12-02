@@ -32,7 +32,7 @@
 #include "city/city.hpp"
 #include "objects/market.hpp"
 #include "objects/granary.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "good/goodhelper.hpp"
 #include "objects/farm.hpp"
 #include "objects/entertainment.hpp"
@@ -89,7 +89,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     houseInfo->setText( _(text) );
   }
 
-  std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
+  std::string workerState = utils::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
                                                   _house->habitants().count(),
                                                   (int)_house->getServiceValue( Service::recruter ),
                                                   _house->habitants().count( CitizenGroup::newborn ),
@@ -108,7 +108,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   {
     if( _house->getServiceValue( Service::forum ) > 0 )
     {
-      taxesStr = StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
+      taxesStr = utils::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
     }
     else
     {
@@ -173,17 +173,17 @@ void AboutHouse::drawHabitants( HousePtr house )
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
-    freeRoomText = StringHelper::format( 0xff, "%d %s %d", current, _("##citizens_additional_rooms_for##"), freeRoom);
+    freeRoomText = utils::format( 0xff, "%d %s %d", current, _("##citizens_additional_rooms_for##"), freeRoom);
   }
   else if (freeRoom == 0)
   {
     // full house!
-    freeRoomText = StringHelper::format( 0xff, "%d %s", current, _("##occupants##"));
+    freeRoomText = utils::format( 0xff, "%d %s", current, _("##occupants##"));
   }
   else if (freeRoom < 0)
   {
     // too many habitants!
-    freeRoomText = StringHelper::format( 0xff, "%d %s %d", current, _("##no_room_for_citizens##"),-freeRoom);
+    freeRoomText = utils::format( 0xff, "%d %s %d", current, _("##no_room_for_citizens##"),-freeRoom);
     lbHabitants->setFont( Font::create( FONT_2_RED ) );
   }
 
@@ -193,7 +193,7 @@ void AboutHouse::drawHabitants( HousePtr house )
 void AboutHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
-  std::string text = StringHelper::format( 0xff, "%d", qty);
+  std::string text = utils::format( 0xff, "%d", qty);
 
   // pictures of goods
   const Picture& pic = GoodHelper::picture( goodType );

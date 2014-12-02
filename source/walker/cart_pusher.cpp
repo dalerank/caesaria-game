@@ -32,7 +32,7 @@
 #include "gfx/picture_bank.hpp"
 #include "objects/factory.hpp"
 #include "good/goodstore.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"

@@ -24,7 +24,7 @@
 #include "events/disaster.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "extension.hpp"
 #include "core/json.hpp"
 
@@ -82,7 +82,7 @@ std::string Construction::troubleDesc() const
     const char* troubleName[] = { "some", "have", "most" };
     lvlTrouble = std::max( fire, damage );
     const char* typelvl = ( fire > damage ) ? "fire" : "damage";
-    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)((lvlTrouble-50) / 25) ], typelvl );
+    return utils::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)((lvlTrouble-50) / 25) ], typelvl );
   }
 
   return "";
@@ -99,7 +99,7 @@ bool Construction::build(PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
 
-  std::string name =  StringHelper::format( 0xff, "%s_%d_%d",
+  std::string name =  utils::format( 0xff, "%s_%d_%d",
                                             MetaDataHolder::findTypename( type() ).c_str(),
                                             pos.i(), pos.j() );
   setName( name );
@@ -184,7 +184,7 @@ void Construction::save( VariantMap& stream) const
   {
     VariantMap vmExt;
     (*it)->save( vmExt );
-    vm_extensions[ StringHelper::i2str( extIndex++ ) ] = vmExt;
+    vm_extensions[ utils::i2str( extIndex++ ) ] = vmExt;
   }
 
   stream[ "extensions" ] = vm_extensions;

@@ -22,7 +22,7 @@
 #include "events/showrequestwindow.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 namespace city
 {
@@ -112,7 +112,7 @@ VariantMap Dispatcher::save() const
 
   foreach( rq, _d->requests )
   {
-    std::string name = StringHelper::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
+    std::string name = utils::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
     vm_rq[ name ] = (*rq)->save();
   }
 

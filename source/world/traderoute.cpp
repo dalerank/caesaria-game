@@ -20,7 +20,7 @@
 #include "merchant.hpp"
 #include "city.hpp"
 #include "good/goodstore_simple.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"

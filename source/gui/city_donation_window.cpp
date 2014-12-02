@@ -21,7 +21,7 @@
 #include "core/logger.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "widget_helper.hpp"
 
 namespace gui
@@ -116,7 +116,7 @@ Signal1<int>& CityDonation::onSendMoney() { return _dfunc()->sendMoneySignal; }
 
 void CityDonation::Impl::updateDonationText()
 {
-  std::string text = StringHelper::format( 0xff, "%s %d from %d dn", _("##donation_is##"), wantSend, maxMoney );
+  std::string text = utils::format( 0xff, "%s %d from %d dn", _("##donation_is##"), wantSend, maxMoney );
   if( lbDonation ) lbDonation->setText( text );
 }
 

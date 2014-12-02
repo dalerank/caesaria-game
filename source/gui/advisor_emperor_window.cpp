@@ -22,7 +22,7 @@
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "groupbox.hpp"
 #include "listbox.hpp"
@@ -88,11 +88,11 @@ public:
     city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
     if( gr.isValid() )
     {
-      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->qty() ), 2, 2 );
+      font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
       font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = GameDate::current().monthsTo( gr->finishedDate() );
-      font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
+      font.draw( *pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
       font.draw( *pic, gr->description(), 5, pic->height() - 20 );
     }
   }
@@ -148,7 +148,7 @@ public:
 
   std::string getEmperorFavourStr()
   {
-    return StringHelper::format( 0xff, "##emperor_favour_%02d##", (int)(city->favour() / 100.f) * 20 );
+    return utils::format( 0xff, "##emperor_favour_%02d##", (int)(city->favour() / 100.f) * 20 );
   }
 };
 
@@ -261,7 +261,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, btnChangeSalary )
 
   if( _d->lbEmperorFavour )
-    _d->lbEmperorFavour->setText( StringHelper::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
+    _d->lbEmperorFavour->setText( utils::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
 
   if( _d->lbEmperorFavourDesc )
     _d->lbEmperorFavourDesc->setText( _( _d->getEmperorFavourStr() ) );

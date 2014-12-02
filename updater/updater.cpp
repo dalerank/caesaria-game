@@ -267,7 +267,7 @@ void Updater::DetermineLocalVersion()
 			vfs::Directory folder = getTargetDir();
 			vfs::Path candidate = folder.getFilePath( f->second.file );
 
-			if( StringHelper::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), StringHelper::equaleIgnoreCase ) )
+			if( utils::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), utils::equaleIgnoreCase ) )
 			{
 				Logger::warning( "IGNORE" );
 				continue;
@@ -525,7 +525,7 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
   //Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
 
   // check ignore list
-  if (isIgnored(StringHelper::localeLower(releaseFile.file.toString())))
+  if (isIgnored(utils::localeLower(releaseFile.file.toString())))
   {
     Logger::warning("IGNORED");
     return true; // ignore this file
@@ -948,7 +948,7 @@ void Updater::PostUpdateCleanup()
   vfs::Entries dir = pdir.getEntries();
   foreach( i, dir )
   {
-    if( StringHelper::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
+    if( utils::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
     {
       vfs::NFile::remove( i->fullpath );
     }

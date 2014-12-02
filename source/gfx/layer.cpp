@@ -31,7 +31,7 @@
 #include "core/font.hpp"
 #include "layerconstants.hpp"
 #include "decorator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
@@ -569,7 +569,7 @@ void Layer::afterRender( Engine& engine)
     if( _d->tilePosText->isValid() )
     {
       _d->tilePosText->fill( 0x0 );
-      _d->debugFont.draw( *_d->tilePosText, StringHelper::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+      _d->debugFont.draw( *_d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
     }
 
     TileOverlayPtr ov = tile->overlay();

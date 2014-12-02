@@ -29,7 +29,7 @@
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace gfx;
 
@@ -146,7 +146,7 @@ std::string ServiceBuilding::workersStateDesc() const
               ? "ready_for_work"
               : "prepare_for_work";
   }
-  std::string currentState = StringHelper::format( 0xff, "##%s_%s##", srvcType.c_str(), state.c_str() );
+  std::string currentState = utils::format( 0xff, "##%s_%s##", srvcType.c_str(), state.c_str() );
   return currentState;
 }
 

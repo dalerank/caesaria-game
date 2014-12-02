@@ -16,18 +16,18 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "json.hpp"
-#include "stringhelper.hpp"
+#include "utils.hpp"
 
 static std::string lastParsedObjectName;
 static std::string sanitizeString(std::string str)
 {
-  str = StringHelper::replace( str, "\\", "\\\\");
-  str = StringHelper::replace( str, "\"", "\\\"");
-  str = StringHelper::replace( str, "\b", "\\b");
-  str = StringHelper::replace( str, "\f", "\\f");
-  str = StringHelper::replace( str, "\n", "\\n");
-  str = StringHelper::replace( str, "\r", "\\r");
-  str = StringHelper::replace( str, "\t", "\\t");
+  str = utils::replace( str, "\\", "\\\\");
+  str = utils::replace( str, "\"", "\\\"");
+  str = utils::replace( str, "\b", "\\b");
+  str = utils::replace( str, "\f", "\\f");
+  str = utils::replace( str, "\n", "\\n");
+  str = utils::replace( str, "\r", "\\r");
+  str = utils::replace( str, "\t", "\\t");
   
   return std::string( "\"" ) + str + std::string("\"");
 }
@@ -162,8 +162,8 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::Float: // double?
     {
       // TODO: cheap hack - almost locale independent double formatting
-      str = StringHelper::format( 0xff, "\"%f\"", data.toDouble() );
-      str = StringHelper::replace(str, ",", ".");
+      str = utils::format( 0xff, "\"%f\"", data.toDouble() );
+      str = utils::replace(str, ",", ".");
       if( str.find(".") == std::string::npos && str.find("e") == std::string::npos )
       {
          str += ".0";
@@ -174,21 +174,21 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::NTilePos:
     {
       const TilePos& pos = data.toTilePos();
-      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.i(), pos.j() );
+      str = utils::format( 0xff, "[ %d, %d ]", pos.i(), pos.j() );
     }
     break;
 
     case Variant::NSize:
     {
       const Size& size = data.toSize();
-      str = StringHelper::format( 0xff, "[ %d, %d ]", size.width(), size.height() );
+      str = utils::format( 0xff, "[ %d, %d ]", size.width(), size.height() );
     }
     break;
 
     case Variant::NPoint:
     {
       const Point& pos = data.toPoint();
-      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.x(), pos.y() );
+      str = utils::format( 0xff, "[ %d, %d ]", pos.x(), pos.y() );
     }
     break;
 
@@ -196,9 +196,9 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     {
       PointF pos = data.toPointF();
       // TODO: cheap hack - almost locale independent double formatting
-      std::string posX = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.x()), ",", ".");
-      std::string posY = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.y()), ",", ".");
-      str = StringHelper::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
+      std::string posX = utils::replace(utils::format( 0xff, "%f", pos.x()), ",", ".");
+      std::string posY = utils::replace(utils::format( 0xff, "%f", pos.y()), ",", ".");
+      str = utils::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
     }
     break;
 
@@ -210,30 +210,30 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
 
     case Variant::ULongLong: // large unsigned number?
     {
-      str = StringHelper::format( 0xff, "%u", data.toULongLong() );
+      str = utils::format( 0xff, "%u", data.toULongLong() );
     }
     break;
 
     case Variant::Int: // simple int?
     {
-      str = StringHelper::format( 0xff, "%d", data.toInt() );
+      str = utils::format( 0xff, "%d", data.toInt() );
     }
     break;
 
     case Variant::UInt:
     {
-      str = StringHelper::format( 0xff, "%d", data.toInt() );
+      str = utils::format( 0xff, "%d", data.toInt() );
     }
     break;
 
     default:
       if ( data.canConvert( Variant::LongLong ) ) // any signed number?
       {
-        str = StringHelper::format( 0xff, "%d", data.toLongLong() );
+        str = utils::format( 0xff, "%d", data.toLongLong() );
       }
       else if (data.canConvert( Variant::Long ))
       {
-        str = StringHelper::format( 0xff, "%d", data.toLongLong() );
+        str = utils::format( 0xff, "%d", data.toLongLong() );
       }
       else if (data.canConvert( Variant::String ) ) // can value be converted to string?
       {
@@ -345,7 +345,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
           return Variant(name);
         }
 
-        name = StringHelper::replace( name, " ", "" );
+        name = utils::replace( name, " ", "" );
 
         index++;
         Variant value = Json::parseValue(json, index, success);
@@ -378,7 +378,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
         if(token != JsonTokenColon)
         {
           success = false;
-          std::string errText = StringHelper::format( 0xff, "Wrong token colon near \"%s\"", name.c_str() );
+          std::string errText = utils::format( 0xff, "Wrong token colon near \"%s\"", name.c_str() );
           return Variant( errText );
         }
 
@@ -513,7 +513,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
   {
     success = false;
     std::string advText = json.substr( std::max( 0, index - 60), 120 );
-    std::string errText = StringHelper::format( 0xff, "Wrong symbol in object name \"%s\"  at \n %s", s.c_str(), advText.c_str() );
+    std::string errText = utils::format( 0xff, "Wrong symbol in object name \"%s\"  at \n %s", s.c_str(), advText.c_str() );
     return Variant( errText );
   }
 
@@ -637,15 +637,15 @@ Variant Json::parseNumber(const std::string &json, int &index)
 
         if( numberStr.find('.') != std::string::npos )
         {
-          return Variant( StringHelper::toFloat( numberStr.c_str() ) );
+          return Variant( utils::toFloat( numberStr.c_str() ) );
         }
         else if( numberStr[0] == '-' ) 
         {
-          return Variant( StringHelper::toInt( numberStr.c_str() ) );
+          return Variant( utils::toInt( numberStr.c_str() ) );
         } 
         else 
         {
-          return Variant( StringHelper::toUint( numberStr.c_str() ) );
+          return Variant( utils::toUint( numberStr.c_str() ) );
         }
 }
 

@@ -21,7 +21,7 @@
 #include "gui/pushbutton.hpp"
 #include "gui/label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
@@ -219,12 +219,12 @@ void AdvisorChief::Impl::drawEmploymentState()
     int needWorkersNumber = maxWorkers - currentWorkers;
     if( needWorkersNumber > 10 )
     {
-      text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
+      text = utils::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
       color = DefaultColors::brown;
     }
     else if( workless > 10 )
     {
-      text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
+      text = utils::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
       color = DefaultColors::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
@@ -237,8 +237,8 @@ void AdvisorChief::Impl::drawProfitState()
 {
   std::string text;
   int profit = city->funds().profit();
-  if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
-  else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
+  if( profit >= 0 )  {    text = utils::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
+  else  {    text = utils::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
   drawReportRow( profitState, text,
                  profit > 0 ? DefaultColors::black : DefaultColors::brown );
@@ -301,7 +301,7 @@ void AdvisorChief::Impl::drawFoodStockState()
           case 3: text = "##our_foods_level_are_low##"; break;
 
           default:
-            text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+            text = utils::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
     }
@@ -386,7 +386,7 @@ void AdvisorChief::Impl::drawMilitary()
       {
         if( minDistance <= 40 )
         {
-          std::string threatText = StringHelper::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          std::string threatText = utils::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
           reasons << threatText;
         }
         else if( minDistance <= 100 )

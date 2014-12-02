@@ -22,7 +22,7 @@
 #include "pathway/path_finding.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"

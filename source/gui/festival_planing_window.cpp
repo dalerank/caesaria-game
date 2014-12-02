@@ -27,7 +27,7 @@
 #include "core/gettext.hpp"
 #include "city/funds.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "religion/pantheon.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
@@ -89,7 +89,7 @@ public:
   {
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
-    std::string text = StringHelper::format( 0xff, "##hold_%s_festival##", divinity.isValid()
+    std::string text = utils::format( 0xff, "##hold_%s_festival##", divinity.isValid()
                                                                               ? divinity->debugName().c_str()
                                                                               : "unknown" );
     lbTitle->setText( _(text) );
@@ -139,21 +139,21 @@ FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle,
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
-    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
+    _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
-    _d->btnMiddleFestival->setText( StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
+    _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
-    _d->btnGreatFestival->setText( StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
+    _d->btnGreatFestival->setText( utils::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
   }
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );

@@ -19,7 +19,7 @@
 #include "empire.hpp"
 #include "city.hpp"
 #include "good/goodstore_simple.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
 #include "core/logger.hpp"
@@ -150,7 +150,7 @@ void Trading::sendMerchant( const std::string& begin, const std::string& end,
 
 TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& end )
 {
-  unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
+  unsigned int routeId = utils::hash( begin ) + utils::hash( end );
   Impl::TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
@@ -180,7 +180,7 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
     return route;
   }
 
-  unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
+  unsigned int routeId = utils::hash( begin ) + utils::hash( end );
 
   route = TraderoutePtr( new Traderoute( _d->empire, begin, end ) );
   _d->routes[ routeId ] = route;

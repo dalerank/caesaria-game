@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_UPDATER_UTIL_H_INCLUDE__
 #define __CAESARIA_UPDATER_UTIL_H_INCLUDE__
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "vfs/path.hpp"
 
 // Platform-specific Sleep(int msec) definition
@@ -42,19 +42,19 @@ public:
 	{
 		if (size > 1024*1024*1024)
 		{
-			return StringHelper::format( 0xff, "%0.2f GB", size / (1024*1024*1024.f) );
+			return utils::format( 0xff, "%0.2f GB", size / (1024*1024*1024.f) );
 		}
 		else if (size > 1024*1024)
 		{
-			return  StringHelper::format( 0xff, "%0.1f MB", size / (1024*1024.f) );
+			return  utils::format( 0xff, "%0.1f MB", size / (1024*1024.f) );
 		}
 		else if (size > 1024)
 		{
-			return  StringHelper::format( 0xff, "%0.0f kB", size / 1024.f );
+			return  utils::format( 0xff, "%0.0f kB", size / 1024.f );
 		}
 		else
 		{
-			return  StringHelper::format( 0xff, "%d bytes", size);
+			return  utils::format( 0xff, "%d bytes", size);
 		}
 	}
 

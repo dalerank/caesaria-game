@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "trade_options.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "good/goodhelper.hpp"
 #include "good/goodstore_simple.hpp"
 #include "core/logger.hpp"

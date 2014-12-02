@@ -23,7 +23,7 @@
 #include "city/helper.hpp"
 #include "good/goodhelper.hpp"
 #include "city/city.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"

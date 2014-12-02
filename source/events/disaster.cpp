@@ -24,7 +24,7 @@
 #include "objects/house_level.hpp"
 #include "objects/house.hpp"
 #include "objects/ruins.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tilesarray.hpp"
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
@@ -130,9 +130,9 @@ void DisasterEvent::_exec( Game& game, unsigned int )
           if( ruins.isValid() )
           {
             std::string typev = _infoType > 1000
-                                  ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
+                                  ? utils::format( 0xff, "house%02d", _infoType - 1000 )
                                   : MetaDataHolder::findTypename( _infoType );
-            ruins->setInfo( StringHelper::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
+            ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
             ruins->afterBuild();
           }
         }

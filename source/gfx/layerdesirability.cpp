@@ -23,7 +23,7 @@
 #include "city/helper.hpp"
 #include "core/font.hpp"
 #include "core/event.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "layerconstants.hpp"
 
 using namespace constants;
@@ -113,7 +113,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offse
 
   if( desirability != 0 )
   {
-    Picture* tx = _d->debugFont.once( StringHelper::format( 0xff, "%d", desirability) );
+    Picture* tx = _d->debugFont.once( utils::format( 0xff, "%d", desirability) );
     _d->debugText.push_back( tx );
 
     _addPicture( screenPos + Point( 20, -15 ), *tx );

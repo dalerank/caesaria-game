@@ -19,7 +19,7 @@
 #include "inifile.hpp"
 #include "CRC.h"
 #include "vfs/path.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "vfs/entries.hpp"
 #include "vfs/file.hpp"
 #include "vfs/directory.hpp"
@@ -116,7 +116,7 @@ struct ReleaseFile
 
 	bool isUpdater(const std::string& executable) const
 	{
-		return StringHelper::isEquale( file.toString(), executable );
+		return utils::isEquale( file.toString(), executable );
 	}
 };
 

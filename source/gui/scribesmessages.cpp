@@ -20,7 +20,7 @@
 #include "listbox.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/datetimehelper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "widgetescapecloser.hpp"
 #include "city/cityservice_info.hpp"
 #include "city/city.hpp"

@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "stringhelper.hpp"
+#include "utils.hpp"
 #include "requirements.hpp"
 #include "logger.hpp"
 
@@ -29,11 +29,12 @@
 #include <sstream>
 #include "stacktrace.hpp"
 
-namespace {
- static bool outputStacktraceLog = false;
-}
+namespace utils
+{
 
-int StringHelper::vformat(std::string& str, int max_size, const char* format, va_list argument_list)
+static bool outputStacktraceLog = false;
+
+int vformat(std::string& str, int max_size, const char* format, va_list argument_list)
 {
   if (format == NULL || format[0] == '\0') //au: VladRassokhin
   {
@@ -65,9 +66,9 @@ int StringHelper::vformat(std::string& str, int max_size, const char* format, va
   return length;
 }
 
-void StringHelper::useStackTrace(bool enabled) {  outputStacktraceLog = enabled;}
+void useStackTrace(bool enabled) {  outputStacktraceLog = enabled;}
 
-std::string StringHelper::trim(const std::string& str)
+std::string trim(const std::string& str)
 {
   std::string ret = str;
   ret.erase(0, ret.find_first_not_of(' '));       //prefixing spaces
@@ -75,12 +76,12 @@ std::string StringHelper::trim(const std::string& str)
   return ret;
 }
 
-std::string StringHelper::i2str(int value)
+std::string i2str(int value)
 {
   return format( 0xff, "%d", value );
 }
 
-std::string StringHelper::format( unsigned int max_size, const char* fmt, ...)
+std::string format( unsigned int max_size, const char* fmt, ...)
 {
   va_list argument_list;
   va_start(argument_list, fmt);
@@ -93,7 +94,7 @@ std::string StringHelper::format( unsigned int max_size, const char* fmt, ...)
   return ret;
 }
 
-float StringHelper::toFloat( const char* in, const char** out /*= 0*/ )
+float toFloat( const char* in, const char** out /*= 0*/ )
 {
   if (!in)
   {
@@ -139,12 +140,12 @@ float StringHelper::toFloat( const char* in, const char** out /*= 0*/ )
   return floatValue;
 }
 
-float StringHelper::toFloat(std::string in)
+float toFloat(std::string in)
 {
   return toFloat( in.c_str() );
 }
 
-int StringHelper::toInt( const char* in, const char** out/*=0*/ )
+int toInt( const char* in, const char** out/*=0*/ )
 {
   if (!in)
   {
@@ -174,12 +175,12 @@ int StringHelper::toInt( const char* in, const char** out/*=0*/ )
   }
 }
 
-int StringHelper::toInt( const std::string& number )
+int toInt( const std::string& number )
 {
   return toInt( number.c_str() );
 }
 
-unsigned int StringHelper::toUint( const char* in, const char** out/*=0*/ )
+unsigned int toUint( const char* in, const char** out/*=0*/ )
 {
   if (!in)
   {
@@ -209,7 +210,7 @@ unsigned int StringHelper::toUint( const char* in, const char** out/*=0*/ )
   return unsignedValue;
 }
 
-std::string StringHelper::replace( std::string text, const std::string& from, const std::string& to )
+std::string replace( std::string text, const std::string& from, const std::string& to )
 {
   for (size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
     text.replace(i, from.length(), to);
@@ -219,7 +220,7 @@ std::string StringHelper::replace( std::string text, const std::string& from, co
   return text;
 }
 
-bool StringHelper::isEquale( const std::string& a, const std::string& b, equaleMode mode )
+bool isEquale( const std::string& a, const std::string& b, equaleMode mode )
 {
   switch( mode )
   {
@@ -234,7 +235,7 @@ bool StringHelper::isEquale( const std::string& a, const std::string& b, equaleM
   }
 }
 
-int StringHelper::compare( const std::string& a, const std::string& b, equaleMode mode )
+int compare( const std::string& a, const std::string& b, equaleMode mode )
 {
   switch( mode )
   {
@@ -249,7 +250,7 @@ int StringHelper::compare( const std::string& a, const std::string& b, equaleMod
   }
 }
 
-unsigned int StringHelper::hash( const std::string& text )
+unsigned int hash( const std::string& text )
 {
   unsigned int nHash = 0;
   const char* key = text.c_str();
@@ -262,7 +263,7 @@ unsigned int StringHelper::hash( const std::string& text )
   return nHash;
 }
 
-unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
+unsigned int hash( unsigned int max_size, const char* fmt, ... )
 {
   va_list argument_list;
   va_start(argument_list, fmt);
@@ -275,7 +276,7 @@ unsigned int StringHelper::hash( unsigned int max_size, const char* fmt, ... )
   return hash( fmtStr );
 }
 
-StringArray StringHelper::split( std::string str, std::string spl )
+StringArray split( std::string str, std::string spl )
 {
   StringArray ret;
   if(spl.empty())
@@ -297,7 +298,7 @@ StringArray StringHelper::split( std::string str, std::string spl )
   return ret;
 }
 
-bool StringHelper::isEqualen( const std::string& str1, const std::string& str2, unsigned int n )
+bool isEqualen( const std::string& str1, const std::string& str2, unsigned int n )
 {
   unsigned int i;
   unsigned int minStrLenght = math::min<unsigned int>( str1.length(), str2.length() );
@@ -320,7 +321,7 @@ static char __localeLower( char x )
   return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
 }
 
-std::string StringHelper::localeLower( const std::string& str)
+std::string localeLower( const std::string& str)
 {
   std::string ret = str;
   std::transform( ret.begin(), ret.end(), ret.begin(), __localeLower );
@@ -328,13 +329,15 @@ std::string StringHelper::localeLower( const std::string& str)
 }
 
 
-bool StringHelper::startsWith(std::string text, std::string start)
+bool startsWith(std::string text, std::string start)
 {
   text.resize( start.length() );
   return text == start;
 }
 
-unsigned int StringHelper::toUint(const std::string& in)
+unsigned int toUint(const std::string& in)
 {
   return toUint( in.c_str(), 0 );
 }
+
+}//end namespace utils

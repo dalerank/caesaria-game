@@ -15,7 +15,7 @@
 
 #include "wall.hpp"
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/time.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"

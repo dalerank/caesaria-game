@@ -22,7 +22,7 @@
 #include "label.hpp"
 #include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "city/helper.hpp"
@@ -85,13 +85,13 @@ public:
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
+    std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = StringHelper::format( 0xff, "%d", _info.buildingWork );
+    std::string buildingWorkT = utils::format( 0xff, "%d", _info.buildingWork );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
-    std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
+    std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
     rfont.draw( *texture, peoplesStrT, 255, 0 );
 
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
@@ -157,7 +157,7 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
     sumStudents += (*house)->habitants().count( CitizenGroup::student );
   }
 
-  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 

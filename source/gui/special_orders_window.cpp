@@ -30,7 +30,7 @@
 #include "good/goodhelper.hpp"
 #include "good/goodstore.hpp"
 #include "good/goodorders.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 

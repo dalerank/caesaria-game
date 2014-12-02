@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "trading_options.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/game.hpp"
 #include "world/empire.hpp"
 #include "good/goodhelper.hpp"

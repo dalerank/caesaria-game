@@ -50,7 +50,7 @@
 #include "core/event.hpp"
 #include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"
 #endif
@@ -356,7 +356,7 @@ void StartMenu::Impl::showOptionsMenu()
   CONNECT( btn, onClicked(), this, Impl::showSoundOptions );
 
   btn = menu->addButton( _("##mainmenu_package##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::showLanguageOptions );
+  CONNECT( btn, onClicked(), this, Impl::showPackageOptions );
 
   btn = menu->addButton( _("##cancel##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );

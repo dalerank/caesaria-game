@@ -23,7 +23,7 @@
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "groupbox.hpp"
@@ -92,7 +92,7 @@ public:
       Font f = font( _state() );
       PictureRef& textPic = _textPictureRef();
       f.draw( *textPic, _( _goodName ), 55, 0, true, false );
-      f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0, true, false );
+      f.draw( *textPic, utils::format( 0xff, "%d", _qty), 190, 0, true, false );
       f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
@@ -106,7 +106,7 @@ public:
       break;
 
       case city::TradeOptions::exporting:
-        tradeStateText = StringHelper::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
+        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
       break;
 
       default: break;

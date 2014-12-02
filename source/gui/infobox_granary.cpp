@@ -22,7 +22,7 @@
 #include "pushbutton.hpp"
 #include "core/gettext.hpp"
 #include "objects/granary.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "good/goodstore.hpp"
 #include "core/logger.hpp"
 #include "special_orders_window.hpp"
@@ -59,7 +59,7 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
   if( lbUnits )
   {
     // summary: total stock, free capacity
-    std::string desc = StringHelper::format( 0xff, "%d %s, %s %d",
+    std::string desc = utils::format( 0xff, "%d %s, %s %d",
                                              _granary->store().qty(),
                                              _("##units_in_stock##"), _("##freespace_for##"),
                                              _granary->store().freeQty() );
@@ -96,7 +96,7 @@ void AboutGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);
-  std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
+  std::string outText = utils::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
 
   // pictures of goods
   const Picture& pic = GoodHelper::picture( goodType );

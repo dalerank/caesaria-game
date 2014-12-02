@@ -24,7 +24,7 @@
 #include "gfx/tile.hpp"
 #include "city/helper.hpp"
 #include "good/goodhelper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "funds.hpp"
@@ -206,7 +206,7 @@ VariantMap Info::save() const
   VariantMap currentVm;
   foreach( i, _d->lastYearHistory )
   {
-    stepName = StringHelper::format( 0xff, "%02d", step++ );
+    stepName = utils::format( 0xff, "%02d", step++ );
     currentVm[ stepName ] = (*i).save();
   }
   ret[ lc_lastHistory ] = currentVm;
@@ -215,7 +215,7 @@ VariantMap Info::save() const
   VariantMap allVm;
   foreach( i, _d->allHistory )
   {
-    stepName = StringHelper::format( 0xff, "%04d", step++ );
+    stepName = utils::format( 0xff, "%04d", step++ );
     allVm[ stepName ] = (*i).save();
   }
   ret[ lc_allHistory ] = allVm;
@@ -224,7 +224,7 @@ VariantMap Info::save() const
   VariantMap messagesVm;
   foreach( i, _d->messages )
   {
-    stepName = StringHelper::format( 0xff, "%04d", step++ );
+    stepName = utils::format( 0xff, "%04d", step++ );
     messagesVm[ stepName ] = (*i).save();
   }
   ret[ lc_messages ] = messagesVm;
@@ -235,7 +235,7 @@ VariantMap Info::save() const
     VariantList paramVm;
     paramVm << _d->maxParams[ k ].date;
     paramVm << _d->maxParams[ k ].value;
-    maxParamVm[ StringHelper::format( 0xff, "%02d", k ) ] = paramVm;
+    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
   }
   ret[ lc_maxparam ] = maxParamVm;
 
@@ -269,7 +269,7 @@ void Info::load(const VariantMap& stream)
   _d->maxParams.resize( paramsCount );
   foreach( i, maxParamVm )
   {
-    int index = StringHelper::toInt( i->first );
+    int index = utils::toInt( i->first );
     DateTime date = i->second.toList().get( 0 ).toDateTime();
     int value = i->second.toList().get( 1 ).toInt();
     _d->maxParams[ index ].date = date;

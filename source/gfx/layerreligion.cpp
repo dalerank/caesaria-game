@@ -20,7 +20,7 @@
 #include "objects/house_level.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/event.hpp"
 #include "tilemap_camera.hpp"
 #include "core/gettext.hpp"
@@ -146,7 +146,7 @@ void LayerReligion::handleEvent(NEvent& event)
 
           text = (templeAccess == 5 && oracleAccess )
                   ? "##religion_access_full##"
-                  : StringHelper::format( 0xff, "##religion_access_%d_temple##", templeAccess );
+                  : utils::format( 0xff, "##religion_access_%d_temple##", templeAccess );
         }
       }
 

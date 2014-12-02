@@ -16,7 +16,7 @@
 #include "goodstore.hpp"
 #include "goodstore_simple.hpp"
 #include "goodorders.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "goodhelper.hpp"

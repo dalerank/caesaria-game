@@ -31,7 +31,7 @@
 #include "good/goodstore.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "good/goodhelper.hpp"

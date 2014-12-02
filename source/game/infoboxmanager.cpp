@@ -23,7 +23,7 @@
 #include "gfx/tile.hpp"
 #include "objects/service.hpp"
 #include "objects/engineer_post.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/house.hpp"
 #include "core/gettext.hpp"
 #include "city/helper.hpp"

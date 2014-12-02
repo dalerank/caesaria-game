@@ -28,7 +28,7 @@
 #include "objects/watersupply.hpp"
 #include "tilemap_camera.hpp"
 #include "objects/factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 

@@ -31,7 +31,7 @@
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
 #include "widget_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -210,18 +210,18 @@ void Population::Impl::switch2nextChart( int change )
     chartCurrent->update( city, (CityChart::DrawMode)(chartCurrent->mode()+change) );
     int mode = chartCurrent->mode();
     std::string modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    std::string text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    std::string text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
     lbTitle->setText( _( text ) );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() + 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
     lbNextChart->setText(  _( text ) );
     chartNext->update( city, (CityChart::DrawMode)mode );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() - 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
     lbPrevChart->setText( _( text ) );
     chartPrev->update( city, (CityChart::DrawMode)mode );
   }
@@ -254,7 +254,7 @@ void Population::Impl::updateStates()
                              ? "##newcomer_this_month##"
                              : "##newcomers_this_month##";
 
-      migrationText = StringHelper::i2str( migrationValue ) + " " + _( suffix );
+      migrationText = utils::i2str( migrationValue ) + " " + _( suffix );
     }
     else
     {
@@ -279,7 +279,7 @@ void Population::Impl::updateStates()
       foodLevel += (goods[ (Good::Type)k ] > 0 ? 1 : 0);
     }
 
-    lbFoodValue->setText( _( "##varieties_food_eaten##") + StringHelper::i2str( foodLevel ) );
+    lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
   }
 
   if( lbYearMigrationValue )
@@ -350,7 +350,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
   pic.fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
   {
-    std::string text = StringHelper::i2str( k * _maxValue / _stepCount );
+    std::string text = utils::i2str( k * _maxValue / _stepCount );
     Point offset  = _horizontal
         ? Point( k * width() / _stepCount - (k == 0 ? 0 : 20), 3 )
         : Point( 8, height() - k * height() / _stepCount - (k == _stepCount ? 0 : 23) );

@@ -34,7 +34,7 @@
 #include "gfx/renderermode.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/empiremap_window.hpp"
 #include "gui/save_dialog.hpp"
 #include "gui/advisors_window.hpp"
@@ -420,7 +420,7 @@ void Level::Impl::handleDirectionChange(Direction direction)
 std::string Level::Impl::getScreenshotName()
 {
   DateTime time = DateTime::getCurrenTime();
-  return StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
+  return utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
                                time.year(), time.month(), time.day(),
                                time.hour(), time.minutes(), time.seconds() );
 }
@@ -541,7 +541,7 @@ void Level::animate( unsigned int time )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
-      vfs::Path filename = _d->createFastSaveName( "autosave", StringHelper::i2str( rotate ) );
+      vfs::Path filename = _d->createFastSaveName( "autosave", utils::i2str( rotate ) );
       _d->game->save( filename.toString() );
     }
   }
@@ -850,7 +850,7 @@ void Level::_requestExitGame()
 
 void Level::Impl::showMissionTaretsWindow()
 {
-  int id = StringHelper::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  int id = utils::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {

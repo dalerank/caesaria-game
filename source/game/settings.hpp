@@ -72,6 +72,7 @@ public:
   __GS_PROPERTY(font)
   __GS_PROPERTY(walkerRelations)
   __GS_PROPERTY(freeplay_opts)
+  __GS_PROPERTY(cellw)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();
@@ -86,6 +87,8 @@ public:
   static void save();
 
   void setwdir( const std::string& wdir );
+  void checkwdir( char* argv[], int argc );
+  void checkCmdOptions( char* argv[], int argc );
 private:
   GameSettings();
 

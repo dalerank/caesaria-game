@@ -21,7 +21,7 @@
 #include "core/event.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 #include <set>
 
@@ -67,7 +67,7 @@ HirePriority::HirePriority(Widget* p, city::Industry::Type type, int priority)
   Size btnSize( 28, 28 );
   for( int k=0; k < 9; k++ )
   {
-    PushButton* btn = new PushButton( this, Rect( start, btnSize), StringHelper::i2str( k+1 ), k+1, false, PushButton::flatBorderLine );
+    PushButton* btn = new PushButton( this, Rect( start, btnSize), utils::i2str( k+1 ), k+1, false, PushButton::flatBorderLine );
     btn->setIsPushButton( true );
     btn->setPressed( priority > 0 ? k+1 == priority : false );
     btn->setTooltipText( _("##priority_button_tolltip##") );

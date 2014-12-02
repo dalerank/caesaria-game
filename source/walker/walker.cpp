@@ -23,7 +23,7 @@
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "pathway/path_finding.hpp"
 #include "city/city.hpp"
 #include "gfx/animation_bank.hpp"

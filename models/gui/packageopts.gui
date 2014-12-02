@@ -26,6 +26,14 @@
     text : ""
     text.offset : [ 20, 0 ]
   }
+
+  btnChangeCellw#PushButton :
+  {
+    geometry : [ 12, 85, "pw-15", 110 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_2"
+    text : ""
+  }
 	
 	lbApply#Label :
   {

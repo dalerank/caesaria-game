@@ -44,7 +44,7 @@
 #include "objects/road.hpp"
 #include "core/time.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "walker/walkers_factory.hpp"
 #include "core/gettext.hpp"
 #include "build_options.hpp"
@@ -494,7 +494,7 @@ void PlayerCity::save( VariantMap& stream) const
   {
     VariantMap vm_walker;
     (*w)->save( vm_walker );
-    vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
     walkedId++;
   }
   stream[ "walkers" ] = vm_walkers;
@@ -505,7 +505,7 @@ void PlayerCity::save( VariantMap& stream) const
   {
     VariantMap vm_overlay;
     (*overlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->pos().i(),
+    vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
                                                       (*overlay)->pos().j() ) ] = vm_overlay;
   }
   stream[ "overlays" ] = vm_overlays;

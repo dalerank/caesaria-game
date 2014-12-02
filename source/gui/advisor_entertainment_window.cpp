@@ -21,7 +21,7 @@
 #include "texturedbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
@@ -92,10 +92,10 @@ public:
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    rfont.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
-    rfont.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
-    rfont.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
-    rfont.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
+    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
+    rfont.draw( *texture, utils::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
+    rfont.draw( *texture, utils::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
+    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
   }
 
 private:
@@ -351,7 +351,7 @@ void Entertainment::Impl::updateFestivalInfo()
 {
   if( srvc.isValid() )
   {    
-    std::string text = StringHelper::format( 0xff, "%d %s", monthFromLastFestival, _("##month_from_last_festival##") );
+    std::string text = utils::format( 0xff, "%d %s", monthFromLastFestival, _("##month_from_last_festival##") );
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
@@ -368,7 +368,7 @@ void Entertainment::Impl::updateFestivalInfo()
                          24, 24, 24, 24,
                          24, 24, 31, 31 };
 
-    text = StringHelper::format( 0xff, "##more_%d_month_from_festival##", strIndex[ math::clamp( monthFromLastFestival, 0, 32) ] );
+    text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ math::clamp( monthFromLastFestival, 0, 32) ] );
     if( lbInfoAboutLastFestival ) { lbInfoAboutLastFestival->setText( _( text ) ); }
   }
 }

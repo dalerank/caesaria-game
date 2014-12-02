@@ -32,6 +32,7 @@ public:
 
 private:
   void _setResourcesPath(std::string);
+  void _changeCellw();
 
   class Impl;
   ScopedPtr<Impl> _d;

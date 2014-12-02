@@ -28,7 +28,7 @@
 #include "sdl_engine.hpp"
 #include "core/font.hpp"
 #include "objects/fortification.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "camera.hpp"
 #include "gui/dialogbox.hpp"
 #include "renderermode.hpp"
@@ -256,7 +256,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
   d->textPic->fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
-  d->textFont.draw( *d->textPic, StringHelper::i2str( d->money4Construction ) + " Dn", Point() );
+  d->textFont.draw( *d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
 void LayerBuild::_buildAll()

@@ -18,7 +18,7 @@
 #include <cstdio>
 
 #include "infobox_factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
 #include "image.hpp"
@@ -57,12 +57,12 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   }
 
   // paint progress
-  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
+  std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
   Size lbSize( (width() - 20) / 2, 25 );
   _lbProduction = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 10, 0 ), lbSize ), text );
   _lbProduction->setFont( Font::create( FONT_2 ) );
 
-  std::string effciencyText = StringHelper::format( 0xff, "%s %d%%", _("##effciency##"), factory->effciency() );
+  std::string effciencyText = utils::format( 0xff, "%s %d%%", _("##effciency##"), factory->effciency() );
   _lbEffciency = new Label( this, _lbProduction->relativeRect() + Point( lbSize.width(), 0 ), effciencyText );
   _lbEffciency->setFont( Font::create( FONT_2 ) );
 
@@ -88,8 +88,8 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
     Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::picture( factory->inStockRef().type() ) );
 
-    std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
-    std::string text = StringHelper::format( 0xff, "%d %s %s %d",
+    std::string whatStock = utils::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
+    std::string text = utils::format( 0xff, "%d %s %s %d",
                                              factory->inStockRef().qty() / 100,
                                              _(whatStock),
                                              _("##factory_units##"),
@@ -103,7 +103,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
   std::string workInfo = factory->workersProblemDesc();
   std::string cartInfo = factory->cartStateDesc();
-  setText( StringHelper::format( 0xff, "%s\n%s", _(workInfo), _( cartInfo ) ) );
+  setText( utils::format( 0xff, "%s\n%s", _(workInfo), _( cartInfo ) ) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }

@@ -24,7 +24,7 @@
 #include "city/helper.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "city/funds.hpp"
 #include "city/trade_options.hpp"

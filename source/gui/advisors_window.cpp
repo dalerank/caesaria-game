@@ -26,7 +26,7 @@
 #include "gfx/decorator.hpp"
 #include "label.hpp"
 #include "city/city.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "advisor_employers_window.hpp"

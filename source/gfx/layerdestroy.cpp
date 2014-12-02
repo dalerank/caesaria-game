@@ -26,7 +26,7 @@
 #include "gfx/helper.hpp"
 #include "core/event.hpp"
 #include "events/clearland.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
@@ -174,7 +174,7 @@ void LayerDestroy::render( Engine& engine )
   {
     _d->textPic->fill( 0x0, Rect() );
     _d->textFont.setColor( 0xffff0000 );
-    _d->textFont.draw( *_d->textPic, StringHelper::i2str( _d->money4destroy ) + " Dn", Point() );
+    _d->textFont.draw( *_d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
   engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );

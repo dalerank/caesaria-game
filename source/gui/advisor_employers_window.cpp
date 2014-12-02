@@ -21,7 +21,7 @@
 #include "texturedbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
@@ -96,19 +96,19 @@ protected:
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2, true, false );
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
+    font.draw( *pic, utils::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
+    font.draw( *pic, utils::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
 
     if( _priority > 0 )
     {
       font.setColor( DefaultColors::black );
-      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 3 ), true, false );
+      font.draw( *pic, utils::i2str( _priority ), Point( 60, 3 ), true, false );
     }
 
     pic->update();
@@ -179,7 +179,7 @@ void Employer::Impl::updateWorkersState()
   int workers = city::Statistic::getAvailableWorkersNumber( city );
   int worklessPercent = city::Statistic::getWorklessPercent( city );
   int withoutWork = city::Statistic::getWorklessNumber( city );
-  std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )",
+  std::string strWorkerState = utils::format( 0xff, "%d %s     %d %s  ( %d%% )",
                                                      workers, _("##advemployer_panel_workers##"),
                                                      withoutWork, _("##advemployer_panel_workless##"),
                                                      worklessPercent );
@@ -195,7 +195,7 @@ void Employer::Impl::updateYearlyWages()
   if( lbYearlyWages )
   {
     int wages = city::Statistic::getMonthlyWorkersWages( city ) * DateTime::monthsInYear;
-    std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
+    std::string wagesStr = utils::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
     lbYearlyWages->setText( wagesStr );
   }
@@ -252,7 +252,7 @@ void Employer::Impl::updateSalaryLabel()
 {
   int pay = city->funds().workerSalary();
   int romePay = city->empire()->workerSalary();
-  std::string salaryString = StringHelper::format( 0xff, "%s %d (%s %d)",
+  std::string salaryString = utils::format( 0xff, "%s %d (%s %d)",
                                                    _("##advemployer_panel_denaries##"), pay,
                                                    _("##advemployer_panel_romepay##"), romePay );
 

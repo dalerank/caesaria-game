@@ -17,7 +17,7 @@
 
 #include "event.hpp"
 #include "dispatcher.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"

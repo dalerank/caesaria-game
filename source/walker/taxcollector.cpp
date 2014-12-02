@@ -27,7 +27,7 @@
 #include "core/foreach.hpp"
 #include "objects/house_level.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 #include <game/settings.hpp>
 
@@ -68,7 +68,7 @@ void TaxCollector::_centerTile()
       _d->money += tax;
       house->applyService( this );
 
-      std::string posStr = StringHelper::format( 0xff, "%02dx%02d", house->pos().i(), house->pos().j() );
+      std::string posStr = utils::format( 0xff, "%02dx%02d", house->pos().i(), house->pos().j() );
       _d->history[ posStr ] += tax;
     }
   }

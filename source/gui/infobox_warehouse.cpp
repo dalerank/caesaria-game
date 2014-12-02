@@ -23,7 +23,7 @@
 #include "good/goodhelper.hpp"
 #include "special_orders_window.hpp"
 #include "good/goodstore.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 
@@ -113,7 +113,7 @@ void AboutWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
   lb->setFont( Font::create( FONT_2 ) );
   lb->setIcon( pic, Point( 0, 4 ) );
 
-  std::string outText = StringHelper::format( 0xff, "%d %s", qty / 100, _(goodName) );
+  std::string outText = utils::format( 0xff, "%d %s", qty / 100, _(goodName) );
   lb->setText( outText );
   lb->setTextOffset( Point( 24, 0 ) );
 }

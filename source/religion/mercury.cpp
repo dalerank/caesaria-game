@@ -23,7 +23,7 @@
 #include "good/goodstore.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -53,8 +53,8 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 {
   if( showMessage )
   {
-    std::string txt = StringHelper::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
-    std::string descr = StringHelper::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
+    std::string txt = utils::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
+    std::string descr = utils::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
 
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),

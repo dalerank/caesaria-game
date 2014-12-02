@@ -21,7 +21,7 @@
 #include "core/event.hpp"
 #include "label.hpp"
 #include "listbox.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
@@ -106,9 +106,9 @@ void GameSpeedOptions::_update()
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
   _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
 
-  if( lbGameSpeedPercent ) { lbGameSpeedPercent->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
-  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
-  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " m." ); }
+  if( lbGameSpeedPercent ) { lbGameSpeedPercent->setText( utils::i2str( _d->speedValue ) + "%" ); }
+  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( utils::i2str( _d->scrollValue ) + "%" ); }
+  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( utils::i2str( _d->autosaveInterval ) + " m." ); }
 }
 
 }//end namespace dialog

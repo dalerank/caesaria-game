@@ -26,7 +26,7 @@
 #include "world/computer_city.hpp"
 #include "city/helper.hpp"
 #include "label.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "dialogbox.hpp"
 #include "good/goodstore.hpp"
@@ -403,7 +403,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
   unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
 
-  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
+  btnOpenTrade->setText( utils::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
 
   CONNECT( btnOpenTrade, onClicked(), this, Impl::showOpenRouteRequestWindow );
 }
@@ -423,7 +423,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
       Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  GoodHelper::picture( Good::Type(i), true) );
 
-      std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
+      std::string text = utils::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
@@ -442,7 +442,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
       Label* lb = new Label( gbox, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( GoodHelper::picture( Good::Type(i), true) );
 
-      std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
+      std::string text = utils::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( gbox, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }

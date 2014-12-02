@@ -28,7 +28,7 @@
 #include "walker/fishing_boat.hpp"
 #include "good/goodstore.hpp"
 #include "objects/warehouse.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -57,7 +57,7 @@ void RomeDivinity::load(const VariantMap& vm)
   _shortDesc = vm.get( "shortDesc" ).toString();
   if( _shortDesc.empty() )
   {
-    _shortDesc  = StringHelper::format( 0xff, "##%s_desc##", internalName().c_str() );
+    _shortDesc  = utils::format( 0xff, "##%s_desc##", internalName().c_str() );
   }
   _wrathPoints = vm.get( "wrath" );
   _blessingDone = vm.get( "blessingDone" );

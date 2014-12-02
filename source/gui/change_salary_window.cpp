@@ -22,7 +22,7 @@
 #include "world/empire.hpp"
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 namespace gui
 {
@@ -59,7 +59,7 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
     foreach( i, ranks )
     {
       std::string salaryStr = _( "##" + (*i).rankName + "_salary##" );
-      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + StringHelper::i2str( (*i).salary ) );
+      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( (*i).salary ) );
       item.setTag( (*i).salary );
       if( (*i).salary == salary )
       {

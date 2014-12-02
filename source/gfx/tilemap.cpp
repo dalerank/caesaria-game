@@ -23,7 +23,7 @@
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 

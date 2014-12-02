@@ -25,7 +25,7 @@
 #include "tilemap_camera.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 
@@ -172,7 +172,7 @@ void LayerEntertainment::handleEvent(NEvent& event)
           int lvlValue = _getLevelValue( house );
           if( _type == citylayer::entertainment )
           {
-            text = StringHelper::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
+            text = utils::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
           }
           else
           {

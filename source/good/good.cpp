@@ -21,7 +21,7 @@
 #include "core/gettext.hpp"
 #include "core/exception.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 
 GoodStock::GoodStock()
@@ -49,7 +49,7 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   }
   if (_type != none && _type != stock._type)
   {
-    std::string errorStr = StringHelper::format( 0xff, "GoodTypes do not match: %d vs %d", _type, stock._type );
+    std::string errorStr = utils::format( 0xff, "GoodTypes do not match: %d vs %d", _type, stock._type );
     Logger::warning( errorStr );
     return;
   }

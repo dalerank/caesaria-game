@@ -20,7 +20,7 @@
 #include "objects/building.hpp"
 #include "tileoverlay.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "helper.hpp"
 #include "game/gamedate.hpp"

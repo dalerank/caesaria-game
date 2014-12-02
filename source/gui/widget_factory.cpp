@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "widget_factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "label.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"

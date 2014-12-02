@@ -24,7 +24,7 @@
 #include "city/city.hpp"
 #include "core/variant.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"

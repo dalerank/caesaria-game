@@ -20,7 +20,7 @@
 #include "core/variant.hpp"
 #include "core/time.hpp"
 #include "core/saveadapter.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "trading.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
@@ -152,7 +152,7 @@ void Empire::addObject(ObjectPtr obj)
 {
   if( obj->name().empty() )
   {          
-    obj->setName( obj->type() + StringHelper::i2str( _d->objUid++ ) );    
+    obj->setName( obj->type() + utils::i2str( _d->objUid++ ) );    
   }  
 
   foreach( it, _d->objects )

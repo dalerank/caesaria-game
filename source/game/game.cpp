@@ -19,7 +19,7 @@
 #include "game.hpp"
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/picture.hpp"
@@ -62,6 +62,7 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "gfx/helper.hpp"
 #include "gamestate.hpp"
 
 #include <list>
@@ -360,8 +361,13 @@ void Game::Impl::initArchiveLoaders()
 
 void Game::initialize()
 {
-  Logger::warning( "Game: load game settings" );
-  GameSettings::load();
+  int cellWidth = SETTINGS_VALUE( cellw );
+  if( cellWidth != 30 || cellWidth != 60 )
+  {
+    cellWidth = 30;
+  }
+
+  TileHelper::initTileWidth( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );

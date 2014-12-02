@@ -24,7 +24,7 @@
 #include "loader_mission.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/helper.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"

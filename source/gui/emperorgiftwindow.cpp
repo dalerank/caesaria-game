@@ -25,7 +25,7 @@
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
 #include "game/gamedate.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 namespace gui
 {
@@ -78,7 +78,7 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   if( lbLastGiftDate )
   {
     int monthsLastGift = lastgift.monthsTo( GameDate::current() );
-    std::string text = StringHelper::format( 0xff, "%s  %d  %s",
+    std::string text = utils::format( 0xff, "%s  %d  %s",
                                              _("##time_since_last_gift##"),
                                              monthsLastGift,
                                              _("##mo##") );
@@ -102,7 +102,7 @@ void EmperorGift::Impl::fillGifts(ListBox* lbx)
   for( int k=0; k < 3; k++ )
   {
     int tag = getGiftCost( (GiftType)k, maxMoney );
-    std::string priceStr = StringHelper::format( 0xff, " : %d", tag );
+    std::string priceStr = utils::format( 0xff, " : %d", tag );
     ListBoxItem& item = lbx->addItem( _( gifts.random() ) + priceStr );
     item.setTag( tag );
     item.setTextColor( ListBoxItem::simple, tag < maxMoney ? DefaultColors::black : DefaultColors::grey );

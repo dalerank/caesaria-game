@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "service.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 
 ServiceHelper& ServiceHelper::instance()

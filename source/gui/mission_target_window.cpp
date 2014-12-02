@@ -28,7 +28,7 @@
 #include "environment.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/victoryconditions.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
@@ -113,34 +113,34 @@ void MissionTargets::setCity(PlayerCityPtr city)
 
   if( _d->lbProsperity )
   {
-    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
+    text = utils::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
     _d->lbProsperity->setText( text );
     _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
   }
 
   if( _d->lbPopulation )
   {
-    text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
+    text = utils::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
     _d->lbPopulation->setText( text );
   }
 
   if( _d->lbFavour )
   {
-    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
+    text = utils::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
     _d->lbFavour->setText( text );
     _d->lbFavour->setVisible( wint.needFavour() > 0 );
   }
 
   if( _d->lbCulture )
   {
-    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
+    text = utils::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
     _d->lbCulture->setText( text );
     _d->lbCulture->setVisible( wint.needCulture() > 0 );
   }
 
   if( _d->lbPeace )
   {
-    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
+    text = utils::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
     _d->lbPeace->setText( text );
     _d->lbPeace->setVisible( wint.needPeace() > 0 );
   }

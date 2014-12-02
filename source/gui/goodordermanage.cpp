@@ -26,7 +26,7 @@
 #include "gfx/engine.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -81,7 +81,7 @@ public:
           Rect textRect = f.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
           f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
 
-          text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
+          text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
           textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
           f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
         }
@@ -145,7 +145,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   if( lbTitle ) lbTitle->setText( _( GoodHelper::name( type ) ) );
   if( lbStackedQty )
   {
-    std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
+    std::string text = utils::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
     lbStackedQty->setText( text );
   }
 
@@ -260,7 +260,7 @@ void GoodOrderManageWindow::updateIndustryState()
   std::string postfixWork = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
   std::string postfixIdle = (workFactoryCount%10 == 1) ? "##idle_factory_in_city##" : "##idle_factories_in_city##";
 
-  std::string text = StringHelper::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfixWork),
+  std::string text = utils::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfixWork),
                                            idleFactoryCount, _(postfixIdle) );
   _d->lbIndustryInfo->setText( text );
 
@@ -296,11 +296,11 @@ void GoodOrderManageWindow::updateStackingState()
   std::string text;
   if( isStacking )
   {
-    text = StringHelper::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+    text = utils::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
   }
   else
   {
-    text = StringHelper::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+    text = utils::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
   }
 
   _d->btnStackingState->setText( text );

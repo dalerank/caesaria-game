@@ -22,7 +22,7 @@
 #include "good/good.hpp"
 #include "walker/fish_place.hpp"
 #include "pathway/pathway_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "pathway/pathway.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"

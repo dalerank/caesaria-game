@@ -20,7 +20,7 @@
 #include "core/event.hpp"
 #include "label.hpp"
 #include "widget_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "sound/constants.hpp"
 #include "core/logger.hpp"
 
@@ -117,9 +117,9 @@ void SoundOptions::_update()
   _d->current.ambient = math::clamp( _d->current.ambient, 0, 100 );
   _d->current.theme = math::clamp( _d->current.theme, 0, 100 );
 
-  if( lbGameSoundPercent ) { lbGameSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.game ) ); }
-  if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.ambient ) ); }
-  if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.theme ) ); }
+  if( lbGameSoundPercent ) { lbGameSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.game ) ); }
+  if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.ambient ) ); }
+  if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.theme ) ); }
 
   emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
   emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );

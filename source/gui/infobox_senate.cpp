@@ -21,7 +21,7 @@
 #include "objects/metadata.hpp"
 #include "objects/senate.hpp"
 #include "objects/constants.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
 #include "good/goodhelper.hpp"
@@ -53,7 +53,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   // number of workers
   _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );
 
-  std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
+  std::string denariesStr = utils::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
 
   Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
   lb->setIcon( GoodHelper::picture( Good::denaries ) );

@@ -21,7 +21,7 @@
 
 #include "objects/house.hpp"
 #include "core/exception.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/variant.hpp"
 #include "core/saveadapter.hpp"
 #include "good/goodstore.hpp"
@@ -754,7 +754,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
     foreach( it, vmTextures )
     {
-      std::string arName = StringHelper::format( 0xff, "h%d_%s", spec._d->houseLevel, it->first.c_str() );
+      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it->first.c_str() );
       StringArray txNames = it->second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];
@@ -774,7 +774,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
 
 Picture HouseSpecHelper::getPicture( int houseLevel, int size ) const
 {
-  std::string arName = StringHelper::format( 0xff, "h%d_s%d", houseLevel, size );
+  std::string arName = utils::format( 0xff, "h%d_s%d", houseLevel, size );
   StringArray& array = _d->houseTextures[ arName ];
 
   if( !array.empty() )

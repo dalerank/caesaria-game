@@ -21,7 +21,7 @@
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
@@ -77,13 +77,13 @@ public:
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
+    std::string buildingStrT = utils::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
+    std::string buildingWorkT = utils::format( 0xff, "%d", _workingBuilding );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
-    std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
+    std::string peoplesStrT = utils::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
     rfont.draw( *texture, peoplesStrT, 255, 0 );
   }
 

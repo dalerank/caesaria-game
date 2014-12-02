@@ -19,7 +19,7 @@
 #include "city.hpp"
 #include "game/gamedate.hpp"
 #include "walker/enemysoldier.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/cityservice_info.hpp"
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
@@ -150,7 +150,7 @@ VariantMap Military::save() const
   int index = 0;
   foreach( it, _d->notifications )
   {
-    notifications[ StringHelper::format( 0xff, "note_%03d", index ) ] = (*it).save();
+    notifications[ utils::format( 0xff, "note_%03d", index ) ] = (*it).save();
   }
 
   VARIANT_SAVE_ANY( ret, notifications );

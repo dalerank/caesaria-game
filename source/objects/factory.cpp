@@ -29,7 +29,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_supplier.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "good/goodstore_simple.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
@@ -274,13 +274,13 @@ std::string Factory::troubleDesc() const
   if( !isActive() )
   {
     std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
-    ret = StringHelper::format( 0xff, "##trade_advisor_blocked_%s_production##", goodname.c_str() );
+    ret = utils::format( 0xff, "##trade_advisor_blocked_%s_production##", goodname.c_str() );
   }
 
   if( ret.empty() && !haveMaterial() && consumeGoodType() != Good::none )
   {
     std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
-    ret = StringHelper::format( 0xff, "##trouble_need_%s##", goodname.c_str() );
+    ret = utils::format( 0xff, "##trouble_need_%s##", goodname.c_str() );
   }
 
   return ret;

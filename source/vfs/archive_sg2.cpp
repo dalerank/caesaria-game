@@ -17,7 +17,7 @@
 
 #include "archive_sg2.hpp"
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
@@ -131,7 +131,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
     sbr.filename[64] = 0;
     sbr.comment[50] = 0;
 
-    strcpy( sbr.filename, StringHelper::localeLower( sbr.filename ).c_str() );
+    strcpy( sbr.filename, utils::localeLower( sbr.filename ).c_str() );
     std::string bmp_name_full = sbr.filename;
     std::string bmp_name = bmp_name_full.substr(0, bmp_name_full.length() - 4);
 
@@ -148,7 +148,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
 
       // Construct name
-      std::string name = StringHelper::format( 0xff, "%s_%05d.png", bmp_name.c_str(), i - sbr.start_index + 1);
+      std::string name = utils::format( 0xff, "%s_%05d.png", bmp_name.c_str(), i - sbr.start_index + 1);
       // Locate appropriate 555 file
       Path p555;
       if( sir.flags[0] > 0 ) //is external resource file???
@@ -241,7 +241,7 @@ std::string Sg2ArchiveReader::_find555File( const SgFileEntry& rec )
 std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& dir, std::string filename )
 {
   Directory directory( dir );
-  filename = StringHelper::localeLower( filename );
+  filename = utils::localeLower( filename );
 
   Entries::Items files = directory.getEntries().items();
   for( unsigned int i = 0; i < files.size(); i++)

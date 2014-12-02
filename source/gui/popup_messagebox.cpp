@@ -25,7 +25,7 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "texturedbutton.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "game/datetimehelper.hpp"
 #include "widget_helper.hpp"

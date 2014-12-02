@@ -18,7 +18,7 @@
 #include "infobox_ruins.hpp"
 #include "good/goodhelper.hpp"
 #include "image.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"

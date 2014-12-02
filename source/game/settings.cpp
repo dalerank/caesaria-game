@@ -19,6 +19,7 @@
 #include "vfs/path.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/directory.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 
 #define __REG_PROPERTY(a) const char* GameSettings::a = CAESARIA_STR_EXT(a);
@@ -68,6 +69,7 @@ __REG_PROPERTY(opengl_opts)
 __REG_PROPERTY(font)
 __REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
+__REG_PROPERTY(cellw)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -122,6 +124,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;
+  _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;
   _d->options[ difficulty          ] = 3; // 0-4, Very Easy, Easy, Normal, Hard, Very Hard. Default: Hard
   _d->options[ resolution          ] = Size( 1024, 768 );
@@ -165,6 +168,46 @@ void GameSettings::setwdir( const std::string& wdirstr )
   saveDir = wdir/defaultSaveDir;
 #endif
   _d->options[ savedir ] = Variant( saveDir.toString() );
+}
+
+void GameSettings::checkwdir(char* argv[], int argc)
+{
+  for (int i = 0; i < (argc - 1); i++)
+  {
+    if( !strcmp( argv[i], "-R" ) )
+    {
+      const char* opts = argv[i+1];
+      setwdir( std::string( opts, strlen( opts ) ) );
+      i++;
+    }
+  }
+}
+
+void GameSettings::checkCmdOptions(char* argv[], int argc)
+{
+  for (int i = 0; i < (argc - 1); i++)
+  {
+    if( !strcmp( argv[i], "-Lc" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ language ] = Variant( opts );
+      i++;
+    }
+    else if( !strcmp( argv[i], "-c3gfx" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ c3gfx ] = Variant( opts );
+      i++;
+    }
+    else if( !strcmp( argv[i], "-cellw" ) )
+    {
+      const char* opts = argv[i+1];
+      int cellWidth = utils::toInt( opts );
+      _d->options[ cellw ] = cellWidth;
+      i++;
+    }
+  }
+
 }
 
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )

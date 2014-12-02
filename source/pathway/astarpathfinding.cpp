@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "astarpoint.hpp"
 #include "path_finding.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"

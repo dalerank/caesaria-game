@@ -30,7 +30,7 @@
 #include "core/event.hpp"
 #include "objects/fort.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "widget_helper.hpp"
 
 using namespace constants;
@@ -149,7 +149,7 @@ void AboutLegion::_update()
 
   if( _d->lbNumberValue )
   {
-    _d->lbNumberValue->setText( StringHelper::i2str( _d->fort->soldiers().size() ) );
+    _d->lbNumberValue->setText( utils::i2str( _d->fort->soldiers().size() ) );
   }
 
   if( _d->lbHealthValue )
@@ -171,12 +171,12 @@ void AboutLegion::_update()
 
   if( _d->lbTrainedValue )
   {
-    _d->lbTrainedValue->setText( StringHelper::i2str( _d->fort->legionTrained() ) );
+    _d->lbTrainedValue->setText( utils::i2str( _d->fort->legionTrained() ) );
   }
 
   if( _d->btnAttackAnimals )
   {
-    std::string text = StringHelper::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
+    std::string text = utils::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
     _d->btnAttackAnimals->setText( text );
   }
 

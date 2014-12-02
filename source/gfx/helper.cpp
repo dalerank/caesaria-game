@@ -21,7 +21,7 @@
 #include "tileoverlay.hpp"
 #include "animation_bank.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "picture_bank.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
@@ -88,7 +88,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
     Logger::warning( "TileHelper: unknown image Id=%d ", imgId );
   }
 
-  std::string ret_str = StringHelper::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
+  std::string ret_str = utils::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
   return ret_str;
 }
 

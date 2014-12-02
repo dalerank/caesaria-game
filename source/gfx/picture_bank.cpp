@@ -30,7 +30,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/animation.hpp"
 #include "game/settings.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "picture_info_bank.hpp"
 #include "core/foreach.hpp"
@@ -76,7 +76,7 @@ public:
 void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
 {
   // first: we deallocate the current picture, if any
-  unsigned int picId = StringHelper::hash( name );
+  unsigned int picId = utils::hash( name );
   Picture* ptrPic = 0;
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
@@ -169,7 +169,7 @@ void PictureBank::addAtlas( const std::string& filename )
     VariantMap items = options.get( framesSection ).toMap();
     foreach( i, items )
     {
-      unsigned int hash = StringHelper::hash( i->first );
+      unsigned int hash = utils::hash( i->first );
       atlas.images.insert( hash );
     }
 
@@ -184,7 +184,7 @@ void PictureBank::loadAtlas(const std::string& filename)
 
 Picture& PictureBank::getPicture(const std::string &name)
 {
-  const unsigned int hash = StringHelper::hash( name );
+  const unsigned int hash = utils::hash( name );
   //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
@@ -203,7 +203,7 @@ Picture& PictureBank::getPicture(const std::string &name)
 
 Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
 {
-  std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
+  std::string resource_name = utils::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
   return getPicture(resource_name);
 }
@@ -251,7 +251,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
-  unsigned int hash = StringHelper::hash( name );
+  unsigned int hash = utils::hash( name );
   foreach( i, atlases )
   {
     bool found = i->find( hash );

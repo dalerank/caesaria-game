@@ -22,7 +22,7 @@
 #include "city/city.hpp"
 #include "city/funds.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 #include "gui/film_widget.hpp"

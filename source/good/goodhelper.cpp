@@ -19,7 +19,7 @@
 #include "good.hpp"
 #include "core/enumerator.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/animation_bank.hpp"
 #include "city/trade_options.hpp"
 #include "city/city.hpp"

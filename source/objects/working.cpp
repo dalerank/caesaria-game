@@ -19,7 +19,7 @@
 #include "city/helper.hpp"
 #include "walker/walker.hpp"
 #include "events/returnworkers.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
@@ -286,12 +286,12 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
 
   if( prefix.empty() )
   {
-    return StringHelper::format( 0xff, "##%s_%s##",
+    return utils::format( 0xff, "##%s_%s##",
                                  factoryType.c_str(), productivityDescription[ workKoeff ] );
   }
   else
   {
-    return StringHelper::format( 0xff, "##%s_%s_%s##",
+    return utils::format( 0xff, "##%s_%s_%s##",
                                  factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
   }
 }
