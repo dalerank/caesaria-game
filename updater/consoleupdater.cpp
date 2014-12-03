@@ -274,7 +274,7 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	{
 		Logger::warning( " Done comparing local files to server definitions.");
 
-		std::string sizeStr = Util::GetHumanReadableBytes(_controller.GetTotalDownloadSize());
+		std::string sizeStr = Util::getHumanReadableBytes(_controller.GetTotalDownloadSize());
 		std::size_t numFiles = _controller.GetNumFilesToBeUpdated();
 
 		std::string totalSize = utils::format( 0xff, "%d %s to be downloaded (size: %s).",
@@ -343,7 +343,7 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 		Logger::warning( " Done downloading updates.");
 
 		std::string totalBytesStr = utils::format( 0xff, " Total bytes downloaded: %s",
-																											Util::GetHumanReadableBytes(_controller.GetTotalBytesDownloaded()).c_str() );
+																											Util::getHumanReadableBytes(_controller.GetTotalBytesDownloaded()).c_str() );
 		Logger::warning( totalBytesStr);
 
 		if (!_controller.LocalFilesNeedUpdate())
@@ -470,7 +470,7 @@ void ConsoleUpdater::PrintProgress()
 	{
 	case ProgressInfo::FileDownload:	
 	{
-		line += " at " + Util::GetHumanReadableBytes( _info.downloadSpeed ) + "/sec ";
+		line += " at " + Util::getHumanReadableBytes( _info.downloadSpeed ) + "/sec ";
 	}
 	break;
 

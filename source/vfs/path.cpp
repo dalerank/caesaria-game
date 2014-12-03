@@ -256,7 +256,7 @@ Path Path::absolutePath() const
   char fpath[_MAX_PATH];
 
   p = _fullpath(fpath, _d->path.c_str(), _MAX_PATH);
-  std::string tmp = StringHelper::replace( p, "\\", "/");
+  std::string tmp = utils::replace( p, "\\", "/");
   return tmp;
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   char* p=0;
@@ -375,7 +375,7 @@ Path Path::getRelativePathTo( const Directory& directory ) const
 
   for (; i<list1.size() && i<list2.size() 
 #if defined (CAESARIA_PLATFORM_WIN)
-    && ( StringHelper::isEquale( list1[ it1 ], list2[ it2 ], StringHelper::equaleIgnoreCase ) )
+    && ( utils::isEquale( list1[ it1 ], list2[ it2 ], utils::equaleIgnoreCase ) )
 #elif defined(CAESARIA_PLATFORM_UNIX)
     && ( list1[ it1 ]== list2[ it2 ] )	
 #endif //CAESARIA_PLATFORM_UNIX

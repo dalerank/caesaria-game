@@ -76,6 +76,7 @@ public:
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
   virtual DateTime lastAttack() const;
+  virtual world::Nation nation() const;
 
   PlayerPtr player() const;
   

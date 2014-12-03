@@ -108,9 +108,10 @@ void Rome::addObject(ObjectPtr obj)
     {
       _d->lastAttack = GameDate::current();
     }
-  }
+    }
 }
 
+Nation Rome::nation() const { return world::rome; }
 DateTime Rome::lastAttack() const { return _d->lastAttack; }
 int Rome::strength() const { return _d->strength; }
 

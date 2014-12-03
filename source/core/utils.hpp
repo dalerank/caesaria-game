@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_STRINGHELPER_H_INCLUDED__
-#define __CAESARIA_STRINGHELPER_H_INCLUDED__
+#ifndef __CAESARIA_STRING_UTILS_H_INCLUDED__
+#define __CAESARIA_STRING_UTILS_H_INCLUDED__
 
 #include <string>
 #include <cstdarg>
@@ -80,4 +80,4 @@ namespace utils
   std::string i2str( int valie );
 }
 
-#endif //__CAESARIA_STRINGHELPER_H_INCLUDED__
+#endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

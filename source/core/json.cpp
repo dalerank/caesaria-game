@@ -592,7 +592,7 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
 //                                 {
 //                                         std::string unicodeStr = json.substr(index, 4);
 // 
-//                                         int symbol = StringHelper::fromHex( unicodeStr.c_str() );
+//                                         int symbol = utils::fromHex( unicodeStr.c_str() );
 // 
 //                                         s.append( symbol );
 // 

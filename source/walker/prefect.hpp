@@ -55,13 +55,13 @@ protected:
 protected:
   Prefect( PlayerCityPtr city );
 
-  WalkerPtr _looks4Enemy( int range);
+  WalkerPtr _looks4Enemy( const int range);
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   bool _checkPath2NearestFire( const ReachedBuildings& buildings );
   void _serveBuildings( ReachedBuildings& reachedBuildings );
   void _back2Prefecture();
   void _back2Patrol();
-  void _setSubAction( SbAction action );
+  void _setSubAction(const SbAction action );
   bool _figthFire();
   bool _findFire();
   virtual void _brokePathway(TilePos pos);

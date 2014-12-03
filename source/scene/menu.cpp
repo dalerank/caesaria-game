@@ -499,7 +499,7 @@ void StartMenu::initialize()
 
 #ifdef CAESARIA_USE_STEAM
   _d->userImage = steamapi::Handler::userImage();
-  std::string text = StringHelper::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
+  std::string text = utils::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
                                                                                CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );

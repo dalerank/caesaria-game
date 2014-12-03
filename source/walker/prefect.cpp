@@ -83,7 +83,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
   return false;
 }
 
-WalkerPtr Prefect::_looks4Enemy( int range )
+WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
   city::Helper helper( _city() );
@@ -217,7 +217,7 @@ void Prefect::_back2Patrol()
   }
 }
 
-void Prefect::_setSubAction(Prefect::SbAction action)
+void Prefect::_setSubAction( const Prefect::SbAction action)
 {
   _d->action = action;
 

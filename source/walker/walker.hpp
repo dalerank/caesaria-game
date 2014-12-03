@@ -27,6 +27,7 @@
 #include "gfx/picture.hpp"
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
+#include "world/nation.hpp"
 #include "pathway/predefinitions.hpp"
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
@@ -110,7 +111,7 @@ public:
   virtual void initialize( const VariantMap& options );
   virtual int agressive() const;
 
-  virtual constants::walker::Nation nation() const;
+  virtual world::Nation nation() const;
 
   void attach();
 
@@ -136,7 +137,7 @@ protected:
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
   void _setDirection( constants::Direction direction );
-  void _setNation( constants::walker::Nation nation );
+  void _setNation( world::Nation nation );
   void _setType( constants::walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );

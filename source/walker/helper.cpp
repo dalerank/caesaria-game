@@ -19,6 +19,7 @@
 
 #include "animals.hpp"
 #include "human.hpp"
+#include "world/nation.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 
@@ -34,10 +35,10 @@ public:
   }
 };
 
-class HationEnums : public EnumsHelper<walker::Nation>
+class HationEnums : public EnumsHelper<world::Nation>
 {
 public:
-  HationEnums() : EnumsHelper<walker::Nation>( walker::unknownNation )
+  HationEnums() : EnumsHelper<world::Nation>( world::unknownNation )
   {
 
   }
@@ -47,7 +48,7 @@ class WalkerHelper::Impl
 {
 public:    
   typedef std::map< walker::Type, std::string > PrettyNames;
-  typedef std::map< walker::Nation, std::string > PrettyNations;
+  typedef std::map< world::Nation, std::string > PrettyNations;
 
   TypeEnums htype;
   PrettyNames typenames;
@@ -63,7 +64,7 @@ public:
     typenames[ type ] = "##wt_" + name + "##";
   }
 
-  void appendNation( walker::Nation nation, const std::string& name )
+  void appendNation( world::Nation nation, const std::string& name )
   {
     hnation.append( nation, name );
     nationnames[ nation ] = "##wn_" + name + "##";
@@ -71,7 +72,7 @@ public:
 
   Impl()
   {
-#define __REG_WNATION(a) appendNation( walker::a, CAESARIA_STR_A(a));
+#define __REG_WNATION(a) appendNation( world::a, CAESARIA_STR_A(a));
     __REG_WNATION( unknownNation )
     __REG_WNATION( rome )
     __REG_WNATION( etruscan )
@@ -226,15 +227,15 @@ std::string WalkerHelper::getPrettyTypename(walker::Type type)
   return it != instance()._d->typenames.end() ? it->second : "";
 }
 
-std::string WalkerHelper::getNationName(walker::Nation type)
+std::string WalkerHelper::getNationName(world::Nation type)
 {
   Impl::PrettyNations::iterator it = instance()._d->nationnames.find( type );
   return it != instance()._d->nationnames.end() ? it->second : "";
 }
 
-walker::Nation WalkerHelper::getNation(const std::string &name)
+world::Nation WalkerHelper::getNation(const std::string &name)
 {
-  walker::Nation nation = instance()._d->hnation.findType( name );
+  world::Nation nation = instance()._d->hnation.findType( name );
 
   if( nation == instance()._d->hnation.getInvalid() )
   {
@@ -299,7 +300,7 @@ class WalkerRelations::Impl
 {
 public:
   typedef std::map< walker::Type, RelationInfo > WalkerRelations;
-  typedef std::map< walker::Nation, RelationInfo > NationRelations;
+  typedef std::map<world::Nation, RelationInfo > NationRelations;
 
   WalkerRelations walkers;
   NationRelations nations;
@@ -325,7 +326,7 @@ void WalkerRelations::remFriend(walker::Type who, walker::Type friendType)
   r[ friendType ].remFriend( who );
 }
 
-void WalkerRelations::addFriend(walker::Nation who, walker::Nation friendType)
+void WalkerRelations::addFriend(world::Nation who, world::Nation friendType)
 {
   instance()._d->nations[ who ].addFriend( friendType );
   instance()._d->nations[ friendType ].addFriend( who );
@@ -337,7 +338,7 @@ void WalkerRelations::addEnemy(walker::Type who, walker::Type enemyType)
   instance()._d->walkers[ enemyType ].addEnemy( who );
 }
 
-void WalkerRelations::addEnemy(walker::Nation who, walker::Nation enemyType)
+void WalkerRelations::addEnemy(world::Nation who, world::Nation enemyType)
 {
   instance()._d->nations[ who ].addEnemy( enemyType );
   instance()._d->nations[ enemyType ].addEnemy( who );
@@ -361,7 +362,7 @@ bool WalkerRelations::isNeutral(walker::Type a, walker::Type b)
   return __isNeutral( instance()._d->walkers, a, b );
 }
 
-bool WalkerRelations::isNeutral(walker::Nation a, walker::Nation b)
+bool WalkerRelations::isNeutral(world::Nation a, world::Nation b)
 {
   return __isNeutral( instance()._d->nations, a, b );
 }
@@ -417,15 +418,15 @@ void WalkerRelations::load(const VariantMap& stream)
   foreach( it,nrelations)
   {
     VariantMap item = it->second.toMap();
-    __fillRelations<walker::Nation>( it->first, item, "friend",
+    __fillRelations<world::Nation>( it->first, item, "friend",
                                    &WalkerHelper::getNation,
                                    "NationRelations: unknown friend %s for type %s",
-                                   &WalkerRelations::addFriend, walker::unknownNation );
+                                   &WalkerRelations::addFriend, world::unknownNation );
 
-    __fillRelations<walker::Nation>( it->first, item, "enemy",
+    __fillRelations<world::Nation>( it->first, item, "enemy",
                                    &WalkerHelper::getNation,
                                    "NationRelations: unknown enemy %s for type %s",
-                                   &WalkerRelations::addEnemy, walker::unknownNation );
+                                   &WalkerRelations::addEnemy, world::unknownNation );
   }
 }
 

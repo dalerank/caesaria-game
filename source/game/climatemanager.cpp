@@ -32,7 +32,7 @@ using namespace vfs;
 {
   for( int index=start; index <= stop; index++ )
   {
-    ar << StringHelper::format( 0xff, "%s_%05d", rc.c_str(), index );
+    ar << utils::format( 0xff, "%s_%05d", rc.c_str(), index );
   }
 }*/
 

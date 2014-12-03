@@ -335,6 +335,8 @@ DateTime PlayerCity::lastAttack() const
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
 
+world::Nation PlayerCity::nation() const { return world::rome; }
+
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
   city::Helper hlp( city );

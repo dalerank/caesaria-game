@@ -68,7 +68,7 @@ public:
   std::string thinks;
   float tileSpeedKoeff;
   AbilityList abilities;
-  walker::Nation nation;
+  world::Nation nation;
 
   float finalSpeed() const   {  return speedMultiplier * speed * tileSpeedKoeff;  }
 
@@ -94,8 +94,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->isDeleted = false;
   _d->centerReached = false;
   _d->waitInterval = 0;
-  _d->nation = walker::unknownNation;
-
+  _d->nation = world::unknownNation;
 
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );
@@ -109,8 +108,8 @@ Walker::~Walker()
 #endif
 }
 
-walker::Nation Walker::nation() const{ return _d->nation; }
-void Walker::_setNation(walker::Nation nation) { _d->nation = nation; }
+world::Nation Walker::nation() const{ return _d->nation; }
+void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
 
 void Walker::timeStep(const unsigned long time)
 {

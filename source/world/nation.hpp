@@ -12,34 +12,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_PACKAGE_OPTIONS_H_INCLUDE_
-#define _CAESARIA_PACKAGE_OPTIONS_H_INCLUDE_
+#ifndef _CAESARIA_NATIONTYPE_INCLUDE_H_
+#define _CAESARIA_NATIONTYPE_INCLUDE_H_
 
-#include "info_box.hpp"
-
-namespace gui
+namespace world
 {
 
-namespace dialog
+enum Nation
 {
-
-class PackageOptions : public Window
-{
-public:
-  PackageOptions(Widget* parent, const Rect& rectangle);
-  virtual ~PackageOptions();
-
-private:
-  void _setResourcesPath(std::string);
-  void _changeCellw();
-  void _update();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  unknownNation=0,
+  rome,
+  etruscan,
+  barbarian,
+  numidian,
+  pict,
+  samnite,
+  selecid,
+  carthaginian,
+  celt,
+  eygptian,
+  goth,
+  graeci,
+  judaean,
+  native,
+  visigoth,
+  gaul,
+  iberian,
+  helveti,
+  nationCount
 };
 
-}//end namespace dialog
+}//end namespace world
 
-}//end namespace gui
-#endif //_CAESARIA_PACKAGE_OPTIONS_H_INCLUDE_
+#endif //_CAESARIA_NATIONTYPE_INCLUDE_H_

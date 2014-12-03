@@ -51,7 +51,7 @@ public:
     case Path::equaleCase: break;
     case Path::nativeCase:
   #ifdef CAESARIA_PLATFORM_WIN
-      return StringHelper::localeLower( p.toString() );
+      return utils::localeLower( p.toString() );
   #elif defined(CAESARIA_PLATFORM_UNIX)
       return p;
   #endif

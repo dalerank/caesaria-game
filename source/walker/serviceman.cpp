@@ -52,6 +52,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Human( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
+  _setNation( city->nation() );
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;

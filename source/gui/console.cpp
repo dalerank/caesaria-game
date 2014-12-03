@@ -251,7 +251,7 @@ void Console::inputChar_( unsigned int key_char, bool shift_down )		//
     std::string astr = buf;
 		
     //if(shift_down)
-    //  astr = StringHelper::localUpper( astr );
+    //  astr = utils::localUpper( astr );
 		
     currentCommand_ = currentCommand_.substr( 0, cursorPos_-1 ) + astr + currentCommand_.substr( cursorPos_-1, 0xff );
 		cursorPos_++;

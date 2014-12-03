@@ -498,7 +498,7 @@ const Path& FileSystem::workingDirectory()
 		#if defined(CAESARIA_PLATFORM_WIN)
 			char tmp[_MAX_PATH];
 			_getcwd(tmp, _MAX_PATH);
-      _d->workingDirectory[type] = StringHelper::replace( tmp, "\\", "/" );
+      _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
 		#elif defined(CAESARIA_PLATFORM_UNIX)
 			// getting the CWD is rather complex as we do not know the size
 			// so try it until the call was successful

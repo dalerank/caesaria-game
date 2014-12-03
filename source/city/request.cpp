@@ -177,7 +177,7 @@ void RqGood::fail( PlayerCityPtr city )
   {
     _startDate = _finishDate;
 
-    //std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
+    //std::string text = utils::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
     e = events::ShowInfobox::create( "##emperor_anger##", "##emperor_anger_text##" );
     e->dispatch();
 

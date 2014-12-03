@@ -43,16 +43,17 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {
   setupUI( ":/gui/packageopts.gui" );
+  setCenter( parent->center() );
 
   GET_DWIDGET_FROM_UI(_d,edResourcesPath)
   GET_DWIDGET_FROM_UI(_d,btnApply)
   GET_DWIDGET_FROM_UI(_d,btnChangeCellw)
 
-  if( _d->edResourcesPath ) { _d->edResourcesPath->setText( SETTINGS_VALUE( resourcePath ).toString() ); }
-
   CONNECT( _d->btnApply, onClicked(), this, PackageOptions::deleteLater );
   CONNECT( _d->edResourcesPath, onTextChanged(), this, PackageOptions::_setResourcesPath );
   CONNECT( _d->btnChangeCellw, onClicked(), this, PackageOptions::_changeCellw );
+
+  _update();
 }
 
 PackageOptions::~PackageOptions() {}
@@ -66,7 +67,22 @@ void PackageOptions::_changeCellw()
 {
   int cellWidth = SETTINGS_VALUE( cellw );
   cellWidth = cellWidth == 30 ? 60 : 30;
-  if( _d->btnChangeCellw ) { _d->btnChangeCellw->setText( "CellWidth: %d" + utils::i2str( cellWidth ) ); }
+  SETTINGS_SET_VALUE( cellw, cellWidth );
+  _update();
+}
+
+void PackageOptions::_update()
+{
+  if( _d->btnChangeCellw )
+  {
+    int cellWidth = SETTINGS_VALUE( cellw );
+    _d->btnChangeCellw->setText( "CellWidth: " + utils::i2str( cellWidth ) );
+  }
+
+  if( _d->edResourcesPath )
+  {
+    _d->edResourcesPath->setText( SETTINGS_VALUE( resourcePath ).toString() );
+  }
 }
 
 }//end namespace dialog

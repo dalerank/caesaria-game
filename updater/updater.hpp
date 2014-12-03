@@ -226,7 +226,7 @@ public:
 	void GetVersionInfoFromServer();
 
 	// Return the version string of the newest available version
-	std::string GetNewestVersion();
+	std::string getNewestVersion();
 
 	// Attempt to determine the local version using the version info downloaded earlier
 	void DetermineLocalVersion();
@@ -241,7 +241,7 @@ public:
 	void PerformDifferentialUpdateStep();
 
 	// Return the version as determined in DetermineLocalVersion()
-	std::string GetDeterminedLocalVersion();
+	std::string getDeterminedLocalVersion();
 
 	// Get Information about the next differential update
 	//DifferentialUpdateInfo GetDifferentialUpdateInfo();
@@ -287,10 +287,10 @@ public:
 	void RestartUpdater();
 
 	// Cleanup (both after regular exit and user terminations)
-	void PostUpdateCleanup();
+	void postUpdateCleanup();
 
 	// Interrupts ongoing downloads
-	void CancelDownloads();
+	void cancelDownloads();
 
 	// Prepare the update batch/script file
 	void PrepareUpdateBatchFile();
@@ -316,7 +316,7 @@ private:
 	vfs::Directory getTargetDir();
 
 	// Creates a mirrored download
-	DownloadPtr PrepareMirroredDownload(const std::string& remoteFile);
+	DownloadPtr prepareMirroredDownload(const std::string& remoteFile);
 
 	// Downloads a file from a random mirror to the target folder
 	void PerformSingleMirroredDownload(const std::string& remoteFile);

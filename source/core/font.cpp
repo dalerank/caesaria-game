@@ -371,7 +371,7 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 
   if( !font.isValid() )
   {
-    Logger::warning( "StringHelper::breakText font must be exists" );
+    Logger::warning( "utils::breakText font must be exists" );
     brokenText.push_back( text );
     return brokenText;
   }

@@ -449,7 +449,7 @@ void EnemySoldier::setAttackPriority(EnemySoldier::AttackPriority who) {_atPrior
 void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
 {
   Soldier::acceptAction( action, pos );
-  if( action == Walker::acFight )
+  if( _subAction() != EnemySoldier::fightEnemy && action == Walker::acFight )
   {
     _tryAttack();
   }

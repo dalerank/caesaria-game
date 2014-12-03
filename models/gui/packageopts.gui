@@ -1,5 +1,5 @@
 {  
-  geometry : [ 0, 0, 380, 300 ]
+  geometry : [ 0, 0, 450, 300 ]
   buttons : "off"
   static : true
   bgtype : "whiteFrame"
@@ -12,19 +12,19 @@
   }
 	
   lbResourcesPath#Label : {
-    geometry : [ 12, 50, 70, 82 ]
-    font : "FONT_3"
+    geometry : [ 12, 50, 100, 72 ]
+    font : "FONT_1"
 		text : "Resources: "
     text.align : [ "center", "center" ]
   }
 	
 	edResourcesPath#EditBox :
   {
-    geometry : [ 72, 50, "pw-15", 82 ]
+    geometry : [ 92, 50, "pw-15", 72 ]
     textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
+    font : "FONT_1"
     text : ""
-    text.offset : [ 20, 0 ]
+    text.offset : [ 10, 0 ]
   }
 
   btnChangeCellw#PushButton :
@@ -32,6 +32,7 @@
     geometry : [ 12, 85, "pw-15", 110 ]
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_2"
+    text.offset : [ 10, 0 ]
     text : ""
   }
 	

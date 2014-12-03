@@ -49,6 +49,7 @@ public:
   virtual const GoodStore& importingGoods() const;
   virtual const GoodStore& exportingGoods() const;
 
+  virtual world::Nation nation() const;
   virtual unsigned int age() const;
 
   virtual void delayTrade(unsigned int month);

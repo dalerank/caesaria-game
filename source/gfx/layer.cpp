@@ -501,7 +501,7 @@ void Layer::afterRender( Engine& engine)
         for( int j=0; j < size; j+=2 )
         {
           const Tile& rtile = tmap.at( i, j );
-          text = StringHelper::format( 0xff, "(%d,%d)", i, j );
+          text = utils::format( 0xff, "(%d,%d)", i, j );
           //PictureDecorator::basicText( screen, rtile.mapPos() + offset + Point( 0, 0),text.c_str(), 0xffffffff );
           font.draw( screen, text, rtile.mappos() + offset + Point( 7, -7 ), false );
         }
