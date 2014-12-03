@@ -20,6 +20,7 @@
 #include "gfx/helper.hpp"
 #include "objects/objects_factory.hpp"
 #include "resourcegroup.hpp"
+#include "objects/metadata.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -122,20 +123,19 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     ovType = objects::road;
-    Picture pic = Picture::load( ResourceGroup::land1a, 1/*62 + math::random( 57 )*/ );
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
     oTile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
   }
   else if( oTile.getFlag( Tile::tlTree ) )
   {
     ovType = objects::tree;
-    Picture pic = Picture::load( ResourceGroup::land1a, 1/*62 + math::random( 57 )*/ );
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
-    //oTile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    Picture pic = Picture::load( ResourceGroup::land1a, 1/*62 + math::random( 57 )*/ );
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
   }
   else if( (imgId >= 372 && imgId <= 427) )

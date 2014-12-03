@@ -134,6 +134,10 @@ public:
     __REG_TOTYPE( elevation )
     __REG_TOTYPE( rift )
     __REG_TOTYPE( river )
+    __REG_TOTYPE( tree )
+    __REG_TOTYPE( waymark )
+    __REG_TOTYPE( terrain )
+    __REG_TOTYPE( water )
 
     append( objects::unknown,        "" );
 #undef __REG_TOTYPE
@@ -252,10 +256,10 @@ public:
   BuildingTypeHelper typeHelper;
   BuildingClassHelper classHelper;
 
-  typedef std::map<TileOverlay::Type, MetaData> BuildingsMap;
+  typedef std::map<TileOverlay::Type, MetaData> ObjectsMap;
   typedef std::map<Good::Type, TileOverlay::Type> FactoryInMap;
 
-  BuildingsMap buildings;// key=building_type, value=data
+  ObjectsMap objectsInfo;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
 };
 
@@ -280,11 +284,11 @@ TileOverlay::Type MetaDataHolder::getConsumerType(const Good::Type inGoodType) c
 
 const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
 {
-  Impl::BuildingsMap::iterator mapIt;
-  mapIt = instance()._d->buildings.find(buildingType);
-  if (mapIt == instance()._d->buildings.end())
+  Impl::ObjectsMap::iterator mapIt;
+  mapIt = instance()._d->objectsInfo.find(buildingType);
+  if (mapIt == instance()._d->objectsInfo.end())
   {
-    Logger::warning("MetaDataHolder::Unknown building %d", buildingType );
+    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType );
     return MetaData::invalid;
   }
   return mapIt->second;
@@ -293,9 +297,9 @@ const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
 bool MetaDataHolder::hasData(const TileOverlay::Type buildingType) const
 {
   bool res = true;
-  Impl::BuildingsMap::iterator mapIt;
-  mapIt = _d->buildings.find(buildingType);
-  if (mapIt == _d->buildings.end())
+  Impl::ObjectsMap::iterator mapIt;
+  mapIt = _d->objectsInfo.find(buildingType);
+  if (mapIt == _d->objectsInfo.end())
   {
     res = false;
   }
@@ -305,7 +309,7 @@ bool MetaDataHolder::hasData(const TileOverlay::Type buildingType) const
 MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
 {
   OverlayTypes ret;
-  foreach( it, _d->buildings )  { ret.push_back( it->first );  }
+  foreach( it, _d->objectsInfo )  { ret.push_back( it->first );  }
   return ret;
 }
 
@@ -319,7 +323,7 @@ void MetaDataHolder::addData(const MetaData &data)
     return;
   }
 
-  _d->buildings.insert(std::make_pair(buildingType, data));
+  _d->objectsInfo.insert(std::make_pair(buildingType, data));
 }
 
 
@@ -336,7 +340,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
   _d->mapBuildingByInGood[Good::olive ] = objects::creamery;
   _d->mapBuildingByInGood[Good::grape ] = objects::winery;
 
-  VariantMap constructions = SaveAdapter::load( filename.toString() );
+  VariantMap constructions = SaveAdapter::load( filename );
 
   foreach( mapItem, constructions )
   {
@@ -349,8 +353,8 @@ void MetaDataHolder::initialize( vfs::Path filename )
       continue;
     }
 
-    Impl::BuildingsMap::const_iterator bdataIt = _d->buildings.find( btype );
-    if( bdataIt != _d->buildings.end() )
+    Impl::ObjectsMap::const_iterator bdataIt = _d->objectsInfo.find( btype );
+    if( bdataIt != _d->objectsInfo.end() )
     {
       Logger::warning( "!!!Warning: type %s also initialized", mapItem->first.c_str() );
       continue;
@@ -439,7 +443,7 @@ TileOverlay::Group MetaDataHolder::findGroup( const std::string& name )
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
-    Logger::warning( "MetaDataHolder: can't find building class for building className %s", name.c_str() );
+    Logger::warning( "MetaDataHolder: can't find object class for className %s", name.c_str() );
     return objects::unknownGroup;
   }
 

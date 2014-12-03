@@ -31,6 +31,7 @@ public:
   virtual ~PackageOptions();
 
 private:
+  void _saveOptions();
   void _setResourcesPath(std::string);
   void _changeCellw();
   void _update();

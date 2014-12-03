@@ -50,6 +50,7 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   GET_DWIDGET_FROM_UI(_d,btnChangeCellw)
 
   CONNECT( _d->btnApply, onClicked(), this, PackageOptions::deleteLater );
+  CONNECT( _d->btnApply, onClicked(), this, PackageOptions::_saveOptions );
   CONNECT( _d->edResourcesPath, onTextChanged(), this, PackageOptions::_setResourcesPath );
   CONNECT( _d->btnChangeCellw, onClicked(), this, PackageOptions::_changeCellw );
 
@@ -58,9 +59,14 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
 
 PackageOptions::~PackageOptions() {}
 
+void PackageOptions::_saveOptions()
+{
+  GameSettings::instance().save();
+}
+
 void PackageOptions::_setResourcesPath(std::string path)
 {
-  SETTINGS_SET_VALUE( resourcePath, Variant(path) );
+  SETTINGS_SET_VALUE( resourcePath, Variant(path) );  
 }
 
 void PackageOptions::_changeCellw()

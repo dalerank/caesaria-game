@@ -362,7 +362,7 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != 30 || cellWidth != 60 )
+  if( cellWidth != 30 && cellWidth != 60 )
   {
     cellWidth = 30;
   }

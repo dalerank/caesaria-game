@@ -188,6 +188,8 @@ enum Type
   river,
   tree,
   waymark,
+  terrain,
+  water,
 
   typeCount,
   userType=1000
