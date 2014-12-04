@@ -201,14 +201,11 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
 }
 
 void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc, bool simple)
-{
-  std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
+{  
   PictureInfoBank& pib = PictureInfoBank::instance();
 
   foreach( ac, desc )
-  {
-    Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
-
+  {   
     VariantMap actionInfo = ac->second.toMap();
     VARIANT_INIT_STR( rc, actionInfo )
     VARIANT_INIT_ANY( int, start, actionInfo )
@@ -218,19 +215,23 @@ void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc, bool 
     VARIANT_INIT_ANY( int, delay, actionInfo )
     VARIANT_INIT_ANY( int, step, actionInfo )
 
-    //creating information about animation offset
-    Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
-    VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
-    pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
-
     if( simple )
     {
+      VARIANT_LOAD_ANY( type, actionInfo )
+      Logger::warning( "AnimationBank: load simple animations for " + ac->first );
       Animation& animation = simpleAnimations[ type ];
       animation.load( rc, start, frames, reverse, step );
       animation.setDelay( delay );
     }
     else
     {
+      //creating information about animation offset
+      Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
+      VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
+      pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
+
+      std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
+      Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
       loadAnimation( type, rc, start, frames, (Walker::Action)action, step, delay );
     }
   }
@@ -295,12 +296,7 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
   }
 
   items = SaveAdapter::load( basic );
-  foreach( i, items )
-  {
-    VariantMap vm = i->second.toMap();
-    AnimationGroup group = (AnimationGroup)vm.get( "type" ).toInt();
-    _d->loadAnimation( group, vm, true );
-  }
+  _d->loadAnimation( animUnknown, items, true );
 }
 
 Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int start, bool back )

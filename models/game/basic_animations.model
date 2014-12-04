@@ -1,83 +1,84 @@
 {
   water : {
-    rc : "land1a"
-    start : 121
-    frames : 7
-    delay : 12
     type : 1
-    step : 8
+    rc : "land1a"
+      start : 121
+      frames : 7
+      delay : 40
+      step : 1
   }
 
   meadow : {
-    rc : "meadow"
-    start : 1
-    frames : 1
-    delay : 12
     type : 2
-    step : 8
+      rc : "meadow"
+      start : 1
+      frames : 1
+      delay : 12
+      step : 1
   }
 
   tree_0 : {
-    rc : "land1a"
-    start : 10
-    frames : 1
-    delay : 12
     type : 600
-    step : 8
+      rc : "land1a"
+      start : 10
+      frames : 1
+      delay : 12
+      step : 1
   }
 
   tree_1 : {
-    rc : "land1a"
-    start : 11
-    frames : 1
-    delay : 12
     type : 601
-    step : 8
+      rc : "land1a"
+      start : 11
+      frames : 1
+      delay : 12
+      step : 1
+
   }
 
   tree_2 : {
-    rc : "land1a"
-    start : 12
-    frames : 1
-    delay : 12
     type : 602
-    step : 8
+      rc : "land1a"
+      start : 12
+      frames : 1
+      delay : 12
+      step : 1
   }
 
   tree_3 : {
-    rc : "land1a"
-    start : 13
-    frames : 1
-    delay : 12
     type : 603
-    step : 8
+      rc : "land1a"
+      start : 13
+      frames : 1
+      delay : 12
+      step : 1
   }
 
   tree_4 : {
-    rc : "land1a"
-    start : 14
-    frames : 1
-    delay : 12
     type : 604
-    step : 8
+      rc : "land1a"
+      start : 14
+      frames : 1
+      delay : 12
+      step : 1
   }
 
   tree_5 : {
-    rc : "land1a"
-    start : 15
-    frames : 1
-    delay : 12
     type : 605
-    step : 8
+      rc : "land1a"
+      start : 15
+      frames : 1
+      delay : 12
+      step : 1
   }
 
   tree_6 : {
-    rc : "land1a"
-    start : 16
-    frames : 1
-    delay : 12
     type : 606
-    step : 8
+      rc : "land1a"
+      start : 16
+      frames : 1
+      delay : 12
+      step : 1
   }
 }
 
