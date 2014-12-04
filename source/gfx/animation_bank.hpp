@@ -52,7 +52,7 @@ public:
   // loads all cart graphics
   void loadCarts();
 
-  void loadAnimation( vfs::Path model );
+  void loadAnimation(vfs::Path model, vfs::Path basic);
 
   static const Picture& getCart( int good, int capacity, constants::Direction direction );
   static const Animation& simple( int type );

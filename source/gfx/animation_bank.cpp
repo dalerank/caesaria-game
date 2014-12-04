@@ -83,7 +83,7 @@ public:
                      const int start, const int size,
                      Walker::Action wa=Walker::acMove,
                      const int step = defaultStepInFrame, int delay=0);
-  void loadAnimation(int who, const VariantMap& desc );
+  void loadAnimation(int who, const VariantMap& desc , bool simple);
   const AnimationBank::MovementAnimation& tryLoadAnimations(int wtype );
 
   void loadCarts();
@@ -165,25 +165,7 @@ AnimationBank& AnimationBank::instance()
 
 AnimationBank::AnimationBank() : _d( new Impl )
 {
-  Animation water;
-  water.setDelay( 12 );
-  water.load( ResourceGroup::land1a, 121, 7 );
-  water.load( ResourceGroup::land1a, 127, 7, true );
 
-  _d->simpleAnimations[ animWater ] = water;
-
-  Animation meadow;
-  meadow.setDelay( 12 );
-  meadow.load( ResourceGroup::meadow, 1, 1 );
-  _d->simpleAnimations[ animMeadow ] = meadow;
-
-  for( int i=0; i < 7; i++)
-  {
-    Animation tree;
-    tree.setDelay( 12 );
-    tree.load( ResourceGroup::land1a, 10+i, 1 );
-    _d->simpleAnimations[ animTree+i ] = tree;
-  }
 }
 
 void AnimationBank::loadCarts()
@@ -199,7 +181,7 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
                                          int delay )
 {
   MovementAnimation& ioMap = directedAnimations[ who ].actions;
-  DirectedAction action= { wa, noneDirection };
+  DirectedAction action = { wa, noneDirection };
 
   if( step == 0 )
   {
@@ -218,7 +200,7 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
   }
 }
 
-void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
+void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc, bool simple)
 {
   std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
   PictureInfoBank& pib = PictureInfoBank::instance();
@@ -227,9 +209,10 @@ void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
   {
     Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
 
-    VariantMap actionInfo = ac->second.toMap();    
+    VariantMap actionInfo = ac->second.toMap();
     VARIANT_INIT_STR( rc, actionInfo )
     VARIANT_INIT_ANY( int, start, actionInfo )
+    VARIANT_INIT_ANY( bool, reverse, actionInfo )
     VARIANT_INIT_ANY( int, frames, actionInfo )
     VARIANT_INIT_ANY( int, action, actionInfo )
     VARIANT_INIT_ANY( int, delay, actionInfo )
@@ -240,7 +223,16 @@ void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
     VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
     pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
 
-    loadAnimation( type, rc, start, frames, (Walker::Action)action, step, delay );
+    if( simple )
+    {
+      Animation& animation = simpleAnimations[ type ];
+      animation.load( rc, start, frames, reverse, step );
+      animation.setDelay( delay );
+    }
+    else
+    {
+      loadAnimation( type, rc, start, frames, (Walker::Action)action, step, delay );
+    }
   }
 }
 
@@ -250,7 +242,7 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(i
 
   if( configIt != animConfigs.end() )
   {
-    loadAnimation( wtype, configIt->second );
+    loadAnimation( wtype, configIt->second, false );
     animConfigs.erase( configIt );
   }
 
@@ -281,7 +273,7 @@ const AnimationBank::MovementAnimation& AnimationBank::find( int type )
   return it->second.actions;
 }
 
-void AnimationBank::loadAnimation(vfs::Path model)
+void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
 {
   Logger::warning( "AnimationBank: start loading animations from " + model.toString() );
   _d->loadAnimation( 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
@@ -300,6 +292,14 @@ void AnimationBank::loadAnimation(vfs::Path model)
     {
       Logger::warning( "AnimationBank: cannot find type " + i->first );
     }
+  }
+
+  items = SaveAdapter::load( basic );
+  foreach( i, items )
+  {
+    VariantMap vm = i->second.toMap();
+    AnimationGroup group = (AnimationGroup)vm.get( "type" ).toInt();
+    _d->loadAnimation( group, vm, true );
   }
 }
 

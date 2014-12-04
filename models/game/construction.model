@@ -2,7 +2,7 @@
   terrain : {
     class : "terrain"
     image.ext : {
-      type_1 : { size:1, rc : "land1a", start : 2, count : 1 }
+      type_1 : { size:1, rc : "land1a", start : 62, count : 1 }
     }
   }
 

@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+// This f ile is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ public:
   Tree();
   
   virtual void timeStep( const unsigned long time );
-  bool isFlat() const;
-  void initTerrain(gfx::Tile &terrain);
-  bool build(PlayerCityPtr city, const TilePos &pos);
-  void destroy();
+  virtual bool isFlat() const;
+  virtual void initTerrain(gfx::Tile &terrain);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual void destroy();
 private:
   bool _isFlat;
 };

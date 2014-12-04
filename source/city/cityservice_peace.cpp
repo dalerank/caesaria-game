@@ -200,6 +200,8 @@ std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
 std::string Peace::reason() const
 {
   if( _d->rioterSeen ) { return "##last_riots_bad_for_peace_rating##"; }
+
+  return "";
 }
 
 VariantMap Peace::save() const

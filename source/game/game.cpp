@@ -232,7 +232,8 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
 void Game::Impl::initPictures()
 {
   AnimationBank::instance().loadCarts();
-  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
+  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
+                                           SETTINGS_RC_PATH( simpleAnimationModel ) );
 }
 
 PlayerPtr Game::player() const { return _d->player; }

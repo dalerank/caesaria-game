@@ -73,6 +73,7 @@ public:
   __GS_PROPERTY(walkerRelations)
   __GS_PROPERTY(freeplay_opts)
   __GS_PROPERTY(cellw)
+  __GS_PROPERTY(simpleAnimationModel)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();

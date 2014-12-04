@@ -70,6 +70,7 @@ __REG_PROPERTY(font)
 __REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
 __REG_PROPERTY(cellw)
+__REG_PROPERTY(simpleAnimationModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -118,6 +119,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
   _d->options[ walkerRelations     ] = Variant( std::string( "/relations.model" ) );
   _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
+  _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.model" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
