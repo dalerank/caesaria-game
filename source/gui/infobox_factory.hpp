@@ -33,7 +33,7 @@ class AboutFactory : public AboutConstruction
 public:
   AboutFactory( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 
-  virtual void showDescription();
+  virtual void _showHelp();
 
 protected:
   void _toggleWork();

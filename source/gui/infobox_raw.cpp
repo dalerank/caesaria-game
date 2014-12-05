@@ -90,7 +90,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
 AboutRawMaterial::~AboutRawMaterial() {}
 
-void AboutRawMaterial::showDescription()
+void AboutRawMaterial::_showHelp()
 {
   DictionaryWindow::show( ui()->rootWidget(), _type );
 }

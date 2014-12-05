@@ -236,7 +236,7 @@ Manager::Manager() : _d( new Impl )
   ADD_INFOBOX( objects::chariotSchool, ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( objects::forum,            CAESARIA_STR_EXT(Forum),        new ServiceBaseInfoboxCreator("", "" ) );
   addInfobox( objects::governorHouse,    CAESARIA_STR_EXT(governorHouse),new ServiceBaseInfoboxCreator( "", "##governor_house_text##") );
-  addInfobox( objects::governorVilla,    CAESARIA_STR_EXT(governorVilla),new ServiceBaseInfoboxCreator( "", "##governor_villa_text##") );
+  ADD_INFOBOX( objects::governorVilla, ServiceBaseInfoboxCreator( "", "##governor_villa_text##") )
   addInfobox( objects::governorPalace,   CAESARIA_STR_EXT(governorPalace), new ServiceBaseInfoboxCreator( "", "##governor_palace_text##") );
   addInfobox( objects::highBridge,       CAESARIA_STR_EXT(HighBridge),   new InfoboxBasicCreator( "", "##high_bridge_info##") );
   addInfobox( objects::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoboxBasicCreator( "", "##bridge_extends_city_area##") );

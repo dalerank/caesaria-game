@@ -108,7 +108,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }
 
-void AboutFactory::showDescription()
+void AboutFactory::_showHelp()
 {
   DictionaryWindow::show( ui()->rootWidget(), _type );
 }
