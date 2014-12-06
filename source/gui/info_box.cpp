@@ -113,7 +113,7 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
   }
 
   CONNECT( _d->btnExit, onClicked(), this, Simple::deleteLater );
-  CONNECT( _d->btnHelp, onClicked(), this, Simple::showDescription );
+  CONNECT( _d->btnHelp, onClicked(), this, Simple::_showHelp );
 
   // black box
   Point lastPos( width() - 32, height() - 48 );

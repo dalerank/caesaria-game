@@ -27,8 +27,9 @@
 #include "label.hpp"
 #include "image.hpp"
 #include "core/saveadapter.hpp"
-#include <algorithm>
+//#include <algorithm>
 #include "core/gettext.hpp"
+#include "dictionary_text.hpp"
 #include "widgetescapecloser.hpp"
 
 using namespace gfx;
@@ -43,7 +44,8 @@ class LoadMission::Impl
 {
 public:
   FileListBox* lbxFiles;
-  Label* lbDescription;
+  Label* lbTitle;
+  DictionaryText* lbDescription;
   Image* imgPreview;
   vfs::Directory directory;
   std::string saveItemText;
@@ -66,14 +68,18 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
   vfs::Path fn(saveItemText);
   fn = directory/fn;
 
+  std::string missionName = vfs::Path( fn ).baseName( false ).toString();
   VariantMap vm = SaveAdapter::load( fn );
+  Locale::addTranslation( missionName );
 
-  std::string text = vm[ "preview.text" ].toString();
-  std::string previewImg = vm[ "preview.image" ].toString();
+  std::string text = vm.get( "preview.text" ).toString();
+  std::string previewImg = vm.get( "preview.image" ).toString();
+  std::string title = vm.get( "preview.title" ).toString();
 
   if( lbDescription ) lbDescription->setText( _(text) );
   if( imgPreview ) imgPreview->setPicture( Picture::load( previewImg ) );
   if( btnLoad ) btnLoad->setEnabled( !saveItemText.empty() );
+  if( lbTitle ) lbTitle->setText( _( title ) );
 }
 
 LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
@@ -89,6 +95,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
   GET_DWIDGET_FROM_UI( _d, btnLoad )
   GET_DWIDGET_FROM_UI( _d, lbDescription )
   GET_DWIDGET_FROM_UI( _d, imgPreview )
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
 
   CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );

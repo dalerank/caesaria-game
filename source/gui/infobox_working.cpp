@@ -78,7 +78,7 @@ void AboutWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void AboutWorkingBuilding::showDescription()
+void AboutWorkingBuilding::_showHelp()
 {
   DictionaryWindow::show( this, _working->type() );
 }

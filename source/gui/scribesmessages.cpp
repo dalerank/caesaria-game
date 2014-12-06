@@ -30,6 +30,7 @@
 #include "popup_messagebox.hpp"
 #include "texturedbutton.hpp"
 #include "core/color.hpp"
+#include "dictionary.hpp"
 #include "gfx/engine.hpp"
 #include "event_messagebox.hpp"
 #include "core/gettext.hpp"
@@ -162,6 +163,7 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessagestWindow::_showMessage );
   CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessagestWindow::_removeMessage );
   CONNECT( btnExit, onClicked(), this, ScribesMessagestWindow::deleteLater );
+  CONNECT( btnHelp, onClicked(), this, ScribesMessagestWindow::_showHelp );
 }
 
 void ScribesMessagestWindow::draw(gfx::Engine& painter )
@@ -193,7 +195,12 @@ void ScribesMessagestWindow::_fillMessages()
 
       item.setData( options );
     }
-  }
+    }
+}
+
+void ScribesMessagestWindow::_showHelp()
+{
+  DictionaryWindow::show( this, "scribes_messages" );
 }
 
 void ScribesMessagestWindow::_showMessage(int index)

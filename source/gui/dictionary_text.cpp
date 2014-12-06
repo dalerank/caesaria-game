@@ -607,6 +607,12 @@ bool DictionaryText::onEvent(const NEvent& event)
     }
     break;
 
+    case mouseWheel:
+    {
+
+    }
+    break;
+
     default: break;
     }
   }

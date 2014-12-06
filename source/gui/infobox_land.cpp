@@ -128,7 +128,7 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-void AboutLand::showDescription()
+void AboutLand::_showHelp()
 {
 
 }
@@ -149,7 +149,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
     }
 }
 
-void AboutFreeHouse::showDescription()
+void AboutFreeHouse::_showHelp()
 {
   DictionaryWindow::show( this, "vacant_lot" );
 }

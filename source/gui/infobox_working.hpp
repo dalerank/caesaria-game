@@ -36,12 +36,11 @@ class AboutWorkingBuilding : public AboutConstruction
 public:
   AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
   
-  void drawWorkers( int );
   virtual void setText(const std::string& text);
 
-  virtual void showDescription();
-
 protected:
+  virtual void _showHelp();
+  void _drawWorkers( int );
   WorkingBuildingPtr _getBuilding();
 
 private:

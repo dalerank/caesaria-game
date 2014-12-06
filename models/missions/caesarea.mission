@@ -9,6 +9,7 @@
   fishPlaceEnabled : false
   climate : 1
   preview.text : "##caesarea_preview_mission##"
+  preview.title : "##caesarea_preview_title##"
   preview.image : ""
 	
   win : {

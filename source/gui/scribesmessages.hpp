@@ -38,6 +38,7 @@ private:
   void _showMessage( int index );
   void _removeMessage( int index );
   void _fillMessages();
+  void _showHelp();
 
   class Impl;
   ScopedPtr< Impl > _d;

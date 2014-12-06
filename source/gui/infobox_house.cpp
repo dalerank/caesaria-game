@@ -226,7 +226,7 @@ bool AboutHouse::onEvent(const NEvent& event)
   return Simple::onEvent( event );
 }
 
-void AboutHouse::showDescription()
+void AboutHouse::_showHelp()
 {
   DictionaryWindow::show( this, "house" );
 }

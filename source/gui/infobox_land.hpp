@@ -34,14 +34,14 @@ public:
   AboutLand( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 
   virtual void setText( const std::string& text );
-  virtual void showDescription();
+  virtual void _showHelp();
 };
 
 class AboutFreeHouse : public AboutLand
 {
 public:
   AboutFreeHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-  virtual void showDescription();
+  virtual void _showHelp();
 };
 
 }

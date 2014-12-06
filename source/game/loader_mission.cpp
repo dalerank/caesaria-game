@@ -142,7 +142,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );
-    GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
+    SETTINGS_SET_VALUE( lastTranslation, Variant( missionName ) );
 
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
