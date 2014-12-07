@@ -33,17 +33,16 @@
 #include "core/logger.hpp"
 #include "saver.hpp"
 
-namespace {
+namespace game{
 static const int currentVesion = 1;
-}
 
-class GameLoaderOc3::Impl
+class LoaderOc3::Impl
 {
 public:
   std::string restartFile;
 };
 
-bool GameLoaderOc3::load( const std::string& filename, Game& game )
+bool LoaderOc3::load( const std::string& filename, Game& game )
 {
   Logger::warning( "GameLoaderOc3: start loading from " + filename );
   VariantMap vm = SaveAdapter::load( filename );
@@ -66,7 +65,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
 
     Variant lastTr = scenario_vm[ "translation" ];
     Locale::addTranslation( lastTr.toString() );
-    GameSettings::set( GameSettings::lastTranslation, lastTr );
+    SETTINGS_SET_VALUE( lastTranslation, lastTr );
 
     game.player()->load( vm[ "player" ].toMap() );
     game.city()->load( vm[ "city" ].toMap() );
@@ -82,7 +81,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
   return false;
 }
 
-int GameLoaderOc3::climateType(const std::string& filename)
+int LoaderOc3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
   VariantMap vm = SaveAdapter::load( filename );
@@ -91,14 +90,16 @@ int GameLoaderOc3::climateType(const std::string& filename)
   return scenario_vm.get( "climate", -1 );
 }
 
-bool GameLoaderOc3::isLoadableFileExtension( const std::string& filename )
+bool LoaderOc3::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 8 ) == ".oc3save";
 }
 
-std::string GameLoaderOc3::restartFile() const { return _d->restartFile; }
+std::string LoaderOc3::restartFile() const { return _d->restartFile; }
 
-GameLoaderOc3::GameLoaderOc3() : _d( new Impl )
+LoaderOc3::LoaderOc3() : _d( new Impl )
 {
 
 }
+
+}//end namespace game

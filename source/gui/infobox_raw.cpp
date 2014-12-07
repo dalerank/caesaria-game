@@ -20,7 +20,6 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
-#include "game/settings.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "objects/factory.hpp"
@@ -40,7 +39,7 @@ namespace infobox
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
+  Widget::setupUI( ":/gui/infoboxraw.gui" );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
   _type = rawmb->type();
 

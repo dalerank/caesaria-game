@@ -21,10 +21,11 @@
 #include "core/time.hpp"
 #include <string>
 
-class DateTimeHelper
+namespace util
 {
-public:
-  static std::string toStr(const DateTime& time);
-};
+
+std::string date2str(const DateTime& time);
+
+}//end namespace util
 
 #endif //_CAESARIA_DATETIMEHELPER_INCLUDE_H_

@@ -64,7 +64,7 @@ PackageOptions::~PackageOptions() {}
 
 void PackageOptions::_saveOptions()
 {
-  GameSettings::instance().save();
+  game::Settings::instance().save();
 }
 
 void PackageOptions::_setResourcesPath(std::string path)

@@ -22,7 +22,10 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 
-#define __REG_PROPERTY(a) const char* GameSettings::a = CAESARIA_STR_EXT(a);
+namespace game
+{
+
+#define __REG_PROPERTY(a) const char* Settings::a = CAESARIA_STR_EXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
@@ -77,19 +80,19 @@ const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
 const vfs::Path defaultLocaleDir = "resources/locale";
 
-class GameSettings::Impl
+class Settings::Impl
 {
 public:
   VariantMap options;
 };
 
-GameSettings& GameSettings::instance()
+Settings& Settings::instance()
 {
-  static GameSettings inst;
+  static Settings inst;
   return inst;
 }
 
-GameSettings::GameSettings() : _d( new Impl )
+Settings::Settings() : _d( new Impl )
 {
   std::string application_path = vfs::Directory::getApplicationDir().toString();
   setwdir( application_path );
@@ -141,12 +144,12 @@ GameSettings::GameSettings() : _d( new Impl )
 #endif
 }
 
-void GameSettings::set( const std::string& option, const Variant& value )
+void Settings::set( const std::string& option, const Variant& value )
 {
   instance()._d->options[ option ] = value;
 }
 
-Variant GameSettings::get( const std::string& option )
+Variant Settings::get( const std::string& option )
 {
   VariantMap::iterator it = instance()._d->options.find( option );
   return  instance()._d->options.end() == it
@@ -154,7 +157,7 @@ Variant GameSettings::get( const std::string& option )
               : it->second;
 }
 
-void GameSettings::setwdir( const std::string& wdirstr )
+void Settings::setwdir( const std::string& wdirstr )
 {
   vfs::Directory wdir( wdirstr );
   _d->options[ workDir ] = Variant( wdir.toString() );
@@ -172,7 +175,7 @@ void GameSettings::setwdir( const std::string& wdirstr )
   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
-void GameSettings::checkwdir(char* argv[], int argc)
+void Settings::checkwdir(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
   {
@@ -185,7 +188,7 @@ void GameSettings::checkwdir(char* argv[], int argc)
   }
 }
 
-void GameSettings::checkCmdOptions(char* argv[], int argc)
+void Settings::checkCmdOptions(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
   {
@@ -214,7 +217,7 @@ void GameSettings::checkCmdOptions(char* argv[], int argc)
 
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
 {
-  Variant vr = GameSettings::get( fpath.toString() );
+  Variant vr = game::Settings::get( fpath.toString() );
   if( vr.isNull() )
   {
     return dir/fpath;
@@ -223,28 +226,30 @@ static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
   return dir/vfs::Path( vr.toString() );
 }
 
-vfs::Path GameSettings::rcpath( const std::string& option )
+vfs::Path Settings::rcpath( const std::string& option )
 {
   std::string rc = get( resourcePath ).toString();
 
   return __concatPath( rc, option );
 }
 
-vfs::Path GameSettings::rpath( const std::string& option )
+vfs::Path Settings::rpath( const std::string& option )
 {
   std::string wd = get( workDir ).toString();
 
   return __concatPath( wd, option );
 }
 
-void GameSettings::load()
+void Settings::load()
 {
-  VariantMap settings = SaveAdapter::load( rcpath( GameSettings::settingsPath ) );
+  VariantMap settings = SaveAdapter::load( rcpath( Settings::settingsPath ) );
 
   foreach( v, settings ) { set( v->first, v->second ); }
 }
 
-void GameSettings::save()
+void Settings::save()
 {
-  SaveAdapter::save( instance()._d->options, rcpath( GameSettings::settingsPath ) );
+  SaveAdapter::save( instance()._d->options, rcpath( Settings::settingsPath ) );
 }
+
+}//end namespace game

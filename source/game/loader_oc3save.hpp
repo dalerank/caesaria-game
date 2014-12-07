@@ -22,10 +22,13 @@
 
 class Game;
 
-class GameLoaderOc3 : public GameAbstractLoader
+namespace game
+{
+
+class LoaderOc3 : public AbstractLoader
 {
 public:
-  GameLoaderOc3();
+  LoaderOc3();
 
   virtual bool load(const std::string& filename, Game &game);
   virtual int  climateType(const std::string& filename);
@@ -37,4 +40,5 @@ private:
   ScopedPtr<Impl> _d;
 };
 
+}//end namespace game
 #endif //__CAESARIA_OC3SAVE_LOADER_H_INCLUDED__

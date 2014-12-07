@@ -479,7 +479,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   _d->dragging = false;
   GET_DWIDGET_FROM_UI( _d, lbTitle )
 
-  _d->offset = GameSettings::get( empMapOffset ).toPoint();
+  _d->offset = game::Settings::get( empMapOffset ).toPoint();
 
   WidgetEscapeCloser::insertTo( this );
 
@@ -692,7 +692,7 @@ EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int
 
 EmpireMapWindow::~EmpireMapWindow()
 {
-  GameSettings::set( empMapOffset, _d->offset );
+  game::Settings::set( empMapOffset, _d->offset );
 }
 
 }//end namespace gui

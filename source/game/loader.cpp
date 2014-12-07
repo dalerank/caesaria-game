@@ -40,12 +40,15 @@
 
 using namespace gfx;
 
-typedef SmartPtr< GameAbstractLoader > GameAbstractLoaderPtr;
+namespace game
+{
 
-class GameLoader::Impl
+typedef SmartPtr< AbstractLoader > AbstractLoaderPtr;
+
+class Loader::Impl
 {
 public:
-  typedef std::vector< GameAbstractLoaderPtr > Loaders;
+  typedef std::vector< AbstractLoaderPtr > Loaders;
   typedef Loaders::iterator LoaderIterator;
   Loaders loaders;
   std::string restartFile;
@@ -60,14 +63,14 @@ public:
   }
 };
 
-GameLoader::GameLoader() : _d( new Impl )
+Loader::Loader() : _d( new Impl )
 {
   _d->initLoaders();
 }
 
-GameLoader::~GameLoader() {}
+Loader::~Loader() {}
 
-void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
+void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 {
   TilePos tlOffset;
   Tilemap& tmap = city->tilemap();
@@ -100,7 +103,7 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr ci
   }
 }
 
-void GameLoader::Impl::initTilesAnimation( Tilemap& tmap )
+void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
 
@@ -124,7 +127,7 @@ void GameLoader::Impl::initTilesAnimation( Tilemap& tmap )
   }
 }
 
-void GameLoader::Impl::finalize( Game& game )
+void Loader::Impl::finalize( Game& game )
 {
   Tilemap& tileMap = game.city()->tilemap();
 
@@ -137,15 +140,15 @@ void GameLoader::Impl::finalize( Game& game )
   initTilesAnimation( tileMap );
 }
 
-void GameLoader::Impl::initLoaders()
+void Loader::Impl::initLoaders()
 {
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Map() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Sav() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderOc3() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderMission() ) );
+  loaders.push_back( AbstractLoaderPtr( new LoaderC3Map() ) );
+  loaders.push_back( AbstractLoaderPtr( new LoaderC3Sav() ) );
+  loaders.push_back( AbstractLoaderPtr( new LoaderOc3() ) );
+  loaders.push_back( AbstractLoaderPtr( new LoaderMission() ) );
 }
 
-bool GameLoader::load( vfs::Path filename, Game& game )
+bool Loader::load( vfs::Path filename, Game& game )
 {
   // try to load file based on file extension
   Impl::LoaderIterator it = _d->loaders.begin();
@@ -176,4 +179,6 @@ bool GameLoader::load( vfs::Path filename, Game& game )
   return false; // failed to load
 }
 
-std::string GameLoader::restartFile() const { return _d->restartFile; }
+std::string Loader::restartFile() const { return _d->restartFile; }
+
+}//end namespace game

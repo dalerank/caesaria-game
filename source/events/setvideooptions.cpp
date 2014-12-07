@@ -52,13 +52,13 @@ bool SetVideoSettings::_mayExec(Game&, unsigned int) const { return true; }
 void SetVideoSettings::_setResolution(Size newSize)
 {
   SETTINGS_SET_VALUE( resolution, newSize );
-  GameSettings::save();
+  game::Settings::save();
 }
 
 void SetVideoSettings::_setFullscreen(bool fullscreen)
 {
   SETTINGS_SET_VALUE( fullscreen, fullscreen );
-  GameSettings::save();
+  game::Settings::save();
 }
 
 }

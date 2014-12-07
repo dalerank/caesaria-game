@@ -34,7 +34,10 @@ using namespace gfx;
 #include <fstream>
 #include <map>
 
-class GameLoaderC3Map::Impl
+namespace game
+{
+
+class LoaderC3Map::Impl
 {
 public:
   static const int kGraphicGrid = 0x0;
@@ -86,7 +89,7 @@ public:
   void initEntryExit(std::fstream &f, PlayerCityPtr ioCity);
 };
 
-bool GameLoaderC3Map::load(const std::string& filename, Game& game)
+bool LoaderC3Map::load(const std::string& filename, Game& game)
 {
   _d->restartFile = filename;
 
@@ -109,7 +112,7 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
   return true;
 }
 
-int GameLoaderC3Map::climateType(const std::string& filename)
+int LoaderC3Map::climateType(const std::string& filename)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -122,20 +125,20 @@ int GameLoaderC3Map::climateType(const std::string& filename)
   return i;
 }
 
-GameLoaderC3Map::GameLoaderC3Map()
+LoaderC3Map::LoaderC3Map()
   : _d( new Impl )
 {
 
 }
 
-bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
+bool LoaderC3Map::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".map" );
 }
 
-std::string GameLoaderC3Map::restartFile() const {  return _d->restartFile; }
+std::string LoaderC3Map::restartFile() const {  return _d->restartFile; }
 
-void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
+void LoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 {
   Tilemap& oTilemap = oCity->tilemap();
 
@@ -273,7 +276,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   }
 }
 
-void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
+void LoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 {
   // read climate
   unsigned int i = 0;
@@ -286,7 +289,7 @@ void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
   Logger::warning( "C3MapLoader: climate type is %d", climate );
 }
 
-void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
+void LoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->tilemap().size();
 
@@ -323,7 +326,7 @@ void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   //std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
-void GameLoaderC3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity)
+void LoaderC3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity)
 {
   /*unsigned short int i = 0;
   unsigned short int j = 0;
@@ -334,3 +337,5 @@ void GameLoaderC3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr io
 
   ioCity->setCameraPos( TilePos( mapSize / 2, mapSize / 2 ) );
 }
+
+}//end namespace game

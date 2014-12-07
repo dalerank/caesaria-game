@@ -57,7 +57,7 @@ void SetSoundOptions::_saveSoundSettings()
   SETTINGS_SET_VALUE( soundVolume, se.volume( audio::gameSound ) );
   SETTINGS_SET_VALUE( ambientVolume, se.volume( audio::ambientSound ) );
   SETTINGS_SET_VALUE( musicVolume, se.volume( audio::themeSound ) );
-  GameSettings::save();
+  game::Settings::save();
 }
 
 }

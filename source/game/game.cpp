@@ -243,7 +243,7 @@ gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
 
-const DateTime& Game::date() const { return game::Date::current(); }
+DateTime Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -276,7 +276,7 @@ Game::~Game(){}
 
 void Game::save(std::string filename) const
 {
-  GameSaver saver;
+  game::Saver saver;
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
@@ -295,14 +295,14 @@ bool Game::load(std::string filename)
   if( !fPath.exist() )
   {
     Logger::warning( "Game: Cannot find file " + fPath.toString() );
-    fPath = GameSettings::rpath( filename );
+    fPath = game::Settings::rpath( filename );
 
     if( !fPath.exist() )
     {
       Logger::warning( "Game: Cannot find file " + fPath.toString() );
       Logger::warning( "Game: Try find file in resource's folder " );
 
-      fPath = GameSettings::rcpath( filename ).absolutePath();
+      fPath = game::Settings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
         Logger::warning( "Game: Cannot find file " + fPath.toString() );
@@ -318,7 +318,7 @@ bool Game::load(std::string filename)
                           SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
-  GameLoader loader;
+  game::Loader loader;
   bool loadOk = loader.load( fPath, *this );
 
   if( !loadOk )
@@ -373,12 +373,12 @@ void Game::initialize()
   TileHelper::initTileWidth( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
-  vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );
+  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
-  _d->initFontCollection( GameSettings::rcpath() );
+  _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();
   _d->createSaveDir();
@@ -423,7 +423,7 @@ void Game::initialize()
 
   screen.setText( "##ready_to_game##" );
 
-  if( GameSettings::get( "no-fade" ).isNull() )
+  if( game::Settings::get( "no-fade" ).isNull() )
     screen.exitScene();
 
   _d->nextScreen = SCREEN_MENU;

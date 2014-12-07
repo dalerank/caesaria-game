@@ -56,7 +56,7 @@
 #include "core/logger.hpp"
 #include "game/patrolpointeventhandler.hpp"
 #include "gfx/tilemap_camera.hpp"
-#include "game/ambientsound.hpp"
+#include "city/ambientsound.hpp"
 #include "gui/win_mission_window.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "events/showadvisorwindow.hpp"
@@ -261,8 +261,8 @@ std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
-  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
-  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
+  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
+  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
   if( !saveDir.exist() )
   {
@@ -341,7 +341,7 @@ void Level::Impl::showMessagesWindow()
 void Level::Impl::setAutosaveInterval(int value)
 {
   SETTINGS_SET_VALUE( autosaveInterval, value );
-  GameSettings::save();
+  game::Settings::save();
 }
 
 void Level::Impl::layerChanged(int layer)
@@ -468,7 +468,7 @@ void Level::_showIngameMenu()
   gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
 
   menu->setCenter( p->center() );
-  menu->setupUI( GameSettings::rcpath( "/gui/ingamemenu_android.gui") );
+  menu->setupUI( ":/gui/ingamemenu_android.gui" );
   WidgetEscapeCloser::insertTo( menu );
 
   PushButton* btnContinue = findChildA<PushButton*>( "btnContinue", true, menu );
@@ -870,8 +870,8 @@ void Level::_showLoadDialog()
 {
   gui::Widget* parent = _d->game->gui()->rootWidget();
 
-  vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
-  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
+  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
+  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );

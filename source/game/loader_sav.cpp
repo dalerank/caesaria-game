@@ -36,9 +36,12 @@
 
 using namespace gfx;
 
+namespace game
+{
+
 static const int kClimate     = 0x33ad8;
 
-class GameLoaderC3Sav::Impl
+class LoaderC3Sav::Impl
 {
 public:
   std::map<TilePos, unsigned int> baseBuildings;
@@ -48,7 +51,7 @@ public:
   void initEntryExit(std::fstream& f, PlayerCityPtr ioCity);
 };
 
-GameLoaderC3Sav::GameLoaderC3Sav() : _d( new Impl )
+LoaderC3Sav::LoaderC3Sav() : _d( new Impl )
 {
 }
 
@@ -59,7 +62,7 @@ void SkipCompressed( std::fstream& f )
   f.seekg(tmp, std::ios::cur);
 }
 
-void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
+void LoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->tilemap().size();
 
@@ -96,7 +99,7 @@ void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.seekg(savePos, std::ios::beg);
 }
 
-int GameLoaderC3Sav::climateType(const std::string& filename)
+int LoaderC3Sav::climateType(const std::string& filename)
 {
   /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -110,9 +113,9 @@ int GameLoaderC3Sav::climateType(const std::string& filename)
   return -1;
 }
 
-std::string GameLoaderC3Sav::restartFile() const { return _d->restartFile; }
+std::string LoaderC3Sav::restartFile() const { return _d->restartFile; }
 
-bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
+bool LoaderC3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -130,7 +133,7 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
   return true;
 }
 
-bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
+bool LoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 { 
   uint32_t tmp;
 
@@ -372,7 +375,9 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   return true;
 }
 
-bool GameLoaderC3Sav::isLoadableFileExtension( const std::string& filename )
+bool LoaderC3Sav::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".sav" );
 }
+
+}//end namespace game

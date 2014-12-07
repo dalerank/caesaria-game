@@ -59,7 +59,7 @@ void Mars::_doWrath(PlayerCityPtr city)
   message->dispatch();
 
 
-  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( "mars_wrath.model" ) );
+  VariantMap vm = SaveAdapter::load( game::Settings::rcpath( "mars_wrath.model" ) );
   events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
   barb_attack->dispatch();
 }

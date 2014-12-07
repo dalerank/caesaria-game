@@ -28,6 +28,9 @@
 
 using namespace vfs;
 
+namespace game
+{
+
 /*void __appendRange( const std::string& rc, int start, int stop, StringArray& ar )
 {
   for( int index=start; index <= stop; index++ )
@@ -65,3 +68,5 @@ void ClimateManager::initialize(ClimateType climate)
     rc.loadFiles( archive );
   }
 }
+
+}//end namespace game

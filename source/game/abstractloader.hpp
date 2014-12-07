@@ -22,15 +22,19 @@
 
 class Game;
 
-class GameAbstractLoader : public ReferenceCounted
+namespace game
+{
+
+class AbstractLoader : public ReferenceCounted
 {
 public:
-  virtual ~GameAbstractLoader() {}
+  virtual ~AbstractLoader() {}
   virtual bool load( const std::string& filename, Game& oScenario ) = 0;
   virtual int  climateType( const std::string& filename ) = 0;
   virtual bool isLoadableFileExtension( const std::string& filename ) = 0;
   virtual std::string restartFile() const = 0;
 };
 
+}//end namespace game
 
 #endif //__CAESARIA_SCENARIOABSTRACTLOADER_H_INCLUDED__

@@ -465,7 +465,7 @@ void EffectManager::load(vfs::Path effectModel)
     std::string shaderFile = variables.get( "shader" ).toString();
     variables.erase( "shader" );
 
-    effect->loadProgramm( GameSettings::rcpath( shaderFile ) );
+    effect->loadProgramm( game::Settings::rcpath( shaderFile ) );
     effect->setVariables( variables );
 
     _effects.push_back( effect );

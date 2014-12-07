@@ -50,7 +50,7 @@ public:
   gui::Ui* gui() const;
   gfx::Engine* engine() const;
   scene::Base* scene() const;
-  const DateTime& date() const;
+  DateTime date() const;
 
   void setPaused( bool value );
   bool isPaused() const;

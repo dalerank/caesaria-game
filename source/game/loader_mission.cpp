@@ -43,26 +43,26 @@
 
 using namespace religion;
 
-namespace {
+namespace game
+{
 CAESARIA_LITERALCONST(climate)
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
 CAESARIA_LITERALCONST(random)
-}
 
-class GameLoaderMission::Impl
+class LoaderMission::Impl
 {
 public:
   std::string restartFile;
 };
 
-GameLoaderMission::GameLoaderMission()
+LoaderMission::LoaderMission()
  : _d( new Impl )
 {
 }
 
-bool GameLoaderMission::load( const std::string& filename, Game& game )
+bool LoaderMission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
   _d->restartFile = filename;
@@ -88,7 +88,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     }
     else
     {
-      GameLoader mapLoader;
+      game::Loader mapLoader;
       mapLoader.load( mapToLoad, game );
     }
 
@@ -157,10 +157,12 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
   return false;
 }
 
-bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
+bool LoaderMission::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".mission" );
 }
 
-int GameLoaderMission::climateType(const std::string& filename) { return -1; }
-std::string GameLoaderMission::restartFile() const { return _d->restartFile; }
+int LoaderMission::climateType(const std::string& filename) { return -1; }
+std::string LoaderMission::restartFile() const { return _d->restartFile; }
+
+}//end namespace game

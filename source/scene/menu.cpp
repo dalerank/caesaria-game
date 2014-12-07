@@ -128,7 +128,7 @@ void StartMenu::Impl::fitScreenResolution()
   gfx::Engine::Modes modes = game->engine()->modes();
   SETTINGS_SET_VALUE( resolution, modes.front() );
   SETTINGS_SET_VALUE( screenFitted, true );
-  GameSettings::save();
+  game::Settings::save();
 }
 
 void StartMenu::Impl::playMenuSoundTheme()

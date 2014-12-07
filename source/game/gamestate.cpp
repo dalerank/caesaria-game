@@ -138,10 +138,10 @@ ShowMainMenu::~ShowMainMenu()
     bool loadOk = _game->load( startMenu->mapName() );
     Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
 
-    FreeplayFinalizer::addPopulationMilestones( _game->city() );
-    FreeplayFinalizer::initBuildOptions(_game->city() );
-    FreeplayFinalizer::addEvents( _game->city());
-    FreeplayFinalizer::resetFavour( _game->city() );
+    game::freeplay::addPopulationMilestones( _game->city() );
+    game::freeplay::initBuildOptions(_game->city() );
+    game::freeplay::addEvents( _game->city());
+    game::freeplay::resetFavour( _game->city() );
 
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
   }
@@ -241,9 +241,9 @@ GameLoop::~GameLoop()
       std::string ext = vfs::Path( _restartFilename ).extension();
       if( ext == ".map" || ext == ".sav" )
       {
-        FreeplayFinalizer::addPopulationMilestones( _game->city() );
-        FreeplayFinalizer::initBuildOptions( _game->city() );
-        FreeplayFinalizer::addEvents( _game->city() );
+        game::freeplay::addPopulationMilestones( _game->city() );
+        game::freeplay::initBuildOptions( _game->city() );
+        game::freeplay::addEvents( _game->city() );
       }
     }
   }

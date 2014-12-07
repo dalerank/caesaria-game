@@ -109,7 +109,7 @@ void TopMenu::Impl::updateDate()
   if( !lbDate || saveDate.month() == game::Date::current().month() )
     return;
 
-  lbDate->setText( DateTimeHelper::toStr( game::Date::current() ) );
+  lbDate->setText( util::date2str( game::Date::current() ) );
 }
 
 void TopMenu::Impl::showShortKeyInfo()

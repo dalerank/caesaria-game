@@ -40,7 +40,7 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   Rect rect = _lbTextRef()->relativeRect();
   rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, DateTimeHelper::toStr( time ) );
+  Label* lbTime = new Label( this, rect, util::date2str( time ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
 
   if( !additional.empty() )

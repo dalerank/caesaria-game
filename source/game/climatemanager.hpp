@@ -20,10 +20,15 @@
 
 #include "city/climate.hpp"
 
+namespace game
+{
+
 class ClimateManager
 {
 public:
   static void initialize( city::climate::Type climate );
 };
+
+}//end namespace game
 
 #endif //_CAESARIA_CLIMATEMANAGER_INCLUDE_H_
