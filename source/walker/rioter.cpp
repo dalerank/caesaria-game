@@ -170,7 +170,7 @@ void Rioter::timeStep(const unsigned long time)
 
   case Impl::destroyConstruction:
   {
-    if( GameDate::isDayChanged() )
+    if( game::Date::isDayChanged() )
     {
       city::Helper helper( _city() );
       ConstructionList constructions = helper.find<Construction>( objects::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );

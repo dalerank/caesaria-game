@@ -52,7 +52,7 @@ void RomeDivinity::load(const VariantMap& vm)
   _service = ServiceHelper::getType( vm.get( "service" ).toString() );
   _pic = Picture::load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
-  _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
+  _lastFestival = vm.get( "lastFestivalDate", game::Date::current() ).toDateTime() ;
 
   _shortDesc = vm.get( "shortDesc" ).toString();
   if( _shortDesc.empty() )
@@ -100,7 +100,7 @@ const Picture&RomeDivinity::picture() const { return _pic; }
 void RomeDivinity::assignFestival(int type)
 {
   //_relation = math::clamp<float>( _relation + type * 10, 0, 100 );
-  _lastFestival = GameDate::current();
+  _lastFestival = game::Date::current();
 }
 
 VariantMap RomeDivinity::save() const
@@ -146,7 +146,7 @@ void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
   }
 
   unsigned int minMood = 50 - math::clamp( city->population() / 10, 0u, 50u );
-  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
+  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( game::Date::current() ) );
   _needRelation = math::clamp<int>( income + festivalFactor + _effectPoints, minMood, 100 );
 
   _relation += math::signnum( _needRelation - _relation );
@@ -185,14 +185,14 @@ void RomeDivinity::checkAction( PlayerCityPtr city )
     _blessingDone = true;
     _relation -= 50;
   }
-  else if( _wrathPoints >= 20 && !_smallCurseDone && _lastFestival.monthsTo( GameDate::current() ) > 3 )
+  else if( _wrathPoints >= 20 && !_smallCurseDone && _lastFestival.monthsTo( game::Date::current() ) > 3 )
   {
     _doSmallCurse( city );
     _smallCurseDone = true;
     _wrathPoints = 0;
     _relation += 12;
   }
-  else if( _wrathPoints >= 50 && _lastFestival.monthsTo( GameDate::current() ) > 3 )
+  else if( _wrathPoints >= 50 && _lastFestival.monthsTo( game::Date::current() ) > 3 )
   {
     _doWrath( city );
     _wrathPoints = 0;

@@ -66,20 +66,20 @@ SrvcPtr Info::create( PlayerCityPtr city )
 Info::Info( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->lastDate = GameDate::current();
+  _d->lastDate = game::Date::current();
   _d->lastYearHistory.resize( 12 );
   _d->maxParams.resize( paramsCount );
 }
 
 void Info::timeStep(const unsigned int time )
 {
-  if( !GameDate::isMonthChanged() )
+  if( !game::Date::isMonthChanged() )
     return;
 
-  if( GameDate::current().month() != _d->lastDate.month() )
+  if( game::Date::current().month() != _d->lastDate.month() )
   {
-    bool yearChanged = GameDate::current().year() != _d->lastDate.year();
-    _d->lastDate = GameDate::current();
+    bool yearChanged = game::Date::current().year() != _d->lastDate.year();
+    _d->lastDate = game::Date::current();
 
     _d->lastYearHistory.erase( _d->lastYearHistory.begin() );
     _d->lastYearHistory.push_back( Parameters() );

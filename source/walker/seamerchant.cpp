@@ -142,14 +142,14 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stWaitFreeDock:
   {
-    waitInterval = GameDate::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( 7 );
     nextState = stFindDock;
   }
   break;
 
   case stRequestGoods:
   {
-    landingDate = GameDate::current();
+    landingDate = game::Date::current();
 
     WalkerList walkers = city->walkers( wlk->pos() );
     walkers.remove( wlk );
@@ -218,7 +218,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       }
 
       nextState = stWaitGoods;
-      waitInterval = anyBuy ? GameDate::days2ticks( 7 ) : 0;
+      waitInterval = anyBuy ? game::Date::days2ticks( 7 ) : 0;
 
       if( 0 == buy.freeQty() ) //all done
       {
@@ -242,7 +242,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     }
     else
     {
-      if( landingDate.monthsTo( GameDate::current() ) > 2 )
+      if( landingDate.monthsTo( game::Date::current() ) > 2 )
       {
         nextState = stGoOutFromCity;
         resolveState( city, wlk );
@@ -259,7 +259,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stGoOutFromCity:
   {
     // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-    waitInterval = GameDate::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( 7 );
     goAwayFromCity( city, wlk );
     nextState = stBackToBaseCity;
   }
@@ -291,7 +291,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     nextState = stBuyGoods;
     resolveState( city, wlk );
-    waitInterval = anySell ? GameDate::days2ticks( 7 ) : 0;
+    waitInterval = anySell ? game::Date::days2ticks( 7 ) : 0;
   }
   break;
 

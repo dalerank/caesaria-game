@@ -96,18 +96,18 @@ SrvcPtr CultureRating::create( PlayerCityPtr city )
 CultureRating::CultureRating( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->lastDate = GameDate::current();
+  _d->lastDate = game::Date::current();
   _d->culture = 0;
 }
 
 void CultureRating::timeStep(const unsigned int time )
 {
-  if( !GameDate::isMonthChanged() )
+  if( !game::Date::isMonthChanged() )
     return;
 
-  if( _d->lastDate.monthsTo( GameDate::current() ) > 0 )
+  if( _d->lastDate.monthsTo( game::Date::current() ) > 0 )
   {
-    _d->lastDate = GameDate::current();
+    _d->lastDate = game::Date::current();
     _d->parishionersCount = 0;
     _d->theaterVisitors = 0;
     _d->libraryVisitors = 0;

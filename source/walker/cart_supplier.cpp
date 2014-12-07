@@ -210,7 +210,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
     // a warehouse/granary has been found!
     // reserve some goods from that warehouse/granary
     int qty = math::clamp( needQty, 0, max_qty );
-    reservId = res->store().reserveRetrieval( what, qty, GameDate::current() );
+    reservId = res->store().reserveRetrieval( what, qty, game::Date::current() );
     return res->pos();
   }
   else
@@ -285,7 +285,7 @@ void CartSupplier::_reserveStorage()
 
   if( storage != 0 )
   {
-    _d->rcvReservationID = storage->reserveStorage( _d->stock, GameDate::current() );
+    _d->rcvReservationID = storage->reserveStorage( _d->stock, game::Date::current() );
   }
   else
   {}

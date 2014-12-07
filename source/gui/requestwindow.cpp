@@ -108,7 +108,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     if( lbText ) { lbText->setText( _( text ) ); }
     if( lbTitle ) { lbTitle->setText( _( title ) ); }
 
-    int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );
+    int month2Comply = game::Date::current().monthsTo( gr->finishedDate() );
     if( lbInterval ) { lbInterval->setText( utils::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
 
     video = _d->video.empty() ? video : _d->video;

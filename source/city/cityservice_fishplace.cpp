@@ -60,7 +60,7 @@ Fishery::Fishery( PlayerCityPtr city )
 
 void Fishery::timeStep(const unsigned int time )
 {  
-  if( !GameDate::isMonthChanged() )
+  if( !game::Date::isMonthChanged() )
     return;
 
   if( _d->places.empty() )

@@ -81,7 +81,7 @@ Peace::Peace( PlayerCityPtr city )
 
 void Peace::timeStep(const unsigned int time )
 {
-  if( !GameDate::isYearChanged() )
+  if( !game::Date::isYearChanged() )
     return;
 
   city::MilitaryPtr ml;
@@ -158,13 +158,13 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
     _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.count( overlay->type() );
   }
 
-  if( _d->lastMessageDate.monthsTo( GameDate::current() ) > 1 )
+  if( _d->lastMessageDate.monthsTo( game::Date::current() ) > 1 )
   {
     std::string title;
     std::string text;
     std::string video;
 
-    _d->lastMessageDate = GameDate::current();
+    _d->lastMessageDate = game::Date::current();
 
     switch( why )
     {

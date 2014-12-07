@@ -209,18 +209,18 @@ void PlayerCity::_initAnimation()
 
 void PlayerCity::timeStep(unsigned int time)
 {
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     _d->age++;
     _d->targets.decreaseReignYear();
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, GameDate::current() );    
+    _d->monthStep( this, game::Date::current() );
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _d->calculatePopulation( this );
   }
@@ -264,7 +264,7 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
     player->appendMoney( playerSalary );
   }
 
-  funds.updateHistory( GameDate::current() );
+  funds.updateHistory( game::Date::current() );
 }
 
 WalkerList PlayerCity::walkers( walker::Type rtype )
@@ -774,12 +774,12 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
       soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( GameDate::days2ticks( k ) / 2 );
+      soldier->wait( game::Date::days2ticks( k ) / 2 );
       if( (k % 16) == 15 )
       {
         ChastenerElephantPtr elephant = ChastenerElephant::create( this );
         elephant->send2City( borderInfo().roadEntry );
-        soldier->wait( GameDate::days2ticks( k ) );
+        soldier->wait( game::Date::days2ticks( k ) );
       }
     }
 
@@ -793,7 +793,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
       soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( GameDate::days2ticks( k ) / 2 );
+      soldier->wait( game::Date::days2ticks( k ) / 2 );
     }
 
     events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );

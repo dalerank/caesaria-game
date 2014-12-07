@@ -146,7 +146,7 @@ void Market::load( const VariantMap& stream)
 
 void Market::timeStep(const unsigned long time)
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     ServiceWalkerList servicemen;
     servicemen << walkers();

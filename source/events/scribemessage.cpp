@@ -44,7 +44,7 @@ void ScribeMessage::_exec(Game& game, unsigned int)
   if( srvc.isValid() )
   {
     city::Info::ScribeMessage msg;
-    msg.date = GameDate::current();
+    msg.date = game::Date::current();
     msg.opened = false;
     msg.gtype = _gtype;
     msg.position = _position;

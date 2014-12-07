@@ -77,7 +77,7 @@ Religion::Religion( PlayerCityPtr city )
 
 void Religion::timeStep( const unsigned int time )
 {  
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
       return;
@@ -158,7 +158,7 @@ void Religion::timeStep( const unsigned int time )
     }
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
       return;
@@ -228,7 +228,7 @@ void Religion::load(const VariantMap& stream)
 {
   Srvc::load( stream );
 
-  _d->lastMessageDate = stream.get( lc_lastMessageDate, GameDate::current() ).toDateTime();
+  _d->lastMessageDate = stream.get( lc_lastMessageDate, game::Date::current() ).toDateTime();
 }
 
 void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
@@ -243,9 +243,9 @@ void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
   Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
   divn->updateRelation( faithValue, city );
 
-  if( divn->relation() < 30 && lastMessageDate.monthsTo( GameDate::current() ) > 6 )
+  if( divn->relation() < 30 && lastMessageDate.monthsTo( game::Date::current() ) > 6 )
   {
-    lastMessageDate = GameDate::current();
+    lastMessageDate = game::Date::current();
     std::string text = divn->relation() < 10 ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
     std::string title = divn->relation() < 10 ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
 

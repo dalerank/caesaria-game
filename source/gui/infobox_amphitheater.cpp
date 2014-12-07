@@ -52,7 +52,7 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
     if( amph->isShowGladiatorBouts() )
     {
       DateTime lastGlBoutDate = amph->lastBoutsDate();
-      text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( GameDate::current() ), "##days##" );
+      text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
@@ -60,7 +60,7 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
     if( amph->isActorsShow() )
     {
       DateTime lastShowDate = amph->lastShowDate();
-      text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( GameDate::current() ), "##days##" );
+      text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
     }
 
     new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );

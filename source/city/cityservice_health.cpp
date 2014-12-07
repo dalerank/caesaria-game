@@ -59,7 +59,7 @@ HealthCare::HealthCare( PlayerCityPtr city )
 
 void HealthCare::timeStep(const unsigned int time )
 {
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     Helper helper( _city() );
     HouseList houses = helper.find<House>( objects::house );

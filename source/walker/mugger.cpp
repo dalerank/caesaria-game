@@ -146,7 +146,7 @@ void Mugger::timeStep(const unsigned long time)
 
   case Impl::robHouse:
   {
-    if( GameDate::isDayChanged() )
+    if( game::Date::isDayChanged() )
     {
       city::Helper helper( _city() );
       HouseList houses = helper.find<House>( objects::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );

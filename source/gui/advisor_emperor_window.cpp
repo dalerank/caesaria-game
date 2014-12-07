@@ -91,7 +91,7 @@ public:
       font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
       font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
 
-      int month2comply = GameDate::current().monthsTo( gr->finishedDate() );
+      int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
       font.draw( *pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
       font.draw( *pic, gr->description(), 5, pic->height() - 20 );
     }
@@ -154,7 +154,7 @@ public:
 
 void Emperor::_showChangeSalaryWindow()
 {
-  if( GameDate::current() > _d->city->victoryConditions().finishDate() )
+  if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
     DialogBox* dialog = new DialogBox( this, Rect(), "", _("##disabled_draw_salary_for_free_reign##"), DialogBox::btnYes );
     CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );

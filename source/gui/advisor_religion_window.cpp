@@ -73,7 +73,7 @@ public:
 
     if( _divinity.isValid() )
     {
-      _lastFestival = _divinity->lastFestivalDate().monthsTo( GameDate::current() );
+      _lastFestival = _divinity->lastFestivalDate().monthsTo( game::Date::current() );
 
       rfont.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );

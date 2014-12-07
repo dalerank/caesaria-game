@@ -150,8 +150,8 @@ void ComputerCity::load( const VariantMap& options )
 {
   City::load( options );
 
-  _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
-  _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
+  _d->lastTimeUpdate = options.get( "lastTimeUpdate", game::Date::current() ).toDateTime();
+  _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", game::Date::current() ).toDateTime();
   VARIANT_LOAD_ANY_D( _d, available, options )
   VARIANT_LOAD_ANY_D( _d, merchantsNumber, options )
   VARIANT_LOAD_ANY_D( _d, distantCity, options )
@@ -241,7 +241,7 @@ void ComputerCity::addObject(ObjectPtr object )
   else if( is_kind_of<Barbarian>( object ) )
   {
     BarbarianPtr brb = ptr_cast<Barbarian>( object );
-    _d->lastAttack = GameDate::current();
+    _d->lastAttack = game::Date::current();
     int attack = std::max<int>( brb->strength() - strength(), 0 );
     if( !attack ) attack = 10;
     _d->strength = math::clamp<int>( _d->strength - math::random( attack ), 0, 100 );
@@ -280,26 +280,26 @@ ComputerCity::~ComputerCity() {}
 
 void ComputerCity::timeStep( unsigned int time )
 {
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _d->strength = math::clamp<int>( _d->strength+1, 0, _d->population / 100 );
   }
 
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     _d->age++;
   }
 
   //one year before step need
-  if( _d->lastTimeUpdate.monthsTo( GameDate::current() ) > 11 )
+  if( _d->lastTimeUpdate.monthsTo( game::Date::current() ) > 11 )
   {
     _d->merchantsNumber = math::clamp<int>( _d->merchantsNumber-1, 0, 2 );
-    _d->lastTimeUpdate = GameDate::current();
+    _d->lastTimeUpdate = game::Date::current();
 
     for( int i=Good::none; i < Good::goodCount; i ++ )
     {
@@ -310,7 +310,7 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 
-  if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
+  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > 2 )
   {
     TraderouteList routes = empire()->tradeRoutes( name() );
 
@@ -320,7 +320,7 @@ void ComputerCity::timeStep( unsigned int time )
     if( !_mayTrade() )
       return;
 
-    _d->lastTimeMerchantSend = GameDate::current();
+    _d->lastTimeMerchantSend = game::Date::current();
 
     if( _d->merchantsNumber >= routes.size() )
     {

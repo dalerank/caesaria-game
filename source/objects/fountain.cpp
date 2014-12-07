@@ -83,7 +83,7 @@ void Fountain::deliverService()
 void Fountain::timeStep(const unsigned long time)
 {
   //filled area, that fontain present and work
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     _d->haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
 
@@ -104,7 +104,7 @@ void Fountain::timeStep(const unsigned long time)
     }
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     int desPic[] = { simpleFountain, testFountain, prettyFountain, awesomeFountain, patricianFountain };
     int currentId = desPic[ math::clamp<int>( tile().param( Tile::pDesirability ) / 20, 0, 4 ) ];

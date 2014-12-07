@@ -77,7 +77,7 @@ void NativeHut::load( const VariantMap& stream) {Building::load(stream);}
 void NativeHut::timeStep(const unsigned long time)
 {
   NativeBuilding::timeStep( time );
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     _discontent = math::clamp<float>( _discontent+0.5, 0.f, 100.f );
     _day2look--;
@@ -154,7 +154,7 @@ void NativeField::load( const VariantMap& stream) {Building::load(stream);}
 
 void NativeField::timeStep(const unsigned long time)
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     int lastState = _progress / 20;
     _progress = math::clamp( _progress+1, 0u, 100u );

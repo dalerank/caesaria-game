@@ -97,7 +97,7 @@ House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl 
   _d->money = 0;
   _d->tax = 0;
   _d->taxesThisYear = 0;
-  _d->currentYear = GameDate::current().year();
+  _d->currentYear = game::Date::current().year();
 
   setState( House::health, 100 );
   setState( House::fire, 0 );
@@ -366,16 +366,16 @@ void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
   {
-    if( GameDate::isMonthChanged() )
+    if( game::Date::isMonthChanged() )
     {
       _levelDown();
     }
     return; 
   }
 
-  if( _d->currentYear != GameDate::current().year() )
+  if( _d->currentYear != game::Date::current().year() )
   {
-    _d->currentYear = GameDate::current().year();
+    _d->currentYear = game::Date::current().year();
     _makeOldHabitants();    
     _d->taxesThisYear = 0;
   }
@@ -397,7 +397,7 @@ void House::timeStep(const unsigned long time)
     _d->consumeGoods( this );
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     setState( settleLock, 0 );
     _updateTax(); 
@@ -408,7 +408,7 @@ void House::timeStep(const unsigned long time)
     _d->poverity = math::clamp( _d->poverity, 0, 100 );
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _checkEvolve();
     _updateCrime();
@@ -1142,7 +1142,7 @@ void House::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D(_d,tax, stream )
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
-  _d->currentYear = GameDate::current().year();
+  _d->currentYear = game::Date::current().year();
   VARIANT_LOAD_ANY_D(_d,taxesThisYear, stream)
 
   _d->initGoodStore( size().area() );
@@ -1274,7 +1274,7 @@ float House::collectTaxes()
   float tax = _d->tax;
   _d->taxesThisYear += tax;
   _d->tax = 0.f;
-  _d->lastTaxationDate = GameDate::current();
+  _d->lastTaxationDate = game::Date::current();
   return tax;
 }
 
@@ -1380,8 +1380,7 @@ void House::Impl::consumeFoods(HousePtr house)
   if( foodLevel == 0 )
     return;
 
-
-  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / GameDate::days2ticks( 30 );
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / game::Date::days2ticks( 30 );
 
   int availableFoodLevel = 0;
   for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )

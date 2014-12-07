@@ -104,7 +104,7 @@ void Amphitheater::deliverService()
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
-        ? _d->lastDateGl : _d->lastDateShow ) = GameDate::current();
+        ? _d->lastDateGl : _d->lastDateShow ) = game::Date::current();
     }
   }
   else

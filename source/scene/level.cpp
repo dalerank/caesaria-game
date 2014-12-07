@@ -528,16 +528,16 @@ void Level::animate( unsigned int time )
 {
   _d->renderer.animate( time );
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _d->checkWinMission( this );
     _d->checkFailedMission( this );
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
-    if( GameDate::current().month() % autosaveInterval == 0 )
+    if( game::Date::current().month() % autosaveInterval == 0 )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
@@ -780,7 +780,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
     const city::Info::MaxParameters& params = info->maxParams();
 
     bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
-    bool failedByTime = ( !vc.isSuccess() && GameDate::current() > vc.finishDate() );
+    bool failedByTime = ( !vc.isSuccess() && game::Date::current() > vc.finishDate() );
 
     if( failedByDestroy || failedByTime || forceFailed )
     {

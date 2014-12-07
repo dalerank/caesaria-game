@@ -77,7 +77,7 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
 
   if( lbLastGiftDate )
   {
-    int monthsLastGift = lastgift.monthsTo( GameDate::current() );
+    int monthsLastGift = lastgift.monthsTo( game::Date::current() );
     std::string text = utils::format( 0xff, "%s  %d  %s",
                                              _("##time_since_last_gift##"),
                                              monthsLastGift,

@@ -95,7 +95,7 @@ void Shoreline::timeStep( const unsigned int time )
     WaterGarbagePtr wg = WaterGarbage::create( _city() );
     wg->send2City( _city()->borderInfo().boatEntry );
 
-    _d->nextWaterGarbage = time + math::random( GameDate::days2ticks( 10 ) );
+    _d->nextWaterGarbage = time + math::random( game::Date::days2ticks( 10 ) );
 
     for( int k=0; k < 20; k++ )
     {

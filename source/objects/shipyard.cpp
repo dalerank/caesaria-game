@@ -66,7 +66,7 @@ void Shipyard::destroy()
 void Shipyard::timeStep(const unsigned long time)
 {
   //try get good from storage building for us
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( numberWorkers() > 0 && walkers().size() == 0 )
     {

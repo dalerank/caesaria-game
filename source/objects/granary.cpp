@@ -127,7 +127,7 @@ void Granary::timeStep(const unsigned long time)
   if( !mayWork() )
     return;
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if(  walkers().empty() )
     {

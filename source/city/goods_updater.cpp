@@ -60,9 +60,9 @@ SrvcPtr GoodsUpdater::create( PlayerCityPtr city )
 
 void GoodsUpdater::timeStep(const unsigned int time)
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
-    _d->isDeleted = (_d->endTime < GameDate::current());
+    _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "GoodsUpdater: execute service" );
     Helper helper( _city() );

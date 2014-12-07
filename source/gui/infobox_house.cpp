@@ -113,7 +113,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     else
     {
       DateTime lastTax = _house->lastTaxationDate();
-      if( GameDate::current().year() > lastTax.year() )
+      if( game::Date::current().year() > lastTax.year() )
       {
         taxesStr = "##no_tax_in_this_year##";
       }

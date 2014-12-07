@@ -402,7 +402,7 @@ void Warehouse::timeStep(const unsigned long time)
    _fgPicturesRef()[3] = _d->animFlag.currentFrame();
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( _d->goodStore.isDevastation() )
     {

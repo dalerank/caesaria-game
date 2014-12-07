@@ -52,7 +52,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
     if( coloseum->isShowLionBattles() )
     {
       DateTime lastAnimalBoutDate = coloseum->lastAnimalBoutDate();
-      text = utils::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( GameDate::current() ), "##days##" );
+      text = utils::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
@@ -60,7 +60,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
     if( coloseum->isShowGladiatorBattles() )
     {
       DateTime lastGlBoutDate = coloseum->lastGladiatorBoutDate();
-      text = utils::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( GameDate::current() ), "##days##" );
+      text = utils::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
 
     new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );

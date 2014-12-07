@@ -120,7 +120,7 @@ void Barbarian::_check4attack()
      CityList cities = empire()->cities();
      std::map< int, CityPtr > citymap;
 
-     DateTime currentDate = GameDate::current();
+     DateTime currentDate = game::Date::current();
      foreach( it, cities )
      {
        float distance = location().distanceTo( (*it)->location() );

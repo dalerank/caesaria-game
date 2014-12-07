@@ -119,12 +119,12 @@ void Dock::timeStep(const unsigned long time)
 {
   if( time % 25 == 0 )
   {
-    if( _d->dateSendGoods < GameDate::current() )
+    if( _d->dateSendGoods < game::Date::current() )
     {
       _tryReceiveGoods();
       _tryDeliverGoods();
 
-      _d->dateSendGoods = GameDate::current();
+      _d->dateSendGoods = game::Date::current();
       _d->dateSendGoods.appendWeek();
     }
   }

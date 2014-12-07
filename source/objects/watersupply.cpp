@@ -135,7 +135,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //filled area, that reservoir present
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     Tilemap& tmap = _city()->tilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
@@ -147,7 +147,7 @@ void Reservoir::timeStep(const unsigned long time)
     }
   }
 
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };
     _produceWater(offsets, 4);
@@ -202,7 +202,7 @@ bool WaterSource::haveWater() const{  return _d->water > 0;}
 
 void WaterSource::timeStep( const unsigned long time )
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {  
     _d->daysWithoutWater++;
     if( _d->daysWithoutWater > 5 )

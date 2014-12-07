@@ -57,7 +57,7 @@ void Wharf::timeStep(const unsigned long time)
   CoastalFactory::timeStep(time);
 
   //try get good from storage building for us
-  if( GameDate::isWeekChanged() && numberWorkers() > 0 && walkers().size() == 0 )
+  if( game::Date::isWeekChanged() && numberWorkers() > 0 && walkers().size() == 0 )
   {
     receiveGood();
     deliverGood();

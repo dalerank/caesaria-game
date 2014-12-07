@@ -151,7 +151,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
     else { ++it; }
   }
 
-  if( GameDate::isMonthChanged() && numberWorkers() > 0 )
+  if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
     city::Helper helper( _city() );
     TilePos offset( 8, 8 );
@@ -177,7 +177,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
 void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     if( mayWork() )
     {

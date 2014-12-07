@@ -78,7 +78,7 @@ void Locust::timeStep(const unsigned long time)
 {
   _d->counter++;
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     FarmPtr farm;
     farm << _city()->getOverlay( pos() );

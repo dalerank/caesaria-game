@@ -56,7 +56,7 @@ void BurningRuins::timeStep(const unsigned long time)
      _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     TilePos offset( 2, 2 );
     city::Helper helper( _city() );
@@ -96,7 +96,7 @@ void BurningRuins::timeStep(const unsigned long time)
     }
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _animationRef().setDelay( math::random( 4 )+1 );
   }
@@ -242,7 +242,7 @@ void PlagueRuins::timeStep(const unsigned long time)
   _animationRef().update( time );
   _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
 
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     if( state( Construction::fire ) > 0 )
     {

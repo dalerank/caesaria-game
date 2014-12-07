@@ -79,13 +79,13 @@ void ServiceBuilding::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep(time);
 
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     int serviceDelay = time2NextService();
-    if( _d->dateLastSend.daysTo( GameDate::current() ) > serviceDelay )
+    if( _d->dateLastSend.daysTo( game::Date::current() ) > serviceDelay )
     {
        deliverService();
-       _d->dateLastSend = GameDate::current();
+       _d->dateLastSend = game::Date::current();
     }
   }
  }
@@ -104,7 +104,7 @@ void ServiceBuilding::deliverService()
   if( !serviceman->isDeleted() )
   {
     addWalker( serviceman.object() );
-    _setLastSendService( GameDate::current() );
+    _setLastSendService( game::Date::current() );
   }
 }
 
@@ -142,7 +142,7 @@ std::string ServiceBuilding::workersStateDesc() const
   }
   else if( numberWorkers() > 0  )
   {
-    state = _d->dateLastSend.daysTo( GameDate::current() ) < 2
+    state = _d->dateLastSend.daysTo( game::Date::current() ) < 2
               ? "ready_for_work"
               : "prepare_for_work";
   }

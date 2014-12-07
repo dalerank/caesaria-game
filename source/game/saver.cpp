@@ -38,7 +38,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm[ "timemultiplier" ] = game.timeMultiplier();
 
   VariantMap vm_scenario;
-  vm_scenario[ "date" ] = GameDate::current();
+  vm_scenario[ "date" ] = game::Date::current();
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
   vm_scenario[ "translation" ] = GameSettings::get( GameSettings::lastTranslation );
   vm_scenario[ "climate" ] = (int)game.city()->climate();

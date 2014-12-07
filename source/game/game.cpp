@@ -157,17 +157,17 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  Variant c3res = SETTINGS_VALUE( c3gfx );
-  if( c3res.isValid() )
+  std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
+  if( !c3res.empty() )
   {
-    vfs::Directory gfxDir( c3res.toString() );
+    vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
 
     if( !c3path.exist( vfs::Path::ignoreCase ) )
     {
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
-                 "original game archive c3.sg2 not found in folder " + c3res.toString() +
+                 "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
@@ -190,7 +190,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   if( !errorStr.empty() )
   {
     OSystem::error( "Resources error", errorStr );
-    Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
+    Logger::warning( "CRITICAL: not found original resources in " + c3res );
     exit( -1 ); //kill application
   }
 
@@ -242,6 +242,8 @@ world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
+
+const DateTime& Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }

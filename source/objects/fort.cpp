@@ -191,7 +191,7 @@ Fort::~Fort() {}
 
 void Fort::timeStep( const unsigned long time )
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     int traineeLevel = traineeValue( walker::soldier );
     // all trainees are there for the show!

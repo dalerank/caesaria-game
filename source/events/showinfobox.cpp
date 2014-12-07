@@ -105,7 +105,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
   if( _d->video.toString().empty() )
   {
     gui::EventMessageBox* msgWnd = new gui::EventMessageBox( game.gui()->rootWidget(), _d->title, _d->text,
-                                                             GameDate::current(), _d->gtype, _d->tip );
+                                                             game::Date::current(), _d->gtype, _d->tip );
     msgWnd->show();
   }
   else

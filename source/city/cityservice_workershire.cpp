@@ -76,7 +76,7 @@ std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
 WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
 {
-  _d->lastMessageDate = GameDate::current();
+  _d->lastMessageDate = game::Date::current();
   _d->excludeTypes.insert( objects::fountain );
   _d->fillIndustryMap();
   _d->distance = defaultHireDistance;
@@ -139,7 +139,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 
 void WorkersHire::timeStep( const unsigned int time )
 {
-  if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
   if( _city()->population() == 0 )
@@ -176,9 +176,9 @@ void WorkersHire::timeStep( const unsigned int time )
     _d->hireWorkers( _city(), *it );
   }
 
-  if( _d->lastMessageDate.monthsTo( GameDate::current() ) > DateTime::monthsInYear / 2 )
+  if( _d->lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2 )
   {
-    _d->lastMessageDate = GameDate::current();
+    _d->lastMessageDate = game::Date::current();
 
     int workersNeed = Statistic::getWorkersNeed( _city() );
     if( workersNeed > 20 )

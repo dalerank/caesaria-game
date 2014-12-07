@@ -56,7 +56,7 @@ Trading::Trading() : _d( new Impl )
 
 void Trading::timeStep( unsigned int time )
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     foreach( it,_d->routes )
     {

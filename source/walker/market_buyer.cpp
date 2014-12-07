@@ -104,7 +104,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
     int qty = std::min( max_qty, market->getGoodDemand( what ) );
     qty = std::min(qty, basket.capacity( what ) - basket.qty( what ));
     // std::cout << "MarketLady reserves from warehouse, qty=" << qty << std::endl;
-    reservId = res->store().reserveRetrieval( what, qty, GameDate::current() );
+    reservId = res->store().reserveRetrieval( what, qty, game::Date::current() );
     return res->pos();
   }
 

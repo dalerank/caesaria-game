@@ -52,7 +52,7 @@ MovableObject::~MovableObject(){}
 void MovableObject::setSpeed(float speed)
 {
   __D_IMPL(d,MovableObject)
-  d->speed = GameDate::days2ticks( DateTime::daysInWeek ) / speed;
+  d->speed = game::Date::days2ticks( DateTime::daysInWeek ) / speed;
 }
 
 void MovableObject::timeStep(const unsigned int time)

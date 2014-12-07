@@ -61,15 +61,15 @@ Roads::Roads( PlayerCityPtr city )
 {
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
-  _d->lastTimeUpdate = GameDate::current();  
+  _d->lastTimeUpdate = game::Date::current();
 }
 
 void Roads::timeStep( const unsigned int time )
 {
-  if( _d->lastTimeUpdate.month() == GameDate::current().month() )
+  if( _d->lastTimeUpdate.month() == game::Date::current().month() )
     return;
 
-  _d->lastTimeUpdate = GameDate::current();
+  _d->lastTimeUpdate = game::Date::current();
 
   std::vector< Impl::UpdateBuilding > btypes;
   btypes.push_back( Impl::UpdateBuilding(objects::senate, 10) );

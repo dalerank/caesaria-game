@@ -57,7 +57,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
 {
   setState( Construction::inflammability, 1 );
   setState( Construction::collapsibility, 1 );
-  _d->stateDecreaseInterval = GameDate::days2ticks( 1 );
+  _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
 Building::~Building() {}

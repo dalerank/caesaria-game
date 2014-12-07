@@ -198,7 +198,7 @@ void RqGood::update()
 {
   Request::update();
 
-  if( !_d->alsoRemind && (_startDate.monthsTo( GameDate::current() ) > 12) )
+  if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > 12) )
   {
     _d->alsoRemind = true;
 
@@ -236,7 +236,7 @@ void Request::load(const VariantMap& stream)
   Variant vStart = stream.get( "date" );
   Logger::warningIf( vStart.isNull(), "Request: unknown start date" );
 
-  _startDate = vStart.isNull() ? GameDate::current() : vStart.toDateTime();
+  _startDate = vStart.isNull() ? game::Date::current() : vStart.toDateTime();
 }
 
 Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )

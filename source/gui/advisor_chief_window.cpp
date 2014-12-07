@@ -513,7 +513,7 @@ void AdvisorChief::Impl::drawEntertainment()
 
   if( srvc.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( GameDate::current() );
+    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( game::Date::current() );
     if( monthFromLastFestival > 6 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";

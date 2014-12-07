@@ -66,7 +66,7 @@ void StartWork::_exec(Game& game, unsigned int)
 
 bool StartWork::_mayExec(Game& game, unsigned int ) const
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     city::Helper helper( game.city() );
 

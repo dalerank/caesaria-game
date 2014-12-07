@@ -49,7 +49,7 @@ void School::deliverService()
   if( numberWorkers() <= 0 )
     return;
 
-  if( lastSendService().month() != GameDate::current().month() )
+  if( lastSendService().month() != game::Date::current().month() )
   {
     _d->currentPeopleServed = 0;
     _d->srvBuidings.clear();

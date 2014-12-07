@@ -394,14 +394,14 @@ void Empire::timeStep( unsigned int time )
     _d->newObjects.clear();
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     _d->checkLoans();
     _d->checkBarbarians( this );
     _d->checkEmperorChanged();
   }
 
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     _d->takeTaxes();
   }
@@ -582,7 +582,7 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
 void Empire::Impl::checkEmperorChanged()
 {
   EmperorLine& emperors = EmperorLine::instance();
-  std::string emperorName = emperors.getEmperor( GameDate::current() );
+  std::string emperorName = emperors.getEmperor( game::Date::current() );
   if( emperorName != emperor.name() )
   {
     VariantMap vm = emperors.getInfo( emperorName );

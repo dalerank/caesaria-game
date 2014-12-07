@@ -66,7 +66,7 @@ bool EarthQuake::isDeleted() const
 
 void EarthQuake::_exec( Game& game, unsigned int time)
 {
-  if( GameDate::isDayChanged() && time != _d->lastTimeUpdate )
+  if( game::Date::isDayChanged() && time != _d->lastTimeUpdate )
   {
     _d->lastTimeUpdate = time;
     Logger::warning( "Execute earthquake event" );

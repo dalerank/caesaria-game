@@ -316,7 +316,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   if( res.isValid() )
   {
     SmartPtr<T> ptr = ptr_cast<T>( res );
-    reservationID = ptr->store().reserveStorage( stock, GameDate::current() );
+    reservationID = ptr->store().reserveStorage( stock, game::Date::current() );
     if (reservationID != 0)
     {
       oPathWay = *(shortestPath.object());
@@ -389,7 +389,7 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( GameDate::isWeekChanged() && !_pathwayRef().isValid() )
+  if( game::Date::isWeekChanged() && !_pathwayRef().isValid() )
   {
     _computeWalkerDestination();
   }

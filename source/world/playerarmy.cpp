@@ -72,7 +72,7 @@ void PlayerArmy::timeStep(const unsigned int time)
 {
   if( _d->mode == PlayerArmy::wait )
   {
-    if( GameDate::isDayChanged() )
+    if( game::Date::isDayChanged() )
     {
       for( RomeSoldierList::iterator it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
       {
@@ -221,7 +221,7 @@ void PlayerArmy::_check4attack()
      CityList cities = empire()->cities();
      std::map< int, CityPtr > citymap;
 
-     DateTime currentDate = GameDate::current();
+     DateTime currentDate = game::Date::current();
      foreach( it, cities )
      {
        float distance = location().distanceTo( (*it)->location() );

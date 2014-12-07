@@ -61,7 +61,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     VariantMap scenario_vm = vm[ "scenario" ].toMap();
     game.setTimeMultiplier( (int)vm[ "timemultiplier"] );
 
-    GameDate::instance().init( scenario_vm[ "date" ].toDateTime() );
+    game::Date::instance().init( scenario_vm[ "date" ].toDateTime() );
     events::Dispatcher::instance().load( scenario_vm[ "events" ].toMap() );
 
     Variant lastTr = scenario_vm[ "translation" ];

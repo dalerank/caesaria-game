@@ -107,7 +107,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, true ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( lc_fishPlaceEnabled, true ) );
 
-    GameDate::instance().init( vm[ "date" ].toDateTime() );
+    game::Date::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm[ "events" ].toMap();
     foreach( it, vm_events )

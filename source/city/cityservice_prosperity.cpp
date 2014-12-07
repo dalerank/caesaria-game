@@ -63,7 +63,7 @@ SrvcPtr ProsperityRating::create( PlayerCityPtr city )
 ProsperityRating::ProsperityRating(PlayerCityPtr city)
   : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->lastDate = GameDate::current();
+  _d->lastDate = game::Date::current();
   _d->prosperity = 0;
   _d->houseCapTrand = 0;
   _d->prosperityExtend = 0;
@@ -77,15 +77,15 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city)
 
 void ProsperityRating::timeStep(const unsigned int time )
 {
-  if( !GameDate::isMonthChanged() )
+  if( !game::Date::isMonthChanged() )
     return;
 
-  if( GameDate::current().year() > _d->lastDate.year() )
+  if( game::Date::current().year() > _d->lastDate.year() )
   {          
     _d->lastYearBalance = _city()->funds().getIssueValue( city::Funds::balance, city::Funds::lastYear );
     _d->workersSalary = _city()->funds().workerSalary();
 
-    _d->lastDate = GameDate::current();
+    _d->lastDate = game::Date::current();
 
     if( _city()->population() == 0 )
     {

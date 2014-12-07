@@ -106,7 +106,7 @@ void Rome::addObject(ObjectPtr obj)
 
     if( brb.isValid() )
     {
-      _d->lastAttack = GameDate::current();
+      _d->lastAttack = game::Date::current();
     }
     }
 }

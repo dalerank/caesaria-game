@@ -50,7 +50,7 @@ void EnemyArcher::_fire( TilePos p )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
-  wait( GameDate::days2ticks( 1 ) / 2 );
+  wait( game::Date::days2ticks( 1 ) / 2 );
 }
 
 void EnemyArcher::_waitFinished()

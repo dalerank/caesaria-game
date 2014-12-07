@@ -53,7 +53,7 @@ std::string Animals::defaultName() { return CAESARIA_STR_EXT(Animals); }
 
 void Animals::timeStep(const unsigned int time)
 {
-  if( !GameDate::isMonthChanged() )
+  if( !game::Date::isMonthChanged() )
     return;
 
   if( _d->maxAnimal.empty() )

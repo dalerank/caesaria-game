@@ -143,7 +143,7 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  _d->monthFromLastFestival = _d->srvc->lastFestivalDate().monthsTo( GameDate::current() );
+  _d->monthFromLastFestival = _d->srvc->lastFestivalDate().monthsTo( game::Date::current() );
 
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
@@ -355,7 +355,7 @@ void Entertainment::Impl::updateFestivalInfo()
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
-    bool prepare2Festival = srvc->nextFestivalDate() >= GameDate::current();
+    bool prepare2Festival = srvc->nextFestivalDate() >= game::Date::current();
     btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
     btnNewFestival->setEnabled( !prepare2Festival );
 

@@ -140,7 +140,7 @@ bool Factory::mayWork() const
 
 void Factory::_removeSpoiledGoods()
 {
-  store().removeExpired( GameDate::current() );
+  store().removeExpired( game::Date::current() );
 }
 
 void Factory::_setUnworkingInterval(unsigned int weeks)
@@ -160,7 +160,7 @@ void Factory::timeStep(const unsigned long time)
   WorkingBuilding::timeStep(time);
 
   //try get good from storage building for us
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( numberWorkers() > 0 && walkers().size() == 0 )
     {
@@ -168,7 +168,7 @@ void Factory::timeStep(const unsigned long time)
       deliverGood();      
     }
 
-    if( GameDate::current().month() % 3 == 1 )
+    if( game::Date::current().month() % 3 == 1 )
     {
       _removeSpoiledGoods();
     }
@@ -212,7 +212,7 @@ void Factory::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->produceGood && GameDate::isDayChanged() )
+    if( _d->produceGood && game::Date::isDayChanged() )
     {
       //ok... factory is work, produce goods
       float timeKoeff = _d->productionRate / 365.f;

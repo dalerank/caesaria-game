@@ -186,7 +186,7 @@ bool GameLoop::update(gfx::Engine* engine)
     return false;
   }
 
-  GameDate& cdate = GameDate::instance();
+  game::Date& cdate = game::Date::instance();
 
   _screen->update( *engine );
 

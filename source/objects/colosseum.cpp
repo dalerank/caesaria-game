@@ -64,7 +64,7 @@ void Colosseum::deliverService()
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
-        ? _d->lastDateGl : _d->lastDateLion) = GameDate::current();
+        ? _d->lastDateGl : _d->lastDateLion) = game::Date::current();
     }
   }
   else
@@ -88,8 +88,8 @@ bool Colosseum::build(PlayerCityPtr city, const TilePos& pos)
   GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( objects::gladiatorSchool );
   LionsNurseryList lionsNs = helper.find<LionsNursery>( objects::lionsNursery );
 
-  _d->lastDateGl = GameDate::current();
-  _d->lastDateLion = GameDate::current();
+  _d->lastDateGl = game::Date::current();
+  _d->lastDateLion = game::Date::current();
 
   if( glSchools.empty() )
   {

@@ -67,7 +67,7 @@ DateTime Festival::nextFestivalDate() const { return _d->festivalDate; }
 void Festival::assignFestival( RomeDivinityType name, int size )
 {
   _d->festivalType = size;
-  _d->festivalDate = GameDate::current();
+  _d->festivalDate = game::Date::current();
   _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
 
@@ -78,17 +78,17 @@ void Festival::assignFestival( RomeDivinityType name, int size )
 Festival::Festival(PlayerCityPtr city)
 : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->lastFestivalDate = GameDate::current();
+  _d->lastFestivalDate = game::Date::current();
   _d->festivalDate = DateTime( -550, 0, 0 );
   _d->prevFestivalDate = DateTime( -550, 0, 0 );
 }
 
 void Festival::timeStep(const unsigned int time )
 {
-  if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
-  const DateTime currentDate = GameDate::current();
+  const DateTime currentDate = game::Date::current();
   if( _d->festivalDate.year() == currentDate.year()
       && _d->festivalDate.month() == currentDate.month() )
   {
@@ -96,7 +96,7 @@ void Festival::timeStep(const unsigned int time )
 
     if( _d->prevFestivalDate.monthsTo( currentDate ) >= 12 )
     {
-      int* sentimentValues = (_d->lastFestivalDate.monthsTo( GameDate::current() ) < 12)
+      int* sentimentValues = (_d->lastFestivalDate.monthsTo( game::Date::current() ) < 12)
                                   ? secondFesivalSentiment
                                   : firstFestivalSentinment;
 

@@ -270,7 +270,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
         wlk->setThinks( "##landmerchant_say_about_store_goods##" );
-        waitInterval = GameDate::days2ticks( 7 );
+        waitInterval = game::Date::days2ticks( 7 );
       }
 
       nextState = stGoOutFromCity;

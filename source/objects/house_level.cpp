@@ -595,9 +595,9 @@ HouseSpecification::~HouseSpecification() {}
 
 HouseSpecification::HouseSpecification() : _d( new Impl )
 {
-  _d->srvcInterval = GameDate::days2ticks( 2 );
-  _d->foodInterval = GameDate::days2ticks( 30 );
-  _d->goodInterval = GameDate::days2ticks( 15 );
+  _d->srvcInterval = game::Date::days2ticks( 2 );
+  _d->foodInterval = game::Date::days2ticks( 30 );
+  _d->goodInterval = game::Date::days2ticks( 15 );
 }
 
 HouseSpecification::HouseSpecification( const HouseSpecification& other ) : _d( new Impl )

@@ -52,7 +52,7 @@ void RomeChastenerArmy::timeStep(const unsigned int time)
 {
   Army::timeStep( time );
 
-  if( GameDate::isWeekChanged() && _d->checkFavor )
+  if( game::Date::isWeekChanged() && _d->checkFavor )
   {
     if( empire()->emperor().relation( target() ) > 35 )
     {

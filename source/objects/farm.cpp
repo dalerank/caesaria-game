@@ -166,7 +166,7 @@ void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  if( GameDate::isDayChanged() && mayWork() && progress() < 100 )
+  if( game::Date::isDayChanged() && mayWork() && progress() < 100 )
   {
     computePictures();
   }
