@@ -1,0 +1,19 @@
+{  
+ title : "##religion##"
+ sound : "fanfare"
+ text  : "There are five gods to consider in your cities: Ceres, goddess of farming, Mercury, god of commerce, Neptune, god of the sea, Mars, god of war, and Venus, goddess of love. Keep them all happy, or you will suffer the consequences of their anger.\n To please gods, build @temples& to them. The more temples you dedicate to a particular god, the more they will like you. As your population grows, the number of temples needed to satisfy the gods rises. Besides placating the gods, temples improve a neighborhood's desirability and enhance your city's @35Culture&rating. \n People like to live close to temples. The best neighborhoods should receive visits from the priests of at least four different gods.\n A god grows angry with you if he or she feels that you have not built enough temples to them, given the size of the city. The gods are a jealous and quarrelsome lot, and will surely notice if your temples seem to favor one god over the others. When gods get angry enough, they strike out at your city, with each inflicting damage in its own area of expertise. If you make the gods very happy, on the other hand, they may send you a blessing. \n Dedicating a Festival to a god will also please them, though only for a while. For more on festivals, click on @Entertainment&.\n To demonstrate your largesse, and to impress the gods, build large temples as well as small ones. Large temples use two cartloads of precious marble, which you have to quarry or buy in trade.\n Oracles are a special type of temple, dedicated to all the gods and to divining the future. They have the same effects on a neighborhood and on Culture as a temple does, but they please all five gods equally. Like large temples, oracles need two cartloads of marble. Unlike temples, oracles do not sent priests walking through neighborhoods, and so don't give houses access to any god.\n Check your standing in the gods' eyes with your @Religion Advisor&."
+ uri : {
+  "schools" : "school"
+  "temples" : "temple"
+  "Entertainment" : "entertainment"
+  "Education Advisor" : "education_advisor"
+  "academy" : "academy"
+  "libraries" : "library"
+  "Culture rating" : "culture_rating"
+  "performer suppliers" : "supplier"
+  "amphitheaters" : "amphitheater"
+  "festivals" : "festival"
+  "Religion Advisor" : "religion_advisor"
+  "Population Advisor" : "population_advisor"
+ }
+}

@@ -1,0 +1,9 @@
+{  
+ title : "##patricians##"
+ sound : "fanfare"
+ text  : "Most @plebeians& aspire to become patricians. These wealthy aristocrats live in comfortable villas. Patricians spend their days visiting one another, lounging in the baths, attending the theaters and debating politics, philosophy and art, but do not work.\n As your city grows wealthier and more cultured, patrician villas may replace the old plebeian apartments. Patricians are not part of your workforce and don't draw wages, but they are an important source of tax income for your treasury because their wealth is so substantial. Strive to accommodate as many patrician villas as your workforce can support, but remember that a city top-heavy with patricians cannot sustain itself. They don't work, but they do still eat - and demand other services that only plebeians provide."
+ uri : {
+  "plebeians" : "plebians"
+  "here" : "http://wikipedia.ru"
+ }
+}

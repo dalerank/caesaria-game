@@ -15,9 +15,9 @@
     geometry : [ 12, 50, 100, 72 ]
     font : "FONT_1"
 		text : "Resources: "
-    text.align : [ "center", "center" ]
+    text.align : [ "upperLeft", "center" ]
   }
-	
+
 	edResourcesPath#EditBox :
   {
     geometry : [ 92, 50, "pw-15", 72 ]
@@ -27,9 +27,25 @@
     text.offset : [ 10, 0 ]
   }
 
+  lbCaesar3Path#Label : {
+    geometry : [ 12, 76, 100, 98 ]
+    font : "FONT_1"
+    text : "C3 gfx: "
+    text.align : [ "upperLeft", "center" ]
+  }
+
+  edCaesar3Path#EditBox :
+  {
+    geometry : [ 92, 76, "pw-15", 98 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
   btnChangeCellw#PushButton :
   {
-    geometry : [ 12, 85, "pw-15", 110 ]
+    geometry : [ 12, 105, "pw-15", 129 ]
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_2"
     text.offset : [ 10, 0 ]

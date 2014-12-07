@@ -1,0 +1,15 @@
+{  
+ title : "##prefecture_history##"
+ sound : "fanfare"
+ text  : "Policing the city was a haphazard enterprise. The 'praefectus urbi', whose duties were equivalent to a mayor, supervised a small group of 'aediles', who in turn organized patrols of watchmen and fire-fighters. Street lighting was almost non-existent, and nights on the streets of Rome were for the adventurous. Brawls barely attracted attention unless they ended in murder or involved prominent citizens. Riots were common. Emperors were inclined to let civil disorder play itself out, although they did station large numbers of troops near the city to keep riots from spreading into insurrection.\n Fires were a more serious danger. Insulae, with their wooden upper floors, were built in large blocks without firewalls between apartments, and Romans satisfied all of their cooking, heating and lighting needs with open flames. Citizens reacted quickly when fire was reported, forming a bucket brigade to the nearest @fountain&. Property damage was typically severe however quickly a fire was fought.\n Rome's worst fire was during Nero's rule in AD 64. Historians argue about whether Nero really 'fiddled' while Rome burned - in fact, most think the Emperor ordered it set - but the question is moot. That fire could not have been contained had every citizen of Rome been given a bucket. Up to two-thirds of the city was destroyed."
+ uri : {
+  "prefects" : "prefect"
+  "engineers" : "engineer"
+  "fountain" : "fountain"
+  "Labor Advisor" : "labor_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "Crime" : "crime"
+  "historical role of Prefects" : "prefect_history"
+  "here" : "http://wikipedia.ru"
+ }
+}

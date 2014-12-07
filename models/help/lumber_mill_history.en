@@ -1,0 +1,15 @@
+{  
+ title : "##lumber_mill_history##"
+ sound : "fanfare"
+ text  : "Roman ruins attest to the durability of stone, and for grand public works stone was indeed the material of choice. Wood's importance should not be underestimated just because it does not survive the centuries as well. Europe was thickly forested and trees were more of a nuisance than a resource, especially in the provinces. Progress in the ancient world meant clearing land for settlement and for agriculture. Vast quantities of timber were produced in the process. In urban areas, where the forests were long since cleared, stands of timber were indeed treated as resources to be harvested for firewood and lumber, to provide habitat for game animals, or simply enjoyed as a refuge from the city. Wood had the advantage of being a cheap, plentiful and comparatively lightweight and easily-worked building material. These qualities lent it myriad uses, even in Rome itself, and provincial towns were built almost entirely of wood."
+ uri : {
+  "granary" : "granary"
+  "pottery" : "pottery"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

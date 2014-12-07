@@ -33,6 +33,7 @@ public:
 private:
   void _saveOptions();
   void _setResourcesPath(std::string);
+  void _setCaesar3Path(std::string);
   void _changeCellw();
   void _update();
 

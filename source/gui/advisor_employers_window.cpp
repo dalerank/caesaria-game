@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "core/event.hpp"
 #include "environment.hpp"
+#include "dictionary.hpp"
 #include "hire_priority_window.hpp"
 #include "city/cityservice_workershire.hpp"
 #include "widget_helper.hpp"
@@ -332,6 +333,9 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )
   GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
 
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Employer::_showHelp );
+
   _d->updateSalaryLabel();
   _d->updateWorkersState();
   _d->updateYearlyWages();
@@ -354,6 +358,11 @@ bool Employer::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
+void Employer::_showHelp()
+{
+  DictionaryWindow::show( this, "labor_advisor" );
 }
 
 }

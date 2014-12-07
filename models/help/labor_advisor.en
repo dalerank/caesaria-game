@@ -1,0 +1,8 @@
+{  
+ title : "##labor_advisor##"
+ sound : "fanfare"
+ text  : "Click @here& for a general description of how employment works. This panel's primary functions are:\n Set labor priorities. Without instructions from you, workers are assigned jobs by the Employment Advisor, whose priorities will not always be the same as yours. If you want jobs filled in a particular order, rank their priority here.\n Set wages. Citizens compare your wage level to that of Rome, which starts as 30 denarii, though it may change in time. Lowering the wage scale saves money, but discourages immigration and aggravates crime by lowering the city's overall mood. Raising the scale improves your citizens' mood.\n The Labor Advisor also shows the size of your workforce and any unemployed people, and reports your total cost of labor for a year. One-twelfth of this cost is assessed each month."
+ uri : {
+  "here" : "http://wikipedia.ru"
+ }
+}

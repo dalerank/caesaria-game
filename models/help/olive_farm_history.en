@@ -1,0 +1,14 @@
+{  
+ title : "##olive_farm_history##"
+ sound : "fanfare"
+ text  : "All of the dozens of varieties of olives are bitter when fresh; their final flavor depends on their ripeness when picked and how they are processed. Silvery olive trees are native to the Mediterranean and were considered sacred as early as the 17th century BC. Romans grew olives for their fruit, but even more importantly for their oil. Underripe olives are always green. Ripe olives range from darker green to black."
+ uri : {
+  "granary" : "granary"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

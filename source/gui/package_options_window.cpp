@@ -35,6 +35,7 @@ class PackageOptions::Impl
 {
 public:
   EditBox* edResourcesPath;
+  EditBox* edCaesar3Path;
   TexturedButton* btnApply;
   PushButton* btnChangeCellw;
 };
@@ -48,10 +49,12 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   GET_DWIDGET_FROM_UI(_d,edResourcesPath)
   GET_DWIDGET_FROM_UI(_d,btnApply)
   GET_DWIDGET_FROM_UI(_d,btnChangeCellw)
+  GET_DWIDGET_FROM_UI(_d,edCaesar3Path)
 
   CONNECT( _d->btnApply, onClicked(), this, PackageOptions::deleteLater );
   CONNECT( _d->btnApply, onClicked(), this, PackageOptions::_saveOptions );
   CONNECT( _d->edResourcesPath, onTextChanged(), this, PackageOptions::_setResourcesPath );
+  CONNECT( _d->edCaesar3Path, onTextChanged(), this, PackageOptions::_setCaesar3Path );
   CONNECT( _d->btnChangeCellw, onClicked(), this, PackageOptions::_changeCellw );
 
   _update();
@@ -66,7 +69,12 @@ void PackageOptions::_saveOptions()
 
 void PackageOptions::_setResourcesPath(std::string path)
 {
-  SETTINGS_SET_VALUE( resourcePath, Variant(path) );  
+  SETTINGS_SET_VALUE( resourcePath, Variant(path) );
+}
+
+void PackageOptions::_setCaesar3Path(std::string path)
+{
+  SETTINGS_SET_VALUE( c3gfx, Variant(path) );
 }
 
 void PackageOptions::_changeCellw()
@@ -88,6 +96,11 @@ void PackageOptions::_update()
   if( _d->edResourcesPath )
   {
     _d->edResourcesPath->setText( SETTINGS_VALUE( resourcePath ).toString() );
+  }
+
+  if( _d->edCaesar3Path )
+  {
+    _d->edCaesar3Path->setText( SETTINGS_VALUE( c3gfx ).toString() );
   }
 }
 
