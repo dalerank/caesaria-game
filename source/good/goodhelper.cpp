@@ -28,7 +28,7 @@
 
 using namespace gfx;
 
-static const int empPicId[ Good::goodCount+1 ] = { PicID::bad,
+static const int empPicId[ good::goodCount+1 ] = { PicID::bad,
                                        /*G_WHEAT*/11, 
                                        /*G_FISH*/27,
                                        /*G_MEAT*/16, 
@@ -48,7 +48,7 @@ static const int empPicId[ Good::goodCount+1 ] = { PicID::bad,
                                        /*G_DENARIES*/26,                            
                                        PicID::bad };
 
- static const int localPicId[ Good::goodCount+1 ] = { PicID::bad,
+ static const int localPicId[ good::goodCount+1 ] = { PicID::bad,
                                           /*G_WHEAT*/317, 
                                           /*G_FISH*/333,
                                           /*G_MEAT*/322,
@@ -68,21 +68,21 @@ static const int empPicId[ Good::goodCount+1 ] = { PicID::bad,
                                           /*G_DENARIES*/332,
                                           PicID::bad };
 
-class GoodHelper::Impl : public EnumsHelper<Good::Type>
+class GoodHelper::Impl : public EnumsHelper<good::Type>
 {
 public:
-  typedef std::map<Good::Type, std::string > GoodNames;
+  typedef std::map<good::Type, std::string > GoodNames;
   GoodNames goodName;  // index=GoodType, value=Good
 
-  void append( Good::Type type, const std::string& name, const std::string& prName )
+  void append( good::Type type, const std::string& name, const std::string& prName )
   {
-    EnumsHelper<Good::Type>::append( type, name );
+    EnumsHelper<good::Type>::append( type, name );
     goodName[ type ] = prName;
   }
 
-  Impl() : EnumsHelper<Good::Type>(Good::none)
+  Impl() : EnumsHelper<good::Type>(good::none)
   {
-#define __REG_GTYPE(a) append( Good::a, CAESARIA_STR_EXT(a), "##"CAESARIA_STR_EXT(a)"##" );
+#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##"CAESARIA_STR_EXT(a)"##" );
     __REG_GTYPE(none ) // append( Good::none, "none", "##none##");
     __REG_GTYPE(wheat) // append( Good::wheat, "wheat", "##wheat##" );
     __REG_GTYPE(fish ) // append( Good::fish, "fish", "##fish##" );
@@ -102,7 +102,7 @@ public:
     __REG_GTYPE(marble ) // append( Good::marble, "marble", "##marble##" );
     __REG_GTYPE(denaries ) //append( Good::denaries, "denaries", "##denaries##");
     __REG_GTYPE(prettyWine ) // append( Good::prettyWine, "prettyWine", "##prettyWine##" );
-    append( Good::goodCount, "unknown", "##unknown##" );
+    append( good::goodCount, "unknown", "##unknown##" );
 #undef __REG_GTYPE
   }
 };
@@ -117,7 +117,7 @@ GoodHelper::GoodHelper() : _d( new Impl )
 {  
 }
 
-Picture GoodHelper::picture( Good::Type type, bool emp )
+Picture GoodHelper::picture( good::Type type, bool emp )
 {
   int picId = -1;
 
@@ -140,27 +140,27 @@ Picture GoodHelper::picture( Good::Type type, bool emp )
 
 GoodHelper::~GoodHelper() {}
 
-std::string GoodHelper::name( Good::Type type )
+std::string GoodHelper::name( good::Type type )
 {
   Impl::GoodNames::iterator it = getInstance()._d->goodName.find( type );
   return it != getInstance()._d->goodName.end() ? it->second : "";
 }
 
-Good::Type GoodHelper::getType( const std::string& name )
+good::Type GoodHelper::getType( const std::string& name )
 {
-  Good::Type type = getInstance()._d->findType( name );
+  good::Type type = getInstance()._d->findType( name );
 
   if( type == getInstance()._d->getInvalid() )
   {
-    Logger::warning( "Can't find type for goodName %s", name.c_str() );
-    return Good::none;
+    Logger::warning( "Can't find type for goodName " + name );
+    return good::none;
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find type for goodName" );
   }
 
   return type;
 }
 
-std::string GoodHelper::getTypeName( Good::Type type )
+std::string GoodHelper::getTypeName( good::Type type )
 {
   return getInstance()._d->findName( type );
 }
@@ -170,19 +170,19 @@ float GoodHelper::convQty2Units(int qty)
   return qty / 100.f;
 }
 
-float GoodHelper::exportPrice(PlayerCityPtr city, Good::Type gtype, int qty)
+float GoodHelper::exportPrice(PlayerCityPtr city, good::Type gtype, int qty)
 {
   int price = city->tradeOptions().buyPrice( gtype );
   return price * GoodHelper::convQty2Units( qty );
 }
 
-float GoodHelper::importPrice(PlayerCityPtr city, Good::Type gtype, int qty)
+float GoodHelper::importPrice(PlayerCityPtr city, good::Type gtype, int qty)
 {
   int price = city->tradeOptions().sellPrice( gtype );
   return price * GoodHelper::convQty2Units( qty );
 }
 
-Picture GoodHelper::getCartPicture(const GoodStock& stock, constants::Direction direction)
+Picture GoodHelper::getCartPicture(const good::Stock& stock, constants::Direction direction)
 {
-  return AnimationBank::getCart( stock.empty() ? Good::none : stock.type(), stock.capacity(), direction );
+  return AnimationBank::getCart( stock.empty() ? good::none : stock.type(), stock.capacity(), direction );
 }

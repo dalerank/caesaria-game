@@ -25,7 +25,7 @@ using namespace constants;
 namespace events
 {
 
-GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
+GameEventPtr RemoveGoods::create( good::Type type, int qty  )
 {
   RemoveGoods* r = new RemoveGoods();
   r->_qty = qty;
@@ -38,7 +38,7 @@ GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
 }
 
 template<class T>
-void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, Good::Type what, int& qty )
+void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Type what, int& qty )
 {
   SmartList<T> bList;	
 #ifdef CAESARIA_PLATFORM_HAIKU
@@ -57,7 +57,7 @@ void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, Good::Type what, 
 
     if( maxQty > 0 )
     {
-      GoodStock stock( what, maxQty );
+      good::Stock stock( what, maxQty );
       store.retrieve( stock, maxQty );
       qty -= maxQty;
     }

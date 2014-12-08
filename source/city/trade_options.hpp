@@ -32,27 +32,27 @@ public:
   TradeOptions();
   ~TradeOptions();
 
-  unsigned int exportLimit(Good::Type type) const;
-  void setExportLimit(Good::Type type, unsigned int qty);
+  unsigned int exportLimit(good::Type type) const;
+  void setExportLimit(good::Type type, unsigned int qty);
   
-  void setStackMode( Good::Type type, bool stacking );
-  bool isGoodsStacking( Good::Type type );
+  void setStackMode( good::Type type, bool stacking );
+  bool isGoodsStacking( good::Type type );
 
-  bool isExporting( Good::Type type ) const;
-  bool isImporting( Good::Type type ) const;
+  bool isExporting( good::Type type ) const;
+  bool isImporting( good::Type type ) const;
 
-  unsigned int sellPrice( Good::Type type ) const;
-  void setSellPrice( Good::Type type, unsigned int price );
+  unsigned int sellPrice( good::Type type ) const;
+  void setSellPrice( good::Type type, unsigned int price );
 
-  bool isVendor( Good::Type type ) const;
-  void setVendor( Good::Type type, bool available );
+  bool isVendor( good::Type type ) const;
+  void setVendor( good::Type type, bool available );
 
-  unsigned int buyPrice( Good::Type type ) const;
-  void setBuyPrice( Good::Type type, unsigned int price );
+  unsigned int buyPrice( good::Type type ) const;
+  void setBuyPrice( good::Type type, unsigned int price );
 
-  Order getOrder( Good::Type type ) const;
-  void setOrder( Good::Type type, Order order );
-  Order switchOrder( Good::Type type );
+  Order getOrder( good::Type type ) const;
+  void setOrder( good::Type type, Order order );
+  Order switchOrder( good::Type type );
 
   VariantMap save() const;
   void load( const VariantMap& stream );

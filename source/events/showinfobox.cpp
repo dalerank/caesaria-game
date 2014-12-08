@@ -38,7 +38,7 @@ public:
   bool send2scribe;
   vfs::Path video;
   Point position;
-  Good::Type gtype;
+  good::Type gtype;
 };
 
 GameEventPtr ShowInfobox::create()
@@ -48,7 +48,7 @@ GameEventPtr ShowInfobox::create()
   return ret;
 }
 
-GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, Good::Type type, bool send2scribe)
+GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, good::Type type, bool send2scribe)
 {
   ShowInfobox* ev = new ShowInfobox();
   ev->_d->title = title;
@@ -68,7 +68,7 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
   ev->_d->title = title;
   ev->_d->text = text;
   ev->_d->video = video;
-  ev->_d->gtype = Good::none;
+  ev->_d->gtype = good::none;
   ev->_d->send2scribe = send2scribe;
 
   GameEventPtr ret( ev );

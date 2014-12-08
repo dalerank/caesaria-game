@@ -25,38 +25,42 @@
 
 class VariantList;
 
-class Good
+namespace good
 {
-public:
-  typedef enum
-  {
-    none=0,
-    wheat, fish, meat, fruit, vegetable,
-    olive, oil,
-    grape, wine,
-    timber, furniture,
-    clay, pottery,
-    iron, weapon,
-    marble,
-    denaries,
-    prettyWine,
-    goodCount
-  } Type;
 
+typedef enum
+{
+  none=0,
+  wheat, fish, meat, fruit, vegetable,
+  olive, oil,
+  grape, wine,
+  timber, furniture,
+  clay, pottery,
+  iron, weapon,
+  marble,
+  denaries,
+  prettyWine,
+  goodCount
+} Type;
+
+
+class Product
+{
+public:  
   Type type() const { return _type; }
 
 protected:
   Type _type;
 };
 
-class GoodStock : public Good
+class Stock : public Product
 {
 public:
-  GoodStock();
-  GoodStock(const Good::Type &goodType, const int maxQty, const int currentQty=0);
-  ~GoodStock();
+  Stock();
+  Stock(const Type &goodType, const int maxQty, const int currentQty=0);
+  ~Stock();
 
-  void setType( Good::Type goodType );
+  void setType( Type goodType );
 
   void setCapacity( const int maxQty );
   int capacity() const { return _capacity; }
@@ -70,7 +74,7 @@ public:
   void pop( const int qty );
 
   /** amount: if -1, amount=stock._currentQty */
-  void append(GoodStock &stock, const int amount = -1);
+  void append( Stock& stock, const int amount = -1);
 
   VariantList save() const;
   void load( const VariantList& options );
@@ -81,5 +85,7 @@ protected:
   int _capacity;
   int _qty;
 };
+
+}//end namespace good
     
 #endif //_CAESARIA_GOOD_H_INCLUDE_

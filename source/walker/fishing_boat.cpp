@@ -40,7 +40,7 @@ public:
   CoastalFactoryPtr base;
   DateTime dateUpdate;
   TilePos destination;
-  GoodStock stock;
+  good::Stock stock;
   FishingBoat::State mode;
 
   Pathway findFishingPlace(PlayerCityPtr city, TilePos pos);
@@ -188,7 +188,7 @@ FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = wait;
-  _d->stock.setType( Good::fish );
+  _d->stock.setType( good::fish );
   _d->stock.setCapacity( 100 );
 }
 

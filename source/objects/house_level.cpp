@@ -62,10 +62,10 @@ public:
   int minReligionLevel;  // number of religions
   int minFoodLevel;  // number of food types
 
-  typedef std::map<Good::Type, int> RequiredGoods;
+  typedef std::map<good::Type, int> RequiredGoods;
   RequiredGoods requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
 
-  typedef std::map<Good::Type, float> GoodConsumptionMuls;
+  typedef std::map<good::Type, float> GoodConsumptionMuls;
   GoodConsumptionMuls consumptionMuls;
 };
 
@@ -212,35 +212,35 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
     return false;
   }
 
-  if( _d->requiredGoods[Good::pottery] != 0 && house->goodStore().qty(Good::pottery) == 0)
+  if( _d->requiredGoods[good::pottery] != 0 && house->goodStore().qty(good::pottery) == 0)
   {
     ref = "##missing_pottery##";
     needBuilding = objects::pottery;
     return false;
   }
 
-  if( _d->requiredGoods[Good::furniture] != 0 && house->goodStore().qty(Good::furniture) == 0)
+  if( _d->requiredGoods[good::furniture] != 0 && house->goodStore().qty(good::furniture) == 0)
   {
     ref = "##missing_furniture##";
     needBuilding = objects::furnitureWorkshop;
     return false;
   }
 
-  if( _d->requiredGoods[Good::oil] != 0 && house->goodStore().qty(Good::oil) == 0)
+  if( _d->requiredGoods[good::oil] != 0 && house->goodStore().qty(good::oil) == 0)
   {
     ref = "##missing_oil##";
     needBuilding = objects::creamery;
     return false;
   }
 
-  if( _d->requiredGoods[Good::wine] != 0 && house->goodStore().qty(Good::wine) == 0)
+  if( _d->requiredGoods[good::wine] != 0 && house->goodStore().qty(good::wine) == 0)
   {
     ref = "##missing_wine##";
     needBuilding = objects::winery;
     return false;
   }
 
-  if( _d->requiredGoods[Good::prettyWine] != 0 && house->goodStore().qty(Good::prettyWine) == 0)
+  if( _d->requiredGoods[good::prettyWine] != 0 && house->goodStore().qty(good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
     needBuilding = objects::winery;
@@ -305,11 +305,11 @@ int HouseSpecification::computeFoodLevel(HousePtr house)
   int res = 0;
 
   const GoodStore& goodStore = house->goodStore();
-  res += goodStore.qty(Good::wheat) > 0 ? 1 : 0;
-  res += goodStore.qty(Good::fish) > 0 ? 1 : 0;
-  res += goodStore.qty(Good::meat) > 0 ? 1 : 0;
-  res += goodStore.qty(Good::fruit) > 0 ? 1 : 0;
-  res += goodStore.qty(Good::vegetable) > 0 ? 1 :0;
+  res += goodStore.qty(good::wheat) > 0 ? 1 : 0;
+  res += goodStore.qty(good::fish) > 0 ? 1 : 0;
+  res += goodStore.qty(good::meat) > 0 ? 1 : 0;
+  res += goodStore.qty(good::fruit) > 0 ? 1 : 0;
+  res += goodStore.qty(good::vegetable) > 0 ? 1 :0;
 
   return res;
 }
@@ -541,7 +541,7 @@ float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Ty
 int HouseSpecification::minDesirabilityLevel() const { return _d->minDesirability; }
 int HouseSpecification::maxDesirabilityLevel() const { return _d->maxDesirability; }
 
-int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const Good::Type goodType, bool real) const
+int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const good::Type goodType, bool real) const
 {
   if( house.isNull() )
   {
@@ -552,18 +552,18 @@ int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const Goo
   int res=0;
   switch( goodType )
   {
-  case Good::furniture:
-  case Good::oil:
-  case Good::pottery:
-  case Good::wine:
+  case good::furniture:
+  case good::oil:
+  case good::pottery:
+  case good::wine:
     res = 2;
   break;
 
-  case Good::wheat:
-  case Good::meat:
-  case Good::fish:
-  case Good::fruit:
-  case Good::vegetable:
+  case good::wheat:
+  case good::meat:
+  case good::fish:
+  case good::fruit:
+  case good::vegetable:
     res = house->habitants().count() / 2;
   break;
 
@@ -587,7 +587,7 @@ int HouseSpecification::computeMonthlyFoodConsumption(HousePtr house) const
 }
 
 const std::string& HouseSpecification::internalName() const{  return _d->internalName; }
-int HouseSpecification::getRequiredGoodLevel(Good::Type type) const{  return _d->requiredGoods[type];}
+int HouseSpecification::getRequiredGoodLevel(good::Type type) const{  return _d->requiredGoods[type];}
 int HouseSpecification::prosperity() const{  return _d->prosperity;}
 int HouseSpecification::crime() const{  return _d->crime;}
 
@@ -726,22 +726,22 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->minHealthLevel = hSpec.get( "health" ).toInt();
     spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
     
-    spec._d->requiredGoods[Good::wheat] = 1;  // hard coded ... to be changed!
-    spec._d->requiredGoods[Good::fish] = 1;
-    spec._d->requiredGoods[Good::meat] = 1;
-    spec._d->requiredGoods[Good::fruit] = 1;
-    spec._d->requiredGoods[Good::vegetable] = 1;
-    spec._d->requiredGoods[Good::pottery] = hSpec.get( "pottery" ).toInt();  // pottery
-    spec._d->requiredGoods[Good::oil] = hSpec.get( "oil" ).toInt();  // oil
-    spec._d->requiredGoods[Good::furniture] = hSpec.get( "furniture").toInt();// furniture
-    spec._d->requiredGoods[Good::wine] = hSpec.get( "wine" ).toInt();  // wine
+    spec._d->requiredGoods[good::wheat] = 1;  // hard coded ... to be changed!
+    spec._d->requiredGoods[good::fish] = 1;
+    spec._d->requiredGoods[good::meat] = 1;
+    spec._d->requiredGoods[good::fruit] = 1;
+    spec._d->requiredGoods[good::vegetable] = 1;
+    spec._d->requiredGoods[good::pottery] = hSpec.get( "pottery" ).toInt();  // pottery
+    spec._d->requiredGoods[good::oil] = hSpec.get( "oil" ).toInt();  // oil
+    spec._d->requiredGoods[good::furniture] = hSpec.get( "furniture").toInt();// furniture
+    spec._d->requiredGoods[good::wine] = hSpec.get( "wine" ).toInt();  // wine
     spec._d->crime = hSpec.get( "crime" ).toInt();  // crime
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    for (int i = 0; i < Good::goodCount; ++i)
+    for (int i = 0; i < good::goodCount; ++i)
     {
-      spec._d->consumptionMuls[ (Good::Type)i ] = 1;
+      spec._d->consumptionMuls[ (good::Type)i ] = 1;
     }
 
     //load consumption goods koefficient

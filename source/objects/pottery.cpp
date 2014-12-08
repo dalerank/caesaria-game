@@ -26,7 +26,7 @@
 using namespace constants;
 using namespace gfx;
 
-Pottery::Pottery() : Factory(Good::clay, Good::pottery, objects::pottery, Size(2))
+Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery, Size(2))
 {
   _fgPicturesRef().resize( 3 );
 }

@@ -52,7 +52,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   GET_WIDGET_FROM_UI( lbProgress )
   GET_WIDGET_FROM_UI( lbDamage )
 
-  if( rawmb->produceGoodType() != Good::none )
+  if( rawmb->produceGoodType() != good::none )
   {
     Picture pic = GoodHelper::picture( rawmb->produceGoodType() );
     new Image( this, Point( 10, 10 ), pic );

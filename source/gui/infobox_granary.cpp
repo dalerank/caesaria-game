@@ -66,10 +66,10 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
     lbUnits->setPosition( _lbTitleRef()->leftbottom() + Point( 0, 5 ) );
     lbUnits->setText( desc );
 
-    drawGood(Good::wheat, 0, lbUnits->bottom() );
-    drawGood(Good::meat, 0, lbUnits->bottom() + 25);
-    drawGood(Good::fruit, 1, lbUnits->bottom() );
-    drawGood(Good::vegetable, 1, lbUnits->bottom() + 25);
+    drawGood(good::wheat, 0, lbUnits->bottom() );
+    drawGood(good::meat, 0, lbUnits->bottom() + 25);
+    drawGood(good::fruit, 1, lbUnits->bottom() );
+    drawGood(good::vegetable, 1, lbUnits->bottom() + 25);
   }
 
   _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maximumWorkers(), _granary->numberWorkers() );
@@ -92,7 +92,7 @@ void AboutGranary::showSpecialOrdersWindow()
   new GranarySpecialOrdersWindow( parent(), pos, _granary );
 }
 
-void AboutGranary::drawGood( Good::Type goodType, int col, int paintY)
+void AboutGranary::drawGood( good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);

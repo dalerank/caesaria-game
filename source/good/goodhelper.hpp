@@ -24,21 +24,19 @@
 #include "city/predefinitions.hpp"
 #include "core/direction.hpp"
 
-class GoodStock;
-
 class GoodHelper
 {
 public:
   static GoodHelper& getInstance();
 
-  static std::string name( Good::Type type );
-  static gfx::Picture picture( Good::Type type, bool emp=false );
-  static Good::Type getType( const std::string& name );
-  static std::string getTypeName( Good::Type type );
+  static std::string name( good::Type type );
+  static gfx::Picture picture( good::Type type, bool emp=false );
+  static good::Type getType( const std::string& name );
+  static std::string getTypeName( good::Type type );
   static float convQty2Units( int qty );
-  static float exportPrice( PlayerCityPtr city, Good::Type gtype, int qty );
-  static float importPrice( PlayerCityPtr city, Good::Type gtype, int qty );
-  static gfx::Picture getCartPicture( const GoodStock& stock, constants::Direction direction );
+  static float exportPrice( PlayerCityPtr city, good::Type gtype, int qty );
+  static float importPrice( PlayerCityPtr city, good::Type gtype, int qty );
+  static gfx::Picture getCartPicture( const good::Stock& stock, constants::Direction direction );
   ~GoodHelper();
 private:
   GoodHelper();

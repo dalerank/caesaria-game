@@ -98,9 +98,9 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
     // for every warehouse within range
     WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
     int rating = 0;
-    for( int i=Good::wheat; i<Good::goodCount; i++ )
+    for( int i=good::wheat; i<good::goodCount; i++ )
     {
-      Good::Type gtype = Good::Type(i);
+      good::Type gtype = good::Type(i);
       if (!options.isExporting(gtype))
       {
         continue;
@@ -238,9 +238,9 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         city::TradeOptions& options = city->tradeOptions();
         GoodStore& whStore = warehouse->store();
         //try buy goods
-        for( int n = Good::wheat; n<Good::goodCount; ++n )
+        for( int n = good::wheat; n<good::goodCount; ++n )
         {
-          Good::Type goodType = (Good::Type) n;
+          good::Type goodType = (good::Type) n;
           if (!options.isExporting(goodType))
           {
             continue;
@@ -254,7 +254,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
             mayBuy = std::min( mayBuy, maySell );
             if( mayBuy > 0 )
             {
-              GoodStock& stock = buy.getStock( goodType );
+              good::Stock& stock = buy.getStock( goodType );
               whStore.retrieve( stock, mayBuy );
 
               currentBuys += GoodHelper::exportPrice( city, goodType, mayBuy );
@@ -320,9 +320,9 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         city::TradeOptions& options = city->tradeOptions();
         //try sell goods
-        for (int n = Good::wheat; n<Good::goodCount; ++n)
+        for (int n = good::wheat; n<good::goodCount; ++n)
         {
-          Good::Type goodType = (Good::Type)n;
+          good::Type goodType = (good::Type)n;
           if (!options.isImporting(goodType))
           {
             continue;
@@ -334,7 +334,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
             if( maySells != 0 )
             {
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              GoodStock& stock = sell.getStock( goodType );
+              good::Stock& stock = sell.getStock( goodType );
               warehouse->store().store( stock, maySells );
               
               currentSell += GoodHelper::importPrice( city, goodType, maySells );

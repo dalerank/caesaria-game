@@ -43,7 +43,7 @@ bool FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
   return true;
 }
 
-FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, objects::furnitureWorkshop, Size(2) )
+FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, objects::furnitureWorkshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 117 );
   _fgPicturesRef().resize( 3 );

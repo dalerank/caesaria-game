@@ -117,7 +117,7 @@ public:
 
   virtual void delayTrade(unsigned int month);
   virtual void addObject( world::ObjectPtr object );
-  virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
+  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost);
 
   virtual const GoodStore& importingGoods() const;
   virtual const GoodStore& exportingGoods() const;

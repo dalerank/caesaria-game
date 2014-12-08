@@ -162,9 +162,9 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       city::TradeOptions& options = city->tradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
       //request goods
-      for( int n = Good::wheat; n<Good::goodCount; n++ )
+      for( int n = good::wheat; n<good::goodCount; n++ )
       {
-        Good::Type goodType = (Good::Type)n;
+        good::Type goodType = (good::Type)n;
         int needQty = buy.freeQty( goodType );
         if (!options.isExporting(goodType))
         {
@@ -174,7 +174,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
         if( maySell > 0)
         {
-          GoodStock stock( goodType, maySell, maySell );
+          good::Stock stock( goodType, maySell, maySell );
           myDock->requestGoods( stock );
           anyBuy = true;
         }
@@ -199,9 +199,9 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       city::TradeOptions& options = city->tradeOptions();
       //try buy goods
-      for( int n = Good::wheat; n<Good::goodCount; ++n )
+      for( int n = good::wheat; n<good::goodCount; ++n )
       {
-        Good::Type goodType = (Good::Type) n;
+        good::Type goodType = (good::Type) n;
         if (!options.isExporting(goodType))
         {
           continue;
@@ -211,7 +211,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
         if( needQty > 0 )
         {
-          GoodStock& stock = buy.getStock( goodType );
+          good::Stock& stock = buy.getStock( goodType );
           currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
@@ -273,9 +273,9 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       city::TradeOptions& options = city->tradeOptions();
       const GoodStore& importing = options.importingGoods();
       //try sell goods
-      for( int n = Good::wheat; n<Good::goodCount; ++n)
+      for( int n = good::wheat; n<good::goodCount; ++n)
       {
-        Good::Type type = (Good::Type)n;
+        good::Type type = (good::Type)n;
         if (!options.isImporting(type))
         {
           continue;

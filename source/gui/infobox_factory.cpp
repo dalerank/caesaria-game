@@ -77,13 +77,13 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
     CONNECT( _btnToggleWork, onClicked(), this, AboutFactory::_toggleWork )
   }
 
-  if( factory->produceGoodType() != Good::none )
+  if( factory->produceGoodType() != good::none )
   {
     new Image( this, Point( 10, 10), GoodHelper::picture( factory->produceGoodType() ) );
   }
 
   // paint picture of in good
-  if( factory->inStockRef().type() != Good::none )
+  if( factory->inStockRef().type() != good::none )
   {
     Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::picture( factory->inStockRef().type() ) );

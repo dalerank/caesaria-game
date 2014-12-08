@@ -75,7 +75,7 @@ SmartPtr<Player> Rome::player() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const GoodStore& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}
-void Rome::empirePricesChanged(Good::Type gtype, int bCost, int sCost){}
+void Rome::empirePricesChanged(good::Type gtype, int bCost, int sCost){}
 const GoodStore& Rome::importingGoods() const{ return _d->gstore; }
 
 void Rome::addObject(ObjectPtr obj)
@@ -84,12 +84,12 @@ void Rome::addObject(ObjectPtr obj)
   {
     GoodCaravanPtr caravan = ptr_cast<GoodCaravan>( obj );
 
-    Good::Type gtype = Good::none;
-    for( int i=Good::wheat; i < Good::goodCount; i++ )
+    good::Type gtype = good::none;
+    for( int i=good::wheat; i < good::goodCount; i++ )
     {
-      if( caravan->store().qty( Good::Type(i) ) > 0 )
+      if( caravan->store().qty( good::Type(i) ) > 0 )
       {
-        gtype = Good::Type(i);
+        gtype = good::Type(i);
         break;
       }
     }

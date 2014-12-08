@@ -42,7 +42,7 @@ class RqGood::Impl
 {
 public:
   unsigned int months2comply;
-  GoodStock stock;
+  good::Stock stock;
   bool alsoRemind;
   int winFavour, winMoney;
   int failFavour, failMoney, failAppendMonth;
@@ -66,7 +66,7 @@ void RqGood::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
-    GoodStock stock( _d->stock.type(), _d->stock.capacity() * 100 );
+    good::Stock stock( _d->stock.type(), _d->stock.capacity() * 100 );
     events::GameEventPtr e = events::RemoveGoods::create( stock.type(), stock.capacity() );
     e->dispatch();
     success( city );
@@ -209,7 +209,7 @@ void RqGood::update()
 
 std::string RqGood::description() const {  return _d->description; }
 int RqGood::qty() const { return _d->stock.capacity(); }
-Good::Type RqGood::goodType() const { return _d->stock.type(); }
+good::Type RqGood::goodType() const { return _d->stock.type(); }
 
 RqGood::RqGood() : Request( DateTime() ), _d( new Impl )
 {

@@ -63,24 +63,24 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   // summary: total stock, free capacity
   int _paintY = _lbTitleRef() ? _lbTitleRef()->bottom() : 50;
 
-  drawGood(Good::wheat,     0, _paintY+0);
-  drawGood(Good::vegetable, 0, _paintY+25);
-  drawGood(Good::fruit,     0, _paintY+50);
-  drawGood(Good::olive,     0, _paintY+75);
-  drawGood(Good::grape,     0, _paintY+100);
-  drawGood(Good::fish,      0, _paintY+125);
+  drawGood(good::wheat,     0, _paintY+0);
+  drawGood(good::vegetable, 0, _paintY+25);
+  drawGood(good::fruit,     0, _paintY+50);
+  drawGood(good::olive,     0, _paintY+75);
+  drawGood(good::grape,     0, _paintY+100);
+  drawGood(good::fish,      0, _paintY+125);
 
-  drawGood(Good::meat,      1, _paintY+0);
-  drawGood(Good::wine,      1, _paintY+25);
-  drawGood(Good::oil,       1, _paintY+50);
-  drawGood(Good::iron,      1, _paintY+75);
-  drawGood(Good::timber,    1, _paintY+100);
+  drawGood(good::meat,      1, _paintY+0);
+  drawGood(good::wine,      1, _paintY+25);
+  drawGood(good::oil,       1, _paintY+50);
+  drawGood(good::iron,      1, _paintY+75);
+  drawGood(good::timber,    1, _paintY+100);
 
-  drawGood(Good::clay,      2, _paintY+0);
-  drawGood(Good::marble,    2, _paintY+25);
-  drawGood(Good::weapon,    2, _paintY+50);
-  drawGood(Good::furniture, 2, _paintY+75);
-  drawGood(Good::pottery,   2, _paintY+100);
+  drawGood(good::clay,      2, _paintY+0);
+  drawGood(good::marble,    2, _paintY+25);
+  drawGood(good::weapon,    2, _paintY+50);
+  drawGood(good::furniture, 2, _paintY+75);
+  drawGood(good::pottery,   2, _paintY+100);
 
   _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->maximumWorkers(), _warehouse->numberWorkers() );
 }
@@ -102,7 +102,7 @@ void AboutWarehouse::showSpecialOrdersWindow()
   new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
 }
 
-void AboutWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
+void AboutWarehouse::drawGood( const good::Type &goodType, int col, int paintY )
 {
   std::string goodName = GoodHelper::name( goodType );
   int qty = _warehouse->store().qty(goodType);

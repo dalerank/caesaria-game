@@ -76,7 +76,7 @@ void Building::timeStep(const unsigned long time)
   Construction::timeStep(time);
 }
 
-void Building::storeGoods(GoodStock &stock, const int amount)
+void Building::storeGoods(good::Stock &stock, const int amount)
 {
   std::string bldType = debugName();
   Logger::warning( "This building should not store any goods %s at [%d,%d]",

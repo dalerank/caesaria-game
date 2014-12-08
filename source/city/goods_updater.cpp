@@ -44,7 +44,7 @@ public:
 
   DateTime endTime;
   bool isDeleted;
-  Good::Type gtype;
+  good::Type gtype;
   BuildingTypes supportBuildings;
 
   int value;
@@ -72,7 +72,7 @@ void GoodsUpdater::timeStep(const unsigned int time)
       BuildingList buildings = helper.find<Building>( *bldType );
       foreach( it, buildings )
       {
-        GoodStock stock( _d->gtype, _d->value, _d->value );
+        good::Stock stock( _d->gtype, _d->value, _d->value );
         (*it)->storeGoods( stock, _d->value );
       }
     }
@@ -86,7 +86,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
 
-  _d->gtype = (Good::Type)GoodHelper::getType( stream.get( lc_good ).toString() );
+  _d->gtype = (good::Type)GoodHelper::getType( stream.get( lc_good ).toString() );
 
   VariantList vl_buildings = stream.get( "buildings" ).toList();
   foreach( it, vl_buildings )
@@ -117,7 +117,7 @@ VariantMap GoodsUpdater::save() const
 }
 
 std::string GoodsUpdater::defaultName() { return "goods_updater"; }
-Good::Type GoodsUpdater::goodType() const {  return _d->gtype; }
+good::Type GoodsUpdater::goodType() const {  return _d->gtype; }
 
 GoodsUpdater::GoodsUpdater( PlayerCityPtr city )
   : Srvc( city, GoodsUpdater::defaultName() ), _d( new Impl )

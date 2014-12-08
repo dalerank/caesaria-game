@@ -265,7 +265,7 @@ void AdvisorChief::Impl::drawFoodStockState()
   bool romeSendWheat = false;
   foreach( it, goodsUpdaters )
   {
-    if( (*it)->goodType() == Good::wheat )
+    if( (*it)->goodType() == good::wheat )
     {
       romeSendWheat = true;
     }

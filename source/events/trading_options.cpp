@@ -63,8 +63,8 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
   VariantMap goodsVm = _options.get( "goods" ).toMap();
   foreach( it, goodsVm )
   {
-    Good::Type gtype = GoodHelper::getType( it->first );
-    if( gtype != Good::none )
+    good::Type gtype = GoodHelper::getType( it->first );
+    if( gtype != good::none )
     {
       VariantMap goodInfo = it->second.toMap();
       bool relative = goodInfo.get( "relative", false );

@@ -28,17 +28,17 @@ class GoodStore;
 class Factory : public WorkingBuilding
 {
 public:
-  Factory( const Good::Type inGood, const Good::Type outGood,
+  Factory( const good::Type inGood, const good::Type outGood,
            const TileOverlay::Type type, const Size& size );
   virtual ~Factory();
 
-  GoodStock& inStockRef();
-  const GoodStock& inStockRef() const;
+  good::Stock& inStockRef();
+  const good::Stock& inStockRef() const;
 
-  GoodStock& outStockRef();
+  good::Stock& outStockRef();
 
-  Good::Type consumeGoodType() const;
-  Good::Type produceGoodType() const;
+  good::Type consumeGoodType() const;
+  good::Type produceGoodType() const;
 
   GoodStore& store();
 

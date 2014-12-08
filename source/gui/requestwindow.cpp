@@ -92,7 +92,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     std::string title, text, video;
     switch( gr->goodType() )
     {
-    case Good::denaries:
+    case good::denaries:
         text = "##rome_need_some_goods##";
         title = "##emperor_request_money##";
         video = ":/smk/Urgent_message1.smk";

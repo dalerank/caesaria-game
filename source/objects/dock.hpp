@@ -43,11 +43,11 @@ public:
 
   int queueSize() const;
 
-  void requestGoods( GoodStock& stock );
+  void requestGoods( good::Stock& stock );
 
-  int importingGoods( GoodStock& stock );
-  int exportingGoods( GoodStock& stock, int qty );
-  void storeGoods(GoodStock& stock, const int amount);
+  int importingGoods( good::Stock& stock );
+  int exportingGoods( good::Stock& stock, int qty );
+  void storeGoods( good::Stock& stock, const int amount);
 
 private:
   void _setDirection( constants::Direction direction );

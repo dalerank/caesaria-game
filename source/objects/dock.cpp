@@ -234,7 +234,7 @@ const Tile& Dock::queueTile() const
   return _city()->tilemap().at( TilePos( -1, -1 ) );
 }
 
-void Dock::requestGoods(GoodStock& stock)
+void Dock::requestGoods(good::Stock& stock)
 {
   int maxRequest = std::min( stock.qty(), _d->requestGoods.getMaxStore( stock.type() ) );
   maxRequest -= _d->exportGoods.qty( stock.type() );
@@ -245,7 +245,7 @@ void Dock::requestGoods(GoodStock& stock)
   }
 }
 
-int Dock::importingGoods(GoodStock& stock)
+int Dock::importingGoods( good::Stock& stock)
 {
   const GoodStore& cityOrders = _city()->importingGoods();
 
@@ -268,12 +268,12 @@ int Dock::importingGoods(GoodStock& stock)
   return cost;
 }
 
-void Dock::storeGoods(GoodStock &stock, const int)
+void Dock::storeGoods( good::Stock &stock, const int)
 {
   _d->exportGoods.store( stock, stock.qty() );
 }
 
-int Dock::exportingGoods( GoodStock& stock, int qty )
+int Dock::exportingGoods( good::Stock& stock, int qty )
 {
   qty = std::min( qty, _d->exportGoods.getMaxRetrieve( stock.type() ) );
   _d->exportGoods.retrieve( stock, qty );
@@ -383,31 +383,31 @@ bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 
 void Dock::Impl::initStores()
 {
-  importGoods.setCapacity( Good::goodCount, 1000 );
-  exportGoods.setCapacity( Good::goodCount, 1000 );
-  requestGoods.setCapacity( Good::goodCount, 1000 );
+  importGoods.setCapacity( good::goodCount, 1000 );
+  exportGoods.setCapacity( good::goodCount, 1000 );
+  requestGoods.setCapacity( good::goodCount, 1000 );
 
-  importGoods.setCapacity( 1000 * Good::goodCount );
-  exportGoods.setCapacity( 1000 * Good::goodCount );
-  requestGoods.setCapacity( 1000 * Good::goodCount );
+  importGoods.setCapacity( 1000 * good::goodCount );
+  exportGoods.setCapacity( 1000 * good::goodCount );
+  requestGoods.setCapacity( 1000 * good::goodCount );
 }
 
 void Dock::_tryDeliverGoods()
 {
-  for( int i=Good::wheat; i < Good::goodCount; i++ )
+  for( int i=good::wheat; i < good::goodCount; i++ )
   {
     if( walkers().size() > 2 )
     {
       return;
     }
 
-    Good::Type gtype = (Good::Type)i;
+    good::Type gtype = (good::Type)i;
     int qty = std::min( _d->importGoods.getMaxRetrieve( gtype ), 400 );
 
     if( qty > 0 )
     {
       CartPusherPtr walker = CartPusher::create( _city() );
-      GoodStock pusherStock( gtype, qty, 0 );
+      good::Stock pusherStock( gtype, qty, 0 );
       _d->importGoods.retrieve( pusherStock, qty );
       walker->send2city( BuildingPtr( this ), pusherStock );
 
@@ -434,14 +434,14 @@ void Dock::_tryDeliverGoods()
 
 void Dock::_tryReceiveGoods()
 {
-  for( int i=Good::wheat; i < Good::goodCount; i++ )
+  for( int i=good::wheat; i < good::goodCount; i++ )
   {
     if( walkers().size() >= 2 )
     {
       return;
     }
 
-    Good::Type gtype = (Good::Type)i;
+    good::Type gtype = (good::Type)i;
     if( _d->requestGoods.qty( gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _city() );
@@ -451,7 +451,7 @@ void Dock::_tryReceiveGoods()
       if( !cart->isDeleted() )
       {
         addWalker( cart.object() );
-        GoodStock tmpStock( gtype, qty, 0 );
+        good::Stock tmpStock( gtype, qty, 0 );
         _d->requestGoods.retrieve( tmpStock, qty );
         return;
       }

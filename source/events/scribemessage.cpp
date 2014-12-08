@@ -22,7 +22,7 @@
 namespace events
 {
 
-GameEventPtr ScribeMessage::create( const std::string& title, const std::string& text, Good::Type gtype, Point position )
+GameEventPtr ScribeMessage::create( const std::string& title, const std::string& text, good::Type gtype, Point position )
 {
   ScribeMessage* e = new ScribeMessage();
   e->_title = title;

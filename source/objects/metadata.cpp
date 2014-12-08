@@ -257,7 +257,7 @@ public:
   BuildingClassHelper classHelper;
 
   typedef std::map<TileOverlay::Type, MetaData> ObjectsMap;
-  typedef std::map<Good::Type, TileOverlay::Type> FactoryInMap;
+  typedef std::map<good::Type, TileOverlay::Type> FactoryInMap;
 
   ObjectsMap objectsInfo;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -269,7 +269,7 @@ MetaDataHolder& MetaDataHolder::instance()
   return inst;
 }
 
-TileOverlay::Type MetaDataHolder::getConsumerType(const Good::Type inGoodType) const
+TileOverlay::Type MetaDataHolder::getConsumerType(const good::Type inGoodType) const
 {
   TileOverlay::Type res = objects::unknown;
 
@@ -334,11 +334,11 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 void MetaDataHolder::initialize( vfs::Path filename )
 {
   // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[Good::iron  ] = objects::weaponsWorkshop;
-  _d->mapBuildingByInGood[Good::timber] = objects::furnitureWorkshop;
-  _d->mapBuildingByInGood[Good::clay  ] = objects::pottery;
-  _d->mapBuildingByInGood[Good::olive ] = objects::creamery;
-  _d->mapBuildingByInGood[Good::grape ] = objects::winery;
+  _d->mapBuildingByInGood[good::iron  ] = objects::weaponsWorkshop;
+  _d->mapBuildingByInGood[good::timber] = objects::furnitureWorkshop;
+  _d->mapBuildingByInGood[good::clay  ] = objects::pottery;
+  _d->mapBuildingByInGood[good::olive ] = objects::creamery;
+  _d->mapBuildingByInGood[good::grape ] = objects::winery;
 
   VariantMap constructions = SaveAdapter::load( filename );
 

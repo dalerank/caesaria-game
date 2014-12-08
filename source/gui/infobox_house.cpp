@@ -132,11 +132,11 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   int startY = lbCrime->bottom() + 10;
   if( _house->spec().level() > 2 )
   {
-    drawGood( _house, Good::wheat, 0, 0, startY );
-    drawGood( _house, Good::fish, 1, 0, startY );
-    drawGood( _house, Good::meat, 2, 0, startY );
-    drawGood( _house, Good::fruit, 3, 0, startY );
-    drawGood( _house, Good::vegetable, 4, 0, startY );
+    drawGood( _house, good::wheat, 0, 0, startY );
+    drawGood( _house, good::fish, 1, 0, startY );
+    drawGood( _house, good::meat, 2, 0, startY );
+    drawGood( _house, good::fruit, 3, 0, startY );
+    drawGood( _house, good::vegetable, 4, 0, startY );
   }
   else
   {
@@ -148,10 +148,10 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     startY = lb->top();
   }
 
-  drawGood( _house, Good::pottery, 0, 1, startY );
-  drawGood( _house, Good::furniture, 1, 1, startY );
-  drawGood( _house, Good::oil, 2, 1, startY );
-  drawGood( _house, Good::wine, 3, 1, startY );
+  drawGood( _house, good::pottery, 0, 1, startY );
+  drawGood( _house, good::furniture, 1, 1, startY );
+  drawGood( _house, good::oil, 2, 1, startY );
+  drawGood( _house, good::wine, 3, 1, startY );
 }
 
 AboutHouse::~AboutHouse() {}
@@ -190,7 +190,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   lbHabitants->setText( freeRoomText );
 }
 
-void AboutHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
+void AboutHouse::drawGood( HousePtr house, const good::Type &goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
   std::string text = utils::format( 0xff, "%d", qty);

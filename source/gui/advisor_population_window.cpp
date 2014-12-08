@@ -274,9 +274,9 @@ void Population::Impl::updateStates()
   {
     city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, true );
     int foodLevel = 0;
-    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    for( int k=good::wheat; k <= good::vegetable; k++ )
     {
-      foodLevel += (goods[ (Good::Type)k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ (good::Type)k ] > 0 ? 1 : 0);
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );

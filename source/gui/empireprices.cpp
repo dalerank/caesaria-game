@@ -41,14 +41,14 @@ EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, Player
   city::TradeOptions& ctrade = city->tradeOptions();
   Font font = Font::create( FONT_1 );
   Point startPos( 140, 50 );
-  for( int i=Good::wheat; i < Good::prettyWine; i++ )
+  for( int i=good::wheat; i < good::prettyWine; i++ )
     {
-      if( i == Good::fish || i == Good::denaries)
+      if( i == good::fish || i == good::denaries)
         {
           continue;
         }
 
-      Good::Type gtype = (Good::Type)i;
+      good::Type gtype = (good::Type)i;
       Picture goodIcon = GoodHelper::picture( gtype );
       new Image( this, startPos, goodIcon );
 

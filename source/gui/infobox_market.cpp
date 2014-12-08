@@ -52,19 +52,19 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
      GoodStore& goods = market->goodStore();
      int furageSum = 0;
      // for all furage types of good
-     for (int goodType = 0; goodType<Good::olive; ++goodType)
+     for (int goodType = 0; goodType<good::olive; ++goodType)
      {
-       furageSum += goods.qty( (Good::Type)goodType );
+       furageSum += goods.qty( (good::Type)goodType );
      }
 
      int paintY = 100;
      if( 0 < furageSum )
      {
-       drawGood( market, Good::wheat, 0, paintY );
-       drawGood( market, Good::fish, 1, paintY);
-       drawGood( market, Good::meat, 2, paintY);
-       drawGood( market, Good::fruit, 3, paintY);
-       drawGood( market, Good::vegetable, 4, paintY);
+       drawGood( market, good::wheat, 0, paintY );
+       drawGood( market, good::fish, 1, paintY);
+       drawGood( market, good::meat, 2, paintY);
+       drawGood( market, good::fruit, 3, paintY);
+       drawGood( market, good::vegetable, 4, paintY);
        lbAbout->setHeight( 60 );
      }
      else
@@ -74,10 +74,10 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
      }
 
      paintY += 24;
-     drawGood( market, Good::pottery, 0, paintY);
-     drawGood( market, Good::furniture, 1, paintY);
-     drawGood( market, Good::oil, 2, paintY);
-     drawGood( market, Good::wine, 3, paintY);
+     drawGood( market, good::pottery, 0, paintY);
+     drawGood( market, good::furniture, 1, paintY);
+     drawGood( market, good::oil, 2, paintY);
+     drawGood( market, good::wine, 3, paintY);
 
      lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
    }
@@ -92,7 +92,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
 AboutMarket::~AboutMarket() {}
 
-void AboutMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
+void AboutMarket::drawGood( MarketPtr market, const good::Type &goodType, int index, int paintY )
 {
   int startOffset = 25;
 

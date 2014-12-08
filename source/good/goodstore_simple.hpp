@@ -34,19 +34,19 @@ public:
 
   void resize( const GoodStore& other );
 
-  GoodStock& getStock(const Good::Type &goodType);  
+  good::Stock& getStock(const good::Type &goodType);
 
-  virtual int qty(const Good::Type &goodType) const;
-  int capacity(const Good::Type &goodType) const;
-  void setCapacity(const Good::Type &goodType, const int maxQty);
-  void setQty(const Good::Type &goodType, const int currentQty);
+  virtual int qty(const good::Type& goodType) const;
+  int capacity(const good::Type& goodType) const;
+  void setCapacity(const good::Type& goodType, const int maxQty);
+  void setQty(const good::Type& goodType, const int currentQty);
 
   // returns the max quantity that can be stored now
-  int getMaxStore(const Good::Type goodType);
+  int getMaxStore(const good::Type goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const int reservationID);
-  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID);
+  virtual void applyStorageReservation(good::Stock &stock, const int reservationID);
+  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID);
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );

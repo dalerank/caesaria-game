@@ -801,7 +801,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
 }
 
-void PlayerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
+void PlayerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
 {
   _d->tradeOptions.setBuyPrice( gtype, bCost );
   _d->tradeOptions.setSellPrice( gtype, sCost );

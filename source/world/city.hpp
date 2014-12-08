@@ -75,7 +75,7 @@ public:
   virtual unsigned int age() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
-  virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;
+  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost ) = 0;
   virtual const GoodStore& importingGoods() const = 0;
   virtual const GoodStore& exportingGoods() const = 0;
 };

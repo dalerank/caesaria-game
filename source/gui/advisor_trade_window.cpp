@@ -56,7 +56,7 @@ namespace advisorwnd
 class TradeGoodInfo : public PushButton
 {
 public:
-  TradeGoodInfo( Widget* parent, const Rect& rect, Good::Type good, int qty, bool enable,
+  TradeGoodInfo( Widget* parent, const Rect& rect, good::Type good, int qty, bool enable,
                  city::TradeOptions::Order trade, int tradeQty )
     : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
@@ -116,7 +116,7 @@ public:
     }
   }
 
-  Signal1<Good::Type>& onClickedA() { return _onClickedASignal; }
+  Signal1<good::Type>& onClickedA() { return _onClickedASignal; }
 
 protected:
   virtual void _btnClicked()
@@ -131,13 +131,13 @@ private:
   bool _enable;
   city::TradeOptions::Order _tradeOrder;
   int _tradeQty;
-  Good::Type _type;
+  good::Type _type;
   std::string _goodName;
   Picture _goodPicture;
   Pictures _border;
 
 signals private:
-  Signal1<Good::Type> _onClickedASignal;
+  Signal1<good::Type> _onClickedASignal;
 };
 
 class Trade::Impl
@@ -149,9 +149,9 @@ public:
   PlayerCityPtr city;
   city::Statistic::GoodsMap allgoods;
 
-  bool getWorkState( Good::Type gtype );
+  bool getWorkState( good::Type gtype );
   void updateGoodsInfo();
-  void showGoodOrderManageWindow( Good::Type type );
+  void showGoodOrderManageWindow( good::Type type );
   void showGoodsPriceWindow();
 };
 
@@ -167,9 +167,9 @@ void Trade::Impl::updateGoodsInfo()
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
   city::TradeOptions& copt = city->tradeOptions();
-  for( int i=Good::wheat, indexOffset=0; i < Good::goodCount; i++ )
+  for( int i=good::wheat, indexOffset=0; i < good::goodCount; i++ )
   {
-    Good::Type gtype = Good::Type( i );
+    good::Type gtype = good::Type( i );
 
     city::TradeOptions::Order tradeState = copt.getOrder( gtype );
     if( tradeState == city::TradeOptions::disabled )
@@ -187,7 +187,7 @@ void Trade::Impl::updateGoodsInfo()
   } 
 }
 
-bool Trade::Impl::getWorkState(Good::Type gtype )
+bool Trade::Impl::getWorkState(good::Type gtype )
 {
   city::Helper helper( city );
 
@@ -199,7 +199,7 @@ bool Trade::Impl::getWorkState(Good::Type gtype )
   return producers.empty() ? true : industryActive;
 }
 
-void Trade::Impl::showGoodOrderManageWindow(Good::Type type )
+void Trade::Impl::showGoodOrderManageWindow(good::Type type )
 {
   Widget* parent = gbInfo->parent();
   int gmode = GoodOrderManageWindow::gmUnknown;

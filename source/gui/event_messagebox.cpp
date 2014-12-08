@@ -25,7 +25,7 @@ namespace gui
 {
 
 EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
-                                  const std::string& message, DateTime time, Good::Type gtype, const std::string& additional)
+                                  const std::string& message, DateTime time, good::Type gtype, const std::string& additional)
   : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
@@ -52,7 +52,7 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
 
   _lbTextRef()->setTop( _lbTextRef()->top() + 30 );
 
-  if( gtype != Good::none )
+  if( gtype != good::none )
   {
     Rect rect = _lbTextRef()->relativeRect();
     _lbTextRef()->move( Point( 0, 30 ) );

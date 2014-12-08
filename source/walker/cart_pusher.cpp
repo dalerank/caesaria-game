@@ -56,7 +56,7 @@ CAESARIA_LITERALCONST(consumerPos)
 class CartPusher::Impl
 {
 public:
-  GoodStock stock;
+  good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
   Picture cartPicture;
@@ -138,7 +138,7 @@ void CartPusher::_brokePathway(TilePos pos)
   deleteLater();
 }
 
-GoodStock& CartPusher::stock() {   return _d->stock;}
+good::Stock &CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
@@ -277,7 +277,7 @@ void CartPusher::_computeWalkerDestination()
 
 template< class T >
 BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
-                                 GoodStock& stock, long& reservationID,
+                                 good::Stock& stock, long& reservationID,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
@@ -334,7 +334,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  Good::Type goodType = stock.type();
+  good::Type goodType = stock.type();
   TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
 
   if (buildingType == objects::unknown)
@@ -361,9 +361,9 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   Good::Type goodType = stock.type();
-   if (!(goodType == Good::wheat || goodType == Good::fish
-         || goodType == Good::meat || goodType == Good::fruit || goodType == Good::vegetable))
+   good::Type goodType = stock.type();
+   if (!(goodType == good::wheat || goodType == good::fish
+         || goodType == good::meat || goodType == good::fruit || goodType == good::vegetable))
    {
       // this good cannot be stored in a granary
       return 0;
@@ -374,7 +374,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
    return res;
 }
 
-void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
+void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
 {
   _d->stock.append( carry );
   setProducerBuilding( building  );

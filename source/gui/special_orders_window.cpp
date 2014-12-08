@@ -43,7 +43,7 @@ template< class T >
 class OrderGoodWidget : public Label
 {
 public:
-  OrderGoodWidget( Widget* parent, const Rect& rect, Good::Type good, T storageBuilding )
+  OrderGoodWidget( Widget* parent, const Rect& rect, good::Type good, T storageBuilding )
     : Label( parent, rect, "" )
   {
     _type = good;
@@ -95,7 +95,7 @@ public:
   }
 
 private:
-  Good::Type _type;
+  good::Type _type;
   T _storageBuilding;
   PushButton* _btnChangeRule;
 };
@@ -113,7 +113,7 @@ public:
 };
 
 template< class T >
-void addOrderWidget( const int index, const Good::Type good, Widget* area, T storageBuiding )
+void addOrderWidget( const int index, const good::Type good, Widget* area, T storageBuiding )
 {
   Point offset( 0, 25 );
   Size wdgSize( area->width(), 25 );
@@ -190,13 +190,13 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   setTitle( _("##granary_orders##") );
   int index=0;
   _granary = granary;
-  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
+  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
   {
-    const GoodOrders::Order rule = granary->store().getOrder( (Good::Type)goodType );
+    const GoodOrders::Order rule = granary->store().getOrder( (good::Type)goodType );
     
     if( rule != GoodOrders::none )
     {
-      addOrderWidget<GranaryPtr>( index, (Good::Type)goodType, _ordersArea(), granary );
+      addOrderWidget<GranaryPtr>( index, (good::Type)goodType, _ordersArea(), granary );
       index++;
     }
   }
@@ -241,13 +241,13 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   d->warehouse = warehouse;
   int index=0;
-  for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
+  for( int goodType=good::wheat; goodType <= good::marble; goodType++ )
   {
-    const GoodOrders::Order rule = d->warehouse->store().getOrder( (Good::Type)goodType );
+    const GoodOrders::Order rule = d->warehouse->store().getOrder( (good::Type)goodType );
 
     if( rule != GoodOrders::none )
     {
-      addOrderWidget<WarehousePtr>( index, (Good::Type)goodType, _ordersArea(), d->warehouse );
+      addOrderWidget<WarehousePtr>( index, (good::Type)goodType, _ordersArea(), d->warehouse );
       index++;
     }
   }

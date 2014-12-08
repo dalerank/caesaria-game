@@ -34,7 +34,7 @@ public:
   FishingBoatPtr boat;
 };
 
-Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, objects::wharf, Size(2)), _d( new Impl )
+Wharf::Wharf() : CoastalFactory(good::none, good::fish, objects::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northPic );
@@ -75,7 +75,7 @@ void Wharf::timeStep(const unsigned long time)
     {
       updateProgress( -100.f );
       //gcc fix for temporaly ref object
-      GoodStock tmpStock( produceGoodType(), 100, 100 );
+      good::Stock tmpStock( produceGoodType(), 100, 100 );
       store().store( tmpStock, 100 );
     }
   }

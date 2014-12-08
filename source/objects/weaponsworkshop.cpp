@@ -26,7 +26,7 @@ using namespace constants;
 using namespace gfx;
 
 WeaponsWorkshop::WeaponsWorkshop()
-  : Factory(Good::iron, Good::weapon, objects::weaponsWorkshop, Size(2) )
+  : Factory(good::iron, good::weapon, objects::weaponsWorkshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 108);
 

@@ -69,13 +69,13 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
   foreach( it, buildings )
   {
     GoodStore& store = (*it)->store();
-    for( int i=Good::wheat; i < Good::goodCount; i++ )
+    for( int i=good::wheat; i < good::goodCount; i++ )
     {
-      Good::Type gtype = (Good::Type)i;
+      good::Type gtype = (good::Type)i;
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
-        GoodStock rmStock( gtype, goodQty );
+        good::Stock rmStock( gtype, goodQty );
         store.retrieve( rmStock, goodQty );
       }
     }

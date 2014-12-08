@@ -50,8 +50,8 @@ public:
   TraderouteList routes();
   TraderoutePtr createRoute( const std::string& begin, const std::string& end );
 
-  void setPrice( Good::Type gtype, int bCost, int sCost );
-  void getPrice( Good::Type gtype, int& bCost, int& sCost );
+  void setPrice( good::Type gtype, int bCost, int sCost );
+  void getPrice( good::Type gtype, int& bCost, int& sCost );
 
   void sendMerchant( const std::string& begin, const std::string& end, 
                      GoodStore& sell, GoodStore& buy );

@@ -42,24 +42,24 @@ public:
 
   GranaryGoodStore()
   {
-    for( int type=Good::wheat; type <= Good::vegetable; type++ )
+    for( int type=good::wheat; type <= good::vegetable; type++ )
     {
-      setOrder( (Good::Type)type, GoodOrders::accept );
+      setOrder( (good::Type)type, GoodOrders::accept );
     }
 
-    setOrder( Good::fish, GoodOrders::none );
+    setOrder( good::fish, GoodOrders::none );
     setCapacity( GranaryGoodStore::maxCapacity );
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual int reserveStorage( GoodStock &stock, DateTime time )
+  virtual int reserveStorage( good::Stock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
               ? SimpleGoodStore::reserveStorage( stock, time )
               : 0;
   }
 
-  virtual void store( GoodStock &stock, const int amount)
+  virtual void store( good::Stock &stock, const int amount)
   {
     if( granary->numberWorkers() == 0 )
     {
@@ -69,21 +69,21 @@ public:
     SimpleGoodStore::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(GoodStock &stock, const int reservationID)
+  virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
 
     granary->computePictures();
   }
 
-  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
+  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
 
     granary->computePictures();
   }
   
-  virtual void setOrder( const Good::Type type, const GoodOrders::Order order )
+  virtual void setOrder( const good::Type type, const GoodOrders::Order order )
   {
     SimpleGoodStore::setOrder( type, order );
     setCapacity( type, (order == GoodOrders::reject || order == GoodOrders::none ) ? 0 : GranaryGoodStore::maxCapacity );
@@ -250,9 +250,9 @@ void Granary::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
+  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
   {
-    Good::Type gType = (Good::Type)goodType;
+    good::Type gType = (good::Type)goodType;
     GoodOrders::Order order = _d->goodStore.getOrder( gType );
     int goodFreeQty = math::clamp( _d->goodStore.freeQty( gType ), 0, 400 );
 
@@ -270,9 +270,9 @@ void Granary::_resolveDeliverMode()
   }
 }
 
-bool Granary::_trySendGoods( Good::Type gtype, int qty )
+bool Granary::_trySendGoods( good::Type gtype, int qty )
 {
-  GoodStock stock( gtype, qty, qty);
+  good::Stock stock( gtype, qty, qty);
   CartPusherPtr walker = CartPusher::create( _city() );
   walker->send2city( BuildingPtr( this ), stock );
 
@@ -291,16 +291,16 @@ void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   const int maxSentTry = 3;
-  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
+  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
   {
     int trySentQty[maxSentTry] = { 400, 200, 100 };
 
-    int goodQty = _d->goodStore.qty( (Good::Type)goodType );
+    int goodQty = _d->goodStore.qty( (good::Type)goodType );
     for( int i=0; i < maxSentTry; ++i )
     {
       if( goodQty >= trySentQty[i] )
       {
-        bool goodSended = _trySendGoods( (Good::Type)goodType, trySentQty[i] );
+        bool goodSended = _trySendGoods( (good::Type)goodType, trySentQty[i] );
         if( goodSended )
           return;
       }

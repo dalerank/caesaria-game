@@ -28,9 +28,9 @@ public:
   GoodOrders();
   ~GoodOrders();
 
-  void set( const Good::Type type, Order rule );
+  void set( const good::Type type, Order rule );
   void set( Order rule );
-  Order get( const Good::Type type );
+  Order get( const good::Type type );
 
 private:
   class Impl;

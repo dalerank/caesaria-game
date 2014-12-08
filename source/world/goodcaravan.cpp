@@ -115,7 +115,7 @@ GoodCaravan::GoodCaravan( CityPtr city )
 {
   _d->base = city;
   _d->store.setCapacity( 10000 );
-  _d->store.setCapacity( Good::goodCount, 10000 );
+  _d->store.setCapacity( good::goodCount, 10000 );
 
   setSpeed( 3.f );
 

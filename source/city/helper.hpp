@@ -204,7 +204,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > getProducers( const Good::Type goodtype );
+  SmartList< T > getProducers( const good::Type goodtype );
 
   template< class T >
   SmartPtr< T > next( const SmartPtr< T > current );
@@ -265,7 +265,7 @@ SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
 }
 
 template< class T >
-SmartList<T> Helper::getProducers( const Good::Type goodtype )
+SmartList<T> Helper::getProducers( const good::Type goodtype )
 {
   SmartList< T > ret;
   gfx::TileOverlayList& overlays = _city->overlays();

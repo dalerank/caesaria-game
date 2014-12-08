@@ -63,7 +63,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
   {
     _lbTextRef()->setHeight( height() / 2 );
     _d->lbWeaponQty->setTop( _lbTextRef()->bottom() + 5 );
-    _d->lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( Good::weapon ) ) );
+    _d->lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( good::weapon ) ) );
   }
 }
 
