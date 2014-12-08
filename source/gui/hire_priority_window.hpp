@@ -30,13 +30,13 @@ namespace dialog
 class HirePriority : public Window
 {
 public:
-  HirePriority( Widget* parent, city::Industry::Type type, int priority );
+  HirePriority( Widget* parent, city::industry::Type type, int priority );
   virtual ~HirePriority();
 
   virtual bool onEvent(const NEvent &event);
 
 public signals:
-  Signal2<city::Industry::Type, int>& onAcceptPriority();
+  Signal2<city::industry::Type, int>& onAcceptPriority();
 
 private:
   class Impl;

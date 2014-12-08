@@ -22,7 +22,10 @@ using namespace constants;
 namespace city
 {
 
-Industry::BuildingGroups city::Industry::toGroups( Type type )
+namespace industry
+{
+
+BuildingGroups toGroups( Type type )
 {
   std::vector<constants::objects::Group> ret;
   switch( type )
@@ -41,5 +44,7 @@ Industry::BuildingGroups city::Industry::toGroups( Type type )
 
   return ret;
 }
+
+}//end namespace industry
 
 }//end namespace city

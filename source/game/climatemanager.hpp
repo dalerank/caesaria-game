@@ -18,16 +18,17 @@
 #ifndef _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
 #define _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
 
-#include "city/climate.hpp"
+#include "climate.hpp"
 
 namespace game
 {
 
-class ClimateManager
+namespace climate
 {
-public:
-  static void initialize( city::climate::Type climate );
-};
+
+void initialize( Type climate );
+
+}//end namespace climate
 
 }//end namespace game
 

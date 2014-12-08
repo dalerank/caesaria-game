@@ -31,22 +31,17 @@ using namespace vfs;
 namespace game
 {
 
-/*void __appendRange( const std::string& rc, int start, int stop, StringArray& ar )
+namespace climate
 {
-  for( int index=start; index <= stop; index++ )
-  {
-    ar << utils::format( 0xff, "%s_%05d", rc.c_str(), index );
-  }
-}*/
 
-void ClimateManager::initialize(ClimateType climate)
+void initialize(ClimateType climate)
 {
   VariantMap climateArchives = SaveAdapter::load( ":/climate.model" );
 
   std::string optName;
-  if( climate == city::climate::central ) { optName = "central"; }
-  else if( climate == city::climate::northen )  { optName = "north"; }
-  else if( climate == city::climate::desert ) { optName = "south"; }
+  if( climate == game::climate::central ) { optName = "central"; }
+  else if( climate == game::climate::northen )  { optName = "north"; }
+  else if( climate == game::climate::desert ) { optName = "south"; }
 
   Path archivePath = climateArchives.get( optName ).toString();
   ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
@@ -68,5 +63,7 @@ void ClimateManager::initialize(ClimateType climate)
     rc.loadFiles( archive );
   }
 }
+
+}//end namespace climate
 
 }//end namespace game

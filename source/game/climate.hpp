@@ -15,10 +15,10 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_CLIMATE_H_INCLUDED__
-#define __CAESARIA_CITY_CLIMATE_H_INCLUDED__
+#ifndef __CAESARIA_GAME_CLIMATE_H_INCLUDED__
+#define __CAESARIA_GAME_CLIMATE_H_INCLUDED__
 
-namespace city
+namespace game
 {
 
 namespace climate
@@ -30,6 +30,6 @@ typedef enum { central=0, northen, desert, count } Type;
 
 }
 
-typedef city::climate::Type ClimateType;
+typedef game::climate::Type ClimateType;
 
-#endif //__CAESARIA_CITY_CLIMATE_H_INCLUDED__
+#endif //__CAESARIA_GAME_CLIMATE_H_INCLUDED__

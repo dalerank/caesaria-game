@@ -152,7 +152,7 @@ bool Fountain::build(PlayerCityPtr pcity, const TilePos& pos )
   _d->lastPicId = simpleFountain;
   _initAnimation();
 
-  _d->fillDistance = (pcity->climate() == city::climate::desert)
+  _d->fillDistance = (pcity->climate() == game::climate::desert)
                      ? fillDistanceDesert
                      : fillDistanceNormal;
 

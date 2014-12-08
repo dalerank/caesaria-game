@@ -116,8 +116,8 @@ bool Building::build(PlayerCityPtr pcity, const TilePos &pos)
 
   switch( pcity->climate() )
   {
-  case city::climate::northen: setState( Construction::inflammability, 0.5 ); break;
-  case city::climate::desert: setState( Construction::inflammability, 2 ); break;
+  case game::climate::northen: setState( Construction::inflammability, 0.5 ); break;
+  case game::climate::desert: setState( Construction::inflammability, 2 ); break;
   default: break;
   }
 

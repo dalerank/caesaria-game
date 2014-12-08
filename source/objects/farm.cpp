@@ -219,7 +219,7 @@ std::string FarmWheat::troubleDesc() const
 bool FarmWheat::build(PlayerCityPtr pcity, const TilePos& pos)
 {
   bool ret = Farm::build( pcity, pos );
-  if( pcity->climate() == city::climate::central )
+  if( pcity->climate() == game::climate::central )
   {
     setProductRate( productRate() * 2 );
   }

@@ -85,7 +85,7 @@ public:
   }
 
 signals public:
-  Signal1<Industry::Type> onClickedSignal;
+  Signal1<industry::Type> onClickedSignal;
 
 protected:
 
@@ -128,7 +128,7 @@ protected:
   virtual void _btnClicked()
   {
     PushButton::_btnClicked();
-    emit onClickedSignal( (Industry::Type)ID() );
+    emit onClickedSignal( (industry::Type)ID() );
   }
 
 private:
@@ -164,12 +164,12 @@ public:
   void updateWorkersState();
   void updateYearlyWages();
   void changeSalary( int relative );
-  void showPriorityWindow(Industry::Type industry);
-  void setIndustryPriority( Industry::Type industry, int priority );
+  void showPriorityWindow( industry::Type industry);
+  void setIndustryPriority( industry::Type industry, int priority );
   void update();
-  EmployersInfo getEmployersInfo( Industry::Type type );
+  EmployersInfo getEmployersInfo( industry::Type type );
 
-  EmployerButton* addButton( Employer* parent, const Point& startPos, Industry::Type priority, const std::string& title );
+  EmployerButton* addButton( Employer* parent, const Point& startPos, industry::Type priority, const std::string& title );
 };
 
 void Employer::Impl::increaseSalary() { changeSalary( +1 );}
@@ -210,7 +210,7 @@ void Employer::Impl::changeSalary(int relative)
   updateYearlyWages();
 }
 
-void Employer::Impl::showPriorityWindow( Industry::Type industry )
+void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
   city::WorkersHirePtr wh;
   wh << city->findService( city::WorkersHire::defaultName() );
@@ -220,7 +220,7 @@ void Employer::Impl::showPriorityWindow( Industry::Type industry )
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
-void Employer::Impl::setIndustryPriority(Industry::Type industry, int priority)
+void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
   city::WorkersHirePtr wh;
   wh << city->findService( city::WorkersHire::defaultName() );
@@ -244,7 +244,7 @@ void Employer::Impl::update()
 
   foreach( i, empButtons )
   {
-    int priority = wh->getPriority( (Industry::Type)(*i)->ID() );
+    int priority = wh->getPriority( (industry::Type)(*i)->ID() );
     (*i)->setPriority( priority );
   }
 }
@@ -263,9 +263,9 @@ void Employer::Impl::updateSalaryLabel()
   }
 }
 
-Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type type )
+Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  std::vector<objects::Group> bldGroups = city::Industry::toGroups( type );
+  std::vector<objects::Group> bldGroups = city::industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );
@@ -286,7 +286,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type ty
 }
 
 EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startPos,
-                                           Industry::Type priority, const std::string& title )
+                                           industry::Type priority, const std::string& title )
 {
   EmployersInfo info = getEmployersInfo( priority );
 
@@ -307,7 +307,7 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
-  _d->empButtons.resize( Industry::count );
+  _d->empButtons.resize( industry::count );
 
   TexturedButton* btnIncreaseSalary;
   TexturedButton* btnDecreaseSalary;
@@ -319,15 +319,15 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );
-  _d->addButton( this, startPos, Industry::factoryAndTrade, _("##adve_industry_and_trade##") );
-  _d->addButton( this, startPos, Industry::food, _("##adve_food##") );
-  _d->addButton( this, startPos, Industry::engineering, _("##adve_engineers##" ) );
-  _d->addButton( this, startPos, Industry::water, _("##adve_water##") );
-  _d->addButton( this, startPos, Industry::prefectures, _("##adve_prefectures##") );
-  _d->addButton( this, startPos, Industry::military, _("##adve_military##") );
-  _d->addButton( this, startPos, Industry::entertainment, _("##adve_entertainment##") );
-  _d->addButton( this, startPos, Industry::healthAndEducation, _("##adve_health_education##") );
-  _d->addButton( this, startPos, Industry::administrationAndReligion, _("##adve_administration_religion##") );
+  _d->addButton( this, startPos, industry::factoryAndTrade, _("##adve_industry_and_trade##") );
+  _d->addButton( this, startPos, industry::food, _("##adve_food##") );
+  _d->addButton( this, startPos, industry::engineering, _("##adve_engineers##" ) );
+  _d->addButton( this, startPos, industry::water, _("##adve_water##") );
+  _d->addButton( this, startPos, industry::prefectures, _("##adve_prefectures##") );
+  _d->addButton( this, startPos, industry::military, _("##adve_military##") );
+  _d->addButton( this, startPos, industry::entertainment, _("##adve_entertainment##") );
+  _d->addButton( this, startPos, industry::healthAndEducation, _("##adve_health_education##") );
+  _d->addButton( this, startPos, industry::administrationAndReligion, _("##adve_administration_religion##") );
 
   GET_DWIDGET_FROM_UI( _d, lbSalaries )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )

@@ -164,7 +164,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->funds.setTaxRate( 7 );
   _d->age = 0;
   _d->walkerIdCount = 1;
-  _d->climate = city::climate::central;
+  _d->climate = game::climate::central;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 

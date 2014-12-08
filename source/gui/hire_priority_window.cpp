@@ -35,16 +35,15 @@ class HirePriority::Impl
 {
 public:
   GameAutoPause locker;
-  city::Industry::Type type;
+  city::industry::Type type;
   int priority;
   std::set<PushButton*> prButtons;
 
-
 public signals:
-  Signal2<city::Industry::Type, int> onAcceptPrioritySignal;
+  Signal2<city::industry::Type, int> onAcceptPrioritySignal;
 };
 
-HirePriority::HirePriority(Widget* p, city::Industry::Type type, int priority)
+HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   : Window( p,  Rect( 0, 0, 416, 144 ), "" ), _d( new Impl )
 {
   Logger::warning( "HirePriorityWnd: show" );
@@ -114,7 +113,7 @@ bool HirePriority::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<city::Industry::Type, int>& HirePriority::onAcceptPriority() { return _d->onAcceptPrioritySignal; }
+Signal2<city::industry::Type, int>& HirePriority::onAcceptPriority() { return _d->onAcceptPrioritySignal; }
 
 }//end namespace dialog
 

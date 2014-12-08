@@ -74,7 +74,7 @@ bool LoaderMission::load( const std::string& filename, Game& game )
 
     if( climateType >= 0 )
     {
-      ClimateManager::initialize( (ClimateType)climateType );
+      game::climate::initialize( (ClimateType)climateType );
     }
 
     if( mapToLoad == lc_random )

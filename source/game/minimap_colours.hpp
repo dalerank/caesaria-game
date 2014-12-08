@@ -19,7 +19,7 @@
 #define __CAESARIA_MINIMAP_COLOURS_H_INCLUDE_
 
 #include "enums.hpp"
-#include "city/climate.hpp"
+#include "game/climate.hpp"
 
 namespace constants
 {

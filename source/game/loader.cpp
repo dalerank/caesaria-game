@@ -160,7 +160,7 @@ bool Loader::load( vfs::Path filename, Game& game )
       ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
       if( currentClimate >= 0  )
       {
-        ClimateManager::initialize( currentClimate );
+        game::climate::initialize( currentClimate );
       }
 
       bool loadok = (*it)->load( filename.toString(), game );      

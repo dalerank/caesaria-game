@@ -154,7 +154,7 @@ void WorkersHire::timeStep( const unsigned int time )
   {
     foreach( hireIt, _d->priorities )
     {
-      Industry::BuildingGroups groups = city::Industry::toGroups( *hireIt );
+      industry::BuildingGroups groups = industry::toGroups( *hireIt );
 
       foreach( grIt, groups )
       {
@@ -192,7 +192,7 @@ void WorkersHire::timeStep( const unsigned int time )
 
 void WorkersHire::setRecruterDistance(const unsigned int distance) {  _d->distance = distance; }
 
-void WorkersHire::setIndustryPriority(Industry::Type industry, int priority)
+void WorkersHire::setIndustryPriority(industry::Type industry, int priority)
 {
   foreach( i, _d->priorities )
   {
@@ -211,7 +211,7 @@ void WorkersHire::setIndustryPriority(Industry::Type industry, int priority)
   }
 }
 
-int WorkersHire::getPriority(Industry::Type industry)
+int WorkersHire::getPriority(industry::Type industry)
 {
   foreach( i, _d->priorities )
   {

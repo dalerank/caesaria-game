@@ -77,7 +77,7 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   int priorityLevel = 1;
   foreach( i, _d->priority )
   {
-    city::Industry::BuildingGroups groups = city::Industry::toGroups( *i );
+    city::industry::BuildingGroups groups = city::industry::toGroups( *i );
     foreach( grIt, groups )
     {
       _d->priorityMap[ *grIt ] = priorityLevel;
