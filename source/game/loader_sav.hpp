@@ -21,12 +21,16 @@
 #include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
 
-namespace  game {
+namespace game
+{
 
-class LoaderC3Sav : public AbstractLoader
+namespace loader
+{
+
+class C3Sav : public Base
 {
 public:
-  LoaderC3Sav();
+  C3Sav();
 
   virtual bool load(const std::string& filename, Game& game);
   virtual bool isLoadableFileExtension( const std::string& filename );
@@ -37,6 +41,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace loader
 
 }//end namespace game
 

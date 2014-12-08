@@ -31,9 +31,9 @@
 namespace events
 {
 
-GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::string receiver, std::string video)
+GameEventPtr ShowFeastival::create(std::string text, std::string title, std::string receiver, std::string video)
 {
-  ShowFeastWindow* e = new ShowFeastWindow();
+  ShowFeastival* e = new ShowFeastival();
   e->_text = text;
   e->_receiver = receiver;
   e->_title = title;
@@ -45,12 +45,12 @@ GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::s
   return ret;
 }
 
-bool ShowFeastWindow::_mayExec(Game& game, unsigned int time) const
+bool ShowFeastival::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ShowFeastWindow::_exec(Game& game, unsigned int)
+void ShowFeastival::_exec(Game& game, unsigned int)
 {
   gui::Ui* env = game.gui();
 

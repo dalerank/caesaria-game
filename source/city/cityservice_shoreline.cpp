@@ -133,7 +133,7 @@ void Shoreline::timeStep( const unsigned int time )
       }
     }
 
-    std::string picName = TileHelper::convId2PicName( picId );
+    std::string picName = util::convId2PicName( picId );
     if( picName != tile->picture().name())
     {
       tile->setPicture( picName );

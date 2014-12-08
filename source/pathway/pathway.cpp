@@ -112,12 +112,12 @@ constants::Direction Pathway::direction()
     if(_d->isReverse )
     {
       if( _d->step > 0 )
-        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
+        return util::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
     }
     else
     {
       if( _d->step < _d->tiles.size()-1 )
-        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
+        return util::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
     }
   }
 
@@ -233,7 +233,7 @@ void Pathway::prettyPrint() const
   std::string strDir = "";
   for( unsigned int k=0; k < _d->tiles.size()-1; k++ )
   {
-    Direction direction = TileHelper::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
+    Direction direction = util::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
 
     switch (direction)
     {

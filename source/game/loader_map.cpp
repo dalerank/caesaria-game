@@ -37,7 +37,10 @@ using namespace gfx;
 namespace game
 {
 
-class LoaderC3Map::Impl
+namespace loader
+{
+
+class C3Map::Impl
 {
 public:
   static const int kGraphicGrid = 0x0;
@@ -89,7 +92,7 @@ public:
   void initEntryExit(std::fstream &f, PlayerCityPtr ioCity);
 };
 
-bool LoaderC3Map::load(const std::string& filename, Game& game)
+bool C3Map::load(const std::string& filename, Game& game)
 {
   _d->restartFile = filename;
 
@@ -112,7 +115,7 @@ bool LoaderC3Map::load(const std::string& filename, Game& game)
   return true;
 }
 
-int LoaderC3Map::climateType(const std::string& filename)
+int C3Map::climateType(const std::string& filename)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -125,20 +128,16 @@ int LoaderC3Map::climateType(const std::string& filename)
   return i;
 }
 
-LoaderC3Map::LoaderC3Map()
-  : _d( new Impl )
-{
+C3Map::C3Map() : _d( new Impl ) {}
 
-}
-
-bool LoaderC3Map::isLoadableFileExtension( const std::string& filename )
+bool C3Map::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".map" );
 }
 
-std::string LoaderC3Map::restartFile() const {  return _d->restartFile; }
+std::string C3Map::restartFile() const {  return _d->restartFile; }
 
-void LoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
+void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 {
   Tilemap& oTilemap = oCity->tilemap();
 
@@ -211,13 +210,13 @@ void LoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       int index = 162 * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
-      tile.setPicture( TileHelper::convId2PicName( pGraphicGrid.data()[index] ) );
+      tile.setPicture( util::convId2PicName( pGraphicGrid.data()[index] ) );
       tile.setOriginalImgId( pGraphicGrid.data()[index] );
       //tile.setHeight( pElevationGrid.data()[ index ] );
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
-      TileHelper::decode( tile, pTerrainGrid.data()[index] );
-      TileHelper::fixPlateauFlags( tile );
+      util::decode( tile, pTerrainGrid.data()[index] );
+      util::fixPlateauFlags( tile );
     }
   }
 
@@ -276,7 +275,7 @@ void LoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   }
 }
 
-void LoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
+void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 {
   // read climate
   unsigned int i = 0;
@@ -289,7 +288,7 @@ void LoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
   Logger::warning( "C3MapLoader: climate type is %d", climate );
 }
 
-void LoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
+void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->tilemap().size();
 
@@ -326,7 +325,7 @@ void LoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   //std::cout << "boat exit at:"  << ioCity.getBoatExitI()  << "," << ioCity.getBoatExitJ()  << std::endl;
 }
 
-void LoaderC3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity)
+void C3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity)
 {
   /*unsigned short int i = 0;
   unsigned short int j = 0;
@@ -337,5 +336,7 @@ void LoaderC3Map::Impl::initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity
 
   ioCity->setCameraPos( TilePos( mapSize / 2, mapSize / 2 ) );
 }
+
+}//end namespace loader
 
 }//end namespace game

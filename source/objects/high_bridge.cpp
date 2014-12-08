@@ -46,7 +46,7 @@ public:
     _index = index;
 
     Picture pic = Picture::load( ResourceGroup::transport, _index );
-    pic.addOffset( TileHelper::tilepos2screen( _pos ) );
+    pic.addOffset( util::tilepos2screen( _pos ) );
     setPicture( pic );
 
     //checkSecondPart();
@@ -96,7 +96,7 @@ public:
     {
       Tile& mt = city->tilemap().at( pos + TilePos( 0, 1 ) );
       Picture landPic = mt.picture();
-      landPic.addOffset( TileHelper::tilepos2screen( TilePos( 0, 1 ) ) );
+      landPic.addOffset( util::tilepos2screen( TilePos( 0, 1 ) ) );
       _fgPicturesRef().push_back( landPic );
 
       _fgPicturesRef().push_back( pic );
@@ -105,7 +105,7 @@ public:
     {
       Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset(  TileHelper::tilepos2screen( TilePos( 1, 0 ) )  );
+      landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) )  );
       _fgPicturesRef().push_back( landPic );
 
      pic.addOffset( 8, -14 );
@@ -115,7 +115,7 @@ public:
     {
       Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( TileHelper::tilepos2screen( TilePos( 1, 0 ) ) );
+      landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) ) );
       _fgPicturesRef().push_back( landPic );
 
       pic.addOffset( 0, -15 );
@@ -500,10 +500,10 @@ bool HighBridge::build(PlayerCityPtr city, const TilePos& pos )
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
-      subtile->_info = TileHelper::encode( tile );
+      subtile->_info = util::encode( tile );
       subtile->_parent = this;
       
-      events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.object() );
+      events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
       event->dispatch();
     }    
   }
@@ -547,7 +547,7 @@ void HighBridge::destroy()
   {
     HighBridgeSubTilePtr subtile = *it;
 
-    events::GameEventPtr event = events::ClearLandEvent::create( subtile->_pos );
+    events::GameEventPtr event = events::ClearTile::create( subtile->_pos );
     event->dispatch();
 
     Tile& mapTile = city->tilemap().at( subtile->_pos );

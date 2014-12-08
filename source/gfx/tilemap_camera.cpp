@@ -78,7 +78,7 @@ public signals:
 
 TilemapCamera::TilemapCamera() : _d( new Impl )
 {
-  _d->tileMapSize = TileHelper::cellSize();
+  _d->tileMapSize = tilemap::cellSize();
   _d->tilemap = NULL;
   _d->scrollSpeed = 10;
   _d->viewSize = Size( 0 );
@@ -106,8 +106,8 @@ void TilemapCamera::setViewport(Size newSize)
   _d->virtualSize = newSize;
 
   newSize += _d->borderSize;
-  Size vpSize( TileHelper::tilePicSize().height() * 2, TileHelper::tilePicSize().height() );
-  _d->viewSize = Size( (newSize.width() + (vpSize.width()-1)) / vpSize.width(),
+  Size vpSize( tilemap::cellPicSize().height() * 2, tilemap::cellPicSize().height() );
+  _d->viewSize = Size( ( newSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( newSize.height() + (vpSize.height()-1)) / vpSize.height() );
   
   Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );

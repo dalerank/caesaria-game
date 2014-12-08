@@ -23,26 +23,31 @@
 namespace gfx
 {
 
-class TileHelper
+namespace util
 {
-public:
-  static void initTileWidth( int width );
-  static std::string convId2PicName( const unsigned int imgId );
-  static int convPicName2Id( const std::string &pic_name);
-  static Picture& pictureFromId( const unsigned int imgId );
-  static int encode( const Tile& tt );
-  static int turnCoastTile(int imgid , constants::Direction newDirection);
-  static unsigned int hash( const TilePos& pos );
-  static Point tilepos2screen( const TilePos& pos );
-  static void decode( Tile& tile, const int bitset);
-  static Tile& getInvalid();
-  static void clear( Tile& tile );
-  static const Point& cellCenter();
-  static const Size& tilePicSize();
-  static const Size& cellSize();
-  static constants::Direction getDirection( const TilePos& b, const TilePos& e );
-  static void fixPlateauFlags( Tile& tile );
-};
+
+std::string convId2PicName( const unsigned int imgId );
+int convPicName2Id( const std::string &pic_name);
+Picture& pictureFromId( const unsigned int imgId );
+int encode( const Tile& tt );
+int turnCoastTile(int imgid , constants::Direction newDirection);
+unsigned int hash( const TilePos& pos );
+Point tilepos2screen( const TilePos& pos );
+void decode( Tile& tile, const int bitset);
+Tile& getInvalid();
+void clear( Tile& tile );
+constants::Direction getDirection( const TilePos& b, const TilePos& e );
+void fixPlateauFlags( Tile& tile );
+
+}//end namespace util
+
+namespace tilemap
+{
+void initTileBase( int width );
+const Point& cellCenter();
+const Size& cellPicSize();
+const Size& cellSize();
+}
 
 }//end namespace gfx
 

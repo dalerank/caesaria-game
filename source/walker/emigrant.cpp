@@ -84,7 +84,7 @@ void Emigrant::_lockHouse( HousePtr house )
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( House::settleLock, TileHelper::hash( _d->housePosLock ) );
+    house->setState( House::settleLock, util::hash( _d->housePosLock ) );
   }
 }
 
@@ -320,7 +320,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->population() > 300;
-  unsigned int houseLockId = TileHelper::hash( _d->housePosLock );
+  unsigned int houseLockId = util::hash( _d->housePosLock );
 
   while( itHouse != hlist.end() )
   {

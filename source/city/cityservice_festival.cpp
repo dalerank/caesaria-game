@@ -110,7 +110,7 @@ void Festival::timeStep(const unsigned int time )
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
-    events::GameEventPtr e = events::ShowFeastWindow::create( festivalDesc[ id ], festivalTitles[ id ],
+    events::GameEventPtr e = events::ShowFeastival::create( festivalDesc[ id ], festivalTitles[ id ],
                                                               _city()->player()->name(), festivalVideo[ id ] );
     e->dispatch();
 

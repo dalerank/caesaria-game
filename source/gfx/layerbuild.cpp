@@ -276,7 +276,7 @@ void LayerBuild::_buildAll()
 
   if( !_city()->funds().haveMoneyForAction( 1 ) )
   {
-    events::GameEventPtr e = events::WarningMessageEvent::create( "##out_of_credit##" );
+    events::GameEventPtr e = events::WarningMessage::create( "##out_of_credit##" );
     e->dispatch();
     return;
   }
@@ -287,7 +287,7 @@ void LayerBuild::_buildAll()
     Tile* tile = *it;
     if( cnstr->canBuild( _city(), tile->epos(), TilesArray() ) && tile->isMasterTile())
     {
-      events::GameEventPtr event = events::BuildEvent::create( tile->epos(), cnstr->type() );
+      events::GameEventPtr event = events::BuildAny::create( tile->epos(), cnstr->type() );
       event->dispatch();
       buildOk = true;
     }
@@ -299,7 +299,7 @@ void LayerBuild::_buildAll()
   {
     std::string errorStr = cnstr->errorDesc();
 
-    events::GameEventPtr event = events::WarningMessageEvent::create( errorStr.empty()
+    events::GameEventPtr event = events::WarningMessage::create( errorStr.empty()
                                                                       ? "##need_build_on_cleared_area##"
                                                                       : errorStr );
     event->dispatch();

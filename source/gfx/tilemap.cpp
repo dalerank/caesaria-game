@@ -81,7 +81,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = north;
-  _d->virtWidth = TileHelper::cellSize().width() * 2;
+  _d->virtWidth = tilemap::cellSize().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -279,7 +279,7 @@ void Tilemap::save( VariantMap& stream ) const
   foreach( it, tiles )
   {
     Tile* tile = *it;    
-    bitsetInfo.push_back( TileHelper::encode( *tile ) );
+    bitsetInfo.push_back( util::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
     idInfo.push_back( tile->originalImgId() );
   }
@@ -332,13 +332,13 @@ void Tilemap::load( const VariantMap& stream )
   {
     Tile* tile = *it;
 
-    TileHelper::decode( *tile, bitsetAr[index] );
+    util::decode( *tile, bitsetAr[index] );
     tile->setParam( Tile::pDesirability, desAr[index] );
 
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
-      Picture& pic = TileHelper::pictureFromId( imgId );
+      Picture& pic = util::pictureFromId( imgId );
 
       tile->setOriginalImgId( imgId );
 

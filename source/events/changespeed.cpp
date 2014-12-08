@@ -133,7 +133,7 @@ void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );  
 
-  GameEventPtr e = WarningMessageEvent::create( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%" );
+  GameEventPtr e = WarningMessage::create( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%" );
   e->dispatch();
 }
 

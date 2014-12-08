@@ -39,9 +39,12 @@ using namespace gfx;
 namespace game
 {
 
+namespace loader
+{
+
 static const int kClimate     = 0x33ad8;
 
-class LoaderC3Sav::Impl
+class C3Sav::Impl
 {
 public:
   std::map<TilePos, unsigned int> baseBuildings;
@@ -51,7 +54,7 @@ public:
   void initEntryExit(std::fstream& f, PlayerCityPtr ioCity);
 };
 
-LoaderC3Sav::LoaderC3Sav() : _d( new Impl )
+C3Sav::C3Sav() : _d( new Impl )
 {
 }
 
@@ -62,7 +65,7 @@ void SkipCompressed( std::fstream& f )
   f.seekg(tmp, std::ios::cur);
 }
 
-void LoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
+void C3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->tilemap().size();
 
@@ -99,7 +102,7 @@ void LoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.seekg(savePos, std::ios::beg);
 }
 
-int LoaderC3Sav::climateType(const std::string& filename)
+int C3Sav::climateType(const std::string& filename)
 {
   /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -113,9 +116,9 @@ int LoaderC3Sav::climateType(const std::string& filename)
   return -1;
 }
 
-std::string LoaderC3Sav::restartFile() const { return _d->restartFile; }
+std::string C3Sav::restartFile() const { return _d->restartFile; }
 
-bool LoaderC3Sav::load(const std::string& filename, Game& game)
+bool C3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -133,7 +136,7 @@ bool LoaderC3Sav::load(const std::string& filename, Game& game)
   return true;
 }
 
-bool LoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
+bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 { 
   uint32_t tmp;
 
@@ -279,7 +282,7 @@ bool LoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
       Tile& tile = oTilemap.at(i, j);
 
       unsigned int imgId = graphicGrid[index];
-      Picture pic = Picture::load( TileHelper::convId2PicName( imgId ));
+      Picture pic = Picture::load( util::convId2PicName( imgId ));
 
       if( pic.isValid() )
       {
@@ -297,12 +300,12 @@ bool LoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
         baseBuildings[ tile.pos() ] = imgId;
         pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
 
       edgeData[ i ][ j ] = edgeGrid[index];
-      TileHelper::decode( tile, terrainGrid[index] );
-      TileHelper::fixPlateauFlags( tile );
+      util::decode( tile, terrainGrid[index] );
+      util::fixPlateauFlags( tile );
     }
   }    
 
@@ -375,9 +378,11 @@ bool LoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   return true;
 }
 
-bool LoaderC3Sav::isLoadableFileExtension( const std::string& filename )
+bool C3Sav::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".sav" );
 }
+
+}//end namespace loader
 
 }//end namespace game

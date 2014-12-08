@@ -45,7 +45,7 @@ public:
     _index = index;
     _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( TileHelper::tilepos2screen( _pos ) );
+    _picture.addOffset( util::tilepos2screen( _pos ) );
   }
 
   virtual ~LowBridgeSubTile() {}
@@ -426,10 +426,10 @@ bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
-      subtile->_info = TileHelper::encode( tile );
+      subtile->_info = util::encode( tile );
       subtile->_parent = this;
 
-      events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.object() );
+      events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
       event->dispatch();
       index++;
     }
@@ -465,13 +465,13 @@ void LowBridge::destroy()
   foreach( it, _d->subtiles )
   {
     (*it)->_parent = 0;
-    events::GameEventPtr event = events::ClearLandEvent::create( (*it)->_pos );
+    events::GameEventPtr event = events::ClearTile::create( (*it)->_pos );
     event->dispatch();
 
     //std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
-    TileHelper::decode( mapTile, (*it)->_info );
+    util::decode( mapTile, (*it)->_info );
   }
 }
 

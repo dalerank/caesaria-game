@@ -45,24 +45,28 @@ using namespace religion;
 
 namespace game
 {
+
+namespace loader
+{
+
 CAESARIA_LITERALCONST(climate)
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
 CAESARIA_LITERALCONST(random)
 
-class LoaderMission::Impl
+class Mission::Impl
 {
 public:
   std::string restartFile;
 };
 
-LoaderMission::LoaderMission()
+Mission::Mission()
  : _d( new Impl )
 {
 }
 
-bool LoaderMission::load( const std::string& filename, Game& game )
+bool Mission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
   _d->restartFile = filename;
@@ -157,12 +161,14 @@ bool LoaderMission::load( const std::string& filename, Game& game )
   return false;
 }
 
-bool LoaderMission::isLoadableFileExtension( const std::string& filename )
+bool Mission::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".mission" );
 }
 
-int LoaderMission::climateType(const std::string& filename) { return -1; }
-std::string LoaderMission::restartFile() const { return _d->restartFile; }
+int Mission::climateType(const std::string& filename) { return -1; }
+std::string Mission::restartFile() const { return _d->restartFile; }
+
+}//end namespace loader
 
 }//end namespace game

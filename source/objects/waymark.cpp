@@ -71,7 +71,7 @@ bool Waymark::build(PlayerCityPtr city, const TilePos& pos)
   }
 
   setPicture( ResourceGroup::land3a, picIndex );
-  _isFlat = picture().height() <= TileHelper::tilePicSize().height();
+  _isFlat = picture().height() <= tilemap::cellPicSize().height();
 
   return TileOverlay::build( city, pos );
 }

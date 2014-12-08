@@ -49,7 +49,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
   }
 
   Point pos = walker->mappos();
-  Point xOffset( TileHelper::cellSize().width(), 0 );
+  Point xOffset( tilemap::cellSize().width(), 0 );
   if( pathway.isReverse() )
   {
     int rStart = pathway.length() - pathway.curStep();

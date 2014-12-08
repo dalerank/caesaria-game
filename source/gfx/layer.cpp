@@ -562,7 +562,7 @@ void Layer::afterRender( Engine& engine)
   {
     Tile* tile = _d->currentTile;
     Point pos = tile->mappos();
-    int rwidth = TileHelper::tilePicSize().width();
+    int rwidth = tilemap::cellPicSize().width();
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 

@@ -225,7 +225,7 @@ void AdvisorsWindow::Impl::sendMoney2City(int money)
 void AdvisorsWindow::Impl::showEmpireMapWindow()
 {
   advisorPanel->parent()->deleteLater();
-  events::GameEventPtr event = events::ShowEmpireMapWindow::create( true );
+  events::GameEventPtr event = events::ShowEmpireMap::create( true );
   event->dispatch();
 }
 

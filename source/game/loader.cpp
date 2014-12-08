@@ -43,12 +43,15 @@ using namespace gfx;
 namespace game
 {
 
-typedef SmartPtr< AbstractLoader > AbstractLoaderPtr;
+namespace loader
+{
+typedef SmartPtr< loader::Base > BasePtr;
+}
 
 class Loader::Impl
 {
 public:
-  typedef std::vector< AbstractLoaderPtr > Loaders;
+  typedef std::vector< loader::BasePtr > Loaders;
   typedef Loaders::iterator LoaderIterator;
   Loaders loaders;
   std::string restartFile;
@@ -96,7 +99,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   if( maySetSign( signTile ) )
   {
-    TileHelper::clear( signTile );
+    util::clear( signTile );
     gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
     waymark->build( city, tlPos + tlOffset );
     city->addOverlay( waymark );
@@ -142,10 +145,10 @@ void Loader::Impl::finalize( Game& game )
 
 void Loader::Impl::initLoaders()
 {
-  loaders.push_back( AbstractLoaderPtr( new LoaderC3Map() ) );
-  loaders.push_back( AbstractLoaderPtr( new LoaderC3Sav() ) );
-  loaders.push_back( AbstractLoaderPtr( new LoaderOc3() ) );
-  loaders.push_back( AbstractLoaderPtr( new LoaderMission() ) );
+  loaders.push_back( loader::BasePtr( new loader::C3Map() ) );
+  loaders.push_back( loader::BasePtr( new loader::C3Sav() ) );
+  loaders.push_back( loader::BasePtr( new loader::OC3() ) );
+  loaders.push_back( loader::BasePtr( new loader::Mission() ) );
 }
 
 bool Loader::load( vfs::Path filename, Game& game )

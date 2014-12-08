@@ -24,10 +24,13 @@
 namespace game
 {
 
-class LoaderMission : public AbstractLoader
+namespace loader
+{
+
+class Mission : public Base
 {
 public:
-  LoaderMission();
+  Mission();
 
   virtual bool load(const std::string& filename, Game& oScenario);
   virtual bool isLoadableFileExtension( const std::string& filename );
@@ -38,6 +41,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace loader
 
 }//end namespace game
 #endif //__CAESARIA_SCENARIO_MISSION_LOADER_H_INCLUDED__

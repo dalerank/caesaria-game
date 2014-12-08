@@ -99,7 +99,7 @@ void HippodromeSection::destroy()
   HippodromePtr hp = ptr_cast<Hippodrome>( _city()->getOverlay( _basepos ) );
   if( hp.isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _basepos );
+    events::GameEventPtr e = events::ClearTile::create( _basepos );
     e->dispatch();
     _basepos = TilePos( -1, -1 );
   }
@@ -242,14 +242,14 @@ void Hippodrome::destroy()
 
   if( _d->sectionEnd.isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->sectionEnd->pos() );
+    events::GameEventPtr e = events::ClearTile::create( _d->sectionEnd->pos() );
     e->dispatch();
     _d->sectionEnd = 0;
   }
 
   if( _d->sectionMiddle.isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->sectionMiddle->pos() );
+    events::GameEventPtr e = events::ClearTile::create( _d->sectionMiddle->pos() );
     e->dispatch();
     _d->sectionMiddle = 0;
   }

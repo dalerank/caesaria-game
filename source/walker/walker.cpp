@@ -215,7 +215,7 @@ void Walker::_walk()
   delta.ry() = delta.y() * _d->finalSpeed() * speedKoeff;
 
   PointF tmp = _d->wpos;
-  const int wcell = TileHelper::cellSize().height();
+  const int wcell = tilemap::cellSize().height();
   TilePos saveMpos( tmp.x() / wcell , tmp.y() / wcell );
   _d->wpos += delta;
 
@@ -283,7 +283,7 @@ void Walker::_computeDirection()
   _d->action.direction = _d->pathway.direction();
   _d->nextwpos = _nextTile().center().toPointF();
   _d->lastCenterDst = _d->wpos.getDistanceFrom( _d->nextwpos );
-  _d->subSpeed = ( _d->nextwpos - _d->wpos ) / TileHelper::cellSize().height();
+  _d->subSpeed = ( _d->nextwpos - _d->wpos ) / tilemap::cellSize().height();
 
   if( lastDirection != _d->action.direction )
   {
@@ -515,7 +515,7 @@ void Walker::load( const VariantMap& stream)
 
 void Walker::turn(TilePos p )
 {
-  Direction direction = TileHelper::getDirection( pos(), p );
+  Direction direction = util::getDirection( pos(), p );
 
   if( _d->action.direction != direction )
   {

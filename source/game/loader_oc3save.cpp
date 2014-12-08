@@ -33,16 +33,21 @@
 #include "core/logger.hpp"
 #include "saver.hpp"
 
-namespace game{
+namespace game
+{
+
+namespace loader
+{
+
 static const int currentVesion = 1;
 
-class LoaderOc3::Impl
+class OC3::Impl
 {
 public:
   std::string restartFile;
 };
 
-bool LoaderOc3::load( const std::string& filename, Game& game )
+bool OC3::load( const std::string& filename, Game& game )
 {
   Logger::warning( "GameLoaderOc3: start loading from " + filename );
   VariantMap vm = SaveAdapter::load( filename );
@@ -81,7 +86,7 @@ bool LoaderOc3::load( const std::string& filename, Game& game )
   return false;
 }
 
-int LoaderOc3::climateType(const std::string& filename)
+int OC3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
   VariantMap vm = SaveAdapter::load( filename );
@@ -90,16 +95,18 @@ int LoaderOc3::climateType(const std::string& filename)
   return scenario_vm.get( "climate", -1 );
 }
 
-bool LoaderOc3::isLoadableFileExtension( const std::string& filename )
+bool OC3::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 8 ) == ".oc3save";
 }
 
-std::string LoaderOc3::restartFile() const { return _d->restartFile; }
+std::string OC3::restartFile() const { return _d->restartFile; }
 
-LoaderOc3::LoaderOc3() : _d( new Impl )
+OC3::OC3() : _d( new Impl )
 {
 
 }
+
+}//end namespace loader
 
 }//end namespace game

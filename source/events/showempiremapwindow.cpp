@@ -26,26 +26,26 @@ namespace events
 {
 
 
-GameEventPtr ShowEmpireMapWindow::create(bool show)
+GameEventPtr ShowEmpireMap::create(bool show)
 {
-  ShowEmpireMapWindow* ev = new ShowEmpireMapWindow();
+  ShowEmpireMap* ev = new ShowEmpireMap();
   ev->_show = show;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
 }
 
-bool ShowEmpireMapWindow::_mayExec(Game& game, unsigned int time) const
+bool ShowEmpireMap::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-ShowEmpireMapWindow::ShowEmpireMapWindow() : _show( false )
+ShowEmpireMap::ShowEmpireMap() : _show( false )
 {
 
 }
 
-void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
+void ShowEmpireMap::_exec(Game& game, unsigned int)
 {
   List<gui::EmpireMapWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::EmpireMapWindow*>();
 

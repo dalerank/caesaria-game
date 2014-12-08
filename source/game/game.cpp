@@ -280,7 +280,7 @@ void Game::save(std::string filename) const
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-  events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
   e->dispatch();
 }
 
@@ -370,7 +370,7 @@ void Game::initialize()
     cellWidth = 30;
   }
 
-  TileHelper::initTileWidth( cellWidth );
+  tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );

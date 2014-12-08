@@ -25,7 +25,7 @@ class Game;
 namespace events
 {
 
-class ClearLandEvent : public GameEvent
+class ClearTile : public GameEvent
 {
 public:
   static GameEventPtr create( const TilePos& );

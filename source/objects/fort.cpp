@@ -135,7 +135,7 @@ void FortArea::destroy()
   Building::destroy();
   if( base().isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->basePos );
+    events::GameEventPtr e = events::ClearTile::create( _d->basePos );
     e->dispatch();
   }
 }
@@ -231,7 +231,7 @@ void Fort::destroy()
 
   if( _d->area.isValid()  )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->area->pos() );
+    events::GameEventPtr e = events::ClearTile::create( _d->area->pos() );
     e->dispatch();
     _d->area = 0;
   }
@@ -335,7 +335,7 @@ TilePos Fort::freeSlot() const
   {
     foreach( it, tiles )
     {
-      unsigned int tilehash = TileHelper::hash((*it)->pos());
+      unsigned int tilehash = util::hash((*it)->pos());
 
       if( _d->patrolAreaPos.find( tilehash ) == _d->patrolAreaPos.end() )
       {

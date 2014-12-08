@@ -24,10 +24,13 @@
 namespace game
 {
 
-class LoaderC3Map : public AbstractLoader
+namespace loader
+{
+
+class C3Map: public Base
 {
 public:
-  LoaderC3Map();
+  C3Map();
 
   virtual bool load(const std::string& filename, Game& game);
   virtual int climateType( const std::string& filename );
@@ -38,6 +41,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace loader
 
 }//end namespace game
 

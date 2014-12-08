@@ -31,9 +31,9 @@ using namespace gfx;
 namespace events
 {
 
-GameEventPtr ClearLandEvent::create(const TilePos& pos)
+GameEventPtr ClearTile::create(const TilePos& pos)
 {
-  ClearLandEvent* ev = new ClearLandEvent();
+  ClearTile* ev = new ClearTile();
   ev->_pos = pos;
 
   GameEventPtr ret( ev );
@@ -42,9 +42,9 @@ GameEventPtr ClearLandEvent::create(const TilePos& pos)
   return ret;
 }
 
-bool ClearLandEvent::_mayExec(Game& game, unsigned int) const{ return true; }
+bool ClearTile::_mayExec(Game& game, unsigned int) const{ return true; }
 
-void ClearLandEvent::_exec( Game& game, unsigned int )
+void ClearTile::_exec( Game& game, unsigned int )
 {
   Tilemap& tmap = game.city()->tilemap();
 
@@ -62,7 +62,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
     ConstructionPtr constr = ptr_cast<Construction>(overlay);
     if( constr.isValid() && !constr->canDestroy() )
     {
-      GameEventPtr e = WarningMessageEvent::create( _( constr->errorDesc() ) );
+      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ) );
       e->dispatch();
 
       const MetaData& md = MetaDataHolder::getData( constr->type() );
@@ -95,7 +95,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
 
       if( tile->getFlag( Tile::tlMeadow ) || tile->getFlag( Tile::tlWater ) )
       {
-        tile->setPicture( TileHelper::convId2PicName( tile->originalImgId() ) );
+        tile->setPicture( util::convId2PicName( tile->originalImgId() ) );
       }
       else
       {
@@ -113,7 +113,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
 
         Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
-        tile->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile->setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
     }
 

@@ -25,15 +25,20 @@ class Game;
 namespace game
 {
 
-class AbstractLoader : public ReferenceCounted
+namespace loader
+{
+
+class Base : public ReferenceCounted
 {
 public:
-  virtual ~AbstractLoader() {}
+  virtual ~Base() {}
   virtual bool load( const std::string& filename, Game& oScenario ) = 0;
   virtual int  climateType( const std::string& filename ) = 0;
   virtual bool isLoadableFileExtension( const std::string& filename ) = 0;
   virtual std::string restartFile() const = 0;
 };
+
+}//end namespace loader
 
 }//end namespace game
 

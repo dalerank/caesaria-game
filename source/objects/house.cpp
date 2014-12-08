@@ -762,7 +762,7 @@ void House::_levelDown()
         //house->_d->houseId = HouseLevel::smallHovel;
         //house->_update( true );
 
-        GameEventPtr event = BuildEvent::create( (*tile)->pos(), house.object() );
+        GameEventPtr event = BuildAny::create( (*tile)->pos(), house.object() );
         event->dispatch();
       }
 
@@ -1006,7 +1006,7 @@ void House::_update( bool needChangeTexture )
 
   bool lastFlat = _d->isFlat;
 
-  _d->isFlat = picture().height() <= ( TileHelper::tilePicSize().height() * size().width() );
+  _d->isFlat = picture().height() <= ( tilemap::cellPicSize().height() * size().width() );
   if( lastFlat != _d->isFlat && _city().isValid() )
     _city()->setOption( PlayerCity::updateTiles, true );
 

@@ -94,13 +94,13 @@ bool Tile::isFlat() const
 }
 
 
-Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * TileHelper::cellSize().height() + TileHelper::cellCenter(); }
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * tilemap::cellSize().height() + tilemap::cellCenter(); }
 bool Tile::isMasterTile() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
   _epos = epos;
-  _mappos = Point( TileHelper::cellSize().width() * ( _epos.i() + _epos.j() ),
-                   TileHelper::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * TileHelper::cellSize().height() );
+  _mappos = Point( tilemap::cellSize().width() * ( _epos.i() + _epos.j() ),
+                   tilemap::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * tilemap::cellSize().height() );
 }
 
 void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
@@ -112,11 +112,11 @@ void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
 
   if( _terrain.coast )
   {
-    int imgid = TileHelper::turnCoastTile( _terrain.imgid, newDirection );
+    int imgid = util::turnCoastTile( _terrain.imgid, newDirection );
 
     _picture = imgid == -1
                 ? Picture::getInvalid()
-                : TileHelper::pictureFromId( imgid );
+                : util::pictureFromId( imgid );
   }
 }
 

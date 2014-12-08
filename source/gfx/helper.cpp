@@ -31,24 +31,34 @@ using namespace constants;
 namespace gfx
 {
 
-namespace {
+namespace tilemap
+{
+
 static int x_tileBase = 60;
 static int y_tileBase = x_tileBase / 2;
-static Size tileBaseSize( x_tileBase * 2 - 2, x_tileBase );
+static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );
 static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
-}
 
-void TileHelper::initTileWidth(int width)
+void initTileBase(int width)
 {
   x_tileBase = width;
   y_tileBase = x_tileBase / 2;
-  tileBaseSize = Size( x_tileBase * 2 - 2, x_tileBase );
+  tilePicSize = Size( x_tileBase * 2 - 2, x_tileBase );
   tileCellSize = Size( x_tileBase, y_tileBase );
   centerOffset = Point( y_tileBase / 2, y_tileBase / 2 );
 }
 
-std::string TileHelper::convId2PicName( const unsigned int imgId )
+const Point& cellCenter() { return centerOffset;}
+const Size& cellPicSize() { return tilePicSize; }
+const Size& cellSize() { return tileCellSize; }
+
+}
+
+namespace util
+{
+
+std::string convId2PicName( const unsigned int imgId )
 {
   // example: for land1a_00004, pfx=land1a and id=4
   std::string res_pfx;  // resource name prefix
@@ -92,7 +102,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
   return ret_str;
 }
 
-int TileHelper::convPicName2Id( const std::string &pic_name )
+int convPicName2Id( const std::string &pic_name )
 {
   // example: for land1a_00004, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
@@ -116,13 +126,13 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
   return res_id;
 }
 
-Picture &TileHelper::pictureFromId(const unsigned int imgId)
+Picture& pictureFromId(const unsigned int imgId)
 {
   std::string picname = convId2PicName( imgId );
   return Picture::load( picname );
 }
 
-int TileHelper::encode(const Tile& tt)
+int encode(const Tile& tt)
 {
   int res = tt.getFlag( Tile::tlTree )   ? 0x00011 : 0;
   res += tt.getFlag( Tile::tlRock )      ? 0x00002 : 0;
@@ -149,7 +159,7 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
   return imgid;
 }
 
-int TileHelper::turnCoastTile(int imgid, constants::Direction newDirection )
+int turnCoastTile(int imgid, constants::Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
   imgid -= 372;
@@ -184,17 +194,17 @@ int TileHelper::turnCoastTile(int imgid, constants::Direction newDirection )
   return imgid + 372;
 }
 
-unsigned int TileHelper::hash(const TilePos& pos)
+unsigned int hash(const TilePos& pos)
 {
   return (pos.i() << 16) + pos.j();
 }
 
-Point TileHelper::tilepos2screen(const TilePos& pos)
+Point tilepos2screen(const TilePos& pos)
 {
-  return Point( x_tileBase * (pos.i()+pos.j()), y_tileBase * pos.z() );
+  return Point( tilemap::x_tileBase * (pos.i()+pos.j()), tilemap::y_tileBase * pos.z() );
 }
 
-void TileHelper::decode(Tile& tile, const int bitset)
+void decode(Tile& tile, const int bitset)
 {
   tile.setFlag( Tile::clearAll, true );
 
@@ -215,27 +225,23 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }
 }
 
-Tile& TileHelper::getInvalid()
+Tile& getInvalid()
 {
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
 }
 
-void TileHelper::clear(Tile& tile)
+void clear(Tile& tile)
 {
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58 );
 
   Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
-  tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+  tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
 }
 
-const Point& TileHelper::cellCenter() { return centerOffset;}
-const Size& TileHelper::tilePicSize() { return tileBaseSize; }
-const Size& TileHelper::cellSize() { return tileCellSize; }
-
-Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
+Direction getDirection(const TilePos& b, const TilePos& e)
 {
   float t = (e - b).getAngleICW();
   int angle = (int)ceil( t / 45.f);
@@ -246,7 +252,7 @@ Direction TileHelper::getDirection(const TilePos& b, const TilePos& e)
   return directions[ angle ];
 }
 
-void TileHelper::fixPlateauFlags(Tile& tile)
+void fixPlateauFlags(Tile& tile)
 {
   if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
   {
@@ -257,5 +263,7 @@ void TileHelper::fixPlateauFlags(Tile& tile)
     tile.setFlag( Tile::tlRock, !flat );
   }
 }
+
+}//end namespace util
 
 }//end namespace gfx

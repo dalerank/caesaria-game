@@ -109,7 +109,7 @@ void WarehouseTile::computePicture()
   }
 
   _picture = Picture::load( ResourceGroup::warehouse, picIdx );
-  _picture.addOffset( TileHelper::tilepos2screen( _pos ) );
+  _picture.addOffset( util::tilepos2screen( _pos ) );
 }
 
 

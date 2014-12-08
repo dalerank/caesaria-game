@@ -23,7 +23,7 @@
 namespace events
 {
 
-class TradingOptions : public GameEvent
+class ChangeTradingOptions : public GameEvent
 {
 public:
   static GameEventPtr create();

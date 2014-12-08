@@ -303,7 +303,7 @@ void Level::Impl::showCityOptionsDialog()
 
 void Level::Impl::resolveWarningMessage(std::string text )
 {
-  events::GameEventPtr e = events::WarningMessageEvent::create( text );
+  events::GameEventPtr e = events::WarningMessage::create( text );
   e->dispatch();
 }
 
@@ -358,8 +358,8 @@ void Level::Impl::makeFullScreenshot()
   int mapSize = tmap.size();
   Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
   Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
-  Point lastRightPos = TileHelper::tilepos2screen( lastRightTile.pos() );
-  Point lastBottomPos = TileHelper::tilepos2screen( lastBottomTile.pos() );
+  Point lastRightPos = util::tilepos2screen( lastRightTile.pos() );
+  Point lastBottomPos = util::tilepos2screen( lastBottomTile.pos() );
   Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
 
   TilesArray ret;
@@ -413,7 +413,7 @@ void Level::Impl::handleDirectionChange(Direction direction)
 {
   DirectionHelper dHelper;
 
-  events::GameEventPtr e = events::WarningMessageEvent::create( _(dHelper.findName( direction ) ) );
+  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ) );
   e->dispatch();
 }
 
@@ -509,8 +509,8 @@ void Level::_resolveSwitchMap()
 void Level::Impl::showEmpireMapWindow()
 {
   events::GameEventPtr e;
-  if( game->empire()->isAvailable() ) { e = events::ShowEmpireMapWindow::create( true ); }
-  else {  e = events::WarningMessageEvent::create( "##not_available##" ); }
+  if( game->empire()->isAvailable() ) { e = events::ShowEmpireMap::create( true ); }
+  else {  e = events::WarningMessage::create( "##not_available##" ); }
 
   if( e.isValid() ) e->dispatch();
 }
@@ -760,7 +760,7 @@ void Level::Impl::makeScreenShot()
   Logger::warning( "Level: create screenshot %s", filename.c_str() );
 
   Engine::instance().createScreenshot( filename );
-  events::GameEventPtr e = events::WarningMessageEvent::create( "Screenshot save to " + filename );
+  events::GameEventPtr e = events::WarningMessage::create( "Screenshot save to " + filename );
   e->dispatch();
 }
 

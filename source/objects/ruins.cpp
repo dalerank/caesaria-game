@@ -118,7 +118,7 @@ void BurningRuins::destroy()
     fire->rmLocation( pos() );
   }
 
-  events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
+  events::GameEventPtr event = events::BuildAny::create( pos(), p.object() );
   event->dispatch();
 }
 
@@ -279,7 +279,7 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( info() );
 
-  events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
+  events::GameEventPtr event = events::BuildAny::create( pos(), p.object() );
   event->dispatch();
 }
 

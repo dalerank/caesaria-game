@@ -184,7 +184,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
         events::GameEventPtr e = events::FireWorkers::create( house->pos(), citizens.count() );
         e->dispatch();
 
-        e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
+        e = events::Disaster::create( house->tile(), events::Disaster::plague );
         e->dispatch();
 
         if( _d->fumigateHouseNumber > 5 )

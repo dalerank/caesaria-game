@@ -411,7 +411,7 @@ static void __finalizeMap(Game& game, int pass )
         wtile.setFlag( Tile::tlCoast, true );
         Picture pic = Picture::load( ResourceGroup::land1a, start + rnd );
         wtile.setPicture( pic );
-        wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        wtile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
     }
 }
@@ -596,7 +596,7 @@ static void __createRoad(Game& game )
 
       Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );
-      (*it)->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+      (*it)->setOriginalImgId( util::convPicName2Id( pic.name() ) );
 
       overlay->build( oCity, (*it)->pos() );
       oCity->overlays().push_back( overlay );
@@ -664,7 +664,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         tile.setFlag( Tile::tlDeepWater, true );
         Picture pic = Picture::load( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 
@@ -674,7 +674,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         tile.setFlag( Tile::tlDeepWater, true );
         Picture pic = Picture::load( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 
@@ -684,7 +684,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         tile.setFlag( Tile::tlWater, true );
         Picture pic = Picture::load( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 
@@ -705,7 +705,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         }*/
         pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 
@@ -731,7 +731,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
 
         Picture pic = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 
@@ -740,7 +740,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         Picture pic = Picture::load( ResourceGroup::land1a, 290 + math::random( 7 ) );
         tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 
@@ -751,7 +751,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         //tile.setHeight( 1 );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
       break;
 

@@ -25,20 +25,20 @@
 namespace events
 {
 
-GameEventPtr TradingOptions::create()
+GameEventPtr ChangeTradingOptions::create()
 {
-  GameEventPtr ret( new TradingOptions() );
+  GameEventPtr ret( new ChangeTradingOptions() );
   ret->drop();
 
   return ret;
 }
 
-void TradingOptions::load(const VariantMap& stream)
+void ChangeTradingOptions::load(const VariantMap& stream)
 {
   _options = stream;
 }
 
-void TradingOptions::_exec(Game& game, unsigned int)
+void ChangeTradingOptions::_exec(Game& game, unsigned int)
 {
   VariantMap citiesVm = _options.get( "cities" ).toMap();
   foreach( it, citiesVm )
@@ -76,6 +76,6 @@ void TradingOptions::_exec(Game& game, unsigned int)
   }
 }
 
-bool TradingOptions::_mayExec(Game&, unsigned int) const{  return true; }
+bool ChangeTradingOptions::_mayExec(Game&, unsigned int) const{  return true; }
 
 }
