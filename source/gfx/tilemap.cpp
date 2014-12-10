@@ -60,6 +60,7 @@ public:
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
+  TilesArray border;
 
   int size;  
   Direction direction;
@@ -151,6 +152,43 @@ TilesArray Tilemap::allTiles() const
   }
 
   return ret;
+}
+
+const TilesArray& Tilemap::borderTiles() const
+{
+  return _d->border;
+}
+
+void Tilemap::addBorder()
+{
+  if( !_d->border.empty() )
+    return;
+
+  Picture pic = Picture::load( "land1a", 1 );
+  Rect r;
+  r.addInternalPoint( Tile( TilePos(-1, -1) ).mappos() );
+  r.addInternalPoint( Tile( TilePos(0, _d->size+1) ).mappos() );
+  r.addInternalPoint( Tile( TilePos(_d->size+1, _d->size+1) ).mappos() );
+  r.addInternalPoint( Tile( TilePos(_d->size+1, 0) ).mappos() );
+
+  for( int u=0; u < _d->size/2; u++ )
+  {
+    for( int i=0; i < _d->size; i++ )
+    {
+      TilePos tpos[4] = { TilePos( -u, i ), TilePos( i, -u), TilePos( i, _d->size + u ), TilePos( _d->size + u, i) };
+
+      for( int idx=0; idx < 4; idx++ )
+      {
+        Tile t( tpos[idx] );
+
+        if( r.isPointInside( t.mappos() ) )
+        {
+          _d->border.push_back( new Tile( tpos[idx] ) );
+          _d->border.back()->setPicture( pic );
+        }
+      }
+    }
+  }
 }
 
 int Tilemap::size() const {  return _d->size; }

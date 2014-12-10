@@ -73,6 +73,7 @@ enum {
   send_barbarian_to_player,
   comply_rome_request,
   change_emperor,
+  add_city_border,
   earthquake
 };
 
@@ -126,6 +127,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( toggle_show_flat_tiles )
   ADD_DEBUG_EVENT( change_emperor )
   ADD_DEBUG_EVENT( earthquake )
+  ADD_DEBUG_EVENT( add_city_border )
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
 #undef ADD_DEBUG_EVENT
@@ -216,6 +218,12 @@ void DebugHandler::Impl::handleEvent(int event)
     VariantMap vm = SaveAdapter::load( ":/test_emperor.model" );
     e->load( vm );
     e->dispatch();
+  }
+  break;
+
+  case add_city_border:
+  {
+    game->city()->tilemap().addBorder();
   }
   break;
 
