@@ -29,9 +29,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerHealth::type() const {  return _type; }
+namespace layer
+{
 
-int LayerHealth::_getLevelValue( HousePtr house )
+int Health::type() const {  return _type; }
+
+int Health::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
@@ -44,7 +47,7 @@ int LayerHealth::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -130,15 +133,15 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+LayerPtr Health::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerPtr ret( new LayerHealth( camera, city, type ) );
+  LayerPtr ret( new Health( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerHealth::handleEvent(NEvent& event)
+void Health::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -189,8 +192,8 @@ void LayerHealth::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
-  : LayerInfo( camera, city, 9 )
+Health::Health(Camera& camera, PlayerCityPtr city, int type)
+  : Info( camera, city, 9 )
 {
   _type = type;
 
@@ -217,6 +220,8 @@ LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
     _addWalkerType( walker::bathlady );
   break;
   }
+}
+
 }
 
 }//end namespace gfx

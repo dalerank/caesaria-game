@@ -35,9 +35,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerTroubles::type() const{  return _type;}
+namespace layer
+{
 
-void LayerTroubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
+int Troubles::type() const{  return _type;}
+
+void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -97,15 +100,15 @@ void LayerTroubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerTroubles::create(Camera& camera, PlayerCityPtr city , int type)
+LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city , int type)
 {
-  LayerPtr ret( new LayerTroubles( camera, city, type ) );
+  LayerPtr ret( new Troubles( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerTroubles::handleEvent(NEvent& event)
+void Troubles::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -157,10 +160,12 @@ void LayerTroubles::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city, int type )
+Troubles::Troubles( Camera& camera, PlayerCityPtr city, int type )
   : Layer( &camera, city ), _type( type )
 {
   //_loadColumnPicture( 9 );
+}
+
 }
 
 }//end namespace gfx

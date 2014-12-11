@@ -32,7 +32,8 @@ using namespace constants;
 namespace gfx
 {
 
-namespace {
+namespace layer
+{
 
 static const std::string crimeDesc[] =
 {
@@ -48,11 +49,9 @@ static const std::string crimeDesc[] =
   "##high_crime_risk##"
 };
 
-}
+int Crime::type() const {  return citylayer::crime; }
 
-int LayerCrime::type() const {  return citylayer::crime; }
-
-void LayerCrime::drawTile( Engine& engine, Tile& tile, const Point& offset)
+void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -122,15 +121,15 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerCrime::create(Camera& camera, PlayerCityPtr city)
+LayerPtr Crime::create(Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerCrime( camera, city ) );
+  LayerPtr ret( new Crime( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerCrime::handleEvent(NEvent& event)
+void Crime::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -163,10 +162,12 @@ void LayerCrime::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerCrime::LayerCrime( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 18 )
+Crime::Crime( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
 }
+
+}//end namespace layer
 
 }//end namespace gfx

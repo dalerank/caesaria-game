@@ -23,7 +23,10 @@
 namespace gfx
 {
 
-class LayerTroubles : public Layer
+namespace layer
+{
+
+class Troubles : public Layer
 {
 public:
   virtual int type() const;
@@ -33,9 +36,11 @@ public:
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerTroubles( Camera& camera, PlayerCityPtr city, int type );
+  Troubles( Camera& camera, PlayerCityPtr city, int type );
   int _type;
 };
+
+}//
 
 }//end namespace gfx
 

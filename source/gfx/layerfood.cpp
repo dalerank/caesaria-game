@@ -32,9 +32,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerFood::type() const {  return citylayer::food; }
+namespace layer
+{
 
-void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
+int Food::type() const {  return citylayer::food; }
+
+void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -107,7 +110,7 @@ void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
+void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
 {
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
@@ -128,7 +131,7 @@ void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOf
   }
 }
 
-void LayerFood::handleEvent(NEvent& event)
+void Food::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -177,16 +180,16 @@ void LayerFood::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerFood::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerFood( camera, city ) );
+  LayerPtr ret( new Food( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 18 )
+Food::Food( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 18 )
 {
   _addWalkerType( walker::marketLady );
   _addWalkerType( walker::marketKid );
@@ -194,5 +197,7 @@ LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
   _addWalkerType( walker::marketBuyer );
   _addWalkerType( walker::cartPusher );
 }
+
+}//
 
 }//end namespace gfx

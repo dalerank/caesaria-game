@@ -37,7 +37,10 @@ using namespace constants;
 namespace gfx
 {
 
-class LayerDestroy::Impl
+namespace layer
+{
+
+class Destroy::Impl
 {
 public:
   Picture shovelPic;
@@ -48,7 +51,7 @@ public:
   Font textFont;
 };
 
-void LayerDestroy::_clearAll()
+void Destroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
   foreach( tile, tiles4clear )
@@ -58,7 +61,7 @@ void LayerDestroy::_clearAll()
   }
 }
 
-unsigned int LayerDestroy::_checkMoney4destroy(const Tile& tile)
+unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
 {
   TileOverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
@@ -73,7 +76,7 @@ unsigned int LayerDestroy::_checkMoney4destroy(const Tile& tile)
   return 0;
 }
 
-void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
+void Destroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
 {
   if( master==NULL )
   {
@@ -96,7 +99,7 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   }
 }
 
-void LayerDestroy::render( Engine& engine )
+void Destroy::render( Engine& engine )
 {
   // center the map on the screen
   Point cameraOffset = _camera()->offset();
@@ -181,7 +184,7 @@ void LayerDestroy::render( Engine& engine )
   engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
-void LayerDestroy::init(Point cursor)
+void Destroy::init(Point cursor)
 {
   Layer::init( cursor );
   _setLastCursorPos( cursor );
@@ -189,7 +192,7 @@ void LayerDestroy::init(Point cursor)
   _d->startTilePos = TilePos( -1, -1 );
 }
 
-void LayerDestroy::handleEvent(NEvent& event)
+void Destroy::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -252,9 +255,9 @@ void LayerDestroy::handleEvent(NEvent& event)
   }
 }
 
-int LayerDestroy::type() const {  return citylayer::destroyd; }
+int Destroy::type() const {  return citylayer::destroyd; }
 
-void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
+void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
   TileOverlayPtr overlay = tile.overlay();
 
@@ -266,15 +269,15 @@ void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
   Layer::drawTile( engine, tile, offset );
 }
 
-LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Destroy::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerDestroy( camera, city ) );
+  LayerPtr ret( new Destroy( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
+Destroy::Destroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _d->shovelPic = Picture::load( "shovel", 1 );
@@ -282,6 +285,8 @@ LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   _d->textFont = Font::create( FONT_5 );
   _d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );
+}
+
 }
 
 }//end namespace gfx

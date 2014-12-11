@@ -41,6 +41,9 @@ using namespace constants;
 namespace gfx
 {
 
+namespace layer
+{
+
 class Layer::Impl
 {
 public:
@@ -176,7 +179,7 @@ void Layer::handleEvent(NEvent& event)
     {
     case appWindowFocusEnter:
     case appWindowFocusLeave:
-      LayerDrawOptions::instance().setFlag( LayerDrawOptions::windowActive, event.app.type == appWindowFocusEnter );
+      DrawOptions::instance().setFlag( DrawOptions::windowActive, event.app.type == appWindowFocusEnter );
     break;
 
     default: break;
@@ -311,8 +314,8 @@ void Layer::render( Engine& engine)
     drawTile( engine, **it, camOffset );
   }
 
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
-  if( opts.isFlag( LayerDrawOptions::shadowOverlay ) )
+  DrawOptions& opts = DrawOptions::instance();
+  if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }
@@ -330,7 +333,7 @@ void Layer::render( Engine& engine)
 
   engine.resetColorMask();
 
-  if( opts.isFlag( LayerDrawOptions::showPath ) )
+  if( opts.isFlag( DrawOptions::showPath ) )
   {
     WalkerList overDrawWalkers;
 
@@ -460,8 +463,8 @@ void Layer::afterRender( Engine& engine)
   Point moveValue;
 
   //on edge cursor moving
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
-  if( opts.isFlag( LayerDrawOptions::windowActive ) )
+  DrawOptions& opts = DrawOptions::instance();
+  if( opts.isFlag( DrawOptions::windowActive ) )
   {
     if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
     else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
@@ -474,7 +477,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::drawGrid ) )
+  if( opts.isFlag( DrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    
     int size = tmap.size();
@@ -510,7 +513,7 @@ void Layer::afterRender( Engine& engine)
     }*/
   }
 
-  if( opts.isFlag( LayerDrawOptions::showRoads ) )
+  if( opts.isFlag( DrawOptions::showRoads ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
@@ -522,7 +525,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::showWalkableTiles ) )
+  if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
@@ -534,7 +537,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::showFlatTiles ) )
+  if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
@@ -546,7 +549,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::showLockedTiles ) )
+  if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 2);
 
@@ -558,7 +561,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
+  if( _d->currentTile && opts.isFlag( DrawOptions::showObjectArea ) )
   {
     Tile* tile = _d->currentTile;
     Point pos = tile->mappos();
@@ -621,7 +624,7 @@ Layer::~Layer(){}
 void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }
 void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
 Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
-Tile *Layer::_currentTile() const{ return _dfunc()->currentTile; }
+Tile* Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
 
 void Layer::Impl::updateOutlineTexture( Tile* tile )
@@ -638,10 +641,12 @@ void Layer::Impl::updateOutlineTexture( Tile* tile )
   } */
 }
 
-LayerDrawOptions &LayerDrawOptions::instance()
+DrawOptions& DrawOptions::instance()
 {
-  static LayerDrawOptions inst;
+  static DrawOptions inst;
   return inst;
+}
+
 }
 
 }

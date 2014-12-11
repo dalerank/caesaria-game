@@ -30,6 +30,10 @@ using namespace constants;
 namespace gfx
 {
 
+namespace layer
+{
+
+
 static const char* fireLevelName[] = {
                                        "##no_fire_risk##",
                                        "##very_low_fire_risk##", "##some_low_fire_risk##", "##low_fire_risk##",
@@ -39,9 +43,9 @@ static const char* fireLevelName[] = {
                                      };
 
 
-int LayerFire::type() const {  return citylayer::fire; }
+int Fire::type() const {  return citylayer::fire; }
 
-void LayerFire::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -117,7 +121,7 @@ void LayerFire::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerFire::handleEvent(NEvent& event)
+void Fire::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -148,18 +152,20 @@ void LayerFire::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerFire::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Fire::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerFire( camera, city ) );
+  LayerPtr ret( new Fire( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerFire::LayerFire( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 18 )
+Fire::Fire( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
+}
+
 }
 
 }//end namespace gfx

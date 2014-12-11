@@ -24,7 +24,10 @@
 namespace gfx
 {
 
-class LayerCrime : public LayerInfo
+namespace layer
+{
+
+class Crime : public Info
 {
 public:
   virtual int type() const;
@@ -34,8 +37,10 @@ public:
   virtual void handleEvent(NEvent &event);
 
 private:
-  LayerCrime(Camera& camera, PlayerCityPtr city );
+  Crime(Camera& camera, PlayerCityPtr city );
 };
+
+}//end namespace layer
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERCRIME_H_INCLUDED__

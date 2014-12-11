@@ -35,9 +35,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerWater::type() const{  return citylayer::water;}
+namespace layer
+{
 
-void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
+int Water::type() const{  return citylayer::water;}
+
+void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -160,12 +163,12 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerWater::drawWalkerOverlap(Engine& engine, Tile& tile, const Point& offset, const int depth)
+void Water::drawWalkerOverlap(Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
 
 }
 
-void LayerWater::handleEvent(NEvent& event)
+void Water::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventKeyboard )
   {
@@ -215,18 +218,20 @@ void LayerWater::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerWater::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Water::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerWater( camera, city ) );
+  LayerPtr ret( new Water( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerWater::LayerWater( Camera& camera, PlayerCityPtr city)
+Water::Water( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _showWaterValue = false;
 }
+
+}//end namespace layer
 
 }//end namespace gfx

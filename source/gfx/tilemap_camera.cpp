@@ -319,10 +319,10 @@ void TilemapCamera::Impl::cacheFlatTiles()
 
   const TilesArray& tl = tmap->borderTiles();
   Rect viewRect( Point( -tilemap::cellPicSize().width(), -tilemap::cellPicSize().height() ),
-                 virtualSize + tilemap::cellSize() * 2 );
+                 virtualSize + tilemap::cellPicSize() * 2 );
   foreach( i, tl )
   {
-    if( viewRect.isPointInside( (*i)->mappos() + offset ) )
+    if( viewRect.isPointInside( (*i)->mappos() + Point( tilemap::cellPicSize().width()/2, 0 ) + offset)  )
     {
       flatTiles.push_back( *i );
     }

@@ -31,9 +31,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEducation::type() const {  return _type; }
+namespace layer
+{
 
-int LayerEducation::_getLevelValue( HousePtr house ) const
+int Education::type() const {  return _type; }
+
+int Education::_getLevelValue( HousePtr house ) const
 {
   switch(_type)
   {
@@ -59,7 +62,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   return 0;
 }
 
-void LayerEducation::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -140,15 +143,15 @@ void LayerEducation::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerEducation::create( Camera& camera, PlayerCityPtr city, int type )
+LayerPtr Education::create( Camera& camera, PlayerCityPtr city, int type )
 {
-  LayerPtr ret( new LayerEducation( camera, city, type ) );
+  LayerPtr ret( new Education( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-std::string LayerEducation::_getAccessLevel( int lvlValue ) const
+std::string Education::_getAccessLevel( int lvlValue ) const
 {
   if( lvlValue == 0 ) { return "##no_"; }
   else if( lvlValue < 20 ) { return "##warning_"; }
@@ -158,7 +161,7 @@ std::string LayerEducation::_getAccessLevel( int lvlValue ) const
   else { return "##awesome_"; }
 }
 
-void LayerEducation::handleEvent(NEvent& event)
+void Education::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -221,8 +224,8 @@ void LayerEducation::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
-  : LayerInfo( camera, city, 9 )
+Education::Education( Camera& camera, PlayerCityPtr city, int type)
+  : Info( camera, city, 9 )
 {
   _type = type;
 
@@ -233,6 +236,8 @@ LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
   case citylayer::library: _flags.insert( objects::library ); _addWalkerType( walker::librarian ); break;
   case citylayer::academy: _flags.insert( objects::academy ); _addWalkerType( walker::teacher ); break;
   }
+}
+
 }
 
 }//end namespace gfx

@@ -29,7 +29,10 @@ using namespace constants;
 namespace gfx
 {
 
-class LayerSimple::Impl
+namespace layer
+{
+
+class Simple::Impl
 {
 public:
   SenatePopupInfo senateInfo;
@@ -37,17 +40,17 @@ public:
   TileOverlayPtr lastOverlay;
 };
 
-int LayerSimple::type() const { return citylayer::simple; }
+int Simple::type() const { return citylayer::simple; }
 
-LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerSimple( camera, city ) );
+  LayerPtr ret( new Simple( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerSimple::afterRender(Engine& engine)
+void Simple::afterRender(Engine& engine)
 {
   Layer::afterRender( engine );
 
@@ -66,7 +69,7 @@ void LayerSimple::afterRender(Engine& engine)
   }
 }
 
-void LayerSimple::renderUi(Engine &engine)
+void Simple::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
 
@@ -82,10 +85,12 @@ void LayerSimple::renderUi(Engine &engine)
   }
 }
 
-LayerSimple::LayerSimple( Camera& camera, PlayerCityPtr city)
+Simple::Simple( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _addWalkerType( walker::all );
 }
+
+}//
 
 }//end namespace gfx

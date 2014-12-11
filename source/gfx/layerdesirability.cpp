@@ -31,7 +31,10 @@ using namespace constants;
 namespace gfx
 {
 
-class LayerDesirability::Impl
+namespace layer
+{
+
+class Desirability::Impl
 {
 public:
   Font debugFont;
@@ -47,9 +50,9 @@ namespace {
   }
 }
 
-int LayerDesirability::type() const {  return citylayer::desirability; }
+int Desirability::type() const {  return citylayer::desirability; }
 
-void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
+void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mappos() + offset;
@@ -122,15 +125,15 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, const Point& offse
   tile.setWasDrawn();
 }
 
-void LayerDesirability::beforeRender( Engine& engine )
+void Desirability::beforeRender( Engine& engine )
 {
   foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
 
-  LayerInfo::beforeRender( engine );
+  Info::beforeRender( engine );
 }
 
-void LayerDesirability::handleEvent(NEvent& event)
+void Desirability::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -160,18 +163,20 @@ void LayerDesirability::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Desirability::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerDesirability( camera, city ) );
+  LayerPtr ret( new Desirability( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerDesirability::LayerDesirability( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 0 ), _d( new Impl )
+Desirability::Desirability( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 0 ), _d( new Impl )
 {
   _d->debugFont = Font::create( "FONT_1" );
+}
+
 }
 
 }//end namespace gfx

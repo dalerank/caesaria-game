@@ -30,6 +30,9 @@ using namespace constants;
 namespace gfx
 {
 
+namespace layer
+{
+
 static const char* damageLevelName[] = {
                                          "##none_damage_risk##", "##some_defects_damage_risk##",
                                          "##very_low_damage_risk##", "##low_damage_risk##",
@@ -38,9 +41,9 @@ static const char* damageLevelName[] = {
                                          "##very_high_damage_risk##", "##extreme_damage_risk##"
                                        };
 
-int LayerDamage::type() const {  return citylayer::damage; }
+int Damage::type() const {  return citylayer::damage; }
 
-void LayerDamage::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -118,15 +121,15 @@ void LayerDamage::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerDamage::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerDamage( camera, city ) );
+  LayerPtr ret( new Damage( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerDamage::handleEvent(NEvent& event)
+void Damage::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -157,10 +160,12 @@ void LayerDamage::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerDamage::LayerDamage( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 15 )
+Damage::Damage( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 15 )
 {
   _addWalkerType( walker::engineer );
+}
+
 }
 
 }//end namespace gfx

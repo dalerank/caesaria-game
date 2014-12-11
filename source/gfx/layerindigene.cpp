@@ -29,12 +29,15 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerIndigene::type() const
+namespace layer
+{
+
+int Indigene::type() const
 {
   return citylayer::aborigen;
 }
 
-void LayerIndigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -104,15 +107,15 @@ void LayerIndigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerIndigene::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Indigene::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerIndigene( camera, city ) );
+  LayerPtr ret( new Indigene( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerIndigene::handleEvent(NEvent& event)
+void Indigene::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -137,11 +140,13 @@ void LayerIndigene::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerIndigene::LayerIndigene( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 15 )
+Indigene::Indigene( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 15 )
 {
   _addWalkerType( walker::indigene );
   _addWalkerType( walker::missioner );
+}
+
 }
 
 }//end namespace gfx

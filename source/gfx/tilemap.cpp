@@ -164,7 +164,6 @@ void Tilemap::addBorder()
   if( !_d->border.empty() )
     return;
 
-  Picture pic = Picture::load( "land1a", 1 );
   Rect r;
   r.addInternalPoint( Tile( TilePos(-1, -1) ).mappos() );
   r.addInternalPoint( Tile( TilePos(0, _d->size+1) ).mappos() );
@@ -175,7 +174,10 @@ void Tilemap::addBorder()
   {
     for( int i=0; i < _d->size; i++ )
     {
-      TilePos tpos[4] = { TilePos( -u, i ), TilePos( i, -u), TilePos( i, _d->size + u ), TilePos( _d->size + u, i) };
+      TilePos tpos[4] = { TilePos( -_d->size/2 + u, _d->size-i ), TilePos( i, -u),
+                          TilePos( i, _d->size + _d->size/2 - 1 - u ), TilePos( _d->size + u, i) };
+      Picture pics[4] = { at( 0, _d->size-i ).picture(), at( i, 0 ).picture(),
+                          at( i, _d->size -1 ).picture(), at( _d->size -1, i).picture() };
 
       for( int idx=0; idx < 4; idx++ )
       {
@@ -184,7 +186,7 @@ void Tilemap::addBorder()
         if( r.isPointInside( t.mappos() ) )
         {
           _d->border.push_back( new Tile( tpos[idx] ) );
-          _d->border.back()->setPicture( pic );
+          _d->border.back()->setPicture( pics[idx] );
         }
       }
     }

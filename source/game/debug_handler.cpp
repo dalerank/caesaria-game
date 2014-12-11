@@ -43,6 +43,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace gfx::layer;
 
 enum {
   add_enemy_archers=0,
@@ -271,14 +272,14 @@ void DebugHandler::Impl::handleEvent(int event)
     audio::Engine::instance().setVolume( audio::gameSound, 0 );
   break;
 
-  case toggle_grid_visibility: LayerDrawOptions::instance().toggle( LayerDrawOptions::drawGrid );  break;
-  case toggle_overlay_base: LayerDrawOptions::instance().toggle( LayerDrawOptions::shadowOverlay );  break;
-  case toggle_show_path: LayerDrawOptions::instance().toggle( LayerDrawOptions::showPath );  break;
-  case toggle_show_roads: LayerDrawOptions::instance().toggle( LayerDrawOptions::showRoads );  break;
-  case toggle_show_object_area: LayerDrawOptions::instance().toggle( LayerDrawOptions::showObjectArea );  break;
-  case toggle_show_walkable_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showWalkableTiles );  break;
-  case toggle_show_locked_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showLockedTiles );  break;
-  case toggle_show_flat_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showFlatTiles );  break;
+  case toggle_grid_visibility: DrawOptions::instance().toggle( DrawOptions::drawGrid );  break;
+  case toggle_overlay_base: DrawOptions::instance().toggle( DrawOptions::shadowOverlay );  break;
+  case toggle_show_path: DrawOptions::instance().toggle( DrawOptions::showPath );  break;
+  case toggle_show_roads: DrawOptions::instance().toggle( DrawOptions::showRoads );  break;
+  case toggle_show_object_area: DrawOptions::instance().toggle( DrawOptions::showObjectArea );  break;
+  case toggle_show_walkable_tiles: DrawOptions::instance().toggle( DrawOptions::showWalkableTiles );  break;
+  case toggle_show_locked_tiles: DrawOptions::instance().toggle( DrawOptions::showLockedTiles );  break;
+  case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
 
   case add_soldiers_in_fort:
   {

@@ -32,9 +32,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEntertainment::type() const {  return _type; }
+namespace layer
+{
 
-int LayerEntertainment::_getLevelValue( HousePtr house )
+int Entertainment::type() const {  return _type; }
+
+int Entertainment::_getLevelValue( HousePtr house )
 {
   switch( _type )
   {
@@ -53,7 +56,7 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -136,15 +139,15 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
   tile.setWasDrawn();
 }
 
-LayerPtr LayerEntertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+LayerPtr Entertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerPtr ret( new LayerEntertainment( camera, city, type ) );
+  LayerPtr ret( new Entertainment( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerEntertainment::handleEvent(NEvent& event)
+void Entertainment::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -207,8 +210,8 @@ void LayerEntertainment::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int type )
-  : LayerInfo( camera, city, 9 )
+Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
+  : Info( camera, city, 9 )
 {
   _type = type;
 
@@ -263,5 +266,5 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
   default: break;
   }
 }
-
+}
 }//end namespace gfx

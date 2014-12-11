@@ -30,12 +30,15 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerReligion::type() const
+namespace layer
+{
+
+int Religion::type() const
 {
   return citylayer::religion;
 }
 
-void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -126,7 +129,7 @@ void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerReligion::handleEvent(NEvent& event)
+void Religion::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -161,18 +164,20 @@ void LayerReligion::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerReligion::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Religion::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerReligion( camera, city ) );
+  LayerPtr ret( new Religion( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerReligion::LayerReligion( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 9 )
+Religion::Religion( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 9 )
 {
   _addWalkerType( walker::priest );
 }
+
+}//end namespace layer
 
 }//end namespace gfx
