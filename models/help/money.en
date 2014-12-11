@@ -1,0 +1,27 @@
+{  
+ title : "##money##"
+ sound : "fanfare"
+ text  : "Money is extremely important. You need it especially to pay wages and pay for new buildings.\n You will soon run out of the starting funds Rome provided. After that, your funds come mainly from tax income from your people, and from @Trade&. Of these, trade is usually more important, especially early in the life of a new city when tax income will be fairly low.\n Try to start producing goods and exporting them as soon as you have a few farms up and running to feed your people. The sooner you have some supplies of cash coming in, the sooner you can relax as governor. Rome leaves you alone most of the time, but takes a very dim view of governors who consistently spend too much money.\n All citizens who are enrolled for taxes pay whatever rate you decree, although their actual tax bills depend on the quality of their homes. The nicer the home, the wealthier the inhabitants, and the more taxes they pay. Experiment with tax rates to find a level you are comfortable with.\n Remember that people won't like higher rates, although you may be able to balance a higher rate of tax with a higher wage, or very low unemployment, to keep the mood of your population in order. Remember that a bad mood can turn ugly, and increase @Crime&. Click on @Population and Mood& to read more about this.\n You might also need to adjust tax rates for short periods of time as special needs arise. Tell your @Finance Advisor& to set taxes at 4 or 5 percent to raise public happiness and attract new citizens, but beware the impact on the treasury. In times of crisis, you can raise the rate as high as 25 percent, although you'll probably see a major exodus of citizens before you can extract many denarii from them. Tax increases, even small ones, are a beguiling source of fast income, but they can be self-defeating.\n No matter the rate, people do not volunteer to pay taxes. @Forums& and the @senate& send tax collectors to enforce compliance. Ask your @Finances Advisor& how many citizens are registered taxpayers. If the percentage registered is much below 100, plan a new forum or check that your existing senate and forums have the staff they need.\n Your city will never grow rich simply by taxing itself. To generate real wealth, you must engage in trade. Check the @Empire Map& to see what your potential trade partners will buy, then look at the price list to see which of those goods is the most costly, and try to develop that export first.\n Finally, be sure to pay yourself a salary. Tell your @Emperor Advisor& to divert part of your city's income into your personal account. The wisest course is to take the salary appropriate to your rank. Paying yourself more than that might lower your Favor with Caesar - just as taking a salary below your station might make Caesar think better of you!"
+ uri : {
+  "Prefects" : "prefect"
+  "Population" : "population"
+  "Employment" : "employment"
+  "wages" : "wages" 
+  "Trade" : "trade"
+  "mood" : "mood"
+  "Forums" : "forum"
+  "taxes" : "taxes"
+  "senate" : "senate"
+  "Crime" : "crime"
+  "Finance Advisor" : "finance_advisor"
+  "composition of your populace" : "composition_populace"
+  "Labor Advisor" : "labor_advisor"
+  "Empire Map" : "empire_map"
+  "Emperor Advisor" : "emperor_advisor"
+  "Trade Advisor" : "trade_advisor"
+  "Population and Mood" : "population_mood"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+ }
+}
