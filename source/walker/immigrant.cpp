@@ -55,24 +55,20 @@ void Immigrant::getPictures( Pictures& oPics)
   // depending on the walker direction, the cart is ahead or behind
   switch (direction())
   {
-  case constants::west:
-  case constants::northWest:
   case constants::north:
   case constants::northEast:
-    oPics.push_back( _cartPicture() );
+  case constants::northWest:
+  case constants::west:
     oPics.push_back( getMainPicture() );
+    oPics.push_back( _cartPicture() );
   break;
 
-  case constants::east:
-  case constants::southEast:
-    oPics.push_back( _cartPicture() );
-    oPics.push_back( getMainPicture() );
-  break;
-
-  case constants::south:
   case constants::southWest:
-    oPics.push_back( getMainPicture() );
+  case constants::southEast:
+  case constants::east:
+  case constants::south:
     oPics.push_back( _cartPicture() );
+    oPics.push_back( getMainPicture() );
   break;
 
   default:
