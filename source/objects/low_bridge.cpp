@@ -149,25 +149,25 @@ public:
   }
 };
 
-bool LowBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
+bool LowBridge::canBuild( const CityAreaInfo& areaInfo ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
   _d->direction=noneDirection;
 
-  TileOverlayPtr bridge = city->getOverlay( pos );
+  TileOverlayPtr bridge = areaInfo.city->getOverlay( areaInfo.pos );
   if( bridge.isNull() )
   {
     _d->subtiles.clear();
     LowBridge* thisp = const_cast< LowBridge* >( this );
     thisp->_fgPicturesRef().clear();
 
-    _checkParams( city, _d->direction, startPos, endPos, pos );
+    _checkParams( areaInfo.city, _d->direction, startPos, endPos, areaInfo.pos );
 
     if( _d->direction != noneDirection )
     {
-      thisp->_computePictures( city, startPos, endPos, _d->direction );
+      thisp->_computePictures( areaInfo.city, startPos, endPos, _d->direction );
     }
   }
 

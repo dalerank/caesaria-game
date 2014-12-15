@@ -375,9 +375,9 @@ Winery::Winery() : Factory(good::grape, good::wine, objects::winery, Size(2) )
   _fgPicturesRef().resize(3);
 }
 
-bool Winery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Winery::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  return Factory::canBuild( city, pos, aroundTiles );
+  return Factory::canBuild( areaInfo );
 }
 
 bool Winery::build(PlayerCityPtr city, const TilePos& pos)
@@ -407,9 +407,9 @@ Creamery::Creamery() : Factory(good::olive, good::oil, objects::creamery, Size(2
   _fgPicturesRef().resize( 3 );
 }
 
-bool Creamery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Creamery::canBuild( const CityAreaInfo& areaInof ) const
 {
-  return Factory::canBuild( city, pos, aroundTiles );
+  return Factory::canBuild( areaInof );
 }
 
 bool Creamery::build(PlayerCityPtr city, const TilePos& pos)

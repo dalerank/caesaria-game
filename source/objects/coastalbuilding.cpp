@@ -50,11 +50,11 @@ CoastalFactory::CoastalFactory(const good::Type consume, const good::Type produc
 {
 }
 
-bool CoastalFactory::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
-  Direction direction = _d->getDirection( city, pos );
+  Direction direction = _d->getDirection( areaInfo.city, areaInfo.pos );
 
   const_cast< CoastalFactory* >( this )->_setDirection( direction );
 

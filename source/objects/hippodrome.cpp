@@ -170,15 +170,15 @@ std::string Hippodrome::troubleDesc() const
   return ret;
 }
 
-bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Hippodrome::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  const_cast<Hippodrome*>( this )->_checkDirection( city, pos );
+  const_cast<Hippodrome*>( this )->_checkDirection( areaInfo );
   if( _d->direction != noneDirection )
   {
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  city::Helper helper( city );
+  city::Helper helper( areaInfo.city );
   HippodromeList hpList = helper.find<Hippodrome>( objects::hippodrome );
   if( !hpList.empty() )
   {
@@ -212,7 +212,8 @@ void Hippodrome::deliverService()
 
 bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
 {
-  _checkDirection( city, pos );
+  CityAreaInfo info = { city, pos, TilesArray() };
+  _checkDirection( info );
 
   setSize( Size( 5 ) );
   EntertainmentBuilding::build( city, pos );
@@ -334,17 +335,17 @@ HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TileP
   return ret;
 }
 
-void Hippodrome::_checkDirection(PlayerCityPtr city, TilePos pos)
+void Hippodrome::_checkDirection( const CityAreaInfo& areaInfo )
 {
   const_cast<Hippodrome*>( this )->setSize( Size( 15, 5 ) );
   _d->direction = west;
-  bool mayBuild = EntertainmentBuilding::canBuild( city, pos, TilesArray() ); //check horizontal direction
+  bool mayBuild = EntertainmentBuilding::canBuild( areaInfo ); //check horizontal direction
 
   if( !mayBuild )
   {
     _d->direction = north;
     const_cast<Hippodrome*>( this )->setSize( Size( 5, 15 ) );
-    mayBuild = EntertainmentBuilding::canBuild( city, pos, TilesArray() ); //check vertical direction
+    mayBuild = EntertainmentBuilding::canBuild( areaInfo ); //check vertical direction
   }
 
   if( !mayBuild )

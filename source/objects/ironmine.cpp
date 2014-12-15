@@ -40,13 +40,14 @@ IronMine::IronMine()
   _setUnworkingInterval( 8 );
 }
 
-bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool IronMine::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
+  bool is_constructible = WorkingBuilding::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), pos + TilePos(3, 3), Tilemap::checkCorners );
+  Tilemap& tilemap = areaInfo.city->tilemap();
+  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ),
+                                              areaInfo.pos + TilePos(3, 3), Tilemap::checkCorners );
 
   foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }
 

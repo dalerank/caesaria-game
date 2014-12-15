@@ -64,16 +64,16 @@ bool Road::build( PlayerCityPtr city, const TilePos& pos )
   return true;
 }
 
-bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Road::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool is_free = Construction::canBuild( city, pos, aroundTiles );
+  bool is_free = Construction::canBuild( areaInfo );
 
   if( is_free )
     return true; // we try to build on free tile
 
-  TileOverlayPtr overlay  = city->tilemap().at( pos ).overlay();
+  TileOverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
-  Picture pic = picture( city, pos, aroundTiles );
+  Picture pic = picture( areaInfo );
   const_cast<Road*>( this )->setPicture( pic );
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
@@ -84,17 +84,18 @@ void Road::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::TilesArray& tmp ) const
+const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
 {
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  if (!tmp.empty())
+  if (!areaInfo.aroundTiles.empty())
   {
-    foreach( it, tmp )
+    foreach( it, areaInfo.aroundTiles )
     {
       const TilePos& epos = (*it)->epos();
 
       if( (*it)->getFlag( Tile::tlRoad ) || is_kind_of<Road>( (*it)->overlay() ) )
       {
+        const TilePos& p = areaInfo.pos;
         if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
         else if ( epos == p.southnb() ) directionFlags |= road2south; // road to the south
         else if ( epos == p.eastnb() ) directionFlags |= road2east; // road to the east
@@ -104,13 +105,14 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
   }
 
   TilesArray roads;
-  if( city.isValid() )
-    roads = city->tilemap().getNeighbors( p, Tilemap::FourNeighbors );
+  if( areaInfo.city.isValid() )
+    roads = areaInfo.city->tilemap().getNeighbors( areaInfo.pos, Tilemap::FourNeighbors );
 
   foreach( it, roads )
   {
     Tile* tile = *it;
     const TilePos& epos = tile->epos();
+    const TilePos& p = areaInfo.pos;
     if( tile->getFlag( Tile::tlRoad ) || is_kind_of<Road>( tile->overlay() ) )
     {
       if (epos.j() > p.j())      { directionFlags |= road2north; } // road to the north
@@ -120,9 +122,10 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
     }
   }
 
-  if( city.isValid() )
+  const TilePos& p = areaInfo.pos;
+  if( areaInfo.city.isValid() )
   {
-    int mapBorder = city->tilemap().size()-1;
+    int mapBorder = areaInfo.city->tilemap().size()-1;
     if( p.i() == 0 ) { directionFlags |= road2west; }
     if( p.i() == mapBorder ) { directionFlags |= road2east; }
     if( p.j() == 0 ) { directionFlags |= road2south; }
@@ -183,7 +186,11 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
 
 bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
-void Road::updatePicture(){  setPicture( picture( _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() ) );}
+void Road::updatePicture()
+{
+  CityAreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
+  setPicture( picture( info ) );
+}
 bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
@@ -258,14 +265,14 @@ Plaza::Plaza()
 // Plazas can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool Plaza::canBuild(const CityAreaInfo& areaInfo) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
-  Tilemap& tilemap = city->tilemap();
+  Tilemap& tilemap = areaInfo.city->tilemap();
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( pos, size() ); // something very complex ???
+  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
@@ -274,7 +281,7 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return is_constructible;
 }
 
-const Picture& Plaza::picture(PlayerCityPtr city, TilePos pos, const TilesArray &tmp) const
+const Picture& Plaza::picture(const CityAreaInfo& areaInfo) const
 {
   return picture();
 }

@@ -503,10 +503,12 @@ void Fort::_addFormation(Fort::TroopsFormation formation)
   _d->availableFormations.push_back( formation );
 }
 
-bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool isFreeFort = Building::canBuild( city, pos, aroundTiles );
-  bool isFreeArea = _d->area->canBuild( city, pos + TilePos( 3, 0 ), aroundTiles );
+  bool isFreeFort = Building::canBuild( areaInfo );
+  CityAreaInfo fortArea = areaInfo;
+  fortArea.pos += TilePos( 3, 0 );
+  bool isFreeArea = _d->area->canBuild( fortArea );
 
   return (isFreeFort && isFreeArea);
 }

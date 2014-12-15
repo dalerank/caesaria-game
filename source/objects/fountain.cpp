@@ -125,12 +125,12 @@ void Fountain::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Construction::canBuild( city, pos, aroundTiles );
+  bool ret = Construction::canBuild( areaInfo );
 
-  Tilemap& tmap = city->tilemap();
-  const Tile& tile = tmap.at( pos );
+  Tilemap& tmap = areaInfo.city->tilemap();
+  const Tile& tile = tmap.at( areaInfo.pos );
   Fountain* thisp = const_cast< Fountain* >( this );
   thisp->_fgPicturesRef().clear();
   thisp->setPicture( ResourceGroup::utilitya, 10 );

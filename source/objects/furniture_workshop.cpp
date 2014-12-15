@@ -26,9 +26,9 @@
 using namespace constants;
 using namespace gfx;
 
-bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  return Factory::canBuild( city, pos, aroundTiles );
+  return Factory::canBuild( areaInfo );
 }
 
 bool FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)

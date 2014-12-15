@@ -119,7 +119,8 @@ void Build::_checkPreviewBuild(TilePos pos)
     }
   }
 
-  if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
+  CityAreaInfo areaInfo = { _city(), pos, d->buildTiles };
+  if( !walkersOnTile && overlay->canBuild( areaInfo ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _city()->tilemap();
@@ -282,10 +283,12 @@ void Build::_buildAll()
   }
 
   bool buildOk = false;  
+  CityAreaInfo areaInfo = { _city(), TilePos(), TilesArray() };
   foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
-    if( cnstr->canBuild( _city(), tile->epos(), TilesArray() ) && tile->isMasterTile())
+    areaInfo.pos = tile->epos();
+    if( cnstr->canBuild( areaInfo ) && tile->isMasterTile())
     {
       events::GameEventPtr event = events::BuildAny::create( tile->epos(), cnstr->type() );
       event->dispatch();
@@ -404,6 +407,7 @@ void Build::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,Build);
   Point offset = _camera()->offset();
+  CityAreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
   foreach( it, _d->buildTiles )
   {
     Tile* postTile = *it;
@@ -415,8 +419,8 @@ void Build::_drawBuildTiles( Engine& engine)
     ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->overlay() );
     engine.resetColorMask();
 
-    if( ptr_construction.isValid()
-        && ptr_construction->canBuild( _city(), postTile->epos(), _d->buildTiles ) )
+    areaInfo.pos = postTile->epos();
+    if( ptr_construction.isValid() && ptr_construction->canBuild( areaInfo ) )
     {
       engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
@@ -447,16 +451,16 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   Point screenPos = tile.mappos() + offset;
 
   ConstructionPtr cntr = ptr_cast<Construction>( tile.overlay() );
-  const TilesArray& postTiles = _d->buildTiles;
+  CityAreaInfo info = { _city(), tile.epos(), _d->buildTiles };
 
   if( _d->drawTileBasicPicture )
   {
     const Picture* picBasic = 0;
     const Picture* picOver = 0;
-    if( cntr.isValid() && postTiles.size() > 0 )
+    if( cntr.isValid() && info.aroundTiles.size() > 0 )
     {
       picBasic = &cntr->picture();
-      picOver = &cntr->picture( _city(), tile.epos(), postTiles );
+      picOver = &cntr->picture( info );
     }
 
     if( picOver && picBasic != picOver )
@@ -478,7 +482,7 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   {
     if( cntr.isValid() )
     {
-      const Picture& picOver = cntr->picture( _city(), tile.epos(), postTiles );
+      const Picture& picOver = cntr->picture( info );
       engine.draw( picOver, screenPos );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }

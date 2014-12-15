@@ -64,6 +64,7 @@
 #include "gfx/tileoverlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
+#include "hotkey_manager.hpp"
 
 #include <list>
 
@@ -94,6 +95,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initHotkeys();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -234,6 +236,13 @@ void Game::Impl::initPictures()
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
+}
+
+void Game::Impl::initHotkeys()
+{
+  game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
+  hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+  CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
 PlayerPtr Game::player() const { return _d->player; }
@@ -381,6 +390,7 @@ void Game::initialize()
   _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();
+  _d->initHotkeys();
   _d->createSaveDir();
 
   Logger::warning( "Game: load splash screen" );

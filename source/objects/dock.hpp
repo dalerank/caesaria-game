@@ -27,7 +27,7 @@ public:
   Dock();
   ~Dock();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
 

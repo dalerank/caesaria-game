@@ -31,7 +31,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

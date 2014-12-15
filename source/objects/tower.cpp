@@ -70,11 +70,12 @@ void Tower::load(const VariantMap& stream)
   Building::load( stream );
 }
 
-bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
+bool Tower::canBuild(const CityAreaInfo& areaInfo) const
 {
-  Tilemap& tmap = city->tilemap();
+  Tilemap& tmap = areaInfo.city->tilemap();
 
   bool freeMap[ countDirection ] = { 0 };
+  const TilePos& pos = areaInfo.pos;
   freeMap[ noneDirection ] = tmap.at( pos ).getFlag( Tile::isConstructible );
   freeMap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
   freeMap[ east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );

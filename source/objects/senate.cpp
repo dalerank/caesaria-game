@@ -57,14 +57,14 @@ Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ),
   _fgPicturesRef()[ 3 ].setOffset( 230, -10 );
 }
 
-bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool Senate::canBuild( const CityAreaInfo& areaInfo ) const
 {
   _d->errorStr = "";
-  bool mayBuild = ServiceBuilding::canBuild( city, pos, aroundTiles );
+  bool mayBuild = ServiceBuilding::canBuild( areaInfo );
 
   if( mayBuild )
   {
-    city::Helper helper( city );
+    city::Helper helper( areaInfo.city );
     bool isSenatePresent = !helper.find<Building>(objects::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;

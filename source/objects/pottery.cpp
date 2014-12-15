@@ -31,9 +31,9 @@ Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery, Size(2
   _fgPicturesRef().resize( 3 );
 }
 
-bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Pottery::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Factory::canBuild( city, pos, aroundTiles );
+  bool ret = Factory::canBuild( areaInfo );
   return ret;
 }
 

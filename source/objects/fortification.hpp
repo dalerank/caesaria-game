@@ -27,9 +27,7 @@ public:
   virtual ~Fortification();
 
   virtual bool build(PlayerCityPtr city, const TilePos& pos );
-  const gfx::Picture& picture(PlayerCityPtr city,
-                            TilePos pos,
-                            const gfx::TilesArray& tmp ) const;
+  const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
 
   int getDirection() const;
 

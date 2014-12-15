@@ -34,7 +34,7 @@ public:
   Fort( constants::objects::Type type, int picIdLogo );
   virtual ~Fort();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
   virtual bool isNeedRoadAccess() const;

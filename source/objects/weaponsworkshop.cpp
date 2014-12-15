@@ -34,9 +34,9 @@ WeaponsWorkshop::WeaponsWorkshop()
   _fgPicturesRef().resize(2);
 }
 
-bool WeaponsWorkshop::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool WeaponsWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  return Factory::canBuild( city, pos, aroundTiles );
+  return Factory::canBuild( areaInfo );
 }
 
 bool WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)

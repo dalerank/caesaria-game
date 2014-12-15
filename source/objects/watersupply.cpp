@@ -159,11 +159,11 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
-bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Construction::canBuild( city, pos, aroundTiles );
+  bool ret = Construction::canBuild( areaInfo );
 
-  bool nearWater = _isNearWater( city, pos );
+  bool nearWater = _isNearWater( areaInfo.city, areaInfo.pos );
   Reservoir* thisp = const_cast< Reservoir* >( this );
   thisp->_fgPicturesRef().clear();
   if( nearWater )

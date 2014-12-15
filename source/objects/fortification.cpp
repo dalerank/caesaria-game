@@ -134,15 +134,14 @@ Point Fortification::offset( const Tile& tile, const Point& subpos) const
   return _d->offset;
 }
 
-const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
-                                             const TilesArray& tmp) const
+const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
 {
   // find correct picture as for roads
-  Tilemap& tmap = city->tilemap();
+  Tilemap& tmap = areaInfo.city->tilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp.empty()) ? pos() : p;
+  const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
@@ -181,9 +180,10 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   overlay_d[northWest] = tmap.at( tile_pos_d[northWest]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
-  if( !tmp.empty())
+  const TilePos& p = areaInfo.pos;
+  if( !areaInfo.aroundTiles.empty())
   {
-    foreach( it, tmp )
+    foreach( it, areaInfo.aroundTiles )
     {
       if( (*it)->overlay().isNull()
           || (*it)->overlay()->type() != objects::fortification )
@@ -406,16 +406,16 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   }
 
   _d->isTowerEnter = false;
-  bool towerNorth = _d->isFortification( city, p + TilePos( 0, 1 ) );
-  bool towerWest = _d->isFortification( city, p + TilePos( -1, 0 ) );
-  bool towerEast = _d->isFortification( city, p + TilePos( 1, 0 ) );
+  bool towerNorth = _d->isFortification( areaInfo.city, p + TilePos( 0, 1 ) );
+  bool towerWest = _d->isFortification( areaInfo.city, p + TilePos( -1, 0 ) );
+  bool towerEast = _d->isFortification( areaInfo.city, p + TilePos( 1, 0 ) );
 
   switch( index )
   {
   case 175:
     {
-      towerNorth = _d->isFortification( city, p + TilePos( 0, 1 ), true );
-      towerWest = _d->isFortification( city, p + TilePos( -1, 0 ), true );
+      towerNorth = _d->isFortification( areaInfo.city, p + TilePos( 0, 1 ), true );
+      towerWest = _d->isFortification( areaInfo.city, p + TilePos( -1, 0 ), true );
       _d->isTowerEnter = (towerNorth || towerWest);
       if( towerNorth ) { index = 181; }
       else if( towerWest ) { index = 182; }
@@ -435,7 +435,6 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   break;
   }
 
-
   _d->index = index;
   th._d->mayPatrol = (_d->offset.y() > 0);
 
@@ -448,7 +447,8 @@ int Fortification::getDirection() const {  return _d->direction;}
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  setPicture( picture( city, pos(), TilesArray() ) );
+  CityAreaInfo info = { city, pos(), TilesArray() };
+  setPicture( picture( info) );
 }
 
 bool Fortification::isTowerEnter() const {  return _d->isTowerEnter;}

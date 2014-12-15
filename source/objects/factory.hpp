@@ -88,7 +88,7 @@ class Winery : public Factory
 {
 public:
   Winery();
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
 protected:
@@ -100,7 +100,7 @@ class Creamery : public Factory
 public:
   Creamery();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
   virtual bool build(PlayerCityPtr city, const TilePos &pos);
 protected:
   virtual void _storeChanged();

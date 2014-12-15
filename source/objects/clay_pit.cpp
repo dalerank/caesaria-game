@@ -49,13 +49,13 @@ void ClayPit::_reachUnworkingTreshold()
   e->dispatch();
 }
 
-bool ClayPit::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool ClayPit::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool is_constructible = Construction::canBuild( city, pos, aroundTiles );
+  bool is_constructible = Construction::canBuild( areaInfo );
   bool near_water = false;
 
-  Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
+  Tilemap& tilemap = areaInfo.city->tilemap();
+  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
 
   foreach( tile, perimetr )  {  near_water |= (*tile)->getFlag( Tile::tlWater ); }
 

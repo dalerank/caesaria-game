@@ -72,11 +72,11 @@ Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
   _setClearAnimationOnStop( false );
 }
 
-bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
-  Direction direction = _d->getDirection( city, pos, size() );
+  Direction direction = _d->getDirection( areaInfo.city, areaInfo.pos, size() );
 
   const_cast< Dock* >( this )->_setDirection( direction );
 

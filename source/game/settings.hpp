@@ -77,6 +77,7 @@ public:
   __GS_PROPERTY(freeplay_opts)
   __GS_PROPERTY(cellw)
   __GS_PROPERTY(simpleAnimationModel)
+  __GS_PROPERTY(hotkeysModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();

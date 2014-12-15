@@ -48,14 +48,14 @@ Construction::Construction(const Type type, const Size& size)
   _d->params[ damage ] = 0;
 }
 
-bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& ) const
+bool Construction::canBuild(const CityAreaInfo& areaInfo) const
 {
-  Tilemap& tilemap = city->tilemap();
+  Tilemap& tilemap = areaInfo.city->tilemap();
 
   bool is_constructible = true;
 
   //return area for available tiles
-  TilesArray area = tilemap.getArea( pos, size() );
+  TilesArray area = tilemap.getArea( areaInfo.pos, size() );
 
   //on over map size
   if( (int)area.size() != size().area() )
@@ -260,7 +260,7 @@ void Construction::timeStep(const unsigned long time)
   TileOverlay::timeStep( time );
 }
 
-const Picture& Construction::picture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+const Picture& Construction::picture(const CityAreaInfo& areaInfo) const
 {
   return TileOverlay::picture();
 }

@@ -80,6 +80,7 @@
 #include "city/cityservice_info.hpp"
 #include "gfx/layer.hpp"
 #include "game/debug_handler.hpp"
+#include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
 #include "events/movecamera.hpp"
 
@@ -740,6 +741,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     if( !event.keyboard.shift )
     {
       handled = true;
+      game::HotkeyManager::instance().execute( event.keyboard.key );
       switch( event.keyboard.key )
       {
       case KEY_SPACE:
@@ -755,18 +757,6 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
       case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
       case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
-      case KEY_F1:    _d->showAdvisorsWindow( advisor::employers ); break;
-      case KEY_F2:    _d->showAdvisorsWindow( advisor::military ); break;
-      case KEY_F3:    _d->showAdvisorsWindow( advisor::empire ); break;
-      case KEY_F4:    _d->showAdvisorsWindow( advisor::ratings ); break;
-      case KEY_F5:    _d->showAdvisorsWindow( advisor::trading ); break;
-      case KEY_F6:    _d->showAdvisorsWindow( advisor::population ); break;
-      case KEY_F7:    _d->showAdvisorsWindow( advisor::health ); break;
-      case KEY_F8:    _d->showAdvisorsWindow( advisor::education ); break;
-      case KEY_F9:    _d->showAdvisorsWindow( advisor::entertainment ); break;
-      case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
-      case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
-      case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
 
       default:
         handled = false;

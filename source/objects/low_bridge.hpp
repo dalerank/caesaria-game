@@ -25,7 +25,7 @@ class LowBridge : public Construction
 public:
   LowBridge();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual void initTerrain( gfx::Tile& terrain );
   virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual bool canDestroy() const;

@@ -230,25 +230,25 @@ public:
   }
 };
 
-bool HighBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
+bool HighBridge::canBuild( const CityAreaInfo& areaInfo ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
   _d->direction=noneDirection;
   
-  TileOverlayPtr ov = city->getOverlay( pos );
+  TileOverlayPtr ov = areaInfo.city->getOverlay( areaInfo.pos );
   if( ov.isNull() )
   {
     _d->subtiles.clear();
     HighBridge* thisp = const_cast< HighBridge* >( this );
     thisp->_fgPicturesRef().clear();
 
-    _checkParams( city, _d->direction, startPos, endPos, pos );
+    _checkParams( areaInfo.city, _d->direction, startPos, endPos, areaInfo.pos );
 
     if( _d->direction != noneDirection )
     {
-      thisp->_computePictures( city, startPos, endPos, _d->direction );
+      thisp->_computePictures( areaInfo.city, startPos, endPos, _d->direction );
     }
   }
 
