@@ -15,10 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_ADVISOR_INCLUDE_H_
-#define _CAESARIA_ADVISOR_INCLUDE_H_
-
-#include <string>
+#include "advisor.hpp"
+#include "core/enumerator.hpp"
 
 namespace constants
 {
@@ -26,27 +24,33 @@ namespace constants
 namespace advisor
 {
 
-enum Type
+Type findType(const std::string& advisorName)
 {
-  employers=0,
-  military,
-  empire,
-  ratings,
-  trading,
-  population,
-  health,
-  education,
-  entertainment,
-  religion,
-  finance,
-  main,
-  count
-};
+  static EnumsHelper<Type> names( count );
 
-Type findType( const std::string& advisorName );
+#define ADD_ADVISOR(type) names.append(type,CAESARIA_STR_EXT(type) );
+
+  if( names.empty() )
+  {
+    ADD_ADVISOR(employers)
+    ADD_ADVISOR(military)
+    ADD_ADVISOR(empire)
+    ADD_ADVISOR(ratings)
+    ADD_ADVISOR(trading)
+    ADD_ADVISOR(population)
+    ADD_ADVISOR(health)
+    ADD_ADVISOR(education)
+    ADD_ADVISOR(entertainment)
+    ADD_ADVISOR(religion)
+    ADD_ADVISOR(finance)
+    ADD_ADVISOR(main)
+  }
+
+#undef ADD_ADVISOR
+
+  return names.findType( advisorName );
+}
 
 } //end namespace advisor
 
 } //end namespace constants
-
-#endif  //_CAESARIA_ADVISOR_INCLUDE_H_

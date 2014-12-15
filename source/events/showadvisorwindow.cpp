@@ -27,7 +27,14 @@ using namespace constants;
 namespace events
 {
 
-GameEventPtr ShowAdvisorWindow::create(bool show, constants::advisor::Type advisor)
+GameEventPtr ShowAdvisorWindow::create()
+{
+  GameEventPtr ret( new ShowAdvisorWindow() );
+  ret->drop();
+  return ret;
+}
+
+GameEventPtr ShowAdvisorWindow::create(bool show, advisor::Type advisor)
 {
   ShowAdvisorWindow* ev = new ShowAdvisorWindow();
   ev->_show = show;
@@ -37,11 +44,22 @@ GameEventPtr ShowAdvisorWindow::create(bool show, constants::advisor::Type advis
   return ret;
 }
 
+void ShowAdvisorWindow::load(const VariantMap &stream)
+{
+  GameEvent::load( stream );
+
+  _show = stream.get( "show" );
+  Variant adv = stream.get( "advisor" );
+  if( adv.type() == Variant::String ) { _advisor = advisor::findType( adv.toString() ); }
+  else { _advisor = (advisor::Type)adv.toInt(); }
+}
+
 bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const {  return true; }
 
 ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::count )
 {
-
+  _show = false;
+  _advisor = advisor::count;
 }
 
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)
@@ -63,7 +81,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     return;
   }
 
-  List<gui::advisorwnd::AdvisorsWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::advisorwnd::AdvisorsWindow*>();
+  List<gui::advisorwnd::AWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::advisorwnd::AWindow*>();
 
   if( _show )
   {
@@ -74,7 +92,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      gui::advisorwnd::AdvisorsWindow::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
+      gui::advisorwnd::AWindow::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
     }
   }
   else

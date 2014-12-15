@@ -76,6 +76,8 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
     case objects::fountain:
     case objects::well:
     case objects::aqueduct:
+    case objects::tree:
+    case objects::waymark:
       needDrawAnimations = true;
       areaSize = overlay->size();      
     break;

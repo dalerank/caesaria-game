@@ -195,7 +195,6 @@ void Tilemap::addBorder()
 
 int Tilemap::size() const {  return _d->size; }
 
-
 TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
 {
   TilePos offset(1,1);

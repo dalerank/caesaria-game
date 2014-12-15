@@ -562,139 +562,12 @@ void Level::handleEvent( NEvent& event )
     return;
   }
 
-  static enum _MouseEventTarget
+  /*static enum _MouseEventTarget
   {
     _MET_NONE,
     _MET_GUI,
     _MET_TILES
-  } _mouseEventTarget = _MET_NONE;
-
-  if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
-  {
-    if( !event.keyboard.shift )
-    {
-      bool handled = true;
-      switch( event.keyboard.key )
-      {
-      case KEY_SPACE:
-      {
-        int newLayer = _d->renderer.layerType() == citylayer::simple
-                          ? _d->lastLayerId : citylayer::simple;
-        _d->renderer.setLayer( newLayer );
-      }
-      break;
-
-      case KEY_KEY_F: _d->renderer.setLayer( citylayer::fire ); break;
-      case KEY_KEY_D: _d->renderer.setLayer( citylayer::damage ); break;
-      case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
-      case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
-      case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
-      case KEY_F1:    _d->showAdvisorsWindow( advisor::employers ); break;
-      case KEY_F2:    _d->showAdvisorsWindow( advisor::military ); break;
-      case KEY_F3:    _d->showAdvisorsWindow( advisor::empire ); break;
-      case KEY_F4:    _d->showAdvisorsWindow( advisor::ratings ); break;
-      case KEY_F5:    _d->showAdvisorsWindow( advisor::trading ); break;
-      case KEY_F6:    _d->showAdvisorsWindow( advisor::population ); break;
-      case KEY_F7:    _d->showAdvisorsWindow( advisor::health ); break;
-      case KEY_F8:    _d->showAdvisorsWindow( advisor::education ); break;
-      case KEY_F9:    _d->showAdvisorsWindow( advisor::entertainment ); break;
-      case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
-      case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
-      case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
-
-      default:
-        handled = false;
-      break;
-      }
-
-      if( handled )
-        return;
-    }
-
-    switch( event.keyboard.key )
-    {
-    case KEY_MINUS:
-    case KEY_PLUS:
-    case KEY_SUBTRACT:
-    case KEY_ADD:
-    {
-      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
-                                                            ? -10 : +10 );
-      e->dispatch();
-    }
-    break;
-
-    case KEY_KEY_P:
-    {
-      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
-      e->dispatch();
-    }
-    break;
-
-    case KEY_COMMA:
-    case KEY_PERIOD:
-    {
-      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
-      e->dispatch();
-    }
-    break;
-
-    case KEY_F5:
-      if( event.keyboard.control )
-        _d->makeFastSave();
-    break;
-
-    case KEY_F9:
-      if( event.keyboard.control )
-        _resolveLoadGame( "" );
-    break;
-
-    case KEY_KEY_1: case KEY_KEY_2:
-    case KEY_KEY_3: case KEY_KEY_4:
-    {
-      if( event.keyboard.control )
-      {
-        unsigned int index = event.keyboard.key - KEY_KEY_1;
-        city::BuildOptions bopts;
-        bopts = _d->game->city()->buildOptions();
-        if( event.keyboard.shift )
-        {
-          TilePos camPos = _d->renderer.camera()->center();
-          bopts.setMemPoint( index, camPos );
-          _d->game->city()->setBuildOptions( bopts );
-        }
-        else
-        {
-          TilePos camPos = bopts.memPoint( index );
-          _d->renderer.camera()->setCenter( camPos );
-        }
-      }
-    }
-    break;
-
-    case KEY_SNAPSHOT:
-      if( !event.keyboard.shift )
-        _d->makeScreenShot();
-      else
-        _d->makeFullScreenshot();
-    break;
-
-    case KEY_ESCAPE:
-    {
-      Widget::Widgets children = _d->game->gui()->rootWidget()->children();
-      foreach( it, children )
-      {
-        bool handled = (*it)->onEvent( event );
-        if( handled )
-            break;
-      }
-    }
-    break;
-
-    default:
-    break;
-    }
-  }
+  } _mouseEventTarget = _MET_NONE; */
 
   for( Impl::EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
@@ -703,13 +576,24 @@ void Level::handleEvent( NEvent& event )
     else{ ++it; }
   }
 
-  bool eventResolved = false;
-  if (event.EventType == sEventMouse)
+  bool eventResolved = gui.handleEvent( event );
+
+  if( !eventResolved )
+  {
+    eventResolved = _tryExecHotkey( event );
+  }
+
+  if( !eventResolved )
+  {
+     _d->renderer.handleEvent( event );
+     _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
+  }
+  /*if (event.EventType == sEventMouse)
   {
     if( event.mouse.type == mouseRbtnPressed || event.mouse.type == mouseLbtnPressed )
     {
       eventResolved = gui.handleEvent( event );
-      if (eventResolved)
+      if( eventResolved )
       {
         _mouseEventTarget = _MET_GUI;
       }
@@ -733,7 +617,7 @@ void Level::handleEvent( NEvent& event )
     break;
 
     default:
-       if (!gui.handleEvent( event ))
+       if( !gui.handleEvent( event ) )
         _d->renderer.handleEvent( event );
     break;
     }
@@ -751,7 +635,7 @@ void Level::handleEvent( NEvent& event )
     {
       _d->renderer.handleEvent( event );
     }
-  }
+  }*/
 }
 
 void Level::Impl::makeScreenShot()
@@ -846,6 +730,151 @@ void Level::_requestExitGame()
   DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
   CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+}
+
+bool Level::_tryExecHotkey(NEvent &event)
+{
+  bool handled = false;
+  if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
+  {
+    if( !event.keyboard.shift )
+    {
+      handled = true;
+      switch( event.keyboard.key )
+      {
+      case KEY_SPACE:
+      {
+        int newLayer = _d->renderer.layerType() == citylayer::simple
+                          ? _d->lastLayerId : citylayer::simple;
+        _d->renderer.setLayer( newLayer );
+      }
+      break;
+
+      case KEY_KEY_F: _d->renderer.setLayer( citylayer::fire ); break;
+      case KEY_KEY_D: _d->renderer.setLayer( citylayer::damage ); break;
+      case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
+      case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
+      case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
+      case KEY_F1:    _d->showAdvisorsWindow( advisor::employers ); break;
+      case KEY_F2:    _d->showAdvisorsWindow( advisor::military ); break;
+      case KEY_F3:    _d->showAdvisorsWindow( advisor::empire ); break;
+      case KEY_F4:    _d->showAdvisorsWindow( advisor::ratings ); break;
+      case KEY_F5:    _d->showAdvisorsWindow( advisor::trading ); break;
+      case KEY_F6:    _d->showAdvisorsWindow( advisor::population ); break;
+      case KEY_F7:    _d->showAdvisorsWindow( advisor::health ); break;
+      case KEY_F8:    _d->showAdvisorsWindow( advisor::education ); break;
+      case KEY_F9:    _d->showAdvisorsWindow( advisor::entertainment ); break;
+      case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
+      case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
+      case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
+
+      default:
+        handled = false;
+      break;
+      }
+
+      if( handled )
+        return handled;
+    }
+
+    switch( event.keyboard.key )
+    {
+    case KEY_MINUS:
+    case KEY_PLUS:
+    case KEY_SUBTRACT:
+    case KEY_ADD:
+    {
+      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+                                                            ? -10 : +10 );
+      e->dispatch();
+      handled = true;
+    }
+    break;
+
+    case KEY_KEY_P:
+    {
+      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
+      e->dispatch();
+      handled = true;
+    }
+    break;
+
+    case KEY_COMMA:
+    case KEY_PERIOD:
+    {
+      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      e->dispatch();
+      handled = true;
+    }
+    break;
+
+    case KEY_F5:
+      if( event.keyboard.control )
+      {
+        _d->makeFastSave();
+        handled = true;
+      }
+    break;
+
+    case KEY_F9:
+      if( event.keyboard.control )
+      {
+        _resolveLoadGame( "" );
+        handled = true;
+      }
+    break;
+
+    case KEY_KEY_1: case KEY_KEY_2:
+    case KEY_KEY_3: case KEY_KEY_4:
+    {
+      if( event.keyboard.control )
+      {
+        unsigned int index = event.keyboard.key - KEY_KEY_1;
+        city::BuildOptions bopts;
+        bopts = _d->game->city()->buildOptions();
+        if( event.keyboard.shift )
+        {
+          TilePos camPos = _d->renderer.camera()->center();
+          bopts.setMemPoint( index, camPos );
+          _d->game->city()->setBuildOptions( bopts );
+        }
+        else
+        {
+          TilePos camPos = bopts.memPoint( index );
+          _d->renderer.camera()->setCenter( camPos );
+        }
+
+        handled = true;
+      }
+    }
+    break;
+
+    case KEY_SNAPSHOT:
+      if( !event.keyboard.shift )
+        _d->makeScreenShot();
+      else
+        _d->makeFullScreenshot();
+      handled = true;
+    break;
+
+    case KEY_ESCAPE:
+    {
+      Widget::Widgets children = _d->game->gui()->rootWidget()->children();
+      foreach( it, children )
+      {
+        bool handled = (*it)->onEvent( event );
+        if( handled )
+            break;
+      }
+    }
+    break;
+
+    default:
+    break;
+    }
+  }
+
+  return handled;
 }
 
 void Level::Impl::showMissionTaretsWindow()
