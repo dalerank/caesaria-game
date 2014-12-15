@@ -46,6 +46,7 @@ public:
   CitizenGroup peoples;
   int failedWayCount;
   TilePos housePosLock;
+  bool cartBackward;
   bool leaveCity;
   float stamina;
 
@@ -66,6 +67,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
   _d->stamina = math::random( 80 ) + 20;
   _d->failedWayCount = 0;
   _d->leaveCity = false;
+  _d->cartBackward = true;
   _d->housePosLock = TilePos( -1, -1 );
 }
 
@@ -283,8 +285,10 @@ void Emigrant::_noWay()
     _d->failedWayCount = 0;
     setPathway( someway );
     go();
-  }
+    }
 }
+
+bool Emigrant::_isCartBackward() const { return _d->cartBackward; }
 
 void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
 {
@@ -515,4 +519,11 @@ bool Emigrant::die()
   _lockHouse( HousePtr() );
 
   return created;
+}
+
+void Emigrant::initialize(const VariantMap &options)
+{
+  Emigrant::initialize( options );
+
+  _d->cartBackward = options.get( "cartBackward", _d->cartBackward );
 }

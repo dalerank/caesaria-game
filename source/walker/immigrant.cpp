@@ -22,6 +22,7 @@
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
+#include "helper.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
 
@@ -123,6 +124,7 @@ bool Immigrant::die()
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )
 {
   ImmigrantPtr newEmigrant( new Immigrant( city ) );
+  newEmigrant->initialize( WalkerHelper::getOptions( constants::walker::immigrant ) );
   newEmigrant->drop();
   return newEmigrant;
 }

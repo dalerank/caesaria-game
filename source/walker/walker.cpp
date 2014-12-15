@@ -390,7 +390,10 @@ void Walker::initialize(const VariantMap &options)
 
   std::string nation;
   VARIANT_LOAD_STR( nation, options )
-  _d->nation = WalkerHelper::getNation( nation );
+  if( !nation.empty() )
+  {
+    _d->nation = WalkerHelper::getNation( nation );
+  }
 }
 
 int Walker::agressive() const { return 0; }

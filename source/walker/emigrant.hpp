@@ -43,11 +43,13 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual bool die();
+  virtual void initialize(const VariantMap &options);
 
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
+  virtual bool _isCartBackward() const;
   virtual const gfx::Picture& _cartPicture();
 
   void _setCartPicture( const gfx::Picture& pic );
