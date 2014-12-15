@@ -175,9 +175,9 @@ void Tilemap::addBorder()
     for( int i=0; i < _d->size; i++ )
     {
       TilePos tpos[4] = { TilePos( -_d->size/2 + u, _d->size-i ), TilePos( i, -u),
-                          TilePos( i, _d->size + _d->size/2 - 1 - u ), TilePos( _d->size + u, i) };
+                          TilePos( i, _d->size + _d->size/2 - 1 - u ), TilePos( _d->size + u, _d->size-1-i) };
       Picture pics[4] = { at( 0, _d->size-i ).picture(), at( i, 0 ).picture(),
-                          at( i, _d->size -1 ).picture(), at( _d->size -1, i).picture() };
+                          at( i, _d->size -1 ).picture(), at( _d->size-1,  _d->size-1-i).picture() };
 
       for( int idx=0; idx < 4; idx++ )
       {
