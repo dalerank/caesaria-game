@@ -53,7 +53,7 @@ public:
   Reservoir();
   ~Reservoir();
 
-  virtual bool build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(const CityAreaInfo &info);
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual bool isNeedRoadAccess() const;
   virtual void initTerrain(gfx::Tile& terrain);

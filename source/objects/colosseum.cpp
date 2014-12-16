@@ -80,11 +80,11 @@ Service::Type Colosseum::serviceType() const
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 
-bool Colosseum::build(PlayerCityPtr city, const TilePos& pos)
+bool Colosseum::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( objects::gladiatorSchool );
   LionsNurseryList lionsNs = helper.find<LionsNursery>( objects::lionsNursery );
 

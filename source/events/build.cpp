@@ -75,7 +75,8 @@ void BuildAny::_exec( Game& game, unsigned int )
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-    bool buildOk = _overlay->build( game.city(), _pos );
+    CityAreaInfo info = { game.city(), _pos, TilesArray() };
+    bool buildOk = _overlay->build( info );
 
     if( !buildOk )
       return;

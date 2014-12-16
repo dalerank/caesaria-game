@@ -210,13 +210,12 @@ void Hippodrome::deliverService()
   _d->sectionMiddle->setAnimationVisible( animation().isRunning() );
 }
 
-bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
+bool Hippodrome::build( const CityAreaInfo& info )
 {
-  CityAreaInfo info = { city, pos, TilesArray() };
   _checkDirection( info );
 
   setSize( Size( 5 ) );
-  EntertainmentBuilding::build( city, pos );
+  EntertainmentBuilding::build( info );
 
   TilePos offset = _d->direction == north ? TilePos( 0, 5 ) : TilePos( 5, 0 );
 
@@ -224,8 +223,8 @@ bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   _d->sectionEnd = _addSection( HippodromeSection::ended, offset * 2 );
 
   _init( true );
-  city->addOverlay( _d->sectionMiddle.object() );
-  city->addOverlay( _d->sectionEnd.object() );
+  info.city->addOverlay( _d->sectionMiddle.object() );
+  info.city->addOverlay( _d->sectionEnd.object() );
 
   _d->sectionEnd->setAnimationVisible( false );
   _d->sectionMiddle->setAnimationVisible( false );
@@ -329,7 +328,8 @@ void Hippodrome::_init( bool onBuild )
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  ret->build( _city(), pos() + offset );
+  CityAreaInfo info = { _city(), pos() + offset, TilesArray() };
+  ret->build( info );
   ret->drop();
 
   return ret;

@@ -27,13 +27,6 @@
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
 
-struct CityAreaInfo
-{
-  PlayerCityPtr city;
-  TilePos pos;
-  const gfx::TilesArray& aroundTiles;
-};
-
 class Construction : public gfx::TileOverlay
 {
 public:
@@ -45,7 +38,7 @@ public:
   virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
   virtual std::string errorDesc() const;
   virtual std::string troubleDesc() const;
-  virtual bool build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( const CityAreaInfo& info );
   virtual void burn();
   virtual void collapse();
   virtual const gfx::Picture& picture() const;

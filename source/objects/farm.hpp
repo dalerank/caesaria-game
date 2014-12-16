@@ -30,7 +30,7 @@ public:
   void computePictures();
 
   virtual void timeStep(const unsigned long time);
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
 
   virtual void save(VariantMap& stream) const;
@@ -48,7 +48,7 @@ class FarmWheat : public Farm
 public:
   FarmWheat();
   virtual std::string troubleDesc() const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
 };
 
 class FarmOlive : public Farm

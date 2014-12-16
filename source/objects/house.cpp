@@ -491,7 +491,8 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       setSize( growSize  );
       //_update( false );
 
-      build( _city(), pos() );
+      CityAreaInfo info = { _city(), pos(), TilesArray() };
+      build( info );
       //set new desirability level
       helper.updateDesirability( this, city::Helper::onDesirability );
     }
@@ -572,7 +573,8 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         helper.updateDesirability( this, city::Helper::offDesirability );
         setSize( minSize );
         _update( true );
-        build( _city(), buildPos );
+        CityAreaInfo info = { _city(), buildPos, TilesArray() };
+        build( info );
 
         _d->desirability.base = desirability;
         _d->desirability.step = desirability < 0 ? 1 : -1;
@@ -702,7 +704,8 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     }
 
     setSize( rsize );
-    build( _city(), bpos + moveVector );
+    CityAreaInfo info = { _city(), bpos + moveVector, TilesArray() };
+    build( info );
   }
   //set new desirability level
   helper.updateDesirability( this, city::Helper::onDesirability );
@@ -973,9 +976,9 @@ TilesArray House::enterArea() const
   }
 }
 
-bool House::build(PlayerCityPtr city, const TilePos &pos)
+bool House::build( const CityAreaInfo& info )
 {
-  bool ret = Building::build(city, pos);
+  bool ret = Building::build( info );
   _update( true );
   return ret;
 }
@@ -1156,7 +1159,8 @@ void House::load( const VariantMap& stream )
     _d->services[ type ] = vl_services.get( i+1 ).toFloat(); //serviceValue
   }
 
-  Building::build( _city(), pos() );
+  CityAreaInfo info = { _city(), pos(), TilesArray() };
+  Building::build( info );
 
   if( !picture().isValid() )
   {

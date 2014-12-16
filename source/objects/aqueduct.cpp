@@ -47,10 +47,10 @@ Aqueduct::Aqueduct() : WaterSource( objects::aqueduct, Size(1) )
   // land2a 134 - 148       - aqueduct without water
 }
 
-bool Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
+bool Aqueduct::build( const CityAreaInfo& info )
 {
-  Tilemap& tilemap = city->tilemap();
-  Tile& terrain = tilemap.at( pos );
+  Tilemap& tilemap = info.city->tilemap();
+  Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have aqueduct here
   AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.overlay() );
@@ -66,13 +66,13 @@ bool Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
     road->setState( (Construction::Param)Road::lockTerrain, 1 );
   }
 
-  WaterSource::build( city, pos );
+  WaterSource::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   TilePos offset( 2, 2 );
-  AqueductList aqueducts = helper.find<Aqueduct>( objects::aqueduct, pos - offset, pos + offset );
+  AqueductList aqueducts = helper.find<Aqueduct>( objects::aqueduct, info.pos - offset, info.pos + offset );
 
-  foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( city ); }
+  foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( info.city ); }
   return true;
 }
 
@@ -108,7 +108,8 @@ void Aqueduct::destroy()
     RoadPtr r( new Road() );
     r->drop();
 
-    r->build( _city(), pos() );
+    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    r->build( info );
     _city()->addOverlay( ptr_cast<TileOverlay>( r ) );
   }
 }

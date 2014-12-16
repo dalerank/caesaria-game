@@ -161,13 +161,12 @@ void Gatehouse::destroy()
   foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
 }
 
-bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
+bool Gatehouse::build( const CityAreaInfo& info )
 {
-  CityAreaInfo areaInfo = { city, pos, TilesArray() };
-  _update( areaInfo );
+  _update( info );
   _d->updateSprite();
 
-  TilesArray tiles = city->tilemap().getArea( pos, size() );
+  TilesArray tiles = info.city->tilemap().getArea( info.pos, size() );
   foreach( it, tiles )
   {
     RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
@@ -177,7 +176,7 @@ bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
     }
   }
 
-  return Building::build( city, pos );
+  return Building::build( info );
 }
 
 bool Gatehouse::canBuild( const CityAreaInfo& areaInfo ) const

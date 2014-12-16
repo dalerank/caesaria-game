@@ -61,15 +61,15 @@ bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
   return (is_constructible && direction != noneDirection );
 }
 
-bool CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
+bool CoastalFactory::build( const CityAreaInfo& info )
 {
-  _setDirection( _d->getDirection( city, pos ) );
+  _setDirection( _d->getDirection( info.city, info.pos ) );
 
-  TilesArray area = city->tilemap().getArea( pos, size() );
+  TilesArray area = info.city->tilemap().getArea( info.pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( util::encode( *(*tile) ) ); }
 
-  return Factory::build( city, pos );
+  return Factory::build( info );
 }
 
 void CoastalFactory::destroy()

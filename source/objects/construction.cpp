@@ -95,13 +95,13 @@ void Construction::destroy() { TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{ return true; }
 Construction::~Construction() {}
 
-bool Construction::build(PlayerCityPtr city, const TilePos& pos )
+bool Construction::build( const CityAreaInfo& info )
 {
-  TileOverlay::build( city, pos );
+  TileOverlay::build( info );
 
   std::string name =  utils::format( 0xff, "%s_%d_%d",
                                             MetaDataHolder::findTypename( type() ).c_str(),
-                                            pos.i(), pos.j() );
+                                            info.pos.i(), info.pos.j() );
   setName( name );
 
   computeAccessRoads();

@@ -27,7 +27,7 @@ public:
 
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual void initTerrain( gfx::Tile& terrain );
-  virtual bool build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(const CityAreaInfo &info);
   virtual bool canDestroy() const;
   virtual void destroy();
   virtual std::string errorDesc() const;

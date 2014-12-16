@@ -26,7 +26,7 @@ public:
   Pottery();
 
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual void timeStep(const unsigned long time);
   virtual void deliverGood();
 protected:

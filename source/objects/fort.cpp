@@ -513,40 +513,42 @@ bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
   return (isFreeFort && isFreeArea);
 }
 
-bool Fort::build(PlayerCityPtr city, const TilePos& pos)
+bool Fort::build( const CityAreaInfo& info )
 {
   FortList forts;
-  forts << city->overlays();
+  forts << info.city->overlays();
 
-  const city::BuildOptions& bOpts = city->buildOptions();
+  const city::BuildOptions& bOpts = info.city->buildOptions();
   if( forts.size() >= bOpts.getMaximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;
   }
 
-  Building::build( city, pos );
+  Building::build( info );
 
-  _d->area->build( city, pos + TilePos( 3, 0 ) );
+  CityAreaInfo areaInfo = info;
+  areaInfo.pos += TilePos( 3, 0 );
+  _d->area->build( areaInfo );
   _d->area->setBase( this );
 
-  _d->emblem = _findFreeEmblem( city );
+  _d->emblem = _findFreeEmblem( info.city );
 
-  city->addOverlay( _d->area.object() );
+  info.city->addOverlay( _d->area.object() );
 
   _fgPicturesRef().resize(1);
 
   BarracksList barracks;
-  barracks << city->overlays();
+  barracks << info.city->overlays();
 
   if( barracks.empty() )
   {
     _setError( "##need_barracks_for_work##" );
   }
 
-  _setPatrolPoint( PatrolPoint::create( city, this,
+  _setPatrolPoint( PatrolPoint::create( info.city, this,
                                         ResourceGroup::sprites, _d->flagIndex, 8,
-                                        pos + TilePos( 3, 3 ) ) );
+                                        info.pos + TilePos( 3, 3 ) ) );
 
   return true;
 }

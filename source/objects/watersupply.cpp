@@ -94,11 +94,11 @@ Reservoir::Reservoir()
 
 Reservoir::~Reservoir(){}
 
-bool Reservoir::build(PlayerCityPtr city, const TilePos& pos )
+bool Reservoir::build( const CityAreaInfo& info )
 {
-  Construction::build( city, pos );
+  Construction::build( info );
 
-  _isWaterSource = _isNearWater( city, pos );  
+  _isWaterSource = _isNearWater( info.city, info.pos );
   _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");
 
   return true;

@@ -39,12 +39,12 @@ Road::Road()
   _paved = 0;
 }
 
-bool Road::build( PlayerCityPtr city, const TilePos& pos )
+bool Road::build( const CityAreaInfo& info )
 {
-  city->setOption( PlayerCity::updateRoads, 1 );
+  info.city->setOption( PlayerCity::updateRoads, 1 );
 
-  Tilemap& tilemap = city->tilemap();
-  TileOverlayPtr overlay = tilemap.at( pos ).overlay();
+  Tilemap& tilemap = info.city->tilemap();
+  TileOverlayPtr overlay = tilemap.at( info.pos ).overlay();
 
   if( is_kind_of<Road>( overlay ) )
   {
@@ -59,7 +59,7 @@ bool Road::build( PlayerCityPtr city, const TilePos& pos )
     return false;
   }
 
-  Construction::build( city, pos );
+  Construction::build( info );
 
   return true;
 }
@@ -288,20 +288,20 @@ const Picture& Plaza::picture(const CityAreaInfo& areaInfo) const
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build(PlayerCityPtr city, const TilePos& p)
+bool Plaza::build( const CityAreaInfo& info )
 {
-  RoadPtr road = ptr_cast<Road>( city->getOverlay( p ) );
+  RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
   {
     road->setState( (Construction::Param)Road::lockTerrain, 1 );
   }
 
-  Construction::build( city, p );
+  Construction::build( info );
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = city->tilemap().getNeighbors( pos(), Tilemap::AllNeighbors);
+    TilesArray tilesAround = info.city->tilemap().getNeighbors( pos(), Tilemap::AllNeighbors);
     foreach( tile, tilesAround )
     {
       PlazaPtr plaza = ptr_cast<Plaza>( (*tile)->overlay() );
@@ -328,7 +328,8 @@ void Plaza::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    Construction::build( _city(), pos() );
+    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    Construction::build( info );
   }
 
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
@@ -366,7 +367,8 @@ void Plaza::updatePicture()
     city::Helper helper( _city() );
     helper.updateDesirability( this, city::Helper::offDesirability );
     setSize( 2 );
-    Construction::build( _city(), pos() );
+    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
     helper.updateDesirability( this, city::Helper::onDesirability );
   }

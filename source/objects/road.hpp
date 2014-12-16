@@ -29,7 +29,7 @@ public:
   virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
   void updatePicture();
 
-  virtual bool build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(const CityAreaInfo &info);
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual bool isWalkable() const;
@@ -57,7 +57,7 @@ public:
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual const gfx::Picture& picture(const CityAreaInfo& areaInfo) const;
   virtual void appendPaved(int value);
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual const gfx::Picture& picture() const;

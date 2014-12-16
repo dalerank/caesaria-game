@@ -45,7 +45,7 @@ public:
   virtual std::string troubleDesc() const;
   virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
   virtual void deliverService();
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   constants::Direction direction() const;
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;

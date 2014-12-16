@@ -49,10 +49,10 @@ void NativeBuilding::load( const VariantMap& stream)
   Building::load(stream);
 }
 
-bool NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
+bool NativeBuilding::build( const CityAreaInfo& info )
 {
   tile().setFlag( Tile::tlRock, true );
-  return Building::build( city, pos );
+  return Building::build( info );
 }
 
 bool NativeBuilding::canDestroy() const { return false; }

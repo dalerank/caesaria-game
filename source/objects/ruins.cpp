@@ -126,19 +126,19 @@ void BurningRuins::collapse() {}
 
 void BurningRuins::burn(){}
 
-bool BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool BurningRuins::build( const CityAreaInfo& info)
 {
-  Building::build( city, pos );
+  Building::build( info );
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
 
   city::FirePtr fire;
-  fire << city->findService( city::Fire::defaultName() );
+  fire << info.city->findService( city::Fire::defaultName() );
 
   if( fire.isValid() )
   {
-    fire->addLocation( pos );
+    fire->addLocation( info.pos );
   }
 
   return true;
@@ -175,9 +175,9 @@ BurnedRuins::BurnedRuins() : Ruins( objects::burnedRuins )
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
-bool BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool BurnedRuins::build( const CityAreaInfo& info )
 {
-  Building::build( city, pos);
+  Building::build( info );
 
   tile().setFlag( Tile::tlRock, false );
   return true;
@@ -203,9 +203,9 @@ CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsedRuins)
 
 void CollapsedRuins::burn() {}
 
-bool CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool CollapsedRuins::build( const CityAreaInfo& info )
 {
-  Building::build( city, pos );
+  Building::build( info );
 
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
@@ -213,7 +213,7 @@ bool CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 
   if( !_alsoBuilt )
   {
-    DustCloud::create( _city(), pos, 4 );
+    DustCloud::create( info.city, info.pos, 4 );
   }
 
   return true;
@@ -287,9 +287,9 @@ void PlagueRuins::applyService(ServiceWalkerPtr walker){}
 void PlagueRuins::burn(){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
-bool PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool PlagueRuins::build( const CityAreaInfo& info )
 {
-  Building::build( city, pos );
+  Building::build( info );
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );

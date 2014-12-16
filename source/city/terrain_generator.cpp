@@ -550,7 +550,8 @@ static void __createRivers(Game& game )
 
         bool isWater = (*it)->getFlag( Tile::tlWater );
 
-        overlay->build( oCity, (*it)->pos() );
+        CityAreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+        overlay->build( info );
         oCity->overlays().push_back( overlay );
 
         if( isWater )
@@ -598,7 +599,8 @@ static void __createRoad(Game& game )
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( util::convPicName2Id( pic.name() ) );
 
-      overlay->build( oCity, (*it)->pos() );
+      CityAreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+      overlay->build( info );
       oCity->overlays().push_back( overlay );
     }
 

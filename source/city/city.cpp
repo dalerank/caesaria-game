@@ -568,7 +568,8 @@ void PlayerCity::load( const VariantMap& stream )
     TileOverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && pos.i() >= 0 )
     {
-      overlay->build( this, pos );
+      CityAreaInfo info = { this, pos, TilesArray() };
+      overlay->build( info );
       overlay->load( overlayParams );
       _d->overlays.push_back( overlay );
     }

@@ -172,9 +172,9 @@ void Farm::timeStep(const unsigned long time)
   }
 }
 
-bool Farm::build(PlayerCityPtr city, const TilePos& pos)
+bool Farm::build( const CityAreaInfo& info )
 {
-  Factory::build( city, pos );
+  Factory::build( info );
   computePictures();
 
   return true;
@@ -216,10 +216,10 @@ std::string FarmWheat::troubleDesc() const
   return Factory::troubleDesc();
 }
 
-bool FarmWheat::build(PlayerCityPtr pcity, const TilePos& pos)
+bool FarmWheat::build( const CityAreaInfo& info )
 {
-  bool ret = Farm::build( pcity, pos );
-  if( pcity->climate() == game::climate::central )
+  bool ret = Farm::build( info );
+  if( info.city->climate() == game::climate::central )
   {
     setProductRate( productRate() * 2 );
   }

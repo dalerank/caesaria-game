@@ -60,33 +60,33 @@ Fortification::Fortification() : Wall(), _d( new Impl )
 
 Fortification::~Fortification() {}
 
-bool Fortification::build(PlayerCityPtr city, const TilePos& pos )
+bool Fortification::build( const CityAreaInfo& info )
 {
   // we can't build if already have wall here
-  WallPtr wall = ptr_cast<Wall>( city->getOverlay( pos ) );
+  WallPtr wall = ptr_cast<Wall>( info.city->getOverlay( info.pos ) );
   if( wall.isValid() )
   {
     return false;
   }
 
-  Pathway way2border = PathwayHelper::create( pos, city->borderInfo().roadEntry, PathwayHelper::allTerrain );
+  Pathway way2border = PathwayHelper::create( info.pos, info.city->borderInfo().roadEntry, PathwayHelper::allTerrain );
   if( !way2border.isValid() )
   {
     events::GameEventPtr event = events::WarningMessage::create( "##walls_need_a_gatehouse##" );
     event->dispatch();
   }
 
-  Building::build( city, pos );
+  Building::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   FortificationList fortifications = helper.find<Fortification>( objects::fortification );  
 
-  foreach( frt, fortifications ) { (*frt)->updatePicture( city ); }
+  foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
 
   TowerList towers = helper.find<Tower>( objects::tower );
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
-  updatePicture( city );
+  updatePicture( info.city );
 
   return true;
 }

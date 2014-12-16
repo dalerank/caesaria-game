@@ -31,11 +31,11 @@ bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
   return Factory::canBuild( areaInfo );
 }
 
-bool FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
+bool FurnitureWorkshop::build( const CityAreaInfo& info )
 {
-  Factory::build( city, pos );
+  Factory::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   bool haveTimberLogger = !helper.find<TimberLogger>( objects::timberLogger ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );

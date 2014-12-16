@@ -44,13 +44,13 @@ void Waymark::initTerrain(Tile& terrain)
 
 }
 
-bool Waymark::build(PlayerCityPtr city, const TilePos& pos)
+bool Waymark::build( const CityAreaInfo& info )
 {  
   bool isEntryMark = false;
 
-  Tilemap& tmap = city->tilemap();
-  TilesArray around = tmap.getNeighbors( pos );
-  TilePos entryPos = city->borderInfo().roadEntry;
+  Tilemap& tmap = info.city->tilemap();
+  TilesArray around = tmap.getNeighbors( info.pos );
+  TilePos entryPos = info.city->borderInfo().roadEntry;
   foreach( it, around )
   {
     if( (*it)->pos() == entryPos )
@@ -61,6 +61,7 @@ bool Waymark::build(PlayerCityPtr city, const TilePos& pos)
   }
 
   unsigned int picIndex = isEntryMark ? 89 : 85;
+  const TilePos& pos = info.pos;
   if( pos.i() == 0 || pos.i() == tmap.size() - 1 )
   {
     picIndex += (pos.i() == 0 ? 1 : 3 );
@@ -73,5 +74,5 @@ bool Waymark::build(PlayerCityPtr city, const TilePos& pos)
   setPicture( ResourceGroup::land3a, picIndex );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
 
-  return TileOverlay::build( city, pos );
+  return TileOverlay::build( info );
 }
