@@ -523,7 +523,7 @@ bool Emigrant::die()
 
 void Emigrant::initialize(const VariantMap &options)
 {
-  Emigrant::initialize( options );
+  Human::initialize( options );
 
   _d->cartBackward = options.get( "cartBackward", _d->cartBackward );
 }

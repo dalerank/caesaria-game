@@ -73,7 +73,7 @@
   }
 
   engineer : {
-    move : { rc : "citizen01", start : 1137, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen01", start : 1137, frames : 11, action : 1, step : 8, delay : 2 }
   }
 
   gladiator : {
