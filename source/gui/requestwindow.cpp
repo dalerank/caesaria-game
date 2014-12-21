@@ -87,7 +87,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     GET_WIDGET_FROM_UI( lbTitle )
 
     if( lbQty ) { lbQty->setText( utils::format( 0xff, "%d", gr->qty() ) ); }
-    if( imgIcon ) { imgIcon->setPicture( GoodHelper::picture( gr->goodType() )); }
+    if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
 
     std::string title, text, video;
     switch( gr->goodType() )

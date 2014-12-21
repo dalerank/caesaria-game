@@ -39,14 +39,14 @@ Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
   _setType( walker::immigrant );
 }
 
-const Picture& Immigrant::_cartPicture()
+Animation& Immigrant::_cart()
 {
-  if( !Emigrant::_cartPicture().isValid() )
+  if( !Emigrant::_cart().isValid() )
   {
-    _setCartPicture( AnimationBank::getCart( AnimationBank::animImigrantCart + G_EMIGRANT_CART1, 0, direction()) );
+    _setCart( AnimationBank::getCart( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, 0, direction()) );
   }
 
-  return Emigrant::_cartPicture();
+  return Emigrant::_cart();
 }
 
 void Immigrant::getPictures( Pictures& oPics)
@@ -61,14 +61,14 @@ void Immigrant::getPictures( Pictures& oPics)
   case constants::northWest:
   case constants::west:
     oPics.push_back( getMainPicture() );
-    oPics.push_back( _cartPicture() );
+    oPics.push_back( _cart().currentFrame() );
   break;
 
   case constants::southWest:
   case constants::southEast:
   case constants::east:
   case constants::south:
-    oPics.push_back( _cartPicture() );
+    oPics.push_back( _cart().currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
 
@@ -80,7 +80,7 @@ void Immigrant::getPictures( Pictures& oPics)
 void Immigrant::_changeDirection()
 {
   Emigrant::_changeDirection();
-  _setCartPicture( Picture() );  // need to get the new graphic
+  _setCart( Animation() );  // need to get the new graphic
 }
 
 void Immigrant::_updateThoughts()
@@ -100,7 +100,8 @@ void Immigrant::_updateThoughts()
 }
 
 void Immigrant::timeStep(const unsigned long time)
-{
+{  
+  _cart().update( time );
   Walker::timeStep(time);
 }
 

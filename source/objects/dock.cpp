@@ -262,7 +262,7 @@ int Dock::importingGoods( good::Stock& stock)
     events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), traderMaySell );
     e->dispatch();
 
-    cost = GoodHelper::importPrice( _city(), stock.type(), traderMaySell );
+    cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
   }
 
   return cost;
@@ -284,7 +284,7 @@ int Dock::exportingGoods( good::Stock& stock, int qty )
     events::GameEventPtr e = events::FundIssueEvent::exportg( stock.type(), qty );
     e->dispatch();
 
-    cost = GoodHelper::exportPrice( _city(), stock.type(), qty );
+    cost = good::Helper::exportPrice( _city(), stock.type(), qty );
   }
 
   return cost;

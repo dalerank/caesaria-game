@@ -154,7 +154,7 @@ void GoodStore::store( good::Stock& stock, const int amount)
   {
     Logger::warning( "GoodStore: store impossible to store %d of %s",
                      stock.qty(),
-                     GoodHelper::name( stock.type() ).c_str() );
+                     good::Helper::name( stock.type() ).c_str() );
   }
 }
 
@@ -172,7 +172,7 @@ void GoodStore::retrieve(good::Stock &stock, int amount)
   else
   {
     Logger::warning( "GoodStore:Impossible to retrieve %d of %s",
-                     GoodHelper::name( stock.type() ).c_str(),
+                     good::Helper::name( stock.type() ).c_str(),
                      stock.qty() );
   }
 }

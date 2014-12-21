@@ -94,12 +94,12 @@ void AboutGranary::showSpecialOrdersWindow()
 
 void AboutGranary::drawGood( good::Type goodType, int col, int paintY)
 {
-  std::string goodName = GoodHelper::getTypeName( goodType );
+  std::string goodName = good::Helper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);
   std::string outText = utils::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
 
   // pictures of goods
-  const Picture& pic = GoodHelper::picture( goodType );
+  const Picture& pic = good::Helper::picture( goodType );
   Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( 150, 24 )) );
   lb->setIcon( pic );
   lb->setFont( Font::create( FONT_2 ) );

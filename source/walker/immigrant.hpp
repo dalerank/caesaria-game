@@ -43,7 +43,7 @@ protected:
   virtual void _updateThoughts();
 
 protected:
-  const gfx::Picture& _cartPicture();
+  gfx::Animation& _cart();
 
   Immigrant( PlayerCityPtr city );
 };

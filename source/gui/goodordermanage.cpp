@@ -130,7 +130,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
 
   setupUI( ":/gui/goodorder.gui" );
 
-  _d->icon = GoodHelper::picture( type );
+  _d->icon = good::Helper::picture( type );
 
   Label* lbTitle;
   Label* lbStackedQty;
@@ -142,7 +142,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
 
-  if( lbTitle ) lbTitle->setText( _( GoodHelper::name( type ) ) );
+  if( lbTitle ) lbTitle->setText( _( good::Helper::name( type ) ) );
   if( lbStackedQty )
   {
     std::string text = utils::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );

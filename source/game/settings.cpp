@@ -75,6 +75,7 @@ __REG_PROPERTY(freeplay_opts)
 __REG_PROPERTY(cellw)
 __REG_PROPERTY(simpleAnimationModel)
 __REG_PROPERTY(hotkeysModel)
+__REG_PROPERTY(cartsModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -125,6 +126,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
   _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.model" ) );
   _d->options[ hotkeysModel        ] = Variant( std::string( "/hotkeys.model" ) );
+  _d->options[ cartsModel          ] = Variant( std::string( "/carts.model" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );

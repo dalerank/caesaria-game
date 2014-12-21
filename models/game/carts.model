@@ -1,0 +1,74 @@
+{
+  none : {
+    move : { back : false, rc : "cartnone", start : 1, frames : 7, step : 8 }
+  }
+
+  immigrantScarb : {
+    move : { back : true, rc : "emmigrant", start : 1, frames : 11, step : 8, delay : 2 }
+    /* two : { back : false, rc : "carts", start : 1, frames : 7, step : 8 } */
+  }
+
+  wheat : {
+    small : { back : true, rc : "cartwheat", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  wine : {
+    small : { back : false, rc : "cartwine", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  grape : {
+    small : { back : true, rc : "cartgrape", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  clay : {
+    small : { back : true, rc : "cartclay", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  timber : {
+    small : { back : true, rc : "carttimber", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  iron : {
+    small : { back : true, rc : "cartiron", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  oil : {
+    small : { back : false, rc : "cartoil", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  furniture : {
+    small : { back : false, rc : "cartfurniture", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  marble : {
+    small : { back : true, rc : "cartarble", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  fish : {
+    small : { back : true, rc : "cartfish", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  fruit : {
+    small : { back : true, rc : "cartfruit  ", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  meat : {
+    small : { back : true, rc : "cartmeat", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  olive : {
+    small : { back : true, rc : "cartolive", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  pottery : {
+    small : { back : false, rc : "cartpottery", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  weapon : {
+    small : { back : false, rc : "cartweapon", start : 1, frames : 7, step : 8, delay : 2 }
+  }
+
+  circusCart : {
+
+  }
+}

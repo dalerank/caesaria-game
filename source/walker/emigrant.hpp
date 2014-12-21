@@ -50,9 +50,9 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
   virtual bool _isCartBackward() const;
-  virtual const gfx::Picture& _cartPicture();
+  virtual gfx::Animation& _cart();
 
-  void _setCartPicture( const gfx::Picture& pic );
+  void _setCart( const gfx::Animation& anim );
   
   Emigrant( PlayerCityPtr city );
 

@@ -257,7 +257,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
               good::Stock& stock = buy.getStock( goodType );
               whStore.retrieve( stock, mayBuy );
 
-              currentBuys += GoodHelper::exportPrice( city, goodType, mayBuy );
+              currentBuys += good::Helper::exportPrice( city, goodType, mayBuy );
 
               events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, tradeKoeff, mayBuy );
               e->dispatch();
@@ -337,7 +337,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
               good::Stock& stock = sell.getStock( goodType );
               warehouse->store().store( stock, maySells );
               
-              currentSell += GoodHelper::importPrice( city, goodType, maySells );
+              currentSell += good::Helper::importPrice( city, goodType, maySells );
 
               events::GameEventPtr e = events::FundIssueEvent::import( goodType, maySells );
               e->dispatch();

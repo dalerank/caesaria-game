@@ -126,7 +126,7 @@ void RqGood::load(const VariantMap& stream)
     VariantMap vm_good = vm_goodt.toMap();
     if( !vm_good.empty() )
     {
-      _d->stock.setType( GoodHelper::getType( vm_good.begin()->first ) );
+      _d->stock.setType( good::Helper::getType( vm_good.begin()->first ) );
       _d->stock.setCapacity( vm_good.begin()->second.toInt() );
     }
   }

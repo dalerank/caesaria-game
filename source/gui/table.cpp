@@ -227,18 +227,8 @@ void Table::removeColumn(unsigned int  columnIndex)
 	recalculateColumnsWidth_();
 }
 
-
-int Table::getColumnCount() const
-{
-	return _d->columns.size();
-}
-
-
-int Table::getRowCount() const
-{
-	return _d->rows.size();
-}
-
+int Table::getColumnCount() const {	return _d->columns.size();}
+int Table::getRowCount() const {	return _d->rows.size();}
 
 bool Table::setActiveColumn(int idx, bool doOrder )
 {
@@ -298,7 +288,6 @@ bool Table::setActiveColumn(int idx, bool doOrder )
 		event.gui.caller = this;
 		event.gui.element = 0;
 		event.gui.type = guiTableHeaderChanged;
-
 		parent()->onEvent(event);
 	}
 
@@ -347,12 +336,10 @@ void Table::setResizableColumns(bool resizable)
 	ResizableColumns = resizable;
 }
 
-
 bool Table::hasResizableColumns() const
 {
 	return ResizableColumns;
 }
-
 
 unsigned int  Table::addRow(unsigned int  rowIndex)
 {
@@ -368,14 +355,14 @@ unsigned int  Table::addRow(unsigned int  rowIndex)
 
   _d->rows[rowIndex].Items.resize( _d->columns.size() );
 
-    for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
-        _d->rows[rowIndex].Items[ i ] = NULL;
+  for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
+    _d->rows[rowIndex].Items[ i ] = NULL;
 
 	for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
 		_d->rows[rowIndex].Items[ i ] = new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) );
 
   recalculateHeights();
-    recalculateCells_();
+  recalculateCells_();
   recalculateScrollBars_();
   return rowIndex;
 }

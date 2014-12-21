@@ -65,8 +65,8 @@ public:
     _enable = enable;
     _tradeOrder = trade;
     _tradeQty = tradeQty;
-    _goodPicture = GoodHelper::picture( _type );
-    _goodName = GoodHelper::name( _type );
+    _goodPicture = good::Helper::picture( _type );
+    _goodName = good::Helper::name( _type );
     Decorator::draw( _border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
     setFont( Font::create( FONT_2_WHITE ) );

@@ -273,13 +273,13 @@ std::string Factory::troubleDesc() const
 
   if( !isActive() )
   {
-    std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
+    std::string goodname = good::Helper::getTypeName( consumeGoodType() );
     ret = utils::format( 0xff, "##trade_advisor_blocked_%s_production##", goodname.c_str() );
   }
 
   if( ret.empty() && !haveMaterial() && consumeGoodType() != good::none )
   {
-    std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
+    std::string goodname = good::Helper::getTypeName( consumeGoodType() );
     ret = utils::format( 0xff, "##trouble_need_%s##", goodname.c_str() );
   }
 

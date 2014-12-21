@@ -59,7 +59,7 @@ public:
   good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
-  Picture cartPicture;
+  Animation anim;
   int maxDistance;
   long reservationID;
   bool cantUnloadGoods;
@@ -85,7 +85,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
 void CartPusher::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->cartPicture = Picture();
+  _d->anim = Animation();
 
   if( _d->consumerBuilding != NULL )
   {
@@ -157,20 +157,20 @@ BuildingPtr CartPusher::consumerBuilding()
    return _d->consumerBuilding;
 }
 
-Picture& CartPusher::getCartPicture()
+Animation& CartPusher::getCartPicture()
 {
-   if( !_d->cartPicture.isValid() )
+   if( !_d->anim.isValid() )
    {
-     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, direction());
+     _d->anim = good::Helper::getCartPicture(_d->stock, direction());
    }
 
-   return _d->cartPicture;
+   return _d->anim;
 }
 
 void CartPusher::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->cartPicture = Picture();  // need to get the new graphic
+   _d->anim = Animation();  // need to get the new graphic
 }
 
 void CartPusher::getPictures( gfx::Pictures& oPics)
@@ -194,7 +194,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    case constants::northWest:
    case constants::north:
    case constants::northEast:
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( getCartPicture().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
@@ -203,7 +203,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    case constants::south:
    case constants::southWest:
       oPics.push_back( getMainPicture() );
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( getCartPicture().currentFrame() );
    break;
 
    default:
@@ -389,6 +389,7 @@ void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
+  _d->anim.update( time );
   if( game::Date::isWeekChanged() && !_pathwayRef().isValid() )
   {
     _computeWalkerDestination();

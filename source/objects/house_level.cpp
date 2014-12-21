@@ -748,7 +748,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
     foreach( v, varConsumptions )
     {
-      spec._d->consumptionMuls[ GoodHelper::getType( v->first ) ] = (float)v->second;
+      spec._d->consumptionMuls[ good::Helper::getType( v->first ) ] = (float)v->second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();

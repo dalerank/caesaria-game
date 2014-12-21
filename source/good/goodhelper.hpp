@@ -23,11 +23,15 @@
 #include "good.hpp"
 #include "city/predefinitions.hpp"
 #include "core/direction.hpp"
+#include "gfx/animation.hpp"
 
-class GoodHelper
+namespace good
+{
+
+class Helper
 {
 public:
-  static GoodHelper& getInstance();
+  static Helper& getInstance();
 
   static std::string name( good::Type type );
   static gfx::Picture picture( good::Type type, bool emp=false );
@@ -36,13 +40,15 @@ public:
   static float convQty2Units( int qty );
   static float exportPrice( PlayerCityPtr city, good::Type gtype, int qty );
   static float importPrice( PlayerCityPtr city, good::Type gtype, int qty );
-  static gfx::Picture getCartPicture( const good::Stock& stock, constants::Direction direction );
-  ~GoodHelper();
+  static const gfx::Animation& getCartPicture( const good::Stock& stock, constants::Direction direction );
+  ~Helper();
 private:
-  GoodHelper();
+  Helper();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace good
 
 #endif //__CAESARIA_GOODHELPER_H_INCLUDED__

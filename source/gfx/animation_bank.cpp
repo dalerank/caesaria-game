@@ -23,6 +23,7 @@
 #include "gfx/picture.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
+#include "good/goodhelper.hpp"
 #include "walker/helper.hpp"
 #include "picture_info_bank.hpp"
 #include <map>
@@ -51,7 +52,6 @@ namespace{
   static const Point backCartOffsetNorthEast  = Point( -30, 30 );
   static const Point backCartOffsetSouthWest  = Point( -0, 30 );
 
-  static const int noneGoodsPicId = 1;
   static const int defaultStepInFrame = 8;
 }
 
@@ -64,38 +64,60 @@ struct ActionAnimation
 class AnimationBank::Impl
 {
 public:
+  typedef enum { stgSimple, stgObjects, stgCarts } LoadingStage;
   typedef std::map< int, Animation > SimpleAnimations;
   typedef std::map< int, ActionAnimation > DirectedAnimations;
-  typedef std::map< int, Pictures > CartPictures;
   typedef std::map< int, VariantMap > AnimationConfigs;
 
-  CartPictures carts;
   AnimationConfigs animConfigs;
   
-  DirectedAnimations directedAnimations;
+  DirectedAnimations objects;
+  DirectedAnimations carts;
   SimpleAnimations simpleAnimations;
 
   // fills the cart pictures
   // prefix: image prefix
   // start: index of the first frame
-  Pictures fillCart( const std::string &prefix, const int start, bool back );
-  void loadAnimation(int who, const std::string& prefix,
+  void fixCartOffset( int type, bool back );
+  void loadAnimation( DirectedAnimations& refMap, int who, const std::string& prefix,
                      const int start, const int size,
                      Walker::Action wa=Walker::acMove,
                      const int step = defaultStepInFrame, int delay=0);
-  void loadAnimation(int who, const VariantMap& desc , bool simple);
+  void loadAnimation(int who, const VariantMap& desc, LoadingStage stage);
   const AnimationBank::MovementAnimation& tryLoadAnimations(int wtype );
 
-  void loadCarts();
+  void loadCarts( vfs::Path model );
 };
 
-void AnimationBank::Impl::loadCarts()
+void AnimationBank::Impl::loadCarts(vfs::Path model)
 {
   //number of animations with goods + emmigrants + immigrants
   bool frontCart = false;
 
-  carts[good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
-  carts[good::wheat]    = fillCart( ResourceGroup::carts, 9, frontCart);
+  VariantMap config = SaveAdapter::load( model );
+  foreach( it, config )
+  {
+    good::Type gtype = good::Helper::getType( it->first );
+
+    if( gtype != good::none )
+    {
+      VariantMap cartInfo = it->second.toMap();
+      Variant smallInfo = cartInfo.get( "small" );
+      if( smallInfo.isValid() ) loadAnimation( gtype, smallInfo.toMap(), stgCarts );
+
+      Variant bigInfo = cartInfo.get( "big" );
+      if( bigInfo.isValid() ) loadAnimation( gtype + animBigCart, bigInfo.toMap(), stgCarts );
+
+      Variant megaInfo = cartInfo.get( "mega" );
+      if( megaInfo.isValid() ) loadAnimation( gtype + animMegaCart, megaInfo.toMap(), stgCarts );
+    }
+  }
+
+  VariantMap imPureCart = config.get( "none" ).toMap();
+  loadAnimation( good::none, imPureCart, stgCarts );
+
+  //carts[good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
+  /*carts[good::wheat]    = fillCart( ResourceGroup::carts, 9, frontCart);
   carts[good::vegetable]= fillCart( ResourceGroup::carts, 17, frontCart);
   carts[good::fruit]    = fillCart( ResourceGroup::carts, 25, frontCart);
   carts[good::olive]    = fillCart( ResourceGroup::carts, 33, frontCart);
@@ -148,13 +170,17 @@ void AnimationBank::Impl::loadCarts()
   carts[animMegaCart+good::marble]   = fillCart( ResourceGroup::carts, 97, frontCart);
   carts[animMegaCart+good::weapon]   = fillCart( ResourceGroup::carts, 105, frontCart);
   carts[animMegaCart+good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[animMegaCart+good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[animMegaCart+good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);*/
 
-  carts[animImigrantCart + 0] = fillCart( ResourceGroup::carts, 129, !frontCart);
-  carts[animImigrantCart + 1] = fillCart( ResourceGroup::carts, 137, !frontCart);
+  VariantMap imScarbInfo = config.get( "immigrantScarb" ).toMap();
+  loadAnimation( animImmigrantCart, imScarbInfo, stgCarts );
+                   //fillCart( ResourceGroup::carts, 129, !frontCart);
+    //carts[animImmigrantCart + 1] = fillCart( ResourceGroup::carts, 137, !frontCart);
 
-  carts[animCircusCart + 0] = fillCart( ResourceGroup::carts, 601, !frontCart);
-  carts[animCircusCart + 1] = fillCart( ResourceGroup::carts, 609, !frontCart);
+  VariantMap circusInfo = config.get( "circusCart" ).toMap();
+  loadAnimation( animCircusCart, circusInfo, stgCarts );
+    //carts[animCircusCart + 0] = fillCart( ResourceGroup::carts, 601, !frontCart);
+    //carts[animCircusCart + 1] = fillCart( ResourceGroup::carts, 609, !frontCart);
 }
 
 AnimationBank& AnimationBank::instance()
@@ -168,20 +194,20 @@ AnimationBank::AnimationBank() : _d( new Impl )
 
 }
 
-void AnimationBank::loadCarts()
+void AnimationBank::loadCarts(vfs::Path model)
 {
   Logger::warning( "AnimationBank: loading cart graphics" );
 
-  _d->loadCarts();
+  _d->loadCarts(model);
 }
 
-void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
+void AnimationBank::Impl::loadAnimation( DirectedAnimations& refMap , int who, const std::string& prefix,
                                          const int start, const int size,
                                          Walker::Action wa, const int step,
-                                         int delay )
+                                         int delay)
 {
-  MovementAnimation& ioMap = directedAnimations[ who ].actions;
-  DirectedAction action = { wa, noneDirection };
+  MovementAnimation& ioMap = refMap[ who ].actions;
+  DirectedAction action( wa, noneDirection );
 
   if( step == 0 )
   {
@@ -200,7 +226,7 @@ void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
   }
 }
 
-void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc, bool simple)
+void AnimationBank::Impl::loadAnimation(int type, const VariantMap& desc, LoadingStage stage )
 {  
   PictureInfoBank& pib = PictureInfoBank::instance();
 
@@ -215,24 +241,44 @@ void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc, bool 
     VARIANT_INIT_ANY( int, delay, actionInfo )
     VARIANT_INIT_ANY( int, step, actionInfo )
 
-    if( simple )
+    switch( stage )
     {
-      VARIANT_LOAD_ANY( type, actionInfo )
-      Logger::warning( "AnimationBank: load simple animations for " + ac->first );
-      Animation& animation = simpleAnimations[ type ];
-      animation.load( rc, start, frames, reverse, step );
-      animation.setDelay( delay );
-    }
-    else
-    {
-      //creating information about animation offset
-      Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
-      VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
-      pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
+    case stgSimple:
+      {
+        VARIANT_LOAD_ANY( type, actionInfo )
+        Logger::warning( "AnimationBank: load simple animations for " + ac->first );
+        Animation& animation = simpleAnimations[ type ];
+        animation.load( rc, start, frames, reverse, step );
+        animation.setDelay( delay );
+      }
+    break;
 
-      std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
-      Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
-      loadAnimation( type, rc, start, frames, (Walker::Action)action, step, delay );
+    case stgObjects:
+      {
+        //creating information about animation offset
+        Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
+        VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
+        pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
+
+        std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
+        Logger::warning( "AnimationBank: load animations for " + typeName + ":" + ac->first );
+        loadAnimation( objects, type, rc, start, frames, (Walker::Action)action, step, delay );
+      }
+    break;
+
+    case stgCarts:
+      {
+        //Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
+        //VARIANT_LOAD_ANYDEF( offset, actionInfo, offset );
+        //pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
+
+        Logger::warning( "AnimationBank: load animations for %d:%s", type, ac->first.c_str() );
+        loadAnimation( carts, type, rc, start, frames, Walker::acMove, step, delay );
+
+        VARIANT_INIT_ANY( int, back, actionInfo )
+        fixCartOffset( type, back );
+      }
+    break;
     }
   }
 }
@@ -243,17 +289,17 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(i
 
   if( configIt != animConfigs.end() )
   {
-    loadAnimation( wtype, configIt->second, false );
+    loadAnimation( wtype, configIt->second, stgObjects );
     animConfigs.erase( configIt );
   }
 
-  DirectedAnimations::iterator it = directedAnimations.find( wtype );
-  if( it == directedAnimations.end() )
+  DirectedAnimations::iterator it = objects.find( wtype );
+  if( it == objects.end() )
   {
     Logger::warning( "WARNING !!!: AnimationBank can't find config for type %d", wtype );
-    const AnimationBank::MovementAnimation& elMuleta = directedAnimations[ walker::unknown ].actions;
-    directedAnimations[ wtype ].ownerType = wtype;
-    directedAnimations[ wtype ].actions = elMuleta;
+    const AnimationBank::MovementAnimation& elMuleta = objects[ walker::unknown ].actions;
+    objects[ wtype ].ownerType = wtype;
+    objects[ wtype ].actions = elMuleta;
     return elMuleta;
   }
 
@@ -262,7 +308,7 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(i
 
 const AnimationBank::MovementAnimation& AnimationBank::find( int type )
 {
-  Impl::DirectedAnimations& dAnim = instance()._d->directedAnimations;
+  Impl::DirectedAnimations& dAnim = instance()._d->objects;
 
   Impl::DirectedAnimations::iterator it = dAnim.find( type );
   if( it == dAnim.end() )
@@ -277,7 +323,7 @@ const AnimationBank::MovementAnimation& AnimationBank::find( int type )
 void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
 {
   Logger::warning( "AnimationBank: start loading animations from " + model.toString() );
-  _d->loadAnimation( 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
+  _d->loadAnimation( _d->objects, 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
 
   VariantMap items = SaveAdapter::load( model );
 
@@ -296,12 +342,12 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
   }
 
   items = SaveAdapter::load( basic );
-  _d->loadAnimation( animUnknown, items, true );
+  _d->loadAnimation( animUnknown, items, Impl::stgSimple );
 }
 
-Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int start, bool back )
+void AnimationBank::Impl::fixCartOffset( int who, bool back )
 {
-  Pictures ioCart;
+  /*Pictures ioCart;
 
   ioCart.resize(countDirection);
 
@@ -312,28 +358,29 @@ Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int sta
   ioCart[south]      = Picture::load(ResourceGroup::carts, start + 4);
   ioCart[southWest]  = Picture::load(ResourceGroup::carts, start + 5);
   ioCart[west]       = Picture::load(ResourceGroup::carts, start + 6);
-  ioCart[northWest]  = Picture::load(ResourceGroup::carts, start + 7);
+  ioCart[northWest]  = Picture::load(ResourceGroup::carts, start + 7); */
 
-  ioCart[south].setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
-  ioCart[west].setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
-  ioCart[north].setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
-  ioCart[east].setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
+#define __CDA(a) DirectedAction(Walker::acMove,a)
+  MovementAnimation& ma = carts[who].actions;
+  ma[ __CDA(south) ].setOffset( back ? backCartOffsetSouth : frontCartOffsetSouth);
+  ma[ __CDA(west)  ].setOffset ( back ? backCartOffsetWest  : frontCartOffsetWest );
+  ma[ __CDA(north) ].setOffset( back ? backCartOffsetNorth : frontCartOffsetNorth);
+  ma[ __CDA(east)  ].setOffset ( back ? backCartOffsetEast  : frontCartOffsetEast );
 
-  ioCart[southEast].setOffset( back ? backCartOffsetSouthEast : frontCartOffsetSouthEast );
-  ioCart[northWest].setOffset( back ? backCartOffsetNorthWest : frontCartOffsetNorthWest );
-  ioCart[northEast].setOffset( back ? backCartOffsetNorthEast : frontCartOffsetNorthEast );
-  ioCart[southWest].setOffset( back ? backCartOffsetSouthWest : frontCartOffsetSouthWest );
-
-  return ioCart;
+  ma[ __CDA(southEast) ].setOffset( back ? backCartOffsetSouthEast : frontCartOffsetSouthEast );
+  ma[ __CDA(northWest) ].setOffset( back ? backCartOffsetNorthWest : frontCartOffsetNorthWest );
+  ma[ __CDA(northEast) ].setOffset( back ? backCartOffsetNorthEast : frontCartOffsetNorthEast );
+  ma[ __CDA(southWest) ].setOffset( back ? backCartOffsetSouthWest : frontCartOffsetSouthWest );
 }
 
-const Picture& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
+const Animation& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
 {
   int index = 0;
   if( capacity > animBigCart ) index = animMegaCart;
   else if( capacity > animSimpleCart ) index = animBigCart;
 
-  return instance()._d->carts[ index + good ][ direction ];
+  MovementAnimation& ma = instance()._d->carts[ index + good ].actions;
+  return ma[ DirectedAction( Walker::acMove, direction ) ];
 }
 
 const Animation& AnimationBank::simple(int type)

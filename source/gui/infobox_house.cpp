@@ -196,7 +196,7 @@ void AboutHouse::drawGood( HousePtr house, const good::Type &goodType, const int
   std::string text = utils::format( 0xff, "%d", qty);
 
   // pictures of goods
-  const Picture& pic = GoodHelper::picture( goodType );
+  const Picture& pic = good::Helper::picture( goodType );
   Label* lb = new Label( this, Rect( Point( 30 + 100 * col, startY + 2 + 30 * row), Size( 80, 50) ) );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setIcon( pic );

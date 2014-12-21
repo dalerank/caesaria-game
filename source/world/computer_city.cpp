@@ -99,7 +99,7 @@ void ComputerCity::save( VariantMap& options ) const
   for( int i=good::none; i < good::goodCount; i ++ )
   {
     good::Type gtype = good::Type ( i );
-    std::string tname = GoodHelper::getTypeName( gtype );
+    std::string tname = good::Helper::getTypeName( gtype );
     int maxSellStock = _d->sellStore.capacity( gtype );
     if( maxSellStock > 0 )
     {
@@ -175,14 +175,14 @@ void ComputerCity::load( const VariantMap& options )
   VariantMap sold_vm = options.get( "sold" ).toMap();
   for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); ++it )
   {
-    good::Type gtype = GoodHelper::getType( it->first );
+    good::Type gtype = good::Helper::getType( it->first );
     _d->sellStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
   VariantMap bought_vm = options.get( "bought" ).toMap();
   for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); ++it )
   {
-    good::Type gtype = GoodHelper::getType( it->first );
+    good::Type gtype = good::Helper::getType( it->first );
     _d->buyStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
@@ -263,7 +263,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap sells_vm = stream.get( "sells" ).toMap();
   foreach( it, sells_vm )
   {
-    good::Type gtype = GoodHelper::getType( it->first );
+    good::Type gtype = good::Helper::getType( it->first );
     _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
     _d->realSells.setCapacity( gtype, it->second.toInt() * 100 );
   }
@@ -271,7 +271,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap buys_vm = stream.get( "buys" ).toMap();
   foreach( it, buys_vm )
   {
-    good::Type gtype = GoodHelper::getType( it->first );
+    good::Type gtype = good::Helper::getType( it->first );
     _d->buyStore.setCapacity( gtype, it->second.toInt() * 100 );
   }
 }

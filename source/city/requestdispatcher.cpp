@@ -91,6 +91,8 @@ void Dispatcher::timeStep(const unsigned int time)
       }
 
       bool isReady = request->isReady( _city() );
+      isReady;
+
       if( !request->isAnnounced() )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );

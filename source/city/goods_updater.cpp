@@ -86,7 +86,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
 
-  _d->gtype = (good::Type)GoodHelper::getType( stream.get( lc_good ).toString() );
+  _d->gtype = (good::Type)good::Helper::getType( stream.get( lc_good ).toString() );
 
   VariantList vl_buildings = stream.get( "buildings" ).toList();
   foreach( it, vl_buildings )
@@ -111,7 +111,7 @@ VariantMap GoodsUpdater::save() const
     vl_buildings.push_back( Variant( MetaDataHolder::findTypename( (gfx::TileOverlay::Type)*it ) ));
   }
 
-  ret[ lc_good    ] = Variant( GoodHelper::getTypeName( _d->gtype ) );
+  ret[ lc_good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
 
   return ret;
 }

@@ -70,12 +70,12 @@ void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == city::Funds::importGoods )
   {
-    int price = GoodHelper::importPrice( game.city(), _gtype, _qty );
+    int price = good::Helper::importPrice( game.city(), _gtype, _qty );
     _value = -price * ( 1+_buff );
   }
   else if( _type == city::Funds::exportGoods )
   {
-    int price = GoodHelper::exportPrice( game.city(), _gtype, _qty );
+    int price = good::Helper::exportPrice( game.city(), _gtype, _qty );
     _value = price * ( 1+_buff );
   }
 

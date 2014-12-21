@@ -377,8 +377,8 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( sellgoods.capacity( (good::Type)i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( GoodHelper::picture( good::Type(i), true) );
-      lb->setTooltipText( GoodHelper::getTypeName( good::Type(i) ) );
+      lb->setBackgroundPicture( good::Helper::picture( good::Type(i), true) );
+      lb->setTooltipText( good::Helper::getTypeName( good::Type(i) ) );
       k++;
     }
   }
@@ -392,8 +392,8 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     if( buygoods.capacity( (good::Type)i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  GoodHelper::picture( good::Type(i), true) );
-      lb->setTooltipText( GoodHelper::getTypeName( good::Type(i) ) );
+      lb->setBackgroundPicture(  good::Helper::picture( good::Type(i), true) );
+      lb->setTooltipText( good::Helper::getTypeName( good::Type(i) ) );
       k++;
     }
   }
@@ -421,7 +421,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     if( maxsell > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  GoodHelper::picture( good::Type(i), true) );
+      lb->setBackgroundPicture(  good::Helper::picture( good::Type(i), true) );
 
       std::string text = utils::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
@@ -440,7 +440,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     if( maxbuy > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( GoodHelper::picture( good::Type(i), true) );
+      lb->setBackgroundPicture( good::Helper::picture( good::Type(i), true) );
 
       std::string text = utils::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( gbox, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );

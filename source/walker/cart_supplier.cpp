@@ -49,7 +49,7 @@ public:
   good::Stock stock;
   TilePos storageBuildingPos;
   TilePos baseBuildingPos;
-  Picture cartPicture;
+  Animation anim;
   int maxDistance;
   long rcvReservationID;
   long reservationID;
@@ -132,20 +132,20 @@ void CartSupplier::_reachedPathway()
 }
 
 
-const Picture& CartSupplier::getCartPicture()
+const Animation& CartSupplier::_cart()
 {
-  if( !_d->cartPicture.isValid() )
+  if( !_d->anim.isValid() )
   {
-    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, direction() );
+    _d->anim = good::Helper::getCartPicture( _d->stock, direction() );
   }
 
-  return _d->cartPicture;
+  return _d->anim;
 }
 
 void CartSupplier::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->cartPicture = Picture();  // need to get the new graphic
+   _d->anim = Animation();  // need to get the new graphic
 }
 
 void CartSupplier::getPictures( Pictures& oPics)
@@ -159,7 +159,7 @@ void CartSupplier::getPictures( Pictures& oPics)
    case constants::northWest:
    case constants::north:
    case constants::northEast:
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( _cart().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
@@ -168,7 +168,7 @@ void CartSupplier::getPictures( Pictures& oPics)
    case constants::south:
    case constants::southWest:
       oPics.push_back( getMainPicture() );
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( _cart().currentFrame() );
    break;
 
    default:
@@ -333,6 +333,7 @@ bool CartSupplier::die()
 
 void CartSupplier::timeStep(const unsigned long time)
 {
+  _d->anim.update( time );
   Walker::timeStep( time );
 }
 

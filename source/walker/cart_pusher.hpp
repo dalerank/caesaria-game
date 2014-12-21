@@ -40,7 +40,6 @@ public:
   BuildingPtr consumerBuilding();
   good::Stock& stock();
 
-  gfx::Picture& getCartPicture();
   virtual void getPictures( gfx::Pictures& oPics);
 
   void send2city( BuildingPtr building, good::Stock& carry );
@@ -56,6 +55,7 @@ public:
 protected:
   CartPusher( PlayerCityPtr city );
 
+  virtual gfx::Animation& getCartPicture();
   virtual void _changeDirection();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);

@@ -79,16 +79,16 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
   if( factory->produceGoodType() != good::none )
   {
-    new Image( this, Point( 10, 10), GoodHelper::picture( factory->produceGoodType() ) );
+    new Image( this, Point( 10, 10), good::Helper::picture( factory->produceGoodType() ) );
   }
 
   // paint picture of in good
   if( factory->inStockRef().type() != good::none )
   {
     Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
-    lbStockInfo->setIcon( GoodHelper::picture( factory->inStockRef().type() ) );
+    lbStockInfo->setIcon( good::Helper::picture( factory->inStockRef().type() ) );
 
-    std::string whatStock = utils::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
+    std::string whatStock = utils::format( 0xff, "##%s_factory_stock##", good::Helper::getTypeName( factory->inStockRef().type() ).c_str() );
     std::string text = utils::format( 0xff, "%d %s %s %d",
                                              factory->inStockRef().qty() / 100,
                                              _(whatStock),

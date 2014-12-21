@@ -86,7 +86,7 @@ VariantMap Trading::save() const
   {
     VariantList tmp;
     tmp << it->second.buyPrice << it->second.sellPrice;
-    pricesVm[ GoodHelper::getTypeName( it->first ) ] = tmp;
+    pricesVm[ good::Helper::getTypeName( it->first ) ] = tmp;
   }
 
   ret[ "prices" ] = pricesVm;
@@ -121,7 +121,7 @@ void Trading::load(const VariantMap& stream)
   VariantMap prices = stream.get( "prices" ).toMap();
   foreach( it, prices )
   {
-    good::Type gtype = GoodHelper::getType( it->first );
+    good::Type gtype = good::Helper::getType( it->first );
     if( gtype != good::none )
     {
       VariantList vl = it->second.toList();

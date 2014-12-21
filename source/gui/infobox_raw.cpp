@@ -54,7 +54,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   if( rawmb->produceGoodType() != good::none )
   {
-    Picture pic = GoodHelper::picture( rawmb->produceGoodType() );
+    Picture pic = good::Helper::picture( rawmb->produceGoodType() );
     new Image( this, Point( 10, 10 ), pic );
   }
 

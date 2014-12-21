@@ -97,11 +97,11 @@ void AboutMarket::drawGood( MarketPtr market, const good::Type &goodType, int in
   int startOffset = 25;
 
   int offset = ( width() - startOffset * 2 ) / 5;
-  std::string goodName = GoodHelper::name( goodType );
+  std::string goodName = good::Helper::name( goodType );
   std::string outText = utils::format( 0xff, "%d", market->goodStore().qty( goodType ) );
 
   // pictures of goods
-  Picture pic = GoodHelper::picture( goodType );
+  Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
   Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );

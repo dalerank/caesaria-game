@@ -59,10 +59,10 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
 
     rect.LowerRightCorner.setY( rect.top() + 30 );
     rect.UpperLeftCorner.setX( rect.left() + 40 );
-    Label* goodLabel = new Label( this, rect, GoodHelper::getTypeName( gtype ) );
+    Label* goodLabel = new Label( this, rect, good::Helper::getTypeName( gtype ) );
     goodLabel->setTextAlignment( align::upperLeft, align::center );
     goodLabel->setTextOffset( Point( 30, 0 ) );
-    goodLabel->setIcon( GoodHelper::picture( gtype ), Point( 0, 7 ) );
+    goodLabel->setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
   }    
 }
 

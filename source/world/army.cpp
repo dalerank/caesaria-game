@@ -48,7 +48,7 @@ Army::Army( EmpirePtr empire )
 
   _animation().load( ResourceGroup::empirebits, 37, 16 );
   _animation().setLoop( Animation::loopAnimation );
-  Size size = _animation().getFrame( 0 ).size();
+  Size size = _animation().frame( 0 ).size();
   _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
   d->strength = 0;
 }

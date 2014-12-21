@@ -51,6 +51,11 @@ void Animation::setOffset( const Point& offset )
   foreach( pic, _pictures ) { pic->setOffset( offset ); }
 }
 
+void Animation::addOffset(const Point& offset)
+{
+  foreach( pic, _pictures) { pic->addOffset( offset );}
+}
+
 Point Animation::offset() const
 {
   if( _pictures.empty() )
@@ -188,7 +193,7 @@ void Animation::addFrame(const std::string& resource, int index)
   _pictures.push_back( Picture::load( resource, index ) );
 }
 
-const Picture& Animation::getFrame(int index) const
+const Picture& Animation::frame(int index) const
 {
   return ( index >= 0 && index < (int)_pictures.size() )
            ? _pictures[ index ]

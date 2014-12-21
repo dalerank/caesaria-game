@@ -433,8 +433,7 @@ const Picture& Walker::getMainPicture()
     AnimationBank::MovementAnimation::const_iterator itAnimMap;
     if( _d->action.direction == constants::noneDirection )
     {
-      DirectedAction action = { _d->action.action, constants::north };
-      itAnimMap = animMap.find(action);
+      itAnimMap = animMap.find( DirectedAction(_d->action.action, constants::north ) );
     }
     else
     {
@@ -461,19 +460,19 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, type )
   VARIANT_SAVE_ENUM_D( stream, _d, nation )
   stream[ "pathway" ] =  _d->pathway.save();
-  stream[ "health" ] = _d->health;
-  stream[ "action" ] = (int)_d->action.action;
-  stream[ "direction" ] = (int)_d->action.direction;
+  VARIANT_SAVE_ANY_D( stream, _d, health )
+  VARIANT_SAVE_ANY_D( stream, _d, action.action )
+  VARIANT_SAVE_ANY_D( stream, _d, action.direction )
   stream[ "location" ] = _d->location->pos();
-  stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
+  VARIANT_SAVE_ANY_D( stream, _d, tileSpeedKoeff )
   VARIANT_SAVE_ANY_D( stream, _d, wpos )
-  stream[ "nextwpos" ] = _d->nextwpos;
+  VARIANT_SAVE_ANY_D( stream, _d, nextwpos )
   VARIANT_SAVE_ANY_D( stream, _d, speed )
   VARIANT_SAVE_ANY_D( stream, _d, speedMultiplier )
-  stream[ "uid" ] = (unsigned int)_d->uid;
-  stream[ "thinks" ] = Variant( _d->thinks );
-  stream[ "subspeed" ] = _d->subSpeed;
-  stream[ "lastCenterDst" ] = _d->lastCenterDst;
+  VARIANT_SAVE_ANY_D( stream, _d, uid )
+  VARIANT_SAVE_STR_D( stream, _d, thinks )
+  VARIANT_SAVE_ANY_D( stream, _d, subSpeed )
+  VARIANT_SAVE_ANY_D( stream, _d, lastCenterDst )
   stream[ "showDebugInfo" ] = getFlag( showDebugInfo );
 }
 
@@ -486,15 +485,15 @@ void Walker::load( const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, wpos, stream )
   TilePos pos = stream.get( "location" ).toTilePos();
   _d->location = &tmap.at( pos );
-  _d->lastCenterDst = stream.get( "lastCenterDst" );
+  VARIANT_LOAD_ANY_D( _d, lastCenterDst, stream )
   _d->pathway.load( tmap, stream.get( "pathway" ).toMap() );
-  _d->thinks = stream.get( "thinks" ).toString();
-  _d->tileSpeedKoeff = stream.get( "tileSpdKoeff" );
-  _d->nextwpos = stream.get( "nextwpos" ).toPointF();
-  _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
-  _d->action.direction = (Direction) stream.get( "direction" ).toInt();
-  _d->uid = (UniqueId)stream.get( "uid" ).toInt();
-  _d->subSpeed = stream.get( "subspeed" ).toPointF();
+  VARIANT_LOAD_STR_D( _d, thinks, stream )
+  VARIANT_LOAD_ANY_D( _d, tileSpeedKoeff, stream )
+  VARIANT_LOAD_ANY_D( _d, nextwpos, stream );
+  VARIANT_LOAD_ENUM_D( _d, action.action, stream )
+  VARIANT_LOAD_ENUM_D( _d, action.direction, stream )
+  VARIANT_LOAD_ENUM_D( _d, uid, stream )
+  VARIANT_LOAD_ANY_D( _d, subSpeed, stream )
   VARIANT_LOAD_ANY_D( _d, speedMultiplier, stream )
 
 

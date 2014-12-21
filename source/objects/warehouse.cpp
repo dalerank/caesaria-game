@@ -302,14 +302,14 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   if( stock.type() != reservedStock.type() )
   {   
     Logger::warning( "Warehouse: GoodType does not match reservation need=%s have=%s",
-                     GoodHelper::name(reservedStock.type()).c_str(),
-                     GoodHelper::name(stock.type()).c_str() );
+                     good::Helper::name(reservedStock.type()).c_str(),
+                     good::Helper::name(stock.type()).c_str() );
     return;
   }
   if( stock.capacity() < stock.qty() + reservedStock.qty() )
   {
     Logger::warning( "Warehouse: Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
-                     GoodHelper::name(stock.type()).c_str(),
+                     good::Helper::name(stock.type()).c_str(),
                      reservedStock.qty(), stock.freeQty() );
     reservedStock.setQty( stock.freeQty() );
   }

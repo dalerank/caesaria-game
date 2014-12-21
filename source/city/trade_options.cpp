@@ -266,7 +266,7 @@ void TradeOptions::load( const VariantMap& stream )
 {
   for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
   {
-    good::Type gtype = GoodHelper::getType( it->first );
+    good::Type gtype = good::Helper::getType( it->first );
 
     if( gtype == good::none )
     {
@@ -286,7 +286,7 @@ VariantMap TradeOptions::save() const
 
   for( Impl::GoodsInfo::iterator it=_d->goods.begin(); it != _d->goods.end(); ++it )
   {
-    ret[ GoodHelper::getTypeName( it->first ) ] = it->second.save();
+    ret[ good::Helper::getTypeName( it->first ) ] = it->second.save();
   }
 
   return ret;

@@ -89,7 +89,7 @@ public:
     if( gr.isValid() )
     {
       font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
-      font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
+      font.draw( *pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
       font.draw( *pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
@@ -104,7 +104,7 @@ public:
     city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
     if( gr.isValid() )
     {
-      Picture goodPicture = GoodHelper::picture( gr->goodType() );
+      Picture goodPicture = good::Helper::picture( gr->goodType() );
       painter.draw( goodPicture, absoluteRect().lefttop() + Point( 40, 2 ), &absoluteClippingRectRef() );
     }
   }

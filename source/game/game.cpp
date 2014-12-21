@@ -233,7 +233,7 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
 
 void Game::Impl::initPictures()
 {
-  AnimationBank::instance().loadCarts();
+  AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
 }

@@ -61,7 +61,7 @@ public:
   {
     Label::_updateTexture( painter );
 
-    std::string goodName = _( "##" + GoodHelper::getTypeName( _type ) + "##" );
+    std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
 
     if( _textPictureRef() )
     {
@@ -74,7 +74,7 @@ public:
   {
     Label::draw( painter );
 
-    Picture goodIcon = GoodHelper::picture( _type );
+    Picture goodIcon = good::Helper::picture( _type );
     painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
     painter.draw( goodIcon, absoluteRect().lefttop() + Point( 390, 0 ), &absoluteClippingRectRef() );
   }

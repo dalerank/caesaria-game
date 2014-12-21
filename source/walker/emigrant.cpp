@@ -42,7 +42,7 @@ CAESARIA_LITERALCONST(peoples)
 class Emigrant::Impl
 {
 public:
-  Picture cartPicture;
+  Animation cart;
   CitizenGroup peoples;
   int failedWayCount;
   TilePos housePosLock;
@@ -440,8 +440,8 @@ Emigrant::~Emigrant()
   _lockHouse( HousePtr() );
 }
 
-void Emigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
-const Picture& Emigrant::_cartPicture(){  return _d->cartPicture;}
+void Emigrant::_setCart( const Animation& anim ){  _d->cart = anim;}
+Animation& Emigrant::_cart(){  return _d->cart; }
 const CitizenGroup& Emigrant::peoples() const{  return _d->peoples;}
 void Emigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 
@@ -478,7 +478,9 @@ void Emigrant::timeStep(const unsigned long time)
 
   default:
   break;
-    }
+  }
+
+  _d->cart.update( time );
 }
 
 TilePos Emigrant::places(Walker::Place type) const
