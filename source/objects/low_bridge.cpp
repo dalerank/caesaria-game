@@ -54,11 +54,11 @@ public:
   bool isWalkable() const { return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  bool build( PlayerCityPtr city, const TilePos& pos )
+  bool build( const CityAreaInfo& info )
   {
-    Construction::build( city, pos );
+    Construction::build( info );
     _fgPicturesRef().clear();
-    _pos = pos;
+    _pos = info.pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
     _picture.addOffset( Point( 10, -12 ) );
     _fgPicturesRef().push_back( _picture );
@@ -372,20 +372,20 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
 }
 
-bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
+bool LowBridge::build( const CityAreaInfo& info )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
   setSize( Size(0) );
-  Construction::build( city, pos );
+  Construction::build( info );
 
 
   _d->subtiles.clear();
   _fgPicturesRef().clear();
 
-  Tilemap& tilemap = city->tilemap();
+  Tilemap& tilemap = info.city->tilemap();
 
-  _checkParams( city, _d->direction, startPos, endPos, pos );
+  _checkParams( info.city, _d->direction, startPos, endPos, info.pos );
   int signSum = 1;
 
   if( _d->direction != noneDirection )
@@ -393,25 +393,25 @@ bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
     switch( _d->direction )
     {
     case northEast:
-      _computePictures( city, endPos, startPos, southWest );
+      _computePictures( info.city, endPos, startPos, southWest );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
       signSum = -1;
     break;
 
     case northWest:
-      _computePictures( city, endPos, startPos, southEast );
+      _computePictures( info.city, endPos, startPos, southEast );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
       std::swap( startPos, endPos );
       signSum = -1;
     break;
 
     case southWest:
-      _computePictures( city, startPos, endPos, _d->direction );
+      _computePictures( info.city, startPos, endPos, _d->direction );
       std::swap( startPos, endPos );
     break;
 
     case southEast:
-      _computePictures( city, startPos, endPos, _d->direction );
+      _computePictures( info.city, startPos, endPos, _d->direction );
     break;
 
     default: break;
@@ -422,7 +422,7 @@ bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
     foreach( t, tiles )
     {
       LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
-      TilePos buildPos = pos + subtile->_pos * signSum;
+      TilePos buildPos = info.pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();

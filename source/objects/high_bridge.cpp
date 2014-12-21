@@ -61,7 +61,7 @@ public:
   bool isWalkable() const   {    return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  bool build( PlayerCityPtr city, const TilePos& pos )
+  bool build( const CityAreaInfo& info )
   {
     if( _index == descentNorth || _index == liftingNorth )
     {
@@ -77,24 +77,25 @@ public:
       return false;
     }
 
-    Construction::build( city, pos );
+    Construction::build( info );
 
     setPicture( Picture::getInvalid() );
     _fgPicturesRef().clear();
     Picture pic = Picture::load( ResourceGroup::transport, _index);
 
+    const TilePos& pos = info.pos;
     if( _index == descentNorth )
     {
-      Tile& mt = city->tilemap().at( pos + TilePos( 0, 1 ) );
-      city->tilemap().at( pos + TilePos( 0, 1 ) ).setMasterTile( 0 );
-      city->tilemap().at( pos ).setMasterTile( &mt );
+      Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
+      info.city->tilemap().at( pos + TilePos( 0, 1 ) ).setMasterTile( 0 );
+      info.city->tilemap().at( pos ).setMasterTile( &mt );
 
       pic.addOffset( -30, -15 );
       _fgPicturesRef().push_back( pic );
     }
     else if( _index == liftingNorth )
     {
-      Tile& mt = city->tilemap().at( pos + TilePos( 0, 1 ) );
+      Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
       Picture landPic = mt.picture();
       landPic.addOffset( util::tilepos2screen( TilePos( 0, 1 ) ) );
       _fgPicturesRef().push_back( landPic );
@@ -103,7 +104,7 @@ public:
     }
     else if( _index == descentWest )
     {
-      Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
+      Tile& mt = info.city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
       landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) )  );
       _fgPicturesRef().push_back( landPic );
@@ -113,7 +114,7 @@ public:
     }
     else if(  _index == liftingWest )
     {
-      Tile& mt = city->tilemap().at( pos + TilePos( 1, 0) );
+      Tile& mt = info.city->tilemap().at( info.pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
       landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) ) );
       _fgPicturesRef().push_back( landPic );
@@ -474,29 +475,29 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   }
 }
 
-bool HighBridge::build(PlayerCityPtr city, const TilePos& pos )
+bool HighBridge::build( const CityAreaInfo& info  )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
 
   setSize( Size(0) );
-  Construction::build( city, pos );
+  Construction::build( info );
 
   _d->subtiles.clear();
   _fgPicturesRef().clear();
 
-  Tilemap& tilemap = city->tilemap();
+  Tilemap& tilemap = info.city->tilemap();
 
-  _checkParams( city, _d->direction, startPos, endPos, pos );
+  _checkParams( info.city, _d->direction, startPos, endPos, info.pos );
 
   if( _d->direction != noneDirection )
   {    
-    _computePictures( city, startPos, endPos, _d->direction );
+    _computePictures( info.city, startPos, endPos, _d->direction );
    
     foreach( it, _d->subtiles )
     {
       HighBridgeSubTilePtr subtile = *it;
-      TilePos buildPos = pos + subtile->_pos;
+      TilePos buildPos = info.pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();

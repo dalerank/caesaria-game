@@ -26,7 +26,7 @@ public:
   Colosseum();
   virtual void deliverService();
   virtual Service::Type serviceType() const;
-  virtual bool build(PlayerCityPtr city, const TilePos& pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual std::string troubleDesc() const;
 
   bool isNeedGladiators() const;

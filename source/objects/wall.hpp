@@ -23,7 +23,7 @@ class Wall : public Building
 public:
   Wall();
 
-  virtual bool build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(const CityAreaInfo &info);
 
   virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;

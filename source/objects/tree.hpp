@@ -28,7 +28,7 @@ public:
   virtual void timeStep( const unsigned long time );
   virtual bool isFlat() const;
   virtual void initTerrain(gfx::Tile &terrain);
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual void destroy();
 private:
   bool _isFlat;

@@ -38,7 +38,7 @@ public:
 
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
 
-  virtual bool build(PlayerCityPtr city, const TilePos& pos);
+  virtual bool build(const CityAreaInfo &info);
 private:
   bool _update( const CityAreaInfo& areaInfo );
 

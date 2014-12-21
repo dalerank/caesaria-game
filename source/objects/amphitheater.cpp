@@ -70,11 +70,11 @@ std::string Amphitheater::workersStateDesc() const
   return EntertainmentBuilding::workersStateDesc();
 }
 
-bool Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
+bool Amphitheater::build( const CityAreaInfo& info)
 {
-  EntertainmentBuilding::build( city, pos );
+  EntertainmentBuilding::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
   if( actors.empty() )
   {

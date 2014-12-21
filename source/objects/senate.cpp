@@ -96,9 +96,9 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-bool Senate::build(PlayerCityPtr city, const TilePos& pos)
+bool Senate::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( info );
   _updateUnemployers();
   _updateRatings();
 

@@ -27,7 +27,7 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  virtual bool build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( const CityAreaInfo& info );
   virtual bool canDestroy() const;
 };
 

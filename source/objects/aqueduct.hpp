@@ -25,7 +25,7 @@ class Aqueduct : public WaterSource
 public:
   Aqueduct();
 
-  virtual bool build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( const CityAreaInfo& info );
   virtual void addWater(const WaterSource &source);
   virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(const CityAreaInfo& areaInfo ) const;

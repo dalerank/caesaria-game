@@ -68,10 +68,10 @@ void Elevation::changeDirection(Tile* masterTile, constants::Direction direction
 
 bool Elevation::isDestructible() const{  return false;}
 
-bool Elevation::build(PlayerCityPtr city, const TilePos &pos)
+bool Elevation::build( const CityAreaInfo& info )
 {
-  bool res = TileOverlay::build(city, pos);
-  _d->basicImgId = city->tilemap().at( pos ).originalImgId();
+  bool res = TileOverlay::build( info );
+  _d->basicImgId = info.city->tilemap().at( info.pos ).originalImgId();
 
-	return res;
+  return res;
 }

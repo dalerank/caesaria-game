@@ -67,7 +67,7 @@ public:
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build( const CityAreaInfo& info );
 
   virtual double state( ParameterType param) const;
 

@@ -30,7 +30,7 @@ public:
   virtual bool isDestructible() const;
   virtual void initTerrain(gfx::Tile &terrain);
 
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
 private:
   bool _isFlat;
 };

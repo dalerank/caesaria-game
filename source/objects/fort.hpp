@@ -35,7 +35,7 @@ public:
   virtual ~Fort();
 
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
 
   virtual bool isNeedRoadAccess() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);

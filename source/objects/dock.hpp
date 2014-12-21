@@ -28,7 +28,7 @@ public:
   ~Dock();
 
   virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);

@@ -26,7 +26,7 @@ class Fountain : public ServiceBuilding
 public:
   Fountain();
 
-  virtual bool build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(const CityAreaInfo &info);
   virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);

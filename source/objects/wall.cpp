@@ -35,10 +35,10 @@ Wall::Wall() : Building( objects::wall, Size(1) )
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }
 
-bool Wall::build(PlayerCityPtr city, const TilePos& pos )
+bool Wall::build( const CityAreaInfo& info )
 {
-  Tilemap& tilemap = city->tilemap();
-  Tile& terrain = tilemap.at( pos );
+  Tilemap& tilemap = info.city->tilemap();
+  Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have wall here
   WallPtr wall = ptr_cast<Wall>( terrain.overlay() );
@@ -47,14 +47,14 @@ bool Wall::build(PlayerCityPtr city, const TilePos& pos )
     return false;
   }
 
-  Construction::build( city, pos );
+  Construction::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   WallList walls = helper.find<Wall>( objects::wall );
 
-  foreach( wall, walls ) { (*wall)->updatePicture( city ); }
+  foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
 
-  updatePicture( city );
+  updatePicture( info.city );
 
   return true;
 }

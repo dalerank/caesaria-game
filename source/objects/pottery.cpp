@@ -37,10 +37,10 @@ bool Pottery::canBuild( const CityAreaInfo& areaInfo ) const
   return ret;
 }
 
-bool Pottery::build(PlayerCityPtr city, const TilePos& pos)
+bool Pottery::build( const CityAreaInfo& info )
 {
-  Factory::build( city, pos );
-  city::Helper helper( city );
+  Factory::build( info );
+  city::Helper helper( info.city );
   bool haveClaypit = !helper.find<Building>( objects::clayPit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );

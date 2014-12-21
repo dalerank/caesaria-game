@@ -22,6 +22,7 @@
 #include "resourcegroup.hpp"
 #include "objects/metadata.hpp"
 #include "core/logger.hpp"
+#include "gfx/tilesarray.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -167,7 +168,8 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     if( oTile.overlay().isValid() )
       return;
 
-    overlay->build( city, oTile.pos() );
+    CityAreaInfo info = { city, oTile.pos(), TilesArray() };
+    overlay->build( info );
     city->overlays().push_back( overlay );
   }
 }

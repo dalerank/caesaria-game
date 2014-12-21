@@ -32,11 +32,11 @@ Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, S
   _addNecessaryWalker( walker::actor );
 }
 
-bool Theater::build(PlayerCityPtr city, const TilePos& pos)
+bool Theater::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( info );
 
-  city::Helper helper( city );
+  city::Helper helper( info.city );
   ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
 
   if( actors.empty() )

@@ -46,7 +46,7 @@ public:
 
   // evaluate the given service
   virtual float evaluateService( ServiceWalkerPtr walker);
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
 
   // handle service reservation
   void reserveService(const Service::Type service);

@@ -106,9 +106,9 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), objects::oracle, 55 )
 
 unsigned int TempleOracle::parishionerNumber() const {  return 500; }
 
-bool TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
+bool TempleOracle::build( const CityAreaInfo& info )
 {
-  BigTemple::build( city, pos );
+  BigTemple::build( info );
 
   if( isDeleted() )
   {
@@ -135,18 +135,18 @@ BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
 
 unsigned int BigTemple::parishionerNumber() const {  return 1500; }
 
-bool BigTemple::build(PlayerCityPtr city, const TilePos& pos)
+bool BigTemple::build( const CityAreaInfo& info )
 {  
-  if( city->getOption( PlayerCity::forceBuild ) > 0 )  //load from savefiles
+  if( info.city->getOption( PlayerCity::forceBuild ) > 0 )  //load from savefiles
   {
-    Temple::build( city, pos );
+    Temple::build( info );
     return true;
   }
 
-  city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, false );
+  city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( info.city, false );
   if( goods[ good::marble ] >= 2 )
   {
-    Temple::build( city, pos );
+    Temple::build( info );
   }
   else
   {

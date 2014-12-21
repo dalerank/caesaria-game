@@ -50,9 +50,9 @@ Baths::Baths() : ServiceBuilding(Service::baths, objects::baths, Size(2) )
 
 unsigned int Baths::walkerDistance() const {  return 35;}
 
-bool Baths::build(PlayerCityPtr city, const TilePos& pos)
+bool Baths::build( const CityAreaInfo& info )
 {
-  return ServiceBuilding::build( city, pos );
+  return ServiceBuilding::build( info );
 }
 
 bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }

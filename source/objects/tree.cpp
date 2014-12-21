@@ -43,12 +43,12 @@ void Tree::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlTree, true );
 }
 
-bool Tree::build(PlayerCityPtr city, const TilePos& pos)
+bool Tree::build( const CityAreaInfo& info )
 {
-  std::string picname = util::convId2PicName( city->tilemap().at( pos ).originalImgId() );
+  std::string picname = util::convId2PicName( info.city->tilemap().at( info.pos ).originalImgId() );
   setPicture( Picture::load( picname ) );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
-  return TileOverlay::build( city, pos );
+  return TileOverlay::build( info );
 }
 
 void Tree::destroy()

@@ -32,7 +32,7 @@ public:
   virtual Point offset( const gfx::Tile& tile, const Point &subpos) const;
   virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
   virtual bool isDestructible() const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
 private:
   class Impl;
   ScopedPtr<Impl> _d;
