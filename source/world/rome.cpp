@@ -38,7 +38,7 @@ class Rome::Impl
 {
 public:
   city::Funds funds;
-  SimpleGoodStore gstore;
+  good::SimpleStore gstore;
   DateTime lastAttack;
   int strength;
 };
@@ -73,10 +73,10 @@ void Rome::timeStep(const unsigned int time)
 
 SmartPtr<Player> Rome::player() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
-const GoodStore& Rome::exportingGoods() const{ return _d->gstore; }
+const good::Store& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}
 void Rome::empirePricesChanged(good::Type gtype, int bCost, int sCost){}
-const GoodStore& Rome::importingGoods() const{ return _d->gstore; }
+const good::Store& Rome::importingGoods() const{ return _d->gstore; }
 
 void Rome::addObject(ObjectPtr obj)
 {

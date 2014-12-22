@@ -86,6 +86,8 @@ protected:
   int _qty;
 };
 
+class Store;
+
 }//end namespace good
     
 #endif //_CAESARIA_GOOD_H_INCLUDE_

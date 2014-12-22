@@ -95,7 +95,7 @@ bool Statistic::canImport(PlayerCityPtr city, good::Type type)
   foreach( it, routes )
   {
     world::CityPtr partner = (*it)->partner( city->name() );
-    const GoodStore& goods = partner->exportingGoods();
+    const good::Store& goods = partner->exportingGoods();
     if( goods.capacity( type ) > 0 )
     {
       haveImportWay = true;

@@ -65,7 +65,7 @@ public:
   int poverity;
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
-  SimpleGoodStore goodStore;
+  good::SimpleStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   unsigned int maxHabitants;
   DateTime lastTaxationDate;
@@ -805,9 +805,9 @@ void House::buyMarket( ServiceWalkerPtr walker )
   if( market.isNull() )
     return;
 
-  GoodStore& marketStore = market->goodStore();
+  good::Store& marketStore = market->goodStore();
 
-  GoodStore &houseStore = goodStore();
+  good::Store& houseStore = goodStore();
   for (int i = 0; i < good::goodCount; ++i)
   {
     good::Type goodType = (good::Type) i;
@@ -926,8 +926,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
   case Service::market:
   {
     MarketPtr market = ptr_cast<Market>( walker->base() );
-    GoodStore &marketStore = market->goodStore();
-    GoodStore &houseStore = goodStore();
+    good::Store& marketStore = market->goodStore();
+    good::Store& houseStore = goodStore();
     for (int i = 0; i < good::goodCount; ++i)
     {
       good::Type goodType = (good::Type) i;
@@ -1290,7 +1290,7 @@ std::string House::evolveInfo() const{  return _d->evolveInfo;}
 bool House::isWalkable() const{  return size().width() == 1; }
 bool House::isFlat() const { return _d->isFlat; }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
-GoodStore& House::goodStore(){   return _d->goodStore;}
+good::Store& House::goodStore(){ return _d->goodStore; }
 const HouseSpecification& House::spec() const{   return _d->spec; }
 bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service){  return _d->services[service]; }

@@ -68,7 +68,7 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 
   foreach( it, buildings )
   {
-    GoodStore& store = (*it)->store();
+    good::Store& store = (*it)->store();
     for( int i=good::wheat; i < good::goodCount; i++ )
     {
       good::Type gtype = (good::Type)i;

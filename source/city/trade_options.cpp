@@ -76,7 +76,7 @@ public:
 
   typedef std::map< good::Type, GoodInfo > GoodsInfo;
   GoodsInfo goods;
-  SimpleGoodStore buys, sells;
+  good::SimpleStore buys, sells;
 
   void updateLists()
   {
@@ -292,14 +292,7 @@ VariantMap TradeOptions::save() const
   return ret;
 }
 
-const GoodStore& TradeOptions::importingGoods()
-{
-  return _d->buys;
-}
-
-const GoodStore& TradeOptions::exportingGoods()
-{
-  return _d->sells;
-}
+const good::Store& TradeOptions::importingGoods() {  return _d->buys; }
+const good::Store& TradeOptions::exportingGoods() { return _d->sells; }
 
 }//end namespace city

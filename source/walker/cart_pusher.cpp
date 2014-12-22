@@ -93,7 +93,7 @@ void CartPusher::_reachedPathway()
     WarehousePtr warehouse = ptr_cast<Warehouse>(_d->consumerBuilding);
     FactoryPtr factory = ptr_cast<Factory>(_d->consumerBuilding);
 
-    GoodStore* goodStore = 0;
+    good::Store* goodStore = 0;
     if( granary.isValid() ) { goodStore = &granary->store(); }
     else if( warehouse.isValid() ) { goodStore = &warehouse->store(); }
     else if( factory.isValid() ) { goodStore = &factory->store(); }

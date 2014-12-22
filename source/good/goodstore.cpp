@@ -21,23 +21,26 @@
 #include "core/logger.hpp"
 #include "goodhelper.hpp"
 
-class GoodStore::Impl
+namespace good
+{
+
+class Store::Impl
 {
 public:  
   bool devastation;
 
   Reservations storeReservations;  // key=reservationID, value=stock
   Reservations retrieveReservations;  // key=reservationID, value=stock
-  GoodOrders goodOrders;
+  Orders goodOrders;
 };
 
-GoodStore::GoodStore() : _d( new Impl )
+Store::Store() : _d( new Impl )
 {
   _d->devastation = false;
 }
 
 
-int GoodStore::getMaxRetrieve(const good::Type goodType)
+int Store::getMaxRetrieve(const good::Type goodType)
 {
   // current good quantity
   int rqty = qty(goodType);
@@ -52,7 +55,7 @@ int GoodStore::getMaxRetrieve(const good::Type goodType)
 }
 
 
-int GoodStore::reserveStorage(good::Stock &stock, DateTime time)
+int Store::reserveStorage(good::Stock &stock, DateTime time)
 {
   if( getMaxStore(stock.type() ) < stock.qty() )   // current free capacity
     return 0;
@@ -61,13 +64,13 @@ int GoodStore::reserveStorage(good::Stock &stock, DateTime time)
   return _d->storeReservations.push( stock, time );
 }
 
-int GoodStore::reserveStorage(good::Type what, unsigned int qty, DateTime time)
+int Store::reserveStorage(good::Type what, unsigned int qty, DateTime time)
 {
   good::Stock tmpStock( what, qty, qty);
   return reserveStorage( tmpStock, time );
 }
 
-int GoodStore::reserveRetrieval(good::Stock &stock, DateTime time)
+int Store::reserveRetrieval(good::Stock &stock, DateTime time)
 {
   // current good quantity
   if( getMaxRetrieve(stock.type()) < stock.qty())
@@ -76,13 +79,13 @@ int GoodStore::reserveRetrieval(good::Stock &stock, DateTime time)
   return _d->retrieveReservations.push( stock, time );
 }
 
-int GoodStore::reserveRetrieval(good::Type what, unsigned int qty, DateTime time)
+int Store::reserveRetrieval(good::Type what, unsigned int qty, DateTime time)
 {
   good::Stock tmpStock( what, qty, qty);
   return reserveRetrieval( tmpStock, time );
 }
 
-good::Stock GoodStore::getStorageReservation(const int reservationID, const bool pop)
+good::Stock Store::getStorageReservation(const int reservationID, const bool pop)
 {
   ReserveInfo info = _d->storeReservations.get( reservationID );
 
@@ -101,7 +104,7 @@ good::Stock GoodStore::getStorageReservation(const int reservationID, const bool
 }
 
 
-good::Stock GoodStore::getRetrieveReservation(const int reservationID, const bool pop)
+good::Stock Store::getRetrieveReservation(const int reservationID, const bool pop)
 {
   ReserveInfo info = _d->retrieveReservations.get(reservationID);
 
@@ -120,7 +123,7 @@ good::Stock GoodStore::getRetrieveReservation(const int reservationID, const boo
 }
 
 
-void GoodStore::applyStorageReservation(SimpleGoodStore &goodStore, const int reservationID)
+void Store::applyStorageReservation(SimpleStore &goodStore, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID);
   good::Stock &stock = goodStore.getStock(reservedStock.type() );
@@ -129,7 +132,7 @@ void GoodStore::applyStorageReservation(SimpleGoodStore &goodStore, const int re
 }
 
 
-void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const int reservationID)
+void Store::applyRetrieveReservation(SimpleStore &goodStore, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID);
   good::Stock &stock = goodStore.getStock(reservedStock.type() );
@@ -137,7 +140,7 @@ void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const int r
   applyRetrieveReservation(stock, reservationID);
 }
 
-void GoodStore::store( good::Stock& stock, const int amount)
+void Store::store( good::Stock& stock, const int amount)
 {
   good::Stock reservedStock;
   reservedStock.setType( stock.type() );
@@ -158,7 +161,7 @@ void GoodStore::store( good::Stock& stock, const int amount)
   }
 }
 
-void GoodStore::retrieve(good::Stock &stock, int amount)
+void Store::retrieve(good::Stock &stock, int amount)
 {
   good::Stock reservedStock;
   reservedStock.setType( stock.type() );
@@ -177,7 +180,7 @@ void GoodStore::retrieve(good::Stock &stock, int amount)
   }
 }
 
-void GoodStore::storeAll( GoodStore& goodStore)
+void Store::storeAll( Store& goodStore)
 {
   for (int n = 1; n<good::goodCount; ++n)
   {
@@ -192,7 +195,7 @@ void GoodStore::storeAll( GoodStore& goodStore)
   }
 }
 
-VariantMap GoodStore::save() const 
+VariantMap Store::save() const
 {
   VariantMap stream;
 
@@ -210,7 +213,7 @@ VariantMap GoodStore::save() const
   return stream;
 }
 
-void GoodStore::load( const VariantMap& stream )
+void Store::load( const VariantMap& stream )
 {
   _d->devastation = (bool)stream.get( "devastation" );
   _d->storeReservations.load( stream.get( "storeReservations" ).toMap() );
@@ -220,29 +223,29 @@ void GoodStore::load( const VariantMap& stream )
   int index = 0;
   foreach( var, vm_orders )
   {
-    setOrder( (good::Type)index, (GoodOrders::Order)var->toInt() );
+    setOrder( (good::Type)index, (Orders::Order)var->toInt() );
     index++;
   }
 }
 
-bool GoodStore::isDevastation() const{  return _d->devastation;}
-void GoodStore::setDevastation( bool value ){  _d->devastation = value;}
+bool Store::isDevastation() const{  return _d->devastation;}
+void Store::setDevastation( bool value ){  _d->devastation = value;}
 
-GoodStore::~GoodStore() {}
-void GoodStore::setOrder( const good::Type type, const GoodOrders::Order order ){  _d->goodOrders.set( type, order );}
-GoodOrders::Order GoodStore::getOrder(const good::Type type ) const{  return _d->goodOrders.get( type );}
+Store::~Store() {}
+void Store::setOrder( const good::Type type, const Orders::Order order ){  _d->goodOrders.set( type, order );}
+Orders::Order Store::getOrder(const good::Type type ) const{  return _d->goodOrders.get( type );}
 
-void GoodStore::removeExpired(DateTime date)
+void Store::removeExpired(DateTime date)
 {
   _d->retrieveReservations.removeExpired( date, 2 );
   _d->storeReservations.removeExpired( date, 2 );
 }
 
-Reservations& GoodStore::_getStoreReservations() {  return _d->storeReservations; }
-Reservations& GoodStore::_getRetrieveReservations(){   return _d->retrieveReservations;}
-int GoodStore::freeQty( const good::Type& goodType ) const{ return capacity( goodType ) - qty( goodType );}
-int GoodStore::freeQty() const{  return capacity() - qty();}
-bool GoodStore::empty() const{  return qty() == 0;}
+Reservations& Store::_getStoreReservations() {  return _d->storeReservations; }
+Reservations& Store::_getRetrieveReservations(){   return _d->retrieveReservations;}
+int Store::freeQty( const good::Type& goodType ) const{ return capacity( goodType ) - qty( goodType );}
+int Store::freeQty() const{  return capacity() - qty();}
+bool Store::empty() const{  return qty() == 0;}
 const ReserveInfo Reservations::invalid = { good::Stock(), DateTime(), 0 };
 Reservations::Reservations(){  _idCounter = 1; }
 
@@ -327,3 +330,5 @@ void Reservations::load(const VariantMap& stream)
     insert( info );
   }
 }
+
+}//end namespace good

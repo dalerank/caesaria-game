@@ -55,8 +55,8 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // warehouse
-  SimpleGoodStore sell;
-  SimpleGoodStore buy;
+  good::SimpleStore sell;
+  good::SimpleStore buy;
   int attemptCount;
   int waitInterval;
   std::string baseCityName;
@@ -83,7 +83,7 @@ Merchant::Merchant(PlayerCityPtr city )
 
 Merchant::~Merchant(){}
 
-DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket, PlayerCityPtr city)
+DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::SimpleStore& basket, PlayerCityPtr city)
 {
   DirectPRoutes routes = pathPropagator.getRoutes( objects::warehouse );
 
@@ -120,7 +120,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
   return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : DirectRoute();
 }
 
-DirectRoute getWarehouse4Sells( Propagator &pathPropagator, SimpleGoodStore& basket )
+DirectRoute getWarehouse4Sells( Propagator &pathPropagator, good::SimpleStore& basket )
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( objects::warehouse );
 
@@ -159,7 +159,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       DirectRoute route;
 
       //try found any available warehouse for selling our goods
-      const GoodStore& buyOrders = city->importingGoods();
+      const good::Store& buyOrders = city->importingGoods();
 
       if( buyOrders.capacity() > 0 )
       {
@@ -236,7 +236,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
 
         city::TradeOptions& options = city->tradeOptions();
-        GoodStore& whStore = warehouse->store();
+        good::Store& whStore = warehouse->store();
         //try buy goods
         for( int n = good::wheat; n<good::goodCount; ++n )
         {
@@ -314,7 +314,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       WarehousePtr warehouse;
       warehouse << city->getOverlay( destBuildingPos );
 
-      const GoodStore& cityOrders = city->importingGoods();
+      const good::Store& cityOrders = city->importingGoods();
 
       if( warehouse.isValid() )
       {

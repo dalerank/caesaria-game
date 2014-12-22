@@ -23,8 +23,6 @@
 #include "predefinitions.hpp"
 #include "good/good.hpp"
 
-class GoodStore;
-
 class Factory : public WorkingBuilding
 {
 public:
@@ -40,7 +38,7 @@ public:
   good::Type consumeGoodType() const;
   good::Type produceGoodType() const;
 
-  GoodStore& store();
+  good::Store& store();
 
   virtual std::string troubleDesc() const;
 

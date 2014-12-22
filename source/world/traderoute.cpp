@@ -117,7 +117,7 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
 const gfx::Pictures& Traderoute::pictures() const {  return _d->pictures;}
 bool Traderoute::isSeaRoute() const{  return _d->seaRoute;}
 
-MerchantPtr Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
+MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell, good::Store &buy )
 {
   if( _d->points.empty() )
   {
@@ -204,7 +204,7 @@ void Traderoute::load(const VariantMap& stream)
   VariantMap merchants = stream.get( "merchants" ).toMap();
   foreach( it, merchants )
   {
-    SimpleGoodStore sell, buy;
+    good::SimpleStore sell, buy;
     MerchantPtr m = addMerchant( _d->begin, sell, buy );
 
     if( m.isValid() )

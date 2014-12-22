@@ -677,8 +677,8 @@ PlayerPtr PlayerCity::player() const { return _d->player; }
 city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 
-const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
-const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
+const good::Store &PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }

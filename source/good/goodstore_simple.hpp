@@ -19,20 +19,23 @@
 #include "goodstore.hpp"
 #include "core/scopedptr.hpp"
 
-class SimpleGoodStore : public GoodStore
+namespace good
+{
+
+class SimpleStore : public Store
 {
 public:
   //using GoodStore::applyStorageReservation;
   //using GoodStore::applyRetrieveReservation;
 
-  SimpleGoodStore();
-  virtual ~SimpleGoodStore();
+  SimpleStore();
+  virtual ~SimpleStore();
 
   void setCapacity(const int maxQty);
   virtual int capacity() const;
   virtual int qty() const;
 
-  void resize( const GoodStore& other );
+  void resize( const Store& other );
 
   good::Stock& getStock(const good::Type &goodType);
 
@@ -55,5 +58,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _gsd;
 };
+
+}//end namespace good
 
 #endif //__CAESARIA_GOODSTORE_SIMPLE_H_INCLUDED__

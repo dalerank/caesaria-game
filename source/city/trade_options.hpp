@@ -20,8 +20,6 @@
 #include "good/good.hpp"
 #include "core/variant.hpp"
 
-class GoodStore;
-
 namespace city
 {
 
@@ -57,8 +55,8 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
-  const GoodStore& importingGoods();
-  const GoodStore& exportingGoods();
+  const good::Store& importingGoods();
+  const good::Store& exportingGoods();
 
 public:
   class Impl;

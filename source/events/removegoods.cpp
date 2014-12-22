@@ -52,7 +52,7 @@ void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Type what, 
     if( qty <= 0 )
       break;
 
-    GoodStore& store = (*it)->store();
+    good::Store& store = (*it)->store();
     int maxQty = std::min( store.getMaxRetrieve( what ), qty );
 
     if( maxQty > 0 )

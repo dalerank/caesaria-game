@@ -109,7 +109,7 @@ bool TileOverlay::build(const CityAreaInfo &info)
       initTerrain( tile );
     }
   }
-  info->setOption( PlayerCity::updateTiles, 1 );
+  info.city->setOption( PlayerCity::updateTiles, 1 );
 
   return true;
 }

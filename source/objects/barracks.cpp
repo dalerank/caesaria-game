@@ -28,7 +28,7 @@ using namespace constants;
 class Barracks::Impl
 {
 public:
-  SimpleGoodStore store;
+  good::SimpleStore store;
   bool notNeedSoldiers;
 };
 

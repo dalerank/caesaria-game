@@ -40,7 +40,7 @@
 using namespace constants;
 using namespace gfx;
 
-class FactoryStore : public SimpleGoodStore
+class FactoryStore : public good::SimpleStore
 {
 public:
   FactoryStore() : factory( NULL ) {}
@@ -52,18 +52,18 @@ public:
       return 0;
     }
 
-    return SimpleGoodStore::getMaxStore( goodType );
+    return good::SimpleStore::getMaxStore( goodType );
   }
 
   virtual void applyStorageReservation( good::Stock &stock, const int reservationID )
   {
-    SimpleGoodStore::applyStorageReservation( stock, reservationID );
+    good::SimpleStore::applyStorageReservation( stock, reservationID );
     emit onChangeState();
   }
 
   virtual void applyRetrieveReservation( good::Stock &stock, const int reservationID)
   {
-    SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
+    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
     emit onChangeState();
   }
 
@@ -265,7 +265,7 @@ void Factory::deliverGood()
   }
 }
 
-GoodStore& Factory::store() {   return _d->store; }
+good::Store& Factory::store() {   return _d->store; }
 
 std::string Factory::troubleDesc() const
 {

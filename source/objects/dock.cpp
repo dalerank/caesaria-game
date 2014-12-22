@@ -41,9 +41,9 @@ class Dock::Impl
 public:
   enum { southPic=29, northPic=5, westPic=41, eastPic=17 };
 
-  SimpleGoodStore exportGoods;
-  SimpleGoodStore importGoods;
-  SimpleGoodStore requestGoods;
+  good::SimpleStore exportGoods;
+  good::SimpleStore importGoods;
+  good::SimpleStore requestGoods;
   DateTime dateSendGoods;
   std::vector<int> saveTileInfo;
   Direction direction;
@@ -247,7 +247,7 @@ void Dock::requestGoods(good::Stock& stock)
 
 int Dock::importingGoods( good::Stock& stock)
 {
-  const GoodStore& cityOrders = _city()->importingGoods();
+  const good::Store& cityOrders = _city()->importingGoods();
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );

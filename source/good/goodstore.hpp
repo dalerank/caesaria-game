@@ -24,6 +24,9 @@
 
 #include <set>
 
+namespace good
+{
+
 struct ReserveInfo
 {
   good::Stock stock;
@@ -55,12 +58,12 @@ private:
   unsigned int _idCounter;
 };
 
-class SimpleGoodStore;
-class GoodStore
+class SimpleStore;
+class Store
 {
 public:
-  GoodStore();
-  virtual ~GoodStore();
+  Store();
+  virtual ~Store();
 
   virtual int qty(const good::Type& goodType) const = 0;
   virtual int qty() const = 0;
@@ -94,15 +97,15 @@ public:
   virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
 
   // store/retrieve to goodStore
-  void applyStorageReservation(SimpleGoodStore& goodStore, const int reservationID);
-  void applyRetrieveReservation(SimpleGoodStore& goodStore, const int reservationID);
+  void applyStorageReservation(SimpleStore& goodStore, const int reservationID);
+  void applyRetrieveReservation(SimpleStore& goodStore, const int reservationID);
 
   // immediate store/retrieve, exception if impossible
   virtual void store( good::Stock& stock, const int amount);
   virtual void retrieve( good::Stock& stock, const int amount);
 
   // store all goods from the given goodStore
-  virtual void storeAll( GoodStore &goodStore);
+  virtual void storeAll( Store &goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );
@@ -110,8 +113,8 @@ public:
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
-  virtual void setOrder( const good::Type type, const GoodOrders::Order order );
-  virtual GoodOrders::Order getOrder( const good::Type type ) const;
+  virtual void setOrder( const good::Type type, const Orders::Order order );
+  virtual Orders::Order getOrder( const good::Type type ) const;
 
   virtual void removeExpired( DateTime date );
 
@@ -123,5 +126,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace good
 
 #endif //__CAESARIA_GOODSTORE_H_INCLUDED__

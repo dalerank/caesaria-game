@@ -81,16 +81,16 @@ public:
 
   void updateBtnText()
   {
-    GoodOrders::Order rule = _storageBuilding->store().getOrder( _type );
+    good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
     const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
-    _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
+    _btnChangeRule->setFont( Font::create( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( _(ruleName[ rule ]) );
   }
 
   void changeGranaryRule()
   {
-    GoodOrders::Order rule = _storageBuilding->store().getOrder( _type );
-    _storageBuilding->store().setOrder( _type, GoodOrders::Order( (rule+1) % (GoodOrders::none)) );
+    good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
+    _storageBuilding->store().setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );
     updateBtnText();
   }
 
@@ -192,9 +192,9 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   _granary = granary;
   for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
   {
-    const GoodOrders::Order rule = granary->store().getOrder( (good::Type)goodType );
+    const good::Orders::Order rule = granary->store().getOrder( (good::Type)goodType );
     
-    if( rule != GoodOrders::none )
+    if( rule != good::Orders::none )
     {
       addOrderWidget<GranaryPtr>( index, (good::Type)goodType, _ordersArea(), granary );
       index++;
@@ -243,9 +243,9 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   int index=0;
   for( int goodType=good::wheat; goodType <= good::marble; goodType++ )
   {
-    const GoodOrders::Order rule = d->warehouse->store().getOrder( (good::Type)goodType );
+    const good::Orders::Order rule = d->warehouse->store().getOrder( (good::Type)goodType );
 
-    if( rule != GoodOrders::none )
+    if( rule != good::Orders::none )
     {
       addOrderWidget<WarehousePtr>( index, (good::Type)goodType, _ordersArea(), d->warehouse );
       index++;

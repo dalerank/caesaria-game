@@ -30,7 +30,7 @@ class GoodCaravan::Impl
 public:
   CityPtr base;
   std::string destination;
-  SimpleGoodStore store;
+  good::SimpleStore store;
 
   VariantMap options;
 };
@@ -73,7 +73,7 @@ void GoodCaravan::sendTo(CityPtr obj)
   sendTo( ptr_cast<Object>( obj ) );
 }
 
-GoodStore& GoodCaravan::store() { return _d->store; }
+good::Store& GoodCaravan::store() { return _d->store; }
 std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
 
 void GoodCaravan::timeStep(unsigned int time)

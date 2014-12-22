@@ -371,7 +371,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 90 );
   new Label( gbox, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
-  const GoodStore& sellgoods = currentCity->importingGoods();
+  const good::Store& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < good::goodCount; i++ )
   {
     if( sellgoods.capacity( (good::Type)i ) > 0  )
@@ -386,7 +386,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point buyPoint = startDraw + Point( 200, 0 );
   new Label( gbox, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
-  const GoodStore& buygoods = currentCity->exportingGoods();
+  const good::Store& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < good::goodCount; i++ )
   {
     if( buygoods.capacity( (good::Type)i ) > 0  )
@@ -413,7 +413,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 80 );
   new Label( gbox, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
-  const GoodStore& sellgoods = currentCity->importingGoods();
+  const good::Store& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < good::goodCount; i++ )
   {
     int maxsell = sellgoods.capacity( (good::Type)i ) / 100;
@@ -432,7 +432,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point buyPoint = startDraw + Point( 0, 30 );
   new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
-  const GoodStore& buygoods = currentCity->exportingGoods();
+  const good::Store& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < good::goodCount; i++ )
   {
     int maxbuy = buygoods.capacity( (good::Type)i ) / 100;

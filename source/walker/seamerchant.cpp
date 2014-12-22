@@ -48,8 +48,8 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // dock
-  SimpleGoodStore sell;
-  SimpleGoodStore buy;
+  good::SimpleStore sell;
+  good::SimpleStore buy;
   int tryDockCount;
   int maxTryDockCount;
   int waitInterval;
@@ -271,7 +271,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() )
     {
       city::TradeOptions& options = city->tradeOptions();
-      const GoodStore& importing = options.importingGoods();
+      const good::Store& importing = options.importingGoods();
       //try sell goods
       for( int n = good::wheat; n<good::goodCount; ++n)
       {

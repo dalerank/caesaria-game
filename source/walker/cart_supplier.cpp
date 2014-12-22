@@ -80,7 +80,7 @@ void CartSupplier::_reachedPathway()
     BuildingPtr building;
     building << _city()->getOverlay( _d->baseBuildingPos );
 
-    GoodStore* storage = 0;
+    good::Store* storage = 0;
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
     WarehousePtr w = ptr_cast<Warehouse>( building );
@@ -107,7 +107,7 @@ void CartSupplier::_reachedPathway()
     BuildingPtr building;
     building << _city()->getOverlay( _d->storageBuildingPos );
 
-    GoodStore* storage = 0;
+    good::Store* storage = 0;
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
     WarehousePtr w = ptr_cast<Warehouse>( building );
@@ -275,7 +275,7 @@ void CartSupplier::_reserveStorage()
   BuildingPtr b;
   b << _city()->getOverlay( _d->baseBuildingPos );
 
-  GoodStore* storage = 0;
+  good::Store* storage = 0;
   FactoryPtr f = ptr_cast<Factory>( b );
   GranaryPtr g = ptr_cast<Granary>( b );
   WarehousePtr w = ptr_cast<Warehouse>( b );

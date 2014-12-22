@@ -20,15 +20,14 @@
 
 #include "service.hpp"
 #include "core/predefinitions.hpp"
-
-class GoodStore;
+#include "good/good.hpp"
 
 class Market: public ServiceBuilding
 {
 public:
   Market();
 
-  GoodStore& goodStore();
+  good::Store& goodStore();
   std::list<good::Type> mostNeededGoods();  // used by the market buyer
 
   // returns the quantity of needed goods

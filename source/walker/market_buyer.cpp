@@ -42,7 +42,7 @@ public:
   good::Type priorityGood;
   int maxDistance;
   MarketPtr market;
-  SimpleGoodStore basket;
+  good::SimpleStore basket;
   int reservationID;
 };
 
@@ -71,7 +71,7 @@ MarketBuyer::~MarketBuyer(){}
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                               MarketPtr market, SimpleGoodStore& basket, const good::Type what,
+                               MarketPtr market, good::SimpleStore& basket, const good::Type what,
                                Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;

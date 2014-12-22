@@ -113,7 +113,7 @@ void WarehouseTile::computePicture()
 }
 
 
-class WarehouseStore : public GoodStore
+class WarehouseStore : public good::Store
 {
 public:
   typedef std::map< good::Type, int > StockMap;
@@ -135,8 +135,8 @@ public:
   virtual int getMaxStore(const good::Type goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock &stock, const int reservationID);
-  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID);
+  virtual void applyStorageReservation(good::Stock& stock, const int reservationID);
+  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID);
 
 private:
   Warehouse* _warehouse;
@@ -158,11 +158,11 @@ WarehouseStore::WarehouseStore()
 
   for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
   {
-    setOrder( (good::Type)goodType, GoodOrders::accept );
+    setOrder( (good::Type)goodType, good::Orders::accept );
   }
 }
 
-void WarehouseStore::init(Warehouse &warehouse){  _warehouse = &warehouse; }
+void WarehouseStore::init(Warehouse& warehouse){  _warehouse = &warehouse; }
 
 int WarehouseStore::qty(const good::Type &goodType) const
 {
@@ -186,7 +186,7 @@ int WarehouseStore::qty() const {  return qty( good::goodCount ); }
 
 int WarehouseStore::getMaxStore(const good::Type goodType)
 {
-  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->onlyDispatchGoods() )
+  if( getOrder( goodType ) == good::Orders::reject || isDevastation() || _warehouse->onlyDispatchGoods() )
   { 
     return 0;
   }
@@ -207,8 +207,8 @@ int WarehouseStore::getMaxStore(const good::Type goodType)
   }
 
   // add reservations
-  Reservations& r = _getStoreReservations();
-  foreach( i, r )
+  good::Reservations& reservations = _getStoreReservations();
+  foreach( i, reservations )
   {
     const good::Stock& reservationStock = i->stock;
     maxStore[ reservationStock.type() ] += reservationStock.qty();
@@ -428,8 +428,8 @@ void Warehouse::computePictures()
   }
 }
 
-GoodStore& Warehouse::store() {   return _d->goodStore; }
-const GoodStore& Warehouse::store() const {   return _d->goodStore; }
+good::Store& Warehouse::store() {   return _d->goodStore; }
+const good::Store& Warehouse::store() const {   return _d->goodStore; }
 
 void Warehouse::save( VariantMap& stream ) const
 {
@@ -518,10 +518,10 @@ void Warehouse::_resolveDeliverMode()
   for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
   {
     good::Type gType = (good::Type)goodType;
-    GoodOrders::Order order = _d->goodStore.getOrder( gType );
+    good::Orders::Order order = _d->goodStore.getOrder( gType );
     int goodFreeQty = math::clamp( _d->goodStore.freeQty( gType ), 0, 400 );
 
-    if( GoodOrders::deliver == order && goodFreeQty > 0 )
+    if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
       CartSupplierPtr walker = CartSupplier::create( _city() );
       walker->send2city( BuildingPtr( this ), gType, goodFreeQty );

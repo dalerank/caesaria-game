@@ -49,7 +49,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
    if( market->numberWorkers() > 0 )
    {
-     GoodStore& goods = market->goodStore();
+     good::Store& goods = market->goodStore();
      int furageSum = 0;
      // for all furage types of good
      for (int goodType = 0; goodType<good::olive; ++goodType)

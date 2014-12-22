@@ -304,7 +304,7 @@ int HouseSpecification::computeFoodLevel(HousePtr house)
 {
   int res = 0;
 
-  const GoodStore& goodStore = house->goodStore();
+  const good::Store& goodStore = house->goodStore();
   res += goodStore.qty(good::wheat) > 0 ? 1 : 0;
   res += goodStore.qty(good::fish) > 0 ? 1 : 0;
   res += goodStore.qty(good::meat) > 0 ? 1 : 0;

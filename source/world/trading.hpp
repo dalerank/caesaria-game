@@ -27,8 +27,6 @@
 #include "traderoute.hpp"
 #include "good/good.hpp"
 
-class GoodStore;
-
 namespace world
 {
 
@@ -54,7 +52,7 @@ public:
   void getPrice( good::Type gtype, int& bCost, int& sCost );
 
   void sendMerchant( const std::string& begin, const std::string& end, 
-                     GoodStore& sell, GoodStore& buy );
+                     good::Store& sell, good::Store& buy );
 
 private:
   class Impl;

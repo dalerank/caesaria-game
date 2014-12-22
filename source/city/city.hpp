@@ -119,8 +119,8 @@ public:
   virtual void addObject( world::ObjectPtr object );
   virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost);
 
-  virtual const GoodStore& importingGoods() const;
-  virtual const GoodStore& exportingGoods() const;
+  virtual const good::Store& importingGoods() const;
+  virtual const good::Store& exportingGoods() const;
   virtual unsigned int tradeType() const;
 
   void setOption( OptionType opt, int value );

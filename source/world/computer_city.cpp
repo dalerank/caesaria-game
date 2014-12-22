@@ -45,9 +45,9 @@ public:
   int strength;
   unsigned int age;
   unsigned int tradeDelay;
-  SimpleGoodStore sellStore;
-  SimpleGoodStore buyStore;
-  SimpleGoodStore realSells;
+  good::SimpleStore sellStore;
+  good::SimpleStore buyStore;
+  good::SimpleStore realSells;
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   DateTime lastAttack;
@@ -198,8 +198,8 @@ void ComputerCity::load( const VariantMap& options )
   _initTextures();
 }
 
-const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
-const GoodStore& ComputerCity::exportingGoods() const{  return _d->buyStore;}
+const good::Store& ComputerCity::importingGoods() const { return _d->realSells; }
+const good::Store& ComputerCity::exportingGoods() const{ return _d->buyStore; }
 Nation ComputerCity::nation() const { return _d->nation; }
 unsigned int ComputerCity::age() const { return _d->age; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
@@ -221,8 +221,8 @@ void ComputerCity::addObject(ObjectPtr object )
   if( is_kind_of<Merchant>( object ) )
   {
     MerchantPtr merchant = ptr_cast<Merchant>( object );
-    GoodStore& sellGoods = merchant->sellGoods();
-    GoodStore& buyGoods = merchant->buyGoods();
+    good::Store& sellGoods = merchant->sellGoods();
+    good::Store& buyGoods = merchant->buyGoods();
 
     _d->buyStore.storeAll( buyGoods );
 
@@ -327,7 +327,7 @@ void ComputerCity::timeStep( unsigned int time )
       return;
     }
 
-    SimpleGoodStore sellGoods, buyGoods;
+    good::SimpleStore sellGoods, buyGoods;
     sellGoods.setCapacity( 2000 );
     buyGoods.setCapacity( 2000 );
     for( int i=good::none; i < good::goodCount; i ++ )

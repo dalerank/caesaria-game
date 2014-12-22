@@ -46,8 +46,8 @@ public:
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );
 
-  virtual const GoodStore& importingGoods() const;
-  virtual const GoodStore& exportingGoods() const;
+  virtual const good::Store& importingGoods() const;
+  virtual const good::Store& exportingGoods() const;
 
   virtual world::Nation nation() const;
   virtual unsigned int age() const;
