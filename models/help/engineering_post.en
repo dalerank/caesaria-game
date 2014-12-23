@@ -5,7 +5,7 @@
  uri : {
   "Labor Advisor" : "labor_advisor"
   "Risks Overlay" : "risk_overlay"
-  "historical role of Engineers" : "history_engineer"
+  "historical role of Engineers" : "engineer_history"
   "here" : "http://wikipedia.ru"
  }
 }

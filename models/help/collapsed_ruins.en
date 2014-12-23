@@ -1,0 +1,8 @@
+{  
+ title : "##collapsed_ruins##"
+ sound : "fanfare"
+ text  : "A building has collapsed. Poor maintenance by city engineers allowed the building to become unstable and crumble under its own weight."
+ uri : {
+  "here" : ""
+	}
+}

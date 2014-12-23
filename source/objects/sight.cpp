@@ -23,7 +23,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/trainee.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
@@ -45,7 +45,7 @@ using namespace gfx;
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
-SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
+SmallStatue::SmallStatue() : Building( objects::smallStatue, Size(1) )
 {
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -55,7 +55,7 @@ SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
 
 bool SmallStatue::isNeedRoadAccess() const {  return false; }
 
-MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
+MediumStatue::MediumStatue() : Building( objects::middleStatue, Size(2) )
 {
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -65,7 +65,7 @@ MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
 
 bool MediumStatue::isNeedRoadAccess() const {  return false; }
 
-BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
+BigStatue::BigStatue() : Building( objects::bigStatue, Size(3))
 {
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -76,7 +76,7 @@ BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
 bool BigStatue::isNeedRoadAccess() const {  return false;}
 
 // second arch pictures is land3a 45 + 46	
-TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
+TriumphalArch::TriumphalArch() : Building( objects::triumphalArch, Size(3) )
 {
   setPicture( ResourceGroup::land3a, 43 );
   _animationRef().load("land3a", 44, 1);

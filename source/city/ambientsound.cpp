@@ -19,7 +19,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "sound/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tileoverlay.hpp"
 #include "core/foreach.hpp"
 
@@ -66,7 +66,7 @@ struct SoundEmitter
       }
       else
       {
-        return StringHelper::format( 0xff, "emptyland_%05d.ogg", (tile->i() * tile->j()) % 3 + 1  );
+        return utils::format( 0xff, "emptyland_%05d.ogg", (tile->i() * tile->j()) % 3 + 1  );
       }
     }
 

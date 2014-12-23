@@ -1,0 +1,9 @@
+{  
+ title : "##legion_advisor##"
+ sound : "fanfare"
+ text  : "Click @here& to read more about peace and war in CaesarIA. Your Legion Advisor keeps track of the city's defensive legions. After each legion's name, you see buttons enabling you to 'Go To' that legion's present location in your province; order the legion to return to its home @fort&; or select the legion for 'Empire Service'. Use this latter choice when Caesar requests troops from you. Your Emperor Advisor actually sends the legion on its way; the Legion Advisor merely selects which legions will go.\n The Legion Advisor also reports on the total number of soldiers active in your province, reminds you of any reports of enemy activity you might have received, and shows any requests for troops from the Emperor."
+ uri : {
+  "here" : "here"
+	"fort" : "fort"
+ }
+}

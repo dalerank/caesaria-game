@@ -22,7 +22,10 @@
 #include "core/variant.hpp"
 #include "vfs/path.hpp"
 
-class GameSettings
+namespace game
+{
+
+class Settings
 {
 public:
 #define __GS_PROPERTY(a) static const char* a;
@@ -72,9 +75,13 @@ public:
   __GS_PROPERTY(font)
   __GS_PROPERTY(walkerRelations)
   __GS_PROPERTY(freeplay_opts)
+  __GS_PROPERTY(cellw)
+  __GS_PROPERTY(simpleAnimationModel)
+  __GS_PROPERTY(hotkeysModel)
+  __GS_PROPERTY(cartsModel)
 #undef __GS_PROPERTY
 
-  static GameSettings& instance();
+  static Settings& instance();
 
   static void set( const std::string& option, const Variant& value );
   static Variant get( const std::string& option );
@@ -86,15 +93,19 @@ public:
   static void save();
 
   void setwdir( const std::string& wdir );
+  void checkwdir( char* argv[], int argc );
+  void checkCmdOptions( char* argv[], int argc );
 private:
-  GameSettings();
+  Settings();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#define SETTINGS_RC_PATH(a) GameSettings::rcpath( GameSettings::a )
-#define SETTINGS_VALUE(a) GameSettings::get( GameSettings::a )
-#define SETTINGS_SET_VALUE(a, value) GameSettings::set( GameSettings::a, value )
+}//end namespace game
+
+#define SETTINGS_RC_PATH(a) game::Settings::rcpath( game::Settings::a )
+#define SETTINGS_VALUE(a) game::Settings::get( game::Settings::a )
+#define SETTINGS_SET_VALUE(a, value) game::Settings::set( game::Settings::a, value )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

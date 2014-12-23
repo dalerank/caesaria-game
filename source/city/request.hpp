@@ -74,7 +74,7 @@ public:
   virtual void update();
 
   int qty() const;
-  Good::Type goodType() const;
+  good::Type goodType() const;
   virtual std::string description() const;
 
   static std::string typeName();

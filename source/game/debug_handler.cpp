@@ -43,6 +43,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace gfx::layer;
 
 enum {
   add_enemy_archers=0,
@@ -73,6 +74,7 @@ enum {
   send_barbarian_to_player,
   comply_rome_request,
   change_emperor,
+  add_city_border,
   earthquake
 };
 
@@ -126,6 +128,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( toggle_show_flat_tiles )
   ADD_DEBUG_EVENT( change_emperor )
   ADD_DEBUG_EVENT( earthquake )
+  ADD_DEBUG_EVENT( add_city_border )
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
 #undef ADD_DEBUG_EVENT
@@ -179,7 +182,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case comply_rome_request:
   {
     world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( game->city() ) );
-    GoodStock stock( (Good::Type)math::random( Good::goodCount), 1000, 1000 );
+    good::Stock stock( (good::Type)math::random( good::goodCount), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
     caravan->sendTo( game->empire()->rome() );
   }
@@ -216,6 +219,12 @@ void DebugHandler::Impl::handleEvent(int event)
     VariantMap vm = SaveAdapter::load( ":/test_emperor.model" );
     e->load( vm );
     e->dispatch();
+  }
+  break;
+
+  case add_city_border:
+  {
+    game->city()->tilemap().addBorder();
   }
   break;
 
@@ -263,14 +272,14 @@ void DebugHandler::Impl::handleEvent(int event)
     audio::Engine::instance().setVolume( audio::gameSound, 0 );
   break;
 
-  case toggle_grid_visibility: LayerDrawOptions::instance().toggle( LayerDrawOptions::drawGrid );  break;
-  case toggle_overlay_base: LayerDrawOptions::instance().toggle( LayerDrawOptions::shadowOverlay );  break;
-  case toggle_show_path: LayerDrawOptions::instance().toggle( LayerDrawOptions::showPath );  break;
-  case toggle_show_roads: LayerDrawOptions::instance().toggle( LayerDrawOptions::showRoads );  break;
-  case toggle_show_object_area: LayerDrawOptions::instance().toggle( LayerDrawOptions::showObjectArea );  break;
-  case toggle_show_walkable_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showWalkableTiles );  break;
-  case toggle_show_locked_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showLockedTiles );  break;
-  case toggle_show_flat_tiles: LayerDrawOptions::instance().toggle( LayerDrawOptions::showFlatTiles );  break;
+  case toggle_grid_visibility: DrawOptions::instance().toggle( DrawOptions::drawGrid );  break;
+  case toggle_overlay_base: DrawOptions::instance().toggle( DrawOptions::shadowOverlay );  break;
+  case toggle_show_path: DrawOptions::instance().toggle( DrawOptions::showPath );  break;
+  case toggle_show_roads: DrawOptions::instance().toggle( DrawOptions::showRoads );  break;
+  case toggle_show_object_area: DrawOptions::instance().toggle( DrawOptions::showObjectArea );  break;
+  case toggle_show_walkable_tiles: DrawOptions::instance().toggle( DrawOptions::showWalkableTiles );  break;
+  case toggle_show_locked_tiles: DrawOptions::instance().toggle( DrawOptions::showLockedTiles );  break;
+  case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
 
   case add_soldiers_in_fort:
   {

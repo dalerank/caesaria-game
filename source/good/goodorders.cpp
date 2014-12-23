@@ -17,41 +17,46 @@
 #include "core/foreach.hpp"
 #include <map>
 
-class GoodOrders::Impl
+namespace good
+{
+
+class Orders::Impl
 {
 public:
-  typedef std::map< Good::Type, Order > Orders;
+  typedef std::map< good::Type, Order > Orders;
   Orders orders;
 };
 
-GoodOrders::~GoodOrders()
+Orders::~Orders()
 {
 
 }
 
-GoodOrders::GoodOrders() : _d( new Impl )
+Orders::Orders() : _d( new Impl )
 {
 
 }
 
-void GoodOrders::set( Order rule )
+void Orders::set( Order rule )
 {
   foreach( item, _d->orders )
   {
-    if( item->second != GoodOrders::none )
+    if( item->second != Orders::none )
     {
       item->second = rule;
     }
   }
 }
 
-void GoodOrders::set(const Good::Type type, Order rule )
+void Orders::set(const good::Type type, Order rule )
 {
   _d->orders[ type ] = rule;  
 }
 
-GoodOrders::Order GoodOrders::get( const Good::Type type )
+Orders::Order Orders::get( const good::Type type )
 {
   Impl::Orders::iterator it = _d->orders.find( type );
-  return it != _d->orders.end() ? (*it).second : GoodOrders::none;
+  return it != _d->orders.end() ? (*it).second : Orders::none;
 }
+
+}//end namespace good

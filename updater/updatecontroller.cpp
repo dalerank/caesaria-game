@@ -66,7 +66,7 @@ void UpdateController::StartOrContinue()
 
 void UpdateController::PerformPostUpdateCleanup()
 {
-	_updater.PostUpdateCleanup();
+	_updater.postUpdateCleanup();
 }
 
 void UpdateController::Abort()
@@ -84,7 +84,7 @@ void UpdateController::Abort()
 			Logger::warning( "Controller thread aborted. %s", ex.what() );
 		}
 
-		_updater.CancelDownloads();
+		_updater.cancelDownloads();
 	}
 }
 
@@ -95,8 +95,8 @@ bool UpdateController::LocalFilesNeedUpdate(){	return _updater.LocalFilesNeedUpd
 std::size_t UpdateController::GetTotalDownloadSize(){	return _updater.GetTotalDownloadSize();}
 std::size_t UpdateController::GetTotalBytesDownloaded(){	return _updater.GetTotalBytesDownloaded();}
 std::size_t UpdateController::GetNumFilesToBeUpdated(){	return _updater.GetNumFilesToBeUpdated();}
-std::string UpdateController::GetLocalVersion(){	return _updater.GetDeterminedLocalVersion();}
-std::string UpdateController::GetNewestVersion(){	return _updater.GetNewestVersion();}
+std::string UpdateController::GetLocalVersion(){	return _updater.getDeterminedLocalVersion();}
+std::string UpdateController::GetNewestVersion(){	return _updater.getNewestVersion();}
 
 void UpdateController::removeDownload(std::string itemname)
 {
@@ -187,7 +187,7 @@ void UpdateController::performStep(int step)
 		break;
 
 	case PostUpdateCleanup:
-		_updater.PostUpdateCleanup();
+		_updater.postUpdateCleanup();
 		_updater.setBinaryAsExecutable();
 		break;
 

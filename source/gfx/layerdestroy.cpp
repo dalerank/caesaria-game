@@ -23,8 +23,10 @@
 #include "core/foreach.hpp"
 #include "tilemap_camera.hpp"
 #include "city/city.hpp"
+#include "gfx/helper.hpp"
 #include "core/event.hpp"
-#include "core/stringhelper.hpp"
+#include "events/clearland.hpp"
+#include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
@@ -35,7 +37,10 @@ using namespace constants;
 namespace gfx
 {
 
-class LayerDestroy::Impl
+namespace layer
+{
+
+class Destroy::Impl
 {
 public:
   Picture shovelPic;
@@ -46,17 +51,17 @@ public:
   Font textFont;
 };
 
-void LayerDestroy::_clearAll()
+void Destroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
   foreach( tile, tiles4clear )
   {
-    events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->epos() );
+    events::GameEventPtr event = events::ClearTile::create( (*tile)->epos() );
     event->dispatch();
   }
 }
 
-unsigned int LayerDestroy::_checkMoney4destroy(const Tile& tile)
+unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
 {
   TileOverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
@@ -71,7 +76,7 @@ unsigned int LayerDestroy::_checkMoney4destroy(const Tile& tile)
   return 0;
 }
 
-void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
+void Destroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
 {
   if( master==NULL )
   {
@@ -94,7 +99,7 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   }
 }
 
-void LayerDestroy::render( Engine& engine )
+void Destroy::render( Engine& engine )
 {
   // center the map on the screen
   Point cameraOffset = _camera()->offset();
@@ -115,7 +120,7 @@ void LayerDestroy::render( Engine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( TileHelper::hash(tile->epos()));
+    hashDestroyArea.insert( util::hash(tile->epos()));
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
@@ -123,7 +128,7 @@ void LayerDestroy::render( Engine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert(TileHelper::hash((*ovelayTile)->epos()));
+        hashDestroyArea.insert( util::hash((*ovelayTile)->epos()));
       }
     }
 
@@ -136,7 +141,7 @@ void LayerDestroy::render( Engine& engine )
     Tile* tile = *it;
     Tile* master = tile->masterTile();
 
-    int tilePosHash = TileHelper::hash(tile->epos());
+    int tilePosHash = util::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -153,7 +158,7 @@ void LayerDestroy::render( Engine& engine )
     Tile* tile = *it;
     int z = tile->epos().z();
 
-    int tilePosHash = TileHelper::hash(tile->epos());
+    int tilePosHash = util::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
@@ -172,14 +177,14 @@ void LayerDestroy::render( Engine& engine )
   {
     _d->textPic->fill( 0x0, Rect() );
     _d->textFont.setColor( 0xffff0000 );
-    _d->textFont.draw( *_d->textPic, StringHelper::i2str( _d->money4destroy ) + " Dn", Point() );
+    _d->textFont.draw( *_d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
   engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );
   engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
-void LayerDestroy::init(Point cursor)
+void Destroy::init(Point cursor)
 {
   Layer::init( cursor );
   _setLastCursorPos( cursor );
@@ -187,7 +192,7 @@ void LayerDestroy::init(Point cursor)
   _d->startTilePos = TilePos( -1, -1 );
 }
 
-void LayerDestroy::handleEvent(NEvent& event)
+void Destroy::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -250,9 +255,9 @@ void LayerDestroy::handleEvent(NEvent& event)
   }
 }
 
-int LayerDestroy::type() const {  return citylayer::destroyd; }
+int Destroy::type() const {  return citylayer::destroyd; }
 
-void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
+void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
   TileOverlayPtr overlay = tile.overlay();
 
@@ -264,15 +269,15 @@ void LayerDestroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
   Layer::drawTile( engine, tile, offset );
 }
 
-LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Destroy::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerDestroy( camera, city ) );
+  LayerPtr ret( new Destroy( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
+Destroy::Destroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _d->shovelPic = Picture::load( "shovel", 1 );
@@ -280,6 +285,8 @@ LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   _d->textFont = Font::create( FONT_5 );
   _d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );
+}
+
 }
 
 }//end namespace gfx

@@ -32,15 +32,18 @@
 namespace gfx
 {
 
-class LayerDrawOptions : public FlagHolder<int>
+namespace layer
+{
+
+class DrawOptions : public FlagHolder<int>
 {
 public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
                  showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100 } Flags;
-  static LayerDrawOptions& instance();
+  static DrawOptions& instance();
 
 private:
-  LayerDrawOptions() {}
+  DrawOptions() {}
 };
 
 class Layer : public ReferenceCounted
@@ -99,6 +102,8 @@ protected:
 
 typedef SmartPtr<Layer> LayerPtr;
 
-}
+}//end namespace layer
+
+}//end namespace gfx
 
 #endif //__CAESAIRAS_LAYER_H_INCLUDED__

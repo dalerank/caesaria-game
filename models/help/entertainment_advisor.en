@@ -1,0 +1,9 @@
+{  
+ title : "##entertainment_advisor##"
+ sound : "fanfare"
+ text  : "This panel lists your city's working theaters, amphitheaters, colosseums and hippodrome. The number of people they can accommodate, and their overall city coverage, are also noted. If a working entertainment venue has no shows, or fewer than it might have, it needs performers, and you should provide a new actors' colony, gladiator school, lion pit or charioteer school. Each amphitheater and colosseum can host two shows at once, so if they're working at capacity, you should see twice as many shows as you have venues. Check the @Entertainment Overlay& to find the best place for new facilities. Click @here& to read more about the concept of entertainment in CaesarIA. Use this panel to arrange a festival. Citizens like you to hold at least one festival every other year, but there is no benefit to having more than two per year, and the second festival in a given year is less effective than the first. Choose which god to honor, and dedicate a small, large or grand festival. To hold a grand festival, your warehouses must hold enough wine for all your citizens. The more lavish your festival, the longer it takes to prepare and the more it costs - but the greater will be its effect."
+ uri : {
+  "here" : "entertainment_concept"
+  "Entertainment Overlay" : "entertainment_overlay"
+ }
+}

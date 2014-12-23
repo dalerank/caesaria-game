@@ -34,7 +34,7 @@
       normal : [ "paneling", 601 ]
       hovered : [ "paneling", 602 ]
       pressed : [ "paneling", 603 ]
-      disabled : [ "paneling", 301 ]
+      disabled : [ "paneling", 601 ]
       tooltip : "##wage_level_tip##"
     }
 
@@ -43,7 +43,7 @@
       normal : [ "paneling", 605 ]
       hovered : [ "paneling", 606 ]
       pressed : [ "paneling", 607 ]
-      disabled : [ "paneling", 305 ]
+      disabled : [ "paneling", 605 ]
       tooltip : "##wage_level_tip##"
     }
 

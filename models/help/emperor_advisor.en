@@ -1,0 +1,9 @@
+{  
+ title : "##emperor_advisor##"
+ sound : "fanfare"
+ text  : "Check with your Emperor Advisor to see your Favor rating and a description of Caesar's opinion of you.\n The main window shows any requests from the Emperor, along with the remaining time he has given you to fill them and how much of the requested item you have. When you have enough to meet Caesar's request, a Dispatch button appears. Merely having the commodity on hand does not please the Emperor; you must send it to him. If it arrives shortly after Caesar's deadline has passed, you still gain some reduced benefit for complying. For the greatest benefit, though, send it before the deadline.\n Your rank and personal savings appear at the bottom. You may set your own salary at any level your city's income will support. As a guideline, you should pay yourself commensurate to your rank. Overpaying yourself might anger Caesar.\n To tide your city over temporary budget crises without testing the Emperor's generosity, use the button provided here to transfer money from your personal savings to the city treasury. This is a one-way function; you can't transfer money from the city to your own account, except by raising your salary.\n 'Send a Gift' lets you donate some of your personal savings to the Emperor. Use this button if Caesar asks for a monetary gift, or if you seek an extra boost to your Favor rating. Once Caesar starts getting unexpected gifts from you, he grows used to them, and from then on he'll expect larger gifts.\n Other useful Help topics are @Ratings& and @Money&."
+ uri : {
+  "Ratings" : "ratings"
+	"Money" : "money"
+ }
+}

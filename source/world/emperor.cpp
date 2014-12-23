@@ -124,7 +124,7 @@ void Emperor::sendGift(const std::string& cityname, unsigned int money)
     relation = it->second;
   }
 
-  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( GameDate::current() ),
+  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( game::Date::current() ),
                                             0, (int)DateTime::monthsInYear );
   const int maxFavourUpdate = 5;
 
@@ -151,7 +151,7 @@ DateTime Emperor::lastGiftDate(const std::string &cityname)
 
 void Emperor::timeStep(unsigned int time)
 {
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     __D_IMPL(d,Emperor)
 
@@ -159,7 +159,7 @@ void Emperor::timeStep(unsigned int time)
     {
       Relation& ref = it->second;
       ref.value -= 2;
-      int monthWithoutTax = ref.lastTaxDate.monthsTo( GameDate::current() );
+      int monthWithoutTax = ref.lastTaxDate.monthsTo( game::Date::current() );
       if( monthWithoutTax > 12 )
       {
         int decrease = math::clamp( 3 + monthWithoutTax / DateTime::monthsInYear * 2, 0, 8 );
@@ -183,7 +183,7 @@ void Emperor::timeStep(unsigned int time)
     }
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     __D_IMPL(d,Emperor)
 
@@ -238,7 +238,7 @@ void Emperor::setName(const std::string& name){ _dfunc()->name = name; }
 void Emperor::cityTax(const std::string &cityname, unsigned int money)
 {
   __D_IMPL(d,Emperor)
-  d->relations[ cityname ].lastTaxDate = GameDate::current();
+  d->relations[ cityname ].lastTaxDate = game::Date::current();
 }
 
 void Emperor::resetRelations(const StringArray& cities)
@@ -267,8 +267,8 @@ void Emperor::resetRelations(const StringArray& cities)
 
       r.value = 50;
       r.lastGiftValue = 0;
-      r.lastTaxDate = GameDate::current();
-      r.lastGiftDate = GameDate::current();
+      r.lastTaxDate = game::Date::current();
+      r.lastGiftDate = game::Date::current();
     }
   }
 

@@ -22,7 +22,7 @@
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/font.hpp"
 #include "objects/construction.hpp"
@@ -36,6 +36,7 @@
 #include "widget_helper.hpp"
 #include "world/emperor.hpp"
 #include "city/funds.hpp"
+#include "dictionary.hpp"
 #include "city/cityservice_peace.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
@@ -70,10 +71,10 @@ public:
     PictureRef& pic = _textPictureRef();
     if( pic )
     {
-      digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), width() / 2 - 10, 17, true, false );
+      digitFont.draw( *pic, utils::format( 0xff, "%d", _value ), width() / 2 - 10, 17, true, false );
 
       Font targetFont = Font::create( FONT_1 );
-      targetFont.draw( *pic, StringHelper::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
+      targetFont.draw( *pic, utils::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
 
       pic->update();
     }     
@@ -156,7 +157,7 @@ void Ratings::Impl::checkCultureRating()
       int coverage = culture->coverage( CultureRating::Coverage(k) );
       if( coverage < 100 )
       {
-        std::string troubleDesc = StringHelper::format( 0xff, "##have_less_%s_in_city_%d##", covTypename[ k ], coverage / 50 );
+        std::string troubleDesc = utils::format( 0xff, "##have_less_%s_in_city_%d##", covTypename[ k ], coverage / 50 );
         troubles.push_back( troubleDesc );
       }
     }
@@ -324,7 +325,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
 
   const city::VictoryConditions& targets = city->victoryConditions();
 
-  if( lbNeedPopulation ) lbNeedPopulation->setText( StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
+  if( lbNeedPopulation ) lbNeedPopulation->setText( utils::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
 
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wndrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
@@ -351,6 +352,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( _d->btnHelp, onClicked(), this, Ratings::_showHelp );
 }
 
 void Ratings::draw( gfx::Engine& painter )
@@ -361,6 +363,11 @@ void Ratings::draw( gfx::Engine& painter )
   Window::draw( painter );
 
   painter.draw( _d->columns, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+}
+
+void Ratings::_showHelp()
+{
+  DictionaryWindow::show( this, "ratings_advisor" );
 }
 
 }

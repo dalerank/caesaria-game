@@ -76,9 +76,9 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
 AboutFontain::~AboutFontain(){}
 
-void AboutFontain::showDescription()
+void AboutFontain::_showHelp()
 {
-  DictionaryWindow::show( parent(), building::fountain );
+  DictionaryWindow::show( parent(), objects::fountain );
 }
 
 AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -105,9 +105,9 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
 
 AboutReservoir::~AboutReservoir() {}
 
-void AboutReservoir::showDescription()
+void AboutReservoir::_showHelp()
 {
-  DictionaryWindow::show( parent(), building::reservoir );
+  DictionaryWindow::show( parent(), objects::reservoir );
 }
 
 AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -177,9 +177,9 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
 AboutWell::~AboutWell() {}
 
-void AboutWell::showDescription()
+void AboutWell::_showHelp()
 {
-  DictionaryWindow::show( parent(), building::well );
+  DictionaryWindow::show( parent(), objects::well );
 }
 
 }

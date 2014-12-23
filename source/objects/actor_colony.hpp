@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-
 #ifndef _CAESARIA_ACTOR_COLONY_H_INCLUDE_
 #define _CAESARIA_ACTOR_COLONY_H_INCLUDE_
 

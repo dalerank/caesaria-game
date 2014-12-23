@@ -25,7 +25,7 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "texturedbutton.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "game/datetimehelper.hpp"
 #include "widget_helper.hpp"
@@ -35,7 +35,10 @@ using namespace gfx;
 namespace gui
 {
 
-class PopupMessageBox::Impl
+namespace messagebox
+{
+
+class Popup::Impl
 {
 public:
   PushButton* btnExit;
@@ -43,7 +46,7 @@ public:
   Label* lbText;
 };
 
-PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title, 
+Popup::Popup( Widget* parent, const std::string& title,
                                   const std::string& text,
                                   const DateTime& time,
                                   const std::string& receiver, int id )
@@ -63,13 +66,13 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   GET_DWIDGET_FROM_UI( _d, lbText  )
 
   if( lbTitle ) lbTitle->setText( title );
-  if( lbTime ) lbTime->setText( DateTimeHelper::toStr( time ) );
+  if( lbTime ) lbTime->setText( util::date2str( time ) );
   if( lbReceiver ) lbReceiver->setText( receiver );
 
-  CONNECT( _d->btnExit, onClicked(), this, PopupMessageBox::deleteLater );
+  CONNECT( _d->btnExit, onClicked(), this, Popup::deleteLater );
 }
 
-void PopupMessageBox::draw(gfx::Engine& painter )
+void Popup::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -77,9 +80,11 @@ void PopupMessageBox::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-PopupMessageBox* PopupMessageBox::information(Widget* parent, const std::string& title, const std::string& text, const DateTime& time)
+Popup* Popup::information(Widget* parent, const std::string& title, const std::string& text, const DateTime& time)
 {
-  return new PopupMessageBox( parent, title, text, time );
+  return new Popup( parent, title, text, time );
 }
+
+}//end namespace messagebox
 
 }//end namespace gui

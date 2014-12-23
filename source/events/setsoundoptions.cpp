@@ -20,9 +20,11 @@
 #include "sound/engine.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
+
+using namespace gui;
 
 namespace events
 {
@@ -38,10 +40,10 @@ GameEventPtr SetSoundOptions::create()
 void SetSoundOptions::_exec(Game& game, unsigned int)
 {
   audio::Engine& e = audio::Engine::instance();
-  gui::SoundOptionsWindow* dialog = new gui::SoundOptionsWindow( game.gui()->rootWidget(),
-                                                                 e.volume( audio::gameSound ),
-                                                                 e.volume( audio::ambientSound ),
-                                                                 e.volume( audio::themeSound ) );
+  dialog::SoundOptions* dialog = new dialog::SoundOptions( game.gui()->rootWidget(),
+                                                           e.volume( audio::gameSound ),
+                                                           e.volume( audio::ambientSound ),
+                                                           e.volume( audio::themeSound ) );
 
   CONNECT( dialog, onSoundChange(), &e, audio::Engine::setVolume );
   CONNECT( dialog, onClose(), this, SetSoundOptions::_saveSoundSettings );
@@ -52,10 +54,10 @@ bool SetSoundOptions::_mayExec(Game&, unsigned int) const { return true; }
 void SetSoundOptions::_saveSoundSettings()
 {
   audio::Engine& se = audio::Engine::instance();
-  GameSettings::set( GameSettings::soundVolume, se.volume( audio::gameSound ) );
-  GameSettings::set( GameSettings::ambientVolume, se.volume( audio::ambientSound ) );
-  GameSettings::set( GameSettings::musicVolume, se.volume( audio::themeSound ) );
-  GameSettings::save();
+  SETTINGS_SET_VALUE( soundVolume, se.volume( audio::gameSound ) );
+  SETTINGS_SET_VALUE( ambientVolume, se.volume( audio::ambientSound ) );
+  SETTINGS_SET_VALUE( musicVolume, se.volume( audio::themeSound ) );
+  game::Settings::save();
 }
 
 }

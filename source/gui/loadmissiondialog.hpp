@@ -25,10 +25,13 @@
 namespace gui
 {
 
-class LoadMissionDialog : public Widget
+namespace dialog
+{
+
+class LoadMission : public Widget
 {
 public:
-  static LoadMissionDialog* create(Widget* parent, const vfs::Directory& dir );
+  static LoadMission* create(Widget* parent, const vfs::Directory& dir );
         
   virtual void draw( gfx::Engine& engine );
 
@@ -39,8 +42,10 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  LoadMissionDialog( Widget* parent, const vfs::Directory& dir );
+  LoadMission( Widget* parent, const vfs::Directory& dir );
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 

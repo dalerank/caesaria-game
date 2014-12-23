@@ -30,7 +30,7 @@ namespace {
  const unsigned int wellServiceRange = 2;
 }
 
-Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
+Well::Well() : ServiceBuilding( Service::well, objects::well, Size(1) )
 {
   setWorkers( 0 );
 }
@@ -72,9 +72,9 @@ bool Well::isNeedRoadAccess() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
-bool Well::build(PlayerCityPtr city, const TilePos &pos)
+bool Well::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( info );
 
   Picture rpic = MetaDataHolder::randomPicture( type(), size() );
   if( !rpic.isValid() )

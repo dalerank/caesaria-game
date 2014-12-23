@@ -8,6 +8,9 @@
   climate : 2
   adviserEnabled : true
   fishPlaceEnabled : false
+  preview.text : "##tingis_preview_mission##"
+  preview.title : "##tingis_preview_title##"
+  preview.image : ""
 	
   win :
   {

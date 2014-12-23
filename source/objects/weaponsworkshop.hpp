@@ -26,8 +26,8 @@ class WeaponsWorkshop : public Factory
 public:
   WeaponsWorkshop();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
+  virtual bool build(const CityAreaInfo &info);
 protected:
   virtual void _storeChanged();
 };

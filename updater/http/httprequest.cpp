@@ -18,7 +18,7 @@
 
 #include <cstring>
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "../constants.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
@@ -77,7 +77,7 @@ void HttpRequest::InitRequest()
 	curl_easy_setopt(_handle, CURLOPT_WRITEDATA, this);
 
 	// Set agent
-	std::string agent = StringHelper::format( 0xff, "Caesaria Updater v%s/%s",
+	std::string agent = utils::format( 0xff, "Caesaria Updater v%s/%s",
 																									LIB_UPDATE_VERSION,
 																									LIB_UPDATE_PLATFORM );
 	curl_easy_setopt(_handle, CURLOPT_USERAGENT, agent.c_str());

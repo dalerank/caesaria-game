@@ -1,0 +1,8 @@
+{  
+ title : "##health_advisor##"
+ sound : "fanfare"
+ text  : "This advisor reports the number of working bath-houses, barbers, clinics and hospitals in your city, as well as how many people they serve and how good their overall coverage is. If you see a deficit in one or more areas, use the @Health Overlay& to find the neighborhoods that will benefit the most from new health facilities. Citizens who aren't visited by doctors are at a higher risk of disease, especially if they aren't eating a healthy diet.\n The @Health& entry will help you understand this panel's function."
+ uri : {
+  "Health" : "health"
+ }
+}

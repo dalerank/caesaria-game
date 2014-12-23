@@ -8,6 +8,9 @@
   climate : 0
   adviserEnabled : true
   fishPlaceEnabled : false
+  preview.text : "##lutetia_preview_mission##"
+  preview.title : "##lutetia_preview_title##"
+  preview.image : ""
 	
   win :
   {

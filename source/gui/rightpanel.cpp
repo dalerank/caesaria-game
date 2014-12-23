@@ -50,6 +50,9 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, P
   ret->_d->background.clear();
 
   unsigned int y = 0;
+  if( tilePic.height() == 0 )
+    return ret;
+
   while( y < ret->height() )
   {
     ret->_d->background.append( tilePic, Point( 0, -y ) );

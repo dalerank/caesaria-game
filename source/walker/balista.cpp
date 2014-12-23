@@ -87,7 +87,7 @@ void Balista::_fire( TilePos target )
   spear->setPicInfo( ResourceGroup::sprites, 146 );
   spear->setPicOffset( Point( -15, 15 ));
   spear->toThrow( pos(), target );
-  wait( GameDate::days2ticks( 1 ) / 2 );
+  wait( game::Date::days2ticks( 1 ) / 2 );
 }
 
 void Balista::timeStep(const unsigned long time)

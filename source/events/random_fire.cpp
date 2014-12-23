@@ -59,9 +59,9 @@ void RandomFire::_exec( Game& game, unsigned int time)
     _d->isDeleted = true;
 
     Priorities<int> exclude;
-    exclude << building::waterGroup
-            << building::roadGroup
-            << building::disasterGroup;
+    exclude << objects::waterGroup
+            << objects::roadGroup
+            << objects::disasterGroup;
 
     ConstructionList ctrs;
     ctrs << game.city()->overlays();

@@ -74,7 +74,7 @@ void Ceres::_doBlessing(PlayerCityPtr city)
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, GameDate::days2ticks( 60 ) );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, game::Date::days2ticks( 60 ) );
   }
 
   foreach(farm, farms)

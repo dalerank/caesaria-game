@@ -1,0 +1,8 @@
+{  
+ title : "##population_advisor##"
+ sound : "fanfare"
+ text  : "Consult this advisor for information about the size and composition of your population. By default, the first graph occupying the main window shows your city's total population over time. If you are doing well, this graph rises steadily, with only minor dips and surges. Disasters or mismanagement show up as steep declines.\n Click on either small graph to display it in the main window. 'Census' shows your population's composition by age. Only persons aged 20 to 50 participate in your workforce, and those under 22 need schools and academies. If this graph shows a dip in the 20- to 50-year-olds, your city will probably be short of workers despite having a large population.\n 'Society' breaks your population down by income level. The more people you have in the high income brackets, the better your tax revenue will be. A wide disparity between rich and poor citizens can lower your city's mood, and large numbers of low-income citizens depresses the Prosperity rating.\n The smaller window under the graphs summarizes your city's food reserves and tells you how varied the people's diet is. You can also see whether people are entering or leaving the city. Help for @Population& will help you understand these graphs."
+ uri : {
+  "Population" : "population_graphs"
+ }
+}

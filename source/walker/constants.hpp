@@ -95,30 +95,6 @@ enum Type
   any = all
 };
 
-enum Nation
-{
-  unknownNation=0,
-  rome,
-  etruscan,
-  barbarian,
-  numidian,
-  pict,
-  samnite,
-  selecid,
-  carthaginian,
-  celt,
-  eygptian,
-  goth,
-  graeci,
-  judaean,
-  native,
-  visigoth,
-  gaul,
-  iberian,
-  helveti,
-  nationCount
-};
-
 } //end namespace walker
 
 } //end namespace constants

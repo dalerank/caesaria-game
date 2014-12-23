@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "trading_options.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/game.hpp"
 #include "world/empire.hpp"
 #include "good/goodhelper.hpp"
@@ -25,20 +25,20 @@
 namespace events
 {
 
-GameEventPtr TradingOptions::create()
+GameEventPtr ChangeTradingOptions::create()
 {
-  GameEventPtr ret( new TradingOptions() );
+  GameEventPtr ret( new ChangeTradingOptions() );
   ret->drop();
 
   return ret;
 }
 
-void TradingOptions::load(const VariantMap& stream)
+void ChangeTradingOptions::load(const VariantMap& stream)
 {
   _options = stream;
 }
 
-void TradingOptions::_exec(Game& game, unsigned int)
+void ChangeTradingOptions::_exec(Game& game, unsigned int)
 {
   VariantMap citiesVm = _options.get( "cities" ).toMap();
   foreach( it, citiesVm )
@@ -63,8 +63,8 @@ void TradingOptions::_exec(Game& game, unsigned int)
   VariantMap goodsVm = _options.get( "goods" ).toMap();
   foreach( it, goodsVm )
   {
-    Good::Type gtype = GoodHelper::getType( it->first );
-    if( gtype != Good::none )
+    good::Type gtype = good::Helper::getType( it->first );
+    if( gtype != good::none )
     {
       VariantMap goodInfo = it->second.toMap();
       bool relative = goodInfo.get( "relative", false );
@@ -76,6 +76,6 @@ void TradingOptions::_exec(Game& game, unsigned int)
   }
 }
 
-bool TradingOptions::_mayExec(Game&, unsigned int) const{  return true; }
+bool ChangeTradingOptions::_mayExec(Game&, unsigned int) const{  return true; }
 
 }

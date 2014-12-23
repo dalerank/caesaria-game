@@ -26,12 +26,12 @@ public:
   typedef enum { lockTerrain=Construction::paramCount+1 } RoadFlag;
   Road();
 
-  virtual const gfx::Picture& picture(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& tmp ) const;
+  virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
   void updatePicture();
 
-  virtual bool build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(const CityAreaInfo &info);
   virtual void initTerrain( gfx::Tile &terrain);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
@@ -54,10 +54,10 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual const gfx::Picture& picture(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& tmp ) const;
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual const gfx::Picture& picture(const CityAreaInfo& areaInfo) const;
   virtual void appendPaved(int value);
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual const gfx::Picture& picture() const;

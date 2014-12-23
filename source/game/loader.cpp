@@ -24,32 +24,41 @@
 #include "loader_mission.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/stringhelper.hpp"
-#include "gfx/tile.hpp"
+#include "core/utils.hpp"
+#include "gfx/helper.hpp"
 #include "resourcegroup.hpp"
+#include "gfx/animation_bank.hpp"
 #include "core/foreach.hpp"
 #include "game.hpp"
+#include "objects/objects_factory.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
+#include "objects/waymark.hpp"
 #include "climatemanager.hpp"
 
 #include <vector>
 
 using namespace gfx;
 
-typedef SmartPtr< GameAbstractLoader > GameAbstractLoaderPtr;
+namespace game
+{
 
-class GameLoader::Impl
+namespace loader
+{
+typedef SmartPtr< loader::Base > BasePtr;
+}
+
+class Loader::Impl
 {
 public:
-  typedef std::vector< GameAbstractLoaderPtr > Loaders;
+  typedef std::vector< loader::BasePtr > Loaders;
   typedef Loaders::iterator LoaderIterator;
   Loaders loaders;
   std::string restartFile;
 
   void initLoaders();
-  void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit );
-  void initWaterTileAnimation( Tilemap& tmap );
+  void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
+  void initTilesAnimation( Tilemap& tmap );
   void finalize( Game& game );
   bool maySetSign( const Tile& tile )
   {
@@ -57,62 +66,54 @@ public:
   }
 };
 
-GameLoader::GameLoader() : _d( new Impl )
+Loader::Loader() : _d( new Impl )
 {
   _d->initLoaders();
 }
 
-GameLoader::~GameLoader() {}
+Loader::~Loader() {}
 
-void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit )
+void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 {
-  unsigned int idOffset = 0;
   TilePos tlOffset;
-  if( tlPos.i() == 0 || tlPos.i() == tileMap.size() - 1 )
+  Tilemap& tmap = city->tilemap();
+  if( tlPos.i() == 0 || tlPos.i() == tmap.size() - 1 )
   {    
     tlOffset = TilePos( 0, 1 );
-    idOffset = (tlPos.i() == 0 ? 1 : 3 );
   }
-
-  else if( tlPos.j() == 0 || tlPos.j() == tileMap.size() - 1 )
+  else if( tlPos.j() == 0 || tlPos.j() == tmap.size() - 1 )
   {
     tlOffset = TilePos( 1, 0 );
-    idOffset = (tlPos.j() == 0 ? 2 : 0 );
   }
 
-  Tile& tmpTile = tileMap.at( tlPos + tlOffset );
+  Tile& tmpTile = tmap.at( tlPos + tlOffset );
   if( !maySetSign( tmpTile ) )
   {
     tlOffset = -tlOffset;
   }
 
-  Tile& signTile = tileMap.at( tlPos + tlOffset );  
+  Tile& signTile = tmap.at( tlPos + tlOffset );
 
   Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
   Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
-    signTile.setPicture( ResourceGroup::land3a, picIdStart + idOffset );
-    signTile.setFlag( Tile::clearAll, true );
-    signTile.setFlag( Tile::tlRock, true );
-
-    if( signTile.overlay().isValid() )
-    {
-      signTile.overlay()->deleteLater();
-      signTile.setOverlay( 0 );
-    }
+    util::clear( signTile );
+    gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
+    CityAreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    waymark->build( info );
+    city->addOverlay( waymark );
   }
 }
 
-void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
+void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
 
-  Animation water;
-  water.setDelay( 12 );
-  water.load( ResourceGroup::land1a, 121, 7 );
-  water.load( ResourceGroup::land1a, 127, 7, true );
+  Animation water = AnimationBank::simple( AnimationBank::animWater );
+  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+
   foreach( tile, area )
   {
     int rId = (*tile)->originalImgId() - 364;
@@ -122,31 +123,36 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
       (*tile)->setAnimation( water );
       (*tile)->setFlag( Tile::tlDeepWater, true );
     }
+
+    if( (*tile)->getFlag( Tile::tlMeadow ) )
+    {
+      (*tile)->setAnimation( meadow );
+    }
   }
 }
 
-void GameLoader::Impl::finalize( Game& game )
+void Loader::Impl::finalize( Game& game )
 {
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
   const BorderInfo& border = game.city()->borderInfo();
 
-  initEntryExitTile( border.roadEntry, tileMap, 89, false );
-  initEntryExitTile( border.roadExit,  tileMap, 85, true  );
+  initEntryExitTile( border.roadEntry, game.city() );
+  initEntryExitTile( border.roadExit,  game.city() );
 
-  initWaterTileAnimation( tileMap );
+  initTilesAnimation( tileMap );
 }
 
-void GameLoader::Impl::initLoaders()
+void Loader::Impl::initLoaders()
 {
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Map() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Sav() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderOc3() ) );
-  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderMission() ) );
+  loaders.push_back( loader::BasePtr( new loader::C3Map() ) );
+  loaders.push_back( loader::BasePtr( new loader::C3Sav() ) );
+  loaders.push_back( loader::BasePtr( new loader::OC3() ) );
+  loaders.push_back( loader::BasePtr( new loader::Mission() ) );
 }
 
-bool GameLoader::load( vfs::Path filename, Game& game )
+bool Loader::load( vfs::Path filename, Game& game )
 {
   // try to load file based on file extension
   Impl::LoaderIterator it = _d->loaders.begin();
@@ -158,7 +164,7 @@ bool GameLoader::load( vfs::Path filename, Game& game )
       ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
       if( currentClimate >= 0  )
       {
-        ClimateManager::initialize( currentClimate );
+        game::climate::initialize( currentClimate );
       }
 
       bool loadok = (*it)->load( filename.toString(), game );      
@@ -177,4 +183,6 @@ bool GameLoader::load( vfs::Path filename, Game& game )
   return false; // failed to load
 }
 
-std::string GameLoader::restartFile() const { return _d->restartFile; }
+std::string Loader::restartFile() const { return _d->restartFile; }
+
+}//end namespace game

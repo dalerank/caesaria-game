@@ -82,9 +82,9 @@ PManager& PManager::instance()
 
 void PManager::loadInfoboxes( Manager& manager)
 {
-  manager.addInfobox( construction::road,         CAESARIA_STR_EXT(Road),   new CitizenInfoboxParser<AboutLand>() );
-  manager.addInfobox( construction::plaza,        CAESARIA_STR_EXT(Plaza),  new CitizenInfoboxParser<AboutLand>() );
-  manager.addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown), new CitizenInfoboxParser<AboutLand>() );
+  manager.addInfobox( objects::road,         CAESARIA_STR_EXT(Road),   new CitizenInfoboxParser<AboutLand>() );
+  manager.addInfobox( objects::plaza,        CAESARIA_STR_EXT(Plaza),  new CitizenInfoboxParser<AboutLand>() );
+  manager.addInfobox( objects::unknown,      CAESARIA_STR_EXT(unknown), new CitizenInfoboxParser<AboutLand>() );
 
   addCreator( walker::patrolPoint, new SpecificCitizenInfoboxCreator<AboutLegion>() );
 }

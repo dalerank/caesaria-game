@@ -8,7 +8,7 @@ aux_source_directory(. UPD_SRC_LIST)
 file(GLOB UPD_INC_LIST "*.hpp")
 
 set( UPD_DEP_SOURCES_LIST
-      "${BASE_SOURCE_DIR}/core/stringhelper.cpp"
+      "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/thread/mutex.cpp"

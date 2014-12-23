@@ -1,0 +1,8 @@
+{  
+ title : "##hippodrome##"
+ sound : "fanfare"
+ text  : "Hippodromes - named from the Greek words for 'horse' and 'racetrack' - were large oval @amphitheaters& designed specifically for horse and chariot races. The largest was the Circus Maximus (Latin for 'Greatest Circle'), 600 meters long by 200 wide and capable of seating 250,000 people. Hippodromes were built into a hillside, and the excavated soil was piled on the other side to enclose the oval. Tiered seats ringed three sides of the arena, with the fourth left open as an entrance. Although the seating and other improvements are gone, the outlines of Circus Maximus are a favorite spot for modern Roman joggers.\n Circus Maximus was built during the second century BC in a shallow valley that had been used by the Etruscans for horse racing. Julius Caesar staged a war game there with 1,600 soldiers and 40 elephants."
+ uri : {
+  "amphitheaters" : "amphitheater"
+	}
+}

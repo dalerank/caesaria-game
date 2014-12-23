@@ -22,7 +22,7 @@
 #include "constants.hpp"
 #include "animals.hpp"
 #include "helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace city;
@@ -40,7 +40,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   if( is_kind_of<Animal>( walker ) )
   {
-    std::string text = StringHelper::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->type() ).c_str() );
+    std::string text = utils::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->type() ).c_str() );
     return text;
   }
 

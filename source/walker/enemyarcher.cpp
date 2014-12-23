@@ -24,7 +24,7 @@
 #include "city/city.hpp"
 #include "core/variant.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -50,7 +50,7 @@ void EnemyArcher::_fire( TilePos p )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
-  wait( GameDate::days2ticks( 1 ) / 2 );
+  wait( game::Date::days2ticks( 1 ) / 2 );
 }
 
 void EnemyArcher::_waitFinished()

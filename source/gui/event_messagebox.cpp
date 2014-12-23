@@ -25,7 +25,7 @@ namespace gui
 {
 
 EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
-                                  const std::string& message, DateTime time, Good::Type gtype, const std::string& additional)
+                                  const std::string& message, DateTime time, good::Type gtype, const std::string& additional)
   : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
@@ -40,7 +40,7 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   Rect rect = _lbTextRef()->relativeRect();
   rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, DateTimeHelper::toStr( time ) );
+  Label* lbTime = new Label( this, rect, util::date2str( time ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
 
   if( !additional.empty() )
@@ -52,17 +52,17 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
 
   _lbTextRef()->setTop( _lbTextRef()->top() + 30 );
 
-  if( gtype != Good::none )
+  if( gtype != good::none )
   {
     Rect rect = _lbTextRef()->relativeRect();
     _lbTextRef()->move( Point( 0, 30 ) );
 
     rect.LowerRightCorner.setY( rect.top() + 30 );
     rect.UpperLeftCorner.setX( rect.left() + 40 );
-    Label* goodLabel = new Label( this, rect, GoodHelper::getTypeName( gtype ) );
+    Label* goodLabel = new Label( this, rect, good::Helper::getTypeName( gtype ) );
     goodLabel->setTextAlignment( align::upperLeft, align::center );
     goodLabel->setTextOffset( Point( 30, 0 ) );
-    goodLabel->setIcon( GoodHelper::picture( gtype ), Point( 0, 7 ) );
+    goodLabel->setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
   }    
 }
 

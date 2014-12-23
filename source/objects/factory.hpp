@@ -23,24 +23,22 @@
 #include "predefinitions.hpp"
 #include "good/good.hpp"
 
-class GoodStore;
-
 class Factory : public WorkingBuilding
 {
 public:
-  Factory( const Good::Type inGood, const Good::Type outGood,
+  Factory( const good::Type inGood, const good::Type outGood,
            const TileOverlay::Type type, const Size& size );
   virtual ~Factory();
 
-  GoodStock& inStockRef();
-  const GoodStock& inStockRef() const;
+  good::Stock& inStockRef();
+  const good::Stock& inStockRef() const;
 
-  GoodStock& outStockRef();
+  good::Stock& outStockRef();
 
-  Good::Type consumeGoodType() const;
-  Good::Type produceGoodType() const;
+  good::Type consumeGoodType() const;
+  good::Type produceGoodType() const;
 
-  GoodStore& store();
+  good::Store& store();
 
   virtual std::string troubleDesc() const;
 
@@ -88,8 +86,8 @@ class Winery : public Factory
 {
 public:
   Winery();
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool build(const CityAreaInfo &info);
 
 protected:
   virtual void _storeChanged();
@@ -100,8 +98,8 @@ class Creamery : public Factory
 public:
   Creamery();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
+  virtual bool build(const CityAreaInfo &info);
 protected:
   virtual void _storeChanged();
 };

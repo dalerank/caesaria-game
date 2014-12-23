@@ -24,18 +24,23 @@
 namespace gui
 {
 
-class EmperorGiftWindow : public Window
+namespace dialog
+{
+
+class EmperorGift : public Window
 {
 public:
-  EmperorGiftWindow( Widget* parent, int money, const DateTime& lastgift );
-  virtual ~EmperorGiftWindow();
+  EmperorGift( Widget* parent, int money, const DateTime& lastgift );
+  virtual ~EmperorGift();
 
 public signals:
   Signal1<int>& onSendGift();
 
 private:
-  __DECLARE_IMPL(EmperorGiftWindow)
+  __DECLARE_IMPL(EmperorGift)
 };
+
+} //end namespace dialog
 
 } //end namespace gui
 

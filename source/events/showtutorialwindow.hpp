@@ -21,7 +21,7 @@
 namespace events
 {
 
-class ShowTutorialWindow : public GameEvent
+class ShowTutorial : public GameEvent
 {
 public:
   static GameEventPtr create( std::string tutorial="" );

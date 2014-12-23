@@ -35,7 +35,7 @@ namespace city
 class Statistic
 {
 public:
-  typedef std::map< Good::Type, int > GoodsMap;
+  typedef std::map< good::Type, int > GoodsMap;
 
   static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
   static CitizenGroup getPopulation( PlayerCityPtr city );
@@ -59,8 +59,8 @@ public:
   static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
   static float getBalanceKoeff( PlayerCityPtr city );
   static int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
-  static bool canImport( PlayerCityPtr city, Good::Type type );
-  static bool canProduce( PlayerCityPtr city, Good::Type type );
+  static bool canImport( PlayerCityPtr city, good::Type type );
+  static bool canProduce( PlayerCityPtr city, good::Type type );
 };
 
 }//end namespace city

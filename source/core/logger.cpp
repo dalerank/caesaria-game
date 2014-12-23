@@ -17,7 +17,7 @@
 
 #include "logger.hpp"
 #include "requirements.hpp"
-#include "stringhelper.hpp"
+#include "utils.hpp"
 #include "time.hpp"
 #include "foreach.hpp"
 #include "list.hpp"
@@ -52,7 +52,7 @@ public:
 		if( _logFile )
 		{
 			fputs("Caesaria logfile created: ", _logFile);
-			fputs(StringHelper::format( 0xff, "%02d:%02d:%02d",
+			fputs(utils::format( 0xff, "%02d:%02d:%02d",
 																	t.hour(), t.minutes(), t.seconds()).c_str(),
 						_logFile);
 			fputs("\n", _logFile);
@@ -66,7 +66,7 @@ public:
 		if( _logFile )
 		{
 			fputs("Caesaria logfile closed: ", _logFile);
-			fputs( StringHelper::format( 0xff, "%02d:%02d:%02d",
+			fputs( utils::format( 0xff, "%02d:%02d:%02d",
 																	t.hour(), t.minutes(), t.seconds()).c_str(),
 						 _logFile);
 			fputs("\n", _logFile);
@@ -150,7 +150,7 @@ void Logger::warning( const char* fmt, ... )
   va_start(argument_list, fmt);
 
   std::string ret;
-  StringHelper::vformat( ret, 512, fmt, argument_list );
+  utils::vformat( ret, 512, fmt, argument_list );
 
   va_end(argument_list);
 

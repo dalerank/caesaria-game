@@ -1,0 +1,10 @@
+{  
+ title : "##entertainment_advisor##"
+ sound : "fanfare"
+ text  : "Your Financial Advisor is among your more useful aides, especially while your city is struggling to reach profitability. Use the arrow buttons on this panel to set your tax rate. The default rate of 7 percent produces normal immigration with minimal grumbling. Higher tax rates worsen people's mood, which can limit immigration and aggravate crime. Low taxes improve your citizens' mood.\n Notice the percentage of your citizens who are registered for taxes. Only households visited by a tax collector actually pay their taxes. To improve this percentage, build a Senate house or forum.\n The top part of this panel shows your income from taxes, trade and any donations from your @personal savings&. Income from trade should normally be more important than taxes.\n The bottom part lists expenditures. Wages or Construction are usually the largest category, and the most difficult to control. Interest is charged on any negative balance in your treasury. Sundries include miscellaneous expenses not covered in other categories, like the cost of a festival, theft of city funds or fees for opening new trade routes. Tribute is levied by Caesar based on his opinion of you and your competence, and is beyond your control.\n The left side shows the final results for the previous year, while the right side shows the totals for this year so far.\n Compare total income with total expenses. If expenses exceed income, you must decide whether to raise your tax rate and expand your exports, cut those expenses that you can control, or use a combination of those strategies. Reading about @Money& and @Ratings& will help you understand this panel."
+ uri : {
+  "personal savings" : "personal_savings"
+  "Money" : "money"
+  "Ratings" : "ratings"
+ }
+}

@@ -25,10 +25,13 @@
 namespace gui
 {
 
-class PopupMessageBox : public Window
+namespace messagebox
+{
+
+class Popup : public Window
 {
 public:
-  PopupMessageBox(Widget* parent,
+  Popup(Widget* parent,
                    const std::string& title,
                    const std::string& text,
                    const DateTime& time,
@@ -37,8 +40,8 @@ public:
 
   void draw( gfx::Engine& painter );
 
-  static PopupMessageBox* information( Widget* parent,
-                                       const std::string& title,
+  static Popup* information( Widget* parent,
+                             const std::string& title,
                                        const std::string& text,
                                        const DateTime& time );
 
@@ -46,6 +49,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace messagebox
 
 }//end namespace gui
 

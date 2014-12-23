@@ -84,7 +84,7 @@ void RomeSoldier::timeStep(const unsigned long time)
 {
   Soldier::timeStep( time );
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     unsigned int dst2base = pos().distanceFrom( _d->basePos );
     if( dst2base > maxDistanceFromBase )
@@ -120,7 +120,7 @@ void RomeSoldier::timeStep(const unsigned long time)
   break;
 
   case patrol:
-    if( GameDate::current().day() % 2 == 0 )
+    if( game::Date::current().day() % 2 == 0 )
     {
       _tryAttack();
     }

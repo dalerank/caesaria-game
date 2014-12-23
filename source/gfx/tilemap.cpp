@@ -18,12 +18,12 @@
 
 #include "tilemap.hpp"
 
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
@@ -60,9 +60,11 @@ public:
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
+  TilesArray border;
 
-  int size;
+  int size;  
   Direction direction;
+  int virtWidth;
 
   Tile* ate(const TilePos& pos);
   Tile* ate( const int i, const int j );
@@ -80,6 +82,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = north;
+  _d->virtWidth = tilemap::cellSize().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -103,8 +106,8 @@ TilePos Tilemap::fit( const TilePos& pos ) const
 Tile* Tilemap::at( const Point& pos, bool overborder)
 {
   // x relative to the left most pixel of the tilemap
-  int i = (pos.x() + 2 * pos.y()) / 60;
-  int j = (pos.x() - 2 * pos.y()) / 60;
+  int i = (pos.x() + 2 * pos.y()) / _d->virtWidth;
+  int j = (pos.x() - 2 * pos.y()) / _d->virtWidth;
 
   if( overborder )
   {
@@ -126,8 +129,8 @@ Tile* Tilemap::at( const Point& pos, bool overborder)
 
 TilePos Tilemap::p2tp(const Point &pos)
 {
-  return TilePos( (pos.x() + 2 * pos.y()) / 60,
-                  (pos.x() - 2 * pos.y()) / 60 );
+  return TilePos( (pos.x() + 2 * pos.y()) / _d->virtWidth,
+                  (pos.x() - 2 * pos.y()) / _d->virtWidth );
 }
 
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
@@ -151,8 +154,46 @@ TilesArray Tilemap::allTiles() const
   return ret;
 }
 
-int Tilemap::size() const {  return _d->size; }
+const TilesArray& Tilemap::borderTiles() const
+{
+  return _d->border;
+}
 
+void Tilemap::addBorder()
+{
+  if( !_d->border.empty() )
+    return;
+
+  Rect r;
+  r.addInternalPoint( Tile( TilePos(-1, -1) ).mappos() );
+  r.addInternalPoint( Tile( TilePos(0, _d->size+1) ).mappos() );
+  r.addInternalPoint( Tile( TilePos(_d->size+1, _d->size+1) ).mappos() );
+  r.addInternalPoint( Tile( TilePos(_d->size+1, 0) ).mappos() );
+
+  for( int u=0; u < _d->size/2; u++ )
+  {
+    for( int i=0; i < _d->size; i++ )
+    {
+      TilePos tpos[4] = { TilePos( -_d->size/2 + u, _d->size-i ), TilePos( i, -u),
+                          TilePos( i, _d->size + _d->size/2 - 1 - u ), TilePos( _d->size + u, _d->size-1-i) };
+      Picture pics[4] = { at( 0, _d->size-i ).picture(), at( i, 0 ).picture(),
+                          at( i, _d->size -1 ).picture(), at( _d->size-1,  _d->size-1-i).picture() };
+
+      for( int idx=0; idx < 4; idx++ )
+      {
+        Tile t( tpos[idx] );
+
+        if( r.isPointInside( t.mappos() ) )
+        {
+          _d->border.push_back( new Tile( tpos[idx] ) );
+          _d->border.back()->setPicture( pics[idx] );
+        }
+      }
+    }
+  }
+}
+
+int Tilemap::size() const {  return _d->size; }
 
 TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
 {
@@ -277,7 +318,7 @@ void Tilemap::save( VariantMap& stream ) const
   foreach( it, tiles )
   {
     Tile* tile = *it;    
-    bitsetInfo.push_back( TileHelper::encode( *tile ) );
+    bitsetInfo.push_back( util::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
     idInfo.push_back( tile->originalImgId() );
   }
@@ -330,17 +371,19 @@ void Tilemap::load( const VariantMap& stream )
   {
     Tile* tile = *it;
 
-    TileHelper::decode( *tile, bitsetAr[index] );
+    util::decode( *tile, bitsetAr[index] );
     tile->setParam( Tile::pDesirability, desAr[index] );
 
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
-      Picture& pic = TileHelper::pictureFromId( imgId );
+      Picture& pic = util::pictureFromId( imgId );
 
       tile->setOriginalImgId( imgId );
 
-      int tile_size = (pic.width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
+      int tile_size = (pic.width()+2) / _d->virtWidth;  // size of the multi-tile. the multi-tile is a square.
+
+      tile_size = math::clamp<int>( tile_size, 1, 10 );
 
       // master is the left-most subtile
       Tile* master = (tile_size == 1) ? NULL : tile;
@@ -396,7 +439,9 @@ void Tilemap::turnRight()
     const Impl::TurnInfo& ti = it->second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
-    int pSize = (pic.width() + 2) / 60;
+    int pSize = (pic.width() + 2) / _d->virtWidth;
+
+    pSize = math::clamp<int>( pSize, 1, 10 );
 
     TilePos mTilePos = ti.tile->epos() - TilePos( 0, pSize - 1 );
     Tile* mTile = _d->ate( mTilePos );
@@ -451,7 +496,9 @@ void Tilemap::turnLeft()
     const Impl::TurnInfo& ti = it->second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
-    int pSize = (pic.width() + 2) / 60;
+    int pSize = (pic.width() + 2) / _d->virtWidth;
+
+    pSize = math::clamp<int>( pSize, 1, 10);
 
     TilePos mTilePos = ti.tile->epos() - TilePos( pSize - 1, 0 );
     Tile* mTile = _d->ate( mTilePos );
@@ -554,7 +601,9 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
 
           mtiles[ masterTile ] = ti;
 
-          int pSize = (ti.pic.width() + 2) / 60;
+          int pSize = (ti.pic.width() + 2) / virtWidth;
+
+          pSize = math::clamp<int>(  pSize, 1, 10 );
 
           for( int i=0; i < pSize; i++ )
           {

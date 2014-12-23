@@ -18,7 +18,7 @@
 #include "cityindebt.hpp"
 #include "game/game.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 #include "world/romechastenerarmy.hpp"
@@ -85,7 +85,7 @@ VariantMap CityIndebt::save() const
 
 bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( game.city()->funds().treasury() < -4900 )
     {
@@ -121,20 +121,20 @@ void CityIndebt::_exec(Game& game, unsigned int)
     gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), video );
     dlg->setText( _( text ) );
     dlg->setTitle( _( title ) );
-    dlg->setTime( GameDate::current() );
+    dlg->setTime( game::Date::current() );
     dlg->show();
 
     _d->state++;
 
     GameEventPtr e = FundIssueEvent::create( city::Funds::caesarsHelp, money );
     e->dispatch();
-    _d->lastMessageSent = GameDate::current();
+    _d->lastMessageSent = game::Date::current();
   }
   break;
 
   case 3:
   {
-    if( _d->lastMessageSent.monthsTo( GameDate::current() ) > 11 )
+    if( _d->lastMessageSent.monthsTo( game::Date::current() ) > 11 )
     {
       GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, ":/smk/Emp_send_army.smk" );
       e->dispatch();

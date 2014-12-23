@@ -42,12 +42,13 @@ public:
   virtual SmartPtr<Player> player() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
+  virtual world::Nation nation() const;
   virtual DateTime lastAttack() const;
   virtual int strength() const;
   virtual void delayTrade( unsigned int month );
-  virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost );
-  virtual const GoodStore& importingGoods() const;
-  virtual const GoodStore& exportingGoods() const;
+  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost );
+  virtual const good::Store& importingGoods() const;
+  virtual const good::Store& exportingGoods() const;
 
 private:
   class Impl;

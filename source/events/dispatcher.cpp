@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "dispatcher.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "postpone.hpp"
 #include "core/logger.hpp"
@@ -78,7 +78,7 @@ VariantMap Dispatcher::save() const
   int index = 0;
   foreach( event, _d->events )
   {
-    ret[ StringHelper::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
+    ret[ utils::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
   }
 
   return ret;

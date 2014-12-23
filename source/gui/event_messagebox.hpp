@@ -25,7 +25,7 @@ class EventMessageBox : public infobox::Simple
 {
 public:
   EventMessageBox(Widget* parent, const std::string& title, const std::string& message,
-                   DateTime time, Good::Type gtype, const std::string& additional="" );
+                   DateTime time, good::Type gtype, const std::string& additional="" );
   virtual ~EventMessageBox();
 };
 
