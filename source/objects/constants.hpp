@@ -16,27 +16,13 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _CAESARIA_BUILDING_CONSTANTS_INCLUDE_H_
-#define _CAESARIA_BUILDING_CONSTANTS_INCLUDE_H_
+#ifndef _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
+#define _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 
 namespace constants
 {
 
-namespace construction
-{
-
-enum Type
-{
-  unknown=0,
-  road,
-  plaza,
-  garden,
-  count
-};
-
-}
-
-namespace building
+namespace objects
 {
 
 enum Group
@@ -72,11 +58,14 @@ enum Group
 enum Type
 {
 //unknown building
-  unknown=construction::unknown,
-  any=unknown,
+  unknown=0,
+  any=0,
+  road,
+  plaza,
+  garden,
 
 // entertainment
-  amphitheater=construction::count,
+  amphitheater,
   theater,
   hippodrome,
   colloseum,
@@ -197,6 +186,11 @@ enum Type
   elevation,
   rift,//90
   river,
+  tree,
+  waymark,
+  terrain,
+  water,
+
   typeCount,
   userType=1000
 }; //end Type
@@ -205,4 +199,4 @@ enum Type
 
 } //end namespace constants
 
-#endif  //_CAESARIA_BUILDING_CONSTANTS_INCLUDE_H_
+#endif  //_CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_

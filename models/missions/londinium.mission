@@ -8,6 +8,9 @@
   climate : 1
   adviserEnabled : true
   fishPlaceEnabled : false
+  preview.text : "##londinium_preview_mission##"
+  preview.title : "##londinium_preview_title##"
+  preview.image : ""
 
   win :
   {

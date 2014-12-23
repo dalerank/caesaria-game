@@ -45,6 +45,7 @@ public:
 
   // show resource
   Picture& getPicture(const std::string &prefix, const int idx);
+  bool present( const std::string& prefix,const int idx ) const;
 
   ~PictureBank();
 

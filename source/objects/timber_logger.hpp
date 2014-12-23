@@ -25,7 +25,7 @@ class TimberLogger : public Factory
 {
 public:
   TimberLogger();
-  virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
 };
 
 #endif //_CAESARIA_TIMBER_LOGGER_H_INCLUDE_

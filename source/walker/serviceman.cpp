@@ -22,7 +22,7 @@
 #include "pathway/path_finding.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
@@ -52,6 +52,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Human( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
+  _setNation( city->nation() );
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
@@ -171,7 +172,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
       ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
       foreach( it, reachedBuildings )
       {
-        if( (*it)->type() == building::house )
+        if( (*it)->type() == objects::house )
         {
           _d->lastHousePos = (*itTile)->pos();
         }

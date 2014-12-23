@@ -15,7 +15,7 @@
 
 #include "wall.hpp"
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/time.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
@@ -30,15 +30,15 @@
 using namespace constants;
 using namespace gfx;
 
-Wall::Wall() : Building( building::wall, Size(1) )
+Wall::Wall() : Building( objects::wall, Size(1) )
 {
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }
 
-bool Wall::build(PlayerCityPtr city, const TilePos& pos )
+bool Wall::build( const CityAreaInfo& info )
 {
-  Tilemap& tilemap = city->tilemap();
-  Tile& terrain = tilemap.at( pos );
+  Tilemap& tilemap = info.city->tilemap();
+  Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have wall here
   WallPtr wall = ptr_cast<Wall>( terrain.overlay() );
@@ -47,14 +47,14 @@ bool Wall::build(PlayerCityPtr city, const TilePos& pos )
     return false;
   }
 
-  Construction::build( city, pos );
+  Construction::build( info );
 
-  city::Helper helper( city );
-  WallList walls = helper.find<Wall>( building::wall );
+  city::Helper helper( info.city );
+  WallList walls = helper.find<Wall>( objects::wall );
 
-  foreach( wall, walls ) { (*wall)->updatePicture( city ); }
+  foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
 
-  updatePicture( city );
+  updatePicture( info.city );
 
   return true;
 }
@@ -87,27 +87,27 @@ void Wall::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow );
 }
 
-bool Wall::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Wall::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Construction::canBuild( city, pos, aroundTiles );
+  bool ret = Construction::canBuild( areaInfo );
 
   if( ret )
   {
-    Picture pic = const_cast< Wall* >( this )->picture( city, pos, aroundTiles );
+    Picture pic = const_cast< Wall* >( this )->picture( areaInfo );
     const_cast< Wall* >( this )->setPicture( pic );
   }
 
   return ret;
 }
 
-const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tmp) const
+const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
 {
   // find correct picture as for roads
-  Tilemap& tmap = city->tilemap();
+  Tilemap& tmap = areaInfo.city->tilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp.empty()) ? pos() : p;
+  const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::wall, 178 );
@@ -142,12 +142,12 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
   overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
-  if (!tmp.empty())
+  if (!areaInfo.aroundTiles.empty())
   {
-    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+    foreach( it, areaInfo.aroundTiles )
     {
       if( (*it)->overlay().isNull()
-          || (*it)->overlay()->type() != building::wall)
+          || (*it)->overlay()->type() != objects::wall)
       {
         continue;
       }
@@ -156,6 +156,7 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
       int i = (*it)->i();
       int j = (*it)->j();
 
+      const TilePos& p = areaInfo.pos;
       if( (p + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
       else if(i == p.i() && j == (p.j() - 1)) is_busy[south] = true;
       else if(j == p.j() && i == (p.i() + 1)) is_busy[east] = true;
@@ -169,7 +170,7 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
   for (int i = 0; i < countDirection; ++i) {
     if( !is_border[i] &&
        ( (overlay_d[i].isValid() &&
-          (overlay_d[i]->type() == building::wall || overlay_d[i]->type() == building::gatehouse ) )
+          (overlay_d[i]->type() == objects::wall || overlay_d[i]->type() == objects::gatehouse ) )
         || is_busy[i] ) )
     {
       switch (i)
@@ -229,7 +230,7 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
 
   default:
     index = 178; // it's impossible, but ...
-    Logger::warning( "Impossible direction on wall building [%d,%d]", p.i(), p.j() );
+    Logger::warning( "Impossible direction on wall building [%d,%d]", areaInfo.pos.i(), areaInfo.pos.j() );
   }
 
   return Picture::load( ResourceGroup::wall, index );
@@ -237,7 +238,8 @@ const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tm
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  setPicture( picture( city, TilePos(), TilesArray() ) );
+  CityAreaInfo areaInfo = { city, TilePos(), TilesArray() };
+  setPicture( picture( areaInfo ) );
 }
 
 bool Wall::isNeedRoadAccess() const

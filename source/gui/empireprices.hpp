@@ -29,10 +29,10 @@ namespace gui
 namespace advisorwnd
 {
 
-class EmpirePricesWindow : public Window
+class EmpirePrices : public Window
 {
 public:
-  EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  );
+  EmpirePrices( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  );
 
   virtual void draw( gfx::Engine& painter );
 

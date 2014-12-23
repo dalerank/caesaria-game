@@ -19,7 +19,7 @@
 #include "requestwindow.hpp"
 #include "game/settings.hpp"
 #include "label.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "image.hpp"
 #include "good/goodhelper.hpp"
 #include "texturedbutton.hpp"
@@ -86,13 +86,13 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     GET_WIDGET_FROM_UI( smkViewer )
     GET_WIDGET_FROM_UI( lbTitle )
 
-    if( lbQty ) { lbQty->setText( StringHelper::format( 0xff, "%d", gr->qty() ) ); }
-    if( imgIcon ) { imgIcon->setPicture( GoodHelper::picture( gr->goodType() )); }
+    if( lbQty ) { lbQty->setText( utils::format( 0xff, "%d", gr->qty() ) ); }
+    if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
 
     std::string title, text, video;
     switch( gr->goodType() )
     {
-    case Good::denaries:
+    case good::denaries:
         text = "##rome_need_some_goods##";
         title = "##emperor_request_money##";
         video = ":/smk/Urgent_message1.smk";
@@ -108,8 +108,8 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     if( lbText ) { lbText->setText( _( text ) ); }
     if( lbTitle ) { lbTitle->setText( _( title ) ); }
 
-    int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );
-    if( lbInterval ) { lbInterval->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
+    int month2Comply = game::Date::current().monthsTo( gr->finishedDate() );
+    if( lbInterval ) { lbInterval->setText( utils::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
 
     video = _d->video.empty() ? video : _d->video;
     if( smkViewer ) { smkViewer->setFilename( video ); }

@@ -24,7 +24,10 @@
 namespace gfx
 {
 
-class LayerFire : public LayerInfo
+namespace layer
+{
+
+class Fire : public Info
 {
 public:
   virtual int type() const;
@@ -34,8 +37,10 @@ public:
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerFire( Camera& camera, PlayerCityPtr city );
+  Fire( Camera& camera, PlayerCityPtr city );
 };
+
+}
 
 }//end namespace gfx
 

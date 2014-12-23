@@ -21,7 +21,7 @@
 #include "good/goodstore.hpp"
 #include "core/gettext.hpp"
 #include "good/goodhelper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -49,22 +49,22 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
    if( market->numberWorkers() > 0 )
    {
-     GoodStore& goods = market->goodStore();
+     good::Store& goods = market->goodStore();
      int furageSum = 0;
      // for all furage types of good
-     for (int goodType = 0; goodType<Good::olive; ++goodType)
+     for (int goodType = 0; goodType<good::olive; ++goodType)
      {
-       furageSum += goods.qty( (Good::Type)goodType );
+       furageSum += goods.qty( (good::Type)goodType );
      }
 
      int paintY = 100;
      if( 0 < furageSum )
      {
-       drawGood( market, Good::wheat, 0, paintY );
-       drawGood( market, Good::fish, 1, paintY);
-       drawGood( market, Good::meat, 2, paintY);
-       drawGood( market, Good::fruit, 3, paintY);
-       drawGood( market, Good::vegetable, 4, paintY);
+       drawGood( market, good::wheat, 0, paintY );
+       drawGood( market, good::fish, 1, paintY);
+       drawGood( market, good::meat, 2, paintY);
+       drawGood( market, good::fruit, 3, paintY);
+       drawGood( market, good::vegetable, 4, paintY);
        lbAbout->setHeight( 60 );
      }
      else
@@ -74,10 +74,10 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
      }
 
      paintY += 24;
-     drawGood( market, Good::pottery, 0, paintY);
-     drawGood( market, Good::furniture, 1, paintY);
-     drawGood( market, Good::oil, 2, paintY);
-     drawGood( market, Good::wine, 3, paintY);
+     drawGood( market, good::pottery, 0, paintY);
+     drawGood( market, good::furniture, 1, paintY);
+     drawGood( market, good::oil, 2, paintY);
+     drawGood( market, good::wine, 3, paintY);
 
      lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
    }
@@ -92,16 +92,16 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
 AboutMarket::~AboutMarket() {}
 
-void AboutMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
+void AboutMarket::drawGood( MarketPtr market, const good::Type &goodType, int index, int paintY )
 {
   int startOffset = 25;
 
   int offset = ( width() - startOffset * 2 ) / 5;
-  std::string goodName = GoodHelper::name( goodType );
-  std::string outText = StringHelper::format( 0xff, "%d", market->goodStore().qty( goodType ) );
+  std::string goodName = good::Helper::name( goodType );
+  std::string outText = utils::format( 0xff, "%d", market->goodStore().qty( goodType ) );
 
   // pictures of goods
-  Picture pic = GoodHelper::picture( goodType );
+  Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
   Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );

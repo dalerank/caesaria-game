@@ -15,7 +15,7 @@
 
 #include "roadbuild_helper.hpp"
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "pathway/astarpathfinding.hpp"

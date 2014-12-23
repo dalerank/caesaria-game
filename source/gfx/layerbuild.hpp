@@ -25,7 +25,10 @@
 namespace gfx
 {
 
-class LayerBuild : public Layer
+namespace layer
+{
+
+class Build : public Layer
 {
 public:
   virtual void handleEvent(NEvent &event);
@@ -39,7 +42,7 @@ public:
 
   static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
 
-  virtual ~LayerBuild();
+  virtual ~Build();
 private:
   void _updatePreviewTiles(bool force);
   void _checkPreviewBuild(TilePos pos);
@@ -49,10 +52,12 @@ private:
   void _drawBuildTiles( Engine& engine );
   void _handeLayerSwitch(int layer);
 
-  LayerBuild( Renderer* renderer, PlayerCityPtr city );
+  Build( Renderer* renderer, PlayerCityPtr city );
 
-  __DECLARE_IMPL(LayerBuild)
+  __DECLARE_IMPL(Build)
 };
+
+}//end namespace layer
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERBUILD_H_INCLUDED__

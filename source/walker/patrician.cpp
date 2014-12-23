@@ -70,8 +70,8 @@ void Patrician::load( const VariantMap& stream )
 void Patrician::_findNewWay( const TilePos& start )
 {
   city::Helper helper( _city() );
-  std::vector< building::Type > bTypes;
-  bTypes.push_back( building::senate );
+  std::vector< objects::Type > bTypes;
+  bTypes.push_back( objects::senate );
 
   ConstructionList buildings;
 

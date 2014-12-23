@@ -18,7 +18,7 @@
 
 #include "timer.hpp"
 #include "city/cityservice_timers.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include <SDL_cpuinfo.h>
 #include <SDL_timer.h>
@@ -110,13 +110,13 @@ unsigned int DebugTimer::ticks()
 
 void DebugTimer::reset(const std::string &name)
 {
-  unsigned int namehash = StringHelper::hash( name );
+  unsigned int namehash = utils::hash( name );
   instance()._d->timers[ namehash ].time = SDL_GetPerformanceCounter();
 }
 
 unsigned int DebugTimer::take(const std::string &name, bool reset)
 {
-  unsigned int namehash = StringHelper::hash( name );
+  unsigned int namehash = utils::hash( name );
   Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
 
   unsigned int ret = tinfo.time;
@@ -128,7 +128,7 @@ unsigned int DebugTimer::take(const std::string &name, bool reset)
 
 unsigned int DebugTimer::delta(const std::string &name, bool reset)
 {
-  unsigned int namehash = StringHelper::hash( name );
+  unsigned int namehash = utils::hash( name );
   Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
 
   unsigned int ret = SDL_GetPerformanceCounter() - tinfo.time;

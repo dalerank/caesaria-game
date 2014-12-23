@@ -18,7 +18,7 @@
 
 #include "alarm_event_holder.hpp"
 #include "core/timer.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include <vector>
 

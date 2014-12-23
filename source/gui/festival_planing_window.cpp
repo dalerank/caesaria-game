@@ -27,7 +27,7 @@
 #include "core/gettext.hpp"
 #include "city/funds.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "religion/pantheon.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
@@ -39,7 +39,10 @@ using namespace gfx;
 namespace gui
 {
 
-class FestivalPlaningWindow::Impl
+namespace dialog
+{
+
+class FestivalPlaning::Impl
 {
 public:
   typedef enum { divId=0x200, festId=0x400 } FestID;
@@ -86,23 +89,23 @@ public:
   {
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
-    std::string text = StringHelper::format( 0xff, "##hold_%s_festival##", divinity.isValid()
+    std::string text = utils::format( 0xff, "##hold_%s_festival##", divinity.isValid()
                                                                               ? divinity->debugName().c_str()
                                                                               : "unknown" );
     lbTitle->setText( _(text) );
   }
 };
 
-FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityPtr city, int id )
+FestivalPlaning* FestivalPlaning::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, Rect( 0, 0, 1, 1 ), city);
+  FestivalPlaning* ret = new FestivalPlaning( parent, id, Rect( 0, 0, 1, 1 ), city);
 
   return ret;
 }
 
-FestivalPlaningWindow::~FestivalPlaningWindow(){}
+FestivalPlaning::~FestivalPlaning(){}
 
-FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
+FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
   setupUI( ":/gui/festivalplaning.gui" );
@@ -136,34 +139,34 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
-    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
+    _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
-    _d->btnMiddleFestival->setText( StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
+    _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
-    _d->btnGreatFestival->setText( StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
+    _d->btnGreatFestival->setText( utils::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
   }
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
   _d->btnNo->setTooltipText( "##donot_organize_festival##" );
 
-  CONNECT( _d->btnExit,onClicked(), this, FestivalPlaningWindow::deleteLater );
-  CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaningWindow::deleteLater );
+  CONNECT( _d->btnExit,onClicked(), this, FestivalPlaning::deleteLater );
+  CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaning::deleteLater );
   CONNECT( _d->btnYes, onClicked(), _d.data(), Impl::assignFestival );
-  CONNECT( _d->btnYes, onClicked(), this, FestivalPlaningWindow::deleteLater );
+  CONNECT( _d->btnYes, onClicked(), this, FestivalPlaning::deleteLater );
 }
 
-void FestivalPlaningWindow::draw( gfx::Engine& painter )
+void FestivalPlaning::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -171,7 +174,7 @@ void FestivalPlaningWindow::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-bool FestivalPlaningWindow::onEvent(const NEvent& event)
+bool FestivalPlaning::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -205,6 +208,8 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<int,int>& FestivalPlaningWindow::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
+Signal2<int,int>& FestivalPlaning::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
+
+}//end namespace dialog
 
 }//end namespace gui

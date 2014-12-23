@@ -24,7 +24,10 @@ namespace events
 class ShowAdvisorWindow : public GameEvent
 {
 public:
+  static GameEventPtr create();
   static GameEventPtr create(bool show, constants::advisor::Type advisor );
+
+  virtual void load(const VariantMap& stream);
 
 protected:
   virtual void _exec( Game& game, unsigned int );

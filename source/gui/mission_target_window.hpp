@@ -25,21 +25,26 @@
 namespace gui
 {
 
-class MissionTargetsWindow : public Window
+namespace dialog
+{
+
+class MissionTargets : public Window
 {
 public:
-  static MissionTargetsWindow* create( Widget* parent, PlayerCityPtr city , int id=-1 );
-  virtual ~MissionTargetsWindow();
+  static MissionTargets* create( Widget* parent, PlayerCityPtr city , int id=-1 );
+  virtual ~MissionTargets();
 
   virtual void draw( gfx::Engine& painter );
   void setCity( PlayerCityPtr city );
 
 private:
-  MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle );
+  MissionTargets( Widget* parent, int id, const Rect& rectangle );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__

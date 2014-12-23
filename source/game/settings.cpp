@@ -19,9 +19,13 @@
 #include "vfs/path.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/directory.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 
-#define __REG_PROPERTY(a) const char* GameSettings::a = CAESARIA_STR_EXT(a);
+namespace game
+{
+
+#define __REG_PROPERTY(a) const char* Settings::a = CAESARIA_STR_EXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
@@ -68,25 +72,29 @@ __REG_PROPERTY(opengl_opts)
 __REG_PROPERTY(font)
 __REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
+__REG_PROPERTY(cellw)
+__REG_PROPERTY(simpleAnimationModel)
+__REG_PROPERTY(hotkeysModel)
+__REG_PROPERTY(cartsModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
 const vfs::Path defaultLocaleDir = "resources/locale";
 
-class GameSettings::Impl
+class Settings::Impl
 {
 public:
   VariantMap options;
 };
 
-GameSettings& GameSettings::instance()
+Settings& Settings::instance()
 {
-  static GameSettings inst;
+  static Settings inst;
   return inst;
 }
 
-GameSettings::GameSettings() : _d( new Impl )
+Settings::Settings() : _d( new Impl )
 {
   std::string application_path = vfs::Directory::getApplicationDir().toString();
   setwdir( application_path );
@@ -116,12 +124,16 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
   _d->options[ walkerRelations     ] = Variant( std::string( "/relations.model" ) );
   _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
+  _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.model" ) );
+  _d->options[ hotkeysModel        ] = Variant( std::string( "/hotkeys.model" ) );
+  _d->options[ cartsModel          ] = Variant( std::string( "/carts.model" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;
+  _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;
   _d->options[ difficulty          ] = 3; // 0-4, Very Easy, Easy, Normal, Hard, Very Hard. Default: Hard
   _d->options[ resolution          ] = Size( 1024, 768 );
@@ -136,12 +148,12 @@ GameSettings::GameSettings() : _d( new Impl )
 #endif
 }
 
-void GameSettings::set( const std::string& option, const Variant& value )
+void Settings::set( const std::string& option, const Variant& value )
 {
   instance()._d->options[ option ] = value;
 }
 
-Variant GameSettings::get( const std::string& option )
+Variant Settings::get( const std::string& option )
 {
   VariantMap::iterator it = instance()._d->options.find( option );
   return  instance()._d->options.end() == it
@@ -149,7 +161,7 @@ Variant GameSettings::get( const std::string& option )
               : it->second;
 }
 
-void GameSettings::setwdir( const std::string& wdirstr )
+void Settings::setwdir( const std::string& wdirstr )
 {
   vfs::Directory wdir( wdirstr );
   _d->options[ workDir ] = Variant( wdir.toString() );
@@ -167,9 +179,49 @@ void GameSettings::setwdir( const std::string& wdirstr )
   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
+void Settings::checkwdir(char* argv[], int argc)
+{
+  for (int i = 0; i < (argc - 1); i++)
+  {
+    if( !strcmp( argv[i], "-R" ) )
+    {
+      const char* opts = argv[i+1];
+      setwdir( std::string( opts, strlen( opts ) ) );
+      i++;
+    }
+  }
+}
+
+void Settings::checkCmdOptions(char* argv[], int argc)
+{
+  for (int i = 0; i < (argc - 1); i++)
+  {
+    if( !strcmp( argv[i], "-Lc" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ language ] = Variant( opts );
+      i++;
+    }
+    else if( !strcmp( argv[i], "-c3gfx" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ c3gfx ] = Variant( opts );
+      i++;
+    }
+    else if( !strcmp( argv[i], "-cellw" ) )
+    {
+      const char* opts = argv[i+1];
+      int cellWidth = utils::toInt( opts );
+      _d->options[ cellw ] = cellWidth;
+      i++;
+    }
+  }
+
+}
+
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
 {
-  Variant vr = GameSettings::get( fpath.toString() );
+  Variant vr = game::Settings::get( fpath.toString() );
   if( vr.isNull() )
   {
     return dir/fpath;
@@ -178,28 +230,30 @@ static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
   return dir/vfs::Path( vr.toString() );
 }
 
-vfs::Path GameSettings::rcpath( const std::string& option )
+vfs::Path Settings::rcpath( const std::string& option )
 {
   std::string rc = get( resourcePath ).toString();
 
   return __concatPath( rc, option );
 }
 
-vfs::Path GameSettings::rpath( const std::string& option )
+vfs::Path Settings::rpath( const std::string& option )
 {
   std::string wd = get( workDir ).toString();
 
   return __concatPath( wd, option );
 }
 
-void GameSettings::load()
+void Settings::load()
 {
-  VariantMap settings = SaveAdapter::load( rcpath( GameSettings::settingsPath ) );
+  VariantMap settings = SaveAdapter::load( rcpath( Settings::settingsPath ) );
 
   foreach( v, settings ) { set( v->first, v->second ); }
 }
 
-void GameSettings::save()
+void Settings::save()
 {
-  SaveAdapter::save( instance()._d->options, rcpath( GameSettings::settingsPath ) );
+  SaveAdapter::save( instance()._d->options, rcpath( Settings::settingsPath ) );
 }
+
+}//end namespace game

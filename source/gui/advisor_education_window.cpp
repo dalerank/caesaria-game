@@ -22,11 +22,13 @@
 #include "label.hpp"
 #include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"
+#include "dictionary.hpp"
+#include "texturedbutton.hpp"
 #include "core/foreach.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
@@ -75,21 +77,21 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case building::school: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
-    case building::academy: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
-    case building::library: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
+    case objects::school: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
+    case objects::academy: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
+    case objects::library: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
+    std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = StringHelper::format( 0xff, "%d", _info.buildingWork );
+    std::string buildingWorkT = utils::format( 0xff, "%d", _info.buildingWork );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
-    std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
+    std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
     rfont.draw( *texture, peoplesStrT, 255, 0 );
 
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
@@ -135,32 +137,35 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( city, building::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), building::school, info );
+  info = _d->getInfo( city, objects::school );
+  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), objects::school, info );
 
-  info = _d->getInfo( city, building::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), building::academy, info );
+  info = _d->getInfo( city, objects::academy );
+  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), objects::academy, info );
 
-  info = _d->getInfo( city, building::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), building::library, info );
+  info = _d->getInfo( city, objects::library );
+  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), objects::library, info );
 
   city::Helper helper( city );
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
   foreach( house, houses )
   {
     sumScholars += (*house)->habitants().count( CitizenGroup::scholar );
     sumStudents += (*house)->habitants().count( CitizenGroup::student );
   }
 
-  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
   std::string advice = _d->getTrouble( city );
   if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _(advice) ); }
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Education::_showHelp );
 }
 
 void Education::draw( gfx::Engine& painter )
@@ -169,6 +174,11 @@ void Education::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+void Education::_showHelp()
+{
+  DictionaryWindow::show( this, "education_advisor" );
 }
 
 InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
@@ -193,9 +203,9 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
   CitizenGroup::Age age;
   switch( bType )
   {
-  case building::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
-  case building::academy: service = Service::academy; maxStuding = 100; age = CitizenGroup::student; break;
-  case building::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
+  case objects::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
+  case objects::academy: service = Service::academy; maxStuding = 100; age = CitizenGroup::student; break;
+  case objects::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
   default:
     age=CitizenGroup::newborn;
     service=Service::srvCount;
@@ -213,7 +223,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
     }
   }
 
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
   int minAccessLevel = 100;
   foreach( it, houses )
   {

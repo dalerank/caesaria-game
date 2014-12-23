@@ -61,7 +61,7 @@ std::string Player::defaultName() { return "audio_player"; }
 
 void Player::timeStep(const unsigned int time )
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( _d->playlist.empty() )
       return;

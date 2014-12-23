@@ -21,7 +21,7 @@
 #include "core/event.hpp"
 #include "label.hpp"
 #include "listbox.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
@@ -29,7 +29,10 @@
 namespace gui
 {
 
-class GameSpeedOptionsWindow::Impl
+namespace dialog
+{
+
+class GameSpeedOptions::Impl
 {
 public:
   GameAutoPause locker;
@@ -39,7 +42,7 @@ public:
   int speedValue, scrollValue, autosaveInterval;
 };
 
-GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, int scrollSpeed,
+GameSpeedOptions::GameSpeedOptions( Widget* parent, int gameSpeed, int scrollSpeed,
                                                int autosaveInterval)
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
@@ -55,9 +58,9 @@ GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, in
   _update();
 }
 
-GameSpeedOptionsWindow::~GameSpeedOptionsWindow( void ) {}
+GameSpeedOptions::~GameSpeedOptions( void ) {}
 
-bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
+bool GameSpeedOptions::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && guiButtonClicked == event.gui.type )
   {
@@ -86,11 +89,11 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>& GameSpeedOptionsWindow::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
-Signal1<int>& GameSpeedOptionsWindow::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
-Signal1<int>&GameSpeedOptionsWindow::onAutosaveIntervalChange(){ return _d->onAutosaveIntervalShangeSignal; }
+Signal1<int>& GameSpeedOptions::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
+Signal1<int>& GameSpeedOptions::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
+Signal1<int>& GameSpeedOptions::onAutosaveIntervalChange(){ return _d->onAutosaveIntervalShangeSignal; }
 
-void GameSpeedOptionsWindow::_update()
+void GameSpeedOptions::_update()
 {
   Label* lbGameSpeedPercent;
   Label* lbScrollSpeedPercent;
@@ -103,9 +106,11 @@ void GameSpeedOptionsWindow::_update()
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
   _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
 
-  if( lbGameSpeedPercent ) { lbGameSpeedPercent->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
-  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
-  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " m." ); }
+  if( lbGameSpeedPercent ) { lbGameSpeedPercent->setText( utils::i2str( _d->speedValue ) + "%" ); }
+  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( utils::i2str( _d->scrollValue ) + "%" ); }
+  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( utils::i2str( _d->autosaveInterval ) + " m." ); }
 }
+
+}//end namespace dialog
 
 }//end namespace gui

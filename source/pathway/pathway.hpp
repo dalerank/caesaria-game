@@ -33,7 +33,7 @@ public:
 
   virtual ~Pathway();
 
-  void init( const gfx::Tile& origin );
+  void init(const gfx::Tile& origin);
 
   unsigned int length() const;
 

@@ -21,7 +21,7 @@
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "training.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 #include "walker/serviceman.hpp"
@@ -39,7 +39,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, objects::amphitheater, Size(3)), _d( new Impl )
 {
   _fgPicturesRef().resize(2);
 
@@ -70,18 +70,18 @@ std::string Amphitheater::workersStateDesc() const
   return EntertainmentBuilding::workersStateDesc();
 }
 
-bool Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
+bool Amphitheater::build( const CityAreaInfo& info)
 {
-  EntertainmentBuilding::build( city, pos );
+  EntertainmentBuilding::build( info );
 
-  city::Helper helper( city );
-  ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
+  city::Helper helper( info.city );
+  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::gladiatorSchool );
+  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( objects::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );
@@ -104,7 +104,7 @@ void Amphitheater::deliverService()
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
-        ? _d->lastDateGl : _d->lastDateShow ) = GameDate::current();
+        ? _d->lastDateGl : _d->lastDateShow ) = game::Date::current();
     }
   }
   else

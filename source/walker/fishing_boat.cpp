@@ -22,7 +22,7 @@
 #include "good/good.hpp"
 #include "walker/fish_place.hpp"
 #include "pathway/pathway_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "pathway/pathway.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
@@ -40,7 +40,7 @@ public:
   CoastalFactoryPtr base;
   DateTime dateUpdate;
   TilePos destination;
-  GoodStock stock;
+  good::Stock stock;
   FishingBoat::State mode;
 
   Pathway findFishingPlace(PlayerCityPtr city, TilePos pos);
@@ -74,9 +74,9 @@ void FishingBoat::timeStep(const unsigned long time)
 {
   Ship::timeStep( time );
 
-  if( _d->dateUpdate.daysTo( GameDate::current() ) > 0 )
+  if( _d->dateUpdate.daysTo( game::Date::current() ) > 0 )
   {
-    _d->dateUpdate = GameDate::current();
+    _d->dateUpdate = game::Date::current();
 
     switch( _d->mode )
     {
@@ -188,7 +188,7 @@ FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = wait;
-  _d->stock.setType( Good::fish );
+  _d->stock.setType( good::fish );
   _d->stock.setCapacity( 100 );
 }
 

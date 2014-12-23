@@ -1,0 +1,8 @@
+{  
+ title : "##scribes_messages##"
+ sound : "fanfare"
+ text  : "When your underlings think that some event merits your immediate attention, they post messages that you access with this button. A brief fanfare sounds when a new message is delivered. Left-click on a message to read it. Delete messages by right-clicking on them in the message list.\n Your scribes' sense of urgency tends to be over-inflated, but you ignore their postings at your own peril. When a message reports a fire, riot or collapsed building, use the 'alarm bell' button immediately to the right to jump directly to the problem area."
+ uri : {
+  "Ratings" : "ratings"
+ }
+}

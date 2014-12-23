@@ -24,6 +24,7 @@ Human::Human(PlayerCityPtr city)
   : Walker( city )
 {
   setFlag( Walker::vividly, true );
+  _setNation( city->nation() );
 }
 
 Human::~Human()

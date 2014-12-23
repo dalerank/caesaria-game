@@ -21,10 +21,16 @@
 #include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
 
-class GameLoaderC3Map : public GameAbstractLoader
+namespace game
+{
+
+namespace loader
+{
+
+class C3Map: public Base
 {
 public:
-  GameLoaderC3Map();
+  C3Map();
 
   virtual bool load(const std::string& filename, Game& game);
   virtual int climateType( const std::string& filename );
@@ -35,5 +41,9 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace loader
+
+}//end namespace game
 
 #endif //__CAESARIA_SCENARIOMAP_LOADER_H_INCLUDED__

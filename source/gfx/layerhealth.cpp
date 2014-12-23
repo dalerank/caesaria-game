@@ -29,9 +29,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerHealth::type() const {  return _type; }
+namespace layer
+{
 
-int LayerHealth::_getLevelValue( HousePtr house )
+int Health::type() const {  return _type; }
+
+int Health::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
@@ -44,7 +47,7 @@ int LayerHealth::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -62,25 +65,25 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
       needDrawAnimations = true;
     break;
 
-    case building::doctor:
-    case building::hospital:
-    case building::barber:
-    case building::baths:
+    case objects::doctor:
+    case objects::hospital:
+    case objects::barber:
+    case objects::baths:
       needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
@@ -90,7 +93,7 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
 
@@ -130,15 +133,15 @@ void LayerHealth::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+LayerPtr Health::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerPtr ret( new LayerHealth( camera, city, type ) );
+  LayerPtr ret( new Health( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerHealth::handleEvent(NEvent& event)
+void Health::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -189,8 +192,8 @@ void LayerHealth::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
-  : LayerInfo( camera, city, 9 )
+Health::Health(Camera& camera, PlayerCityPtr city, int type)
+  : Info( camera, city, 9 )
 {
   _type = type;
 
@@ -198,25 +201,27 @@ LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
   {
   case citylayer::health:
   case citylayer::doctor:
-    _flags.insert( building::doctor );
+    _flags.insert( objects::doctor );
     _addWalkerType( walker::doctor );
   break;
 
   case citylayer::hospital:
-    _flags.insert( building::hospital );
+    _flags.insert( objects::hospital );
     _addWalkerType( walker::surgeon );
   break;
 
   case citylayer::barber:
-    _flags.insert( building::barber );
+    _flags.insert( objects::barber );
     _addWalkerType( walker::barber );
   break;
 
   case citylayer::baths:
-    _flags.insert( building::baths );
+    _flags.insert( objects::baths );
     _addWalkerType( walker::bathlady );
   break;
   }
+}
+
 }
 
 }//end namespace gfx

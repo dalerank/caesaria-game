@@ -1,0 +1,14 @@
+{  
+ title : "##vinard_history##"
+ sound : "fanfare"
+ text  : "Wine was the favorite drink of the Empire and grapes were grown everywhere but in Britain and northern Gaul. Even in these northern climes, whose people had drunk beer since prehistoric times, the Roman fashion of preferring wine caught on. When Romans wanted to keep a clear head, they didn't forgo their wine, but mixed it with water.\n Grapes are highly varietal, depending on the soil, climate and weather conditions in which they're grown. Even when the grapes are nearly identical, vintners can pick them at different stages of ripeness and process them in a number of ways. Extraction of the juices, fermentation and aging all affect a wine's flavor. No two wineries can produce the same varietal; indeed, no single winery can consistently produce the same vintage. This endless variability makes each wine a custom product, so that however much wine a given region produces, drinkers always want to try imported wines."
+ uri : {
+  "granary" : "granary"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

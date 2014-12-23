@@ -17,7 +17,7 @@
 #include "city.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"
@@ -95,7 +95,7 @@ void Shoreline::timeStep( const unsigned int time )
     WaterGarbagePtr wg = WaterGarbage::create( _city() );
     wg->send2City( _city()->borderInfo().boatEntry );
 
-    _d->nextWaterGarbage = time + math::random( GameDate::days2ticks( 10 ) );
+    _d->nextWaterGarbage = time + math::random( game::Date::days2ticks( 10 ) );
 
     for( int k=0; k < 20; k++ )
     {
@@ -133,7 +133,7 @@ void Shoreline::timeStep( const unsigned int time )
       }
     }
 
-    std::string picName = TileHelper::convId2PicName( picId );
+    std::string picName = util::convId2PicName( picId );
     if( picName != tile->picture().name())
     {
       tile->setPicture( picName );

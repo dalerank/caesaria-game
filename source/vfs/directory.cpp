@@ -21,7 +21,7 @@
 #include "entries.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
@@ -75,7 +75,7 @@ bool Directory::createByPath( Directory dir )
   Path saveDir = getCurrent();
   bool result=true;
 
-  StringArray path = StringHelper::split( dir.toString(), "/" );
+  StringArray path = utils::split( dir.toString(), "/" );
   std::string current;
   try
   {
@@ -316,18 +316,18 @@ Path Directory::getRelativePathTo(Path path) const
   Path path2( Directory( path.directory() ).absolutePath() );
   StringArray list1, list2;
 
-  list1 = StringHelper::split( path1.toString(), "/\\");
-  list2 = StringHelper::split( path2.toString(), "/\\");
+  list1 = utils::split( path1.toString(), "/\\");
+  list2 = utils::split( path2.toString(), "/\\");
 
   unsigned int i=0;
   for (; i<list1.size() && i<list2.size(); ++i)
   {
-    StringHelper::equaleMode emode = StringHelper::equaleIgnoreCase;
+    utils::equaleMode emode = utils::equaleIgnoreCase;
 #ifdef CAESARIA_PLATFORM_UNIX
-    emode = StringHelper::equaleCase;
+    emode = utils::equaleCase;
 #endif //CAESARIA_PLATFORM_UNIX
 
-    if( !StringHelper::isEquale( list1[ i ], list2[ i ], emode ) )
+    if( !utils::isEquale( list1[ i ], list2[ i ], emode ) )
     {
       break;
     }

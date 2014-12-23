@@ -33,6 +33,8 @@ public:
   virtual ~AboutFort();
 
 private:
+  virtual void _showHelp();
+
   class Impl;
   ScopedPtr<Impl> _d;
 };

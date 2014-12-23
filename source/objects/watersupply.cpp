@@ -15,7 +15,7 @@
 
 #include "watersupply.hpp"
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/time.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
@@ -76,7 +76,7 @@ void Reservoir::addWater(const WaterSource& source)
 }
 
 Reservoir::Reservoir()
-    : WaterSource( building::reservoir, Size( 3 ) )
+    : WaterSource( objects::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
   setPicture( ResourceGroup::utilitya, 34 );
@@ -94,11 +94,11 @@ Reservoir::Reservoir()
 
 Reservoir::~Reservoir(){}
 
-bool Reservoir::build(PlayerCityPtr city, const TilePos& pos )
+bool Reservoir::build( const CityAreaInfo& info )
 {
-  Construction::build( city, pos );
+  Construction::build( info );
 
-  _isWaterSource = _isNearWater( city, pos );  
+  _isWaterSource = _isNearWater( info.city, info.pos );
   _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");
 
   return true;
@@ -135,7 +135,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //filled area, that reservoir present
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     Tilemap& tmap = _city()->tilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
@@ -147,7 +147,7 @@ void Reservoir::timeStep(const unsigned long time)
     }
   }
 
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };
     _produceWater(offsets, 4);
@@ -159,11 +159,11 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
-bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Construction::canBuild( city, pos, aroundTiles );
+  bool ret = Construction::canBuild( areaInfo );
 
-  bool nearWater = _isNearWater( city, pos );
+  bool nearWater = _isNearWater( areaInfo.city, areaInfo.pos );
   Reservoir* thisp = const_cast< Reservoir* >( this );
   thisp->_fgPicturesRef().clear();
   if( nearWater )
@@ -202,7 +202,7 @@ bool WaterSource::haveWater() const{  return _d->water > 0;}
 
 void WaterSource::timeStep( const unsigned long time )
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {  
     _d->daysWithoutWater++;
     if( _d->daysWithoutWater > 5 )

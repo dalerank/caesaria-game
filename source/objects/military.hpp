@@ -44,7 +44,7 @@ class FortMounted : public Fort
 {
 public:  
   FortMounted();
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
 
 protected:
   virtual void _readyNewSoldier();

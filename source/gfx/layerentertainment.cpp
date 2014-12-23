@@ -25,16 +25,19 @@
 #include "tilemap_camera.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 
 namespace gfx
 {
 
-int LayerEntertainment::type() const {  return _type; }
+namespace layer
+{
 
-int LayerEntertainment::_getLevelValue( HousePtr house )
+int Entertainment::type() const {  return _type; }
+
+int Entertainment::_getLevelValue( HousePtr house )
 {
   switch( _type )
   {
@@ -53,7 +56,7 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -71,28 +74,28 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
       needDrawAnimations = true;
     break;
 
-    case building::theater:
-    case building::amphitheater:
-    case building::colloseum:
-    case building::hippodrome:
-    case building::lionsNursery:
-    case building::actorColony:
-    case building::gladiatorSchool:
+    case objects::theater:
+    case objects::amphitheater:
+    case objects::colloseum:
+    case objects::hippodrome:
+    case objects::lionsNursery:
+    case objects::actorColony:
+    case objects::gladiatorSchool:
       needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
@@ -102,7 +105,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         entertainmentLevel = _getLevelValue( house );
@@ -136,15 +139,15 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, const Point& offse
   tile.setWasDrawn();
 }
 
-LayerPtr LayerEntertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+LayerPtr Entertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerPtr ret( new LayerEntertainment( camera, city, type ) );
+  LayerPtr ret( new Entertainment( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerEntertainment::handleEvent(NEvent& event)
+void Entertainment::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -172,7 +175,7 @@ void LayerEntertainment::handleEvent(NEvent& event)
           int lvlValue = _getLevelValue( house );
           if( _type == citylayer::entertainment )
           {
-            text = StringHelper::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
+            text = utils::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
           }
           else
           {
@@ -207,19 +210,19 @@ void LayerEntertainment::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int type )
-  : LayerInfo( camera, city, 9 )
+Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
+  : Info( camera, city, 9 )
 {
   _type = type;
 
   switch( type )
   {
   case citylayer::entertainment:
-    _flags.insert( building::unknown ); _flags.insert( building::theater );
-    _flags.insert( building::amphitheater ); _flags.insert( building::colloseum );
-    _flags.insert( building::hippodrome ); _flags.insert( building::actorColony );
-    _flags.insert( building::gladiatorSchool ); _flags.insert( building::lionsNursery );
-    _flags.insert( building::chariotSchool );
+    _flags.insert( objects::unknown ); _flags.insert( objects::theater );
+    _flags.insert( objects::amphitheater ); _flags.insert( objects::colloseum );
+    _flags.insert( objects::hippodrome ); _flags.insert( objects::actorColony );
+    _flags.insert( objects::gladiatorSchool ); _flags.insert( objects::lionsNursery );
+    _flags.insert( objects::chariotSchool );
 
     _addWalkerType( walker::actor );
     _addWalkerType( walker::gladiator );
@@ -228,25 +231,25 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
   break;
 
   case citylayer::theater:
-    _flags.insert( building::theater );
-    _flags.insert( building::actorColony );
+    _flags.insert( objects::theater );
+    _flags.insert( objects::actorColony );
 
     _addWalkerType( walker::actor );
   break;
 
   case citylayer::amphitheater:
-    _flags.insert( building::amphitheater );
-    _flags.insert( building::actorColony );
-    _flags.insert( building::gladiatorSchool );
+    _flags.insert( objects::amphitheater );
+    _flags.insert( objects::actorColony );
+    _flags.insert( objects::gladiatorSchool );
 
     _addWalkerType( walker::actor );
     _addWalkerType( walker::gladiator );
   break;
 
   case citylayer::colloseum:
-    _flags.insert( building::colloseum );
-    _flags.insert( building::gladiatorSchool );
-    _flags.insert( building::lionsNursery );
+    _flags.insert( objects::colloseum );
+    _flags.insert( objects::gladiatorSchool );
+    _flags.insert( objects::lionsNursery );
 
     _addWalkerType( walker::gladiator );
     _addWalkerType( walker::lionTamer );
@@ -254,8 +257,8 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
 
 
   case citylayer::hippodrome:
-    _flags.insert( building::hippodrome );
-    _flags.insert( building::chariotSchool );
+    _flags.insert( objects::hippodrome );
+    _flags.insert( objects::chariotSchool );
 
     _addWalkerType( walker::charioteer );
   break;
@@ -263,5 +266,5 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
   default: break;
   }
 }
-
+}
 }//end namespace gfx

@@ -22,7 +22,10 @@
 namespace gfx
 {
 
-class LayerReligion : public LayerInfo
+namespace layer
+{
+
+class Religion : public Info
 {
 public:
   virtual int type() const;
@@ -32,9 +35,11 @@ public:
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerReligion( Camera& camera, PlayerCityPtr city );
+  Religion( Camera& camera, PlayerCityPtr city );
   std::set<int> _flags;
 };
+
+}//end namespace layer
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERRELIGION_H_INCLUDED__

@@ -21,7 +21,11 @@
 
 #include "working.hpp"
 
-class GoodStore;
+namespace good
+{
+  class Store;
+}
+
 class Granary : public WorkingBuilding
 {
 public:
@@ -29,7 +33,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void computePictures();
-  GoodStore& store();
+  good::Store& store();
 
   virtual void initTerrain(gfx::Tile& terrain);
   virtual void save( VariantMap& stream) const;
@@ -47,7 +51,7 @@ protected:
 
 private:
   void _tryDevastateGranary();
-  bool _trySendGoods(Good::Type gtype, int qty);
+  bool _trySendGoods(good::Type gtype, int qty);
   void _resolveDeliverMode();
 
   class Impl;

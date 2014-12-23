@@ -8,6 +8,9 @@
   climate : 2
   adviserEnabled : true
   fishPlaceEnabled : true
+  preview.text : "##miletus_preview_mission##"
+  preview.title : "##miletus_preview_title##"
+  preview.image : ""
 	
   win :
   {

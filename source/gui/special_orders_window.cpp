@@ -30,7 +30,7 @@
 #include "good/goodhelper.hpp"
 #include "good/goodstore.hpp"
 #include "good/goodorders.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 
@@ -43,7 +43,7 @@ template< class T >
 class OrderGoodWidget : public Label
 {
 public:
-  OrderGoodWidget( Widget* parent, const Rect& rect, Good::Type good, T storageBuilding )
+  OrderGoodWidget( Widget* parent, const Rect& rect, good::Type good, T storageBuilding )
     : Label( parent, rect, "" )
   {
     _type = good;
@@ -61,7 +61,7 @@ public:
   {
     Label::_updateTexture( painter );
 
-    std::string goodName = _( "##" + GoodHelper::getTypeName( _type ) + "##" );
+    std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
 
     if( _textPictureRef() )
     {
@@ -74,28 +74,28 @@ public:
   {
     Label::draw( painter );
 
-    Picture goodIcon = GoodHelper::picture( _type );
+    Picture goodIcon = good::Helper::picture( _type );
     painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
     painter.draw( goodIcon, absoluteRect().lefttop() + Point( 390, 0 ), &absoluteClippingRectRef() );
   }
 
   void updateBtnText()
   {
-    GoodOrders::Order rule = _storageBuilding->store().getOrder( _type );
+    good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
     const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
-    _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
+    _btnChangeRule->setFont( Font::create( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( _(ruleName[ rule ]) );
   }
 
   void changeGranaryRule()
   {
-    GoodOrders::Order rule = _storageBuilding->store().getOrder( _type );
-    _storageBuilding->store().setOrder( _type, GoodOrders::Order( (rule+1) % (GoodOrders::none)) );
+    good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
+    _storageBuilding->store().setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );
     updateBtnText();
   }
 
 private:
-  Good::Type _type;
+  good::Type _type;
   T _storageBuilding;
   PushButton* _btnChangeRule;
 };
@@ -113,7 +113,7 @@ public:
 };
 
 template< class T >
-void addOrderWidget( const int index, const Good::Type good, Widget* area, T storageBuiding )
+void addOrderWidget( const int index, const good::Type good, Widget* area, T storageBuiding )
 {
   Point offset( 0, 25 );
   Size wdgSize( area->width(), 25 );
@@ -190,13 +190,13 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   setTitle( _("##granary_orders##") );
   int index=0;
   _granary = granary;
-  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
+  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
   {
-    const GoodOrders::Order rule = granary->store().getOrder( (Good::Type)goodType );
+    const good::Orders::Order rule = granary->store().getOrder( (good::Type)goodType );
     
-    if( rule != GoodOrders::none )
+    if( rule != good::Orders::none )
     {
-      addOrderWidget<GranaryPtr>( index, (Good::Type)goodType, _ordersArea(), granary );
+      addOrderWidget<GranaryPtr>( index, (good::Type)goodType, _ordersArea(), granary );
       index++;
     }
   }
@@ -241,13 +241,13 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   d->warehouse = warehouse;
   int index=0;
-  for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
+  for( int goodType=good::wheat; goodType <= good::marble; goodType++ )
   {
-    const GoodOrders::Order rule = d->warehouse->store().getOrder( (Good::Type)goodType );
+    const good::Orders::Order rule = d->warehouse->store().getOrder( (good::Type)goodType );
 
-    if( rule != GoodOrders::none )
+    if( rule != good::Orders::none )
     {
-      addOrderWidget<WarehousePtr>( index, (Good::Type)goodType, _ordersArea(), d->warehouse );
+      addOrderWidget<WarehousePtr>( index, (good::Type)goodType, _ordersArea(), d->warehouse );
       index++;
     }
   }

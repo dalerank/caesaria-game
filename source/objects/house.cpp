@@ -17,10 +17,9 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
-
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "objects/house_level.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "walker/workerhunter.hpp"
 #include "walker/immigrant.hpp"
@@ -66,7 +65,7 @@ public:
   int poverity;
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
-  SimpleGoodStore goodStore;
+  good::SimpleStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   unsigned int maxHabitants;
   DateTime lastTaxationDate;
@@ -86,7 +85,7 @@ public:
   int getFoodLevel() const;
 };
 
-House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl )
+House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl )
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
@@ -98,7 +97,7 @@ House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl
   _d->money = 0;
   _d->tax = 0;
   _d->taxesThisYear = 0;
-  _d->currentYear = GameDate::current().year();
+  _d->currentYear = game::Date::current().year();
 
   setState( House::health, 100 );
   setState( House::fire, 0 );
@@ -291,9 +290,9 @@ void House::_updateCrime()
   {
     int foodStoreQty = 0;
     int foodTypeCount = 0;
-    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    for( int k=good::wheat; k <= good::vegetable; k++ )
     {
-      int qty = _d->goodStore.qty( (Good::Type)k );
+      int qty = _d->goodStore.qty( (good::Type)k );
       foodStoreQty += qty;
       foodTypeCount += (qty > 0 ? 1 : 0);
     }
@@ -367,16 +366,16 @@ void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
   {
-    if( GameDate::isMonthChanged() )
+    if( game::Date::isMonthChanged() )
     {
       _levelDown();
     }
     return; 
   }
 
-  if( _d->currentYear != GameDate::current().year() )
+  if( _d->currentYear != game::Date::current().year() )
   {
-    _d->currentYear = GameDate::current().year();
+    _d->currentYear = game::Date::current().year();
     _makeOldHabitants();    
     _d->taxesThisYear = 0;
   }
@@ -398,7 +397,7 @@ void House::timeStep(const unsigned long time)
     _d->consumeGoods( this );
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     setState( settleLock, 0 );
     _updateTax(); 
@@ -409,7 +408,7 @@ void House::timeStep(const unsigned long time)
     _d->poverity = math::clamp( _d->poverity, 0, 100 );
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _checkEvolve();
     _updateCrime();
@@ -492,7 +491,8 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       setSize( growSize  );
       //_update( false );
 
-      build( _city(), pos() );
+      CityAreaInfo info = { _city(), pos(), TilesArray() };
+      build( info );
       //set new desirability level
       helper.updateDesirability( this, city::Helper::onDesirability );
     }
@@ -559,7 +559,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         }
         else
         {
-          if( overlay->type() != construction::garden )
+          if( overlay->type() != objects::garden )
           {
             mayGrow = false; //not garden, can't grow
             break;
@@ -573,7 +573,8 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         helper.updateDesirability( this, city::Helper::offDesirability );
         setSize( minSize );
         _update( true );
-        build( _city(), buildPos );
+        CityAreaInfo info = { _city(), buildPos, TilesArray() };
+        build( info );
 
         _d->desirability.base = desirability;
         _d->desirability.step = desirability < 0 ? 1 : -1;
@@ -703,7 +704,8 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     }
 
     setSize( rsize );
-    build( _city(), bpos + moveVector );
+    CityAreaInfo info = { _city(), bpos + moveVector, TilesArray() };
+    build( info );
   }
   //set new desirability level
   helper.updateDesirability( this, city::Helper::onDesirability );
@@ -758,12 +760,12 @@ void House::_levelDown()
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( building::house ) );
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( objects::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         //house->_d->houseId = HouseLevel::smallHovel;
         //house->_update( true );
 
-        GameEventPtr event = BuildEvent::create( (*tile)->pos(), house.object() );
+        GameEventPtr event = BuildAny::create( (*tile)->pos(), house.object() );
         event->dispatch();
       }
 
@@ -803,12 +805,12 @@ void House::buyMarket( ServiceWalkerPtr walker )
   if( market.isNull() )
     return;
 
-  GoodStore& marketStore = market->goodStore();
+  good::Store& marketStore = market->goodStore();
 
-  GoodStore &houseStore = goodStore();
-  for (int i = 0; i < Good::goodCount; ++i)
+  good::Store& houseStore = goodStore();
+  for (int i = 0; i < good::goodCount; ++i)
   {
-    Good::Type goodType = (Good::Type) i;
+    good::Type goodType = (good::Type) i;
     int houseQty = houseStore.qty(goodType);
     int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
                        + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
@@ -822,7 +824,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
 
        if( qty > 0 )
        {
-         GoodStock stock(goodType, qty);
+         good::Stock stock(goodType, qty);
          marketStore.retrieve(stock, qty);
 
          stock.setCapacity( qty );
@@ -924,11 +926,11 @@ float House::evaluateService(ServiceWalkerPtr walker)
   case Service::market:
   {
     MarketPtr market = ptr_cast<Market>( walker->base() );
-    GoodStore &marketStore = market->goodStore();
-    GoodStore &houseStore = goodStore();
-    for (int i = 0; i < Good::goodCount; ++i)
+    good::Store& marketStore = market->goodStore();
+    good::Store& houseStore = goodStore();
+    for (int i = 0; i < good::goodCount; ++i)
     {
-      Good::Type goodType = (Good::Type) i;
+      good::Type goodType = (good::Type) i;
       int houseQty = houseStore.qty(goodType) / 10;
       int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false)
                          + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
@@ -974,9 +976,9 @@ TilesArray House::enterArea() const
   }
 }
 
-bool House::build(PlayerCityPtr city, const TilePos &pos)
+bool House::build( const CityAreaInfo& info )
 {
-  bool ret = Building::build(city, pos);
+  bool ret = Building::build( info );
   _update( true );
   return ret;
 }
@@ -1007,7 +1009,7 @@ void House::_update( bool needChangeTexture )
 
   bool lastFlat = _d->isFlat;
 
-  _d->isFlat = picture().height() <= ( TileHelper::baseSize().height() * size().width() );
+  _d->isFlat = picture().height() <= ( tilemap::cellPicSize().height() * size().width() );
   if( lastFlat != _d->isFlat && _city().isValid() )
     _city()->setOption( PlayerCity::updateTiles, true );
 
@@ -1075,7 +1077,7 @@ std::string House::sound() const
   if( !_d->habitants.count() )
     return "";
 
-  return StringHelper::format( 0xff, "house_%05d", _d->houseLevel*10+1 );
+  return utils::format( 0xff, "house_%05d", _d->houseLevel*10+1 );
 }
 
 std::string House::troubleDesc() const
@@ -1143,7 +1145,7 @@ void House::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D(_d,tax, stream )
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
-  _d->currentYear = GameDate::current().year();
+  _d->currentYear = game::Date::current().year();
   VARIANT_LOAD_ANY_D(_d,taxesThisYear, stream)
 
   _d->initGoodStore( size().area() );
@@ -1157,7 +1159,8 @@ void House::load( const VariantMap& stream )
     _d->services[ type ] = vl_services.get( i+1 ).toFloat(); //serviceValue
   }
 
-  Building::build( _city(), pos() );
+  CityAreaInfo info = { _city(), pos(), TilesArray() };
+  Building::build( info );
 
   if( !picture().isValid() )
   {
@@ -1190,8 +1193,8 @@ void House::burn()
 
 int House::Impl::getFoodLevel() const
 {
-  const Good::Type f[] = { Good::wheat, Good::fish, Good::meat, Good::fruit, Good::vegetable };
-  std::set<Good::Type> foods( f, f+5 );
+  const good::Type f[] = { good::wheat, good::fish, good::meat, good::fruit, good::vegetable };
+  std::set<good::Type> foods( f, f+5 );
 
   int ret = 0;
   int foodLevel = spec.minFoodLevel();
@@ -1200,7 +1203,7 @@ int House::Impl::getFoodLevel() const
 
   while( foodLevel > 0 )
   {
-    Good::Type maxFtype = Good::none;
+    good::Type maxFtype = good::none;
     int maxFoodQty = 0;
     foreach( ft, foods )
     {
@@ -1275,7 +1278,7 @@ float House::collectTaxes()
   float tax = _d->tax;
   _d->taxesThisYear += tax;
   _d->tax = 0.f;
-  _d->lastTaxationDate = GameDate::current();
+  _d->lastTaxationDate = game::Date::current();
   return tax;
 }
 
@@ -1287,7 +1290,7 @@ std::string House::evolveInfo() const{  return _d->evolveInfo;}
 bool House::isWalkable() const{  return size().width() == 1; }
 bool House::isFlat() const { return _d->isFlat; }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
-GoodStore& House::goodStore(){   return _d->goodStore;}
+good::Store& House::goodStore(){ return _d->goodStore; }
 const HouseSpecification& House::spec() const{   return _d->spec; }
 bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service){  return _d->services[service]; }
@@ -1323,7 +1326,7 @@ std::string House::levelName() const
 
   if( big )
   {
-    ret = StringHelper::replace( ret, "small", "big" );
+    ret = utils::replace( ret, "small", "big" );
   }
 
   return ret;
@@ -1345,15 +1348,15 @@ void House::Impl::initGoodStore(int size)
 {
   int rsize = 25 * size * houseLevel;
   goodStore.setCapacity( rsize * 10 );  // no limit
-  goodStore.setCapacity(Good::wheat, rsize );
-  goodStore.setCapacity(Good::fish, rsize );
-  goodStore.setCapacity(Good::meat, rsize );
-  goodStore.setCapacity(Good::fruit, rsize );
-  goodStore.setCapacity(Good::vegetable, rsize );
-  goodStore.setCapacity(Good::pottery, rsize );
-  goodStore.setCapacity(Good::furniture, rsize);
-  goodStore.setCapacity(Good::oil, rsize );
-  goodStore.setCapacity(Good::wine, rsize );
+  goodStore.setCapacity(good::wheat, rsize );
+  goodStore.setCapacity(good::fish, rsize );
+  goodStore.setCapacity(good::meat, rsize );
+  goodStore.setCapacity(good::fruit, rsize );
+  goodStore.setCapacity(good::vegetable, rsize );
+  goodStore.setCapacity(good::pottery, rsize );
+  goodStore.setCapacity(good::furniture, rsize);
+  goodStore.setCapacity(good::oil, rsize );
+  goodStore.setCapacity(good::wine, rsize );
 }
 
 void House::Impl::consumeServices()
@@ -1367,9 +1370,9 @@ void House::Impl::consumeServices()
 
 void House::Impl::consumeGoods( HousePtr house )
 {
-  for( int i = Good::olive; i < Good::goodCount; ++i)
+  for( int i = good::olive; i < good::goodCount; ++i)
   {
-     Good::Type goodType = (Good::Type) i;
+     good::Type goodType = (good::Type) i;
      int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
      goodStore.setQty( goodType, std::max( goodStore.qty(goodType) - montlyGoodsQty, 0) );
   }
@@ -1381,13 +1384,12 @@ void House::Impl::consumeFoods(HousePtr house)
   if( foodLevel == 0 )
     return;
 
-
-  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / GameDate::days2ticks( 30 );
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / game::Date::days2ticks( 30 );
 
   int availableFoodLevel = 0;
-  for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )
+  for( int afl=good::wheat; afl <= good::vegetable; afl++ )
   {
-    availableFoodLevel += ( goodStore.qty( (Good::Type)afl ) > 0 ? 1 : 0 );
+    availableFoodLevel += ( goodStore.qty( (good::Type)afl ) > 0 ? 1 : 0 );
   }
   availableFoodLevel = std::min( availableFoodLevel, foodLevel );
   bool haveFoods4Eating = ( availableFoodLevel > 0 );
@@ -1398,9 +1400,9 @@ void House::Impl::consumeFoods(HousePtr house)
     while( alsoNeedFood > 0 )
     {
       int realConsumedQty = 0;
-      for( int k=Good::wheat; k <= Good::vegetable; k++ )
+      for( int k=good::wheat; k <= good::vegetable; k++ )
       {
-        Good::Type gType = (Good::Type)k;
+        good::Type gType = (good::Type)k;
         int vQty = std::min( goodStore.qty( gType ), needFoodQty / availableFoodLevel );
         vQty = std::min( vQty, alsoNeedFood );
         if( vQty > 0 )

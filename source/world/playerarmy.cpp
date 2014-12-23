@@ -26,7 +26,7 @@
 #include "city/city.hpp"
 #include "objects/fort.hpp"
 #include "game/gamedate.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "walker/walkers_factory.hpp"
 
 using namespace gfx;
@@ -72,7 +72,7 @@ void PlayerArmy::timeStep(const unsigned int time)
 {
   if( _d->mode == PlayerArmy::wait )
   {
-    if( GameDate::isDayChanged() )
+    if( game::Date::isDayChanged() )
     {
       for( RomeSoldierList::iterator it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
       {
@@ -119,7 +119,7 @@ void PlayerArmy::move2location(Point point)
 void PlayerArmy::setFortPos(const TilePos& base)
 {
   _d->fortPos = base;
-  setName( StringHelper::format( 0xff, "expedition_from_%dx%d", base.i(), base.j() ) );
+  setName( utils::format( 0xff, "expedition_from_%dx%d", base.i(), base.j() ) );
 }
 
 void PlayerArmy::return2fort()
@@ -221,7 +221,7 @@ void PlayerArmy::_check4attack()
      CityList cities = empire()->cities();
      std::map< int, CityPtr > citymap;
 
-     DateTime currentDate = GameDate::current();
+     DateTime currentDate = game::Date::current();
      foreach( it, cities )
      {
        float distance = location().distanceTo( (*it)->location() );

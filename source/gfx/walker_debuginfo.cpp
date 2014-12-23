@@ -18,6 +18,7 @@
 #include "walker_debuginfo.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
+#include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "gfx/decorator.hpp"
 
@@ -48,13 +49,14 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
   }
 
   Point pos = walker->mappos();
+  Point xOffset( tilemap::cellSize().width(), 0 );
   if( pathway.isReverse() )
   {
     int rStart = pathway.length() - pathway.curStep();
     for( int step=rStart-1; step >= 0; step-- )
     {
-      engine.drawLine(  pathColor, pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ) );
-      pos = tiles[ step ]->mappos() + Point( 30, 0 );
+      engine.drawLine(  pathColor, pos + camOffset, tiles[ step ]->mappos() + camOffset + xOffset );
+      pos = tiles[ step ]->mappos() + xOffset;
     }
   }
   else
@@ -62,8 +64,8 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
     for( unsigned int step=pathway.curStep()+1; step < tiles.size(); step++ )
     {
       Tile* tile = tiles[ step ];
-      engine.drawLine(  pathColor, pos + camOffset, tile->mappos() + camOffset + Point( 30, 0 ) );
-      pos = tile->mappos() + Point( 30, tile->height() * 15 );
+      engine.drawLine(  pathColor, pos + camOffset, tile->mappos() + camOffset + xOffset );
+      pos = tile->mappos() + xOffset;
     }
   }
 }

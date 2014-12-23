@@ -2,7 +2,7 @@
 #include "message_sink.hpp"
 #include "console_command.hpp"
 #include "console_dispatcher.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 IC_Command_ECHO::IC_Command_ECHO() : ConsoleCommand("echo")
 {
@@ -115,7 +115,7 @@ bool IC_Command_INFO::invoke(const StringArray& args,
 			pOutput->AppendMessage( strings[ cnt ] );
 
 
-		pOutput->AppendMessage( std::string( "Size of objlist = " ) + StringHelper::format( 0xff, "%d", strings.size() ) );
+		pOutput->AppendMessage( std::string( "Size of objlist = " ) + utils::format( 0xff, "%d", strings.size() ) );
 
 		return true;
 	}

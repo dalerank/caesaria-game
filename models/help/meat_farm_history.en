@@ -1,0 +1,14 @@
+{  
+ title : "##meat_farm_history##"
+ sound : "fanfare"
+ text  : "A typical Roman hog farm had 100 to 150 pigs - 10 or 15 boars, and the remainder sows. Sows were bred starting at 20 months old, and allowed to breed for up to seven years, after which they were slaughtered. Swineherds prevented inbreeding by marking piglets with pitch. Pigs fed upon beans, acorns, barley and other grains.\n Pork was the most common meat in the Roman diet, and remains popular in modern Italy. The upper classes had a taste for 'suckling pigs' - piglets not yet weaned. Most meat came from 6- to 12-month-old boars that were castrated to prevent breeding, and from culled sows."
+ uri : {
+  "granary" : "granary"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

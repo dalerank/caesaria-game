@@ -23,7 +23,7 @@
 namespace events
 {
 
-class WarningMessageEvent : public GameEvent
+class WarningMessage : public GameEvent
 {
 public:
   static GameEventPtr create( const std::string& text );

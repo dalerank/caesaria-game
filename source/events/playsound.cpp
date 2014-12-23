@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "playsound.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "sound/engine.hpp"
 #include "game/game.hpp"
 
@@ -24,7 +24,7 @@ namespace events
 GameEventPtr PlaySound::create( std::string rc, int index, int volume )
 {
   PlaySound* e = new PlaySound();
-  e->_sound = StringHelper::format( 0xff, "%s_%05d", rc.c_str(), index );
+  e->_sound = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
   e->_volume = volume;
 
   GameEventPtr ret( e );

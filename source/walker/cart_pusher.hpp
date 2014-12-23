@@ -38,12 +38,11 @@ public:
   void setConsumerBuilding( BuildingPtr building );
   BuildingPtr producerBuilding();
   BuildingPtr consumerBuilding();
-  GoodStock& stock();
+  good::Stock& stock();
 
-  gfx::Picture& getCartPicture();
   virtual void getPictures( gfx::Pictures& oPics);
 
-  void send2city( BuildingPtr building, GoodStock& carry );
+  void send2city( BuildingPtr building, good::Stock& carry );
 
   virtual void timeStep(const unsigned long time);
 
@@ -56,6 +55,7 @@ public:
 protected:
   CartPusher( PlayerCityPtr city );
 
+  virtual gfx::Animation& getCartPicture();
   virtual void _changeDirection();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);

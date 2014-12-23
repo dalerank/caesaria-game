@@ -63,25 +63,25 @@ Peace::Peace( PlayerCityPtr city )
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
 
-  _d->unsignificantBuildings << building::prefecture
-                         << building::engineerPost
-                         << building::well
-                         << building::fortArea
-                         << building::fortJavelin
-                         << building::fortLegionaire
-                         << building::fortMounted
-                         << building::gatehouse
-                         << building::fortification
-                         << construction::road
-                         << construction::plaza
-                         << building::highBridge
-                         << building::lowBridge
-                         << building::tower;
+  _d->unsignificantBuildings << objects::prefecture
+                         << objects::engineerPost
+                         << objects::well
+                         << objects::fortArea
+                         << objects::fortJavelin
+                         << objects::fortLegionaire
+                         << objects::fortMounted
+                         << objects::gatehouse
+                         << objects::fortification
+                         << objects::road
+                         << objects::plaza
+                         << objects::highBridge
+                         << objects::lowBridge
+                         << objects::tower;
 }
 
 void Peace::timeStep(const unsigned int time )
 {
-  if( !GameDate::isYearChanged() )
+  if( !game::Date::isYearChanged() )
     return;
 
   city::MilitaryPtr ml;
@@ -158,28 +158,28 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
     _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.count( overlay->type() );
   }
 
-  if( _d->lastMessageDate.monthsTo( GameDate::current() ) > 1 )
+  if( _d->lastMessageDate.monthsTo( game::Date::current() ) > 1 )
   {
     std::string title;
     std::string text;
     std::string video;
 
-    _d->lastMessageDate = GameDate::current();
+    _d->lastMessageDate = game::Date::current();
 
     switch( why )
     {
-    case events::DisasterEvent::collapse:
+    case events::Disaster::collapse:
       title = "##collapsed_building_title##";
       text = "##collapsed_building_text##";
     break;
 
-    case events::DisasterEvent::fire:
+    case events::Disaster::fire:
       title = "##city_fire_title##";
       text = "##city_fire_text##";
       video = ":/smk/city_fire.smk";
     break;
 
-    case events::DisasterEvent::riots:
+    case events::Disaster::riots:
       title = "##destroyed_building_title##";
       text = "##rioter_rampaging_accross_city##";
       video = ":/smk/riot.smk";
@@ -200,6 +200,8 @@ std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
 std::string Peace::reason() const
 {
   if( _d->rioterSeen ) { return "##last_riots_bad_for_peace_rating##"; }
+
+  return "";
 }
 
 VariantMap Peace::save() const

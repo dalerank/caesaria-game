@@ -1,0 +1,15 @@
+{  
+ title : "##iron_mine_history##"
+ sound : "fanfare"
+ text  : "The Romans used plenty of easily obtained and refined metals, but made no real contributions to metallurgy themselves. Iron was in the greatest demand, but copper and lead mining were major activities, too. Rebellious slaves or heavily indebted plebes were sometimes sent to the mines, and such an assignment was usually a death sentence. Digging ore from the earth and separating metal from rock were the hardest form of labor in the ancient world. Miners relied on surface or shallow ore deposits and could not follow a rich vein very deep underground, so huge amounts of stone had to be processed to yield profitable quantities of metal."
+ uri : {
+  "granary" : "granary"
+  "pottery" : "pottery"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

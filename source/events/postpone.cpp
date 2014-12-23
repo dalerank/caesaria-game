@@ -111,7 +111,7 @@ bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
     bool dateCondition = true;
     if( _d->date.year() != -1000 )
     {
-      dateCondition = _d->date <= GameDate::current();
+      dateCondition = _d->date <= game::Date::current();
     }
 
     bool popCondition = true;

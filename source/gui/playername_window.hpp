@@ -25,11 +25,14 @@
 namespace gui
 {
 
-class WindowPlayerName : public Window
+namespace dialog
+{
+
+class ChangePlayerName : public Window
 {
 public:
-  WindowPlayerName( Widget* parent );
-  virtual ~WindowPlayerName();
+  ChangePlayerName( Widget* parent );
+  virtual ~ChangePlayerName();
 
   virtual std::string text() const;
   virtual void setModal();
@@ -42,6 +45,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //_CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_

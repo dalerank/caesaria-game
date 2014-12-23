@@ -1,6 +1,7 @@
 { 
  fullscreen : false
- resolution : [ 1280, 800 ]
+ resolution : [ 1440, 800 ]
  language : "en"
+ cellw : 30
  /*c3gfx : "./resources/gfx"*/
 }

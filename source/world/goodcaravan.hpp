@@ -30,7 +30,7 @@ public:
   static GoodCaravanPtr create( CityPtr city );
   void sendTo( ObjectPtr obj );
   void sendTo( CityPtr obj );
-  GoodStore& store();
+  good::Store& store();
   virtual std::string type() const;
 
   virtual void timeStep( unsigned int time );

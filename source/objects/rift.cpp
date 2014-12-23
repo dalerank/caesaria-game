@@ -32,13 +32,13 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rift::Rift() : TileOverlay( building::rift, Size(1) )
+Rift::Rift() : TileOverlay( objects::rift, Size(1) )
 {  
 }
 
-bool Rift::build( PlayerCityPtr city, const TilePos& pos )
+bool Rift::build( const CityAreaInfo& info )
 {
-  TileOverlay::build( city, pos );
+  TileOverlay::build( info );
   setPicture( computePicture() );
 
   RiftList rifts = neighbors();
@@ -47,7 +47,7 @@ bool Rift::build( PlayerCityPtr city, const TilePos& pos )
     (*it)->updatePicture();
   }
 
-  DustCloud::create( city, pos, 5 );
+  DustCloud::create( info.city, info.pos, 5 );
 
   return true;
 }

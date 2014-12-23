@@ -1,0 +1,9 @@
+{  
+ title : "##plebians##"
+ sound : "fanfare"
+ text  : "Plebeians (or plebes) are the backbone of your citizenry. All people other than patricians (the inhabitants of villas) are plebes. These working people - the construction workers, the bath attendants, the barbers, merchants, doctors, teachers - are the commoners whose daily efforts keep your city functioning. Their welfare and contentment are your chief concerns. Their birth and death rates, their health, their wages and tax rates determine whether your city withers or blooms.\n As their fortunes improve, plebes seek to join the @Patrician& class. Only plebes participate in the workforce, so as the best parts of your city evolve from plebeian apartments to patrician villas, you should create new, lower-class neighborhoods to attract working people. (All new immigrants are plebes)."
+ uri : {
+  "Patrician" : "patricians"
+  "here" : "http://wikipedia.ru"
+ }
+}

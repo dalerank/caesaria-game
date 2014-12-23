@@ -19,7 +19,7 @@
 #include "empire.hpp"
 #include "city.hpp"
 #include "good/goodstore_simple.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
@@ -32,8 +32,8 @@ class Merchant::Impl
 {
 public:
   TraderoutePtr route;
-  SimpleGoodStore sells;
-  SimpleGoodStore buys;
+  good::SimpleStore sells;
+  good::SimpleStore buys;
   PointsArray steps;
   unsigned int step;
   std::string destCity, baseCity;
@@ -52,7 +52,7 @@ Merchant::Merchant( EmpirePtr empire )
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
-                              GoodStore& sell, GoodStore& buy )
+                              good::Store &sell, good::Store &buy )
 {
   MerchantPtr ret( new Merchant( empire ) );
   ret->drop();
@@ -136,7 +136,7 @@ void Merchant::load(const VariantMap& stream)
 }
 
 std::string Merchant::baseCity() const{  return _d->baseCity;}
-GoodStore& Merchant::sellGoods(){  return _d->sells;}
-GoodStore& Merchant::buyGoods(){  return _d->buys;}
+good::Store& Merchant::sellGoods(){  return _d->sells;}
+good::Store &Merchant::buyGoods(){  return _d->buys;}
 
 }//end namespace world

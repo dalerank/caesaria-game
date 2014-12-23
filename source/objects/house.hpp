@@ -22,9 +22,9 @@
 #include "objects/building.hpp"
 #include "core/scopedptr.hpp"
 #include "game/citizen_group.hpp"
+#include "good/good.hpp"
 
 class HouseSpecification;
-class GoodStore;
 
 class HouseLevel
 {
@@ -53,7 +53,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual GoodStore& goodStore();
+  virtual good::Store& goodStore();
 
   // return the current house level
   const HouseSpecification& spec() const;
@@ -67,7 +67,7 @@ public:
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build( const CityAreaInfo& info );
 
   virtual double state( ParameterType param) const;
 

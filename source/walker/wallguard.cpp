@@ -133,7 +133,7 @@ void WallGuard::timeStep(const unsigned long time)
   break;
 
   case patrol:
-    if( GameDate::isDayChanged() )
+    if( game::Date::isDayChanged() )
     {
       bool haveEnemies = _tryAttack();
       if( !haveEnemies )
@@ -381,7 +381,7 @@ void WallGuard::_brokePathway(TilePos p)
     {
       _setSubAction( patrol );
       setPathway( Pathway() );
-      wait( GameDate::days2ticks( 7 ) );
+      wait( game::Date::days2ticks( 7 ) );
     }
   }
 }
@@ -395,7 +395,7 @@ void WallGuard::_fire( TilePos target )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), target );
-  wait( GameDate::days2ticks( 1 ) / 2 );
+  wait( game::Date::days2ticks( 1 ) / 2 );
 }
 
 void WallGuard::_centerTile()
