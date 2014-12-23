@@ -1,0 +1,8 @@
+{  
+ title : "##advisor_chief##"
+ sound : "fanfare"
+ text  : "Think of your Chief Advisor as the other advisors' manager. He always has a quick summary of your city's main problems. Items wanting your attention are highlighted in red. Pay special attention to reports of hunger, crime or unhappiness. Visit the other advisors for more detailed information."
+ uri : {
+  "here" : "http://wikipedia.ru"
+ }
+}

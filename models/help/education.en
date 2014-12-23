@@ -1,0 +1,16 @@
+{  
+ title : "##education##"
+ sound : "fanfare"
+ text  : "Rome's @schools& give nearly all citizens a passing acquaintance with reading, writing and arithmetic. Some children progress to the @academy&, where they add history and rhetoric to their studies. Schools enable housing to evolve in the areas that they serve, and boost your @Culture rating&.\n Demand for education fluctuates with the composition of your citizenry. When your city is new, its population density is low and there aren't many school-aged children. As times goes on and the original immigrants raise families, they demand more schools. As they grow older, some fortunate children go on to the academy for higher knowledge. And adults want access to @libraries& throughout their lives. To anticipate future demand for education, ask your @Population Advisor& to show you the age composition of your populace. Children up to 13 years old should be in school. Youths aged 14 through 21 go on to the academy. Your nicest neighborhoods want access to all three types of education.\n When the city is young, building enough education facilities to give access to housing should provide enough classrooms for everyone. As your city matures, and its housing grows more densely-packed, those same facilities won't be enough anymore. Neighborhoods might still have all the access they desire, yet because so many more people live in the same areas the schools are overcrowded. Ask your @Education Advisor& about the city's overall need for schools, academies and libraries. Your @Culture rating& suffers badly when these buildings are overcrowded."
+ uri : {
+  "schools" : "school"
+  "Education Advisor" : "education_advisor"
+  "academy" : "academy"
+  "libraries" : "library"
+  "Culture rating" : "culture_rating"
+  "performer suppliers" : "supplier"
+  "amphitheaters" : "amphitheater"
+  "festivals" : "festival"
+  "Population Advisor" : "population_advisor"
+ }
+}

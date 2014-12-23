@@ -23,7 +23,7 @@
 namespace events
 {
 
-class ShowFeastWindow : public GameEvent
+class ShowFeastival : public GameEvent
 {
 public:
   static GameEventPtr create(std::string text, std::string title,

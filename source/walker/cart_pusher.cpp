@@ -32,7 +32,7 @@
 #include "gfx/picture_bank.hpp"
 #include "objects/factory.hpp"
 #include "good/goodstore.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
@@ -56,10 +56,10 @@ CAESARIA_LITERALCONST(consumerPos)
 class CartPusher::Impl
 {
 public:
-  GoodStock stock;
+  good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
-  Picture cartPicture;
+  Animation anim;
   int maxDistance;
   long reservationID;
   bool cantUnloadGoods;
@@ -85,7 +85,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
 void CartPusher::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->cartPicture = Picture();
+  _d->anim = Animation();
 
   if( _d->consumerBuilding != NULL )
   {
@@ -93,7 +93,7 @@ void CartPusher::_reachedPathway()
     WarehousePtr warehouse = ptr_cast<Warehouse>(_d->consumerBuilding);
     FactoryPtr factory = ptr_cast<Factory>(_d->consumerBuilding);
 
-    GoodStore* goodStore = 0;
+    good::Store* goodStore = 0;
     if( granary.isValid() ) { goodStore = &granary->store(); }
     else if( warehouse.isValid() ) { goodStore = &warehouse->store(); }
     else if( factory.isValid() ) { goodStore = &factory->store(); }
@@ -138,7 +138,7 @@ void CartPusher::_brokePathway(TilePos pos)
   deleteLater();
 }
 
-GoodStock& CartPusher::stock() {   return _d->stock;}
+good::Stock &CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
@@ -157,20 +157,20 @@ BuildingPtr CartPusher::consumerBuilding()
    return _d->consumerBuilding;
 }
 
-Picture& CartPusher::getCartPicture()
+Animation& CartPusher::getCartPicture()
 {
-   if( !_d->cartPicture.isValid() )
+   if( !_d->anim.isValid() )
    {
-     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, direction());
+     _d->anim = good::Helper::getCartPicture(_d->stock, direction());
    }
 
-   return _d->cartPicture;
+   return _d->anim;
 }
 
 void CartPusher::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->cartPicture = Picture();  // need to get the new graphic
+   _d->anim = Animation();  // need to get the new graphic
 }
 
 void CartPusher::getPictures( gfx::Pictures& oPics)
@@ -194,7 +194,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    case constants::northWest:
    case constants::north:
    case constants::northEast:
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( getCartPicture().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
@@ -203,7 +203,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    case constants::south:
    case constants::southWest:
       oPics.push_back( getMainPicture() );
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( getCartPicture().currentFrame() );
    break;
 
    default:
@@ -277,7 +277,7 @@ void CartPusher::_computeWalkerDestination()
 
 template< class T >
 BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
-                                 GoodStock& stock, long& reservationID,
+                                 good::Stock& stock, long& reservationID,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
@@ -316,7 +316,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   if( res.isValid() )
   {
     SmartPtr<T> ptr = ptr_cast<T>( res );
-    reservationID = ptr->store().reserveStorage( stock, GameDate::current() );
+    reservationID = ptr->store().reserveStorage( stock, game::Date::current() );
     if (reservationID != 0)
     {
       oPathWay = *(shortestPath.object());
@@ -334,10 +334,10 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  Good::Type goodType = stock.type();
+  good::Type goodType = stock.type();
   TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
 
-  if (buildingType == building::unknown)
+  if (buildingType == objects::unknown)
   {
      // no factory can use this good
      return 0;
@@ -352,7 +352,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
   BuildingPtr res;
 
-  res = reserveShortestPath<Warehouse>( building::warehouse, stock, reservationID, pathPropagator, oPathWay );
+  res = reserveShortestPath<Warehouse>( objects::warehouse, stock, reservationID, pathPropagator, oPathWay );
 
   return res;
 }
@@ -361,20 +361,20 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   Good::Type goodType = stock.type();
-   if (!(goodType == Good::wheat || goodType == Good::fish
-         || goodType == Good::meat || goodType == Good::fruit || goodType == Good::vegetable))
+   good::Type goodType = stock.type();
+   if (!(goodType == good::wheat || goodType == good::fish
+         || goodType == good::meat || goodType == good::fruit || goodType == good::vegetable))
    {
       // this good cannot be stored in a granary
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( building::granary, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( objects::granary, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }
 
-void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
+void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
 {
   _d->stock.append( carry );
   setProducerBuilding( building  );
@@ -389,7 +389,8 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( GameDate::isWeekChanged() && !_pathwayRef().isValid() )
+  _d->anim.update( time );
+  if( game::Date::isWeekChanged() && !_pathwayRef().isValid() )
   {
     _computeWalkerDestination();
   }

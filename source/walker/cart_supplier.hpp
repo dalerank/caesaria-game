@@ -29,14 +29,12 @@ public:
 
   void setDestinationBuilding( BuildingPtr building );
   void setBaseBuilding( BuildingPtr building );
-  
-  virtual const gfx::Picture& getCartPicture();
-  
+    
   virtual void getPictures( gfx::Pictures& oPics);
 
-  void send2city(BuildingPtr building, Good::Type what, const int qty );
+  void send2city(BuildingPtr building, good::Type what, const int qty );
 
-  void computeWalkerDestination( BuildingPtr building, const Good::Type type, const int qty );
+  void computeWalkerDestination( BuildingPtr building, const good::Type type, const int qty );
  
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
@@ -47,6 +45,7 @@ public:
 
 protected:
   CartSupplier( PlayerCityPtr city );
+  virtual const gfx::Animation& _cart();
   virtual void _changeDirection();
   virtual void _reachedPathway();
 

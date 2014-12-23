@@ -31,7 +31,7 @@ public:
   //! constructor
   DictionaryText( Widget* parent );
 
-  DictionaryText(Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false, int id=-1);
+  DictionaryText( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false, int id=-1);
 
   //! destructor
   virtual ~DictionaryText();

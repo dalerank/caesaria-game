@@ -17,7 +17,7 @@
 
 #include "fountain.hpp"
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/time.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
@@ -56,7 +56,7 @@ public:
 };
 
 Fountain::Fountain()
-  : ServiceBuilding(Service::fountain, building::fountain, Size(1)),
+  : ServiceBuilding(Service::fountain, objects::fountain, Size(1)),
     _d( new Impl )
 {  
   setPicture( ResourceGroup::utilitya, 10 );
@@ -83,7 +83,7 @@ void Fountain::deliverService()
 void Fountain::timeStep(const unsigned long time)
 {
   //filled area, that fontain present and work
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     _d->haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
 
@@ -104,7 +104,7 @@ void Fountain::timeStep(const unsigned long time)
     }
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     int desPic[] = { simpleFountain, testFountain, prettyFountain, awesomeFountain, patricianFountain };
     int currentId = desPic[ math::clamp<int>( tile().param( Tile::pDesirability ) / 20, 0, 4 ) ];
@@ -125,12 +125,12 @@ void Fountain::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Construction::canBuild( city, pos, aroundTiles );
+  bool ret = Construction::canBuild( areaInfo );
 
-  Tilemap& tmap = city->tilemap();
-  const Tile& tile = tmap.at( pos );
+  Tilemap& tmap = areaInfo.city->tilemap();
+  const Tile& tile = tmap.at( areaInfo.pos );
   Fountain* thisp = const_cast< Fountain* >( this );
   thisp->_fgPicturesRef().clear();
   thisp->setPicture( ResourceGroup::utilitya, 10 );
@@ -144,15 +144,15 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return ret;
 }
 
-bool Fountain::build(PlayerCityPtr pcity, const TilePos& pos )
+bool Fountain::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( pcity, pos );
+  ServiceBuilding::build( info );
 
   setPicture( ResourceGroup::utilitya, 10 );
   _d->lastPicId = simpleFountain;
   _initAnimation();
 
-  _d->fillDistance = (pcity->climate() == city::climate::desert)
+  _d->fillDistance = (info.city->climate() == game::climate::desert)
                      ? fillDistanceDesert
                      : fillDistanceNormal;
 
@@ -169,7 +169,7 @@ bool Fountain::haveReservoirAccess() const
   foreach( tile, reachedTiles )
   {
     TileOverlayPtr overlay = (*tile)->overlay();
-    if( overlay.isValid() && (building::reservoir == overlay->type()) )
+    if( overlay.isValid() && (objects::reservoir == overlay->type()) )
     {
       return true;
     }

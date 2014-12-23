@@ -18,7 +18,7 @@
 #include "locale.hpp"
 #include "bytearray.hpp"
 #include "logger.hpp"
-#include "stringhelper.hpp"
+#include "utils.hpp"
 #include "saveadapter.hpp"
 
 namespace {
@@ -35,7 +35,7 @@ static void __loadTranslator( vfs::Path filename )
 
   foreach( it, trs )
   {
-    int hash = StringHelper::hash( it->first );
+    int hash = utils::hash( it->first );
     Translator::iterator trIt = translator.find( hash );
     Logger::warningIf( trIt != translator.end(), "Locale: also have translation for " + it->first );
 
@@ -70,7 +70,7 @@ void Locale::addTranslation(std::string filename)
 
 const char* Locale::translate( const std::string& text)
 {
-  int hash = StringHelper::hash( text );
+  int hash = utils::hash( text );
   Translator::iterator it = translator.find( hash );
 
   return ( it != translator.end()

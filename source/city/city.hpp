@@ -27,7 +27,7 @@
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"
-#include "climate.hpp"
+#include "game/climate.hpp"
 
 namespace city
 {
@@ -76,6 +76,7 @@ public:
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
   virtual DateTime lastAttack() const;
+  virtual world::Nation nation() const;
 
   PlayerPtr player() const;
   
@@ -116,10 +117,10 @@ public:
 
   virtual void delayTrade(unsigned int month);
   virtual void addObject( world::ObjectPtr object );
-  virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
+  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost);
 
-  virtual const GoodStore& importingGoods() const;
-  virtual const GoodStore& exportingGoods() const;
+  virtual const good::Store& importingGoods() const;
+  virtual const good::Store& exportingGoods() const;
   virtual unsigned int tradeType() const;
 
   void setOption( OptionType opt, int value );

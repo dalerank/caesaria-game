@@ -18,7 +18,7 @@
 #include "playername_window.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widgetescapecloser.hpp"
 #include "widget_helper.hpp"
@@ -26,14 +26,17 @@
 namespace gui
 {
 
-class WindowPlayerName::Impl
+namespace dialog
+{
+
+class ChangePlayerName::Impl
 {
 public signals:
   Signal1<std::string> onNameChangeSignal;
   Signal0<> onCloseSignal;
 };
 
-WindowPlayerName::WindowPlayerName(Widget* parent)
+ChangePlayerName::ChangePlayerName(Widget* parent)
   : Window( parent, Rect( 0, 0, 10, 10 ), "", -1 ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/playername.gui" );
@@ -57,15 +60,15 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
   }
 }
 
-WindowPlayerName::~WindowPlayerName(){}
+ChangePlayerName::~ChangePlayerName(){}
 
-std::string WindowPlayerName::text() const
+std::string ChangePlayerName::text() const
 {
   const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
   return ed ? ed->text() : "";
 }
 
-void WindowPlayerName::setModal()
+void ChangePlayerName::setModal()
 {
   Window::setModal();
 
@@ -75,7 +78,9 @@ void WindowPlayerName::setModal()
   if( edPlayerName ) edPlayerName->setFocus();
 }
 
-Signal0<>& WindowPlayerName::onClose(){  return _d->onCloseSignal;}
-Signal1<std::string>& WindowPlayerName::onNameChange(){  return _d->onNameChangeSignal;}
+Signal0<>& ChangePlayerName::onClose(){  return _d->onCloseSignal;}
+Signal1<std::string>& ChangePlayerName::onNameChange(){  return _d->onNameChangeSignal;}
+
+}//end namespace dialog
 
 }//end namespace gui

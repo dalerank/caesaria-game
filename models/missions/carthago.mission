@@ -8,6 +8,10 @@
   climate : 2
   adviserEnabled : true
   fishPlaceEnabled : true
+  preview.text : "##carthago_preview_mission##"
+  preview.title : "##carthago_preview_title##"
+  preview.image : ""
+
 	
   win :
   {

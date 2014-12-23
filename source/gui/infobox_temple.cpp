@@ -21,7 +21,7 @@
 #include "core/gettext.hpp"
 #include "religion/romedivinity.hpp"
 #include "image.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -43,7 +43,7 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   bool bigTemple = temple->size().width() > 2;
   std::string desc = _( divn->shortDescription() );
-  std::string text = _( StringHelper::format( 0xff, "##%s_%s_temple##",
+  std::string text = _( utils::format( 0xff, "##%s_%s_temple##",
                                                  bigTemple ? "big" : "small",
                                                  divn->debugName().c_str() ) );
   setTitle( text + " ( " + desc + " )" );
@@ -53,7 +53,7 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   Image* img = new Image( this, Point( 192, 140 ), divn->picture() );
   bool goodRelation = divn->relation() >= 50;
 
-  std::string descr = StringHelper::format(0xff, "##%s_%s_info##",
+  std::string descr = utils::format(0xff, "##%s_%s_info##",
                                                   divn->internalName().c_str(),
                                                   goodRelation ? "goodmood" : "badmood" );
   img->setTooltipText( _(descr) );

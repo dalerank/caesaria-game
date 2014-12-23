@@ -18,6 +18,8 @@
 #ifndef _CAESARIA_ADVISOR_INCLUDE_H_
 #define _CAESARIA_ADVISOR_INCLUDE_H_
 
+#include <string>
+
 namespace constants
 {
 
@@ -40,6 +42,8 @@ enum Type
   main,
   count
 };
+
+Type findType( const std::string& advisorName );
 
 } //end namespace advisor
 

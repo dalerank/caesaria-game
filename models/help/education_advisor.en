@@ -1,0 +1,12 @@
+{  
+ title : "##education_advisor##"
+ sound : "fanfare"
+ text  : "This advisor summarizes how many working schools, academies and libraries your city has. The number of people served and overall city coverage are also noted. If you see deficits in one or more areas, use the @Education Overlay& to determine where new facilities will have the greatest benefit.\n Notice the number of school-aged and academy-aged children in your city. Compare that to the number of children served in the 'Can Educate' column to see how well your city educates its young people. Classroom size affects your city's @Culture rating&. If there are 300 children of school age, and your city has only two schools capable of teaching 75 children each, then there are two children for every available slot, resulting in huge classes and harming your Culture rating. If those same 300 children are served by four schools, classroom size is just right and Culture benefits. Read about @Education& and @Ratings& to better understand this panel's function."
+ uri : {
+  "Education Overlay" : "education_overlay"
+  "Culture rating" : "culture_rating"
+  "Education" : "education"
+  "Ratings" : "ratings"
+  "Health" : "health"
+ }
+}

@@ -62,6 +62,7 @@ private slots:
   void _resolveEnterButton();
   void _showIngameMenu();
   void _requestExitGame();
+  bool _tryExecHotkey( NEvent& event );
   void _handleDebugEvent( int event );
 
 private:

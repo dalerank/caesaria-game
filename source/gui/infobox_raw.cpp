@@ -16,11 +16,10 @@
 #include "infobox_raw.hpp"
 #include "good/goodhelper.hpp"
 #include "image.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
-#include "game/settings.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "objects/factory.hpp"
@@ -40,7 +39,7 @@ namespace infobox
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
+  Widget::setupUI( ":/gui/infoboxraw.gui" );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
   _type = rawmb->type();
 
@@ -53,9 +52,9 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   GET_WIDGET_FROM_UI( lbProgress )
   GET_WIDGET_FROM_UI( lbDamage )
 
-  if( rawmb->produceGoodType() != Good::none )
+  if( rawmb->produceGoodType() != good::none )
   {
-    Picture pic = GoodHelper::picture( rawmb->produceGoodType() );
+    Picture pic = good::Helper::picture( rawmb->produceGoodType() );
     new Image( this, Point( 10, 10 ), pic );
   }
 
@@ -63,7 +62,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   if( lbDamage != NULL )
   {
-    std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
+    std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
                                             (int)rawmb->state( Construction::damage ),
                                             (int)rawmb->state( Construction::fire ) );
     lbDamage->setText( text );
@@ -71,7 +70,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   if( lbProgress != NULL )
   {
-    std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->progress() );
+    std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->progress() );
     lbProgress->setText( text );
   }
 
@@ -80,7 +79,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();
-  text = ( StringHelper::format( 0xff, "%s\n%s", _(text), _( cartInfo ) ) );
+  text = ( utils::format( 0xff, "%s\n%s", _(text), _( cartInfo ) ) );
 
   if( lbProductivity != NULL )
   {
@@ -90,7 +89,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
 AboutRawMaterial::~AboutRawMaterial() {}
 
-void AboutRawMaterial::showDescription()
+void AboutRawMaterial::_showHelp()
 {
   DictionaryWindow::show( ui()->rootWidget(), _type );
 }

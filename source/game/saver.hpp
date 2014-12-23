@@ -24,6 +24,9 @@
 
 class Game;
 
+namespace game
+{
+
 class SaverOptions
 {
 public:
@@ -31,7 +34,7 @@ public:
   static const char* version;
 };
 
-class GameSaver
+class Saver
 {
 public:   
   void save( const vfs::Path& filename, const Game& game );
@@ -41,5 +44,6 @@ private:
   std::string _restartFile;
 };
 
+}//end namespace game
 
 #endif //_CAESARIA_OC3SAVE_SAVER_H_INCLUDE_

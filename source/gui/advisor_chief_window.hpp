@@ -26,16 +26,23 @@
 namespace gui
 {
 
-class AdvisorChiefWindow : public Window
+namespace advisorwnd
+{
+
+class AdvisorChief : public Window
 {
 public:
-  AdvisorChiefWindow( PlayerCityPtr city, Widget* parent, int id );
+  AdvisorChief( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
 
 private:
-  __DECLARE_IMPL(AdvisorChiefWindow)
+  void _showHelp();
+
+  __DECLARE_IMPL(AdvisorChief)
 };
+
+}//end namesapce advisorwnd
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__

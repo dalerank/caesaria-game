@@ -22,8 +22,7 @@
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
-
-class GoodStore;
+#include "good/good.hpp"
 
 namespace world
 {
@@ -32,15 +31,15 @@ class Merchant : public Object
 {
 public:
   static MerchantPtr create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
-                             GoodStore& sell, GoodStore& buy );
+                             good::Store& sell, good::Store& buy );
   virtual ~Merchant();
 
   virtual void timeStep( unsigned int time );
 
   std::string baseCity() const;
   std::string destinationCity() const;
-  GoodStore& sellGoods();
-  GoodStore& buyGoods();
+  good::Store& sellGoods();
+  good::Store& buyGoods();
 
   bool isSeaRoute() const;
 

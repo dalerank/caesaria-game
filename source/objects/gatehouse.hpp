@@ -36,11 +36,11 @@ public:
 
   virtual void initTerrain(gfx::Tile &terrain);
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
 
-  virtual bool build(PlayerCityPtr city, const TilePos& pos);
+  virtual bool build(const CityAreaInfo &info);
 private:
-  bool _update( PlayerCityPtr city, TilePos pos );
+  bool _update( const CityAreaInfo& areaInfo );
 
   class Impl;
   ScopedPtr< Impl > _d;

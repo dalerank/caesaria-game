@@ -29,8 +29,8 @@ public:
   virtual void timeStep(const unsigned long time);
 
   bool isNeedWeapons() const;
-  int goodQty( Good::Type type ) const;
-  virtual void storeGoods(GoodStock &stock, const int amount);  
+  int goodQty( good::Type type ) const;
+  virtual void storeGoods( good::Stock &stock, const int amount);
   virtual std::string workersProblemDesc() const;
 
   virtual void save(VariantMap &stream) const;

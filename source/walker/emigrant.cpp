@@ -23,6 +23,7 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "city/helper.hpp"
+#include "gfx/helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "name_generator.hpp"
@@ -41,10 +42,11 @@ CAESARIA_LITERALCONST(peoples)
 class Emigrant::Impl
 {
 public:
-  Picture cartPicture;
+  Animation cart;
   CitizenGroup peoples;
   int failedWayCount;
   TilePos housePosLock;
+  bool cartBackward;
   bool leaveCity;
   float stamina;
 
@@ -65,6 +67,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
   _d->stamina = math::random( 80 ) + 20;
   _d->failedWayCount = 0;
   _d->leaveCity = false;
+  _d->cartBackward = true;
   _d->housePosLock = TilePos( -1, -1 );
 }
 
@@ -83,7 +86,7 @@ void Emigrant::_lockHouse( HousePtr house )
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( House::settleLock, TileHelper::hash( _d->housePosLock ) );
+    house->setState( House::settleLock, util::hash( _d->housePosLock ) );
   }
 }
 
@@ -94,13 +97,13 @@ HousePtr Emigrant::_findBlankHouse()
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = hlp.find<House>( building::house, pos() - offset, pos() + offset );
+  HouseList houses = hlp.find<House>( objects::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
   if( houses.empty() )
   {
-    houses = hlp.find<House>( building::house );
+    houses = hlp.find<House>( objects::house );
     _checkHouses( houses );
   }
 
@@ -213,7 +216,7 @@ bool Emigrant::_checkNearestHouse()
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+    HouseList houses = helper.find<House>( objects::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
     foreach( it, houses )
@@ -282,8 +285,10 @@ void Emigrant::_noWay()
     _d->failedWayCount = 0;
     setPathway( someway );
     go();
-  }
+    }
 }
+
+bool Emigrant::_isCartBackward() const { return _d->cartBackward; }
 
 void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
 {
@@ -319,7 +324,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->population() > 300;
-  unsigned int houseLockId = TileHelper::hash( _d->housePosLock );
+  unsigned int houseLockId = util::hash( _d->housePosLock );
 
   while( itHouse != hlist.end() )
   {
@@ -435,8 +440,8 @@ Emigrant::~Emigrant()
   _lockHouse( HousePtr() );
 }
 
-void Emigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
-const Picture& Emigrant::_cartPicture(){  return _d->cartPicture;}
+void Emigrant::_setCart( const Animation& anim ){  _d->cart = anim;}
+Animation& Emigrant::_cart(){  return _d->cart; }
 const CitizenGroup& Emigrant::peoples() const{  return _d->peoples;}
 void Emigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 
@@ -473,7 +478,9 @@ void Emigrant::timeStep(const unsigned long time)
 
   default:
   break;
-    }
+  }
+
+  _d->cart.update( time );
 }
 
 TilePos Emigrant::places(Walker::Place type) const
@@ -514,4 +521,11 @@ bool Emigrant::die()
   _lockHouse( HousePtr() );
 
   return created;
+}
+
+void Emigrant::initialize(const VariantMap &options)
+{
+  Human::initialize( options );
+
+  _d->cartBackward = options.get( "cartBackward", _d->cartBackward );
 }

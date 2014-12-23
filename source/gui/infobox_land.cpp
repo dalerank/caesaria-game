@@ -20,7 +20,7 @@
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "objects/road.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "dictionary.hpp"
@@ -48,6 +48,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   if( tile.pos() == city->borderInfo().roadExit )
   {
     title = "##to_empire_road##";
+    _helpUri = "road_to_empire";
     text = "";
   }
   else if( tile.pos() == city->borderInfo().boatEntry )
@@ -58,6 +59,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   else if( tile.getFlag( Tile::tlTree ) )
   {
     title = "##trees_and_forest_caption##";
+    _helpUri = "trees";
     text = "##trees_and_forest_text##";    
   } 
   else if( tile.getFlag( Tile::tlWater ) )
@@ -73,21 +75,25 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     text = way.isValid()
              ? (typeStr + "_text##")
              : "##inland_lake_text##";
+    _helpUri = "water";
   }
   else if( tile.getFlag( Tile::tlRock ) )
   {
     title = "##rock_caption##";
+    _helpUri = "rock";
     text = "##rock_text##";
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.overlay()->type() == construction::plaza )
+    if( tile.overlay()->type() == objects::plaza )
     {
       title = "##plaza_caption##";
+      _helpUri = "plaza";
       text = "##plaza_text##";
     }
-    else if( tile.overlay()->type() == construction::road )
+    else if( tile.overlay()->type() == objects::road )
     {
+      _helpUri = "paved_road";
       RoadPtr road = ptr_cast<Road>( tile.overlay() );
       title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
       if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
@@ -97,24 +103,27 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     else
     {
       title = "##road_caption##";
+      _helpUri = "road";
       text = "##road_unknown_text##";
     }
   }
   else if( tile.getFlag( Tile::tlMeadow ) )
   {
     title = "##meadow_caption##";
+    _helpUri = "meadow";
     text = "##meadow_text##";
   }
   else 
   {
     title = "##clear_land_caption##";
+    _helpUri = "clear_land";
     text = "##clear_land_text##";
   }
   
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
   text = _(text );
-  text += StringHelper::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
+  text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
                                           ((short int) tile.originalImgId() ) );
   
@@ -128,9 +137,9 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-void AboutLand::showDescription()
+void AboutLand::_showHelp()
 {
-
+  DictionaryWindow::show( this, _helpUri );
 }
 
 AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
@@ -149,7 +158,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
     }
 }
 
-void AboutFreeHouse::showDescription()
+void AboutFreeHouse::_showHelp()
 {
   DictionaryWindow::show( this, "vacant_lot" );
 }

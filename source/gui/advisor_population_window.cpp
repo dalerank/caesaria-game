@@ -28,8 +28,10 @@
 #include "objects/house_level.hpp"
 #include "city/migration.hpp"
 #include "label.hpp"
+#include "texturedbutton.hpp"
+#include "dictionary.hpp"
 #include "widget_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -180,6 +182,8 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
   _d->updateStates();
 
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Population::_showHelp );
   CONNECT( _d->lbNextChart, onClicked(), _d.data(), Impl::showNextChart );
   CONNECT( _d->lbPrevChart, onClicked(), _d.data(), Impl::showPrevChart );
 }
@@ -192,6 +196,10 @@ void Population::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
+void Population::_showHelp()
+{
+  DictionaryWindow::show( this, "population_advisor" );
+}
 
 void Population::Impl::switch2nextChart( int change )
 {
@@ -202,18 +210,18 @@ void Population::Impl::switch2nextChart( int change )
     chartCurrent->update( city, (CityChart::DrawMode)(chartCurrent->mode()+change) );
     int mode = chartCurrent->mode();
     std::string modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    std::string text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    std::string text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
     lbTitle->setText( _( text ) );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() + 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
     lbNextChart->setText(  _( text ) );
     chartNext->update( city, (CityChart::DrawMode)mode );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() - 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
     lbPrevChart->setText( _( text ) );
     chartPrev->update( city, (CityChart::DrawMode)mode );
   }
@@ -246,7 +254,7 @@ void Population::Impl::updateStates()
                              ? "##newcomer_this_month##"
                              : "##newcomers_this_month##";
 
-      migrationText = StringHelper::i2str( migrationValue ) + " " + _( suffix );
+      migrationText = utils::i2str( migrationValue ) + " " + _( suffix );
     }
     else
     {
@@ -266,12 +274,12 @@ void Population::Impl::updateStates()
   {
     city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, true );
     int foodLevel = 0;
-    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    for( int k=good::wheat; k <= good::vegetable; k++ )
     {
-      foodLevel += (goods[ (Good::Type)k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ (good::Type)k ] > 0 ? 1 : 0);
     }
 
-    lbFoodValue->setText( _( "##varieties_food_eaten##") + StringHelper::i2str( foodLevel ) );
+    lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
   }
 
   if( lbYearMigrationValue )
@@ -292,7 +300,7 @@ void Population::Impl::updateStates()
 
     int maxHabitants = 0;
     int currentHabitants = 0;
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses = helper.find<House>( objects::house );
     foreach( it, houses )
     {
       HousePtr house = *it;
@@ -342,7 +350,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
   pic.fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
   {
-    std::string text = StringHelper::i2str( k * _maxValue / _stepCount );
+    std::string text = utils::i2str( k * _maxValue / _stepCount );
     Point offset  = _horizontal
         ? Point( k * width() / _stepCount - (k == 0 ? 0 : 20), 3 )
         : Point( 8, height() - k * height() / _stepCount - (k == _stepCount ? 0 : 23) );
@@ -411,7 +419,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   case dm_society:
     {
       city::Helper helper( city );
-      HouseList houses = helper.find<House>( building::house );
+      HouseList houses = helper.find<House>( objects::house );
 
       _values.clear();
       _maxValue = 5;

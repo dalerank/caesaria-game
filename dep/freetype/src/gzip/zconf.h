@@ -425,4 +425,8 @@ typedef uLong FAR uLongf;
   #pragma map(inflate_copyright,"INCOPY")
 #endif
 
+<<<<<<< HEAD
 #endif /* ZCONF_H */
+=======
+#endif /* ZCONF_H */
+>>>>>>> master

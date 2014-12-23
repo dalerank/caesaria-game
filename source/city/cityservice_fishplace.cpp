@@ -19,7 +19,7 @@
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/position.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
@@ -60,7 +60,7 @@ Fishery::Fishery( PlayerCityPtr city )
 
 void Fishery::timeStep(const unsigned int time )
 {  
-  if( !GameDate::isMonthChanged() )
+  if( !game::Date::isMonthChanged() )
     return;
 
   if( _d->places.empty() )
@@ -125,7 +125,7 @@ VariantMap Fishery::save() const
   int index = 0;
   foreach( it, _d->locations )
   {
-    locationsVm[ StringHelper::format( 0xff, "fp_%d", index++ ) ] = *it;
+    locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = *it;
   }
 
   ret[ "locations" ] = locationsVm;

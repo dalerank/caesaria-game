@@ -18,8 +18,10 @@
 #include "infobox_ruins.hpp"
 #include "good/goodhelper.hpp"
 #include "image.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "label.hpp"
+#include "dictionary.hpp"
+#include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
@@ -38,8 +40,15 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )
 {
   RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
+  if( ruin.isNull() )
+  {
+    Logger::warning( "AbourRuins: tile overlay at [%d,%d] not ruin", tile.i(), tile.j() );
+    return;
+  }
+
   setTitle( MetaDataHolder::findPrettyName( ruin->type() ) );
   std::string text = _("##ruins_0000_text##");
+  _ruinType = ruin->type();
 
   if( ruin.isValid() )
   {
@@ -56,6 +65,13 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
 
 AboutRuins::~AboutRuins()
 {
+}
+
+void AboutRuins::_showHelp()
+{
+  std::string helpValue = MetaDataHolder::findTypename( _ruinType );
+
+  DictionaryWindow::show( this, helpValue );
 }
 
 }

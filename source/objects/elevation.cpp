@@ -17,7 +17,7 @@
 
 #include "elevation.hpp"
 #include "constants.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
@@ -35,7 +35,7 @@ public:
 };
 
 Elevation::Elevation()
-  : TileOverlay( constants::building::elevation, Size( 2 ) ), _d( new Impl )
+  : TileOverlay( constants::objects::elevation, Size( 2 ) ), _d( new Impl )
 {
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }
@@ -63,15 +63,15 @@ void Elevation::changeDirection(Tile* masterTile, constants::Direction direction
   int imgid = _d->basicImgId - startElevationId;
 
   TileOverlay::changeDirection( masterTile, direction );
-  setPicture( TileHelper::pictureFromId( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
+  setPicture( util::pictureFromId( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
 }
 
 bool Elevation::isDestructible() const{  return false;}
 
-bool Elevation::build(PlayerCityPtr city, const TilePos &pos)
+bool Elevation::build( const CityAreaInfo& info )
 {
-  bool res = TileOverlay::build(city, pos);
-  _d->basicImgId = city->tilemap().at( pos ).originalImgId();
+  bool res = TileOverlay::build( info );
+  _d->basicImgId = info.city->tilemap().at( info.pos ).originalImgId();
 
-	return res;
+  return res;
 }

@@ -58,9 +58,9 @@ public:
 
   virtual void setupUI(const VariantMap &ui);
   virtual void setupUI(const vfs::Path& filename);
-  virtual void showDescription() {}
 
 protected:
+  virtual void _showHelp() {}
   gfx::Picture& _background();
   virtual void _afterCreate() {}
   Label* _lbTitleRef();

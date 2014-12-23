@@ -43,6 +43,7 @@ public:
 
   Pictures& frames();
   const Pictures& frames() const;
+  const Picture& frame( int index ) const;
 
   unsigned int frameCount() const;
 
@@ -61,6 +62,7 @@ public:
   bool isLoop() const;
 
   void setOffset( const Point& offset );
+  void addOffset( const Point& offset );
   Point offset() const;
 
   bool atEnd() const;
@@ -78,7 +80,7 @@ public:
   bool isValid() const;
   void addFrame( const Picture& pic );
   void addFrame(const std::string& resource, int index);
-  const Picture& getFrame( int index ) const;
+
 private:
   Pictures _pictures;
 

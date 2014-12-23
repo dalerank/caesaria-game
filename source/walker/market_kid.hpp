@@ -26,7 +26,7 @@ public:
   static MarketKidPtr create( PlayerCityPtr city );
   static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
 
-  GoodStock& getBasket();
+  good::Stock& getBasket();
   void setDelay( int delay );
 
   void send2City( MarketPtr destination );

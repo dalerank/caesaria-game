@@ -1,0 +1,11 @@
+{  
+ title : "##entertainment_advisor##"
+ sound : "fanfare"
+ text  : "This advisor keeps track of the number of small and large @temples& that your city has dedicated to Ceres, Neptune, Mercury, Mars and Venus, and the number of oracles in the city. You can also gauge the gods' opinion of your city. Pacify irate gods by building more temples, or hold a @festival&. Read about @Ratings& and @Religion& to better understand this panel's function."
+ uri : {
+  "temples" : "temple"
+  "Ratings" : "ratings"
+  "Religion" : "religion"
+  "festival" : "festival"
+ }
+}

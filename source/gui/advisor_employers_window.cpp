@@ -21,7 +21,7 @@
 #include "texturedbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "core/event.hpp"
 #include "environment.hpp"
+#include "dictionary.hpp"
 #include "hire_priority_window.hpp"
 #include "city/cityservice_workershire.hpp"
 #include "widget_helper.hpp"
@@ -84,7 +85,7 @@ public:
   }
 
 signals public:
-  Signal1<Industry::Type> onClickedSignal;
+  Signal1<industry::Type> onClickedSignal;
 
 protected:
 
@@ -96,19 +97,19 @@ protected:
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2, true, false );
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
+    font.draw( *pic, utils::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
+    font.draw( *pic, utils::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
 
     if( _priority > 0 )
     {
       font.setColor( DefaultColors::black );
-      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 3 ), true, false );
+      font.draw( *pic, utils::i2str( _priority ), Point( 60, 3 ), true, false );
     }
 
     pic->update();
@@ -127,7 +128,7 @@ protected:
   virtual void _btnClicked()
   {
     PushButton::_btnClicked();
-    emit onClickedSignal( (Industry::Type)ID() );
+    emit onClickedSignal( (industry::Type)ID() );
   }
 
 private:
@@ -163,12 +164,12 @@ public:
   void updateWorkersState();
   void updateYearlyWages();
   void changeSalary( int relative );
-  void showPriorityWindow(Industry::Type industry);
-  void setIndustryPriority( Industry::Type industry, int priority );
+  void showPriorityWindow( industry::Type industry);
+  void setIndustryPriority( industry::Type industry, int priority );
   void update();
-  EmployersInfo getEmployersInfo( Industry::Type type );
+  EmployersInfo getEmployersInfo( industry::Type type );
 
-  EmployerButton* addButton( Employer* parent, const Point& startPos, Industry::Type priority, const std::string& title );
+  EmployerButton* addButton( Employer* parent, const Point& startPos, industry::Type priority, const std::string& title );
 };
 
 void Employer::Impl::increaseSalary() { changeSalary( +1 );}
@@ -179,7 +180,7 @@ void Employer::Impl::updateWorkersState()
   int workers = city::Statistic::getAvailableWorkersNumber( city );
   int worklessPercent = city::Statistic::getWorklessPercent( city );
   int withoutWork = city::Statistic::getWorklessNumber( city );
-  std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )",
+  std::string strWorkerState = utils::format( 0xff, "%d %s     %d %s  ( %d%% )",
                                                      workers, _("##advemployer_panel_workers##"),
                                                      withoutWork, _("##advemployer_panel_workless##"),
                                                      worklessPercent );
@@ -195,7 +196,7 @@ void Employer::Impl::updateYearlyWages()
   if( lbYearlyWages )
   {
     int wages = city::Statistic::getMonthlyWorkersWages( city ) * DateTime::monthsInYear;
-    std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
+    std::string wagesStr = utils::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
     lbYearlyWages->setText( wagesStr );
   }
@@ -209,17 +210,17 @@ void Employer::Impl::changeSalary(int relative)
   updateYearlyWages();
 }
 
-void Employer::Impl::showPriorityWindow( Industry::Type industry )
+void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
   city::WorkersHirePtr wh;
   wh << city->findService( city::WorkersHire::defaultName() );
 
   int priority = wh->getPriority( industry );
-  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalaries->ui()->rootWidget(), industry, priority );
+  dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
-void Employer::Impl::setIndustryPriority(Industry::Type industry, int priority)
+void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
   city::WorkersHirePtr wh;
   wh << city->findService( city::WorkersHire::defaultName() );
@@ -243,7 +244,7 @@ void Employer::Impl::update()
 
   foreach( i, empButtons )
   {
-    int priority = wh->getPriority( (Industry::Type)(*i)->ID() );
+    int priority = wh->getPriority( (industry::Type)(*i)->ID() );
     (*i)->setPriority( priority );
   }
 }
@@ -252,7 +253,7 @@ void Employer::Impl::updateSalaryLabel()
 {
   int pay = city->funds().workerSalary();
   int romePay = city->empire()->workerSalary();
-  std::string salaryString = StringHelper::format( 0xff, "%s %d (%s %d)",
+  std::string salaryString = utils::format( 0xff, "%s %d (%s %d)",
                                                    _("##advemployer_panel_denaries##"), pay,
                                                    _("##advemployer_panel_romepay##"), romePay );
 
@@ -262,9 +263,9 @@ void Employer::Impl::updateSalaryLabel()
   }
 }
 
-Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type type )
+Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  std::vector<building::Group> bldGroups = city::Industry::toGroups( type );
+  std::vector<objects::Group> bldGroups = city::industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );
@@ -285,7 +286,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type ty
 }
 
 EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startPos,
-                                           Industry::Type priority, const std::string& title )
+                                           industry::Type priority, const std::string& title )
 {
   EmployersInfo info = getEmployersInfo( priority );
 
@@ -306,7 +307,7 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
-  _d->empButtons.resize( Industry::count );
+  _d->empButtons.resize( industry::count );
 
   TexturedButton* btnIncreaseSalary;
   TexturedButton* btnDecreaseSalary;
@@ -318,19 +319,22 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );
-  _d->addButton( this, startPos, Industry::factoryAndTrade, _("##adve_industry_and_trade##") );
-  _d->addButton( this, startPos, Industry::food, _("##adve_food##") );
-  _d->addButton( this, startPos, Industry::engineering, _("##adve_engineers##" ) );
-  _d->addButton( this, startPos, Industry::water, _("##adve_water##") );
-  _d->addButton( this, startPos, Industry::prefectures, _("##adve_prefectures##") );
-  _d->addButton( this, startPos, Industry::military, _("##adve_military##") );
-  _d->addButton( this, startPos, Industry::entertainment, _("##adve_entertainment##") );
-  _d->addButton( this, startPos, Industry::healthAndEducation, _("##adve_health_education##") );
-  _d->addButton( this, startPos, Industry::administrationAndReligion, _("##adve_administration_religion##") );
+  _d->addButton( this, startPos, industry::factoryAndTrade, _("##adve_industry_and_trade##") );
+  _d->addButton( this, startPos, industry::food, _("##adve_food##") );
+  _d->addButton( this, startPos, industry::engineering, _("##adve_engineers##" ) );
+  _d->addButton( this, startPos, industry::water, _("##adve_water##") );
+  _d->addButton( this, startPos, industry::prefectures, _("##adve_prefectures##") );
+  _d->addButton( this, startPos, industry::military, _("##adve_military##") );
+  _d->addButton( this, startPos, industry::entertainment, _("##adve_entertainment##") );
+  _d->addButton( this, startPos, industry::healthAndEducation, _("##adve_health_education##") );
+  _d->addButton( this, startPos, industry::administrationAndReligion, _("##adve_administration_religion##") );
 
   GET_DWIDGET_FROM_UI( _d, lbSalaries )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )
   GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Employer::_showHelp );
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();
@@ -354,6 +358,11 @@ bool Employer::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
+void Employer::_showHelp()
+{
+  DictionaryWindow::show( this, "labor_advisor" );
 }
 
 }

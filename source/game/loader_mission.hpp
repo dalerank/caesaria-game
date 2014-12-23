@@ -21,10 +21,16 @@
 #include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
 
-class GameLoaderMission : public GameAbstractLoader
+namespace game
+{
+
+namespace loader
+{
+
+class Mission : public Base
 {
 public:
-  GameLoaderMission();
+  Mission();
 
   virtual bool load(const std::string& filename, Game& oScenario);
   virtual bool isLoadableFileExtension( const std::string& filename );
@@ -36,4 +42,7 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace loader
+
+}//end namespace game
 #endif //__CAESARIA_SCENARIO_MISSION_LOADER_H_INCLUDED__

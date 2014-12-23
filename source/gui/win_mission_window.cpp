@@ -27,7 +27,10 @@
 namespace gui
 {
 
-class WinMissionWindow::Impl
+namespace dialog
+{
+
+class WinMission::Impl
 {
 public:
   GameAutoPause locker;
@@ -37,12 +40,12 @@ public signals:
   Signal1<int> continueRulesSignal;
 };
 
-WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const std::string& winText, bool mayContinue )
+WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string& winText, bool mayContinue )
   : Window( p, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/winmission.gui" );
 
-  Logger::warning( "WinMissionWindow: show" );
+  Logger::warning( "dialog::WinMission: show" );
   _d->locker.activate();
 
   setCenter( p->center() );
@@ -62,9 +65,9 @@ WinMissionWindow::WinMissionWindow(Widget* p, const std::string& newTitle, const
   }
 }
 
-WinMissionWindow::~WinMissionWindow(){}
+WinMission::~WinMission(){}
 
-bool WinMissionWindow::onEvent(const NEvent &event)
+bool WinMission::onEvent(const NEvent &event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -78,7 +81,9 @@ bool WinMissionWindow::onEvent(const NEvent &event)
   return Window::onEvent( event );
 }
 
-Signal0<>& WinMissionWindow::onAcceptAssign(){  return _d->nextMissionSignal; }
-Signal1<int>& WinMissionWindow::onContinueRules(){  return _d->continueRulesSignal; }
+Signal0<>& WinMission::onAcceptAssign(){  return _d->nextMissionSignal; }
+Signal1<int>& WinMission::onContinueRules(){  return _d->continueRulesSignal; }
+
+}//end namespace dialog
 
 }//end namespace gui

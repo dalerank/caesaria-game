@@ -48,13 +48,13 @@ SrvcPtr HealthUpdater::create( PlayerCityPtr city )
 
 void HealthUpdater::timeStep( const unsigned int time)
 {
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
-    _d->isDeleted = (_d->endTime < GameDate::current());
+    _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "HealthUpdater: execute service" );
     Helper helper( _city() );
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses = helper.find<House>( objects::house );
 
     foreach( it, houses )
     {

@@ -20,19 +20,18 @@
 
 #include "service.hpp"
 #include "core/predefinitions.hpp"
-
-class GoodStore;
+#include "good/good.hpp"
 
 class Market: public ServiceBuilding
 {
 public:
   Market();
 
-  GoodStore& goodStore();
-  std::list<Good::Type> mostNeededGoods();  // used by the market buyer
+  good::Store& goodStore();
+  std::list<good::Type> mostNeededGoods();  // used by the market buyer
 
   // returns the quantity of needed goods
-  int getGoodDemand(const Good::Type &goodType);  // used by the market buyer
+  int getGoodDemand(const good::Type& goodType);  // used by the market buyer
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);

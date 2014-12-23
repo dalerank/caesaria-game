@@ -24,7 +24,7 @@
 #include "events/disaster.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "extension.hpp"
 #include "core/json.hpp"
 
@@ -48,14 +48,14 @@ Construction::Construction(const Type type, const Size& size)
   _d->params[ damage ] = 0;
 }
 
-bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& ) const
+bool Construction::canBuild(const CityAreaInfo& areaInfo) const
 {
-  Tilemap& tilemap = city->tilemap();
+  Tilemap& tilemap = areaInfo.city->tilemap();
 
   bool is_constructible = true;
 
   //return area for available tiles
-  TilesArray area = tilemap.getArea( pos, size() );
+  TilesArray area = tilemap.getArea( areaInfo.pos, size() );
 
   //on over map size
   if( (int)area.size() != size().area() )
@@ -82,7 +82,7 @@ std::string Construction::troubleDesc() const
     const char* troubleName[] = { "some", "have", "most" };
     lvlTrouble = std::max( fire, damage );
     const char* typelvl = ( fire > damage ) ? "fire" : "damage";
-    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)((lvlTrouble-50) / 25) ], typelvl );
+    return utils::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)((lvlTrouble-50) / 25) ], typelvl );
   }
 
   return "";
@@ -95,13 +95,13 @@ void Construction::destroy() { TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{ return true; }
 Construction::~Construction() {}
 
-bool Construction::build(PlayerCityPtr city, const TilePos& pos )
+bool Construction::build( const CityAreaInfo& info )
 {
-  TileOverlay::build( city, pos );
+  TileOverlay::build( info );
 
-  std::string name =  StringHelper::format( 0xff, "%s_%d_%d",
+  std::string name =  utils::format( 0xff, "%s_%d_%d",
                                             MetaDataHolder::findTypename( type() ).c_str(),
-                                            pos.i(), pos.j() );
+                                            info.pos.i(), info.pos.j() );
   setName( name );
 
   computeAccessRoads();
@@ -141,7 +141,7 @@ void Construction::burn()
 {
   deleteLater();
 
-  events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::fire );
+  events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::fire );
   event->dispatch();
 
   Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
@@ -151,7 +151,7 @@ void Construction::collapse()
 {
   deleteLater();
 
-  events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::collapse );
+  events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::collapse );
   event->dispatch();
 
   Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
@@ -184,7 +184,7 @@ void Construction::save( VariantMap& stream) const
   {
     VariantMap vmExt;
     (*it)->save( vmExt );
-    vm_extensions[ StringHelper::i2str( extIndex++ ) ] = vmExt;
+    vm_extensions[ utils::i2str( extIndex++ ) ] = vmExt;
   }
 
   stream[ "extensions" ] = vm_extensions;
@@ -260,7 +260,7 @@ void Construction::timeStep(const unsigned long time)
   TileOverlay::timeStep( time );
 }
 
-const Picture& Construction::picture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+const Picture& Construction::picture(const CityAreaInfo& areaInfo) const
 {
   return TileOverlay::picture();
 }

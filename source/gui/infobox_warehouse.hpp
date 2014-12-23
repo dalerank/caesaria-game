@@ -30,7 +30,7 @@ public:
   AboutWarehouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutWarehouse();
 
-  void drawGood( const Good::Type &goodType, int col, int paintY);
+  void drawGood( const good::Type& goodType, int col, int paintY);
   void showSpecialOrdersWindow();
 
 private:

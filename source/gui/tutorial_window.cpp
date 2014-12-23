@@ -21,7 +21,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "events/playsound.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "texturedbutton.hpp"
 #include "widget_helper.hpp"

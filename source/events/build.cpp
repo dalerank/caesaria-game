@@ -31,14 +31,14 @@ using namespace gfx;
 namespace events
 {
 
-GameEventPtr BuildEvent::create( const TilePos& pos, const TileOverlay::Type type )
+GameEventPtr BuildAny::create( const TilePos& pos, const TileOverlay::Type type )
 {
   return create( pos, TileOverlayFactory::instance().create( type ) );
 }
 
-GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
+GameEventPtr BuildAny::create(const TilePos& pos, TileOverlayPtr overlay)
 {
-  BuildEvent* ev = new BuildEvent();
+  BuildAny* ev = new BuildAny();
   ev->_pos = pos;
   ev->_overlay = overlay;
 
@@ -48,9 +48,9 @@ GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
   return ret;
 }
 
-bool BuildEvent::_mayExec(Game&, unsigned int) const {  return true;}
+bool BuildAny::_mayExec(Game&, unsigned int) const {  return true;}
 
-void BuildEvent::_exec( Game& game, unsigned int )
+void BuildAny::_exec( Game& game, unsigned int )
 {  
   if( _overlay.isNull() )
     return;
@@ -66,16 +66,17 @@ void BuildEvent::_exec( Game& game, unsigned int )
   city::Helper helper( game.city() );
   TilePos offset(10, 10);
   EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() && _overlay->group() != building::disasterGroup )
+  if( !enemies.empty() && _overlay->group() != objects::disasterGroup )
   {
-    GameEventPtr e = WarningMessageEvent::create( "##too_close_to_enemy_troops##" );
+    GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##" );
     e->dispatch();
     return;
   }
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-    bool buildOk = _overlay->build( game.city(), _pos );
+    CityAreaInfo info = { game.city(), _pos, TilesArray() };
+    bool buildOk = _overlay->build( info );
 
     if( !buildOk )
       return;
@@ -90,7 +91,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
       game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                     -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
-      if( construction->group() != building::disasterGroup )
+      if( construction->group() != objects::disasterGroup )
       {
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
         e->dispatch();
@@ -98,14 +99,14 @@ void BuildEvent::_exec( Game& game, unsigned int )
 
       if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
       {
-        GameEventPtr e = WarningMessageEvent::create( "##building_need_road_access##" );
+        GameEventPtr e = WarningMessage::create( "##building_need_road_access##" );
         e->dispatch();
       }
 
       std::string error = construction->errorDesc();
       if( !error.empty() )
       {
-        GameEventPtr e = WarningMessageEvent::create( error );
+        GameEventPtr e = WarningMessage::create( error );
         e->dispatch();
       }
 
@@ -115,7 +116,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         unsigned int worklessCount = city::Statistic::getWorklessNumber( game.city() );
         if( worklessCount < wb->maximumWorkers() )
         {
-          GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );
+          GameEventPtr e = WarningMessage::create( "##city_need_more_workers##" );
           e->dispatch();
         }
       }
@@ -126,7 +127,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
     ConstructionPtr construction = ptr_cast<Construction>( _overlay );
     if( construction.isValid() )
     {
-      GameEventPtr e = WarningMessageEvent::create( construction->errorDesc() );
+      GameEventPtr e = WarningMessage::create( construction->errorDesc() );
       e->dispatch();
     }
   }

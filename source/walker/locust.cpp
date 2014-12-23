@@ -78,11 +78,11 @@ void Locust::timeStep(const unsigned long time)
 {
   _d->counter++;
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     FarmPtr farm;
     farm << _city()->getOverlay( pos() );
-    if( farm.isValid() && farm->type() != building::pigFarm )
+    if( farm.isValid() && farm->type() != objects::pigFarm )
     {
       farm->updateProgress( -50 );
     }

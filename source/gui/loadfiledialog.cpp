@@ -22,7 +22,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/engine.hpp"
 #include "listbox.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "vfs/filesystem.hpp"
 #include "vfs/entries.hpp"
 #include "core/color.hpp"

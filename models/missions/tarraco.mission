@@ -132,23 +132,18 @@
       end : [ 44, 57 ]
     }
 
-    earthquake#earthquake : {
-      date : "-268.03.01"
-      start : [ 14, 77 ]
-      end : [ 44, 57 ]
-    }
-
     earthquake_message#messagebox : {
       date : "-268.03.01"
       title : "##earthquake_title##"
       text : "##earthquake_text##"
+      video : ":/smk/Quake.smk"
       send2scribe : true
     }
 
     emperor_request_pottery1#city_request : {
       date : "-269.05.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { pottery : 10 }
       success : { favour : 10 }
@@ -158,7 +153,7 @@
     emperor_request_pottery2#city_request : {
       date : "-267.04.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { fruit : 10 }
       success : { favour : 10 }
@@ -168,7 +163,7 @@
 	emperor_request_pottery3#city_request : {
       date : "-265.05.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { pottery : 15 }
       success : { favour : 10 }
@@ -178,7 +173,7 @@
 	emperor_request_pottery4#city_request : {
       date : "-263.03.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { fruit : 15 }
       success : { favour : 10 }
@@ -188,7 +183,7 @@
     emperor_request_pottery5#city_request : {
       date : "-261.05.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { pottery : 20 }
       success : { favour : 10 }
@@ -198,7 +193,7 @@
 	emperor_request_pottery6#city_request : {
       date : "-259.08.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { fruit : 25 }
       success : { favour : 10 }
@@ -208,7 +203,7 @@
 	emperor_request_pottery7#city_request : {
       date : "-257.02.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { pottery : 25 }
       success : { favour : 10 }
@@ -218,7 +213,7 @@
 	emperor_request_pottery8#city_request : {
       date : "-255.05.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { fruit : 30 }
       success : { favour : 10 }
@@ -228,7 +223,7 @@
 	emperor_request_pottery9#city_request : {
       date : "-250.05.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { pottery : 30 }
       success : { favour : 10 }
@@ -238,7 +233,7 @@
     emperor_request_pottery10#city_request : {
       date : "-245.05.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : ":/smk/Urgent_message2.smk"
       month : 24
       good : { fruit : 30 }
       success : { favour : 10 }
@@ -313,7 +308,7 @@
       date : "-350.01.01"
       population : 500
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : ":/smk/Population1.smk"
       title : "##population_mileston##"
       text : "##500_citzens_in_city##"
     }    

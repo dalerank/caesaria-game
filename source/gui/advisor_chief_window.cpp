@@ -21,7 +21,7 @@
 #include "gui/pushbutton.hpp"
 #include "gui/label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
@@ -35,6 +35,7 @@
 #include "objects/constants.hpp"
 #include "city/migration.hpp"
 #include "city/statistic.hpp"
+#include "dictionary.hpp"
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
 #include "city/cityservice_military.hpp"
@@ -48,11 +49,15 @@
 #include "city/cityservice_culture.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace gui
+{
+
+namespace advisorwnd
 {
 
 typedef enum { atEmployers=0, profitState,
@@ -79,10 +84,10 @@ static const std::string titles[atCount] = {
   "##advchief_sentiment##"
 };
 
-class AdvisorChiefWindowRow : public Label
+class InfomationRow : public Label
 {
 public:
-  AdvisorChiefWindowRow( Widget* parent, const std::string& title, const Rect& rectangle )
+  InfomationRow( Widget* parent, const std::string& title, const Rect& rectangle )
     : Label( parent, rectangle )
   {
     _title = title;
@@ -104,11 +109,11 @@ public:
   std::string _title;
 };
 
-class AdvisorChiefWindow::Impl
+class AdvisorChief::Impl
 {
 public:  
   PlayerCityPtr city;
-  std::vector<AdvisorChiefWindowRow*> rows;
+  std::vector<InfomationRow*> rows;
 
   TexturedButton* btnHelp;
 
@@ -130,10 +135,10 @@ public:
   void initRows( Widget* parent, int width );
 };
 
-AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
-  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL( AdvisorChiefWindow )
+AdvisorChief::AdvisorChief(PlayerCityPtr city, Widget* parent, int id )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL( AdvisorChief )
 {
-  __D_IMPL(_d, AdvisorChiefWindow)
+  __D_IMPL(_d, AdvisorChief )
   setupUI( ":/gui/chiefadv.gui" );
 
   _d->city = city;
@@ -155,20 +160,23 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   _d->drawReligion();
   _d->drawEntertainment();
   _d->drawSentiment();
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, AdvisorChief::_showHelp );
 }
 
-void AdvisorChiefWindow::Impl::initRows( Widget* parent, int width )
+void AdvisorChief::Impl::initRows( Widget* parent, int width )
 {
   Point startPoint( 20, 60 );
   Point offset( 0, 27 );
 
   for( int i=0; i < atCount; i++ )
   {
-    rows.push_back( new AdvisorChiefWindowRow( parent, titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
+    rows.push_back( new InfomationRow( parent, titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
   }
 }
 
-void AdvisorChiefWindow::draw( gfx::Engine& painter )
+void AdvisorChief::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -176,11 +184,16 @@ void AdvisorChiefWindow::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void AdvisorChiefWindow::Impl::drawReportRow( AdviceType type, std::string text, NColor color=DefaultColors::black )
+void AdvisorChief::_showHelp()
+{
+  DictionaryWindow::show( this, "advisor_chief" );
+}
+
+void AdvisorChief::Impl::drawReportRow( AdviceType type, std::string text, NColor color=DefaultColors::black )
 {
   if( type < atCount )
   {
-    AdvisorChiefWindowRow* row = rows[ type ];
+    InfomationRow* row = rows[ type ];
     Font font = row->font();
     font.setColor( color );
     row->setFont( font );
@@ -188,7 +201,7 @@ void AdvisorChiefWindow::Impl::drawReportRow( AdviceType type, std::string text,
   }
 }
 
-void AdvisorChiefWindow::Impl::drawEmploymentState()
+void AdvisorChief::Impl::drawEmploymentState()
 {
   int currentWorkers, maxWorkers;
   city::Statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
@@ -206,12 +219,12 @@ void AdvisorChiefWindow::Impl::drawEmploymentState()
     int needWorkersNumber = maxWorkers - currentWorkers;
     if( needWorkersNumber > 10 )
     {
-      text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
+      text = utils::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
       color = DefaultColors::brown;
     }
     else if( workless > 10 )
     {
-      text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
+      text = utils::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
       color = DefaultColors::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
@@ -220,18 +233,18 @@ void AdvisorChiefWindow::Impl::drawEmploymentState()
   drawReportRow( atEmployers, text, color );
 }
 
-void AdvisorChiefWindow::Impl::drawProfitState()
+void AdvisorChief::Impl::drawProfitState()
 {
   std::string text;
   int profit = city->funds().profit();
-  if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
-  else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
+  if( profit >= 0 )  {    text = utils::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
+  else  {    text = utils::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
   drawReportRow( profitState, text,
                  profit > 0 ? DefaultColors::black : DefaultColors::brown );
 }
 
-void AdvisorChiefWindow::Impl::drawMigrationState()
+void AdvisorChief::Impl::drawMigrationState()
 {
   SmartPtr<city::Migration> migration = ptr_cast<city::Migration>( city->findService( city::Migration::defaultName() ) );
 
@@ -244,7 +257,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState()
   drawReportRow( migrationState, _( text ) );
 }
 
-void AdvisorChiefWindow::Impl::drawFoodStockState()
+void AdvisorChief::Impl::drawFoodStockState()
 { 
   SmartList<city::GoodsUpdater> goodsUpdaters;
   goodsUpdaters << city->services();
@@ -252,7 +265,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
   bool romeSendWheat = false;
   foreach( it, goodsUpdaters )
   {
-    if( (*it)->goodType() == Good::wheat )
+    if( (*it)->goodType() == good::wheat )
     {
       romeSendWheat = true;
     }
@@ -288,7 +301,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
           case 3: text = "##our_foods_level_are_low##"; break;
 
           default:
-            text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+            text = utils::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
     }
@@ -297,7 +310,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState()
   drawReportRow( foodStockState, text );
 }
 
-void AdvisorChiefWindow::Impl::drawFoodConsumption()
+void AdvisorChief::Impl::drawFoodConsumption()
 {
   std::string text;
   city::InfoPtr info;
@@ -329,7 +342,7 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
   drawReportRow( foodConsumption, _(text) );
 }
 
-void AdvisorChiefWindow::Impl::drawMilitary()
+void AdvisorChief::Impl::drawMilitary()
 {
   StringArray reasons;
   city::MilitaryPtr mil;
@@ -373,7 +386,7 @@ void AdvisorChiefWindow::Impl::drawMilitary()
       {
         if( minDistance <= 40 )
         {
-          std::string threatText = StringHelper::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          std::string threatText = utils::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
           reasons << threatText;
         }
         else if( minDistance <= 100 )
@@ -392,7 +405,7 @@ void AdvisorChiefWindow::Impl::drawMilitary()
   {
     city::Helper helper( city );
 
-    BarracksList barracks = helper.find<Barracks>( building::barracks );
+    BarracksList barracks = helper.find<Barracks>( objects::barracks );
 
     bool needWeapons = false;
     foreach( it, barracks )
@@ -418,7 +431,7 @@ void AdvisorChiefWindow::Impl::drawMilitary()
   drawReportRow( atMilitary, _(reasons.random()) );
 }
 
-void AdvisorChiefWindow::Impl::drawCrime()
+void AdvisorChief::Impl::drawCrime()
 {
   std::string text;
 
@@ -435,7 +448,7 @@ void AdvisorChiefWindow::Impl::drawCrime()
   drawReportRow( atCrime, _(text) );
 }
 
-void AdvisorChiefWindow::Impl::drawHealth()
+void AdvisorChief::Impl::drawHealth()
 {
   std::string text;
 
@@ -451,16 +464,16 @@ void AdvisorChiefWindow::Impl::drawHealth()
   drawReportRow( atHealth, _(text));
 }
 
-void AdvisorChiefWindow::Impl::drawEducation()
+void AdvisorChief::Impl::drawEducation()
 {
   std::string text;
 
   StringArray reasons;
-  int avTypes[] = { building::school, building::library, building::academy, building::unknown };
+  int avTypes[] = { objects::school, objects::library, objects::academy, objects::unknown };
   std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
                               "##advchief_some_need_academy##", "" };
 
-  for( int i=0; avTypes[ i ] != building::unknown; i++ )
+  for( int i=0; avTypes[ i ] != objects::unknown; i++ )
   {
     std::set<int> availableTypes;
     availableTypes.insert( avTypes[ i ] );
@@ -482,13 +495,13 @@ void AdvisorChiefWindow::Impl::drawEducation()
   drawReportRow( atEducation, _( text ) );
 }
 
-void AdvisorChiefWindow::Impl::drawReligion()
+void AdvisorChief::Impl::drawReligion()
 {
   std::string text;
   drawReportRow( atReligion, text );
 }
 
-void AdvisorChiefWindow::Impl::drawEntertainment()
+void AdvisorChief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
@@ -500,7 +513,7 @@ void AdvisorChiefWindow::Impl::drawEntertainment()
 
   if( srvc.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( GameDate::current() );
+    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( game::Date::current() );
     if( monthFromLastFestival > 6 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";
@@ -525,7 +538,7 @@ void AdvisorChiefWindow::Impl::drawEntertainment()
   drawReportRow( atEntertainment, _( reasons.random() ) );
 }
 
-void AdvisorChiefWindow::Impl::drawSentiment()
+void AdvisorChief::Impl::drawSentiment()
 {
   city::SentimentPtr st;
   st << city->findService( city::Sentiment::defaultName() );
@@ -536,5 +549,7 @@ void AdvisorChiefWindow::Impl::drawSentiment()
 
   drawReportRow( atSentiment, text );
 }
+
+}//end namespace advisorwnd
 
 }//end namespace gui

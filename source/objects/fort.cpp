@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
 #include "events/event.hpp"
@@ -34,6 +35,7 @@
 #include "core/stacktrace.hpp"
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
+#include "events/clearland.hpp"
 #include "city/build_options.hpp"
 
 using namespace constants;
@@ -114,7 +116,7 @@ public:
   TilePos basePos;
 };
 
-FortArea::FortArea() : Building( building::fortArea, Size(4) ),
+FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -133,7 +135,7 @@ void FortArea::destroy()
   Building::destroy();
   if( base().isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->basePos );
+    events::GameEventPtr e = events::ClearTile::create( _d->basePos );
     e->dispatch();
   }
 }
@@ -151,7 +153,7 @@ FortPtr FortArea::base() const
   return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
-Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
+Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
   Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
@@ -189,7 +191,7 @@ Fort::~Fort() {}
 
 void Fort::timeStep( const unsigned long time )
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     int traineeLevel = traineeValue( walker::soldier );
     // all trainees are there for the show!
@@ -229,7 +231,7 @@ void Fort::destroy()
 
   if( _d->area.isValid()  )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->area->pos() );
+    events::GameEventPtr e = events::ClearTile::create( _d->area->pos() );
     e->dispatch();
     _d->area = 0;
   }
@@ -333,7 +335,7 @@ TilePos Fort::freeSlot() const
   {
     foreach( it, tiles )
     {
-      unsigned int tilehash = TileHelper::hash((*it)->pos());
+      unsigned int tilehash = util::hash((*it)->pos());
 
       if( _d->patrolAreaPos.find( tilehash ) == _d->patrolAreaPos.end() )
       {
@@ -501,48 +503,52 @@ void Fort::_addFormation(Fort::TroopsFormation formation)
   _d->availableFormations.push_back( formation );
 }
 
-bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool isFreeFort = Building::canBuild( city, pos, aroundTiles );
-  bool isFreeArea = _d->area->canBuild( city, pos + TilePos( 3, 0 ), aroundTiles );
+  bool isFreeFort = Building::canBuild( areaInfo );
+  CityAreaInfo fortArea = areaInfo;
+  fortArea.pos += TilePos( 3, 0 );
+  bool isFreeArea = _d->area->canBuild( fortArea );
 
   return (isFreeFort && isFreeArea);
 }
 
-bool Fort::build(PlayerCityPtr city, const TilePos& pos)
+bool Fort::build( const CityAreaInfo& info )
 {
   FortList forts;
-  forts << city->overlays();
+  forts << info.city->overlays();
 
-  const city::BuildOptions& bOpts = city->buildOptions();
+  const city::BuildOptions& bOpts = info.city->buildOptions();
   if( forts.size() >= bOpts.getMaximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;
   }
 
-  Building::build( city, pos );
+  Building::build( info );
 
-  _d->area->build( city, pos + TilePos( 3, 0 ) );
+  CityAreaInfo areaInfo = info;
+  areaInfo.pos += TilePos( 3, 0 );
+  _d->area->build( areaInfo );
   _d->area->setBase( this );
 
-  _d->emblem = _findFreeEmblem( city );
+  _d->emblem = _findFreeEmblem( info.city );
 
-  city->addOverlay( _d->area.object() );
+  info.city->addOverlay( _d->area.object() );
 
   _fgPicturesRef().resize(1);
 
   BarracksList barracks;
-  barracks << city->overlays();
+  barracks << info.city->overlays();
 
   if( barracks.empty() )
   {
     _setError( "##need_barracks_for_work##" );
   }
 
-  _setPatrolPoint( PatrolPoint::create( city, this,
+  _setPatrolPoint( PatrolPoint::create( info.city, this,
                                         ResourceGroup::sprites, _d->flagIndex, 8,
-                                        pos + TilePos( 3, 3 ) ) );
+                                        info.pos + TilePos( 3, 3 ) ) );
 
   return true;
 }

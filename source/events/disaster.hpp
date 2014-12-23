@@ -21,7 +21,7 @@
 namespace events
 {
 
-class DisasterEvent : public GameEvent
+class Disaster : public GameEvent
 {
 public:
   typedef enum
@@ -35,7 +35,7 @@ protected:
   virtual bool _mayExec(Game&, unsigned int) const;
 
 private:
-  DisasterEvent();
+  Disaster();
   TilePos _pos;
   Type _type;
   int _infoType;

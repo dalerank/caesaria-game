@@ -59,7 +59,7 @@ void Mars::_doWrath(PlayerCityPtr city)
   message->dispatch();
 
 
-  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( "mars_wrath.model" ) );
+  VariantMap vm = SaveAdapter::load( game::Settings::rcpath( "mars_wrath.model" ) );
   events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
   barb_attack->dispatch();
 }
@@ -67,7 +67,7 @@ void Mars::_doWrath(PlayerCityPtr city)
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
   city::Helper helper( city );
-  FortList forts = helper.find<Fort>( building::militaryGroup );
+  FortList forts = helper.find<Fort>( objects::militaryGroup );
 
   std::string text, title;
   if( !forts.empty() )

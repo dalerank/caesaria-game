@@ -42,9 +42,9 @@ void TrainingBuilding::timeStep(const unsigned long time)
 {
    WorkingBuilding::timeStep( time );
 
-   if( _lastSendDate.daysTo( GameDate::current() ) > _trainingDelay )
+   if( _lastSendDate.daysTo( game::Date::current() ) > _trainingDelay )
    {
-     _lastSendDate = GameDate::current();
+     _lastSendDate = game::Date::current();
       deliverTrainee();
    }
 }
@@ -64,7 +64,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 }
 
 
-GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( objects::gladiatorSchool, Size(3))
 {
   _fgPicturesRef().resize(1);
 }
@@ -81,7 +81,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
   TrainingBuilding::timeStep( time );
 }
 
-LionsNursery::LionsNursery() : TrainingBuilding( building::lionsNursery, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( objects::lionsNursery, Size(3) )
 {
    _fgPicturesRef().resize(1);
 }

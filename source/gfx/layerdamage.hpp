@@ -23,7 +23,10 @@
 namespace gfx
 {
 
-class LayerDamage : public LayerInfo
+namespace layer
+{
+
+class Damage : public Info
 {
 public:
   virtual int type() const;
@@ -33,8 +36,10 @@ public:
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerDamage( Camera& camera, PlayerCityPtr city );
+  Damage( Camera& camera, PlayerCityPtr city );
 };
+
+}
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__

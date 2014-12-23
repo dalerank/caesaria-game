@@ -76,8 +76,8 @@ public:
   bool hasData(const gfx::TileOverlay::Type buildingType) const;
   OverlayTypes availableTypes() const;
 
-  // return factory that consume goodType
-  gfx::TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
+  // return factory that consume good
+  gfx::TileOverlay::Type getConsumerType(const good::Type inGoodType) const;
 
   static gfx::TileOverlay::Type findType( const std::string& name );
   static std::string findTypename( gfx::TileOverlay::Type type );

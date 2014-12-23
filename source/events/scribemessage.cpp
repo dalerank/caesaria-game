@@ -22,7 +22,7 @@
 namespace events
 {
 
-GameEventPtr ScribeMessage::create( const std::string& title, const std::string& text, Good::Type gtype, Point position )
+GameEventPtr ScribeMessage::create( const std::string& title, const std::string& text, good::Type gtype, Point position )
 {
   ScribeMessage* e = new ScribeMessage();
   e->_title = title;
@@ -44,7 +44,7 @@ void ScribeMessage::_exec(Game& game, unsigned int)
   if( srvc.isValid() )
   {
     city::Info::ScribeMessage msg;
-    msg.date = GameDate::current();
+    msg.date = game::Date::current();
     msg.opened = false;
     msg.gtype = _gtype;
     msg.position = _position;

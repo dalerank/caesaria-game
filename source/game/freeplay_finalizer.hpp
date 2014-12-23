@@ -20,13 +20,19 @@
 
 #include "city/city.hpp"
 
-class FreeplayFinalizer
+namespace game
 {
-public:
-  static void addPopulationMilestones( PlayerCityPtr city );
-  static void initBuildOptions(PlayerCityPtr city);
-  static void addEvents(PlayerCityPtr city);
-  static void resetFavour(PlayerCityPtr city);
-};
+
+namespace freeplay
+{
+
+void addPopulationMilestones( PlayerCityPtr city );
+void initBuildOptions(PlayerCityPtr city);
+void addEvents(PlayerCityPtr city);
+void resetFavour(PlayerCityPtr city);
+
+}//end namespace freeplay
+
+}//end namespace game
 
 #endif //__CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
