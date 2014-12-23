@@ -108,7 +108,7 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
   return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::building::Type buildingType, PathwayHelper::WayType type)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
   city::Helper helper( city );

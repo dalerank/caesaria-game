@@ -31,9 +31,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerTax::type() const {  return citylayer::tax; }
+namespace layer
+{
 
-void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
+int Tax::type() const {  return citylayer::tax; }
+
+void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -51,27 +54,27 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     // Tax-related
-    case building::senate:
-    case building::forum:
+    case objects::senate:
+    case objects::forum:
       needDrawAnimations = true;
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         //taxLevel = house->getServiceValue( Service::forum );
@@ -116,15 +119,15 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr LayerTax::create( Camera& camera, PlayerCityPtr city )
+LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )
 {
-  LayerPtr ret( new LayerTax( camera, city ) );
+  LayerPtr ret( new Tax( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerTax::handleEvent(NEvent& event)
+void Tax::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -165,10 +168,10 @@ void LayerTax::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerTax::LayerTax( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 9 )
+Tax::Tax( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 9 )
 {
   _addWalkerType( walker::taxCollector );
 }
-
+}
 }//end namespace gfx

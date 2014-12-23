@@ -20,6 +20,7 @@
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
 #include "tilesarray.hpp"
+#include "gfx/helper.hpp"
 #include "core/event.hpp"
 #include "city_renderer.hpp"
 #include "events/showtileinfo.hpp"
@@ -30,7 +31,7 @@
 #include "core/font.hpp"
 #include "layerconstants.hpp"
 #include "decorator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
@@ -38,6 +39,9 @@
 using namespace constants;
 
 namespace gfx
+{
+
+namespace layer
 {
 
 class Layer::Impl
@@ -175,7 +179,7 @@ void Layer::handleEvent(NEvent& event)
     {
     case appWindowFocusEnter:
     case appWindowFocusLeave:
-      LayerDrawOptions::instance().setFlag( LayerDrawOptions::windowActive, event.app.type == appWindowFocusEnter );
+      DrawOptions::instance().setFlag( DrawOptions::windowActive, event.app.type == appWindowFocusEnter );
     break;
 
     default: break;
@@ -310,8 +314,8 @@ void Layer::render( Engine& engine)
     drawTile( engine, **it, camOffset );
   }
 
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
-  if( opts.isFlag( LayerDrawOptions::shadowOverlay ) )
+  DrawOptions& opts = DrawOptions::instance();
+  if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }
@@ -329,7 +333,7 @@ void Layer::render( Engine& engine)
 
   engine.resetColorMask();
 
-  if( opts.isFlag( LayerDrawOptions::showPath ) )
+  if( opts.isFlag( DrawOptions::showPath ) )
   {
     WalkerList overDrawWalkers;
 
@@ -402,10 +406,22 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
     if( tile.rov().isValid() )
     {
-      registerTileForRendering( tile );
+      Size size = tile.rov()->size();
+      if( size.width() > 1 )
+      {
+        __D_IMPL(_d,Layer)
+        Tilemap& tmap = _d->city->tilemap();
+        for( int i=0; i < size.width(); i++ )
+          for( int j=0; j < size.height(); j++ )
+          {
+            drawPass( engine, tmap.at( tile.pos() + TilePos( i, j ) ), offset, Renderer::ground );
+          }
+      }
+
+      registerTileForRendering( tile );     
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }       
+    }
   }
 }
 
@@ -447,8 +463,8 @@ void Layer::afterRender( Engine& engine)
   Point moveValue;
 
   //on edge cursor moving
-  LayerDrawOptions& opts = LayerDrawOptions::instance();
-  if( opts.isFlag( LayerDrawOptions::windowActive ) )
+  DrawOptions& opts = DrawOptions::instance();
+  if( opts.isFlag( DrawOptions::windowActive ) )
   {
     if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
     else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
@@ -461,7 +477,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::drawGrid ) )
+  if( opts.isFlag( DrawOptions::drawGrid ) )
   {
     Tilemap& tmap = _d->city->tilemap();    
     int size = tmap.size();
@@ -488,7 +504,7 @@ void Layer::afterRender( Engine& engine)
         for( int j=0; j < size; j+=2 )
         {
           const Tile& rtile = tmap.at( i, j );
-          text = StringHelper::format( 0xff, "(%d,%d)", i, j );
+          text = utils::format( 0xff, "(%d,%d)", i, j );
           //PictureDecorator::basicText( screen, rtile.mapPos() + offset + Point( 0, 0),text.c_str(), 0xffffffff );
           font.draw( screen, text, rtile.mappos() + offset + Point( 7, -7 ), false );
         }
@@ -497,7 +513,7 @@ void Layer::afterRender( Engine& engine)
     }*/
   }
 
-  if( opts.isFlag( LayerDrawOptions::showRoads ) )
+  if( opts.isFlag( DrawOptions::showRoads ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
@@ -509,7 +525,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::showWalkableTiles ) )
+  if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
@@ -521,7 +537,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::showFlatTiles ) )
+  if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 1);
 
@@ -533,7 +549,7 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( opts.isFlag( LayerDrawOptions::showLockedTiles ) )
+  if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
     const Picture& grnPicture = Picture::load( "oc3_land", 2);
 
@@ -545,16 +561,18 @@ void Layer::afterRender( Engine& engine)
     }
   }
 
-  if( _d->currentTile && opts.isFlag( LayerDrawOptions::showObjectArea ) )
+  if( _d->currentTile && opts.isFlag( DrawOptions::showObjectArea ) )
   {
     Tile* tile = _d->currentTile;
     Point pos = tile->mappos();
-    Size size( (tile->picture().width() + 2) / 60 );
+    int rwidth = tilemap::cellPicSize().width();
+    int halfRWidth = rwidth / 2;
+    Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
     if( _d->tilePosText->isValid() )
     {
       _d->tilePosText->fill( 0x0 );
-      _d->debugFont.draw( *_d->tilePosText, StringHelper::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+      _d->debugFont.draw( *_d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
     }
 
     TileOverlayPtr ov = tile->overlay();
@@ -562,18 +580,20 @@ void Layer::afterRender( Engine& engine)
     {
       size = ov->size();
       pos = ov->tile().mappos();
+
+
     }
     else if( tile->masterTile() != 0 )
     {
       pos = tile->masterTile()->mappos();
-      size = (tile->masterTile()->picture().width() + 2) / 60;
+      size = (tile->masterTile()->picture().width() + 2) / rwidth;
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( 29, 15 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, 15 ) * size.width(), pos + Point( 58, 0) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( 58, 0) * size.width(), pos + Point( 29, -15 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( 29, -15 ) * size.width(), pos );
+    engine.drawLine( DefaultColors::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
     engine.draw( *_d->tilePosText, pos );
   }
 }
@@ -604,7 +624,7 @@ Layer::~Layer(){}
 void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }
 void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
 Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
-Tile *Layer::_currentTile() const{ return _dfunc()->currentTile; }
+Tile* Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
 
 void Layer::Impl::updateOutlineTexture( Tile* tile )
@@ -621,10 +641,12 @@ void Layer::Impl::updateOutlineTexture( Tile* tile )
   } */
 }
 
-LayerDrawOptions &LayerDrawOptions::instance()
+DrawOptions& DrawOptions::instance()
 {
-  static LayerDrawOptions inst;
+  static DrawOptions inst;
   return inst;
+}
+
 }
 
 }

@@ -42,10 +42,12 @@ public:
   virtual void initTerrain( gfx::Tile& terrain);
 
   virtual void timeStep(const unsigned long time);
-  virtual void storeGoods(GoodStock &stock, const int amount = -1);
+  virtual void storeGoods(good::Stock& stock, const int amount = -1);
+
   // evaluate the given service
   virtual float evaluateService( ServiceWalkerPtr walker);
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(const CityAreaInfo &info);
+
   // handle service reservation
   void reserveService(const Service::Type service);
   bool isServiceReserved(const Service::Type service);

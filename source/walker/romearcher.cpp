@@ -33,7 +33,7 @@ void RomeArcher::_fire( TilePos p )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
-  wait( GameDate::days2ticks( 1 ) / 2 );
+  wait( game::Date::days2ticks( 1 ) / 2 );
 }
 
 RomeArcherPtr RomeArcher::create(PlayerCityPtr city, walker::Type type)
@@ -96,7 +96,7 @@ void RomeArcher::timeStep(const unsigned long time)
   }
 
   case Soldier::patrol:
-    if( GameDate::current().day() % 2 == 0 )
+    if( game::Date::current().day() % 2 == 0 )
     {
       _tryAttack();
     }

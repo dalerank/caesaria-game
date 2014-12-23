@@ -91,15 +91,15 @@ Sentiment::Sentiment( PlayerCityPtr city )
 
 void Sentiment::timeStep(const unsigned int time )
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _d->value += math::signnum( _d->finishValue - _d->value );
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     _d->buffValue = 0;
-    DateTime current = GameDate::current();
+    DateTime current = game::Date::current();
     for( Impl::Buffs::iterator it=_d->buffs.begin(); it != _d->buffs.end(); )
     {
       BuffInfo& buff = *it;
@@ -201,7 +201,7 @@ void Sentiment::addBuff(int value, bool relative, int month2finish)
   BuffInfo buff;
   buff.value = value;
   buff.relative = relative;
-  buff.finishDate = GameDate::current();
+  buff.finishDate = game::Date::current();
   buff.finishDate.appendMonth( month2finish );
 
   _d->buffs.push_back( buff );

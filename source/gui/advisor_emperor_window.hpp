@@ -43,6 +43,7 @@ protected:
   void _showSend2CityWindow();
   void _showGiftWindow();
   void _updateRequests();
+  void _showHelp();
 
 private:
   class Impl;

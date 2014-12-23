@@ -1,0 +1,15 @@
+{  
+ title : "##crime##"
+ sound : "fanfare"
+ text  : "Crime can go from bad to worse quickly, and you should strive to stamp it out as soon as it appears. Unhappy people are more likely to commit crimes. The uglier their mood, the worse crimes they will commit. Crimes range from minor mugging, to thefts (which can cost your city considerable cash) to riots. Riots have been known to destroy substantial cities. Take action fast if one breaks out.\n Crime is caused directly by bad mood in your city. Prevention is much better than cure. Lack of food, high unemployment, high taxes and low wages all sour your people's mood. Festivals can improve mood, as can low tax rates or high wages.\n @Prefects& fight rioters and help put out any fires they start. It is hard to eliminate crime entirely from your poorest, most industrial areas, and you'll always need a heavy prefect presence there. Citywide, though, limit crime by fostering wealthy homes and good mood.\n If a riot does break out, don't panic. OK, go ahead and panic, but then do this: Reduce tax rates to as low as you can get away with straight away - zero, if possible. Build a few more prefectures quite close to, but not in the middle of, the riot zone, and build some housing there if there is none close by. Then arrange a large festival. Make sure your people have enough food. If they don't, see if you can import some, which will be faster than growing it. Wheat is the best food to use in a hurry. Check unemployment, and if possible build some more structures to provide jobs quickly. Hospitals can be useful employers at such times; high unemployment (20% or higher) will rapidly worsen people's mood, so try to get it comfortably below that level.\n Since fires spread, be prepared to destroy buildings next to fires, to try to prevent further damage. Good luck!\n Many aspects of CaesarIA affect mood. The Help entries on @Population& and @Employment& contain some relevant advice."
+ uri : {
+  "Prefects" : "prefect"
+  "Population" : "population"
+  "Employment" : "employment"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+  "here(1)" : "http://wikipedia.ru"
+  "here(2)" : "http://wikipedia.ru"
+ }
+}

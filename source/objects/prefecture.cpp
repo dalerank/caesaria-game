@@ -40,11 +40,12 @@ public:
 };
 
 Prefecture::Prefecture()
-  : ServiceBuilding(Service::prefect, constants::building::prefecture, Size(1)),
+  : ServiceBuilding(Service::prefect, constants::objects::prefecture, Size(1)),
     _d( new Impl )
 {
   _d->fireDetect = TilePos( -1, -1 );
-  setPicture( ResourceGroup::security, 1 );
+  //setPicture( ResourceGroup::security, 1 );
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
   
   _animationRef().load( ResourceGroup::security, 2, 10);
   _animationRef().setDelay( 4 );

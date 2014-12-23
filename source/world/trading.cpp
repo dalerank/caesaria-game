@@ -19,7 +19,7 @@
 #include "empire.hpp"
 #include "city.hpp"
 #include "good/goodstore_simple.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
 #include "core/logger.hpp"
@@ -38,14 +38,14 @@ public:
     unsigned int buyPrice;
   };
 
-  typedef std::map< Good::Type, PriceInfo > Prices;
+  typedef std::map< good::Type, PriceInfo > Prices;
   typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
 
   EmpirePtr empire;
   TradeRoutes routes;
   Prices empirePrices;
 
-  void setPrice( Good::Type type, int buy, int sell );
+  void setPrice( good::Type type, int buy, int sell );
   void initStandartPrices();
 };
 
@@ -56,7 +56,7 @@ Trading::Trading() : _d( new Impl )
 
 void Trading::timeStep( unsigned int time )
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     foreach( it,_d->routes )
     {
@@ -86,7 +86,7 @@ VariantMap Trading::save() const
   {
     VariantList tmp;
     tmp << it->second.buyPrice << it->second.sellPrice;
-    pricesVm[ GoodHelper::getTypeName( it->first ) ] = tmp;
+    pricesVm[ good::Helper::getTypeName( it->first ) ] = tmp;
   }
 
   ret[ "prices" ] = pricesVm;
@@ -121,8 +121,8 @@ void Trading::load(const VariantMap& stream)
   VariantMap prices = stream.get( "prices" ).toMap();
   foreach( it, prices )
   {
-    Good::Type gtype = GoodHelper::getType( it->first );
-    if( gtype != Good::none )
+    good::Type gtype = good::Helper::getType( it->first );
+    if( gtype != good::none )
     {
       VariantList vl = it->second.toList();
       _d->setPrice( gtype, vl.get( 0, 0 ).toInt(), vl.get( 1, 0 ).toInt() );
@@ -135,8 +135,8 @@ Trading::~Trading()
 
 }
 
-void Trading::sendMerchant( const std::string& begin, const std::string& end,
-                            GoodStore& sell, GoodStore& buy )
+void Trading::sendMerchant(const std::string& begin, const std::string& end,
+                            good::Store &sell, good::Store &buy )
 {
   TraderoutePtr route = findRoute( begin, end );
   if( route != 0 )
@@ -150,7 +150,7 @@ void Trading::sendMerchant( const std::string& begin, const std::string& end,
 
 TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& end )
 {
-  unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
+  unsigned int routeId = utils::hash( begin ) + utils::hash( end );
   Impl::TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
@@ -180,7 +180,7 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
     return route;
   }
 
-  unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
+  unsigned int routeId = utils::hash( begin ) + utils::hash( end );
 
   route = TraderoutePtr( new Traderoute( _d->empire, begin, end ) );
   _d->routes[ routeId ] = route;
@@ -189,12 +189,12 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
   return route;
 }
 
-void Trading::setPrice(Good::Type gtype, int bCost, int sCost)
+void Trading::setPrice(good::Type gtype, int bCost, int sCost)
 {
   _d->setPrice( gtype, bCost, sCost );
 }
 
-void Trading::getPrice(Good::Type gtype, int& bCost, int& sCost)
+void Trading::getPrice(good::Type gtype, int& bCost, int& sCost)
 {
   Impl::Prices::const_iterator it = _d->empirePrices.find( gtype );
 
@@ -234,7 +234,7 @@ TraderouteList Trading::routes()
   return ret;
 }
 
-void Trading::Impl::setPrice(Good::Type type, int bCost, int sCost)
+void Trading::Impl::setPrice(good::Type type, int bCost, int sCost)
 {
   empirePrices[ type ].buyPrice = bCost;
   empirePrices[ type ].sellPrice = sCost;
@@ -242,21 +242,21 @@ void Trading::Impl::setPrice(Good::Type type, int bCost, int sCost)
 
 void Trading::Impl::initStandartPrices()
 {
-  setPrice( Good::wheat, 28, 22 );
-  setPrice( Good::vegetable, 38, 30 );
-  setPrice( Good::fruit, 38, 30 );
-  setPrice( Good::olive, 42, 34 );
-  setPrice( Good::grape, 44, 36 );
-  setPrice( Good::meat, 44, 36 );
-  setPrice( Good::wine, 215, 160 );
-  setPrice( Good::oil, 180, 140 );
-  setPrice( Good::iron, 60, 40 );
-  setPrice( Good::timber, 50, 35 );
-  setPrice( Good::clay, 40, 30 );
-  setPrice( Good::marble, 200, 140 );
-  setPrice( Good::weapon, 250, 180 );
-  setPrice( Good::furniture, 200, 150 );
-  setPrice( Good::pottery, 180, 140 );
+  setPrice( good::wheat, 28, 22 );
+  setPrice( good::vegetable, 38, 30 );
+  setPrice( good::fruit, 38, 30 );
+  setPrice( good::olive, 42, 34 );
+  setPrice( good::grape, 44, 36 );
+  setPrice( good::meat, 44, 36 );
+  setPrice( good::wine, 215, 160 );
+  setPrice( good::oil, 180, 140 );
+  setPrice( good::iron, 60, 40 );
+  setPrice( good::timber, 50, 35 );
+  setPrice( good::clay, 40, 30 );
+  setPrice( good::marble, 200, 140 );
+  setPrice( good::weapon, 250, 180 );
+  setPrice( good::furniture, 200, 150 );
+  setPrice( good::pottery, 180, 140 );
 }
 
 }//end namespace world

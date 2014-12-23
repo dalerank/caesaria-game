@@ -24,16 +24,19 @@
 namespace gui
 {
 
-class GameSpeedOptionsWindow : public Window
+namespace dialog
+{
+
+class GameSpeedOptions : public Window
 {
 public:
-  GameSpeedOptionsWindow(Widget* parent,
+  GameSpeedOptions(Widget* parent,
                          int gameSpeed,
                          int scrollSpeed,
                          int autosaveInterval);
 
   //! Деструктор
-  virtual ~GameSpeedOptionsWindow(void);
+  virtual ~GameSpeedOptions(void);
 
   virtual bool onEvent(const NEvent &event);
 
@@ -48,6 +51,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 

@@ -23,7 +23,7 @@
 using namespace constants;
 
 MissionaryPost::MissionaryPost()
-  : ServiceBuilding( Service::missionary, building::missionaryPost, Size(2) )
+  : ServiceBuilding( Service::missionary, objects::missionaryPost, Size(2) )
 {
   setMaximumWorkers(20);
   setWorkers( 0 );

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gameautopause.hpp"
-#include "events/event.hpp"
+#include "events/changespeed.hpp"
 
 using namespace events;
 

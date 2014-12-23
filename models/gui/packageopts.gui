@@ -1,0 +1,79 @@
+{  
+  geometry : [ 0, 0, 450, 300 ]
+  buttons : "off"
+  static : true
+  bgtype : "whiteFrame"
+
+  lbTitle#Label : {
+    geometry : [ 10, 10, "pw-10", 50 ]
+    font : "FONT_5"
+		text : "##package_options##"
+    text.align : [ "center", "center" ]
+  }
+	
+  lbResourcesPath#Label : {
+    geometry : [ 12, 50, 100, 72 ]
+    font : "FONT_1"
+		text : "Resources: "
+    text.align : [ "upperLeft", "center" ]
+  }
+
+	edResourcesPath#EditBox :
+  {
+    geometry : [ 92, 50, "pw-15", 72 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
+  lbCaesar3Path#Label : {
+    geometry : [ 12, 76, 100, 98 ]
+    font : "FONT_1"
+    text : "C3 gfx: "
+    text.align : [ "upperLeft", "center" ]
+  }
+
+  edCaesar3Path#EditBox :
+  {
+    geometry : [ 92, 76, "pw-15", 98 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
+  btnChangeCellw#PushButton :
+  {
+    geometry : [ 12, 105, "pw-15", 129 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_2"
+    text.offset : [ 10, 0 ]
+    text : ""
+  }
+	
+	lbApply#Label :
+  {
+    geometry : [ 180, "ph-35", "pw-40", "ph-15" ]
+    text : "##plname_continue##"
+    font : "FONT_2"
+    textAlign : [ "lowerRight", "center" ]
+  }
+	
+	btnApply#TexturedButton :
+  {
+    geometry : [ "pw-40", "ph-40", "pw-13", "ph-13" ]
+    normal : [ "paneling", 179 ]
+    hovered : [ "paneling", 180 ]
+    pressed : [ "paneling", 181 ]
+    disabled : [ "paneling", 179 ]
+  }
+
+  lbExitHelp#Label :
+  {
+    geometry : [ 18, "ph-35", 180, "ph-15" ]
+    text : "##press_escape_to_exit##"
+    font : "FONT_1"
+  }
+
+}

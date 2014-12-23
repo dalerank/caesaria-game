@@ -19,7 +19,7 @@
 
 #include "variant.hpp"
 #include "variantprivate.hpp"
-#include "stringhelper.hpp"
+#include "utils.hpp"
 
 static Variant::Type staticNameToType( const char* name )
 {
@@ -423,9 +423,9 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
     switch( (unsigned long long)(d->type) )
     {
     case Variant::String:
-      return StringHelper::toInt( v_cast<std::string>(d)->c_str() );
+      return utils::toInt( v_cast<std::string>(d)->c_str() );
     case Variant::NByteArray:
-      return StringHelper::toInt( &(*v_cast<ByteArray>(d))[0] );
+      return utils::toInt( &(*v_cast<ByteArray>(d))[0] );
     case Variant::Bool:
         return (long long)(d->data.b);
     case Variant::Double:
@@ -455,9 +455,9 @@ static unsigned long long ConvertToUnsignedNumber(const Variant2Impl *d, bool *o
     switch((unsigned int)(d->type)) 
     {
     case Variant::String:
-      return StringHelper::toUint( v_cast<std::string>(d)->c_str() );
+      return utils::toUint( v_cast<std::string>(d)->c_str() );
     case Variant::NByteArray:
-      return StringHelper::toUint( &(*v_cast<ByteArray>(d))[0] );
+      return utils::toUint( &(*v_cast<ByteArray>(d))[0] );
     case Variant::Bool:
         return (unsigned long long)(d->data.b);
     case Variant::Double:
@@ -521,34 +521,34 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
             case Variant::Char: *str = d->data.c; 
 			      break;
 
-            case Variant::Uchar: *str = StringHelper::format( 0xff, "%d", (unsigned char)Variant2Number(d) );
+            case Variant::Uchar: *str = utils::format( 0xff, "%d", (unsigned char)Variant2Number(d) );
             break;
             
             case Variant::Short:
             case Variant::Long:
             case Variant::Int:
             case Variant::LongLong:
-              *str = StringHelper::format( 0xff, "%d", (long long)Variant2Number(d) );
+              *str = utils::format( 0xff, "%d", (long long)Variant2Number(d) );
             break;
 
             case Variant::UInt:
             case Variant::ULongLong:
             case Variant::Ushort:
             case Variant::Ulong:
-                *str = StringHelper::format( 0xff, "%u", (unsigned long)Variant2UNumber(d) );
+                *str = utils::format( 0xff, "%u", (unsigned long)Variant2UNumber(d) );
             break;
 
             case Variant::Float:
-                *str = StringHelper::format( 0xff, "%f", d->data.f );
+                *str = utils::format( 0xff, "%f", d->data.f );
             break;
             case Variant::Double:
-                *str = StringHelper::format( 0xff, "%g", d->data.d );
+                *str = utils::format( 0xff, "%g", d->data.d );
             break;
     
             case Variant::NDateTime:
               {
                 const DateTime* dt = v_cast<DateTime>(d);
-                *str = StringHelper::format( 0xff, "%04d.%02d.%02d %02d:%02d:%02d", dt->year(), dt->month(),
+                *str = utils::format( 0xff, "%04d.%02d.%02d %02d:%02d:%02d", dt->year(), dt->month(),
                                              dt->day(), dt->hour(), dt->minutes(), dt->seconds() );
               }
             break;
@@ -806,11 +806,11 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         break;
 
         case Variant::Double:
-          *ba = StringHelper::format( 0xff, "%f", d->data.d );
+          *ba = utils::format( 0xff, "%f", d->data.d );
         break;
         
         case Variant::Float:
-            *ba = StringHelper::format( 0xff, "%f", d->data.f );
+            *ba = utils::format( 0xff, "%f", d->data.f );
             break;
         case Variant::Char:
             ba->clear();
@@ -820,14 +820,14 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         case Variant::LongLong:
         case Variant::Short:
         case Variant::Long:
-            *ba = StringHelper::format( 0xff, "%d", (long)Variant2Number(d) );
+            *ba = utils::format( 0xff, "%d", (long)Variant2Number(d) );
             break;
         case Variant::UInt:
         case Variant::ULongLong:
         case Variant::Ushort:
         case Variant::Ulong:
         case Variant::Uchar:
-            *ba = StringHelper::format( 0xff, "%u", (unsigned long)Variant2UNumber(d) );
+            *ba = utils::format( 0xff, "%u", (unsigned long)Variant2UNumber(d) );
             break;
         case Variant::Bool:
           *ba = std::string( d->data.b ? "true" : "false" );
@@ -908,11 +908,11 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         switch (d->type) 
         {
         case Variant::String:
-          *f = StringHelper::toFloat( v_cast<std::string>(d)->c_str() );
+          *f = utils::toFloat( v_cast<std::string>(d)->c_str() );
         break;
         
         case Variant::NByteArray:
-          *f = StringHelper::toFloat( v_cast<ByteArray>(d)->data() );
+          *f = utils::toFloat( v_cast<ByteArray>(d)->data() );
         break;
         
         case Variant::Bool:
@@ -947,11 +947,11 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         float *f = static_cast<float*>(result);
         switch (d->type) {
         case Variant::String:
-          *f =StringHelper::toFloat( v_cast<std::string>(d)->c_str() );
+          *f =utils::toFloat( v_cast<std::string>(d)->c_str() );
         break;
         
         case Variant::NByteArray:
-          *f = StringHelper::toFloat( v_cast<ByteArray>(d)->data() );
+          *f = utils::toFloat( v_cast<ByteArray>(d)->data() );
         break;
         
         case Variant::Bool:
@@ -1260,7 +1260,7 @@ Variant::Type Variant::nameToType(const std::string &name)
     if ( name.empty() )
         return Variant::Invalid;
 
-    if( StringHelper::isEquale( name,  "UserType" ) )
+    if( utils::isEquale( name,  "UserType" ) )
         return UserType;
 
     int metaType = staticNameToType( name.c_str() );

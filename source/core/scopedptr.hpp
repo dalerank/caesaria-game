@@ -72,7 +72,7 @@ public:
 		this->d = 0;
 	}
 
-	inline T &operator*() const
+	inline T& operator*() const
 	{
 		_CAESARIA_DEBUG_BREAK_IF( !d );
 		return *d;
@@ -86,7 +86,7 @@ public:
 
 	inline bool operator!() const {		return !d;	}
 	inline operator bool() const {	return !isNull();	}
-	inline T *data() const	{	return d;	}
+	inline T* data() const	{	return d;	}
 	inline bool isNull() const {	return !d;	}
 
 	inline void reset(T *other = 0)

@@ -28,18 +28,18 @@ using namespace constants;
 class Barracks::Impl
 {
 public:
-  SimpleGoodStore store;
+  good::SimpleStore store;
   bool notNeedSoldiers;
 };
 
-Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
+Barracks::Barracks() : TrainingBuilding( objects::barracks, Size( 3 ) ),
   _d( new Impl )
 {
   setMaximumWorkers(5);
   setPicture( ResourceGroup::security, 17 );
 
   _d->store.setCapacity( 1000 );
-  _d->store.setCapacity( Good::weapon, 1000 );
+  _d->store.setCapacity( good::weapon, 1000 );
   _d->notNeedSoldiers = false;
 }
 
@@ -48,7 +48,7 @@ void Barracks::deliverTrainee()
   if( walkers().size() == 0 && _d->store.freeQty() > 0 )
   {
     CartSupplierPtr walker = CartSupplier::create( _city() );
-    walker->send2city( this, Good::weapon, 100 );
+    walker->send2city( this, good::weapon, 100 );
 
     if( !walker->isDeleted() )
     {
@@ -56,14 +56,14 @@ void Barracks::deliverTrainee()
     }
   }
 
-  if( _d->store.qty( Good::weapon ) >= 100 )
+  if( _d->store.qty( good::weapon ) >= 100 )
   {
     TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::soldier );
     trainee->send2City( this, false );
 
     if( !trainee->isDeleted() )
     {
-      GoodStock delStock( Good::weapon, 100 );
+      good::Stock delStock( good::weapon, 100 );
       _d->store.retrieve( delStock, 100 );
       addWalker( trainee.object() );
       _d->notNeedSoldiers = false;
@@ -81,9 +81,9 @@ void Barracks::timeStep(const unsigned long time)
 }
 
 bool Barracks::isNeedWeapons() const {  return _d->store.freeQty() >= 100; }
-int Barracks::goodQty(Good::Type type) const{  return _d->store.qty( type ); }
+int Barracks::goodQty(good::Type type) const{  return _d->store.qty( type ); }
 
-void Barracks::storeGoods(GoodStock& stock, const int amount)
+void Barracks::storeGoods(good::Stock& stock, const int amount)
 {
   _d->store.store(stock, amount == -1 ? stock.qty() : amount );
 }

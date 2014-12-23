@@ -20,6 +20,7 @@
 #include "walker/constants.hpp"
 #include "city_renderer.hpp"
 #include "city/city.hpp"
+#include "camera.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
 
@@ -28,23 +29,47 @@ using namespace constants;
 namespace gfx
 {
 
-class LayerSimple::Impl
+namespace layer
+{
+
+class Simple::Impl
 {
 public:
   SenatePopupInfo senateInfo;
+  PictureRef selectedBuildingPic;
+  TileOverlayPtr lastOverlay;
 };
 
-int LayerSimple::type() const { return citylayer::simple; }
+int Simple::type() const { return citylayer::simple; }
 
-LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerSimple( camera, city ) );
+  LayerPtr ret( new Simple( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerSimple::renderUi(Engine &engine)
+void Simple::afterRender(Engine& engine)
+{
+  Layer::afterRender( engine );
+
+  Tile* tile = _currentTile();
+  if( tile )
+  {
+    TileOverlayPtr curOverlay = tile->overlay();
+    if( is_kind_of<Building>( curOverlay ) )
+    {
+      _d->lastOverlay = curOverlay;
+      engine.setColorMask( 0x003f0000, 0x00003f00, 0x0000003f, 0xff000000 );
+      curOverlay->tile().resetWasDrawn();
+      drawPass( engine, curOverlay->tile(), _camera()->offset(), Renderer::overlay );
+      engine.resetColorMask();
+    }
+  }
+}
+
+void Simple::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
 
@@ -60,10 +85,12 @@ void LayerSimple::renderUi(Engine &engine)
   }
 }
 
-LayerSimple::LayerSimple( Camera& camera, PlayerCityPtr city)
+Simple::Simple( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _addWalkerType( walker::all );
 }
+
+}//
 
 }//end namespace gfx

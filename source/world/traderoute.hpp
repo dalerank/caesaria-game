@@ -23,9 +23,8 @@
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
+#include "good/good.hpp"
 #include "gfx/picturesarray.hpp"
-
-class GoodStore;
 
 namespace world
 {
@@ -49,7 +48,7 @@ public:
 
   bool isSeaRoute() const;
 
-  MerchantPtr addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
+  MerchantPtr addMerchant( const std::string& begin, good::Store& sell, good::Store& buy );
   MerchantPtr merchant( unsigned int index );
   MerchantList merchants() const;
 

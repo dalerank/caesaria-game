@@ -50,7 +50,7 @@ WalkerPtr Corpse::create(PlayerCityPtr city)
 WalkerPtr Corpse::create( PlayerCityPtr city, WalkerPtr wlk )
 {
   AnimationBank::MovementAnimation ma = AnimationBank::find( wlk->type() );
-  DirectedAction action = { acDie, north };
+  DirectedAction action( acDie, north );
   Animation animation = ma[ action ];
 
   if( animation.isValid() )
@@ -103,7 +103,7 @@ Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   _setType( walker::corpse );
 
   _d->time = 0;
-  _d->updateInterval = GameDate::days2ticks( 1 );
+  _d->updateInterval = game::Date::days2ticks( 1 );
   _d->loop = false;
 
   setName( _("##corpse##") );

@@ -23,7 +23,10 @@
 namespace gfx
 {
 
-class LayerEntertainment : public LayerInfo
+namespace layer
+{
+
+class Entertainment : public Info
 {
 public:
   virtual int type() const;
@@ -32,13 +35,15 @@ public:
   static LayerPtr create(TilemapCamera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
 private:
-  LayerEntertainment( Camera& camera, PlayerCityPtr city, int type );
+  Entertainment( Camera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house);
 
   std::set<int> _flags;
   WalkerTypes _visibleWalkers;
   int _type;
 };
+
+}
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERENTERTAINMENT_H_INCLUDED__

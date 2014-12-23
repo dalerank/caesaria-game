@@ -25,7 +25,10 @@ using namespace constants;
 namespace gfx
 {
 
-class LayerInfo::Impl
+namespace layer
+{
+
+class Info::Impl
 {
 public:
   Picture footColumn;
@@ -49,19 +52,19 @@ public:
   Pictures pictures;
 };
 
-void LayerInfo::render(Engine& engine)
+void Info::render(Engine& engine)
 {
-  Layer::render( engine );  
+  Layer::render( engine );
 }
 
-void LayerInfo::_loadColumnPicture(int picId)
+void Info::_loadColumnPicture(int picId)
 {
   _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
   _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
   _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
 }
 
-void LayerInfo::drawColumn( Engine& engine, const Point& pos, const int percent)
+void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
 {
   // Column made of tree base parts and contains maximum 10 parts.
   // Header (10)
@@ -102,15 +105,15 @@ void LayerInfo::drawColumn( Engine& engine, const Point& pos, const int percent)
   }
 }
 
-LayerInfo::~LayerInfo() {  }
+Info::~Info() {  }
 
-void LayerInfo::beforeRender(Engine& engine)
+void Info::beforeRender(Engine& engine)
 {
   _d->columns.clear();
   _d->pictures.clear();
 }
 
-void LayerInfo::afterRender(Engine& engine)
+void Info::afterRender(Engine& engine)
 {
   foreach( it, _d->columns )
   {
@@ -125,22 +128,24 @@ void LayerInfo::afterRender(Engine& engine)
   Layer::afterRender( engine );
 }
 
-LayerInfo::LayerInfo( Camera& camera, PlayerCityPtr city, int columnIndex )
+Info::Info( Camera& camera, PlayerCityPtr city, int columnIndex )
   : Layer( &camera, city ), _d( new Impl )
 {
   _loadColumnPicture( columnIndex );
 }
 
-void LayerInfo::_addColumn(Point pos, int value)
+void Info::_addColumn(Point pos, int value)
 {
   Impl::ColumnInfo info = { pos, value };
   _d->columns.push_back( info );
 }
 
-void LayerInfo::_addPicture(Point pos, const Picture& pic)
+void Info::_addPicture(Point pos, const Picture& pic)
 {
   Impl::PictureInfo info = { pos, pic };
   _d->pictures.push_back( info );
 }
+
+}//end namespace layer
 
 }//end namespace gfx

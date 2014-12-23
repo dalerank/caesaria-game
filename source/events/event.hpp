@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCENARIO_EVENT_H_INCLUDE_
-#define _CAESARIA_SCENARIO_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_GAME_EVENT_H_INCLUDE_
+#define _CAESARIA_GAME_EVENT_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
@@ -50,61 +50,5 @@ protected:
   GameEvent() {}
 };
 
-class ClearLandEvent : public GameEvent
-{
-public:
-  static GameEventPtr create( const TilePos& );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  TilePos _pos;
-};
-
-class Pause : public GameEvent
-{
-public:
-  typedef enum { toggle, pause, play, hidepause, hideplay, unknown } Mode;
-  static GameEventPtr create( Mode mode );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  Pause();
-  Mode _mode;
-};
-
-class Step : public GameEvent
-{
-public:
-  static GameEventPtr create(unsigned int count);
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  Step(unsigned int count);
-  unsigned int _count;
-};
-
-class ChangeSpeed : public GameEvent
-{
-public:
-  static GameEventPtr create( int value );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec( Game& game, unsigned int ) const;
-
-private:
-  ChangeSpeed();
-  int _value;
-};
-
 } //end namespace events
-#endif //_CAESARIA_SCENARIO_EVENT_H_INCLUDE_
+#endif //_CAESARIA_GAME_EVENT_H_INCLUDE_

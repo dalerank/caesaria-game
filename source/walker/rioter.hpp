@@ -36,7 +36,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual int agressive() const;
-  virtual void excludeAttack( constants::building::Group group );
+  virtual void excludeAttack( constants::objects::Group group );
 
 protected:
   Rioter( PlayerCityPtr city );

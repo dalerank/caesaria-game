@@ -19,7 +19,7 @@
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "listbox.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "dialogbox.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"
@@ -31,7 +31,10 @@
 namespace gui
 {
 
-class VideoOptionsWindow::Impl
+namespace dialog
+{
+
+class VideoOptions::Impl
 {
 public:
   GameAutoPause locker;
@@ -43,7 +46,7 @@ public:
   bool haveChanges;
 };
 
-VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
+VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
@@ -61,7 +64,7 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes,
     std::string modeStr;
     foreach( mode, modes )
     {
-      modeStr = StringHelper::format( 0xff, "%dx%d", mode->width(), mode->height() );
+      modeStr = utils::format( 0xff, "%dx%d", mode->width(), mode->height() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
       item.setTag( (mode->width() << 16) + mode->height());
     }
@@ -70,9 +73,9 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes,
   _update();
 }
 
-VideoOptionsWindow::~VideoOptionsWindow( void ){}
+VideoOptions::~VideoOptions( void ){}
 
-bool VideoOptionsWindow::onEvent(const NEvent& event)
+bool VideoOptions::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui )
 
@@ -124,16 +127,18 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<Size>& VideoOptionsWindow::onSreenSizeChange() {  return _d->onScreenSizeChangeSignal; }
-Signal1<bool>&VideoOptionsWindow::onFullScreenChange(){  return _d->onFullScreeChangeSignal; }
-Signal0<>&VideoOptionsWindow::onClose(){  return _d->onCloseSignal; }
+Signal1<Size>& VideoOptions::onSreenSizeChange() {  return _d->onScreenSizeChangeSignal; }
+Signal1<bool>& VideoOptions::onFullScreenChange(){  return _d->onFullScreeChangeSignal; }
+Signal0<>& VideoOptions::onClose(){  return _d->onCloseSignal; }
 
-void VideoOptionsWindow::_update()
+void VideoOptions::_update()
 {
   if( _d->btnSwitchMode )
   {
     _d->btnSwitchMode->setText( _d->fullScreen ? _("##fullscreen_on##") : _("##fullscreen_off##") );
   }
 }
+
+}//end namespace dialog
 
 }//end namespace gui

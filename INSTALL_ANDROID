@@ -47,21 +47,33 @@ download latest build tools and 4.0.3 android developes enviroment
 4. Install java ant
 $ sudo apt-get install ant
 
-5. Checkout pelya/commangergenius
+Read this section for version which using SDL2
+SDL2/5. Checkout caesaria
+$ cd projects
+$ git clone https://bitbucket.org/dalerank/caesaria
+$ cd caesaria/android
+$ make
+
+SDL2/6. Copy resources to device
+Download last resources archive from http://sourceforge.net/projects/opencaesar3/files/bin/caesaria_0.4-cache-SOME_DATE.zip 
+and unpack it somewhere, forexample ~/caesaria-data. Goto ~/caesaria-data/resources and pack all files and folders to "cache.zip"
+then create folder /sdcard/Android/data/net.dalerank.caesaria/files on device 
+and copy foder "resources" to /sdcard/Android/data/net.dalerank.caesaria/files
+
+Read this section for version which using SDL 1.2.14
+SDL1/5. Checkout pelya/commangergenius and caesaria
 $ mkdir projects
 $ cd projects
 $ git clone https://github.com/pelya/commandergenius
-
-6. Checkout caesaria
 $ cd commandergenius/project/jni/application
 $ git clone https://bitbucket.org/dalerank/caesaria
 
-Download archive from http://sourceforge.net/projects/opencaesar3/files/bin/caesaria_win_2014-02-25.zip/download 
+SDL1/6. Download last resources archive from http://sourceforge.net/projects/opencaesar3/files/bin/caesaria_0.4-cache-SOME_DATE.zip 
 and unpack it somewhere, forexample ~/caesaria-data. Goto ~/caesaria-data/resources and pack all files and folders to "cache.zip"
 $ mkdir ~/commandergenius/project/jni/application/caesaria/AndroidData
 $ cp ~/caesaria/resources/cache.zip ~/commandergenius/project/jni/application/caesaria/AndroidData/cache.zip
 
-7. Building apk
+SDL1/7. Building apk
 ===================
 $ rm project/jni/application/src
 $ ln -s caesaria project/jni/application/src/
@@ -72,12 +84,12 @@ $ ./build.sh
 It will compile a bunch of libs under project/libs/armeabi,
 create Android package file ~/projects/commandergenius/project/bin/MainActivity-release-unsigned.apk
 
-8. Signing apk
+SDL1/8. Signing apk
 $ keytool -genkey -v -keystore rs.keystore -alias caesaria -keyalg RSA -keysize 2048 -validity 10000
 $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore rs.keystore ~/projects/commandergenius/project/bin/MainActivity-release-unsigned.apk caesaria
 $ mv ~/projects/commandergenius/project/bin/MainActivity-release-unsigned.apk ~/projects/caesaria.apk
 
-9. Install on device
+SDL1/9. Install on device
 $ adb uninstall net.dalerank.caesaria
 $ adb install ~/projects/caesaria.apk 
 or copy caesaria.apk on device and install nativelly

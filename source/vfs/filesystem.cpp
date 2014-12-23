@@ -22,7 +22,7 @@
 #include "core/foreach.hpp"
 #include "entries.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 #if defined (CAESARIA_PLATFORM_WIN)
 	#include <direct.h> // for _chdir
@@ -498,7 +498,7 @@ const Path& FileSystem::workingDirectory()
 		#if defined(CAESARIA_PLATFORM_WIN)
 			char tmp[_MAX_PATH];
 			_getcwd(tmp, _MAX_PATH);
-      _d->workingDirectory[type] = StringHelper::replace( tmp, "\\", "/" );
+      _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
 		#elif defined(CAESARIA_PLATFORM_UNIX)
 			// getting the CWD is rather complex as we do not know the size
 			// so try it until the call was successful
@@ -565,7 +565,7 @@ inline int isInSameDirectory ( const Path& path, const Path& file )
 	int subB = 0;
 	int pos;
 
-  if ( path.toString().size() && !StringHelper::isEqualen( path.toString(), file.toString(), path.toString().size() ) )
+  if ( path.toString().size() && !utils::isEqualen( path.toString(), file.toString(), path.toString().size() ) )
 		return -1;
 
 	pos = 0;
@@ -589,7 +589,7 @@ inline int isInSameDirectory ( const Path& path, const Path& file )
 Entries FileSystem::getFileList()
 {
   Entries ret;
-  Path rpath = StringHelper::replace( workingDirectory().toString(), "\\", "/" );
+  Path rpath = utils::replace( workingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
   
   //Logger::warning( "FileSystem: start listing directory" );

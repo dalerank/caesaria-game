@@ -29,7 +29,7 @@
 
 using namespace constants;
 
-WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, Size(3) )
+WorkshopChariot::WorkshopChariot() : TrainingBuilding( objects::chariotSchool, Size(3) )
 {
   _fgPicturesRef().resize(1);
 }

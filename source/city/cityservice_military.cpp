@@ -19,7 +19,7 @@
 #include "city.hpp"
 #include "game/gamedate.hpp"
 #include "walker/enemysoldier.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/cityservice_info.hpp"
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
@@ -57,9 +57,9 @@ Military::Military( PlayerCityPtr city )
 
 void Military::timeStep(const unsigned int time )
 {
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
-    DateTime curDate = GameDate::current();
+    DateTime curDate = game::Date::current();
     //clear old notificationse
     for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
@@ -71,7 +71,7 @@ void Military::timeStep(const unsigned int time )
     }
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     world::EmpirePtr empire = _city()->empire();
 
@@ -91,7 +91,7 @@ void Military::timeStep(const unsigned int time )
     }
   }
 
-  if( _d->updateMilitaryThreat || GameDate::isMonthChanged() )
+  if( _d->updateMilitaryThreat || game::Date::isMonthChanged() )
   {
     _d->updateMilitaryThreat = false;
 
@@ -105,7 +105,7 @@ void Military::timeStep(const unsigned int time )
 void Military::addNotification(const std::string& text, const std::string& name, Notification::Type type)
 {
   Notification n;
-  n.date = GameDate::current();
+  n.date = game::Date::current();
   n.message = text;
   n.objectName = name;
   n.type = type;
@@ -150,7 +150,7 @@ VariantMap Military::save() const
   int index = 0;
   foreach( it, _d->notifications )
   {
-    notifications[ StringHelper::format( 0xff, "note_%03d", index ) ] = (*it).save();
+    notifications[ utils::format( 0xff, "note_%03d", index ) ] = (*it).save();
   }
 
   VARIANT_SAVE_ANY( ret, notifications );
@@ -181,10 +181,10 @@ void Military::updateThreat(int value)
   _d->updateMilitaryThreat = true;
 
   if( value > 0 )
-    _d->lastEnemyAttack = GameDate::current();
+    _d->lastEnemyAttack = game::Date::current();
 }
 
-int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( GameDate::current()); }
+int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( game::Date::current()); }
 
 world::PlayerArmyList Military::expeditions() const
 {

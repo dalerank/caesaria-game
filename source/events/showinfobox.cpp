@@ -38,7 +38,7 @@ public:
   bool send2scribe;
   vfs::Path video;
   Point position;
-  Good::Type gtype;
+  good::Type gtype;
 };
 
 GameEventPtr ShowInfobox::create()
@@ -48,7 +48,7 @@ GameEventPtr ShowInfobox::create()
   return ret;
 }
 
-GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, Good::Type type, bool send2scribe)
+GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, good::Type type, bool send2scribe)
 {
   ShowInfobox* ev = new ShowInfobox();
   ev->_d->title = title;
@@ -68,7 +68,7 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
   ev->_d->title = title;
   ev->_d->text = text;
   ev->_d->video = video;
-  ev->_d->gtype = Good::none;
+  ev->_d->gtype = good::none;
   ev->_d->send2scribe = send2scribe;
 
   GameEventPtr ret( ev );
@@ -85,7 +85,7 @@ void ShowInfobox::load(const VariantMap& stream)
   VARIANT_LOAD_STR_D( _d, video, stream )
   VARIANT_LOAD_ANY_D( _d, send2scribe, stream)
   VARIANT_LOAD_STR_D( _d, tip, stream )
-  _d->gtype = GoodHelper::getType( stream.get( "good" ).toString() );
+  _d->gtype = good::Helper::getType( stream.get( "good" ).toString() );
 }
 
 VariantMap ShowInfobox::save() const
@@ -105,7 +105,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
   if( _d->video.toString().empty() )
   {
     gui::EventMessageBox* msgWnd = new gui::EventMessageBox( game.gui()->rootWidget(), _d->title, _d->text,
-                                                             GameDate::current(), _d->gtype, _d->tip );
+                                                             game::Date::current(), _d->gtype, _d->tip );
     msgWnd->show();
   }
   else

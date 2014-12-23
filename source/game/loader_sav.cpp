@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_sav.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
@@ -36,9 +36,15 @@
 
 using namespace gfx;
 
+namespace game
+{
+
+namespace loader
+{
+
 static const int kClimate     = 0x33ad8;
 
-class GameLoaderC3Sav::Impl
+class C3Sav::Impl
 {
 public:
   std::map<TilePos, unsigned int> baseBuildings;
@@ -48,7 +54,7 @@ public:
   void initEntryExit(std::fstream& f, PlayerCityPtr ioCity);
 };
 
-GameLoaderC3Sav::GameLoaderC3Sav() : _d( new Impl )
+C3Sav::C3Sav() : _d( new Impl )
 {
 }
 
@@ -59,7 +65,7 @@ void SkipCompressed( std::fstream& f )
   f.seekg(tmp, std::ios::cur);
 }
 
-void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
+void C3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->tilemap().size();
 
@@ -96,7 +102,7 @@ void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.seekg(savePos, std::ios::beg);
 }
 
-int GameLoaderC3Sav::climateType(const std::string& filename)
+int C3Sav::climateType(const std::string& filename)
 {
   /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -110,9 +116,9 @@ int GameLoaderC3Sav::climateType(const std::string& filename)
   return -1;
 }
 
-std::string GameLoaderC3Sav::restartFile() const { return _d->restartFile; }
+std::string C3Sav::restartFile() const { return _d->restartFile; }
 
-bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
+bool C3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -130,7 +136,7 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
   return true;
 }
 
-bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
+bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 { 
   uint32_t tmp;
 
@@ -276,7 +282,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
       Tile& tile = oTilemap.at(i, j);
 
       unsigned int imgId = graphicGrid[index];
-      Picture pic = Picture::load( TileHelper::convId2PicName( imgId ));
+      Picture pic = Picture::load( util::convId2PicName( imgId ));
 
       if( pic.isValid() )
       {
@@ -286,7 +292,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
       else
       {
         TileOverlay::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
-        if( ovType == constants::construction::unknown )
+        if( ovType == constants::objects::unknown )
         {
           Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
         }
@@ -294,12 +300,12 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
         baseBuildings[ tile.pos() ] = imgId;
         pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
       }
 
       edgeData[ i ][ j ] = edgeGrid[index];
-      TileHelper::decode( tile, terrainGrid[index] );
-      TileHelper::fixPlateauFlags( tile );
+      util::decode( tile, terrainGrid[index] );
+      util::fixPlateauFlags( tile );
     }
   }    
 
@@ -372,7 +378,11 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   return true;
 }
 
-bool GameLoaderC3Sav::isLoadableFileExtension( const std::string& filename )
+bool C3Sav::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".sav" );
 }
+
+}//end namespace loader
+
+}//end namespace game

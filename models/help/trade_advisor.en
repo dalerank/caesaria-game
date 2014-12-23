@@ -1,0 +1,13 @@
+{  
+ title : "##trade_advisor##"
+ sound : "fanfare"
+ text  : "Click on any good for more information on it. You can see how many industries of this type your city currently has, turn production on or off, or give instructions to import or export these goods. To commence imports or exports, you need to have an open trade route that supplies or demands that item.\n When you do have an open trade route for an item, you'll see a button marked 'Not Trading.' Click that button. If your trade partners are willing to sell you the commodity, the button now reads 'Importing.' Click the same button again. If any of your trading partners want to buy the commodity from you, the button says 'Export Goods Over.'\n To sell your entire production of an item, set the 'Export Goods Over' level to 0. Set a higher number to keep some of this item in your warehouses. You cannot export anything until you use this panel to tell your Advisor to allow exports of an item. Citizens will eventually want pottery, oil, furniture and wine, and in some provinces you'll need weapons to arm legionaries. Local demand for food is met from your @granaries&, so the 'export over' level for foodstuffs only considers any food at warehouses.\n If you click the 'Turn Industry OFF' button, that industry stops working. Its laborers become unemployed, and are available for reassignment by your @Labor Advisor&. Click the same button again to turn the industry back on. You might want to turn industries off if they have produced a large surplus of their product, or if you need their labor elsewhere.\n The last button says 'Using and Trading this Resource; Click Here to Stockpile it.' If you click that button, the commodity can only be added to your warehouses or granaries, never taken out. Not only is the good unavailable for export, but your own markets cannot use it, either. This option is valuable when Caesar requests a commodity from you and you want to provide it quickly. Click the button again to resume normal traffic in this good.\n Don't neglect the 'Show Prices' button. The costs of items you can import, and the price you get for your exports, varies widely from one commodity to the next. Use this information to see which imports are cheapest, and to identify the most valuable goods for export.\n The Help entries on @Food&, @Industry& and @Trade& will help you understand this panel's function."
+ uri : {
+  "granaries" : "granary"
+	"Food" : "food"
+	"Trade" : "trade"
+	"Industry" : "industry"
+	"Labor Advisor" : "labor_advisor"
+	"Peace and war" : "peace_and_war"
+ }
+}

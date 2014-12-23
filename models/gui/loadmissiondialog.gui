@@ -10,7 +10,8 @@
       geometry : [ 210, 350, 510, 610 ]
       bgtype : "none"
       border.visible : false
-      items.font : "FONT_2_WHITE"
+      itemheight : 16
+      items.font : "FONT_1_WHITE"
       items.simple.color : "0xffffffff"
       items.hovered.color : "0xff000000"
     }
@@ -18,7 +19,7 @@
     lbTitle#Label : {
       geometry : [ 255, 150, 455, 175 ]
       text : "##mainmenu_playmission##"
-      font : "FONT_3"
+      font : "FONT_2"
       text.align : [ "center", "upperLeft" ]
     }
 
@@ -27,9 +28,9 @@
       mode : "center"
     }
 
-    lbDescription#Label : {
+    lbDescription#DictionaryText : {
       geometry : [ 525, 165, 805, 560 ]
-      font : "FONT_2"
+      font : "FONT_1"
       multiline : true
     }
 

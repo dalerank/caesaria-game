@@ -1,0 +1,8 @@
+{  
+ title : "##actor_school##"
+ sound : "fanfare"
+ text  : "Many of the cultures that Rome absorbed had traditions more advanced than those of their conquerors. Glassblowers, metalworkers, sculptors and silversmiths all could profitably ply their crafts in Rome, and many artisans led semi-nomadic lives that took them wherever their skills were in demand. More renowned artists and sculptors worked on commission to Rome's upper classes; some even joined patricians' households and worked exclusively for one patron."
+ uri : {
+  "amphitheaters" : "amphitheater"
+	}
+}

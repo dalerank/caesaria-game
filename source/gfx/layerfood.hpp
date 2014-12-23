@@ -21,7 +21,10 @@
 namespace gfx
 {
 
-class LayerFood : public LayerInfo
+namespace layer
+{
+
+class Food : public Info
 {
 public:
   virtual int type() const;
@@ -32,8 +35,10 @@ public:
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerFood( Camera& camera, PlayerCityPtr city );
+  Food( Camera& camera, PlayerCityPtr city );
 };
+
+}//
 
 }//end namespace gfx
 

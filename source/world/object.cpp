@@ -93,7 +93,7 @@ void Object::save( VariantMap& stream ) const
 
 void Object::load(const VariantMap& stream)
 {
-  VARIANT_LOAD_ANY_D( _d, location, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, location, _d->location, stream )
 
   Variant name = stream.get( "name" );
   if( name.isValid() )

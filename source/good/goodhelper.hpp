@@ -23,28 +23,32 @@
 #include "good.hpp"
 #include "city/predefinitions.hpp"
 #include "core/direction.hpp"
+#include "gfx/animation.hpp"
 
-class GoodStock;
+namespace good
+{
 
-class GoodHelper
+class Helper
 {
 public:
-  static GoodHelper& getInstance();
+  static Helper& getInstance();
 
-  static std::string name( Good::Type type );
-  static gfx::Picture picture( Good::Type type, bool emp=false );
-  static Good::Type getType( const std::string& name );
-  static std::string getTypeName( Good::Type type );
+  static std::string name( good::Type type );
+  static gfx::Picture picture( good::Type type, bool emp=false );
+  static good::Type getType( const std::string& name );
+  static std::string getTypeName( good::Type type );
   static float convQty2Units( int qty );
-  static float exportPrice( PlayerCityPtr city, Good::Type gtype, int qty );
-  static float importPrice( PlayerCityPtr city, Good::Type gtype, int qty );
-  static gfx::Picture getCartPicture( const GoodStock& stock, constants::Direction direction );
-  ~GoodHelper();
+  static float exportPrice( PlayerCityPtr city, good::Type gtype, int qty );
+  static float importPrice( PlayerCityPtr city, good::Type gtype, int qty );
+  static const gfx::Animation& getCartPicture( const good::Stock& stock, constants::Direction direction );
+  ~Helper();
 private:
-  GoodHelper();
+  Helper();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace good
 
 #endif //__CAESARIA_GOODHELPER_H_INCLUDED__

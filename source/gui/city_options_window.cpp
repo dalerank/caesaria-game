@@ -19,7 +19,7 @@
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "listbox.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "dialogbox.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"

@@ -19,7 +19,7 @@
 #include "game.hpp"
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/picture.hpp"
@@ -62,7 +62,9 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "gfx/helper.hpp"
 #include "gamestate.hpp"
+#include "hotkey_manager.hpp"
 
 #include <list>
 
@@ -93,6 +95,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initHotkeys();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -156,17 +159,17 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  Variant c3res = SETTINGS_VALUE( c3gfx );
-  if( c3res.isValid() )
+  std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
+  if( !c3res.empty() )
   {
-    vfs::Directory gfxDir( c3res.toString() );
+    vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
 
     if( !c3path.exist( vfs::Path::ignoreCase ) )
     {
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
-                 "original game archive c3.sg2 not found in folder " + c3res.toString() +
+                 "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
@@ -177,7 +180,8 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
     if( !testPics.exist() )
     {
-      errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
+      SETTINGS_SET_VALUE( resourcePath, Variant("") );
+      errorStr = "Not found graphics package. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }
@@ -188,7 +192,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   if( !errorStr.empty() )
   {
     OSystem::error( "Resources error", errorStr );
-    Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
+    Logger::warning( "CRITICAL: not found original resources in " + c3res );
     exit( -1 ); //kill application
   }
 
@@ -229,8 +233,16 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
 
 void Game::Impl::initPictures()
 {
-  AnimationBank::instance().loadCarts();
-  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
+  AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
+  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
+                                           SETTINGS_RC_PATH( simpleAnimationModel ) );
+}
+
+void Game::Impl::initHotkeys()
+{
+  game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
+  hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+  CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
 PlayerPtr Game::player() const { return _d->player; }
@@ -239,6 +251,8 @@ world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
+
+DateTime Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -271,11 +285,11 @@ Game::~Game(){}
 
 void Game::save(std::string filename) const
 {
-  GameSaver saver;
+  game::Saver saver;
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-  events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
   e->dispatch();
 }
 
@@ -290,14 +304,14 @@ bool Game::load(std::string filename)
   if( !fPath.exist() )
   {
     Logger::warning( "Game: Cannot find file " + fPath.toString() );
-    fPath = GameSettings::rpath( filename );
+    fPath = game::Settings::rpath( filename );
 
     if( !fPath.exist() )
     {
       Logger::warning( "Game: Cannot find file " + fPath.toString() );
       Logger::warning( "Game: Try find file in resource's folder " );
 
-      fPath = GameSettings::rcpath( filename ).absolutePath();
+      fPath = game::Settings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
         Logger::warning( "Game: Cannot find file " + fPath.toString() );
@@ -313,7 +327,7 @@ bool Game::load(std::string filename)
                           SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
-  GameLoader loader;
+  game::Loader loader;
   bool loadOk = loader.load( fPath, *this );
 
   if( !loadOk )
@@ -359,18 +373,24 @@ void Game::Impl::initArchiveLoaders()
 
 void Game::initialize()
 {
-  Logger::warning( "Game: load game settings" );
-  GameSettings::load();
+  int cellWidth = SETTINGS_VALUE( cellw );
+  if( cellWidth != 30 && cellWidth != 60 )
+  {
+    cellWidth = 30;
+  }
+
+  tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
-  vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );
+  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
-  _d->initFontCollection( GameSettings::rcpath() );
+  _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();
+  _d->initHotkeys();
   _d->createSaveDir();
 
   Logger::warning( "Game: load splash screen" );
@@ -413,7 +433,7 @@ void Game::initialize()
 
   screen.setText( "##ready_to_game##" );
 
-  if( GameSettings::get( "no-fade" ).isNull() )
+  if( game::Settings::get( "no-fade" ).isNull() )
     screen.exitScene();
 
   _d->nextScreen = SCREEN_MENU;

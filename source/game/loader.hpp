@@ -24,11 +24,14 @@
 
 class Game;
 
-class GameLoader
+namespace game
+{
+
+class Loader
 {
 public:
-  GameLoader();
-  ~GameLoader();
+  Loader();
+  ~Loader();
 
   bool load(vfs::Path filename, Game& game);
   std::string restartFile() const;
@@ -37,5 +40,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace game
 
 #endif //_CAESARIA_GAME_LOADER_H_INCLUDE_

@@ -24,7 +24,10 @@
 namespace gfx
 {
 
-class LayerInfo : public Layer
+namespace layer
+{
+
+class Info : public Layer
 {
 public:
   virtual void render(Engine &engine);
@@ -32,19 +35,21 @@ public:
   virtual void afterRender(Engine &engine);
   virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
 
-  virtual ~LayerInfo();
+  virtual ~Info();
 
 protected:
   void _addColumn( Point pos, int value );
   void _addPicture( Point pos, const Picture& pic );
   void _loadColumnPicture( int picId );
 
-  LayerInfo(Camera& camera, PlayerCityPtr city, int columnIndex);
+  Info(Camera& camera, PlayerCityPtr city, int columnIndex);
 
 private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//end namespace layer
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYER_INFO_H_INCLUDED__

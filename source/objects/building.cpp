@@ -24,7 +24,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/trainee.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
@@ -57,7 +57,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
 {
   setState( Construction::inflammability, 1 );
   setState( Construction::collapsibility, 1 );
-  _d->stateDecreaseInterval = GameDate::days2ticks( 1 );
+  _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
 Building::~Building() {}
@@ -76,7 +76,7 @@ void Building::timeStep(const unsigned long time)
   Construction::timeStep(time);
 }
 
-void Building::storeGoods(GoodStock &stock, const int amount)
+void Building::storeGoods(good::Stock &stock, const int amount)
 {
   std::string bldType = debugName();
   Logger::warning( "This building should not store any goods %s at [%d,%d]",
@@ -110,14 +110,14 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-bool Building::build(PlayerCityPtr pcity, const TilePos &pos)
+bool Building::build( const CityAreaInfo& info )
 {
-  Construction::build( pcity, pos );
+  Construction::build( info );
 
-  switch( pcity->climate() )
+  switch( info.city->climate() )
   {
-  case city::climate::northen: setState( Construction::inflammability, 0.5 ); break;
-  case city::climate::desert: setState( Construction::inflammability, 2 ); break;
+  case game::climate::northen: setState( Construction::inflammability, 0.5 ); break;
+  case game::climate::desert: setState( Construction::inflammability, 2 ); break;
   default: break;
   }
 

@@ -16,7 +16,7 @@
 #include "inifile.hpp"
 
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include <set>
 #include <fstream>
 #include <sstream>
@@ -184,7 +184,7 @@ void IniFile::ExportToFile(vfs::Path file, const std::string& headerComments) co
 	if (!headerComments.empty())
 	{
 		// Split the header text into lines and export it as INI comment
-		std::vector<std::string> lines = StringHelper::split( headerComments, "\n" );
+		std::vector<std::string> lines = utils::split( headerComments, "\n" );
 
 		for (std::size_t i = 0; i < lines.size(); ++i)
 		{
@@ -240,7 +240,7 @@ public:
 		// Just remember the key name, an AddValue() call is imminent
 		_lastKey = std::string(beg, end);
 
-		_lastKey = StringHelper::replace( _lastKey, " ", "" );
+		_lastKey = utils::replace( _lastKey, " ", "" );
 	}
 
 	void AddValue(char const* beg, char const* end)
@@ -263,9 +263,9 @@ void IniFile::ParseFromString(const std::string& str)
 	std::istringstream iss(str);
 	while( std::getline( iss, sRead ) )
 	{
-		sRead = StringHelper::trim( sRead );
-		sRead = StringHelper::replace( sRead, "\r", "");
-		sRead = StringHelper::replace( sRead, "\n", "");
+		sRead = utils::trim( sRead );
+		sRead = utils::replace( sRead, "\r", "");
+		sRead = utils::replace( sRead, "\n", "");
 		if( !sRead.empty() )
 		{
 			RR nType = ( sRead.find_first_of("[") == 0 && ( sRead[sRead.find_last_not_of(" \t\r\n")] == ']' ) ) ? SECTION : OTHER ;
@@ -275,7 +275,7 @@ void IniFile::ParseFromString(const std::string& str)
 			switch( nType )
 			{
 				case SECTION:
-					sectionName = StringHelper::trim( sRead.substr( 1 , sRead.size() - 2 ) );
+					sectionName = utils::trim( sRead.substr( 1 , sRead.size() - 2 ) );
 					AddSection( sectionName );
 				break;
 
@@ -285,8 +285,8 @@ void IniFile::ParseFromString(const std::string& str)
 					if( !sectionName.empty() )
 					{
 						size_t iFind = sRead.find_first_of("=");
-						std::string sKey = StringHelper::trim( sRead.substr(0,iFind) );
-						std::string sValue = StringHelper::trim( sRead.substr(iFind + 1) );
+						std::string sKey = utils::trim( sRead.substr(0,iFind) );
+						std::string sValue = utils::trim( sRead.substr(iFind + 1) );
 						SetValue( sectionName, sKey, sValue );
 					}
 				}

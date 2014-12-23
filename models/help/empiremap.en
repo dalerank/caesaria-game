@@ -1,0 +1,10 @@
+{  
+ title : "##empire_map##"
+ sound : "fanfare"
+ text  : "Your foreign affairs are conducted primarily on this map.\n Early on in each assignment, find trading partners on the Empire Map. The city with the black and gold flag is your city; trading cities have red flags, and other Roman cities fly blue banners. Foreign cities have gold flags. Click on a trading city to see what goods it can supply, and what commodities it will buy. Trade routes cost money to open, usually proportionate to their length. Make sure that you differentiate between land routes and sea routes. You cannot trade over a sea route without a dock.\n In most provinces, you'll eventually need multiple trade routes to absorb all of the goods you can export, but choose your first route with special care, balancing its demand against its cost. Opening a trade route, producing raw materials, establishing the appropriate workshops and building the necessary warehouses or docks is a huge investment. Make sure it pays off, because if it fails you might lack the income to open a second route.\n Early assignments, while the Empire is young, have limited trade opportunities. As time goes on, the Empire's borders expand and more cities become available, with more resources and greater appetites for your exports.\n Periodically, your scribes post messages for your attention. When these refer to nearby military actions or invading armies, use the Empire Map to check their locations. You can also see the Empire's boundaries on this map.\n Help entries on @Trade&, @Industry&, and @Peace and war& contain related information."
+ uri : {
+  "Trade" : "trade"
+	"Industry" : "industry"
+	"Peace and war" : "peace_and_war"
+ }
+}

@@ -652,6 +652,12 @@ void Label::setAlpha(unsigned int value)
   _d->needUpdatePicture = true;
 }
 
+void Label::setColor(NColor color)
+{
+  _d->font.setColor( color );
+  _d->needUpdatePicture = true;
+}
+
 void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
   Widget::setTextAlignment( horizontal, vertical );

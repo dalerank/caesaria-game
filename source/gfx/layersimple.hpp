@@ -24,19 +24,25 @@
 namespace gfx
 {
 
-class LayerSimple : public Layer
+namespace layer
+{
+
+class Simple : public Layer
 {
 public:
   virtual int type() const;
   static LayerPtr create(Camera& camera, PlayerCityPtr city );
+  virtual void afterRender(Engine &engine);
   virtual void renderUi(Engine &engine);
 
 protected:
-  LayerSimple(Camera& camera, PlayerCityPtr city );
+  Simple(Camera& camera, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERSIMPLE_H_INCLUDED__

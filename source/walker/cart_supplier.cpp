@@ -46,10 +46,10 @@ const int defaultDeliverDistance = 40;
 class CartSupplier::Impl
 {
 public:
-  GoodStock stock;
+  good::Stock stock;
   TilePos storageBuildingPos;
   TilePos baseBuildingPos;
-  Picture cartPicture;
+  Animation anim;
   int maxDistance;
   long rcvReservationID;
   long reservationID;
@@ -80,7 +80,7 @@ void CartSupplier::_reachedPathway()
     BuildingPtr building;
     building << _city()->getOverlay( _d->baseBuildingPos );
 
-    GoodStore* storage = 0;
+    good::Store* storage = 0;
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
     WarehousePtr w = ptr_cast<Warehouse>( building );
@@ -107,7 +107,7 @@ void CartSupplier::_reachedPathway()
     BuildingPtr building;
     building << _city()->getOverlay( _d->storageBuildingPos );
 
-    GoodStore* storage = 0;
+    good::Store* storage = 0;
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
     WarehousePtr w = ptr_cast<Warehouse>( building );
@@ -132,20 +132,20 @@ void CartSupplier::_reachedPathway()
 }
 
 
-const Picture& CartSupplier::getCartPicture()
+const Animation& CartSupplier::_cart()
 {
-  if( !_d->cartPicture.isValid() )
+  if( !_d->anim.isValid() )
   {
-    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, direction() );
+    _d->anim = good::Helper::getCartPicture( _d->stock, direction() );
   }
 
-  return _d->cartPicture;
+  return _d->anim;
 }
 
 void CartSupplier::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->cartPicture = Picture();  // need to get the new graphic
+   _d->anim = Animation();  // need to get the new graphic
 }
 
 void CartSupplier::getPictures( Pictures& oPics)
@@ -159,7 +159,7 @@ void CartSupplier::getPictures( Pictures& oPics)
    case constants::northWest:
    case constants::north:
    case constants::northEast:
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( _cart().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
@@ -168,7 +168,7 @@ void CartSupplier::getPictures( Pictures& oPics)
    case constants::south:
    case constants::southWest:
       oPics.push_back( getMainPicture() );
-      oPics.push_back( getCartPicture() );
+      oPics.push_back( _cart().currentFrame() );
    break;
 
    default:
@@ -178,7 +178,7 @@ void CartSupplier::getPictures( Pictures& oPics)
 
 template< class T >
 TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                                 const Good::Type what, const int needQty,
+                                 const good::Type what, const int needQty,
                                  Pathway &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
@@ -210,7 +210,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
     // a warehouse/granary has been found!
     // reserve some goods from that warehouse/granary
     int qty = math::clamp( needQty, 0, max_qty );
-    reservId = res->store().reserveRetrieval( what, qty, GameDate::current() );
+    reservId = res->store().reserveRetrieval( what, qty, game::Date::current() );
     return res->pos();
   }
   else
@@ -219,7 +219,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
   }
 }
 
-void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Type type, const int qty )
+void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Type type, const int qty )
 {
   _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
 
@@ -232,13 +232,13 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, building::granary,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, objects::granary,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
-    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, building::warehouse,
+    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, objects::warehouse,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 
@@ -256,7 +256,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   }
 }
 
-void CartSupplier::send2city( BuildingPtr building, Good::Type what, const int qty )
+void CartSupplier::send2city( BuildingPtr building, good::Type what, const int qty )
 {
   _d->stock.setType( what );
   _d->stock.setCapacity( qty );
@@ -275,7 +275,7 @@ void CartSupplier::_reserveStorage()
   BuildingPtr b;
   b << _city()->getOverlay( _d->baseBuildingPos );
 
-  GoodStore* storage = 0;
+  good::Store* storage = 0;
   FactoryPtr f = ptr_cast<Factory>( b );
   GranaryPtr g = ptr_cast<Granary>( b );
   WarehousePtr w = ptr_cast<Warehouse>( b );
@@ -285,7 +285,7 @@ void CartSupplier::_reserveStorage()
 
   if( storage != 0 )
   {
-    _d->rcvReservationID = storage->reserveStorage( _d->stock, GameDate::current() );
+    _d->rcvReservationID = storage->reserveStorage( _d->stock, game::Date::current() );
   }
   else
   {}
@@ -333,6 +333,7 @@ bool CartSupplier::die()
 
 void CartSupplier::timeStep(const unsigned long time)
 {
+  _d->anim.update( time );
   Walker::timeStep( time );
 }
 

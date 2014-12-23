@@ -21,6 +21,7 @@
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
+#include "dictionary.hpp"
 #include "walker/soldier.hpp"
 #include "label.hpp"
 
@@ -91,6 +92,11 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
 AboutFort::~AboutFort()
 {
+}
+
+void AboutFort::_showHelp()
+{
+  DictionaryWindow::show( this, "fort" );
 }
 
 void AboutFort::Impl::update(Widget* parent)

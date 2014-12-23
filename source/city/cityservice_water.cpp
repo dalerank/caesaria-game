@@ -26,7 +26,7 @@ using namespace gfx;
 namespace city
 {
 
-const int waterDecreaseInterval = GameDate::days2ticks( 5 );
+const int waterDecreaseInterval = game::Date::days2ticks( 5 );
 
 city::SrvcPtr Water::create( PlayerCityPtr city )
 {

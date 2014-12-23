@@ -17,22 +17,25 @@
 
 #include "gamedate.hpp"
 
+namespace game
+{
+
 namespace {
   unsigned int tickInDay = 25;
 }
 
-GameDate& GameDate::instance()
+Date& Date::instance()
 {
-  static GameDate inst;
+  static Date inst;
   return inst;
 }
 
-unsigned int GameDate::days2ticks(unsigned int days)
+unsigned int Date::days2ticks(unsigned int days)
 {
   return days * tickInDay;
 }
 
-void GameDate::timeStep( unsigned int time )
+void Date::timeStep( unsigned int time )
 {
   _dayChange = false;
   _weekChange = false;
@@ -51,12 +54,14 @@ void GameDate::timeStep( unsigned int time )
   }  
 }
 
-void GameDate::init( const DateTime& date )
+void Date::init( const DateTime& date )
 {
   _current = date;
 }
 
-GameDate::GameDate()
+Date::Date()
 {
   _current = DateTime( -350, 0, 0 );
 }
+
+}// end namespace game

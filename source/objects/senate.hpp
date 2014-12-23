@@ -36,11 +36,11 @@ public:
 
   virtual void deliverService();  
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles)const;
+  virtual bool canBuild( const CityAreaInfo& areaInfo )const;
 
   virtual void applyService(ServiceWalkerPtr walker);
 
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build( const CityAreaInfo& info );
 
   virtual unsigned int walkerDistance() const;
 

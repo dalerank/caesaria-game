@@ -23,7 +23,10 @@
 namespace gfx
 {
 
-class LayerIndigene : public LayerInfo
+namespace layer
+{
+
+class Indigene : public Info
 {
 public:
   virtual int type() const;
@@ -33,8 +36,10 @@ public:
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerIndigene( Camera& camera, PlayerCityPtr city );
+  Indigene( Camera& camera, PlayerCityPtr city );
 };
+
+}//end namespace layer
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERINDIGENE_H_INCLUDED__

@@ -43,26 +43,30 @@
 
 using namespace religion;
 
-namespace {
+namespace game
+{
+
+namespace loader
+{
+
 CAESARIA_LITERALCONST(climate)
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
 CAESARIA_LITERALCONST(random)
-}
 
-class GameLoaderMission::Impl
+class Mission::Impl
 {
 public:
   std::string restartFile;
 };
 
-GameLoaderMission::GameLoaderMission()
+Mission::Mission()
  : _d( new Impl )
 {
 }
 
-bool GameLoaderMission::load( const std::string& filename, Game& game )
+bool Mission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
   _d->restartFile = filename;
@@ -74,7 +78,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     if( climateType >= 0 )
     {
-      ClimateManager::initialize( (ClimateType)climateType );
+      game::climate::initialize( (ClimateType)climateType );
     }
 
     if( mapToLoad == lc_random )
@@ -88,7 +92,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     }
     else
     {
-      GameLoader mapLoader;
+      game::Loader mapLoader;
       mapLoader.load( mapToLoad, game );
     }
 
@@ -107,7 +111,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, true ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( lc_fishPlaceEnabled, true ) );
 
-    GameDate::instance().init( vm[ "date" ].toDateTime() );
+    game::Date::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm[ "events" ].toMap();
     foreach( it, vm_events )
@@ -142,7 +146,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );
-    GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
+    SETTINGS_SET_VALUE( lastTranslation, Variant( missionName ) );
 
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
@@ -157,10 +161,14 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
   return false;
 }
 
-bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
+bool Mission::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".mission" );
 }
 
-int GameLoaderMission::climateType(const std::string& filename) { return -1; }
-std::string GameLoaderMission::restartFile() const { return _d->restartFile; }
+int Mission::climateType(const std::string& filename) { return -1; }
+std::string Mission::restartFile() const { return _d->restartFile; }
+
+}//end namespace loader
+
+}//end namespace game

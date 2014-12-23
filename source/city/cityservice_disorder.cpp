@@ -75,17 +75,17 @@ Disorder::Disorder( PlayerCityPtr city )
 
 void Disorder::timeStep( const unsigned int time )
 {
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     _d->rioterInLastYear = _d->rioterInThisYear;
     _d->rioterInThisYear = 0;
   }
 
-  if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
   Helper helper( _city() );
-  HouseList houses = helper.find<House>( building::house );
+  HouseList houses = helper.find<House>( objects::house );
 
   WalkerList walkers = _city()->walkers( walker::protestor );
 

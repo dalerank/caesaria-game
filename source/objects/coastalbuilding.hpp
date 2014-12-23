@@ -25,10 +25,10 @@
 class CoastalFactory : public Factory
 {
 public:
-  CoastalFactory( const Good::Type consume, const Good::Type produce,
+  CoastalFactory( const good::Type consume, const good::Type produce,
                   const TileOverlay::Type type, Size size );
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool build(const CityAreaInfo &info);
   virtual void destroy();
 
   virtual void save(VariantMap &stream) const;

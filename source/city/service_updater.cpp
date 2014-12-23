@@ -57,13 +57,13 @@ SrvcPtr ServiceUpdater::create( PlayerCityPtr city )
 
 void ServiceUpdater::timeStep( const unsigned int time)
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
-    _d->isDeleted = (_d->endTime < GameDate::current());
+    _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
     Helper helper( _city() );
-    HouseList houses = helper.find<House>( building::house );
+    HouseList houses = helper.find<House>( objects::house );
 
     foreach( it, houses )
     {

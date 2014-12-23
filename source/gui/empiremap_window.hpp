@@ -46,6 +46,7 @@ protected:
   const Point& _offset() const;
 
   Widget* _resetInfoPanel();
+  void _showHelp();
 
   class Impl;
   ScopedPtr< Impl > _d;

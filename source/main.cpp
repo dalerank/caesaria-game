@@ -15,11 +15,12 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
@@ -57,36 +58,19 @@ int main(int argc, char* argv[])
 #endif
   Logger::registerWriter( Logger::consolelog, "" );
 
-  Logger::warning( "Options: working directory is " + workdir.toString() );
-
-  GameSettings::instance().setwdir( workdir.toString() );
-  for (int i = 0; i < (argc - 1); i++)
-  {
-    if( !strcmp( argv[i], "-R" ) )
-    {
-      const char* opts = argv[i+1];
-      workdir = vfs::Path( opts );
-      Logger::warning( "Options: setting workdir to %s", opts  );
-      GameSettings::instance().setwdir( std::string( opts, strlen( opts ) ) );
-      i++;
-    }
-    else if( !strcmp( argv[i], "-Lc" ) )
-    {
-      const char* opts = argv[i+1];
-      Logger::warning( "Options: setting language to %s", opts );
-      GameSettings::set( GameSettings::language, Variant( opts ) );
-      i++;
-    }
-    else if( !strcmp( argv[i], "-c3gfx" ) )
-    {
-      const char* opts = argv[i+1];
-      Logger::warning( "Options: using native C3 resources from %s", opts );
-      GameSettings::set( GameSettings::c3gfx, Variant( opts ) );
-      i++;
-    }
-  }
-
+  game::Settings::instance().setwdir( workdir.toString() );
+  game::Settings::instance().checkwdir( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
+
+  Logger::warning( "Game: setting workdir to " + SETTINGS_VALUE( workDir ).toString()  );
+
+  Logger::warning( "Game: load game settings" );
+  game::Settings::load();
+  game::Settings::instance().checkCmdOptions( argv, argc );
+
+  Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
+  Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );
+  Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
 
   try
   {

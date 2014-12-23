@@ -19,7 +19,7 @@
 #include "city/helper.hpp"
 #include "walker/walker.hpp"
 #include "events/returnworkers.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
@@ -151,12 +151,12 @@ void WorkingBuilding::timeStep( const unsigned long time )
     else { ++it; }
   }
 
-  if( GameDate::isMonthChanged() && numberWorkers() > 0 )
+  if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
     city::Helper helper( _city() );
     TilePos offset( 8, 8 );
     TilePos myPos = pos();
-    HouseList houses = helper.find<House>( building::house, myPos - offset, myPos + offset );
+    HouseList houses = helper.find<House>( objects::house, myPos - offset, myPos + offset );
     float averageDistance = 0;
     foreach( it, houses )
     {
@@ -177,7 +177,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
 void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
-  if( GameDate::isDayChanged() )
+  if( game::Date::isDayChanged() )
   {
     if( mayWork() )
     {
@@ -286,12 +286,12 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
 
   if( prefix.empty() )
   {
-    return StringHelper::format( 0xff, "##%s_%s##",
+    return utils::format( 0xff, "##%s_%s##",
                                  factoryType.c_str(), productivityDescription[ workKoeff ] );
   }
   else
   {
-    return StringHelper::format( 0xff, "##%s_%s_%s##",
+    return utils::format( 0xff, "##%s_%s_%s##",
                                  factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
   }
 }

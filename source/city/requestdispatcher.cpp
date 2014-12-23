@@ -22,7 +22,7 @@
 #include "events/showrequestwindow.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 namespace city
 {
@@ -79,18 +79,20 @@ std::string Dispatcher::defaultName(){  return "requests";}
 
 void Dispatcher::timeStep(const unsigned int time)
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     foreach( rq, _d->requests )
     {
       RequestPtr request = *rq;
-      if( request->finishedDate() <= GameDate::current() )
+      if( request->finishedDate() <= game::Date::current() )
       {
         request->fail( _city() );
-        _d->lastRequestCancelDate = GameDate::current();
+        _d->lastRequestCancelDate = game::Date::current();
       }
 
       bool isReady = request->isReady( _city() );
+      isReady;
+
       if( !request->isAnnounced() )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
@@ -112,7 +114,7 @@ VariantMap Dispatcher::save() const
 
   foreach( rq, _d->requests )
   {
-    std::string name = StringHelper::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
+    std::string name = utils::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
     vm_rq[ name ] = (*rq)->save();
   }
 
@@ -134,7 +136,7 @@ void Dispatcher::load(const VariantMap& stream)
 
 bool Dispatcher::haveCanceledRequest() const
 {
-  return _d->lastRequestCancelDate.monthsTo( GameDate::current() ) < DateTime::monthsInYear;
+  return _d->lastRequestCancelDate.monthsTo( game::Date::current() ) < DateTime::monthsInYear;
 }
 
 RequestList Dispatcher::requests() const {  return _d->requests; }

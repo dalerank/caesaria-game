@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_INDUSTRY_H_INCLUDE__
-#define __CAESARIA_INDUSTRY_H_INCLUDE__
+#ifndef __CAESARIA_CITY_INDUSTRY_H_INCLUDE__
+#define __CAESARIA_CITY_INDUSTRY_H_INCLUDE__
 
 #include <vector>
 #include "objects/constants.hpp"
@@ -25,29 +25,29 @@
 namespace city
 {
 
-class Industry
+namespace industry
 {
-public:
-  typedef std::vector<constants::building::Group> BuildingGroups;
-  typedef enum
-  {
-    factoryAndTrade=0,
-    food,
-    engineering,
-    water,
-    prefectures,
-    military,
-    entertainment,
-    healthAndEducation,
-    administrationAndReligion,
-    count
-  } Type;
 
-  static BuildingGroups toGroups(Type type);
-};
+typedef std::vector<constants::objects::Group> BuildingGroups;
+typedef enum
+{
+  factoryAndTrade=0,
+  food,
+  engineering,
+  water,
+  prefectures,
+  military,
+  entertainment,
+  healthAndEducation,
+  administrationAndReligion,
+  count
+} Type;
 
-typedef Priorities<Industry::Type> HirePriorities;
+BuildingGroups toGroups(Type type);
+} //end namespace industry
 
-}
+typedef Priorities<industry::Type> HirePriorities;
 
-#endif //__CAESARIA_INDUSTRY_H_INCLUDE__
+} //end namespace city
+
+#endif //__CAESARIA_CITY_INDUSTRY_H_INCLUDE__

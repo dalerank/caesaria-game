@@ -9,6 +9,7 @@
   fishPlaceEnabled : false
   climate : 2
   preview.text : "##sarmizegetusa_preview_mission##"
+  preview.title : "##sarmizegetusa_preview_title##"
   preview.image : ""
 	
   win : {

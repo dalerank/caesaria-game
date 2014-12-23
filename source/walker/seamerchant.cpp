@@ -20,7 +20,7 @@
 #include "city/statistic.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "city/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
@@ -48,8 +48,8 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // dock
-  SimpleGoodStore sell;
-  SimpleGoodStore buy;
+  good::SimpleStore sell;
+  good::SimpleStore buy;
   int tryDockCount;
   int maxTryDockCount;
   int waitInterval;
@@ -99,7 +99,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( tryDockCount < maxTryDockCount )
     {
       city::Helper helper( city );
-      DockList docks = helper.find<Dock>( building::dock );
+      DockList docks = helper.find<Dock>( objects::dock );
 
       if( !docks.empty() )
       {
@@ -142,14 +142,14 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stWaitFreeDock:
   {
-    waitInterval = GameDate::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( 7 );
     nextState = stFindDock;
   }
   break;
 
   case stRequestGoods:
   {
-    landingDate = GameDate::current();
+    landingDate = game::Date::current();
 
     WalkerList walkers = city->walkers( wlk->pos() );
     walkers.remove( wlk );
@@ -162,9 +162,9 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       city::TradeOptions& options = city->tradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
       //request goods
-      for( int n = Good::wheat; n<Good::goodCount; n++ )
+      for( int n = good::wheat; n<good::goodCount; n++ )
       {
-        Good::Type goodType = (Good::Type)n;
+        good::Type goodType = (good::Type)n;
         int needQty = buy.freeQty( goodType );
         if (!options.isExporting(goodType))
         {
@@ -174,7 +174,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
         if( maySell > 0)
         {
-          GoodStock stock( goodType, maySell, maySell );
+          good::Stock stock( goodType, maySell, maySell );
           myDock->requestGoods( stock );
           anyBuy = true;
         }
@@ -199,9 +199,9 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       city::TradeOptions& options = city->tradeOptions();
       //try buy goods
-      for( int n = Good::wheat; n<Good::goodCount; ++n )
+      for( int n = good::wheat; n<good::goodCount; ++n )
       {
-        Good::Type goodType = (Good::Type) n;
+        good::Type goodType = (good::Type) n;
         if (!options.isExporting(goodType))
         {
           continue;
@@ -211,14 +211,14 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
         if( needQty > 0 )
         {
-          GoodStock& stock = buy.getStock( goodType );
+          good::Stock& stock = buy.getStock( goodType );
           currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
       }
 
       nextState = stWaitGoods;
-      waitInterval = anyBuy ? GameDate::days2ticks( 7 ) : 0;
+      waitInterval = anyBuy ? game::Date::days2ticks( 7 ) : 0;
 
       if( 0 == buy.freeQty() ) //all done
       {
@@ -242,7 +242,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     }
     else
     {
-      if( landingDate.monthsTo( GameDate::current() ) > 2 )
+      if( landingDate.monthsTo( game::Date::current() ) > 2 )
       {
         nextState = stGoOutFromCity;
         resolveState( city, wlk );
@@ -259,7 +259,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stGoOutFromCity:
   {
     // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-    waitInterval = GameDate::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( 7 );
     goAwayFromCity( city, wlk );
     nextState = stBackToBaseCity;
   }
@@ -271,11 +271,11 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() )
     {
       city::TradeOptions& options = city->tradeOptions();
-      const GoodStore& importing = options.importingGoods();
+      const good::Store& importing = options.importingGoods();
       //try sell goods
-      for( int n = Good::wheat; n<Good::goodCount; ++n)
+      for( int n = good::wheat; n<good::goodCount; ++n)
       {
-        Good::Type type = (Good::Type)n;
+        good::Type type = (good::Type)n;
         if (!options.isImporting(type))
         {
           continue;
@@ -291,7 +291,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     nextState = stBuyGoods;
     resolveState( city, wlk );
-    waitInterval = anySell ? GameDate::days2ticks( 7 ) : 0;
+    waitInterval = anySell ? game::Date::days2ticks( 7 ) : 0;
   }
   break;
 
@@ -386,7 +386,7 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
   city::Helper helper( city );
-  DockList docks = helper.find<Dock>( building::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  DockList docks = helper.find<Dock>( objects::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
     if( (*dock)->landingTile().pos() == walker->pos() )

@@ -26,24 +26,24 @@
 using namespace constants;
 using namespace gfx;
 
-bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  return Factory::canBuild( city, pos, aroundTiles );
+  return Factory::canBuild( areaInfo );
 }
 
-bool FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
+bool FurnitureWorkshop::build( const CityAreaInfo& info )
 {
-  Factory::build( city, pos );
+  Factory::build( info );
 
-  city::Helper helper( city );
-  bool haveTimberLogger = !helper.find<TimberLogger>( building::timberLogger ).empty();
+  city::Helper helper( info.city );
+  bool haveTimberLogger = !helper.find<TimberLogger>( objects::timberLogger ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
   return true;
 }
 
-FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, building::furnitureWorkshop, Size(2) )
+FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, objects::furnitureWorkshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 117 );
   _fgPicturesRef().resize( 3 );

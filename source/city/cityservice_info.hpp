@@ -62,7 +62,7 @@ public:
   {
     std::string text;
     std::string title;
-    Good::Type gtype;
+    good::Type gtype;
     Point position;
     int type;
     DateTime date;

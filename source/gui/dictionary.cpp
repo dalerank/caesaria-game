@@ -17,7 +17,7 @@
 
 #include "dictionary.hpp"
 #include "pushbutton.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
 #include "core/saveadapter.hpp"

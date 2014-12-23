@@ -12,24 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_CLIMATE_H_INCLUDED__
-#define __CAESARIA_CITY_CLIMATE_H_INCLUDED__
+#ifndef _CAESARIA_PACKAGE_OPTIONS_H_INCLUDE_
+#define _CAESARIA_PACKAGE_OPTIONS_H_INCLUDE_
 
-namespace city
+#include "info_box.hpp"
+
+namespace gui
 {
 
-namespace climate
+namespace dialog
 {
 
-typedef enum { central=0, northen, desert } Type;
+class PackageOptions : public Window
+{
+public:
+  PackageOptions(Widget* parent, const Rect& rectangle);
+  virtual ~PackageOptions();
 
-}
+private:
+  void _saveOptions();
+  void _setResourcesPath(std::string);
+  void _setCaesar3Path(std::string);
+  void _changeCellw();
+  void _update();
 
-}
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
 
-typedef city::climate::Type ClimateType;
+}//end namespace dialog
 
-#endif //__CAESARIA_CITY_CLIMATE_H_INCLUDED__
+}//end namespace gui
+#endif //_CAESARIA_PACKAGE_OPTIONS_H_INCLUDE_

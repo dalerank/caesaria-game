@@ -19,7 +19,7 @@
 #include "listboxprivate.hpp"
 #include "pushbutton.hpp"
 #include "core/time.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
@@ -314,8 +314,8 @@ bool ListBox::onEvent(const NEvent& event)
         if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
 				{
 					if( _d->items[ _d->selectedItemIndex ].text().size() >= _d->keyBuffer.size()
-							&& StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].text().substr( 0,_d->keyBuffer.size() ),
-																				StringHelper::equaleIgnoreCase ) )
+							&& utils::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].text().substr( 0,_d->keyBuffer.size() ),
+																				utils::equaleIgnoreCase ) )
 					{
 						return true;
 					}
@@ -326,8 +326,8 @@ bool ListBox::onEvent(const NEvent& event)
 				{
 					if( _d->items[current].text().size() >= _d->keyBuffer.size())
 					{
-						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].text().substr(0,_d->keyBuffer.size()),
-                                        StringHelper::equaleIgnoreCase ) )
+						if( utils::isEquale( _d->keyBuffer, _d->items[current].text().substr(0,_d->keyBuffer.size()),
+                                        utils::equaleIgnoreCase ) )
 						{
 							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( moveOverSelect ))
 							{
@@ -344,8 +344,8 @@ bool ListBox::onEvent(const NEvent& event)
 				{
 					if( _d->items[current].text().size() >= _d->keyBuffer.size())
 					{
-						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].text().substr( 0,_d->keyBuffer.size() ),
-																				StringHelper::equaleIgnoreCase ) )
+						if( utils::isEquale( _d->keyBuffer, _d->items[current].text().substr( 0,_d->keyBuffer.size() ),
+																				utils::equaleIgnoreCase ) )
 						{
 							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( moveOverSelect ))
 							{
