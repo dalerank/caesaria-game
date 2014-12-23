@@ -45,10 +45,11 @@ after_success:
 - export REVISION_NUMBER=`git rev-list HEAD --count`
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
 # Prepare ZIP archive
-- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- ZIPNAME=caesaria-0.5-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- sshpass -p "$SCP_PASS" scp -v *.exe dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
