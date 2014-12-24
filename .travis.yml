@@ -9,7 +9,7 @@ before_install:
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
-- cmake -DUSE_STEAM=1 -DCMAKE_BUILD_TYPE=Release .
+- cmake -DUSE_STEAM=1 -DX64_BUIDL=1 -DCMAKE_BUILD_TYPE=Release .
 before_script:
 # Don't ask for confirmation when using scp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
