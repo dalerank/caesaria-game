@@ -237,14 +237,14 @@ if(USE_STEAM)
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/libsdkencryptedappticket.dll" "${WORK_DIR}/libsdkencryptedappticket.dll"
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/dkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/steam_api.dll" "${WORK_DIR}/steam_api.dll"
       )
     else()
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/libsdkencryptedappticket.dll" "${WORK_DIR}/libsdkencryptedappticket.dll"
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/steam_api.dll" "${WORK_DIR}/steam_api.dll"
       )
     endif()
