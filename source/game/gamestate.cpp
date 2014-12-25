@@ -28,6 +28,7 @@
 #include "core/time.hpp"
 #include "world/empire.hpp"
 #include "freeplay_finalizer.hpp"
+#include "steam.hpp"
 
 namespace gamestate
 {
@@ -54,6 +55,9 @@ bool BaseState::update(gfx::Engine* engine)
     return false;
   }
 
+#ifdef CAESARIA_USE_STEAM
+  steamapi::Handler::update();
+#endif
   _screen->update(*engine);
   return true;
 }

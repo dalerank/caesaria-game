@@ -466,9 +466,9 @@ bool Game::exec()
       _d->timeX10 = 0;
       _d->saveTime = _d->timeX10;
       _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
-                                                          _d->saveTime, _d->timeX10,
-                                                          _d->timeMultiplier, _d->manualTicksCounterX10,
-                                                          _d->nextFilename, _d->restartFile );
+                                                        _d->saveTime, _d->timeX10,
+                                                        _d->timeMultiplier, _d->manualTicksCounterX10,
+                                                        _d->nextFilename, _d->restartFile );
     } break;
     case SCREEN_BRIEFING:
     {
