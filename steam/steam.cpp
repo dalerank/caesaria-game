@@ -85,6 +85,16 @@ bool Handler::connect()
   // Ensure that the user has logged into Steam. This will always return true if the game is launched
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
+  ISteamApps* apps = SteamApps();
+
+  Logger::warning( "CurrentGameLanguage: %s", apps->GetCurrentGameLanguage() );
+
+  ISteamUserStats* stats = SteamUserStats();
+
+  stats->RequestCurrentStats();
+  Logger::warning("Reqesting Current Stats");
+  //SteamAPICall_t hSteamAPICall = stats->GetNumberOfCurrentPlayers();
+
   ISteamUser* player = SteamUser();
   if ( !player->BLoggedOn() )
   {
@@ -101,7 +111,7 @@ void Handler::close()
   SteamAPI_Shutdown();
 }
 
-void Handler::frame()
+void Handler::update()
 {
   // Run Steam client callbacks
   SteamAPI_RunCallbacks();
@@ -109,7 +119,17 @@ void Handler::frame()
 
 void Handler::init()
 {
-  glbSteamId = SteamUser()->GetSteamID();
+  Logger::warning( "Try get personaName: %s" );
+  ISteamUser* user = SteamUser();
+  if( user )
+  {
+    glbSteamId = user->GetSteamID();
+    Logger::warning( "PersonaName: %s", SteamFriends()->GetPersonaName() );
+  }
+  else
+  {
+    Logger::warning( "SteamUser is null" );
+  }
 }
 
 std::string Handler::userName()

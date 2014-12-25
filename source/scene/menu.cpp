@@ -499,7 +499,7 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::init();
+  steamapi::Handler::init();  
 
   std::string steamName = steamapi::Handler::userName();
   _d->userImage = steamapi::Handler::userImage();

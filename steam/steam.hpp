@@ -30,7 +30,7 @@ public:
   static bool checkSteamRunning();
   static bool connect();
   static void close();
-  static void frame();
+  static void update();
   static void init();
   static std::string userName();
   static const gfx::Picture& userImage();

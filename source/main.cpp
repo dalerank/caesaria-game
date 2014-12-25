@@ -41,15 +41,6 @@ int SDL_main(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {  
-
-#ifdef CAESARIA_USE_STEAM
-  if( !steamapi::Handler::checkSteamRunning() )
-    return EXIT_FAILURE;
-
-  if( !steamapi::Handler::connect() )
-    return EXIT_FAILURE;
-#endif
-
   vfs::Directory workdir;
 #ifdef CAESARIA_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
@@ -59,7 +50,7 @@ int main(int argc, char* argv[])
   Logger::registerWriter( Logger::consolelog, "" );
 
   game::Settings::instance().setwdir( workdir.toString() );
-  game::Settings::instance().checkwdir( argv, argc );
+  game::Settings::instance().checkwdir( argv, argc );  
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 
   Logger::warning( "Game: setting workdir to " + SETTINGS_VALUE( workDir ).toString()  );
@@ -71,6 +62,14 @@ int main(int argc, char* argv[])
   Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
   Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );
   Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
+
+#ifdef CAESARIA_USE_STEAM
+  if( !steamapi::Handler::checkSteamRunning() )
+    return EXIT_FAILURE;
+
+  if( !steamapi::Handler::connect() )
+    return EXIT_FAILURE;
+#endif
 
   try
   {
