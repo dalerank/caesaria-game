@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
   if( !steamapi::Handler::checkSteamRunning() )
     return EXIT_FAILURE;
 
-  if( !steamapi::Handler::init() )
+  if( !steamapi::Handler::connect() )
     return EXIT_FAILURE;
 #endif
 

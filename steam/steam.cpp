@@ -25,7 +25,8 @@ namespace steamapi
 {
 
 static const AppId_t CAESARIA_STEAM_APPID=327640;
-static gfx::Picture* avatarImage = 0;
+static gfx::Picture const* avatarImage = 0;
+static CSteamID glbSteamId;
 
 //-----------------------------------------------------------------------------
 // Purpose: callback hook for debug text emitted from the Steam API
@@ -55,7 +56,7 @@ bool Handler::checkSteamRunning()
   return !needRestart;
 }
 
-bool Handler::init()
+bool Handler::connect()
 {
   // Initialize SteamAPI, if this fails we bail out since we depend on Steam for lots of stuff.
   // You don't necessarily have to though if you write your code to check whether all the Steam
@@ -84,12 +85,13 @@ bool Handler::init()
   // Ensure that the user has logged into Steam. This will always return true if the game is launched
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
-  if ( !SteamUser()->BLoggedOn() )
+  ISteamUser* player = SteamUser();
+  if ( !player->BLoggedOn() )
   {
     Logger::warning( "Steam user is not logged in\n" );
     OSystem::error( "Fatal Error", "Steam user must be logged in to play this game (SteamUser()->BLoggedOn() returned false).\n" );
     return false;
-  }
+  }  
 
   return true;
 }
@@ -105,35 +107,32 @@ void Handler::frame()
   SteamAPI_RunCallbacks();
 }
 
+void Handler::init()
+{
+  glbSteamId = SteamUser()->GetSteamID();
+}
+
 std::string Handler::userName()
 {
   // We use Steam persona names for our players in-game name.  To get these we
   // just call SteamFriends()->GetFriendPersonaName() this call will work on friends,
   // players on the same game server as us (if using the Steam game server auth API)
   // and on ourself.
-  ISteamUser* player = SteamUser();
-  std::string playerName;
-
-  if( player )
-  {
-    CSteamID steamId = player->GetSteamID();
-    playerName = SteamFriends()->GetFriendPersonaName( steamId );
-  }
+  std::string playerName = SteamFriends()->GetPersonaName();
 
   return playerName;
 }
 
 const gfx::Picture& Handler::userImage()
 {
-  ISteamUser* player = SteamUser();
+  avatarImage = &gfx::Picture::getInvalid();
   // We also want to use the Steam Avatar image inside the HUD if it is available.
   // We look it up via GetMediumFriendAvatar, which returns an image index we use
   // to look up the actual RGBA data below.
 
-  if( player )
+  if( glbSteamId.IsValid() )
   {
-    CSteamID steamId = player->GetSteamID();
-    int iImage = SteamFriends()->GetMediumFriendAvatar( steamId );
+    int iImage = SteamFriends()->GetMediumFriendAvatar( glbSteamId );
     if ( iImage != -1 )
     {
       // We haven't created a texture for this image index yet, do so now
@@ -144,26 +143,25 @@ const gfx::Picture& Handler::userImage()
       Size newSize( uAvatarWidth, uAvatarHeight );
       if( newSize.area() > 0 && ( !avatarImage || avatarImage->size() != newSize) )
       {
-        gfx::Picture::destroy( avatarImage );
         // Get the actual raw RGBA data from Steam and turn it into a texture in our game engine
         const unsigned int imgSize = uAvatarWidth * uAvatarHeight * 4;
         std::vector<unsigned char> avatarRGBA( imgSize );
         SteamUtils()->GetImageRGBA( iImage, (uint8*)avatarRGBA.data(), imgSize );
 
-        unsigned int* rImg = (unsigned int*)avatarRGBA.data();
-        for( int y=0; y < uAvatarHeight; y++ )
-          for( int x=0; x< uAvatarWidth; x++ )
-            {
-              NColor cl( rImg[ y * uAvatarWidth + x ] );
-              rImg[ y * uAvatarWidth + x ] = cl.abgr();
-            }
+        int32* rImg = (int32*)avatarRGBA.data();
+        for( unsigned int y=0; y < uAvatarHeight; y++ )
+          for( unsigned int x=0; x< uAvatarWidth; x++ )
+          {
+            NColor cl( rImg[ y * uAvatarWidth + x ] );
+            rImg[ y * uAvatarWidth + x ] = cl.abgr();
+          }
 
         avatarImage = gfx::Picture::create( newSize, avatarRGBA.data() );
       }
     }
   }
 
-  return avatarImage ? *avatarImage : gfx::Picture::getInvalid();
+  return *avatarImage;
 }
 
 }
