@@ -100,11 +100,19 @@ endif(UNIX)
 
 if(USE_STEAM)
   if(WIN32)
-    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win32/steam_api.lib")
+    if(X64_BUILD)
+      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win64/steam_api.lib")
+    else()
+      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win32/steam_api.lib")
+    endif()
   elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
   elseif(UNIX)
-    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux32/libsteam_api.so")
+    if(X64_BUILD)
+      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux32/libsteam_api.so")
+    else()
+      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux64/libsteam_api.so")
+    endif()
   endif()
 endif(USE_STEAM)
 
@@ -233,12 +241,21 @@ ADD_CUSTOM_COMMAND(
 
 if(USE_STEAM)
   if(WIN32)
-    ADD_CUSTOM_COMMAND(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/libsdkencryptedappticket.dll" "${WORK_DIR}/libsdkencryptedappticket.dll"
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-    )
+    if(X64_BUILD)
+      ADD_CUSTOM_COMMAND(
+          TARGET ${PROJECT_NAME}
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/dkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+      )
+    else()
+      ADD_CUSTOM_COMMAND(
+          TARGET ${PROJECT_NAME}
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+      )
+    endif()
   elseif(APPLE)
     ADD_CUSTOM_COMMAND(
         TARGET ${PROJECT_NAME}
@@ -247,12 +264,21 @@ if(USE_STEAM)
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib" "${WORK_DIR}/libsteam_api.dylib"
     )
   elseif(UNIX)
-    ADD_CUSTOM_COMMAND(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
-    )
+    if(X64_BUILD)
+      ADD_CUSTOM_COMMAND(
+          TARGET ${PROJECT_NAME}
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
+      )
+    else()
+      ADD_CUSTOM_COMMAND(
+          TARGET ${PROJECT_NAME}
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
+     )
+    endif()
   endif()
 endif()
 
