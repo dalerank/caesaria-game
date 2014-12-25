@@ -335,7 +335,7 @@ TilePos Fort::freeSlot() const
   {
     foreach( it, tiles )
     {
-      unsigned int tilehash = util::hash((*it)->pos());
+      unsigned int tilehash = tile::hash((*it)->pos());
 
       if( _d->patrolAreaPos.find( tilehash ) == _d->patrolAreaPos.end() )
       {

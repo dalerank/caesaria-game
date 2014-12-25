@@ -53,12 +53,23 @@ const Point& cellCenter() { return centerOffset;}
 const Size& cellPicSize() { return tilePicSize; }
 const Size& cellSize() { return tileCellSize; }
 
+Direction getDirection(const TilePos& b, const TilePos& e)
+{
+  float t = (e - b).getAngleICW();
+  int angle = (int)ceil( t / 45.f);
+
+  Direction directions[] = { east, southEast, south, southWest,
+                             west, northWest, north, northEast, northEast };
+
+  return directions[ angle ];
 }
 
-namespace util
+}
+
+namespace imgid
 {
 
-std::string convId2PicName( const unsigned int imgId )
+std::string toResource( const unsigned int imgId )
 {
   // example: for land1a_00004, pfx=land1a and id=4
   std::string res_pfx;  // resource name prefix
@@ -102,7 +113,7 @@ std::string convId2PicName( const unsigned int imgId )
   return ret_str;
 }
 
-int convPicName2Id( const std::string &pic_name )
+int fromResource( const std::string &pic_name )
 {
   // example: for land1a_00004, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
@@ -126,11 +137,16 @@ int convPicName2Id( const std::string &pic_name )
   return res_id;
 }
 
-Picture& pictureFromId(const unsigned int imgId)
+Picture& toPicture(const unsigned int imgId)
 {
-  std::string picname = convId2PicName( imgId );
+  std::string picname = toResource( imgId );
   return Picture::load( picname );
 }
+
+}
+
+namespace tile
+{
 
 int encode(const Tile& tt)
 {
@@ -238,18 +254,7 @@ void clear(Tile& tile)
 
   Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
-  tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
-}
-
-Direction getDirection(const TilePos& b, const TilePos& e)
-{
-  float t = (e - b).getAngleICW();
-  int angle = (int)ceil( t / 45.f);
-
-  Direction directions[] = { east, southEast, south, southWest,
-                             west, northWest, north, northEast, northEast };
-
-  return directions[ angle ];
+  tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)
@@ -257,7 +262,7 @@ void fixPlateauFlags(Tile& tile)
   if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
   {
     tile.setFlag( Tile::clearAll, true );
-    Picture pic = Picture::load( convId2PicName( tile.originalImgId() ) );
+    Picture pic = imgid::toPicture( tile.originalImgId() );
     int size = (pic.width() + 2) / 60;
     bool flat = pic.height() <= 30 * size;
     tile.setFlag( Tile::tlRock, !flat );

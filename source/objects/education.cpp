@@ -73,7 +73,7 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
     HousePtr house = ptr_cast<House>( *it );
     if( house.isValid() )
     {
-      unsigned int posHash = gfx::util::hash(house->pos());
+      unsigned int posHash = gfx::tile::hash(house->pos());
       _d->srvBuidings[ posHash ] = house->habitants().count( CitizenGroup::scholar );
     }
   }

@@ -46,7 +46,7 @@ public:
     _index = index;
 
     Picture pic = Picture::load( ResourceGroup::transport, _index );
-    pic.addOffset( util::tilepos2screen( _pos ) );
+    pic.addOffset( tile::tilepos2screen( _pos ) );
     setPicture( pic );
 
     //checkSecondPart();
@@ -97,7 +97,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
       Picture landPic = mt.picture();
-      landPic.addOffset( util::tilepos2screen( TilePos( 0, 1 ) ) );
+      landPic.addOffset( tile::tilepos2screen( TilePos( 0, 1 ) ) );
       _fgPicturesRef().push_back( landPic );
 
       _fgPicturesRef().push_back( pic );
@@ -106,7 +106,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) )  );
+      landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) )  );
       _fgPicturesRef().push_back( landPic );
 
      pic.addOffset( 8, -14 );
@@ -116,7 +116,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( info.pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) ) );
+      landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) ) );
       _fgPicturesRef().push_back( landPic );
 
       pic.addOffset( 0, -15 );
@@ -501,7 +501,7 @@ bool HighBridge::build( const CityAreaInfo& info  )
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
-      subtile->_info = util::encode( tile );
+      subtile->_info = tile::encode( tile );
       subtile->_parent = this;
       
       events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
