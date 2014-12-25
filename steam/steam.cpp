@@ -52,7 +52,7 @@ bool Handler::checkSteamRunning()
 
   // Once you get a public Steam AppID assigned for this game, you need to replace k_uAppIdInvalid with it and
   // removed steam_appid.txt from the game depot.
-  bool needRestart = SteamAPI_RestartAppIfNecessary( k_uAppIdInvalid/*CAESARIA_STEAM_APPID*/ );
+  bool needRestart = SteamAPI_RestartAppIfNecessary( CAESARIA_STEAM_APPID );
   return !needRestart;
 }
 
