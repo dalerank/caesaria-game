@@ -88,21 +88,15 @@ bool Handler::connect()
   ISteamApps* apps = SteamApps();
 
   Logger::warning( "CurrentGameLanguage: %s", apps->GetCurrentGameLanguage() );
-
-  ISteamUserStats* stats = SteamUserStats();
-
-  stats->RequestCurrentStats();
-  Logger::warning("Reqesting Current Stats");
-  //SteamAPICall_t hSteamAPICall = stats->GetNumberOfCurrentPlayers();
-
-  ISteamUser* player = SteamUser();
-  if ( !player->BLoggedOn() )
+  if ( !SteamUser()->BLoggedOn() )
   {
     Logger::warning( "Steam user is not logged in\n" );
     OSystem::error( "Fatal Error", "Steam user must be logged in to play this game (SteamUser()->BLoggedOn() returned false).\n" );
     return false;
   }  
 
+  Logger::warning("Reqesting Current Stats:" );
+  bool result = SteamUserStats()->RequestCurrentStats();
   return true;
 }
 
@@ -119,12 +113,10 @@ void Handler::update()
 
 void Handler::init()
 {
-  Logger::warning( "Try get personaName: %s" );
-  ISteamUser* user = SteamUser();
-  if( user )
+  if( SteamUser()->BLoggedOn() )
   {
-    glbSteamId = user->GetSteamID();
-    Logger::warning( "PersonaName: %s", SteamFriends()->GetPersonaName() );
+    Logger::warning( "Try receive steamID: %d", (int)SteamUser() );
+    glbSteamId = SteamUser()->GetSteamID();
   }
   else
   {
