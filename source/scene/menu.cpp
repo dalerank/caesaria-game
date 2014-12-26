@@ -427,6 +427,7 @@ StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
   _d->game = &game;
+  _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
 }
 
@@ -498,9 +499,20 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
+  steamapi::Handler::init();  
+
+  std::string steamName = steamapi::Handler::userName();
   _d->userImage = steamapi::Handler::userImage();
-  std::string text = utils::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
-                                                                               CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
+  if( steamName.empty() )
+  {
+    OSystem::error( "Error", "Cant login in Steam" );
+    _d->isStopped = true;
+    _d->result = closeApplication;
+    return;
+  }
+
+  std::string text = utils::format( 0xff, "ver %d.%d.%d\n%s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
+                                                                      CAESARIA_VERSION_REVSN, steamName.c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );

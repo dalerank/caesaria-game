@@ -89,7 +89,7 @@ bool Dock::build( const CityAreaInfo& info )
 
   TilesArray area = info.city->tilemap().getArea( info.pos, size() );
 
-  foreach( tile, area ) { _d->saveTileInfo.push_back( util::encode( *(*tile) ) ); }
+  foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
 
   WorkingBuilding::build( info );
 
@@ -110,7 +110,7 @@ void Dock::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( tile, area ) { util::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   WorkingBuilding::destroy();
 }

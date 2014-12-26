@@ -63,7 +63,7 @@ void Elevation::changeDirection(Tile* masterTile, constants::Direction direction
   int imgid = _d->basicImgId - startElevationId;
 
   TileOverlay::changeDirection( masterTile, direction );
-  setPicture( util::pictureFromId( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
+  setPicture( imgid::toPicture( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
 }
 
 bool Elevation::isDestructible() const{  return false;}

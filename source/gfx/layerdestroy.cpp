@@ -120,7 +120,7 @@ void Destroy::render( Engine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( util::hash(tile->epos()));
+    hashDestroyArea.insert( tile::hash(tile->epos()));
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
@@ -128,7 +128,7 @@ void Destroy::render( Engine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( util::hash((*ovelayTile)->epos()));
+        hashDestroyArea.insert( tile::hash((*ovelayTile)->epos()));
       }
     }
 
@@ -141,7 +141,7 @@ void Destroy::render( Engine& engine )
     Tile* tile = *it;
     Tile* master = tile->masterTile();
 
-    int tilePosHash = util::hash(tile->epos());
+    int tilePosHash = tile::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -158,7 +158,7 @@ void Destroy::render( Engine& engine )
     Tile* tile = *it;
     int z = tile->epos().z();
 
-    int tilePosHash = util::hash(tile->epos());
+    int tilePosHash = tile::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
