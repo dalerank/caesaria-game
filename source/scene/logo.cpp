@@ -52,7 +52,7 @@ void SplashScreen::initialize()
 {
   Engine& engine = Engine::instance();
 
-  _d->background = Picture::load("logo", 1);
+  _d->background = Picture::load( "logo", 1 );
 
   // center the background on the screen
   Size s = (engine.screenSize() - _d->background.size()) / 2;

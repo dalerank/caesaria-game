@@ -79,6 +79,7 @@ public:
   __GS_PROPERTY(simpleAnimationModel)
   __GS_PROPERTY(hotkeysModel)
   __GS_PROPERTY(cartsModel)
+  __GS_PROPERTY(logoArchive)
 #undef __GS_PROPERTY
 
   static Settings& instance();

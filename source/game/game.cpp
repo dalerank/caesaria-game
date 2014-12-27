@@ -397,12 +397,14 @@ void Game::initialize()
   splash::initialize( "logo_00001" );
 
   scene::SplashScreen screen;
-  screen.initialize();
-  screen.update( *_d->engine );
 
   Logger::warning( "Game: initialize resource loader" );
   ResourceLoader rcLoader;
+  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
+
+  screen.initialize();
+  screen.update( *_d->engine );
 
   Logger::warning( "Game: initialize offsets" );
   screen.setPrefix( "##loading_offsets##" );
