@@ -127,7 +127,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     ovType = objects::road;
     Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
-    oTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+    changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlTree ) )
   {
@@ -140,12 +140,19 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   {
     Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
+    changeId = imgid::fromResource( pic.name() );
   }
   else if( (imgId >= 372 && imgId <= 427) )
   {
     oTile.setFlag( Tile::tlCoast, true );
     if( imgId >= 388 )
       oTile.setFlag( Tile::tlRubble, true );
+  }
+  else if( imgId >= 863 && imgId <= 870 )
+  {
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+    oTile.setPicture( pic );
+    changeId = imgid::fromResource( pic.name() );
   }
   else
   {
