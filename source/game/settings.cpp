@@ -76,6 +76,7 @@ __REG_PROPERTY(cellw)
 __REG_PROPERTY(simpleAnimationModel)
 __REG_PROPERTY(hotkeysModel)
 __REG_PROPERTY(cartsModel)
+__REG_PROPERTY(logoArchive)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -127,6 +128,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.model" ) );
   _d->options[ hotkeysModel        ] = Variant( std::string( "/hotkeys.model" ) );
   _d->options[ cartsModel          ] = Variant( std::string( "/carts.model" ) );
+  _d->options[ logoArchive         ] = Variant( std::string( "/gfx/pics_wait.zip" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
@@ -142,7 +144,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
-
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
 #endif

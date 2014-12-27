@@ -112,11 +112,11 @@ void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
 
   if( _terrain.coast )
   {
-    int imgid = util::turnCoastTile( _terrain.imgid, newDirection );
+    int iid = tile::turnCoastTile( _terrain.imgid, newDirection );
 
-    _picture = imgid == -1
+    _picture = iid == -1
                 ? Picture::getInvalid()
-                : util::pictureFromId( imgid );
+                : imgid::toPicture( iid );
   }
 }
 
