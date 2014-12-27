@@ -45,7 +45,7 @@ void Tree::initTerrain(Tile& terrain)
 
 bool Tree::build( const CityAreaInfo& info )
 {
-  std::string picname = util::convId2PicName( info.city->tilemap().at( info.pos ).originalImgId() );
+  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
   setPicture( Picture::load( picname ) );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
   return TileOverlay::build( info );

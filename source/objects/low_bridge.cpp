@@ -45,7 +45,7 @@ public:
     _index = index;
     _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( util::tilepos2screen( _pos ) );
+    _picture.addOffset( tile::tilepos2screen( _pos ) );
   }
 
   virtual ~LowBridgeSubTile() {}
@@ -426,7 +426,7 @@ bool LowBridge::build( const CityAreaInfo& info )
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
-      subtile->_info = util::encode( tile );
+      subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 
       events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
@@ -471,7 +471,7 @@ void LowBridge::destroy()
     //std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
-    util::decode( mapTile, (*it)->_info );
+    tile::decode( mapTile, (*it)->_info );
   }
 }
 

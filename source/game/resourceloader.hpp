@@ -35,6 +35,7 @@ public:
   void loadFromModel( vfs::Path path2model, const vfs::Directory altDir=vfs::Directory() );
   void loadAtlases( vfs::NFile file, bool lazy );
   void loadFiles( vfs::ArchivePtr archive );
+  void loadFiles( vfs::Path path );
 
 public signals:
   Signal1<std::string> &onStartLoading();

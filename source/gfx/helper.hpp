@@ -23,30 +23,32 @@
 namespace gfx
 {
 
-namespace util
+namespace imgid
 {
+  std::string toResource( const unsigned int imgId );
+  int fromResource( const std::string &pic_name);
+  Picture& toPicture( const unsigned int imgId );
+}
 
-std::string convId2PicName( const unsigned int imgId );
-int convPicName2Id( const std::string &pic_name);
-Picture& pictureFromId( const unsigned int imgId );
-int encode( const Tile& tt );
-int turnCoastTile(int imgid , constants::Direction newDirection);
-unsigned int hash( const TilePos& pos );
-Point tilepos2screen( const TilePos& pos );
-void decode( Tile& tile, const int bitset);
-Tile& getInvalid();
-void clear( Tile& tile );
-constants::Direction getDirection( const TilePos& b, const TilePos& e );
-void fixPlateauFlags( Tile& tile );
-
-}//end namespace util
+namespace tile
+{
+  int encode( const Tile& tt );
+  int turnCoastTile(int imgid , constants::Direction newDirection);
+  unsigned int hash( const TilePos& pos );
+  Point tilepos2screen( const TilePos& pos );
+  void decode( Tile& tile, const int bitset);
+  Tile& getInvalid();
+  void clear( Tile& tile );
+  void fixPlateauFlags( Tile& tile );
+}//end namespace tile
 
 namespace tilemap
 {
-void initTileBase( int width );
-const Point& cellCenter();
-const Size& cellPicSize();
-const Size& cellSize();
+  constants::Direction getDirection( const TilePos& b, const TilePos& e );
+  void initTileBase( int width );
+  const Point& cellCenter();
+  const Size& cellPicSize();
+  const Size& cellSize();
 }
 
 }//end namespace gfx

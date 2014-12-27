@@ -517,7 +517,7 @@ void Walker::load( const VariantMap& stream)
 
 void Walker::turn(TilePos p )
 {
-  Direction direction = util::getDirection( pos(), p );
+  Direction direction = tilemap::getDirection( pos(), p );
 
   if( _d->action.direction != direction )
   {
