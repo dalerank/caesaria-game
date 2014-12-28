@@ -138,6 +138,7 @@ public:
     __REG_TOTYPE( waymark )
     __REG_TOTYPE( terrain )
     __REG_TOTYPE( water )
+    __REG_TOTYPE( meadow )
 
     append( objects::unknown,        "" );
 #undef __REG_TOTYPE

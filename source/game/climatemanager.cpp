@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"
 #include "resourceloader.hpp"
+#include "settings.hpp"
 
 using namespace vfs;
 
@@ -36,7 +37,7 @@ namespace climate
 
 void initialize(ClimateType climate)
 {
-  VariantMap climateArchives = SaveAdapter::load( ":/climate.model" );
+  VariantMap climateArchives = SaveAdapter::load( SETTINGS_RC_PATH( climateModel ) );
 
   std::string optName;
   if( climate == game::climate::central ) { optName = "central"; }

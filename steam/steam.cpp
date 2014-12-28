@@ -118,7 +118,7 @@ void Handler::init()
 #ifndef CAESARIA_PLATFORM_WIN //strange bug on windows bl, access violation when using SteamUser()((
   if( SteamUser()->BLoggedOn() )
   {
-    Logger::warning( "Try receive steamID: %d", (int)SteamUser() );
+    Logger::warning( "Try receive steamID:" );
     glbSteamId = SteamUser()->GetSteamID();
   }
   else

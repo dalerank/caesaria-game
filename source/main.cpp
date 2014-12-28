@@ -58,6 +58,7 @@ int main(int argc, char* argv[])
   Logger::warning( "Game: load game settings" );
   game::Settings::load();
   game::Settings::instance().checkCmdOptions( argv, argc );
+  game::Settings::instance().checkC3present();
 
   Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
   Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );

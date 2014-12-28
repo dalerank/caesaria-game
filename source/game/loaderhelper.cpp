@@ -23,6 +23,7 @@
 #include "objects/metadata.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilesarray.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -138,9 +139,13 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
-    oTile.setPicture( pic );
-    changeId = imgid::fromResource( pic.name() );
+    std::string c3path = SETTINGS_VALUE( c3gfx ).toString();
+    if( c3path.empty() )
+    {
+      Picture pic = MetaDataHolder::randomPicture( objects::meadow, Size(1) );
+      oTile.setPicture( pic );
+      changeId = imgid::fromResource( pic.name() );
+    }
   }
   else if( (imgId >= 372 && imgId <= 427) )
   {

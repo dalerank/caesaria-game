@@ -123,20 +123,19 @@ void SplashScreen::exitScene()
   _d->textPic.init( engine.screenSize() );
   _d->textPic->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic->size() ) );
 
-  std::string text[7] = { 
-                          "This is an developer's version of CaesarIA!",
-                          "therefore this game still has bugs and some features  is not complete!",
-                          "It will be updated and fixed for a basis stage.",
-			  "Also, this game is not tested with every device, be aware of that if you choose this version for play",
-			  "You can support the development of this game at",
-                          "www.bitbucket.org/dalerank/caesaria",
-                          "If you encounter bugs or crashes please send us a description about"
+  std::string text[6] = {
+                              "This is a development version of CaesarIA!",
+                              "therefore this game still has a lot of bugs and some features are not complete!",
+                              "This version is not tested, as well, be aware of that",
+                              "You can support the development of this game at",
+                              " www.bitbucket.org/dalerank/caesaria",
+                              "If you encounter bugs or crashes please send us a report"
 			};
-  for( int i=0; i<7; i++ )
+	for( int i=0; i<6; i++ )
   {
     Rect textRect = textFont.getTextRect( text[i], Rect( Point(), _d->textPic->size() ), align::center, align::center );
-    bool defaultColor = i == 5;  
-    textFont.setColor( defaultColor ? DefaultColors::indianRed : DefaultColors::dodgerBlue );
+    bool defaultColor = (text[i][0] != ' ');
+    textFont.setColor( defaultColor ? DefaultColors::dodgerBlue : DefaultColors::indianRed );
     textFont.draw( *_d->textPic, text[i], textRect.left(), textRect.top() + 20 * i, false, true );
   }
 

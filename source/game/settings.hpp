@@ -41,6 +41,7 @@ public:
   __GS_PROPERTY(language)
   __GS_PROPERTY(resolution)
   __GS_PROPERTY(fullscreen)
+  __GS_PROPERTY(climateModel)
   __GS_PROPERTY(savedir)
   __GS_PROPERTY(emigrantSalaryKoeff)
   __GS_PROPERTY(minMonthWithFood)
@@ -80,6 +81,8 @@ public:
   __GS_PROPERTY(hotkeysModel)
   __GS_PROPERTY(cartsModel)
   __GS_PROPERTY(logoArchive)
+  __GS_PROPERTY(titleResource)
+  __GS_PROPERTY(forbidenTile)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -96,6 +99,7 @@ public:
   void setwdir( const std::string& wdir );
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
+  void checkC3present();
 private:
   Settings();
 
