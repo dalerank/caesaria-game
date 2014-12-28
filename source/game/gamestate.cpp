@@ -56,7 +56,7 @@ bool BaseState::update(gfx::Engine* engine)
   }
 
 #ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::update();
+  //steamapi::Handler::update();
 #endif
   _screen->update(*engine);
   return true;

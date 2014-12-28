@@ -64,8 +64,11 @@ int main(int argc, char* argv[])
   Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
 
 #ifdef CAESARIA_USE_STEAM
-  if( !steamapi::Handler::checkSteamRunning() )
+  /*if( !steamapi::Handler::checkSteamRunning() )
+  {
+    Logger::warning( "Steam not running. Exit." );
     return EXIT_FAILURE;
+  }*/
 
   if( !steamapi::Handler::connect() )
     return EXIT_FAILURE;

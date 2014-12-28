@@ -52,6 +52,7 @@ bool Handler::checkSteamRunning()
 
   // Once you get a public Steam AppID assigned for this game, you need to replace k_uAppIdInvalid with it and
   // removed steam_appid.txt from the game depot.
+  Logger::warning( "Check running Steam" );
   bool needRestart = SteamAPI_RestartAppIfNecessary( CAESARIA_STEAM_APPID );
   return !needRestart;
 }
@@ -65,6 +66,7 @@ bool Handler::connect()
   // This will also load the in-game steam overlay dll into your process.  That dll is normally
   // injected by steam when it launches games, but by calling this you cause it to always load,
   // even when not launched via steam.
+  Logger::warning( "Init Steam api" );
   if ( !SteamAPI_Init() )
   {
     Logger::warning( "SteamAPI_Init() failed" );
@@ -113,6 +115,7 @@ void Handler::update()
 
 void Handler::init()
 {
+#ifndef CAESARIA_PLATFORM_WIN //strange bug on windows bl, access violation when using SteamUser()((
   if( SteamUser()->BLoggedOn() )
   {
     Logger::warning( "Try receive steamID: %d", (int)SteamUser() );
@@ -122,6 +125,7 @@ void Handler::init()
   {
     Logger::warning( "SteamUser is null" );
   }
+#endif
 }
 
 std::string Handler::userName()

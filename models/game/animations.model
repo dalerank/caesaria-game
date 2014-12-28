@@ -108,10 +108,11 @@
 
   prefect : {
     notes : { dragWater : 6, fightFire : 7 }
-    move : { rc : "citizen02", start : 615, frames : 12, action : 1, step : 8 }
-    dragWater : { rc : "citizen02", start : 767, frames : 12, action : 6, step : 8 }
-    fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8, delay : 3 }
-    fight : { rc : "citizen02", start : 719, frames : 6, action : 2, step : 8 }
+    move : { rc : "citizen02", start : 615, frames : 11, action : 1, step : 8, delay : 2 }
+    dragWater : { rc : "citizen02", start : 767, frames : 11, action : 6, step : 8, delay : 2 }
+    fightFire : { rc : "prefectdw", start : 1, frames : 11, action : 7, step : 8, delay : 3 }
+    fight : { rc : "prefectff", start : 1, frames : 11, action : 2, step : 8 }
+    die : { rc : "citizen02", start : 711, frames : 8, action : 3, step : 0 }
   }
 
   emigrant : {
