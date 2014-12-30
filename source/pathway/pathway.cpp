@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "pathway.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "core/direction.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
@@ -76,13 +76,13 @@ Pathway::Pathway(const Pathway &copy) : _d( new Impl )
   *this = copy;
 }
 
-void Pathway::init(const gfx::Tile& origin)
+void Pathway::init( const Tile& origin)
 {
   _d->origin = origin.pos();
   _d->isReverse = false;
   _d->destination = origin.pos();
   _d->tiles.clear();
-  _d->tiles.push_back( const_cast<Tile*>( &origin ) );
+  _d->tiles.push_back( &const_cast<Tile&>( origin ) );
 }
 
 unsigned int Pathway::length() const
@@ -112,12 +112,12 @@ constants::Direction Pathway::direction()
     if(_d->isReverse )
     {
       if( _d->step > 0 )
-        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
+        return tilemap::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
     }
     else
     {
       if( _d->step < _d->tiles.size()-1 )
-        return TileHelper::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
+        return tilemap::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
     }
   }
 
@@ -198,7 +198,7 @@ void Pathway::setNextTile( const Tile& tile )
   else if (dI==0 && dJ==-1){ direction = south; }
   else if (dI==-1 && dJ==-1){ direction = southWest;}
   else if (dI==-1 && dJ==0) {direction = west;}
-  else if (dI==-1 && dJ==1){direction = northWest; }
+  else if (dI==-1 && dJ==1){ direction = northWest; }
   else
   {
     Logger::warning( "Destination[%d, %d] out of map", dI, dJ );
@@ -233,7 +233,7 @@ void Pathway::prettyPrint() const
   std::string strDir = "";
   for( unsigned int k=0; k < _d->tiles.size()-1; k++ )
   {
-    Direction direction = TileHelper::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
+    Direction direction = tilemap::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
 
     switch (direction)
     {

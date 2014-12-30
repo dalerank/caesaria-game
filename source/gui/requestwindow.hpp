@@ -35,7 +35,8 @@ public:
   virtual ~EmperrorRequestWindow();
 
   virtual void draw( gfx::Engine& painter );
-  virtual void setText(const std::string &text);
+  virtual void setText(const std::string& text);
+  virtual void setTitle(const std::string& text);
   virtual bool onEvent(const NEvent &event);
 
 private:

@@ -1,0 +1,16 @@
+{  
+ title : "##fort_history##"
+ sound : "fanfare"
+ text  : "Ancient warfare meant continuous campaigning, especially in the Empire's early, expansionist days. Roman armies operated deep within enemy territory, living off the land, the largesse of allied tribes and the spoils of conquered enemies. Their marching camps consisted of tents, and rarely stayed in one place for more than a few days. After an area was pacified, the legions built turf and timber forts a day's march apart and patrolled between them. When the threat of enemy activity receded, the army went home.\n In remote and savage lands like Germany and Britain, the tribes were never quiet for long. Here the Romans built large forts to house part of a legion indefinitely, or to serve as campaign bases. Permanent forts weren't built until the third and fourth centuries, when imperial expansion stopped and Rome's emphasis turned to maintaining its frontiers. These late forts were built of local stone and included towers for archers and small catapults. \n Typical permanent forts had a central headquarters and comfortable homes for senior officers. Junior officers had their own houses. Blocks of barracks housed common soldiers, each holding one 'century' of 80 men. Sturdy @granaries& held the legion's food, and most forts included workshops and field @hospitals&. As citizens grew confident of peace, forts developed into towns, and some of these towns evolved into cities."
+ uri : {
+  "peace and war" : "peace_and_war"
+  "granaries" : "granary"
+  "hospitals" : "hospital"
+  "barracks" : "barracks"
+  "Military Advisor" : "military_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "Crime" : "crime"
+  "historical role of Prefects" : "history_prefect"
+  "here" : "fort_history"
+ }
+}

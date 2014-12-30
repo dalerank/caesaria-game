@@ -18,7 +18,7 @@
 #include "animation.hpp"
 #include "core/position.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -49,6 +49,11 @@ unsigned int Animation::frameCount() const{  return _pictures.size();}
 void Animation::setOffset( const Point& offset )
 {
   foreach( pic, _pictures ) { pic->setOffset( offset ); }
+}
+
+void Animation::addOffset(const Point& offset)
+{
+  foreach( pic, _pictures) { pic->addOffset( offset );}
 }
 
 Point Animation::offset() const
@@ -188,7 +193,7 @@ void Animation::addFrame(const std::string& resource, int index)
   _pictures.push_back( Picture::load( resource, index ) );
 }
 
-const Picture& Animation::getFrame(int index) const
+const Picture& Animation::frame(int index) const
 {
   return ( index >= 0 && index < (int)_pictures.size() )
            ? _pictures[ index ]

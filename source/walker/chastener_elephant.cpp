@@ -48,9 +48,9 @@ ChastenerElephant::ChastenerElephant( PlayerCityPtr city )
     : EnemySoldier( city, walker::romeChastenerElephant ), _d( new Impl )
 {
   _excludeAttack().clear();
-  _excludeAttack() << building::disasterGroup
-                   << building::roadGroup
-                   << building::bridgeGroup;
+  _excludeAttack() << objects::disasterGroup
+                   << objects::roadGroup
+                   << objects::bridgeGroup;
 }
 
 Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range )
@@ -103,7 +103,7 @@ int ChastenerElephant::agressive() const { return -2; }
 
 bool ChastenerElephant::die()
 {
-  _city()->empire()->emperor().soldierDie( _city()->name() );
+  _city()->empire()->emperor().remSoldiers( _city()->name(), 1 );
 
   return EnemySoldier::die();
 }

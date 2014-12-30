@@ -89,8 +89,8 @@ Migration::Migration( PlayerCityPtr city )
   _d->lastMonthMigration = 0;
   _d->lastMonthComing = 0;
   _d->lastMonthLeaving = 0;
-  _d->lastUpdate = GameDate::current();
-  _d->updateTickInerval = GameDate::days2ticks( 7 );
+  _d->lastUpdate = game::Date::current();
+  _d->updateTickInerval = game::Date::days2ticks( 7 );
   _d->emigrantsIndesirability = 0;
 }
 
@@ -186,16 +186,16 @@ void Migration::timeStep( const unsigned int time )
   if( goddesRandom > _d->emigrantsIndesirability )
   {
     _d->createMigrationToCity( _city() );
-    _d->updateTickInerval = math::random( GameDate::days2ticks( _d->checkRange ) ) + 10;
+    _d->updateTickInerval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
   }
   else
   {
-    _d->updateTickInerval = GameDate::days2ticks( _d->checkRange );
+    _d->updateTickInerval = game::Date::days2ticks( _d->checkRange );
   }
 
-  if( _d->lastUpdate.monthsTo( GameDate::current() ) > 0 )
+  if( _d->lastUpdate.monthsTo( game::Date::current() ) > 0 )
   {
-    _d->lastUpdate = GameDate::current();
+    _d->lastUpdate = game::Date::current();
     _d->lastMonthMigration = _d->lastMonthComing - _d->lastMonthLeaving;
     _d->lastMonthComing = 0;
     _d->lastMonthLeaving = 0;
@@ -321,7 +321,7 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
   Helper helper( city );
-  HouseList houses = helper.find<House>(building::house);
+  HouseList houses = helper.find<House>(objects::house);
   foreach( house, houses )
   {
     if( (*house)->getAccessRoads().size() > 0 )
@@ -390,7 +390,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
   Helper helper( city );
-  HouseList houses = helper.find<House>(building::house);
+  HouseList houses = helper.find<House>(objects::house);
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {

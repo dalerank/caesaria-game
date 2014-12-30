@@ -32,9 +32,12 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerFood::type() const {  return citylayer::food; }
+namespace layer
+{
 
-void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
+int Food::type() const {  return citylayer::food; }
+
+void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -51,27 +54,27 @@ void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     // Food-related
-    case building::market:
-    case building::granary:
+    case objects::market:
+    case objects::granary:
       needDrawAnimations = true;     
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );
@@ -107,7 +110,7 @@ void LayerFood::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
+void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
 {
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
@@ -118,8 +121,8 @@ void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOf
     if( wlk->type() == walker::cartPusher )
     {
       CartPusherPtr cartp = ptr_cast<CartPusher>( wlk );
-      Good::Type gtype = cartp->stock().type();
-      if( gtype == Good::none || gtype > Good::vegetable )
+      good::Type gtype = cartp->stock().type();
+      if( gtype == good::none || gtype > good::vegetable )
         continue;
     }
     pics.clear();
@@ -128,7 +131,7 @@ void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOf
   }
 }
 
-void LayerFood::handleEvent(NEvent& event)
+void Food::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -147,11 +150,11 @@ void LayerFood::handleEvent(NEvent& event)
 
           if( houseHabitantsCount > 0 )
           {
-            GoodStore& st = house->goodStore();
+            good::Store& st = house->goodStore();
             int foodQty = 0;
-            for( int k=Good::wheat; k <= Good::vegetable; k++ )
+            for( int k=good::wheat; k <= good::vegetable; k++ )
             {
-              foodQty += st.qty( (Good::Type)k );
+              foodQty += st.qty( (good::Type)k );
             }
             int monthWithFood = 2 * foodQty / houseHabitantsCount;
 
@@ -177,16 +180,16 @@ void LayerFood::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerFood::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerFood( camera, city ) );
+  LayerPtr ret( new Food( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 18 )
+Food::Food( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 18 )
 {
   _addWalkerType( walker::marketLady );
   _addWalkerType( walker::marketKid );
@@ -194,5 +197,7 @@ LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
   _addWalkerType( walker::marketBuyer );
   _addWalkerType( walker::cartPusher );
 }
+
+}//
 
 }//end namespace gfx

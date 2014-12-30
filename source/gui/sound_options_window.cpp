@@ -20,14 +20,17 @@
 #include "core/event.hpp"
 #include "label.hpp"
 #include "widget_helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "sound/constants.hpp"
 #include "core/logger.hpp"
 
 namespace gui
 {
 
-class SoundOptionsWindow::Impl
+namespace dialog
+{
+
+class SoundOptions::Impl
 {
 public:
   GameAutoPause locker;
@@ -46,7 +49,7 @@ public signals:
   Signal0<> onCloseSignal;
 };
 
-SoundOptionsWindow::SoundOptionsWindow(Widget* parent, int gameSound, int ambientSound, int themeSound )
+SoundOptions::SoundOptions(Widget* parent, int gameSound, int ambientSound, int themeSound )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
@@ -61,9 +64,9 @@ SoundOptionsWindow::SoundOptionsWindow(Widget* parent, int gameSound, int ambien
   _update();
 }
 
-SoundOptionsWindow::~SoundOptionsWindow( void ) {}
+SoundOptions::~SoundOptions( void ) {}
 
-bool SoundOptionsWindow::onEvent(const NEvent& event)
+bool SoundOptions::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -97,10 +100,10 @@ bool SoundOptionsWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<audio::SoundType, int>&SoundOptionsWindow::onSoundChange() {  return _d->onSoundChangeSignal;}
-Signal0<>&SoundOptionsWindow::onClose(){  return _d->onCloseSignal;}
+Signal2<audio::SoundType, int>& SoundOptions::onSoundChange() {  return _d->onSoundChangeSignal;}
+Signal0<>& SoundOptions::onClose(){  return _d->onCloseSignal;}
 
-void SoundOptionsWindow::_update()
+void SoundOptions::_update()
 {
   Label* lbGameSoundPercent;
   Label* lbAmbientSoundPercent;
@@ -114,13 +117,15 @@ void SoundOptionsWindow::_update()
   _d->current.ambient = math::clamp( _d->current.ambient, 0, 100 );
   _d->current.theme = math::clamp( _d->current.theme, 0, 100 );
 
-  if( lbGameSoundPercent ) { lbGameSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.game ) ); }
-  if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.ambient ) ); }
-  if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( StringHelper::format( 0xff, "%d%%", _d->current.theme ) ); }
+  if( lbGameSoundPercent ) { lbGameSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.game ) ); }
+  if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.ambient ) ); }
+  if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.theme ) ); }
 
   emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
   emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );
   emit _d->onSoundChangeSignal( audio::themeSound,_d->current.theme );
 }
+
+}//end namespace dialog
 
 }//end namespace gui

@@ -23,7 +23,7 @@
 #include "good/goodstore.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -53,12 +53,13 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 {
   if( showMessage )
   {
-    std::string txt = StringHelper::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
-    std::string descr = StringHelper::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
+    std::string txt = utils::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
+    std::string descr = utils::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
 
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),
-                                                              events::ShowInfobox::send2scribe );
+                                                              events::ShowInfobox::send2scribe,
+                                                              ":/smk/God_Mercury.smk");
     event->dispatch();
   }
 
@@ -67,14 +68,14 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 
   foreach( it, buildings )
   {
-    GoodStore& store = (*it)->store();
-    for( int i=Good::wheat; i < Good::goodCount; i++ )
+    good::Store& store = (*it)->store();
+    for( int i=good::wheat; i < good::goodCount; i++ )
     {
-      Good::Type gtype = (Good::Type)i;
+      good::Type gtype = (good::Type)i;
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
-        GoodStock rmStock( gtype, goodQty );
+        good::Stock rmStock( gtype, goodQty );
         store.retrieve( rmStock, goodQty );
       }
     }

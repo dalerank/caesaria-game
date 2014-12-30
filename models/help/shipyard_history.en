@@ -1,0 +1,28 @@
+{  
+ title : "##shipyard##"
+ sound : "fanfare"
+ text  : "Oddly, for a city beside a great river and an Empire spanning a great sea, the Romans were reluctant sailors. Small-scale coastal fishing was the full extent of their maritime activity, even during their conquest of Italy. War fleets were raised as needed - the Punic wars pitted Rome against Carthage, a major seafaring power - but weren't maintained in peacetime. Rome only mastered the Mediterranean when the demands of Empire required a large fleet of merchantmen and the warships to protect them from pirates.\n Merchant vessels were perhaps more important to the Empire than were warships. These were built along the Mediterranean tradition that dated back to the Greeks and resulted in clumsy, rounded vessels that were very strong and seaworthy, if also slow and unmaneuverable. Cargo ships all had the same basic shape, but they were built in sizes ranging from 20 tons for a common freighter to 600 tons for @grain& carriers."
+ uri : {
+  "Prefects" : "prefect"
+  "Population" : "population"
+  "Employment" : "employment"
+  "wages" : "wages" 
+  "Trade" : "trade"
+  "mood" : "mood"
+  "grain" : "grain"
+  "Forums" : "forum"
+  "taxes" : "taxes"
+  "senate" : "senate"
+  "Crime" : "crime"
+  "Finance Advisor" : "finance_advisor"
+  "composition of your populace" : "composition_populace"
+  "Labor Advisor" : "labor_advisor"
+  "Empire Map" : "empire_map"
+  "Emperor Advisor" : "emperor_advisor"
+  "Trade Advisor" : "trade_advisor"
+  "Population and Mood" : "population_mood"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+ }
+}

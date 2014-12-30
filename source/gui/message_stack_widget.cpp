@@ -20,7 +20,7 @@
 #include "gfx/engine.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include <list>
 
 using namespace gfx;
@@ -28,7 +28,7 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = StringHelper::hash( CAESARIA_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = utils::hash( CAESARIA_STR_EXT(WindowMessageStack) );
 
 class WindowMessageStack::LabelA : public Label
 {

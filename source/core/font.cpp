@@ -19,7 +19,8 @@
 #include "gfx/picture.hpp"
 #include "logger.hpp"
 #include "exception.hpp"
-#include <SDL_ttf.h>
+#include "SDL_ttf.h"
+#include "SDL_version.h"
 #include "color.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
@@ -84,7 +85,11 @@ int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 int Font::color() const
 {
   int ret = 0;
+#if SDL_MAJOR_VERSION>1
   ret = (_d->color.a << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
+#else
+  ret = (_d->color.unused << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
+#endif
   return ret;
 }
 
@@ -163,7 +168,11 @@ void Font::setColor( NColor color )
   _d->color.b = color.blue();
   _d->color.g = color.green();
   _d->color.r = color.red();
+#if SDL_MAJOR_VERSION>1
   _d->color.a = color.alpha();
+#else
+  _d->color.unused = color.alpha();
+#endif
 }
 
 void Font::draw( Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
@@ -171,14 +180,24 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  SDL_Surface* sText = TTF_RenderText_Solid( _d->ttfFont, text.c_str(), _d->color );
+#else
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  if( useAlpha )
-  {
-    SDL_SetSurfaceBlendMode( sText, SDL_BLENDMODE_NONE );
-  }
+#endif
 
   if( sText )
   {
+
+    if( useAlpha )
+    {
+#if SDL_MAJOR_VERSION>1
+      SDL_SetSurfaceBlendMode( sText, SDL_BLENDMODE_NONE );
+#else
+      SDL_SetAlpha( sText, 0, 0 );
+#endif
+    }
+
     if( !dstpic.surface() )
     {
       Logger::warning("Font::draw dstpic surface is null");
@@ -294,7 +313,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
   if( ret.second == false )
   {
     // no insert font (already exists)
-    Logger::warning( "Error, font already exists, key=%d", key );
+    Logger::warning( "WARNING!!! font already exists, key=%d", key );
     return;
   }
 
@@ -306,11 +325,11 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
   if( ttf == NULL )
   {
-    std::string errorStr = "CRITICAL!!! " + std::string( TTF_GetError() );
+    std::string errorStr( TTF_GetError() );
 #ifdef CAESARIA_PLATFORM_WIN
     errorStr += "\n Is it only latin symbols in path to game?";
 #endif
-    OSystem::error( "ERROR!", errorStr );
+    OSystem::error( "CRITICAL!!! ", errorStr );
     THROW( errorStr );
   }
 
@@ -352,7 +371,7 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 
   if( !font.isValid() )
   {
-    Logger::warning( "StringHelper::breakText font must be exists" );
+    Logger::warning( "utils::breakText font must be exists" );
     brokenText.push_back( text );
     return brokenText;
   }

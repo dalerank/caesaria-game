@@ -1,0 +1,12 @@
+{  
+ title : "##barracks##"
+ sound : "fanfare"
+ text  : "Barracks recruit and train soldiers for your @forts&. They require road access and labor, and reduce the desirability of nearby property. Barracks need to store 16 cartloads of @weapons& to fully equip a new legionary (heavy infantry) unit. Auxiliary legions bring their own weapons, and don't need to get them from barracks. As they are trained and equipped, soldiers walk from the barracks to the fort that will be their home, or from the barracks to the @military academy& if one exists.\n Barracks also provide guards for @towers&. Tower guards don't use the barracks' weapons, and are always the top priority for a barracks to train.\n To better understand the role of barracks in defending your city, read about @Peace and War&."
+ uri : {
+  "forts" : "fort"
+  "weapons" : "weapon" 
+  "towers" : "tower"
+  "military academy" : "military_academy"
+  "Peace and War" : "peace_and_war"
+ }
+}

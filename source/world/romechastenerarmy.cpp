@@ -18,6 +18,10 @@
 #include "romechastenerarmy.hpp"
 #include "empire.hpp"
 #include "events/notification.hpp"
+#include "emperor.hpp"
+#include "core/logger.hpp"
+#include "events/showinfobox.hpp"
+#include "game/gamedate.hpp"
 #include "city.hpp"
 
 namespace world
@@ -27,6 +31,7 @@ class RomeChastenerArmy::Impl
 {
 public:
   int soldiersNumber;
+  bool checkFavor;
 };
 
 RomeChastenerArmyPtr RomeChastenerArmy::create( EmpirePtr empire )
@@ -41,32 +46,62 @@ void RomeChastenerArmy::setSoldiersNumber(unsigned int count) { _d->soldiersNumb
 
 std::string RomeChastenerArmy::type() const { return CAESARIA_STR_EXT(RomeChastenerArmy); }
 unsigned int RomeChastenerArmy::soldiersNumber() const { return _d->soldiersNumber; }
+void RomeChastenerArmy::setCheckFavor(bool value) { _d->checkFavor = value; }
+
+void RomeChastenerArmy::timeStep(const unsigned int time)
+{
+  Army::timeStep( time );
+
+  if( game::Date::isWeekChanged() && _d->checkFavor )
+  {
+    if( empire()->emperor().relation( target() ) > 35 )
+    {
+      events::GameEventPtr e = events::ShowInfobox::create( "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
+      e->dispatch();
+
+      empire()->emperor().remSoldiers( target(), _d->soldiersNumber );
+      deleteLater();
+    }
+  }
+}
 
 void RomeChastenerArmy::save(VariantMap& stream) const
 {
   Army::save( stream );
 
-  stream[ "soldiersNumber" ] = _d->soldiersNumber;
+  VARIANT_SAVE_ANY_D( stream, _d, soldiersNumber )
+  VARIANT_SAVE_ANY_D( stream, _d, checkFavor )
 }
 
 void RomeChastenerArmy::load(const VariantMap& stream)
 {
   Army::load( stream );
 
-  _d->soldiersNumber = stream.get( "soldiersNumber" );
+  VARIANT_LOAD_ANY_D( _d, soldiersNumber, stream )
+  VARIANT_LOAD_ANY_D( _d, checkFavor, stream )
 }
 
 void RomeChastenerArmy::attack(ObjectPtr obj)
 {
   Army::attack( obj );
 
-  events::GameEventPtr e = events::Notification::attack( obj->name(), "##rome_attack_empire_city##", this );
-  e->dispatch();
+  if( !target().empty() )
+  {
+    empire()->emperor().addSoldiers( target(), _d->soldiersNumber );
+
+    events::GameEventPtr e = events::Notification::attack( obj->name(), "##rome_attack_empire_city##", this );
+    e->dispatch();
+  }
+  else
+  {
+    Logger::warning( "WARNING!!! RomeChastenerArmy::attack cant attack unexist object" );
+  }
 }
 
 RomeChastenerArmy::RomeChastenerArmy(EmpirePtr empire)
  : Army( empire ), _d( new Impl )
 {
+  _d->checkFavor = false;
   _d->soldiersNumber = 16;
 }
 

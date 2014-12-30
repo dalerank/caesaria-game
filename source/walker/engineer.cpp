@@ -63,7 +63,7 @@ void Engineer::_centerTile()
 {
   city::Helper helper( _city() );
   TilePos offset( reachDistance(), reachDistance() );
-  ConstructionList buildings = helper.find<Construction>( building::any, pos() - offset, pos() + offset );
+  ConstructionList buildings = helper.find<Construction>( objects::any, pos() - offset, pos() + offset );
   foreach( b, buildings )
   {
     if( !_d->_reachedBuildings.count( *b ) )

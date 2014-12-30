@@ -90,30 +90,9 @@ enum Type
   riverWave,
   supplier,
   circusCharioter,
+  docker,
   all = 0xff,
   any = all
-};
-
-enum Nation
-{
-  unknownNation=0,
-  rome,
-  etruscan,
-  barbarian,
-  numidian,
-  pict,
-  samnite,
-  selecid,
-  carthaginian,
-  celt,
-  eygptian,
-  goth,
-  graeci,
-  judaean,
-  native,
-  visigoth,
-  gaul,
-  nationCount
 };
 
 } //end namespace walker

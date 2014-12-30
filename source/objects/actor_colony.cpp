@@ -23,7 +23,7 @@
 
 using namespace constants;
 
-ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
+ActorColony::ActorColony() : TrainingBuilding( objects::actorColony, Size(3) )
 {
   _fgPicturesRef().resize(1);
 }

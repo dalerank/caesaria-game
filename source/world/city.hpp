@@ -23,9 +23,8 @@
 #include "core/position.hpp"
 #include "predefinitions.hpp"
 #include "good/good.hpp"
-
-class GoodStore;
-class Player;
+#include "nation.hpp"
+#include "game/predefinitions.hpp"
 
 namespace city
 {
@@ -65,17 +64,18 @@ public:
   virtual city::Funds& funds() = 0;
   virtual unsigned int population() const = 0;
   virtual bool isPaysTaxes() const = 0;
+  virtual Nation nation() const = 0;
   virtual bool haveOverduePayment() const = 0;
   virtual bool isMovable() const { return false; }
   virtual DateTime lastAttack() const = 0;
   virtual int strength() const = 0;
-  virtual SmartPtr<Player> player() const = 0;
+  virtual PlayerPtr player() const = 0;
   virtual unsigned int age() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
-  virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;
-  virtual const GoodStore& importingGoods() const = 0;
-  virtual const GoodStore& exportingGoods() const = 0;
+  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost ) = 0;
+  virtual const good::Store& importingGoods() const = 0;
+  virtual const good::Store& exportingGoods() const = 0;
 };
 
 }//end namespace world

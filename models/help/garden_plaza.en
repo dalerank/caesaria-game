@@ -1,0 +1,9 @@
+{  
+ title : "##forum##"
+ sound : "fanfare"
+ text  : "Both gardens and plazas serve a very straightforward function in Caesar III - to enhance housing desirability by beautifying the city. Gardens simply turn empty land into pleasant parks. Plazas are placed over existing @roads&. Use either improvement to boost the desirability of a neighborhood. Gardens don't require road access.\n Click @here& to read about parks and plazas in ancient Rome."
+ uri : {
+  "roads" : "road"
+  "here" : "http://wikipedia.ru"
+ }
+}

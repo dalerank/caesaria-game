@@ -29,7 +29,7 @@ namespace gfx
 class WalkerDebugInfo
 {
 public:
-  static void showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera );
+  static void showPath(WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera, NColor color=0);
 };
 
 }//end namespace gfx

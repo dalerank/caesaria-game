@@ -1,0 +1,13 @@
+{  
+ title : "##oil_workshop##"
+ sound : "fanfare"
+ text  : "Workers press olives from your @olive farms& into oil here.\n Two workshops can be supplied by the output of each olive farm.\n Like most industries, oil workshops are undesirable neighbors for housing. Workshops need a nearby labor source, and road access to a @warehouse& and to the olive farm that supplies them. Workers take finished oil to the nearest warehouse with empty space. You may export it if you have an appropriate @trade route&, and @market traders& will take some back to their markets when their housing requests it. @POil is among the products your citizens demand to reach the highest levels of @housing&. Oil Workshops are animated while working. Right-click on a workshop to see its status, particularly if you notice that activity has stopped.\n To read more about oil in the Roman Empire, click @here&."
+ uri : {
+  "olive farms" : "olive_farms"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "festivals" : "festival"
+  "housing" : "house"
+  "here" : "http://wikipedia.ru"
+ }
+}

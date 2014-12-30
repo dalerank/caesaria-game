@@ -1,0 +1,15 @@
+{  
+ title : "##history##"
+ sound : "fanfare"
+ text  : "Warehouses have changed little since ancient times. Any culture that trades extensively needs large, inexpensive structures in which to temporarily store goods. The warehouse should be dry, secure and free of vermin, although these qualities' values are relative to the nature of the cargo - marble resists the elements better than do foodstuffs. Roman warehouses were usually located near water transportation or major roads. @Ports& had a commercial area, called the 'emporion', at which goods were traded. Emporia included rudimentary warehouse facilities made of the cheapest possible materials for temporarily housing unsold cargoes. Urban warehouses were more permanent, as befits a building that might shelter multiple types of commodities indefinitely. These were made of stone and sometimes colonnaded. They had just enough high, narrow windows to light their interiors without compromising security. Their only door had a heavy lock, and warehouses often employed watchmen."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

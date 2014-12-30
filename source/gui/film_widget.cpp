@@ -18,7 +18,7 @@
 #include "film_widget.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
@@ -90,7 +90,7 @@ void FilmWidget::setTitle(std::string text)
 
 void FilmWidget::setTime(DateTime time)
 {
-  if( _d->lbTime ) _d->lbTime->setText( StringHelper::format( 0xff, "%s %d %s",
+  if( _d->lbTime ) _d->lbTime->setText( utils::format( 0xff, "%s %d %s",
                                                               DateTime::getMonthName( time.month() ),
                                                               time.year(),
                                                               time.year() < 0 ? "BC" : "AD" ) );

@@ -1,0 +1,15 @@
+{  
+ title : "##vacant_lot##"
+ sound : "fanfare"
+ text  : "When you first establish your colony, immigrants wheel carts full of belongings toward vacant housing lots. A small number are attracted just by the newly-zoned land, but to keep attracting immigrants you must keep the city's mood positive. The strongest causes of a good mood are plenty of food, job openings, an attractive wage scale and reasonable tax rates.\n As long as you provide this welcoming environment, and there is space to move into, immigrants will flock to your town. If unemployment rises too high, or housing becomes overcrowded, or if you cut wages or raise taxes, the mood will worsen and immigration could dry up. Unless you remedy the situation, citizens abandon hope and your city. When you see emigrants abandoning your settlement, right-click on them. They will not hesitate to voice their grievances.\nAside from immigration and emigration, your population has a natural growth rate due to births and deaths. Pay attention to your citizens' average age. Younger people are less likely to die and more likely to have children. Perhaps most important, they form your labor force. When you notice your populace aging, take steps to attract immigrants (who tend to be young).\n People's mood affects, and is affected by, nearly everything that you do. Happy citizens are productive citizens who recommend your city to their friends (helping attract immigrants). Unhappy residents might emigrate, and will surely warn their friends against moving to your town. When they don't leave, unhappy people are likely to indulge in crime, and may even riot.\nIf your scribes report a worsening mood, the quickest remedy is to hold a @festival&. Even the most lavish parties, though, won't make residents forget their grievances for long. You must identify and correct the underlying problem.\n\n To learn more about the specific roles of people in your city, click @plebeians&, @patricians& or @citizens&. You might also wish to explore @housing&, @ratings& and @employment&."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

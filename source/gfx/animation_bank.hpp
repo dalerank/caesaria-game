@@ -34,24 +34,27 @@ class AnimationBank
 {
 public:
   typedef enum {
-    simpleCart=100,
-    bigCart = 200,
-    megaCart = 300,
-    imigrantCart = 400,
-    circusCart = 500
-  } CartCapacity;
+    animUnknown      =0,
+    animWater        =1,
+    animMeadow,
+    animSimpleCart   =100,
+    animBigCart      =200,
+    animMegaCart     =300,
+    animImmigrantCart =400,
+    animCircusCart   =500,
+    animTree         =600,
+  } AnimationGroup;
 
   typedef std::map< DirectedAction, Animation > MovementAnimation;
 
   static AnimationBank& instance();
 
   // loads all cart graphics
-  void loadCarts();
+  void loadCarts( vfs::Path model );
+  void loadAnimation(vfs::Path model, vfs::Path basic);
 
-  void loadAnimation( vfs::Path model );
-
-  static const Picture& getCart(int good, int capacity, constants::Direction direction );
-
+  static const Animation& getCart( int good, int capacity, constants::Direction direction );
+  static const Animation& simple( int type );
   static const MovementAnimation& find( int type );
 private:
   AnimationBank();

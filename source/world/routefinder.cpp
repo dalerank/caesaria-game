@@ -306,7 +306,11 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
     n++;
   }
 
-  foreach( pathPoint, lPath ) { way.push_back( (*pathPoint)->pos ); }
+  if( !lPath.empty() )
+  {
+    way.push_back( startPos );
+    foreach( pathPoint, lPath ) { way.push_back( (*pathPoint)->pos ); }
+  }
 
   return way.size() > 0;
 }

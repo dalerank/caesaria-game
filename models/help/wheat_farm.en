@@ -1,0 +1,14 @@
+{  
+ title : "##meat_fruit_vegetable_farm##"
+ sound : "fanfare"
+ text  : "@Wheat& is the staple of your people's diet, but supplemental foods like meat, vegetables and fruit are important to their overall health and happiness. Supplemental farming is usually more valuable as exports than is wheat. The climate in your province might preclude growing one or all of these foods, meaning that you might have to import them to satisfy your citizens. Follow this link for detailed information on the role that @food and farming& play. \nMost farms are undesirable neighbors, and lower nearby housing's value, but fruit farms are pleasant and people like to live near them. All farms may only be built on arable land, which appears as yellow tufts of vegetation on the map. When you select any type of farm from the buildings buttons, a ghostly green image of the farm appears when your cursor is over agricultural land.\n Farms need a local source of labor, and road access to a @granary&. When the harvest is in, a farmer pushes a full cart to the nearest granary if one has room, or @warehouse& if the granary is full. Food taken to a granary is distributed to your populace by @market traders&, while food taken to a warehouse may be exported if you have an open trade route for it. As long as the farm is working, you will see crops growing in its fields; right-click a farm for information about its productivity.\n Follow these links to read about the historical role of @meat or fruit and vegetables& in the Roman Empire."
+ uri : {
+  "granary" : "granary"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

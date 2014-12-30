@@ -72,7 +72,7 @@ void FireWorkers::_exec(Game& game, unsigned int)
   if( _workers > 0 )
   {
     city::Helper helper( game.city() );
-    WorkingBuildingList  wb = helper.find<WorkingBuilding>( building::any );
+    WorkingBuildingList  wb = helper.find<WorkingBuilding>( objects::any );
     foreach( it, wb )
     {
       int removedFromWb = (*it)->removeWorkers( _workers );

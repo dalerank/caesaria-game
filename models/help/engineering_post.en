@@ -1,0 +1,11 @@
+{  
+ title : "##engineer_post##"
+ sound : "fanfare"
+ text  : "An engineer's post sends an @engineer& out to repair and maintain the buildings on his route. Most buildings that aren't on an engineer's patrol route will eventually collapse, although some structures - like reservoirs, aqueducts, fountains, wells, gardens, statues, forts and walls - don't need an engineer's attention.\n Engineer's posts don't affect the desirability of nearby housing.\n Your @Labor Advisor& should usually give Engineering a high priority. Use the @Risks Overlay& to find buildings in danger of collapse and to watch the engineer make his rounds. Right-click on an engineer's post to check its status. A working engineer's post flies a small blue flag.\n Read more about the @historical role of Engineers&."
+ uri : {
+  "Labor Advisor" : "labor_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "historical role of Engineers" : "engineer_history"
+  "here" : "http://wikipedia.ru"
+ }
+}

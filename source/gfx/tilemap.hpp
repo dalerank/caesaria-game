@@ -46,6 +46,8 @@ public:
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;
   TilesArray allTiles() const;
+  const TilesArray& borderTiles() const;
+  void addBorder();
 
   // returns all tiles on a rectangular perimeter
   // (i1, j1) : left corner of the rectangle (minI, minJ)

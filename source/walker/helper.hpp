@@ -21,6 +21,7 @@
 #include "core/requirements.hpp"
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
+#include "world/nation.hpp"
 #include "walker.hpp"
 
 class WalkerHelper
@@ -31,8 +32,8 @@ public:
   static std::string getTypename( constants::walker::Type type );
   static constants::walker::Type getType( const std::string& name );
   static std::string getPrettyTypename( constants::walker::Type type );
-  static std::string getNationName( constants::walker::Nation type );
-  static constants::walker::Nation getNation( const std::string& name );
+  static std::string getNationName( world::Nation type );
+  static world::Nation getNation( const std::string& name );
   static gfx::Picture getBigPicture( constants::walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const constants::walker::Type type );
@@ -57,11 +58,11 @@ public:
 
   static void addFriend( constants::walker::Type who, constants::walker::Type friendType );
   static void remFriend( constants::walker::Type who, constants::walker::Type friendType );
-  static void addFriend( constants::walker::Nation who, constants::walker::Nation friendType );
+  static void addFriend( world::Nation who, world::Nation friendType );
   static void addEnemy( constants::walker::Type who, constants::walker::Type enemyType );
-  static void addEnemy( constants::walker::Nation who, constants::walker::Nation enemyType );
+  static void addEnemy( world::Nation who, world::Nation enemyType );
   static bool isNeutral( constants::walker::Type a, constants::walker::Type b );
-  static bool isNeutral( constants::walker::Nation a, constants::walker::Nation b);
+  static bool isNeutral( world::Nation a, world::Nation b);
 
   void load( vfs::Path path );
   void load( const VariantMap& stream );

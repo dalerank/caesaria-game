@@ -1,0 +1,14 @@
+{  
+ title : "##hippodrome##"
+ sound : "fanfare"
+ text  : "Just as there is only one hippodrome in Rome - the Circus Maximus - so can your city have only one of these enormous @entertainment& facilities. In fact, due to the engineering challenges involved, only fairly large or advanced cities can build one at all. The word 'hippodrome' means 'horse racetrack' in Greek.\n The hippodrome holds only chariot races, but these are the most popular sport of all, and no housing in your city can reach its ultimate potential until it adds hippodrome access to its entertainment options. Remember that, besides @charioteers&, the hippodrome needs a large conventional labor force.\n Charioteers provide hippodrome access as they ride through neighboring streets. Close proximity to the Hippodrome is undesirable, thanks to the noise and traffic it generates. To watch the hippodrome's charioteers make their rounds, choose the @Entertainment Overlay&. Right-click on the hippodrome to check its status.\n LClick @here& to read about the historical Circus Maximus in Rome."
+ uri : {
+  "gladiator school" : "gladiator_school"
+  "charioteers" : "charioteer_school"
+  "Entertainment Overlay" : "entertainment_overlay"
+  "entertainment" : "entertainment"
+  "amphitheater" : "amphitheater"
+  "Entertainment Advisor" : "entertainment_advisor"
+  "here" : "http://wikipedia.ru"
+ }
+}

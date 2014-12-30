@@ -21,7 +21,7 @@
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "training.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "walker/serviceman.hpp"
@@ -37,7 +37,7 @@ public:
   DateTime lastDateGl, lastDateLion;
 };
 
-Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, building::colloseum, Size(5) ), _d( new Impl )
+Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, objects::colloseum, Size(5) ), _d( new Impl )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
@@ -64,7 +64,7 @@ void Colosseum::deliverService()
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
-        ? _d->lastDateGl : _d->lastDateLion) = GameDate::current();
+        ? _d->lastDateGl : _d->lastDateLion) = game::Date::current();
     }
   }
   else
@@ -80,16 +80,16 @@ Service::Type Colosseum::serviceType() const
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 
-bool Colosseum::build(PlayerCityPtr city, const TilePos& pos)
+bool Colosseum::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( info );
 
-  city::Helper helper( city );
-  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( building::gladiatorSchool );
-  LionsNurseryList lionsNs = helper.find<LionsNursery>( building::lionsNursery );
+  city::Helper helper( info.city );
+  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  LionsNurseryList lionsNs = helper.find<LionsNursery>( objects::lionsNursery );
 
-  _d->lastDateGl = GameDate::current();
-  _d->lastDateLion = GameDate::current();
+  _d->lastDateGl = game::Date::current();
+  _d->lastDateLion = game::Date::current();
 
   if( glSchools.empty() )
   {
@@ -126,7 +126,7 @@ std::string Colosseum::troubleDesc() const
 bool Colosseum::isNeedGladiators() const
 {
   city::Helper helper( _city() );
-  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( building::gladiatorSchool );
+  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( objects::gladiatorSchool );
 
   return colloseums.empty();
 }

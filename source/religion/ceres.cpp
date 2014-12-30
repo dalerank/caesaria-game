@@ -50,7 +50,8 @@ void Ceres::_doWrath( PlayerCityPtr city )
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
                                                             _("##wrath_of_ceres_description##"),
-                                                            events::ShowInfobox::send2scribe );
+                                                            events::ShowInfobox::send2scribe,
+                                                            ":/smk/God_Ceres.smk");
   event->dispatch();
 
   FarmList farms;
@@ -73,7 +74,7 @@ void Ceres::_doBlessing(PlayerCityPtr city)
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, GameDate::days2ticks( 60 ) );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, game::Date::days2ticks( 60 ) );
   }
 
   foreach(farm, farms)

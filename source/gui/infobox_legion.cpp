@@ -30,7 +30,7 @@
 #include "core/event.hpp"
 #include "objects/fort.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "widget_helper.hpp"
 
 using namespace constants;
@@ -116,7 +116,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       _d->btnReturn->hide();
 
       city::Helper helper( city );
-      BuildingList barracks = helper.find<Building>( building::barracks );
+      BuildingList barracks = helper.find<Building>( objects::barracks );
 
       std::string text = barracks.empty()
                           ? "##legion_haveho_soldiers_and_barracks##"
@@ -149,7 +149,7 @@ void AboutLegion::_update()
 
   if( _d->lbNumberValue )
   {
-    _d->lbNumberValue->setText( StringHelper::i2str( _d->fort->soldiers().size() ) );
+    _d->lbNumberValue->setText( utils::i2str( _d->fort->soldiers().size() ) );
   }
 
   if( _d->lbHealthValue )
@@ -171,12 +171,12 @@ void AboutLegion::_update()
 
   if( _d->lbTrainedValue )
   {
-    _d->lbTrainedValue->setText( StringHelper::i2str( _d->fort->legionTrained() ) );
+    _d->lbTrainedValue->setText( utils::i2str( _d->fort->legionTrained() ) );
   }
 
   if( _d->btnAttackAnimals )
   {
-    std::string text = StringHelper::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
+    std::string text = utils::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
     _d->btnAttackAnimals->setText( text );
   }
 
@@ -187,9 +187,9 @@ void AboutLegion::_update()
     int flIndex = 0;
     switch( _d->fort->type() )
     {
-    case building::fortJavelin: flIndex = 30; break;
-    case building::fortLegionaire: flIndex = 21; break;
-    case building::fortMounted: flIndex = 39; break;
+    case objects::fortJavelin: flIndex = 30; break;
+    case objects::fortLegionaire: flIndex = 21; break;
+    case objects::fortMounted: flIndex = 39; break;
 
     default: break;
     }
@@ -243,11 +243,11 @@ bool AboutLegion::onEvent(const NEvent& event)
       std::string text;
       switch( id )
       {
-      case Fort::frmNorthLine: text = "##defensive_formation"; break;
-      case Fort::frmWestLine: text = "##defensive_formation2_"; break;
-      case Fort::frmNorthDblLine: text = "##simple_formation"; break;
-      case Fort::frmWestDblLine: text = "##simple_formation2"; break;
-      case Fort::frmRandomLocation: text = "##simple_random_location"; break;
+      case Fort::frmNorthLine: text = "##line_formation"; break;
+      case Fort::frmWestLine: text = "##line_formation"; break;
+      case Fort::frmNorthDblLine: text = "##mopup_formation"; break;
+      case Fort::frmWestDblLine: text = "##mopup_formation"; break;
+      case Fort::frmOpen: text = "##open_formation"; break;
 
       default:
       break;

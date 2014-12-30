@@ -23,7 +23,7 @@
 #include "environment.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/color.hpp"
 #include "core/time.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -46,11 +46,11 @@ public:
     lastUpdateTime = DateTime::elapsedTime();
 
     background->fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background->width()-2, background->height()-2 ) );
-    font.draw( *background, StringHelper::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
-    font.draw( *background, StringHelper::format( 0xff, "%d", senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
+    font.draw( *background, utils::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
+    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
+    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
+    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
+    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
 
     background->update();
   }

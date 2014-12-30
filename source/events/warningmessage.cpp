@@ -29,21 +29,21 @@ namespace events
 {
 
 
-GameEventPtr WarningMessageEvent::create(const std::string& text)
+GameEventPtr WarningMessage::create(const std::string& text)
 {
-  WarningMessageEvent* ev = new WarningMessageEvent();
+  WarningMessage* ev = new WarningMessage();
   ev->_text = text;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
 }
 
-bool WarningMessageEvent::_mayExec(Game& game, unsigned int time) const
+bool WarningMessage::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void WarningMessageEvent::_exec(Game& game, unsigned int)
+void WarningMessage::_exec(Game& game, unsigned int)
 {
   if( !game.city()->getOption( PlayerCity::warningsEnabled ) )
     return;

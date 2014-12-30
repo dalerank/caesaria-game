@@ -1,0 +1,13 @@
+{  
+ title : "##furniture_workshop##"
+ sound : "fanfare"
+ text  : "Carpenters turn lumber from your @timber yards& into furniture here.\n One timber yard can supply enough wood for two furniture workshops. Like most industries, furniture workshops are undesirable neighbors for housing. Workshops need a nearby labor source, and road access to a @warehouse& and to the timber yard that supplies them. @Workers& take finished furniture to the nearest warehouse with empty space.\n You may export it if you have an appropriate @trade route&, and @market buyers& take some back to their markets when they receive requests for it from housing. Sometimes your province may not be suitable for your own timber yards, though you may be able to import timber. Importing timber and turning it into furniture in your own workshops can be a lot cheaper than importing furniture.\n Furniture is among the products your citizens demand to reach the highest levels of @housing&. Furniture workshops are animated while working. Right-click on a workshop to see its status, particularly if you notice that activity has stopped.\n To read more about furniture in the Roman Empire, click @here&."
+ uri : {
+  "olive farms" : "olive_farms"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "festivals" : "festival"
+  "housing" : "house"
+  "here" : "http://wikipedia.ru"
+ }
+}

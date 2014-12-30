@@ -42,6 +42,7 @@ public:
   virtual DateTime startDate() const { return _startDate; }
   virtual DateTime finishedDate() const { return _finishDate; }
   virtual bool isAnnounced() const { return _isAnnounced; }
+  virtual void update() {}
   virtual void setAnnounced( bool value ) { _isAnnounced = value; }
 
   virtual VariantMap save() const;
@@ -70,8 +71,10 @@ public:
   virtual void success( PlayerCityPtr city );
   virtual void fail( PlayerCityPtr city );
 
+  virtual void update();
+
   int qty() const;
-  Good::Type goodType() const;
+  good::Type goodType() const;
   virtual std::string description() const;
 
   static std::string typeName();

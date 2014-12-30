@@ -38,6 +38,19 @@ public:
   TilePos startPoint, endPoint, currentPoint;
 };
 
+GameEventPtr EarthQuake::create(TilePos start, TilePos stop)
+{
+  EarthQuake* eq = new EarthQuake();
+  eq->_d->startPoint = start;
+  eq->_d->endPoint = stop;
+  eq->_d->currentPoint = start;
+
+  GameEventPtr ret( eq );
+  ret->drop();
+
+  return ret;
+}
+
 GameEventPtr EarthQuake::create()
 {
   GameEventPtr ret( new EarthQuake() );
@@ -53,7 +66,7 @@ bool EarthQuake::isDeleted() const
 
 void EarthQuake::_exec( Game& game, unsigned int time)
 {
-  if( GameDate::isDayChanged() && time != _d->lastTimeUpdate )
+  if( game::Date::isDayChanged() && time != _d->lastTimeUpdate )
   {
     _d->lastTimeUpdate = time;
     Logger::warning( "Execute earthquake event" );
@@ -67,7 +80,7 @@ void EarthQuake::_exec( Game& game, unsigned int time)
 
       if( mayDestruct )
       {
-        events::GameEventPtr e = events::DisasterEvent::create( *currentTile, DisasterEvent::rift );
+        events::GameEventPtr e = events::Disaster::create( *currentTile, Disaster::rift );
         e->dispatch();
       }
     }
@@ -96,7 +109,6 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     {
       _d->currentPoint = nextPoints.random()->pos();
     }
-
 
     if( _d->currentPoint == _d->endPoint )
     {

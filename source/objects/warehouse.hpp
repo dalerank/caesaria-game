@@ -24,7 +24,10 @@
 #include "good/good.hpp"
 #include "core/position.hpp"
 
-class GoodStore;
+namespace good
+{
+class Store;
+}
 
 class Warehouse: public WorkingBuilding
 {
@@ -36,8 +39,8 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void computePictures();
-  GoodStore& store();
-  const GoodStore& store() const;
+  good::Store& store();
+  const good::Store& store() const;
   
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

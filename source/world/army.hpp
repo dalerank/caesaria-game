@@ -40,6 +40,7 @@ public:
   virtual int strength() const;  
   virtual void killSoldiers( int percent );
   virtual void addObject(ObjectPtr);
+  std::string target() const;
 
   static void battle(unsigned int attackers, unsigned int defenders, int &atcLoss, int &defLoss);
 

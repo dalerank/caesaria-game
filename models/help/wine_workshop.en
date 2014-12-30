@@ -1,0 +1,13 @@
+{  
+ title : "##wine_workshop##"
+ sound : "fanfare"
+ text  : "Vintners turn grapes from your @vine farms& into wine here.\n Processing raw materials is more labor-intensive than is producing them, so you can supply two workshops from the output of each vine farm.\n Like most industries, wine workshops are undesirable neighbors for housing, although not as undesirable as are other workshops. Workshops need a nearby labor source, and road access to their raw material supplier and to a @warehouse&. @Workers& take finished wine to the nearest warehouse with empty space. You may export it if you have an appropriate @trade route&, and @market buyers& will take some back to their markets when they have requests for it from housing.\n Wine is among the products your citizens demand to reach the highest levels of @housing&. Multiple vintages must be available to allow the grandest villas. You can offer them one domestic and one imported wine, or two imported wines, but they will not be happy with two domestic wines, even if they come from different workshops. Patricians consider all of your local wine production to be of the same vintage.\n You need a supply of wine on hand to hold the largest @festivals&; enough, in fact, for everyone in your city.\n Wine is usually one of the most valuable exports.\n Wine workshops are animated while working. Right-click on a workshop to see its status, particularly if you notice that activity has stopped.To read more about wine in the Roman Empire, click @here&."
+ uri : {
+  "vine farms" : "vine_farms"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "festivals" : "festival"
+  "housing" : "house"
+  "here" : "http://wikipedia.ru"
+ }
+}

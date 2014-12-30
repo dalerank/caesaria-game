@@ -22,7 +22,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -38,7 +38,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
 {
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
   setBase( ptr_cast<Construction>( coloseum ) );
-  setTitle( _( MetaDataHolder::findPrettyName( building::colloseum ) ) );
+  setTitle( _( MetaDataHolder::findPrettyName( objects::colloseum ) ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, coloseum->maximumWorkers(), coloseum->numberWorkers() );
   
@@ -52,7 +52,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
     if( coloseum->isShowLionBattles() )
     {
       DateTime lastAnimalBoutDate = coloseum->lastAnimalBoutDate();
-      text = StringHelper::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( GameDate::current() ), "##days##" );
+      text = utils::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
@@ -60,7 +60,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
     if( coloseum->isShowGladiatorBattles() )
     {
       DateTime lastGlBoutDate = coloseum->lastGladiatorBoutDate();
-      text = StringHelper::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( GameDate::current() ), "##days##" );
+      text = utils::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
 
     new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );

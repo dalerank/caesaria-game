@@ -21,14 +21,17 @@
 #include "core/time.hpp"
 #include "core/scopedptr.hpp"
 
-class GameDate
+namespace game
+{
+
+class Date
 {
 public:
   void timeStep( unsigned int time );
 
   void init( const DateTime& date );
 
-  static GameDate& instance();
+  static Date& instance();
 
   static inline DateTime current() { return instance()._current; }
   static inline bool isDayChanged() { return instance()._dayChange; }
@@ -39,7 +42,7 @@ public:
   static unsigned int days2ticks( unsigned int days );
 
 private:
-  GameDate();
+  Date();
 
   DateTime _current;
 
@@ -49,5 +52,7 @@ private:
   bool _monthChange;
   bool _yearChange;
 };
+
+}//end namespace game
 
 #endif //__CAESARIA_GAMEDATE_H_INCLUDED__

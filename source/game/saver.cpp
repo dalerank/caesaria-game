@@ -28,19 +28,22 @@
 #include "settings.hpp"
 #include "events/dispatcher.hpp"
 
+namespace game
+{
+
 const char* SaverOptions::restartFile = "restartFile";
 const char* SaverOptions::version = "version";
 
-void GameSaver::save(const vfs::Path& filename, const Game& game )
+void Saver::save(const vfs::Path& filename, const Game& game )
 {
   VariantMap vm;
   vm[ SaverOptions::version ] = 1;
   vm[ "timemultiplier" ] = game.timeMultiplier();
 
   VariantMap vm_scenario;
-  vm_scenario[ "date" ] = GameDate::current();
+  vm_scenario[ "date" ] = game::Date::current();
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
-  vm_scenario[ "translation" ] = GameSettings::get( GameSettings::lastTranslation );
+  vm_scenario[ "translation" ] = SETTINGS_VALUE( lastTranslation );
   vm_scenario[ "climate" ] = (int)game.city()->climate();
   vm[ "scenario" ] = vm_scenario;
   vm[ SaverOptions::restartFile ] = Variant( _restartFile );
@@ -64,4 +67,6 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   SaveAdapter::save( vm, filename );
 }
 
-void GameSaver::setRestartFile(const std::string& filename) { _restartFile = filename; }
+void Saver::setRestartFile(const std::string& filename) { _restartFile = filename; }
+
+}//end namespace game

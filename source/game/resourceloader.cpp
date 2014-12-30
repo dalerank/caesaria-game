@@ -97,9 +97,17 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
   }
 }
 
-void ResourceLoader::loadFiles(ArchivePtr archive)
+void ResourceLoader::loadFiles(Path path)
+{
+  ArchivePtr archive = FileSystem::instance().mountArchive( path );
+  if( archive.isValid() )
+    loadFiles( archive );
+}
+
+void ResourceLoader::loadFiles(ArchivePtr archive )
 {
   const vfs::Entries::Items& files = archive->entries()->items();
+  gfx::PictureBank& pb = gfx::PictureBank::instance();
 
   foreach( it, files )
   {
@@ -110,7 +118,7 @@ void ResourceLoader::loadFiles(ArchivePtr archive)
       if( pic.isValid() )
       {
         std::string basename = it->name.baseName().toString();
-        gfx::PictureBank::instance().setPicture( basename, pic );
+        pb.setPicture( basename, pic );
       }
     }
   }

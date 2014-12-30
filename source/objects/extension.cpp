@@ -39,7 +39,7 @@ void ConstructionExtension::load(const VariantMap &stream)
 
 void ConstructionExtension::timeStep(ConstructionPtr, unsigned int)
 {
-  _isDeleted = GameDate::current() > _finishDate;
+  _isDeleted = game::Date::current() > _finishDate;
 }
 
 ConstructionExtensionPtr FactoryProgressUpdater::create()
@@ -55,7 +55,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   FactoryProgressUpdater* updater = new FactoryProgressUpdater();
   updater->_options[ "value" ] = value;
 
-  updater->_finishDate = GameDate::current();
+  updater->_finishDate = game::Date::current();
   updater->_finishDate.appendWeek( week2finish );
 
   ConstructionExtensionPtr ret( updater );
@@ -68,7 +68,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
 
 void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time)
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     FactoryPtr factory = ptr_cast<Factory>( parent );
     if( factory.isValid() )
@@ -97,7 +97,7 @@ ConstructionExtensionPtr FortCurseByMars::create()
 ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int monthsCurse)
 {
   FortCurseByMars* curse = new FortCurseByMars();
-  DateTime gdate = GameDate::current();
+  DateTime gdate = game::Date::current();
   gdate.appendMonth( monthsCurse );
   curse->_finishDate = gdate;
 
@@ -111,7 +111,7 @@ ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int mo
 
 void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     FortPtr base = ptr_cast<Fort>( parent );
     if( !base.isValid() )
@@ -228,7 +228,7 @@ ConstructionExtensionPtr WarehouseBuff::assignTo(WarehousePtr warehouse, int gro
   WarehouseBuff* buff = new WarehouseBuff();
   buff->_options[ "value" ] = value;
   buff->_options[ "group" ] = group;
-  buff->_finishDate = GameDate::current();
+  buff->_finishDate = game::Date::current();
   buff->_finishDate.appendWeek( week2finish );
 
   warehouse->addExtension( buff );
@@ -263,7 +263,7 @@ ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr cons
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;
   buff->_options[ "param" ] = paramName;
-  buff->_finishDate = GameDate::current();
+  buff->_finishDate = game::Date::current();
   buff->_finishDate.appendWeek( week2finish );
 
   construction->addExtension( buff );
@@ -277,7 +277,7 @@ void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int tim
 {
   ConstructionExtension::timeStep( parent,time );
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     if( _options[ "relative" ].toBool() )
     {

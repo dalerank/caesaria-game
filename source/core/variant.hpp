@@ -341,9 +341,21 @@ public:
     *this = other;
   }
 
+  VariantMap& operator+=(const VariantMap& other )
+  {
+    foreach( it, other )
+    {
+      (*this)[ it->first ] = it->second;
+    }
+
+    return *this;
+  }
+
   VariantMap& operator=(const VariantMap& other )
   {
-    for( VariantMap::const_iterator it=other.begin(); it != other.end(); ++it )
+    clear();
+
+    foreach( it, other )
     {
       (*this)[ it->first ] = it->second;
     }

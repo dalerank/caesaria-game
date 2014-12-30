@@ -41,7 +41,7 @@ public:
   std::string errorStr;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
@@ -57,15 +57,15 @@ Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) )
   _fgPicturesRef()[ 3 ].setOffset( 230, -10 );
 }
 
-bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool Senate::canBuild( const CityAreaInfo& areaInfo ) const
 {
   _d->errorStr = "";
-  bool mayBuild = ServiceBuilding::canBuild( city, pos, aroundTiles );
+  bool mayBuild = ServiceBuilding::canBuild( areaInfo );
 
   if( mayBuild )
   {
-    city::Helper helper( city );
-    bool isSenatePresent = !helper.find<Building>(building::senate).empty();
+    city::Helper helper( areaInfo.city );
+    bool isSenatePresent = !helper.find<Building>(objects::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
@@ -96,9 +96,9 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-bool Senate::build(PlayerCityPtr city, const TilePos& pos)
+bool Senate::build( const CityAreaInfo& info )
 {
-  ServiceBuilding::build( city, pos );
+  ServiceBuilding::build( info );
   _updateUnemployers();
   _updateRatings();
 
@@ -117,7 +117,7 @@ void Senate::_updateRatings()
 
 void Senate::timeStep(const unsigned long time)
 {
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     _updateUnemployers();
     _updateRatings();

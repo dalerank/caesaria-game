@@ -37,6 +37,8 @@ public:
   virtual bool onEvent(const NEvent &event);
 
 private:
+  void _showHelp();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

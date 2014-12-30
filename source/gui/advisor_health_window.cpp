@@ -21,7 +21,7 @@
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
@@ -32,6 +32,7 @@
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "dictionary.hpp"
 #include "city/cityservice_health.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
@@ -67,22 +68,22 @@ public:
     std::string buildingStr, peoplesStr;
     switch( _service )
     {
-    case building::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
-    case building::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
-    case building::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case building::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
+    case objects::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
+    case objects::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
+    case objects::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
+    case objects::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
+    std::string buildingStrT = utils::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
+    std::string buildingWorkT = utils::format( 0xff, "%d", _workingBuilding );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
-    std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
+    std::string peoplesStrT = utils::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
     rfont.draw( *texture, peoplesStrT, 255, 0 );
   }
 
@@ -128,25 +129,28 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
   Size labelSize( lbBlackframe->width() - 6, 20 );
 
-  Impl::InfrastructureInfo info = _d->getInfo( city, building::baths );
-  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), building::baths,
+  Impl::InfrastructureInfo info = _d->getInfo( city, objects::baths );
+  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), objects::baths,
                                              info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, building::barber );
-  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), building::barber,
+  info = _d->getInfo( city, objects::barber );
+  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), objects::barber,
                                               info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, building::doctor );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), building::doctor,
+  info = _d->getInfo( city, objects::doctor );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), objects::doctor,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, building::hospital );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), building::hospital,
+  info = _d->getInfo( city, objects::hospital );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), objects::hospital,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
   _d->updateAdvice( city );
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Health::_showHelp );
 }
 
 void Health::draw( gfx::Engine& painter )
@@ -155,6 +159,11 @@ void Health::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+void Health::_showHelp()
+{
+  DictionaryWindow::show( this, "health_advisor" );
 }
 
 Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
@@ -203,7 +212,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     else
     {
       city::Helper helper( c );
-      HouseList houses =  helper.find<House>( building::house );
+      HouseList houses =  helper.find<House>( objects::house );
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;

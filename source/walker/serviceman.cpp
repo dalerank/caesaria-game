@@ -22,7 +22,7 @@
 #include "pathway/path_finding.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
@@ -43,6 +43,7 @@ public:
   BuildingPtr base;
   TilePos lastHousePos;
   Service::Type service;
+  Propagator::ObsoleteOverlays obsoleteOvs;
   unsigned int reachDistance;
   unsigned int maxDistance;
 };
@@ -51,6 +52,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Human( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
+  _setNation( city->nation() );
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
@@ -128,6 +130,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
   Propagator pathPropagator( _city() );
   pathPropagator.init( ptr_cast<Construction>( _d->base ) );
   pathPropagator.setAllDirections( false );
+  pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
   PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
 
@@ -169,7 +172,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
       ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
       foreach( it, reachedBuildings )
       {
-        if( (*it)->type() == building::house )
+        if( (*it)->type() == objects::house )
         {
           _d->lastHousePos = (*itTile)->pos();
         }
@@ -196,6 +199,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
+void ServiceWalker::_addObsoleteOverlays(TileOverlay::Type type) { _d->obsoleteOvs.insert( type ); }
 unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
@@ -490,7 +494,7 @@ TilePos ServiceWalker::places(Walker::Place type) const
   default: break;
   }
 
-  return ServiceWalker::places( type );
+  return Human::places( type );
 }
 
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )

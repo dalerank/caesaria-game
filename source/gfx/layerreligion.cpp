@@ -20,7 +20,7 @@
 #include "objects/house_level.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/event.hpp"
 #include "tilemap_camera.hpp"
 #include "core/gettext.hpp"
@@ -30,12 +30,15 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerReligion::type() const
+namespace layer
+{
+
+int Religion::type() const
 {
   return citylayer::religion;
 }
 
-void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -53,38 +56,38 @@ void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     switch( overlay->type() )
     {
     // Base set of visible objects
-    case construction::road:
-    case construction::plaza:
-    case construction::garden:
+    case objects::road:
+    case objects::plaza:
+    case objects::garden:
 
-    case building::burnedRuins:
-    case building::collapsedRuins:
+    case objects::burnedRuins:
+    case objects::collapsedRuins:
 
-    case building::lowBridge:
-    case building::highBridge:
+    case objects::lowBridge:
+    case objects::highBridge:
 
-    case building::elevation:
-    case building::rift:
+    case objects::elevation:
+    case objects::rift:
 
     // Religion-related
-    case building::templeCeres:
-    case building::templeMars:
-    case building::templeMercury:
-    case building::templeNeptune:
-    case building::templeVenus:
+    case objects::templeCeres:
+    case objects::templeMars:
+    case objects::templeMercury:
+    case objects::templeNeptune:
+    case objects::templeVenus:
 
-    case building::cathedralCeres:
-    case building::cathedralMars:
-    case building::cathedralMercury:
-    case building::cathedralNeptune:
-    case building::cathedralVenus:
+    case objects::cathedralCeres:
+    case objects::cathedralMars:
+    case objects::cathedralMercury:
+    case objects::cathedralNeptune:
+    case objects::cathedralVenus:
 
-    case building::oracle:
+    case objects::oracle:
       needDrawAnimations = true;      
     break;
 
       //houses
-    case building::house:
+    case objects::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
         religionLevel = (int) house->getServiceValue(Service::religionMercury);
@@ -126,7 +129,7 @@ void LayerReligion::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-void LayerReligion::handleEvent(NEvent& event)
+void Religion::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -146,7 +149,7 @@ void LayerReligion::handleEvent(NEvent& event)
 
           text = (templeAccess == 5 && oracleAccess )
                   ? "##religion_access_full##"
-                  : StringHelper::format( 0xff, "##religion_access_%d_temple##", templeAccess );
+                  : utils::format( 0xff, "##religion_access_%d_temple##", templeAccess );
         }
       }
 
@@ -161,18 +164,20 @@ void LayerReligion::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerReligion::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Religion::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerReligion( camera, city ) );
+  LayerPtr ret( new Religion( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerReligion::LayerReligion( Camera& camera, PlayerCityPtr city)
-  : LayerInfo( camera, city, 9 )
+Religion::Religion( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 9 )
 {
   _addWalkerType( walker::priest );
 }
+
+}//end namespace layer
 
 }//end namespace gfx

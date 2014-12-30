@@ -46,13 +46,14 @@ public:
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );
 
-  virtual const GoodStore& importingGoods() const;
-  virtual const GoodStore& exportingGoods() const;
+  virtual const good::Store& importingGoods() const;
+  virtual const good::Store& exportingGoods() const;
 
+  virtual world::Nation nation() const;
   virtual unsigned int age() const;
 
   virtual void delayTrade(unsigned int month);
-  virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
+  virtual void empirePricesChanged(good::Type gtype, int bCost, int sCost);
 
   virtual unsigned int tradeType() const;
   virtual int strength() const;

@@ -1,0 +1,15 @@
+{  
+ title : "##well##"
+ sound : "fanfare"
+ text  : "Only the poorest neighborhoods rely on wells for their @water supply&. Build wells to supply drinking water to housing when it is impractical to provide a @fountain&. Wells allow housing to progress further than it would with no water supply at all, but housing with well access will never evolve very far. Wells have the smallest distribution radius of any water supply.\n Wells do not need road access to employees, but will slightly increase the overall labor requirement for your water supply.\n Click @here& to read more about wells in the Roman Empire."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

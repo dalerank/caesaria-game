@@ -21,7 +21,7 @@
 #include "objects/metadata.hpp"
 #include "objects/senate.hpp"
 #include "objects/constants.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
 #include "good/goodhelper.hpp"
@@ -47,16 +47,16 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
-  std::string title = MetaDataHolder::instance().getData( building::senate ).prettyName();
+  std::string title = MetaDataHolder::instance().getData( objects::senate ).prettyName();
   setTitle( _(title) );
 
   // number of workers
   _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );
 
-  std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
+  std::string denariesStr = utils::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
 
   Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
-  lb->setIcon( GoodHelper::picture( Good::denaries ) );
+  lb->setIcon( good::Helper::picture( good::denaries ) );
   lb->setText( denariesStr );
   lb->setTextOffset( Point( 30, 0 ));
 

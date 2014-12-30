@@ -26,22 +26,22 @@
 using namespace constants;
 using namespace gfx;
 
-Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(2))
+Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery, Size(2))
 {
   _fgPicturesRef().resize( 3 );
 }
 
-bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Pottery::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  bool ret = Factory::canBuild( city, pos, aroundTiles );
+  bool ret = Factory::canBuild( areaInfo );
   return ret;
 }
 
-bool Pottery::build(PlayerCityPtr city, const TilePos& pos)
+bool Pottery::build( const CityAreaInfo& info )
 {
-  Factory::build( city, pos );
-  city::Helper helper( city );
-  bool haveClaypit = !helper.find<Building>( building::clayPit ).empty();
+  Factory::build( info );
+  city::Helper helper( info.city );
+  bool haveClaypit = !helper.find<Building>( objects::clayPit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 

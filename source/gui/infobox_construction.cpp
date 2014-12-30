@@ -68,8 +68,8 @@ void AboutConstruction::_switch(int flag)
   if( _construction.isValid() )
   {
     events::GameEventPtr e = events::ShowTileInfo::create( base()->pos(), flag == KEY_PERIOD
-                                                                                       ? events::ShowTileInfo::next
-                                                                                       : events::ShowTileInfo::prew );
+                                                           ? events::ShowTileInfo::next
+                                                           : events::ShowTileInfo::prew );
     deleteLater();
     e->dispatch();
   }

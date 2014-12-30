@@ -39,10 +39,10 @@ class MarketBuyer::Impl
 {
 public:
   TilePos destBuildingPos;  // granary or warehouse
-  Good::Type priorityGood;
+  good::Type priorityGood;
   int maxDistance;
   MarketPtr market;
-  SimpleGoodStore basket;
+  good::SimpleStore basket;
   int reservationID;
 };
 
@@ -53,16 +53,16 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
    _d->maxDistance = 25;
    _d->basket.setCapacity(800);  // this is a big basket!
 
-   _d->basket.setCapacity(Good::wheat, 800);
-   _d->basket.setCapacity(Good::fruit, 800);
-   _d->basket.setCapacity(Good::vegetable, 800);
-   _d->basket.setCapacity(Good::meat, 800);
-   _d->basket.setCapacity(Good::fish, 800);
+   _d->basket.setCapacity(good::wheat, 800);
+   _d->basket.setCapacity(good::fruit, 800);
+   _d->basket.setCapacity(good::vegetable, 800);
+   _d->basket.setCapacity(good::meat, 800);
+   _d->basket.setCapacity(good::fish, 800);
 
-   _d->basket.setCapacity(Good::pottery, 300);
-   _d->basket.setCapacity(Good::furniture, 300);
-   _d->basket.setCapacity(Good::oil, 300);
-   _d->basket.setCapacity(Good::wine, 300);
+   _d->basket.setCapacity(good::pottery, 300);
+   _d->basket.setCapacity(good::furniture, 300);
+   _d->basket.setCapacity(good::oil, 300);
+   _d->basket.setCapacity(good::wine, 300);
 
    setName( NameGenerator::rand( NameGenerator::female ) );
 }
@@ -71,12 +71,12 @@ MarketBuyer::~MarketBuyer(){}
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                               MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
+                               MarketPtr market, good::SimpleStore& basket, const good::Type what,
                                Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;
 
-  DirectRoutes pathWayList = pathPropagator.getRoutes( type );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
@@ -104,7 +104,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
     int qty = std::min( max_qty, market->getGoodDemand( what ) );
     qty = std::min(qty, basket.capacity( what ) - basket.qty( what ));
     // std::cout << "MarketLady reserves from warehouse, qty=" << qty << std::endl;
-    reservId = res->store().reserveRetrieval( what, qty, GameDate::current() );
+    reservId = res->store().reserveRetrieval( what, qty, game::Date::current() );
     return res->pos();
   }
 
@@ -114,7 +114,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<Good::Type> priorityGoods = _d->market->mostNeededGoods();
+  std::list<good::Type> priorityGoods = _d->market->mostNeededGoods();
 
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
@@ -133,24 +133,24 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     {
       _d->priorityGood = *goodType;
 
-      if( _d->priorityGood == Good::wheat || _d->priorityGood == Good::fish
-          || _d->priorityGood == Good::meat || _d->priorityGood == Good::fruit
-          || _d->priorityGood == Good::vegetable)
+      if( _d->priorityGood == good::wheat || _d->priorityGood == good::fish
+          || _d->priorityGood == good::meat || _d->priorityGood == good::fruit
+          || _d->priorityGood == good::vegetable)
       {
         // try get that good from a granary
-        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granary, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
         if( _d->destBuildingPos.i() < 0 )
         {
-          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, objects::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
       }
       else
       {
         // try get that good from a warehouse
-        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, objects::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
       }
 
@@ -188,8 +188,10 @@ std::string MarketBuyer::thoughts( Thought th) const
   break;
 
   default:
-      break;
-    }
+  break;
+  }
+
+  return "";
 }
 
 TilePos MarketBuyer::places(Walker::Place type) const
@@ -231,10 +233,10 @@ void MarketBuyer::_reachedPathway()
         granary->store().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = Good::wheat; n<=Good::vegetable; ++n)
+        for (int n = good::wheat; n<=good::vegetable; ++n)
         {
           // for all types of good (except G_NONE)
-          Good::Type goodType = (Good::Type) n;
+          good::Type goodType = (good::Type) n;
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
           if (qty > 0)
           {
@@ -243,7 +245,7 @@ void MarketBuyer::_reachedPathway()
             if (qty > 0)
             {
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              GoodStock& stock = _d->basket.getStock(goodType);
+              good::Stock& stock = _d->basket.getStock(goodType);
               granary->store().retrieve(stock, qty);
             }
           }
@@ -256,10 +258,10 @@ void MarketBuyer::_reachedPathway()
         warehouse->store().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = Good::wheat; n<Good::goodCount; ++n)
+        for (int n = good::wheat; n<good::goodCount; ++n)
         {
           // for all types of good (except G_NONE)
-          Good::Type goodType = (Good::Type) n;
+          good::Type goodType = (good::Type) n;
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
           if (qty > 0)
           {
@@ -268,7 +270,7 @@ void MarketBuyer::_reachedPathway()
             if (qty > 0)
             {
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              GoodStock& stock = _d->basket.getStock(goodType);
+              good::Stock& stock = _d->basket.getStock(goodType);
               warehouse->store().retrieve(stock, qty);
             }
           }
@@ -279,14 +281,14 @@ void MarketBuyer::_reachedPathway()
 
       while( _d->basket.qty() > 100 )
       {
-        for( int gtype=Good::wheat; gtype < Good::goodCount ; gtype++ )
+        for( int gtype=good::wheat; gtype < good::goodCount ; gtype++ )
         {
-          GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
+          good::Stock& currentStock = _d->basket.getStock( (good::Type)gtype );
           if( currentStock.qty() > 0 )
           {
             MarketKidPtr boy = MarketKid::create( _city(), this );
-            GoodStock& boyBasket =  boy->getBasket();
-            boyBasket.setType( (Good::Type)gtype );
+            good::Stock& boyBasket =  boy->getBasket();
+            boyBasket.setType( (good::Type)gtype );
             boyBasket.setCapacity( 100 );
             _d->basket.retrieve( boyBasket, math::clamp( currentStock.qty(), 0, 100 ) );
             boy->setDelay( delay );
@@ -330,7 +332,7 @@ void MarketBuyer::load( const VariantMap& stream)
 {
   Walker::load( stream );
   VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream );
-  _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
+  _d->priorityGood = (good::Type)stream.get( "priorityGood" ).toInt();
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
 

@@ -16,14 +16,19 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "datetimehelper.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 
-std::string DateTimeHelper::toStr(const DateTime& time)
+namespace util
 {
-  std::string month = StringHelper::format( 0xff, "##month_%d_short##", time.month() );
-  std::string age = StringHelper::format( 0xff, "##age_%s##", time.year() > 0 ? "ad" : "bc" );
-  std::string text = StringHelper::format( 0xff, "%s %d %s", _( month ), abs( time.year() ), _( age ) );
+
+std::string date2str(const DateTime& time)
+{
+  std::string month = utils::format( 0xff, "##month_%d_short##", time.month() );
+  std::string age = utils::format( 0xff, "##age_%s##", time.year() > 0 ? "ad" : "bc" );
+  std::string text = utils::format( 0xff, "%s %d %s", _( month ), abs( time.year() ), _( age ) );
 
   return text;
 }
+
+}//end namespace util

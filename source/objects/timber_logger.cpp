@@ -27,7 +27,7 @@ using namespace constants;
 using namespace gfx;
 
 TimberLogger::TimberLogger()
-  : Factory(Good::none, Good::timber, building::timberLogger, Size(2) )
+  : Factory(good::none, good::timber, objects::timberLogger, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 72 );
 
@@ -35,13 +35,13 @@ TimberLogger::TimberLogger()
   _fgPicturesRef().resize(2);
 }
 
-bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool TimberLogger::canBuild( const CityAreaInfo& areaInfo ) const
 {
-   bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
+   bool is_constructible = WorkingBuilding::canBuild( areaInfo );
    bool near_forest = false;  // tells if the factory is next to a forest
 
-   Tilemap& tilemap = city->tilemap();
-   TilesArray area = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
+   Tilemap& tilemap = areaInfo.city->tilemap();
+   TilesArray area = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
    foreach( tile, area )
    {
      near_forest |= (*tile)->getFlag( Tile::tlTree );

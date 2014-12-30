@@ -23,7 +23,7 @@
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "groupbox.hpp"
@@ -42,6 +42,7 @@
 #include "goodordermanage.hpp"
 #include "widget_helper.hpp"
 #include "city/statistic.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -55,7 +56,7 @@ namespace advisorwnd
 class TradeGoodInfo : public PushButton
 {
 public:
-  TradeGoodInfo( Widget* parent, const Rect& rect, Good::Type good, int qty, bool enable,
+  TradeGoodInfo( Widget* parent, const Rect& rect, good::Type good, int qty, bool enable,
                  city::TradeOptions::Order trade, int tradeQty )
     : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
@@ -64,8 +65,8 @@ public:
     _enable = enable;
     _tradeOrder = trade;
     _tradeQty = tradeQty;
-    _goodPicture = GoodHelper::picture( _type );
-    _goodName = GoodHelper::name( _type );
+    _goodPicture = good::Helper::picture( _type );
+    _goodName = good::Helper::name( _type );
     Decorator::draw( _border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
     setFont( Font::create( FONT_2_WHITE ) );
@@ -91,7 +92,7 @@ public:
       Font f = font( _state() );
       PictureRef& textPic = _textPictureRef();
       f.draw( *textPic, _( _goodName ), 55, 0, true, false );
-      f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0, true, false );
+      f.draw( *textPic, utils::format( 0xff, "%d", _qty), 190, 0, true, false );
       f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
@@ -105,7 +106,7 @@ public:
       break;
 
       case city::TradeOptions::exporting:
-        tradeStateText = StringHelper::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
+        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
       break;
 
       default: break;
@@ -115,7 +116,7 @@ public:
     }
   }
 
-  Signal1<Good::Type>& onClickedA() { return _onClickedASignal; }
+  Signal1<good::Type>& onClickedA() { return _onClickedASignal; }
 
 protected:
   virtual void _btnClicked()
@@ -130,13 +131,13 @@ private:
   bool _enable;
   city::TradeOptions::Order _tradeOrder;
   int _tradeQty;
-  Good::Type _type;
+  good::Type _type;
   std::string _goodName;
   Picture _goodPicture;
   Pictures _border;
 
 signals private:
-  Signal1<Good::Type> _onClickedASignal;
+  Signal1<good::Type> _onClickedASignal;
 };
 
 class Trade::Impl
@@ -148,9 +149,9 @@ public:
   PlayerCityPtr city;
   city::Statistic::GoodsMap allgoods;
 
-  bool getWorkState( Good::Type gtype );
+  bool getWorkState( good::Type gtype );
   void updateGoodsInfo();
-  void showGoodOrderManageWindow( Good::Type type );
+  void showGoodOrderManageWindow( good::Type type );
   void showGoodsPriceWindow();
 };
 
@@ -166,9 +167,9 @@ void Trade::Impl::updateGoodsInfo()
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
   city::TradeOptions& copt = city->tradeOptions();
-  for( int i=Good::wheat, indexOffset=0; i < Good::goodCount; i++ )
+  for( int i=good::wheat, indexOffset=0; i < good::goodCount; i++ )
   {
-    Good::Type gtype = Good::Type( i );
+    good::Type gtype = good::Type( i );
 
     city::TradeOptions::Order tradeState = copt.getOrder( gtype );
     if( tradeState == city::TradeOptions::disabled )
@@ -183,10 +184,10 @@ void Trade::Impl::updateGoodsInfo()
                                             gtype, allgoods[ gtype ], workState, tradeState, tradeQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
-  }
+  } 
 }
 
-bool Trade::Impl::getWorkState(Good::Type gtype )
+bool Trade::Impl::getWorkState(good::Type gtype )
 {
   city::Helper helper( city );
 
@@ -198,11 +199,15 @@ bool Trade::Impl::getWorkState(Good::Type gtype )
   return producers.empty() ? true : industryActive;
 }
 
-void Trade::Impl::showGoodOrderManageWindow(Good::Type type )
+void Trade::Impl::showGoodOrderManageWindow(good::Type type )
 {
   Widget* parent = gbInfo->parent();
+  int gmode = GoodOrderManageWindow::gmUnknown;
+  gmode |= (city::Statistic::canImport( city, type ) ? GoodOrderManageWindow::gmImport : 0);
+  gmode |= (city::Statistic::canProduce( city, type ) ? GoodOrderManageWindow::gmProduce : 0);
+
   GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->height() -60 ), 
-                                                          city, type, allgoods[ type ] );
+                                                          city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
 
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
@@ -211,7 +216,7 @@ void Trade::Impl::showGoodsPriceWindow()
 {
   Widget* parent = gbInfo->parent();
   Size size( 610, 180 );
-  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
+  new EmpirePrices( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
                                                    ( parent->height() - size.height() ) / 2), size ), city );
 }
 
@@ -232,6 +237,9 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
 
   _d->updateGoodsInfo();
+
+  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), this, Trade::_showHelp );
 }
 
 void Trade::draw(gfx::Engine& painter )
@@ -242,9 +250,11 @@ void Trade::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-Signal0<>& Trade::onEmpireMapRequest()
+Signal0<>& Trade::onEmpireMapRequest() { return _d->btnEmpireMap->onClicked(); }
+
+void Trade::_showHelp()
 {
-  return _d->btnEmpireMap->onClicked();
+  DictionaryWindow::show( this, "trade_advisor" );
 }
 
 }

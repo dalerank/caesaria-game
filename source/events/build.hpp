@@ -23,7 +23,7 @@
 namespace events
 {
 
-class BuildEvent : public GameEvent
+class BuildAny : public GameEvent
 {
 public:
   static GameEventPtr create( const TilePos&, gfx::TileOverlay::Type type );

@@ -1,0 +1,15 @@
+{  
+ title : "##clay_pit_history##"
+ sound : "fanfare"
+ text  : "Clay is a complex mineral with modern uses ranging from ceramics to animal feed additive, and from landfill lining to kitty litter. It is found in hundreds of varieties, characterized by their elemental components, their organic content and their plasticity. All clays are primarily kaolin, produced from granite decomposed by superhot steam from fissures deep within the earth. They are usually found in thick sedimentary layers deposited by rivers.\n Rome was built on the floodplain of the Tiber River, so clay was never in short supply. Easily obtained, ductile and durable, clay was indispensable. Mining it in ancient times was as simple as shoveling the mineral from deposits exposed by running water or erosion. Digging deeper yielded purer clays with less organic content. Clay was the basis for all @pottery&, including the ubiquitous amphorae. Under its marble faзade, clay held Rome together in such mundane capacities as its plumbing and its roofing. The terra cotta roofing tiles that we still associate with Mediterranean houses are made from clay."
+ uri : {
+  "granary" : "granary"
+  "pottery" : "pottery"
+  "market traders" : "market_trader"
+  "food and farming" : "food_and_farming"
+  "Crime" : "crime"
+  "meat or fruit and vegetables" : "wheat_farm_history"
+  "warehouse" : "warehouse"
+  "here" : "http://wikipedia.ru"
+ }
+}

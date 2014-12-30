@@ -55,9 +55,9 @@ SrvcPtr DesirabilityUpdater::create( PlayerCityPtr city )
 
 void DesirabilityUpdater::timeStep( const unsigned int time )
 {
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
-    _d->isDeleted = (_d->endTime < GameDate::current());
+    _d->isDeleted = (_d->endTime < game::Date::current());
 
     if( !_d->alsoInfluence )
     {      

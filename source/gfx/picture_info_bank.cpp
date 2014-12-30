@@ -17,7 +17,7 @@
 
 #include "picture_info_bank.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/variant.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"
@@ -148,19 +148,19 @@ void PictureInfoBank::Impl::setRange(const std::string& preffix, const int first
 
 void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, const Point& offset)
 {
-  unsigned int hashName = StringHelper::hash( 0xff, "%s_%05d", preffix.c_str(), index );
+  unsigned int hashName = utils::hash( 0xff, "%s_%05d", preffix.c_str(), index );
   data[hashName] = offset;
 }
 
 void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, const int xoffset, const int yoffset)
 {
-  unsigned int hashName = StringHelper::hash( 0xff, "%s_%05d", preffix.c_str(), index );
+  unsigned int hashName = utils::hash( 0xff, "%s_%05d", preffix.c_str(), index );
   data[hashName] = Point( xoffset, yoffset );
 }
 
 Point PictureInfoBank::getOffset(const std::string& resource_name)
 {
-  Impl::PictureInfoMap::iterator it = _d->data.find( StringHelper::hash( resource_name ) );
+  Impl::PictureInfoMap::iterator it = _d->data.find( utils::hash( resource_name ) );
   if (it == _d->data.end())
   {
     return Point();

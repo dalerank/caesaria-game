@@ -9,7 +9,7 @@
   }
 
   lbxFiles#FileListBox : {
-    geometry : [ 10, 50, "pw-10", "ph-45" ]
+    geometry : [ 12, 50, "pw-12", "ph-45" ]
     items.font : "FONT_2_WHITE"
     items.simple.color : "0xffffffff"
     items.hovered.color : "0xff000000"

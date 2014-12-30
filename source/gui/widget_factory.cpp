@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "widget_factory.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "label.hpp"
 #include "editbox.hpp"
 #include "pushbutton.hpp"
@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 #include "groupbox.hpp"
 #include "filelistbox.hpp"
+#include "dictionary_text.hpp"
 #include <map>
 
 namespace gui
@@ -73,6 +74,7 @@ WidgetFactory::WidgetFactory() : _d( new Impl )
   addCreator( CAESARIA_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
   addCreator( CAESARIA_STR_EXT(SmkViewer),      new BaseWidgetCreator<SmkViewer>() );
   addCreator( CAESARIA_STR_EXT(FileListBox),    new BaseWidgetCreator<FileListBox>() );
+  addCreator( CAESARIA_STR_EXT(DictionaryText), new BaseWidgetCreator<DictionaryText>() );
 }
 
 WidgetFactory::~WidgetFactory() {}

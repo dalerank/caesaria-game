@@ -25,20 +25,20 @@ using namespace constants;
 // housng1a 47 - governor's villa    4 x 4
 // housng1a 48 - governor's palace   5 x 5
 
-GovernorsHouse::GovernorsHouse() : WorkingBuilding( building::governorHouse, Size(3) )
+GovernorsHouse::GovernorsHouse() : WorkingBuilding( objects::governorHouse, Size(3) )
 {
   setMaximumWorkers(5);
   setPicture( ResourceGroup::housing, 46 );
 }
 
-GovernorsVilla::GovernorsVilla() : WorkingBuilding( building::governorVilla, Size(4) )
+GovernorsVilla::GovernorsVilla() : WorkingBuilding( objects::governorVilla, Size(4) )
 {
   setMaximumWorkers(10);
   setWorkers(0);    
   setPicture( ResourceGroup::housing, 47 );
 }
 
-GovernorsPalace::GovernorsPalace() : WorkingBuilding( building::governorPalace, Size( 5 ) )
+GovernorsPalace::GovernorsPalace() : WorkingBuilding( objects::governorPalace, Size( 5 ) )
 {
   setMaximumWorkers(15);
   setWorkers(0);  

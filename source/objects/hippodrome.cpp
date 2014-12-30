@@ -22,6 +22,7 @@
 #include "city/helper.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
+#include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
 
 using namespace constants;
@@ -46,7 +47,7 @@ const Point hippodromeSectionOffset[] = {
 };
 
 HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction direction, Type type )
-  : Building( building::fortArea, Size(5) )
+  : Building( objects::fortArea, Size(5) )
 {
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -98,7 +99,7 @@ void HippodromeSection::destroy()
   HippodromePtr hp = ptr_cast<Hippodrome>( _city()->getOverlay( _basepos ) );
   if( hp.isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _basepos );
+    events::GameEventPtr e = events::ClearTile::create( _basepos );
     e->dispatch();
     _basepos = TilePos( -1, -1 );
   }
@@ -148,7 +149,7 @@ const Pictures& Hippodrome::pictures(Renderer::Pass pass) const
   return EntertainmentBuilding::pictures( pass );
 }
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(15,5) ), _d( new Impl )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, objects::hippodrome, Size(15,5) ), _d( new Impl )
 {
   _fgPicturesRef().resize(5);
   _d->direction = west;
@@ -169,16 +170,16 @@ std::string Hippodrome::troubleDesc() const
   return ret;
 }
 
-bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Hippodrome::canBuild( const CityAreaInfo& areaInfo ) const
 {
-  const_cast<Hippodrome*>( this )->_checkDirection( city, pos );
+  const_cast<Hippodrome*>( this )->_checkDirection( areaInfo );
   if( _d->direction != noneDirection )
   {
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  city::Helper helper( city );
-  HippodromeList hpList = helper.find<Hippodrome>( building::hippodrome );
+  city::Helper helper( areaInfo.city );
+  HippodromeList hpList = helper.find<Hippodrome>( objects::hippodrome );
   if( !hpList.empty() )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");
@@ -209,12 +210,12 @@ void Hippodrome::deliverService()
   _d->sectionMiddle->setAnimationVisible( animation().isRunning() );
 }
 
-bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
+bool Hippodrome::build( const CityAreaInfo& info )
 {
-  _checkDirection( city, pos );
+  _checkDirection( info );
 
   setSize( Size( 5 ) );
-  EntertainmentBuilding::build( city, pos );
+  EntertainmentBuilding::build( info );
 
   TilePos offset = _d->direction == north ? TilePos( 0, 5 ) : TilePos( 5, 0 );
 
@@ -222,8 +223,8 @@ bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   _d->sectionEnd = _addSection( HippodromeSection::ended, offset * 2 );
 
   _init( true );
-  city->addOverlay( _d->sectionMiddle.object() );
-  city->addOverlay( _d->sectionEnd.object() );
+  info.city->addOverlay( _d->sectionMiddle.object() );
+  info.city->addOverlay( _d->sectionEnd.object() );
 
   _d->sectionEnd->setAnimationVisible( false );
   _d->sectionMiddle->setAnimationVisible( false );
@@ -241,14 +242,14 @@ void Hippodrome::destroy()
 
   if( _d->sectionEnd.isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->sectionEnd->pos() );
+    events::GameEventPtr e = events::ClearTile::create( _d->sectionEnd->pos() );
     e->dispatch();
     _d->sectionEnd = 0;
   }
 
   if( _d->sectionMiddle.isValid() )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->sectionMiddle->pos() );
+    events::GameEventPtr e = events::ClearTile::create( _d->sectionMiddle->pos() );
     e->dispatch();
     _d->sectionMiddle = 0;
   }
@@ -327,23 +328,24 @@ void Hippodrome::_init( bool onBuild )
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  ret->build( _city(), pos() + offset );
+  CityAreaInfo info = { _city(), pos() + offset, TilesArray() };
+  ret->build( info );
   ret->drop();
 
   return ret;
 }
 
-void Hippodrome::_checkDirection(PlayerCityPtr city, TilePos pos)
+void Hippodrome::_checkDirection( const CityAreaInfo& areaInfo )
 {
   const_cast<Hippodrome*>( this )->setSize( Size( 15, 5 ) );
   _d->direction = west;
-  bool mayBuild = EntertainmentBuilding::canBuild( city, pos, TilesArray() ); //check horizontal direction
+  bool mayBuild = EntertainmentBuilding::canBuild( areaInfo ); //check horizontal direction
 
   if( !mayBuild )
   {
     _d->direction = north;
     const_cast<Hippodrome*>( this )->setSize( Size( 5, 15 ) );
-    mayBuild = EntertainmentBuilding::canBuild( city, pos, TilesArray() ); //check vertical direction
+    mayBuild = EntertainmentBuilding::canBuild( areaInfo ); //check vertical direction
   }
 
   if( !mayBuild )

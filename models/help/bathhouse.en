@@ -1,0 +1,10 @@
+{  
+ title : "##barber##"
+ sound : "fanfare"
+ text  : "A neighborhood bath-house gives a nice boost to the desirability of nearby housing. Use the @Health Overlay& to view housing's access to a bath-house and watch bath workers walk their circuits. Baths must have pipe access to a @reservoir& in order to function. Right-click on a bath-house to see its status.\n To learn why Romans were among the cleanest people in history, click @here&."
+ uri : {
+  "Health Overlay" : "health_overlay"
+  "reservoir" : "reservoir"
+  "here" : "http://wikipedia.ru"
+ }
+}

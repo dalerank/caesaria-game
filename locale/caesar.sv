@@ -1,14 +1,24 @@
 {"##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
 "##1_entertainment_access##":"Denna boning har knappt tillgång till underhållning"
+"##100_citizens_in_city##":" "
+"##1000_citizens_in_city##":""
+"##10000_citizens_in_city##":""
+"##15000_citizens_in_city##":""
 "##2_entertainment_access##":"Denna boning har viss tillgång till underhållning"
+"##2000_citizens_in_city##":""
+"##20000_citizens_in_city##":""
+"##25000_citizens_in_city##":""
 "##3_entertainment_access##":"Denna boning har mycket begränsad tillgång till underhållning"
+"##3000_citizens_in_city##":""
 "##4_entertainment_access##":"Denna boning har rimlig tillgång till underhållning"
 "##5_entertainment_access##":"Denna boning har begränsad tillgång till underhållning"
+"##500_citizens_in_city##":""
+"##5000_citizens_inc_city##":""
 "##6_entertainment_access##":"Denna boning har god tillgång till underhållning"
 "##7_entertainment_access##":"Denna boning har mycket god tillgång till underhållning"
 "##8_entertainment_access##":"Denna boning har utmärkt tillgång till underhållning"
 "##9_entertainment_access##":"Denna boning har tillgång till all underhållning som kan önskas"
-"##academies##":"Högskolor"
+"##a_price_rise_title##":"Prisändringar"
 "##academy_full_work##":"Denna högskola används, och ungdomarna i stadsdelen lär sig sociala färdigheter."
 "##academy_info##":"En del ungdomar som går ut skolorna går vidare och studerar avancerad retorik och historia vid högskolan. Alla kulturella medborgare har en akademisk bakgrund."
 "##academy_no_workers##":"Denna högskola används inte, och är därför värdelös för lokalsamhället."
@@ -169,7 +179,7 @@
 "##ballista##":"Kastmaskin"
 "##barbarian_are_closing_city##":"Fiender närmar sig staden"
 "##barbarian_attack_text##":""
-"##barbarian_attack_title##":"Fiender attackerar staden"
+"##barbarian_attack_title##":""
 "##barbarian_warrior##":"En barbarisk soldat"
 "##barber_access##":"Barberartillgång"
 "##barber_average_life##":"Är inte den här staden ett riktigt klipp?"
@@ -213,8 +223,8 @@
 "##beatyfull_insula##":"Storslagen Insulae"
 "##become_trade_center##":"Utse till handelscentral"
 "##below_average##":"Under medel"
-"##better_class_road##":"En finare typ av väg"
 "##big_domus##":"Stor Insula"
+"##big_fest_description##":""
 "##big_hovel##":"Stort skjul"
 "##big_hut##":"Stort hus"
 "##big_palace##":"Stort palats"
@@ -225,6 +235,7 @@
 "##bldm_farm##":"Jordbruk"
 "##bldm_raw_materials##":"Råmaterial"
 "##bldm_raw##":"Råmaterial"
+"##blood_sports_add_spice_to_life##":"Blodsporter ger krydda åt alla."
 "##bolt##":"Armborst"
 "##bridge_extends_city_area##":"Denna bro ger oss mer mark, men ger fri passage både för medborgare och fiender!"
 "##bridge##":"Bro"
@@ -240,6 +251,7 @@
 "##build_road_tlp##":"Bygg vägar"
 "##building_need_road_access##":""
 "##buildings##":"Byggnation"
+"##burning_ruins_info##":"Prefekterna kunde inte nå hit i tid för att rädda byggnaden. När elden har brunnit ut kommer endast spillror att finnas kvar på denna plats."
 "##burning_ruins##":"Brinnande ruin"
 "##buy_price##":"Köparna betalar"
 "##caesar_assign_new_title##":"Caesar har befordrat dig till graden"
@@ -251,16 +263,23 @@
 "##cant_calc_prosperity##":"Din stad är ny. Vi har inte haft möjlighet att bedöma ditt välstånd än!"
 "##cant_demolish_bridge_with_people##":"Kan inte förstöra bro med människor på"
 "##captured_city##":"En erövrad stad"
+"##capua_win_text##":"Din förmåga att styra imponerar på mig. Många ståthållares karriärer gäckas när jag ber dem bygga den första kolonin. Ledare som du garanterar Rom en framtid. Kan du upprepa dina framgångar eller var det bara tur?"
 "##carthaginian_soldier##":"En karthagisk soldat"
 "##carthago_win_text##":"Tack vare din briljanta insats ligger det karthagiska hotet äntligen bakom oss. Våra forna fiender är nu laglydiga romerska medborgare. I alla fall de som ännu är i livet!"
 "##cartPusher_average_life##":"...knappast roligt, men att få bo i denna fina stad gör det mödan värt."
+"##cartpusher_cant_unload_goods_in_factory##":"...ta emot dem. Jag har hört att de behöver mer arbetskraft."
 "##cartPusher_cantfind_destination##":"Det skulle gå snabbare att dra varorna till Rom än dit jag ska."
 "##cartPusher_gods_angry##":"...religiös, men inte ens jag skulle behandla gudarna på det här sättet."
 "##cartPusher_good_life##":"Stad som stad... Den här verkar rätt bra."
 "##cartPusher_high_workless##":"...min fru har slutat tjata om att jag ska skaffa mig ett nytt arbete."
 "##cartPusher_low_entertainment##":"...vagnar. Det är mer underhållande än resten av den här staden."
 "##cartPusher_need_workers##":"Vart man än kommer i staden finns det lediga arbeten."
+"##cartPusher_normal_life##":"Allt verkar fungera bra här."
 "##cartPusher_so_hungry##":"...dagen kräver styrka. Hur ska en vagndragare kunna arbeta utan mat?"
+"##cartSupplier_average_life##":"Det här är en bra stad. Folk tycker om att bo här."
+"##cartSupplier_good_life##":"Detta är en magnifik stad."
+"##centurion_new_order_to_save_player##":""
+"##centurion_send_army_to_player##":""
 "##ceres_badmood_info##":"Ceres missnöje är farligt, eftersom hon skyddar folket från dåliga skördar och hungersnöd."
 "##ceres_desc##":"Jordbruk"
 "##ceres_goodmood_info##":"Ceres skänker fruktsamhet åt jorden, och får plantorna att växa. Blidka henne, eller bered dig på hungersnöd."
@@ -291,20 +310,31 @@
 "##citizen_salary##":"Medborgarlön på"
 "##citizen##":"Medborgare"
 "##citizens_additional_rooms_for##":"Extra utrymme för"
+"##citizens_enjoy_drama_and_comedy##":"Medborgarna njuter av drama och komedi enligt den grekiska traditionen."
+"##citizens_grumble_lack_festivals_held##":"Medborgarna klagar över bristen på festivaler i din stad."
+"##citizens_here_are_bored_for_chariot_races##":"Medborgarna är uttråkade. Trots hästkapplöpningarna finns det inte tillräckligt med underhållning här."
+"##citizens_like_chariot_races##":"Medborgarna vet inget bättre än vagnkapplöpningar!"
 "##city_cyrene##":"Cyrene"
 "##city_damascus##":"Damascus"
-"##city_fire_text##":"Prefekterna kunde inte nå hit i tid för att rädda byggnaden. När elden har brunnit ut kommer endast spillror att finnas kvar på denna plats."
+"##city_fire_text##":""
 "##city_fire_title##":""
 "##city_has_debt##":"Staden har en skuld till Rom på"
 "##city_has_runout_debt##":""
+"##city_has_runout_money_again##":""
+"##city_has_runout_money##":""
 "##city_have_defence##":"Stadens försvar skulle aldrig ha släppt igenom fienden!"
 "##city_have_goods_for_request##":""
 "##city_have##":"Stadens skattkammare har tillgångar på"
 "##city_health##":"Hälsosituation"
+"##city_in_debt_again##":""
+"##city_in_debt##":""
+"##city_is_besieged##":"Staden är belägrad"
 "##city_loathed_you##":"Du föraktas i hela staden"
 "##city_need_more_workers##":"Din stad kräver fler arbetare"
 "##city_sounds_off##":"Stadsljud är AV"
 "##city_sounds_on##":"Stadsljud är PÅ"
+"##city_still_in_debt_text##":""
+"##city_still_in_debt##":""
 "##city_under_barbarian_attack##":"Fiendesoldaterna i stadens omgivning förbättrar inte din fredsställning!"
 "##city_under_rome_attack##":"De legioner från imperiet som närmar sig skrämmer dina invånare och förbättrar inte din fredsställning."
 "##city##":"Stad"
@@ -329,6 +359,7 @@
 "##clerk##":"Bokhållare"
 "##click_here_that_stacking##":"Klicka här för att hamstra"
 "##click_here_that_use_it##":"Klicka här för att stänga av hamstring"
+"##click_here_to_talk_person##":"Klicka här för att tala med denna person"
 "##click_item_for_start_trade##":"Klicka på en vara"
 "##click_on_city_for_info##":"Klicka på en stad för att få information"
 "##clinic_full_work##":"Denna klinik används, och betjänar lokalsamhället."
@@ -339,7 +370,10 @@
 "##colege_access_perfectly##":"Områden som kräver utbildningsmöjligheter har tillgång till dem, men fler högskolor skulle minska storleken på klasserna."
 "##collapse_available_damage_risk##":"Mycket stor risk för kollaps"
 "##collapse_immitent##":"Överhängande risk för kollaps"
+"##collapsed_building_text##":""
+"##collapsed_building_title##":""
 "##collapsed_ruins_info##":"Dessa spillror av gamla byggnader gör marken mindre åtråvärd."
+"##colleges##":"Högskolor"
 "##colloseum_haveno_animal_bouts##":"Inga djurkamper för närvarande"
 "##colloseum_haveno_gladiator_bouts##":"Ingen aktuell gladiatorkamp"
 "##colloseum_haveno_gladiatorpit##":"Bygg en gladiatorskola för att arrangera matcher här"
@@ -355,6 +389,8 @@
 "##consul_salary##":"Konsulslön på"
 "##consul##":"Konsul"
 "##contaminted_water##":"Förorenat vatten"
+"##continue_2_years##":"Fortsätt att styra i 2 år till."
+"##continue_5_years##":"Fortsätt i 5 år till."
 "##continue##":""
 "##corinthus##":"Corinthus"
 "##cost_2_open##":"Kostnad att öppna"
@@ -364,6 +400,8 @@
 "##crack##":"Spricka"
 "##credit##":"Utgifter"
 "##current_game_speed_is##":""
+"##current_play_runs_for_another##":"Nuvarande pjäs spelas i ytterligare"
+"##current_races_runs_for_another##":"Kapplöpningar pågår ytterligare"
 "##current_year_notpay_tribute_warning##":"Du har inte betalat tribut detta året. Spara lite pengar i din skattkammare så att du kan göra din årliga betalning."
 "##cursed_by_mars##":"Förbannad av Mars!"
 "##damage##":"Skador"
@@ -397,10 +435,12 @@
 "##destroy_bridge_warning##":"Sätt tillbaka Caesar III CD'n i CD-ROM enheten"
 "##destroy_bridge##":"CD saknas"
 "##destroy_fort##":"Förstör ett fort"
+"##destroyed_building_title##":""
 "##devastate_granary##":"Töm sädesmagasin"
 "##devastate_warehouse##":"BÖRJA tömma magasin"
 "##developers##":""
 "##difficulty##":""
+"##disabled_draw_salary_for_free_reign##":"Senaten förbjuder dig att ta ut lön nu, eftersom du fortsätter att styra av egen fri vilja."
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"Sänd iväg undsättningsstyrka?"
 "##dispatch_gift##":"Sänd en gåva"
@@ -427,6 +467,7 @@
 "##dock_no_workers##":"Vi har inga hamnarbetare och kan därför inte lasta eller lossa några fartyg som kommer till hamnen."
 "##dock##":"Handelshamn"
 "##docked_buying_selling_goods##":"Ligger vid kaj, köper och säljer varor"
+"##dockers_taking_our_goods##":"Hamnarbetarna för våra varor till lagerlokalen nu."
 "##doctor_average_life##":"Detta är en fantastisk stad."
 "##doctor_gods_angry##":"Gudarna är upprörda. Om vi inte respekterar dem, kommer vi att få känna på deras vrede."
 "##doctor_good_life##":"Stadens invånare tycks vara vid god hälsa."
@@ -439,6 +480,7 @@
 "##donations##":"Donerat"
 "##donationwnd_exit_tip##":"Lämna donationsskärmen"
 "##donot_organize_festival##":"Organisera ingen festival"
+"##earthquake_title##":"Jordbävning"
 "##east##":"Öst"
 "##edadv_need_better_access_school_or_colege##":"Bättre skola eller högskola och tillgång till bibliotek skulle förbättra vissa områden i staden. Man skall inte behöva gå långt för att lära sig något!"
 "##edil_salary##":"Edillön på"
@@ -452,6 +494,7 @@
 "##education_objects##":"Utbildningsbyggnader"
 "##education##":"Utbildning"
 "##educationBtnTooltip##":""
+"##effciency##":"Effektivitet"
 "##egift_chest_of_sapphire##":"En kista med safirer"
 "##egift_educated_slave##":"En utbildad slav"
 "##egift_egyptian_glassware##":"Egyptiska glasvaror"
@@ -473,6 +516,9 @@
 "##empbutton_low_work##":"Fungerar dåligt. Tilldela fler människor till vår sektor"
 "##empbutton_simple_work##":"Fungerar, men fler arbetare skulle kunna tilldelas oss"
 "##empbutton_tooltip##":"Klicka här för att fastställa en prioritet för denna arbetskraftskategori"
+"##emperor_anger_text##":""
+"##emperor_anger##":""
+"##emperor_changed_title##":"Byte av kejsare"
 "##emperor_favour_00##":"Kejsaren är rasande på dig."
 "##emperor_favour_01##":"Kejsaren är så otroligt arg att han talar om att landsförvisa dig."
 "##emperor_favour_02##":"Kejsaren är vansinnigt arg på dig."
@@ -494,7 +540,8 @@
 "##emperor_favour_18##":"Kejsaren är utom sig av glädje över vad du gjort."
 "##emperor_favour_19##":"Kejsaren är mer än tillfreds med vad du gjort."
 "##emperor_favour_20##":"Kejsaren är så otroligt nöjd att han talar om att utnämna dig till sin arvinge."
-"##emperor_request##":"Kejserlig begäran"
+"##emperor_request_money##":""
+"##emperor_request##":""
 "##emperor_send_money_to_you_nearest_time##":"Det faktum att kejsaren nyligen måste ingripa för att rädda dig skadar allvarligt din stads rykte om välstånd."
 "##emperor_wrath_by_debt_text##":"Jag är mycket missnöjd. Trots alla pengar jag har investerat i din stad och senatens generösa krediter, har du svikit mig. Din stad har inte betalat tillbaka sina lån. Mitt förtroende för dig var missriktat och jag tvingas nu finna en annan ståthållare i ditt ställe. Du kanske passar bättre i den nya position jag har i åtanke för dig..."
 "##emperor##":"Imperiet"
@@ -513,9 +560,12 @@
 "##emw_buy##":"Inköp"
 "##emw_sell##":"Försäljningar"
 "##emw_sold##":"Sålt"
+"##enemies_at_the_door##":""
+"##enemies_attack_title##":"Fiender attackerar staden"
 "##enemies_hard_to_me##":"Denne soldat är för stark för mig!"
 "##enemies_very_easy##":"Vi ska nog skrämma bort veklingarna snabbt."
 "##enemies_very_hard##":"Vi ska göra vårt bästa, men även romerska soldater får svårt att besegra den här fienden."
+"##enemy_army_attack_city##":""
 "##enemy_army_threating_a_city##":"En fiendearmé som hotar en av rikets städer"
 "##engineer_average_life##":"Allt tycks fungera väl här."
 "##engineer_building_allok##":"Jag behövs knappast. Dessa byggnader är i utmärkt skick."
@@ -639,6 +689,7 @@
 "##getting_reports_about_enemies##":"Vi får rapporter om fiender som närmar sig staden"
 "##give_money_tip##":"Klicka här för att donera pengar till staden"
 "##give_money##":"Ge pengar"
+"##gladiator_bouts_runs_for_another##":"Gladiatorkampen pågår ytterligare"
 "##gladiator_gods_angry##":"Var hälsad, medborgare. Har du hört? Gudarna är vreda."
 "##gladiator_good_life##":"Var hälsad. Livet här är skönt att leva, inte sant?"
 "##gladiator_high_workless##":"De arbetslösa är så många här. Jag önskar vi kunde få träna oss på några av dem."
@@ -723,6 +774,7 @@
 "##have_no_legions##":"Du har inga legioner att sända"
 "##have_no_requests##":"För närvarande har du inga meddelanden att läsa. I takt med att din stad växer, eller om kejsaren begär varor av dig, kommer meddelanden att visas här"
 "##having_some_slums_lack_migration##":"Att ha slumområden förhindrar immigration"
+"##heading_to_city_warehouses##":"På väg mot stadens handelsmagasin"
 "##health_advisor##":"Hälsosituation"
 "##health_advisor##":"Byggnader förknippade med hälsa"
 "##health##":"Hälsa"
@@ -750,6 +802,7 @@
 "##hippodrome_no_workers##":"Inget rör sig i hippodromen. Utan arbetare ger den ingen underhållning åt lokalsamhället."
 "##hippodrome##":"Hippodrom"
 "##hippodromes##":"Hippodromer"
+"##hlth_care_of##":"Sköter om"
 "##hold_ceres_festival##":"Anordna festival för Ceres"
 "##hold_mars_festival##":"Anordna festival för Mars"
 "##hold_mercury_festival##":"Anordna festival för Merkurius"
@@ -773,13 +826,18 @@
 "##houseBtnTooltip##":""
 "##how_to_grow_prosperity##":"Ställningen har inte förändrats detta året. Att visa vinst i stadens årliga räkenskaper är det bästa sättet att förbättra välståndsställningen."
 "##hun_warrior##":"En hunnersoldat"
+"##idle_factories_in_city##":"overksamma industrier i staden"
+"##idle_factory_in_city##":"overksam industri i staden"
 "##immigrant_much_food_here##":"De påstår att det finns mat här. Är det en bra plats att bo på?"
 "##immigrant_so_hungry##":"Om jag stannar längre dör jag. Det finns ingen mat någonstans."
 "##immigrant_want_to_be_liontamer##":"Jag har hört att det finns arbete här. Jag vill bli lejontämjare."
 "##immigrant_where_my_home##":"Jag är ny i staden. Vet du var man kan få tag i en bostad?"
+"##imperial_reminder_text##":""
+"##imperial_reminder##":""
 "##imperial_request_cance_badly_affected##":"Den kejserliga begäran som du nyligen upphävde har skadat din ställning i Rom."
 "##import_fn##":"Importer"
 "##import##":"Importerar"
+"##increase_trading_title##":"Begär ändringar"
 "##industry_disabled##":"Industri är AV"
 "##industry_enabled##":"Industri är PÅ"
 "##infobox_construction_comma_tip##":"TIPS: Använd komma och punkt för snabbflyttning genom dessa och andra objekt."
@@ -804,8 +862,11 @@
 "##iron_mine##":"Malmbrott"
 "##iron##":"Järn"
 "##its_very_peacefull_province##":"Imperiet har aldrig förut skådat en stad med sådant lugn!"
+"##ive_asked_senate_proclaim_you_a_god##":"Gratulerar! Du har uppnått de högsta poängställningar som någonsin åstadkommits av Roms ståthållare. Jag är stolt över att få lämna över till dig. Jag kungör att du må krönas till kejsare och härskare över hela imperiet. Äntligen kan jag dra mig tillbaka till min villa på ön, som en vanlig medborgare igen. Må ditt namn..."
 "##judaean_warrior##":"En judéisk soldat"
 "##labor##":"Arbetskraft"
+"##land_route##":"Landväg"
+"##land_trade_problem_title##":"Problem med landhandeln"
 "##landmerchant_good_deals##":"Jag älskar att komma hit. Affärerna går mycket bra."
 "##landmerchant_noany_trade##":"Jag vet inte varför jag tar den här handelsvägen. De köper ingenting och de har inget de vill sälja till mig."
 "##landmerchant_say_about_store_goods##":"Försiktigt! Jag önskar att arbetarna skulle ta det lugnt när de lastar mina djur med de varor jag nyss har köpt."
@@ -813,6 +874,7 @@
 "##large_temple##":"Stort tempel"
 "##large_temples##":"Stora tempel"
 "##large##":"Stort"
+"##last_riots_bad_for_peace_rating##":"Upploppen som nyligen ägde rum i staden har haft negativ inverkan på din fredsställning!"
 "##last_year##":"Förra året"
 "##lawless_area##":"Ett laglöst område. Människorna är vettskrämda."
 "##layer_crime##":"Brott"
@@ -822,6 +884,7 @@
 "##legion_haveho_soldiers_and_barracks##":"Denna legion har för närvarande inga soldater. Den existerar bara till namnet och utan förläggningar i staden kan den inte ta emot några nya trupper."
 "##legion_haveho_soldiers##":"Denna legion har för närvarande inga soldater. Den existerar bara till namnet. Endast när nyligen utbildade trupper anländer från förläggningarna kommer den att förvandlas till en stridande enhet."
 "##legion_morale_is_too_low##":"Legionens stridsmoral är för dålig för att kunna svara!"
+"##legion_morale##":"Moral"
 "##legion##":"Militär"
 "##legionadv_no_legions##":"Du har inga legioner att leda. Du måste först bygga ett fort"
 "##legionary_average_life##":"Jag slåss intill döden! Staden är trygg så länge jag lever!"
@@ -844,6 +907,8 @@
 "##library_no_workers##":"Hyllorna i detta bibliotek är tomma, och värdelösa för lokalsamhället."
 "##library##":"Bibliotek"
 "##lindum_extremely_dangerous_province##":"Lindum: en extremt farlig provins"
+"##line_formation_text##":"En enkel formation, som ger fördelar åt försvarstrupper."
+"##line_formation_title##":"Linjeformation"
 "##lion_pit_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag leverera ett lejon på tre månader."
 "##lion_pit_need_some_workers##":"Vi är något underbemannade, och kan därför endast leverera två nya lejon i månaden."
 "##lion_pit_no_workers##":"Utan personal kan detta lejonhus inte leverera några nya lejon till spelen."
@@ -874,6 +939,7 @@
 "##low_wage_broke_migration##":"Låga löner förhindrar immigration"
 "##low_wage_broke_migration##":"Låga löner minskar immigrationen till din stad"
 "##low_wage_lack_migration##":"Låga löner är ett problem"
+"##lowgrade_housing_want_better_conditions##":"Invånarna i dåliga bostäder vill ha bättre villkor"
 "##lugdunum_win_text##":"Din behandling av gallerna i Lugdunum och den sköna stadens prakt bådar väl för Roms expansion i den norra vildmarken. Bra gjort!"
 "##lumber_mill_bad_work##":"Det finns nästan inga skogsarbetare, och produktionen står nästan still."
 "##lumber_mill_full_work##":"Denna brädgård har alla anställda den behöver. Den arbetar fullt ut med att såga timmer."
@@ -934,11 +1000,17 @@
 "##meat_farm##":"Svinuppfödning"
 "##meat##":"Kött"
 "##mediolanum_win_text##":"Att Hannibal kunde korsa Alperna med sina elefanter var häpnadsväckande. Att Mediolanum skulle blomstra trots hans attacker är ett mirakel. Din framgång vände lyckan i det puniska kriget till Roms fördel. Hela Rom tackar dig."
+"##merchant_just_unloading_my_goods##":"Lagerlokalen lastar just av varor från mina djur."
+"##merchant_little_busy_now##":"Jag är lite upptagen just nu."
+"##merchant_notbad_city##":"Jag har kappkört i många värre städer än den här."
+"##merchant_wait_for_deal##":"Jag vill gärna göra affärer här. Jag älskar att göra en bra affär."
 "##mercury_desc##":"Handel"
 "##mercury##":"Mercury"
+"##message_from_centurion##":""
 "##message##":"Meddelande"
 "##messageBtnTooltip##":"Meddelanden från dina skrivare"
 "##messages##":"Meddelanden"
+"##middle_fest_description##":""
 "##middle_festival##":"Stor festival"
 "##middle_file_risk##":"Denna byggnad har en viss brandrisk"
 "##middle_insula##":"Medelstor Insulae"
@@ -957,6 +1029,7 @@
 "##migration_middle_lack_workless##":"Hög arbetslöshet är ett problem"
 "##migration_middle_lack_workless##":"Brist på arbete förhindrar immigration"
 "##migration_people_away##":"Brist på arbete driver bort människor"
+"##migration_peoples_arrived_in_city##":"Människor immigrerar till staden"
 "##migration_war_deterring##":"Krig avskräcker immigranter!!"
 "##miletus_win_text##":"Precis som jag förväntade mig har exemplet Miletus redan inspirerat andra östliga städer att inleda förhandlingar om att ingå i imperiet. Din erfarenhet av fisket har blivit en läxa för alla mina ståthållare!"
 "##military_academy_patrly_workers##":"När nya soldater har avslutat sin utbildning i förläggningen kommer de hit för att förbättra och finslipa sina färdigheter. Det går dock först när vi har fått tillräckligt med personal."
@@ -1030,7 +1103,10 @@
 "##missionaryPost_full_work##":"Vi arbetar på att civilisera lokalbefolkningen. Genom att lära dem grunderna i latin hoppas vi uppmuntra dem att arbeta med oss, istället för emot oss."
 "##missionaryPost##":"Inhemsk mission"
 "##missionBtnTooltip##":"Titel på provinskarta."
+"##missioner_high_barbarian_risk##":"Var hälsad! Min undervisning om Roms välvilja tycks tränga in hos dessa ganska skrämmande barbarer."
 "##moment_fire_risk##":"Denna byggnad kan fatta eld när som helst!"
+"##money_stolen_text##":""
+"##money_stolen_title##":""
 "##month_1_short##":"Jan"
 "##month_10_short##":"Okt"
 "##month_11_short##":"Nov"
@@ -1048,6 +1124,8 @@
 "##months_until_defeat##":"månader till nederlag"
 "##months_until_victory##":"månader till seger"
 "##months##":"Människor"
+"##mopup_formation_text##":"Denna ordning är det effektivaste sättet att hantera resterna av en besegrad armé."
+"##mopup_formation_title##":"Upprensningsformation"
 "##more_0_month_from_festival##":"Ditt folk, somliga fortfarande berusade efter festen, välkomnar din generositet."
 "##more_12_month_from_festival##":"Ditt invånare är mycket missnöjda med tanken på ännu ett år utan en festival."
 "##more_16_month_from_festival##":"Människorna kommer inte längre ihåg den sista festivalen som hölls i staden."
@@ -1058,12 +1136,13 @@
 "##more_salary_dispeasure_senate##":"Den lön som du betalar dig själv, och som vida överskrider din rang, är en källa till missnöje i Rom."
 "##much_plebs##":"Den höga koncentrationen av boende i slumområden i din stad gör att den ser fattig ut."
 "##my_rome##":""
+"##native_center_info##":"Mötesplats för lokalbefolkningen"
+"##native_center##":"Inhemskt centrum"
+"##native_field##":""
+"##native_hut##":"Infödingshydda"
 "##nativeCenter_info##":"Mötesplatsen för den lokalbefolkning som kommer hit för att byteshandla med enkla handelsvaror. Om styresmannen bara kunde lära sig några ord på latin..."
-"##nativeCenter##":"Inhemskt centrum"
 "##nativeField_info##":"Vissa primitiva grödor, som förser lokalbefolkningen med en grundläggande källa till livsmedel."
-"##nativeField##":""
 "##nativeHut_info##":"En del lokalbefolkning bor här, de lever ett stillsamt enkelt liv. De vill bara bli lämnade ifred."
-"##nativeHut##":"Infödingshydda"
 "##nearby_building_negative_effect_degrade##":"En närliggande byggnad har en försämrande effekt på efterfrågan till området. Försök att anlägga t ex trädgårdar, torg och statyer."
 "##nearby_building_negative_effect##":"En närliggande byggnad har en försämrande effekt på efterfrågan till området. Försök att anlägga t ex trädgårdar, torg och statyer."
 "##need_access_to_full_reservoir##":"Kräver tillgång till en full reservoar för att fungera"
@@ -1087,7 +1166,6 @@
 "##need_vines_farm##":"Bygg en vingård"
 "##neptune_desc##":"Havet"
 "##neptune_despleasure_tip##":"Sjömän finner att Neptunus är en ombytlig gud även om han blidkas. Väck inte Neptunus vrede, om du önskar bedriva handel över vattnet."
-"##neptune_wrath_of_you##":"Neptunus skyddar sjömän och deras skepp från havets faror. Om du gör honom missnöjd riskerar du dina sjömäns liv."
 "##new_festival##":"Anordna ny festival"
 "##new_governor##":""
 "##new_map##":"Fil"
@@ -1104,7 +1182,9 @@
 "##no_goods_for_request##":"Du har inte tillräckligt med varor i dina handelsmagasin"
 "##no_industries_in_city##":"Inga industrier i staden"
 "##no_people_in_city##":"Inga människor i staden!"
+"##no_people_in_this_locality##":"Inga människor på denna plats."
 "##no_priority##":"Ingen prioritet"
+"##no_room_for_citizens##":"för många"
 "##no_space_for_evolve##":"Denna boning skulle kunna få ännu högre status om den hade mer utrymme att expandera."
 "##no_target_population##":"( Ingen målbefolkning )"
 "##no_tax_in_this_year##":"Hittills i år har ingen skatt betalats från detta hus"
@@ -1113,6 +1193,7 @@
 "##nomoney_for_gift_text##":"Du har inte tillräcklig med personliga besparingar för att kunna betala en gåva till kejsaren. Försök att betala dig själv högre lön!"
 "##none_crime_risk##":"Ingen brottslighet i sikte här inte."
 "##none_damage_risk##":"Ingen risk för kollaps"
+"##north##":"Norr"
 "##northBtnTooltip##":""
 "##not_available##":"Ej tillgänglig... ännu!"
 "##not_enought_place_for_legion##":"Din legion har de fort som krävs"
@@ -1141,6 +1222,8 @@
 "##olive_farm_slow_work##":"Det finns mycket få människor som arbetar här. Som resultat är olivproduktionen långsam."
 "##olive_farm##":"Olivodling"
 "##olive##":"Oliver"
+"##open_formation_text##":"Öppen ordning ger möjlighet att täcka ett brett område, men ger dem ingen formationsfördel."
+"##open_formation_title##":"Öppen formation"
 "##open_trade_route##":"Öppna handelsväg"
 "##options##":"Inställning"
 "##oracle_info##":"Orakel ökar efterfrågan på husen i stadsdelen och gör de boende gladare. Denna byggnad tillfredsställer samtliga gudar."
@@ -1149,6 +1232,7 @@
 "##oracles_in_city##":"Orakel i staden"
 "##oracles##":"Orakel"
 "##other##":"Diverse"
+"##our_enemies_near_city##":"Våra fiender är inom synhåll från staden"
 "##our_foods_level_are_low##":"Våra livsmedelsförråd är små"
 "##out_legion_back_to_city##":"Vår legion marscherar tillbaka till vår stad"
 "##out_legion_go_to_location##":"Vår legion marscherar för att rädda en av rikets städer"
@@ -1217,6 +1301,7 @@
 "##poor_city_mood_lack_migration##":"Stämningen i staden förhindrar immigration"
 "##poor_housing_discourages_migration##":"Dåliga bostäder motverkar invandring trots välståndet i staden"
 "##pop##":"Inv"
+"##population_milestone##":" "
 "##population_registered_as_taxpayers##":"av befolkningen är skatteskrivna"
 "##population_tooltip##":"Befolkningsmängd"
 "##population##":"Befolkning"
@@ -1250,9 +1335,9 @@
 "##prefecture##":"Prefektur"
 "##prepare_to_festival##":"Förbereder den kommande festivalen"
 "##press_escape_to_exit##":"Högerklicka för att avsluta"
+"##priest_average_life##":"Denna stad är en hygglig plats att bo på."
 "##priest_gods_angry##":"Vi är i fara! Staden visar ingen respekt för gudarna."
 "##priest_good_life##":"Livet är mycket behagligt i denna stad."
-"##priest_good_life##":"Denna stad är en hygglig plats att bo på."
 "##priest_high_workless##":"Arbetslösheten är oroväckande hög."
 "##priest_low_entertainment##":"Denna stad är så tråkig. Även en präst tycker om gladiatorspel då och då."
 "##priest_need_workers##":"Detta ställe behöver många fler arbetare."
@@ -1303,28 +1388,43 @@
 "##reorient_map_to_north##":"Ändra visningen norrut"
 "##replay_game##":"Börja om"
 "##request_btn_tooltip##":"Klicka här för att sända iväg begäran"
+"##request_faild_text#":""
 "##request_failed##":"Din nyligen visade oförmåga eller ovilja att utföra en kejserlig begäran har skadat din ställning i Rom en aning."
 "##requierd##":"Behov"
 "##reservoir_info##":"Denna gigantiska cistern innehåller rent dricksvatten, som distribueras via rör av lera över en stor radie i staden. Akvedukter kan länka samman reservoarerna över stora avstånd."
 "##reservoir_no_water##":"Denna reservoar fungerar inte eftersom den inte ligger intill vatten eller inte är ansluten till en annan reservoar via akvedukter."
 "##reservoir##":""
+"##restart_mission_tip##":"Klicka här för att återuppbygga denna provins"
 "##restocking_fishing_boat##":"Vi förbereder för närvarande vår fiskebåt för att segla ut igen. Hur snabbt det går beror på hur många anställda vi har."
 "##return_2_fort##":"Återvänd till fortet"
 "##return_to_main_map##":"Återvänd till spelets huvudkarta"
 "##rift_info##":"Sprickor i marken"
 "##right_click_to_exit##":"Högerklicka för att avsluta"
+"##rioter_in_city_text##":""
+"##rioter_in_city_title##":""
+"##rioter_rampaging_accross_city##":""
 "##rioter_say_1##":"Ståthållaren bryr sig uppenbarligen inte om mig, så jag tänker visa vad jag tycker om hans stad."
 "##rioter_say_3##":"Om du vill veta hur städer ser ut när de brinner, se noga på nu!"
 "##rladv_mood##":"Gudarna är"
 "##road_caption##":"Väg"
 "##road_from_rome##":"Detta är vägen till Rom. Immigranterna anländer från denna punkt. Därför är det viktigt att vägen hålls öppen. Även köpmän passerar genom din provins längs denna kejserliga huvudväg."
+"##road_paved_text##":"Människor föredrar torg!"
+"##road_paved_title##":"En finare typ av väg"
 "##road_text##":"Vägarna är livsviktiga för stadens funktion. Invånarna går bara ut ur sina hus om det finns en väg."
 "##road_to_distant_region##":"Detta är den väg som leder till rikets utposter. Det är en kejserlig huvudväg, som måste hållas öppen längs hela sin sträckning."
-"##roadBtnTooltip##":""
 "##rock_caption##":"Klippor"
 "##rock_text##":"Klipporna kan inte forceras eller röjas undan. Marmor- och malmbrott fungerar bara om de uppförs nära klippor."
 "##roman_city##":"En romersk stad"
+"##rome_gratitude_request_text##":""
+"##rome_gratitude_request_title##":""
+"##rome_lowers_wages##":"Rom sänker lönerna"
+"##rome_need_some_goods##":""
+"##rome_need_some_money##":""
 "##rome_prices##":"Priser fastställs av Rom"
+"##rome_raises_wages##":"Rom höjer lönerna"
+"##romechastener_attack_text##":""
+"##romechastener_attack_title##":""
+"##RomeChastenerArmy_troops_at_our_gates##":"Imperiets trupper står vid stadsportarna"
 "##romeGuard_average_life##":"Allt verkar lugnt här."
 "##romeGuard_gods_angry##":"Gudarna är förargade på denna plats."
 "##romeGuard_good_live##":"Jag må vara en simpel soldat, men även jag kan se vilken storslagen stad detta är."
@@ -1336,7 +1436,9 @@
 "##rotate_map_counter-clockwise##":"Rotera kartan moturs"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
+"##sailing_to_city_docks##":"Seglar mot stadens lastkajer"
 "##samnite_soldier##":"En samnitisk soldat"
+"##sarmizegetusa_dangerous_province##":"Sarmizegetuza: en mycket farlig provins"
 "##save_city##":"Spara spel"
 "##save_game_here##":"Spara det aktuella spelet till denna fil"
 "##save_map##":"Öppna karta"
@@ -1363,8 +1465,10 @@
 "##scrw_subject##":"Ämne"
 "##sdlr_bold##":"Modig"
 "##seamerchant_noany_trade##":"Om jag fick bestämma skulle jag inte segla den här vägen. Den här staden varken köper eller säljer något."
+"##seamrchant_another_successful_voyage##":"Ännu en lyckosam resa. Förtjänsten från denna stad gör att man står ut med sjösjukan."
 "##select_city_layer##":"Välj en översiktsrapport för staden"
 "##select_location##":""
+"##select_this_graph##":"Välj detta diagram"
 "##seleucid_soldier##":"En selucidisk soldat"
 "##sell_price##":"Säljarna får"
 "##senate_1_info##":"Senatsbyggnaden är en av de attraktivaste byggnaderna i staden. Den ger anställning åt skatteindrivarna och inkomsterna från deras verksamhet förvaras här."
@@ -1397,6 +1501,7 @@
 "##sentiment_people_veryupset_you##":"Människorna är mycket upprörda över dig"
 "##set_amount_to_donate##":"Fastställ summa att donera"
 "##set_mayor_salary##":"Klicka här för att fastställa din personliga lön"
+"##setup_traderoute_to_import##":"Fastställ en handelsväg för att importera det"
 "##several_crimes_but_area_secure##":"Flera brott har rapporterats här nyligen, men på det hela taget har prefekterna situationen under kontroll"
 "##shipyard_info##":"Med några vagnslaster timmer och tillräckligt med arbetare bygger fartygsvarvet fiskebåtar till stadens fiskehamnar."
 "##shipyard_notneed_ours_boat##":"Det finns för närvarande inga fiskehamnar som behöver våra båtar."
@@ -1410,7 +1515,6 @@
 "##showing_lisistrata_aristopanes##":"Uppför: 'Vergilius dikter'"
 "##showing_odyssey_homer##":"Uppför: 'Platons filosofi'"
 "##showing_thecrito_plato##":"Uppför: 'Oidipus', av Sofokles"
-"##simple_formation_text##":"En enkel formation, som ger fördelar åt försvarstrupper."
 "##sld_quite_daring##":"Mycket djärv"
 "##sldh_health_sparse##":"Gles"
 "##sldh_health_strong##":"Stark"
@@ -1427,6 +1531,7 @@
 "##small_ceres_temple##":"Cerestempel"
 "##small_colloseum_show##":"Det krävs fler spektakel i dina colosseum! Genom att förse dem med gladiatorer eller lejon förbättras underhållningen i delar av staden."
 "##small_domus##":"Liten Insulae"
+"##small_fest_description##":""
 "##small_festival##":"Liten festival"
 "##small_food_on_next_month##":"- mycket lite mat kommande månad"
 "##small_hovel##":"Litet skjul"
@@ -1445,6 +1550,7 @@
 "##smallcurse_of_mars_text##":"Mars vakar över soldater och belönar tapperhet i fält. Ingen man vågar kämpa utan Mars välsignelse."
 "##smallcurse_of_mars_text##":"Mars, soldaternas beskyddare och segerförlänare, är missnöjd. Dina soldater fruktar att de kommer att förlora ett stort slag om han inte blidkas."
 "##smallcurse_of_mercury_description##":"Merkurius, gudarnas budbärare och handelsmännens beskyddare, är missnöjd. Dina handelsmän fruktar att hans beskydd viker."
+"##smallcurse_of_neptune##":"Neptunus skyddar sjömän och deras skepp från havets faror. Om du gör honom missnöjd riskerar du dina sjömäns liv."
 "##smcurse_of_venus_description##":"Venus, förmedlare av kärlek och harmoni, är upprörd. Detta bådar inget gott för prefekterna i din stad!"
 "##smcurse2_of_venus_description##":"När Venus är missnöjd sänker hon medborgarnas sinnesstämning. En del säger att hon för med sig sjukdomar."
 "##soldier##":"Soldat"
@@ -1461,7 +1567,11 @@
 "##some_houses_need_better_library_access##":"Vissa områden i staden vill ha bättre tillgång till bibliotek. Välbärgade medborgare tycker om att läsa men vill inte gå långt för att nå biblioteket."
 "##some_houses_need_library_or_colege_access##":"Vissa områden i staden kräver nu skolor och högskolor. Bristen på utbildningsmöjligheter förhindrar byggandet av bättre bostäder i dessa områden."
 "##some_low_fire_risk##":"Denna byggnad utgör en försumbar brandrisk"
+"##some_soldiers_need_weapon##":"Vissa soldater måste ha tillgång till vapenförråd"
 "##sound_settings##":"Ljud"
+"##south##":"Syd"
+"##southEast##":"Sydost"
+"##southWest##":"Sydväst"
 "##spear##":"Spjut"
 "##special_orders##":""
 "##speed_settings##":"Hastighet"
@@ -1520,10 +1630,12 @@
 "##theater_no_workers##":"Vinden är det enda som rör sig i denna teater. Utan arbetare erbjuder den inga pjäser till lokalbefolkningen."
 "##theater##":"Teater"
 "##theaters##":"Teatrar"
+"##these_goods_import_only##":"Dessa varor finns endast tillgängliga via import"
 "##these_rift_info##":"Dessa klyftor har orsakats av jordbävningar. De kan inte passeras eller fyllas."
 "##this_fire_can_spread##":"Dessa eldsvådor sprider sig om du inte snabbt hejdar dem."
 "##this_is_ruins##":"Detta är spillrorna från byggnaden som nämns ovan. Förfallna platser gör inte att området ser vackrare ut."
 "##this_lawab_province_become_very_peacefull##":"Detta är en laglydig provins som med tiden kan bli mycket fredlig."
+"##this_province_feels_peaceful##":"Denna provins känns förhållandevis säker, en känsla som kan förbättras med tiden."
 "##this_time_you_city_not_need_religion##":"Dina medborgare är ännu så länge upptagna med andra aspekter på stadslivet. I takt med att staden växer kommer de att vilja ha tillgång till ett stort Tempelutbud."
 "##this_year##":"Så här långt detta året"
 "##timber_factory_stock##":"Lagrat virke,"
@@ -1535,6 +1647,7 @@
 "##to_empire_road##":"Till Imperiet"
 "##to_rome_road##":"Till Rom"
 "##to_trade_advisor##":"Till handelsrådgivaren"
+"##too_close_to_enemy_troops##":"För nära fiendestyrkorna!"
 "##tooltip_full##":"Mushjälp FULL"
 "##tooltip_some##":"Mushjälp HALV"
 "##tower_have_workers_no_soldiers##":"Vi har underhållspersonal, men vi behöver trupper från en förläggning för att försvara staden."
@@ -1560,6 +1673,7 @@
 "##trade_advisor##":"Handelsrådgivare"
 "##trade_btn_notrade_text##":"Gör ej affärer"
 "##trade_caravan_from##":"Köpmannakaravan från"
+"##trade_ship_from##":"Handelsskepp från"
 "##trade##":"Handel"
 "##tradeadv_industrystate_tip##":"Starta eller avsluta produktion för denna aktivitet överallt i staden"
 "##trees_and_forest_caption##":"Träd och skogsland"
@@ -1586,7 +1700,6 @@
 "##trouble_too_far_from_water##":"Denna byggnad är inte intill vatten!"
 "##try_reduce_your_high_salary##":"Rom tycker att din lön är för hög för din nuvarande ställning. Du borde sänka den lite."
 "##try_reduce_your_salary##":"Rom tycker att din lön är för hög för din nuvarande ställning. Det skulle vara bra om du sänkte den."
-"##tutorial_prefecture_info##":""
 "##tutorial_win_text##":"Gratulerar! Du har förstått grunderna på ett nöjsamt sätt. För att på bästa sätt fortsätta din utbildning, har jag ännu ett lindrigt uppdrag åt dig. Mot Brundisium!"
 "##tutorial2_win_text##":"Du lär dig snabbt! Nu har du tillräckligt med kunskap för att klara ett riktigt uppdrag. Från och med nu kan du välja vilken riktning din karriär ska ta. Välj en fredligare provins om du vill koncentrera dig på att styra eller en farligare provins om du vill tampas med Roms fiender."
 "##unable_fullfill_request##":"Kan inte fullgöra begäran"
@@ -1694,6 +1807,7 @@
 "##well_haveno_houses_inarea##":"Denna brunn är överflödig för tillfället, eftersom det inte finns några hus inom dess serviceområde."
 "##well_info##":"Medborgare utan tillgång till fontän kan ta vatten från brunnar, men stadsdelar med brunnsvatten är inga trevliga platser att bo på."
 "##well##":"Brunn"
+"##west##":"Väst"
 "##wharf_full_work##":"Med fullt antal anställda lassar och lossar vi med maximal hastighet."
 "##wharf_info##":"Båtar avseglar från fartygsvarvet och hämtar sina besättningar här. Varje fiskehamn kan betjäna en fiskebåt."
 "##wharf_our_boat_fishing##":"Vår fiskebåt befinner sig vid fiskevattnet och fångar just nu fisk."
@@ -1720,18 +1834,28 @@
 "##wine_workshops_need_some_workers##":"Denna vingård är underbemannad och det tar mycket längre tid att producera vin än vad det borde."
 "##wine_workshops_patrly_workers##":"Denna vingård utnyttjar inte full kapacitet. Vinproduktionen något långsammare än vad den borde vara."
 "##wine##":"Vin"
+"##winning_population##":"Vinnande befolkning"
 "##wn_barbarian##":"Barbar"
 "##wn_carthaginians##":"Karthager"
+"##wn_celt_soldier##":"En keltisk soldat"
 "##wn_celts##":"Kelter"
+"##wn_etruscan_soldier##":"En etruskisk soldat"
+"##wn_eygptian_soldier##":"En egyptisk soldat"
 "##wn_eygptians##":"Eygptier"
+"##wn_gaul_soldier##":"En gallisk soldat"
+"##wn_gaul##":"Galler"
 "##wn_goth##":"Goter"
 "##wn_graeci##":"Greker"
+"##wn_helveti_soldier##":"En helvetisk soldat"
+"##wn_iberian_soldier##":"En iberisk soldat"
 "##wn_indigene##":"Infödingar"
 "##wn_judaean##":"Judeér"
 "##wn_numidian##":"Numidier"
 "##wn_picts##":"Pikter"
 "##wn_samnites##":"Samniter"
 "##wn_selecids##":"Selucider"
+"##wn_visigoth_soldier##":"En visigotisk soldat"
+"##wn_visigoth##":"Visigoter"
 "##wnd_ratings_title##":"Ställning"
 "##wndrt_culture##":"Kultur"
 "##wndrt_favor_tooltip##":"Klicka här för information om din popularitetsställning"
@@ -1751,9 +1875,21 @@
 "##working_have_no_labor_access##":"Denna byggnad har för närvarande ingen tillgång till arbetskraft"
 "##working_have_some_labor_access##":"Denna byggnad har för närvarande viss tillgång till arbetskraft"
 "##working_have_very_little_labor_access##":"Denna byggnad har för närvarande mycket liten tillgång till arbetskraft"
+"##working_industries##":"fungerande industrier i staden"
+"##working_industry##":"fungerande industri i staden"
+"##wrath_of_ceres_description##":""
+"##wrath_of_ceres_title##":""
+"##wrath_of_mars_text##":""
+"##wrath_of_mars_title##":""
+"##wrath_of_mercury_description##":""
+"##wrath_of_mercury_title##":""
+"##wrath_of_neptune_description##":""
 "##wrath_of_neptune_title##":"Neptuns Vrede"
+"##wrath_of_venus_description##":""
+"##wrath_of_venus_title##":""
 "##wt_cartPusher##":"Vagndragare"
 "##wt_criminal##":"Brottsling"
+"##wt_docker##":"Hamnarbetare"
 "##wt_emigrant##":""
 "##wt_endeavor##":"Endeavor"
 "##wt_engineer##":""
@@ -1770,9 +1906,13 @@
 "##wt_missioner_average_life##":"Var hälsad! Jag ser att det finns mycket att göra med att lära dessa barbarer fördelarna med Roms välvilja."
 "##wt_missioner_normal_life##":"Jag är så glad att vara romare. Du skulle se vad dessa barbarer håller på med i sina hyddor!"
 "##wt_patrician##":"Patricier"
+"##wt_pict_soldier##":"En piktisk soldat"
 "##wt_prefect##":"Prefekt"
 "##wt_priest##":"Präst"
 "##wt_rioter##":"Upprorsman"
+"##wt_romeGuard##":"Vaktpost"
+"##wt_romeHorseman##":"Beridna stödtrupper"
+"##wt_romeSpearman##":"Spjutkastare"
 "##wt_rprotestor##":"Demonstrant"
 "##wt_sheep##":"Får"
 "##wt_surgeon##":"Kirurg"
@@ -1788,7 +1928,6 @@
 "##your_prosperity_raising##":"Din välståndsställning förbättras."
 "##your_province_quiet_and_secure##":"Din provins lugna och säkra tillvaro har blivit legendarisk. Andra ståthållare planerar förmodligen att dra sig tillbaka hit!"
 "##your_salary_frowned_senate##":"I Rom ser man ner på din fräckhet att betala dig själv en lön som är högre än din rang."
-"#winning_population##":"Vinnande befolkning"
 "Variable":"SVENSKA (v1.0)"
 
 
@@ -1818,313 +1957,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 }

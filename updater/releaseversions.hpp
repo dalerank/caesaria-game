@@ -37,9 +37,9 @@ public:
 	void VisitSection(const IniFile& iniFile, const std::string& sectionName)
 	{
 		// Get the info from the section header
-		if(StringHelper::startsWith( sectionName, "Version"))
+		if(utils::startsWith( sectionName, "Version"))
 		{
-			StringArray tokens = StringHelper::split( sectionName, " " );
+			StringArray tokens = utils::split( sectionName, " " );
 
 			if( tokens.size() == 3 && tokens[ 1 ] == "File")
 			{
@@ -51,7 +51,7 @@ public:
 				ReleaseFile file(filename);
 
 				file.crc = CRC::ParseFromString(iniFile.GetValue(sectionName, "crc"));
-				file.filesize = StringHelper::toUint( iniFile.GetValue(sectionName, "filesize") );
+				file.filesize = utils::toUint( iniFile.GetValue(sectionName, "filesize") );
 				file.localChangesAllowed = iniFile.GetValue(sectionName, "allow_local_modifications") == "1";
 
 				Logger::warning( "Found version %s file: %s with checksum %x", version.c_str(), filename.c_str(), file.crc );

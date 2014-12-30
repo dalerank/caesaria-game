@@ -25,7 +25,7 @@
 #include "core/event.hpp"
 #include "gfx/renderermode.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/house_level.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
@@ -58,6 +58,7 @@
 #include "pathway/pathway.hpp"
 
 using namespace constants;
+using namespace gfx::layer;
 
 namespace gfx
 {
@@ -106,34 +107,34 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
 
   _d->engine->initViewport( 0, _d->engine->screenSize() );
 
-  addLayer( LayerSimple::create( _d->camera, city ) );
-  addLayer( LayerWater::create( _d->camera, city ) );
-  addLayer( LayerFire::create( _d->camera, city ) );
-  addLayer( LayerFood::create( _d->camera, city ) );
-  addLayer( LayerHealth::create( _d->camera, city, citylayer::health ));
-  addLayer( LayerHealth::create( _d->camera, city, citylayer::doctor ));
-  addLayer( LayerHealth::create( _d->camera, city, citylayer::hospital ));
-  addLayer( LayerHealth::create( _d->camera, city, citylayer::barber ));
-  addLayer( LayerHealth::create( _d->camera, city, citylayer::baths ));
-  addLayer( LayerReligion::create( _d->camera, city ) );
-  addLayer( LayerDamage::create( _d->camera, city ) );
-  addLayer( LayerDesirability::create( _d->camera, city ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::entertainment ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::theater ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::amphitheater ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::colloseum ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::hippodrome ) );
-  addLayer( LayerCrime::create( _d->camera, city ) ) ;
-  addLayer( LayerBuild::create( this, city ) );
-  addLayer( LayerDestroy::create( _d->camera, city ) );
-  addLayer( LayerTax::create( _d->camera, city ) );
-  addLayer( LayerEducation::create( _d->camera, city, citylayer::education ) );
-  addLayer( LayerEducation::create( _d->camera, city, citylayer::school ) );
-  addLayer( LayerEducation::create( _d->camera, city, citylayer::library ) );
-  addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );
-  addLayer( LayerTroubles::create( _d->camera, city, citylayer::risks ) );
-  addLayer( LayerTroubles::create( _d->camera, city, citylayer::troubles ) );
-  addLayer( LayerIndigene::create( _d->camera, city ) );
+  addLayer( Simple::create( _d->camera, city ) );
+  addLayer( Water::create( _d->camera, city ) );
+  addLayer( Fire::create( _d->camera, city ) );
+  addLayer( Food::create( _d->camera, city ) );
+  addLayer( Health::create( _d->camera, city, citylayer::health ));
+  addLayer( Health::create( _d->camera, city, citylayer::doctor ));
+  addLayer( Health::create( _d->camera, city, citylayer::hospital ));
+  addLayer( Health::create( _d->camera, city, citylayer::barber ));
+  addLayer( Health::create( _d->camera, city, citylayer::baths ));
+  addLayer( Religion::create( _d->camera, city ) );
+  addLayer( Damage::create( _d->camera, city ) );
+  addLayer( layer::Desirability::create( _d->camera, city ) );
+  addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
+  addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
+  addLayer( Entertainment::create( _d->camera, city, citylayer::amphitheater ) );
+  addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
+  addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
+  addLayer( Crime::create( _d->camera, city ) ) ;
+  addLayer( Build::create( this, city ) );
+  addLayer( Destroy::create( _d->camera, city ) );
+  addLayer( Tax::create( _d->camera, city ) );
+  addLayer( Education::create( _d->camera, city, citylayer::education ) );
+  addLayer( Education::create( _d->camera, city, citylayer::school ) );
+  addLayer( Education::create( _d->camera, city, citylayer::library ) );
+  addLayer( Education::create( _d->camera, city, citylayer::academy ) );
+  addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
+  addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
+  addLayer( layer::Indigene::create( _d->camera, city ) );
 
   _d->setLayer( citylayer::simple );
 }
@@ -270,11 +271,18 @@ void CityRenderer::rotateLeft()
   _d->resetWalkersAfterTurn();
 }
 
+void CityRenderer::setLayer(int layertype)
+{
+  if( _d->currentLayer->type() == layertype )
+    layertype = citylayer::simple;
+
+  _d->setLayer( layertype );
+}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-void CityRenderer::setLayer(int layertype) { _d->setLayer( layertype ); }
 TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }

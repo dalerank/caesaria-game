@@ -264,7 +264,7 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 		}
 		else
 		{
-			std::string versionFound = StringHelper::format( 0xff, "local version is %s.", _controller.GetLocalVersion().c_str() );
+			std::string versionFound = utils::format( 0xff, "local version is %s.", _controller.GetLocalVersion().c_str() );
 			Logger::warning( versionFound );
 		}
 	}
@@ -274,10 +274,10 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	{
 		Logger::warning( " Done comparing local files to server definitions.");
 
-		std::string sizeStr = Util::GetHumanReadableBytes(_controller.GetTotalDownloadSize());
+		std::string sizeStr = Util::getHumanReadableBytes(_controller.GetTotalDownloadSize());
 		std::size_t numFiles = _controller.GetNumFilesToBeUpdated();
 
-		std::string totalSize = StringHelper::format( 0xff, "%d %s to be downloaded (size: %s).",
+		std::string totalSize = utils::format( 0xff, "%d %s to be downloaded (size: %s).",
 																									numFiles,
 																									(numFiles == 1 ? "file needs" : "files need"),
 																									sizeStr.c_str() );
@@ -342,8 +342,8 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	{
 		Logger::warning( " Done downloading updates.");
 
-		std::string totalBytesStr = StringHelper::format( 0xff, " Total bytes downloaded: %s",
-																											Util::GetHumanReadableBytes(_controller.GetTotalBytesDownloaded()).c_str() );
+		std::string totalBytesStr = utils::format( 0xff, " Total bytes downloaded: %s",
+																											Util::getHumanReadableBytes(_controller.GetTotalBytesDownloaded()).c_str() );
 		Logger::warning( totalBytesStr);
 
 		if (!_controller.LocalFilesNeedUpdate())
@@ -412,12 +412,12 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 			PrintProgress();
 
 			// Add a line break when a new file starts
-			Logger::warning( StringHelper::format( 0xff, "\nDownloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
+			Logger::warning( utils::format( 0xff, "\nDownloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
 		}
 		else if (_info.file.toString().empty())
 		{
 			// First file
-			Logger::warning( StringHelper::format( 0xff, " Downloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
+			Logger::warning( utils::format( 0xff, " Downloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
 		}
 
 		_info = info;
@@ -464,13 +464,13 @@ void ConsoleUpdater::PrintProgress()
 	std::string line = " [" + progressBar + progressSpace + "]";
 	
 	// Percent
-	line += StringHelper::format( 0xff, " %2.1f%%", _info.progressFraction*100 );
+	line += utils::format( 0xff, " %2.1f%%", _info.progressFraction*100 );
 
 	switch (_info.type)
 	{
 	case ProgressInfo::FileDownload:	
 	{
-		line += " at " + Util::GetHumanReadableBytes( _info.downloadSpeed ) + "/sec ";
+		line += " at " + Util::getHumanReadableBytes( _info.downloadSpeed ) + "/sec ";
 	}
 	break;
 

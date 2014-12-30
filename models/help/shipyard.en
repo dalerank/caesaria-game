@@ -1,0 +1,10 @@
+{  
+ title : "##shipyard##"
+ sound : "fanfare"
+ text  : "Shipyards build the fishing boats that, in some provinces, can supplement farming. When you see seagulls wheeling over a patch of water, your province has a commercially viable fishery, and you should build a fishing fleet if you wish to make use of it.\n Obviously, the shipyard must be built on a waterfront. It needs road access to workers to build a fishing boat. Completed fishing boats automatically sail to any @wharf& which needs them. As you would expect from such a heavy industry, shipyards make surrounding property considerably less desirable for housing. \n The merchants who you trade with own their own vessels. You do not need to build trading ships. Shipyards are only valuable for fishing fleets.\n Read more about shipbuilding in Roman @history&."
+ uri : {
+  "wharf" : "wharf"
+  "history" : "history"
+  "here" : "http://wikipedia.ru"
+ }
+}

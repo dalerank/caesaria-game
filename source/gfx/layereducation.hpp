@@ -23,7 +23,10 @@
 namespace gfx
 {
 
-class LayerEducation : public LayerInfo
+namespace layer
+{
+
+class Education : public Info
 {
 public:
   virtual int type() const;
@@ -33,13 +36,15 @@ public:
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerEducation( Camera& camera, PlayerCityPtr city, int type );
+  Education( Camera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house ) const;
   std::string _getAccessLevel( int lvl ) const;
 
   std::set<int> _flags;
   int _type;
 };
+
+}
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
