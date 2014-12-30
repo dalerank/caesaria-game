@@ -25,6 +25,8 @@
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"
 #include "resourceloader.hpp"
+#include "vfs/directory.hpp"
+#include "settings.hpp"
 
 using namespace vfs;
 
@@ -36,7 +38,7 @@ namespace climate
 
 void initialize(ClimateType climate)
 {
-  VariantMap climateArchives = SaveAdapter::load( ":/climate.model" );
+  VariantMap climateArchives = SaveAdapter::load( SETTINGS_RC_PATH( climateModel ) );  
 
   std::string optName;
   if( climate == game::climate::central ) { optName = "central"; }
@@ -44,6 +46,10 @@ void initialize(ClimateType climate)
   else if( climate == game::climate::desert ) { optName = "south"; }
 
   Path archivePath = climateArchives.get( optName ).toString();
+  Directory dir = archivePath.directory();
+
+  archivePath = dir.find( archivePath.baseName(), Path::ignoreCase );
+
   ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
 
   if( archive.isNull() )

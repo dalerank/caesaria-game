@@ -58,14 +58,18 @@ int main(int argc, char* argv[])
   Logger::warning( "Game: load game settings" );
   game::Settings::load();
   game::Settings::instance().checkCmdOptions( argv, argc );
+  game::Settings::instance().checkC3present();
 
   Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
   Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );
   Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
 
 #ifdef CAESARIA_USE_STEAM
-  if( !steamapi::Handler::checkSteamRunning() )
+  /*if( !steamapi::Handler::checkSteamRunning() )
+  {
+    Logger::warning( "Steam not running. Exit." );
     return EXIT_FAILURE;
+  }*/
 
   if( !steamapi::Handler::connect() )
     return EXIT_FAILURE;

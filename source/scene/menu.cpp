@@ -76,10 +76,8 @@ public:
   std::string playerName;
   int result;
 
-#ifdef CAESARIA_USE_STEAM
   Picture userImage;
   gui::Label* lbSteamName;
-#endif
 
 public:
   void handleNewGame();
@@ -276,7 +274,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "doc (doc@nnm.me),vk.com/caesaria-game",
+                         "vk.com/caesaria-game",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
@@ -459,7 +457,8 @@ void StartMenu::handleEvent( NEvent& event )
 void StartMenu::initialize()
 {
   Logger::warning( "ScreenMenu: initialize start");
-  _d->bgPicture = Picture::load("title", 1);
+  std::string resName = SETTINGS_VALUE( titleResource ).toString();
+  _d->bgPicture = Picture::load( resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;

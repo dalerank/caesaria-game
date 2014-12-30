@@ -31,6 +31,7 @@
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
 #include "core/font.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 
@@ -281,7 +282,8 @@ Destroy::Destroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _d->shovelPic = Picture::load( "shovel", 1 );
-  _d->clearPic = Picture::load( "oc3_land", 2 );
+  std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
+  _d->clearPic = Picture::load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
   _d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );

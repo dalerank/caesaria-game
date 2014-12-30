@@ -190,6 +190,7 @@ enum Type
   waymark,
   terrain,
   water,
+  meadow,
 
   typeCount,
   userType=1000

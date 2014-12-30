@@ -13,10 +13,10 @@
     }
   }
 
-   meadow : {
+  meadow : {
     class : "terrain"
     image.ext : {
-      type_1 : { size:1, rc : "land1a", start : 1, count : 1 }
+      type_1 : { size:1, rc : "land1a", start : 18, count : 11 }
     }
   }
 
@@ -26,15 +26,11 @@
       type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
     }
   }
-
   road : {
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
     class : "road"
     image : [ "land2a", 44 ]
-    image.ext : {
-      type_1 : { size:1, rc : "land2a", start : 2, count : 1 }
-    }
   },
 
   elevation : {
@@ -294,9 +290,7 @@
     cost : 30,
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 6
-    image.ext : {
-      s1 : { size: 1, rc : "prefecture", start : 1, count : 4 }
-    }
+    image : [ "security", 1 ]
     class : "security"
   },  
  
@@ -490,11 +484,8 @@
     cost : 30,
     desirability : { base : 0, 	range : 0,	step : 0 }
     employers : 5
+    image : [ "transport", 56 ]
     class : "engineer"
-
-    image.ext : {
-      type_1 : { size:1, rc : "engineering", start : 1, count : 4 }
-    }
   },
 
   low_bridge : {
@@ -578,9 +569,9 @@
     desirability : { base : -1,    range : 1,    step : 1 }
     employers : 0,
     pretty : "Well",
-    image : [ "well", 1 ]
+    image : [ "utilitya", 1 ]
     image.ext : {
-      type_1 : { size:1, rc : "well", start : 1, count : 1 }
+      type_1 : { size:1, rc : "well", start : 1, count : 4 }
     }
     class : "water"
     sound : [ "well", 1 ]
