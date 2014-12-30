@@ -21,12 +21,12 @@
 namespace events
 {
 
-class DisasterEvent : public GameEvent
+class Disaster : public GameEvent
 {
 public:
   typedef enum
   {
-    fire, collapse, plague, rift, count
+    fire, collapse, plague, rift, riots, count
   } Type;
   static GameEventPtr create(const gfx::Tile& tile, Type type );
 
@@ -35,7 +35,7 @@ protected:
   virtual bool _mayExec(Game&, unsigned int) const;
 
 private:
-  DisasterEvent();
+  Disaster();
   TilePos _pos;
   Type _type;
   int _infoType;

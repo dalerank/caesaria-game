@@ -20,7 +20,7 @@
 #include "label.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 
@@ -48,14 +48,14 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 
   setText( "" );
 
-  std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
+  std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
                                            (int)_working->state( Construction::damage ),
                                            (int)_working->state( Construction::fire ));
   if( is_kind_of<ServiceBuilding>( _working ) )
   {
     ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );
     DateTime time = srvc->lastSendService();
-    text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
+    text += utils::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
   }
 
   new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
@@ -78,9 +78,9 @@ void AboutWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void AboutWorkingBuilding::showDescription()
+void AboutWorkingBuilding::_showHelp()
 {
-  DictionaryWindow::show( ui()->rootWidget(), _working->type() );
+  DictionaryWindow::show( this, _working->type() );
 }
 
 WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()

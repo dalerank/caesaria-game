@@ -24,7 +24,10 @@
 namespace gfx
 {
 
-class LayerDestroy : public Layer
+namespace layer
+{
+
+class Destroy : public Layer
 {
 public:
   virtual void handleEvent( NEvent& event );
@@ -36,7 +39,7 @@ public:
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerDestroy( Camera& camera, PlayerCityPtr city );
+  Destroy( Camera& camera, PlayerCityPtr city );
 
   void _drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset);
   void _clearAll();
@@ -45,6 +48,8 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}
 
 }//end namespace gfx
 #endif //__CAESARIA_LAYERDESTROY_H_INCLUDED__

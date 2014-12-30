@@ -36,6 +36,8 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
+  void _showHelp();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

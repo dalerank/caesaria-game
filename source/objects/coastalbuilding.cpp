@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "coastalbuilding.hpp"
-#include "gfx/tile.hpp"
+#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
@@ -44,32 +44,32 @@ public:
   Direction getDirection(PlayerCityPtr city, TilePos pos);
 };
 
-CoastalFactory::CoastalFactory(const Good::Type consume, const Good::Type produce,
+CoastalFactory::CoastalFactory(const good::Type consume, const good::Type produce,
                                const TileOverlay::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
 }
 
-bool CoastalFactory::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
+bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
-  Direction direction = _d->getDirection( city, pos );
+  Direction direction = _d->getDirection( areaInfo.city, areaInfo.pos );
 
   const_cast< CoastalFactory* >( this )->_setDirection( direction );
 
   return (is_constructible && direction != noneDirection );
 }
 
-bool CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
+bool CoastalFactory::build( const CityAreaInfo& info )
 {
-  _setDirection( _d->getDirection( city, pos ) );
+  _setDirection( _d->getDirection( info.city, info.pos ) );
 
-  TilesArray area = city->tilemap().getArea( pos, size() );
+  TilesArray area = info.city->tilemap().getArea( info.pos, size() );
 
-  foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
+  foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
 
-  return Factory::build( city, pos );
+  return Factory::build( info );
 }
 
 void CoastalFactory::destroy()
@@ -79,7 +79,7 @@ void CoastalFactory::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }

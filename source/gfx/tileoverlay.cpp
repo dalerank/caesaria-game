@@ -86,18 +86,18 @@ void TileOverlay::setPicture(Picture picture)
   _d->picture = picture;
 }
 
-bool TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
+bool TileOverlay::build(const CityAreaInfo &info)
 {
-  Tilemap &tilemap = city->tilemap();
+  Tilemap &tilemap = info.city->tilemap();
 
-  _d->city = city;
-  _d->masterTile = &tilemap.at( pos );
+  _d->city = info.city;
+  _d->masterTile = &tilemap.at( info.pos );
 
   for (int dj = 0; dj < _d->size.height(); ++dj)
   {
     for (int di = 0; di < _d->size.width(); ++di)
     {
-      Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
+      Tile& tile = tilemap.at( info.pos + TilePos( di, dj ) );
       tile.setMasterTile( _d->masterTile );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
@@ -109,7 +109,7 @@ bool TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
       initTerrain( tile );
     }
   }
-  city->setOption( PlayerCity::updateTiles, 1 );
+  info.city->setOption( PlayerCity::updateTiles, 1 );
 
   return true;
 }
@@ -173,7 +173,7 @@ void TileOverlay::load( const VariantMap& stream )
 
 bool TileOverlay::isWalkable() const{  return false;}
 bool TileOverlay::isDestructible() const { return true; }
-bool TileOverlay::isFlat() const{  return false;}
+bool TileOverlay::isFlat() const { return false;}
 
 TilePos TileOverlay::pos() const
 {

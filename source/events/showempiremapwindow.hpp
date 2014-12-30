@@ -21,7 +21,7 @@
 namespace events
 {
 
-class ShowEmpireMapWindow : public GameEvent
+class ShowEmpireMap : public GameEvent
 {
 public:
   static GameEventPtr create( bool show );
@@ -31,7 +31,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  ShowEmpireMapWindow();
+  ShowEmpireMap();
   bool _show;
 };
 

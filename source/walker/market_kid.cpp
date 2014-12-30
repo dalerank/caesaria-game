@@ -32,7 +32,7 @@ using namespace constants;
 class MarketKid::Impl
 {
 public:
-  GoodStock basket;
+  good::Stock basket;
   TilePos marketPos;
   unsigned int delay;
   unsigned int birthTime;
@@ -155,4 +155,4 @@ void MarketKid::_updateThoughts()
   setThinks( WalkerThinks::check( this, _city(), ownThinks ) );
 }
 
-GoodStock& MarketKid::getBasket(){  return _d->basket;}
+good::Stock& MarketKid::getBasket(){  return _d->basket;}

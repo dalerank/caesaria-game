@@ -22,12 +22,11 @@
 #include "game/resourcegroup.hpp"
 #include "contextmenuitem.hpp"
 #include "gfx/picturesarray.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "game/gamedate.hpp"
-#include "game/settings.hpp"
 #include "environment.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
@@ -96,28 +95,28 @@ void TopMenu::draw(gfx::Engine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( StringHelper::format( 0xff, "%s %d", _("##pop##"), value ) );
+    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( StringHelper::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
+    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()
 {
-  if( !lbDate || saveDate.month() == GameDate::current().month() )
+  if( !lbDate || saveDate.month() == game::Date::current().month() )
     return;
 
-  lbDate->setText( DateTimeHelper::toStr( GameDate::current() ) );
+  lbDate->setText( util::date2str( game::Date::current() ) );
 }
 
 void TopMenu::Impl::showShortKeyInfo()
 {
   Widget* parent = lbDate->ui()->rootWidget();
   Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  bg->setupUI( GameSettings::rcpath( "/gui/shortkeys.gui" ) );
+  bg->setupUI( ":/gui/shortkeys.gui" );
   bg->setCenter( parent->center() );
 
   TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
@@ -141,8 +140,8 @@ void TopMenu::Impl::initBackground( const Size& size )
 
   while( x < size.width())
   {
-    background.append( p_marble[i%10], Point( x, 0 ) );
-    x += p_marble[i%10].width();
+    background.append( p_marble[i%12], Point( x, 0 ) );
+    x += p_marble[i%12].width();
     i++;
   }
 }
@@ -151,7 +150,7 @@ void TopMenu::Impl::showAboutInfo()
 {
   Widget* parent = lbDate->ui()->rootWidget();
   Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  bg->setupUI( GameSettings::rcpath( "/gui/about.gui" ) );
+  bg->setupUI( ":/gui/about.gui" );
   bg->setCenter( parent->center() );
 
   TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
@@ -164,7 +163,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
 : MainMenu( parent, Rect( 0, 0, parent->width(), height ) ),
   _d( new Impl )
 {
-  setupUI( GameSettings::rcpath( "/gui/topmenu.gui" ) );
+  setupUI( ":/gui/topmenu.gui" );
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
   _d->initBackground( size() );

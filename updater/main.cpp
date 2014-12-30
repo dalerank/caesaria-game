@@ -21,7 +21,7 @@
 #include "updateroptions.hpp"
 #include "updater.hpp"
 #include "packager.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "util.hpp"
 
 #include "consoleupdater.hpp"
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 
 	if( localOptions.isSet( "verbose") )
 	{
-		StringHelper::useStackTrace( true );
+		utils::useStackTrace( true );
 	}
 
 	if( localOptions.isSet( "update" ) || localOptions.isSet( "release" ))

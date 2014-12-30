@@ -1,3 +1,5 @@
 {
   preview.text : "##massilia_preview_mission##"
+  preview.title : "##massilia_preview_title##"
+  win.text : "##ive_asked_senate_proclaim_you_a_god##"
 }

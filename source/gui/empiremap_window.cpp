@@ -26,7 +26,7 @@
 #include "world/computer_city.hpp"
 #include "city/helper.hpp"
 #include "label.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "dialogbox.hpp"
 #include "good/goodstore.hpp"
@@ -49,6 +49,7 @@
 #include "world/barbarian.hpp"
 #include "core/flagholder.hpp"
 #include "world/playerarmy.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -94,6 +95,7 @@ public:
   void drawMovable( Engine& painter );
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
+  void drawCell(Engine& e, Point start, int side , NColor color);
   world::ObjectPtr findObject( Point pos );
 };
 
@@ -153,6 +155,9 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
   {
     Point location = (*it)->location();
     painter.draw( (*it)->pictures(), offset + location );
+#ifdef DEBUG
+    drawCell( painter, offset + location - Point( 10, 10 ), 20, DefaultColors::red );
+#endif
   }
 }
 
@@ -177,15 +182,26 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     const PointsArray& points = route->points();
     const Pictures& pictures = route->pictures();
 
+#ifdef DEBUG
+    for( unsigned int index=1; index < pictures.size(); index++ )
+    {
+      Point pos1 = offset + points[ index-1 ];
+      Point pos2 = offset + points[ index ];
+      painter.drawLine( DefaultColors::blue, pos1, pos2 );
+      drawCell( painter, pos1 - Point( 10, 10 ), 20, DefaultColors::green );
+    }
+#endif
+
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
-      painter.draw( pictures[ index ], offset + points[ index ] );
+      Point pos = offset + points[ index ];
+      painter.draw( pictures[ index ], pos );
     }
 
-    world::MerchantPtr merchant = route->merchant( 0 );
-    if( merchant != 0 )
+    world::MerchantList merchants = route->merchants();
+    foreach ( it, merchants )
     {
-      painter.draw( merchant->picture(), offset + merchant->location() );
+      painter.draw( (*it)->picture(), offset + (*it)->location() );
     }
   }
 }
@@ -281,9 +297,19 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
                                        -p->height() + (120 + centerPicture.height() - 20)) );
 }
 
+void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor color)
+{
+#ifdef DEBUG
+  e.drawLine( color, start, start + Point( side, 0 ) );
+  e.drawLine( color, start + Point( side, 0 ), start + Point( side, side ) );
+  e.drawLine( color, start + Point( side, side ), start + Point( 0, side ) );
+  e.drawLine( color, start + Point( 0, side ), start );
+#endif
+}
+
 world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
 {
-  world::ObjectList objs = city->empire()->findObjects( -offset + pos, 30 );
+  world::ObjectList objs = city->empire()->findObjects( -offset + pos, 20 );
 
   return objs.empty() ? world::ObjectPtr() : objs.front();
 }
@@ -301,7 +327,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       city::Helper helper( city );
-      DockList docks = helper.find<Dock>( constants::building::dock );
+      DockList docks = helper.find<Dock>( constants::objects::dock );
       if( docks.empty() )
       {
         events::GameEventPtr e = events::ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
@@ -345,14 +371,14 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 90 );
   new Label( gbox, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
-  const GoodStore& sellgoods = currentCity->importingGoods();
-  for( int i=0, k=0; i < Good::goodCount; i++ )
+  const good::Store& sellgoods = currentCity->importingGoods();
+  for( int i=0, k=0; i < good::goodCount; i++ )
   {
-    if( sellgoods.capacity( (Good::Type)i ) > 0  )
+    if( sellgoods.capacity( (good::Type)i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( GoodHelper::picture( Good::Type(i), true) );
-      lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
+      lb->setBackgroundPicture( good::Helper::picture( good::Type(i), true) );
+      lb->setTooltipText( good::Helper::getTypeName( good::Type(i) ) );
       k++;
     }
   }
@@ -360,14 +386,14 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point buyPoint = startDraw + Point( 200, 0 );
   new Label( gbox, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
-  const GoodStore& buygoods = currentCity->exportingGoods();
-  for( int i=0, k=0; i < Good::goodCount; i++ )
+  const good::Store& buygoods = currentCity->exportingGoods();
+  for( int i=0, k=0; i < good::goodCount; i++ )
   {
-    if( buygoods.capacity( (Good::Type)i ) > 0  )
+    if( buygoods.capacity( (good::Type)i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  GoodHelper::picture( Good::Type(i), true) );
-      lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
+      lb->setBackgroundPicture(  good::Helper::picture( good::Type(i), true) );
+      lb->setTooltipText( good::Helper::getTypeName( good::Type(i) ) );
       k++;
     }
   }
@@ -377,7 +403,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
   unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
 
-  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
+  btnOpenTrade->setText( utils::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
 
   CONNECT( btnOpenTrade, onClicked(), this, Impl::showOpenRouteRequestWindow );
 }
@@ -387,17 +413,17 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 80 );
   new Label( gbox, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
-  const GoodStore& sellgoods = currentCity->importingGoods();
-  for( int i=0, k=0; i < Good::goodCount; i++ )
+  const good::Store& sellgoods = currentCity->importingGoods();
+  for( int i=0, k=0; i < good::goodCount; i++ )
   {
-    int maxsell = sellgoods.capacity( (Good::Type)i ) / 100;
-    int cursell = sellgoods.qty( (Good::Type)i ) / 100;
+    int maxsell = sellgoods.capacity( (good::Type)i ) / 100;
+    int cursell = sellgoods.qty( (good::Type)i ) / 100;
     if( maxsell > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  GoodHelper::picture( Good::Type(i), true) );
+      lb->setBackgroundPicture(  good::Helper::picture( good::Type(i), true) );
 
-      std::string text = StringHelper::format( 0xff, "%d/%d", cursell, maxsell );
+      std::string text = utils::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
@@ -406,17 +432,17 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point buyPoint = startDraw + Point( 0, 30 );
   new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
-  const GoodStore& buygoods = currentCity->exportingGoods();
-  for( int i=0, k=0; i < Good::goodCount; i++ )
+  const good::Store& buygoods = currentCity->exportingGoods();
+  for( int i=0, k=0; i < good::goodCount; i++ )
   {
-    int maxbuy = buygoods.capacity( (Good::Type)i ) / 100;
-    int curbuy = buygoods.qty( (Good::Type)i ) / 100;
+    int maxbuy = buygoods.capacity( (good::Type)i ) / 100;
+    int curbuy = buygoods.qty( (good::Type)i ) / 100;
     if( maxbuy > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( GoodHelper::picture( Good::Type(i), true) );
+      lb->setBackgroundPicture( good::Helper::picture( good::Type(i), true) );
 
-      std::string text = StringHelper::format( 0xff, "%d/%d", curbuy, maxbuy );
+      std::string text = utils::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( gbox, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }
@@ -453,7 +479,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   _d->dragging = false;
   GET_DWIDGET_FROM_UI( _d, lbTitle )
 
-  _d->offset = GameSettings::get( empMapOffset ).toPoint();
+  _d->offset = game::Settings::get( empMapOffset ).toPoint();
 
   WidgetEscapeCloser::insertTo( this );
 
@@ -469,6 +495,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow );
+  CONNECT( _d->btnHelp, onClicked(), this, EmpireMapWindow::_showHelp );
 
   setFlag( showCityInfo, true );
 }
@@ -574,7 +601,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
 void EmpireMapWindow::_changePosition()
 {
-  world::ObjectPtr obj = _d->findObject( const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() );
+  Point cursorPos = const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() ;
+  world::ObjectPtr obj = _d->findObject( cursorPos );
 
   std::string text;
   if( obj.isValid() )
@@ -601,6 +629,19 @@ void EmpireMapWindow::_changePosition()
       text = pa->mode() == world::PlayerArmy::go2home
                 ? "##playerarmy_gone_to_home##"
                 : "##playerarmy_gone_to_location##";
+    }
+  }
+  else
+  {
+    world::EmpirePtr empire = _d->city->empire();
+    world::TraderouteList routes = empire->tradeRoutes();
+
+    foreach( it, routes )
+    {
+      if( (*it)->containPoint( -_d->offset + cursorPos, 4 ) )
+      {
+        text = (*it)->isSeaRoute() ? "##sea_route##" : "##land_route##";
+      }
     }
   }
 
@@ -637,6 +678,11 @@ void EmpireMapWindow::_changePosition()
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
 
+void EmpireMapWindow::_showHelp()
+{
+  DictionaryWindow::show( this, "empiremap" );
+}
+
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {
   EmpireMapWindow* ret = new EmpireMapWindow( parent, id, city );
@@ -646,7 +692,7 @@ EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int
 
 EmpireMapWindow::~EmpireMapWindow()
 {
-  GameSettings::set( empMapOffset, _d->offset );
+  game::Settings::set( empMapOffset, _d->offset );
 }
 
 }//end namespace gui

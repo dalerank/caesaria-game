@@ -18,7 +18,7 @@
 
 #include "../inifile.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 #include <map>
 //#include <boost/algorithm/string/predicate.hpp>
@@ -48,7 +48,7 @@ struct Mirror
 		weight(weight_)
 	{
 		// grayman #3208 - remove all spaces in the url
-		url = StringHelper::replace( url, " ", "");
+		url = utils::replace( url, " ", "");
 
 		// url should terminate with "/"
 		if( *url.rbegin() != '/' )
@@ -82,14 +82,14 @@ public:
 
 	void VisitSection(const IniFile& iniFile, const std::string& sectionName)
 	{
-		if( !StringHelper::startsWith( sectionName, "Mirror ") )
+		if( !utils::startsWith( sectionName, "Mirror ") )
 		{
 			return; // ignore non-Mirror sections
 		}
 
 		push_back( Mirror( sectionName.substr(7), // displayname
 											 iniFile.GetValue( sectionName, "url" ),
-											 StringHelper::toFloat( iniFile.GetValue(sectionName, "weight") ))
+											 utils::toFloat( iniFile.GetValue(sectionName, "weight") ))
 						 );
 	}
 

@@ -26,7 +26,7 @@
 #include "city/helper.hpp"
 #include "core/variant.hpp"
 #include "name_generator.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -62,6 +62,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
   _setSubAction( doNothing );
+  _addObsoleteOverlays( objects::gatehouse );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -72,7 +73,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
   foreach( it, buildings )
   {
-    if( (*it)->type() == building::burningRuins )
+    if( (*it)->type() == objects::burningRuins )
     {
       p = (*it)->pos();
       return true;
@@ -82,7 +83,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
   return false;
 }
 
-WalkerPtr Prefect::_looks4Enemy( int range )
+WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
   city::Helper helper( _city() );
@@ -104,7 +105,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->type() != building::burningRuins )
+    if( building->type() != objects::burningRuins )
       continue;
 
     if( building->pos().distanceFrom( pos() ) < 1.5f )
@@ -120,7 +121,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->type() != building::burningRuins )
+    if( building->type() != objects::burningRuins )
       continue;
 
     Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
@@ -183,7 +184,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
         events::GameEventPtr e = events::FireWorkers::create( house->pos(), citizens.count() );
         e->dispatch();
 
-        e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
+        e = events::Disaster::create( house->tile(), events::Disaster::plague );
         e->dispatch();
 
         if( _d->fumigateHouseNumber > 5 )
@@ -216,7 +217,7 @@ void Prefect::_back2Patrol()
   }
 }
 
-void Prefect::_setSubAction(Prefect::SbAction action)
+void Prefect::_setSubAction( const Prefect::SbAction action)
 {
   _d->action = action;
 
@@ -234,7 +235,7 @@ bool Prefect::_figthFire()
   foreach( it, tiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
-    if( building.isValid() && building->type() == building::burningRuins )
+    if( building.isValid() && building->type() == objects::burningRuins )
     {
       turn( building->pos() );
       _setSubAction( fightFire );
@@ -264,7 +265,7 @@ bool Prefect::_findFire()
 void Prefect::_brokePathway(TilePos p)
 {
   TileOverlayPtr overlay = _city()->getOverlay( p );
-  if( overlay.isValid() && overlay->type() == building::burningRuins )
+  if( overlay.isValid() && overlay->type() == objects::burningRuins )
   {
     setSpeed( 0.f );
     _setAction( acFightFire );
@@ -449,7 +450,7 @@ void Prefect::timeStep(const unsigned long time)
   case fightFire:
   {    
     BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
-    bool inFire = (building.isValid() && building->type() == building::burningRuins );
+    bool inFire = (building.isValid() && building->type() == objects::burningRuins );
 
     if( inFire )
     {

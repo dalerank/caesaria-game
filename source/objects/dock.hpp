@@ -27,8 +27,8 @@ public:
   Dock();
   ~Dock();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool build(const CityAreaInfo &info);
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);
@@ -43,11 +43,11 @@ public:
 
   int queueSize() const;
 
-  void requestGoods( GoodStock& stock );
+  void requestGoods( good::Stock& stock );
 
-  void importingGoods( GoodStock& stock );
-  void exportingGoods( GoodStock& stock, int qty );
-  void storeGoods(GoodStock& stock, const int amount);
+  int importingGoods( good::Stock& stock );
+  int exportingGoods( good::Stock& stock, int qty );
+  void storeGoods( good::Stock& stock, const int amount);
 
 private:
   void _setDirection( constants::Direction direction );

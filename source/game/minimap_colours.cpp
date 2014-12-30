@@ -17,8 +17,14 @@
 
 #include "minimap_colours.hpp"
 
-MinimapColors::MinimapColors(ClimateType climate) {
-	if (climate == city::climate::central)
+namespace constants
+{
+
+namespace minimap
+{
+
+Colors::Colors(ClimateType climate) {
+	if (climate == game::climate::central)
 	{
 		int colours[][8] = {
 			{0x000000}, // background
@@ -48,7 +54,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			}
 		}
 	}
-	else if (climate == city::climate::northen)
+	else if (climate == game::climate::northen)
 	{
 		int colours[][8] = {{0x000000}, // background
 			{0x4A8231, 0x527929, 0x526929, 0x397121, 0x527931, 0x4A7129, 0x4A6918, 0x527929}, // empty 1
@@ -77,7 +83,7 @@ MinimapColors::MinimapColors(ClimateType climate) {
 			}
 		}
 	}
-	else if (climate == city::climate::desert)
+	else if (climate == game::climate::desert)
 	{
 		int colours[][8] = {{0x000000}, // background
 			{0xBDBA9C, 0xC6BAA5, 0xBDBA9C, 0xD6CBAD, 0xA59A7B, 0xCECBAD, 0xC6C3A5, 0xCECBAD}, // empty 1
@@ -108,7 +114,12 @@ MinimapColors::MinimapColors(ClimateType climate) {
 	}
 }
 
-int MinimapColors::colour(int type, int number)
+int Colors::colour(int type, int number)
 {
 	return map[type][number];
 }
+
+
+}//end namespace minimap
+
+}//end namespace constants

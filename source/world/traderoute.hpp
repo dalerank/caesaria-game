@@ -23,9 +23,8 @@
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
+#include "good/good.hpp"
 #include "gfx/picturesarray.hpp"
-
-class GoodStore;
 
 namespace world
 {
@@ -38,17 +37,20 @@ public:
 
   CityPtr beginCity() const;
   CityPtr endCity() const;
+  CityPtr partner( const std::string& name ) const;
   std::string getName() const;
 
   void update( unsigned int time );
   PointsArray points( bool reverse=false ) const;
+  bool containPoint( Point pos, int devianceDistance=10 );
   void setPoints(const PointsArray& points , bool seaRoute);
   const gfx::Pictures& pictures() const;
 
   bool isSeaRoute() const;
 
-  void addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
+  MerchantPtr addMerchant( const std::string& begin, good::Store& sell, good::Store& buy );
   MerchantPtr merchant( unsigned int index );
+  MerchantList merchants() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );

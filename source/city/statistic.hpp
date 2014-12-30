@@ -26,6 +26,7 @@
 #include "objects/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 #include "game/enums.hpp"
+#include "game/service.hpp"
 #include <set>
 
 namespace city
@@ -34,7 +35,7 @@ namespace city
 class Statistic
 {
 public:
-  typedef std::map< Good::Type, int > GoodsMap;
+  typedef std::map< good::Type, int > GoodsMap;
 
   static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
   static CitizenGroup getPopulation( PlayerCityPtr city );
@@ -57,6 +58,9 @@ public:
   static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
   static float getBalanceKoeff( PlayerCityPtr city );
+  static int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
+  static bool canImport( PlayerCityPtr city, good::Type type );
+  static bool canProduce( PlayerCityPtr city, good::Type type );
 };
 
 }//end namespace city

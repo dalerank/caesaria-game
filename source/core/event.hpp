@@ -218,8 +218,8 @@ enum GuiEventType
 	//! The text in an editbox was changed. This does not include automatic changes in text-breaking.
 	guiEditboxChanged,
 
-    //! The marked area in an editbox was changed.
-    guiEditboxMarkingChanged,
+  //! The marked area in an editbox was changed.
+  guiEditboxMarkingChanged,
 
 	//! The tab was changed in an tab control
 	guiTabChanged,
@@ -232,6 +232,11 @@ enum GuiEventType
 
 	//! The value of a spin box has changed
 	guiSpinboxChanged,
+
+	guiTableHeaderChanged,
+	guiTableCellChange,
+	guiTableCellSelected,
+	guiTableCellDblclick,
 
 	//! No real event. Just for convenience to get number of events
 	guiEventCount

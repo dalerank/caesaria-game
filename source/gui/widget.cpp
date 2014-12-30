@@ -25,7 +25,7 @@
 #include "core/event.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 
@@ -519,7 +519,7 @@ void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
 static int __convStr2RelPos( Widget* w, std::string s )
 {
-  s = StringHelper::trim( s );
+  s = utils::trim( s );
   std::string dd = s.substr( 0, 2 );
   int lenght = 0;
   if( dd == "pw" ) { lenght = w->parent()->width(); }
@@ -530,7 +530,7 @@ static int __convStr2RelPos( Widget* w, std::string s )
   {
     std::string opStr = s.substr( 2, 1 );
     char operation = opStr.empty() ? 0 : opStr[ 0 ];
-    int value = StringHelper::toFloat( s.substr( 3 ) );
+    int value = utils::toFloat( s.substr( 3 ) );
     switch( operation )
     {
     case '-':
@@ -547,7 +547,7 @@ static int __convStr2RelPos( Widget* w, std::string s )
   }
   else
   {
-    return StringHelper::toInt( s );
+    return utils::toInt( s );
   }
 }
 

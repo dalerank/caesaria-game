@@ -28,17 +28,22 @@ namespace infobox
 
 class AboutLand : public Simple
 {
-  static const int lbTextId=2;
 public:
   AboutLand( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 
   virtual void setText( const std::string& text );
+  virtual void _showHelp();
+
+private:
+  static const int lbTextId=2;
+  std::string _helpUri;
 };
 
 class AboutFreeHouse : public AboutLand
 {
 public:
   AboutFreeHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  virtual void _showHelp();
 };
 
 }

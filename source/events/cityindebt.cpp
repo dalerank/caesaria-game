@@ -18,13 +18,16 @@
 #include "cityindebt.hpp"
 #include "game/game.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
+#include "world/romechastenerarmy.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
+#include "showinfobox.hpp"
 #include "city/funds.hpp"
 #include "gui/film_widget.hpp"
+#include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
 
@@ -34,8 +37,12 @@ namespace events
 class CityIndebt::Impl
 {
 public:
-  int emperorMoney;
-  std::string text;
+  std::vector<int> emperorMoney;
+  StringArray text;
+  StringArray title;
+  StringArray video;
+  DateTime lastMessageSent;
+  unsigned int state;
   bool isDeleted;
 };
 
@@ -52,24 +59,35 @@ bool CityIndebt::isDeleted() const { return _d->isDeleted; }
 void CityIndebt::load(const VariantMap& stream)
 {
   GameEvent::load( stream );
-  VARIANT_LOAD_ANY_D( _d, emperorMoney, stream )
-  VARIANT_LOAD_STR_D( _d, text, stream )
+  VARIANT_LOAD_ANY_D( _d, state, stream )
+  VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
+
+  _d->emperorMoney << stream.get( "emperorMoney" ).toList();
+  _d->text = stream.get( "text" ).toStringArray();
+  _d->title = stream.get( "title" ).toStringArray();
+  _d->video = stream.get( "video" ).toStringArray();
 }
 
 VariantMap CityIndebt::save() const
 {
   VariantMap ret = GameEvent::save();
 
-  VARIANT_SAVE_ANY_D( ret, _d, emperorMoney )
-  VARIANT_SAVE_STR_D( ret, _d, text )
+  VariantList emperorMoneys( _d->emperorMoney );
+  ret[ "emperorMoney" ] = emperorMoneys;
+
+  VARIANT_SAVE_ANY_D( ret, _d, text )
+  VARIANT_SAVE_ANY_D( ret, _d, isDeleted )
+  VARIANT_SAVE_ANY_D( ret, _d, title )
+  VARIANT_SAVE_ANY_D( ret, _d, video )
+  VARIANT_SAVE_ANY_D( ret, _d, state )
   return ret;
 }
 
 bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 {
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
-    if( game.city()->funds().treasury() < 0 )
+    if( game.city()->funds().treasury() < -4900 )
     {
       return true;
     }
@@ -80,24 +98,63 @@ bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 
 CityIndebt::CityIndebt() : _d( new Impl )
 {
-  _d->text = "##city_indebt_text##";
-  _d->emperorMoney = 0;
   _d->isDeleted = false;
+  _d->state = 0;
 }
 
 void CityIndebt::_exec(Game& game, unsigned int)
 {
   gui::Ui* env = game.gui();
+  //_d->isDeleted = _d->state > 3;
 
-  _d->isDeleted = true;
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Emp_2nd_chance.smk" );
-  dlg->setText( _( _d->text ) );
-  dlg->setTitle( _("##city_indebt_title##") );
-  dlg->setTime( GameDate::current() );
-  dlg->show();
+  switch( _d->state )
+  {
+  case 0:
+  case 1:
+  case 2:
+  {
+    std::string video = _d->state < _d->video.size() ? _d->video[ _d->state ] : "unknown.video";
+    std::string text = _d->state < _d->text.size() ? _d->text[ _d->state ] : "##city_in_debt_text##";
+    std::string title = _d->state < _d->title.size() ? _d->title[ _d->state ] : "##city_in_debt_text##";
 
-  GameEventPtr e = FundIssueEvent::create( city::Funds::caesarsHelp, _d->emperorMoney );
-  e->dispatch();
+    unsigned int money = _d->state < _d->emperorMoney.size() ? _d->emperorMoney[ _d->state ] : 0;
+    gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), video );
+    dlg->setText( _( text ) );
+    dlg->setTitle( _( title ) );
+    dlg->setTime( game::Date::current() );
+    dlg->show();
+
+    _d->state++;
+
+    GameEventPtr e = FundIssueEvent::create( city::Funds::caesarsHelp, money );
+    e->dispatch();
+    _d->lastMessageSent = game::Date::current();
+  }
+  break;
+
+  case 3:
+  {
+    if( _d->lastMessageSent.monthsTo( game::Date::current() ) > 11 )
+    {
+      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, ":/smk/Emp_send_army.smk" );
+      e->dispatch();
+
+      world::CityPtr rome = game.empire()->rome();
+      PlayerCityPtr plCity = game.city();
+
+      world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( game.empire() );
+      army->setCheckFavor( false );
+      army->setBase( rome );
+      army->attack( ptr_cast<world::Object>( plCity ) );
+
+      _d->state++;
+    }
+  }
+  break;
+
+  case 4:
+  break;
+  }
 }
 
 }

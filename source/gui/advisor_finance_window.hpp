@@ -26,19 +26,25 @@
 namespace gui
 {
 
-class AdvisorFinanceWindow : public Window
+namespace advisorwnd
+{
+
+class Finance : public Window
 {
 public:
-  AdvisorFinanceWindow( PlayerCityPtr city, Widget* parent, int id );
+  Finance( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
 
 private:
+  void _showHelp();
   void _drawReportRow( const Point& pos, const std::string& title, int type );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end advisorwnd
 
 }//end namespace gui
 #endif //__OPENCAESAR3_ADVISOR_HEALTH_WINDOW_H_INCLUDED__

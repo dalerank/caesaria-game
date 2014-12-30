@@ -38,7 +38,7 @@ class Rome::Impl
 {
 public:
   city::Funds funds;
-  SimpleGoodStore gstore;
+  good::SimpleStore gstore;
   DateTime lastAttack;
   int strength;
 };
@@ -73,10 +73,10 @@ void Rome::timeStep(const unsigned int time)
 
 SmartPtr<Player> Rome::player() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
-const GoodStore& Rome::exportingGoods() const{ return _d->gstore; }
+const good::Store& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}
-void Rome::empirePricesChanged(Good::Type gtype, int bCost, int sCost){}
-const GoodStore& Rome::importingGoods() const{ return _d->gstore; }
+void Rome::empirePricesChanged(good::Type gtype, int bCost, int sCost){}
+const good::Store& Rome::importingGoods() const{ return _d->gstore; }
 
 void Rome::addObject(ObjectPtr obj)
 {
@@ -84,12 +84,12 @@ void Rome::addObject(ObjectPtr obj)
   {
     GoodCaravanPtr caravan = ptr_cast<GoodCaravan>( obj );
 
-    Good::Type gtype = Good::none;
-    for( int i=Good::wheat; i < Good::goodCount; i++ )
+    good::Type gtype = good::none;
+    for( int i=good::wheat; i < good::goodCount; i++ )
     {
-      if( caravan->store().qty( Good::Type(i) ) > 0 )
+      if( caravan->store().qty( good::Type(i) ) > 0 )
       {
-        gtype = Good::Type(i);
+        gtype = good::Type(i);
         break;
       }
     }
@@ -106,11 +106,12 @@ void Rome::addObject(ObjectPtr obj)
 
     if( brb.isValid() )
     {
-      _d->lastAttack = GameDate::current();
+      _d->lastAttack = game::Date::current();
     }
-  }
+    }
 }
 
+Nation Rome::nation() const { return world::rome; }
 DateTime Rome::lastAttack() const { return _d->lastAttack; }
 int Rome::strength() const { return _d->strength; }
 

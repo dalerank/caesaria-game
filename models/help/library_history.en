@@ -1,0 +1,14 @@
+{  
+ title : "##library##"
+ sound : "fanfare"
+ text  : "By the end of the Empire, Rome had about 40 public libraries and hundreds of private ones. These followed a standard plan of two rectangular rooms - one for Greek materials, and the other for Latin. 'Books' in antiquity were scrolls of parchment or papyrus, which are considerably bulkier than their modern bound counterparts. Even the largest ancient libraries held no more than a few thousand works, and any library numbering even hundreds of titles was impressive. These libraries' function was familiar, including borrowing privileges for members, but their popularity was restricted to scholars. Scrolls were bulky and expensive. Many works were unique and irreplaceable, and even the most popular literary mainstays numbered only a few hundred copies in the world."
+ uri : {
+  "Forum" : "forum"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "doctors" : "doctor"
+ }
+}

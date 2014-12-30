@@ -1,0 +1,15 @@
+{  
+ title : "##missionary_post##"
+ sound : "fanfare"
+ text  : "If an assignment takes you to a province already inhabited by indigenous tribes, you may wish to build a mission post. It needs road access and labor, and when working, will send out a missionary to establish contact with the natives. The missionary will try to explain to the natives that the Romans come in peace, and persuade them not to fight us. Use the Native @Risk overlay& to see the lands they claim. Build the mission post in 'their' area, as a sign of your intentions of peace. Once they accept you, they will commence trade. After that, you may safely build other structures on their land."
+ uri : {
+  "market" : "market"
+  "warehouses" : "warehouse"
+  "Farms" : "farm"
+  "Ports" : "port"
+  "Workshops" : "workshop"
+  "Industry" : "industry"
+  "Food and Farming" : "food_and_farming"
+  "Trade" : "trade"
+ }
+}

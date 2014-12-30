@@ -1,0 +1,9 @@
+{  
+ title : "##pottery_workshop##"
+ sound : "fanfare"
+ text  : "Potters mold clay from your @claypits& into pottery here. @Workshops& need a nearby labor source and road access, but not a water supply. Workers bring clay either directly from clay pits or from a warehouse. Sometimes you may need to import clay. When the workshop has turned its clay into pots, its staff deliver the finished pottery in a cart to the nearest @warehouse& with empty space. Animated workshops are making pottery. Potters can store some extra clay on the premises to smooth their production runs. Any stored clay appears in the potter's yard. @Pottery& may be traded for cash. Your own citizens demand pottery so that they can live in nicer housing. Nice housing soon devolves to smaller dwellings if pottery is unavailable for long. Large cities have voracious appetites for pottery. If you are exporting pottery, it is a good idea to tell your @Trade Advisor& to set an amount that you wish to keep in your warehouse for your own city's use. Market workers collect pottery from warehouses and take it to your markets, from where they distribute it to the citizenry. Pottery workshops are undesirable neighbors for housing. You can fully supply two workshops from the output of one clay pit. Read the @market& entry to learn how goods get from warehouses to the people. Read about Trade if you plan to export pottery or import clay. To read more about Pottery in the Roman Empire, click @here&."
+ uri : {
+  "claypits" : "claypits_help"
+  "Workshops" : "workhops_help"
+ }
+}

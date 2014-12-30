@@ -24,9 +24,12 @@
 
 #include <set>
 
+namespace good
+{
+
 struct ReserveInfo
 {
-  GoodStock stock;
+  good::Stock stock;
   DateTime time;
   unsigned int id;
 
@@ -43,7 +46,7 @@ public:
   Reservations();
   const ReserveInfo& get(unsigned int id) const;
 
-  unsigned int push( const GoodStock& stock, DateTime time );
+  unsigned int push( const good::Stock& stock, DateTime time );
   bool pop( unsigned int id );
 
   void removeExpired(DateTime currentDate, int monthNumber );
@@ -55,54 +58,54 @@ private:
   unsigned int _idCounter;
 };
 
-class SimpleGoodStore;
-class GoodStore
+class SimpleStore;
+class Store
 {
 public:
-  GoodStore();
-  virtual ~GoodStore();
+  Store();
+  virtual ~Store();
 
-  virtual int qty(const Good::Type &goodType) const = 0;
+  virtual int qty(const good::Type& goodType) const = 0;
   virtual int qty() const = 0;
   virtual void setCapacity(const int maxcap) = 0;
   virtual int capacity() const = 0;
-  virtual int capacity(const Good::Type& goodType ) const = 0;
-  virtual int freeQty( const Good::Type& goodType ) const;
+  virtual int capacity(const good::Type& goodType ) const = 0;
+  virtual int freeQty( const good::Type& goodType ) const;
   virtual int freeQty() const;
   virtual bool empty() const;
 
   // returns the max quantity that can be stored now
-  virtual int getMaxStore(const Good::Type goodType) = 0;
+  virtual int getMaxStore(const good::Type goodType) = 0;
 
   // returns the max quantity that can be retrieved now
-  virtual int getMaxRetrieve(const Good::Type goodType);
+  virtual int getMaxRetrieve(const good::Type goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual int reserveStorage( GoodStock &stock, DateTime time );
-  virtual int reserveStorage( Good::Type what, unsigned int qty, DateTime time);
+  virtual int reserveStorage( good::Stock& stock, DateTime time );
+  virtual int reserveStorage( good::Type what, unsigned int qty, DateTime time);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual int reserveRetrieval(GoodStock &stock, DateTime time);
-  virtual int reserveRetrieval(Good::Type what, unsigned int qty, DateTime time);
+  virtual int reserveRetrieval(good::Stock& stock, DateTime time);
+  virtual int reserveRetrieval(good::Type what, unsigned int qty, DateTime time);
 
   // return the reservation
-  GoodStock getStorageReservation(const int reservationID, const bool pop=false);
-  GoodStock getRetrieveReservation(const int reservationID, const bool pop=false);
+  good::Stock getStorageReservation(const int reservationID, const bool pop=false);
+  good::Stock getRetrieveReservation(const int reservationID, const bool pop=false);
 
   // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const int reservationID) = 0;
-  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID) = 0;
+  virtual void applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
 
   // store/retrieve to goodStore
-  void applyStorageReservation(SimpleGoodStore& goodStore, const int reservationID);
-  void applyRetrieveReservation(SimpleGoodStore& goodStore, const int reservationID);
+  void applyStorageReservation(SimpleStore& goodStore, const int reservationID);
+  void applyRetrieveReservation(SimpleStore& goodStore, const int reservationID);
 
   // immediate store/retrieve, exception if impossible
-  virtual void store( GoodStock &stock, const int amount);
-  virtual void retrieve( GoodStock &stock, const int amount);
+  virtual void store( good::Stock& stock, const int amount);
+  virtual void retrieve( good::Stock& stock, const int amount);
 
   // store all goods from the given goodStore
-  virtual void storeAll( GoodStore &goodStore);
+  virtual void storeAll( Store &goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );
@@ -110,8 +113,8 @@ public:
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
-  virtual void setOrder( const Good::Type type, const GoodOrders::Order order );
-  virtual GoodOrders::Order getOrder( const Good::Type type ) const;
+  virtual void setOrder( const good::Type type, const Orders::Order order );
+  virtual Orders::Order getOrder( const good::Type type ) const;
 
   virtual void removeExpired( DateTime date );
 
@@ -123,5 +126,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace good
 
 #endif //__CAESARIA_GOODSTORE_H_INCLUDED__

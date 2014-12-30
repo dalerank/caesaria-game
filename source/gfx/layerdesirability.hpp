@@ -23,7 +23,10 @@
 namespace gfx
 {
 
-class LayerDesirability : public LayerInfo
+namespace layer
+{
+
+class Desirability : public Info
 {
 public:
   virtual int type() const;
@@ -33,11 +36,13 @@ public:
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
 private:
-  LayerDesirability( Camera& camera, PlayerCityPtr city );
+  Desirability( Camera& camera, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//
 
 }//end namespace gfx
 

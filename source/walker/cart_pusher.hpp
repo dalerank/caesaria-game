@@ -32,20 +32,18 @@ public:
                } CartCapacity;
 
   static CartPusherPtr create( PlayerCityPtr city, CartCapacity cap=simpleCart );
+  virtual ~CartPusher();
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
   BuildingPtr producerBuilding();
   BuildingPtr consumerBuilding();
-  GoodStock& stock();
+  good::Stock& stock();
 
-  gfx::Picture& getCartPicture();
   virtual void getPictures( gfx::Pictures& oPics);
 
-  void send2city( BuildingPtr building, GoodStock& carry );
+  void send2city( BuildingPtr building, good::Stock& carry );
 
-  void computeWalkerDestination();
- 
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;
@@ -57,10 +55,12 @@ public:
 protected:
   CartPusher( PlayerCityPtr city );
 
+  virtual gfx::Animation& getCartPicture();
   virtual void _changeDirection();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
 
+  void _computeWalkerDestination();
 private:
   class Impl;
   ScopedPtr< Impl > _d;

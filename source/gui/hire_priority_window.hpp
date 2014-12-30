@@ -24,21 +24,26 @@
 namespace gui
 {
 
-class HirePriorityWnd : public Window
+namespace dialog
+{
+
+class HirePriority : public Window
 {
 public:
-  HirePriorityWnd( Widget* parent, city::Industry::Type type, int priority );
-  virtual ~HirePriorityWnd();
+  HirePriority( Widget* parent, city::industry::Type type, int priority );
+  virtual ~HirePriority();
 
   virtual bool onEvent(const NEvent &event);
 
 public signals:
-  Signal2<city::Industry::Type, int>& onAcceptPriority();
+  Signal2<city::industry::Type, int>& onAcceptPriority();
 
 private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //_CAESARIA_HIRE_PRIORITY_WINDOW_H_INCLUDE_

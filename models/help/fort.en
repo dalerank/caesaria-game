@@ -1,0 +1,14 @@
+{  
+ title : "##fort##"
+ sound : "fanfare"
+ text  : "Forts house the legions that defend your city from invaders.\n When you build a new fort, you are asked whether it is for legionaries, horse auxiliaries or javelin auxiliaries. For more about these troop types, please see @peace and war&.\n Assuming that your city has an active @barracks&, soldiers make their way to the new fort as they finish their training. When 16 soldiers stand in the fort's parade grounds, the legion is at full strength. Legions prefer to remain in their forts whenever their services aren't required, and they definitely want to return to their fort after fighting a battle. Soldiers' health and morale gradually improve while they are in their fort, and any combat losses are replaced there. Consult your @Military Advisor& to review your troops.\n A province can support a maximum of six forts. With the noise and danger they create, forts lower desirability more than any other building. Locate them outside your city. Forts do not require road access, and do not fall down or catch fire.\n Click @here& to read a short history of Roman forts."
+ uri : {
+  "peace and war" : "peace_and_war"
+  "barracks" : "barracks"
+  "Military Advisor" : "military_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "Crime" : "crime"
+  "historical role of Prefects" : "history_prefect"
+  "here" : "fort_history"
+ }
+}

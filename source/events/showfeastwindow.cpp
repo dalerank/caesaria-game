@@ -22,7 +22,7 @@
 #include "city/city.hpp"
 #include "city/funds.hpp"
 #include "gfx/engine.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 #include "gui/film_widget.hpp"
@@ -31,12 +31,13 @@
 namespace events
 {
 
-GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::string receiver)
+GameEventPtr ShowFeastival::create(std::string text, std::string title, std::string receiver, std::string video)
 {
-  ShowFeastWindow* e = new ShowFeastWindow();
+  ShowFeastival* e = new ShowFeastival();
   e->_text = text;
   e->_receiver = receiver;
   e->_title = title;
+  e->_video = video;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -44,21 +45,20 @@ GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::s
   return ret;
 }
 
-bool ShowFeastWindow::_mayExec(Game& game, unsigned int time) const
+bool ShowFeastival::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ShowFeastWindow::_exec(Game& game, unsigned int)
+void ShowFeastival::_exec(Game& game, unsigned int)
 {
   gui::Ui* env = game.gui();
 
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Festival3_Glad.smk" );
+  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), _video );
   dlg->setText( _text );
   dlg->setTitle( _title );
   dlg->setReceiver( _receiver );
-  dlg->setTime( GameDate::current() );
-
+  dlg->setTime( game::Date::current() );
 }
 
 }

@@ -20,7 +20,7 @@
 #include "city/city.hpp"
 #include "good/goodhelper.hpp"
 #include "image.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "label.hpp"
 #include "core/event.hpp"
 
@@ -33,7 +33,7 @@ namespace gui
 namespace advisorwnd
 {
 
-EmpirePricesWindow::EmpirePricesWindow(Widget *parent, int id, const Rect &rectangle, PlayerCityPtr city)
+EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, PlayerCityPtr city)
   : Window( parent, rectangle, "", id )
 {
   setupUI( ":/gui/empireprices.gui" );
@@ -41,22 +41,22 @@ EmpirePricesWindow::EmpirePricesWindow(Widget *parent, int id, const Rect &recta
   city::TradeOptions& ctrade = city->tradeOptions();
   Font font = Font::create( FONT_1 );
   Point startPos( 140, 50 );
-  for( int i=Good::wheat; i < Good::prettyWine; i++ )
+  for( int i=good::wheat; i < good::prettyWine; i++ )
     {
-      if( i == Good::fish || i == Good::denaries)
+      if( i == good::fish || i == good::denaries)
         {
           continue;
         }
 
-      Good::Type gtype = (Good::Type)i;
-      Picture goodIcon = GoodHelper::picture( gtype );
+      good::Type gtype = (good::Type)i;
+      Picture goodIcon = good::Helper::picture( gtype );
       new Image( this, startPos, goodIcon );
 
-      std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
+      std::string priceStr = utils::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
       Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
       lb->setFont( font );
 
-      priceStr = StringHelper::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
+      priceStr = utils::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
       lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
       lb->setFont( font );
 
@@ -64,7 +64,7 @@ EmpirePricesWindow::EmpirePricesWindow(Widget *parent, int id, const Rect &recta
     }
 }
 
-void EmpirePricesWindow::draw(Engine &painter)
+void EmpirePrices::draw(Engine &painter)
 {
   if( !visible() )
     return;
@@ -72,7 +72,7 @@ void EmpirePricesWindow::draw(Engine &painter)
   Window::draw( painter );
 }
 
-bool EmpirePricesWindow::onEvent(const NEvent &event)
+bool EmpirePrices::onEvent(const NEvent &event)
 {
   if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
     {

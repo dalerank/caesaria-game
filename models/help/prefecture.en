@@ -1,0 +1,14 @@
+{  
+ title : "##prefecture##"
+ sound : "fanfare"
+ text  : "As the sole bastion of internal security, @prefects& are probably the only workers more important than @engineers& to your city's basic survival. Tell your @Labor Advisor& to give them a high priority.\n Prefectures send prefects on patrol to inspect buildings for fire hazards and deal with any crime and civil unrest. Any building that is not on a prefect's patrol route may burn down (there are some exceptions: reservoirs, aqueducts, fountains, wells, gardens, statues, walls and forts).\n Prefects will move to arrest rioters as quickly as possible, and are authorized to kill them should the rioter start a fight. They try to douse burning buildings before the flames can engulf your whole city.\n Use the @Risks Overlay& frequently to find buildings in danger of burning down, and residential areas prone to unrest. Riots can decrease your Peace rating and cause serious property damage if not quelled immediately. Prevention is much better than cure, though. For more on preventing riots, see @Crime&.\n Despite their importance, prefectures are not good neighbors, and lower the desirability of nearby housing. They require road and labor access to operate.\n Read more about the @historical role of Prefects& in the Roman Empire."
+ uri : {
+  "prefects" : "prefect"
+  "engineers" : "engineer"
+  "Labor Advisor" : "labor_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "Crime" : "crime"
+  "historical role of Prefects" : "prefect_history"
+  "here" : "http://wikipedia.ru"
+ }
+}

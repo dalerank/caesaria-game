@@ -1,0 +1,13 @@
+{  
+ title : "##school##"
+ sound : "fanfare"
+ text  : "Schools educate the youngest Romans, up to age 13. The need for elementary schooling is universal, and housing will not progress far without access to this most basic form of @education&. Use the @Education Overlay& to see a particular school's area of influence and to watch students skipping to and from classes, spreading access as they go. Ask your @Education Advisor& about the city's overall need for schooling. Right-click on a school to check its status. People don't desire to live next door to schools because of the noise small children make.\n In the city's early days, building enough schools to provide access for individual houses is also enough to satisfy the city's overall need for schools. However, each school can handle only a limited number of children before its classrooms become overcrowded. As your city's population density increases, the number of classrooms in a school remains constant. Thus, houses want more schools, even though they already have access, so that classrooms won't grow too crowded.\n Schools affect your @Culture Rating&. Keep classrooms small to enhance Culture in your city. Compare the number of children who need schooling to the number of kids your schools can accommodate to see how many children each school in your city serves.\n Click @here(1)& to explore the concept of education in Caesar III.\nFor a quick lesson about schools in the Roman Empire, click @here(2)&."
+ uri : {
+  "education" : "education"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+  "here(1)" : "http://wikipedia.ru"
+  "here(2)" : "http://wikipedia.ru"
+ }
+}

@@ -19,6 +19,7 @@
 #include "city/funds.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "good/goodhelper.hpp"
 #include "city/trade_options.hpp"
 
 using namespace constants;
@@ -36,7 +37,7 @@ GameEventPtr FundIssueEvent::create(int type, int value)
   return ret;
 }
 
-GameEventPtr FundIssueEvent::import(Good::Type good, int qty, float buff)
+GameEventPtr FundIssueEvent::import(good::Type good, int qty, float buff)
 {
   FundIssueEvent* ev = new FundIssueEvent();
   ev->_gtype = good;
@@ -48,7 +49,7 @@ GameEventPtr FundIssueEvent::import(Good::Type good, int qty, float buff)
   return ret;
 }
 
-GameEventPtr FundIssueEvent::exportg(Good::Type good, int qty, float buff)
+GameEventPtr FundIssueEvent::exportg(good::Type good, int qty, float buff)
 {
   FundIssueEvent* ev = new FundIssueEvent();
   ev->_gtype = good;
@@ -62,20 +63,20 @@ GameEventPtr FundIssueEvent::exportg(Good::Type good, int qty, float buff)
 
 bool FundIssueEvent::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-FundIssueEvent::FundIssueEvent() : _type( 0 ), _value( 0 ), _buff( 1.f ), _gtype( Good::none ), _qty( 0 )
+FundIssueEvent::FundIssueEvent() : _type( 0 ), _value( 0 ), _buff( 1.f ), _gtype( good::none ), _qty( 0 )
 {}
 
 void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == city::Funds::importGoods )
   {
-    int price = game.city()->tradeOptions().sellPrice( _gtype );
-    _value = -price * ( 1+_buff ) * _qty / 100;
+    int price = good::Helper::importPrice( game.city(), _gtype, _qty );
+    _value = -price * ( 1+_buff );
   }
   else if( _type == city::Funds::exportGoods )
   {
-    int price = game.city()->tradeOptions().buyPrice( _gtype );
-    _value = price * ( 1+_buff ) * _qty / 100;
+    int price = good::Helper::exportPrice( game.city(), _gtype, _qty );
+    _value = price * ( 1+_buff );
   }
 
   game.city()->funds().resolveIssue( FundIssue( _type, _value ) );

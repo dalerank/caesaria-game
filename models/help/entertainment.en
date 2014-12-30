@@ -1,0 +1,14 @@
+{  
+ title : "##entertainment##"
+ sound : "fanfare"
+ text  : "Everyone likes to be entertained, and your people are no exception.\n Provide your citizens with entertainment by building venues, such as @theaters&, @amphitheaters&,or @colosseums&, and then providing performers to put on shows there. Build an actors' colony, for example, and give it road access and labor, and you will see actors making their way to a theater or amphitheater to perform. No performer will bother wandering around your city unless there is a venue for them to go to.\n As the performers walk through your city, they tell the houses they pass that they have access to their show. So, to boost a house's access to entertainment, encourage a performer to walk past it on his way to or from a venue. It is often a good idea to build the performer structures in a different location than the venues, so you know that the performers will walk a certain way to reach their venues.\n Read about @performer suppliers& for details about providing actors for theaters and amphitheaters, gladiators for amphitheaters and colosseums, lion tamers for colosseums and chariots for the hippodrome. Whenever you commission a new entertainment venue, make sure your city can supply performers.\n Advanced housing needs multiple types of entertainment within easy walking distance. Neighborhoods with access to several theaters are better than districts served by only one theater, and blocks with no theater access won't evolve far at all. But a community with access to a theater, an amphitheater, a colosseum and a hippodrome can develop the nicest homes.\n As well as enhancing housing, theaters contribute to your @Culture rating&.\n Your @Entertainment Advisor& can arrange @festivals& for you, too. Festivals please the god to which they are dedicated, and they improve the mood of your people. In fact, a festival is often a good, fast way to cheer your people up, which you may need to do from time to time.\n There are three sizes of festival. The larger the festival, the more it will cost, and the longer it will take your Entertainment Advisor to arrange it. The largest, the Grand Festival, further requires enough wine for all your people, and is not available unless your city has sufficient wine in its warehouses."
+ uri : {
+  "theaters" : "theater"
+  "colosseums" : "colosseum"
+  "Culture rating" : "culture_rating"
+  "performer suppliers" : "supplier"
+  "amphitheaters" : "amphitheater"
+  "festivals" : "festival"
+  "Entertainment Overlay" : "entertainment_overlay"
+ }
+}

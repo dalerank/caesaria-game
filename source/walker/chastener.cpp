@@ -53,7 +53,7 @@ int Chastener::agressive() const { return -2; }
 
 bool Chastener::die()
 {
-  _city()->empire()->emperor().soldierDie( _city()->name() );
+  _city()->empire()->emperor().remSoldiers( _city()->name(), 1 );
 
   return EnemySoldier::die();
 }

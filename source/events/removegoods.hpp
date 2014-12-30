@@ -24,7 +24,7 @@ namespace events
 class RemoveGoods : public GameEvent
 {
 public:
-  static GameEventPtr create( Good::Type type, int qty );
+  static GameEventPtr create( good::Type type, int qty );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap& stream);
@@ -37,7 +37,7 @@ protected:
 private:
   RemoveGoods();
 
-  Good::Type _type;
+  good::Type _type;
   int _qty;
 };
 

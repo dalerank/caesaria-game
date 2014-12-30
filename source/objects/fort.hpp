@@ -27,15 +27,15 @@ class Fort : public WorkingBuilding
 public:
   typedef enum { frmNorthLine=0, frmWestLine,
                  frmNorthDblLine, frmWestDblLine,
-                 frmRandomLocation, frmSquad,
+                 frmOpen, frmSquad,
                  frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;  
 
-  Fort( constants::building::Type type, int picIdLogo );
+  Fort( constants::objects::Type type, int picIdLogo );
   virtual ~Fort();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual bool build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool build(const CityAreaInfo &info);
 
   virtual bool isNeedRoadAccess() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);

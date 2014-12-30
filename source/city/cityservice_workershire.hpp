@@ -35,8 +35,8 @@ public:
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
   void setRecruterDistance( const unsigned int distance );
-  void setIndustryPriority( Industry::Type industry, int priority );
-  int getPriority( Industry::Type industry );
+  void setIndustryPriority( industry::Type industry, int priority );
+  int getPriority( industry::Type industry );
   const HirePriorities& priorities() const;
 
   virtual VariantMap save() const;

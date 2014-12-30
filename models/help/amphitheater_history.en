@@ -1,0 +1,14 @@
+{  
+ title : "##amphitheater##"
+ sound : "fanfare"
+ text  : "Amphitheaters embodied the dichotomy of the Roman character. On one hand, Romans drew pleasure from art, sculpture, oratory, architecture and related high-minded pursuits. On the other, Rome remained a militaristic culture at heart, and warfare and blood sports were immensely popular.\n Personal combat was the mainstay of Rome's spectacles. It began small, as entertainment at funerals, when two fighters performed a ritualized combat for the mourners. Eventually the stylized nature of these contests gave way to genuine fights, and crowds for these shows grew so large that a public building was needed to house them. Amphitheater construction accelerated when Republic gave way to Empire, and emperors used the games to placate a citizenry that had lost its voice in government. The ancient Roman calendar proclaimed 159 holidays, and 93 of them featured games.\n Gladiatorial contests, wild animal fights, war games and athletic competitions drew raucous crowds throughout the Empire. Ruins of amphitheaters exist all over Europe, but none are as magnificent as the @Colosseum&."
+ uri : {
+  "Colosseum" : "colosseum"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "doctors" : "doctor"
+ }
+}

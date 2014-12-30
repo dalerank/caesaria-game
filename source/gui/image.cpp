@@ -116,6 +116,12 @@ Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 void Image::setPicture( Picture picture )
 {
   _d->bgPicture = picture;
+
+	if( _d->mode == image )
+	{
+		setWidth( picture.width() );
+		setHeight( picture.height() );
+	}
 }
 
 void Image::setupUI(const VariantMap& ui)

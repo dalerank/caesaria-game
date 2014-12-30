@@ -1,0 +1,14 @@
+{  
+ title : "##hospital##"
+ sound : "fanfare"
+ text  : "When they sought medical care at all, ailing Romans were treated in their homes, but these routine housecalls grew inconvenient as the Empire enlarged. The sick and injured came to be housed in @temples& - which seems appropriate, given that cures could as credibly be attributed to the gods as to @doctors&. The Roman legions developed military hospitals in geographic centers to care for their wounded. These institutions expanded their function to accommodate the sick. Eventually public hospitals took this duty away from the temples and military."
+ uri : {
+  "temples" : "temple"
+  "fountains" : "fountain"
+  "statues" : "statue"
+  "engineers" : "engineer"
+  "oil" : "oil"
+  "Aqueducts" : "aqueduct"
+  "doctors" : "doctor"
+ }
+}

@@ -28,10 +28,10 @@ using namespace gfx;
 class CircusCharioter::Impl
 {
 public:
-  Picture cartPicture;
+  Animation animation;
 
 public:
-  const Picture& getCartPicture( Direction direction );
+  const Animation& cart( Direction direction );
 };
 
 CircusCharioter::CircusCharioter(PlayerCityPtr city)
@@ -81,15 +81,15 @@ void CircusCharioter::_addToCircus(HippodromePtr circus)
   go();
 }
 
-const Picture& CircusCharioter::Impl::getCartPicture( Direction direction )
+const Animation& CircusCharioter::Impl::cart( Direction direction )
 {
-  if( !cartPicture.isValid() )
+  if( !animation.isValid() )
   {
-    cartPicture = AnimationBank::getCart( AnimationBank::circusCart, 0, direction );
-    cartPicture.addOffset( 8, -12 );
+    animation = AnimationBank::getCart( AnimationBank::animCircusCart, 0, direction );
+    animation.addOffset( Point( 8, -12 ) );
   }
 
-  return cartPicture;
+  return animation;
 }
 
 WalkerPtr CircusCharioter::create(PlayerCityPtr city, HippodromePtr circus)
@@ -119,20 +119,20 @@ void CircusCharioter::getPictures(Pictures& oPics)
   case constants::northWest:
   case constants::north:
   case constants::northEast:
-    oPics.push_back( _d->getCartPicture( direction() ) );
+    oPics.push_back( _d->cart( direction() ).currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
 
   case constants::east:
   case constants::southEast:
-    oPics.push_back( _d->getCartPicture( direction()  ) );
+    oPics.push_back( _d->cart( direction()  ).currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
 
   case constants::south:
   case constants::southWest:
     oPics.push_back( getMainPicture() );
-    oPics.push_back( _d->getCartPicture( direction() ) );
+    oPics.push_back( _d->cart( direction() ).currentFrame() );
   break;
 
   default:
@@ -142,6 +142,7 @@ void CircusCharioter::getPictures(Pictures& oPics)
 
 void CircusCharioter::timeStep(const unsigned long time)
 {
+  _d->animation.update( time );
   Walker::timeStep( time );
 }
 
@@ -153,7 +154,7 @@ void CircusCharioter::_reachedPathway()
 
 void CircusCharioter::_changeDirection()
 {
-  _d->cartPicture = Picture::getInvalid();
+  _d->animation = Animation();
 
   Walker::_changeDirection();
 }

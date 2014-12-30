@@ -89,25 +89,25 @@ void BuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
   bool mayBuild = (vmb.toString() != disable_all);
   switch( type )
   {
-  case BM_FARM: setBuildingAvailble( building::wheatFarm, building::pigFarm, mayBuild ); break;
-  case BM_WATER: setBuildingAvailble( building::reservoir, building::well, mayBuild ); break;
-  case BM_HEALTH: setBuildingAvailble( building::doctor, building::barber, mayBuild ); break;
-  case BM_RAW_MATERIAL: setBuildingAvailble( building::marbleQuarry, building::clayPit, mayBuild ); break;
-  case BM_RELIGION: setBuildingAvailble( building::templeCeres, building::oracle, mayBuild ); break;
-  case BM_FACTORY: setBuildingAvailble( building::winery, building::pottery, mayBuild ); break;
-  case BM_EDUCATION: setBuildingAvailble( building::school, building::library, mayBuild ); break;
-  case BM_ENTERTAINMENT: setBuildingAvailble( building::amphitheater, building::chariotSchool, mayBuild ); break;
-  case BM_ADMINISTRATION: setBuildingAvailble( building::senate, building::governorPalace, mayBuild ); break;
+  case BM_FARM: setBuildingAvailble( objects::wheatFarm, objects::pigFarm, mayBuild ); break;
+  case BM_WATER: setBuildingAvailble( objects::reservoir, objects::well, mayBuild ); break;
+  case BM_HEALTH: setBuildingAvailble( objects::doctor, objects::barber, mayBuild ); break;
+  case BM_RAW_MATERIAL: setBuildingAvailble( objects::marbleQuarry, objects::clayPit, mayBuild ); break;
+  case BM_RELIGION: setBuildingAvailble( objects::templeCeres, objects::oracle, mayBuild ); break;
+  case BM_FACTORY: setBuildingAvailble( objects::winery, objects::pottery, mayBuild ); break;
+  case BM_EDUCATION: setBuildingAvailble( objects::school, objects::library, mayBuild ); break;
+  case BM_ENTERTAINMENT: setBuildingAvailble( objects::amphitheater, objects::chariotSchool, mayBuild ); break;
+  case BM_ADMINISTRATION: setBuildingAvailble( objects::senate, objects::governorPalace, mayBuild ); break;
   case BM_ENGINEERING:
-    setBuildingAvailble( building::engineerPost, building::wharf, mayBuild );
-    setBuildingAvailble( construction::plaza, mayBuild );
-    setBuildingAvailble( construction::garden, mayBuild );
+    setBuildingAvailble( objects::engineerPost, objects::wharf, mayBuild );
+    setBuildingAvailble( objects::plaza, mayBuild );
+    setBuildingAvailble( objects::garden, mayBuild );
   break;
-  case BM_SECURITY: setBuildingAvailble( building::prefecture, building::fortArea, mayBuild ); break;
-  case BM_COMMERCE: setBuildingAvailble( building::market, building::warehouse, mayBuild ); break;
-  case BM_TEMPLE: setBuildingAvailble( building::templeCeres, building::templeVenus, mayBuild ); break;
-  case BM_BIGTEMPLE: setBuildingAvailble( building::cathedralCeres, building::cathedralVenus, mayBuild ); break;
-  case BM_MAX: setBuildingAvailble( construction::unknown, building::typeCount, mayBuild );
+  case BM_SECURITY: setBuildingAvailble( objects::prefecture, objects::fortArea, mayBuild ); break;
+  case BM_COMMERCE: setBuildingAvailble( objects::market, objects::warehouse, mayBuild ); break;
+  case BM_TEMPLE: setBuildingAvailble( objects::templeCeres, objects::templeVenus, mayBuild ); break;
+  case BM_BIGTEMPLE: setBuildingAvailble( objects::cathedralCeres, objects::cathedralVenus, mayBuild ); break;
+  case BM_MAX: setBuildingAvailble( objects::unknown, objects::typeCount, mayBuild );
 
   default:
   break;
@@ -118,20 +118,20 @@ bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
 {
   switch( type )
   {
-  case BM_FARM:         return isBuildingsAvailble( building::wheatFarm, building::pigFarm ); break;
-  case BM_WATER:        return isBuildingsAvailble( building::reservoir, building::well ); break;
-  case BM_HEALTH:       return isBuildingsAvailble( building::doctor, building::barber ); break;
-  case BM_RAW_MATERIAL: return isBuildingsAvailble( building::marbleQuarry, building::clayPit ); break;
-  case BM_RELIGION:     return isBuildingsAvailble( building::templeCeres, building::oracle ); break;
-  case BM_FACTORY:      return isBuildingsAvailble( building::winery, building::pottery ); break;
-  case BM_EDUCATION:    return isBuildingsAvailble( building::school, building::library ); break;
-  case BM_ENTERTAINMENT: return isBuildingsAvailble( building::amphitheater, building::chariotSchool ); break;
-  case BM_ADMINISTRATION: return isBuildingsAvailble( building::senate, building::governorPalace ); break;
-  case BM_ENGINEERING:  return isBuildingsAvailble( building::engineerPost, building::wharf ); break;
-  case BM_SECURITY:     return isBuildingsAvailble( building::prefecture, building::fortArea ); break;
-  case BM_COMMERCE:     return isBuildingsAvailble( building::market, building::warehouse ); break;
-  case BM_TEMPLE:       return isBuildingsAvailble( building::templeCeres, building::templeVenus ); break;
-  case BM_BIGTEMPLE:    return isBuildingsAvailble( building::cathedralCeres, building::cathedralVenus ); break;
+  case BM_FARM:         return isBuildingsAvailble( objects::wheatFarm, objects::pigFarm ); break;
+  case BM_WATER:        return isBuildingsAvailble( objects::reservoir, objects::well ); break;
+  case BM_HEALTH:       return isBuildingsAvailble( objects::doctor, objects::barber ); break;
+  case BM_RAW_MATERIAL: return isBuildingsAvailble( objects::marbleQuarry, objects::clayPit ); break;
+  case BM_RELIGION:     return isBuildingsAvailble( objects::templeCeres, objects::oracle ); break;
+  case BM_FACTORY:      return isBuildingsAvailble( objects::winery, objects::pottery ); break;
+  case BM_EDUCATION:    return isBuildingsAvailble( objects::school, objects::library ); break;
+  case BM_ENTERTAINMENT: return isBuildingsAvailble( objects::amphitheater, objects::chariotSchool ); break;
+  case BM_ADMINISTRATION: return isBuildingsAvailble( objects::senate, objects::governorPalace ); break;
+  case BM_ENGINEERING:  return isBuildingsAvailble( objects::engineerPost, objects::wharf ); break;
+  case BM_SECURITY:     return isBuildingsAvailble( objects::prefecture, objects::fortArea ); break;
+  case BM_COMMERCE:     return isBuildingsAvailble( objects::market, objects::warehouse ); break;
+  case BM_TEMPLE:       return isBuildingsAvailble( objects::templeCeres, objects::templeVenus ); break;
+  case BM_BIGTEMPLE:    return isBuildingsAvailble( objects::cathedralCeres, objects::cathedralVenus ); break;
   default:
   break;
   }

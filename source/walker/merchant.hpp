@@ -36,6 +36,8 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void timeStep(const unsigned long time);
+  virtual std::string thoughts(Thought th) const;
+
   std::string parentCity() const;
   virtual TilePos places(Place type) const;
 

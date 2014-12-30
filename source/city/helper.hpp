@@ -48,14 +48,14 @@ public:
   SmartList< T > find( const gfx::TileOverlay::Type type );
 
   template< class T >
-  SmartList< T > find( constants::building::Group group )
+  SmartList< T > find( constants::objects::Group group )
   {
     SmartList< T > ret;
     gfx::TileOverlayList& buildings = _city->overlays();
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
-      if( b.isValid() && (b->group() == group || group == constants::building::anyGroup ) )
+      if( b.isValid() && (b->group() == group || group == constants::objects::anyGroup ) )
       {
         ret.push_back( b );
       }
@@ -115,7 +115,7 @@ public:
   SmartPtr< T > find( const gfx::TileOverlay::Type type, const TilePos& pos )
   {   
     gfx::TileOverlayPtr overlay = _city->getOverlay( pos );
-    if( overlay.isValid() && (overlay->type() == type || type == constants::building::any) )
+    if( overlay.isValid() && (overlay->type() == type || type == constants::objects::any) )
     {
       return ptr_cast< T >( overlay );
     }
@@ -167,7 +167,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > find( const constants::building::Type type, TilePos start, TilePos stop=TilePos(-1,-1) )
+  SmartList< T > find( const constants::objects::Type type, TilePos start, TilePos stop=TilePos(-1,-1) )
   {
     SmartList< T > ret;
 
@@ -175,7 +175,7 @@ public:
     foreach( tile, area )
     {
       SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
-      if( obj.isValid() && (obj->type() == type || type == constants::building::any) )
+      if( obj.isValid() && (obj->type() == type || type == constants::objects::any) )
       {
         ret.push_back( obj );
       }
@@ -185,7 +185,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > find( constants::building::Group group, TilePos start, TilePos stop )
+  SmartList< T > find( constants::objects::Group group, TilePos start, TilePos stop )
   {
     SmartList< T > ret;
 
@@ -194,7 +194,7 @@ public:
     foreach( tile, area )
     {
       SmartPtr<T> obj = ptr_cast< T >((*tile)->overlay());
-      if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
+      if( obj.isValid() && (obj->getClass() == group || group == constants::objects::anyGroup) )
       {
         ret.push_back( obj );
       }
@@ -204,7 +204,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > getProducers( const Good::Type goodtype );
+  SmartList< T > getProducers( const good::Type goodtype );
 
   template< class T >
   SmartPtr< T > next( const SmartPtr< T > current );
@@ -255,7 +255,7 @@ SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
   foreach( item, buildings )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
-    if( b.isValid() && (b->type() == type || type == constants::building::any ) )
+    if( b.isValid() && (b->type() == type || type == constants::objects::any ) )
     {
       ret.push_back( b );
     }
@@ -265,7 +265,7 @@ SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
 }
 
 template< class T >
-SmartList<T> Helper::getProducers( const Good::Type goodtype )
+SmartList<T> Helper::getProducers( const good::Type goodtype )
 {
   SmartList< T > ret;
   gfx::TileOverlayList& overlays = _city->overlays();

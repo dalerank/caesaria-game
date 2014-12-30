@@ -23,6 +23,7 @@
 #include "gui/gameautopause.hpp"
 #include "scene/level.hpp"
 #include "core/gettext.hpp"
+#include "clearland.hpp"
 #include "core/logger.hpp"
 
 namespace events
@@ -66,7 +67,7 @@ void RequestDestroy::_applyDestroy()
   if( _reqConstruction.isValid() )
   {
     _reqConstruction->setState( Construction::destroyable, 1. );
-    GameEventPtr e = ClearLandEvent::create( _reqConstruction->pos() );
+    GameEventPtr e = ClearTile::create( _reqConstruction->pos() );
     e->dispatch();
     _mayDelete = true;
   }

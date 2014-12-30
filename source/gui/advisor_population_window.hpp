@@ -37,6 +37,8 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
+  void _showHelp();
+
   __DECLARE_IMPL(Population)
 };
 

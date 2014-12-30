@@ -30,13 +30,14 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/animation.hpp"
 #include "game/settings.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "picture_info_bank.hpp"
 #include "core/foreach.hpp"
 #include "loader.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
+#include "gfx/helper.hpp"
 #include "core/color.hpp"
 
 using namespace gfx;
@@ -75,8 +76,11 @@ public:
 
 void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
 {
+  int dot_pos = name.find('.');
+  std::string rcname = name.substr(0, dot_pos);
+
   // first: we deallocate the current picture, if any
-  unsigned int picId = StringHelper::hash( name );
+  unsigned int picId = utils::hash( rcname );
   Picture* ptrPic = 0;
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
@@ -97,9 +101,6 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   if( pic.texture() > 0 )
     txCounters[ pic.texture() ]++;
 
-  int dot_pos = name.find('.');
-  std::string rcname = name.substr(0, dot_pos);
-
   Point offset( 0, 0 );
 
   // decode the picture name => to set the offset manually
@@ -108,7 +109,9 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   if( pic_info == Point( -1, -1 ) )
   {
     // this is a tiled picture=> automatic offset correction
-    offset.setY( pic.height()-15*( (pic.width()+2)/60 ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
+    int cw = gfx::tilemap::cellSize().width() * 2;
+    int ch = gfx::tilemap::cellSize().width() / 2;
+    offset.setY( pic.height()-ch*( (pic.width()+2)/cw ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
   }
   else if( pic_info == Point( -2, -2 ) )
   {
@@ -169,7 +172,7 @@ void PictureBank::addAtlas( const std::string& filename )
     VariantMap items = options.get( framesSection ).toMap();
     foreach( i, items )
     {
-      unsigned int hash = StringHelper::hash( i->first );
+      unsigned int hash = utils::hash( i->first );
       atlas.images.insert( hash );
     }
 
@@ -184,7 +187,7 @@ void PictureBank::loadAtlas(const std::string& filename)
 
 Picture& PictureBank::getPicture(const std::string &name)
 {
-  const unsigned int hash = StringHelper::hash( name );
+  const unsigned int hash = utils::hash( name );
   //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
@@ -203,9 +206,14 @@ Picture& PictureBank::getPicture(const std::string &name)
 
 Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
 {
-  std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
+  std::string resource_name = utils::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
   return getPicture(resource_name);
+}
+
+bool PictureBank::present(const std::string& prefix, const int idx) const
+{
+  return false;
 }
 
 PictureBank::PictureBank() : _d( new Impl )
@@ -246,7 +254,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
-  unsigned int hash = StringHelper::hash( name );
+  unsigned int hash = utils::hash( name );
   foreach( i, atlases )
   {
     bool found = i->find( hash );
@@ -293,6 +301,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     mainTexture = Picture::getInvalid();
   }
 
+  //SizeF mainRectSize = mainTexture.size().toSizeF();
   if( !info.empty() )
   {
     VariantMap items = info.get( framesSection ).toMap();
@@ -300,10 +309,12 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     {
       VariantList rInfo = i->second.toList();
       Picture pic = mainTexture;
-      Point start(rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
+      Point start( rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
       Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
-      pic.setOriginRect( Rect( start, size ) );
+      Rect orect( start, size );
+      pic.setOriginRect( orect );
+      //pic.setOriginRectf( );
       setPicture( i->first, pic );
     }
   }

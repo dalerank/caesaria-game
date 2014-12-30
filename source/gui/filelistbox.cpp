@@ -17,7 +17,7 @@
 
 #include "filelistbox.hpp"
 #include "vfs/filesystem.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "listboxitem.hpp"
 
 namespace gui
@@ -42,7 +42,7 @@ void FileListBox::setShowTime(bool show) {  setFlag( showTime, show ); }
 ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int color)
 {
   DateTime time = vfs::FileSystem::instance().getFileUpdateTime( text );
-  std::string timeStr = StringHelper::format( 0xff, "(%02d %s %02d:%02d:%02d)",
+  std::string timeStr = utils::format( 0xff, "(%02d %s %02d:%02d:%02d)",
                                               time.day(), DateTime::getShortMonthName( time.month()-1 ),
                                               time.hour(), time.minutes(), time.seconds() );
   ListBoxItem& item = ListBox::addItem( vfs::Path( text ).baseName().toString(), font, color );

@@ -41,7 +41,7 @@ static const int noPriority = 999;
 class Recruter::Impl
 {
 public:
-  typedef std::map< building::Group, int > PriorityMap;
+  typedef std::map< objects::Group, int > PriorityMap;
 
   unsigned int needWorkers;
   city::HirePriorities priority;
@@ -77,7 +77,7 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   int priorityLevel = 1;
   foreach( i, _d->priority )
   {
-    city::Industry::BuildingGroups groups = city::Industry::toGroups( *i );
+    city::industry::BuildingGroups groups = city::industry::toGroups( *i );
     foreach( grIt, groups )
     {
       _d->priorityMap[ *grIt ] = priorityLevel;
@@ -210,8 +210,8 @@ bool Recruter::die()
 
 bool Recruter::Impl::isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding)
 {
-  PriorityMap::iterator myPrIt = priorityMap.find( (building::Group)base->group() );
-  PriorityMap::iterator bldPrIt = priorityMap.find( (building::Group)wbuilding->group() );
+  PriorityMap::iterator myPrIt = priorityMap.find( (objects::Group)base->group() );
+  PriorityMap::iterator bldPrIt = priorityMap.find( (objects::Group)wbuilding->group() );
   int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : noPriority);
   int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : noPriority);
 

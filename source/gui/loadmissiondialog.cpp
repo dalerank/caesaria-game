@@ -27,8 +27,9 @@
 #include "label.hpp"
 #include "image.hpp"
 #include "core/saveadapter.hpp"
-#include <algorithm>
+//#include <algorithm>
 #include "core/gettext.hpp"
+#include "dictionary_text.hpp"
 #include "widgetescapecloser.hpp"
 
 using namespace gfx;
@@ -36,11 +37,15 @@ using namespace gfx;
 namespace gui
 {
 
-class LoadMissionDialog::Impl
+namespace dialog
+{
+
+class LoadMission::Impl
 {
 public:
   FileListBox* lbxFiles;
-  Label* lbDescription;
+  Label* lbTitle;
+  DictionaryText* lbDescription;
   Image* imgPreview;
   vfs::Directory directory;
   std::string saveItemText;
@@ -56,24 +61,28 @@ signals public:
   Signal1<std::string> onSelectFileSignal;
 };
 
-void LoadMissionDialog::Impl::resolveItemSelected(const ListBoxItem& item)
+void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
 {
   saveItemText = item.text();
 
   vfs::Path fn(saveItemText);
   fn = directory/fn;
 
+  std::string missionName = vfs::Path( fn ).baseName( false ).toString();
   VariantMap vm = SaveAdapter::load( fn );
+  Locale::addTranslation( missionName );
 
-  std::string text = vm[ "preview.text" ].toString();
-  std::string previewImg = vm[ "preview.image" ].toString();
+  std::string text = vm.get( "preview.text" ).toString();
+  std::string previewImg = vm.get( "preview.image" ).toString();
+  std::string title = vm.get( "preview.title" ).toString();
 
   if( lbDescription ) lbDescription->setText( _(text) );
   if( imgPreview ) imgPreview->setPicture( Picture::load( previewImg ) );
   if( btnLoad ) btnLoad->setEnabled( !saveItemText.empty() );
+  if( lbTitle ) lbTitle->setText( _( title ) );
 }
 
-LoadMissionDialog::LoadMissionDialog(Widget* parent , const vfs::Directory &dir)
+LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
   : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
 {
   setupUI( ":/gui/loadmissiondialog.gui" );
@@ -86,6 +95,7 @@ LoadMissionDialog::LoadMissionDialog(Widget* parent , const vfs::Directory &dir)
   GET_DWIDGET_FROM_UI( _d, btnLoad )
   GET_DWIDGET_FROM_UI( _d, lbDescription )
   GET_DWIDGET_FROM_UI( _d, imgPreview )
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
 
   CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
@@ -95,7 +105,7 @@ LoadMissionDialog::LoadMissionDialog(Widget* parent , const vfs::Directory &dir)
   _d->fillFiles();
 }
 
-void LoadMissionDialog::Impl::fillFiles()
+void LoadMission::Impl::fillFiles()
 {
   if( !lbxFiles )
     return;
@@ -114,7 +124,7 @@ void LoadMissionDialog::Impl::fillFiles()
   lbxFiles->addItems( names );
 }
 
-void LoadMissionDialog::Impl::emitSelectFile()
+void LoadMission::Impl::emitSelectFile()
 {
   if( saveItemText.empty() )
     return;
@@ -124,7 +134,7 @@ void LoadMissionDialog::Impl::emitSelectFile()
 }
 
 
-void LoadMissionDialog::draw( gfx::Engine& engine )
+void LoadMission::draw( gfx::Engine& engine )
 {
   if( !visible() )
     return;
@@ -132,13 +142,15 @@ void LoadMissionDialog::draw( gfx::Engine& engine )
   Widget::draw( engine );
 }
 
-Signal1<std::string>& LoadMissionDialog::onSelectFile() { return _d->onSelectFileSignal; }
+Signal1<std::string>& LoadMission::onSelectFile() { return _d->onSelectFileSignal; }
 
-LoadMissionDialog* LoadMissionDialog::create( Widget* parent, const vfs::Directory& dir )
+LoadMission* LoadMission::create( Widget* parent, const vfs::Directory& dir )
 {
-  LoadMissionDialog* ret = new LoadMissionDialog( parent, dir );
+  LoadMission* ret = new LoadMission( parent, dir );
   ret->setCenter( parent->center() );
   return ret;
 }
+
+}//end namespace dialog
 
 }//end namespace gui

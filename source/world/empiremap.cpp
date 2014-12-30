@@ -98,7 +98,7 @@ Route EmpireMap::findRoute(Point start, Point stop, int flags ) const
 
   foreach( pos, tiles)
   {
-    way.push_back( _d->tp2pnt( *pos ) + Point( 10, 10 ) );
+    way.push_back( _d->tp2pnt( *pos ) );
   }
 
   return way;

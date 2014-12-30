@@ -20,32 +20,36 @@
 #include "vfs/filesystem.hpp"
 #include "gfx/loader.hpp"
 #include "resourcegroup.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "gfx/picture_bank.hpp"
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"
 #include "resourceloader.hpp"
+#include "vfs/directory.hpp"
+#include "settings.hpp"
 
 using namespace vfs;
 
-/*void __appendRange( const std::string& rc, int start, int stop, StringArray& ar )
+namespace game
 {
-  for( int index=start; index <= stop; index++ )
-  {
-    ar << StringHelper::format( 0xff, "%s_%05d", rc.c_str(), index );
-  }
-}*/
 
-void ClimateManager::initialize(ClimateType climate)
+namespace climate
 {
-  VariantMap climateArchives = SaveAdapter::load( ":/climate.model" );
+
+void initialize(ClimateType climate)
+{
+  VariantMap climateArchives = SaveAdapter::load( SETTINGS_RC_PATH( climateModel ) );  
 
   std::string optName;
-  if( climate == city::climate::central ) { optName = "central"; }
-  else if( climate == city::climate::northen )  { optName = "north"; }
-  else if( climate == city::climate::desert ) { optName = "south"; }
+  if( climate == game::climate::central ) { optName = "central"; }
+  else if( climate == game::climate::northen )  { optName = "north"; }
+  else if( climate == game::climate::desert ) { optName = "south"; }
 
   Path archivePath = climateArchives.get( optName ).toString();
+  Directory dir = archivePath.directory();
+
+  archivePath = dir.find( archivePath.baseName(), Path::ignoreCase );
+
   ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
 
   if( archive.isNull() )
@@ -65,3 +69,7 @@ void ClimateManager::initialize(ClimateType climate)
     rc.loadFiles( archive );
   }
 }
+
+}//end namespace climate
+
+}//end namespace game

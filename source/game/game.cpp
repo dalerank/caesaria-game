@@ -19,7 +19,7 @@
 #include "game.hpp"
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/picture.hpp"
@@ -62,6 +62,9 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "gfx/helper.hpp"
+#include "gamestate.hpp"
+#include "hotkey_manager.hpp"
 
 #include <list>
 
@@ -70,14 +73,9 @@ using namespace gfx;
 class Game::Impl
 {
 public:
-  class ScreenHolder;
-  class ScreenMenuHolder;
-  class ScreenBriefingHolder;
-  class ScreenGameHolder;
-
   ScreenType nextScreen;
   std::string nextFilename;
-  ScreenHolder* currentScreen;
+  gamestate::BaseState* currentScreen;
   gfx::Engine* engine;
   gui::Ui* gui;
 
@@ -97,6 +95,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initHotkeys();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -108,253 +107,6 @@ public:
       currentScreen(0), engine(0), gui(0)
   {}
 };
-
-class Game::Impl::ScreenHolder
-{
-protected:
-  Game *game;
-  scene::Base* screen;
-  ScreenType screenType;
-
-  void initialize(scene::Base* screen, ScreenType screenType) {
-    this->screen = screen;
-    this->screenType = screenType;
-    this->screen->initialize();
-  }
-
-public:
-  ScreenHolder(Game *game): game(game), screen(0), screenType(SCREEN_NONE)
-  {
-  }
-
-  virtual ~ScreenHolder()
-  {
-    delete screen;
-  }
-
-  virtual bool update(gfx::Engine* engine)
-  {
-    if (screen->isStopped())
-    {
-      return false;
-    }
-
-    screen->update(*engine);
-    return true;
-  }
-
-  ScreenType getScreenType()
-  {
-    return screenType;
-  }
-
-  scene::Base* toBase()
-  {
-    return screen;
-  }
-};
-
-class Game::Impl::ScreenBriefingHolder: public ScreenHolder
-{
-  scene::Briefing *briefing;
-
-public:
-  ScreenBriefingHolder(Game *game, gfx::Engine* engine, const std::string &file):
-    ScreenHolder(game),
-    briefing(new scene::Briefing( *game, *engine, file ))
-  {
-    initialize(briefing, SCREEN_BRIEFING);
-  }
-
-  virtual ~ScreenBriefingHolder()
-  {
-    Game::Impl *_d = game->_d.data();
-
-    switch( screen->result() )
-    {
-      case scene::Briefing::loadMission:
-      {
-        bool loadOk = game->load( briefing->getMapName() );
-        Logger::warning( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + briefing->getMapName() );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      default:
-        _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
-     }
-  }
-};
-
-class Game::Impl::ScreenMenuHolder: public ScreenHolder
-{
-  scene::StartMenu *startMenu;
-public:
-  ScreenMenuHolder(Game *game, gfx::Engine* engine):
-    ScreenHolder(game),
-    startMenu(new scene::StartMenu( *game, *engine ))
-  {
-    initialize(startMenu, SCREEN_MENU);
-  }
-
-  ~ScreenMenuHolder()
-  {
-    Game::Impl *_d = game->_d.data();
-    game->reset();
-
-    switch( screen->result() )
-    {
-      case scene::StartMenu::startNewGame:
-      {
-        std::srand( DateTime::elapsedTime() );
-        std::string startMission = "/missions/tutorial.mission";
-
-        bool loadOk = game->load( startMission );
-        _d->player->setName( startMenu->playerName() );
-
-        Logger::warning( (loadOk ? "Career: start mission " : "Career: cant load mission") + startMission );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      case scene::StartMenu::reloadScreen:
-        _d->nextScreen = SCREEN_MENU;
-      break;
-
-      case scene::StartMenu::loadSavedGame:
-      case scene::StartMenu::loadMission:
-      {
-        bool loadOk = game->load( startMenu->mapName() );
-        Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + startMenu->mapName()  );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      case scene::StartMenu::loadMap:
-      {
-        bool loadOk = game->load( startMenu->mapName() );
-        Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
-
-        FreeplayFinalizer::addPopulationMilestones( _d->city );
-        FreeplayFinalizer::initBuildOptions( _d->city );
-        FreeplayFinalizer::addEvents( _d->city );
-        FreeplayFinalizer::resetFavour( _d->city );
-
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-      }
-      break;
-
-      case scene::StartMenu::closeApplication:
-      {
-        _d->nextScreen = SCREEN_QUIT;
-      }
-      break;
-
-      default:
-        _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
-     }
-  }
-};
-
-
-class Game::Impl::ScreenGameHolder: public ScreenHolder
-{
-  scene::Level *level;
-public:
-  ScreenGameHolder(Game *game, gfx::Engine* engine):
-    ScreenHolder(game),
-    level(new scene::Level( *game, *engine ))
-  {
-    initialize(level, SCREEN_GAME);
-
-    game->_d->timeX10 = 0;
-    game->_d->saveTime = game->_d->timeX10;
-
-    Logger::warning( "game: prepare for game loop" );
-  }
-
-  virtual bool update(gfx::Engine* engine)
-  {
-    if (screen->isStopped())
-    {
-      return false;
-    }
-
-    Game::Impl *_d = game->_d.data();
-    GameDate& cdate = GameDate::instance();
-
-    screen->update( *_d->engine );
-
-    if( _d->city->tilemap().direction() == constants::north )
-    {
-      if( !_d->pauseCounter )
-      {
-        _d->timeX10 += _d->timeMultiplier / 10;
-      }
-      else if ( _d->manualTicksCounterX10 > 0 )
-      {
-        unsigned int add = math::min( _d->timeMultiplier / 10, _d->manualTicksCounterX10 );
-        _d->timeX10 += add;
-        _d->manualTicksCounterX10 -= add;
-      }
-      while ( _d->timeX10 > _d->saveTime * 10 + 1 )
-      {
-        _d->saveTime++;
-
-        cdate.timeStep( _d->saveTime );
-        _d->empire->timeStep( _d->saveTime );
-
-        level->animate( _d->saveTime );
-      }
-    }
-
-    events::Dispatcher::instance().update( *game, _d->saveTime );
-    return true;
-  }
-
-  ~ScreenGameHolder()
-  {
-    Game::Impl *_d = game->_d.data();
-
-    game->clear();
-
-    _d->nextFilename = level->nextFilename();
-    switch( screen->result() )
-    {
-      case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
-      case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  game->load( level->nextFilename() ); break;
-
-      case scene::Level::restart:
-      {
-        Logger::warning( "ScreenGame: restart game " + _d->restartFile );
-        bool loadOk = game->load( _d->restartFile );
-        _d->nextScreen = loadOk ? SCREEN_GAME : SCREEN_MENU;
-
-        Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " )+ _d->restartFile );
-
-        if( loadOk )
-        {
-          std::string ext = vfs::Path( _d->restartFile ).extension();
-          if( ext == ".map" || ext == ".sav" )
-          {
-            FreeplayFinalizer::addPopulationMilestones( _d->city );
-            FreeplayFinalizer::initBuildOptions( _d->city );
-            FreeplayFinalizer::addEvents( _d->city );
-          }
-        }
-      }
-      break;
-
-      case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
-      case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
-      default: _d->nextScreen = SCREEN_QUIT;
-    }
-  }
-};
-
 
 void Game::Impl::initLocale( std::string localePath )
 {
@@ -407,17 +159,17 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  Variant c3res = SETTINGS_VALUE( c3gfx );
-  if( c3res.isValid() )
+  std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
+  if( !c3res.empty() )
   {
-    vfs::Directory gfxDir( c3res.toString() );
+    vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
 
     if( !c3path.exist( vfs::Path::ignoreCase ) )
     {
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
-                 "original game archive c3.sg2 not found in folder " + c3res.toString() +
+                 "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
@@ -428,7 +180,8 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
     if( !testPics.exist() )
     {
-      errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
+      SETTINGS_SET_VALUE( resourcePath, Variant("") );
+      errorStr = "Not found graphics package. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }
@@ -439,7 +192,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   if( !errorStr.empty() )
   {
     OSystem::error( "Resources error", errorStr );
-    Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
+    Logger::warning( "CRITICAL: not found original resources in " + c3res );
     exit( -1 ); //kill application
   }
 
@@ -480,8 +233,16 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
 
 void Game::Impl::initPictures()
 {
-  AnimationBank::instance().loadCarts();
-  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
+  AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
+  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
+                                           SETTINGS_RC_PATH( simpleAnimationModel ) );
+}
+
+void Game::Impl::initHotkeys()
+{
+  game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
+  hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+  CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
 PlayerPtr Game::player() const { return _d->player; }
@@ -490,6 +251,8 @@ world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
+
+DateTime Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -517,15 +280,16 @@ Game::Game() : _d( new Impl )
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
 void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
+
 Game::~Game(){}
 
 void Game::save(std::string filename) const
 {
-  GameSaver saver;
+  game::Saver saver;
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-  events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
   e->dispatch();
 }
 
@@ -540,14 +304,14 @@ bool Game::load(std::string filename)
   if( !fPath.exist() )
   {
     Logger::warning( "Game: Cannot find file " + fPath.toString() );
-    fPath = GameSettings::rpath( filename );
+    fPath = game::Settings::rpath( filename );
 
     if( !fPath.exist() )
     {
       Logger::warning( "Game: Cannot find file " + fPath.toString() );
       Logger::warning( "Game: Try find file in resource's folder " );
 
-      fPath = GameSettings::rcpath( filename ).absolutePath();
+      fPath = game::Settings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
         Logger::warning( "Game: Cannot find file " + fPath.toString() );
@@ -563,7 +327,7 @@ bool Game::load(std::string filename)
                           SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
-  GameLoader loader;
+  game::Loader loader;
   bool loadOk = loader.load( fPath, *this );
 
   if( !loadOk )
@@ -609,30 +373,38 @@ void Game::Impl::initArchiveLoaders()
 
 void Game::initialize()
 {
-  Logger::warning( "Game: load game settings" );
-  GameSettings::load();
+  int cellWidth = SETTINGS_VALUE( cellw );
+  if( cellWidth != 30 && cellWidth != 60 )
+  {
+    cellWidth = 30;
+  }
+
+  tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
-  vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );
+  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
-  _d->initFontCollection( GameSettings::rcpath() );
+  _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();
+  _d->initHotkeys();
   _d->createSaveDir();
 
   Logger::warning( "Game: load splash screen" );
   splash::initialize( "logo_00001" );
 
   scene::SplashScreen screen;
-  screen.initialize();
-  screen.update( *_d->engine );
 
   Logger::warning( "Game: initialize resource loader" );
   ResourceLoader rcLoader;
+  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
+
+  screen.initialize();
+  screen.update( *_d->engine );
 
   Logger::warning( "Game: initialize offsets" );
   screen.setPrefix( "##loading_offsets##" );
@@ -663,7 +435,7 @@ void Game::initialize()
 
   screen.setText( "##ready_to_game##" );
 
-  if( GameSettings::get( "no-fade" ).isNull() )
+  if( game::Settings::get( "no-fade" ).isNull() )
     screen.exitScene();
 
   _d->nextScreen = SCREEN_MENU;
@@ -688,16 +460,21 @@ bool Game::exec()
   {
     case SCREEN_MENU:
     {
-      _d->currentScreen = new Impl::ScreenMenuHolder(this, _d->engine);
+      _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
     } break;
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
-      _d->currentScreen = new Impl::ScreenGameHolder(this, _d->engine);
+      _d->timeX10 = 0;
+      _d->saveTime = _d->timeX10;
+      _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
+                                                        _d->saveTime, _d->timeX10,
+                                                        _d->timeMultiplier, _d->manualTicksCounterX10,
+                                                        _d->nextFilename, _d->restartFile );
     } break;
     case SCREEN_BRIEFING:
     {
-      _d->currentScreen = new Impl::ScreenBriefingHolder(this, _d->engine, _d->nextFilename );
+      _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
     } break;
 
     default:
@@ -736,4 +513,9 @@ void Game::clear()
   gfx::OverlayDebugQueue::print();
   gfx::OverlayDebugQueue::instance().clear();
 #endif
+}
+
+void Game::setNextScreen(ScreenType screen)
+{
+  _d->nextScreen = screen;
 }

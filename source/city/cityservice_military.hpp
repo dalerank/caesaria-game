@@ -45,7 +45,6 @@ public:
 
   typedef std::vector< Notification > NotificationArray;
 
-
   static city::SrvcPtr create( PlayerCityPtr city );
 
   virtual void timeStep( const unsigned int time );

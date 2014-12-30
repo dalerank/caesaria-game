@@ -44,7 +44,7 @@
 #include "objects/road.hpp"
 #include "core/time.hpp"
 #include "core/variant.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "walker/walkers_factory.hpp"
 #include "core/gettext.hpp"
 #include "build_options.hpp"
@@ -84,6 +84,7 @@
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
 #include "walkergrid.hpp"
+#include "events/showinfobox.hpp"
 #include "cityservice_fire.hpp"
 
 #include <set>
@@ -163,7 +164,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->funds.setTaxRate( 7 );
   _d->age = 0;
   _d->walkerIdCount = 1;
-  _d->climate = city::climate::central;
+  _d->climate = game::climate::central;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
@@ -208,18 +209,18 @@ void PlayerCity::_initAnimation()
 
 void PlayerCity::timeStep(unsigned int time)
 {
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     _d->age++;
     _d->targets.decreaseReignYear();
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, GameDate::current() );    
+    _d->monthStep( this, game::Date::current() );
   }
 
-  if( GameDate::isWeekChanged() )
+  if( game::Date::isWeekChanged() )
   {
     _d->calculatePopulation( this );
   }
@@ -263,7 +264,7 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
     player->appendMoney( playerSalary );
   }
 
-  funds.updateHistory( GameDate::current() );
+  funds.updateHistory( game::Date::current() );
 }
 
 WalkerList PlayerCity::walkers( walker::Type rtype )
@@ -314,7 +315,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 int PlayerCity::strength() const
 {
   city::Helper helper( const_cast<PlayerCity*>( this ) );
-  FortList forts = helper.find<Fort>( building::any );
+  FortList forts = helper.find<Fort>( objects::any );
 
   int ret = 0;
   foreach( i, forts )
@@ -334,15 +335,17 @@ DateTime PlayerCity::lastAttack() const
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
 
+world::Nation PlayerCity::nation() const { return world::rome; }
+
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
   city::Helper hlp( city );
   float lastMonthTax = 0;
   
-  ForumList forums = hlp.find< Forum >( building::forum );
+  ForumList forums = hlp.find< Forum >( objects::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = hlp.find< Senate >( building::senate );
+  SenateList senates = hlp.find< Senate >( objects::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
@@ -381,7 +384,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
   city::Helper helper( city );
 
-  HouseList houseList = helper.find<House>( building::house );
+  HouseList houseList = helper.find<House>( objects::house );
 
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
@@ -493,7 +496,7 @@ void PlayerCity::save( VariantMap& stream) const
   {
     VariantMap vm_walker;
     (*w)->save( vm_walker );
-    vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
     walkedId++;
   }
   stream[ "walkers" ] = vm_walkers;
@@ -504,7 +507,7 @@ void PlayerCity::save( VariantMap& stream) const
   {
     VariantMap vm_overlay;
     (*overlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->pos().i(),
+    vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
                                                       (*overlay)->pos().j() ) ] = vm_overlay;
   }
   stream[ "overlays" ] = vm_overlays;
@@ -565,7 +568,8 @@ void PlayerCity::load( const VariantMap& stream )
     TileOverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && pos.i() >= 0 )
     {
-      overlay->build( this, pos );
+      CityAreaInfo info = { this, pos, TilesArray() };
+      overlay->build( info );
       overlay->load( overlayParams );
       _d->overlays.push_back( overlay );
     }
@@ -673,8 +677,8 @@ PlayerPtr PlayerCity::player() const { return _d->player; }
 city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 
-const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
-const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
+const good::Store &PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -737,7 +741,7 @@ int PlayerCity::culture() const
 int PlayerCity::peace() const
 {
   city::PeacePtr p;
-  p << findService( city::Peace::getDefaultName() );
+  p << findService( city::Peace::defaultName() );
   return p.isValid() ? p->value() : 0;
 }
 
@@ -771,14 +775,17 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
       soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( GameDate::days2ticks( k ) / 2 );
+      soldier->wait( game::Date::days2ticks( k ) / 2 );
       if( (k % 16) == 15 )
       {
         ChastenerElephantPtr elephant = ChastenerElephant::create( this );
         elephant->send2City( borderInfo().roadEntry );
-        soldier->wait( GameDate::days2ticks( k ) );
+        soldier->wait( game::Date::days2ticks( k ) );
       }
     }
+
+    events::GameEventPtr e = events::ShowInfobox::create( "##romechastener_attack_title##", "##romechastener_attack_text##", true );
+    e->dispatch();
   }
   else if( is_kind_of<world::Barbarian>( object ) )
   {
@@ -787,7 +794,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
       soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( GameDate::days2ticks( k ) / 2 );
+      soldier->wait( game::Date::days2ticks( k ) / 2 );
     }
 
     events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
@@ -795,7 +802,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
 }
 
-void PlayerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
+void PlayerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
 {
   _d->tradeOptions.setBuyPrice( gtype, bCost );
   _d->tradeOptions.setSellPrice( gtype, sCost );

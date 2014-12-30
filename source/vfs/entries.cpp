@@ -18,7 +18,7 @@
 #include "entries.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 #include <map>
 
@@ -46,12 +46,12 @@ public:
     switch( sensType )
     {
     case Path::ignoreCase:
-      return StringHelper::localeLower( p.toString() );
+      return utils::localeLower( p.toString() );
       break;
     case Path::equaleCase: break;
     case Path::nativeCase:
   #ifdef CAESARIA_PLATFORM_WIN
-      return StringHelper::localeLower( p.toString() );
+      return utils::localeLower( p.toString() );
   #elif defined(CAESARIA_PLATFORM_UNIX)
       return p;
   #endif
@@ -69,7 +69,7 @@ Entries::Entries( const Path& path, Path::SensType type, bool ignorePaths )
   setDebugName( "FileList" );
 #endif
   _d->ignorePaths = ignorePaths;
-  _d->path = StringHelper::replace( path.toString(), "\\", "/" );
+  _d->path = utils::replace( path.toString(), "\\", "/" );
   _d->sensType = type;
 }
 
@@ -106,9 +106,9 @@ void Entries::_updateCache()
   for( unsigned int k=0; k < _d->files.size(); k++ )
   {
     EntryInfo& info = _d->files[ k ];
-    info.fphash = StringHelper::hash( info.fullpath.toString() );
-    info.nhash = StringHelper::hash( info.name.toString() );
-    info.nihash = StringHelper::hash( StringHelper::localeLower( info.name.toString() ) );
+    info.fphash = utils::hash( info.fullpath.toString() );
+    info.nhash = utils::hash( info.name.toString() );
+    info.nihash = utils::hash( utils::localeLower( info.name.toString() ) );
 
     _d->hashedIndex[ info.nhash ] = k;
     _d->hashedIcIndex[ info.nihash ] = k;
@@ -156,7 +156,7 @@ unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsign
   entry.size = size;
   entry.isDirectory = isDirectory;
 
-  Path tmpPath = StringHelper::replace( fullPath.toString(), "\\", "/" );
+  Path tmpPath = utils::replace( fullPath.toString(), "\\", "/" );
 
   // remove trailing slash
   if( tmpPath.lastChar() == '/')
@@ -211,7 +211,7 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 {
   EntryInfo entry;
   // we only need fullName to be set for the search
-  entry.fullpath = StringHelper::replace( filename.toString(), "\\", "/" );
+  entry.fullpath = utils::replace( filename.toString(), "\\", "/" );
   entry.isDirectory = isDirectory;
 
   if( entry.fullpath.lastChar() == '/' )
@@ -238,8 +238,8 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 
   std::string fname = filename.baseName().toString();
   unsigned int fnHash = (sType == Path::ignoreCase
-                            ? StringHelper::hash( StringHelper::localeLower( fname ) )
-                            : StringHelper::hash( fname )
+                            ? utils::hash( utils::localeLower( fname ) )
+                            : utils::hash( fname )
                         );
 
   if( _d->hashedIndex.empty() )

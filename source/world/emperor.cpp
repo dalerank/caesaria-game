@@ -124,7 +124,7 @@ void Emperor::sendGift(const std::string& cityname, unsigned int money)
     relation = it->second;
   }
 
-  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( GameDate::current() ),
+  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( game::Date::current() ),
                                             0, (int)DateTime::monthsInYear );
   const int maxFavourUpdate = 5;
 
@@ -151,7 +151,7 @@ DateTime Emperor::lastGiftDate(const std::string &cityname)
 
 void Emperor::timeStep(unsigned int time)
 {
-  if( GameDate::isYearChanged() )
+  if( game::Date::isYearChanged() )
   {
     __D_IMPL(d,Emperor)
 
@@ -159,7 +159,7 @@ void Emperor::timeStep(unsigned int time)
     {
       Relation& ref = it->second;
       ref.value -= 2;
-      int monthWithoutTax = ref.lastTaxDate.monthsTo( GameDate::current() );
+      int monthWithoutTax = ref.lastTaxDate.monthsTo( game::Date::current() );
       if( monthWithoutTax > 12 )
       {
         int decrease = math::clamp( 3 + monthWithoutTax / DateTime::monthsInYear * 2, 0, 8 );
@@ -183,7 +183,7 @@ void Emperor::timeStep(unsigned int time)
     }
   }
 
-  if( GameDate::isMonthChanged() )
+  if( game::Date::isMonthChanged() )
   {
     __D_IMPL(d,Emperor)
 
@@ -193,24 +193,10 @@ void Emperor::timeStep(unsigned int time)
       CityPtr city = d->empire->findCity( it->first );
       Relation& relation = d->relations[ it->first ];
 
-      if( ( city->funds().treasury() < -5500 || relation.value < 20 )
-          && relation.soldiersSent == 0 )
+      if( city.isValid() && relation.value < 20 && relation.soldiersSent == 0 )
       {
-        if( city->funds().treasury() < -5500 && !relation.debtMessageSent )
-        {
-          relation.debtMessageSent = true;
-          events::GameEventPtr e = events::ShowInfobox::create( "##emperor_wrath_by_debt_title##",
-                                                                "##emperor_wrath_by_debt_text##",
-                                                                true );
-          e->dispatch();
-        }
-
-        if( city.isValid() )
-        {
-          troubleCities << city;
-        }
+        troubleCities << city;
       }
-
     }
 
     foreach( it, troubleCities )
@@ -219,20 +205,31 @@ void Emperor::timeStep(unsigned int time)
       relation.soldiersSent = relation.lastSoldiersSent * 2;
 
       unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
-      relation.soldiersSent = sldrNumber;
-      relation.lastSoldiersSent = sldrNumber;
 
       RomeChastenerArmyPtr army = RomeChastenerArmy::create( d->empire );
+      army->setCheckFavor( true );
       army->setSoldiersNumber( sldrNumber );
       army->attack( ptr_cast<Object>( *it ) );
+
+      relation.lastSoldiersSent = sldrNumber;
     }
   }
 }
 
-void Emperor::soldierDie(const std::string& cityname)
+void Emperor::remSoldiers(const std::string& cityname, int value)
 {
   __D_IMPL(d,Emperor)
-  d->relations[ cityname ].removeSoldier();
+  for( int i=0; i < value; i++ )
+  {
+    d->relations[ cityname ].removeSoldier();
+  }
+}
+
+void Emperor::addSoldiers(const std::string& name, int value)
+{
+  __D_IMPL(d,Emperor)
+  Relation& relation = d->relations[ name ];
+  relation.soldiersSent += value;
 }
 
 std::string Emperor::name() const { return _dfunc()->name; }
@@ -241,7 +238,7 @@ void Emperor::setName(const std::string& name){ _dfunc()->name = name; }
 void Emperor::cityTax(const std::string &cityname, unsigned int money)
 {
   __D_IMPL(d,Emperor)
-  d->relations[ cityname ].lastTaxDate = GameDate::current();
+  d->relations[ cityname ].lastTaxDate = game::Date::current();
 }
 
 void Emperor::resetRelations(const StringArray& cities)
@@ -270,8 +267,8 @@ void Emperor::resetRelations(const StringArray& cities)
 
       r.value = 50;
       r.lastGiftValue = 0;
-      r.lastTaxDate = GameDate::current();
-      r.lastGiftDate = GameDate::current();
+      r.lastTaxDate = game::Date::current();
+      r.lastGiftDate = game::Date::current();
     }
   }
 

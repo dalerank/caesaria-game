@@ -47,8 +47,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-typedef SmartPtr<Dispatcher> DispatcherPtr;
-
 } //end namespace events
 
 #endif //_CAESARIA_EVENT_DISPATCHER_H_INCLUDE_

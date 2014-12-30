@@ -1,0 +1,12 @@
+{  
+ title : "##dock##"
+ sound : "fanfare"
+ text  : "If you see seagulls wheeling over a body of water, your province can support a commercial fishery. Fish can be an important food source.\n Build fishing boats at a @shipyard&. Completed boats report to the wharf, where they take on a crew. Once a boat is crewed, it sails to the fishing grounds and works until its hold is full, then returns to the wharf to unload its catch. The wharf's workers take the fish to a granary or warehouse.\n Each wharf can support only one fishing boat.\n Like most buildings, wharves require labor and road access in order to operate. They reduce the desirability of their neighborhood."
+ uri : {
+  "trade" : "trade"
+  "bridges" : "bridge"
+  "warehouse" : "warehouse"
+  "shipyard" : "shipyard"
+  "here" : "http://wikipedia.ru"
+ }
+}

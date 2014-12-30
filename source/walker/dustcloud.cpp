@@ -21,6 +21,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -116,7 +117,10 @@ void DustCloud::timeStep(const unsigned long time)
   {
     PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
-    TilePos ij( (_d->currentPos.x() - 7) / 15, (_d->currentPos.y() - 7) / 15 );
+    const int wcell = tilemap::cellSize().height();
+
+    Point tp = (_d->currentPos.toPoint() - tilemap::cellCenter()) / wcell;
+    TilePos ij( tp.x(), tp.y() );
     setPos( ij );
     _setWpos( _d->currentPos.toPoint() );
     _d->animation.update( time );

@@ -23,19 +23,21 @@
 namespace events
 {
 
-class ShowFeastWindow : public GameEvent
+class ShowFeastival : public GameEvent
 {
 public:
-  static GameEventPtr create(std::string text, std::string title, std::string receiver);
+  static GameEventPtr create(std::string text, std::string title,
+                             std::string receiver, std::string video);
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  std::string _text;
-  std::string _title;
-  std::string _receiver;
+  std::string _text,
+              _title,
+              _receiver,
+              _video;
 };
 
 }

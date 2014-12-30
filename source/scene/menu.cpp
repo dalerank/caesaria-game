@@ -48,8 +48,9 @@
 #include "gui/loadmissiondialog.hpp"
 #include "gui/widgetescapecloser.hpp"
 #include "core/event.hpp"
+#include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"
 #endif
@@ -75,10 +76,8 @@ public:
   std::string playerName;
   int result;
 
-#ifdef CAESARIA_USE_STEAM
   Picture userImage;
   gui::Label* lbSteamName;
-#endif
 
 public:
   void handleNewGame();
@@ -98,7 +97,8 @@ public:
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
   void handleStartCareer();
-  void resolveShowChangeLanguageWindow();
+  void showLanguageOptions();
+  void showPackageOptions();
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
   void playMenuSoundTheme();
@@ -126,7 +126,7 @@ void StartMenu::Impl::fitScreenResolution()
   gfx::Engine::Modes modes = game->engine()->modes();
   SETTINGS_SET_VALUE( resolution, modes.front() );
   SETTINGS_SET_VALUE( screenFitted, true );
-  GameSettings::save();
+  game::Settings::save();
 }
 
 void StartMenu::Impl::playMenuSoundTheme()
@@ -146,7 +146,7 @@ void StartMenu::Impl::showSoundOptions()
   e->dispatch();
 }
 
-void StartMenu::Impl::resolveShowChangeLanguageWindow()
+void StartMenu::Impl::showLanguageOptions()
 {
   gui::Widget* parent = game->gui()->rootWidget();
   Size rootSize = parent->size();
@@ -167,7 +167,7 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
   foreach( it, languages )
   {
     lbx->addItem( it->first );
-    std::string ext = it->second.toMap().get( "ext" ).toString();
+    std::string ext = it->second.toMap().get( lc_ext ).toString();
     if( ext == currentLang )
       currentIndex = std::distance( languages.begin(), it );
   }
@@ -176,6 +176,12 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
 
   CONNECT( lbx, onItemSelected(), this, Impl::resolveChangeLanguage );
   CONNECT( btn, onClicked(), this, Impl::reload );
+}
+
+void StartMenu::Impl::showPackageOptions()
+{
+  dialog::PackageOptions* dlg = new dialog::PackageOptions( game->gui()->rootWidget(), Rect() );
+  dlg->setModal();
 }
 
 void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
@@ -203,7 +209,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
 void StartMenu::Impl::handleStartCareer()
 {
-  gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->gui()->rootWidget() );
+  dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
   dlg->setModal();
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
@@ -268,7 +274,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "doc (doc@nnm.me),vk.com/caesaria-game",
+                         "vk.com/caesaria-game",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
@@ -330,7 +336,7 @@ void StartMenu::Impl::showLoadMenu()
 void StartMenu::Impl::resolveLoadRandommap()
 {
   result = StartMenu::loadMission;
-  fileMap = GameSettings::rcpath( "/missions/random.mission" ).toString();
+  fileMap = ":/missions/random.mission";
   isStopped = true;
 }
 
@@ -339,7 +345,7 @@ void StartMenu::Impl::showOptionsMenu()
   menu->clear();
 
   gui::PushButton* btn = menu->addButton( _("##mainmenu_language##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  CONNECT( btn, onClicked(), this, Impl::showLanguageOptions );
 
   btn = menu->addButton( _("##mainmenu_video##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showVideoOptions );
@@ -347,8 +353,8 @@ void StartMenu::Impl::showOptionsMenu()
   btn = menu->addButton( _("##mainmenu_sound##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showSoundOptions );
 
-  //btn = menu->addButton( _("##mainmenu_game##"), -1 );
-  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  btn = menu->addButton( _("##mainmenu_package##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showPackageOptions );
 
   btn = menu->addButton( _("##cancel##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );
@@ -385,7 +391,7 @@ void StartMenu::Impl::showMissionSelector()
   Widget* parent = game->gui()->rootWidget();
 
   result = StartMenu::loadMission;
-  LoadMissionDialog* wnd = LoadMissionDialog::create( parent, vfs::Path( ":/missions/" ) );
+  dialog::LoadMission* wnd = dialog::LoadMission::create( parent, vfs::Path( ":/missions/" ) );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
 }
@@ -403,9 +409,9 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
   gui::Widget* parent = game->gui()->rootWidget();
 
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                    Rect(),
-                                                    GameSettings::rcpath( "/maps/" ), ".map",
-                                                    -1 );
+                                                      Rect(),
+                                                      vfs::Path( ":/maps/" ), ".map",
+                                                      -1 );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( false );
 
@@ -419,6 +425,7 @@ StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
   _d->game = &game;
+  _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
 }
 
@@ -450,7 +457,8 @@ void StartMenu::handleEvent( NEvent& event )
 void StartMenu::initialize()
 {
   Logger::warning( "ScreenMenu: initialize start");
-  _d->bgPicture = Picture::load("title", 1);
+  std::string resName = SETTINGS_VALUE( titleResource ).toString();
+  _d->bgPicture = Picture::load( resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
@@ -490,9 +498,20 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
+  steamapi::Handler::init();  
+
+  std::string steamName = steamapi::Handler::userName();
   _d->userImage = steamapi::Handler::userImage();
-  std::string text = StringHelper::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
-                                                                               CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
+  if( steamName.empty() )
+  {
+    OSystem::error( "Error", "Cant login in Steam" );
+    _d->isStopped = true;
+    _d->result = closeApplication;
+    return;
+  }
+
+  std::string text = utils::format( 0xff, "ver %d.%d.%d\n%s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
+                                                                      CAESARIA_VERSION_REVSN, steamName.c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );

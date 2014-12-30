@@ -128,7 +128,7 @@ namespace
 		// Try to cast the filename to an integer number (=PID)
 		try
 		{
-			unsigned long pid = StringHelper::toUint( name );
+			unsigned long pid = utils::toUint( name );
 		
 			// Was the PID read correctly?
 			if (pid == 0)

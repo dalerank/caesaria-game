@@ -21,12 +21,12 @@
 #include "core/gettext.hpp"
 #include "good/goodhelper.hpp"
 #include "label.hpp"
-#include "city/helper.hpp"
 #include "objects/factory.hpp"
+#include "city/helper.hpp"
 #include "gfx/engine.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -81,7 +81,7 @@ public:
           Rect textRect = f.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
           f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
 
-          text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
+          text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
           textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
           f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
         }
@@ -108,26 +108,29 @@ class GoodOrderManageWindow::Impl
 {
 public:
   PlayerCityPtr city;
-  Good::Type type;
+  good::Type type;
   TradeStateButton* btnTradeState;
   PushButton* btnIndustryState;
   Label* lbIndustryInfo;
   Picture icon;
+  GoodOrderManageWindow::GoodMode gmode;
   PushButton* btnStackingState;
 
 signals public:
   Signal0<> onOrderChangedSignal;
 };
 
-GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods)
+GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city,
+                                             good::Type type, int stackedGoods, GoodMode gmode )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {  
   _d->city = city;
   _d->type = type;
+  _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
 
-  _d->icon = GoodHelper::picture( type );
+  _d->icon = good::Helper::picture( type );
 
   Label* lbTitle;
   Label* lbStackedQty;
@@ -139,10 +142,10 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
 
-  if( lbTitle ) lbTitle->setText( _( GoodHelper::name( type ) ) );
+  if( lbTitle ) lbTitle->setText( _( good::Helper::name( type ) ) );
   if( lbStackedQty )
   {
-    std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
+    std::string text = utils::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
     lbStackedQty->setText( text );
   }
 
@@ -188,10 +191,30 @@ void GoodOrderManageWindow::decreaseQty()
 
 void GoodOrderManageWindow::updateTradeState()
 {
-  city::TradeOptions& ctrade = _d->city->tradeOptions();
-  city::TradeOptions::Order order = ctrade.getOrder( _d->type );
-  int qty = ctrade.exportLimit( _d->type );
-  _d->btnTradeState->setTradeState( order, qty );
+  switch( _d->gmode )
+  {
+  case gmImport|gmProduce:
+    {
+      city::TradeOptions& ctrade = _d->city->tradeOptions();
+      city::TradeOptions::Order order = ctrade.getOrder( _d->type );
+      int qty = ctrade.exportLimit( _d->type );
+      _d->btnTradeState->setTradeState( order, qty );
+    }
+  break;
+
+  case gmImport:
+  case gmProduce:
+  {      
+    _d->btnTradeState->setText( _d->gmode == gmImport
+                                    ? _("##these_goods_import_only##")
+                                    : _("##setup_traderoute_to_import##" ) );
+    _d->btnTradeState->setEnabled( false );
+    _d->btnTradeState->setBackgroundStyle( PushButton::noBackground );
+  }
+  break;
+
+  default: break;
+  }
 }
 
 void GoodOrderManageWindow::changeTradeState()
@@ -237,7 +260,7 @@ void GoodOrderManageWindow::updateIndustryState()
   std::string postfixWork = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
   std::string postfixIdle = (workFactoryCount%10 == 1) ? "##idle_factory_in_city##" : "##idle_factories_in_city##";
 
-  std::string text = StringHelper::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfixWork),
+  std::string text = utils::format( 0xff, "%d %s\n%d %s", workFactoryCount, _(postfixWork),
                                            idleFactoryCount, _(postfixIdle) );
   _d->lbIndustryInfo->setText( text );
 
@@ -273,11 +296,11 @@ void GoodOrderManageWindow::updateStackingState()
   std::string text;
   if( isStacking )
   {
-    text = StringHelper::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+    text = utils::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
   }
   else
   {
-    text = StringHelper::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+    text = utils::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
   }
 
   _d->btnStackingState->setText( text );

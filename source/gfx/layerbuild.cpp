@@ -28,12 +28,13 @@
 #include "sdl_engine.hpp"
 #include "core/font.hpp"
 #include "objects/fortification.hpp"
-#include "core/stringhelper.hpp"
+#include "core/utils.hpp"
 #include "camera.hpp"
 #include "gui/dialogbox.hpp"
 #include "renderermode.hpp"
 #include "events/warningmessage.hpp"
 #include "city/funds.hpp"
+#include "game/settings.hpp"
 #include "walker/walker.hpp"
 #include "city_renderer.hpp"
 
@@ -43,12 +44,11 @@ using namespace gui;
 namespace gfx
 {
 
-namespace {
+namespace layer
+{
 static const int frameCountLimiter=25;
-CAESARIA_LITERALCONST(oc3_land)
-}
 
-class LayerBuild::Impl
+class Build::Impl
 {
 public:
   bool multiBuilding;
@@ -63,14 +63,15 @@ public:
   int money4Construction;
   Renderer* renderer;
   LayerPtr lastLayer;
+  std::string resForbiden;
   Font textFont;
   PictureRef textPic;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
-void LayerBuild::_discardPreview()
+void Build::_discardPreview()
 {
-  __D_IMPL(d,LayerBuild)
+  __D_IMPL(d,Build)
   foreach( tile, d->buildTiles )
   {
     if( (*tile)->overlay().isValid() )
@@ -84,9 +85,9 @@ void LayerBuild::_discardPreview()
   d->buildTiles.clear();
 }
 
-void LayerBuild::_checkPreviewBuild(TilePos pos)
+void Build::_checkPreviewBuild(TilePos pos)
 {
-  __D_IMPL(d,LayerBuild);
+  __D_IMPL(d,Build);
   BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->mode() );
 
   if (bldCommand.isNull())
@@ -119,7 +120,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
     }
   }
 
-  if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
+  CityAreaInfo areaInfo = { _city(), pos, d->buildTiles };
+  if( !walkersOnTile && overlay->canBuild( areaInfo ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _city()->tilemap();
@@ -141,7 +143,6 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
-        //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         d->buildTiles.push_back( tile );
       }
     }
@@ -150,8 +151,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   {
     //bldCommand->setCanBuild(false);
 
-    const Picture& grnPicture = Picture::load(lc_oc3_land, 1);
-    const Picture& redPicture = Picture::load(lc_oc3_land, 2);
+    const Picture& grnPicture = Picture::load( d->resForbiden, 1);
+    const Picture& redPicture = Picture::load( d->resForbiden, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -184,9 +185,9 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   }
 }
 
-void LayerBuild::_updatePreviewTiles( bool force )
+void Build::_updatePreviewTiles( bool force )
 {
-  __D_IMPL(d,LayerBuild);
+  __D_IMPL(d,Build);
   Tile* curTile = _camera()->at( _lastCursorPos(), true );
 
   if( !curTile )
@@ -257,12 +258,12 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
   d->textPic->fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
-  d->textFont.draw( *d->textPic, StringHelper::i2str( d->money4Construction ) + " Dn", Point() );
+  d->textFont.draw( *d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
-void LayerBuild::_buildAll()
+void Build::_buildAll()
 {
-  __D_IMPL(d,LayerBuild);
+  __D_IMPL(d,Build);
   BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->mode() );
   if( bldCommand.isNull() )
     return;
@@ -277,18 +278,20 @@ void LayerBuild::_buildAll()
 
   if( !_city()->funds().haveMoneyForAction( 1 ) )
   {
-    events::GameEventPtr e = events::WarningMessageEvent::create( "##out_of_credit##" );
+    events::GameEventPtr e = events::WarningMessage::create( "##out_of_credit##" );
     e->dispatch();
     return;
   }
 
   bool buildOk = false;  
+  CityAreaInfo areaInfo = { _city(), TilePos(), TilesArray() };
   foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
-    if( cnstr->canBuild( _city(), tile->epos(), TilesArray() ) && tile->isMasterTile())
+    areaInfo.pos = tile->epos();
+    if( cnstr->canBuild( areaInfo ) && tile->isMasterTile())
     {
-      events::GameEventPtr event = events::BuildEvent::create( tile->epos(), cnstr->type() );
+      events::GameEventPtr event = events::BuildAny::create( tile->epos(), cnstr->type() );
       event->dispatch();
       buildOk = true;
     }
@@ -300,16 +303,16 @@ void LayerBuild::_buildAll()
   {
     std::string errorStr = cnstr->errorDesc();
 
-    events::GameEventPtr event = events::WarningMessageEvent::create( errorStr.empty()
+    events::GameEventPtr event = events::WarningMessage::create( errorStr.empty()
                                                                       ? "##need_build_on_cleared_area##"
                                                                       : errorStr );
     event->dispatch();
   }
 }
 
-void LayerBuild::handleEvent(NEvent& event)
+void Build::handleEvent(NEvent& event)
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   _d->kbShift = false;
   _d->kbCtrl = false;
   if( event.EventType == sEventMouse )
@@ -392,19 +395,20 @@ void LayerBuild::handleEvent(NEvent& event)
   }
 }
 
-void LayerBuild::_finishBuild()
+void Build::_finishBuild()
 {
   _buildAll();
   _setStartCursorPos( _lastCursorPos() );
   _updatePreviewTiles( true );
 }
 
-int LayerBuild::type() const {  return citylayer::build;}
+int Build::type() const {  return citylayer::build;}
 
-void LayerBuild::_drawBuildTiles( Engine& engine)
+void Build::_drawBuildTiles( Engine& engine)
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   Point offset = _camera()->offset();
+  CityAreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
   foreach( it, _d->buildTiles )
   {
     Tile* postTile = *it;
@@ -416,8 +420,8 @@ void LayerBuild::_drawBuildTiles( Engine& engine)
     ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->overlay() );
     engine.resetColorMask();
 
-    if( ptr_construction.isValid()
-        && ptr_construction->canBuild( _city(), postTile->epos(), _d->buildTiles ) )
+    areaInfo.pos = postTile->epos();
+    if( ptr_construction.isValid() && ptr_construction->canBuild( areaInfo ) )
     {
       engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
@@ -428,9 +432,9 @@ void LayerBuild::_drawBuildTiles( Engine& engine)
   engine.resetColorMask();
 }
 
-void LayerBuild::_handeLayerSwitch(int layer)
+void Build::_handeLayerSwitch(int layer)
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   if( layer != type() )
   {
     _d->lastLayer = LayerPtr();
@@ -442,17 +446,31 @@ void LayerBuild::_handeLayerSwitch(int layer)
   }
 }
 
-void LayerBuild::drawTile( Engine& engine, Tile& tile, const Point& offset )
+void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   Point screenPos = tile.mappos() + offset;
 
   ConstructionPtr cntr = ptr_cast<Construction>( tile.overlay() );
-  const TilesArray& postTiles = _d->buildTiles;
+  CityAreaInfo info = { _city(), tile.epos(), _d->buildTiles };
 
   if( _d->drawTileBasicPicture )
   {
-    if( _d->lastLayer.isValid() )
+    const Picture* picBasic = 0;
+    const Picture* picOver = 0;
+    if( cntr.isValid() && info.aroundTiles.size() > 0 )
+    {
+      picBasic = &cntr->picture();
+      picOver = &cntr->picture( info );
+    }
+
+    if( picOver && picBasic != picOver )
+    {
+      drawPass( engine, tile, offset, Renderer::ground );
+      engine.draw( *picOver, screenPos );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
+    }
+    else if( _d->lastLayer.isValid() )
     {
       _d->lastLayer->drawTile( engine, tile, offset );
     }
@@ -460,24 +478,12 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, const Point& offset )
     {
       Layer::drawTile( engine, tile, offset );
     }
-
-    if( cntr.isValid() && postTiles.size() > 0 )
-    {
-      const Picture& picBasic = cntr->picture();
-      const Picture& picOver = cntr->picture( _city(), tile.epos(), postTiles );
-
-      if( &picBasic != &picOver )
-      {
-        engine.draw( picOver, screenPos );
-        drawPass( engine, tile, offset, Renderer::overlayAnimation );
-      }
-    }
   }
   else
   {
     if( cntr.isValid() )
     {
-      const Picture& picOver = cntr->picture( _city(), tile.epos(), postTiles );
+      const Picture& picOver = cntr->picture( info );
       engine.draw( picOver, screenPos );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }
@@ -488,9 +494,9 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, const Point& offset )
   }
 }
 
-void LayerBuild::render( Engine& engine)
+void Build::render( Engine& engine)
 {
-  __D_IMPL(d,LayerBuild);
+  __D_IMPL(d,Build);
   d->drawTileBasicPicture = true;
   Layer::render( engine );
 
@@ -506,9 +512,9 @@ void LayerBuild::render( Engine& engine)
   engine.draw( *d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
-void LayerBuild::init(Point cursor)
+void Build::init(Point cursor)
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   Layer::init( cursor );
 
   _d->lastTilePos = TilePos(-1, -1);
@@ -520,57 +526,60 @@ void LayerBuild::init(Point cursor)
   _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
 }
 
-void LayerBuild::beforeRender(Engine& engine)
+void Build::beforeRender(Engine& engine)
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   if( _d->lastLayer.isValid() )
     _d->lastLayer->beforeRender( engine );
   else
     Layer::beforeRender( engine );
 }
 
-void LayerBuild::afterRender(Engine& engine)
+void Build::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,LayerBuild);
+  __D_IMPL(_d,Build);
   if( _d->lastLayer.isValid() )
     _d->lastLayer->afterRender( engine );
   else
     Layer::afterRender( engine );
 }
 
-const Layer::WalkerTypes& LayerBuild::visibleTypes() const
+const Layer::WalkerTypes& Build::visibleTypes() const
 {
-  __D_IMPL_CONST(_d,LayerBuild);
+  __D_IMPL_CONST(_d,Build);
   if( _d->lastLayer.isValid() )
     return _d->lastLayer->visibleTypes();
 
   return Layer::visibleTypes();
 }
 
-LayerPtr LayerBuild::create(Renderer* renderer, PlayerCityPtr city)
+LayerPtr Build::create(Renderer* renderer, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerBuild( renderer, city ) );
+  LayerPtr ret( new Build( renderer, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerBuild::~LayerBuild() {}
+Build::~Build() {}
 
-LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
+Build::Build(Renderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),
-    __INIT_IMPL(LayerBuild)
+    __INIT_IMPL(Build)
 {
-  __D_IMPL(d,LayerBuild);
+  __D_IMPL(d,Build);
   d->renderer = renderer;
   d->frameCount = 0;
+  d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = TilePos( -1, -1 );
   d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );
 
   CityRenderer* cRenderer = safety_cast<CityRenderer*>( d->renderer );
-  CONNECT( cRenderer, onLayerSwitch(), this, LayerBuild::_handeLayerSwitch )
+  CONNECT( cRenderer, onLayerSwitch(), this, Build::_handeLayerSwitch )
 }
+
+}//end namespace layer
 
 }//end namespace gfx

@@ -24,6 +24,7 @@
 #include "cityindebt.hpp"
 #include "enemy_attack.hpp"
 #include "showinfobox.hpp"
+#include "showadvisorwindow.hpp"
 #include "earthquake.hpp"
 #include "start_work.hpp"
 #include "distant_battle.hpp"
@@ -79,7 +80,7 @@ void GameEventFactory::addCreator( const std::string& name, GameEventCreatorPtr 
 
 GameEventFactory::GameEventFactory() : _d( new Impl )
 {
-  addCreator<ShowTutorialWindow>( "tutorial_window" );
+  addCreator<ShowTutorial>( "tutorial_window" );
   addCreator<ChangeBuildingOptions>( "building_options" );
   addCreator<ChangeEmpireOptions>( "empire_options" );
   addCreator<ChangeEmperor>( "change_emperor" );
@@ -90,8 +91,9 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<ShowInfobox>( "messagebox" );
   addCreator<EarthQuake>( "earthquake" );
   addCreator<StartWork>( "start_work" );
+  addCreator<ShowAdvisorWindow>( "advisor_window" );
   addCreator<DistantBattle>( "distant_battle" );
-  addCreator<TradingOptions>( "trading_options" );
+  addCreator<ChangeTradingOptions>( "trading_options" );
   addCreator<ContaminatedWater>( "contaminated_water" );
   addCreator<RandomAnimals>( "random_animals" );
 }
