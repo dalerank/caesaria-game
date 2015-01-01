@@ -35,6 +35,7 @@
 #include "core/utils.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "objects/constants.hpp"

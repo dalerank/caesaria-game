@@ -69,6 +69,8 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
     case objects::elevation:
     case objects::rift:
+    case objects::waymark:
+    case objects::tree:
       needDrawAnimations = true;
     break;
 

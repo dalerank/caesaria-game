@@ -83,6 +83,7 @@ public:
   __GS_PROPERTY(logoArchive)
   __GS_PROPERTY(titleResource)
   __GS_PROPERTY(forbidenTile)
+  __GS_PROPERTY(layersOptsModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();

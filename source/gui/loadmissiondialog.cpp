@@ -27,7 +27,7 @@
 #include "label.hpp"
 #include "image.hpp"
 #include "core/saveadapter.hpp"
-//#include <algorithm>
+#include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "dictionary_text.hpp"
 #include "widgetescapecloser.hpp"

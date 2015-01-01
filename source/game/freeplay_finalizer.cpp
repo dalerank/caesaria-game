@@ -18,6 +18,7 @@
 #include "freeplay_finalizer.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"

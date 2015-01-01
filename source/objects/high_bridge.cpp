@@ -20,6 +20,7 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
+#include "core/variant_map.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"

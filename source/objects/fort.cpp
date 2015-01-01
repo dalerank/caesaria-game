@@ -35,6 +35,7 @@
 #include "core/stacktrace.hpp"
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
+#include "core/variant_map.hpp"
 #include "events/clearland.hpp"
 #include "city/build_options.hpp"
 

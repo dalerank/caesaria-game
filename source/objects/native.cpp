@@ -20,6 +20,7 @@
 #include "gfx/tile.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "walker/serviceman.hpp"
 #include "walker/rioter.hpp"

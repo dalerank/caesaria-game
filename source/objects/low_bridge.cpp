@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
 #include "events/clearland.hpp"

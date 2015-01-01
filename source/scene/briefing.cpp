@@ -26,6 +26,7 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 

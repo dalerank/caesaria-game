@@ -25,6 +25,7 @@
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "walker/dustcloud.hpp"
 #include "city/cityservice_fire.hpp"

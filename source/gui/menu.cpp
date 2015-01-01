@@ -505,7 +505,7 @@ void ExtentMenu::toggleOverlayMenuVisible()
 
 void ExtentMenu::changeOverlay(int ovType)
 {
-  std::string layerName = citylayer::Helper::instance().findName( (citylayer::Type)ovType );
+  std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
   _d->overlaysButton->setText( _( layerName ) );
 }
 

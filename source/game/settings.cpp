@@ -19,6 +19,7 @@
 #include "vfs/path.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/directory.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 
@@ -80,6 +81,7 @@ __REG_PROPERTY(cartsModel)
 __REG_PROPERTY(logoArchive)
 __REG_PROPERTY(titleResource)
 __REG_PROPERTY(forbidenTile)
+__REG_PROPERTY(layersOptsModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -135,6 +137,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ logoArchive         ] = Variant( std::string( "/gfx/pics_wait.zip" ) );
   _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
   _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
+  _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );

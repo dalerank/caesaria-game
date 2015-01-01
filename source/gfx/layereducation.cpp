@@ -77,56 +77,33 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
     TileOverlayPtr overlay = tile.overlay();
 
     int educationLevel = -1;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
+      // Base set of visible objects
       needDrawAnimations = true;
-    break;
+    }
+    else if( _flags.count( overlay->type() ) > 0 )
+    {
+      needDrawAnimations = true;
+      //city::Helper helper( _city() );
+      //drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+    }
+    else if( overlay->type() == objects::house )
+    {
+      HousePtr house = ptr_cast<House>( overlay );
 
-    case objects::school:
-    case objects::library:
-    case objects::academy:
-      needDrawAnimations = _flags.count( overlay->type() ) > 0;
-      if( !needDrawAnimations )
-      {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-      }
-    break;
+      educationLevel = _getLevelValue( house );
 
-      //houses
-    case objects::house:
-      {
-        HousePtr house = ptr_cast<House>( overlay );
+      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
-        educationLevel = _getLevelValue( house );
-
-        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-      }
-    break;
-
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+    }
+    else
+    {
       //other buildings
-    default:
-      {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-      }
-    break;
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -232,10 +209,16 @@ Education::Education( Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::education:
-  case citylayer::school: _flags.insert( objects::school ); _addWalkerType( walker::scholar ); break;
-  case citylayer::library: _flags.insert( objects::library ); _addWalkerType( walker::librarian ); break;
-  case citylayer::academy: _flags.insert( objects::academy ); _addWalkerType( walker::teacher ); break;
+    _flags << objects::school << objects::library << objects::academy;
+    _visibleWalkers() << walker::scholar << walker::librarian << walker::teacher;
+  break;
+
+  case citylayer::school: _flags << objects::school; _visibleWalkers() << walker::scholar; break;
+  case citylayer::library: _flags << objects::library; _visibleWalkers() << walker::librarian; break;
+  case citylayer::academy: _flags << objects::academy; _visibleWalkers() << walker::teacher; break;
   }
+
+  _fillVisibleObjects( citylayer::education );
 }
 
 }

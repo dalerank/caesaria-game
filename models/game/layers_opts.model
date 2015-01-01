@@ -1,0 +1,37 @@
+{
+  crime : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge", "highBridge",
+                       "elevation", "tree", "rift", "prefecture", "burningRuins" ]
+  }
+
+  damage : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "engineerPost" ]
+  }
+
+  desirability : {
+    visibleObjects : [ "road", "plaza", "garden", "collapsedRuins", "burnedRuins", "collapsedRuins", "lowBridge",
+                       "highBridge", "tree", "elevation", "rift", "burningRuins" ]
+  }
+
+  education : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge",
+                       "highBridge", "tree", "elevation", "rift", "burningRuins" ]
+
+  }
+
+  entertainment : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge",
+                       "highBridge", "tree", "elevation", "rift", "burningRuins" ]
+  }
+
+  fire : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "prefecture" ]
+  }
+
+  food : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "market", "granary" ]
+  }
+}

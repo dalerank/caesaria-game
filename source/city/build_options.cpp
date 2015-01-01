@@ -18,8 +18,8 @@
 #include "build_options.hpp"
 #include "objects/metadata.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
 #include "objects/constants.hpp"
-#include <map>
 
 using namespace constants;
 using namespace gfx;

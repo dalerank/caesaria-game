@@ -17,7 +17,7 @@
 
 #include "victoryconditions.hpp"
 #include "objects/house_level.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 
 namespace city
 {

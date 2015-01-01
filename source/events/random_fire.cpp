@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
 #include "core/priorities.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;

@@ -29,6 +29,7 @@
 #include "good/goodstore_simple.hpp"
 #include "city/helper.hpp"
 #include "name_generator.hpp"
+#include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 

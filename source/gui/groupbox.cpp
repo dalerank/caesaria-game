@@ -19,6 +19,7 @@
 #include "gfx/decorator.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 

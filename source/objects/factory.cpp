@@ -27,7 +27,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/predefinitions.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "walker/cart_supplier.hpp"
 #include "core/utils.hpp"
 #include "good/goodstore_simple.hpp"

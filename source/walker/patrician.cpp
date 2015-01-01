@@ -23,6 +23,7 @@
 #include "corpse.hpp"
 #include "ability.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 

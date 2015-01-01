@@ -18,6 +18,7 @@
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "game/game.hpp"
 
 using namespace constants;

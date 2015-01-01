@@ -31,6 +31,7 @@
 #include "world/empire.hpp"
 #include "city/city.hpp"
 #include "settings.hpp"
+#include "core/variant_map.hpp"
 #include "events/postpone.hpp"
 #include "gamedate.hpp"
 #include "core/logger.hpp"

@@ -24,6 +24,7 @@
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "pathway/pathway_helper.hpp"
 
 using namespace constants;

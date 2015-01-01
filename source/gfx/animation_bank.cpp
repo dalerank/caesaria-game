@@ -26,7 +26,7 @@
 #include "good/goodhelper.hpp"
 #include "walker/helper.hpp"
 #include "picture_info_bank.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 using namespace constants;
 

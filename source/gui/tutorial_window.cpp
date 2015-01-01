@@ -23,6 +23,7 @@
 #include "events/playsound.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
+#include "core/variant_map.hpp"
 #include "texturedbutton.hpp"
 #include "widget_helper.hpp"
 #include "label.hpp"

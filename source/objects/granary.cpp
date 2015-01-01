@@ -19,7 +19,7 @@
 #include "granary.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
 #include "good/goodstore_simple.hpp"
 #include "city/helper.hpp"

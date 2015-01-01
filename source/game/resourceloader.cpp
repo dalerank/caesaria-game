@@ -20,6 +20,7 @@
 #include "vfs/filesystem.hpp"
 #include "vfs/directory.hpp"
 #include "gfx/picture_bank.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 #include "gfx/loader.hpp"

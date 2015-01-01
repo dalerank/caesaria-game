@@ -24,6 +24,7 @@
 #include "core/utils.hpp"
 #include "core/enumerator.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "gfx/picture_info_bank.hpp"

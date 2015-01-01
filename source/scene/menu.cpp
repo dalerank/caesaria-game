@@ -50,6 +50,7 @@
 #include "core/event.hpp"
 #include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"

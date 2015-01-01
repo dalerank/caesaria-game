@@ -18,6 +18,7 @@
 #include "objects_factory.hpp"
 #include "service.hpp"
 #include "training.hpp"
+#include "core/variant_map.hpp"
 #include "watersupply.hpp"
 #include "warehouse.hpp"
 #include "ruins.hpp"

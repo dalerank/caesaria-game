@@ -27,6 +27,7 @@
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
 #include "city/migration.hpp"
+#include "core/variant_map.hpp"
 #include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
 #include "cityservice_prosperity.hpp"
