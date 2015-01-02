@@ -810,6 +810,7 @@ bool Widget::isMyChild( Widget* child ) const
 {
     if (!child)
         return false;
+
     do
     {
         if( child->parent() )

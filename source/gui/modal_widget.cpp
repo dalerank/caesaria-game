@@ -47,10 +47,13 @@ ModalScreen::ModalScreen( Widget* parent, int id)
 
 bool ModalScreen::_canTakeFocus(Widget* target) const
 {
-   return (target && ((const Widget*)target == this // this element can take it
+  if( !target )
+    return false;
+
+  return ( (const Widget*)target == this // this element can take it
            || isMyChild(target)    // own children also
            || ( safety_cast< ModalScreen* >( target ) != 0 )// other modals also fine
-           || ( target->parent() && ( safety_cast< ModalScreen* >( target->parent() ) != 0) )))   // children of other modals will do
+           || ( target->parent() && ( safety_cast< ModalScreen* >( target->parent() ) != 0) ))   // children of other modals will do
             ;
 }
 
