@@ -705,7 +705,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   {
     dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
                                                       wt.newTitle(), wt.winText(),
-                                                      false );
+                                                      wt.mayContinue() );
 
     mapToLoad = wt.nextMission();
 

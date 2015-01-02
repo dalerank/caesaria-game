@@ -31,6 +31,7 @@ public:
   int prosperity;
   int favour;
   int peace;
+  bool may_continue;
   bool success;
   int reignYears;
   DateTime finishDate;
@@ -51,6 +52,7 @@ VictoryConditions::VictoryConditions() : _d( new Impl )
   _d->culture = 0;
   _d->prosperity = 0;
   _d->favour = 0;
+  _d->may_continue = false;
   _d->peace = 0;
   _d->reignYears = 0;
   _d->finishDate = DateTime( 500, 1, 1 );
@@ -59,8 +61,8 @@ VictoryConditions::VictoryConditions() : _d( new Impl )
 VictoryConditions::~VictoryConditions(){}
 
 bool VictoryConditions::isSuccess( int culture, int prosperity,
-                                int favour, int peace,
-                                int population ) const
+                                   int favour, int peace,
+                                   int population ) const
 {
   if( (_d->population + _d->culture + _d->prosperity + _d->favour + _d->peace) == 0 )
     return false;
@@ -76,6 +78,7 @@ bool VictoryConditions::isSuccess( int culture, int prosperity,
 }
 
 bool VictoryConditions::isSuccess() const {  return _d->success; }
+bool VictoryConditions::mayContinue() const { return _d->may_continue; }
 
 void VictoryConditions::load( const VariantMap& stream )
 {
@@ -88,6 +91,7 @@ void VictoryConditions::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, peace, stream )
   VARIANT_LOAD_TIME_D( _d, finishDate, stream )
   VARIANT_LOAD_ANY_D( _d, reignYears, stream )
+  VARIANT_LOAD_ANY_D( _d, may_continue, stream )
   if( _d->finishDate.year() < -9000 )
   {
     _d->finishDate = DateTime( 500, 1, 1 );
@@ -116,6 +120,7 @@ VariantMap VictoryConditions::save() const
   ret[ "short"      ] = Variant( _d->shortDesc );
   ret[ "win.text"   ] = Variant( _d->winText );
   VARIANT_SAVE_STR_D( ret, _d, caption )
+  VARIANT_SAVE_STR_D( ret, _d, may_continue )
   VARIANT_SAVE_STR_D( ret, _d, next )
   VARIANT_SAVE_STR_D( ret, _d, title )
   return ret;
