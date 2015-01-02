@@ -38,7 +38,7 @@ namespace gfx
 namespace layer
 {
 
-int Troubles::type() const{  return _type;}
+int Troubles::type() const{ return _type;}
 
 void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
@@ -54,28 +54,12 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
 
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-    case objects::waymark:
-    case objects::tree:
+      // Base set of visible objects
       needDrawAnimations = true;
-    break;
-
-    //other buildings
-    default:
+    }
+    else
     {
       ConstructionPtr c = ptr_cast<Construction>( overlay );
       if( c.isValid() )
@@ -83,8 +67,6 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
         std::string trouble = c->troubleDesc();
         needDrawAnimations = !trouble.empty();
       }
-    }
-    break;
     }
 
     if( needDrawAnimations )
@@ -166,6 +148,7 @@ Troubles::Troubles( Camera& camera, PlayerCityPtr city, int type )
   : Layer( &camera, city ), _type( type )
 {
   //_loadColumnPicture( 9 );
+  _fillVisibleObjects( _type );
 }
 
 }

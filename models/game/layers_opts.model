@@ -44,4 +44,32 @@
     visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
                        "highBridge", "elevation", "rift", "tree", "burningRuins", "nativeCenter", "nativeField" ]
   }
+
+  religion : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "templeCeres",
+                       "templeMars", "templeMercury", "templeNeptune", "templeVenus", "cathedralCeres",
+                       "cathedralMars", "cathedralMercury", "cathedralNeptune", "cathedralVenus", "oracle" ]
+  }
+
+  tax : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "seante", "forum" ]
+  }
+
+  troubles : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins" ]
+  }
+
+  risks : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins" ]
+  }
+
+  water : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "reservoir",
+                       "fountain", "well", "aqueduct", "tree", ]
+  }
 }
