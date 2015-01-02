@@ -62,60 +62,34 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
     TileOverlayPtr overlay = tile.overlay();
 
     int healthLevel = -1;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
+      // Base set of visible objects
       needDrawAnimations = true;
-    break;
+    }
+    else if( _flags.count( overlay->type() ) )
+    {
+      needDrawAnimations = true;
+      //city::Helper helper( _city() );
+      //drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+    }
+    else if( overlay->type() == objects::house )
+    {
+      HousePtr house = ptr_cast<House>( overlay );
+      healthLevel = _getLevelValue( house );
 
-    case objects::doctor:
-    case objects::hospital:
-    case objects::barber:
-    case objects::baths:
-      needDrawAnimations = _flags.count( overlay->type() ) > 0;
+      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+
       if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
-    break;
-
-      //houses
-    case objects::house:
-      {
-        HousePtr house = ptr_cast<House>( overlay );
-
-        healthLevel = _getLevelValue( house );
-
-        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-
-        if( !needDrawAnimations )
-        {
-          city::Helper helper( _city() );
-          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-        }
-      }
-    break;
-
-      //other buildings
-    default:
-      {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-      }
-    break;
+    }
+    else  //other buildings
+    {
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -200,26 +174,34 @@ Health::Health(Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::health:
+    _flags << objects::doctor << objects::hospital
+           << objects::barber << objects::baths;
+    _visibleWalkers() << walker::doctor << walker::surgeon
+                      << walker::barber << walker::bathlady;
+  break;
+
   case citylayer::doctor:
-    _flags.insert( objects::doctor );
-    _addWalkerType( walker::doctor );
+    _flags << objects::doctor;
+    _visibleWalkers() << walker::doctor;
   break;
 
   case citylayer::hospital:
-    _flags.insert( objects::hospital );
-    _addWalkerType( walker::surgeon );
+    _flags << objects::hospital;
+    _visibleWalkers() << walker::surgeon;
   break;
 
   case citylayer::barber:
-    _flags.insert( objects::barber );
-    _addWalkerType( walker::barber );
+    _flags << objects::barber;
+    _visibleWalkers() << walker::barber;
   break;
 
   case citylayer::baths:
-    _flags.insert( objects::baths );
-    _addWalkerType( walker::bathlady );
+    _flags << objects::baths;
+    _visibleWalkers() << walker::bathlady;
   break;
   }
+
+  _fillVisibleObjects( citylayer::health );
 }
 
 }

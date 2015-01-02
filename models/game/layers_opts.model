@@ -34,4 +34,14 @@
     visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
                        "highBridge", "elevation", "rift", "tree", "burningRuins", "market", "granary" ]
   }
+
+  health : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins" ]
+  }
+
+  aborigen : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "nativeCenter", "nativeField" ]
+  }
 }
