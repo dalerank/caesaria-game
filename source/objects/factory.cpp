@@ -290,9 +290,9 @@ void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, productionRate )
-  stream[ "goodStore" ] = _d->store.save();
   VARIANT_SAVE_ANY_D( stream, _d, progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
+  stream[ "goodStore" ] = _d->store.save();
 }
 
 void Factory::load( const VariantMap& stream)
