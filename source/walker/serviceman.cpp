@@ -82,24 +82,24 @@ void ServiceWalker::_init(const Service::Type service)
     _setType( walker::priest );
   break;
   
-  case Service::engineer: _setType( walker::engineer ); break;
-  case Service::doctor:   _setType( walker::doctor );   break;
-  case Service::hospital: _setType( walker::surgeon );  break;
-  case Service::barber:   _setType( walker::barber );   break;
-  case Service::baths:    _setType( walker::bathlady ); break;
-  case Service::school:   _setType( walker::scholar);   break;
+  case Service::engineer:  _setType( walker::engineer ); break;
+  case Service::doctor:    _setType( walker::doctor );   break;
+  case Service::hospital:  _setType( walker::surgeon );  break;
+  case Service::barber:    _setType( walker::barber );   break;
+  case Service::baths:     _setType( walker::bathlady ); break;
+  case Service::school:    _setType( walker::scholar);   break;
   case Service::theater:   _setType( walker::actor );    break;
   case Service::amphitheater: _setType( walker::gladiator ); break;
   case Service::colloseum:  _setType( walker::lionTamer );    break;
-  case Service::hippodrome:   _setType( walker::charioteer ); break;
-  case Service::market: _setType( walker::marketLady ); nameType = NameGenerator::female; break;
+  case Service::hippodrome: _setType( walker::charioteer ); break;
+  case Service::market:     _setType( walker::marketLady ); nameType = NameGenerator::female; break;
   case Service::missionary: _setType( walker::missioner ); break;
 
   case Service::library:
-  case Service::academy: _setType( walker::teacher ); break;
+  case Service::academy:    _setType( walker::teacher ); break;
 
   case Service::forum:
-  case Service::senate:  _setType( walker::taxCollector); break;
+  case Service::senate:     _setType( walker::taxCollector); break;
 
   default:
   break;

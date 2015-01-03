@@ -98,7 +98,7 @@
     sound : [ "colloseum", 1 ]
   },
   
-  gladiator_pit : {
+  gladiatorSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
@@ -115,7 +115,7 @@
     class : "house"
   }
 
-  lion_pit : {
+  lionsNursery : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
@@ -134,7 +134,7 @@
     sound : [ "artistpit", 1  ]
   },
 
-  chatioteer_school : {
+  chariotSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 10
@@ -465,21 +465,21 @@
     sound : [ "wharf", 1 ]
   }, 
   
-  governor_palace_1 : {
+  governorHouse : {
     cost : 150,
     desirability : { base : 12, 	range : 3,	step : -2 }
     employers : 0
     class : "administration"
   }, 
   
-  governor_palace_2 : {
+  governorVilla : {
     cost : 400,
     desirability : { base : 20, 	range : 4,	step : -4 }
     employers : 0
     class : "administration"
   }, 
 
-  governor_palace_3 : {
+  governorPalace : {
     cost : 700,
     desirability : { base : 28, 	range : 7,	step : -4 }
     employers : 0

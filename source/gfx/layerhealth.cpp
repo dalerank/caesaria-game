@@ -174,14 +174,14 @@ Health::Health(Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::health:
-    _flags << objects::doctor << objects::hospital
+    _flags << objects::clinic << objects::hospital
            << objects::barber << objects::baths;
     _visibleWalkers() << walker::doctor << walker::surgeon
                       << walker::barber << walker::bathlady;
   break;
 
   case citylayer::doctor:
-    _flags << objects::doctor;
+    _flags << objects::clinic;
     _visibleWalkers() << walker::doctor;
   break;
 

@@ -33,7 +33,7 @@
 using namespace constants;
 using namespace gfx;
 
-BurningRuins::BurningRuins() : Ruins( objects::burningRuins )
+BurningRuins::BurningRuins() : Ruins( objects::burning_ruins )
 {
   setState( Construction::fire, 99 );
   setState( Construction::inflammability, 0 );
@@ -171,7 +171,7 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 bool BurningRuins::isNeedRoadAccess() const{  return false; }
 void BurnedRuins::timeStep( const unsigned long ){}
 
-BurnedRuins::BurnedRuins() : Ruins( objects::burnedRuins )
+BurnedRuins::BurnedRuins() : Ruins( objects::burned_ruins )
 {
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
@@ -189,7 +189,7 @@ bool BurnedRuins::isFlat() const{ return true;}
 bool BurnedRuins::isNeedRoadAccess() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
 
-CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsedRuins)
+CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsed_ruins)
 {
   setState( Construction::damage, 1 );
   setState( Construction::inflammability, 0 );
@@ -225,7 +225,7 @@ bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 
-PlagueRuins::PlagueRuins() : Ruins( objects::plagueRuins )
+PlagueRuins::PlagueRuins() : Ruins( objects::plague_ruins )
 {
   setState( Construction::fire, 99 );
   setState( Construction::collapsibility, 0 );

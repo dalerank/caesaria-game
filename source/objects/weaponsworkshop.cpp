@@ -26,7 +26,7 @@ using namespace constants;
 using namespace gfx;
 
 WeaponsWorkshop::WeaponsWorkshop()
-  : Factory(good::iron, good::weapon, objects::weaponsWorkshop, Size(2) )
+  : Factory(good::iron, good::weapon, objects::weapons_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 108);
 
@@ -44,7 +44,7 @@ bool WeaponsWorkshop::build( const CityAreaInfo& info )
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveIronMine = !helper.find<Building>( objects::ironMine ).empty();
+  bool haveIronMine = !helper.find<Building>( objects::iron_mine ).empty();
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
 

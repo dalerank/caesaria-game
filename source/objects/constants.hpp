@@ -84,8 +84,8 @@ enum Type
   house,
 
 // administration
-  senate,
-  forum,
+  senate_1,
+  forum_1,
   governorHouse,
   governorVilla,//20
   governorPalace,
@@ -96,52 +96,52 @@ enum Type
   fortification,
   tower,
   gatehouse,
-  fortLegionaire,
-  fortJavelin,
-  fortMounted,
-  militaryAcademy,//30
+  fort_legionaries,
+  fort_javelin,
+  fort_horse,
+  military_academy,//30
   barracks,
   fortArea,
 
 // commerce
   market,
-  granary,
+  granery,
   warehouse,
 
 // farms
-  wheatFarm,
-  fruitFarm,
-  vegetableFarm,
-  oliveFarm,
-  grapeFarm,//40
-  pigFarm,
+  wheat_farm,
+  fig_farm,
+  vegetable_farm,
+  olive_farm,
+  vinard,//40
+  meat_farm,
 
 // raw materials
-  marbleQuarry,
-  ironMine,
-  timberLogger,
-  clayPit,
+  quarry,
+  iron_mine,
+  lumber_mill,
+  clay_pit,
 
 // factories
-  winery,
-  creamery,
-  weaponsWorkshop,
-  furnitureWorkshop,
-  pottery,//50
+  wine_workshop,
+  oil_workshop,
+  weapons_workshop,
+  furniture_workshop,
+  pottery_workshop,//50
 
 // utility
-  engineerPost,
-  smallStatue,
-  middleStatue,
-  bigStatue,
-  lowBridge,
-  highBridge,
+  engineering_post,
+  statue_small,
+  statue_middle,
+  statue_big,
+  low_bridge,
+  high_bridge,
   shipyard,
   dock,
   wharf,
 
 // health
-  doctor,//60
+  clinic,//60
   hospital,
   baths,
   barber,
@@ -153,36 +153,36 @@ enum Type
   missionaryPost,
 
 // religion: small temples
-  templeCeres,
-  templeMars,
-  templeNeptune,//70
-  templeMercury,
-  templeVenus,
+  small_ceres_temple,
+  small_mars_temple,
+  small_neptune_temple,//70
+  small_mercury_temple,
+  small_venus_temple,
 
 // religion: big temples
-  cathedralCeres,
-  cathedralMars,
-  cathedralNeptune,
-  cathedralMercury,
-  cathedralVenus,
+  big_ceres_temple,
+  big_mars_temple,
+  big_neptune_temple,
+  big_mercury_temple,
+  big_venus_temple,
 
 // religion: others
   oracle,
 
 // building of natives
-  nativeHut,
-  nativeCenter,//80
-  nativeField,
+  native_hut,
+  native_center,//80
+  native_field,
 
 //other
-  triumphalArch,
-  burningRuins,
-  burnedRuins,
-  collapsedRuins,
-  plagueRuins,
+  triumphal_arch,
+  burning_ruins,
+  burned_ruins,
+  collapsed_ruins,
+  plague_ruins,
 
-  forum2,
-  senate2,
+  forum_2,
+  senate_2,
   elevation,
   rift,//90
   river,
@@ -191,6 +191,7 @@ enum Type
   terrain,
   water,
   meadow,
+  roadBlock,
 
   typeCount,
   userType=1000

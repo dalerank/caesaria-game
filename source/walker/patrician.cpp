@@ -72,7 +72,7 @@ void Patrician::_findNewWay( const TilePos& start )
 {
   city::Helper helper( _city() );
   std::vector< objects::Type > bTypes;
-  bTypes.push_back( objects::senate );
+  bTypes.push_back( objects::senate_1 );
 
   ConstructionList buildings;
 

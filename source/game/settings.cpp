@@ -82,6 +82,8 @@ __REG_PROPERTY(logoArchive)
 __REG_PROPERTY(titleResource)
 __REG_PROPERTY(forbidenTile)
 __REG_PROPERTY(layersOptsModel)
+__REG_PROPERTY(experimental)
+__REG_PROPERTY(buildMenuModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -138,6 +140,8 @@ Settings::Settings() : _d( new Impl )
   _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
   _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
   _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
+  _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
+  _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );

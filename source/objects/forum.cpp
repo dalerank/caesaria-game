@@ -39,7 +39,7 @@ public:
   void removeMoney( PlayerCityPtr city );
 };
 
-Forum::Forum() : ServiceBuilding(Service::forum, objects::forum, Size(2)), _d( new Impl )
+Forum::Forum() : ServiceBuilding(Service::forum, objects::forum_1, Size(2)), _d( new Impl )
 {
   _d->taxValue = 0;
   setPicture( ResourceGroup::govt, 10 );
@@ -113,7 +113,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
   city::Helper helper( city );
   SenatePtr senate;
-  SenateList senates = helper.find<Senate>( objects::senate );
+  SenateList senates = helper.find<Senate>( objects::senate_1 );
   if( !senates.empty() )
     senate = senates.front();
 

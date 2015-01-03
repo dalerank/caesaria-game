@@ -62,9 +62,9 @@ void resetFavour(PlayerCityPtr city)
 
 void initBuildOptions(PlayerCityPtr city)
 {
-  city::BuildOptions bopts;
+  city::development::Options bopts;
   bopts = city->buildOptions();
-  bopts.setGroupAvailable( BM_MAX, true );
+  bopts.setGroupAvailable( city::development::all, true );
   city->setBuildOptions( bopts );
 }
 

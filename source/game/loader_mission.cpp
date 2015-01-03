@@ -132,7 +132,7 @@ bool Mission::load( const std::string& filename, Game& game )
     winConditions.load( winOptions.toMap() );
     city->setVictoryConditions( winConditions );
 
-    city::BuildOptions options;
+    city::development::Options options;
     options.load( vm[ "buildoptions" ].toMap() );
     city->setBuildOptions( options  );
 

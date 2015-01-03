@@ -370,7 +370,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( objects::granary, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( objects::granery, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }

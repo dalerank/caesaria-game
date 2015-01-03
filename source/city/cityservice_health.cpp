@@ -91,14 +91,14 @@ std::string HealthCare::reason() const
   std::string mainReason = healthDescription[ lvl ];
 
   Helper helper( _city() );
-  BuildingList clinics = helper.find<Building>( objects::doctor );
+  BuildingList clinics = helper.find<Building>( objects::clinic );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 
   reasons << mainReason;
   if( lvl > maxDescriptionLevel / 3 )
   {
-    int avTypes[] = { objects::barber, objects::baths, objects::doctor, objects::hospital, objects::unknown };
+    int avTypes[] = { objects::barber, objects::baths, objects::clinic, objects::hospital, objects::unknown };
     std::string avReasons[] = { "##advchief_some_need_barber##", "##advchief_some_need_baths##",
                                 "##advchief_some_need_doctors##", "##advchief_some_need_hospital##",
                                 "" };

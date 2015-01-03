@@ -342,7 +342,7 @@
       dock : true
       iron_mine : true
       hippodrome : false
-      chatioteer_school : false
+      chariotSchool : false
       prefecture : true
       clay_pit : true
       quarry : true

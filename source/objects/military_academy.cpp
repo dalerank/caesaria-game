@@ -21,6 +21,6 @@
 using namespace constants;
 
 MilitaryAcademy::MilitaryAcademy()
-  : WorkingBuilding( objects::militaryAcademy, Size(3) )
+  : WorkingBuilding( objects::military_academy, Size(3) )
 {
 }

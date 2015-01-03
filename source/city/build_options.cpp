@@ -27,6 +27,9 @@ using namespace gfx;
 namespace city
 {
 
+namespace development
+{
+
 static const char* disable_all = "disable_all";
 
 struct BuildingRule
@@ -36,7 +39,38 @@ struct BuildingRule
   unsigned int quotes;
 };
 
-class BuildOptions::Impl
+class BranchHelper : public EnumsHelper<Branch>
+{
+public:
+  static BranchHelper& instance()
+  {
+    static BranchHelper inst;
+    return inst;
+  }
+
+  BranchHelper() : EnumsHelper<Branch>( unknown )
+  {
+#define __REG_BR(a) append( a, CAESARIA_STR_EXT(a) );
+    __REG_BR( water )
+    __REG_BR( health )
+    __REG_BR( security )
+    __REG_BR( education )
+    __REG_BR( engineering )
+    __REG_BR( administration )
+    __REG_BR( entertainment )
+    __REG_BR( commerce )
+    __REG_BR( farm )
+    __REG_BR( raw_material )
+    __REG_BR( factory )
+    __REG_BR( religion )
+    __REG_BR( temple )
+    __REG_BR( big_temple )
+    __REG_BR( all )
+#undef __REG_BR
+  }
+};
+
+class Options::Impl
 {
 public:
   typedef std::map< TileOverlay::Type, BuildingRule > BuildingRules;
@@ -49,27 +83,27 @@ public:
   unsigned int maximumForts;
 };
 
-BuildOptions::BuildOptions() : _d( new Impl )
+Options::Options() : _d( new Impl )
 {
   _d->checkDesirability = true;
   _d->maximumForts = 999;
   _d->memPoints.resize( 10 );
 }
 
-BuildOptions::~BuildOptions() {}
+Options::~Options() {}
 
-void BuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
+void Options::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
 {
   _d->rules[ type ].mayBuild = mayBuild;
 }
 
-void BuildOptions::setBuildingAvailble( const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild )
+void Options::setBuildingAvailble( const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild )
 {
   for( int i=start; i <= stop; i++ )
     _d->rules[ (TileOverlay::Type)i ].mayBuild = mayBuild;
 }
 
-bool BuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const TileOverlay::Type stop ) const
+bool Options::isBuildingsAvailble( const TileOverlay::Type start, const TileOverlay::Type stop ) const
 {
   bool mayBuild = false;
   for( int i=start; i <= stop; i++ )
@@ -78,10 +112,10 @@ bool BuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const Til
   return mayBuild;
 }
 
-bool BuildOptions::isCheckDesirability() const {  return _d->checkDesirability; }
-unsigned int BuildOptions::getMaximumForts() const { return _d->maximumForts; }
+bool Options::isCheckDesirability() const {  return _d->checkDesirability; }
+unsigned int Options::maximumForts() const { return _d->maximumForts; }
 
-void BuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
+void Options::setGroupAvailable( const development::Branch type, Variant vmb )
 {
   if( vmb.isNull() )
     return;
@@ -89,49 +123,49 @@ void BuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
   bool mayBuild = (vmb.toString() != disable_all);
   switch( type )
   {
-  case BM_FARM: setBuildingAvailble( objects::wheatFarm, objects::pigFarm, mayBuild ); break;
-  case BM_WATER: setBuildingAvailble( objects::reservoir, objects::well, mayBuild ); break;
-  case BM_HEALTH: setBuildingAvailble( objects::doctor, objects::barber, mayBuild ); break;
-  case BM_RAW_MATERIAL: setBuildingAvailble( objects::marbleQuarry, objects::clayPit, mayBuild ); break;
-  case BM_RELIGION: setBuildingAvailble( objects::templeCeres, objects::oracle, mayBuild ); break;
-  case BM_FACTORY: setBuildingAvailble( objects::winery, objects::pottery, mayBuild ); break;
-  case BM_EDUCATION: setBuildingAvailble( objects::school, objects::library, mayBuild ); break;
-  case BM_ENTERTAINMENT: setBuildingAvailble( objects::amphitheater, objects::chariotSchool, mayBuild ); break;
-  case BM_ADMINISTRATION: setBuildingAvailble( objects::senate, objects::governorPalace, mayBuild ); break;
-  case BM_ENGINEERING:
-    setBuildingAvailble( objects::engineerPost, objects::wharf, mayBuild );
+  case development::farm: setBuildingAvailble( objects::wheat_farm, objects::meat_farm, mayBuild ); break;
+  case development::water: setBuildingAvailble( objects::reservoir, objects::well, mayBuild ); break;
+  case development::health: setBuildingAvailble( objects::clinic, objects::barber, mayBuild ); break;
+  case development::raw_material: setBuildingAvailble( objects::quarry, objects::clay_pit, mayBuild ); break;
+  case development::religion: setBuildingAvailble( objects::small_ceres_temple, objects::oracle, mayBuild ); break;
+  case development::factory: setBuildingAvailble( objects::wine_workshop, objects::pottery_workshop, mayBuild ); break;
+  case development::education: setBuildingAvailble( objects::school, objects::library, mayBuild ); break;
+  case development::entertainment: setBuildingAvailble( objects::amphitheater, objects::chariotSchool, mayBuild ); break;
+  case development::administration: setBuildingAvailble( objects::senate_1, objects::governorPalace, mayBuild ); break;
+  case development::engineering:
+    setBuildingAvailble( objects::engineering_post, objects::wharf, mayBuild );
     setBuildingAvailble( objects::plaza, mayBuild );
     setBuildingAvailble( objects::garden, mayBuild );
   break;
-  case BM_SECURITY: setBuildingAvailble( objects::prefecture, objects::fortArea, mayBuild ); break;
-  case BM_COMMERCE: setBuildingAvailble( objects::market, objects::warehouse, mayBuild ); break;
-  case BM_TEMPLE: setBuildingAvailble( objects::templeCeres, objects::templeVenus, mayBuild ); break;
-  case BM_BIGTEMPLE: setBuildingAvailble( objects::cathedralCeres, objects::cathedralVenus, mayBuild ); break;
-  case BM_MAX: setBuildingAvailble( objects::unknown, objects::typeCount, mayBuild );
+  case development::security: setBuildingAvailble( objects::prefecture, objects::fortArea, mayBuild ); break;
+  case development::commerce: setBuildingAvailble( objects::market, objects::warehouse, mayBuild ); break;
+  case development::temple: setBuildingAvailble( objects::small_ceres_temple, objects::small_venus_temple, mayBuild ); break;
+  case development::big_temple: setBuildingAvailble( objects::big_ceres_temple, objects::big_venus_temple, mayBuild ); break;
+  case development::all: setBuildingAvailble( objects::unknown, objects::typeCount, mayBuild );
 
   default:
   break;
   }
 }
 
-bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
+bool Options::isGroupAvailable(const Branch type) const
 {
   switch( type )
   {
-  case BM_FARM:         return isBuildingsAvailble( objects::wheatFarm, objects::pigFarm ); break;
-  case BM_WATER:        return isBuildingsAvailble( objects::reservoir, objects::well ); break;
-  case BM_HEALTH:       return isBuildingsAvailble( objects::doctor, objects::barber ); break;
-  case BM_RAW_MATERIAL: return isBuildingsAvailble( objects::marbleQuarry, objects::clayPit ); break;
-  case BM_RELIGION:     return isBuildingsAvailble( objects::templeCeres, objects::oracle ); break;
-  case BM_FACTORY:      return isBuildingsAvailble( objects::winery, objects::pottery ); break;
-  case BM_EDUCATION:    return isBuildingsAvailble( objects::school, objects::library ); break;
-  case BM_ENTERTAINMENT: return isBuildingsAvailble( objects::amphitheater, objects::chariotSchool ); break;
-  case BM_ADMINISTRATION: return isBuildingsAvailble( objects::senate, objects::governorPalace ); break;
-  case BM_ENGINEERING:  return isBuildingsAvailble( objects::engineerPost, objects::wharf ); break;
-  case BM_SECURITY:     return isBuildingsAvailble( objects::prefecture, objects::fortArea ); break;
-  case BM_COMMERCE:     return isBuildingsAvailble( objects::market, objects::warehouse ); break;
-  case BM_TEMPLE:       return isBuildingsAvailble( objects::templeCeres, objects::templeVenus ); break;
-  case BM_BIGTEMPLE:    return isBuildingsAvailble( objects::cathedralCeres, objects::cathedralVenus ); break;
+  case development::farm:         return isBuildingsAvailble( objects::wheat_farm, objects::meat_farm ); break;
+  case development::water:        return isBuildingsAvailble( objects::reservoir, objects::well ); break;
+  case development::health:       return isBuildingsAvailble( objects::clinic, objects::barber ); break;
+  case development::raw_material: return isBuildingsAvailble( objects::quarry, objects::clay_pit ); break;
+  case development::religion:     return isBuildingsAvailble( objects::small_ceres_temple, objects::oracle ); break;
+  case development::factory:      return isBuildingsAvailble( objects::wine_workshop, objects::pottery_workshop ); break;
+  case development::education:    return isBuildingsAvailble( objects::school, objects::library ); break;
+  case development::entertainment:return isBuildingsAvailble( objects::amphitheater, objects::chariotSchool ); break;
+  case development::administration:return isBuildingsAvailble( objects::senate_1, objects::governorPalace ); break;
+  case development::engineering:  return isBuildingsAvailble( objects::engineering_post, objects::wharf ); break;
+  case development::security:     return isBuildingsAvailble( objects::prefecture, objects::fortArea ); break;
+  case development::commerce:     return isBuildingsAvailble( objects::market, objects::warehouse ); break;
+  case development::temple:       return isBuildingsAvailble( objects::small_ceres_temple, objects::small_venus_temple ); break;
+  case development::big_temple:   return isBuildingsAvailble( objects::big_ceres_temple, objects::big_venus_temple ); break;
   default:
   break;
   }
@@ -139,40 +173,40 @@ bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
   return false;
 }
 
-unsigned int BuildOptions::getBuildingsQuote(const TileOverlay::Type type) const
+unsigned int Options::getBuildingsQuote(const TileOverlay::Type type) const
 {
   Impl::BuildingRules::const_iterator it = _d->rules.find( type );
   return it != _d->rules.end() ? it->second.quotes : 999;
 }
 
-TilePos BuildOptions::memPoint(unsigned int index) const
+TilePos Options::memPoint(unsigned int index) const
 {
   index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
   return _d->memPoints[ index ];
 }
 
-void BuildOptions::setMemPoint(unsigned int index, TilePos point)
+void Options::setMemPoint(unsigned int index, TilePos point)
 {
   index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
   _d->memPoints[ index ] = point;
 }
 
-void BuildOptions::clear() {  _d->rules.clear(); }
+void Options::clear() {  _d->rules.clear(); }
 
-void BuildOptions::load(const VariantMap& options)
+void Options::load(const VariantMap& options)
 {
-  setGroupAvailable( BM_FARM, options.get( "farm" ) );
-  setGroupAvailable( BM_RAW_MATERIAL, options.get( "raw_material" ) );
-  setGroupAvailable( BM_FACTORY, options.get( "factory" ) );
-  setGroupAvailable( BM_WATER, options.get( "water" ) );
-  setGroupAvailable( BM_HEALTH, options.get( "health" ) );
-  setGroupAvailable( BM_RELIGION, options.get( "religion" ) );
-  setGroupAvailable( BM_EDUCATION, options.get( "education" ) );
-  setGroupAvailable( BM_ENTERTAINMENT, options.get( "entertainment" ) );
-  setGroupAvailable( BM_ADMINISTRATION, options.get( "govt" ) );
-  setGroupAvailable( BM_ENGINEERING, options.get( "engineering" ) );
-  setGroupAvailable( BM_SECURITY, options.get( "security" ) );
-  setGroupAvailable( BM_COMMERCE, options.get( "commerce" ) );
+  setGroupAvailable( development::farm, options.get( "farm" ) );
+  setGroupAvailable( development::raw_material, options.get( "raw_material" ) );
+  setGroupAvailable( development::factory, options.get( "factory" ) );
+  setGroupAvailable( development::water, options.get( "water" ) );
+  setGroupAvailable( development::health, options.get( "health" ) );
+  setGroupAvailable( development::religion, options.get( "religion" ) );
+  setGroupAvailable( development::education, options.get( "education" ) );
+  setGroupAvailable( development::entertainment, options.get( "entertainment" ) );
+  setGroupAvailable( development::administration, options.get( "govt" ) );
+  setGroupAvailable( development::engineering, options.get( "engineering" ) );
+  setGroupAvailable( development::security, options.get( "security" ) );
+  setGroupAvailable( development::commerce, options.get( "commerce" ) );
 
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )
@@ -193,7 +227,7 @@ void BuildOptions::load(const VariantMap& options)
   _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
 }
 
-VariantMap BuildOptions::save() const
+VariantMap Options::save() const
 {
   VariantMap blds;
   VariantMap quotes;
@@ -219,7 +253,7 @@ VariantMap BuildOptions::save() const
   return ret;
 }
 
-BuildOptions& BuildOptions::operator=(const city::BuildOptions& a)
+Options& Options::operator=(const development::Options& a)
 {
   _d->rules = a._d->rules;
   _d->checkDesirability = a._d->checkDesirability;
@@ -229,10 +263,15 @@ BuildOptions& BuildOptions::operator=(const city::BuildOptions& a)
   return *this;
 }
 
-bool BuildOptions::isBuildingAvailble(const TileOverlay::Type type ) const
+bool Options::isBuildingAvailble(const TileOverlay::Type type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
 }
+
+Branch toBranch(const std::string& name) { return BranchHelper::instance().findType( name ); }
+std::string toString(Branch branch) { return BranchHelper::instance().findName( branch ); }
+
+}//end namespace development
 
 }//end namespace city

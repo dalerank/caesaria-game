@@ -221,14 +221,14 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(objects::road,     Road, ConstructionCreator );
 
   // administration
-  ADD_CREATOR(objects::forum,        Forum, WorkingBuildingCreator );
-  ADD_CREATOR(objects::senate,       Senate, WorkingBuildingCreator );
+  ADD_CREATOR(objects::forum_1,        Forum, WorkingBuildingCreator );
+  ADD_CREATOR(objects::senate_1,       Senate, WorkingBuildingCreator );
   ADD_CREATOR(objects::governorHouse,GovernorsHouse, ConstructionCreator );
   ADD_CREATOR(objects::governorVilla,GovernorsVilla, ConstructionCreator );
   addCreator(objects::governorPalace, CAESARIA_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );
-  addCreator(objects::smallStatue,    CAESARIA_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
-  addCreator(objects::middleStatue,    CAESARIA_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
-  addCreator(objects::bigStatue,    CAESARIA_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
+  addCreator(objects::statue_small,    CAESARIA_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
+  addCreator(objects::statue_middle,    CAESARIA_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
+  addCreator(objects::statue_big,    CAESARIA_STR_EXT(BigStatue), new ConstructionCreator<BigStatue>() );
   addCreator(objects::garden, CAESARIA_STR_EXT(Garden) , new ConstructionCreator<Garden>() );
   ADD_CREATOR(objects::plaza,  Plaza, ConstructionCreator );
 
@@ -240,10 +240,10 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 
   // security
   addCreator(objects::prefecture,   CAESARIA_STR_EXT(Prefecture)  , new WorkingBuildingCreator<Prefecture>() );
-  addCreator(objects::fortLegionaire, CAESARIA_STR_EXT(FortLegionary), new WorkingBuildingCreator<FortLegionary>() );
-  addCreator(objects::fortJavelin, CAESARIA_STR_EXT(FortJaveline)   , new WorkingBuildingCreator<FortJaveline>() );
-  addCreator(objects::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new WorkingBuildingCreator<FortMounted>() );
-  ADD_CREATOR(objects::militaryAcademy, MilitaryAcademy, WorkingBuildingCreator );
+  addCreator(objects::fort_legionaries, CAESARIA_STR_EXT(FortLegionary), new WorkingBuildingCreator<FortLegionary>() );
+  addCreator(objects::fort_javelin, CAESARIA_STR_EXT(FortJaveline)   , new WorkingBuildingCreator<FortJaveline>() );
+  addCreator(objects::fort_horse, CAESARIA_STR_EXT(FortMounted)  , new WorkingBuildingCreator<FortMounted>() );
+  ADD_CREATOR(objects::military_academy, MilitaryAcademy, WorkingBuildingCreator );
   addCreator(objects::barracks,   CAESARIA_STR_EXT(Barracks)        , new WorkingBuildingCreator<Barracks>() );
   ADD_CREATOR( objects::wall,          Wall, ConstructionCreator );
   ADD_CREATOR( objects::fortification, Fortification, ConstructionCreator );
@@ -254,55 +254,55 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   // commerce
   ADD_CREATOR(objects::market,     Market, WorkingBuildingCreator );
   ADD_CREATOR(objects::warehouse,  Warehouse, WorkingBuildingCreator );
-  addCreator(objects::granary,      CAESARIA_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
+  addCreator(objects::granery,      CAESARIA_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
 
   // farms
-  addCreator(objects::wheatFarm,    CAESARIA_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
-  addCreator(objects::oliveFarm, CAESARIA_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
-  addCreator(objects::grapeFarm,    CAESARIA_STR_EXT(FarmGrape) , new FactoryCreator<FarmGrape>() );
-  addCreator(objects::pigFarm,   CAESARIA_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
-  addCreator(objects::fruitFarm, CAESARIA_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
-  addCreator(objects::vegetableFarm, CAESARIA_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
+  addCreator(objects::wheat_farm,    CAESARIA_STR_EXT(FarmWheat) , new FactoryCreator<FarmWheat>() );
+  addCreator(objects::olive_farm, CAESARIA_STR_EXT(FarmOlive) , new FactoryCreator<FarmOlive>() );
+  addCreator(objects::vinard,    CAESARIA_STR_EXT(FarmGrape) , new FactoryCreator<FarmGrape>() );
+  addCreator(objects::meat_farm,   CAESARIA_STR_EXT(FarmMeat)     , new FactoryCreator<FarmMeat>() );
+  addCreator(objects::fig_farm, CAESARIA_STR_EXT(FarmFruit)    , new FactoryCreator<FarmFruit>() );
+  addCreator(objects::vegetable_farm, CAESARIA_STR_EXT(FarmVegetable), new FactoryCreator<FarmVegetable>() );
 
   // raw materials
-  addCreator(objects::ironMine,     CAESARIA_STR_EXT(IronMine)  , new FactoryCreator<IronMine>() );
-  addCreator(objects::timberLogger, CAESARIA_STR_EXT(TimberLogger), new FactoryCreator<TimberLogger>() );
-  addCreator(objects::clayPit,      CAESARIA_STR_EXT(ClayPit)  , new FactoryCreator<ClayPit>() );
-  addCreator(objects::marbleQuarry, CAESARIA_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
+  addCreator(objects::iron_mine,     CAESARIA_STR_EXT(IronMine)  , new FactoryCreator<IronMine>() );
+  addCreator(objects::lumber_mill, CAESARIA_STR_EXT(TimberLogger), new FactoryCreator<TimberLogger>() );
+  addCreator(objects::clay_pit,      CAESARIA_STR_EXT(ClayPit)  , new FactoryCreator<ClayPit>() );
+  addCreator(objects::quarry, CAESARIA_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
 
   // factories
-  ADD_CREATOR(objects::weaponsWorkshop, WeaponsWorkshop, FactoryCreator );
-  ADD_CREATOR(objects::furnitureWorkshop,  FurnitureWorkshop, FactoryCreator );
-  ADD_CREATOR(objects::winery, Winery, FactoryCreator );
-  ADD_CREATOR(objects::creamery, Creamery, FactoryCreator );
-  ADD_CREATOR(objects::pottery,  Pottery, FactoryCreator );
+  ADD_CREATOR(objects::weapons_workshop, WeaponsWorkshop, FactoryCreator );
+  ADD_CREATOR(objects::furniture_workshop,  FurnitureWorkshop, FactoryCreator );
+  ADD_CREATOR(objects::wine_workshop, Winery, FactoryCreator );
+  ADD_CREATOR(objects::oil_workshop, Creamery, FactoryCreator );
+  ADD_CREATOR(objects::pottery_workshop,  Pottery, FactoryCreator );
 
   // utility
-  ADD_CREATOR(objects::engineerPost, EngineerPost, WorkingBuildingCreator );
-  ADD_CREATOR(objects::lowBridge,  LowBridge, ConstructionCreator );
-  ADD_CREATOR(objects::highBridge, HighBridge, ConstructionCreator );
+  ADD_CREATOR(objects::engineering_post, EngineerPost, WorkingBuildingCreator );
+  ADD_CREATOR(objects::low_bridge,  LowBridge, ConstructionCreator );
+  ADD_CREATOR(objects::high_bridge, HighBridge, ConstructionCreator );
   ADD_CREATOR(objects::dock,       Dock    , WorkingBuildingCreator );
   ADD_CREATOR(objects::shipyard,   Shipyard, FactoryCreator );
   ADD_CREATOR(objects::wharf,      Wharf   , FactoryCreator );
-  ADD_CREATOR(objects::triumphalArch, TriumphalArch, ConstructionCreator );
+  ADD_CREATOR(objects::triumphal_arch, TriumphalArch, ConstructionCreator );
 
   // religion
-  ADD_CREATOR(objects::templeCeres,  TempleCeres, WorkingBuildingCreator );
-  ADD_CREATOR(objects::templeNeptune, TempleNeptune, WorkingBuildingCreator );
-  ADD_CREATOR(objects::templeMars, TempleMars, WorkingBuildingCreator );
-  ADD_CREATOR(objects::templeVenus, TempleVenus, WorkingBuildingCreator );
-  ADD_CREATOR(objects::templeMercury, TempleMercury, WorkingBuildingCreator );
-  ADD_CREATOR(objects::cathedralCeres, BigTempleCeres, WorkingBuildingCreator );
-  ADD_CREATOR(objects::cathedralNeptune, BigTempleNeptune, WorkingBuildingCreator );
-  ADD_CREATOR(objects::cathedralMars, BigTempleMars, WorkingBuildingCreator );
-  ADD_CREATOR(objects::cathedralVenus, BigTempleVenus, WorkingBuildingCreator );
-  ADD_CREATOR(objects::cathedralMercury, BigTempleMercury, WorkingBuildingCreator );
+  ADD_CREATOR(objects::small_ceres_temple,  TempleCeres, WorkingBuildingCreator );
+  ADD_CREATOR(objects::small_neptune_temple, TempleNeptune, WorkingBuildingCreator );
+  ADD_CREATOR(objects::small_mars_temple, TempleMars, WorkingBuildingCreator );
+  ADD_CREATOR(objects::small_venus_temple, TempleVenus, WorkingBuildingCreator );
+  ADD_CREATOR(objects::small_mercury_temple, TempleMercury, WorkingBuildingCreator );
+  ADD_CREATOR(objects::big_ceres_temple, BigTempleCeres, WorkingBuildingCreator );
+  ADD_CREATOR(objects::big_neptune_temple, BigTempleNeptune, WorkingBuildingCreator );
+  ADD_CREATOR(objects::big_mars_temple, BigTempleMars, WorkingBuildingCreator );
+  ADD_CREATOR(objects::big_venus_temple, BigTempleVenus, WorkingBuildingCreator );
+  ADD_CREATOR(objects::big_mercury_temple, BigTempleMercury, WorkingBuildingCreator );
   ADD_CREATOR(objects::oracle, TempleOracle, WorkingBuildingCreator );
 
   // health
   addCreator(objects::baths,      CAESARIA_STR_EXT(Baths)   , new WorkingBuildingCreator<Baths>() );
   addCreator(objects::barber,     CAESARIA_STR_EXT(Barber)  , new WorkingBuildingCreator<Barber>() );
-  addCreator(objects::doctor,     CAESARIA_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
+  addCreator(objects::clinic,     CAESARIA_STR_EXT(Doctor)  , new WorkingBuildingCreator<Doctor>() );
   addCreator(objects::hospital,   CAESARIA_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
 
   // education
@@ -312,15 +312,15 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(objects::missionaryPost, MissionaryPost, ConstructionCreator );
 
   // natives
-  ADD_CREATOR(objects::nativeHut, NativeHut, ConstructionCreator );
-  ADD_CREATOR(objects::nativeCenter, NativeCenter, ConstructionCreator );
-  ADD_CREATOR(objects::nativeField, NativeField, ConstructionCreator );
+  ADD_CREATOR(objects::native_hut, NativeHut, ConstructionCreator );
+  ADD_CREATOR(objects::native_center, NativeCenter, ConstructionCreator );
+  ADD_CREATOR(objects::native_field, NativeField, ConstructionCreator );
 
   //damages
-  ADD_CREATOR(objects::burningRuins, BurningRuins, ConstructionCreator );
-  ADD_CREATOR(objects::burnedRuins, BurnedRuins, ConstructionCreator );
-  ADD_CREATOR(objects::collapsedRuins, CollapsedRuins, ConstructionCreator );
-  ADD_CREATOR(objects::plagueRuins, PlagueRuins, ConstructionCreator);
+  ADD_CREATOR(objects::burning_ruins, BurningRuins, ConstructionCreator );
+  ADD_CREATOR(objects::burned_ruins, BurnedRuins, ConstructionCreator );
+  ADD_CREATOR(objects::collapsed_ruins, CollapsedRuins, ConstructionCreator );
+  ADD_CREATOR(objects::plague_ruins, PlagueRuins, ConstructionCreator);
 
   //places
   ADD_CREATOR( objects::elevation, Elevation, BaseCreator );

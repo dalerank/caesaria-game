@@ -65,18 +65,18 @@ Peace::Peace( PlayerCityPtr city )
   _d->significantBuildingsDestroyed = false;
 
   _d->unsignificantBuildings << objects::prefecture
-                         << objects::engineerPost
+                         << objects::engineering_post
                          << objects::well
                          << objects::fortArea
-                         << objects::fortJavelin
-                         << objects::fortLegionaire
-                         << objects::fortMounted
+                         << objects::fort_javelin
+                         << objects::fort_legionaries
+                         << objects::fort_horse
                          << objects::gatehouse
                          << objects::fortification
                          << objects::road
                          << objects::plaza
-                         << objects::highBridge
-                         << objects::lowBridge
+                         << objects::high_bridge
+                         << objects::low_bridge
                          << objects::tower;
 }
 
