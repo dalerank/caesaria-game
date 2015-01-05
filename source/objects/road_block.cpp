@@ -35,7 +35,7 @@ RoadBlock::RoadBlock()
   // or we will run into big troubles
 
   setType(objects::roadBlock);
-  setPicture( ResourceGroup::blocks, 1 );
+  setPicture( ResourceGroup::roadBlock, 1 );
 }
 
 // Plazas can be built ONLY on top of existing roads
@@ -73,7 +73,7 @@ bool RoadBlock::build( const CityAreaInfo& info )
   }
 
   Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  //setPicture( MetaDataHolder::randomPicture( type(), size() ) );
 
   return true;
 }
@@ -102,5 +102,5 @@ const Picture& RoadBlock::picture() const
 {
   return tile().masterTile()
            ? Construction::picture()
-           : Picture::load( ResourceGroup::blocks, 1);
+           : Picture::load( ResourceGroup::roadBlock, 1);
 }

@@ -199,7 +199,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-void ServiceWalker::_addObsoleteOverlays(TileOverlay::Type type) { _d->obsoleteOvs.insert( type ); }
+void ServiceWalker::_addObsoleteOverlay(TileOverlay::Type type) { _d->obsoleteOvs.insert( type ); }
 unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
@@ -481,6 +481,19 @@ bool ServiceWalker::die()
   }
 
   return false;
+}
+
+void ServiceWalker::initialize(const VariantMap& options)
+{
+  Human::initialize( options );
+
+  VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
+  foreach( it, oboletesOvs )
+  {
+    TileOverlay::Type ovType = MetaDataHolder::findType( it->toString() );
+    if( ovType != objects::unknown )
+      _addObsoleteOverlay( ovType );
+  }
 }
 
 void ServiceWalker::setMaxDistance( const int distance ) { _d->maxDistance = distance; }

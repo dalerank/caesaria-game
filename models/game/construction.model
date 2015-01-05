@@ -83,6 +83,12 @@
     sound : [ "theatre", 1 ]
   },
 
+  roadBlock : {
+    cost : 10
+    class : "road"
+    image : [ "roadBlock", 1 ]
+  }
+
   hippodrome : {
     cost : 2500,
     desirability : { base : -3, range : 3, step : 1 }

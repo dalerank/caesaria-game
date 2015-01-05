@@ -59,7 +59,7 @@ public:
   __RCG_NAME wall;
   __RCG_NAME hippodrome;
   __RCG_NAME celts;
-  __RCG_NAME blocks;
+  __RCG_NAME roadBlock;
 };
 
 class ResourceMenu

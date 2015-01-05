@@ -212,7 +212,7 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::factory:        ret = new BuildMenu_factory       ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::religion:       ret = new BuildMenu_religion      ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::temple:         ret = new BuildMenu_temple        ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::big_temple:      ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
+  case development::big_temple:     ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
 

@@ -581,14 +581,6 @@ bool Prefect::die()
 void Prefect::initialize(const VariantMap& options)
 {
   ServiceWalker::initialize( options );
-
-  VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
-  foreach( it, oboletesOvs )
-  {
-    TileOverlay::Type ovType = MetaDataHolder::findType( it->toString() );
-    if( ovType != objects::unknown )
-      _addObsoleteOverlays( ovType );
-  }
 }
 
 std::string Prefect::thoughts(Thought th) const

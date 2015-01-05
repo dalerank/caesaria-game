@@ -20,12 +20,19 @@
     }
   }
 
+  roadBlock : {
+    cost : 10
+    class : "road"
+    image : [ "roadBlock", 1 ]
+  }
+
   tree : {
     class : "tree"
     image.ext : {
       type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
     }
   }
+
   road : {
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
