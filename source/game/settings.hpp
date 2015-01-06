@@ -53,6 +53,7 @@ public:
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
   __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)

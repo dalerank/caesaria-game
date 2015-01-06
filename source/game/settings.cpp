@@ -49,6 +49,7 @@ __REG_PROPERTY(fastsavePostfix)
 __REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
+__REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
 __REG_PROPERTY(soundThemesModel)
@@ -222,6 +223,12 @@ void Settings::checkCmdOptions(char* argv[], int argc)
       _d->options[ c3gfx ] = Variant( opts );
       i++;
     }
+    else if( !strcmp( argv[i], "-oldgfx" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ oldgfx ] = Variant( opts );
+      i++;
+    }
     else if( !strcmp( argv[i], "-cellw" ) )
     {
       const char* opts = argv[i+1];
@@ -236,7 +243,8 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 void Settings::checkC3present()
 {
   std::string c3path = _d->options[ c3gfx ].toString();
-  if( !c3path.empty() )
+  int useOldGfx = _d->options[ oldgfx ];
+  if( !c3path.empty() || useOldGfx )
   {
     _d->options[ houseModel          ] = Variant( std::string( "/house.c3" ) );
     _d->options[ constructionModel   ] = Variant( std::string( "/construction.c3" ) );
