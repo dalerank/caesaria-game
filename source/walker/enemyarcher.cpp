@@ -22,7 +22,6 @@
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
-#include "core/variant.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
 #include "events/event.hpp"
@@ -34,6 +33,7 @@
 #include "animals.hpp"
 #include "spear.hpp"
 #include "helper.hpp"
+#include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 

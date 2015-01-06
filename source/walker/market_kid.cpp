@@ -22,6 +22,7 @@
 #include "pathway/pathway.hpp"
 #include "good/goodstore.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"

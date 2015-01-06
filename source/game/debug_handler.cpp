@@ -75,7 +75,8 @@ enum {
   comply_rome_request,
   change_emperor,
   add_city_border,
-  earthquake
+  earthquake,
+  toggle_experimental_options
 };
 
 class DebugHandler::Impl
@@ -129,6 +130,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( change_emperor )
   ADD_DEBUG_EVENT( earthquake )
   ADD_DEBUG_EVENT( add_city_border )
+  ADD_DEBUG_EVENT( toggle_experimental_options )
 
   CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
 #undef ADD_DEBUG_EVENT
@@ -225,6 +227,13 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_city_border:
   {
     game->city()->tilemap().addBorder();
+  }
+  break;
+
+  case toggle_experimental_options:
+  {
+    bool enable = SETTINGS_VALUE( experimental );
+    SETTINGS_SET_VALUE( experimental, !enable );
   }
   break;
 

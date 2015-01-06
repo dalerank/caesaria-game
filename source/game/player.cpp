@@ -17,8 +17,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "player.hpp"
-#include "core/variant.hpp"
-
+#include "core/variant_map.hpp"
 
 class Player::Impl
 {

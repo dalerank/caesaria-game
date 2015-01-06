@@ -16,6 +16,7 @@
 #include "showtutorialwindow.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "core/variant_map.hpp"
 #include "gui/tutorial_window.hpp"
 #include "gui/environment.hpp"
 

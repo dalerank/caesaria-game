@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "merchant.hpp"
 #include "gfx/animation.hpp"
+#include "core/variant_map.hpp"
 #include "city.hpp"
 #include "city/city.hpp"
 #include "objects/fort.hpp"

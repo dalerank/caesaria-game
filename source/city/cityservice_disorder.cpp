@@ -23,6 +23,7 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "events/event.hpp"
 #include "walker/mugger.hpp"

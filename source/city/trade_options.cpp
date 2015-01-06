@@ -17,6 +17,7 @@
 #include "core/utils.hpp"
 #include "good/goodhelper.hpp"
 #include "good/goodstore_simple.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 
 namespace city

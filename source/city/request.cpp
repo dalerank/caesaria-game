@@ -31,6 +31,7 @@
 #include "events/showrequestwindow.hpp"
 #include "world/goodcaravan.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 
 namespace  city
 {

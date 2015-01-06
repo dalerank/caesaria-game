@@ -24,7 +24,7 @@
 #include "city.hpp"
 #include "core/saveadapter.hpp"
 #include "empire.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 namespace world
 {

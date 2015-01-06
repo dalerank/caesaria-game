@@ -55,34 +55,13 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
   else
   {
     TileOverlayPtr overlay = tile.overlay();
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    //water buildings
-    case objects::reservoir:
-    case objects::fountain:
-    case objects::well:
-    case objects::aqueduct:
-    case objects::tree:
-    case objects::waymark:
+      // Base set of visible objects
       needDrawAnimations = true;
       areaSize = overlay->size();      
-    break;
-
-    default:
+    }
+    else
     {
       int tileNumber = 0;
       bool haveWater = tile.param( Tile::pFountainWater ) > 0 || tile.param( Tile::pWellWater ) > 0;
@@ -107,8 +86,6 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
         areaSize = 0;
       }
-    }
-    break;
     }
 
     if ( needDrawAnimations )
@@ -232,6 +209,7 @@ Water::Water( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _showWaterValue = false;
+  _fillVisibleObjects( citylayer::water );
 }
 
 }//end namespace layer

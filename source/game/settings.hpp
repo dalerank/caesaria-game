@@ -53,6 +53,7 @@ public:
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
   __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)
@@ -83,6 +84,9 @@ public:
   __GS_PROPERTY(logoArchive)
   __GS_PROPERTY(titleResource)
   __GS_PROPERTY(forbidenTile)
+  __GS_PROPERTY(layersOptsModel)
+  __GS_PROPERTY(experimental)
+  __GS_PROPERTY(buildMenuModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();

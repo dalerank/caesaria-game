@@ -16,13 +16,12 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "house_level.hpp"
 
 #include "objects/house.hpp"
 #include "core/exception.hpp"
 #include "core/utils.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "good/goodstore.hpp"
 #include "core/foreach.hpp"
@@ -166,7 +165,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
     {
     case 1: needBuilding = objects::baths; break;
     case 2: needBuilding = objects::barber; break;
-    case 3: needBuilding = objects::doctor; break;
+    case 3: needBuilding = objects::clinic; break;
     case 4: needBuilding = objects::hospital; break;
     }
 
@@ -215,35 +214,35 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   if( _d->requiredGoods[good::pottery] != 0 && house->goodStore().qty(good::pottery) == 0)
   {
     ref = "##missing_pottery##";
-    needBuilding = objects::pottery;
+    needBuilding = objects::pottery_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::furniture] != 0 && house->goodStore().qty(good::furniture) == 0)
   {
     ref = "##missing_furniture##";
-    needBuilding = objects::furnitureWorkshop;
+    needBuilding = objects::furniture_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::oil] != 0 && house->goodStore().qty(good::oil) == 0)
   {
     ref = "##missing_oil##";
-    needBuilding = objects::creamery;
+    needBuilding = objects::oil_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::wine] != 0 && house->goodStore().qty(good::wine) == 0)
   {
     ref = "##missing_wine##";
-    needBuilding = objects::winery;
+    needBuilding = objects::wine_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::prettyWine] != 0 && house->goodStore().qty(good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
-    needBuilding = objects::winery;
+    needBuilding = objects::wine_workshop;
     return false;
   }
 

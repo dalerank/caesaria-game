@@ -24,9 +24,9 @@
 #include "objects/granary.hpp"
 #include "objects/warehouse.hpp"
 #include "gfx/tile.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "good/goodhelper.hpp"
-#include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/animation_bank.hpp"
 #include "objects/factory.hpp"
@@ -232,7 +232,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Ty
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, objects::granary,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, objects::granery,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.i() < 0 )

@@ -17,6 +17,7 @@
 #include "good/goodstore_simple.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"

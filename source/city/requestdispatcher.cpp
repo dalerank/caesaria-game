@@ -20,6 +20,7 @@
 #include "request.hpp"
 #include "game/gamedate.hpp"
 #include "events/showrequestwindow.hpp"
+#include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"

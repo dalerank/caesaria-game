@@ -19,6 +19,7 @@
 #include "gui/environment.hpp"
 #include "warningmessage.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "objects/senate.hpp"
 #include "core/logger.hpp"
 

@@ -187,9 +187,9 @@ void AboutLegion::_update()
     int flIndex = 0;
     switch( _d->fort->type() )
     {
-    case objects::fortJavelin: flIndex = 30; break;
-    case objects::fortLegionaire: flIndex = 21; break;
-    case objects::fortMounted: flIndex = 39; break;
+    case objects::fort_javelin: flIndex = 30; break;
+    case objects::fort_legionaries: flIndex = 21; break;
+    case objects::fort_horse: flIndex = 39; break;
 
     default: break;
     }

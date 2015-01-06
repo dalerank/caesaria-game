@@ -18,6 +18,7 @@
 #ifndef __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 #define __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 
+#include "build_options.hpp"
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "game/enums.hpp"
@@ -25,20 +26,46 @@
 #include "gfx/tileoverlay.hpp"
 
 namespace city
+{  
+
+namespace development
 {
 
-class BuildOptions : public ReferenceCounted
+typedef enum
+{
+  unknown,
+  water,
+  health,
+  security,
+  education,
+  engineering,
+  administration,
+  entertainment,
+  commerce,
+  farm,
+  raw_material,
+  factory,
+  religion,
+  temple,
+  big_temple,
+  all
+} Branch;
+
+Branch toBranch( const std::string& name );
+std::string toString( Branch branch );
+
+class Options : public ReferenceCounted
 {
 public:
-  BuildOptions();
-  virtual ~BuildOptions();
+  Options();
+  virtual ~Options();
 
   void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
-  void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
-  bool isGroupAvailable(const BuildMenuType type ) const;
+  void setGroupAvailable(const Branch type, Variant mayBuild );
+  bool isGroupAvailable(const Branch type ) const;
   unsigned int getBuildingsQuote( const gfx::TileOverlay::Type type ) const;
   TilePos memPoint( unsigned int index ) const;
-  void setMemPoint(unsigned int index, TilePos point );
+  void setMemPoint( unsigned int index, TilePos point );
 
   bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
 
@@ -47,17 +74,19 @@ public:
   void load( const VariantMap& options );
   VariantMap save() const;
 
-  BuildOptions& operator=(const BuildOptions& a);
+  Options& operator=(const Options& a);
 
   void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
   bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
   bool isCheckDesirability() const;
-  unsigned int getMaximumForts() const;
+  unsigned int maximumForts() const;
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace development
 
 }//end namespace city
 #endif //__CAESARIA_BUILD_OPTIONS_H_INCLUDED__

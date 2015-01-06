@@ -19,6 +19,7 @@
 #include "http/httpconnection.hpp"
 #include "core/logger.hpp"
 #include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include <sstream>
 
 namespace updater

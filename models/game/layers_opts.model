@@ -1,0 +1,75 @@
+{
+  crime : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge", "highBridge",
+                       "elevation", "tree", "rift", "prefecture", "burningRuins" ]
+  }
+
+  damage : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "engineerPost" ]
+  }
+
+  desirability : {
+    visibleObjects : [ "road", "plaza", "garden", "collapsedRuins", "burnedRuins", "collapsedRuins", "lowBridge",
+                       "highBridge", "tree", "elevation", "rift", "burningRuins" ]
+  }
+
+  education : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge",
+                       "highBridge", "tree", "elevation", "rift", "burningRuins" ]
+
+  }
+
+  entertainment : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge",
+                       "highBridge", "tree", "elevation", "rift", "burningRuins" ]
+  }
+
+  fire : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "prefecture" ]
+  }
+
+  food : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "market", "granary" ]
+  }
+
+  health : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins" ]
+  }
+
+  aborigen : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "nativeCenter", "nativeField" ]
+  }
+
+  religion : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "templeCeres",
+                       "templeMars", "templeMercury", "templeNeptune", "templeVenus", "cathedralCeres",
+                       "cathedralMars", "cathedralMercury", "cathedralNeptune", "cathedralVenus", "oracle" ]
+  }
+
+  tax : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "seante", "forum" ]
+  }
+
+  troubles : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins" ]
+  }
+
+  risks : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins" ]
+  }
+
+  water : {
+    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "reservoir",
+                       "fountain", "well", "aqueduct", "tree", ]
+  }
+}

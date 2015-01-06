@@ -81,14 +81,18 @@ public:
   virtual int nextLayer() const;
 
   virtual ~Layer();
+
 protected:
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
   Tile* _currentTile() const;
-  void _setTooltipText( const std::string& text );  
+  void _setTooltipText( const std::string& text );
   void _addWalkerType( constants::walker::Type wtype );
+  void _fillVisibleObjects( int ltype );
+  WalkerTypes& _visibleWalkers();
+  bool _isVisibleObject( int ovType );
 
   TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 

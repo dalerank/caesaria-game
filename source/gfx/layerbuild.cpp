@@ -402,7 +402,7 @@ void Build::_finishBuild()
   _updatePreviewTiles( true );
 }
 
-int Build::type() const {  return citylayer::build;}
+int Build::type() const {  return citylayer::build; }
 
 void Build::_drawBuildTiles( Engine& engine)
 {

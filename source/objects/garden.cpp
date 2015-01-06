@@ -21,6 +21,7 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 
 using namespace gfx;

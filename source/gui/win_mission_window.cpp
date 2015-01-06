@@ -45,14 +45,18 @@ WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string
 {
   setupUI( ":/gui/winmission.gui" );
 
-  Logger::warning( "dialog::WinMission: show" );
+  Logger::warning( "dialog::WinMission show" );
   _d->locker.activate();
 
   setCenter( p->center() );
 
   Label* lbNewTitle;
+  PushButton* btnContinue2years;
+  PushButton* btnContinue5years;
 
   GET_WIDGET_FROM_UI( lbNewTitle )
+  GET_WIDGET_FROM_UI( btnContinue2years )
+  GET_WIDGET_FROM_UI( btnContinue5years )
 
   if( lbNewTitle ) lbNewTitle->setText( _( newTitle ) );
 
@@ -63,6 +67,9 @@ WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string
     lbWin->setWordwrap( true );
     WidgetDeleter::assignTo( lbWin, 3000 );
   }
+
+  if( btnContinue2years ) btnContinue2years->setVisible( mayContinue );
+  if( btnContinue5years ) btnContinue5years->setVisible( mayContinue );
 }
 
 WinMission::~WinMission(){}
