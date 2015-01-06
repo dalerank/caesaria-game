@@ -55,6 +55,7 @@ public:
                   int population ) const;
 
   bool isSuccess() const;
+  bool mayContinue() const;
 
   void load( const VariantMap& stream );
   VariantMap save() const;

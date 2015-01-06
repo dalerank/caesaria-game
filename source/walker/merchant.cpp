@@ -21,6 +21,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "city/statistic.hpp"
+#include "core/variant_map.hpp"
 #include "city/helper.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"

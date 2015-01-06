@@ -19,6 +19,7 @@
 #include "bytearray.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
+#include "variant_map.hpp"
 #include "saveadapter.hpp"
 
 namespace {

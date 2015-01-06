@@ -25,7 +25,7 @@
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
 #include "core/gettext.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"

@@ -21,10 +21,10 @@
 #include <string>
 #include <memory>
 #include <sys/stat.h>
-#include <map>
 #include <set>
 #include <SDL.h>
 
+#include "core/variant_map.hpp"
 #include "core/position.hpp"
 #include "core/exception.hpp"
 #include "game/resourcegroup.hpp"

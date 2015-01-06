@@ -51,57 +51,34 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     TileOverlayPtr overlay = tile.overlay();
 
     int taxLevel = -1;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
     // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    // Tax-related
-    case objects::senate:
-    case objects::forum:
       needDrawAnimations = true;
-    break;
+    }
+    else if( overlay->type() == objects::house )
+    {
+      HousePtr house = ptr_cast<House>( overlay );
+      //taxLevel = house->getServiceValue( Service::forum );
+      taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
+      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
-      //houses
-    case objects::house:
+      if( needDrawAnimations  )
       {
-        HousePtr house = ptr_cast<House>( overlay );
-        //taxLevel = house->getServiceValue( Service::forum );
-        taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
-        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-
-        if( needDrawAnimations  )
-        {
-          int taxAccess = house->hasServiceAccess( Service::forum );
-          needDrawAnimations = (taxAccess < 25);
-        }
-
-        if( !needDrawAnimations )
-        {
-          city::Helper helper( _city() );
-          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-        }
+        int taxAccess = house->hasServiceAccess( Service::forum );
+        needDrawAnimations = (taxAccess < 25);
       }
-    break;
 
-      //other buildings
-    default:
+      if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
-    break;
+    }
+    else
+    {
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )

@@ -76,29 +76,15 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
   else
   {
     TileOverlayPtr overlay = tile.overlay();
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
+      // Base set of visible objects
       Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
-    break;
-
-    //other buildings
-    default:
+    }
+    else
     {
+      //other buildings
       int picOffset = __des2index( desirability );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
@@ -109,8 +95,6 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
       {
         engine.draw( pic, (*tile)->mappos() + offset );
       }
-    }
-    break;
     }
   }
 
@@ -175,6 +159,7 @@ Desirability::Desirability( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 0 ), _d( new Impl )
 {
   _d->debugFont = Font::create( "FONT_1" );
+  _fillVisibleObjects( type() );
 }
 
 }

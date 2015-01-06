@@ -24,24 +24,4 @@ enum FestivalType { smallFest=1, middleFest, greatFest };
 
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_BRIEFING, SCREEN_QUIT, SCREEN_MAX };
 
-enum BuildMenuType 
-{ 
-  BM_NONE, 
-  BM_WATER, 
-  BM_HEALTH, 
-  BM_SECURITY, 
-  BM_EDUCATION, 
-  BM_ENGINEERING, 
-  BM_ADMINISTRATION, 
-  BM_ENTERTAINMENT, 
-  BM_COMMERCE, 
-  BM_FARM, 
-  BM_RAW_MATERIAL, 
-  BM_FACTORY, 
-  BM_RELIGION, 
-  BM_TEMPLE, 
-  BM_BIGTEMPLE, 
-  BM_MAX 
-};
-
 #endif  //_CAESARIA_ENUMS_INCLUDE_H_

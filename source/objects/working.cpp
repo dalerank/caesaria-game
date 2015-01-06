@@ -20,6 +20,7 @@
 #include "walker/walker.hpp"
 #include "events/returnworkers.hpp"
 #include "core/utils.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"

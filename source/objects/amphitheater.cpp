@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"

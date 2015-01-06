@@ -20,6 +20,7 @@
 #include "core/event.hpp"
 #include "environment.hpp"
 #include "gfx/engine.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/picture.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"

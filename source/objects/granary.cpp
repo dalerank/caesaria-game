@@ -19,7 +19,7 @@
 #include "granary.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
 #include "good/goodstore_simple.hpp"
 #include "city/helper.hpp"
@@ -100,7 +100,7 @@ public:
   bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( constants::objects::granary, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( constants::objects::granery, Size(3) ), _d( new Impl )
 {
   _d->store.granary = this;
 

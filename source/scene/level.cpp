@@ -705,7 +705,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   {
     dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
                                                       wt.newTitle(), wt.winText(),
-                                                      false );
+                                                      wt.mayContinue() );
 
     mapToLoad = wt.nextMission();
 
@@ -820,7 +820,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       if( event.keyboard.control )
       {
         unsigned int index = event.keyboard.key - KEY_KEY_1;
-        city::BuildOptions bopts;
+        city::development::Options bopts;
         bopts = _d->game->city()->buildOptions();
         if( event.keyboard.shift )
         {

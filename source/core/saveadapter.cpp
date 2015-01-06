@@ -21,6 +21,7 @@
 #include "logger.hpp"
 #include "vfs/file.hpp"
 #include "vfs/path.hpp"
+#include "core/variant_map.hpp"
 
 using namespace vfs;
 

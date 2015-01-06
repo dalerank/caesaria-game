@@ -21,6 +21,7 @@
 #include "gui/environment.hpp"
 #include "scribemessage.hpp"
 #include "core/gettext.hpp"
+#include "core/variant_map.hpp"
 #include "gui/film_widget.hpp"
 #include "gui/event_messagebox.hpp"
 #include "good/goodhelper.hpp"

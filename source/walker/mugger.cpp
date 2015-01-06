@@ -30,7 +30,7 @@
 #include "corpse.hpp"
 #include "ability.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;

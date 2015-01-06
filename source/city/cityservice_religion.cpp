@@ -24,6 +24,7 @@
 #include "objects/religion.hpp"
 #include "religion/pantheon.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"

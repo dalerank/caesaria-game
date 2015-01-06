@@ -21,6 +21,7 @@
 #include "core/time.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
 #include "core/foreach.hpp"

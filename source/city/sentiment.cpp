@@ -19,6 +19,7 @@
 #include "game/gamedate.hpp"
 #include "helper.hpp"
 #include "objects/house.hpp"
+#include "core/variant_map.hpp"
 
 using namespace constants;
 

@@ -179,7 +179,7 @@ bool FestivalPlaning::onEvent(const NEvent& event)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
-    if( btn && (btn->ID() & Impl::divId ) )
+    if( btn && btn->ID() != Widget::noId && (btn->ID() & Impl::divId) == Impl::divId )
     {
       foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
 

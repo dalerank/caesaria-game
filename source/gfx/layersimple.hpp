@@ -32,6 +32,7 @@ class Simple : public Layer
 public:
   virtual int type() const;
   static LayerPtr create(Camera& camera, PlayerCityPtr city );
+  virtual void drawTile(Engine &engine, Tile &tile, const Point &offset);
   virtual void afterRender(Engine &engine);
   virtual void renderUi(Engine &engine);
 

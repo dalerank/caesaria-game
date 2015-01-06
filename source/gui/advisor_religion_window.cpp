@@ -156,23 +156,23 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, objects::templeCeres, objects::cathedralCeres );
+  Impl::InfrastructureInfo info = _d->getInfo( city, objects::small_ceres_temple, objects::big_ceres_temple );
   _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), rome::Pantheon::ceres(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::templeNeptune, objects::cathedralNeptune );
+  info = _d->getInfo( city, objects::small_neptune_temple, objects::big_neptune_temple );
   _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), rome::Pantheon::neptune(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::templeMercury, objects::cathedralMercury );
+  info = _d->getInfo( city, objects::small_mercury_temple, objects::big_mercury_temple );
   _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), rome::Pantheon::mercury(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::templeMars, objects::cathedralMars );
+  info = _d->getInfo( city, objects::small_mars_temple, objects::big_mars_temple );
   _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), rome::Pantheon::mars(),
                                           info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::templeVenus, objects::cathedralVenus );
+  info = _d->getInfo( city, objects::small_venus_temple, objects::big_venus_temple );
   _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), rome::Pantheon::venus(),
                                            info.smallTemplCount, info.bigTempleCount );
 

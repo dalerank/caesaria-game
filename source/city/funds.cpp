@@ -23,7 +23,7 @@
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 using namespace constants;
 

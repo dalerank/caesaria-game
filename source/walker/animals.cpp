@@ -17,7 +17,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "animals.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "city/helper.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"

@@ -71,7 +71,7 @@ public:
     case objects::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
     case objects::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
     case objects::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case objects::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
+    case objects::clinic: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
@@ -137,8 +137,8 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), objects::barber,
                                               info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  info = _d->getInfo( city, objects::doctor );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), objects::doctor,
+  info = _d->getInfo( city, objects::clinic );
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), objects::clinic,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   info = _d->getInfo( city, objects::hospital );

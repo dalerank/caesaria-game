@@ -34,7 +34,8 @@ namespace city
   class Funds;
   class VictoryConditions;
   class TradeOptions;
-  class BuildOptions;
+
+namespace development { class Options; }
 }
 
 struct BorderInfo
@@ -105,8 +106,8 @@ public:
   void addOverlay( gfx::TileOverlayPtr overlay);
   gfx::TileOverlayPtr getOverlay( const TilePos& pos ) const;
 
-  const city::BuildOptions& buildOptions() const;
-  void setBuildOptions( const city::BuildOptions& options );
+  const city::development::Options& buildOptions() const;
+  void setBuildOptions( const city::development::Options& options );
 
   virtual unsigned int age() const;
 

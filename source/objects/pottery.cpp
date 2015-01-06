@@ -26,7 +26,7 @@
 using namespace constants;
 using namespace gfx;
 
-Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery, Size(2))
+Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery_workshop, Size(2))
 {
   _fgPicturesRef().resize( 3 );
 }
@@ -41,7 +41,7 @@ bool Pottery::build( const CityAreaInfo& info )
 {
   Factory::build( info );
   city::Helper helper( info.city );
-  bool haveClaypit = !helper.find<Building>( objects::clayPit ).empty();
+  bool haveClaypit = !helper.find<Building>( objects::clay_pit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 
