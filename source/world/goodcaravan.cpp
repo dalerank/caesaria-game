@@ -21,6 +21,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "city.hpp"
+#include "core/variant_map.hpp"
 
 namespace world
 {

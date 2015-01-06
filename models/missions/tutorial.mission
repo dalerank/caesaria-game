@@ -58,7 +58,7 @@
         }
 
         "enable_engineer#building_options" : {
-          buildings : { engineering_post : true, senate_1 : true }
+          buildings : { engineering_post : true, senate : true }
         }
       }
     }

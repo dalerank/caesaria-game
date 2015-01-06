@@ -17,6 +17,7 @@
 
 #include "traderoute.hpp"
 #include "empire.hpp"
+#include "core/variant_map.hpp"
 #include "merchant.hpp"
 #include "city.hpp"
 #include "good/goodstore_simple.hpp"

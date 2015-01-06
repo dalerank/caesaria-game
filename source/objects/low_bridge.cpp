@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
 #include "events/clearland.hpp"
@@ -37,7 +38,7 @@ class LowBridgeSubTile : public Construction
 public:
   enum { liftingWest=67, spanWest=68, descentWest=69, liftingNorth=70, spanNorth=71, descentNorth=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
-    : Construction( objects::lowBridge, Size( 1 ) )
+    : Construction( objects::low_bridge, Size( 1 ) )
   {
     _info = 0;
     _imgId = 0;
@@ -174,7 +175,7 @@ bool LowBridge::canBuild( const CityAreaInfo& areaInfo ) const
   return (_d->direction != noneDirection);
 }
 
-LowBridge::LowBridge() : Construction( constants::objects::lowBridge, Size(1) ), _d( new Impl )
+LowBridge::LowBridge() : Construction( constants::objects::low_bridge, Size(1) ), _d( new Impl )
 {
   Picture pic;
   setPicture( pic );

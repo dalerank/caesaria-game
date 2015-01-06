@@ -17,6 +17,7 @@
 
 #include "cityservice.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 
 namespace city

@@ -21,6 +21,7 @@
 #include "objects/theater.hpp"
 #include "core/gettext.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_map.hpp"
 #include "label.hpp"
 
 using namespace constants;

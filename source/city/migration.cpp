@@ -27,6 +27,7 @@
 #include "objects/house.hpp"
 #include "gfx/tile.hpp"
 #include "funds.hpp"
+#include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
 #include "world/empire.hpp"

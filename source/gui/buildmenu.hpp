@@ -31,14 +31,15 @@ class BuildMenu : public Widget
 public:
   static const int subMenuCreateIdHigh = 0x1000;
 
-  BuildMenu( Widget* parent, const Rect& rectangle, int id );
+  BuildMenu( Widget* parent, const Rect& rectangle, int id,
+             city::development::Branch branch );
   virtual ~BuildMenu();
 
-  static BuildMenu* create( const BuildMenuType menuType, 
+  static BuildMenu* create( const city::development::Branch menuType,
                             Widget* parent );
 
   // add the subMenu in the menu.
-  void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
+  void addSubmenuButton(const city::development::Branch menuType, const std::string &text);
 
   // add the button in the menu.
   void addBuildButton(const gfx::TileOverlay::Type buildingType);
@@ -47,19 +48,19 @@ public:
 
   virtual void initialize();
 
-  void setBuildOptions(const city::BuildOptions& options );
+  void setBuildOptions(const city::development::Options& options );
 
 protected:
   void _resolveButtonClick();
 
-  city::BuildOptions _options;
+  city::development::Options _options;
+  city::development::Branch _branch;
 };
 
 class BuildMenu_water : public BuildMenu
 {
 public:
   BuildMenu_water( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 
@@ -67,7 +68,6 @@ class BuildMenu_security : public BuildMenu
 {
 public:
   BuildMenu_security( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 
@@ -75,15 +75,12 @@ class BuildMenu_education : public BuildMenu
 {
 public:
   BuildMenu_education( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
-
 
 class BuildMenu_health : public BuildMenu
 {
 public:
   BuildMenu_health( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 
@@ -91,7 +88,6 @@ class BuildMenu_engineering : public BuildMenu
 {
 public:
   BuildMenu_engineering( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 
@@ -99,7 +95,6 @@ class BuildMenu_administration : public BuildMenu
 {
 public:
   BuildMenu_administration( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 
@@ -107,31 +102,25 @@ class BuildMenu_entertainment : public BuildMenu
 {
 public:
   BuildMenu_entertainment( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
-
 
 class BuildMenu_commerce : public BuildMenu
 {
 public:
   BuildMenu_commerce( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
-
 
 class BuildMenu_farm : public BuildMenu
 {
 public:
   BuildMenu_farm( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 
-class BuildMenu_raw_factory : public BuildMenu
+class BuildMenu_raw_material : public BuildMenu
 {
 public:
-  BuildMenu_raw_factory( Widget* parent, const Rect& rectangle );
-  void initialize();
+  BuildMenu_raw_material( Widget* parent, const Rect& rectangle );
 };
 
 
@@ -139,28 +128,24 @@ class BuildMenu_factory : public BuildMenu
 {
 public:
   BuildMenu_factory( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 class BuildMenu_religion: public BuildMenu
 {
 public:
   BuildMenu_religion( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 class BuildMenu_temple : public BuildMenu
 {
 public:
   BuildMenu_temple( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 class BuildMenu_bigtemple : public BuildMenu
 {
 public:
   BuildMenu_bigtemple( Widget* parent, const Rect& rectangle );
-  void initialize();
 };
 
 }//end namespace gui

@@ -21,6 +21,13 @@
 #include <vector>
 #include "variant.hpp"
 #include "core/foreach.hpp"
+#include <set>
+
+inline std::set<int>& operator<<(std::set<int>& which, int value)
+{
+  which.insert( value );
+  return which;
+}
 
 template<class T>
 class Priorities : public std::vector< T >

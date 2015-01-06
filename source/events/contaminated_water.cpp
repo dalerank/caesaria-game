@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "objects/well.hpp"
 
 using namespace constants;

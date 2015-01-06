@@ -16,7 +16,7 @@
 #include "goodstore_simple.hpp"
 #include "core/math.hpp"
 #include "core/foreach.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 

@@ -31,6 +31,7 @@
 #include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
+#include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "cityservice_military.hpp"
 

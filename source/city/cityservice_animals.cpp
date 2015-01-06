@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/animals.hpp"
+#include "core/variant_map.hpp"
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "walker/walkers_factory.hpp"

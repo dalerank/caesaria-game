@@ -207,7 +207,7 @@
     { 
       engineering_post : true
       plaza : true
-      forum_1 : false
+      forum : false
       garden : true
       low_bridge : true
       high_bridge : true
@@ -231,7 +231,7 @@
       wheat_farm : true
       fig_farm : true
       olive_farm : true
-      senate_1 : true
+      senate : true
     }
   }
 }

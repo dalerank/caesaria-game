@@ -24,7 +24,7 @@
 #include "empiremap.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 

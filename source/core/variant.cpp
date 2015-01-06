@@ -18,6 +18,7 @@
 #include <cstring>
 
 #include "variant.hpp"
+#include "variant_map.hpp"
 #include "variantprivate.hpp"
 #include "utils.hpp"
 
