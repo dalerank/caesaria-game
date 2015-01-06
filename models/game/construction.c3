@@ -511,36 +511,22 @@
     requestDestroy : true
   },
 
-  senate_1 : {
+  senate : {
     cost : 250,
     desirability : { base : 8,	range : 4,	step : -2 }
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
   }, 
- 
-  senate_2 : {
-    cost : 400,
-    desirability : { base : 8,	range : 8,	step : -1 }
-    employers : 30
-    class : "administration"
-  }, 
-  
-  forum_1 : {
+   
+  forum : {
     cost : 75,
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
     sound : [ "forum", 1 ]
   }, 
-  
-  forum_2 : {
-    cost : 125,
-    desirability : { base : 3, 	range : 3,	step : -1 }
-    employers : 8
-    class : "administration"
-  },
-  
+    
   native_hut : {
     cost : 50,
     desirability : { base : 0, 	range : 0,	step : 0 }

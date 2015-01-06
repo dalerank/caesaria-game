@@ -343,10 +343,10 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   city::Helper hlp( city );
   float lastMonthTax = 0;
   
-  ForumList forums = hlp.find< Forum >( objects::forum_1 );
+  ForumList forums = hlp.find< Forum >( objects::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = hlp.find< Senate >( objects::senate_1 );
+  SenateList senates = hlp.find< Senate >( objects::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );

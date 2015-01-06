@@ -72,7 +72,7 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = game::Date::current();
 
   std::vector< Impl::UpdateBuilding > btypes;
-  btypes.push_back( Impl::UpdateBuilding(objects::senate_1, 10) );
+  btypes.push_back( Impl::UpdateBuilding(objects::senate, 10) );
   btypes.push_back( Impl::UpdateBuilding(objects::small_ceres_temple, 4));
   btypes.push_back( Impl::UpdateBuilding(objects::small_mars_temple, 4));
   btypes.push_back( Impl::UpdateBuilding(objects::small_mercury_temple, 4));

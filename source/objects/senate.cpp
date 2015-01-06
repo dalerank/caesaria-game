@@ -41,7 +41,7 @@ public:
   std::string errorStr;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, objects::senate_1, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
@@ -65,7 +65,7 @@ bool Senate::canBuild( const CityAreaInfo& areaInfo ) const
   if( mayBuild )
   {
     city::Helper helper( areaInfo.city );
-    bool isSenatePresent = !helper.find<Building>(objects::senate_1).empty();
+    bool isSenatePresent = !helper.find<Building>(objects::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }

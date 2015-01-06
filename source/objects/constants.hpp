@@ -84,8 +84,8 @@ enum Type
   house,
 
 // administration
-  senate_1,
-  forum_1,
+  senate,
+  forum,
   governorHouse,
   governorVilla,//20
   governorPalace,
@@ -181,8 +181,8 @@ enum Type
   collapsed_ruins,
   plague_ruins,
 
-  forum_2,
-  senate_2,
+  reserved_2,
+  reserved_3,
   elevation,
   rift,//90
   river,

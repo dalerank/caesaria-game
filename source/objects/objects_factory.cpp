@@ -222,8 +222,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(objects::road,     Road, ConstructionCreator );
 
   // administration
-  ADD_CREATOR(objects::forum_1,        Forum, WorkingBuildingCreator );
-  ADD_CREATOR(objects::senate_1,       Senate, WorkingBuildingCreator );
+  ADD_CREATOR(objects::forum,        Forum, WorkingBuildingCreator );
+  ADD_CREATOR(objects::senate,       Senate, WorkingBuildingCreator );
   ADD_CREATOR(objects::governorHouse,GovernorsHouse, ConstructionCreator );
   ADD_CREATOR(objects::governorVilla,GovernorsVilla, ConstructionCreator );
   addCreator(objects::governorPalace, CAESARIA_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );

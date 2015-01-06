@@ -131,7 +131,7 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   case development::factory: setBuildingAvailble( objects::wine_workshop, objects::pottery_workshop, mayBuild ); break;
   case development::education: setBuildingAvailble( objects::school, objects::library, mayBuild ); break;
   case development::entertainment: setBuildingAvailble( objects::amphitheater, objects::chariotSchool, mayBuild ); break;
-  case development::administration: setBuildingAvailble( objects::senate_1, objects::governorPalace, mayBuild ); break;
+  case development::administration: setBuildingAvailble( objects::senate, objects::governorPalace, mayBuild ); break;
   case development::engineering:
     setBuildingAvailble( objects::engineering_post, objects::wharf, mayBuild );
     setBuildingAvailble( objects::plaza, mayBuild );
@@ -160,7 +160,7 @@ bool Options::isGroupAvailable(const Branch type) const
   case development::factory:      return isBuildingsAvailble( objects::wine_workshop, objects::pottery_workshop ); break;
   case development::education:    return isBuildingsAvailble( objects::school, objects::library ); break;
   case development::entertainment:return isBuildingsAvailble( objects::amphitheater, objects::chariotSchool ); break;
-  case development::administration:return isBuildingsAvailble( objects::senate_1, objects::governorPalace ); break;
+  case development::administration:return isBuildingsAvailble( objects::senate, objects::governorPalace ); break;
   case development::engineering:  return isBuildingsAvailble( objects::engineering_post, objects::wharf ); break;
   case development::security:     return isBuildingsAvailble( objects::prefecture, objects::fortArea ); break;
   case development::commerce:     return isBuildingsAvailble( objects::market, objects::warehouse ); break;

@@ -73,7 +73,7 @@
 
     "enable_industry#building_options" : {
       population : 450
-      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true, weapons_workshop : true, forum_1 : true }
+      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true, weapons_workshop : true, forum : true }
     }
 
     "enable_advisors#empire_options" : {
@@ -137,7 +137,7 @@
       market : true
       granery : true
       wheat_farm : true
-      senate_1 : true
+      senate : true
     }
   }
 }

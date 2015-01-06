@@ -225,7 +225,7 @@ Manager::Manager() : _d( new Impl )
   addInfobox( objects::dock,             CAESARIA_STR_EXT(Dock), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( objects::wine_workshop,           CAESARIA_STR_EXT(Winery), new BaseInfoboxCreator<AboutFactory>() );
   addInfobox( objects::oil_workshop,         CAESARIA_STR_EXT(Creamery), new BaseInfoboxCreator<AboutFactory>() );
-  addInfobox( objects::senate_1,           CAESARIA_STR_EXT(Senate),    new BaseInfoboxCreator<AboutSenate>() );
+  addInfobox( objects::senate,           CAESARIA_STR_EXT(Senate),    new BaseInfoboxCreator<AboutSenate>() );
   addInfobox( objects::theater,          CAESARIA_STR_EXT(Theater),     new BaseInfoboxCreator<AboutTheater>() );
   addInfobox( objects::actorColony,      CAESARIA_STR_EXT(ActorColony), new ServiceBaseInfoboxCreator( "", "" ) );
   ADD_INFOBOX( objects::amphitheater,    BaseInfoboxCreator<AboutAmphitheater>() )
@@ -234,7 +234,7 @@ Manager::Manager() : _d( new Impl )
   addInfobox( objects::lionsNursery,     CAESARIA_STR_EXT(LionsNursery), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( objects::hippodrome,       CAESARIA_STR_EXT(Hippodrome), new ServiceBaseInfoboxCreator( "", "" ) );
   ADD_INFOBOX( objects::chariotSchool, ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( objects::forum_1,            CAESARIA_STR_EXT(Forum),        new ServiceBaseInfoboxCreator("", "" ) );
+  addInfobox( objects::forum,            CAESARIA_STR_EXT(Forum),        new ServiceBaseInfoboxCreator("", "" ) );
   addInfobox( objects::governorHouse,    CAESARIA_STR_EXT(governorHouse),new ServiceBaseInfoboxCreator( "", "##governor_house_text##") );
   ADD_INFOBOX( objects::governorVilla, ServiceBaseInfoboxCreator( "", "##governor_villa_text##") )
   addInfobox( objects::governorPalace,   CAESARIA_STR_EXT(governorPalace), new ServiceBaseInfoboxCreator( "", "##governor_palace_text##") );

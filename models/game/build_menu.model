@@ -13,11 +13,11 @@
   }
 
   health : {
-    buildings : [ "doctor", "barber", "baths", "hospital" ]
+    buildings : [ "clinic", "barber", "baths", "hospital" ]
   }
 
   engineering : {
-    buildings : [ "engineerPost", "low_bridge", "high_bridge", "dock",
+    buildings : [ "engineering_post", "low_bridge", "high_bridge", "dock",
                   "shipyard", "wharf", "triumphal_arch", "garden", "plaza", "roadBlock" ]
   }
 

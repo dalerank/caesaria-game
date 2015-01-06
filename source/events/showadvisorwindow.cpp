@@ -74,7 +74,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   }
 
   city::Helper helper( game.city() );
-  SenateList senates = helper.find<Senate>( objects::senate_1 );
+  SenateList senates = helper.find<Senate>( objects::senate );
   if( senates.empty() )
   {
     events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##" );
