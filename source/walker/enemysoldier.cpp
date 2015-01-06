@@ -22,7 +22,7 @@
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
 #include "events/event.hpp"

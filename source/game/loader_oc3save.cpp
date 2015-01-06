@@ -23,6 +23,7 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "player.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "gamedate.hpp"
 #include "world/empire.hpp"

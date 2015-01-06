@@ -31,6 +31,7 @@
 #include "world/empire.hpp"
 #include "city/city.hpp"
 #include "settings.hpp"
+#include "core/variant_map.hpp"
 #include "events/postpone.hpp"
 #include "gamedate.hpp"
 #include "core/logger.hpp"
@@ -131,7 +132,7 @@ bool Mission::load( const std::string& filename, Game& game )
     winConditions.load( winOptions.toMap() );
     city->setVictoryConditions( winConditions );
 
-    city::BuildOptions options;
+    city::development::Options options;
     options.load( vm[ "buildoptions" ].toMap() );
     city->setBuildOptions( options  );
 

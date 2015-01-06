@@ -69,7 +69,10 @@ public:
 void WarehouseTile::computePicture()
 {
   int picIdx = 0;
-  switch( _stock.type() )
+  int qty = _stock.qty();
+  good::Type gtype = _stock.empty() ? good::none : _stock.type();
+
+  switch( gtype )
   {
   case good::none: picIdx = 19; break;
   case good::wheat: picIdx = 20; break;
@@ -96,11 +99,11 @@ void WarehouseTile::computePicture()
   break;
   default:
     _CAESARIA_DEBUG_BREAK_IF( "Unexpected good type: " );
-  }
+  }  
 
-  if (_stock.type() != good::none)
+  if( gtype != good::none)
   {
-    int qty = _stock.qty();
+
     // (0  , 100] -> 0
     // (100, 200] -> 1
     // (200, 300] -> 2
@@ -109,7 +112,7 @@ void WarehouseTile::computePicture()
   }
 
   _picture = Picture::load( ResourceGroup::warehouse, picIdx );
-  _picture.addOffset( util::tilepos2screen( _pos ) );
+  _picture.addOffset( tile::tilepos2screen( _pos ) );
 }
 
 
@@ -137,6 +140,8 @@ public:
   // store/retrieve
   virtual void applyStorageReservation(good::Stock& stock, const int reservationID);
   virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID);
+
+  virtual void retrieve( good::Stock& stock, const int amount);
 
 private:
   Warehouse* _warehouse;
@@ -330,6 +335,9 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
       int tileAmount = std::min(amount, whStock.qty());
       // std::cout << "retrieve from half filled" << std::endl;
       stock.append( whStock, tileAmount);
+      if( whStock.empty() )
+        whStock.setType( good::none );
+
       amount -= tileAmount;
     }
   }
@@ -351,6 +359,13 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
       amount -= tileAmount;
     }
   }
+
+  _warehouse->computePictures();
+}
+
+void WarehouseStore::retrieve(good::Stock& stock, const int amount)
+{
+  good::Store::retrieve( stock, amount );
 
   _warehouse->computePictures();
 }
@@ -540,22 +555,24 @@ void Warehouse::_resolveDevastationMode()
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
+    const int maxCapacity = 400;
     for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
     {
       int goodQty = _d->goodStore.qty( (good::Type)goodType );
-      goodQty = math::clamp( goodQty, 0, 400);
+      goodQty = math::clamp( goodQty, 0, maxCapacity);
 
       if( goodQty > 0 )
       {
         good::Stock stock( (good::Type)goodType, goodQty, goodQty);
-        CartPusherPtr walker = CartPusher::create( _city() );
-        walker->send2city( BuildingPtr( this ), stock );
+        CartPusherPtr cart = CartPusher::create( _city() );
+        cart->stock().setCapacity( maxCapacity );
+        cart->send2city( BuildingPtr( this ), stock );
 
-        if( !walker->isDeleted() )
+        if( !cart->isDeleted() )
         {
           good::Stock tmpStock( (good::Type)goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
-          addWalker( walker.object() );
+          addWalker( cart.object() );
         }
       }
     }   

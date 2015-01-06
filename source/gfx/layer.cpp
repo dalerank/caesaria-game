@@ -21,6 +21,7 @@
 #include "game/resourcegroup.hpp"
 #include "tilesarray.hpp"
 #include "gfx/helper.hpp"
+#include "core/variant_map.hpp"
 #include "core/event.hpp"
 #include "city_renderer.hpp"
 #include "events/showtileinfo.hpp"
@@ -49,6 +50,7 @@ class Layer::Impl
 public:
   //typedef std::vector<Tile*> TileQueue;
   //typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
+  typedef std::set<int> AlwaysDrawObjects;
 
   Point lastCursorPos;
   Point startCursorPos;
@@ -64,6 +66,7 @@ public:
   Layer::WalkerTypes vwalkers;
   PictureRef tilePosText;
   Font debugFont;
+  AlwaysDrawObjects drObjects;
 
   int posMode;
 public:
@@ -616,6 +619,20 @@ void Layer::_addWalkerType(walker::Type wtype)
   _dfunc()->vwalkers.insert( wtype );
 }
 
+void Layer::_fillVisibleObjects(int ltype)
+{
+  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)ltype );
+  VariantList vl = vm.get( "visibleObjects" ).toList();
+  foreach( it, vl )
+  {
+    int ovType = MetaDataHolder::findType( it->toString() );
+    if( ovType != objects::unknown )
+      _dfunc()->drObjects.insert( ovType );
+    }
+}
+
+Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
+bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}

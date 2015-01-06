@@ -41,6 +41,7 @@ public:
   __GS_PROPERTY(language)
   __GS_PROPERTY(resolution)
   __GS_PROPERTY(fullscreen)
+  __GS_PROPERTY(climateModel)
   __GS_PROPERTY(savedir)
   __GS_PROPERTY(emigrantSalaryKoeff)
   __GS_PROPERTY(minMonthWithFood)
@@ -52,6 +53,7 @@ public:
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
   __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)
@@ -79,6 +81,12 @@ public:
   __GS_PROPERTY(simpleAnimationModel)
   __GS_PROPERTY(hotkeysModel)
   __GS_PROPERTY(cartsModel)
+  __GS_PROPERTY(logoArchive)
+  __GS_PROPERTY(titleResource)
+  __GS_PROPERTY(forbidenTile)
+  __GS_PROPERTY(layersOptsModel)
+  __GS_PROPERTY(experimental)
+  __GS_PROPERTY(buildMenuModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -95,6 +103,7 @@ public:
   void setwdir( const std::string& wdir );
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
+  void checkC3present();
 private:
   Settings();
 

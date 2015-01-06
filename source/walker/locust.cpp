@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "locust.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
@@ -82,7 +82,7 @@ void Locust::timeStep(const unsigned long time)
   {
     FarmPtr farm;
     farm << _city()->getOverlay( pos() );
-    if( farm.isValid() && farm->type() != objects::pigFarm )
+    if( farm.isValid() && farm->type() != objects::meat_farm )
     {
       farm->updateProgress( -50 );
     }

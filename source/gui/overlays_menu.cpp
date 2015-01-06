@@ -109,7 +109,7 @@ void OverlaysMenu::_addButtons(const int type )
 
 void OverlaysMenu::_addButton(const int ovType, const Point& offset )
 {
-  std::string layerName = citylayer::Helper::instance().findName( (citylayer::Type)ovType );
+  std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
   PushButton* btn = new PushButton( this, Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
   btn->setFont( Font::create( FONT_1 ) );
   btn->setNotClipped( true );

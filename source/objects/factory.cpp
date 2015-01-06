@@ -27,7 +27,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/predefinitions.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "walker/cart_supplier.hpp"
 #include "core/utils.hpp"
 #include "good/goodstore_simple.hpp"
@@ -290,9 +290,9 @@ void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, productionRate )
-  stream[ "goodStore" ] = _d->store.save();
   VARIANT_SAVE_ANY_D( stream, _d, progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
+  stream[ "goodStore" ] = _d->store.save();
 }
 
 void Factory::load( const VariantMap& stream)
@@ -366,7 +366,7 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Winery::Winery() : Factory(good::grape, good::wine, objects::winery, Size(2) )
+Winery::Winery() : Factory(good::grape, good::wine, objects::wine_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
 
@@ -385,7 +385,7 @@ bool Winery::build( const CityAreaInfo& info )
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveVinegrad = !helper.find<Building>( objects::grapeFarm ).empty();
+  bool haveVinegrad = !helper.find<Building>( objects::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -398,7 +398,7 @@ void Winery::_storeChanged()
   _fgPicturesRef()[1].setOffset( 40, -10 );
 }
 
-Creamery::Creamery() : Factory(good::olive, good::oil, objects::creamery, Size(2) )
+Creamery::Creamery() : Factory(good::olive, good::oil, objects::oil_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 99 );
 
@@ -417,7 +417,7 @@ bool Creamery::build( const CityAreaInfo& info )
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveOliveFarm = !helper.find<Building>( objects::oliveFarm ).empty();
+  bool haveOliveFarm = !helper.find<Building>( objects::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

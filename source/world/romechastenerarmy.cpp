@@ -19,6 +19,7 @@
 #include "empire.hpp"
 #include "events/notification.hpp"
 #include "emperor.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"

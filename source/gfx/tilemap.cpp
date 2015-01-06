@@ -22,7 +22,7 @@
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
@@ -318,7 +318,7 @@ void Tilemap::save( VariantMap& stream ) const
   foreach( it, tiles )
   {
     Tile* tile = *it;    
-    bitsetInfo.push_back( util::encode( *tile ) );
+    bitsetInfo.push_back( tile::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
     idInfo.push_back( tile->originalImgId() );
   }
@@ -371,13 +371,13 @@ void Tilemap::load( const VariantMap& stream )
   {
     Tile* tile = *it;
 
-    util::decode( *tile, bitsetAr[index] );
+    tile::decode( *tile, bitsetAr[index] );
     tile->setParam( Tile::pDesirability, desAr[index] );
 
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
-      Picture& pic = util::pictureFromId( imgId );
+      Picture& pic = imgid::toPicture( imgId );
 
       tile->setOriginalImgId( imgId );
 

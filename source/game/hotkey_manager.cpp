@@ -17,6 +17,7 @@
 
 #include "hotkey_manager.hpp"
 #include "core/event.hpp"
+#include "core/variant_map.hpp"
 #include "core/enumerator.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"

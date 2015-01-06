@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "objects/road.hpp"
 #include "objects/house.hpp"
+#include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "core/priorities.hpp"

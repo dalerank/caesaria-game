@@ -30,6 +30,7 @@
 #include "core/foreach.hpp"
 #include "helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_map.hpp"
 
 using namespace constants;
 using namespace gfx;

@@ -35,6 +35,7 @@
 #include "core/stacktrace.hpp"
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
+#include "core/variant_map.hpp"
 #include "events/clearland.hpp"
 #include "city/build_options.hpp"
 
@@ -335,7 +336,7 @@ TilePos Fort::freeSlot() const
   {
     foreach( it, tiles )
     {
-      unsigned int tilehash = util::hash((*it)->pos());
+      unsigned int tilehash = tile::hash((*it)->pos());
 
       if( _d->patrolAreaPos.find( tilehash ) == _d->patrolAreaPos.end() )
       {
@@ -518,8 +519,8 @@ bool Fort::build( const CityAreaInfo& info )
   FortList forts;
   forts << info.city->overlays();
 
-  const city::BuildOptions& bOpts = info.city->buildOptions();
-  if( forts.size() >= bOpts.getMaximumForts() )
+  const city::development::Options& bOpts = info.city->buildOptions();
+  if( forts.size() >= bOpts.maximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;

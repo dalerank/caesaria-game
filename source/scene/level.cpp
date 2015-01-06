@@ -359,8 +359,8 @@ void Level::Impl::makeFullScreenshot()
   int mapSize = tmap.size();
   Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
   Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
-  Point lastRightPos = util::tilepos2screen( lastRightTile.pos() );
-  Point lastBottomPos = util::tilepos2screen( lastBottomTile.pos() );
+  Point lastRightPos = tile::tilepos2screen( lastRightTile.pos() );
+  Point lastBottomPos = tile::tilepos2screen( lastBottomTile.pos() );
   Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
 
   TilesArray ret;
@@ -705,7 +705,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   {
     dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
                                                       wt.newTitle(), wt.winText(),
-                                                      false );
+                                                      wt.mayContinue() );
 
     mapToLoad = wt.nextMission();
 
@@ -820,7 +820,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       if( event.keyboard.control )
       {
         unsigned int index = event.keyboard.key - KEY_KEY_1;
-        city::BuildOptions bopts;
+        city::development::Options bopts;
         bopts = _d->game->city()->buildOptions();
         if( event.keyboard.shift )
         {

@@ -27,6 +27,7 @@
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
 #include "city/migration.hpp"
+#include "core/variant_map.hpp"
 #include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
 #include "cityservice_prosperity.hpp"
@@ -125,7 +126,7 @@ public:
   Tilemap tilemap;
   TilePos cameraStart;
 
-  city::BuildOptions buildOptions;
+  city::development::Options buildOptions;
   city::TradeOptions tradeOptions;
   city::VictoryConditions targets;
   Options options;
@@ -658,7 +659,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 
 const city::SrvcList& PlayerCity::services() const { return _d->services; }
 
-void PlayerCity::setBuildOptions(const city::BuildOptions& options)
+void PlayerCity::setBuildOptions(const city::development::Options& options)
 {
   _d->buildOptions = options;
   emit _d->onChangeBuildingOptionsSignal();
@@ -668,7 +669,7 @@ unsigned int PlayerCity::age() const { return _d->age; }
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
-const city::BuildOptions& PlayerCity::buildOptions() const { return _d->buildOptions; }
+const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }

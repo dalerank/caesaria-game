@@ -185,9 +185,9 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
       }
       break;
 
-      case objects::fortJavelin:
-      case objects::fortLegionaire:
-      case objects::fortMounted:
+      case objects::fort_javelin:
+      case objects::fort_legionaries:
+      case objects::fort_horse:
       {
         c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
         c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);

@@ -77,7 +77,7 @@ void FarmTile::computePicture(const int percent)
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
   _picture = pictures[picIdx];
-  _picture.addOffset( util::tilepos2screen( _pos ));
+  _picture.addOffset( tile::tilepos2screen( _pos ));
 }
 
 Picture& FarmTile::getPicture() {  return _picture; }
@@ -199,7 +199,7 @@ unsigned int Farm::getProduceQty() const
 
 Farm::~Farm() {}
 
-FarmWheat::FarmWheat() : Farm(good::wheat, objects::wheatFarm)
+FarmWheat::FarmWheat() : Farm(good::wheat, objects::wheat_farm)
 {
 }
 
@@ -227,22 +227,22 @@ bool FarmWheat::build( const CityAreaInfo& info )
   return ret;
 }
 
-FarmOlive::FarmOlive() : Farm(good::olive, objects::oliveFarm)
+FarmOlive::FarmOlive() : Farm(good::olive, objects::olive_farm)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(good::grape, objects::grapeFarm)
+FarmGrape::FarmGrape() : Farm(good::grape, objects::vinard)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(good::meat, objects::pigFarm)
+FarmMeat::FarmMeat() : Farm(good::meat, objects::meat_farm)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(good::fruit, objects::fruitFarm)
+FarmFruit::FarmFruit() : Farm(good::fruit, objects::fig_farm)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(good::vegetable, objects::vegetableFarm)
+FarmVegetable::FarmVegetable() : Farm(good::vegetable, objects::vegetable_farm)
 {
 }

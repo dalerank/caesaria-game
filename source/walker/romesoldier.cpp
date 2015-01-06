@@ -25,6 +25,7 @@
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "helper.hpp"
 #include "enemysoldier.hpp"
 #include "core/foreach.hpp"

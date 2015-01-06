@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_CHANGE_EMPEROR_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/variant_map.hpp"
 
 namespace events
 {

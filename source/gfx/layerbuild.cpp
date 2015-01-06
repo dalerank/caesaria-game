@@ -34,6 +34,7 @@
 #include "renderermode.hpp"
 #include "events/warningmessage.hpp"
 #include "city/funds.hpp"
+#include "game/settings.hpp"
 #include "walker/walker.hpp"
 #include "city_renderer.hpp"
 
@@ -46,7 +47,6 @@ namespace gfx
 namespace layer
 {
 static const int frameCountLimiter=25;
-CAESARIA_LITERALCONST(oc3_land)
 
 class Build::Impl
 {
@@ -63,6 +63,7 @@ public:
   int money4Construction;
   Renderer* renderer;
   LayerPtr lastLayer;
+  std::string resForbiden;
   Font textFont;
   PictureRef textPic;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
@@ -150,8 +151,8 @@ void Build::_checkPreviewBuild(TilePos pos)
   {
     //bldCommand->setCanBuild(false);
 
-    const Picture& grnPicture = Picture::load(lc_oc3_land, 1);
-    const Picture& redPicture = Picture::load(lc_oc3_land, 2);
+    const Picture& grnPicture = Picture::load( d->resForbiden, 1);
+    const Picture& redPicture = Picture::load( d->resForbiden, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -401,7 +402,7 @@ void Build::_finishBuild()
   _updatePreviewTiles( true );
 }
 
-int Build::type() const {  return citylayer::build;}
+int Build::type() const {  return citylayer::build; }
 
 void Build::_drawBuildTiles( Engine& engine)
 {
@@ -569,6 +570,7 @@ Build::Build(Renderer* renderer, PlayerCityPtr city)
   __D_IMPL(d,Build);
   d->renderer = renderer;
   d->frameCount = 0;
+  d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = TilePos( -1, -1 );
   d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );

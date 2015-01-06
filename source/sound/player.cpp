@@ -21,6 +21,7 @@
 #include "core/stringarray.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "sound/engine.hpp"
 

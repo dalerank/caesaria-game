@@ -95,7 +95,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
       if( tile->getFlag( Tile::tlMeadow ) || tile->getFlag( Tile::tlWater ) )
       {
-        tile->setPicture( util::convId2PicName( tile->originalImgId() ) );
+        tile->setPicture( imgid::toResource( tile->originalImgId() ) );
       }
       else
       {
@@ -113,7 +113,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
         Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
-        tile->setOriginalImgId( util::convPicName2Id( pic.name() ) );
+        tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
     }
 

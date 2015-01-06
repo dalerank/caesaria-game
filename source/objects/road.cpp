@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "objects/aqueduct.hpp"
 #include "city/city.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "city/helper.hpp"

@@ -18,6 +18,7 @@
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "core/time.hpp"
+#include "core/variant_map.hpp"
 #include "environment.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"

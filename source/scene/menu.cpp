@@ -50,6 +50,7 @@
 #include "core/event.hpp"
 #include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"
@@ -76,10 +77,8 @@ public:
   std::string playerName;
   int result;
 
-#ifdef CAESARIA_USE_STEAM
   Picture userImage;
   gui::Label* lbSteamName;
-#endif
 
 public:
   void handleNewGame();
@@ -276,7 +275,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "doc (doc@nnm.me),vk.com/caesaria-game",
+                         "vk.com/caesaria-game",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
@@ -427,6 +426,7 @@ StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
   _d->game = &game;
+  _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
 }
 
@@ -458,7 +458,8 @@ void StartMenu::handleEvent( NEvent& event )
 void StartMenu::initialize()
 {
   Logger::warning( "ScreenMenu: initialize start");
-  _d->bgPicture = Picture::load("title", 1);
+  std::string resName = SETTINGS_VALUE( titleResource ).toString();
+  _d->bgPicture = Picture::load( resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
@@ -498,9 +499,20 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
+  steamapi::Handler::init();  
+
+  std::string steamName = steamapi::Handler::userName();
   _d->userImage = steamapi::Handler::userImage();
-  std::string text = utils::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
-                                                                               CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
+  if( steamName.empty() )
+  {
+    OSystem::error( "Error", "Cant login in Steam" );
+    _d->isStopped = true;
+    _d->result = closeApplication;
+    return;
+  }
+
+  std::string text = utils::format( 0xff, "ver %d.%d.%d\n%s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
+                                                                      CAESARIA_VERSION_REVSN, steamName.c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );

@@ -28,6 +28,7 @@
 #include "empiremap.hpp"
 #include "game/player.hpp"
 #include "world/barbarian.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 

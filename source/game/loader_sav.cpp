@@ -282,7 +282,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
       Tile& tile = oTilemap.at(i, j);
 
       unsigned int imgId = graphicGrid[index];
-      Picture pic = Picture::load( util::convId2PicName( imgId ));
+      Picture pic = imgid::toPicture( imgId );
 
       if( pic.isValid() )
       {
@@ -300,12 +300,12 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         baseBuildings[ tile.pos() ] = imgId;
         pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
+        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
 
       edgeData[ i ][ j ] = edgeGrid[index];
-      util::decode( tile, terrainGrid[index] );
-      util::fixPlateauFlags( tile );
+      tile::decode( tile, terrainGrid[index] );
+      tile::fixPlateauFlags( tile );
     }
   }    
 

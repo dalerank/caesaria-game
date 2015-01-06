@@ -26,7 +26,7 @@
 #include "objects/market.hpp"
 #include "objects/objects_factory.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
 #include "good/goodstore_simple.hpp"

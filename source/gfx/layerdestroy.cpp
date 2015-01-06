@@ -31,6 +31,7 @@
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
 #include "core/font.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 
@@ -120,7 +121,7 @@ void Destroy::render( Engine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( util::hash(tile->epos()));
+    hashDestroyArea.insert( tile::hash(tile->epos()));
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
@@ -128,7 +129,7 @@ void Destroy::render( Engine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( util::hash((*ovelayTile)->epos()));
+        hashDestroyArea.insert( tile::hash((*ovelayTile)->epos()));
       }
     }
 
@@ -141,7 +142,7 @@ void Destroy::render( Engine& engine )
     Tile* tile = *it;
     Tile* master = tile->masterTile();
 
-    int tilePosHash = util::hash(tile->epos());
+    int tilePosHash = tile::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -158,7 +159,7 @@ void Destroy::render( Engine& engine )
     Tile* tile = *it;
     int z = tile->epos().z();
 
-    int tilePosHash = util::hash(tile->epos());
+    int tilePosHash = tile::hash(tile->epos());
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
@@ -281,7 +282,8 @@ Destroy::Destroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _d->shovelPic = Picture::load( "shovel", 1 );
-  _d->clearPic = Picture::load( "oc3_land", 2 );
+  std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
+  _d->clearPic = Picture::load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
   _d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );

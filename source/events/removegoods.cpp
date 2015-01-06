@@ -18,6 +18,7 @@
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "game/game.hpp"
 
 using namespace constants;
@@ -67,7 +68,7 @@ void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Type what, 
 void RemoveGoods::_exec( Game& game, unsigned int time )
 {
   _removeGoodFrom<Warehouse>( game.city(), objects::warehouse, _type, _qty );
-  _removeGoodFrom<Granary>( game.city(), objects::granary, _type, _qty );
+  _removeGoodFrom<Granary>( game.city(), objects::granery, _type, _qty );
 }
 
 bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }

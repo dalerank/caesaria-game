@@ -27,6 +27,7 @@
 #include "objects/house_level.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
+#include "core/variant_map.hpp"
 #include "texturedbutton.hpp"
 #include "gui/label.hpp"
 #include "city/city.hpp"

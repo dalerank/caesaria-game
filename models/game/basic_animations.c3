@@ -1,0 +1,83 @@
+{
+  water : {
+    type : 1
+    rc : "land1a"
+    start : 121
+    frames : 7
+    delay : 40
+    step : 1
+  }
+
+  meadow : {
+    type : 2
+    rc : "meadow"
+    start : 1
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_0 : {
+    type : 600
+    rc : "land1a"
+    start : 10
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_1 : {
+    type : 601
+    rc : "land1a"
+    start : 11
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_2 : {
+    type : 602
+    rc : "land1a"
+    start : 12
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_3 : {
+    type : 603
+    rc : "land1a"
+    start : 13
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_4 : {
+    type : 604
+    rc : "land1a"
+    start : 14
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_5 : {
+    type : 605
+    rc : "land1a"
+    start : 15
+    frames : 1
+    delay : 12
+    step : 1
+  }
+
+  tree_6 : {
+    type : 606
+    rc : "land1a"
+    start : 16
+    frames : 1
+    delay : 12
+    step : 1
+  }
+}
+

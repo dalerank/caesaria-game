@@ -22,7 +22,7 @@
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "pathway/path_finding.hpp"
 #include "city/city.hpp"
@@ -517,7 +517,7 @@ void Walker::load( const VariantMap& stream)
 
 void Walker::turn(TilePos p )
 {
-  Direction direction = util::getDirection( pos(), p );
+  Direction direction = tilemap::getDirection( pos(), p );
 
   if( _d->action.direction != direction )
   {
