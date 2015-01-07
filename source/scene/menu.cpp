@@ -115,6 +115,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   result = StartMenu::loadSavedGame;
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  wnd->setShowExtension( false );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( true );
 

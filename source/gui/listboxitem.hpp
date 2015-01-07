@@ -94,8 +94,8 @@ public:
   void setTextColor( ColorType type, NColor color);
 
   void updateText( const Point& p, Font f, const Size& s );
-
   void draw(const std::string& text, Font f , const Point& p);
+  void clear();
 
   struct OverrideColor
   {

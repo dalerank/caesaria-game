@@ -49,6 +49,7 @@ public:
 
 signals public:
   Signal1<int> onChangeSignal;
+  Signal1<IssueType> onNewIssueSignal;
 };
 
 Funds::Funds() : _d( new Impl )
@@ -62,11 +63,11 @@ Funds::Funds() : _d( new Impl )
 
 void Funds::resolveIssue( FundIssue issue )
 {
+  int saveMoney = _d->money;
   bool needUpdateTreasury = true;
   switch( issue.type )
   {
   case unknown:
-    //_CAESARIA_DEBUG_BREAK_IF( "wrong issue" );
     Logger::warning( "Funds: wrong issue type %d", issue.type );
     return;
   break;
@@ -94,7 +95,12 @@ void Funds::resolveIssue( FundIssue issue )
   break;
   }
 
-  emit _d->onChangeSignal( _d->money );
+  emit _d->onNewIssueSignal( (IssueType)issue.type );
+
+  if( saveMoney != _d->money )
+  {
+    emit _d->onChangeSignal( _d->money );
+  }
 }
 
 int Funds::treasury() const { return _d->money; }
@@ -199,5 +205,6 @@ void Funds::load( const VariantMap& stream )
 
 Funds::~Funds(){}
 Signal1<int>& Funds::onChange(){  return _d->onChangeSignal; }
+Signal1<Funds::IssueType>&Funds::onNewIssue(){ return _d->onNewIssueSignal; }
 
 }//end namespace city
