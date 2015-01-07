@@ -145,6 +145,7 @@ public:
   void updateWalkers(unsigned int time);
   void updateOverlays( PlayerCityPtr city, unsigned int time);
   void updateServices( PlayerCityPtr city, unsigned int time );
+  void resolveNewIssue( city::Funds::IssueType type );
 
 signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -456,6 +457,28 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
+    }
+}
+
+void PlayerCity::Impl::resolveNewIssue(city::Funds::IssueType type)
+{
+  switch( type )
+  {
+  case city::Funds::overdueEmpireTax:
+    {
+      int lastYearBrokenTribute = funds.getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+      std::string text = lastYearBrokenTribute > 0
+                                ? "##for_second_year_broke_tribute##"
+                                : "##current_year_notpay_tribute_warning##";
+      events::GameEventPtr e = events::ShowInfobox::create( "##tribute_broken_title##",
+                                                            text );
+      e->dispatch();
+    }
+  break;
+
+  default:
+  break;
+
   }
 }
 
