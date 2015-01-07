@@ -75,6 +75,7 @@ public:
 
 signals public:
   Signal1<int>& onChange();
+  Signal1<IssueType>& onNewIssue();
 
 private:
   class Impl;

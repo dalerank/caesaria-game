@@ -1,6 +1,6 @@
 {
   version : 1
-  map : ":/maps/Caesarea.sav"
+  map : ":/maps/Sarmizegetusa.sav"
   funds : 8000
   city.name : "Sarmizegetusa"
   player.rank : 2

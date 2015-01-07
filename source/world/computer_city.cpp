@@ -294,6 +294,12 @@ void ComputerCity::timeStep( unsigned int time )
   if( game::Date::isYearChanged() )
   {
     _d->age++;
+
+    //debug muleta
+    if( _d->funds.treasury() < 1000 )
+    {
+      _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
+    }
   }
 
   //one year before step need

@@ -618,6 +618,8 @@ void ListBox::beforeDraw(gfx::Engine& painter)
   Widget::beforeDraw( painter );
 }
 
+void ListBox::refresh() {  _d->needItemsRepackTextures = true; }
+
 //! draws the element and its children
 void ListBox::draw(gfx::Engine& painter )
 {
@@ -862,8 +864,7 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); ++it )
-  { addItem( *it ); }
+  foreach( it, strings ) { addItem( *it ); }
 }
 
 Font ListBox::font() const{  return _d->font;}
