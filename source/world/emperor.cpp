@@ -40,6 +40,7 @@ struct Relation
   unsigned int lastSoldiersSent;
   DateTime lastGiftDate;
   DateTime lastTaxDate;
+  int chastenerFailed;
   int lastGiftValue;
   bool debtMessageSent;
 
@@ -68,6 +69,7 @@ struct Relation
     VARIANT_SAVE_ANY(ret, soldiersSent )
     VARIANT_SAVE_ANY(ret, lastSoldiersSent)
     VARIANT_SAVE_ANY(ret, debtMessageSent )
+    VARIANT_SAVE_ANY(ret, chastenerFailed )
 
     return ret;
   }
@@ -81,6 +83,7 @@ struct Relation
     VARIANT_LOAD_ANY(lastSoldiersSent, stream);
     VARIANT_LOAD_ANY(soldiersSent, stream)
     VARIANT_LOAD_ANY(debtMessageSent, stream)
+    VARIANT_LOAD_ANY(chastenerFailed, stream)
   }
 };
 
@@ -230,7 +233,14 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
     army->setSoldiersNumber( sldrNumber );
     army->attack( ptr_cast<Object>( *it ) );
 
-    relation.lastSoldiersSent = sldrNumber;
+    if( !army->isDeleted() )
+    {
+      relation.lastSoldiersSent = sldrNumber;
+    }
+    else
+    {
+      relation.chastenerFailed++;
+    }
   }
 }
 
