@@ -158,6 +158,12 @@ Settings::Settings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
+  _d->options[ oldgfx              ] = 1;
+
+#ifdef CAESARIA_USE_STEAM
+  _d->options[ oldgfx              ] = 0;
+#endif
+
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
 #endif
