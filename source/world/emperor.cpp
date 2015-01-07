@@ -88,9 +88,12 @@ class Emperor::Impl
 {
 public:
   typedef std::map< std::string, Relation > Relations;
+
   Relations relations;
   Empire* empire;
   std::string name;
+
+  void resolveTroubleCities( const CityList& cities );
 };
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
@@ -157,30 +160,37 @@ void Emperor::timeStep(unsigned int time)
   {
     __D_IMPL(d,Emperor)
 
-    foreach( it, d->relations )
+    CityList empireCities = d->empire->cities();
+    foreach( it, empireCities )
     {
-      Relation& ref = it->second;
-      ref.value -= 2;
-      int monthWithoutTax = ref.lastTaxDate.monthsTo( game::Date::current() );
+      CityPtr cityp = *it;
+
+      if( !cityp->isAvailable() )
+        continue;
+
+      Relation& relation = d->relations[ cityp->name() ];
+
+      relation.soldiersSent = 0;     //clear chasteners count
+      relation.value -= 2;
+      int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
       if( monthWithoutTax > 12 )
       {
         int decrease = math::clamp( 3 + monthWithoutTax / DateTime::monthsInYear * 2, 0, 8 );
-        ref.value -= decrease;
+        relation.value -= decrease;
       }
 
-      CityPtr cityp = d->empire->findCity( it->first );
       float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
-      if( salaryKoeff > 1.f ) { ref.value -= (int)salaryKoeff * salaryKoeff; }
-      else if( salaryKoeff < 1.f ) { ref.value += 1; }
+      if( salaryKoeff > 1.f ) { relation.value -= (int)salaryKoeff * salaryKoeff; }
+      else if( salaryKoeff < 1.f ) { relation.value += 1; }
 
       int brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
       if( brokenEmpireTax > 0 )
       {
-        ref.value -= 1;
+        relation.value -= 1;
 
         brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
         if( brokenEmpireTax > 0 )
-          ref.value -= 2;
+          relation.value -= 2;
       }
     }
   }
@@ -201,20 +211,26 @@ void Emperor::timeStep(unsigned int time)
       }
     }
 
-    foreach( it, troubleCities )
-    {
-      Relation& relation = d->relations[ (*it)->name() ];
-      relation.soldiersSent = relation.lastSoldiersSent * 2;
+    d->resolveTroubleCities( troubleCities );
+  }
+}
 
-      unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
+void Emperor::Impl::resolveTroubleCities( const CityList& cities )
+{
+  foreach( it, cities )
+  {
+    Relation& relation = relations[ (*it)->name() ];
+    relation.soldiersSent = relation.lastSoldiersSent * 2;
 
-      RomeChastenerArmyPtr army = RomeChastenerArmy::create( d->empire );
-      army->setCheckFavor( true );
-      army->setSoldiersNumber( sldrNumber );
-      army->attack( ptr_cast<Object>( *it ) );
+    unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
 
-      relation.lastSoldiersSent = sldrNumber;
-    }
+    RomeChastenerArmyPtr army = RomeChastenerArmy::create( empire );
+    army->setCheckFavor( true );
+    army->setBase( empire->rome() );
+    army->setSoldiersNumber( sldrNumber );
+    army->attack( ptr_cast<Object>( *it ) );
+
+    relation.lastSoldiersSent = sldrNumber;
   }
 }
 
@@ -276,6 +292,23 @@ void Emperor::resetRelations(const StringArray& cities)
 
 }
 
+void Emperor::checkCities()
+{
+  __D_IMPL(d,Emperor)
+  CityList empireCities = d->empire->cities();
+  foreach( it, empireCities )
+  {
+    if( !(*it)->isAvailable() )
+      continue;
+
+    if( d->relations.count( (*it)->name() ) == 0 )
+    {
+      Relation& relation = d->relations[ (*it)->name() ];
+      relation.value = 50;
+    }
+  }
+}
+
 VariantMap Emperor::save() const
 {
   __D_IMPL_CONST(d,Emperor)
@@ -309,7 +342,11 @@ void Emperor::load(const VariantMap& stream)
   VARIANT_LOAD_STR_D( d, name, stream )
 }
 
-void Emperor::init(Empire &empire) { _dfunc()->empire = &empire; }
+void Emperor::init(Empire &empire)
+{
+  __D_IMPL(d,Emperor)
+  d->empire = &empire;
+}
 
 struct EmperorInfo
 {

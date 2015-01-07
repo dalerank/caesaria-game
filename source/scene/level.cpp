@@ -697,7 +697,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   int culture = city->culture();
   int prosperity = city->prosperity();
   int favour = city->favour();
-  int peace = city->favour();
+  int peace = city->peace();
   int population = city->population();
   bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
 
