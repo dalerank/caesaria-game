@@ -335,6 +335,7 @@
     animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
     employers : 2
     class : "religion"
+    image : [ "smlceres", 1 ]
     sound : [ "templeceres", 1 ]
   },  
   
