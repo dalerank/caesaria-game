@@ -232,7 +232,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
     else if( !strcmp( argv[i], "-oldgfx" ) )
     {
       const char* opts = argv[i+1];
-      _d->options[ oldgfx ] = Variant( opts );
+      _d->options[ oldgfx ] = utils::toInt( opts );
       i++;
     }
     else if( !strcmp( argv[i], "-cellw" ) )

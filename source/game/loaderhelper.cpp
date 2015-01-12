@@ -139,8 +139,9 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    std::string c3path = SETTINGS_VALUE( c3gfx ).toString();
-    if( c3path.empty() )
+    bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
+    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
+    if( !oldgfx )
     {
       Picture pic = MetaDataHolder::randomPicture( objects::meadow, Size(1) );
       oTile.setPicture( pic );
