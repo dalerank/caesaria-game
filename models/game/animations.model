@@ -80,11 +80,10 @@
     move : { rc : "citizen02", start : 1, frames : 12, action : 1, step : 8 }
   }
 
-  /*
-  gladiator2 : {
+
+  gladiatorRiot : {
     move : { rc : "citizen02", start : 199, frames : 12, action : 1, step : 8 }
   }
-  */
 
   protestor : {
     move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }

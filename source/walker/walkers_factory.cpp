@@ -141,6 +141,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::waterGarbage, new BaseCreator<WaterGarbage>() );
   addCreator( walker::bow_arrow, new BaseCreator<BowArrow>() );
   addCreator( walker::etruscanSoldier, new SoldierCreator<EnemySoldier>( walker::etruscanSoldier ) );
+  addCreator( walker::gladiatorRiot, new SoldierCreator<EnemySoldier>( walker::gladiatorRiot ) );
   addCreator( walker::etruscanArcher, new SoldierCreator<EnemyArcher>( walker::etruscanArcher ) );
   addCreator( walker::mugger, new BaseCreator<Mugger>() );
   addCreator( walker::dustCloud, new BaseCreator<DustCloud>() );

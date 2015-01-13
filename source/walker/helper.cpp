@@ -158,6 +158,7 @@ public:
     __REG_WTYPE( patrician  )
     __REG_WTYPE( circusCharioter )
     __REG_WTYPE( docker )
+    __REG_WTYPE( etruscanSoldier )
 #undef __REG_WTYPE
   }
 };
