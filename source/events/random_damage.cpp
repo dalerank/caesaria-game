@@ -90,7 +90,8 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     for( unsigned int k=0; k < number4burn; k++ )
     {
       ConstructionPtr building = ctrs.random();
-      building->collapse();
+      if( !building->isDeleted() )
+        building->collapse();
     }
   }
 }
