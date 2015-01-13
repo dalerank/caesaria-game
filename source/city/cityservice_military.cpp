@@ -24,6 +24,7 @@
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
 #include "objects/fort.hpp"
+#include "core/variant_map.hpp"
 #include "core/flagholder.hpp"
 
 using namespace constants;

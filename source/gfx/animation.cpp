@@ -17,6 +17,7 @@
 
 #include "animation.hpp"
 #include "core/position.hpp"
+#include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"

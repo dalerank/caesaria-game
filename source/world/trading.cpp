@@ -22,6 +22,7 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "good/goodhelper.hpp"
 #include "game/gamedate.hpp"

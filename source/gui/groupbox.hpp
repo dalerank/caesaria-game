@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_GROUPBOX_H_INCLUDED__
 #define __CAESARIA_GROUPBOX_H_INCLUDED__
 
-#include "gui/widget.hpp"
+#include "widget.hpp"
 
 namespace gui
 {

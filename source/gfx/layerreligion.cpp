@@ -53,66 +53,32 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     TileOverlayPtr overlay = tile.overlay();
 
     int religionLevel = -1;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    // Religion-related
-    case objects::templeCeres:
-    case objects::templeMars:
-    case objects::templeMercury:
-    case objects::templeNeptune:
-    case objects::templeVenus:
-
-    case objects::cathedralCeres:
-    case objects::cathedralMars:
-    case objects::cathedralMercury:
-    case objects::cathedralNeptune:
-    case objects::cathedralVenus:
-
-    case objects::oracle:
+      // Base set of visible objects
       needDrawAnimations = true;      
-    break;
+    }
+    else if( overlay->type() == objects::house )
+    {
+      HousePtr house = ptr_cast<House>( overlay );
+      religionLevel = (int) house->getServiceValue(Service::religionMercury);
+      religionLevel += house->getServiceValue(Service::religionVenus);
+      religionLevel += house->getServiceValue(Service::religionMars);
+      religionLevel += house->getServiceValue(Service::religionNeptune);
+      religionLevel += house->getServiceValue(Service::religionCeres);
+      religionLevel = math::clamp( religionLevel / (house->spec().minReligionLevel()+1), 0, 100 );
+      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
-      //houses
-    case objects::house:
-      {
-        HousePtr house = ptr_cast<House>( overlay );
-        religionLevel = (int) house->getServiceValue(Service::religionMercury);
-        religionLevel += house->getServiceValue(Service::religionVenus);
-        religionLevel += house->getServiceValue(Service::religionMars);
-        religionLevel += house->getServiceValue(Service::religionNeptune);
-        religionLevel += house->getServiceValue(Service::religionCeres);
-        religionLevel = math::clamp( religionLevel / (house->spec().minReligionLevel()+1), 0, 100 );
-        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-
-        if( !needDrawAnimations )
-        {
-          city::Helper helper( _city() );
-          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-        }
-      }
-    break;
-
-      //other buildings
-    default:
+      if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
-    break;
+    }
+    else
+    {
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -176,6 +142,7 @@ Religion::Religion( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 9 )
 {
   _addWalkerType( walker::priest );
+  _fillVisibleObjects( citylayer::religion );
 }
 
 }//end namespace layer

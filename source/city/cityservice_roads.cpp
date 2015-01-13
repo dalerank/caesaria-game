@@ -73,11 +73,11 @@ void Roads::timeStep( const unsigned int time )
 
   std::vector< Impl::UpdateBuilding > btypes;
   btypes.push_back( Impl::UpdateBuilding(objects::senate, 10) );
-  btypes.push_back( Impl::UpdateBuilding(objects::templeCeres, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::templeMars, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::templeMercury, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::templeNeptune, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::templeVenus, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::small_ceres_temple, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::small_mars_temple, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::small_mercury_temple, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::small_neptune_temple, 4));
+  btypes.push_back( Impl::UpdateBuilding(objects::small_venus_temple, 4));
 
   Helper helper( _city() );
 

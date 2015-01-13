@@ -22,7 +22,7 @@
 
 using namespace gfx;
 
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineerPost, Size(1) )
+EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineering_post, Size(1) )
 {
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
   //setPicture( ResourceGroup::buildingEngineer, 56 );

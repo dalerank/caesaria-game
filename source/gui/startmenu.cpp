@@ -25,6 +25,7 @@
 #include "game/resourcegroup.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 

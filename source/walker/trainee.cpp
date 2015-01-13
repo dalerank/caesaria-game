@@ -24,6 +24,7 @@
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "pathway/pathway_helper.hpp"
 
 using namespace constants;
@@ -53,17 +54,17 @@ void TraineeWalker::_init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case walker::actor:     _d->necBuildings << objects::theater
+  case walker::actor:      _d->necBuildings << objects::theater
                                            << objects::amphitheater;  break;
-  case walker::gladiator:    _d->necBuildings << objects::amphitheater
+  case walker::gladiator:  _d->necBuildings << objects::amphitheater
                                               << objects::colloseum;  break;
-  case walker::lionTamer:    _d->necBuildings << objects::colloseum;  break;
-  case walker::soldier:    _d->necBuildings << objects::militaryAcademy
-                                            << objects::fortLegionaire
-                                            << objects::fortMounted
-                                            << objects::fortJavelin
+  case walker::lionTamer:  _d->necBuildings << objects::colloseum;  break;
+  case walker::soldier:    _d->necBuildings << objects::military_academy
+                                            << objects::fort_legionaries
+                                            << objects::fort_horse
+                                            << objects::fort_javelin
                                             << objects::tower;  break;
-  case walker::charioteer:    _d->necBuildings << objects::hippodrome;  break;
+  case walker::charioteer:  _d->necBuildings << objects::hippodrome;  break;
   default: break;
   }
 

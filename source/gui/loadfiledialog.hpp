@@ -44,6 +44,7 @@ public:
   void setTitle( const std::string& title );
 
   void setMayDelete( bool mayDelete );
+  void setShowExtension( bool  showExtension );
   bool isMayDelete() const;
 
 signals public:

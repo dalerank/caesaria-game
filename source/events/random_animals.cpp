@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "walker/animals.hpp"
 #include "walker/helper.hpp"
+#include "core/variant_map.hpp"
 #include "walker/walkers_factory.hpp"
 #include "gfx/tilemap.hpp"
 

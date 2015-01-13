@@ -25,9 +25,6 @@ template< class T >
 class EnumsHelper
 {
 public:
-  typedef std::pair< T, std::string > TypeEquale;
-  typedef std::map< T, std::string > Equales;
-
   T findType( const std::string& name ) const
   {
     foreach( it, _equales )
@@ -60,6 +57,9 @@ public:
   EnumsHelper( T invalid ) : _invalid( invalid ) {}
 
 protected:
+  typedef std::pair< T, std::string > TypeEquale;
+  typedef std::map< T, std::string > Equales;
+
   Equales _equales;
   T _invalid;
 };

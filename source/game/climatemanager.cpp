@@ -26,6 +26,7 @@
 #include "vfs/entries.hpp"
 #include "resourceloader.hpp"
 #include "vfs/directory.hpp"
+#include "core/variant_map.hpp"
 #include "settings.hpp"
 
 using namespace vfs;

@@ -271,6 +271,8 @@ void Empire::load( const VariantMap& stream )
 
   VariantMap objects = stream.get( "objects" ).toMap();
   _loadObjects( objects );
+
+  _d->emperor.checkCities();
 }
 
 void Empire::setCitiesAvailable(bool value)
@@ -635,15 +637,6 @@ void Empire::Impl::takeTaxes()
     }
     else
     {
-      int lastYearBrokenTribute = funds.getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
-
-      std::string text = lastYearBrokenTribute > 0
-                                ? "##for_second_year_broke_tribute##"
-                                : "##current_year_notpay_tribute_warning##";
-      events::GameEventPtr e = events::ShowInfobox::create( "##tribute_broken_title##",
-                                                            text );
-      e->dispatch();
-
       city->funds().resolveIssue( FundIssue( city::Funds::overdueEmpireTax, empireTax ) );
     }
   }

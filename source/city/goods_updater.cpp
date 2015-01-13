@@ -22,6 +22,7 @@
 #include "good/goodhelper.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_map.hpp"
 #include "objects/house.hpp"
 #include "good/goodstore.hpp"
 #include "core/logger.hpp"

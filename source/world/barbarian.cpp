@@ -23,6 +23,7 @@
 #include "merchant.hpp"
 #include "gfx/animation.hpp"
 #include "city.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "events/notification.hpp"
 

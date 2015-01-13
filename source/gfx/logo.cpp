@@ -21,8 +21,8 @@
 namespace splash
 {
 
-static unsigned int width = 640;
-static unsigned int height = 480;
+//static unsigned int width = 640;
+//static unsigned int height = 480;
 
 /*  Call this macro repeatedly.  After each use, the pixel data can be extracted  */
 /*  GIMP header image file format (RGB): /home/dalerank/logo.h  */

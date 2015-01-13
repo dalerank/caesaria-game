@@ -20,12 +20,19 @@
     }
   }
 
+  roadBlock : {
+    cost : 10
+    class : "road"
+    image : [ "roadBlock", 1 ]
+  }
+
   tree : {
     class : "tree"
     image.ext : {
       type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
     }
   }
+
   road : {
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
@@ -94,7 +101,7 @@
     sound : [ "colloseum", 1 ]
   },
   
-  gladiator_pit : {
+  gladiatorSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
@@ -111,7 +118,7 @@
     class : "house"
   }
 
-  lion_pit : {
+  lionsNursery : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
@@ -130,7 +137,7 @@
     sound : [ "artistpit", 1  ]
   },
 
-  chatioteer_school : {
+  chariotSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 10
@@ -459,21 +466,21 @@
     sound : [ "wharf", 1 ]
   }, 
   
-  governor_palace_1 : {
+  governorHouse : {
     cost : 150,
     desirability : { base : 12, 	range : 3,	step : -2 }
     employers : 0
     class : "administration"
   }, 
   
-  governor_palace_2 : {
+  governorVilla : {
     cost : 400,
     desirability : { base : 20, 	range : 4,	step : -4 }
     employers : 0
     class : "administration"
   }, 
 
-  governor_palace_3 : {
+  governorPalace : {
     cost : 700,
     desirability : { base : 28, 	range : 7,	step : -4 }
     employers : 0
@@ -504,36 +511,22 @@
     requestDestroy : true
   },
 
-  senate_1 : {
+  senate : {
     cost : 250,
     desirability : { base : 8,	range : 4,	step : -2 }
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
   }, 
- 
-  senate_2 : {
-    cost : 400,
-    desirability : { base : 8,	range : 8,	step : -1 }
-    employers : 30
-    class : "administration"
-  }, 
-  
-  forum_1 : {
+   
+  forum : {
     cost : 75,
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
     sound : [ "forum", 1 ]
   }, 
-  
-  forum_2 : {
-    cost : 125,
-    desirability : { base : 3, 	range : 3,	step : -1 }
-    employers : 8
-    class : "administration"
-  },
-  
+    
   native_hut : {
     cost : 50,
     desirability : { base : 0, 	range : 0,	step : 0 }

@@ -21,6 +21,7 @@
 #include "core/safetycast.hpp"
 #include "core/utils.hpp"
 #include "core/position.hpp"
+#include "core/variant_map.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
 

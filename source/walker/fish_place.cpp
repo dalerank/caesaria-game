@@ -24,6 +24,7 @@
 #include "walker/walker.hpp"
 #include "constants.hpp"
 #include "core/gettext.hpp"
+#include "core/variant_map.hpp"
 
 using namespace constants;
 using namespace gfx;
