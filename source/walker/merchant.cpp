@@ -260,7 +260,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
               currentBuys += good::Helper::exportPrice( city, goodType, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, tradeKoeff, mayBuy );
+              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }

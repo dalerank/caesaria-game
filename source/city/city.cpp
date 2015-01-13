@@ -824,6 +824,12 @@ void PlayerCity::addObject( world::ObjectPtr object )
     events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
     e->dispatch();
   }
+  else if( is_kind_of<world::Messenger>( object ) )
+  {
+    world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
+    events::GameEventPtr e = events::ShowInfobox::create( msm->title(), msm->message() );
+    e->dispatch();
+  }
 }
 
 void PlayerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
