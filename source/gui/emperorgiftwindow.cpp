@@ -24,6 +24,7 @@
 #include "core/saveadapter.hpp"
 #include "core/gettext.hpp"
 #include "widget_helper.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
 

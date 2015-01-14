@@ -144,17 +144,20 @@ void Construction::burn()
   events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::fire );
   event->dispatch();
 
-  Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
+  Logger::warning( "Construction catch fire at %d,%d!", pos().i(), pos().j() );
 }
 
 void Construction::collapse()
 {
+  if( isDeleted() )
+    return;
+
   deleteLater();
 
   events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::collapse );
   event->dispatch();
 
-  Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
+  Logger::warning( "Construction collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return TileOverlay::picture(); }

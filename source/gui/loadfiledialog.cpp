@@ -114,7 +114,7 @@ void LoadFileDialog::Impl::fillFiles()
   StringArray names;
   foreach( it, flist )
   {
-    names << (*it).fullpath.toString();
+    names <<  (*it).fullpath.toString();
   }
   std::sort( names.begin(), names.end() );
 
@@ -174,6 +174,15 @@ void LoadFileDialog::setMayDelete(bool mayDelete)
   _d->btnLoad->setRight( !mayDelete
                           ? _d->btnDelete->right()
                           : _d->btnDelete->left() );
+}
+
+void LoadFileDialog::setShowExtension(bool showExtension)
+{
+  if( _d->lbxFiles )
+  {
+    _d->lbxFiles->setShowExtension( showExtension );
+    _d->lbxFiles->refresh();
+  }
 }
 
 void LoadFileDialog::setTitle( const std::string& title ) { if( _d->lbTitle ) _d->lbTitle->setText( title ); }

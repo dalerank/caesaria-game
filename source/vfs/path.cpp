@@ -419,7 +419,7 @@ Path Path::baseName(bool keepExtension) const
     // take care to search only after last slash to check only for
     // dots in the filename
     end = toString().find_last_of('.');
-    if( end == std::string::npos || end < lastSlash)
+    if( end == std::string::npos || end == lastSlash)
       end=0;
     else
       end = toString().size()-end;

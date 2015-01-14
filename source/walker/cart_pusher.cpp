@@ -35,6 +35,7 @@
 #include "core/utils.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "objects/constants.hpp"
@@ -369,7 +370,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( objects::granary, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( objects::granery, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }

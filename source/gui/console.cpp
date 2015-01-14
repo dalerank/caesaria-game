@@ -4,6 +4,7 @@
 #include "core/saveadapter.hpp"
 #include "gfx/engine.hpp"
 #include "core/utils.hpp"
+#include "core/variant_map.hpp"
 #include "core/event.hpp"
 
 namespace gui

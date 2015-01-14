@@ -19,7 +19,7 @@
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "city/funds.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -75,7 +75,10 @@ enum {
   comply_rome_request,
   change_emperor,
   add_city_border,
-  earthquake
+  earthquake,
+  toggle_experimental_options,
+  kill_all_enemies,
+  send_exporter
 };
 
 class DebugHandler::Impl
@@ -98,39 +101,50 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
   gui::ContextMenu* debugMenu = tmp->addSubMenu();
 
-#define ADD_DEBUG_EVENT(ev) debugMenu->addItem( #ev, ev );
-  ADD_DEBUG_EVENT( add_enemy_archers )
-  ADD_DEBUG_EVENT( add_enemy_soldiers )
-  ADD_DEBUG_EVENT( add_chastener_soldiers )
-  ADD_DEBUG_EVENT( comply_rome_request )
-  ADD_DEBUG_EVENT( add_wolves )
-  ADD_DEBUG_EVENT( send_mars_wrath )
-  ADD_DEBUG_EVENT( add_1000_dn )
-  ADD_DEBUG_EVENT( add_player_money )
-  ADD_DEBUG_EVENT( send_chastener )
-  ADD_DEBUG_EVENT( test_request )
-  ADD_DEBUG_EVENT( send_player_army )
-  ADD_DEBUG_EVENT( screenshot )
-  ADD_DEBUG_EVENT( add_empire_barbarian )
-  ADD_DEBUG_EVENT( send_venus_wrath )
-  ADD_DEBUG_EVENT( win_mission )
-  ADD_DEBUG_EVENT( all_sound_off )
-  ADD_DEBUG_EVENT( toggle_grid_visibility )
-  ADD_DEBUG_EVENT( toggle_overlay_base )
-  ADD_DEBUG_EVENT( toggle_show_path )
-  ADD_DEBUG_EVENT( toggle_show_roads )
-  ADD_DEBUG_EVENT( toggle_show_object_area )
-  ADD_DEBUG_EVENT( add_soldiers_in_fort )
-  ADD_DEBUG_EVENT( send_barbarian_to_player )
-  ADD_DEBUG_EVENT( fail_mission )
-  ADD_DEBUG_EVENT( toggle_show_walkable_tiles )
-  ADD_DEBUG_EVENT( toggle_show_locked_tiles )
-  ADD_DEBUG_EVENT( toggle_show_flat_tiles )
-  ADD_DEBUG_EVENT( change_emperor )
-  ADD_DEBUG_EVENT( earthquake )
-  ADD_DEBUG_EVENT( add_city_border )
+#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = debugMenu->addItem( section, #ev, ev ); \
+                                       CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
 
-  CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
+  ADD_DEBUG_EVENT( "enemies", add_enemy_archers )
+  ADD_DEBUG_EVENT( "enemies", add_enemy_soldiers )
+  ADD_DEBUG_EVENT( "enemies", add_chastener_soldiers )
+  ADD_DEBUG_EVENT( "enemies", add_wolves )
+  ADD_DEBUG_EVENT( "enemies", send_chastener )
+  ADD_DEBUG_EVENT( "enemies", add_empire_barbarian )
+  ADD_DEBUG_EVENT( "enemies", send_barbarian_to_player )
+  ADD_DEBUG_EVENT( "enemies", kill_all_enemies )
+
+  ADD_DEBUG_EVENT( "request", comply_rome_request )
+  ADD_DEBUG_EVENT( "request", test_request )
+
+  ADD_DEBUG_EVENT( "religion", send_mars_wrath )
+  ADD_DEBUG_EVENT( "religion", send_venus_wrath )
+
+  ADD_DEBUG_EVENT( "money", add_1000_dn )
+  ADD_DEBUG_EVENT( "money", add_player_money )
+
+  ADD_DEBUG_EVENT( "other", send_player_army )
+  ADD_DEBUG_EVENT( "other", screenshot )
+
+  ADD_DEBUG_EVENT( "game", win_mission )
+  ADD_DEBUG_EVENT( "game", fail_mission )
+  ADD_DEBUG_EVENT( "game", change_emperor )
+
+  ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
+  ADD_DEBUG_EVENT( "city", add_city_border )
+  ADD_DEBUG_EVENT( "city", send_exporter )
+  ADD_DEBUG_EVENT( "city", earthquake )
+
+  ADD_DEBUG_EVENT( "options", all_sound_off )
+  ADD_DEBUG_EVENT( "options", toggle_experimental_options )
+
+  ADD_DEBUG_EVENT( "draw", toggle_grid_visibility )
+  ADD_DEBUG_EVENT( "draw", toggle_overlay_base )
+  ADD_DEBUG_EVENT( "draw", toggle_show_path )
+  ADD_DEBUG_EVENT( "draw", toggle_show_roads )
+  ADD_DEBUG_EVENT( "draw", toggle_show_object_area )
+  ADD_DEBUG_EVENT( "draw", toggle_show_walkable_tiles )
+  ADD_DEBUG_EVENT( "draw", toggle_show_locked_tiles )
+  ADD_DEBUG_EVENT( "draw", toggle_show_flat_tiles )
 #undef ADD_DEBUG_EVENT
 }
 
@@ -222,9 +236,26 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case kill_all_enemies:
+  {
+     city::Helper helper( game->city() );
+     EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, city::Helper::invalidPos );
+
+     foreach( it, enemies )
+       (*it)->die();
+  }
+  break;
+
   case add_city_border:
   {
     game->city()->tilemap().addBorder();
+  }
+  break;
+
+  case toggle_experimental_options:
+  {
+    bool enable = SETTINGS_VALUE( experimental );
+    SETTINGS_SET_VALUE( experimental, !enable );
   }
   break;
 

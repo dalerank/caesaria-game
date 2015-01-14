@@ -26,6 +26,7 @@
 #include <iostream>
 #include <vector>
 #include <SDL.h>
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "core/exception.hpp"
 #include "picture.hpp"

@@ -793,7 +793,7 @@
       weapons_workshop : true
       furniture_workshop : true
 
-      forum_1 : false
+      forum : false
       garden : true
       low_bridge : true
       high_bridge : true
@@ -814,7 +814,7 @@
       academy : true
       library : true
       mission_post : true
-      senate_1 : true
+      senate : true
       gatehouse : true
       wall : true
       tower : true

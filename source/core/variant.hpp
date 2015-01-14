@@ -331,50 +331,6 @@ typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
 
 StringArray& operator<<(StringArray& strlist, const VariantList& vars );
 
-class VariantMap : public std::map<std::string, Variant>
-{
-public:
-  VariantMap() {}
-
-  VariantMap( const VariantMap& other )
-  {
-    *this = other;
-  }
-
-  VariantMap& operator+=(const VariantMap& other )
-  {
-    foreach( it, other )
-    {
-      (*this)[ it->first ] = it->second;
-    }
-
-    return *this;
-  }
-
-  VariantMap& operator=(const VariantMap& other )
-  {
-    clear();
-
-    foreach( it, other )
-    {
-      (*this)[ it->first ] = it->second;
-    }
-
-    return *this;
-  }
-
-  Variant get( const std::string& name, Variant defaultVal=Variant() ) const
-  {
-    VariantMap::const_iterator it = find( name );
-    return (it != end() ? it->second : defaultVal );
-  }
-
-  Variant toVariant() const
-  {
-    return Variant( *this );
-  }
-};
-
 inline Variant::Variant() {}
 
 #endif // __CAESARIA_VARIANT_H_INCLUDE__

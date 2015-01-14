@@ -24,6 +24,7 @@
 #include "city/statistic.hpp"
 #include "helper.hpp"
 #include "corpse.hpp"
+#include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 
 using namespace constants;

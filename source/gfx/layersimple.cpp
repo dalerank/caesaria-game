@@ -50,10 +50,25 @@ LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
   return ret;
 }
 
+void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
+{
+  TileOverlayPtr curOverlay = tile.overlay();
+
+  bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay);
+  if( blowTile )
+    engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
+
+  Layer::drawTile(engine, tile, offset);
+
+  if( blowTile )
+      engine.resetColorMask();
+}
+
 void Simple::afterRender(Engine& engine)
 {
   Layer::afterRender( engine );
 
+  _d->lastOverlay = 0;
   Tile* tile = _currentTile();
   if( tile )
   {
@@ -61,10 +76,6 @@ void Simple::afterRender(Engine& engine)
     if( is_kind_of<Building>( curOverlay ) )
     {
       _d->lastOverlay = curOverlay;
-      engine.setColorMask( 0x003f0000, 0x00003f00, 0x0000003f, 0xff000000 );
-      curOverlay->tile().resetWasDrawn();
-      drawPass( engine, curOverlay->tile(), _camera()->offset(), Renderer::overlay );
-      engine.resetColorMask();
     }
   }
 }

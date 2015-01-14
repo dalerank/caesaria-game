@@ -21,6 +21,7 @@
 #include "human.hpp"
 #include "world/nation.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 
 using namespace constants;
@@ -157,6 +158,7 @@ public:
     __REG_WTYPE( patrician  )
     __REG_WTYPE( circusCharioter )
     __REG_WTYPE( docker )
+    __REG_WTYPE( etruscanSoldier )
 #undef __REG_WTYPE
   }
 };

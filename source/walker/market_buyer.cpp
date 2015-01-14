@@ -29,6 +29,7 @@
 #include "good/goodstore_simple.hpp"
 #include "city/helper.hpp"
 #include "name_generator.hpp"
+#include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 
@@ -138,7 +139,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
           || _d->priorityGood == good::vegetable)
       {
         // try get that good from a granary
-        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granary, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granery, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
         if( _d->destBuildingPos.i() < 0 )

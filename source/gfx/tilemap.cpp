@@ -22,7 +22,7 @@
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"

@@ -18,6 +18,7 @@
 #include "fishplace.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"

@@ -19,6 +19,7 @@
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
+#include "core/variant_map.hpp"
 #include "core/position.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"

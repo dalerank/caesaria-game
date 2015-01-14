@@ -22,6 +22,7 @@
 #include "core/safetycast.hpp"
 #include "objects/road.hpp"
 #include "gfx/tile.hpp"
+#include "core/variant_map.hpp"
 #include "walker/serviceman.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"

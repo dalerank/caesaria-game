@@ -20,6 +20,7 @@
 #include "core/utils.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "dictionary_text.hpp"
 #include "core/logger.hpp"

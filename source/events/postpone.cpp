@@ -21,6 +21,7 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "dispatcher.hpp"
+#include "core/variant_map.hpp"
 #include "city/requestdispatcher.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"

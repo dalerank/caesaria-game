@@ -17,7 +17,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "saver.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "player.hpp"
 #include "world/empire.hpp"

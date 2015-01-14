@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/trainee.hpp"
 #include "good/goodstore_simple.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "walker/cart_supplier.hpp"
 

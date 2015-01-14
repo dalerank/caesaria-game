@@ -29,7 +29,7 @@
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
 #include "core/saveadapter.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 using namespace constants;
 using namespace std;

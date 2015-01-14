@@ -18,6 +18,7 @@
 #include "scribesmessages.hpp"
 #include "gameautopause.hpp"
 #include "listbox.hpp"
+#include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/datetimehelper.hpp"
 #include "core/utils.hpp"

@@ -57,54 +57,33 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     int damageLevel = 0;
-    switch( overlay->type() )
+
+    if( _isVisibleObject( overlay->type() ) )
     {
-      //fire buildings and roads
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    case objects::engineerPost:
       needDrawAnimations = true;
-    break;
+    }
+    else if( overlay->type() == objects::house )
+    {
+      HousePtr house = ptr_cast<House>( overlay );
+      damageLevel = (int)house->state( Construction::damage );
+      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
-      //houses
-    case objects::house:
+      if( !needDrawAnimations )
       {
-        HousePtr house = ptr_cast<House>( overlay );
-        damageLevel = (int)house->state( Construction::damage );
-        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-
-        if( !needDrawAnimations )
-        {
-          city::Helper helper( _city() );
-          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-        }
-      }
-      break;
-
-      //other buildings
-    default:
-      {
-        BuildingPtr building = ptr_cast<Building>( overlay );
-        if( building.isValid() )
-        {
-          damageLevel = (int)building->state( Construction::damage );
-        }
-
         city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
-      break;
+    }
+    else
+    {
+      BuildingPtr building = ptr_cast<Building>( overlay );
+      if( building.isValid() )
+      {
+        damageLevel = (int)building->state( Construction::damage );
+      }
+
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -164,6 +143,7 @@ Damage::Damage( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 15 )
 {
   _addWalkerType( walker::engineer );
+  _fillVisibleObjects( type() );
 }
 
 }

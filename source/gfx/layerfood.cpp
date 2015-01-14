@@ -51,49 +51,26 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     int foodLevel = -1;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    // Food-related
-    case objects::market:
-    case objects::granary:
+      // Base set of visible objects
       needDrawAnimations = true;     
-    break;
-
-      //houses
-    case objects::house:
+    }
+    else if( overlay->type() == objects::house )
+    {
+      city::Helper helper( _city() );
+      HousePtr house = ptr_cast<House>( overlay );
+      foodLevel = (int) house->state( (Construction::Param)House::food );
+      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      if( !needDrawAnimations )
       {
-        city::Helper helper( _city() );        
-        HousePtr house = ptr_cast<House>( overlay );
-        foodLevel = (int) house->state( (Construction::Param)House::food );
-        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-        if( !needDrawAnimations )
-        {
-          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-        }
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
-    break;
-
-      //other buildings
-    default:
-      {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base);
-      }
-      break;
+    }
+    else      //other buildings
+    {
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base);
     }
 
     if( needDrawAnimations )
@@ -191,11 +168,11 @@ LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
 Food::Food( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {
-  _addWalkerType( walker::marketLady );
-  _addWalkerType( walker::marketKid );
-  _addWalkerType( walker::fishingBoat );
-  _addWalkerType( walker::marketBuyer );
-  _addWalkerType( walker::cartPusher );
+  _visibleWalkers() << walker::marketLady << walker::marketKid
+                    << walker::fishingBoat << walker::marketBuyer
+                    << walker::cartPusher;
+
+  _fillVisibleObjects( type() );
 }
 
 }//

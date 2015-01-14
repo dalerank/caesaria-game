@@ -199,7 +199,7 @@ unsigned int Statistic::getFoodStock(PlayerCityPtr city)
 
   int foodSum = 0;
 
-  GranaryList granaries = helper.find<Granary>( objects::granary );
+  GranaryList granaries = helper.find<Granary>( objects::granery );
   foreach( gr, granaries ) { foodSum += (*gr)->store().qty(); }
 
   return foodSum;

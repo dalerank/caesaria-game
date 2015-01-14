@@ -22,6 +22,7 @@
 #include "city/helper.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "walker/serviceman.hpp"

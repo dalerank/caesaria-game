@@ -21,6 +21,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "city/statistic.hpp"
+#include "core/variant_map.hpp"
 #include "city/helper.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
@@ -259,7 +260,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
               currentBuys += good::Helper::exportPrice( city, goodType, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, tradeKoeff, mayBuy );
+              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }

@@ -22,6 +22,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "objects/road.hpp"
+#include "core/variant_map.hpp"
 #include "core/direction.hpp"
 
 using namespace constants;

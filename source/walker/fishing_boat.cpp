@@ -27,6 +27,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "objects/predefinitions.hpp"
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"

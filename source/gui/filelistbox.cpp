@@ -23,7 +23,8 @@
 namespace gui
 {
 
-const Flag showTime= Flag(count+1);
+const Flag showTime = Flag(count+1);
+const Flag showExtension = Flag(count+2);
 
 FileListBox::FileListBox(Widget* parent)
   : ListBox( parent, Rect( 0, 0, 1, 1) )
@@ -35,9 +36,11 @@ FileListBox::FileListBox(Widget* parent, const Rect& rectangle, int id)
   : ListBox( parent, rectangle, id )
 {
   setShowTime( true );
+  setShowExtension( true );
 }
 
-void FileListBox::setShowTime(bool show) {  setFlag( showTime, show ); }
+void FileListBox::setShowTime(bool show) { setFlag( showTime, show ); }
+void FileListBox::setShowExtension(bool show) { setFlag( showExtension, show ); }
 
 ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int color)
 {
@@ -54,6 +57,16 @@ ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int 
 void FileListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect )
 {
   ListBox::_updateItemText( painter, item, textRect, font, frameRect );
+
+  if( !isFlag( showExtension ) )
+  {
+    item.clear();
+
+    std::string text = vfs::Path( item.text() ).baseName( false ).toString();
+    Rect finalRect = font.getTextRect( text, Rect( Point(), frameRect.size() ), align::upperLeft, align::center );
+
+    item.draw( text, font, finalRect.lefttop() + Point( 10, 0)  );
+  }
 
   if( isFlag( showTime ) )
   {

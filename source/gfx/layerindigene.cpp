@@ -51,46 +51,23 @@ void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     int discontentLevel = 0;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-      //fire buildings and roads
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    case objects::nativeCenter:
-    case objects::nativeField:
       needDrawAnimations = true;
-    break;
+    }
+    else if( overlay->type() == objects::native_hut )
+    {
+      NativeHutPtr hut = ptr_cast<NativeHut>( overlay );
+      discontentLevel = (int)hut->discontent();
+      needDrawAnimations = false;
 
-      //houses
-    case objects::nativeHut:
-      {
-        NativeHutPtr hut = ptr_cast<NativeHut>( overlay );
-        discontentLevel = (int)hut->discontent();
-        needDrawAnimations = false;
-
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
-      }
-    break;
-
-      //other buildings
-    default:
-      {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-      }
-    break;
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+    }
+    else
+    {
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -143,8 +120,8 @@ void Indigene::handleEvent(NEvent& event)
 Indigene::Indigene( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 15 )
 {
-  _addWalkerType( walker::indigene );
-  _addWalkerType( walker::missioner );
+  _visibleWalkers() << walker::indigene << walker::missioner;
+  _fillVisibleObjects( citylayer::aborigen );
 }
 
 }

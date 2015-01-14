@@ -29,6 +29,7 @@
 #include "good/goodstore.hpp"
 #include "objects/warehouse.hpp"
 #include "core/utils.hpp"
+#include "core/variant_map.hpp"
 
 using namespace constants;
 using namespace gfx;

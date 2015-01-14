@@ -29,6 +29,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
+#include "core/variant_map.hpp"
 #include "events/disaster.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"

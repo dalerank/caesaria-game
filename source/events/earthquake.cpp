@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilemap.hpp"
