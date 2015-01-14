@@ -144,6 +144,7 @@ public:
   virtual int selected();
 
   virtual void beforeDraw( gfx::Engine& painter );
+  virtual void refresh();
 
   virtual void setItemTextOffset(Point p);
 

@@ -24,7 +24,7 @@
 using namespace constants;
 using namespace gfx;
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::doctor, Size(1))
+Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::clinic, Size(1))
 {
 }
 

@@ -19,6 +19,7 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "postpone.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 

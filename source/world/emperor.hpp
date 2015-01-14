@@ -47,6 +47,7 @@ public:
 
   void cityTax( const std::string& cityname, unsigned int money );
   void resetRelations( const StringArray& cities );
+  void checkCities();
 
   VariantMap save() const;
   void load( const VariantMap& stream );

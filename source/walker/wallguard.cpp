@@ -19,6 +19,7 @@
 #include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
+#include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/military.hpp"
 #include "pathway/pathway_helper.hpp"

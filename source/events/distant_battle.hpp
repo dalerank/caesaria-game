@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/variant_map.hpp"
 
 namespace events
 {

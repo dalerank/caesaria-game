@@ -26,6 +26,7 @@
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/label.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/helper.hpp"
 #include "requestdestroy.hpp"
 

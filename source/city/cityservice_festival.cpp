@@ -19,6 +19,7 @@
 #include "game/gamedate.hpp"
 #include "city.hpp"
 #include "city/statistic.hpp"
+#include "core/variant_map.hpp"
 #include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
 #include "events/updatecitysentiment.hpp"

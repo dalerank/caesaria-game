@@ -17,6 +17,7 @@
 
 #include "dock.hpp"
 #include "gfx/helper.hpp"
+#include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"

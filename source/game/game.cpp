@@ -25,6 +25,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/gl_engine.hpp"
 #include "sound/engine.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/picture_bank.hpp"
 #include "scene/menu.hpp"
 #include "scene/level.hpp"

@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "object.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "empire.hpp"
 #include "core/logger.hpp"
 #include "gfx/animation.hpp"

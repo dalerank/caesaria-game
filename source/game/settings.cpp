@@ -19,6 +19,7 @@
 #include "vfs/path.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/directory.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 
@@ -48,6 +49,7 @@ __REG_PROPERTY(fastsavePostfix)
 __REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
+__REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
 __REG_PROPERTY(soundThemesModel)
@@ -80,6 +82,9 @@ __REG_PROPERTY(cartsModel)
 __REG_PROPERTY(logoArchive)
 __REG_PROPERTY(titleResource)
 __REG_PROPERTY(forbidenTile)
+__REG_PROPERTY(layersOptsModel)
+__REG_PROPERTY(experimental)
+__REG_PROPERTY(buildMenuModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -135,6 +140,9 @@ Settings::Settings() : _d( new Impl )
   _d->options[ logoArchive         ] = Variant( std::string( "/gfx/pics_wait.zip" ) );
   _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
   _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
+  _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
+  _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
+  _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
@@ -150,6 +158,12 @@ Settings::Settings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
+  _d->options[ oldgfx              ] = 1;
+
+#ifdef CAESARIA_USE_STEAM
+  _d->options[ oldgfx              ] = 0;
+#endif
+
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
 #endif
@@ -215,6 +229,12 @@ void Settings::checkCmdOptions(char* argv[], int argc)
       _d->options[ c3gfx ] = Variant( opts );
       i++;
     }
+    else if( !strcmp( argv[i], "-oldgfx" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ oldgfx ] = utils::toInt( opts );
+      i++;
+    }
     else if( !strcmp( argv[i], "-cellw" ) )
     {
       const char* opts = argv[i+1];
@@ -229,7 +249,8 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 void Settings::checkC3present()
 {
   std::string c3path = _d->options[ c3gfx ].toString();
-  if( !c3path.empty() )
+  int useOldGfx = _d->options[ oldgfx ];
+  if( !c3path.empty() || useOldGfx )
   {
     _d->options[ houseModel          ] = Variant( std::string( "/house.c3" ) );
     _d->options[ constructionModel   ] = Variant( std::string( "/construction.c3" ) );

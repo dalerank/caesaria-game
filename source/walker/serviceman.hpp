@@ -55,6 +55,7 @@ public:
   virtual void setPathway(const Pathway& pathway);
   virtual bool die();
 
+  virtual void initialize(const VariantMap &options);
   virtual ~ServiceWalker();
 
 protected:
@@ -72,7 +73,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
-  void _addObsoleteOverlays( gfx::TileOverlay::Type type );
+  void _addObsoleteOverlay( gfx::TileOverlay::Type type );
 
 private:
   class Impl;

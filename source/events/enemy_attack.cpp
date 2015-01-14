@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "events/dispatcher.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/cityservice_military.hpp"

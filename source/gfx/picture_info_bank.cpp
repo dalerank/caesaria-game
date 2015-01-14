@@ -18,7 +18,7 @@
 #include "picture_info_bank.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"
 #include <map>

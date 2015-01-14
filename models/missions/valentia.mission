@@ -525,8 +525,8 @@
       dock : true
       granery : true
       warehouse : true
-      senate_1 : true
-      forum_1 : false
+      senate : true
+      forum : false
       garden : true
 
       prefecture : true

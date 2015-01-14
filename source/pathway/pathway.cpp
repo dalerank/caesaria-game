@@ -16,6 +16,7 @@
 #include "pathway.hpp"
 #include "gfx/helper.hpp"
 #include "core/direction.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 

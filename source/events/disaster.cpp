@@ -118,9 +118,9 @@ void Disaster::_exec( Game& game, unsigned int )
       TileOverlayPtr ov;
       if( needBuildRuins )
       {
-        TileOverlay::Type dstr2constr[] = { objects::burningRuins, objects::collapsedRuins,
-                                            objects::plagueRuins, objects::collapsedRuins,
-                                            objects::collapsedRuins };
+        TileOverlay::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
+                                            objects::plague_ruins, objects::collapsed_ruins,
+                                            objects::collapsed_ruins };
 
         ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
 

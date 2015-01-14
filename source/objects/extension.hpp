@@ -20,6 +20,7 @@
 
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
+#include "core/variant_map.hpp"
 #include "construction.hpp"
 
 class ConstructionExtension : public ReferenceCounted

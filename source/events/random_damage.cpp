@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "objects/road.hpp"
 #include "objects/house.hpp"
+#include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "core/priorities.hpp"
@@ -89,7 +90,8 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     for( unsigned int k=0; k < number4burn; k++ )
     {
       ConstructionPtr building = ctrs.random();
-      building->collapse();
+      if( !building->isDeleted() )
+        building->collapse();
     }
   }
 }
