@@ -91,6 +91,11 @@ public:
     }
   }
 
+  void update()
+  {
+    _resizeEvent();
+  }
+
   void setTradeState( city::TradeOptions::Order o, int qty )
   {
     order = o;
@@ -150,6 +155,11 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   }
 
   _d->btnTradeState = new TradeStateButton( this, Rect( 50, 90, width() - 60, 90 + 30), -1 );
+  if( gmode == gmUnknown )
+  {
+    _d->btnTradeState->setTradeState( city::TradeOptions::noTrade, 0 );
+    _d->btnTradeState->setEnabled( false );
+  }
 
   updateTradeState();
   updateIndustryState();
@@ -191,35 +201,27 @@ void GoodOrderManageWindow::decreaseQty()
 
 void GoodOrderManageWindow::updateTradeState()
 {
-  switch( _d->gmode )
-  {
-  case gmImport|gmProduce:
-    {
-      city::TradeOptions& ctrade = _d->city->tradeOptions();
-      city::TradeOptions::Order order = ctrade.getOrder( _d->type );
-      int qty = ctrade.exportLimit( _d->type );
-      _d->btnTradeState->setTradeState( order, qty );
-    }
-  break;
-
-  case gmImport:
-  case gmProduce:
-  {      
-    _d->btnTradeState->setText( _d->gmode == gmImport
-                                    ? _("##these_goods_import_only##")
-                                    : _("##setup_traderoute_to_import##" ) );
-    _d->btnTradeState->setEnabled( false );
-    _d->btnTradeState->setBackgroundStyle( PushButton::noBackground );
-  }
-  break;
-
-  default: break;
-  }
+  city::TradeOptions& ctrade = _d->city->tradeOptions();
+  city::TradeOptions::Order order = ctrade.getOrder( _d->type );
+  int qty = ctrade.exportLimit( _d->type );
+  _d->btnTradeState->setTradeState( order, qty );
 }
 
 void GoodOrderManageWindow::changeTradeState()
 {
-  _d->city->tradeOptions().switchOrder( _d->type );
+  city::TradeOptions& trOpts = _d->city->tradeOptions();
+  if( _d->gmode == gmImport )
+  {
+    city::TradeOptions::Order order = trOpts.getOrder( _d->type );
+    trOpts.setOrder( _d->type, order == city::TradeOptions::importing
+                                  ? city::TradeOptions::noTrade
+                                  : city::TradeOptions::importing );
+  }
+  else
+  {
+    trOpts.switchOrder( _d->type );
+  }
+
   updateTradeState();
   emit _d->onOrderChangedSignal();
 }

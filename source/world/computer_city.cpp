@@ -199,8 +199,8 @@ void ComputerCity::load( const VariantMap& options )
   _initTextures();
 }
 
-const good::Store& ComputerCity::importingGoods() const { return _d->realSells; }
-const good::Store& ComputerCity::exportingGoods() const{ return _d->buyStore; }
+const good::Store& ComputerCity::importingGoods() const { return _d->buyStore; }
+const good::Store& ComputerCity::exportingGoods() const{ return _d->realSells; }
 Nation ComputerCity::nation() const { return _d->nation; }
 unsigned int ComputerCity::age() const { return _d->age; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
