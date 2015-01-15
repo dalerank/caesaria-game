@@ -39,6 +39,48 @@ using namespace gfx;
 namespace gui
 {
 
+class VolumeButton : public PushButton
+{
+public:
+	VolumeButton( Widget* );
+
+	//! constructor
+	VolumeButton( Widget* parent,
+								const Rect& rectangle )
+		: PushButton( parent, rectangle )
+	{
+		step = 4;
+		icon = Picture::load( "whblock", 1 );
+		setBackgroundStyle( PushButton::blackBorderUp );
+		setFont( Font::create( FONT_2_WHITE ) );
+	}
+
+  virtual void draw( gfx::Engine& painter )
+  {
+    if( !visible() )
+      return;
+
+    PushButton::draw( painter );
+
+    //for( int i=0; i < step; i++ )
+    //  painter.draw( icon, absoluteRect().lefttop() + Point( 6 + i * icon.width()/2, 0)/*, &absoluteClippingRectRef() */ );
+  }
+
+protected:
+	//! when some mouse button clicked
+	virtual void _btnClicked()
+	{
+		PushButton::_btnClicked();
+
+		step = (step+1) % 4;
+		setText( step == 0 ? "Any" : utils::format( 0xff, "%d/4", step ) );
+		_resizeEvent();
+	}
+
+	int step;
+	Picture icon;
+};
+
 template< class T >
 class OrderGoodWidget : public Label
 {
@@ -51,6 +93,7 @@ public:
     setFont( Font::create( FONT_1_WHITE ) );
 
     _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
+    _btnVolume = new VolumeButton( this, Rect( _btnChangeRule->righttop(), Size( 40, height() ) ) );
     _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
     updateBtnText();
 
@@ -76,7 +119,7 @@ public:
 
     Picture goodIcon = good::Helper::picture( _type );
     painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
-    painter.draw( goodIcon, absoluteRect().lefttop() + Point( 390, 0 ), &absoluteClippingRectRef() );
+    painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
   }
 
   void updateBtnText()
@@ -98,6 +141,7 @@ private:
   good::Type _type;
   T _storageBuilding;
   PushButton* _btnChangeRule;
+  PushButton* _btnVolume;
 };
 
 class BaseSpecialOrdersWindow::Impl
