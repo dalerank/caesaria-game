@@ -67,11 +67,16 @@ public:
 
   virtual int qty(const good::Type& goodType) const = 0;
   virtual int qty() const = 0;
+
   virtual void setCapacity(const int maxcap) = 0;
+  virtual void setCapacity(const good::Type& goodType, const int maxQty) = 0;
+
   virtual int capacity() const = 0;
   virtual int capacity(const good::Type& goodType ) const = 0;
+
   virtual int freeQty( const good::Type& goodType ) const;
   virtual int freeQty() const;
+
   virtual bool empty() const;
 
   // returns the max quantity that can be stored now

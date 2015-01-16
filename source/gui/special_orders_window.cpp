@@ -42,18 +42,22 @@ namespace gui
 class VolumeButton : public PushButton
 {
 public:
-	VolumeButton( Widget* );
+  VolumeButton( Widget* );
 
-	//! constructor
-	VolumeButton( Widget* parent,
-								const Rect& rectangle )
-		: PushButton( parent, rectangle )
-	{
-		step = 4;
-		icon = Picture::load( "whblock", 1 );
-		setBackgroundStyle( PushButton::blackBorderUp );
-		setFont( Font::create( FONT_2_WHITE ) );
-	}
+  //! constructor
+  VolumeButton( Widget* parent,
+                const Rect& rectangle,
+                int roomCap, int warehouseCap )
+          : PushButton( parent, rectangle )
+  {
+    float prc = roomCap / (float)warehouseCap;
+    if( prc < 0.25 )
+    _step = 4;
+    _icon = Picture::load( "whblock", 1 );
+    setBackgroundStyle( PushButton::blackBorderUp );
+    setFont( Font::create( FONT_2_WHITE ) );
+    _updateText();
+  }
 
   virtual void draw( gfx::Engine& painter )
   {
@@ -66,19 +70,28 @@ public:
     //  painter.draw( icon, absoluteRect().lefttop() + Point( 6 + i * icon.width()/2, 0)/*, &absoluteClippingRectRef() */ );
   }
 
+  Signal1<float>& onChange() { return _onChangeSignal; }
+
 protected:
-	//! when some mouse button clicked
-	virtual void _btnClicked()
-	{
-		PushButton::_btnClicked();
 
-		step = (step+1) % 4;
-		setText( step == 0 ? "Any" : utils::format( 0xff, "%d/4", step ) );
-		_resizeEvent();
-	}
+  void _updateText()
+  {
+    _step = (_step+1) % 4;
+    setText( _step == 0 ? "Any" : utils::format( 0xff, "%d/4", _step ) );
+  }
 
-	int step;
-	Picture icon;
+  //! when some mouse button clicked
+  virtual void _btnClicked()
+  {
+    PushButton::_btnClicked();
+
+    _updateText();
+    emit _onChangeSignal( _step / 4.f );
+  }
+
+  int _step;
+  Picture _icon;
+  Signal1<float> _onChangeSignal;
 };
 
 template< class T >
@@ -97,7 +110,8 @@ public:
     _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
     updateBtnText();
 
-    CONNECT( _btnChangeRule, onClicked(), this, OrderGoodWidget::changeGranaryRule );
+    CONNECT( _btnChangeRule, onClicked(), this, OrderGoodWidget::changeRule );
+    CONNECT( _btnVolume, onChange(), this, OrderGoodWidget::changeCapacity );
   }
 
   virtual void _updateTexture( gfx::Engine& painter )
@@ -122,15 +136,27 @@ public:
     painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
   }
 
+  void changeCapacity( float fillingPercentage )
+  {
+    int storeCap = _storageBuilding->store().capacity();
+    _storageBuilding->store().setCapacity( _type, storeCap * fillingPercentage );
+  }
+
   void updateBtnText()
   {
     good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
+    if( rule > good::Orders::none )
+    {
+      Logger::warning( "OrderGoodWidget: unknown rule %d", (int)rule );
+      return;
+    }
+
     const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
     _btnChangeRule->setFont( Font::create( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( _(ruleName[ rule ]) );
   }
 
-  void changeGranaryRule()
+  void changeRule()
   {
     good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
     _storageBuilding->store().setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );
@@ -141,7 +167,7 @@ private:
   good::Type _type;
   T _storageBuilding;
   PushButton* _btnChangeRule;
-  PushButton* _btnVolume;
+  VolumeButton* _btnVolume;
 };
 
 class BaseSpecialOrdersWindow::Impl
@@ -178,10 +204,10 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
-  CONNECT( _d->btnExit, onClicked(), this, GranarySpecialOrdersWindow::deleteLater );
-
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
   _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
+
+  CONNECT( _d->btnExit, onClicked(), this, GranarySpecialOrdersWindow::deleteLater );
 }
 
 
@@ -303,10 +329,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   _updateBtnDevastation();
 }
 
-WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow()
-{
-
-}
+WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow() {}
 
 void WarehouseSpecialOrdersWindow::toggleDevastation()
 {

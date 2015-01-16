@@ -26,7 +26,7 @@ namespace good
 class Orders
 {
 public:
-  typedef enum { accept=0, reject, deliver, none } Order;
+  typedef enum { accept=0, reject, deliver, none, count } Order;
   
   Orders();
   ~Orders();

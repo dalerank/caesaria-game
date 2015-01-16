@@ -21,20 +21,27 @@
 
 #include "working.hpp"
 #include "game/enums.hpp"
-#include "good/good.hpp"
+#include "good/goodstore.hpp"
 #include "core/position.hpp"
-
-namespace good
-{
-class Store;
-}
 
 class Warehouse: public WorkingBuilding
 {
-  friend class WarehouseStore;
-
 public:
+  class Room : public good::Stock
+  {
+  public:
+    static const unsigned int basicCapacity = 400;
+
+    Room( const TilePos& pos );
+    void computePicture();
+
+    TilePos location;
+    gfx::Picture picture;
+  };
+
   typedef enum { sellGoodsBuff, buyGoodsBuff } Buff;
+  typedef std::vector<Room> Rooms;
+
   Warehouse();
 
   virtual void timeStep(const unsigned long time);
@@ -48,6 +55,8 @@ public:
   bool onlyDispatchGoods() const;
   bool isGettingFull() const;
   float tradeBuff( Buff type ) const;
+
+  Rooms& rooms();
 
   virtual std::string troubleDesc() const;
 

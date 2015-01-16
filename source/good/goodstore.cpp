@@ -277,7 +277,7 @@ unsigned int Reservations::push(const good::Stock& stock, DateTime time)
 
 bool Reservations::pop(unsigned int id)
 {
-  for( Reservations::iterator i=begin(); i != end(); ++i )
+  foreach( i, *this )
   {
     if( (*i).id == id )
     {

@@ -170,10 +170,9 @@ VariantMap SimpleStore::save() const
   stream[ "max" ] = _gsd->capacity;
 
   VariantList stockSave;
-  for( Impl::StockList::const_iterator itStock = _gsd->stocks.begin();
-       itStock != _gsd->stocks.end(); ++itStock )
+  foreach( it, _gsd->stocks )
   {
-    stockSave.push_back( (*itStock)->save() );
+    stockSave.push_back( (*it)->save() );
   }
 
   stream[ "stock" ] = stockSave;

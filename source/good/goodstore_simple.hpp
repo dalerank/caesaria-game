@@ -31,7 +31,7 @@ public:
   SimpleStore();
   virtual ~SimpleStore();
 
-  void setCapacity(const int maxQty);
+  virtual void setCapacity(const int maxQty);
   virtual int capacity() const;
   virtual int qty() const;
 
@@ -40,8 +40,9 @@ public:
   good::Stock& getStock(const good::Type &goodType);
 
   virtual int qty(const good::Type& goodType) const;
-  int capacity(const good::Type& goodType) const;
-  void setCapacity(const good::Type& goodType, const int maxQty);
+  virtual int capacity(const good::Type& goodType) const;
+  virtual void setCapacity(const good::Type& goodType, const int maxQty);
+
   void setQty(const good::Type& goodType, const int currentQty);
 
   // returns the max quantity that can be stored now
