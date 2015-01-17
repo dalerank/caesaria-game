@@ -26,8 +26,12 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::granery, Granary)
 
 namespace {
 CAESARIA_LITERALCONST(goodStore)

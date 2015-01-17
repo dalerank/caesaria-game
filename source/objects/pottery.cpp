@@ -22,9 +22,12 @@
 #include "core/gettext.hpp"
 #include "constants.hpp"
 #include "good/goodstore.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::pottery_workshop, Pottery)
 
 Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery_workshop, Size(2))
 {

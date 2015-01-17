@@ -26,9 +26,12 @@
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wall, Wall)
 
 Wall::Wall() : Building( objects::wall, Size(1) )
 {

@@ -23,8 +23,11 @@
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "walker/cart_supplier.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::barracks, Barracks)
 
 class Barracks::Impl
 {

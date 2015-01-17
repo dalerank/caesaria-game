@@ -23,10 +23,13 @@
 #include "core/logger.hpp"
 #include "objects/road.hpp"
 #include "core/variant_map.hpp"
+#include "objects_factory.hpp"
 #include "core/direction.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::gatehouse, Gatehouse)
 
 namespace {
 static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };

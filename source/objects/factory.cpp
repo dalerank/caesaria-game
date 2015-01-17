@@ -36,9 +36,13 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wine_workshop, Winery)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::oil_workshop, Creamery)
 
 class FactoryStore : public good::SimpleStore
 {
@@ -340,6 +344,14 @@ std::string Factory::cartStateDesc() const
 
   return "";
 }
+
+void Factory::initialize(const MetaData& mdata)
+{
+  WorkingBuilding::initialize( mdata );
+
+  setProductRate( (float)mdata.getOption( "productRate", 9.6f ) );
+}
+
 good::Product Factory::produceGoodType() const{  return _d->outGoodType;}
 
 void Factory::receiveGood()

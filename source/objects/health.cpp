@@ -20,9 +20,15 @@
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::hospital, Hospital)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::clinic, Doctor)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::baths, Baths)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::barber, Barber)
 
 Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::clinic, Size(1))
 {

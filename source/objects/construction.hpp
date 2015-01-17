@@ -63,6 +63,7 @@ public:
 
   virtual void addExtension( ConstructionExtensionPtr ext );
   virtual const ConstructionExtensionList& extensions() const;
+  virtual void initialize(const MetaData &mdata);
 protected:
   class Impl;
   ScopedPtr< Impl > _d;

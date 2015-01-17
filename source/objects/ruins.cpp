@@ -29,9 +29,15 @@
 #include "game/gamedate.hpp"
 #include "walker/dustcloud.hpp"
 #include "city/cityservice_fire.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::burned_ruins, BurnedRuins)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::burned_ruins, BurningRuins)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::collapsed_ruins, CollapsedRuins)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::plague_ruins, PlagueRuins)
 
 BurningRuins::BurningRuins() : Ruins( objects::burning_ruins )
 {

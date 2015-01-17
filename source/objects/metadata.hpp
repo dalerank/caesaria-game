@@ -58,7 +58,6 @@ public:
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 
   MetaData& operator=( const MetaData& a );
-
 private:
   class Impl;
   ScopedPtr< Impl > _d;

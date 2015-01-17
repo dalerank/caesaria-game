@@ -69,6 +69,7 @@ public:
   virtual unsigned int getConsumeQty() const;
 
   std::string cartStateDesc() const;
+  virtual void initialize(const MetaData &mdata);
 
 protected:
   virtual bool _mayDeliverGood() const;

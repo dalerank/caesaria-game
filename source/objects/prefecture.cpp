@@ -27,8 +27,12 @@
 #include "city/helper.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::prefecture, Prefecture)
 
 class Prefecture::Impl
 {

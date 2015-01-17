@@ -19,8 +19,12 @@
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::engineering_post, EngineerPost)
 
 EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineering_post, Size(1) )
 {

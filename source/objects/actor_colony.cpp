@@ -20,8 +20,11 @@
 #include "constants.hpp"
 #include "walker/trainee.hpp"
 #include "city/city.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::actorColony, ActorColony)
 
 ActorColony::ActorColony() : TrainingBuilding( objects::actorColony, Size(3) )
 {

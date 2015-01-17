@@ -23,9 +23,12 @@
 #include "constants.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::roadBlock, RoadBlock)
 
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 RoadBlock::RoadBlock()

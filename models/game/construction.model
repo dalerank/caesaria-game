@@ -644,6 +644,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "wheat"
     productRate : 9.6
     sound : [ "wheatfarm", 1 ]
   }, 

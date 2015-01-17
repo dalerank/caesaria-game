@@ -26,8 +26,12 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::market, Market)
 
 class Market::Impl
 {

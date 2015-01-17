@@ -222,6 +222,31 @@ void Construction::load( const VariantMap& stream )
 void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->newExtensions.push_back( ext ); }
 const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
 
+void Construction::initialize(const MetaData& mdata)
+{
+  TileOverlay::initialize( mdata );
+
+  VariantMap anMap = mdata.getOption( "animation" ).toMap();
+  if( !anMap.empty() )
+  {
+    Animation anim;
+
+    anim.load( anMap.get( "rc" ).toString(), anMap.get( "start" ).toInt(),
+               anMap.get( "count" ).toInt(), anMap.get( "reverse", false ).toBool(),
+               anMap.get( "step", 1 ).toInt() );
+
+    Variant v_offset = anMap.get( "offset" );
+    if( v_offset.isValid() )
+    {
+      anim.setOffset( v_offset.toPoint() );
+    }
+
+    anim.setDelay( (unsigned int)anMap.get( "delay", 1u ) );
+
+    setAnimation( anim );
+  }
+}
+
 double Construction::state( ParameterType param) const { return _d->params[ param ]; }
 
 TilesArray Construction::enterArea() const

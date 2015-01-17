@@ -31,9 +31,17 @@
 #include "walker/locust.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fig_farm, FarmFruit)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wheat_farm, FarmWheat)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::vinard, FarmGrape)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::meat_farm, FarmMeat)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::olive_farm, FarmOlive)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::vegetable_farm, FarmVegetable)
 
 class FarmTile
 {
@@ -191,7 +199,7 @@ void Farm::load( const VariantMap& stream )
   computePictures();
 }
 
-unsigned int Farm::getProduceQty() const
+unsigned int Farm::produceQty() const
 {
   return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }

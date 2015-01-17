@@ -24,6 +24,7 @@ class Farm : public Factory
 {
 public:
   Farm(const good::Product outGood, const TileOverlay::Type type );
+
   virtual ~Farm();
   void init();
 
@@ -36,7 +37,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  virtual unsigned int getProduceQty() const;
+  virtual unsigned int produceQty() const;
 
 protected:
   class Impl;

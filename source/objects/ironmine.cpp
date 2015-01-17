@@ -24,9 +24,12 @@
 #include "game/gamedate.hpp"
 #include "city/helper.hpp"
 #include "events/showinfobox.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::iron_mine, IronMine)
 
 IronMine::IronMine()
   : Factory(good::none, good::iron, objects::iron_mine, Size(2) )

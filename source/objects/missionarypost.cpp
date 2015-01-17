@@ -19,8 +19,11 @@
 #include "game/resourcegroup.hpp"
 #include "walker/walker.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::missionaryPost, MissionaryPost)
 
 MissionaryPost::MissionaryPost()
   : ServiceBuilding( Service::missionary, objects::missionaryPost, Size(2) )

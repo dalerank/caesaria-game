@@ -30,9 +30,12 @@
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::aqueduct, Aqueduct)
 
 Aqueduct::Aqueduct() : WaterSource( objects::aqueduct, Size(1) )
 {

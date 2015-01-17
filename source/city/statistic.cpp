@@ -224,7 +224,7 @@ unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
   int foodProducing = 0;
   FarmList farms = helper.find<Farm>( objects::foodGroup );
 
-  foreach( f, farms ) { foodProducing += (*f)->getProduceQty(); }
+  foreach( f, farms ) { foodProducing += (*f)->produceQty(); }
 
   return foodProducing;
 }

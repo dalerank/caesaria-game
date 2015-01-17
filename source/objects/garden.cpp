@@ -23,8 +23,11 @@
 #include "constants.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::garden, Garden)
 
 Garden::Garden() : Construction(constants::objects::garden, Size(1) )
 {

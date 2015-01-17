@@ -26,8 +26,11 @@
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::chariotSchool, WorkshopChariot)
 
 WorkshopChariot::WorkshopChariot() : TrainingBuilding( objects::chariotSchool, Size(3) )
 {

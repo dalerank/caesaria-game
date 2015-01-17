@@ -22,9 +22,12 @@
 #include "house.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::well, Well)
 
 namespace {
  const unsigned int wellServiceRange = 2;

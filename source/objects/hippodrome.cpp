@@ -24,9 +24,12 @@
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::hippodrome, Hippodrome)
 
 const Point hippodromeSectionOffset[] = {
   Point(), Point( 0, 43 ), Point(),

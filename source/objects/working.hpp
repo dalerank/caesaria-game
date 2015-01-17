@@ -61,6 +61,8 @@ public:
   virtual std::string workersStateDesc() const;
   virtual std::string troubleDesc() const;
 
+  virtual void initialize(const MetaData &mdata);
+
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();

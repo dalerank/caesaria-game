@@ -28,8 +28,10 @@
 #include "core/logger.hpp"
 #include "events/fundissue.hpp"
 #include "city/helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::forum, Forum)
 
 class Forum::Impl
 {

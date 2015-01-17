@@ -27,9 +27,12 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::senate, Senate)
 // govt 4  - senate
 // govt 9  - advanced senate
 // govt 5 ~ 8 - senate flags

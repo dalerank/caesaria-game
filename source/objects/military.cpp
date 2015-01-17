@@ -31,9 +31,14 @@
 #include "walker/romehorseman.hpp"
 #include "walker/helper.hpp"
 #include "walker/romearcher.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fort_javelin, FortJaveline)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fort_horse, FortMounted)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fort_legionaries, FortLegionary)
 
 FortLegionary::FortLegionary()
   : Fort( objects::fort_legionaries, 16 )

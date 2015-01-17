@@ -29,10 +29,13 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::reservoir, Reservoir)
 
 class WaterSource::Impl
 {

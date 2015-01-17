@@ -41,10 +41,12 @@
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 using namespace events;
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::house, House)
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };

@@ -22,9 +22,12 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::river, River)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);

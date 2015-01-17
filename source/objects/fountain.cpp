@@ -34,9 +34,12 @@
 #include "game/gamedate.hpp"
 #include "walker/workerhunter.hpp"
 #include "events/returnworkers.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fountain, Fountain)
 
 namespace {
 static const unsigned int fillDistanceNormal = 4;

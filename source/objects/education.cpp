@@ -23,8 +23,13 @@
 #include "objects/house.hpp"
 #include "gfx/helper.hpp"
 #include "game/gamedate.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::school, School)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::library, Library)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::academy, Academy)
 
 class School::Impl
 {

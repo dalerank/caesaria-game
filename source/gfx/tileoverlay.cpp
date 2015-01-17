@@ -173,6 +173,14 @@ void TileOverlay::load( const VariantMap& stream )
   tile().setHeight( stream.get( "height" ).toInt() );
 }
 
+void TileOverlay::initialize(const MetaData& mdata)
+{
+  if( mdata.picture().isValid() )
+  {
+    setPicture( mdata.picture() );  // default picture for build tool
+  }
+}
+
 bool TileOverlay::isWalkable() const{  return false;}
 bool TileOverlay::isDestructible() const { return true; }
 bool TileOverlay::isFlat() const { return false;}

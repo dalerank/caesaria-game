@@ -20,10 +20,13 @@
 #include "constants.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
+#include "objects_factory.hpp"
 #include "city/helper.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::weapons_workshop, WeaponsWorkshop)
 
 WeaponsWorkshop::WeaponsWorkshop()
   : Factory(good::iron, good::weapon, objects::weapons_workshop, Size(2) )

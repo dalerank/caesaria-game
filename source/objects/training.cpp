@@ -28,9 +28,13 @@
 #include "constants.hpp"
 #include "walker/lion_tamer.hpp"
 #include "game/gamedate.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::gladiatorSchool, GladiatorSchool)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::lionsNursery, LionsNursery)
 
 TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
   : WorkingBuilding( type, size )

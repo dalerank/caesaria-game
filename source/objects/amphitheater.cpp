@@ -29,9 +29,12 @@
 #include "constants.hpp"
 #include "actor_colony.hpp"
 #include "walker/helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::amphitheater, Amphitheater)
 
 class Amphitheater::Impl
 {

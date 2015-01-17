@@ -33,9 +33,12 @@
 #include "walker/cart_pusher.hpp"
 #include "events/fundissue.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::dock, Dock)
 
 class Dock::Impl
 {

@@ -371,7 +371,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 90 );
   new Label( gbox, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
-  const good::Store& sellgoods = currentCity->exportingGoods();
+  const good::Store& sellgoods = currentCity->importingGoods();
   good::Product product=good::none;
   for( int k=0; product < good::goodCount; ++product )
   {
@@ -387,7 +387,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point buyPoint = startDraw + Point( 200, 0 );
   new Label( gbox, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
-  const good::Store& buygoods = currentCity->importingGoods();
+  const good::Store& buygoods = currentCity->exportingGoods();
   good::Product i=good::none;
   for( int k=0; i < good::goodCount; ++i )
   {

@@ -24,9 +24,12 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "events/showinfobox.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
 
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::clay_pit, ClayPit)
 
 ClayPit::ClayPit()
   : Factory( good::none, good::clay, constants::objects::clay_pit, Size(2) )

@@ -25,9 +25,12 @@
 #include "constants.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::road, Road)
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::plaza, Plaza)
 
 namespace {
 static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);

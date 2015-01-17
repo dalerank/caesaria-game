@@ -22,9 +22,12 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/gettext.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::lumber_mill, TimberLogger)
 
 TimberLogger::TimberLogger()
   : Factory(good::none, good::timber, objects::lumber_mill, Size(2) )

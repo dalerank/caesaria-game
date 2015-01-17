@@ -39,10 +39,14 @@
 #include "walker/cart_supplier.hpp"
 #include "extension.hpp"
 #include "warehouse_store.hpp"
+#include "objects_factory.hpp"
 
 #include <list>
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::warehouse, Warehouse)
 
 namespace {
 CAESARIA_LITERALCONST(tiles)

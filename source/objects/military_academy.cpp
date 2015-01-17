@@ -17,8 +17,11 @@
 
 #include "military_academy.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::military_academy, MilitaryAcademy)
 
 MilitaryAcademy::MilitaryAcademy()
   : WorkingBuilding( objects::military_academy, Size(3) )

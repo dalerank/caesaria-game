@@ -112,6 +112,13 @@ std::string WorkingBuilding::troubleDesc() const
   return trouble;
 }
 
+void WorkingBuilding::initialize(const MetaData& mdata)
+{
+  Building::initialize( mdata );
+
+  setMaximumWorkers( (unsigned int)mdata.getOption( "employers" ) );
+}
+
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
 void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->maxWorkers = maxWorkers; }
 unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
