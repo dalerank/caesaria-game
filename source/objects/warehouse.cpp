@@ -93,7 +93,7 @@ void Warehouse::Room::computePicture()
     // (100, 200] -> 1
     // (200, 300] -> 2
     // (300, 400] -> 3
-    picIdx += math::min<int>( 0, good::Helper::convQty2Units( qty() ) - 1 );
+    picIdx += math::max<int>( 0, good::Helper::convQty2Units( qty() ) - 1 );
   }
 
   picture = Picture::load( ResourceGroup::warehouse, picIdx );

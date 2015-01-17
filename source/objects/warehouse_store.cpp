@@ -28,6 +28,7 @@ WarehouseStore::WarehouseStore()
   for( good::Product goodType=good::wheat; goodType <= good::goodCount; ++goodType )
   {
     setOrder( goodType, good::Orders::accept );
+    _capacities[ goodType ] = 9999;
   }
 }
 
