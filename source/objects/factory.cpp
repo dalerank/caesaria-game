@@ -350,6 +350,13 @@ void Factory::initialize(const MetaData& mdata)
   WorkingBuilding::initialize( mdata );
 
   setProductRate( (float)mdata.getOption( "productRate", 9.6f ) );
+  Variant outputProduct = mdata.getOption( "output" );
+  if( outputProduct.isValid() )
+  {
+    good::Product pr = good::Helper::getType( outputProduct.toString() );
+    if( pr != good::none )
+      _d->outGoodType = pr;
+  }
 }
 
 good::Product Factory::produceGoodType() const{  return _d->outGoodType;}

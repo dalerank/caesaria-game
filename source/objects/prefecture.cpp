@@ -66,6 +66,9 @@ void Prefecture::timeStep(const unsigned long time)
 
 void Prefecture::deliverService()
 {
+  if( !isActive() )
+    return;
+
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TilePos fireDetectPos = _d->checkFireDetect( _city(), pos() );

@@ -127,7 +127,7 @@ unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers;
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
-bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
+bool WorkingBuilding::mayWork() const { return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
@@ -180,7 +180,8 @@ void WorkingBuilding::timeStep( const unsigned long time )
     _d->laborAccessKoeff = math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
   }
 
-  _updateAnimation( time );
+  if( isActive() )
+    _updateAnimation( time );
 }
 
 void WorkingBuilding::_updateAnimation(const unsigned long time )

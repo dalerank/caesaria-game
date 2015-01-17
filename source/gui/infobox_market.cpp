@@ -22,6 +22,7 @@
 #include "core/gettext.hpp"
 #include "good/goodhelper.hpp"
 #include "core/utils.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,7 +38,14 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
    MarketPtr market = ptr_cast<Market>( tile.overlay() );
 
+   if( !market.isValid() )
+   {
+     Logger::warning( "AboutMarket: market is null tile at [d,%d]", tile.i(), tile.j() );
+     return;
+   }
+
    setBase( ptr_cast<Construction>( market ));
+   _setWorkingVisible( true );
 
    Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
    lbAbout->setWordwrap( true );

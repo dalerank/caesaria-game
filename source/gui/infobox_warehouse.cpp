@@ -42,6 +42,7 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
   setBase( ptr_cast<Construction>( _warehouse ) );
+  _setWorkingVisible( true );
 
   /*StringArray warnings;
   if( _warehouse->onlyDispatchGoods() )  { warnings << "##warehouse_low_personal_warning##";  }
