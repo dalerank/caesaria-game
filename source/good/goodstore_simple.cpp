@@ -28,7 +28,7 @@ class SmStock : public good::Stock, public ReferenceCounted
 public:
   typedef SmartPtr<SmStock> Ptr;
 
-  static Ptr create( good::Type type )
+  static Ptr create( good::Product type )
   {
     Ptr ret( new SmStock() );
     ret->setType( type );
@@ -49,10 +49,10 @@ public:
   void reset()
   {
     stocks.clear();
-    stocks.reserve(good::goodCount);
-    for( int n = 0; n < (int)good::goodCount; ++n)
+    stocks.reserve(good::goodCount.toInt());
+    for( good::Product n = good::none; n < good::goodCount; ++n)
     {
-      stocks.push_back( SmStock::create( (good::Type)n ) );
+      stocks.push_back( SmStock::create( n ) );
     }
   }
 };
@@ -77,29 +77,28 @@ int SimpleStore::qty() const
   return qty;
 }
 
-good::Stock& SimpleStore::getStock(const good::Type &goodType){  return *(_gsd->stocks[goodType].object());}
-int SimpleStore::qty(const good::Type& goodType) const{  return _gsd->stocks[goodType]->qty();}
-int SimpleStore::capacity(const good::Type& goodType) const{  return _gsd->stocks[goodType]->capacity();}
+good::Stock& SimpleStore::getStock(const Product& goodType){  return *(_gsd->stocks[goodType.toInt()].object());}
+int SimpleStore::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->qty();}
+int SimpleStore::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->capacity();}
 
-void SimpleStore::setCapacity(const good::Type& goodType, const int maxQty)
+void SimpleStore::setCapacity(const good::Product& goodType, const int maxQty)
 {
   if( goodType == good::goodCount )
   {
-    for( int i=good::none; i < good::goodCount; i++ )
+    for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = (good::Type)i;
-      _gsd->stocks[gtype]->setCapacity( maxQty );
+      _gsd->stocks[gtype.toInt()]->setCapacity( maxQty );
     }
   }
   else
   {
-    _gsd->stocks[goodType]->setCapacity( maxQty );
+    _gsd->stocks[goodType.toInt()]->setCapacity( maxQty );
   }
 }
 
-void SimpleStore::setQty(const good::Type& goodType, const int currentQty){  _gsd->stocks[goodType]->setQty( currentQty );}
+void SimpleStore::setQty(const good::Product& goodType, const int currentQty){  _gsd->stocks[goodType.toInt()]->setQty( currentQty );}
 
-int SimpleStore::getMaxStore(const good::Type goodType)
+int SimpleStore::getMaxStore(const good::Product goodType)
 {
   int freeRoom = 0;
   if( !isDevastation() )
@@ -107,7 +106,7 @@ int SimpleStore::getMaxStore(const good::Type goodType)
     int globalFreeRoom = capacity() - qty();
 
     // current free capacity
-    good::Stock& st = *_gsd->stocks[goodType].object();
+    good::Stock& st = *_gsd->stocks[goodType.toInt()].object();
     freeRoom = math::clamp( st.freeQty(), 0, globalFreeRoom );
 
     // remove all storage reservations
@@ -137,7 +136,7 @@ void SimpleStore::applyStorageReservation(good::Stock &stock, const int reservat
   }
 
   int amount = reservedStock.qty();
-  _gsd->stocks[ reservedStock.type() ]->push( amount );
+  _gsd->stocks[ reservedStock.type().toInt() ]->push( amount );
   stock.pop( amount );
 }
 
@@ -191,7 +190,7 @@ void SimpleStore::load( const VariantMap& stream )
   {
     SmStock::Ptr stock = SmStock::create( good::none );
     stock->load( it->toList() );
-    _gsd->stocks[ stock->type() ] = stock;
+    _gsd->stocks[ stock->type().toInt() ] = stock;
   }
 }
 
@@ -201,9 +200,8 @@ void SimpleStore::resize(const Store &other )
 {
   setCapacity( other.capacity() );
 
-  for( int i=good::wheat; i < good::goodCount; i++ )
+  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
   {
-    good::Type gtype = good::Type( i );
     setCapacity( gtype, other.capacity( gtype ) );
   }
 }

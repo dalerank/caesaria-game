@@ -52,9 +52,9 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
      good::Store& goods = market->goodStore();
      int furageSum = 0;
      // for all furage types of good
-     for (int goodType = 0; goodType<good::olive; ++goodType)
+     for( good::Product pr=good::none; pr<good::olive; ++pr )
      {
-       furageSum += goods.qty( (good::Type)goodType );
+       furageSum += goods.qty( pr );
      }
 
      int paintY = 100;
@@ -92,7 +92,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
 AboutMarket::~AboutMarket() {}
 
-void AboutMarket::drawGood( MarketPtr market, const good::Type &goodType, int index, int paintY )
+void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int index, int paintY )
 {
   int startOffset = 25;
 

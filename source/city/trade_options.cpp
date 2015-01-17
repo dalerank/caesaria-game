@@ -75,15 +75,14 @@ public:
     }
   };
 
-  typedef std::map< good::Type, GoodInfo > GoodsInfo;
+  typedef std::map< good::Product, GoodInfo > GoodsInfo;
   GoodsInfo goods;
   good::SimpleStore buys, sells;
 
   void updateLists()
   {
-    for( int i=good::wheat; i < good::goodCount; i++ )
+    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = (good::Type)i;
       const GoodInfo& info = goods[ gtype ];
 
       switch( info.order )
@@ -112,9 +111,8 @@ public:
   {
     buys.setCapacity( 9999 );
     sells.setCapacity( 9999 );
-    for( int i=good::wheat; i < good::goodCount; i++ )
+    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = (good::Type)i;
       goods[ gtype ].stacking = false;
       goods[ gtype ].order = TradeOptions::noTrade;
       goods[ gtype ].vendor = true;
@@ -132,13 +130,13 @@ TradeOptions::TradeOptions() : _d( new Impl )
 {  
 }
 
-unsigned int TradeOptions::exportLimit(good::Type type) const
+unsigned int TradeOptions::exportLimit(good::Product type) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.exportLimit );
 }
 
-TradeOptions::Order TradeOptions::getOrder( good::Type type ) const
+TradeOptions::Order TradeOptions::getOrder( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? TradeOptions::noTrade : it->second.order);
@@ -149,7 +147,7 @@ TradeOptions::~TradeOptions()
 
 }
 
-TradeOptions::Order TradeOptions::switchOrder( good::Type type )
+TradeOptions::Order TradeOptions::switchOrder( good::Product type )
 {
   if( !isVendor( type ) )
   {
@@ -175,20 +173,20 @@ TradeOptions::Order TradeOptions::switchOrder( good::Type type )
   return getOrder( type );
 }
 
-void TradeOptions::setExportLimit(good::Type type, unsigned int qty)
+void TradeOptions::setExportLimit(good::Product type, unsigned int qty)
 {
   _d->goods[ type ].exportLimit = qty;
 
   _d->updateLists();
 }
 
-bool TradeOptions::isGoodsStacking( good::Type type )
+bool TradeOptions::isGoodsStacking( good::Product type )
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.stacking );
 }
 
-bool TradeOptions::isExporting( good::Type type ) const
+bool TradeOptions::isExporting( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   if (it == _d->goods.end())
@@ -201,7 +199,7 @@ bool TradeOptions::isExporting( good::Type type ) const
   }
 }
 
-bool TradeOptions::isImporting( good::Type type ) const
+bool TradeOptions::isImporting( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   if (it == _d->goods.end())
@@ -214,49 +212,49 @@ bool TradeOptions::isImporting( good::Type type ) const
   }
 }
 
-void TradeOptions::setStackMode( good::Type type, bool stackGoods )
+void TradeOptions::setStackMode( good::Product type, bool stackGoods )
 {
   _d->goods[ type ].stacking = stackGoods;
 
   _d->updateLists();
 }
 
-unsigned int TradeOptions::sellPrice( good::Type type ) const
+unsigned int TradeOptions::sellPrice( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.sellPrice );
 }
 
-void TradeOptions::setSellPrice( good::Type type, unsigned int price )
+void TradeOptions::setSellPrice( good::Product type, unsigned int price )
 {
    _d->goods[ type ].sellPrice = price;
 }
 
-unsigned int TradeOptions::buyPrice( good::Type type ) const
+unsigned int TradeOptions::buyPrice( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.buyPrice );
 }
 
-void TradeOptions::setBuyPrice( good::Type type, unsigned int price )
+void TradeOptions::setBuyPrice( good::Product type, unsigned int price )
 {
   _d->goods[ type ].buyPrice = price;
 }
 
-bool TradeOptions::isVendor( good::Type type ) const
+bool TradeOptions::isVendor( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.vendor );
 }
 
-void TradeOptions::setVendor( good::Type type, bool available )
+void TradeOptions::setVendor( good::Product type, bool available )
 {
   _d->goods[ type ].vendor = available;
 
   _d->updateLists();
 }
 
-void TradeOptions::setOrder( good::Type type, Order order )
+void TradeOptions::setOrder( good::Product type, Order order )
 {
   _d->goods[ type ].order = order;
 
@@ -267,7 +265,7 @@ void TradeOptions::load( const VariantMap& stream )
 {
   for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
 
     if( gtype == good::none )
     {

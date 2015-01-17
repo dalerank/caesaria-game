@@ -51,8 +51,11 @@ public:
           : PushButton( parent, rectangle )
   {
     float prc = roomCap / (float)warehouseCap;
-    if( prc < 0.25 )
-    _step = 4;
+    if( prc < 0.50 ) { _step = 1; }
+    else if( prc < 0.75 ) { _step = 2; }
+    else if( prc < 1 ) { _step = 3; }
+    else _step =0;
+
     _icon = Picture::load( "whblock", 1 );
     setBackgroundStyle( PushButton::blackBorderUp );
     setFont( Font::create( FONT_2_WHITE ) );
@@ -98,15 +101,19 @@ template< class T >
 class OrderGoodWidget : public Label
 {
 public:
-  OrderGoodWidget( Widget* parent, const Rect& rect, good::Type good, T storageBuilding )
+  OrderGoodWidget( Widget* parent, const Rect& rect, good::Product good, T storageBuilding )
     : Label( parent, rect, "" )
   {
     _type = good;
     _storageBuilding = storageBuilding;
     setFont( Font::create( FONT_1_WHITE ) );
 
+    good::Store& store = _storageBuilding->store();
+
     _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
-    _btnVolume = new VolumeButton( this, Rect( _btnChangeRule->righttop(), Size( 40, height() ) ) );
+    _btnVolume = new VolumeButton( this, Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
+                                   store.capacity( good ), store.capacity() );
+
     _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
     updateBtnText();
 
@@ -164,7 +171,7 @@ public:
   }
 
 private:
-  good::Type _type;
+  good::Product _type;
   T _storageBuilding;
   PushButton* _btnChangeRule;
   VolumeButton* _btnVolume;
@@ -183,7 +190,7 @@ public:
 };
 
 template< class T >
-void addOrderWidget( const int index, const good::Type good, Widget* area, T storageBuiding )
+void addOrderWidget( const int index, const good::Product good, Widget* area, T storageBuiding )
 {
   Point offset( 0, 25 );
   Size wdgSize( area->width(), 25 );
@@ -260,13 +267,13 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   setTitle( _("##granary_orders##") );
   int index=0;
   _granary = granary;
-  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
+  for( good::Product goodType=good::wheat; goodType <= good::vegetable; ++goodType )
   {
-    const good::Orders::Order rule = granary->store().getOrder( (good::Type)goodType );
+    const good::Orders::Order rule = granary->store().getOrder( goodType );
     
     if( rule != good::Orders::none )
     {
-      addOrderWidget<GranaryPtr>( index, (good::Type)goodType, _ordersArea(), granary );
+      addOrderWidget<GranaryPtr>( index, goodType, _ordersArea(), granary );
       index++;
     }
   }
@@ -311,13 +318,13 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   d->warehouse = warehouse;
   int index=0;
-  for( int goodType=good::wheat; goodType <= good::marble; goodType++ )
+  for( good::Product goodType=good::wheat; goodType <= good::marble; ++goodType )
   {
-    const good::Orders::Order rule = d->warehouse->store().getOrder( (good::Type)goodType );
+    const good::Orders::Order rule = d->warehouse->store().getOrder( goodType );
 
     if( rule != good::Orders::none )
     {
-      addOrderWidget<WarehousePtr>( index, (good::Type)goodType, _ordersArea(), d->warehouse );
+      addOrderWidget<WarehousePtr>( index, goodType, _ordersArea(), d->warehouse );
       index++;
     }
   }

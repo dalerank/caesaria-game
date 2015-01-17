@@ -514,6 +514,7 @@ float Prefect::serviceValue() const {  return 5; }
 PrefectPtr Prefect::create(PlayerCityPtr city )
 {
   PrefectPtr ret( new Prefect( city ) );
+  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
   ret->drop();
 
   return ret;

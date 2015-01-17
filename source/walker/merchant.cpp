@@ -99,9 +99,8 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::SimpleStore& ba
     // for every warehouse within range
     WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
     int rating = 0;
-    for( int i=good::wheat; i<good::goodCount; i++ )
+    for( good::Product gtype=good::wheat; gtype<good::goodCount; ++gtype )
     {
-      good::Type gtype = good::Type(i);
       if (!options.isExporting(gtype))
       {
         continue;
@@ -239,9 +238,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         city::TradeOptions& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
         //try buy goods
-        for( int n = good::wheat; n<good::goodCount; ++n )
+        for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
         {
-          good::Type goodType = (good::Type) n;
           if (!options.isExporting(goodType))
           {
             continue;
@@ -321,9 +319,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         city::TradeOptions& options = city->tradeOptions();
         //try sell goods
-        for (int n = good::wheat; n<good::goodCount; ++n)
+        for (good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
         {
-          good::Type goodType = (good::Type)n;
           if (!options.isImporting(goodType))
           {
             continue;

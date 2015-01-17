@@ -97,9 +97,8 @@ void ComputerCity::save( VariantMap& options ) const
   VariantMap vm_buys;
   VariantMap vm_bought;
 
-  for( int i=good::none; i < good::goodCount; i ++ )
+  for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )
   {
-    good::Type gtype = good::Type ( i );
     std::string tname = good::Helper::getTypeName( gtype );
     int maxSellStock = _d->sellStore.capacity( gtype );
     if( maxSellStock > 0 )
@@ -163,9 +162,8 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D( _d, strength, options )
   VARIANT_LOAD_ANYDEF_D(_d, population, _d->population, options )
 
-  for( int i=good::none; i < good::goodCount; i ++ )
+  for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype  )
   {
-    good::Type gtype = good::Type ( i );
     _d->sellStore.setCapacity( gtype, 0 );
     _d->buyStore.setCapacity( gtype, 0 );
     _d->realSells.setCapacity( gtype, 0 );
@@ -176,14 +174,14 @@ void ComputerCity::load( const VariantMap& options )
   VariantMap sold_vm = options.get( "sold" ).toMap();
   for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); ++it )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
     _d->sellStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
   VariantMap bought_vm = options.get( "bought" ).toMap();
   for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); ++it )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
     _d->buyStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
@@ -205,7 +203,7 @@ Nation ComputerCity::nation() const { return _d->nation; }
 unsigned int ComputerCity::age() const { return _d->age; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
 
-void ComputerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
+void ComputerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
 {
 }
 
@@ -227,9 +225,8 @@ void ComputerCity::addObject(ObjectPtr object )
 
     _d->buyStore.storeAll( buyGoods );
 
-    for( int i=good::none; i < good::goodCount; i ++ )
+    for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = good::Type ( i );
       int qty = sellGoods.freeQty( gtype );
       good::Stock stock( gtype, qty, qty );
       _d->realSells.store( stock, qty );
@@ -264,7 +261,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap sells_vm = stream.get( "sells" ).toMap();
   foreach( it, sells_vm )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
     _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
     _d->realSells.setCapacity( gtype, it->second.toInt() * 100 );
   }
@@ -272,7 +269,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap buys_vm = stream.get( "buys" ).toMap();
   foreach( it, buys_vm )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
     _d->buyStore.setCapacity( gtype, it->second.toInt() * 100 );
   }
 }
@@ -308,9 +305,8 @@ void ComputerCity::timeStep( unsigned int time )
     _d->merchantsNumber = math::clamp<int>( _d->merchantsNumber-1, 0, 2 );
     _d->lastTimeUpdate = game::Date::current();
 
-    for( int i=good::none; i < good::goodCount; i ++ )
+    for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = good::Type( i );
       _d->sellStore.setQty( gtype, _d->sellStore.capacity( gtype ) );     
       _d->buyStore.setQty( gtype, 0  );
       _d->realSells.setQty( gtype, 0 );
@@ -337,10 +333,8 @@ void ComputerCity::timeStep( unsigned int time )
     good::SimpleStore sellGoods, buyGoods;
     sellGoods.setCapacity( 2000 );
     buyGoods.setCapacity( 2000 );
-    for( int i=good::none; i < good::goodCount; i ++ )
+    for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = good::Type( i );
-
       buyGoods.setCapacity( gtype, _d->buyStore.capacity( gtype ) );
 
       //how much space left

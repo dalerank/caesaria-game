@@ -59,36 +59,32 @@ Warehouse::Room::Room(const TilePos &pos)
 void Warehouse::Room::computePicture()
 {
   int picIdx = 0;
-  good::Type gtype = empty() ? good::none : type();
+  good::Product gtype = empty() ? good::none : type();
 
-  switch( gtype )
+  if( gtype == good::none ) picIdx = 19;
+  else if( gtype == good::wheat ) picIdx = 20;
+  else if( gtype == good::vegetable ) picIdx = 24;
+  else if( gtype == good::fruit ) picIdx = 28;
+  else if( gtype == good::olive ) picIdx = 32;
+  else if( gtype == good::grape ) picIdx = 36;
+  else if( gtype == good::meat ) picIdx = 40;
+  else if( gtype == good::wine ) picIdx = 44;
+  else if( gtype == good::oil ) picIdx = 48;
+  else if( gtype == good::iron ) picIdx = 52;
+  else if( gtype == good::timber ) picIdx = 56;
+  else if( gtype == good::clay ) picIdx = 60;
+  else if( gtype == good::marble ) picIdx = 64;
+  else if( gtype == good::weapon ) picIdx = 68;
+  else if( gtype == good::furniture ) picIdx = 72;
+  else if( gtype == good::pottery ) picIdx = 76;
+  else if( gtype == good::fish ) picIdx = 80;
+  else if( gtype == good::prettyWine ) picIdx = 44;
+  else
   {
-  case good::none: picIdx = 19; break;
-  case good::wheat: picIdx = 20; break;
-  case good::vegetable: picIdx = 24; break;
-  case good::fruit: picIdx = 28; break;
-  case good::olive: picIdx = 32; break;
-  case good::grape: picIdx = 36; break;
-  case good::meat: picIdx = 40; break;
-  case good::wine: picIdx = 44; break;
-  case good::oil: picIdx = 48; break;
-  case good::iron: picIdx = 52; break;
-  case good::timber: picIdx = 56; break;
-  case good::clay: picIdx = 60; break;
-  case good::marble: picIdx = 64; break;
-  case good::weapon: picIdx = 68; break;
-  case good::furniture: picIdx = 72; break;
-  case good::pottery: picIdx = 76; break;
-  case good::fish: picIdx = 80; break;
-  case good::prettyWine: picIdx = 44; break;
-  case good::goodCount:
     Logger::warning( "Unexpected good type: in warehouse");
     setType( good::none );
     picIdx = 19;
-  break;
-  default:
-    _CAESARIA_DEBUG_BREAK_IF( "Unexpected good type: " );
-  }  
+  }
 
   if( gtype != good::none)
   {
@@ -271,9 +267,8 @@ void Warehouse::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
+  for( good::Product gType=good::wheat; gType <= good::goodCount; ++gType )
   {
-    good::Type gType = (good::Type)goodType;
     good::Orders::Order order = _d->goodStore.getOrder( gType );
     int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( gType ), 0, Room::basicCapacity );
 
@@ -297,21 +292,21 @@ void Warehouse::_resolveDevastationMode()
   if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
     const int maxCapacity = CartPusher::megaCart;
-    for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
+    for( good::Product goodType=good::wheat; goodType <= good::goodCount; ++goodType )
     {
-      int goodQty = _d->goodStore.qty( (good::Type)goodType );
+      int goodQty = _d->goodStore.qty( goodType );
       goodQty = math::clamp( goodQty, 0, maxCapacity);
 
       if( goodQty > 0 )
       {
-        good::Stock stock( (good::Type)goodType, goodQty, goodQty);
+        good::Stock stock( goodType, goodQty, goodQty);
         CartPusherPtr cart = CartPusher::create( _city() );
         cart->stock().setCapacity( maxCapacity );
         cart->send2city( BuildingPtr( this ), stock );
 
         if( !cart->isDeleted() )
         {
-          good::Stock tmpStock( (good::Type)goodType, goodQty );;
+          good::Stock tmpStock( goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
           addWalker( cart.object() );
         }

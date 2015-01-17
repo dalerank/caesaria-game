@@ -372,13 +372,14 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   new Label( gbox, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
   const good::Store& sellgoods = currentCity->exportingGoods();
-  for( int i=0, k=0; i < good::goodCount; i++ )
+  good::Product product=good::none;
+  for( int k=0; product < good::goodCount; ++product )
   {
-    if( sellgoods.capacity( (good::Type)i ) > 0  )
+    if( sellgoods.capacity( product ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( good::Helper::picture( good::Type(i), true) );
-      lb->setTooltipText( good::Helper::getTypeName( good::Type(i) ) );
+      lb->setBackgroundPicture( good::Helper::picture( product, true) );
+      lb->setTooltipText( good::Helper::getTypeName( product ) );
       k++;
     }
   }
@@ -387,13 +388,14 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   new Label( gbox, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
   const good::Store& buygoods = currentCity->importingGoods();
-  for( int i=0, k=0; i < good::goodCount; i++ )
+  good::Product i=good::none;
+  for( int k=0; i < good::goodCount; ++i )
   {
-    if( buygoods.capacity( (good::Type)i ) > 0  )
+    if( buygoods.capacity( i ) > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  good::Helper::picture( good::Type(i), true) );
-      lb->setTooltipText( good::Helper::getTypeName( good::Type(i) ) );
+      lb->setBackgroundPicture(  good::Helper::picture( i, true) );
+      lb->setTooltipText( good::Helper::getTypeName( i ) );
       k++;
     }
   }
@@ -414,14 +416,15 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   new Label( gbox, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
   const good::Store& sellgoods = currentCity->importingGoods();
-  for( int i=0, k=0; i < good::goodCount; i++ )
+  good::Product i=good::none;
+  for( int k=0; i < good::goodCount; ++i )
   {
-    int maxsell = sellgoods.capacity( (good::Type)i ) / 100;
-    int cursell = sellgoods.qty( (good::Type)i ) / 100;
+    int maxsell = good::Helper::convQty2Units( sellgoods.capacity( i ) );
+    int cursell = good::Helper::convQty2Units( sellgoods.qty( i ) );
     if( maxsell > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture(  good::Helper::picture( good::Type(i), true) );
+      lb->setBackgroundPicture(  good::Helper::picture( i, true) );
 
       std::string text = utils::format( 0xff, "%d/%d", cursell, maxsell );
       new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
@@ -433,14 +436,15 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
   const good::Store& buygoods = currentCity->exportingGoods();
-  for( int i=0, k=0; i < good::goodCount; i++ )
+  i=good::none;
+  for( int k=0; i < good::goodCount; ++i )
   {
-    int maxbuy = buygoods.capacity( (good::Type)i ) / 100;
-    int curbuy = buygoods.qty( (good::Type)i ) / 100;
+    int maxbuy = buygoods.capacity( i ) / 100;
+    int curbuy = buygoods.qty( i ) / 100;
     if( maxbuy > 0  )
     {
       Label* lb = new Label( gbox, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb->setBackgroundPicture( good::Helper::picture( good::Type(i), true) );
+      lb->setBackgroundPicture( good::Helper::picture( i, true) );
 
       std::string text = utils::format( 0xff, "%d/%d", curbuy, maxbuy );
       new Label( gbox, Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );

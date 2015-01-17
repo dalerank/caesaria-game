@@ -87,7 +87,7 @@ int Statistic::getEntertainmentCoverage(PlayerCityPtr city, Service::Type servic
             : math::percentage( need, have) );
 }
 
-bool Statistic::canImport(PlayerCityPtr city, good::Type type)
+bool Statistic::canImport(PlayerCityPtr city, good::Product type)
 {
   world::EmpirePtr empire = city->empire();
   world::TraderouteList routes = empire->tradeRoutes( city->name() );
@@ -106,7 +106,7 @@ bool Statistic::canImport(PlayerCityPtr city, good::Type type)
   return haveImportWay;
 }
 
-bool Statistic::canProduce(PlayerCityPtr city, good::Type type)
+bool Statistic::canProduce(PlayerCityPtr city, good::Product type)
 {
   Helper helper( city );
 
@@ -330,9 +330,8 @@ Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city, bool includeGrana
 
   foreach( wh, warehouses )
   {
-    for( int i=good::wheat; i < good::goodCount; i++ )
+    for( good::Product goodType=good::wheat; goodType < good::goodCount; ++goodType )
     {
-      good::Type goodType = (good::Type)i;
       cityGoodsAvailable[ goodType ] += (*wh)->store().qty( goodType );
     }
   }
@@ -344,9 +343,8 @@ Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city, bool includeGrana
 
     foreach( gg, granaries )
     {
-      for( int i=good::wheat; i <= good::vegetable; i++ )
+      for( good::Product goodType=good::wheat; goodType <= good::vegetable; ++goodType )
       {
-        good::Type goodType = (good::Type)i;
         cityGoodsAvailable[ goodType ] += (*gg)->store().qty( goodType );
       }
     }

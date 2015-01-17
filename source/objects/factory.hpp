@@ -26,7 +26,7 @@
 class Factory : public WorkingBuilding
 {
 public:
-  Factory( const good::Type inGood, const good::Type outGood,
+  Factory( const good::Product inGood, const good::Product outGood,
            const TileOverlay::Type type, const Size& size );
   virtual ~Factory();
 
@@ -35,8 +35,8 @@ public:
 
   good::Stock& outStockRef();
 
-  good::Type consumeGoodType() const;
-  good::Type produceGoodType() const;
+  good::Product consumeGoodType() const;
+  good::Product produceGoodType() const;
 
   good::Store& store();
 

@@ -31,9 +31,9 @@ public:
   Orders();
   ~Orders();
 
-  void set( const good::Type type, Order rule );
+  void set( const good::Product type, Order rule );
   void set( Order rule );
-  Order get( const good::Type type );
+  Order get( const good::Product type );
 
 private:
   class Impl;

@@ -113,7 +113,7 @@ class GoodOrderManageWindow::Impl
 {
 public:
   PlayerCityPtr city;
-  good::Type type;
+  good::Product type;
   TradeStateButton* btnTradeState;
   PushButton* btnIndustryState;
   Label* lbIndustryInfo;
@@ -126,7 +126,7 @@ signals public:
 };
 
 GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city,
-                                             good::Type type, int stackedGoods, GoodMode gmode )
+                                             good::Product type, int stackedGoods, GoodMode gmode )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {  
   _d->city = city;

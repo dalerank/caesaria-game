@@ -92,7 +92,7 @@ void AboutGranary::showSpecialOrdersWindow()
   new GranarySpecialOrdersWindow( parent(), pos, _granary );
 }
 
-void AboutGranary::drawGood( good::Type goodType, int col, int paintY)
+void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
 {
   std::string goodName = good::Helper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);

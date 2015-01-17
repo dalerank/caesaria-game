@@ -33,7 +33,7 @@ public:
   AboutGranary( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutGranary();
   
-  void drawGood(good::Type goodType, int, int);
+  void drawGood(good::Product goodType, int, int);
   void showSpecialOrdersWindow();
 
 private:

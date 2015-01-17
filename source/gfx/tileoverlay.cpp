@@ -213,7 +213,7 @@ Size TileOverlay::size() const{  return _d->size;}
 bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
 Renderer::PassQueue TileOverlay::passQueue() const{ return defaultPassQueue;}
 std::string TileOverlay::name(){  return _d->name;}
-TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}
+TileOverlay::Type TileOverlay::type() const{ return _d->overlayType;}
 
 TileOverlay::~TileOverlay()
 {

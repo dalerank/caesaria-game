@@ -37,6 +37,7 @@
 #include "sound/engine.hpp"
 #include "objects/fort.hpp"
 #include "gfx/tilemap.hpp"
+#include "good/goodhelper.hpp"
 #include "world/goodcaravan.hpp"
 #include "events/earthquake.hpp"
 #include "events/changeemperor.hpp"
@@ -196,7 +197,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case comply_rome_request:
   {
     world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( game->city() ) );
-    good::Stock stock( (good::Type)math::random( good::goodCount), 1000, 1000 );
+    good::Stock stock( good::Helper::random(), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
     caravan->sendTo( game->empire()->rome() );
   }

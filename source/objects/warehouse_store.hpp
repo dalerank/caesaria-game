@@ -26,21 +26,21 @@
 class WarehouseStore : public good::Store
 {
 public:
-  typedef std::map< good::Type, int > StockMap;
+  typedef std::map< good::Product, int > StockMap;
 
   WarehouseStore();
 
   void init(Warehouse &_warehouse);
 
-  virtual int qty(const good::Type &goodType) const;
+  virtual int qty(const good::Product &goodType) const;
   virtual int qty() const;
   virtual int capacity() const;
   virtual void setCapacity( const int maxcap);
-  virtual void setCapacity(const good::Type& goodType, const int maxQty);
-  virtual int capacity(const good::Type& goodType ) const;
+  virtual void setCapacity(const good::Product& goodType, const int maxQty);
+  virtual int capacity(const good::Product& goodType ) const;
 
   // returns the max quantity that can be stored now
-  virtual int getMaxStore(const good::Type goodType);
+  virtual int getMaxStore(const good::Product goodType);
 
   // store/retrieve
   virtual void applyStorageReservation(good::Stock& stock, const int reservationID);

@@ -290,9 +290,9 @@ void House::_updateCrime()
   {
     int foodStoreQty = 0;
     int foodTypeCount = 0;
-    for( int k=good::wheat; k <= good::vegetable; k++ )
+    for( good::Product k=good::wheat; k <= good::vegetable; ++k )
     {
-      int qty = _d->goodStore.qty( (good::Type)k );
+      int qty = _d->goodStore.qty( k );
       foodStoreQty += qty;
       foodTypeCount += (qty > 0 ? 1 : 0);
     }
@@ -808,9 +808,8 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  for (int i = 0; i < good::goodCount; ++i)
+  for (good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
   {
-    good::Type goodType = (good::Type) i;
     int houseQty = houseStore.qty(goodType);
     int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
                        + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
@@ -928,9 +927,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
     MarketPtr market = ptr_cast<Market>( walker->base() );
     good::Store& marketStore = market->goodStore();
     good::Store& houseStore = goodStore();
-    for (int i = 0; i < good::goodCount; ++i)
+    for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
     {
-      good::Type goodType = (good::Type) i;
       int houseQty = houseStore.qty(goodType) / 10;
       int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false)
                          + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
@@ -1193,8 +1191,8 @@ void House::burn()
 
 int House::Impl::getFoodLevel() const
 {
-  const good::Type f[] = { good::wheat, good::fish, good::meat, good::fruit, good::vegetable };
-  std::set<good::Type> foods( f, f+5 );
+  const good::Product f[] = { good::wheat, good::fish, good::meat, good::fruit, good::vegetable };
+  std::set<good::Product> foods( f, f+5 );
 
   int ret = 0;
   int foodLevel = spec.minFoodLevel();
@@ -1203,7 +1201,7 @@ int House::Impl::getFoodLevel() const
 
   while( foodLevel > 0 )
   {
-    good::Type maxFtype = good::none;
+    good::Product maxFtype = good::none;
     int maxFoodQty = 0;
     foreach( ft, foods )
     {
@@ -1370,9 +1368,8 @@ void House::Impl::consumeServices()
 
 void House::Impl::consumeGoods( HousePtr house )
 {
-  for( int i = good::olive; i < good::goodCount; ++i)
+  for( good::Product goodType = good::olive; goodType < good::goodCount; ++goodType)
   {
-     good::Type goodType = (good::Type) i;
      int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
      goodStore.setQty( goodType, std::max( goodStore.qty(goodType) - montlyGoodsQty, 0) );
   }
@@ -1387,9 +1384,9 @@ void House::Impl::consumeFoods(HousePtr house)
   const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / game::Date::days2ticks( 30 );
 
   int availableFoodLevel = 0;
-  for( int afl=good::wheat; afl <= good::vegetable; afl++ )
+  for( good::Product afl=good::wheat; afl <= good::vegetable; ++afl )
   {
-    availableFoodLevel += ( goodStore.qty( (good::Type)afl ) > 0 ? 1 : 0 );
+    availableFoodLevel += ( goodStore.qty( afl ) > 0 ? 1 : 0 );
   }
   availableFoodLevel = std::min( availableFoodLevel, foodLevel );
   bool haveFoods4Eating = ( availableFoodLevel > 0 );
@@ -1400,9 +1397,8 @@ void House::Impl::consumeFoods(HousePtr house)
     while( alsoNeedFood > 0 )
     {
       int realConsumedQty = 0;
-      for( int k=good::wheat; k <= good::vegetable; k++ )
+      for( good::Product gType=good::wheat; gType <= good::vegetable; ++gType )
       {
-        good::Type gType = (good::Type)k;
         int vQty = std::min( goodStore.qty( gType ), needFoodQty / availableFoodLevel );
         vQty = std::min( vQty, alsoNeedFood );
         if( vQty > 0 )

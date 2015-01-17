@@ -335,8 +335,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  good::Type goodType = stock.type();
-  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
+  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
 
   if (buildingType == objects::unknown)
   {
@@ -362,9 +361,9 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   good::Type goodType = stock.type();
-   if (!(goodType == good::wheat || goodType == good::fish
-         || goodType == good::meat || goodType == good::fruit || goodType == good::vegetable))
+   good::Product p = stock.type();
+   if( !(p == good::wheat || p == good::fish
+         || p == good::meat || p == good::fruit || p == good::vegetable))
    {
       // this good cannot be stored in a granary
       return 0;

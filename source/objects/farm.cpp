@@ -38,7 +38,7 @@ using namespace gfx;
 class FarmTile
 {
 public:
-  FarmTile(const good::Type outGood, const TilePos& pos );
+  FarmTile(const good::Product outGood, const TilePos& pos );
   virtual ~FarmTile();
   void computePicture(const int percent);
   Picture& getPicture();
@@ -49,20 +49,19 @@ private:
   Animation _animation;
 };
 
-FarmTile::FarmTile(const good::Type outGood, const TilePos& pos )
+FarmTile::FarmTile(const good::Product outGood, const TilePos& pos )
 {
   _pos = pos;
 
   int picIdx = 0;
-  switch (outGood)
+  if(outGood == good::wheat) picIdx = 13;
+  else if(outGood == good::vegetable ) picIdx = 18;
+  else if(outGood == good::fruit )picIdx = 23;
+  else if(outGood == good::olive ) picIdx = 28;
+  else if(outGood == good::grape ) picIdx = 33;
+  else if(outGood == good::meat) picIdx = 38;
+  else
   {
-  case good::wheat: picIdx = 13; break;
-  case good::vegetable: picIdx = 18; break;
-  case good::fruit: picIdx = 23; break;
-  case good::olive: picIdx = 28; break;
-  case good::grape: picIdx = 33; break;
-  case good::meat: picIdx = 38; break;
-  default:
     Logger::warning( "Unexpected farmType in farm" + good::Helper::name( outGood ) );
     _CAESARIA_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
@@ -91,7 +90,7 @@ public:
   Picture pictureBuilding;  // we need to change its offset
 };
 
-Farm::Farm(const good::Type outGood, const Type type )
+Farm::Farm(const good::Product outGood, const Type type )
   : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
@@ -122,7 +121,7 @@ bool Farm::canBuild( const CityAreaInfo& areaInfo ) const
 
 void Farm::init()
 {
-  good::Type farmType = produceGoodType();
+  good::Product farmType = produceGoodType();
   // add subTiles in draw order
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));

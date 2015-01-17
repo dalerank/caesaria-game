@@ -210,7 +210,7 @@ void RqGood::update()
 
 std::string RqGood::description() const {  return _d->description; }
 int RqGood::qty() const { return _d->stock.capacity(); }
-good::Type RqGood::goodType() const { return _d->stock.type(); }
+good::Product RqGood::goodType() const { return _d->stock.type(); }
 
 RqGood::RqGood() : Request( DateTime() ), _d( new Impl )
 {

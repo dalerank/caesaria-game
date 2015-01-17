@@ -163,9 +163,8 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       city::TradeOptions& options = city->tradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
       //request goods
-      for( int n = good::wheat; n<good::goodCount; n++ )
+      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
       {
-        good::Type goodType = (good::Type)n;
         int needQty = buy.freeQty( goodType );
         if (!options.isExporting(goodType))
         {
@@ -200,9 +199,8 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       city::TradeOptions& options = city->tradeOptions();
       //try buy goods
-      for( int n = good::wheat; n<good::goodCount; ++n )
+      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
       {
-        good::Type goodType = (good::Type) n;
         if (!options.isExporting(goodType))
         {
           continue;
@@ -274,17 +272,16 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       city::TradeOptions& options = city->tradeOptions();
       const good::Store& importing = options.importingGoods();
       //try sell goods
-      for( int n = good::wheat; n<good::goodCount; ++n)
+      for( good::Product goodType= good::wheat; goodType<good::goodCount; ++goodType)
       {
-        good::Type type = (good::Type)n;
-        if (!options.isImporting(type))
+        if (!options.isImporting(goodType))
         {
           continue;
         }
 
-        if( sell.qty(type) > 0 && importing.capacity(type) > 0)
+        if( sell.qty(goodType) > 0 && importing.capacity(goodType) > 0)
         {
-          currentSell += myDock->importingGoods( sell.getStock(type) );
+          currentSell += myDock->importingGoods( sell.getStock(goodType) );
           anySell = true;
         }
       }

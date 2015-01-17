@@ -25,15 +25,15 @@ WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
+  for( good::Product goodType=good::wheat; goodType <= good::goodCount; ++goodType )
   {
-    setOrder( (good::Type)goodType, good::Orders::accept );
+    setOrder( goodType, good::Orders::accept );
   }
 }
 
 void WarehouseStore::init(Warehouse& warehouse){  _warehouse = &warehouse; }
 
-int WarehouseStore::qty(const good::Type &goodType) const
+int WarehouseStore::qty(const good::Product &goodType) const
 {
   if( _warehouse->numberWorkers() == 0 )
     return 0;
@@ -53,7 +53,7 @@ int WarehouseStore::qty(const good::Type &goodType) const
 
 int WarehouseStore::qty() const {  return qty( good::goodCount ); }
 
-int WarehouseStore::getMaxStore(const good::Type goodType)
+int WarehouseStore::getMaxStore(const good::Product goodType)
 {
   if( getOrder( goodType ) == good::Orders::reject || isDevastation() || _warehouse->onlyDispatchGoods() )
   { 
@@ -64,9 +64,9 @@ int WarehouseStore::getMaxStore(const good::Type goodType)
   StockMap maxStore;
 
   // init the map
-  for (int i = good::none; i != good::goodCount; ++i)
+  for( good::Product i = good::none; i != good::goodCount; ++i)
   {
-    maxStore[ (good::Type)i ] = 0;
+    maxStore[ i ] = 0;
   }
   // put current stock in the map
   foreach( room, _warehouse->rooms() )
@@ -89,7 +89,7 @@ int WarehouseStore::getMaxStore(const good::Type goodType)
   int nbFreeTiles = _warehouse->rooms().size();
   foreach( mapItem, maxStore )
   {
-    good::Type otherGoodType = mapItem->first;
+    good::Product otherGoodType = mapItem->first;
     if (otherGoodType == goodType)
     {
       // don't count this goodType
@@ -234,9 +234,9 @@ VariantMap WarehouseStore::save() const
 {
   VariantMap ret = Store::save();
   VariantList vl;
-  for( int k=0; k < good::goodCount; k++ )
+  for( good::Product k=good::none; k < good::goodCount; ++k )
   {
-    StockMap::const_iterator it = _capacities.find( (good::Type)k );
+    StockMap::const_iterator it = _capacities.find( k );
     vl << (it != _capacities.end() ? it->second : 0);
   }
   ret[ "capacities" ] = vl;
@@ -254,7 +254,7 @@ void WarehouseStore::load(const VariantMap &stream)
   foreach( it, vl )
   {
     int value = it->toInt();
-    _capacities[ (good::Type)index ] = (value == 0 ? maxCapacity : value);
+    _capacities[ (good::Product)index ] = (value == 0 ? maxCapacity : value);
     index++;
   }
 }
@@ -265,9 +265,9 @@ int WarehouseStore::capacity() const
 }
 
 void WarehouseStore::setCapacity(const int) {}
-void WarehouseStore::setCapacity(const good::Type &goodType, const int maxQty)
+void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty)
 {
   _capacities[ goodType ] = maxQty;
 }
 
-int WarehouseStore::capacity( const good::Type& goodType ) const{  return capacity();}
+int WarehouseStore::capacity( const good::Product& goodType ) const{  return capacity();}

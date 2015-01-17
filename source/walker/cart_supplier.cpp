@@ -178,7 +178,7 @@ void CartSupplier::getPictures( Pictures& oPics)
 
 template< class T >
 TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                                 const good::Type what, const int needQty,
+                                 const good::Product what, const int needQty,
                                  Pathway &oPathWay, long& reservId )
 {
   SmartPtr< T > res;
@@ -219,7 +219,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
   }
 }
 
-void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Type type, const int qty )
+void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Product type, const int qty )
 {
   _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
 
@@ -256,7 +256,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Ty
   }
 }
 
-void CartSupplier::send2city( BuildingPtr building, good::Type what, const int qty )
+void CartSupplier::send2city( BuildingPtr building, good::Product what, const int qty )
 {
   _d->stock.setType( what );
   _d->stock.setCapacity( qty );
