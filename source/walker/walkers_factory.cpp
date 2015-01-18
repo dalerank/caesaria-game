@@ -55,6 +55,7 @@
 #include "market_lady.hpp"
 #include "cart_supplier.hpp"
 #include "dock_pusher.hpp"
+#include "merchant_camel.hpp"
 #include <map>
 
 using namespace constants;
@@ -154,6 +155,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::romeChastenerElephant, new BaseCreator<ChastenerElephant>() );
   addCreator( walker::supplier, new BaseCreator<CartSupplier>() );
   addCreator( walker::docker, new BaseCreator<Docker>() );
+  addCreator( walker::merchantCamel, new BaseCreator<MerchantCamel>() );
 }
 
 WalkerManager::~WalkerManager(){}

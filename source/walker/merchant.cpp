@@ -33,10 +33,12 @@
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "good/goodhelper.hpp"
+#include "merchant_camel.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
 #include "core/stacktrace.hpp"
+#include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
 
@@ -65,6 +67,7 @@ public:
   int currentSell;
   int currentBuys;
   int maxDistance;
+  MerchantCamelList camels;
   State nextState;
 
   void resolveState( PlayerCityPtr city, WalkerPtr wlk, const TilePos& position );
@@ -272,6 +275,10 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
         wlk->setThinks( "##landmerchant_say_about_store_goods##" );
         waitInterval = game::Date::days2ticks( 7 );
+        foreach( it, camels )
+        {
+          (*it)->wait();
+        }
       }
 
       nextState = stGoOutFromCity;
@@ -400,7 +407,13 @@ void Merchant::send2city()
 
   if( !isDeleted() )
   {
-    _city()->addWalker( this );
+    attach();
+
+    for( int i=0; i < 2; i++ )
+    {
+      _d->camels << MerchantCamel::create( _city(), this, 15 * (i+1) );
+      _d->camels.back()->attach();
+    }
   }
 }
 

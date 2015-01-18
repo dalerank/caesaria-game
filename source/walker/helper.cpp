@@ -158,7 +158,8 @@ public:
     __REG_WTYPE( patrician  )
     __REG_WTYPE( circusCharioter )
     __REG_WTYPE( docker )
-    __REG_WTYPE( etruscanSoldier )
+    __REG_WTYPE( gladiatorRiot )
+    __REG_WTYPE( merchantCamel )
 #undef __REG_WTYPE
   }
 };
