@@ -18,6 +18,7 @@
 
 #include "warehouse_store.hpp"
 #include "good/goodhelper.hpp"
+#include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
@@ -96,8 +97,8 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
       // don't count this goodType
       continue;
     }
-    int units = good::Helper::convQty2Units( mapItem->second );
-    int nbTiles = ( units + 3 )/4;  // nb of subTiles this goodType occupies
+    Unit units = Unit::fromQty( mapItem->second );
+    int nbTiles = ( units.ivalue() + 3 )/4;  // nb of subTiles this goodType occupies
     nbFreeTiles -= nbTiles;
   }
 

@@ -272,7 +272,7 @@ void Population::Impl::updateStates()
 
   if( lbFoodValue )
   {
-    city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city, true );
+    statistic::GoodsMap goods = statistic::getGoodsMap( city, true );
     int foodLevel = 0;
     for( good::Product k=good::wheat; k <= good::vegetable; ++k )
     {
@@ -375,7 +375,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   {
   case dm_census:
     {
-      CitizenGroup population = city::Statistic::getPopulation( city );
+      CitizenGroup population = statistic::getPopulation( city );
 
       _maxValue = 100;
       for( int age=CitizenGroup::newborn; age <= CitizenGroup::longliver; age++ )

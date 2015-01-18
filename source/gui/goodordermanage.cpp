@@ -30,6 +30,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -58,33 +59,33 @@ public:
 
     switch( order )
     {
-      case city::TradeOptions::importing:
-      case city::TradeOptions::noTrade:
+      case trade::noTrade:
       {
         btnDecrease->hide();
         btnIncrease->hide();
 
         Font f = font( _state() );
-        std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
+        std::string text = _("##trade_btn_notrade_text##");
         Rect textRect = f.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
         f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner );
       }
       break;
 
-      case city::TradeOptions::exporting:
-        {
-          btnDecrease->show();
-          btnIncrease->show();
+      case trade::importing:
+      case trade::exporting:
+      {
+        btnDecrease->show();
+        btnIncrease->show();
 
-          Font f = font( _state() );
-          std::string text = _("##trade_btn_export_text##");
-          Rect textRect = f.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-          f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
+        Font f = font( _state() );
+        std::string text = (order == trade::importing ? "##trade_btn_import_text##" : "##trade_btn_export_text##");
+        Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
+        f.draw( *_textPictureRef(), _(text), textRect.UpperLeftCorner, true );
 
-          text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
-          textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-          f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
-        }
+        text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
+        textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
+        f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
+      }
       break;
 
       default: break;
@@ -96,14 +97,14 @@ public:
     _resizeEvent();
   }
 
-  void setTradeState( city::TradeOptions::Order o, int qty )
+  void setTradeState( trade::Order o, int qty )
   {
     order = o;
     goodsQty = qty;
     _resizeEvent();
   }
 
-  city::TradeOptions::Order order;
+  trade::Order order;
   int goodsQty;
   TexturedButton* btnDecrease;
   TexturedButton* btnIncrease;
@@ -157,7 +158,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->btnTradeState = new TradeStateButton( this, Rect( 50, 90, width() - 60, 90 + 30), -1 );
   if( gmode == gmUnknown )
   {
-    _d->btnTradeState->setTradeState( city::TradeOptions::noTrade, 0 );
+    _d->btnTradeState->setTradeState( trade::noTrade, 0 );
     _d->btnTradeState->setEnabled( false );
   }
 
@@ -185,37 +186,27 @@ void GoodOrderManageWindow::draw(Engine &painter)
   painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
 }
 
-void GoodOrderManageWindow::increaseQty()
-{
-  city::TradeOptions& ctrade = _d->city->tradeOptions();
-  ctrade.setExportLimit( _d->type, math::clamp<int>( ctrade.exportLimit( _d->type )+1, 0, 999 ) );
-  updateTradeState();
-}
+void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
 
-void GoodOrderManageWindow::decreaseQty()
-{
-  city::TradeOptions& ctrade = _d->city->tradeOptions();
-  ctrade.setExportLimit( _d->type, math::clamp<int>( ctrade.exportLimit( _d->type )-1, 0, 999 ) );
-  updateTradeState();
-}
+void GoodOrderManageWindow::decreaseQty() { _changeTradeLimit( -1 ); }
 
 void GoodOrderManageWindow::updateTradeState()
 {
-  city::TradeOptions& ctrade = _d->city->tradeOptions();
-  city::TradeOptions::Order order = ctrade.getOrder( _d->type );
-  int qty = ctrade.exportLimit( _d->type );
+  trade::Options& ctrade = _d->city->tradeOptions();
+  trade::Order order = ctrade.getOrder( _d->type );
+  int qty = ctrade.tradeLimit( order, _d->type );
   _d->btnTradeState->setTradeState( order, qty );
 }
 
 void GoodOrderManageWindow::changeTradeState()
 {
-  city::TradeOptions& trOpts = _d->city->tradeOptions();
+  trade::Options& trOpts = _d->city->tradeOptions();
   if( _d->gmode == gmImport )
   {
-    city::TradeOptions::Order order = trOpts.getOrder( _d->type );
-    trOpts.setOrder( _d->type, order == city::TradeOptions::importing
-                                  ? city::TradeOptions::noTrade
-                                  : city::TradeOptions::importing );
+    trade::Order order = trOpts.getOrder( _d->type );
+    trOpts.setOrder( _d->type, order == trade::importing
+                                  ? trade::noTrade
+                                  : trade::importing );
   }
   else
   {
@@ -309,6 +300,21 @@ void GoodOrderManageWindow::updateStackingState()
 }
 
 Signal0<> &GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }
+
+void GoodOrderManageWindow::_changeTradeLimit(int value)
+{
+  trade::Options& ctrade = _d->city->tradeOptions();
+
+  trade::Order state = _d->btnTradeState->order;
+  if( state == trade::importing ||
+      state == trade::exporting )
+  {
+    unsigned int limit = ctrade.tradeLimit( state, _d->type );
+    limit = math::clamp<int>( limit+value, 0, 999 );
+    ctrade.setTradeLimit( state, _d->type, limit );
+  }
+  updateTradeState();
+}
 
 }
 

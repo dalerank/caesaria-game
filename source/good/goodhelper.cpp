@@ -168,21 +168,18 @@ std::string Helper::getTypeName(Product type )
   return getInstance()._d->findName( type );
 }
 
-float Helper::convQty2Units(int qty)
-{
-  return qty / 100.f;
-}
-
 float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, int qty)
 {
   int price = city->tradeOptions().buyPrice( gtype );
-  return price * convQty2Units( qty );
+  Unit units = Unit::fromQty( qty );
+  return price * units.ivalue();
 }
 
 float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
 {
   int price = city->tradeOptions().sellPrice( gtype );
-  return price * convQty2Units( qty );
+  Unit units = Unit::fromQty( qty );
+  return price * units.ivalue();
 }
 
 const Animation& Helper::getCartPicture(const good::Stock& stock, constants::Direction direction)

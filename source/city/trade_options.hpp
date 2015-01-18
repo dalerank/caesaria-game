@@ -23,15 +23,19 @@
 namespace city
 {
 
-class TradeOptions
+namespace trade
+{
+
+typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
+
+class Options
 {
 public:
-  typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
-  TradeOptions();
-  ~TradeOptions();
+  Options();
+  ~Options();
 
-  unsigned int exportLimit(good::Product type) const;
-  void setExportLimit(good::Product type, unsigned int qty);
+  unsigned int tradeLimit( Order state, good::Product type) const;
+  void setTradeLimit( Order state, good::Product type, unsigned int qty);
   
   void setStackMode( good::Product type, bool stacking );
   bool isGoodsStacking( good::Product type );
@@ -62,6 +66,8 @@ public:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace trade
 
 }//end namespace city
 

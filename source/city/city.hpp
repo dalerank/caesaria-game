@@ -31,10 +31,10 @@
 
 namespace city
 {
-  class Funds;
-  class VictoryConditions;
-  class TradeOptions;
+class Funds;
+class VictoryConditions;
 
+namespace trade { class Options; }
 namespace development { class Options; }
 }
 
@@ -114,7 +114,7 @@ public:
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
 
-  city::TradeOptions& tradeOptions();
+  city::trade::Options& tradeOptions();
 
   virtual void delayTrade(unsigned int month);
   virtual void addObject( world::ObjectPtr object );

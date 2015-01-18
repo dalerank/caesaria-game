@@ -26,6 +26,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -38,7 +39,7 @@ EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, Player
 {
   setupUI( ":/gui/empireprices.gui" );
 
-  city::TradeOptions& ctrade = city->tradeOptions();
+  trade::Options& ctrade = city->tradeOptions();
   Font font = Font::create( FONT_1 );
   Point startPos( 140, 50 );
   for( good::Product gtype=good::wheat; gtype < good::prettyWine; ++gtype )

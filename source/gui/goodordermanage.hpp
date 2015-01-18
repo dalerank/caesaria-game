@@ -61,6 +61,8 @@ signals public:
   Signal0<> &onOrderChanged();
 
 private:
+  void _changeTradeLimit( int value );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };

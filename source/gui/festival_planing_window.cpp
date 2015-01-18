@@ -35,6 +35,7 @@
 
 using namespace religion;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -134,7 +135,7 @@ FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle,
   _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
-  _d->festivalCost = city::Statistic::getFestivalCost( city, smallFest );
+  _d->festivalCost = city::statistic::getFestivalCost( city, smallFest );
 
   if( _d->btnSmallFestival )
   {
@@ -142,14 +143,14 @@ FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle,
     _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
   }
 
-  _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
+  _d->festivalCost = city::statistic::getFestivalCost( city, middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
     _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
   }
 
-  _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
+  _d->festivalCost = city::statistic::getFestivalCost( city, greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );

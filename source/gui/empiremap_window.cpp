@@ -419,14 +419,14 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   good::Product i=good::none;
   for( int k=0; i < good::goodCount; ++i )
   {
-    int maxsell = good::Helper::convQty2Units( sellgoods.capacity( i ) );
-    int cursell = good::Helper::convQty2Units( sellgoods.qty( i ) );
+    Unit maxsell = Unit::fromQty( sellgoods.capacity( i ) );
+    Unit cursell = Unit::fromQty( sellgoods.qty( i ) );
     if( maxsell > 0  )
     {
       Label* lb = new Label( gbox, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  good::Helper::picture( i, true) );
 
-      std::string text = utils::format( 0xff, "%d/%d", cursell, maxsell );
+      std::string text = utils::format( 0xff, "%d/%d", cursell.ivalue(), maxsell.ivalue() );
       new Label( gbox, Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
       k++;
     }

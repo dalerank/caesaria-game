@@ -34,6 +34,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace city;
 
 class SeaMerchant::Impl
 {
@@ -160,8 +161,8 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
     {
-      city::TradeOptions& options = city->tradeOptions();
-      city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
+      trade::Options& options = city->tradeOptions();
+      statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
       //request goods
       for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
       {
@@ -170,7 +171,8 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         {
           continue;
         }
-        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, needQty );
+        int exportLimit = options.tradeLimit( trade::exporting, goodType ) * 100;
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
         {
@@ -197,7 +199,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     if( myDock.isValid() )
     {
-      city::TradeOptions& options = city->tradeOptions();
+      trade::Options& options = city->tradeOptions();
       //try buy goods
       for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
       {
@@ -269,7 +271,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() )
     {
-      city::TradeOptions& options = city->tradeOptions();
+      trade::Options& options = city->tradeOptions();
       const good::Store& importing = options.importingGoods();
       //try sell goods
       for( good::Product goodType= good::wheat; goodType<good::goodCount; ++goodType)

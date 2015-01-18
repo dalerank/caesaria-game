@@ -46,6 +46,7 @@
 using namespace constants;
 using namespace gfx;
 using namespace events;
+using namespace city;
 REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::house, House)
 
 namespace {
@@ -248,7 +249,7 @@ void House::_updateTax()
 
 void House::_updateCrime()
 {
-  float cityKoeff = city::Statistic::getBalanceKoeff( _city() );
+  float cityKoeff = statistic::getBalanceKoeff( _city() );
 
   const int currentHabtn = habitants().count();
 
@@ -267,7 +268,7 @@ void House::_updateCrime()
   int wagesInfluence4happiness = 0; ///!!!
   if( !spec().isPatrician() )
   {
-    int diffWages = city::Statistic::getWagesDiff( _city() );
+    int diffWages = statistic::getWagesDiff( _city() );
     if( diffWages < 0)
     {
       wagesInfluence4happiness = diffWages;
@@ -278,7 +279,7 @@ void House::_updateCrime()
     }
   }
 
-  int taxValue = city::Statistic::getTaxValue( _city() );
+  int taxValue = statistic::getTaxValue( _city() );
   int taxInfluence4happiness = happines4tax[ math::clamp( taxValue, 0, 25 ) ]; ///!!!
   if( spec().isPatrician() )
   {

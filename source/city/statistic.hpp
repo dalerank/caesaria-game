@@ -32,36 +32,35 @@
 namespace city
 {
 
-class Statistic
+namespace statistic
 {
-public:
-  typedef std::map< good::Product, int > GoodsMap;
+typedef std::map< good::Product, int > GoodsMap;
 
-  static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
-  static CitizenGroup getPopulation( PlayerCityPtr city );
-  static unsigned int getWorkersNeed( PlayerCityPtr city );
-  static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
-  static unsigned int getMonthlyWorkersWages( PlayerCityPtr city );
-  static float getMonthlyOneWorkerWages( PlayerCityPtr city );
-  static unsigned int getWorklessNumber( PlayerCityPtr city );
-  static unsigned int getWorklessPercent( PlayerCityPtr city );
-  static unsigned int getFoodStock( PlayerCityPtr city );
-  static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
-  static unsigned int getFoodProducing( PlayerCityPtr city );
-  static unsigned int getTaxValue( PlayerCityPtr city );
-  static unsigned int getTaxPayersPercent( PlayerCityPtr city );
-  static unsigned int getHealth( PlayerCityPtr city );
-  static int months2lastAttack( PlayerCityPtr city );
-  static int getWagesDiff( PlayerCityPtr city );
-  static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
-  static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
-  static unsigned int getCrimeLevel( PlayerCityPtr city );
-  static GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
-  static float getBalanceKoeff( PlayerCityPtr city );
-  static int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
-  static bool canImport( PlayerCityPtr city, good::Product type );
-  static bool canProduce( PlayerCityPtr city, good::Product type );
-};
+void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
+CitizenGroup getPopulation( PlayerCityPtr city );
+unsigned int getWorkersNeed( PlayerCityPtr city );
+unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
+unsigned int getMonthlyWorkersWages( PlayerCityPtr city );
+float getMonthlyOneWorkerWages( PlayerCityPtr city );
+unsigned int getWorklessNumber( PlayerCityPtr city );
+unsigned int getWorklessPercent( PlayerCityPtr city );
+unsigned int getFoodStock( PlayerCityPtr city );
+unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
+unsigned int getFoodProducing( PlayerCityPtr city );
+unsigned int getTaxValue( PlayerCityPtr city );
+unsigned int getTaxPayersPercent( PlayerCityPtr city );
+unsigned int getHealth( PlayerCityPtr city );
+int months2lastAttack( PlayerCityPtr city );
+int getWagesDiff( PlayerCityPtr city );
+unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
+HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
+unsigned int getCrimeLevel( PlayerCityPtr city );
+GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
+float getBalanceKoeff( PlayerCityPtr city );
+int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
+bool canImport( PlayerCityPtr city, good::Product type );
+bool canProduce( PlayerCityPtr city, good::Product type );
+}
 
 }//end namespace city
 

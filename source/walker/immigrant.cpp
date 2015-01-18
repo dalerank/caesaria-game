@@ -29,6 +29,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
 {
@@ -90,8 +91,8 @@ void Immigrant::_updateThoughts()
   thinks << "##immigrant_where_my_home##";
   thinks << "##immigrant_want_to_be_liontamer##";
 
-  int fstock = city::Statistic::getFoodStock( _city() );
-  int mconsumption = city::Statistic::getFoodMonthlyConsumption( _city() );
+  int fstock = statistic::getFoodStock( _city() );
+  int mconsumption = statistic::getFoodMonthlyConsumption( _city() );
   if( fstock / (mconsumption+1) > 4 )
   {
     thinks << "##immigrant_much_food_here##";
