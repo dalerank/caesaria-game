@@ -50,9 +50,11 @@
 #include "core/flagholder.hpp"
 #include "world/playerarmy.hpp"
 #include "dictionary.hpp"
+#include "core/metric.hpp"
 
 using namespace constants;
 using namespace gfx;
+using namespace metric;
 
 namespace gui
 {

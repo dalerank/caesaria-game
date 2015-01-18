@@ -24,9 +24,11 @@
 #include "city/trade_options.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
+#include "core/metric.hpp"
 #include <vector>
 
 using namespace gfx;
+using namespace metric;
 
 namespace good
 {

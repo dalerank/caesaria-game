@@ -21,6 +21,9 @@
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "core/metric.hpp"
+
+using namespace metric;
 
 WarehouseStore::WarehouseStore()
 {

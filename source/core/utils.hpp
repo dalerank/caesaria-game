@@ -80,19 +80,4 @@ namespace utils
   std::string i2str( int valie );
 }
 
-class Unit
-{
-public:
-  static Unit fromQty( unsigned int value ) { return Unit( value / 100.f ); }
-  unsigned int toQty() { return _value * 100; }
-  float value() const { return _value; }
-  float ivalue() const { return (int)_value; }
-  bool operator>( float v ) const { return _value > v; }
-
-private:
-  explicit Unit( unsigned int value) : _value( value ) {}
-
-  float _value;
-};
-
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

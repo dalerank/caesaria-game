@@ -40,11 +40,13 @@
 #include "extension.hpp"
 #include "warehouse_store.hpp"
 #include "objects_factory.hpp"
+#include "core/metric.hpp"
 
 #include <list>
 
 using namespace gfx;
 using namespace constants;
+using namespace metric;
 
 REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::warehouse, Warehouse)
 
