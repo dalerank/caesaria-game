@@ -26,7 +26,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::theater, Theater)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::theater, Theater)
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, Size(2))
 {

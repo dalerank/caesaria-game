@@ -32,9 +32,12 @@
 #include "world/merchant.hpp"
 #include "objects/dock.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace city;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::seaMerchant, SeaMerchant)
 
 class SeaMerchant::Impl
 {

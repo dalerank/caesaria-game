@@ -27,17 +27,17 @@
 using namespace constants;
 using namespace religion;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::small_ceres_temple, TempleCeres)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::small_mars_temple, TempleMars)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::small_mercury_temple, TempleMercury)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::small_neptune_temple, TempleNeptune)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::small_venus_temple, TempleVenus)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::big_ceres_temple, BigTempleCeres)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::big_mars_temple, BigTempleMars)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::big_mercury_temple, BigTempleMercury)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::big_neptune_temple, BigTempleNeptune)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::big_venus_temple, BigTempleVenus)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::oracle, TempleOracle)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_ceres_temple, TempleCeres)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_mars_temple, TempleMars)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_mercury_temple, TempleMercury)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_neptune_temple, TempleNeptune)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_venus_temple, TempleVenus)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_ceres_temple, BigTempleCeres)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_mars_temple, BigTempleMars)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_mercury_temple, BigTempleMercury)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_neptune_temple, BigTempleNeptune)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_venus_temple, BigTempleVenus)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oracle, TempleOracle)
 
 class Temple::Impl
 {

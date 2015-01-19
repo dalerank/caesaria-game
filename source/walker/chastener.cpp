@@ -31,9 +31,12 @@
 #include "helper.hpp"
 #include "game/gamedate.hpp"
 #include "core/variant_map.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeChastenerSoldier, walker::romeChastenerSoldier, Chastener, chasterner )
 
 Chastener::Chastener( PlayerCityPtr city, walker::Type type )
     : EnemySoldier( city, type )

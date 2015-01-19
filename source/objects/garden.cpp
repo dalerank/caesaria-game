@@ -27,7 +27,8 @@
 
 using namespace gfx;
 using namespace constants;
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::garden, Garden)
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::garden, Garden)
 
 Garden::Garden() : Construction(constants::objects::garden, Size(1) )
 {

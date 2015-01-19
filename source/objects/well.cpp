@@ -27,10 +27,10 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::well, Well)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::well, Well)
 
 namespace {
- const unsigned int wellServiceRange = 2;
+const unsigned int wellServiceRange = 2;
 }
 
 Well::Well() : ServiceBuilding( Service::well, objects::well, Size(1) )

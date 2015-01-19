@@ -35,7 +35,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::reservoir, Reservoir)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
 
 class WaterSource::Impl
 {

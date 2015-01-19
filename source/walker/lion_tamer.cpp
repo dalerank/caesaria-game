@@ -19,8 +19,11 @@
 #include "city/city.hpp"
 #include "lion.hpp"
 #include "pathway/pathway.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::lionTamer, LionTamer)
 
 class LionTamer::Impl
 {

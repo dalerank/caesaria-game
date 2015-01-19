@@ -23,9 +23,12 @@
 #include "gfx/tilemap.hpp"
 #include "gfx/helper.hpp"
 #include "core/logger.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::dustCloud, DustCloud)
 
 class DustCloud::Impl
 {

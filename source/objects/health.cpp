@@ -25,13 +25,12 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::hospital, Hospital)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::clinic, Doctor)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::baths, Baths)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::barber, Barber)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::hospital, Hospital)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::clinic, Doctor)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::baths, Baths)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barber, Barber)
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::clinic, Size(1))
-{
+Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::clinic, Size(1)){
 }
 
 unsigned int Doctor::walkerDistance() const{ return 26; }

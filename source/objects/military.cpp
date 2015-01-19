@@ -36,9 +36,9 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fort_javelin, FortJaveline)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fort_horse, FortMounted)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fort_legionaries, FortLegionary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_javelin, FortJaveline)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_horse, FortMounted)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_legionaries, FortLegionary)
 
 FortLegionary::FortLegionary()
   : Fort( objects::fort_legionaries, 16 )

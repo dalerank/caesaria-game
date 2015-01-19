@@ -27,7 +27,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::furniture_workshop, FurnitureWorkshop)
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::furniture_workshop, FurnitureWorkshop)
 
 bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
 {

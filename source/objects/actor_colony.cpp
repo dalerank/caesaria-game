@@ -24,7 +24,7 @@
 
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::actorColony, ActorColony)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::actorColony, ActorColony)
 
 ActorColony::ActorColony() : TrainingBuilding( objects::actorColony, Size(3) )
 {

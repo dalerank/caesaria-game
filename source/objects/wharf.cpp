@@ -28,7 +28,7 @@
 
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wharf, Wharf)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wharf, Wharf)
 
 class Wharf::Impl
 {

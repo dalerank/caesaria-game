@@ -31,9 +31,10 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wall, Wall)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wall, Wall)
 
-Wall::Wall() : Building( objects::wall, Size(1) )
+Wall::Wall()
+  : Building( objects::wall, Size(1) )
 {
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }

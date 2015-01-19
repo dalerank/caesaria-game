@@ -27,7 +27,7 @@
 
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::barracks, Barracks)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barracks, Barracks)
 
 class Barracks::Impl
 {

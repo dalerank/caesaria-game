@@ -30,7 +30,7 @@
 
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::shipyard, Shipyard)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::shipyard, Shipyard)
 
 class Shipyard::Impl
 {

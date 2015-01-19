@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "engineer_post.hpp"
 #include "game/resourcegroup.hpp"
@@ -24,7 +24,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::engineering_post, EngineerPost)
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::engineering_post, EngineerPost)
 
 EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineering_post, Size(1) )
 {

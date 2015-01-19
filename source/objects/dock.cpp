@@ -38,7 +38,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::dock, Dock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::dock, Dock)
 
 class Dock::Impl
 {

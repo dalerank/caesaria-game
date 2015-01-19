@@ -26,7 +26,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::elevation, Elevation)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::elevation, Elevation)
 
 namespace {
   static const int startElevationId = 845;

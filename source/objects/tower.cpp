@@ -31,7 +31,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::tower, Tower)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tower, Tower)
 
 class Tower::Impl
 {

@@ -20,6 +20,7 @@
 
 #include "human.hpp"
 #include "pathway/predefinitions.hpp"
+#include "walkers_factory_creator.hpp"
 
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Human
@@ -79,5 +80,19 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+class ServicemanCreator : public WalkerCreator
+{
+public:
+  virtual WalkerPtr create( PlayerCityPtr city );
+  ServicemanCreator( const Service::Type type )  { serviceType = type;  }
+  Service::Type serviceType;
+};
+
+#define REGISTER_SERVICEMAN_IN_WALKERFACTORY(type,service,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new ServicemanCreator( service ) ); }}; \
+static Registrator_##a rtor_##a; \
+}
 
 #endif //__CAESARIA_SERVICEWALKER_H_INCLUDED__

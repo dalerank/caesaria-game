@@ -21,12 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 #include "walker/constants.hpp"
-
-class WalkerCreator
-{
-public:
-  virtual WalkerPtr create( PlayerCityPtr city ) = 0;
-};
+#include "walkers_factory_creator.hpp"
 
 class WalkerManager
 {
@@ -46,5 +41,11 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#define REGISTER_CLASS_IN_WALKERFACTORY(type,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new WalkerBaseCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
 
 #endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__

@@ -26,7 +26,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::weapons_workshop, WeaponsWorkshop)
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::weapons_workshop, WeaponsWorkshop)
 
 WeaponsWorkshop::WeaponsWorkshop()
   : Factory(good::iron, good::weapon, objects::weapons_workshop, Size(2) )

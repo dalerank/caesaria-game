@@ -31,7 +31,7 @@
 #include "objects_factory.hpp"
 
 using namespace constants;
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::forum, Forum)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::forum, Forum)
 
 class Forum::Impl
 {

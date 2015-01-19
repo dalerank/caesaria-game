@@ -13,42 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#include "lion.hpp"
-#include "core/gettext.hpp"
-#include "city/city.hpp"
-#include "walkers_factory.hpp"
+#ifndef __CAESARIA_WALKERMANAGERCREATOR_H_INCLUDED__
+#define __CAESARIA_WALKERMANAGERCREATOR_H_INCLUDED__
 
-using namespace constants;
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
+#include "walker/constants.hpp"
 
-REGISTER_CLASS_IN_WALKERFACTORY(walker::lion, Lion)
-
-LionPtr Lion::create(PlayerCityPtr city)
+class WalkerCreator
 {
-  LionPtr ret( new Lion( city ) );
-  ret->drop();
+public:
+  virtual WalkerPtr create( PlayerCityPtr city ) = 0;
+};
 
-  return ret;
-}
-
-bool Lion::die()
+template< class T >
+class WalkerBaseCreator : public WalkerCreator
 {
-  bool created = Animal::die();
+public:
+  virtual WalkerPtr create( PlayerCityPtr city )
+  {
+    return T::create( city ).object();
+  }
+};
 
-  return created;
-  //Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
-}
-
-void Lion::_reachedPathway()
-{
-  Animal::_reachedPathway();
-  deleteLater();
-}
-
-Lion::Lion(PlayerCityPtr city) : Animal( city )
-{
-  _setType( walker::lion );
-
-  setName( _("##Lion##") );
-}
+#endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__

@@ -39,7 +39,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fountain, Fountain)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fountain, Fountain)
 
 namespace {
 static const unsigned int fillDistanceNormal = 4;

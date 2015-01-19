@@ -34,12 +34,13 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::burned_ruins, BurnedRuins)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::burned_ruins, BurningRuins)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::collapsed_ruins, CollapsedRuins)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::plague_ruins, PlagueRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurnedRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurningRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::collapsed_ruins, CollapsedRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::plague_ruins, PlagueRuins)
 
-BurningRuins::BurningRuins() : Ruins( objects::burning_ruins )
+BurningRuins::BurningRuins()
+  : Ruins( objects::burning_ruins )
 {
   setState( Construction::fire, 99 );
   setState( Construction::inflammability, 0 );

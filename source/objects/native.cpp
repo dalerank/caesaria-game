@@ -30,9 +30,9 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::native_hut, NativeHut)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::native_center, NativeCenter)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::native_field, NativeField)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::native_hut, NativeHut)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::native_center, NativeCenter)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::native_field, NativeField)
 
 namespace {
 static const int rioterGenerateLevel = 80;

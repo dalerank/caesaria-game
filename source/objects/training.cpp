@@ -33,8 +33,8 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::gladiatorSchool, GladiatorSchool)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::lionsNursery, LionsNursery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::gladiatorSchool, GladiatorSchool)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::lionsNursery, LionsNursery)
 
 TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
   : WorkingBuilding( type, size )

@@ -48,7 +48,7 @@ using namespace gfx;
 using namespace constants;
 using namespace metric;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::warehouse, Warehouse)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::warehouse, Warehouse)
 
 namespace {
 CAESARIA_LITERALCONST(tiles)

@@ -41,10 +41,13 @@
 #include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 using namespace city;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::merchant, Merchant)
 
 class Merchant::Impl
 {

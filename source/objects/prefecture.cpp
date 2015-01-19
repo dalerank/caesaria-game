@@ -32,7 +32,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::prefecture, Prefecture)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::prefecture, Prefecture)
 
 class Prefecture::Impl
 {

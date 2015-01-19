@@ -26,7 +26,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::quarry, MarbleQuarry)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::quarry, MarbleQuarry)
 
 MarbleQuarry::MarbleQuarry()
   : Factory(good::none, good::marble, objects::quarry, Size(2) )

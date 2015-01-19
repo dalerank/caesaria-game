@@ -29,7 +29,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::iron_mine, IronMine)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::iron_mine, IronMine)
 
 IronMine::IronMine()
   : Factory(good::none, good::iron, objects::iron_mine, Size(2) )

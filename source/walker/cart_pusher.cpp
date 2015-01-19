@@ -43,9 +43,12 @@
 #include "events/removecitizen.hpp"
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
 const int defaultDeliverDistance = 40;

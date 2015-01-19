@@ -47,7 +47,7 @@ using namespace constants;
 using namespace gfx;
 using namespace events;
 using namespace city;
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::house, House)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::house, House)
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };

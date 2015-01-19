@@ -31,7 +31,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::granery, Granary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::granery, Granary)
 
 namespace {
 CAESARIA_LITERALCONST(goodStore)

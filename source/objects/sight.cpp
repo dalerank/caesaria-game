@@ -35,10 +35,11 @@
 
 using namespace constants;
 using namespace gfx;
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::statue_small, SmallStatue)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::statue_middle, MediumStatue)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::statue_big, BigStatue)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::triumphal_arch, TriumphalArch)
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::statue_small, SmallStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::statue_middle, MediumStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::statue_big, BigStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::triumphal_arch, TriumphalArch)
 
 // govt     1  - small statue        1 x 1
 // govt     2  - medium statue       2 x 2

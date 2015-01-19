@@ -25,12 +25,11 @@
 
 using namespace gfx;
 using namespace constants;
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::waymark, Waymark)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::waymark, Waymark)
 
 Waymark::Waymark()
   : TileOverlay( constants::objects::tree, Size(1) )
 {
-
 }
 
 void Waymark::timeStep( const unsigned long time )

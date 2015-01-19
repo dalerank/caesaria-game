@@ -33,7 +33,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::colloseum, Colosseum)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::colloseum, Colosseum)
 
 class Colosseum::Impl
 {

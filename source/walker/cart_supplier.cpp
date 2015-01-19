@@ -35,9 +35,12 @@
 #include "objects/constants.hpp"
 #include "events/removecitizen.hpp"
 #include "core/direction.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::supplier, CartSupplier)
 
 namespace {
 const int defaultDeliverDistance = 40;

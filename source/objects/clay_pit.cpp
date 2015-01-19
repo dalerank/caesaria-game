@@ -29,7 +29,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::clay_pit, ClayPit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::clay_pit, ClayPit)
 
 ClayPit::ClayPit()
   : Factory( good::none, good::clay, constants::objects::clay_pit, Size(2) )

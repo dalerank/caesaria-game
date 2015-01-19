@@ -30,7 +30,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::high_bridge, HighBridge)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::high_bridge, HighBridge)
 
 namespace {
   const Point spanswOffset = Point( 12, -43 );

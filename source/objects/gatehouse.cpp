@@ -29,7 +29,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::gatehouse, Gatehouse)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::gatehouse, Gatehouse)
 
 namespace {
 static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };

@@ -27,9 +27,7 @@
 
 using namespace constants;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::school, School)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::library, Library)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::academy, Academy)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::school, School)
 
 class School::Impl
 {

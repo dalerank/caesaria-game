@@ -36,12 +36,12 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::fig_farm, FarmFruit)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wheat_farm, FarmWheat)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::vinard, FarmGrape)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::meat_farm, FarmMeat)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::olive_farm, FarmOlive)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::vegetable_farm, FarmVegetable)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fig_farm, FarmFruit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wheat_farm, FarmWheat)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::vinard, FarmGrape)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::meat_farm, FarmMeat)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::olive_farm, FarmOlive)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::vegetable_farm, FarmVegetable)
 
 class FarmTile
 {

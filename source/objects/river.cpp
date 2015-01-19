@@ -27,7 +27,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::river, River)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::river, River)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);

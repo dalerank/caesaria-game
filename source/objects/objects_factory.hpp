@@ -58,16 +58,9 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#define REGISTER_OVERLAY_IN_OBJECTFACTORY(type,a) \
+#define REGISTER_CLASS_IN_OVERLAYFACTORY(type,a) \
 namespace { \
-class Registrator_##a \
-{ \
-public: \
-  Registrator_##a() \
-  { \
-    TileOverlayFactory::instance().addCreator( type, CAESARIA_STR_A(a), new BaseCreator<a>() ); \
-  } \
-}; \
+struct Registrator_##a { Registrator_##a() { TileOverlayFactory::instance().addCreator( type, CAESARIA_STR_A(a), new BaseCreator<a>() ); }}; \
 static Registrator_##a rtor_##a; \
 }
 

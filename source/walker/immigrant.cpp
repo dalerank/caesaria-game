@@ -25,11 +25,14 @@
 #include "helper.hpp"
 #include "corpse.hpp"
 #include "core/variant_map.hpp"
+#include "walkers_factory.hpp"
 #include "game/resourcegroup.hpp"
 
 using namespace constants;
 using namespace gfx;
 using namespace city;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::immigrant, Immigrant)
 
 Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
 {

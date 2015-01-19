@@ -32,9 +32,12 @@
 #include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::marketBuyer, MarketBuyer)
 
 class MarketBuyer::Impl
 {

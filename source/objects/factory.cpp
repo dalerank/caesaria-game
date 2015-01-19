@@ -41,8 +41,8 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::wine_workshop, Winery)
-REGISTER_OVERLAY_IN_OBJECTFACTORY(objects::oil_workshop, Creamery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wine_workshop, Winery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oil_workshop, Creamery)
 
 class FactoryStore : public good::SimpleStore
 {
