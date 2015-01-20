@@ -44,6 +44,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   _type = rawmb->type();
 
   setBase( ptr_cast<Construction>( rawmb ) );
+  _setWorkingVisible( true );
 
   Label* lbDamage;
   Label* lbProgress;

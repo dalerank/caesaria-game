@@ -190,7 +190,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   lbHabitants->setText( freeRoomText );
 }
 
-void AboutHouse::drawGood( HousePtr house, const good::Type &goodType, const int col, const int row, const int startY )
+void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
   std::string text = utils::format( 0xff, "%d", qty);

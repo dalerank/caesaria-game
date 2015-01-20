@@ -144,17 +144,20 @@ void Construction::burn()
   events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::fire );
   event->dispatch();
 
-  Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
+  Logger::warning( "Construction catch fire at %d,%d!", pos().i(), pos().j() );
 }
 
 void Construction::collapse()
 {
+  if( isDeleted() )
+    return;
+
   deleteLater();
 
   events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::collapse );
   event->dispatch();
 
-  Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
+  Logger::warning( "Construction collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return TileOverlay::picture(); }
@@ -218,6 +221,31 @@ void Construction::load( const VariantMap& stream )
 
 void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->newExtensions.push_back( ext ); }
 const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
+
+void Construction::initialize(const MetaData& mdata)
+{
+  TileOverlay::initialize( mdata );
+
+  VariantMap anMap = mdata.getOption( "animation" ).toMap();
+  if( !anMap.empty() )
+  {
+    Animation anim;
+
+    anim.load( anMap.get( "rc" ).toString(), anMap.get( "start" ).toInt(),
+               anMap.get( "count" ).toInt(), anMap.get( "reverse", false ).toBool(),
+               anMap.get( "step", 1 ).toInt() );
+
+    Variant v_offset = anMap.get( "offset" );
+    if( v_offset.isValid() )
+    {
+      anim.setOffset( v_offset.toPoint() );
+    }
+
+    anim.setDelay( (unsigned int)anMap.get( "delay", 1u ) );
+
+    setAnimation( anim );
+  }
+}
 
 double Construction::state( ParameterType param) const { return _d->params[ param ]; }
 

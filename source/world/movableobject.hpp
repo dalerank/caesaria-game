@@ -54,11 +54,29 @@ protected:
   virtual bool _findWay( Point p1, Point p2 );
   virtual void _reachedWay();
   virtual void _noWay();
+
   Route& _way();
   MovableObject( EmpirePtr empire );
 
 private: 
   __DECLARE_IMPL(MovableObject)
+};
+
+class Messenger : public MovableObject
+{
+public:
+  virtual ~Messenger();
+  static void now( EmpirePtr empire,
+                   const std::string& cityname,
+                   const std::string& title,
+                   const std::string& message );
+
+  std::string title() const;
+  std::string message() const;
+
+private:
+  Messenger( EmpirePtr empire );
+  __DECLARE_IMPL(Messenger)
 };
 
 }

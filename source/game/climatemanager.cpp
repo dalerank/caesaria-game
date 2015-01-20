@@ -39,7 +39,7 @@ namespace climate
 
 void initialize(ClimateType climate)
 {
-  VariantMap climateArchives = SaveAdapter::load( SETTINGS_RC_PATH( climateModel ) );  
+  VariantMap climateArchives = config::load( SETTINGS_RC_PATH( climateModel ) );
 
   std::string optName;
   if( climate == game::climate::central ) { optName = "central"; }

@@ -36,8 +36,11 @@
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanArcher, walker::etruscanArcher, EnemyArcher, etruscanArcher )
 
 EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
   : EnemySoldier( city, type )

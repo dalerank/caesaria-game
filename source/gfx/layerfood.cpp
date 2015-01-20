@@ -98,7 +98,7 @@ void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
     if( wlk->type() == walker::cartPusher )
     {
       CartPusherPtr cartp = ptr_cast<CartPusher>( wlk );
-      good::Type gtype = cartp->stock().type();
+      good::Product gtype = cartp->stock().type();
       if( gtype == good::none || gtype > good::vegetable )
         continue;
     }
@@ -129,9 +129,9 @@ void Food::handleEvent(NEvent& event)
           {
             good::Store& st = house->goodStore();
             int foodQty = 0;
-            for( int k=good::wheat; k <= good::vegetable; k++ )
+            for( good::Product k=good::wheat; k <= good::vegetable; ++k )
             {
-              foodQty += st.qty( (good::Type)k );
+              foodQty += st.qty( k );
             }
             int monthWithFood = 2 * foodQty / houseHabitantsCount;
 

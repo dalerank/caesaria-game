@@ -67,6 +67,7 @@ protected:
   Label* _lbTextRef();
   Label* _lbBlackFrameRef();
   PushButton* _btnExitRef();
+
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 
   class Impl;

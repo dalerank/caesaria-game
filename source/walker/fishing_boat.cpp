@@ -32,8 +32,11 @@
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::fishingBoat, FishingBoat)
 
 class FishingBoat::Impl
 {

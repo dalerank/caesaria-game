@@ -20,6 +20,7 @@
 #define _CAESARIA_SOLDIER_INCLUDE_H_
 
 #include "human.hpp"
+#include "walkers_factory_creator.hpp"
 
 /** Soldier, friend or enemy */
 class Soldier : public Human
@@ -76,5 +77,19 @@ private:
   __DECLARE_IMPL(Soldier)
 };
 
+template< class T >
+class SoldierCreator : public WalkerCreator
+{
+public:
+  WalkerPtr create( PlayerCityPtr city ) { return T::create( city, rtype ).object();  }
+  SoldierCreator( const constants::walker::Type type ) { rtype = type;  }
+  constants::walker::Type rtype;
+};
+
+#define REGISTER_SOLDIER_IN_WALKERFACTORY(type,rtype,rclass,ctorname) \
+namespace { \
+struct Registrator_##ctorname { Registrator_##ctorname() { WalkerManager::instance().addCreator( type, new SoldierCreator<rclass>( rtype ) ); }}; \
+static Registrator_##ctorname rtor_##ctorname; \
+}
 
 #endif //_CAESARIA_SOLDIER_INCLUDE_H_

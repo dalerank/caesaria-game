@@ -97,7 +97,7 @@ Empire::~Empire()
 void Empire::_initializeObjects( vfs::Path filename )
 {
   _d->objects.clear();
-  VariantMap objects = SaveAdapter::load( filename.toString() );
+  VariantMap objects = config::load( filename.toString() );
   if( objects.empty() )
   {
     Logger::warning( "Empire: can't load objects model from %s", filename.toString().c_str() );
@@ -108,7 +108,7 @@ void Empire::_initializeObjects( vfs::Path filename )
 
 void Empire::_initializeCities( vfs::Path filename )
 {
-  VariantMap cities = SaveAdapter::load( filename.toString() );
+  VariantMap cities = config::load( filename.toString() );
 
   _d->cities.clear();
   if( cities.empty() )
@@ -128,7 +128,7 @@ void Empire::_initializeCities( vfs::Path filename )
 
 void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
 {
-  VariantMap emap = SaveAdapter::load( filemap.toString() );
+  VariantMap emap = config::load( filemap.toString() );
   _d->emap.initialize( emap );
 
   _initializeCities( citiesPath );
@@ -286,7 +286,7 @@ void Empire::setWorkerSalary(unsigned int value){ _d->workerSalary = math::clamp
 bool Empire::isAvailable() const{  return _d->enabled; }
 void Empire::setAvailable(bool value) { _d->enabled = value; }
 
-void Empire::setPrice(good::Type gtype, int buy, int sell)
+void Empire::setPrice(good::Product gtype, int buy, int sell)
 {
   _d->trading.setPrice( gtype, buy, sell );
   foreach( it, _d->cities)
@@ -295,14 +295,14 @@ void Empire::setPrice(good::Type gtype, int buy, int sell)
   }
 }
 
-void Empire::changePrice(good::Type gtype, int buy, int sell)
+void Empire::changePrice(good::Product gtype, int buy, int sell)
 {
   int b, s;
   _d->trading.getPrice( gtype, b, s );
   setPrice( gtype, b + buy, s + sell );
 }
 
-void Empire::getPrice(good::Type gtype, int& buy, int& sell) const
+void Empire::getPrice(good::Product gtype, int& buy, int& sell) const
 {
   _d->trading.getPrice( gtype, buy, sell );
 }
@@ -430,11 +430,11 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->playerCityName = city->name();
 
-  for( int k=good::none; k < good::goodCount; k++ )
+  for( good::Product k=good::none; k < good::goodCount; ++k )
   {
     int buy, sell;
-    getPrice( good::Type(k), buy, sell );
-    city->empirePricesChanged( good::Type(k), buy, sell );
+    getPrice( k, buy, sell );
+    city->empirePricesChanged( k, buy, sell );
   }
 
   return ret;
@@ -519,7 +519,7 @@ GovernorRanks EmpireHelper::ranks()
 {
   std::map<unsigned int, GovernorRank> sortRanks;
 
-  VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH( ranksModel ) );
+  VariantMap vm = config::load( SETTINGS_RC_PATH( ranksModel ) );
   foreach( i, vm )
   {
     GovernorRank rank;

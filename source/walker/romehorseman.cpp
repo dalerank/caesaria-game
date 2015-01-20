@@ -27,9 +27,12 @@
 #include "enemysoldier.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeHorseman, walker::romeHorseman, RomeSoldier, romeSoldier )
 
 RomeHorseman::RomeHorseman( PlayerCityPtr city, walker::Type type )
     : RomeSoldier( city, type )

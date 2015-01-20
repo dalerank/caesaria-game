@@ -39,14 +39,14 @@ public:
     unsigned int buyPrice;
   };
 
-  typedef std::map< good::Type, PriceInfo > Prices;
+  typedef std::map< good::Product, PriceInfo > Prices;
   typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
 
   EmpirePtr empire;
   TradeRoutes routes;
   Prices empirePrices;
 
-  void setPrice( good::Type type, int buy, int sell );
+  void setPrice( good::Product type, int buy, int sell );
   void initStandartPrices();
 };
 
@@ -122,7 +122,7 @@ void Trading::load(const VariantMap& stream)
   VariantMap prices = stream.get( "prices" ).toMap();
   foreach( it, prices )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
     if( gtype != good::none )
     {
       VariantList vl = it->second.toList();
@@ -190,12 +190,12 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
   return route;
 }
 
-void Trading::setPrice(good::Type gtype, int bCost, int sCost)
+void Trading::setPrice(good::Product gtype, int bCost, int sCost)
 {
   _d->setPrice( gtype, bCost, sCost );
 }
 
-void Trading::getPrice(good::Type gtype, int& bCost, int& sCost)
+void Trading::getPrice(good::Product gtype, int& bCost, int& sCost)
 {
   Impl::Prices::const_iterator it = _d->empirePrices.find( gtype );
 
@@ -235,7 +235,7 @@ TraderouteList Trading::routes()
   return ret;
 }
 
-void Trading::Impl::setPrice(good::Type type, int bCost, int sCost)
+void Trading::Impl::setPrice(good::Product type, int bCost, int sCost)
 {
   empirePrices[ type ].buyPrice = bCost;
   empirePrices[ type ].sellPrice = sCost;

@@ -33,9 +33,12 @@
 #include "tower.hpp"
 #include "core/font.hpp"
 #include "gatehouse.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fortification, Fortification)
 
 class Fortification::Impl
 {

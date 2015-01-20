@@ -70,9 +70,9 @@ public:
   bool isAvailable() const;
   void setAvailable( bool value );
 
-  void setPrice( good::Type gtype, int buy, int sell );
-  void changePrice( good::Type gtype, int buy, int sell );
-  void getPrice( good::Type gtype, int& buy, int& sell ) const;
+  void setPrice( good::Product gtype, int buy, int sell );
+  void changePrice( good::Product gtype, int buy, int sell );
+  void getPrice( good::Product gtype, int& buy, int& sell ) const;
 
   void clear();
 private:

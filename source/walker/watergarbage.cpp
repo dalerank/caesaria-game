@@ -20,9 +20,12 @@
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::waterGarbage, WaterGarbage)
 
 WaterGarbagePtr WaterGarbage::create(PlayerCityPtr city)
 {
