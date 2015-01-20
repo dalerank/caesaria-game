@@ -69,7 +69,7 @@ Mission::Mission()
 
 bool Mission::load( const std::string& filename, Game& game )
 {
-  VariantMap vm = SaveAdapter::load( filename );
+  VariantMap vm = config::load( filename );
   _d->restartFile = filename;
   
   if( currentVesion == vm[ "version" ].toInt() )

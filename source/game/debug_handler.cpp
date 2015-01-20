@@ -35,11 +35,15 @@
 #include "events/postpone.hpp"
 #include "gfx/layer.hpp"
 #include "sound/engine.hpp"
+#include "vfs/directory.hpp"
 #include "objects/fort.hpp"
+#include "events/dispatcher.hpp"
+#include "gui/loadfiledialog.hpp"
 #include "gfx/tilemap.hpp"
 #include "good/goodhelper.hpp"
 #include "world/goodcaravan.hpp"
 #include "events/earthquake.hpp"
+#include "events/random_fire.hpp"
 #include "events/changeemperor.hpp"
 
 using namespace constants;
@@ -79,7 +83,9 @@ enum {
   earthquake,
   toggle_experimental_options,
   kill_all_enemies,
-  send_exporter
+  send_exporter,
+  random_fire,
+  run_script
 };
 
 class DebugHandler::Impl
@@ -89,6 +95,7 @@ public:
 
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
+  void runScript(std::string filename);
 
 public signals:
   Signal2<scene::Level*, bool> failedMissionSignal;
@@ -126,6 +133,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
 
+  ADD_DEBUG_EVENT( "disaster", random_fire )
+  ADD_DEBUG_EVENT( "disaster", earthquake )
+
   ADD_DEBUG_EVENT( "game", win_mission )
   ADD_DEBUG_EVENT( "game", fail_mission )
   ADD_DEBUG_EVENT( "game", change_emperor )
@@ -133,7 +143,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
   ADD_DEBUG_EVENT( "city", add_city_border )
   ADD_DEBUG_EVENT( "city", send_exporter )
-  ADD_DEBUG_EVENT( "city", earthquake )
+  ADD_DEBUG_EVENT( "city", run_script )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
   ADD_DEBUG_EVENT( "options", toggle_experimental_options )
@@ -161,6 +171,11 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
   }
 
   return enemy;
+}
+
+void DebugHandler::Impl::runScript(std::string filename)
+{
+  events::Dispatcher::instance().load( filename );
 }
 
 Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->failedMissionSignal; }
@@ -231,7 +246,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case change_emperor:
   {
     events::GameEventPtr e = events::ChangeEmperor::create();
-    VariantMap vm = SaveAdapter::load( ":/test_emperor.model" );
+    VariantMap vm = config::load( ":/test_emperor.model" );
     e->load( vm );
     e->dispatch();
   }
@@ -276,6 +291,13 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case random_fire:
+  {
+    events::GameEventPtr e = events::RandomFire::create();
+    e->dispatch();
+  }
+  break;
+
   case earthquake:
   {
     int mapsize = game->city()->tilemap().size();
@@ -288,7 +310,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case test_request:
   {
-    VariantMap rqvm = SaveAdapter::load( ":/test_request.model" );
+    VariantMap rqvm = config::load( ":/test_request.model" );
     events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
     e->dispatch();
   }
@@ -302,6 +324,21 @@ void DebugHandler::Impl::handleEvent(int event)
     audio::Engine::instance().setVolume( audio::ambientSound, 0 );
     audio::Engine::instance().setVolume( audio::themeSound, 0 );
     audio::Engine::instance().setVolume( audio::gameSound, 0 );
+  break;
+
+  case run_script:
+  {
+    gui::Widget* parent = game->gui()->rootWidget();
+    gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
+                                                        Rect(),
+                                                        vfs::Path( ":/scripts/" ), ".model",
+                                                        -1 );
+    wnd->setCenter( parent->center() );
+
+    CONNECT( wnd, onSelectFile(), this, Impl::runScript );
+    wnd->setTitle( "Select file" );
+    wnd->setText( "open" );
+  }
   break;
 
   case toggle_grid_visibility: DrawOptions::instance().toggle( DrawOptions::drawGrid );  break;

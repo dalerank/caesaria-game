@@ -130,7 +130,7 @@ void DictionaryWindow::load(const std::string& uri)
 {
   vfs::Path filePath = _convUri2path( uri );
 
-  VariantMap vm = SaveAdapter::load( filePath );
+  VariantMap vm = config::load( filePath );
 
   std::string text = vm.get( "text" ).toString();
   std::string title = vm.get( "title" ).toString();

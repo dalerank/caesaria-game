@@ -68,6 +68,8 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
                               int id )
   : Window( parent, rect, "", id ), _d( new Impl )
 {
+  _d->btnLoad = 0;
+
   Widget::setupUI( ":/gui/loadfile.gui" );
   setCenter( parent->center() );
 
@@ -186,6 +188,7 @@ void LoadFileDialog::setShowExtension(bool showExtension)
 }
 
 void LoadFileDialog::setTitle( const std::string& title ) { if( _d->lbTitle ) _d->lbTitle->setText( title ); }
+void LoadFileDialog::setText(const std::string &text) { if( _d->btnLoad ) _d->btnLoad->setText( text ); }
 bool LoadFileDialog::isMayDelete() const { return _d->mayDelete; }
 Signal1<std::string>& LoadFileDialog::onSelectFile() {  return _d->onSelecteFileSignal; }
 

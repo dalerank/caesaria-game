@@ -81,7 +81,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   _d->fillIndustryMap();
   _d->distance = defaultHireDistance;
 
-  load( SaveAdapter::load( ":workershire.model" ) );
+  load( config::load( ":workershire.model" ) );
 }
 
 void WorkersHire::Impl::fillIndustryMap()

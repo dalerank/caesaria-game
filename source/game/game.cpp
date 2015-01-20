@@ -222,7 +222,7 @@ void Game::Impl::initGuiEnvironment()
 
 void Game::Impl::initPantheon( vfs::Path filename)
 {
-  VariantMap pantheon = SaveAdapter::load( filename );
+  VariantMap pantheon = config::load( filename );
   religion::rome::Pantheon::instance().load( pantheon );
 }
 

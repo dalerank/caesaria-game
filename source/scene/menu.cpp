@@ -163,7 +163,7 @@ void StartMenu::Impl::showLanguageOptions()
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
-  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   std::string currentLang = SETTINGS_VALUE( language ).toString();
   int currentIndex = -1;
   foreach( it, languages )
@@ -190,7 +190,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   std::string talksArchive;
-  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )

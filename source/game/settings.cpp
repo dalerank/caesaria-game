@@ -295,14 +295,14 @@ vfs::Path Settings::rpath( const std::string& option )
 
 void Settings::load()
 {
-  VariantMap settings = SaveAdapter::load( rcpath( Settings::settingsPath ) );
+  VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
 
   foreach( v, settings ) { set( v->first, v->second ); }
 }
 
 void Settings::save()
 {
-  SaveAdapter::save( instance()._d->options, rcpath( Settings::settingsPath ) );
+  config::save( instance()._d->options, rcpath( Settings::settingsPath ) );
 }
 
 }//end namespace game

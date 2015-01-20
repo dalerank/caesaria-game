@@ -693,7 +693,7 @@ HouseSpecHelper::~HouseSpecHelper(){}
 
 void HouseSpecHelper::initialize( const vfs::Path& filename )
 {
-  VariantMap houseSpecs = SaveAdapter::load( filename );
+  VariantMap houseSpecs = config::load( filename );
 
   if( houseSpecs.empty() )
   {

@@ -48,7 +48,7 @@ StartMenu::StartMenu( Widget* parent )
   path2options = ":/gui/startmenu.gui";
 #endif
 
-  _d->options = SaveAdapter::load( path2options );
+  _d->options = config::load( path2options );
 }
 
 StartMenu::~StartMenu() {}

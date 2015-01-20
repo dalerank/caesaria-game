@@ -51,7 +51,7 @@ public:
 bool OC3::load( const std::string& filename, Game& game )
 {
   Logger::warning( "GameLoaderOc3: start loading from " + filename );
-  VariantMap vm = SaveAdapter::load( filename );
+  VariantMap vm = config::load( filename );
   if( vm.empty() )
   {
     Logger::warning( "GameLoaderOc3: empty file " + filename );
@@ -90,7 +90,7 @@ bool OC3::load( const std::string& filename, Game& game )
 int OC3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
-  VariantMap vm = SaveAdapter::load( filename );
+  VariantMap vm = config::load( filename );
   VariantMap scenario_vm = vm[ "scenario" ].toMap();
 
   return scenario_vm.get( "climate", -1 );

@@ -54,7 +54,7 @@ std::string NameGenerator::rand( NameType type )
 
 void NameGenerator::initialize(const vfs::Path &filename)
 {
-  VariantMap names = SaveAdapter::load( filename );
+  VariantMap names = config::load( filename );
 
   _d->female.clear();
   _d->male.clear();

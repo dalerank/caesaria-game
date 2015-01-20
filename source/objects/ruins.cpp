@@ -35,7 +35,7 @@ using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurnedRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurningRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burning_ruins, BurningRuins)
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::collapsed_ruins, CollapsedRuins)
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::plague_ruins, PlagueRuins)
 

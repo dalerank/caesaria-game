@@ -102,7 +102,7 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
   //number of animations with goods + emmigrants + immigrants
   //bool frontCart = false;
 
-  VariantMap config = SaveAdapter::load( model );
+  VariantMap config = config::load( model );
   foreach( it, config )
   {
     good::Product gtype = good::Helper::getType( it->first );
@@ -282,7 +282,7 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
   Logger::warning( "AnimationBank: start loading animations from " + model.toString() );
   _d->loadStage( _d->objects, 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
 
-  VariantMap items = SaveAdapter::load( model );
+  VariantMap items = config::load( model );
 
   foreach( i, items )
   {
@@ -298,7 +298,7 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
     }
   }
 
-  items = SaveAdapter::load( basic );
+  items = config::load( basic );
   _d->loadGroup( animUnknown, items, Impl::stgSimple );
 }
 

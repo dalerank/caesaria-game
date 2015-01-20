@@ -341,7 +341,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
   _d->mapBuildingByInGood[good::olive ] = objects::oil_workshop;
   _d->mapBuildingByInGood[good::grape ] = objects::wine_workshop;
 
-  VariantMap constructions = SaveAdapter::load( filename );
+  VariantMap constructions = config::load( filename );
 
   foreach( mapItem, constructions )
   {

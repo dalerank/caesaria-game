@@ -97,7 +97,7 @@ Empire::~Empire()
 void Empire::_initializeObjects( vfs::Path filename )
 {
   _d->objects.clear();
-  VariantMap objects = SaveAdapter::load( filename.toString() );
+  VariantMap objects = config::load( filename.toString() );
   if( objects.empty() )
   {
     Logger::warning( "Empire: can't load objects model from %s", filename.toString().c_str() );
@@ -108,7 +108,7 @@ void Empire::_initializeObjects( vfs::Path filename )
 
 void Empire::_initializeCities( vfs::Path filename )
 {
-  VariantMap cities = SaveAdapter::load( filename.toString() );
+  VariantMap cities = config::load( filename.toString() );
 
   _d->cities.clear();
   if( cities.empty() )
@@ -128,7 +128,7 @@ void Empire::_initializeCities( vfs::Path filename )
 
 void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
 {
-  VariantMap emap = SaveAdapter::load( filemap.toString() );
+  VariantMap emap = config::load( filemap.toString() );
   _d->emap.initialize( emap );
 
   _initializeCities( citiesPath );
@@ -519,7 +519,7 @@ GovernorRanks EmpireHelper::ranks()
 {
   std::map<unsigned int, GovernorRank> sortRanks;
 
-  VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH( ranksModel ) );
+  VariantMap vm = config::load( SETTINGS_RC_PATH( ranksModel ) );
   foreach( i, vm )
   {
     GovernorRank rank;
