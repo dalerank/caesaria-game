@@ -176,13 +176,13 @@ const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
     case 10: index = 45+2*((p.i() + p.j())%2); break;  // 94/96 // East+West
     case 12: index = 50; break;  // South+West
 
-    case 7:
-    case 11:
-    case 13:
-    case 14:
-    case 15:
-      index = 78 + (p.i() + p.j()) % 14;
-    break;
+    case 7: index = 57; break;
+    case 11: index = 60; break;
+    case 13: index = 59; break;
+    case 14: index = 58; break;
+      //index = 78 + (p.i() + p.j()) % 14; break;
+
+    case 15: index = 61; break;
     }
   }
 

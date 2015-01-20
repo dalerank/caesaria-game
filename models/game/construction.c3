@@ -327,7 +327,7 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
+    animation : { rc : "smlceres", start : 2, count : 6, offset : [ 41, 27 ], delay : 3 }
     employers : 2
     class : "religion"
     sound : [ "templeceres", 1 ]
