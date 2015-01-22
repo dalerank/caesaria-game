@@ -297,12 +297,14 @@ void Entries::setSensType( Path::SensType type )
   _d->sensType = type;
 }
 
-Entries Entries::filter(int flags, const std::string &options)
+Entries Entries::filter(int flags, const std::string& options)
 {
   Entries ret;
   bool isFile = (flags & Entries::file) > 0;
   bool isDirectory = (flags & Entries::directory) > 0;
   bool checkFileExt = (flags & Entries::extFilter) > 0;
+
+  StringArray exts = utils::split( utils::trim( options ), "," );
 
   foreach( it, _d->files )
   {
@@ -312,7 +314,14 @@ Entries Entries::filter(int flags, const std::string &options)
 
     if( mayAdd && !(*it).isDirectory && checkFileExt )
     {
-      mayAdd = (*it).fullpath.isMyExtension( options );
+      if( exts.size() > 1 )
+      {
+        mayAdd = exts.contains( it->fullpath.extension() );
+      }
+      else
+      {
+        mayAdd = it->fullpath.isMyExtension( options );
+      }
     }
 
     if( mayAdd )

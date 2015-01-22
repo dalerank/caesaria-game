@@ -51,6 +51,7 @@
 #include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
 #include "core/variant_map.hpp"
+#include "events/dispatcher.hpp"
 #include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"
@@ -239,23 +240,16 @@ void StartMenu::Impl::resolveCredits()
                          "gathanase (gathanase@gmail.com) render, game mechanics ",
                          "gecube (gb12335@gmail.com)",
                          "pecunia (pecunia@heavengames.com) game mechanics",
-                         "tracertong",
-                         "VladRassokhin",
-                         "hellium",
-                         "pufik6666",
-                         "andreibranescu",
                          "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
-                         "akuskis (?) aqueduct system",
-                         "rovanion",
-                         "nickers (2nickers@gmail.com)",
-                         "ImperatorPrime",
-                         "veprbl",
-                         "ramMASTER",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
+                         "akuskis (?) aqueduct system",
+                         "ImperatorPrime, nickers, veprbl, ramMASTER",
+                         "tracertong, VladRassokhin, hellium",
+                         "pufik6666, andreibranescu, rovanion",
                          " ",
                          _("##operations_manager##"),
                          " ",
-                         "Max Mironchik (?) "
+                         "Max Mironchik (?) ",
                          " ",
                          _("##testers##"),
                          " ",
@@ -412,7 +406,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
 
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
                                                       Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map",
+                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
                                                       -1 );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( false );
@@ -519,6 +513,14 @@ void StartMenu::initialize()
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
 #endif
+}
+
+void scene::StartMenu::afterFrame()
+{
+  Base::afterFrame();
+
+  static unsigned int saveTime = 0;
+  events::Dispatcher::instance().update( *_d->game, saveTime++ );
 }
 
 int StartMenu::result() const{  return _d->result;}

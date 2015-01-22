@@ -1,6 +1,6 @@
 {
   version : 1
-  map : ":/maps/caesarea.omap"
+  map : ":/maps/Caesarea.sav"
   funds : 8000
   city.name : "Caesarea"
   player.rank : 2

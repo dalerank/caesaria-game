@@ -45,7 +45,7 @@ public:
   PushButton* btnLoad;
   PushButton* btnDelete;
   vfs::Directory directory;
-  std::string fileExtension;
+  std::string fileExtensions;
   std::string saveItemText;
   bool mayDelete;
 
@@ -77,7 +77,7 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   GET_DWIDGET_FROM_UI( _d, lbTitle )
 
   _d->directory = dir;
-  _d->fileExtension = ext;
+  _d->fileExtensions = ext;
 
   GET_DWIDGET_FROM_UI( _d, btnExit )
   GET_DWIDGET_FROM_UI( _d, btnHelp )
@@ -111,7 +111,7 @@ void LoadFileDialog::Impl::fillFiles()
   lbxFiles->clear();
 
   vfs::Entries flist = vfs::Directory( directory ).getEntries();
-  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtension );
+  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtensions );
 
   StringArray names;
   foreach( it, flist )
