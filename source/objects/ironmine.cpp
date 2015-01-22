@@ -24,12 +24,15 @@
 #include "game/gamedate.hpp"
 #include "city/helper.hpp"
 #include "events/showinfobox.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
 
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::iron_mine, IronMine)
+
 IronMine::IronMine()
-  : Factory(good::none, good::iron, objects::ironMine, Size(2) )
+  : Factory(good::none, good::iron, objects::iron_mine, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 54 );
 

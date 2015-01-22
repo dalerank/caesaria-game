@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
@@ -21,14 +21,16 @@
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
 
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tree, Tree)
 
 Tree::Tree()
   : TileOverlay( constants::objects::tree, Size(1) )
 {
-
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -45,7 +47,7 @@ void Tree::initTerrain(Tile& terrain)
 
 bool Tree::build( const CityAreaInfo& info )
 {
-  std::string picname = util::convId2PicName( info.city->tilemap().at( info.pos ).originalImgId() );
+  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
   setPicture( Picture::load( picname ) );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
   return TileOverlay::build( info );

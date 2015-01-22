@@ -27,6 +27,7 @@
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
 #include "city/migration.hpp"
+#include "core/variant_map.hpp"
 #include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
 #include "cityservice_prosperity.hpp"
@@ -125,8 +126,8 @@ public:
   Tilemap tilemap;
   TilePos cameraStart;
 
-  city::BuildOptions buildOptions;
-  city::TradeOptions tradeOptions;
+  city::development::Options buildOptions;
+  city::trade::Options tradeOptions;
   city::VictoryConditions targets;
   Options options;
   ClimateType climate;   
@@ -144,6 +145,7 @@ public:
   void updateWalkers(unsigned int time);
   void updateOverlays( PlayerCityPtr city, unsigned int time);
   void updateServices( PlayerCityPtr city, unsigned int time );
+  void resolveNewIssue( city::Funds::IssueType type );
 
 signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -353,7 +355,7 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
-  int wages = city::Statistic::getMonthlyWorkersWages( city );
+  int wages = city::statistic::getMonthlyWorkersWages( city );
 
   if( funds.haveMoneyForAction( wages ) )
   {
@@ -361,7 +363,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
     HouseList houses;
     houses << city->overlays();
 
-    float salary = city::Statistic::getMonthlyOneWorkerWages( city );
+    float salary = city::statistic::getMonthlyOneWorkerWages( city );
     float wages = 0;
     foreach( it, houses )
     {
@@ -455,6 +457,28 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
+    }
+}
+
+void PlayerCity::Impl::resolveNewIssue(city::Funds::IssueType type)
+{
+  switch( type )
+  {
+  case city::Funds::overdueEmpireTax:
+    {
+      int lastYearBrokenTribute = funds.getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+      std::string text = lastYearBrokenTribute > 0
+                                ? "##for_second_year_broke_tribute##"
+                                : "##current_year_notpay_tribute_warning##";
+      events::GameEventPtr e = events::ShowInfobox::create( "##tribute_broken_title##",
+                                                            text );
+      e->dispatch();
+    }
+  break;
+
+  default:
+  break;
+
   }
 }
 
@@ -658,7 +682,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 
 const city::SrvcList& PlayerCity::services() const { return _d->services; }
 
-void PlayerCity::setBuildOptions(const city::BuildOptions& options)
+void PlayerCity::setBuildOptions(const city::development::Options& options)
 {
   _d->buildOptions = options;
   emit _d->onChangeBuildingOptionsSignal();
@@ -668,17 +692,17 @@ unsigned int PlayerCity::age() const { return _d->age; }
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
-const city::BuildOptions& PlayerCity::buildOptions() const { return _d->buildOptions; }
+const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
 
-city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
+city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 
 const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
-const good::Store &PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -800,9 +824,15 @@ void PlayerCity::addObject( world::ObjectPtr object )
     events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
     e->dispatch();
   }
+  else if( is_kind_of<world::Messenger>( object ) )
+  {
+    world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
+    events::GameEventPtr e = events::ShowInfobox::create( msm->title(), msm->message() );
+    e->dispatch();
+  }
 }
 
-void PlayerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
+void PlayerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
 {
   _d->tradeOptions.setBuyPrice( gtype, bCost );
   _d->tradeOptions.setSellPrice( gtype, sCost );

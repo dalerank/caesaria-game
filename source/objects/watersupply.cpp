@@ -22,16 +22,20 @@
 #include "core/safetycast.hpp"
 #include "objects/road.hpp"
 #include "gfx/tile.hpp"
+#include "core/variant_map.hpp"
 #include "walker/serviceman.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
 
 class WaterSource::Impl
 {

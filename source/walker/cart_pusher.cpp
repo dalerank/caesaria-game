@@ -35,6 +35,7 @@
 #include "core/utils.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "objects/constants.hpp"
@@ -42,9 +43,12 @@
 #include "events/removecitizen.hpp"
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
 const int defaultDeliverDistance = 40;
@@ -334,8 +338,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  good::Type goodType = stock.type();
-  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
+  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
 
   if (buildingType == objects::unknown)
   {
@@ -361,15 +364,15 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   good::Type goodType = stock.type();
-   if (!(goodType == good::wheat || goodType == good::fish
-         || goodType == good::meat || goodType == good::fruit || goodType == good::vegetable))
+   good::Product p = stock.type();
+   if( !(p == good::wheat || p == good::fish
+         || p == good::meat || p == good::fruit || p == good::vegetable))
    {
       // this good cannot be stored in a granary
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( objects::granary, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( objects::granery, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }

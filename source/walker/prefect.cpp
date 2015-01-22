@@ -24,7 +24,7 @@
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
 #include "events/event.hpp"
@@ -36,10 +36,13 @@
 #include "events/disaster.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/helper.hpp"
+#include "walkers_factory.hpp"
 #include "events/fireworkers.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::prefect, Prefect)
 
 namespace {
   const Walker::Action acDragWater = Walker::Action( Walker::acMax + 1 );
@@ -61,8 +64,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
-  _setSubAction( doNothing );
-  _addObsoleteOverlays( objects::gatehouse );
+  _setSubAction( doNothing );  
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -73,7 +75,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
   foreach( it, buildings )
   {
-    if( (*it)->type() == objects::burningRuins )
+    if( (*it)->type() == objects::burning_ruins )
     {
       p = (*it)->pos();
       return true;
@@ -105,7 +107,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->type() != objects::burningRuins )
+    if( building->type() != objects::burning_ruins )
       continue;
 
     if( building->pos().distanceFrom( pos() ) < 1.5f )
@@ -121,7 +123,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->type() != objects::burningRuins )
+    if( building->type() != objects::burning_ruins )
       continue;
 
     Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
@@ -235,7 +237,7 @@ bool Prefect::_figthFire()
   foreach( it, tiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
-    if( building.isValid() && building->type() == objects::burningRuins )
+    if( building.isValid() && building->type() == objects::burning_ruins )
     {
       turn( building->pos() );
       _setSubAction( fightFire );
@@ -265,7 +267,7 @@ bool Prefect::_findFire()
 void Prefect::_brokePathway(TilePos p)
 {
   TileOverlayPtr overlay = _city()->getOverlay( p );
-  if( overlay.isValid() && overlay->type() == objects::burningRuins )
+  if( overlay.isValid() && overlay->type() == objects::burning_ruins )
   {
     setSpeed( 0.f );
     _setAction( acFightFire );
@@ -450,7 +452,7 @@ void Prefect::timeStep(const unsigned long time)
   case fightFire:
   {    
     BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
-    bool inFire = (building.isValid() && building->type() == objects::burningRuins );
+    bool inFire = (building.isValid() && building->type() == objects::burning_ruins );
 
     if( inFire )
     {
@@ -515,6 +517,7 @@ float Prefect::serviceValue() const {  return 5; }
 PrefectPtr Prefect::create(PlayerCityPtr city )
 {
   PrefectPtr ret( new Prefect( city ) );
+  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
   ret->drop();
 
   return ret;
@@ -577,6 +580,11 @@ bool Prefect::die()
   }
 
   return created;
+}
+
+void Prefect::initialize(const VariantMap& options)
+{
+  ServiceWalker::initialize( options );
 }
 
 std::string Prefect::thoughts(Thought th) const

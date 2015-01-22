@@ -51,7 +51,7 @@ protected:
 
 private:
   void _tryDevastateGranary();
-  bool _trySendGoods(good::Type gtype, int qty);
+  bool _trySendGoods(good::Product gtype, int qty);
   void _resolveDeliverMode();
 
   class Impl;

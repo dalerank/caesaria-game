@@ -30,11 +30,14 @@
 #include "corpse.hpp"
 #include "ability.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::mugger, Mugger)
 
 class Mugger::Impl
 {

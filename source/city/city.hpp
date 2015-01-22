@@ -31,10 +31,11 @@
 
 namespace city
 {
-  class Funds;
-  class VictoryConditions;
-  class TradeOptions;
-  class BuildOptions;
+class Funds;
+class VictoryConditions;
+
+namespace trade { class Options; }
+namespace development { class Options; }
 }
 
 struct BorderInfo
@@ -105,19 +106,19 @@ public:
   void addOverlay( gfx::TileOverlayPtr overlay);
   gfx::TileOverlayPtr getOverlay( const TilePos& pos ) const;
 
-  const city::BuildOptions& buildOptions() const;
-  void setBuildOptions( const city::BuildOptions& options );
+  const city::development::Options& buildOptions() const;
+  void setBuildOptions( const city::development::Options& options );
 
   virtual unsigned int age() const;
 
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
 
-  city::TradeOptions& tradeOptions();
+  city::trade::Options& tradeOptions();
 
   virtual void delayTrade(unsigned int month);
   virtual void addObject( world::ObjectPtr object );
-  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost);
+  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost);
 
   virtual const good::Store& importingGoods() const;
   virtual const good::Store& exportingGoods() const;

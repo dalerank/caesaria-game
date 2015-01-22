@@ -17,6 +17,7 @@
 
 #include "hotkey_manager.hpp"
 #include "core/event.hpp"
+#include "core/variant_map.hpp"
 #include "core/enumerator.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"
@@ -70,7 +71,7 @@ Signal1<const VariantMap&>& HotkeyManager::onHotkey()
 
 void HotkeyManager::load(vfs::Path file)
 {
-  VariantMap stream = SaveAdapter::load( file );
+  VariantMap stream = config::load( file );
   foreach( it, stream )
   {
     KeyCode hotkey = _d->hkMapper.findType( it->first );

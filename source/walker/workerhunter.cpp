@@ -22,6 +22,7 @@
 #include "core/position.hpp"
 #include "servicewalker_helper.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/path_finding.hpp"
@@ -30,8 +31,11 @@
 #include "corpse.hpp"
 #include "core/foreach.hpp"
 #include "helper.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)
 
 namespace {
 CAESARIA_LITERALCONST(priority)

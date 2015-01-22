@@ -59,52 +59,29 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     int fireLevel = 0;
-    switch( overlay->type() )
+    if( _isVisibleObject( overlay->type() ) )
     {
-    // Base set of visible objects
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    // Fire-related
-    case objects::prefecture:
-    case objects::burningRuins:
+      // Base set of visible objects
       needDrawAnimations = true;
-    break;
-
-    case objects::house:
+    }
+    else if( overlay->type() == objects::house )
+    {
+      HousePtr house = ptr_cast<House>( overlay );
+      fireLevel = (int)house->state( Construction::fire );
+      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+    }
+    else //other buildings
+    {
+      ConstructionPtr constr = ptr_cast<Construction>( overlay );
+      if( constr != 0 )
       {
-        HousePtr house = ptr_cast<House>( overlay );
-        fireLevel = (int)house->state( Construction::fire );
-        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+        fireLevel = (int)constr->state( Construction::fire );
       }
-    break;
 
-      //other buildings
-    default:
-      {
-        ConstructionPtr constr = ptr_cast<Construction>( overlay );
-        if( constr != 0 )
-        {
-          fireLevel = (int)constr->state( Construction::fire );
-        }
-
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
-      }
-    break;
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
     }
 
     if( needDrawAnimations )
@@ -164,6 +141,7 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
+  _fillVisibleObjects( citylayer::fire );
 }
 
 }

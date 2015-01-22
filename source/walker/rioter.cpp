@@ -29,13 +29,17 @@
 #include "pathway/pathway_helper.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
+#include "core/variant_map.hpp"
 #include "events/disaster.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::rioter, Rioter)
 
 class Rioter::Impl
 {

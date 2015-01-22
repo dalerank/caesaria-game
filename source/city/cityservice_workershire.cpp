@@ -29,7 +29,7 @@
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
 #include "core/saveadapter.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 using namespace constants;
 using namespace std;
@@ -81,7 +81,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   _d->fillIndustryMap();
   _d->distance = defaultHireDistance;
 
-  load( SaveAdapter::load( ":workershire.model" ) );
+  load( config::load( ":workershire.model" ) );
 }
 
 void WorkersHire::Impl::fillIndustryMap()
@@ -180,7 +180,7 @@ void WorkersHire::timeStep( const unsigned int time )
   {
     _d->lastMessageDate = game::Date::current();
 
-    int workersNeed = Statistic::getWorkersNeed( _city() );
+    int workersNeed = statistic::getWorkersNeed( _city() );
     if( workersNeed > 20 )
     {
       events::GameEventPtr e = events::ShowInfobox::create( "##city_need_workers_title##", "##city_need_workers_text##",

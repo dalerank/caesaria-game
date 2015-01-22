@@ -50,6 +50,8 @@
 #include "core/event.hpp"
 #include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
+#include "core/variant_map.hpp"
+#include "events/dispatcher.hpp"
 #include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"
@@ -76,10 +78,8 @@ public:
   std::string playerName;
   int result;
 
-#ifdef CAESARIA_USE_STEAM
   Picture userImage;
   gui::Label* lbSteamName;
-#endif
 
 public:
   void handleNewGame();
@@ -116,6 +116,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   result = StartMenu::loadSavedGame;
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  wnd->setShowExtension( false );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( true );
 
@@ -163,7 +164,7 @@ void StartMenu::Impl::showLanguageOptions()
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
-  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   std::string currentLang = SETTINGS_VALUE( language ).toString();
   int currentIndex = -1;
   foreach( it, languages )
@@ -190,7 +191,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   std::string talksArchive;
-  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )
@@ -239,23 +240,16 @@ void StartMenu::Impl::resolveCredits()
                          "gathanase (gathanase@gmail.com) render, game mechanics ",
                          "gecube (gb12335@gmail.com)",
                          "pecunia (pecunia@heavengames.com) game mechanics",
-                         "tracertong",
-                         "VladRassokhin",
-                         "hellium",
-                         "pufik6666",
-                         "andreibranescu",
                          "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
-                         "akuskis (?) aqueduct system",
-                         "rovanion",
-                         "nickers (2nickers@gmail.com)",
-                         "ImperatorPrime",
-                         "veprbl",
-                         "ramMASTER",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
+                         "akuskis (?) aqueduct system",
+                         "ImperatorPrime, nickers, veprbl, ramMASTER",
+                         "tracertong, VladRassokhin, hellium",
+                         "pufik6666, andreibranescu, rovanion",
                          " ",
                          _("##operations_manager##"),
                          " ",
-                         "Max Mironchik (?) "
+                         "Max Mironchik (?) ",
                          " ",
                          _("##testers##"),
                          " ",
@@ -276,7 +270,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "doc (doc@nnm.me),vk.com/caesaria-game",
+                         "vk.com/caesaria-game",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
@@ -412,7 +406,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
 
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
                                                       Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map",
+                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
                                                       -1 );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( false );
@@ -427,6 +421,7 @@ StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
   _d->game = &game;
+  _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
 }
 
@@ -458,7 +453,8 @@ void StartMenu::handleEvent( NEvent& event )
 void StartMenu::initialize()
 {
   Logger::warning( "ScreenMenu: initialize start");
-  _d->bgPicture = Picture::load("title", 1);
+  std::string resName = SETTINGS_VALUE( titleResource ).toString();
+  _d->bgPicture = Picture::load( resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
@@ -498,14 +494,33 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
+  steamapi::Handler::init();  
+
+  std::string steamName = steamapi::Handler::userName();
   _d->userImage = steamapi::Handler::userImage();
-  std::string text = utils::format( 0xff, "stv_%d.%d.%d\nplayer: %s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
-                                                                               CAESARIA_VERSION_REVSN, steamapi::Handler::userName().c_str() );
+  if( steamName.empty() )
+  {
+    OSystem::error( "Error", "Cant login in Steam" );
+    _d->isStopped = true;
+    _d->result = closeApplication;
+    return;
+  }
+
+  std::string text = utils::format( 0xff, "ver %d.%d.%d\n%s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
+                                                                      CAESARIA_VERSION_REVSN, steamName.c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
 #endif
+}
+
+void scene::StartMenu::afterFrame()
+{
+  Base::afterFrame();
+
+  static unsigned int saveTime = 0;
+  events::Dispatcher::instance().update( *_d->game, saveTime++ );
 }
 
 int StartMenu::result() const{  return _d->result;}

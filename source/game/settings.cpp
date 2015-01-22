@@ -19,6 +19,7 @@
 #include "vfs/path.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/directory.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 
@@ -31,6 +32,7 @@ __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
 __REG_PROPERTY(houseModel )
 __REG_PROPERTY(citiesModel)
+__REG_PROPERTY(climateModel)
 __REG_PROPERTY(constructionModel)
 __REG_PROPERTY(ctNamesModel)
 __REG_PROPERTY(settingsPath)
@@ -47,6 +49,7 @@ __REG_PROPERTY(fastsavePostfix)
 __REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
+__REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
 __REG_PROPERTY(soundThemesModel)
@@ -76,6 +79,12 @@ __REG_PROPERTY(cellw)
 __REG_PROPERTY(simpleAnimationModel)
 __REG_PROPERTY(hotkeysModel)
 __REG_PROPERTY(cartsModel)
+__REG_PROPERTY(logoArchive)
+__REG_PROPERTY(titleResource)
+__REG_PROPERTY(forbidenTile)
+__REG_PROPERTY(layersOptsModel)
+__REG_PROPERTY(experimental)
+__REG_PROPERTY(buildMenuModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -109,6 +118,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ langModel           ] = Variant( std::string( "/language.model" ) );
   _d->options[ archivesModel       ] = Variant( std::string( "/archives.model" ) );
   _d->options[ soundThemesModel    ] = Variant( std::string( "/sound_themes.model" ) );
+  _d->options[ climateModel        ] = Variant( std::string( "/climate.model" ) );
   _d->options[ language            ] = Variant( std::string( "en" ) );
   _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
@@ -127,6 +137,12 @@ Settings::Settings() : _d( new Impl )
   _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.model" ) );
   _d->options[ hotkeysModel        ] = Variant( std::string( "/hotkeys.model" ) );
   _d->options[ cartsModel          ] = Variant( std::string( "/carts.model" ) );
+  _d->options[ logoArchive         ] = Variant( std::string( "/gfx/pics_wait.zip" ) );
+  _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
+  _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
+  _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
+  _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
+  _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
@@ -142,6 +158,11 @@ Settings::Settings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
+  _d->options[ oldgfx              ] = 1;
+
+#ifdef CAESARIA_USE_STEAM
+  _d->options[ oldgfx              ] = 0;
+#endif
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
@@ -208,6 +229,12 @@ void Settings::checkCmdOptions(char* argv[], int argc)
       _d->options[ c3gfx ] = Variant( opts );
       i++;
     }
+    else if( !strcmp( argv[i], "-oldgfx" ) )
+    {
+      const char* opts = argv[i+1];
+      _d->options[ oldgfx ] = utils::toInt( opts );
+      i++;
+    }
     else if( !strcmp( argv[i], "-cellw" ) )
     {
       const char* opts = argv[i+1];
@@ -217,6 +244,28 @@ void Settings::checkCmdOptions(char* argv[], int argc)
     }
   }
 
+}
+
+void Settings::checkC3present()
+{
+  std::string c3path = _d->options[ c3gfx ].toString();
+  int useOldGfx = _d->options[ oldgfx ];
+  if( !c3path.empty() || useOldGfx )
+  {
+    _d->options[ houseModel          ] = Variant( std::string( "/house.c3" ) );
+    _d->options[ constructionModel   ] = Variant( std::string( "/construction.c3" ) );
+    _d->options[ citiesModel         ] = Variant( std::string( "/cities.c3" ) );
+    _d->options[ climateModel        ] = Variant( std::string( "/climate.c3" ) );
+    _d->options[ walkerModel         ] = Variant( std::string( "/walker.c3" ) );
+    _d->options[ animationsModel     ] = Variant( std::string( "/animations.c3" ) );
+    _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.c3" ) );
+    _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.c3" ) );
+    _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
+    _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
+    _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
+    _d->options[ titleResource       ] = Variant( std::string( "title" ) );
+    _d->options[ cellw ] = 30;
+  }
 }
 
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
@@ -246,14 +295,14 @@ vfs::Path Settings::rpath( const std::string& option )
 
 void Settings::load()
 {
-  VariantMap settings = SaveAdapter::load( rcpath( Settings::settingsPath ) );
+  VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
 
   foreach( v, settings ) { set( v->first, v->second ); }
 }
 
 void Settings::save()
 {
-  SaveAdapter::save( instance()._d->options, rcpath( Settings::settingsPath ) );
+  config::save( instance()._d->options, rcpath( Settings::settingsPath ) );
 }
 
 }//end namespace game

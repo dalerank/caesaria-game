@@ -22,7 +22,7 @@
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "pathway/path_finding.hpp"
 #include "city/city.hpp"
@@ -461,6 +461,7 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_ENUM_D( stream, _d, nation )
   stream[ "pathway" ] =  _d->pathway.save();
   VARIANT_SAVE_ANY_D( stream, _d, health )
+  VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   VARIANT_SAVE_ANY_D( stream, _d, action.action )
   VARIANT_SAVE_ANY_D( stream, _d, action.direction )
   stream[ "location" ] = _d->location->pos();
@@ -490,6 +491,7 @@ void Walker::load( const VariantMap& stream)
   VARIANT_LOAD_STR_D( _d, thinks, stream )
   VARIANT_LOAD_ANY_D( _d, tileSpeedKoeff, stream )
   VARIANT_LOAD_ANY_D( _d, nextwpos, stream );
+  VARIANT_LOAD_ANY_D( _d, isDeleted, stream );
   VARIANT_LOAD_ENUM_D( _d, action.action, stream )
   VARIANT_LOAD_ENUM_D( _d, action.direction, stream )
   VARIANT_LOAD_ENUM_D( _d, uid, stream )
@@ -511,13 +513,13 @@ void Walker::load( const VariantMap& stream)
   }
 
   VARIANT_LOAD_ANY_D( _d, speed, stream )
-  _d->health = (double)stream.get( "health" );
+  VARIANT_LOAD_ANY_D( _d, health, stream )
   setFlag( showDebugInfo, stream.get( "showDebugInfo" ).toBool() );
 }
 
 void Walker::turn(TilePos p )
 {
-  Direction direction = util::getDirection( pos(), p );
+  Direction direction = tilemap::getDirection( pos(), p );
 
   if( _d->action.direction != direction )
   {

@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
@@ -28,9 +29,12 @@
 #include "constants.hpp"
 #include "actor_colony.hpp"
 #include "walker/helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::amphitheater, Amphitheater)
 
 class Amphitheater::Impl
 {

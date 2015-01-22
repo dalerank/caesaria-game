@@ -27,14 +27,18 @@
 #include "gfx/tilemap.hpp"
 #include "events/warningmessage.hpp"
 #include "objects/road.hpp"
+#include "core/variant_map.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 #include "tower.hpp"
 #include "core/font.hpp"
 #include "gatehouse.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fortification, Fortification)
 
 class Fortification::Impl
 {

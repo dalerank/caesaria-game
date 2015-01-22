@@ -23,6 +23,7 @@
 #include "objects/metadata.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilesarray.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -78,19 +79,19 @@ unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
   switch ( imgId )
   {
     case 0xb0e:                                 ovType = objects::well;    break;
-    case 0xc89:                                 ovType = objects::templeCeres;    break;
+    case 0xc89:                                 ovType = objects::small_ceres_temple;    break;
     case 0xb17:  case 0xb56:                    ovType = objects::fountain;    break;
     case 0xbeb:                                 ovType = objects::theater ;    break;
-    case 0xb0f:  case 0xb0b:  case 0xb0c:       ovType = objects::nativeHut;    break;
-    case 0xb10:  case 0xb0d:                    ovType = objects::nativeCenter;    break;
+    case 0xb0f:  case 0xb0b:  case 0xb0c:       ovType = objects::native_hut;    break;
+    case 0xb10:  case 0xb0d:                    ovType = objects::native_center;    break;
     case 0xb11:  case 0xb44:  case 0xb45:  case 0xb46:
-                                                ovType = objects::nativeField;    break;
-    case 0xb43: case 0xb53: case 0xb57:         ovType = objects::oliveFarm;    break;
-    case 0xb4e: case 0xb52:                      ovType = objects::fruitFarm;    break;
+                                                ovType = objects::native_field;    break;
+    case 0xb43: case 0xb53: case 0xb57:         ovType = objects::olive_farm;    break;
+    case 0xb4e: case 0xb52:                      ovType = objects::fig_farm;    break;
     case 0xb38:                                 ovType = objects::market;    break;
-    case 0xb7c + 71:                            ovType = objects::granary;    break;  //0xbc3 - (71 is id granary in original game)
+    case 0xb7c + 71:                            ovType = objects::granery;    break;  //0xbc3 - (71 is id granary in original game)
     case 0xb2f:                                 ovType = objects::reservoir;    break;
-    case 0xb9a:                                 ovType = objects::creamery;    break;
+    case 0xb9a:                                 ovType = objects::oil_workshop;    break;
     case 0x34d:  case 0x34e:  case 0x34f:  case 0x350:
                                                 ovType = objects::elevation;    break;
     case 0xc50 + 74:                            ovType = objects::shipyard;    break;
@@ -105,12 +106,12 @@ unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
     case 0xc4c: case 0xc4d: case 0xc4e: case 0xc4f:
                                                 ovType = objects::garden;    break;
     case 0xc5d: case 0xc52:                     ovType = objects::prefecture;    break;
-    case 0xcd1:                                 ovType = objects::engineerPost;    break;
+    case 0xcd1:                                 ovType = objects::engineering_post;    break;
     case 0xc81 + 76:                            ovType = objects::wharf;    break;
     case 0xb8a:                                 ovType = objects::school;    break;
     case 0xc2f:                                 ovType = objects::actorColony;    break;
-    case 0xc91:                                 ovType = objects::templeVenus;    break;
-    case 0xc8d:                                 ovType = objects::templeMercury;    break;
+    case 0xc91:                                 ovType = objects::small_venus_temple;    break;
+    case 0xc8d:                                 ovType = objects::small_mercury_temple;    break;
     case 0xcf7: case 0xd17: case 0xd09:         ovType = objects::warehouse;    break;
   }
 
@@ -119,6 +120,7 @@ unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
 
 void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int forceId )
 {
+  int changeId = 0;
   unsigned int imgId = oTile.originalImgId();
   TileOverlay::Type ovType = objects::unknown;
   if( oTile.getFlag( Tile::tlRoad ) )   // road
@@ -126,24 +128,37 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     ovType = objects::road;
     Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
-    oTile.setOriginalImgId( util::convPicName2Id( pic.name() ) );
+    changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlTree ) )
   {
     ovType = objects::tree;
     Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
+    changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
-    oTile.setPicture( pic );
+    /*bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
+    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
+    if( !oldgfx )
+    {
+      Picture pic = MetaDataHolder::randomPicture( objects::meadow, Size(1) );
+      oTile.setPicture( pic );
+      changeId = imgid::fromResource( pic.name() );
+    }*/
   }
   else if( (imgId >= 372 && imgId <= 427) )
   {
     oTile.setFlag( Tile::tlCoast, true );
     if( imgId >= 388 )
       oTile.setFlag( Tile::tlRubble, true );
+  }
+  else if( imgId >= 863 && imgId <= 870 )
+  {
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+    oTile.setPicture( pic );
+    changeId = imgid::fromResource( pic.name() );
   }
   else
   {
@@ -158,7 +173,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   overlay = TileOverlayFactory::instance().create( ovType );
   if( ovType == objects::elevation )
   {
-    std::string elevationPicName = util::convId2PicName( oTile.originalImgId() );
+    std::string elevationPicName = imgid::toResource( oTile.originalImgId() );
     overlay->setPicture( Picture::load( elevationPicName ) );
   }
 
@@ -171,5 +186,10 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     CityAreaInfo info = { city, oTile.pos(), TilesArray() };
     overlay->build( info );
     city->overlays().push_back( overlay );
+  }
+
+  if( changeId > 0 )
+  {
+    oTile.setOriginalImgId( changeId );
   }
 }

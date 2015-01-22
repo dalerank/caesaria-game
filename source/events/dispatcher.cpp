@@ -19,8 +19,10 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "postpone.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
+#include "core/saveadapter.hpp"
 
 namespace events
 {
@@ -95,6 +97,16 @@ void Dispatcher::load(const VariantMap& stream)
       append( e );
     }
   }
+}
+
+void Dispatcher::load(vfs::Path filename, const std::string& section)
+{
+  VariantMap vm = config::load( filename );
+
+  if( !section.empty() )
+    vm = vm.get( section ).toMap();
+
+  load( vm );
 }
 
 void Dispatcher::reset() { _d->events.clear(); }

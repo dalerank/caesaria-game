@@ -210,13 +210,13 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       int index = 162 * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
-      tile.setPicture( util::convId2PicName( pGraphicGrid.data()[index] ) );
+      tile.setPicture( imgid::toResource( pGraphicGrid.data()[index] ) );
       tile.setOriginalImgId( pGraphicGrid.data()[index] );
       //tile.setHeight( pElevationGrid.data()[ index ] );
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
-      util::decode( tile, pTerrainGrid.data()[index] );
-      util::fixPlateauFlags( tile );
+      tile::decode( tile, pTerrainGrid.data()[index] );
+      tile::fixPlateauFlags( tile );
     }
   }
 

@@ -26,6 +26,7 @@
 #include <iostream>
 #include <vector>
 #include <SDL.h>
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "core/exception.hpp"
 #include "picture.hpp"
@@ -454,7 +455,7 @@ EffectManager::EffectManager() {}
 
 void EffectManager::load(vfs::Path effectModel)
 {
-  VariantMap stream = SaveAdapter::load( effectModel );
+  VariantMap stream = config::load( effectModel );
 
   VariantMap technique = stream.get( CAESARIA_STR_EXT(technique) ).toMap();
 

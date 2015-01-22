@@ -21,12 +21,15 @@
 #include "core/gettext.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
 
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::quarry, MarbleQuarry)
+
 MarbleQuarry::MarbleQuarry()
-  : Factory(good::none, good::marble, objects::marbleQuarry, Size(2) )
+  : Factory(good::none, good::marble, objects::quarry, Size(2) )
 {
   _animationRef().load( ResourceGroup::commerce, 44, 10);
   _animationRef().setDelay( 4 );

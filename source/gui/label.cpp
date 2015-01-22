@@ -19,6 +19,7 @@
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
 #include "core/event.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 

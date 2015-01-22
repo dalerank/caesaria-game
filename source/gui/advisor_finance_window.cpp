@@ -41,6 +41,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -82,7 +83,7 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbTaxRateNow )
   _d->updateTaxRateNowLabel();
 
-  unsigned int regTaxPayers = city::Statistic::getTaxPayersPercent( city );
+  unsigned int regTaxPayers = statistic::getTaxPayersPercent( city );
   std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
   Label* lbRegPayers;
   GET_WIDGET_FROM_UI( lbRegPayers )
@@ -167,7 +168,7 @@ void Finance::Impl::updateTaxRateNowLabel()
   if( !lbTaxRateNow )
     return;
 
-  int taxValue = city::Statistic::getTaxValue( city );
+  int taxValue = statistic::getTaxValue( city );
   std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
                                                     city->funds().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );

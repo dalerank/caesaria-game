@@ -65,29 +65,12 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     int crime = -1;
-    switch( overlay->type() )
+
+    if( _isVisibleObject( overlay->type() ) )
     {
-    //fire buildings and roads
-    case objects::road:
-    case objects::plaza:
-    case objects::garden:
-
-    case objects::burnedRuins:
-    case objects::collapsedRuins:
-
-    case objects::lowBridge:
-    case objects::highBridge:
-
-    case objects::elevation:
-    case objects::rift:
-
-    case objects::prefecture:
-    case objects::burningRuins:
       needDrawAnimations = true;
-    break;
-
-      //houses
-    case objects::house:
+    }
+    else if( overlay->type() == objects::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       crime = (int)house->getServiceValue( Service::crime );
@@ -96,15 +79,10 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
       city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
     }
-    break;
-
-      //other buildings
-    default:
+    else
     {
       city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
-    }
-    break;
     }
 
     if( needDrawAnimations )
@@ -166,6 +144,7 @@ Crime::Crime( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
+  _fillVisibleObjects( type() );
 }
 
 }//end namespace layer

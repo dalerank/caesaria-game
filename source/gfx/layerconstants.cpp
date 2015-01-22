@@ -16,9 +16,21 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "layerconstants.hpp"
+#include "game/settings.hpp"
+#include "core/variant_map.hpp"
+#include "core/saveadapter.hpp"
 
 namespace citylayer
 {
+
+static const VariantMap invalidConfig;
+
+class Helper::Impl
+{
+public:
+	typedef std::map<Type, VariantMap> Configs;
+	Configs configs;
+};
 	
 Helper& Helper::instance()
 {
@@ -26,10 +38,23 @@ Helper& Helper::instance()
   return inst;
 }
 
-Helper::Helper() 
-  : EnumsHelper<Type>( count )
+std::string Helper::prettyName(Type t)
 {
-#define __REG_LAYER(a) append( citylayer::a, "##ovrm_"CAESARIA_STR_EXT(a)"##" );
+  std::string typeName = instance().findName( t );
+  return "##ovrm_" + typeName + "##";
+}
+
+const VariantMap& Helper::getConfig(Type t)
+{
+  const Impl::Configs& configs = instance()._d->configs;
+  Impl::Configs::const_iterator it = configs.find( t );
+  return it != configs.end() ? it->second : invalidConfig;
+}
+
+Helper::Helper() 
+  : EnumsHelper<Type>( count ), _d( new Impl )
+{
+#define __REG_LAYER(a) append( citylayer::a, CAESARIA_STR_EXT(a) );
     __REG_LAYER(simple)
     __REG_LAYER(water)
     __REG_LAYER(fire)
@@ -65,6 +90,15 @@ Helper::Helper()
     __REG_LAYER(all)
 #undef __REG_LAYER
 
+  VariantMap vm = config::load( SETTINGS_RC_PATH(layersOptsModel) );
+  foreach( it, vm )
+  {
+    Type layerType = findType( it->first );
+    if( layerType != count )
+    {
+      _d->configs[ layerType ] = it->second.toMap();
+    }
+  }
 }
 
 }//end namespace citylayer

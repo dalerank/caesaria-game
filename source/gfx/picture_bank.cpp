@@ -21,10 +21,10 @@
 #include <string>
 #include <memory>
 #include <sys/stat.h>
-#include <map>
 #include <set>
 #include <SDL.h>
 
+#include "core/variant_map.hpp"
 #include "core/position.hpp"
 #include "core/exception.hpp"
 #include "game/resourcegroup.hpp"
@@ -37,6 +37,7 @@
 #include "loader.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
+#include "gfx/helper.hpp"
 #include "core/color.hpp"
 
 using namespace gfx;
@@ -75,8 +76,11 @@ public:
 
 void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
 {
+  int dot_pos = name.find('.');
+  std::string rcname = name.substr(0, dot_pos);
+
   // first: we deallocate the current picture, if any
-  unsigned int picId = utils::hash( name );
+  unsigned int picId = utils::hash( rcname );
   Picture* ptrPic = 0;
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
@@ -97,9 +101,6 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   if( pic.texture() > 0 )
     txCounters[ pic.texture() ]++;
 
-  int dot_pos = name.find('.');
-  std::string rcname = name.substr(0, dot_pos);
-
   Point offset( 0, 0 );
 
   // decode the picture name => to set the offset manually
@@ -108,7 +109,9 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   if( pic_info == Point( -1, -1 ) )
   {
     // this is a tiled picture=> automatic offset correction
-    offset.setY( pic.height()-15*( (pic.width()+2)/60 ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
+    int cw = gfx::tilemap::cellSize().width() * 2;
+    int ch = gfx::tilemap::cellSize().width() / 2;
+    offset.setY( pic.height()-ch*( (pic.width()+2)/cw ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
   }
   else if( pic_info == Point( -2, -2 ) )
   {
@@ -158,7 +161,7 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
 
 void PictureBank::addAtlas( const std::string& filename )
 {
-  VariantMap options = SaveAdapter::load( filename );
+  VariantMap options = config::load( filename );
   if( !options.empty() )
   {
     Logger::warning( "PictureBank: load atlas " + filename );
@@ -281,7 +284,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     return;
   }
 
-  VariantMap info = SaveAdapter::load( filePath );
+  VariantMap info = config::load( filePath );
 
   vfs::Path texturePath = info.get( "texture" ).toString();
 

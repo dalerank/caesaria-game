@@ -26,6 +26,7 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 
@@ -125,7 +126,7 @@ void Briefing::initialize()
 
   Logger::warning( "Briefing: initialize start");
 
-  VariantMap vm = SaveAdapter::load( _d->filename );
+  VariantMap vm = config::load( _d->filename );
 
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {

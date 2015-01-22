@@ -20,6 +20,7 @@
 #include "walker/walker.hpp"
 #include "events/returnworkers.hpp"
 #include "core/utils.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
@@ -111,6 +112,13 @@ std::string WorkingBuilding::troubleDesc() const
   return trouble;
 }
 
+void WorkingBuilding::initialize(const MetaData& mdata)
+{
+  Building::initialize( mdata );
+
+  setMaximumWorkers( (unsigned int)mdata.getOption( "employers" ) );
+}
+
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
 void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->maxWorkers = maxWorkers; }
 unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
@@ -119,7 +127,7 @@ unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers;
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
-bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
+bool WorkingBuilding::mayWork() const { return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
@@ -172,7 +180,8 @@ void WorkingBuilding::timeStep( const unsigned long time )
     _d->laborAccessKoeff = math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
   }
 
-  _updateAnimation( time );
+  if( isActive() )
+    _updateAnimation( time );
 }
 
 void WorkingBuilding::_updateAnimation(const unsigned long time )

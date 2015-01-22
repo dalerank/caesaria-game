@@ -17,7 +17,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "saver.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "player.hpp"
 #include "world/empire.hpp"
@@ -64,7 +64,7 @@ void Saver::save(const vfs::Path& filename, const Game& game )
   religion::rome::Pantheon::instance().save( vm_pantheon );
   vm[ "pantheon" ] = vm_pantheon;
 
-  SaveAdapter::save( vm, filename );
+  config::save( vm, filename );
 }
 
 void Saver::setRestartFile(const std::string& filename) { _restartFile = filename; }

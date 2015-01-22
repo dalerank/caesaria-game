@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "gfx/engine.hpp"
 #include "modal_widget.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/picturesarray.hpp"
 

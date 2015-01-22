@@ -16,7 +16,7 @@
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "corpse.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
@@ -24,9 +24,12 @@
 #include "constants.hpp"
 #include "gfx/animation_bank.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::corpse, Corpse)
 
 class Corpse::Impl
 {

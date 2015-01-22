@@ -22,12 +22,16 @@
 #include "pathway/pathway.hpp"
 #include "good/goodstore.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
 #include "thinks.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::marketKid, MarketKid)
 
 class MarketKid::Impl
 {

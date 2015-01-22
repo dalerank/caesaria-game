@@ -31,9 +31,13 @@
 #include "city/migration.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
+#include "core/variant_map.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)
 
 namespace  {
 CAESARIA_LITERALCONST(peoples)
@@ -86,7 +90,7 @@ void Emigrant::_lockHouse( HousePtr house )
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( House::settleLock, util::hash( _d->housePosLock ) );
+    house->setState( House::settleLock, tile::hash( _d->housePosLock ) );
   }
 }
 
@@ -324,7 +328,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->population() > 300;
-  unsigned int houseLockId = util::hash( _d->housePosLock );
+  unsigned int houseLockId = tile::hash( _d->housePosLock );
 
   while( itHouse != hlist.end() )
   {

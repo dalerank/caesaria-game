@@ -27,7 +27,7 @@
 #include "label.hpp"
 #include "image.hpp"
 #include "core/saveadapter.hpp"
-//#include <algorithm>
+#include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "dictionary_text.hpp"
 #include "widgetescapecloser.hpp"
@@ -69,7 +69,7 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
   fn = directory/fn;
 
   std::string missionName = vfs::Path( fn ).baseName( false ).toString();
-  VariantMap vm = SaveAdapter::load( fn );
+  VariantMap vm = config::load( fn );
   Locale::addTranslation( missionName );
 
   std::string text = vm.get( "preview.text" ).toString();

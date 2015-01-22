@@ -26,6 +26,7 @@
 #include "neptune.hpp"
 #include "venus.hpp"
 #include "mercury.hpp"
+#include "core/variant_map.hpp"
 #include "mars.hpp"
 
 using namespace constants;

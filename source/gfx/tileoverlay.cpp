@@ -15,11 +15,11 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "tileoverlay.hpp"
 #include "objects/metadata.hpp"
 #include "city/city.hpp"
 #include "tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -152,6 +152,7 @@ void TileOverlay::save( VariantMap& stream ) const
   stream[ "picture" ] = Variant( _d->picture.name() );
   stream[ "pictureOffset" ] = _d->picture.offset();
   stream[ "size" ] = _d->size;
+  stream[ "height" ] = tile().height();
   stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "name" ] = Variant( _d->name );
 }
@@ -169,6 +170,15 @@ void TileOverlay::load( const VariantMap& stream )
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
+  tile().setHeight( stream.get( "height" ).toInt() );
+}
+
+void TileOverlay::initialize(const MetaData& mdata)
+{
+  if( mdata.picture().isValid() )
+  {
+    setPicture( mdata.picture() );  // default picture for build tool
+  }
 }
 
 bool TileOverlay::isWalkable() const{  return false;}
@@ -211,7 +221,7 @@ Size TileOverlay::size() const{  return _d->size;}
 bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
 Renderer::PassQueue TileOverlay::passQueue() const{ return defaultPassQueue;}
 std::string TileOverlay::name(){  return _d->name;}
-TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}
+TileOverlay::Type TileOverlay::type() const{ return _d->overlayType;}
 
 TileOverlay::~TileOverlay()
 {

@@ -27,7 +27,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/predefinitions.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "walker/cart_supplier.hpp"
 #include "core/utils.hpp"
 #include "good/goodstore_simple.hpp"
@@ -36,16 +36,20 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wine_workshop, Winery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oil_workshop, Creamery)
 
 class FactoryStore : public good::SimpleStore
 {
 public:
   FactoryStore() : factory( NULL ) {}
 
-  virtual int getMaxStore(const good::Type goodType)
+  virtual int getMaxStore(const good::Product goodType)
   {
     if( !factory || factory->numberWorkers() == 0 )
     {
@@ -81,15 +85,15 @@ public:
   float progress;  // progress of the work, in percent (0-100).
   Picture stockPicture; // stock of input good
   FactoryStore store;
-  good::Type inGoodType;
+  good::Product inGoodType;
   unsigned int lowWorkerWeeksNumber;
   unsigned int maxUnworkingWeeks;
-  good::Type outGoodType;
+  good::Product outGoodType;
   bool produceGood;
   unsigned int finishedQty;
 };
 
-Factory::Factory( const good::Type inType, const good::Type outType,
+Factory::Factory(const good::Product inType, const good::Product outType,
                   const TileOverlay::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
@@ -112,7 +116,7 @@ Factory::Factory( const good::Type inType, const good::Type outType,
 good::Stock& Factory::inStockRef(){   return _d->store.getStock(_d->inGoodType);}
 const good::Stock& Factory::inStockRef() const { return _d->store.getStock(_d->inGoodType);}
 good::Stock &Factory::outStockRef(){  return _d->store.getStock(_d->outGoodType);}
-good::Type Factory::consumeGoodType() const{  return _d->inGoodType; }
+good::Product Factory::consumeGoodType() const{  return _d->inGoodType; }
 int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
 
@@ -290,9 +294,9 @@ void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, productionRate )
-  stream[ "goodStore" ] = _d->store.save();
   VARIANT_SAVE_ANY_D( stream, _d, progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
+  stream[ "goodStore" ] = _d->store.save();
 }
 
 void Factory::load( const VariantMap& stream)
@@ -340,7 +344,22 @@ std::string Factory::cartStateDesc() const
 
   return "";
 }
-good::Type Factory::produceGoodType() const{  return _d->outGoodType;}
+
+void Factory::initialize(const MetaData& mdata)
+{
+  WorkingBuilding::initialize( mdata );
+
+  setProductRate( (float)mdata.getOption( "productRate", 9.6f ) );
+  Variant outputProduct = mdata.getOption( "output" );
+  if( outputProduct.isValid() )
+  {
+    good::Product pr = good::Helper::getType( outputProduct.toString() );
+    if( pr != good::none )
+      _d->outGoodType = pr;
+  }
+}
+
+good::Product Factory::produceGoodType() const{  return _d->outGoodType;}
 
 void Factory::receiveGood()
 {
@@ -366,7 +385,7 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Winery::Winery() : Factory(good::grape, good::wine, objects::winery, Size(2) )
+Winery::Winery() : Factory(good::grape, good::wine, objects::wine_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
 
@@ -385,7 +404,7 @@ bool Winery::build( const CityAreaInfo& info )
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveVinegrad = !helper.find<Building>( objects::grapeFarm ).empty();
+  bool haveVinegrad = !helper.find<Building>( objects::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -398,7 +417,7 @@ void Winery::_storeChanged()
   _fgPicturesRef()[1].setOffset( 40, -10 );
 }
 
-Creamery::Creamery() : Factory(good::olive, good::oil, objects::creamery, Size(2) )
+Creamery::Creamery() : Factory(good::olive, good::oil, objects::oil_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 99 );
 
@@ -417,7 +436,7 @@ bool Creamery::build( const CityAreaInfo& info )
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveOliveFarm = !helper.find<Building>( objects::oliveFarm ).empty();
+  bool haveOliveFarm = !helper.find<Building>( objects::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

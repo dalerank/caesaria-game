@@ -22,6 +22,7 @@
 #include "loader_sav.hpp"
 #include "loader_oc3save.hpp"
 #include "loader_mission.hpp"
+#include "loader_omap.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/utils.hpp"
@@ -39,6 +40,7 @@
 #include <vector>
 
 using namespace gfx;
+using namespace constants;
 
 namespace game
 {
@@ -99,7 +101,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   if( maySetSign( signTile ) )
   {
-    util::clear( signTile );
+    tile::clear( signTile );
     gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
     CityAreaInfo info = { city, tlPos + tlOffset, TilesArray() };
     waymark->build( info );
@@ -111,22 +113,26 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
 
-  Animation water = AnimationBank::simple( AnimationBank::animWater );
-  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
-
-  foreach( tile, area )
+  foreach( it, area )
   {
-    int rId = (*tile)->originalImgId() - 364;
+    int rId = (*it)->originalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
+      Animation water = AnimationBank::simple( AnimationBank::animWater );
       water.setIndex( rId );
-      (*tile)->setAnimation( water );
-      (*tile)->setFlag( Tile::tlDeepWater, true );
+      (*it)->setAnimation( water );
+      (*it)->setFlag( Tile::tlDeepWater, true );
     }
 
-    if( (*tile)->getFlag( Tile::tlMeadow ) )
+    if( (*it)->getFlag( Tile::tlMeadow ) )
     {
-      (*tile)->setAnimation( meadow );
+      const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+      if( !(*it)->picture().isValid() )
+      {
+        Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+        (*it)->setPicture( pic );
+      }
+      (*it)->setAnimation( meadow );
     }
   }
 }
@@ -146,10 +152,11 @@ void Loader::Impl::finalize( Game& game )
 
 void Loader::Impl::initLoaders()
 {
-  loaders.push_back( loader::BasePtr( new loader::C3Map() ) );
-  loaders.push_back( loader::BasePtr( new loader::C3Sav() ) );
-  loaders.push_back( loader::BasePtr( new loader::OC3() ) );
-  loaders.push_back( loader::BasePtr( new loader::Mission() ) );
+  loaders.push_back( new loader::C3Map() );
+  loaders.push_back( new loader::C3Sav() );
+  loaders.push_back( new loader::OC3() );
+  loaders.push_back( new loader::Mission() );
+  loaders.push_back( new loader::OMap() );
 }
 
 bool Loader::load( vfs::Path filename, Game& game )

@@ -19,6 +19,7 @@
 #include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
@@ -44,7 +45,7 @@ public:
   Direction getDirection(PlayerCityPtr city, TilePos pos);
 };
 
-CoastalFactory::CoastalFactory(const good::Type consume, const good::Type produce,
+CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
                                const TileOverlay::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
@@ -67,7 +68,7 @@ bool CoastalFactory::build( const CityAreaInfo& info )
 
   TilesArray area = info.city->tilemap().getArea( info.pos, size() );
 
-  foreach( tile, area ) { _d->saveTileInfo.push_back( util::encode( *(*tile) ) ); }
+  foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
 
   return Factory::build( info );
 }
@@ -79,7 +80,7 @@ void CoastalFactory::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( tile, area ) { util::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }

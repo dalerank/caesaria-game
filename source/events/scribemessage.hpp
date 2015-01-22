@@ -27,7 +27,7 @@ class ScribeMessage : public GameEvent
 {
 public:
   static GameEventPtr create(const std::string& title, const std::string& text,
-                             good::Type gtype=good::none, Point position=Point(-1, -1) );
+                             good::Product gtype=good::none, Point position=Point(-1, -1) );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -35,7 +35,7 @@ protected:
 
 private:
   std::string _title;
-  good::Type _gtype;
+  good::Product _gtype;
   Point _position;
   std::string _text;
 };

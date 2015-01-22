@@ -90,19 +90,17 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
 
     std::string title, text, video;
-    switch( gr->goodType() )
+    if( gr->goodType() == good::denaries )
     {
-    case good::denaries:
-        text = "##rome_need_some_goods##";
-        title = "##emperor_request_money##";
-        video = ":/smk/Urgent_message1.smk";
-    break;
-
-    default:
-        text = "##rome_need_some_money##";
-        title = "##emperor_request##";
-        video = ":/smk/Urgent_message2.smk";
-    break;
+      text = "##rome_need_some_goods##";
+      title = "##emperor_request_money##";
+      video = ":/smk/Urgent_message1.smk";
+    }
+    else
+    {
+      text = "##rome_need_some_money##";
+      title = "##emperor_request##";
+      video = ":/smk/Urgent_message2.smk";
     }
 
     if( lbText ) { lbText->setText( _( text ) ); }

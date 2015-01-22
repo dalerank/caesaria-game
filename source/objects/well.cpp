@@ -22,12 +22,15 @@
 #include "house.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::well, Well)
+
 namespace {
- const unsigned int wellServiceRange = 2;
+const unsigned int wellServiceRange = 2;
 }
 
 Well::Well() : ServiceBuilding( Service::well, objects::well, Size(1) )

@@ -25,7 +25,7 @@
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
 #include "core/gettext.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
@@ -97,6 +97,9 @@ void ServiceBuilding::destroy()
 
 void ServiceBuilding::deliverService()
 {
+  if( !isActive() )
+    return;
+
   // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
   serviceman->send2City( this, _getWalkerOrders() );

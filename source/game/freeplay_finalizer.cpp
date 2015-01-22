@@ -18,6 +18,7 @@
 #include "freeplay_finalizer.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
@@ -43,13 +44,13 @@ void __loadEventsFromSection( const VariantMap& vm )
 
 void addPopulationMilestones(PlayerCityPtr city)
 {
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "population_milestones" ].toMap() );
 }
 
 void addEvents(PlayerCityPtr city)
 {
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
 }
 
@@ -61,9 +62,9 @@ void resetFavour(PlayerCityPtr city)
 
 void initBuildOptions(PlayerCityPtr city)
 {
-  city::BuildOptions bopts;
+  city::development::Options bopts;
   bopts = city->buildOptions();
-  bopts.setGroupAvailable( BM_MAX, true );
+  bopts.setGroupAvailable( city::development::all, true );
   city->setBuildOptions( bopts );
 }
 

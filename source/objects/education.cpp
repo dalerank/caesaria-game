@@ -23,8 +23,11 @@
 #include "objects/house.hpp"
 #include "gfx/helper.hpp"
 #include "game/gamedate.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::school, School)
 
 class School::Impl
 {
@@ -73,7 +76,7 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
     HousePtr house = ptr_cast<House>( *it );
     if( house.isValid() )
     {
-      unsigned int posHash = gfx::util::hash(house->pos());
+      unsigned int posHash = gfx::tile::hash(house->pos());
       _d->srvBuidings[ posHash ] = house->habitants().count( CitizenGroup::scholar );
     }
   }

@@ -25,6 +25,7 @@
 #include "game/resourcegroup.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 
@@ -47,7 +48,7 @@ StartMenu::StartMenu( Widget* parent )
   path2options = ":/gui/startmenu.gui";
 #endif
 
-  _d->options = SaveAdapter::load( path2options );
+  _d->options = config::load( path2options );
 }
 
 StartMenu::~StartMenu() {}

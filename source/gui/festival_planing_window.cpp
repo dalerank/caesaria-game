@@ -35,6 +35,7 @@
 
 using namespace religion;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -134,7 +135,7 @@ FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle,
   _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
-  _d->festivalCost = city::Statistic::getFestivalCost( city, smallFest );
+  _d->festivalCost = city::statistic::getFestivalCost( city, smallFest );
 
   if( _d->btnSmallFestival )
   {
@@ -142,14 +143,14 @@ FestivalPlaning::FestivalPlaning( Widget* parent, int id, const Rect& rectangle,
     _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
   }
 
-  _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
+  _d->festivalCost = city::statistic::getFestivalCost( city, middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
     _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
   }
 
-  _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
+  _d->festivalCost = city::statistic::getFestivalCost( city, greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
@@ -179,30 +180,34 @@ bool FestivalPlaning::onEvent(const NEvent& event)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
-    if( btn && (btn->ID() & Impl::divId ) )
+
+    if( btn && btn->ID() != Widget::noId )
     {
-      foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
+      if( (btn->ID() & Impl::divId) == Impl::divId )
+      {
+        foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
 
-      btn->setPressed( true );
-      _d->currentDivinity = _d->divines[ btn->ID() ];
+        btn->setPressed( true );
+        _d->currentDivinity = _d->divines[ btn->ID() ];
 
-      _d->updateTitle();
+        _d->updateTitle();
+      }
+      else if( btn->ID() & Impl::festId  )
+      {
+        _d->btnSmallFestival->setPressed( false );
+        _d->btnMiddleFestival->setPressed( false );
+        _d->btnGreatFestival->setPressed( false );
+
+        StringArray titles;
+        titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
+        _d->festivalType = math::clamp<int>( btn->ID() & 0xf, 0, titles.size() - 1);
+        _d->lbFestivalName->setText( _( titles[ _d->festivalType ] ) );
+
+        btn->setPressed( true );
+      }
+
+      return true;
     }
-    else if( btn && (btn->ID() & Impl::festId ) )
-    {
-      _d->btnSmallFestival->setPressed( false );
-      _d->btnMiddleFestival->setPressed( false );
-      _d->btnGreatFestival->setPressed( false );
-
-      StringArray titles;
-      titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
-      _d->festivalType = (btn->ID() & 0xf);
-      _d->lbFestivalName->setText( _( titles[ _d->festivalType ] ) );
-
-      btn->setPressed( true );
-    }
-
-    return true;
   }
 
   return Widget::onEvent( event );

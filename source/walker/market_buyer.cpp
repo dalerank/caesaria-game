@@ -29,17 +29,21 @@
 #include "good/goodstore_simple.hpp"
 #include "city/helper.hpp"
 #include "name_generator.hpp"
+#include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::marketBuyer, MarketBuyer)
 
 class MarketBuyer::Impl
 {
 public:
   TilePos destBuildingPos;  // granary or warehouse
-  good::Type priorityGood;
+  good::Product priorityGood;
   int maxDistance;
   MarketPtr market;
   good::SimpleStore basket;
@@ -71,7 +75,7 @@ MarketBuyer::~MarketBuyer(){}
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                               MarketPtr market, good::SimpleStore& basket, const good::Type what,
+                               MarketPtr market, good::SimpleStore& basket, const good::Product what,
                                Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;
@@ -114,7 +118,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<good::Type> priorityGoods = _d->market->mostNeededGoods();
+  std::list<good::Product> priorityGoods = _d->market->mostNeededGoods();
 
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
@@ -138,7 +142,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
           || _d->priorityGood == good::vegetable)
       {
         // try get that good from a granary
-        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granary, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granery, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
         if( _d->destBuildingPos.i() < 0 )
@@ -233,10 +237,9 @@ void MarketBuyer::_reachedPathway()
         granary->store().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = good::wheat; n<=good::vegetable; ++n)
+        for ( good::Product goodType = good::wheat; goodType<=good::vegetable; ++goodType)
         {
           // for all types of good (except G_NONE)
-          good::Type goodType = (good::Type) n;
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
           if (qty > 0)
           {
@@ -258,10 +261,9 @@ void MarketBuyer::_reachedPathway()
         warehouse->store().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = good::wheat; n<good::goodCount; ++n)
+        for ( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
         {
           // for all types of good (except G_NONE)
-          good::Type goodType = (good::Type) n;
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
           if (qty > 0)
           {
@@ -281,14 +283,14 @@ void MarketBuyer::_reachedPathway()
 
       while( _d->basket.qty() > 100 )
       {
-        for( int gtype=good::wheat; gtype < good::goodCount ; gtype++ )
+        for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
         {
-          good::Stock& currentStock = _d->basket.getStock( (good::Type)gtype );
+          good::Stock& currentStock = _d->basket.getStock( gtype );
           if( currentStock.qty() > 0 )
           {
             MarketKidPtr boy = MarketKid::create( _city(), this );
             good::Stock& boyBasket =  boy->getBasket();
-            boyBasket.setType( (good::Type)gtype );
+            boyBasket.setType( gtype );
             boyBasket.setCapacity( 100 );
             _d->basket.retrieve( boyBasket, math::clamp( currentStock.qty(), 0, 100 ) );
             boy->setDelay( delay );
@@ -320,7 +322,7 @@ void MarketBuyer::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos );
-  stream[ "priorityGood" ] = (int)_d->priorityGood;
+  stream[ "priorityGood" ] = _d->priorityGood.toInt();
   stream[ "marketPos" ] = _d->market->pos();
 
   stream[ "basket" ] = _d->basket.save();
@@ -332,7 +334,7 @@ void MarketBuyer::load( const VariantMap& stream)
 {
   Walker::load( stream );
   VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream );
-  _d->priorityGood = (good::Type)stream.get( "priorityGood" ).toInt();
+  _d->priorityGood = (good::Product)stream.get( "priorityGood" ).toInt();
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
 

@@ -21,9 +21,14 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::garden, Garden)
 
 Garden::Garden() : Construction(constants::objects::garden, Size(1) )
 {

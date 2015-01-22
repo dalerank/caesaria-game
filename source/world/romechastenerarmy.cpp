@@ -19,6 +19,7 @@
 #include "empire.hpp"
 #include "events/notification.hpp"
 #include "emperor.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
@@ -31,6 +32,7 @@ class RomeChastenerArmy::Impl
 {
 public:
   int soldiersNumber;
+  bool messageSent;
   bool checkFavor;
 };
 
@@ -52,16 +54,17 @@ void RomeChastenerArmy::timeStep(const unsigned int time)
 {
   Army::timeStep( time );
 
-  if( game::Date::isWeekChanged() && _d->checkFavor )
+  if( !_d->messageSent && game::Date::isWeekChanged() && _d->checkFavor )
   {
     if( empire()->emperor().relation( target() ) > 35 )
     {
-      events::GameEventPtr e = events::ShowInfobox::create( "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
-      e->dispatch();
+      Messenger::now( empire(), target(), "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
 
       empire()->emperor().remSoldiers( target(), _d->soldiersNumber );
       deleteLater();
     }
+
+    _d->messageSent = true;
   }
 }
 
@@ -71,6 +74,7 @@ void RomeChastenerArmy::save(VariantMap& stream) const
 
   VARIANT_SAVE_ANY_D( stream, _d, soldiersNumber )
   VARIANT_SAVE_ANY_D( stream, _d, checkFavor )
+  VARIANT_SAVE_ANY_D( stream, _d, messageSent )
 }
 
 void RomeChastenerArmy::load(const VariantMap& stream)
@@ -79,6 +83,7 @@ void RomeChastenerArmy::load(const VariantMap& stream)
 
   VARIANT_LOAD_ANY_D( _d, soldiersNumber, stream )
   VARIANT_LOAD_ANY_D( _d, checkFavor, stream )
+  VARIANT_LOAD_ANY_D( _d, messageSent, stream )
 }
 
 void RomeChastenerArmy::attack(ObjectPtr obj)
@@ -95,6 +100,7 @@ void RomeChastenerArmy::attack(ObjectPtr obj)
   else
   {
     Logger::warning( "WARNING!!! RomeChastenerArmy::attack cant attack unexist object" );
+    deleteLater();
   }
 }
 
@@ -102,6 +108,7 @@ RomeChastenerArmy::RomeChastenerArmy(EmpirePtr empire)
  : Army( empire ), _d( new Impl )
 {
   _d->checkFavor = false;
+  _d->messageSent = false;
   _d->soldiersNumber = 16;
 }
 

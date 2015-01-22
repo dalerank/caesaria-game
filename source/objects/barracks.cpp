@@ -20,10 +20,14 @@
 #include "game/resourcegroup.hpp"
 #include "walker/trainee.hpp"
 #include "good/goodstore_simple.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "walker/cart_supplier.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barracks, Barracks)
 
 class Barracks::Impl
 {
@@ -81,7 +85,7 @@ void Barracks::timeStep(const unsigned long time)
 }
 
 bool Barracks::isNeedWeapons() const {  return _d->store.freeQty() >= 100; }
-int Barracks::goodQty(good::Type type) const{  return _d->store.qty( type ); }
+int Barracks::goodQty(good::Product type) const{  return _d->store.qty( type ); }
 
 void Barracks::storeGoods(good::Stock& stock, const int amount)
 {

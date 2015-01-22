@@ -61,6 +61,10 @@ public:
 	//! Returns amount of menu items
 	virtual unsigned int itemCount() const;
 
+  virtual ContextMenuItem* addItem( const std::string& path, const std::string& text, int commandid,
+                                    bool enabled=true, bool hasSubMenu=false,
+                                    bool checked=false, bool autoChecking=false);
+
 	//! Adds a menu item.
   virtual ContextMenuItem* addItem( const std::string& text, int commandid,
       		                          bool enabled=true, bool hasSubMenu=false, 
@@ -72,6 +76,8 @@ public:
 
 	//! Find a item which has the given CommandId starting from given index
 	virtual ContextMenuItem* findItem( int commandId, unsigned int idxStartSearch ) const;
+
+	virtual ContextMenuItem* findItem( const std::string& name ) const;
 
 	//! Adds a separator item to the menu
 	virtual void addSeparator();

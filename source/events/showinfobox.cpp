@@ -21,6 +21,7 @@
 #include "gui/environment.hpp"
 #include "scribemessage.hpp"
 #include "core/gettext.hpp"
+#include "core/variant_map.hpp"
 #include "gui/film_widget.hpp"
 #include "gui/event_messagebox.hpp"
 #include "good/goodhelper.hpp"
@@ -38,7 +39,7 @@ public:
   bool send2scribe;
   vfs::Path video;
   Point position;
-  good::Type gtype;
+  good::Product gtype;
 };
 
 GameEventPtr ShowInfobox::create()
@@ -48,7 +49,7 @@ GameEventPtr ShowInfobox::create()
   return ret;
 }
 
-GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, good::Type type, bool send2scribe)
+GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, good::Product type, bool send2scribe)
 {
   ShowInfobox* ev = new ShowInfobox();
   ev->_d->title = title;

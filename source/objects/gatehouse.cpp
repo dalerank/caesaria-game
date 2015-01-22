@@ -22,10 +22,14 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "objects/road.hpp"
+#include "core/variant_map.hpp"
+#include "objects_factory.hpp"
 #include "core/direction.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::gatehouse, Gatehouse)
 
 namespace {
 static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };

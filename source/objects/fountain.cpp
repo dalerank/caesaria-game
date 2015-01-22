@@ -28,14 +28,18 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/workerhunter.hpp"
 #include "events/returnworkers.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fountain, Fountain)
 
 namespace {
 static const unsigned int fillDistanceNormal = 4;

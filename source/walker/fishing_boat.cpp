@@ -27,12 +27,16 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "objects/predefinitions.hpp"
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::fishingBoat, FishingBoat)
 
 class FishingBoat::Impl
 {

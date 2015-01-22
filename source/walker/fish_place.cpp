@@ -24,9 +24,13 @@
 #include "walker/walker.hpp"
 #include "constants.hpp"
 #include "core/gettext.hpp"
+#include "core/variant_map.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::fishPlace, FishPlace)
 
 class FishPlace::Impl
 {

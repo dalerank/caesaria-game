@@ -25,6 +25,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/gl_engine.hpp"
 #include "sound/engine.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/picture_bank.hpp"
 #include "scene/menu.hpp"
 #include "scene/level.hpp"
@@ -221,7 +222,7 @@ void Game::Impl::initGuiEnvironment()
 
 void Game::Impl::initPantheon( vfs::Path filename)
 {
-  VariantMap pantheon = SaveAdapter::load( filename );
+  VariantMap pantheon = config::load( filename );
   religion::rome::Pantheon::instance().load( pantheon );
 }
 
@@ -397,12 +398,14 @@ void Game::initialize()
   splash::initialize( "logo_00001" );
 
   scene::SplashScreen screen;
-  screen.initialize();
-  screen.update( *_d->engine );
 
   Logger::warning( "Game: initialize resource loader" );
   ResourceLoader rcLoader;
+  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
+
+  screen.initialize();
+  screen.update( *_d->engine );
 
   Logger::warning( "Game: initialize offsets" );
   screen.setPrefix( "##loading_offsets##" );
@@ -466,9 +469,9 @@ bool Game::exec()
       _d->timeX10 = 0;
       _d->saveTime = _d->timeX10;
       _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
-                                                          _d->saveTime, _d->timeX10,
-                                                          _d->timeMultiplier, _d->manualTicksCounterX10,
-                                                          _d->nextFilename, _d->restartFile );
+                                                        _d->saveTime, _d->timeX10,
+                                                        _d->timeMultiplier, _d->manualTicksCounterX10,
+                                                        _d->nextFilename, _d->restartFile );
     } break;
     case SCREEN_BRIEFING:
     {

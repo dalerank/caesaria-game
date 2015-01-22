@@ -53,7 +53,7 @@ public:
   virtual unsigned int age() const;
 
   virtual void delayTrade(unsigned int month);
-  virtual void empirePricesChanged(good::Type gtype, int bCost, int sCost);
+  virtual void empirePricesChanged(good::Product gtype, int bCost, int sCost);
 
   virtual unsigned int tradeType() const;
   virtual int strength() const;

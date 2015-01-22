@@ -20,13 +20,17 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
+#include "core/variant_map.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include <core/logger.hpp>
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::high_bridge, HighBridge)
 
 namespace {
   const Point spanswOffset = Point( 12, -43 );
@@ -40,13 +44,13 @@ public:
           liftingWestL=173, descentWestL=175,
           liftingNorthL=176, descentNorthL=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
-    : Construction( objects::highBridge, Size( 1 ) )
+    : Construction( objects::high_bridge, Size( 1 ) )
   {
     _pos = pos;
     _index = index;
 
     Picture pic = Picture::load( ResourceGroup::transport, _index );
-    pic.addOffset( util::tilepos2screen( _pos ) );
+    pic.addOffset( tile::tilepos2screen( _pos ) );
     setPicture( pic );
 
     //checkSecondPart();
@@ -97,7 +101,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
       Picture landPic = mt.picture();
-      landPic.addOffset( util::tilepos2screen( TilePos( 0, 1 ) ) );
+      landPic.addOffset( tile::tilepos2screen( TilePos( 0, 1 ) ) );
       _fgPicturesRef().push_back( landPic );
 
       _fgPicturesRef().push_back( pic );
@@ -106,7 +110,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) )  );
+      landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) )  );
       _fgPicturesRef().push_back( landPic );
 
      pic.addOffset( 8, -14 );
@@ -116,7 +120,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( info.pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( util::tilepos2screen( TilePos( 1, 0 ) ) );
+      landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) ) );
       _fgPicturesRef().push_back( landPic );
 
       pic.addOffset( 0, -15 );
@@ -256,7 +260,7 @@ bool HighBridge::canBuild( const CityAreaInfo& areaInfo ) const
   return (_d->direction != noneDirection );
 }
 
-HighBridge::HighBridge() : Construction( objects::highBridge, Size(1) ), _d( new Impl )
+HighBridge::HighBridge() : Construction( objects::high_bridge, Size(1) ), _d( new Impl )
 {
   Picture tmp;
   setPicture( tmp );
@@ -501,7 +505,7 @@ bool HighBridge::build( const CityAreaInfo& info  )
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
-      subtile->_info = util::encode( tile );
+      subtile->_info = tile::encode( tile );
       subtile->_parent = this;
       
       events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );

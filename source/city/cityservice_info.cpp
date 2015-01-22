@@ -31,6 +31,7 @@
 #include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
+#include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "cityservice_military.hpp"
 
@@ -89,30 +90,30 @@ void Info::timeStep(const unsigned int time )
     last[ population  ] = _city()->population();
     last[ funds       ] = _city()->funds().treasury();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
-    last[ foodStock   ] = city::Statistic::getFoodStock( _city() );
-    last[ foodMontlyConsumption ] = city::Statistic::getFoodMonthlyConsumption( _city() );
+    last[ foodStock   ] = statistic::getFoodStock( _city() );
+    last[ foodMontlyConsumption ] = statistic::getFoodMonthlyConsumption( _city() );
     last[ monthWithFood ] = last[ foodMontlyConsumption ] > 0 ? (last[ foodStock ] / last[ foodMontlyConsumption ]) : 0;
 
-    int foodProducing = city::Statistic::getFoodProducing( _city() );
+    int foodProducing = statistic::getFoodProducing( _city() );
     int yearlyFoodConsumption = last[ foodMontlyConsumption ] * DateTime::monthsInYear;
     last[ foodKoeff   ] = ( foodProducing - yearlyFoodConsumption > 0 )
                             ? foodProducing / (yearlyFoodConsumption+1)
                             : -(yearlyFoodConsumption / (foodProducing+1) );
 
     int currentWorkers, rmaxWorkers;
-    city::Statistic::getWorkersNumber( _city(), currentWorkers, rmaxWorkers );
+    statistic::getWorkersNumber( _city(), currentWorkers, rmaxWorkers );
 
     last[ needWorkers ] = rmaxWorkers - currentWorkers;
     last[ maxWorkers  ] = rmaxWorkers;
-    last[ workless    ] = city::Statistic::getWorklessPercent( _city() );
+    last[ workless    ] = statistic::getWorklessPercent( _city() );
     last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
     last[ tax         ] = _city()->funds().taxRate();
     last[ cityWages   ] = _city()->funds().workerSalary();
     last[ romeWages   ] = _city()->empire()->workerSalary();
-    last[ crimeLevel  ] = city::Statistic::getCrimeLevel( _city() );
+    last[ crimeLevel  ] = statistic::getCrimeLevel( _city() );
     last[ favour      ] = _city()->favour();
     last[ prosperity  ] = _city()->prosperity();
-    last[ monthWtWar  ] = city::Statistic::months2lastAttack( _city() );
+    last[ monthWtWar  ] = statistic::months2lastAttack( _city() );
     last[ peace       ] = 0;
 
     PeacePtr peaceSrvc;

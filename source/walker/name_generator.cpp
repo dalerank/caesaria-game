@@ -18,7 +18,7 @@
 #include "name_generator.hpp"
 #include "core/stringarray.hpp"
 #include "core/saveadapter.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 
 class NameGenerator::Impl
 {
@@ -54,7 +54,7 @@ std::string NameGenerator::rand( NameType type )
 
 void NameGenerator::initialize(const vfs::Path &filename)
 {
-  VariantMap names = SaveAdapter::load( filename );
+  VariantMap names = config::load( filename );
 
   _d->female.clear();
   _d->male.clear();

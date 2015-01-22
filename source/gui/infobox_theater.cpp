@@ -21,6 +21,7 @@
 #include "objects/theater.hpp"
 #include "core/gettext.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_map.hpp"
 #include "label.hpp"
 
 using namespace constants;
@@ -49,7 +50,7 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   {
     if( theater->isShow() )
     {
-      VariantMap shows = SaveAdapter::load( ":/theater_shows.model" );
+      VariantMap shows = config::load( ":/theater_shows.model" );
       VariantMap::iterator currentShowIt = shows.begin();
 
       std::advance( currentShowIt, theater->showsCount() % shows.size() );

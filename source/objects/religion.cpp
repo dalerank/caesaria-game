@@ -22,9 +22,22 @@
 #include "core/position.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace religion;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_ceres_temple, TempleCeres)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_mars_temple, TempleMars)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_mercury_temple, TempleMercury)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_neptune_temple, TempleNeptune)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_venus_temple, TempleVenus)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_ceres_temple, BigTempleCeres)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_mars_temple, BigTempleMars)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_mercury_temple, BigTempleMercury)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_neptune_temple, BigTempleNeptune)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_venus_temple, BigTempleVenus)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oracle, TempleOracle)
 
 class Temple::Impl
 {
@@ -56,43 +69,43 @@ unsigned int Temple::walkerDistance() const { return 26;}
 
 Temple::~Temple(){}
 
-TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), objects::templeCeres, 45 )
+TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), objects::small_ceres_temple, 45 )
 {
 }
 
-BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), objects::cathedralCeres, 46 )
+BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), objects::big_ceres_temple, 46 )
 {
 }
 
-TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), objects::templeNeptune, 47 )
+TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), objects::small_neptune_temple, 47 )
 {
 }
 
-BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), objects::cathedralNeptune, 48 )
+BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), objects::big_neptune_temple, 48 )
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), objects::templeMars, 51 )
+TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), objects::small_mars_temple, 51 )
 {
 }
 
-BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), objects::cathedralMars, 52 )
+BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), objects::big_mars_temple, 52 )
 {
 }
 
-TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), objects::templeVenus, 53 )
+TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), objects::small_venus_temple, 53 )
 {
 }
 
-BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), objects::cathedralVenus, 54 )
+BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), objects::big_venus_temple, 54 )
 {
 }
 
-TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), objects::templeMercury, 49 )
+TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), objects::small_mercury_temple, 49 )
 {
 }
 
-BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), objects::cathedralMercury, 50 )
+BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), objects::big_mercury_temple, 50 )
 {
 }
 
@@ -143,7 +156,7 @@ bool BigTemple::build( const CityAreaInfo& info )
     return true;
   }
 
-  city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( info.city, false );
+  city::statistic::GoodsMap goods = city::statistic::getGoodsMap( info.city, false );
   if( goods[ good::marble ] >= 2 )
   {
     Temple::build( info );

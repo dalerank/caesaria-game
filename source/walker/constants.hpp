@@ -91,6 +91,8 @@ enum Type
   supplier,
   circusCharioter,
   docker,
+  gladiatorRiot,
+  merchantCamel,
   all = 0xff,
   any = all
 };

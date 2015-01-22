@@ -19,6 +19,8 @@
 #define __CAESARIA_LAYERCONSTANTS_H_INCLUDED__
 
 #include "core/enumerator.hpp"
+#include "core/scopedptr.hpp"
+#include "core/variant.hpp"
 
 namespace citylayer
 {
@@ -39,9 +41,14 @@ class Helper : public EnumsHelper<Type>
 {
 public:
   static Helper& instance();
+  static std::string prettyName( Type t );
+  static const VariantMap& getConfig( Type t );
   
 protected:
   Helper();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }

@@ -19,14 +19,18 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "city/helper.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
 #include "events/clearland.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::low_bridge, LowBridge)
 
 namespace {
   Point spanswOffset = Point( 10, -25 );
@@ -37,7 +41,7 @@ class LowBridgeSubTile : public Construction
 public:
   enum { liftingWest=67, spanWest=68, descentWest=69, liftingNorth=70, spanNorth=71, descentNorth=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
-    : Construction( objects::lowBridge, Size( 1 ) )
+    : Construction( objects::low_bridge, Size( 1 ) )
   {
     _info = 0;
     _imgId = 0;
@@ -45,7 +49,7 @@ public:
     _index = index;
     _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( util::tilepos2screen( _pos ) );
+    _picture.addOffset( tile::tilepos2screen( _pos ) );
   }
 
   virtual ~LowBridgeSubTile() {}
@@ -174,7 +178,7 @@ bool LowBridge::canBuild( const CityAreaInfo& areaInfo ) const
   return (_d->direction != noneDirection);
 }
 
-LowBridge::LowBridge() : Construction( constants::objects::lowBridge, Size(1) ), _d( new Impl )
+LowBridge::LowBridge() : Construction( constants::objects::low_bridge, Size(1) ), _d( new Impl )
 {
   Picture pic;
   setPicture( pic );
@@ -426,7 +430,7 @@ bool LowBridge::build( const CityAreaInfo& info )
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.originalImgId();
-      subtile->_info = util::encode( tile );
+      subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 
       events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
@@ -471,7 +475,7 @@ void LowBridge::destroy()
     //std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
-    util::decode( mapTile, (*it)->_info );
+    tile::decode( mapTile, (*it)->_info );
   }
 }
 

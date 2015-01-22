@@ -16,13 +16,12 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "house_level.hpp"
 
 #include "objects/house.hpp"
 #include "core/exception.hpp"
 #include "core/utils.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "good/goodstore.hpp"
 #include "core/foreach.hpp"
@@ -62,10 +61,10 @@ public:
   int minReligionLevel;  // number of religions
   int minFoodLevel;  // number of food types
 
-  typedef std::map<good::Type, int> RequiredGoods;
+  typedef std::map<good::Product, int> RequiredGoods;
   RequiredGoods requiredGoods;  // rate of good usage for every good (furniture, pottery, ...)
 
-  typedef std::map<good::Type, float> GoodConsumptionMuls;
+  typedef std::map<good::Product, float> GoodConsumptionMuls;
   GoodConsumptionMuls consumptionMuls;
 };
 
@@ -166,7 +165,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
     {
     case 1: needBuilding = objects::baths; break;
     case 2: needBuilding = objects::barber; break;
-    case 3: needBuilding = objects::doctor; break;
+    case 3: needBuilding = objects::clinic; break;
     case 4: needBuilding = objects::hospital; break;
     }
 
@@ -215,35 +214,35 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   if( _d->requiredGoods[good::pottery] != 0 && house->goodStore().qty(good::pottery) == 0)
   {
     ref = "##missing_pottery##";
-    needBuilding = objects::pottery;
+    needBuilding = objects::pottery_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::furniture] != 0 && house->goodStore().qty(good::furniture) == 0)
   {
     ref = "##missing_furniture##";
-    needBuilding = objects::furnitureWorkshop;
+    needBuilding = objects::furniture_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::oil] != 0 && house->goodStore().qty(good::oil) == 0)
   {
     ref = "##missing_oil##";
-    needBuilding = objects::creamery;
+    needBuilding = objects::oil_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::wine] != 0 && house->goodStore().qty(good::wine) == 0)
   {
     ref = "##missing_wine##";
-    needBuilding = objects::winery;
+    needBuilding = objects::wine_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::prettyWine] != 0 && house->goodStore().qty(good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
-    needBuilding = objects::winery;
+    needBuilding = objects::wine_workshop;
     return false;
   }
 
@@ -541,7 +540,7 @@ float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Ty
 int HouseSpecification::minDesirabilityLevel() const { return _d->minDesirability; }
 int HouseSpecification::maxDesirabilityLevel() const { return _d->maxDesirability; }
 
-int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const good::Type goodType, bool real) const
+int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const good::Product goodType, bool real) const
 {
   if( house.isNull() )
   {
@@ -550,24 +549,20 @@ int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const goo
   }
 
   int res=0;
-  switch( goodType )
+  if( goodType == good::furniture || goodType == good::oil ||
+      goodType == good::pottery  || goodType ==  good::wine )
   {
-  case good::furniture:
-  case good::oil:
-  case good::pottery:
-  case good::wine:
     res = 2;
-  break;
-
-  case good::wheat:
-  case good::meat:
-  case good::fish:
-  case good::fruit:
-  case good::vegetable:
+  }
+  else if( goodType == good::wheat || goodType ==  good::meat ||
+           goodType == good::fish || goodType == good::fruit ||
+           goodType == good::vegetable )
+  {
     res = house->habitants().count() / 2;
-  break;
-
-  default: res = 0;
+  }
+  else
+  {
+     res = 0;
   }
 
   res *= (real ? _d->consumptionMuls[ goodType ] : 1);
@@ -587,7 +582,7 @@ int HouseSpecification::computeMonthlyFoodConsumption(HousePtr house) const
 }
 
 const std::string& HouseSpecification::internalName() const{  return _d->internalName; }
-int HouseSpecification::getRequiredGoodLevel(good::Type type) const{  return _d->requiredGoods[type];}
+int HouseSpecification::getRequiredGoodLevel(good::Product type) const{  return _d->requiredGoods[type];}
 int HouseSpecification::prosperity() const{  return _d->prosperity;}
 int HouseSpecification::crime() const{  return _d->crime;}
 
@@ -698,7 +693,7 @@ HouseSpecHelper::~HouseSpecHelper(){}
 
 void HouseSpecHelper::initialize( const vfs::Path& filename )
 {
-  VariantMap houseSpecs = SaveAdapter::load( filename );
+  VariantMap houseSpecs = config::load( filename );
 
   if( houseSpecs.empty() )
   {
@@ -739,9 +734,9 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    for (int i = 0; i < good::goodCount; ++i)
+    for (good::Product i = good::none; i < good::goodCount; ++i)
     {
-      spec._d->consumptionMuls[ (good::Type)i ] = 1;
+      spec._d->consumptionMuls[ i ] = 1;
     }
 
     //load consumption goods koefficient

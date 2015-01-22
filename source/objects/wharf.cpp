@@ -24,8 +24,11 @@
 #include "good/goodstore.hpp"
 #include "game/gamedate.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wharf, Wharf)
 
 class Wharf::Impl
 {

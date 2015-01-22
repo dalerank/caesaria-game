@@ -13,6 +13,13 @@
     }
   }
 
+   meadow : {
+    class : "terrain"
+    image.ext : {
+      type_1 : { size:1, rc : "land1a", start : 1, count : 1 }
+    }
+  }
+
   tree : {
     class : "tree"
     image.ext : {
@@ -76,6 +83,12 @@
     sound : [ "theatre", 1 ]
   },
 
+  roadBlock : {
+    cost : 10
+    class : "road"
+    image : [ "roadBlock", 1 ]
+  }
+
   hippodrome : {
     cost : 2500,
     desirability : { base : -3, range : 3, step : 1 }
@@ -91,7 +104,7 @@
     sound : [ "colloseum", 1 ]
   },
   
-  gladiator_pit : {
+  gladiatorSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
@@ -108,7 +121,7 @@
     class : "house"
   }
 
-  lion_pit : {
+  lionsNursery : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
@@ -127,7 +140,7 @@
     sound : [ "artistpit", 1  ]
   },
 
-  chatioteer_school : {
+  chariotSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 10
@@ -319,9 +332,10 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
+    animation : { rc : "smlceres", start : 2, count : 6, offset : [ 41, 27 ], delay : 3 }
     employers : 2
     class : "religion"
+    image : [ "smlceres", 1 ]    
     sound : [ "templeceres", 1 ]
   },  
   
@@ -458,21 +472,21 @@
     sound : [ "wharf", 1 ]
   }, 
   
-  governor_palace_1 : {
+  governorHouse : {
     cost : 150,
     desirability : { base : 12, 	range : 3,	step : -2 }
     employers : 0
     class : "administration"
   }, 
   
-  governor_palace_2 : {
+  governorVilla : {
     cost : 400,
     desirability : { base : 20, 	range : 4,	step : -4 }
     employers : 0
     class : "administration"
   }, 
 
-  governor_palace_3 : {
+  governorPalace : {
     cost : 700,
     desirability : { base : 28, 	range : 7,	step : -4 }
     employers : 0
@@ -506,35 +520,21 @@
     requestDestroy : true
   },
 
-  senate_1 : {
+  senate : {
     cost : 250,
     desirability : { base : 8,	range : 4,	step : -2 }
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
   }, 
- 
-  senate_2 : {
-    cost : 400,
-    desirability : { base : 8,	range : 8,	step : -1 }
-    employers : 30
-    class : "administration"
-  }, 
-  
-  forum_1 : {
+   
+  forum : {
     cost : 75,
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
     sound : [ "forum", 1 ]
-  }, 
-  
-  forum_2 : {
-    cost : 125,
-    desirability : { base : 3, 	range : 3,	step : -1 }
-    employers : 8
-    class : "administration"
-  },
+  },   
   
   native_hut : {
     cost : 50,
@@ -644,6 +644,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "wheat"
     productRate : 9.6
     sound : [ "wheatfarm", 1 ]
   }, 
@@ -655,6 +656,7 @@
     employers : 10
     productRate : 9.6
     class : "food"
+    output : "vegetable"
     sound : [ "vegetablefarm", 1 ]
   },
  
@@ -663,6 +665,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    output : "fruit"
     productRate : 9.6
     class : "food"
   },
@@ -673,6 +676,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "olive"
     productRate : 9.6
     sound : [ "olivesfarm", 1 ]
   },
@@ -683,6 +687,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "grape"
     productRate : 4.8
     sound : [ "grapefarm", 1 ]
   },
@@ -693,6 +698,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "meat"
     productRate : 4.8
     sound : [ "meatfarm", 1 ]
   },
@@ -703,6 +709,7 @@
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
     class : "rawmaterial"
+    output : "marble"
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
     image : [ "commerce", 43 ]
@@ -713,6 +720,7 @@
     cost : 50,
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
+    output : "iron"
     class : "rawmaterial"
     productRate : 2.4
     sound : [ "ironmine", 1 ]
@@ -723,6 +731,7 @@
     cost : 40,
     desirability : { base : -4,	range : 4,	step : 1 }
     employers : 10
+    output : "timber"
     class : "rawmaterial"
     productRate : 4.8
     sound : [ "lumbermill", 1 ]
@@ -735,6 +744,7 @@
     employers : 10
     image : [ "commerce", 61 ]
     productRate : 4.8
+    output : "clay"
     class : "rawmaterial"
     animation : { rc : "commerce", start : 62, count : 10, offset : [ 14, 32 ], delay : 3 }
     sound : [ "claypit", 1 ]
@@ -746,6 +756,7 @@
     desirability : { base : -1,	range : 1,	step : 1 }
     employers : 10
     productRate : 4.8
+    output : "wine"
     class : "industry"
     sound : [ "winery", 1 ]
   },
@@ -755,6 +766,7 @@
     cost : 50,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "oil"
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
@@ -766,6 +778,7 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     productRate : 2.4
+    output : "weapon"
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
   },
@@ -777,6 +790,7 @@
     employers : 10
     class : "industry"
     productRate : 2.4
+    output : "furniture"
     sound : [ "furniture", 1 ]
     image : [ "commerce", 117 ]
     animation : { rc : "commerce", start : 118, count : 14, delay : 4 }
@@ -787,6 +801,7 @@
     cost : 40,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "pottery"
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]

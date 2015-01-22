@@ -20,6 +20,7 @@
 #include "vfs/filesystem.hpp"
 #include "vfs/directory.hpp"
 #include "gfx/picture_bank.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 #include "gfx/loader.hpp"
@@ -45,7 +46,7 @@ ResourceLoader::~ResourceLoader(){  }
 
 void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
-  VariantMap archives = SaveAdapter::load( path2model );
+  VariantMap archives = config::load( path2model );
   foreach( a, archives )
   {
     Path absArchivePath( a->second.toString() );
@@ -80,7 +81,7 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
 {
   if( archiveInfo.isOpen() )
   {
-    VariantMap vm = SaveAdapter::load( archiveInfo );
+    VariantMap vm = config::load( archiveInfo );
 
     VariantList atlasNames = vm.get( atlasListSection ).toList();
     foreach( it, atlasNames )
@@ -97,9 +98,17 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
   }
 }
 
-void ResourceLoader::loadFiles(ArchivePtr archive)
+void ResourceLoader::loadFiles(Path path)
+{
+  ArchivePtr archive = FileSystem::instance().mountArchive( path );
+  if( archive.isValid() )
+    loadFiles( archive );
+}
+
+void ResourceLoader::loadFiles(ArchivePtr archive )
 {
   const vfs::Entries::Items& files = archive->entries()->items();
+  gfx::PictureBank& pb = gfx::PictureBank::instance();
 
   foreach( it, files )
   {
@@ -110,7 +119,7 @@ void ResourceLoader::loadFiles(ArchivePtr archive)
       if( pic.isValid() )
       {
         std::string basename = it->name.baseName().toString();
-        gfx::PictureBank::instance().setPicture( basename, pic );
+        pb.setPicture( basename, pic );
       }
     }
   }

@@ -22,7 +22,7 @@
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
 #include "events/event.hpp"
@@ -37,9 +37,14 @@
 #include "throwing_weapon.hpp"
 #include "core/foreach.hpp"
 #include "events/militarythreat.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_SOLDIER_IN_WALKERFACTORY( walker::britonSoldier, walker::britonSoldier, EnemySoldier, briton)
+REGISTER_SOLDIER_IN_WALKERFACTORY( walker::gladiatorRiot, walker::gladiatorRiot, EnemySoldier, glriot)
+REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanSoldier, walker::etruscanSoldier, EnemySoldier, etruscan)
 
 namespace {
   static unsigned int __getCost( ConstructionPtr b )

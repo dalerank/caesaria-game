@@ -39,6 +39,7 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+  void load( vfs::Path filename, const std::string& section="" );
 
   void reset();
 

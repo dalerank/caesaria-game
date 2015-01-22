@@ -69,9 +69,8 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
   foreach( it, buildings )
   {
     good::Store& store = (*it)->store();
-    for( int i=good::wheat; i < good::goodCount; i++ )
+    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
     {
-      good::Type gtype = (good::Type)i;
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
