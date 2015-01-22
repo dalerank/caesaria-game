@@ -509,7 +509,6 @@ void Build::render( Engine& engine)
 
   d->drawTileBasicPicture = false;
   _drawBuildTiles( engine );
-  engine.draw( *d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Build::init(Point cursor)
@@ -551,6 +550,12 @@ const Layer::WalkerTypes& Build::visibleTypes() const
     return _d->lastLayer->visibleTypes();
 
   return Layer::visibleTypes();
+}
+
+void Build::renderUi(Engine &engine)
+{
+  Layer::renderUi( engine );
+  engine.draw( *_dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 LayerPtr Build::create(Renderer* renderer, PlayerCityPtr city)

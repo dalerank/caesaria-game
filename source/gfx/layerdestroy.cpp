@@ -47,7 +47,7 @@ public:
   Picture shovelPic;
   Picture clearPic;
   PictureRef textPic;
-  unsigned int money4destroy;
+  unsigned int savesum, money4destroy;
   TilePos startTilePos;
   Font textFont;
 };
@@ -116,7 +116,7 @@ void Destroy::render( Engine& engine )
   TilesArray destroyArea = _getSelectedArea( _d->startTilePos );
 
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
-  unsigned int saveSum = _d->money4destroy;
+  _d->savesum = _d->money4destroy;
   _d->money4destroy = 0;
   foreach( it, destroyArea)
   {
@@ -173,8 +173,11 @@ void Destroy::render( Engine& engine )
     drawWalkers( engine, *tile, cameraOffset );
     engine.resetColorMask();
   }
+}
 
-  if( saveSum != _d->money4destroy )
+void Destroy::renderUi(Engine &engine)
+{
+  if( _d->savesum != _d->money4destroy )
   {
     _d->textPic->fill( 0x0, Rect() );
     _d->textFont.setColor( 0xffff0000 );
