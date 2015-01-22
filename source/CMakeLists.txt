@@ -230,6 +230,12 @@ ADD_CUSTOM_COMMAND(
 ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/maps" "${WORK_DIR}/resources/maps"
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/locale" "${WORK_DIR}/resources/locale"
 )
 

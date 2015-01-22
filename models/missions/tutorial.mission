@@ -1,7 +1,6 @@
 {
   version : 1
-  /* map : ":/maps/Tutorial1.sav" */
-  map : ":/maps/mediolanum.omap"
+  map : ":/maps/Tutorial1.sav"
   funds : 8000
   city.name : "Brundisium"
   player.rank : 0
