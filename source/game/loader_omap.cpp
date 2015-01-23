@@ -29,6 +29,7 @@
 #include "objects/constants.hpp"
 #include "loaderhelper.hpp"
 #include "core/saveadapter.hpp"
+#include "vfs/archive_zip.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -40,6 +41,9 @@ namespace game
 
 namespace loader
 {
+
+static const char* rawJson = ".omap";
+static const char* zippedJson = ".zmap";
 
 class OMap::Impl
 {
@@ -54,7 +58,16 @@ public:
 bool OMap::load(const std::string& filename, Game& game)
 {
   _d->restartFile = filename;
-  VariantMap vm = config::load( filename );
+  VariantMap vm;
+  if( vfs::Path( filename ).isMyExtension( ".zmap" ) )
+  {
+    Logger::warning( "OMap not loading citymap from zip" );
+    return false;
+  }
+  else
+  {
+    vm = config::load( filename );
+  }
 
   _d->climate = vm.get( "climate" ).toInt();
 
@@ -74,7 +87,8 @@ OMap::OMap() : _d( new Impl ) {}
 
 bool OMap::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isMyExtension( ".omap" );
+  return vfs::Path( filename ).isMyExtension( ".zmap" )||
+         vfs::Path( filename ).isMyExtension( ".omap" );
 }
 
 void OMap::Impl::loadCity( const VariantMap& vm, PlayerCityPtr oCity)
