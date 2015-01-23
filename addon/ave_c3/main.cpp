@@ -18,14 +18,18 @@
 #include <cstdlib>
 #include <iostream>
 
+
 #include "core/addon_requirements.hpp"
 
-extern "C" void initialize( const GameInfo& gameInfo )
+extern "C"
 {
-  std::cout << "Im initialized" << std::endl;
+
+void initialize(const GameInfo& gameInfo)
+{
+    std::cout << "Im initialized" << std::endl;
 }
 
-extern "C" unsigned int getApiVersion()
-{
-  return ADDON_API_VERSION;
+unsigned int getApiVersion() { return ADDON_API_VERSION; }
+unsigned int getLevel() { return  }
+
 }

@@ -14,12 +14,25 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 
-#ifndef _CAESARIA_ENUMS_INCLUDE_H_
-#define _CAESARIA_ENUMS_INCLUDE_H_
+#ifndef __CAESARIA_SCENE_CONSTANTS_H_INCLUDED__
+#define __CAESARIA_SCENE_CONSTANTS_H_INCLUDED__
 
-enum FestivalType { smallFest=1, middleFest, greatFest };
+namespace scene
+{
 
-#endif  //_CAESARIA_ENUMS_INCLUDE_H_
+enum ScreenType 
+{ 
+  SCREEN_NONE, 
+  SCREEN_MENU, 
+  SCREEN_GAME, 
+  SCREEN_BRIEFING, 
+  SCREEN_QUIT, 
+  SCREEN_MAX 
+};
+
+}
+
+#endif //__CAESARIA_SCENE_CONSTANTS_H_INCLUDED__
