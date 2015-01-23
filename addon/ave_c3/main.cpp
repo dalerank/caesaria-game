@@ -15,41 +15,17 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
-#define _CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
+#include <cstdlib>
+#include <iostream>
 
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
-#include "event.hpp"
-#include "core/singleton.hpp"
+#include "core/addon_requirements.hpp"
 
-class Game;
-
-namespace events
+extern "C" void initialize( const GameInfo& gameInfo )
 {
+  std::cout << "Im initialized" << std::endl;
+}
 
-class Dispatcher : public StaticSingleton<Dispatcher>
+extern "C" unsigned int getApiVersion()
 {
-  friend class StaticSingleton;
-public:
-  virtual ~Dispatcher();
-
-  void append( GameEventPtr event );
-  void update( Game& game, unsigned int time );
-
-  VariantMap save() const;
-  void load( const VariantMap& stream );
-  void load( vfs::Path filename, const std::string& section="" );
-
-  void reset();
-
-private:
-  Dispatcher();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-} //end namespace events
-
-#endif //_CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
+  return ADDON_API_VERSION;
+}

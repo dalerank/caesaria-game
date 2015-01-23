@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_APPLICATION_H_INCLUDED__
 #define __CAESARIA_APPLICATION_H_INCLUDED__
 

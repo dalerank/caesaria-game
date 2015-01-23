@@ -136,4 +136,7 @@ add_subdirectory(source source)
 message("Building CaesarIA-updater")
 add_subdirectory(updater updater)
 
+message("Building AveC3-addon")
+add_subdirectory(addon/ave_c3 addon/ave_c3)
+
 #set(NO_USE_SYSTEM_ZLIB ON)
