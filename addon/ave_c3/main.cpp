@@ -13,13 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
+#include <cstdlib>
+#include <iostream>
 
-#ifndef _CAESARIA_ENUMS_INCLUDE_H_
-#define _CAESARIA_ENUMS_INCLUDE_H_
 
-enum FestivalType { smallFest=1, middleFest, greatFest };
+#include "core/addon_requirements.hpp"
 
-#endif  //_CAESARIA_ENUMS_INCLUDE_H_
+extern "C"
+{
+
+void initialize(const GameInfo& gameInfo)
+{
+    std::cout << "Im initialized" << std::endl;
+}
+
+unsigned int getApiVersion() { return ADDON_API_VERSION; }
+unsigned int getLevel() { return  }
+
+}

@@ -21,6 +21,7 @@
 #define __CAESARIA_GAMESTATE_H_INCLUDED__
 
 #include "game.hpp"
+#include "scene/constants.hpp"
 
 namespace scene
 {

@@ -66,6 +66,7 @@
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
+#include "addon_manager.hpp"
 
 #include <list>
 
@@ -96,6 +97,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initAddons();
   void initHotkeys();
   void initGuiEnvironment();
   void initArchiveLoaders();
@@ -239,6 +241,13 @@ void Game::Impl::initPictures()
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
 }
 
+void Game::Impl::initAddons()
+{
+  addons::Manager& am = addons::Manager::instance();
+  am.load( vfs::Directory( std::string( ":/addons" ) ) );
+  am.initAll();
+}
+
 void Game::Impl::initHotkeys()
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
@@ -378,13 +387,14 @@ void Game::initialize()
   if( cellWidth != 30 && cellWidth != 60 )
   {
     cellWidth = 30;
-  }
+  }    
 
   tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
+  _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();

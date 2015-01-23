@@ -30,8 +30,8 @@ namespace events
 
 class Dispatcher : public StaticSingleton<Dispatcher>
 {
+  friend class StaticSingleton;
 public:
-  Dispatcher();
   virtual ~Dispatcher();
 
   void append( GameEventPtr event );
@@ -44,6 +44,8 @@ public:
   void reset();
 
 private:
+  Dispatcher();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

@@ -13,13 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
+#ifndef __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
+#define __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
 
-#ifndef _CAESARIA_ENUMS_INCLUDE_H_
-#define _CAESARIA_ENUMS_INCLUDE_H_
+#ifdef CAESARIA_PLATFORM_WIN
+  #ifdef CAESARIA_ADDON_DEFINED
+    #define  ADDON_EXPORT __declspec(dllexport)
+  #else
+    #define  ADDON_EXPORT __declspec(dllimport)
+  #endif 
+#else 
+ #define ADDON_EXPORT
+#endif
 
-enum FestivalType { smallFest=1, middleFest, greatFest };
+namespace addon
+{
 
-#endif  //_CAESARIA_ENUMS_INCLUDE_H_
+    const unsigned int API_VERSION = 0x1001;
+
+struct GameBridge
+{
+
+};
+
+struct GameInfo
+{
+
+};
+
+}
+
+#endif // __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
