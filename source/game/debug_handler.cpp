@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "debug_handler.hpp"
 #include "gui/contextmenuitem.hpp"
@@ -44,6 +44,7 @@
 #include "world/goodcaravan.hpp"
 #include "events/earthquake.hpp"
 #include "events/random_fire.hpp"
+#include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 
 using namespace constants;
@@ -85,6 +86,7 @@ enum {
   kill_all_enemies,
   send_exporter,
   random_fire,
+  random_collapse,
   run_script
 };
 
@@ -134,6 +136,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( "other", screenshot )
 
   ADD_DEBUG_EVENT( "disaster", random_fire )
+  ADD_DEBUG_EVENT( "disaster", random_collapse )
   ADD_DEBUG_EVENT( "disaster", earthquake )
 
   ADD_DEBUG_EVENT( "game", win_mission )
@@ -262,11 +265,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case add_city_border:
-  {
-    game->city()->tilemap().addBorder();
-  }
-  break;
+  case add_city_border:   {    game->city()->tilemap().addBorder();  }  break;
 
   case toggle_experimental_options:
   {
@@ -294,6 +293,13 @@ void DebugHandler::Impl::handleEvent(int event)
   case random_fire:
   {
     events::GameEventPtr e = events::RandomFire::create();
+    e->dispatch();
+  }
+  break;
+
+  case random_collapse:
+  {
+    events::GameEventPtr e = events::RandomDamage::create();
     e->dispatch();
   }
   break;

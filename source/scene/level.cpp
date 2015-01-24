@@ -338,7 +338,7 @@ void Level::Impl::showTileHelp()
 void Level::Impl::showMessagesWindow()
 {
   unsigned int id = utils::hash( CAESARIA_STR_A(ScribesMessagestWindow) );
-  Widget* wnd = game->gui()->findChild( id );
+  Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
   {

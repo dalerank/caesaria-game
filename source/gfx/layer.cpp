@@ -48,8 +48,6 @@ namespace layer
 class Layer::Impl
 {
 public:
-  //typedef std::vector<Tile*> TileQueue;
-  //typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
   typedef std::set<int> AlwaysDrawObjects;
 
   Point lastCursorPos;
@@ -62,7 +60,6 @@ public:
   PictureRef tooltipPic;
   int nextLayer;
   std::string tooltipText;
-  //RenderQueue renderQueue;
   Layer::WalkerTypes vwalkers;
   PictureRef tilePosText;
   Font debugFont;
@@ -75,30 +72,7 @@ public:
 
 void Layer::registerTileForRendering(Tile& tile)
 {
-  /*__D_IMPL(_d,Layer)
-  if( tile.rov() != 0 )
-  {
-    Renderer::PassQueue passQueue = tile.rov()->passQueue();
-    foreach( pass, passQueue )
-    {
-      _d->renderQueue[ *pass ].push_back( &tile );
-    }
-  }*/
 }
-
-/*void Layer::renderPass( Engine& engine, Renderer::Pass pass )
-{
-  // building foregrounds and animations
-  __D_IMPL(_d,Layer)
-  Impl::TileQueue& tiles = _d->renderQueue[ pass ];
-  Point offset = _d->camera->offset();
-  foreach( tile, tiles )
-  {
-    drawPass( engine, *(*tile), offset, pass );
-  }
-
-  tiles.clear();
-}*/
 
 void Layer::renderUi(Engine& engine)
 {
