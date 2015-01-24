@@ -95,6 +95,7 @@ if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
   if(NOT APPLE)
     target_link_libraries(${PROJECT_NAME} "GL")
+    target_link_libraries(${PROJECT_NAME} "dl")
   endif()  
 endif(UNIX)
 

@@ -31,7 +31,12 @@
 namespace addon
 {
 
-    const unsigned int API_VERSION = 0x1001;
+enum Type
+{
+  df = 0
+};
+
+const unsigned int API_VERSION = 0x1001;
 
 struct GameBridge
 {

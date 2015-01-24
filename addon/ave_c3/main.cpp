@@ -24,12 +24,12 @@
 extern "C"
 {
 
-void initialize(const GameInfo& gameInfo)
+void initialize(const addon::GameInfo& gameInfo)
 {
     std::cout << "Im initialized" << std::endl;
 }
 
-unsigned int getApiVersion() { return ADDON_API_VERSION; }
-unsigned int getLevel() { return  }
+unsigned int getApiVersion() { return addon::API_VERSION; }
+unsigned int getLevel() { return 0; }
 
 }

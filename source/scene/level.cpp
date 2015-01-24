@@ -337,7 +337,17 @@ void Level::Impl::showTileHelp()
 
 void Level::Impl::showMessagesWindow()
 {
-  new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+  unsigned int id = utils::hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  Widget* wnd = game->gui()->findChild( id );
+
+  if( wnd == 0 )
+  {
+    wnd = new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+  }
+  else
+  {
+    wnd->bringToFront();
+  }
 }
 
 void Level::Impl::setAutosaveInterval(int value)
