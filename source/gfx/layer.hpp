@@ -68,6 +68,7 @@ public:
   virtual void drawArea(Engine& engine, const TilesArray& area, const Point& offset,
                         const std::string& resourceGroup, int tileId );
 
+  virtual void drawLands( Engine& engine, Camera* camera );
   virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
 

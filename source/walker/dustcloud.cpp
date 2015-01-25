@@ -126,11 +126,15 @@ void DustCloud::timeStep(const unsigned long time)
   {
     PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
-    const int wcell = tilemap::cellSize().height();
 
-    Point tp = (_d->currentPos.toPoint() - tilemap::cellCenter()) / wcell;
-    TilePos ij( tp.x(), tp.y() );
-    setPos( ij );
+    int yMultiplier = tilemap::cellSize().height();
+    Point xOffset( 0, yMultiplier );
+    TilePos rpos = TilePos( (_d->currentPos.x() - xOffset.x()) / yMultiplier,
+                            (_d->currentPos.y() - xOffset.y()) / yMultiplier );
+
+    Tile& t = _city()->tilemap().at( rpos );
+    _setLocation( &t );
+
     _setWpos( _d->currentPos.toPoint() );
     _d->animation.update( time );
 

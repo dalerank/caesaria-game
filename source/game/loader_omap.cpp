@@ -87,8 +87,8 @@ OMap::OMap() : _d( new Impl ) {}
 
 bool OMap::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isMyExtension( ".zmap" )||
-         vfs::Path( filename ).isMyExtension( ".omap" );
+  return vfs::Path( filename ).isMyExtension( rawJson )||
+         vfs::Path( filename ).isMyExtension( zippedJson );
 }
 
 void OMap::Impl::loadCity( const VariantMap& vm, PlayerCityPtr oCity)
