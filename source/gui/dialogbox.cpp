@@ -94,7 +94,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
                         Size( 39, 26 ), btnNever, cancelBtnPicId );
 
 
-    }
+   }
   setModal();
 }
 
