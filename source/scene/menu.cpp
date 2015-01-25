@@ -457,14 +457,14 @@ void StartMenu::initialize()
   _d->bgPicture = Picture::load( resName, 1);
 
   // center the bgPicture on the screen
-  Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
+  Size tmpSize = (_d->engine->virtualSize() - _d->bgPicture.size())/2;
   _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
 
   _d->game->gui()->clear();
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
-  Size scrSize = _d->engine->screenSize();
+  Size scrSize = _d->engine->virtualSize();
   gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
                                                               Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
                                                               "logo_rdt", 1, 2, 2, 2 );

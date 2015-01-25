@@ -771,7 +771,7 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
         {
             (*it)->_recalculateAbsolutePosition(recursive);
         }
-    }
+      }
 }
 
 void Widget::animate( unsigned int timeMs )

@@ -170,8 +170,8 @@ void Level::initialize()
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
-  Rect rPanelRect( engine.screenSize().width() - rPanelPic.width(), topMenuHeight,
-                   engine.screenSize().width(), engine.screenSize().height() );
+  Rect rPanelRect( engine.virtualSize().width() - rPanelPic.width(), topMenuHeight,
+                   engine.virtualSize().width(), engine.virtualSize().height() );
 
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
@@ -180,11 +180,11 @@ void Level::initialize()
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( ui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.screenSize().width() - _d->rightPanel->width(),
+  _d->menu->setPosition( Point( engine.virtualSize().width() - _d->rightPanel->width(),
                                 _d->topMenu->height() ) );
 
   _d->extMenu = ExtentMenu::create( ui.rootWidget(), -1, city );
-  _d->extMenu->setPosition( Point( engine.screenSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
+  _d->extMenu->setPosition( Point( engine.virtualSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),

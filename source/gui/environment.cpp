@@ -63,7 +63,7 @@ public:
 };
 
 Ui::Ui(Engine& painter )
-  : Widget( 0, -1, Rect( Point(), painter.screenSize() ) ), _d( new Impl )
+  : Widget( 0, -1, Rect() ), _d( new Impl )
 {
   setDebugName( "GuiEnv" );
 
@@ -80,7 +80,7 @@ Ui::Ui(Engine& painter )
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
 
-  //setGeometry( Rect(  ) );
+  setGeometry( Rect( Point(), painter.virtualSize() ) );
 }
 
 //! Returns if the element has focus
@@ -515,13 +515,13 @@ Widget* Ui::hovered() const {  return _d->hovered.object(); }
 
 void Ui::beforeDraw()
 {
-  const Size screenSize( _d->engine->screenSize() );
+  const Size screenSize( _d->engine->virtualSize() );
   const Point& rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {
     // resize gui environment
-    //setGeometry( Rect( Point( 0, 0 ), screenSize ) );
+    setGeometry( Rect( Point( 0, 0 ), screenSize ) );
   }
 
   _d->threatDeletionQueue();
