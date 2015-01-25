@@ -327,7 +327,7 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 2, count : 6, offset : [ 41, 27 ], delay : 3 }
+    image : [ "security", 45 ]
     employers : 2
     class : "religion"
     sound : [ "templeceres", 1 ]
@@ -338,9 +338,8 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    sound : [ "templeneptune", 1 ]
+    sound : [ "security", 47 ]
     image : [ "smlneptune", 1 ]
-    animation : { rc : "smlneptune", start : 2, count : 6, offset : [ 35, 34 ], delay : 3 }
     image.offset : [-1, -1]
   }, 
   
@@ -349,9 +348,8 @@
     desirability : { base : 4, 	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlmercury", 1 ]
+    image : [ "security", 49 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlmercury", start : 2, count : 6, offset : [ 38, 32 ], delay : 3 }
     sound : [ "templemercury", 1 ]
   },
  
@@ -360,9 +358,8 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlmars", 1 ]
+    image : [ "security", 51 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlmars", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templemars", 1 ]
   },
 
@@ -371,9 +368,8 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlvenus", 1 ]
+    image : [ "security", 53 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlvenus", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templevenus", 1 ]
   },
  
@@ -382,6 +378,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 46 ]
     sound : [ "templeceres", 2 ]
   }, 
   
@@ -390,6 +387,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 48 ]
     sound : [ "templeneptune", 2 ]
   }, 
   
@@ -398,6 +396,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 50 ]
     sound : [ "templemercury", 2 ]
   },
   
@@ -406,6 +405,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 52 ]
     sound : [ "templemars", 2 ]
   },
   
@@ -413,6 +413,7 @@
     cost : 150,
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
+    image : [ "security", 54 ]
     class : "religion"
     sound : [ "templevenus", 2 ]
   }, 
