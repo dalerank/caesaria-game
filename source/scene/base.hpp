@@ -46,13 +46,11 @@ class Base
 public:
   virtual ~Base();
 
-  virtual void handleEvent( NEvent& event);
-  //virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
-
+  virtual void handleEvent( NEvent& event) {}
   virtual void draw() = 0;
 
   // this method is executed after every frame. default: do nothing
-  virtual void afterFrame();
+  virtual void afterFrame() {}
 
   // runs the screen (main loop), returns _wevent
   void update( gfx::Engine& engine );

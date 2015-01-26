@@ -28,13 +28,14 @@ typedef HINSTANCE addon_lib_t;
 typedef void* addon_lib_t;
 #endif
 
-namespace addons
+namespace addon
 {
 
 PREDEFINE_CLASS_SMARTLIST(Addon, List)
 
 typedef void (*addonInitFunctor)(const addon::GameInfo& gameInfo);
 typedef void (*addonGetVersionFunctor)(const addon::GameInfo& gameInfo);
+typedef int (*addonGetLevelFunctor)();
 
 class Addon::Impl
 {
@@ -42,6 +43,7 @@ public:
   addon_lib_t library;
   bool isOpened;
   addonInitFunctor funcInit;
+  addonGetLevelFunctor funcGetLevel;
   addonGetVersionFunctor funcGetVersion;
 
   template<class T>
@@ -84,6 +86,7 @@ bool Addon::open(vfs::Path path)
     _d->isOpened = true;
     _d->funcInit = _d->initFunction<addonInitFunctor>( "initialize" );
     _d->funcGetVersion = _d->initFunction<addonGetVersionFunctor>( "getVersion" );
+    _d->funcGetLevel = _d->initFunction<addonGetLevelFunctor>( "getLevel" );
   }
 
   return _d->isOpened;
@@ -100,7 +103,10 @@ void Addon::initialize()
 
 unsigned int Addon::level() const
 {
-  return 0;
+  if( _d->isOpened && _d->funcGetLevel )
+    return _d->funcGetLevel();
+
+  return -1;
 }
 
 class Manager::Impl
@@ -109,10 +115,7 @@ public:
   AddonList addons;
 };
 
-Manager::~Manager()
-{
-
-}
+Manager::~Manager() {}
 
 void Manager::load(vfs::Directory folder)
 {
@@ -142,13 +145,16 @@ void Manager::load(vfs::Path path, bool ls)
 
 }
 
-void Manager::initAll()
+void Manager::initAddons4level( addon::Type type )
 {
   foreach( it, _d->addons )
   {
-    (*it)->initialize();
+    int level = (*it)->level();
+    if( type == level )
+      (*it)->initialize();
   }
 }
+
 
 Manager::Manager() : _d( new Impl )
 {
