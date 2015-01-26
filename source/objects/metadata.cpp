@@ -258,7 +258,7 @@ public:
   BuildingClassHelper classHelper;
 
   typedef std::map<TileOverlay::Type, MetaData> ObjectsMap;
-  typedef std::map<good::Type, TileOverlay::Type> FactoryInMap;
+  typedef std::map<good::Product, TileOverlay::Type> FactoryInMap;
 
   ObjectsMap objectsInfo;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -270,7 +270,7 @@ MetaDataHolder& MetaDataHolder::instance()
   return inst;
 }
 
-TileOverlay::Type MetaDataHolder::getConsumerType(const good::Type inGoodType) const
+gfx::TileOverlay::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) const
 {
   TileOverlay::Type res = objects::unknown;
 
@@ -341,7 +341,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
   _d->mapBuildingByInGood[good::olive ] = objects::oil_workshop;
   _d->mapBuildingByInGood[good::grape ] = objects::wine_workshop;
 
-  VariantMap constructions = SaveAdapter::load( filename );
+  VariantMap constructions = config::load( filename );
 
   foreach( mapItem, constructions )
   {

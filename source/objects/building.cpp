@@ -36,6 +36,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
@@ -68,7 +69,7 @@ void Building::timeStep(const unsigned long time)
 {
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    float popkoeff = std::max<float>( city::Statistic::getBalanceKoeff( _city() ), 0.1f );
+    float popkoeff = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
     updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
     updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
   }

@@ -18,6 +18,8 @@
 #include "infobox_construction.hpp"
 #include "core/event.hpp"
 #include "game/settings.hpp"
+#include "label.hpp"
+#include "core/logger.hpp"
 #include "events/showtileinfo.hpp"
 
 using namespace constants;
@@ -32,6 +34,7 @@ AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea 
   : Simple( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
+  _btnToggleWorking = 0;
 }
 
 AboutConstruction::~AboutConstruction() {}
@@ -58,6 +61,48 @@ bool AboutConstruction::onEvent(const NEvent& event)
   }
 
   return Simple::onEvent( event );
+}
+
+PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }
+
+void AboutConstruction::_setWorkingVisible(bool show)
+{
+  if( !_btnToggleWorking && _lbBlackFrameRef() )
+  {
+     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), Rect( 0, 0, 100, 25 ), "", -1, false, PushButton::blackBorderUp  );
+     _btnToggleWorking->setFont( Font::create( FONT_1 ) );
+     _btnToggleWorking->setPosition( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ) );
+     _updateWorkingText();
+
+     CONNECT( _btnToggleWorking, onClicked(), this, AboutConstruction::_resolveToggleWorking );
+  }
+
+  if( _btnToggleWorking )
+  {
+    _btnToggleWorking->setVisible( show );
+  }
+}
+
+void AboutConstruction::_setWorkingActive(bool working)
+{
+  if( _btnToggleWorking )
+    _btnToggleWorking->setText( working ? "Working" : "Not working");
+}
+
+void AboutConstruction::_updateWorkingText()
+{
+  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
+  _setWorkingActive( working.isValid() ? working->isActive() : false );
+}
+
+void AboutConstruction::_resolveToggleWorking()
+{
+  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
+  if( working.isValid() )
+  {
+    working->setActive( !working->isActive() );
+    _setWorkingActive( working->isActive() );
+  }
 }
 
 ConstructionPtr AboutConstruction::base() const { return _construction; }

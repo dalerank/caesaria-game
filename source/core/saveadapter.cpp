@@ -25,7 +25,10 @@
 
 using namespace vfs;
 
-VariantMap SaveAdapter::load( const vfs::Path& filename )
+namespace config
+{
+
+VariantMap load( const vfs::Path& filename )
 {
   Logger::warning( "SaveAdapter: try load model from " + filename.toString() );
   NFile f = NFile::open( filename );
@@ -33,7 +36,7 @@ VariantMap SaveAdapter::load( const vfs::Path& filename )
   return load( f );
 }
 
-VariantMap SaveAdapter::load( vfs::NFile f )
+VariantMap load( vfs::NFile f )
 {
   if( f.isOpen() )
   {
@@ -59,12 +62,7 @@ VariantMap SaveAdapter::load( vfs::NFile f )
   return VariantMap();
 }
 
-SaveAdapter::SaveAdapter()
-{
-
-}
-
-bool SaveAdapter::save( const VariantMap& options, const vfs::Path& filename )
+bool save( const VariantMap& options, const vfs::Path& filename )
 {
   std::string data = Json::serialize( options.toVariant(), " " );
   if( !data.empty() )
@@ -75,4 +73,6 @@ bool SaveAdapter::save( const VariantMap& options, const vfs::Path& filename )
   }
 
   return true;
+}
+
 }

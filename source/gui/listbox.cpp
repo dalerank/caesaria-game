@@ -663,13 +663,14 @@ void ListBox::draw(gfx::Engine& painter )
         _drawItemText( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset, &clipRect  );
       }
 
-      if( !refItem.url().empty() )
+     /* if( !refItem.url().empty() )
       {
         Point r = frameRect.rightbottom();
-        r += Point( 0, -_d->scrollBar->value() ) + refItem.textOffset();
+        r += Point( 0, -_d->scrollBar->value() );
         //_d->background->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
-        painter.drawLine( 0xff00ff00, r - Point( frameRect.width(), 0 ), r );
-      }
+        Point offset = localToScreen( lefttop() );
+        painter.drawLine( 0xff00ff00, r - Point( frameRect.width(), 0 ) + offset, r + offset );
+      } */
     }
 
     frameRect += Point( 0, _d->itemHeight );

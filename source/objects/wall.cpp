@@ -26,11 +26,15 @@
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-Wall::Wall() : Building( objects::wall, Size(1) )
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wall, Wall)
+
+Wall::Wall()
+  : Building( objects::wall, Size(1) )
 {
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }

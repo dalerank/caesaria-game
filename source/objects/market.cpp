@@ -26,8 +26,12 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::market, Market)
 
 class Market::Impl
 {
@@ -37,9 +41,9 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    for( int i = 0; i < good::goodCount; ++i)
+    for( good::Product i = good::none; i < good::goodCount; ++i)
     {
-      anyGoodStored |= ( store.qty( good::Type(i) ) >= 100 );
+      anyGoodStored |= ( store.qty( i ) >= 100 );
     }
 
     return anyGoodStored;
@@ -92,16 +96,15 @@ void Market::deliverService()
 unsigned int Market::walkerDistance() const {  return 26; }
 good::Store &Market::goodStore(){  return _d->store; }
 
-std::list<good::Type> Market::mostNeededGoods()
+std::list<good::Product> Market::mostNeededGoods()
 {
-  std::list<good::Type> res;
+  std::list<good::Product> res;
 
-  std::multimap<float, good::Type> mapGoods;  // ordered by demand
+  std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  for (int n = 0; n < good::goodCount; ++n)
+  for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
   {
     // for all types of good
-    good::Type goodType = (good::Type) n;
     good::Stock &stock = _d->store.getStock(goodType);
     int demand = stock.capacity() - stock.qty();
     if (demand > 200)
@@ -110,9 +113,9 @@ std::list<good::Type> Market::mostNeededGoods()
     }
   }
 
-  for( std::multimap<float, good::Type>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  for( std::multimap<float, good::Product>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
   {
-    good::Type goodType = itMap->second;
+    good::Product goodType = itMap->second;
     res.push_back(goodType);
   }
 
@@ -120,7 +123,7 @@ std::list<good::Type> Market::mostNeededGoods()
 }
 
 
-int Market::getGoodDemand(const good::Type &goodType)
+int Market::getGoodDemand(const good::Product &goodType)
 {
   int res = 0;
   good::Stock &stock = _d->store.getStock(goodType);

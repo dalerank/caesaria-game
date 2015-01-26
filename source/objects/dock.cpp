@@ -33,9 +33,12 @@
 #include "walker/cart_pusher.hpp"
 #include "events/fundissue.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::dock, Dock)
 
 class Dock::Impl
 {
@@ -388,21 +391,20 @@ void Dock::Impl::initStores()
   exportGoods.setCapacity( good::goodCount, 1000 );
   requestGoods.setCapacity( good::goodCount, 1000 );
 
-  importGoods.setCapacity( 1000 * good::goodCount );
-  exportGoods.setCapacity( 1000 * good::goodCount );
-  requestGoods.setCapacity( 1000 * good::goodCount );
+  importGoods.setCapacity( 1000 * good::goodCount.toInt() );
+  exportGoods.setCapacity( 1000 * good::goodCount.toInt() );
+  requestGoods.setCapacity( 1000 * good::goodCount.toInt() );
 }
 
 void Dock::_tryDeliverGoods()
 {
-  for( int i=good::wheat; i < good::goodCount; i++ )
+  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
   {
     if( walkers().size() > 2 )
     {
       return;
     }
 
-    good::Type gtype = (good::Type)i;
     int qty = std::min( _d->importGoods.getMaxRetrieve( gtype ), 400 );
 
     if( qty > 0 )
@@ -435,14 +437,13 @@ void Dock::_tryDeliverGoods()
 
 void Dock::_tryReceiveGoods()
 {
-  for( int i=good::wheat; i < good::goodCount; i++ )
+  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
   {
     if( walkers().size() >= 2 )
     {
       return;
     }
 
-    good::Type gtype = (good::Type)i;
     if( _d->requestGoods.qty( gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _city() );

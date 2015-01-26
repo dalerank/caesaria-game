@@ -27,8 +27,8 @@ class FundIssueEvent : public GameEvent
 {
 public:
   static GameEventPtr create( int type, int value );
-  static GameEventPtr import( good::Type good, int qty, float buff=1.f );
-  static GameEventPtr exportg( good::Type good, int qty, float buff=1.f );
+  static GameEventPtr import( good::Product good, int qty, float buff=1.f );
+  static GameEventPtr exportg(good::Product good, int qty, float buff=1.f );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -40,7 +40,7 @@ private:
   int _type;
   int _value;
   float _buff;
-  good::Type _gtype;
+  good::Product _gtype;
   int _qty;
 };
 

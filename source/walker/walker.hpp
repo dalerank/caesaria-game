@@ -138,6 +138,7 @@ protected:
   const gfx::Animation &_animationRef() const;
   void _setDirection( constants::Direction direction );
   void _setNation( world::Nation nation );
+  void _setLocation( gfx::Tile* tile );
   void _setType( constants::walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );

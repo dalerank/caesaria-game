@@ -58,7 +58,6 @@ public:
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 
   MetaData& operator=( const MetaData& a );
-
 private:
   class Impl;
   ScopedPtr< Impl > _d;
@@ -77,7 +76,7 @@ public:
   OverlayTypes availableTypes() const;
 
   // return factory that consume good
-  gfx::TileOverlay::Type getConsumerType(const good::Type inGoodType) const;
+  gfx::TileOverlay::Type getConsumerType(const good::Product inGoodType) const;
 
   static gfx::TileOverlay::Type findType( const std::string& name );
   static std::string findTypename( gfx::TileOverlay::Type type );

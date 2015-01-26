@@ -50,7 +50,7 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   {
     if( theater->isShow() )
     {
-      VariantMap shows = SaveAdapter::load( ":/theater_shows.model" );
+      VariantMap shows = config::load( ":/theater_shows.model" );
       VariantMap::iterator currentShowIt = shows.begin();
 
       std::advance( currentShowIt, theater->showsCount() % shows.size() );

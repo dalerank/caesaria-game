@@ -12,10 +12,12 @@
   well : { start: 1, stop : 4, offset : [-1, -1] }
   test_fountain_base : { rc: "utilitya", start: 50, stop : 50, offset : [-1, -1] }
   test_fountain_anim : { rc: "utilitya", start: 51, stop : 57, offset : [-1, -1] }
+  smlceres : { start : 1, stop : 1, offset : [ -1, -1] }
   smlmars : { start : 1, stop : 1, offset : [ -1, -1] }
   smlmercury : { start : 1, stop : 1, offset : [ -1, -1] }
   smlneptune : { start : 1, stop : 1, offset : [ -1, -1] }
   smlvenus : { start : 1, stop : 1, offset : [ -1, -1] }
+  security : { start : 45, stop : 53, offset : [ -1, -1 ] }
   roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
   citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }

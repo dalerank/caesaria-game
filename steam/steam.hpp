@@ -24,17 +24,25 @@
 namespace steamapi
 {
 
-class Handler
+enum AchievementType
 {
-public:
-  static bool checkSteamRunning();
-  static bool connect();
-  static void close();
-  static void update();
-  static void init();
-  static std::string userName();
-  static const gfx::Picture& userImage();
+  achievementNewVillage = 0,
+  achievementNewGraphics = 1,
+  achievementNumber
 };
+
+bool checkSteamRunning();
+bool connect();
+void close();
+void update();
+void init();
+
+void evaluateAchievements();
+void unlockAchievement( AchievementType achivId );
+bool isAchievementReached( AchievementType achivId );
+
+std::string userName();
+const gfx::Picture& userImage();
 
 }
 

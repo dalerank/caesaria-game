@@ -170,8 +170,8 @@ void SdlEngine::init()
   else
   {
     window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
         _srcSize.width(), _srcSize.height(),
         flags);
   }
@@ -194,11 +194,17 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
-  //SDL_SetHint("SDL_RENDER_OPENGL_SHADERS", "0" );
-  if (isFullscreen())
+  _virtualSize = _srcSize;
+  if( isFullscreen() )
   {
+    SDL_DisplayMode mode;
+    SDL_GetDisplayMode(0, 0, &mode);
+    unsigned int fullscreenVirtualWidth = mode.w;
+    unsigned int fullscreenVirtualHeight = mode.h;
+
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
+    SDL_RenderSetLogicalSize(renderer, fullscreenVirtualWidth, fullscreenVirtualHeight );
+    _virtualSize = Size( fullscreenVirtualWidth, fullscreenVirtualHeight );
   }
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

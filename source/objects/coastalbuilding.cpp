@@ -45,7 +45,7 @@ public:
   Direction getDirection(PlayerCityPtr city, TilePos pos);
 };
 
-CoastalFactory::CoastalFactory(const good::Type consume, const good::Type produce,
+CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
                                const TileOverlay::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {

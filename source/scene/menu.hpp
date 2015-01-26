@@ -51,6 +51,7 @@ public:
 
   virtual void draw();
   virtual void initialize();
+  virtual void afterFrame();
 
   std::string mapName() const;
   std::string playerName() const;

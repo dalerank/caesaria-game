@@ -158,39 +158,40 @@ Level::~Level()
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
-  _d->renderer.initialize( city, _d->engine, _d->game->gui() );
-  _d->game->gui()->clear();
+  gui::Ui& ui = *_d->game->gui();
+
+  _d->renderer.initialize( city, _d->engine, &ui );
+  ui.clear();
 
   const int topMenuHeight = 23;
   Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
-  gui::Ui& gui = *_d->game->gui();
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
-  Rect rPanelRect( engine.screenSize().width() - rPanelPic.width(), topMenuHeight,
-                   engine.screenSize().width(), engine.screenSize().height() );
+  Rect rPanelRect( engine.virtualSize().width() - rPanelPic.width(), topMenuHeight,
+                   engine.virtualSize().width(), engine.virtualSize().height() );
 
-  _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
+  _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
-  _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
+  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( _d->game->city()->population() );
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
-  _d->menu = Menu::create( gui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.screenSize().width() - _d->rightPanel->width(),
+  _d->menu = Menu::create( ui.rootWidget(), -1, city );
+  _d->menu->setPosition( Point( engine.virtualSize().width() - _d->rightPanel->width(),
                                 _d->topMenu->height() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
-  _d->extMenu->setPosition( Point( engine.screenSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
+  _d->extMenu = ExtentMenu::create( ui.rootWidget(), -1, city );
+  _d->extMenu->setPosition( Point( engine.virtualSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
                                city,
                                *_d->renderer.camera() );
 
-  WindowMessageStack::create( gui.rootWidget() );
+  WindowMessageStack::create( ui.rootWidget() );
 
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
@@ -336,7 +337,17 @@ void Level::Impl::showTileHelp()
 
 void Level::Impl::showMessagesWindow()
 {
-  new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+  unsigned int id = utils::hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  Widget* wnd = game->gui()->findWidget( id );
+
+  if( wnd == 0 )
+  {
+    wnd = new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+  }
+  else
+  {
+    wnd->bringToFront();
+  }
 }
 
 void Level::Impl::setAutosaveInterval(int value)
@@ -548,9 +559,7 @@ void Level::animate( unsigned int time )
   }
 }
 
-void Level::afterFrame()
-{
-}
+void Level::afterFrame() {}
 
 void Level::handleEvent( NEvent& event )
 {
@@ -562,13 +571,6 @@ void Level::handleEvent( NEvent& event )
     _requestExitGame();
     return;
   }
-
-  /*static enum _MouseEventTarget
-  {
-    _MET_NONE,
-    _MET_GUI,
-    _MET_TILES
-  } _mouseEventTarget = _MET_NONE; */
 
   for( Impl::EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
@@ -589,54 +591,6 @@ void Level::handleEvent( NEvent& event )
      _d->renderer.handleEvent( event );
      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
   }
-  /*if (event.EventType == sEventMouse)
-  {
-    if( event.mouse.type == mouseRbtnPressed || event.mouse.type == mouseLbtnPressed )
-    {
-      eventResolved = gui.handleEvent( event );
-      if( eventResolved )
-      {
-        _mouseEventTarget = _MET_GUI;
-      }
-      else // eventresolved
-      {
-        _mouseEventTarget = _MET_TILES;
-        _d->renderer.handleEvent( event );
-      }
-      return;
-    }
-
-    switch(_mouseEventTarget)
-    {
-    case _MET_GUI:
-      gui.handleEvent( event );
-    break;
-
-    case _MET_TILES:
-      _d->renderer.handleEvent( event );
-      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
-    break;
-
-    default:
-       if( !gui.handleEvent( event ) )
-        _d->renderer.handleEvent( event );
-    break;
-    }
-
-    if( event.mouse.type == mouseRbtnRelease || event.mouse.type == mouseLbtnRelease )
-    {
-      _mouseEventTarget = _MET_NONE;
-    }
-  }
-  else
-  {
-    eventResolved = gui.handleEvent( event );
-   
-    if( !eventResolved )
-    {
-      _d->renderer.handleEvent( event );
-    }
-  }*/
 }
 
 void Level::Impl::makeScreenShot()

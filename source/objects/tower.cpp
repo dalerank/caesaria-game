@@ -26,9 +26,12 @@
 #include "pathway/pathway_helper.hpp"
 #include "walker/trainee.hpp"
 #include "walker/balista.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tower, Tower)
 
 class Tower::Impl
 {
