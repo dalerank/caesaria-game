@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
 #include "gfx/engine.hpp"
@@ -257,6 +257,13 @@ void Level::initialize()
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+
+#ifdef CAESARIA_USE_STEAM
+  DialogBox* blackTexturesWarning = new DialogBox( ui.rootWidget(), Rect(), "PLEASE READ",
+                                                   "Black objects are not drawing yet. Those will add when be done.",
+                                                   DialogBox::btnOk);
+  CONNECT( blackTexturesWarning, onOk(), blackTexturesWarning, DialogBox::deleteLater );
+#endif
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}

@@ -435,8 +435,9 @@ bool isAchievementReached(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:%d", achivId );    
   }
+  return false;
 }
 
 }
