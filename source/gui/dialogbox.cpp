@@ -47,6 +47,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
                       : Window( parent, rectangle, "" ), _d( new Impl )
 {
   Font font = Font::create( FONT_3 );
+  int titleHeight = font.getTextSize( "A" ).height();
   if( rectangle.size() == Size( 0, 0 ) )
   {    
     Size size = font.getTextSize( text );
@@ -59,19 +60,20 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
     else
       size = Size( 480, 60 );
 
-    size += Size( 0, 50 ); //title
+    size += Size( 0, titleHeight ); //title
     size += Size( 0, 50 ); //buttons
+    size += Size( 0, 30 ); //borders
 
     setGeometry( Rect( Point( 0, 0 ), size ) );
     setCenter( parent->center() );
   }
   
-  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
+  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + titleHeight), title );
   lbTitle->setFont( Font::create( FONT_5 ) );
   lbTitle->setTextAlignment( align::center, align::center );  
 
-  Label* lbText = new Label( this, Rect( 10, 55, width() - 10, height() - 55 ), text );
-  lbText->setTextAlignment( align::center, align::center );
+  Label* lbText = new Label( this, Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
+  lbText->setTextAlignment( align::center, align::upperLeft );
   lbText->setWordwrap( true );
 
   if( (buttons == btnOk) || (buttons == btnCancel) )
