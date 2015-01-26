@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "layerdestroy.hpp"
 #include "layerconstants.hpp"
@@ -77,29 +77,6 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
   return 0;
 }
 
-void Destroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
-{
-  if( master==NULL )
-  {
-    // single-tile
-    drawTile( engine, tile, offset );
-    engine.draw( _d->clearPic, tile.mappos() + offset );
-  }
-  else
-  {
-    if( master->getFlag( Tile::isDestructible ) )
-    {
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-    }
-
-    // multi-tile: draw the master tile.
-    if( !master->rwd() )
-      drawTile( engine, *master, offset );
-
-    engine.resetColorMask();
-  }
-}
-
 void Destroy::render( Engine& engine )
 {
   // center the map on the screen
@@ -142,14 +119,79 @@ void Destroy::render( Engine& engine )
     Tile* tile = *it;
     Tile* master = tile->masterTile();
 
-    int tilePosHash = tile::hash(tile->epos());
-    if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
+    tile = master == 0 ? tile : master;
+
+    if( !tile->rwd() )
     {
-      _drawTileInSelArea( engine, *tile, master, cameraOffset );
-    }
-    else
-    {
+      int tilePosHash = tile::hash(tile->epos());
+      if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() &&
+          tile->getFlag( Tile::isDestructible ) )
+      {
+        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      }
+
+      drawPass( engine, *tile, cameraOffset, Renderer::ground );
+      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+
       drawTile( engine, *tile, cameraOffset );
+
+      engine.resetColorMask();
+    }
+  }
+
+  foreach( it, visibleTiles )
+  {
+    Tile& t = **it;
+    if( !t.isFlat() )
+    {
+      Tile* master = t.masterTile();
+      master = master == 0 ? &t : master;
+      int tilePosHash = tile::hash( master->epos());
+
+      if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() &&
+          t.getFlag( Tile::isDestructible ) )
+      {
+        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      }
+
+      if( t.rov().isNull() )
+      {
+        // multi-tile: draw the master tile.
+        // and it is time to draw the master tile
+        if( !master->rwd() && master == &t )
+        {
+          drawPass( engine, *master, cameraOffset, Renderer::ground );
+          drawPass( engine, *master, cameraOffset, Renderer::groundAnimation );
+        }
+      }
+      else
+      {
+        Size size = t.rov()->size();
+        const Picture& terrainPic = master->picture();
+
+        if( !master->rwd() && master == &t )
+        {
+          if( size.width() > 1 )
+          {
+            for( int i=0; i < size.width(); i++ )
+              for( int j=0; j < size.height(); j++ )
+              {
+                TilePos tpos = t.epos() + TilePos( i, j );
+                Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
+                                      tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
+
+                engine.draw( terrainPic, mappos + cameraOffset );
+              }
+          }
+          else
+          {
+            drawPass( engine, *master, cameraOffset, Renderer::ground );
+            drawPass( engine, *master, cameraOffset, Renderer::groundAnimation );
+          }
+        }
+      }
+
+      engine.resetColorMask();
     }
   }
 

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "menu.hpp"
 
@@ -260,9 +260,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##graphics##"),
                          " ",
-                         "Dmitry Plotnikov",
-                         "dimitrius (caesar-iii.ru)",
-                         "aneurysm (4pda.ru)",
+                         "Dmitry Plotnikov",                         
                          " ",
                          _("##music##"),
                          " ",
@@ -270,11 +268,11 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko (?)",
+                         "Alexander Klimenko, Manuel Alvarez",
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "vk.com/caesaria-game",
+                         "vk.com/caesaria-game, dimitrius (caesar-iii.ru), aneurysm (4pda.ru)",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",

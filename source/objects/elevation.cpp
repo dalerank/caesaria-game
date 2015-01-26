@@ -70,7 +70,7 @@ void Elevation::changeDirection(Tile* masterTile, constants::Direction direction
   setPicture( imgid::toPicture( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
 }
 
-bool Elevation::isDestructible() const{  return false;}
+bool Elevation::isDestructible() const { return false; }
 
 bool Elevation::build( const CityAreaInfo& info )
 {

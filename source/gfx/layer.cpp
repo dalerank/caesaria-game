@@ -362,7 +362,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->epos().z() == depth && !master->rwd() )
+  if( !master->rwd() && master->epos().z() == depth )
   {
     drawTile( engine, *master, offset );
   }
@@ -440,17 +440,11 @@ void Layer::drawLands( Engine& engine, Camera* camera )
       if( t.rov().isNull() )
       {
         Tile* master = t.masterTile();
-
-        if( 0 == master )    // single-tile
-        {
-          drawPass( engine, t, camOffset, Renderer::ground );
-          drawPass( engine, t, camOffset, Renderer::groundAnimation );
-          continue;
-        }
+        master = master == 0 ? &t : master;
 
         // multi-tile: draw the master tile.
         // and it is time to draw the master tile
-        if( master->epos().z() == t.epos().z() && !master->rwd() )
+        if( !master->rwd() && master->epos().z() == t.epos().z() )
         {
           drawPass( engine, *master, camOffset, Renderer::ground );
           drawPass( engine, *master, camOffset, Renderer::groundAnimation );
