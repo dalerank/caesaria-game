@@ -36,8 +36,11 @@ bool connect();
 void close();
 void update();
 void init();
+
 void evaluateAchievements();
 void unlockAchievement( AchievementType achivId );
+bool isAchievementReached( AchievementType achivId );
+
 std::string userName();
 const gfx::Picture& userImage();
 

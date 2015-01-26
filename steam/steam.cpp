@@ -274,7 +274,14 @@ void evaluateAchievements()
 
 void unlockAchievement(AchievementType achivId)
 {
-  glbUserStats.unlockAchievement( glbAchievements[ achivId ] );
+  if( achivId >=0 && achivId < achievementNumber )
+  {
+    glbUserStats.unlockAchievement( glbAchievements[ achivId ] );
+  }
+  else
+  {
+    Logger::warning( "Unknown achievement ID:%d", achivId );
+  }
 }
 
 std::string userName()
@@ -392,32 +399,44 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
 
   // we may get callbacks for other games' stats arriving, ignore them
   if ( CAESARIA_STEAM_APPID == pCallback->m_nGameID )
+  {
+    if ( k_EResultOK == pCallback->m_eResult )
     {
-      if ( k_EResultOK == pCallback->m_eResult )
+      Logger::warning( "Received stats and achievements from Steam\n" );
+
+      statsValid = true;
+
+      // load achievements
+      for( int iAch = 0; iAch < achievementNumber; ++iAch )
         {
-          Logger::warning( "Received stats and achievements from Steam\n" );
-
-          statsValid = true;
-
-          // load achievements
-          for( int iAch = 0; iAch < achievementNumber; ++iAch )
-            {
-              Achievement &ach = glbAchievements[iAch];
-              steamUserStats->GetAchievement( ach.uniqueName, &ach.reached );
-              sprintf( ach.name, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "name" ) );
-              sprintf( ach.description, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "desc" ) );
-            }
-
-          // load stats
-          steamUserStats->GetStat( "NumGames", &totalGamesPlayed );
-          steamUserStats->GetStat( "NumWins", &totalNumWins );
-          steamUserStats->GetStat( "NumLosses", &totalNumLosses );
+          Achievement &ach = glbAchievements[iAch];
+          steamUserStats->GetAchievement( ach.uniqueName, &ach.reached );
+          sprintf( ach.name, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "name" ) );
+          sprintf( ach.description, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "desc" ) );
         }
-      else
-        {
-          Logger::warning( "RequestStats - failed, %d\n", pCallback->m_eResult );
-        }
+
+      // load stats
+      steamUserStats->GetStat( "NumGames", &totalGamesPlayed );
+      steamUserStats->GetStat( "NumWins", &totalNumWins );
+      steamUserStats->GetStat( "NumLosses", &totalNumLosses );
     }
+    else
+    {
+      Logger::warning( "RequestStats - failed, %d\n", pCallback->m_eResult );
+    }
+    }
+}
+
+bool isAchievementReached(AchievementType achivId)
+{
+  if( achivId >=0 && achivId < achievementNumber )
+  {
+    return glbAchievements[ achivId ].reached;
+  }
+  else
+  {
+    Logger::warning( "Unknown achievement ID:%d", achivId );
+  }
 }
 
 }
