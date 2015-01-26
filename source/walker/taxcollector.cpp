@@ -30,8 +30,11 @@
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
 #include <game/settings.hpp>
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::taxCollector, TaxCollector)
 
 class TaxCollector::Impl
 {

@@ -27,6 +27,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace events
 {
@@ -113,7 +114,7 @@ void BuildAny::_exec( Game& game, unsigned int )
       WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
       if( wb.isValid() && wb->maximumWorkers() > 0 )
       {
-        unsigned int worklessCount = city::Statistic::getWorklessNumber( game.city() );
+        unsigned int worklessCount = statistic::getWorklessNumber( game.city() );
         if( worklessCount < wb->maximumWorkers() )
         {
           GameEventPtr e = WarningMessage::create( "##city_need_more_workers##" );

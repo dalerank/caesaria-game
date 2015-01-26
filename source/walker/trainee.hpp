@@ -19,6 +19,7 @@
 #define __CAESARIA_TRAINEEWALKER_H_INCLUDED__
 
 #include "human.hpp"
+#include "walkers_factory_creator.hpp"
 
 class Propagator;
 
@@ -51,5 +52,17 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+class TraineeWalkerCreator : public WalkerCreator
+{
+public:
+  virtual WalkerPtr create( PlayerCityPtr city );
+};
+
+#define REGISTER_TRAINEEMAN_IN_WALKERFACTORY(type,trainee,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new TraineeWalkerCreator() ); }}; \
+static Registrator_##a rtor_##a; \
+}
 
 #endif //__CAESARIA_TRAINEEWALKER_H_INCLUDED__

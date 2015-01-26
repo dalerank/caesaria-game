@@ -96,7 +96,7 @@ void EmperorGift::Impl::fillGifts(ListBox* lbx)
   if( !lbx )
     return;
 
-  VariantMap giftModel = SaveAdapter::load( ":/gifts.model" );
+  VariantMap giftModel = config::load( ":/gifts.model" );
   StringArray gifts = giftModel.get( "items" ).toStringArray();
 
   lbx->setTextAlignment( align::center, align::center );

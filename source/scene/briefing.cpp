@@ -126,7 +126,7 @@ void Briefing::initialize()
 
   Logger::warning( "Briefing: initialize start");
 
-  VariantMap vm = SaveAdapter::load( _d->filename );
+  VariantMap vm = config::load( _d->filename );
 
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {

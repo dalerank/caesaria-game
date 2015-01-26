@@ -46,18 +46,33 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
                       const std::string& text, int buttons )
                       : Window( parent, rectangle, "" ), _d( new Impl )
 {
+  Font font = Font::create( FONT_3 );
   if( rectangle.size() == Size( 0, 0 ) )
-  {
-    setGeometry( Rect( 0, 0, 480, 160 ) );
+  {    
+    Size size = font.getTextSize( text );
+
+    if( size.width() > 440 )
+    {
+      size.setHeight( size.width() / 440 * 40 );
+      size.setWidth( 480 );
+    }
+    else
+      size = Size( 480, 60 );
+
+    size += Size( 0, 50 ); //title
+    size += Size( 0, 50 ); //buttons
+
+    setGeometry( Rect( Point( 0, 0 ), size ) );
     setCenter( parent->center() );
   }
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_5 ) );
-  lbTitle->setTextAlignment( align::center, align::center );
+  lbTitle->setTextAlignment( align::center, align::center );  
 
-  Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
+  Label* lbText = new Label( this, Rect( 10, 55, width() - 10, height() - 55 ), text );
   lbText->setTextAlignment( align::center, align::center );
+  lbText->setWordwrap( true );
 
   if( (buttons == btnOk) || (buttons == btnCancel) )
   {
@@ -78,7 +93,9 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
     new TexturedButton( this, Point( width() - 24 - 16, height() - 50),
                         Size( 39, 26 ), btnNever, cancelBtnPicId );
 
-  }
+
+   }
+  setModal();
 }
 
 Signal1<int>& DialogBox::onResult()

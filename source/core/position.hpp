@@ -112,8 +112,8 @@ public:
 
   TilePos nextStep( const TilePos& dst ) const
   {
-    return TilePos( math::signnum( dst.i() - i() ),
-                    math::signnum( dst.j() - j() ) );
+    return *this + TilePos( math::signnum( dst.i() - i() ),
+                            math::signnum( dst.j() - j() ) );
   }
 };
 

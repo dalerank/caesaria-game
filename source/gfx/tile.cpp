@@ -165,7 +165,7 @@ bool Tile::getFlag(Tile::Type type) const
   {
     return _overlay.isValid()
               ? _overlay->isDestructible()
-              : _terrain.tree || _terrain.road;
+              : !(_terrain.rock || _terrain.water);
   }
   case tlGarden: return _terrain.garden;
   case tlElevation: return _terrain.elevation;

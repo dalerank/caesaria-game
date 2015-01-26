@@ -53,6 +53,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -204,8 +205,8 @@ void AdvisorChief::Impl::drawReportRow( AdviceType type, std::string text, NColo
 void AdvisorChief::Impl::drawEmploymentState()
 {
   int currentWorkers, maxWorkers;
-  city::Statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
-  int workless = city::Statistic::getWorklessPercent( city );
+  statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
+  int workless = statistic::getWorklessPercent( city );
   std::string text;
   NColor color = DefaultColors::black;
 
@@ -478,7 +479,7 @@ void AdvisorChief::Impl::drawEducation()
     std::set<int> availableTypes;
     availableTypes.insert( avTypes[ i ] );
 
-    HouseList houses = city::Statistic::getEvolveHouseReadyBy( city, availableTypes );
+    HouseList houses = statistic::getEvolveHouseReadyBy( city, availableTypes );
     if( houses.size() > 0 )
     {
       reasons << avReasons[i];
@@ -529,7 +530,7 @@ void AdvisorChief::Impl::drawEntertainment()
     }
   }
 
-  int hippodromeCoverage = city::Statistic::getEntertainmentCoverage( city, Service::hippodrome );
+  int hippodromeCoverage = statistic::getEntertainmentCoverage( city, Service::hippodrome );
   if( hippodromeCoverage >= 100 )
   {
     reasons << "##current_races_runs_for_another##";

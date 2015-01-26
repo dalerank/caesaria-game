@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "rift.hpp"
 #include "gfx/tile.hpp"
@@ -24,11 +24,14 @@
 #include "constants.hpp"
 #include "walker/dustcloud.hpp"
 #include "core/foreach.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-namespace {
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::rift, Rift)
+
+namespace{
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 

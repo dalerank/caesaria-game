@@ -158,6 +158,8 @@ public:
     __REG_WTYPE( patrician  )
     __REG_WTYPE( circusCharioter )
     __REG_WTYPE( docker )
+    __REG_WTYPE( gladiatorRiot )
+    __REG_WTYPE( merchantCamel )
 #undef __REG_WTYPE
   }
 };
@@ -187,7 +189,7 @@ bool WalkerHelper::isAnimal(WalkerPtr wlk)
 
 void WalkerHelper::load( const vfs::Path& filename )
 {
-  _d->options = SaveAdapter::load( filename );
+  _d->options = config::load( filename );
 }
 
 WalkerHelper& WalkerHelper::instance()
@@ -370,7 +372,7 @@ bool WalkerRelations::isNeutral(world::Nation a, world::Nation b)
 
 void WalkerRelations::load(vfs::Path path)
 {
-  VariantMap stream = SaveAdapter::load( path );
+  VariantMap stream = config::load( path );
   load( stream );
 }
 

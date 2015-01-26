@@ -31,7 +31,7 @@ public:
    AboutMarket( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
    virtual ~AboutMarket();
    
-   void drawGood( MarketPtr market, const good::Type& goodType, int, int );
+   void drawGood( MarketPtr market, const good::Product& goodType, int, int );
 };
 
 }

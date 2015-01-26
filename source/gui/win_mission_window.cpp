@@ -23,6 +23,8 @@
 #include "widget_helper.hpp"
 #include "core/event.hpp"
 #include "widget_deleter.hpp"
+#include "dialogbox.hpp"
+#include "environment.hpp"
 
 namespace gui
 {
@@ -62,10 +64,10 @@ WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string
 
   if( !winText.empty() )
   {
-    Label* lbWin = new Label( this, Rect( 30, 30, width()-30, height()-30 ), _(winText), false, Label::bgWhiteFrame );
-    lbWin->setTextAlignment( align::center, align::center );
-    lbWin->setWordwrap( true );
-    WidgetDeleter::assignTo( lbWin, 3000 );
+    DialogBox* lbWin = new DialogBox( ui()->rootWidget(), Rect(), "",  _(winText), DialogBox::btnOk );
+    //lbWin->setTextAlignment( align::center, align::center );
+    //lbWin->setWordwrap( true );
+    CONNECT( lbWin, onOk(), lbWin, DialogBox::deleteLater );
   }
 
   if( btnContinue2years ) btnContinue2years->setVisible( mayContinue );

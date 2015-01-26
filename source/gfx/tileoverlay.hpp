@@ -29,6 +29,8 @@
 #include "game/predefinitions.hpp"
 #include "core/debug_queue.hpp"
 
+class MetaData;
+
 struct Desirability
 {
  Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
@@ -100,6 +102,8 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );
+
+  virtual void initialize( const MetaData& mdata );
 
 protected:
   gfx::Animation& _animationRef();

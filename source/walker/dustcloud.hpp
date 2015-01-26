@@ -35,6 +35,7 @@ public:
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual void initialize(const VariantMap &options);
 
 protected:
   virtual void _reachedPathway();

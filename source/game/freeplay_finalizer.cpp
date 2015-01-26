@@ -44,13 +44,13 @@ void __loadEventsFromSection( const VariantMap& vm )
 
 void addPopulationMilestones(PlayerCityPtr city)
 {
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "population_milestones" ].toMap() );
 }
 
 void addEvents(PlayerCityPtr city)
 {
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
 }
 

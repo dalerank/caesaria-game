@@ -80,7 +80,8 @@ public:
   GameAutoPause autopause;
 
   Impl() : lbBlackFrame(0), lbTitle(0),
-    lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)
+    lbText(0), btnExit(0), btnHelp(0),
+    isAutoPosition(false)
   {
 
   }
@@ -210,8 +211,8 @@ void Simple::_updateWorkersLabel(const Point &pos, int picId, int need, int have
 
   // number of workers
   std::string text = utils::format( 0xff, "%d %s (%d %s)",
-                                           have, _("##employers##"),
-                                           need, _("##requierd##") );
+                                    have, _("##employers##"),
+                                    need, _("##requierd##") );
   _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
   _d->lbBlackFrame->setText( text );
 }

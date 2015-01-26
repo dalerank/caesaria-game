@@ -26,14 +26,14 @@ namespace good
 class Orders
 {
 public:
-  typedef enum { accept=0, reject, deliver, none } Order;
+  typedef enum { accept=0, reject, deliver, none, count } Order;
   
   Orders();
   ~Orders();
 
-  void set( const good::Type type, Order rule );
+  void set( const good::Product type, Order rule );
   void set( Order rule );
-  Order get( const good::Type type );
+  Order get( const good::Product type );
 
 private:
   class Impl;

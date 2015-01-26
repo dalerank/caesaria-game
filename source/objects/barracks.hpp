@@ -29,7 +29,7 @@ public:
   virtual void timeStep(const unsigned long time);
 
   bool isNeedWeapons() const;
-  int goodQty( good::Type type ) const;
+  int goodQty( good::Product type ) const;
   virtual void storeGoods( good::Stock &stock, const int amount);
   virtual std::string workersProblemDesc() const;
 

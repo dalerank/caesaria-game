@@ -21,11 +21,25 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "metadata.hpp"
 
 class TileOverlayConstructor
 {
 public:
   virtual gfx::TileOverlayPtr create() = 0;
+};
+
+template< class T > class BaseCreator : public TileOverlayConstructor
+{
+public:
+  virtual gfx::TileOverlayPtr create()
+  {
+    gfx::TileOverlayPtr ret( new T() );
+    ret->initialize( MetaDataHolder::instance().getData( ret->type() ) );
+    ret->drop();
+
+    return ret;
+  }
 };
 
 class TileOverlayFactory
@@ -43,5 +57,12 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#define REGISTER_CLASS_IN_OVERLAYFACTORY(type,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { TileOverlayFactory::instance().addCreator( type, CAESARIA_STR_A(a), new BaseCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
+
 
 #endif  //__CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_

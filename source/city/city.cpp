@@ -127,7 +127,7 @@ public:
   TilePos cameraStart;
 
   city::development::Options buildOptions;
-  city::TradeOptions tradeOptions;
+  city::trade::Options tradeOptions;
   city::VictoryConditions targets;
   Options options;
   ClimateType climate;   
@@ -355,7 +355,7 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
-  int wages = city::Statistic::getMonthlyWorkersWages( city );
+  int wages = city::statistic::getMonthlyWorkersWages( city );
 
   if( funds.haveMoneyForAction( wages ) )
   {
@@ -363,7 +363,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
     HouseList houses;
     houses << city->overlays();
 
-    float salary = city::Statistic::getMonthlyOneWorkerWages( city );
+    float salary = city::statistic::getMonthlyOneWorkerWages( city );
     float wages = 0;
     foreach( it, houses )
     {
@@ -698,11 +698,11 @@ void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { 
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
 
-city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
+city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 
 const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
-const good::Store &PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -824,9 +824,15 @@ void PlayerCity::addObject( world::ObjectPtr object )
     events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
     e->dispatch();
   }
+  else if( is_kind_of<world::Messenger>( object ) )
+  {
+    world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
+    events::GameEventPtr e = events::ShowInfobox::create( msm->title(), msm->message() );
+    e->dispatch();
+  }
 }
 
-void PlayerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
+void PlayerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
 {
   _d->tradeOptions.setBuyPrice( gtype, bCost );
   _d->tradeOptions.setSellPrice( gtype, sCost );

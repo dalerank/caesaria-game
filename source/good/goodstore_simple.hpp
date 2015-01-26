@@ -31,21 +31,22 @@ public:
   SimpleStore();
   virtual ~SimpleStore();
 
-  void setCapacity(const int maxQty);
+  virtual void setCapacity(const int maxQty);
   virtual int capacity() const;
   virtual int qty() const;
 
   void resize( const Store& other );
 
-  good::Stock& getStock(const good::Type &goodType);
+  good::Stock& getStock(const good::Product &goodType);
 
-  virtual int qty(const good::Type& goodType) const;
-  int capacity(const good::Type& goodType) const;
-  void setCapacity(const good::Type& goodType, const int maxQty);
-  void setQty(const good::Type& goodType, const int currentQty);
+  virtual int qty(const good::Product& goodType) const;
+  virtual int capacity(const good::Product& goodType) const;
+  virtual void setCapacity(const good::Product& goodType, const int maxQty);
+
+  void setQty(const good::Product& goodType, const int currentQty);
 
   // returns the max quantity that can be stored now
-  int getMaxStore(const good::Type goodType);
+  int getMaxStore(const good::Product goodType);
 
   // store/retrieve
   virtual void applyStorageReservation(good::Stock &stock, const int reservationID);

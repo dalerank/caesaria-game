@@ -30,8 +30,8 @@ namespace events
 
 class Dispatcher : public StaticSingleton<Dispatcher>
 {
+  friend class StaticSingleton;
 public:
-  Dispatcher();
   virtual ~Dispatcher();
 
   void append( GameEventPtr event );
@@ -39,10 +39,13 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+  void load( vfs::Path filename, const std::string& section="" );
 
   void reset();
 
 private:
+  Dispatcher();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

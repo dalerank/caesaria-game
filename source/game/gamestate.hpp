@@ -21,6 +21,7 @@
 #define __CAESARIA_GAMESTATE_H_INCLUDED__
 
 #include "game.hpp"
+#include "scene/constants.hpp"
 
 namespace scene
 {
@@ -41,16 +42,16 @@ public:
 
   virtual bool update(gfx::Engine* engine);
 
-  ScreenType getScreenType();
+  scene::ScreenType getScreenType();
 
   scene::Base* toBase();
 
 protected:
   Game* _game;
   scene::Base* _screen;
-  ScreenType _screenType;
+  scene::ScreenType _screenType;
 
-  void _initialize(scene::Base* screen, ScreenType screenType);
+  void _initialize(scene::Base* screen, scene::ScreenType screenType);
 };
 
 class MissionSelect : public BaseState

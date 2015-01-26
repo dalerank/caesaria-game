@@ -83,7 +83,7 @@ SrvcPtr Migration::create( PlayerCityPtr city )
 Migration::Migration( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {  
-  VariantMap options = SaveAdapter::load( ":/migration.model" );
+  VariantMap options = config::load( ":/migration.model" );
   VARIANT_LOAD_ANYDEF_D( _d, checkRange, DateTime::daysInWeek, options )
   VARIANT_LOAD_ANYDEF_D( _d, worklessMinInfluence, 0, options )
 

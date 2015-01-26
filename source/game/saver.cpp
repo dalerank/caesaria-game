@@ -64,7 +64,7 @@ void Saver::save(const vfs::Path& filename, const Game& game )
   religion::rome::Pantheon::instance().save( vm_pantheon );
   vm[ "pantheon" ] = vm_pantheon;
 
-  SaveAdapter::save( vm, filename );
+  config::save( vm, filename );
 }
 
 void Saver::setRestartFile(const std::string& filename) { _restartFile = filename; }

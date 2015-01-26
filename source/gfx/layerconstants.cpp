@@ -90,7 +90,7 @@ Helper::Helper()
     __REG_LAYER(all)
 #undef __REG_LAYER
 
-  VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH(layersOptsModel) );
+  VariantMap vm = config::load( SETTINGS_RC_PATH(layersOptsModel) );
   foreach( it, vm )
   {
     Type layerType = findType( it->first );

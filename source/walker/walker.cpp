@@ -108,9 +108,6 @@ Walker::~Walker()
 #endif
 }
 
-world::Nation Walker::nation() const{ return _d->nation; }
-void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
-
 void Walker::timeStep(const unsigned long time)
 {
   if( _d->waitInterval > 0 )
@@ -328,6 +325,9 @@ void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
 void Walker::_waitFinished() { }
 
+world::Nation Walker::nation() const{ return _d->nation; }
+void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
+void Walker::_setLocation( Tile* location ){ _d->location = location; }
 Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
@@ -354,6 +354,7 @@ void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
 bool Walker::getFlag(Walker::Flag flag) const{ return _d->flags.count( flag ) > 0; }
+const Tile& Walker::tile() const {  return _d->location ? *_d->location : invalidTile; }
 
 void Walker::setFlag(Walker::Flag flag, bool value)
 {
@@ -365,11 +366,6 @@ Point Walker::tilesubpos() const
 {
   Point tmp = Point( _d->location->i(), _d->location->j() ) * 15 + Point( 7, 7 );
   return tmp - _d->wpos.toPoint();
-}
-
-const Tile& Walker::tile() const
-{
-  return _d->location ? *_d->location : invalidTile;
 }
 
 void Walker::_setAction( Walker::Action action )
@@ -461,6 +457,7 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_ENUM_D( stream, _d, nation )
   stream[ "pathway" ] =  _d->pathway.save();
   VARIANT_SAVE_ANY_D( stream, _d, health )
+  VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   VARIANT_SAVE_ANY_D( stream, _d, action.action )
   VARIANT_SAVE_ANY_D( stream, _d, action.direction )
   stream[ "location" ] = _d->location->pos();
@@ -490,6 +487,7 @@ void Walker::load( const VariantMap& stream)
   VARIANT_LOAD_STR_D( _d, thinks, stream )
   VARIANT_LOAD_ANY_D( _d, tileSpeedKoeff, stream )
   VARIANT_LOAD_ANY_D( _d, nextwpos, stream );
+  VARIANT_LOAD_ANY_D( _d, isDeleted, stream );
   VARIANT_LOAD_ENUM_D( _d, action.action, stream )
   VARIANT_LOAD_ENUM_D( _d, action.direction, stream )
   VARIANT_LOAD_ENUM_D( _d, uid, stream )
@@ -511,7 +509,7 @@ void Walker::load( const VariantMap& stream)
   }
 
   VARIANT_LOAD_ANY_D( _d, speed, stream )
-  _d->health = (double)stream.get( "health" );
+  VARIANT_LOAD_ANY_D( _d, health, stream )
   setFlag( showDebugInfo, stream.get( "showDebugInfo" ).toBool() );
 }
 
