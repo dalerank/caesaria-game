@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "debug_handler.hpp"
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "city/funds.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -35,10 +35,16 @@
 #include "events/postpone.hpp"
 #include "gfx/layer.hpp"
 #include "sound/engine.hpp"
+#include "vfs/directory.hpp"
 #include "objects/fort.hpp"
+#include "events/dispatcher.hpp"
+#include "gui/loadfiledialog.hpp"
 #include "gfx/tilemap.hpp"
+#include "good/goodhelper.hpp"
 #include "world/goodcaravan.hpp"
 #include "events/earthquake.hpp"
+#include "events/random_fire.hpp"
+#include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 
 using namespace constants;
@@ -76,7 +82,12 @@ enum {
   change_emperor,
   add_city_border,
   earthquake,
-  toggle_experimental_options
+  toggle_experimental_options,
+  kill_all_enemies,
+  send_exporter,
+  random_fire,
+  random_collapse,
+  run_script
 };
 
 class DebugHandler::Impl
@@ -86,6 +97,7 @@ public:
 
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
+  void runScript(std::string filename);
 
 public signals:
   Signal2<scene::Level*, bool> failedMissionSignal;
@@ -99,40 +111,54 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
   gui::ContextMenu* debugMenu = tmp->addSubMenu();
 
-#define ADD_DEBUG_EVENT(ev) debugMenu->addItem( #ev, ev );
-  ADD_DEBUG_EVENT( add_enemy_archers )
-  ADD_DEBUG_EVENT( add_enemy_soldiers )
-  ADD_DEBUG_EVENT( add_chastener_soldiers )
-  ADD_DEBUG_EVENT( comply_rome_request )
-  ADD_DEBUG_EVENT( add_wolves )
-  ADD_DEBUG_EVENT( send_mars_wrath )
-  ADD_DEBUG_EVENT( add_1000_dn )
-  ADD_DEBUG_EVENT( add_player_money )
-  ADD_DEBUG_EVENT( send_chastener )
-  ADD_DEBUG_EVENT( test_request )
-  ADD_DEBUG_EVENT( send_player_army )
-  ADD_DEBUG_EVENT( screenshot )
-  ADD_DEBUG_EVENT( add_empire_barbarian )
-  ADD_DEBUG_EVENT( send_venus_wrath )
-  ADD_DEBUG_EVENT( win_mission )
-  ADD_DEBUG_EVENT( all_sound_off )
-  ADD_DEBUG_EVENT( toggle_grid_visibility )
-  ADD_DEBUG_EVENT( toggle_overlay_base )
-  ADD_DEBUG_EVENT( toggle_show_path )
-  ADD_DEBUG_EVENT( toggle_show_roads )
-  ADD_DEBUG_EVENT( toggle_show_object_area )
-  ADD_DEBUG_EVENT( add_soldiers_in_fort )
-  ADD_DEBUG_EVENT( send_barbarian_to_player )
-  ADD_DEBUG_EVENT( fail_mission )
-  ADD_DEBUG_EVENT( toggle_show_walkable_tiles )
-  ADD_DEBUG_EVENT( toggle_show_locked_tiles )
-  ADD_DEBUG_EVENT( toggle_show_flat_tiles )
-  ADD_DEBUG_EVENT( change_emperor )
-  ADD_DEBUG_EVENT( earthquake )
-  ADD_DEBUG_EVENT( add_city_border )
-  ADD_DEBUG_EVENT( toggle_experimental_options )
+#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = debugMenu->addItem( section, #ev, ev ); \
+                                       CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
 
-  CONNECT( debugMenu, onItemAction(), _d.data(), Impl::handleEvent );
+  ADD_DEBUG_EVENT( "enemies", add_enemy_archers )
+  ADD_DEBUG_EVENT( "enemies", add_enemy_soldiers )
+  ADD_DEBUG_EVENT( "enemies", add_chastener_soldiers )
+  ADD_DEBUG_EVENT( "enemies", add_wolves )
+  ADD_DEBUG_EVENT( "enemies", send_chastener )
+  ADD_DEBUG_EVENT( "enemies", add_empire_barbarian )
+  ADD_DEBUG_EVENT( "enemies", send_barbarian_to_player )
+  ADD_DEBUG_EVENT( "enemies", kill_all_enemies )
+
+  ADD_DEBUG_EVENT( "request", comply_rome_request )
+  ADD_DEBUG_EVENT( "request", test_request )
+
+  ADD_DEBUG_EVENT( "religion", send_mars_wrath )
+  ADD_DEBUG_EVENT( "religion", send_venus_wrath )
+
+  ADD_DEBUG_EVENT( "money", add_1000_dn )
+  ADD_DEBUG_EVENT( "money", add_player_money )
+
+  ADD_DEBUG_EVENT( "other", send_player_army )
+  ADD_DEBUG_EVENT( "other", screenshot )
+
+  ADD_DEBUG_EVENT( "disaster", random_fire )
+  ADD_DEBUG_EVENT( "disaster", random_collapse )
+  ADD_DEBUG_EVENT( "disaster", earthquake )
+
+  ADD_DEBUG_EVENT( "game", win_mission )
+  ADD_DEBUG_EVENT( "game", fail_mission )
+  ADD_DEBUG_EVENT( "game", change_emperor )
+
+  ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
+  ADD_DEBUG_EVENT( "city", add_city_border )
+  ADD_DEBUG_EVENT( "city", send_exporter )
+  ADD_DEBUG_EVENT( "city", run_script )
+
+  ADD_DEBUG_EVENT( "options", all_sound_off )
+  ADD_DEBUG_EVENT( "options", toggle_experimental_options )
+
+  ADD_DEBUG_EVENT( "draw", toggle_grid_visibility )
+  ADD_DEBUG_EVENT( "draw", toggle_overlay_base )
+  ADD_DEBUG_EVENT( "draw", toggle_show_path )
+  ADD_DEBUG_EVENT( "draw", toggle_show_roads )
+  ADD_DEBUG_EVENT( "draw", toggle_show_object_area )
+  ADD_DEBUG_EVENT( "draw", toggle_show_walkable_tiles )
+  ADD_DEBUG_EVENT( "draw", toggle_show_locked_tiles )
+  ADD_DEBUG_EVENT( "draw", toggle_show_flat_tiles )
 #undef ADD_DEBUG_EVENT
 }
 
@@ -148,6 +174,11 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
   }
 
   return enemy;
+}
+
+void DebugHandler::Impl::runScript(std::string filename)
+{
+  events::Dispatcher::instance().load( filename );
 }
 
 Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->failedMissionSignal; }
@@ -184,7 +215,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case comply_rome_request:
   {
     world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( game->city() ) );
-    good::Stock stock( (good::Type)math::random( good::goodCount), 1000, 1000 );
+    good::Stock stock( good::Helper::random(), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
     caravan->sendTo( game->empire()->rome() );
   }
@@ -218,17 +249,23 @@ void DebugHandler::Impl::handleEvent(int event)
   case change_emperor:
   {
     events::GameEventPtr e = events::ChangeEmperor::create();
-    VariantMap vm = SaveAdapter::load( ":/test_emperor.model" );
+    VariantMap vm = config::load( ":/test_emperor.model" );
     e->load( vm );
     e->dispatch();
   }
   break;
 
-  case add_city_border:
+  case kill_all_enemies:
   {
-    game->city()->tilemap().addBorder();
+     city::Helper helper( game->city() );
+     EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, city::Helper::invalidPos );
+
+     foreach( it, enemies )
+       (*it)->die();
   }
   break;
+
+  case add_city_border:   {    game->city()->tilemap().addBorder();  }  break;
 
   case toggle_experimental_options:
   {
@@ -253,6 +290,20 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case random_fire:
+  {
+    events::GameEventPtr e = events::RandomFire::create();
+    e->dispatch();
+  }
+  break;
+
+  case random_collapse:
+  {
+    events::GameEventPtr e = events::RandomDamage::create();
+    e->dispatch();
+  }
+  break;
+
   case earthquake:
   {
     int mapsize = game->city()->tilemap().size();
@@ -265,7 +316,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case test_request:
   {
-    VariantMap rqvm = SaveAdapter::load( ":/test_request.model" );
+    VariantMap rqvm = config::load( ":/test_request.model" );
     events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
     e->dispatch();
   }
@@ -279,6 +330,21 @@ void DebugHandler::Impl::handleEvent(int event)
     audio::Engine::instance().setVolume( audio::ambientSound, 0 );
     audio::Engine::instance().setVolume( audio::themeSound, 0 );
     audio::Engine::instance().setVolume( audio::gameSound, 0 );
+  break;
+
+  case run_script:
+  {
+    gui::Widget* parent = game->gui()->rootWidget();
+    gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
+                                                        Rect(),
+                                                        vfs::Path( ":/scripts/" ), ".model",
+                                                        -1 );
+    wnd->setCenter( parent->center() );
+
+    CONNECT( wnd, onSelectFile(), this, Impl::runScript );
+    wnd->setTitle( "Select file" );
+    wnd->setText( "open" );
+  }
   break;
 
   case toggle_grid_visibility: DrawOptions::instance().toggle( DrawOptions::drawGrid );  break;

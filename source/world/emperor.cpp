@@ -405,7 +405,7 @@ void EmperorLine::load(vfs::Path filename)
 {
   _d->changes.clear();
 
-  VariantMap opts = SaveAdapter::load( filename );
+  VariantMap opts = config::load( filename );
   foreach( it, opts )
   {
     VariantMap opts = it->second.toMap();

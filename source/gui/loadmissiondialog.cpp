@@ -69,7 +69,7 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
   fn = directory/fn;
 
   std::string missionName = vfs::Path( fn ).baseName( false ).toString();
-  VariantMap vm = SaveAdapter::load( fn );
+  VariantMap vm = config::load( fn );
   Locale::addTranslation( missionName );
 
   std::string text = vm.get( "preview.text" ).toString();

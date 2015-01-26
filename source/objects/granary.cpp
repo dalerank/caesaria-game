@@ -26,8 +26,12 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::granery, Granary)
 
 namespace {
 CAESARIA_LITERALCONST(goodStore)
@@ -42,9 +46,9 @@ public:
 
   GranaryStore()
   {
-    for( int type=good::wheat; type <= good::vegetable; type++ )
+    for( good::Product type=good::wheat; type <= good::vegetable; ++type )
     {
-      setOrder( (good::Type)type, good::Orders::accept );
+      setOrder( type, good::Orders::accept );
     }
 
     setOrder( good::fish, good::Orders::none );
@@ -83,7 +87,7 @@ public:
     granary->computePictures();
   }
   
-  virtual void setOrder( const good::Type type, const good::Orders::Order order )
+  virtual void setOrder( const good::Product type, const good::Orders::Order order )
   {
     good::SimpleStore::setOrder( type, order );
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
@@ -250,9 +254,8 @@ void Granary::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
+  for( good::Product gType=good::wheat; gType <= good::vegetable; ++gType )
   {
-    good::Type gType = (good::Type)goodType;
     good::Orders::Order order = _d->store.getOrder( gType );
     int goodFreeQty = math::clamp( _d->store.freeQty( gType ), 0, 400 );
 
@@ -270,7 +273,7 @@ void Granary::_resolveDeliverMode()
   }
 }
 
-bool Granary::_trySendGoods( good::Type gtype, int qty )
+bool Granary::_trySendGoods(good::Product gtype, int qty )
 {
   good::Stock stock( gtype, qty, qty);
   CartPusherPtr walker = CartPusher::create( _city() );
@@ -291,16 +294,16 @@ void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   const int maxSentTry = 3;
-  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
+  for( good::Product goodType=good::wheat; goodType <= good::vegetable; ++goodType )
   {
     int trySentQty[maxSentTry] = { 400, 200, 100 };
 
-    int goodQty = _d->store.qty( (good::Type)goodType );
+    int goodQty = _d->store.qty( goodType );
     for( int i=0; i < maxSentTry; ++i )
     {
       if( goodQty >= trySentQty[i] )
       {
-        bool goodSended = _trySendGoods( (good::Type)goodType, trySentQty[i] );
+        bool goodSended = _trySendGoods( goodType, trySentQty[i] );
         if( goodSended )
           return;
       }

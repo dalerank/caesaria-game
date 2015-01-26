@@ -92,6 +92,7 @@ public:
 
 signals public:
   Signal1<bool>& onChecked();
+  Signal1<int>& onAction();
 
 private:
   class Impl;

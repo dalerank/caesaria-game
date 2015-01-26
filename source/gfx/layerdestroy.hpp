@@ -34,6 +34,7 @@ public:
   virtual int type() const;
   virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
   virtual void render( Engine& engine);
+  virtual void renderUi(Engine &engine);
   virtual void init( Point cursor );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
@@ -41,7 +42,6 @@ public:
 private:
   Destroy( Camera& camera, PlayerCityPtr city );
 
-  void _drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset);
   void _clearAll();
   unsigned int _checkMoney4destroy( const Tile& tile );
 

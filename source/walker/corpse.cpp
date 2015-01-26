@@ -24,9 +24,12 @@
 #include "constants.hpp"
 #include "gfx/animation_bank.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::corpse, Corpse)
 
 class Corpse::Impl
 {

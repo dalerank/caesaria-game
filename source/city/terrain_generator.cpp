@@ -731,9 +731,19 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture pic = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
-        tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        Picture land = MetaDataHolder::randomPicture( constants::objects::terrain, Size(1) );
+        tile.setPicture( land );
+
+        Picture tree = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
+        tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
+
+        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::tree );
+        if( overlay != NULL )
+        {
+          CityAreaInfo info = { oCity, tile.pos(), TilesArray() };
+          overlay->build( info );
+          oCity->overlays().push_back( overlay );
+        }
       }
       break;
 

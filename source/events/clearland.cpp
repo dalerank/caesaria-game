@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "clearland.hpp"
 #include "game/game.hpp"
@@ -95,7 +95,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
       if( tile->getFlag( Tile::tlMeadow ) || tile->getFlag( Tile::tlWater ) )
       {
-        tile->setPicture( imgid::toResource( tile->originalImgId() ) );
+        //tile->setPicture( imgid::toResource( tile->originalImgId() ) );
       }
       else
       {

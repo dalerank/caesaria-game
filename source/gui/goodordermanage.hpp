@@ -35,7 +35,7 @@ class GoodOrderManageWindow : public Window
 public:
   typedef enum { gmUnknown=0, gmImport=0x1, gmProduce=0x2 } GoodMode;
   GoodOrderManageWindow( Widget* parent, const Rect& rectangle, PlayerCityPtr city,
-                         good::Type type, int stackedGoods, GoodMode gmode );
+                         good::Product type, int stackedGoods, GoodMode gmode );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -61,6 +61,8 @@ signals public:
   Signal0<> &onOrderChanged();
 
 private:
+  void _changeTradeLimit( int value );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };

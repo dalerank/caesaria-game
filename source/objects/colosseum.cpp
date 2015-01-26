@@ -28,9 +28,12 @@
 #include "walker/serviceman.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::colloseum, Colosseum)
 
 class Colosseum::Impl
 {

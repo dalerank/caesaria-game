@@ -35,13 +35,11 @@ public:
 
 protected:
   virtual void _showHelp();
-  void _toggleWork();
 
 protected:
   gfx::TileOverlay::Type _type;
   Label* _lbProduction;
   Label* _lbEffciency;
-  PushButton* _btnToggleWork;
 };
 
 class AboutShipyard : public AboutFactory

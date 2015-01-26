@@ -232,7 +232,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
     else if( !strcmp( argv[i], "-oldgfx" ) )
     {
       const char* opts = argv[i+1];
-      _d->options[ oldgfx ] = Variant( opts );
+      _d->options[ oldgfx ] = utils::toInt( opts );
       i++;
     }
     else if( !strcmp( argv[i], "-cellw" ) )
@@ -295,14 +295,14 @@ vfs::Path Settings::rpath( const std::string& option )
 
 void Settings::load()
 {
-  VariantMap settings = SaveAdapter::load( rcpath( Settings::settingsPath ) );
+  VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
 
   foreach( v, settings ) { set( v->first, v->second ); }
 }
 
 void Settings::save()
 {
-  SaveAdapter::save( instance()._d->options, rcpath( Settings::settingsPath ) );
+  config::save( instance()._d->options, rcpath( Settings::settingsPath ) );
 }
 
 }//end namespace game

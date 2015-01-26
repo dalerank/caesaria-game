@@ -18,8 +18,12 @@
 #include "goverment.hpp"
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::governorHouse, GovernorsHouse)
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::governorVilla, GovernorsVilla)
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::governorPalace, GovernorsPalace)
 
 // housng1a 46 - governor's house    3 x 3
 // housng1a 47 - governor's villa    4 x 4

@@ -454,7 +454,7 @@ EffectManager::EffectManager() {}
 
 void EffectManager::load(vfs::Path effectModel)
 {
-  VariantMap stream = SaveAdapter::load( effectModel );
+  VariantMap stream = config::load( effectModel );
 
   VariantMap technique = stream.get( CAESARIA_STR_EXT(technique) ).toMap();
 
@@ -568,6 +568,7 @@ void GlEngine::init()
 
   _d->throwIfnoWindow();
   _d->viewportSize = _srcSize;
+  _virtualSize = _srcSize;
   _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);

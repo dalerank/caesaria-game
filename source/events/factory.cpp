@@ -31,6 +31,7 @@
 #include "trading_options.hpp"
 #include "contaminated_water.hpp"
 #include "changeemperor.hpp"
+#include "gladiator_revolt.hpp"
 #include "random_animals.hpp"
 
 namespace events
@@ -96,6 +97,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<ChangeTradingOptions>( "trading_options" );
   addCreator<ContaminatedWater>( "contaminated_water" );
   addCreator<RandomAnimals>( "random_animals" );
+  addCreator<GladiatorRevolt>( "gladiator_revolt" );
 }
 
 }//end namespace events

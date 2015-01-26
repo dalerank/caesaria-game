@@ -28,10 +28,10 @@ public:
   Market();
 
   good::Store& goodStore();
-  std::list<good::Type> mostNeededGoods();  // used by the market buyer
+  std::list<good::Product> mostNeededGoods();  // used by the market buyer
 
   // returns the quantity of needed goods
-  int getGoodDemand(const good::Type& goodType);  // used by the market buyer
+  int getGoodDemand(const good::Product& goodType);  // used by the market buyer
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);

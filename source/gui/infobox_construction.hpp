@@ -37,9 +37,17 @@ public:
   virtual ConstructionPtr base() const;
   virtual void setBase( ConstructionPtr base );
 
+protected:
+  void _setWorkingVisible( bool show );
+  void _setWorkingActive( bool working );
+  void _updateWorkingText();
+  void _resolveToggleWorking();
+  PushButton* _btnToggleWorkingRef();
+
 private:
   void _switch( int flag );
   ConstructionPtr _construction;
+  PushButton* _btnToggleWorking;
 };
 
 }

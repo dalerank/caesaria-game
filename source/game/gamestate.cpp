@@ -30,6 +30,8 @@
 #include "freeplay_finalizer.hpp"
 #include "steam.hpp"
 
+using namespace scene;
+
 namespace gamestate
 {
 

@@ -66,10 +66,12 @@
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
+#include "addon_manager.hpp"
 
 #include <list>
 
 using namespace gfx;
+using namespace scene;
 
 class Game::Impl
 {
@@ -96,6 +98,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initAddons();
   void initHotkeys();
   void initGuiEnvironment();
   void initArchiveLoaders();
@@ -222,7 +225,7 @@ void Game::Impl::initGuiEnvironment()
 
 void Game::Impl::initPantheon( vfs::Path filename)
 {
-  VariantMap pantheon = SaveAdapter::load( filename );
+  VariantMap pantheon = config::load( filename );
   religion::rome::Pantheon::instance().load( pantheon );
 }
 
@@ -237,6 +240,12 @@ void Game::Impl::initPictures()
   AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
+}
+
+void Game::Impl::initAddons()
+{
+  addon::Manager& am = addon::Manager::instance();
+  am.load( vfs::Directory( std::string( ":/addons" ) ) );
 }
 
 void Game::Impl::initHotkeys()
@@ -378,13 +387,14 @@ void Game::initialize()
   if( cellWidth != 30 && cellWidth != 60 )
   {
     cellWidth = 30;
-  }
+  }    
 
   tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
+  _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
@@ -457,12 +467,16 @@ bool Game::exec()
   }
 
   Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
     case SCREEN_MENU:
     {
       _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
-    } break;
+      am.initAddons4level( addon::mainMenu );
+    }
+    break;
+
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
@@ -472,15 +486,19 @@ bool Game::exec()
                                                         _d->saveTime, _d->timeX10,
                                                         _d->timeMultiplier, _d->manualTicksCounterX10,
                                                         _d->nextFilename, _d->restartFile );
-    } break;
+      am.initAddons4level( addon::level );
+    }
+    break;
+
     case SCREEN_BRIEFING:
     {
       _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
-    } break;
+      am.initAddons4level( addon::briefing );
+    }
+    break;
 
     default:
-    Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-    //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+      Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;

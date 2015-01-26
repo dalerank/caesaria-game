@@ -23,34 +23,38 @@
 namespace city
 {
 
-class TradeOptions
+namespace trade
+{
+
+typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
+
+class Options
 {
 public:
-  typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
-  TradeOptions();
-  ~TradeOptions();
+  Options();
+  ~Options();
 
-  unsigned int exportLimit(good::Type type) const;
-  void setExportLimit(good::Type type, unsigned int qty);
+  unsigned int tradeLimit( Order state, good::Product type) const;
+  void setTradeLimit( Order state, good::Product type, unsigned int qty);
   
-  void setStackMode( good::Type type, bool stacking );
-  bool isGoodsStacking( good::Type type );
+  void setStackMode( good::Product type, bool stacking );
+  bool isGoodsStacking( good::Product type );
 
-  bool isExporting( good::Type type ) const;
-  bool isImporting( good::Type type ) const;
+  bool isExporting( good::Product type ) const;
+  bool isImporting( good::Product type ) const;
 
-  unsigned int sellPrice( good::Type type ) const;
-  void setSellPrice( good::Type type, unsigned int price );
+  unsigned int sellPrice( good::Product type ) const;
+  void setSellPrice( good::Product type, unsigned int price );
 
-  bool isVendor( good::Type type ) const;
-  void setVendor( good::Type type, bool available );
+  bool isVendor( good::Product type ) const;
+  void setVendor( good::Product type, bool available );
 
-  unsigned int buyPrice( good::Type type ) const;
-  void setBuyPrice( good::Type type, unsigned int price );
+  unsigned int buyPrice( good::Product type ) const;
+  void setBuyPrice( good::Product type, unsigned int price );
 
-  Order getOrder( good::Type type ) const;
-  void setOrder( good::Type type, Order order );
-  Order switchOrder( good::Type type );
+  Order getOrder( good::Product type ) const;
+  void setOrder( good::Product type, Order order );
+  Order switchOrder( good::Product type );
 
   VariantMap save() const;
   void load( const VariantMap& stream );
@@ -62,6 +66,8 @@ public:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace trade
 
 }//end namespace city
 

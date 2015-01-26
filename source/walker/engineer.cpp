@@ -17,8 +17,11 @@
 
 #include "engineer.hpp"
 #include "city/helper.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::engineer, Engineer)
 
 class Engineer::Impl
 {

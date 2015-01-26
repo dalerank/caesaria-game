@@ -65,28 +65,33 @@ public:
   Store();
   virtual ~Store();
 
-  virtual int qty(const good::Type& goodType) const = 0;
+  virtual int qty(const good::Product& goodType) const = 0;
   virtual int qty() const = 0;
+
   virtual void setCapacity(const int maxcap) = 0;
+  virtual void setCapacity(const good::Product& goodType, const int maxQty) = 0;
+
   virtual int capacity() const = 0;
-  virtual int capacity(const good::Type& goodType ) const = 0;
-  virtual int freeQty( const good::Type& goodType ) const;
+  virtual int capacity(const good::Product& goodType ) const = 0;
+
+  virtual int freeQty( const good::Product& goodType ) const;
   virtual int freeQty() const;
+
   virtual bool empty() const;
 
   // returns the max quantity that can be stored now
-  virtual int getMaxStore(const good::Type goodType) = 0;
+  virtual int getMaxStore(const good::Product goodType) = 0;
 
   // returns the max quantity that can be retrieved now
-  virtual int getMaxRetrieve(const good::Type goodType);
+  virtual int getMaxRetrieve(const good::Product goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
   virtual int reserveStorage( good::Stock& stock, DateTime time );
-  virtual int reserveStorage( good::Type what, unsigned int qty, DateTime time);
+  virtual int reserveStorage( good::Product what, unsigned int qty, DateTime time);
 
   // returns the reservationID if stock can be retrieved (else 0)
   virtual int reserveRetrieval(good::Stock& stock, DateTime time);
-  virtual int reserveRetrieval(good::Type what, unsigned int qty, DateTime time);
+  virtual int reserveRetrieval(good::Product what, unsigned int qty, DateTime time);
 
   // return the reservation
   good::Stock getStorageReservation(const int reservationID, const bool pop=false);
@@ -113,8 +118,8 @@ public:
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
-  virtual void setOrder( const good::Type type, const Orders::Order order );
-  virtual Orders::Order getOrder( const good::Type type ) const;
+  virtual void setOrder( const good::Product type, const Orders::Order order );
+  virtual Orders::Order getOrder( const good::Product type ) const;
 
   virtual void removeExpired( DateTime date );
 

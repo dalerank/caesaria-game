@@ -105,7 +105,7 @@ void BuildMenu::initialize()
   Size textSize;
   Font font = Font::create( FONT_2 );
 
-  VariantMap allItems = SaveAdapter::load( SETTINGS_RC_PATH( buildMenuModel ) );
+  VariantMap allItems = config::load( SETTINGS_RC_PATH( buildMenuModel ) );
   VariantMap config = allItems.get( city::development::toString( _branch ) ).toMap();
   VariantList submenu = config.get( "submenu" ).toList();
   VariantList buildings = config.get( "buildings" ).toList();

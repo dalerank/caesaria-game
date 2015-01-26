@@ -90,7 +90,8 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     for( unsigned int k=0; k < number4burn; k++ )
     {
       ConstructionPtr building = ctrs.random();
-      building->collapse();
+      if( building.isValid() && !building->isDeleted() )
+        building->collapse();
     }
   }
 }
@@ -124,6 +125,10 @@ VariantMap RandomDamage::save() const
 RandomDamage::RandomDamage() : _d( new Impl )
 {
   _d->isDeleted = false;
+  _d->minPopulation = 0;
+  _d->maxPopulation = 9999;
+  _d->strong = 25;
+  _d->priority = 0;
 }
 
 }//end namespace events
