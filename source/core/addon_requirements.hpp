@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
 #define __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
@@ -33,15 +33,12 @@ namespace addon
 
 enum Type
 {
-  df = 0
+  mainMenu=0,
+  level,
+  briefing
 };
 
 const unsigned int API_VERSION = 0x1001;
-
-struct GameBridge
-{
-
-};
 
 struct GameInfo
 {

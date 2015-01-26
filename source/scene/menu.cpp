@@ -494,10 +494,10 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::init();  
+  steamapi::init();
 
-  std::string steamName = steamapi::Handler::userName();
-  _d->userImage = steamapi::Handler::userImage();
+  std::string steamName = steamapi::userName();
+  _d->userImage = steamapi::userImage();
   if( steamName.empty() )
   {
     OSystem::error( "Error", "Cant login in Steam" );
