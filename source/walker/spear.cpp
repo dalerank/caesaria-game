@@ -21,9 +21,12 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::spear, Spear)
 
 SpearPtr Spear::create(PlayerCityPtr city)
 {

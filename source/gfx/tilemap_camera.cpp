@@ -202,8 +202,9 @@ void TilemapCamera::refresh(){  _d->tiles.clear(); }
 
 Tile* TilemapCamera::at(const Point& pos, bool overborder) const
 {
-  float koeff = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
-  Point virtPos = pos * koeff;
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
+  Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
   return _d->tmap->at( virtPos - _d->offset, overborder );
 }
 

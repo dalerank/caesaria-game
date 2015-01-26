@@ -26,9 +26,12 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
 typedef Priorities<TileOverlay::Type> NecessaryBuildings;
 
@@ -252,4 +255,9 @@ TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeT
   TraineeWalkerPtr ret( new TraineeWalker( city, traineeType ) );
   ret->drop();
   return ret;
+}
+
+WalkerPtr TraineeWalkerCreator::create(PlayerCityPtr city)
+{
+  return TraineeWalker::create( city, walker::trainee ).object();
 }

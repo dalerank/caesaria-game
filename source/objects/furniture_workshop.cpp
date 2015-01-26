@@ -22,9 +22,12 @@
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 #include "timber_logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY( objects::furniture_workshop, FurnitureWorkshop)
 
 bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
 {

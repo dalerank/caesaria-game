@@ -36,7 +36,7 @@ public:
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
-  good::Type goodType() const;
+  good::Product goodType() const;
 
 private:
   GoodsUpdater( PlayerCityPtr city );

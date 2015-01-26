@@ -25,9 +25,12 @@
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include <core/logger.hpp>
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::high_bridge, HighBridge)
 
 namespace {
   const Point spanswOffset = Point( 12, -43 );

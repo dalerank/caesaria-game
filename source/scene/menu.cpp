@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "menu.hpp"
 
@@ -51,6 +51,7 @@
 #include "gui/package_options_window.hpp"
 #include "core/timer.hpp"
 #include "core/variant_map.hpp"
+#include "events/dispatcher.hpp"
 #include "core/utils.hpp"
 #ifdef CAESARIA_USE_STEAM
   #include "steam.hpp"
@@ -163,7 +164,7 @@ void StartMenu::Impl::showLanguageOptions()
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
-  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   std::string currentLang = SETTINGS_VALUE( language ).toString();
   int currentIndex = -1;
   foreach( it, languages )
@@ -190,7 +191,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   std::string talksArchive;
-  VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )
@@ -239,23 +240,16 @@ void StartMenu::Impl::resolveCredits()
                          "gathanase (gathanase@gmail.com) render, game mechanics ",
                          "gecube (gb12335@gmail.com)",
                          "pecunia (pecunia@heavengames.com) game mechanics",
-                         "tracertong",
-                         "VladRassokhin",
-                         "hellium",
-                         "pufik6666",
-                         "andreibranescu",
                          "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
-                         "akuskis (?) aqueduct system",
-                         "rovanion",
-                         "nickers (2nickers@gmail.com)",
-                         "ImperatorPrime",
-                         "veprbl",
-                         "ramMASTER",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
+                         "akuskis (?) aqueduct system",
+                         "ImperatorPrime, nickers, veprbl, ramMASTER",
+                         "tracertong, VladRassokhin, hellium",
+                         "pufik6666, andreibranescu, rovanion",
                          " ",
                          _("##operations_manager##"),
                          " ",
-                         "Max Mironchik (?) "
+                         "Max Mironchik (?) ",
                          " ",
                          _("##testers##"),
                          " ",
@@ -266,17 +260,19 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##graphics##"),
                          " ",
-                         "Dmitry Plotnikov",
-                         "dimitrius (caesar-iii.ru)",
-                         "aneurysm (4pda.ru)",
+                         "Dmitry Plotnikov",                         
+                         " ",
+                         _("##music##"),
+                         " ",
+                         "Aliaksandr BeatCheat (www.beatcheat.net)",
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko (?)",
+                         "Alexander Klimenko, Manuel Alvarez",
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "vk.com/caesaria-game",
+                         "vk.com/caesaria-game, dimitrius (caesar-iii.ru), aneurysm (4pda.ru)",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
@@ -412,7 +408,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
 
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
                                                       Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map",
+                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
                                                       -1 );
   wnd->setCenter( parent->center() );
   wnd->setMayDelete( false );
@@ -463,14 +459,14 @@ void StartMenu::initialize()
   _d->bgPicture = Picture::load( resName, 1);
 
   // center the bgPicture on the screen
-  Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
+  Size tmpSize = (_d->engine->virtualSize() - _d->bgPicture.size())/2;
   _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
 
   _d->game->gui()->clear();
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
-  Size scrSize = _d->engine->screenSize();
+  Size scrSize = _d->engine->virtualSize();
   gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
                                                               Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
                                                               "logo_rdt", 1, 2, 2, 2 );
@@ -500,10 +496,10 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::init();  
+  steamapi::init();
 
-  std::string steamName = steamapi::Handler::userName();
-  _d->userImage = steamapi::Handler::userImage();
+  std::string steamName = steamapi::userName();
+  _d->userImage = steamapi::userImage();
   if( steamName.empty() )
   {
     OSystem::error( "Error", "Cant login in Steam" );
@@ -519,6 +515,14 @@ void StartMenu::initialize()
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
 #endif
+}
+
+void scene::StartMenu::afterFrame()
+{
+  Base::afterFrame();
+
+  static unsigned int saveTime = 0;
+  events::Dispatcher::instance().update( *_d->game, saveTime++ );
 }
 
 int StartMenu::result() const{  return _d->result;}

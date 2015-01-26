@@ -34,9 +34,12 @@
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::rioter, Rioter)
 
 class Rioter::Impl
 {

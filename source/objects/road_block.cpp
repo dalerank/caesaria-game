@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "road_block.hpp"
 #include "game/resourcegroup.hpp"
@@ -23,9 +23,12 @@
 #include "constants.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::roadBlock, RoadBlock)
 
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 RoadBlock::RoadBlock()

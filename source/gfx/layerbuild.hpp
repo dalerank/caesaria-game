@@ -39,6 +39,7 @@ public:
   virtual void beforeRender(Engine &engine);
   virtual void afterRender(Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
+  virtual void renderUi(Engine &engine);
 
   static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
 

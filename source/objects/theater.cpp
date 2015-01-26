@@ -21,9 +21,12 @@
 #include "game/resourcegroup.hpp"
 #include "actor_colony.hpp"
 #include "walker/walker.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::theater, Theater)
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, Size(2))
 {

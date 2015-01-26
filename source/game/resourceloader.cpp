@@ -46,7 +46,7 @@ ResourceLoader::~ResourceLoader(){  }
 
 void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
-  VariantMap archives = SaveAdapter::load( path2model );
+  VariantMap archives = config::load( path2model );
   foreach( a, archives )
   {
     Path absArchivePath( a->second.toString() );
@@ -81,7 +81,7 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
 {
   if( archiveInfo.isOpen() )
   {
-    VariantMap vm = SaveAdapter::load( archiveInfo );
+    VariantMap vm = config::load( archiveInfo );
 
     VariantList atlasNames = vm.get( atlasListSection ).toList();
     foreach( it, atlasNames )

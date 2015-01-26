@@ -217,7 +217,13 @@ unsigned int hash(const TilePos& pos)
 
 Point tilepos2screen(const TilePos& pos)
 {
-  return Point( tilemap::x_tileBase * (pos.i()+pos.j()), tilemap::y_tileBase * pos.z() );
+  return Point( tilemap::x_tileBase * (pos.j()+pos.i()),
+                tilemap::y_tileBase * (pos.j()-pos.i()) );
+}
+
+TilePos screen2tilepos( const Point& point, int mapsize )
+{
+  return TilePos( 0, 0 );
 }
 
 void decode(Tile& tile, const int bitset)

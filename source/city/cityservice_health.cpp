@@ -108,7 +108,7 @@ std::string HealthCare::reason() const
       std::set<int> availableTypes;
       availableTypes.insert( avTypes[ i ] );
 
-      HouseList houses = Statistic::getEvolveHouseReadyBy( _city(), availableTypes );
+      HouseList houses = statistic::getEvolveHouseReadyBy( _city(), availableTypes );
       if( houses.size() > 0 )
       {
         reasons << avReasons[i];

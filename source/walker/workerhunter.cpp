@@ -31,8 +31,11 @@
 #include "corpse.hpp"
 #include "core/foreach.hpp"
 #include "helper.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)
 
 namespace {
 CAESARIA_LITERALCONST(priority)

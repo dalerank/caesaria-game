@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_APPLICATION_H_INCLUDED__
 #define __CAESARIA_APPLICATION_H_INCLUDED__
 
@@ -25,6 +24,7 @@
 #include "core/signals.hpp"
 #include "scene/base.hpp"
 #include "gfx/engine.hpp"
+#include "scene/constants.hpp"
 #include "enums.hpp"
 
 class Scene;
@@ -63,7 +63,7 @@ public:
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier(int percent);
   int timeMultiplier() const;
-  void setNextScreen(ScreenType screen);
+  void setNextScreen( scene::ScreenType screen);
   bool load(std::string filename);
 
 public signals:

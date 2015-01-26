@@ -45,6 +45,7 @@ public:
   virtual bool haveEvent( NEvent& event ) = 0;
 
   void setScreenSize( Size size );
+  Size virtualSize() const;
   Size screenSize() const;
 
   bool isFullscreen() const;
@@ -84,7 +85,7 @@ public:
 protected:
   static Engine* _instance;
 
-  Size _srcSize;
+  Size _srcSize, _virtualSize;
   std::map< int, int > _flags;
 };
 

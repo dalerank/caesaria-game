@@ -18,9 +18,11 @@
 #include "lion.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
-//#include "corpse.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::lion, Lion)
 
 LionPtr Lion::create(PlayerCityPtr city)
 {

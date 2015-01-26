@@ -102,27 +102,27 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
   //number of animations with goods + emmigrants + immigrants
   //bool frontCart = false;
 
-  VariantMap config = SaveAdapter::load( model );
+  VariantMap config = config::load( model );
   foreach( it, config )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
 
     if( gtype != good::none )
     {
       VariantMap cartInfo = it->second.toMap();      
       Variant smallInfo = cartInfo.get( lc_small );
-      if( smallInfo.isValid() ) loadStage( gtype, it->first + lc_small, smallInfo.toMap(), stgCarts );
+      if( smallInfo.isValid() ) loadStage( gtype.toInt(), it->first + lc_small, smallInfo.toMap(), stgCarts );
 
       Variant bigInfo = cartInfo.get( lc_big );
-      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it->first + lc_big, bigInfo.toMap(), stgCarts );
+      if( bigInfo.isValid() ) loadStage( gtype.toInt() + animBigCart, it->first + lc_big, bigInfo.toMap(), stgCarts );
 
       Variant megaInfo = cartInfo.get( lc_mega );
-      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it->first + lc_mega, megaInfo.toMap(), stgCarts );
+      if( megaInfo.isValid() ) loadStage( gtype.toInt() + animMegaCart, it->first + lc_mega, megaInfo.toMap(), stgCarts );
     }
   }
 
   VariantMap imPureCart = config.get( "none" ).toMap();
-  loadGroup( good::none, imPureCart, stgCarts );
+  loadGroup( good::none.toInt(), imPureCart, stgCarts );
 
   VariantMap imScarbInfo = config.get( "immigrantScarb" ).toMap();
   loadGroup( animImmigrantCart, imScarbInfo, stgCarts );
@@ -282,7 +282,7 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
   Logger::warning( "AnimationBank: start loading animations from " + model.toString() );
   _d->loadStage( _d->objects, 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
 
-  VariantMap items = SaveAdapter::load( model );
+  VariantMap items = config::load( model );
 
   foreach( i, items )
   {
@@ -298,7 +298,7 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
     }
   }
 
-  items = SaveAdapter::load( basic );
+  items = config::load( basic );
   _d->loadGroup( animUnknown, items, Impl::stgSimple );
 }
 
@@ -323,7 +323,7 @@ void AnimationBank::Impl::fixCartOffset( int who, bool back, int addh )
 const Animation& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
 {
   int index = 0;
-  if( good != good::none )
+  if( good != good::none.toInt() )
   {
     if( capacity > animBigCart ) index = animMegaCart;
     else if( capacity > animSimpleCart ) index = animBigCart;

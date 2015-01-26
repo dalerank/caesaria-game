@@ -1,6 +1,6 @@
 { 
- fullscreen : false
- resolution : [ 1440, 800 ]
- language : "en"
- /*c3gfx : "./resources/gfx"*/
+  fullscreen : false
+  resolution : [ 1440, 800 ]
+  language : "en"
+  /*c3gfx : "./resources/gfx"*/
 }
