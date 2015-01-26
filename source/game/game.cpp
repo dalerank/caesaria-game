@@ -71,6 +71,7 @@
 #include <list>
 
 using namespace gfx;
+using namespace scene;
 
 class Game::Impl
 {

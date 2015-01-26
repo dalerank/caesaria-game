@@ -33,8 +33,8 @@ namespace addons
 
 PREDEFINE_CLASS_SMARTLIST(Addon, List)
 
-typedef void (*addonInitFunctor)(const GameInfo& gameInfo);
-typedef void (*addonGetVersionFunctor)(const GameInfo& gameInfo);
+typedef void (*addonInitFunctor)(const addon::GameInfo& gameInfo);
+typedef void (*addonGetVersionFunctor)(const addon::GameInfo& gameInfo);
 
 class Addon::Impl
 {
@@ -91,7 +91,7 @@ bool Addon::open(vfs::Path path)
 
 void Addon::initialize()
 {
-  GameInfo gameInfo;
+  addon::GameInfo gameInfo;
   if( _d->isOpened && _d->funcInit )
   {
     _d->funcInit( gameInfo );

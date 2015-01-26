@@ -59,11 +59,10 @@ public:
   List< T > findChildren()
   {
     List< T > ret;
-    ConstChildIterator it = children().begin();
-    for( ; it != children().end(); ++it )
+    foreach( it, children() )
     {
-        if( T elm = safety_cast< T >( *it ) )
-            ret.push_back( elm );
+      if( T elm = safety_cast< T >( *it ) )
+          ret.push_back( elm );
     }
 
     return ret;

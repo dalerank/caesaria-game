@@ -22,6 +22,8 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/helper.hpp"
+#include "walker/helper.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "walkers_factory.hpp"
 
@@ -43,6 +45,7 @@ public:
 WalkerPtr DustCloud::create(PlayerCityPtr city)
 {
   WalkerPtr ret( new DustCloud( city ) );
+  ret->initialize( WalkerHelper::getOptions( walker::dustCloud ) );
   ret->drop();
 
   return ret;
@@ -53,6 +56,7 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
   for( int direction=0; direction < 8; direction++ )
   {
     DustCloud* dc = new DustCloud( city );
+    dc->initialize( WalkerHelper::getOptions( walker::dustCloud ) );
 
     TilePos offset;
     switch( direction )
@@ -96,8 +100,10 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
     _d->dst = _d->from + TilePos( 1, 1 );
   }
 
-  _d->dstPos = Point( _d->dst.i(), _d->dst.j() ) * 15 + Point( 7, 7 );
-  _d->srcPos = Point( _d->from.i(), _d->from.j() ) * 15 + Point( 7, 7 );
+  int yMultiplier = tilemap::cellSize().height();
+  Point xOffset( 0, yMultiplier );
+  _d->dstPos = Point( _d->dst.i(), _d->dst.j() ) * yMultiplier + xOffset;
+  _d->srcPos = Point( _d->from.i(), _d->from.j() ) * yMultiplier + xOffset;
 
   float delim = 6.f + math::random( 8 );
   _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (_d->from.distanceFrom( _d->dst ) * delim);
@@ -120,11 +126,15 @@ void DustCloud::timeStep(const unsigned long time)
   {
     PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
-    const int wcell = tilemap::cellSize().height();
 
-    Point tp = (_d->currentPos.toPoint() - tilemap::cellCenter()) / wcell;
-    TilePos ij( tp.x(), tp.y() );
-    setPos( ij );
+    int yMultiplier = tilemap::cellSize().height();
+    Point xOffset( 0, yMultiplier );
+    TilePos rpos = TilePos( (_d->currentPos.x() - xOffset.x()) / yMultiplier,
+                            (_d->currentPos.y() - xOffset.y()) / yMultiplier );
+
+    Tile& t = _city()->tilemap().at( rpos );
+    _setLocation( &t );
+
     _setWpos( _d->currentPos.toPoint() );
     _d->animation.update( time );
 
@@ -155,4 +165,17 @@ void DustCloud::save( VariantMap& stream ) const
 void DustCloud::load( const VariantMap& stream )
 {
   Walker::load( stream );
+}
+
+void DustCloud::initialize(const VariantMap &options)
+{
+  VariantMap anim = options.get( "animation" ).toMap();
+  if( !anim.empty() )
+  {
+    _d->animation.clear();
+    _d->animation.load( anim.get( "rc" ).toString(),
+                        anim.get( "start" ),
+                        anim.get( "frames" ) );
+    _d->animation.setDelay( anim.get( "delay" ) );
+  }
 }

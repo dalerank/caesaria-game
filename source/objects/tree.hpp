@@ -29,6 +29,8 @@ public:
   virtual bool isFlat() const;
   virtual void initTerrain(gfx::Tile &terrain);
   virtual bool build(const CityAreaInfo &info);
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
   virtual void destroy();
 private:
   bool _isFlat;

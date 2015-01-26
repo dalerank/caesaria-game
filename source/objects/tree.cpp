@@ -22,6 +22,7 @@
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects_factory.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -51,6 +52,20 @@ bool Tree::build( const CityAreaInfo& info )
   setPicture( Picture::load( picname ) );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
   return TileOverlay::build( info );
+}
+
+void Tree::save(VariantMap& stream) const
+{
+  TileOverlay::save( stream );
+
+  stream[ "treeFlat" ] = _isFlat;
+}
+
+void Tree::load(const VariantMap& stream)
+{
+  TileOverlay::load( stream );
+
+  _isFlat = stream.get( "treeFlat" );
 }
 
 void Tree::destroy()

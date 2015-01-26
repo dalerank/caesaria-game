@@ -36,6 +36,7 @@
 #include "walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "animation_bank.hpp"
 
 using namespace constants;
 
@@ -48,8 +49,6 @@ namespace layer
 class Layer::Impl
 {
 public:
-  //typedef std::vector<Tile*> TileQueue;
-  //typedef std::map<Renderer::Pass, TileQueue> RenderQueue;
   typedef std::set<int> AlwaysDrawObjects;
 
   Point lastCursorPos;
@@ -62,7 +61,7 @@ public:
   PictureRef tooltipPic;
   int nextLayer;
   std::string tooltipText;
-  //RenderQueue renderQueue;
+  Picture terraintPic;
   Layer::WalkerTypes vwalkers;
   PictureRef tilePosText;
   Font debugFont;
@@ -75,30 +74,7 @@ public:
 
 void Layer::registerTileForRendering(Tile& tile)
 {
-  /*__D_IMPL(_d,Layer)
-  if( tile.rov() != 0 )
-  {
-    Renderer::PassQueue passQueue = tile.rov()->passQueue();
-    foreach( pass, passQueue )
-    {
-      _d->renderQueue[ *pass ].push_back( &tile );
-    }
-  }*/
 }
-
-/*void Layer::renderPass( Engine& engine, Renderer::Pass pass )
-{
-  // building foregrounds and animations
-  __D_IMPL(_d,Layer)
-  Impl::TileQueue& tiles = _d->renderQueue[ pass ];
-  Point offset = _d->camera->offset();
-  foreach( tile, tiles )
-  {
-    drawPass( engine, *(*tile), offset, pass );
-  }
-
-  tiles.clear();
-}*/
 
 void Layer::renderUi(Engine& engine)
 {
@@ -305,17 +281,10 @@ void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   const TilesArray& visibleTiles = _d->camera->tiles();
-  const TilesArray& flatTiles = _d->camera->flatTiles();
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
-
-  // FIRST PART: draw all flat land (walkable/boatable)
-  Tile* tile;
-  foreach( it, flatTiles )
-  {
-    drawTile( engine, **it, camOffset );
-  }
+  drawLands( engine, _d->camera );
 
   DrawOptions& opts = DrawOptions::instance();
   if( opts.isFlag( DrawOptions::shadowOverlay ) )
@@ -326,7 +295,7 @@ void Layer::render( Engine& engine)
   //int r0=0, r1=0, r2=0;
   foreach( it, visibleTiles )
   {
-    tile = *it;
+    Tile* tile = *it;
     int z = tile->epos().z();
 
     drawProminentTile( engine, *tile, camOffset, z, false );
@@ -402,15 +371,15 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   if( !tile.rwd() )
-  {
+  {    
     tile.setWasDrawn();
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    //drawPass( engine, tile, offset, Renderer::ground );
+    //drawPass( engine, tile, offset, Renderer::groundAnimation );
 
     if( tile.rov().isValid() )
     {
-      Size size = tile.rov()->size();
-      if( size.width() > 1 )
+      //Size size = tile.rov()->size();
+      /*if( size.width() > 1 )
       {
         __D_IMPL(_d,Layer)
         Tilemap& tmap = _d->city->tilemap();
@@ -419,7 +388,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
           {
             drawPass( engine, tmap.at( tile.pos() + TilePos( i, j ) ), offset, Renderer::ground );
           }
-      }
+      }*/
 
       registerTileForRendering( tile );     
       drawPass( engine, tile, offset, Renderer::overlay );
@@ -444,6 +413,71 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
     engine.draw( *pic, tile->mappos() + offset );
+  }
+}
+
+void Layer::drawLands( Engine& engine, Camera* camera )
+{
+  const TilesArray& flatTiles = camera->flatTiles();
+  const TilesArray& visibleTiles = camera->tiles();
+  const Picture& terrainPic = _dfunc()->terraintPic;
+  Point camOffset = camera->offset();
+
+  // FIRST PART: draw all flat land (walkable/boatable)
+  foreach( it, flatTiles )
+  {
+    drawPass( engine, **it, camOffset, Renderer::ground );
+    drawPass( engine, **it, camOffset, Renderer::groundAnimation );
+
+    drawTile( engine, **it, camOffset );
+  }
+
+  foreach( it, visibleTiles )
+  {
+    Tile& t = **it;
+    if( !t.isFlat() )
+    {
+      if( t.rov().isNull() )
+      {
+        Tile* master = t.masterTile();
+
+        if( 0 == master )    // single-tile
+        {
+          drawPass( engine, t, camOffset, Renderer::ground );
+          drawPass( engine, t, camOffset, Renderer::groundAnimation );
+          continue;
+        }
+
+        // multi-tile: draw the master tile.
+        // and it is time to draw the master tile
+        if( master->epos().z() == t.epos().z() && !master->rwd() )
+        {
+          drawPass( engine, *master, camOffset, Renderer::ground );
+          drawPass( engine, *master, camOffset, Renderer::groundAnimation );
+        }
+      }
+      else
+      {
+        Size size = t.rov()->size();
+        if( size.width() > 1 )
+        {
+          for( int i=0; i < size.width(); i++ )
+            for( int j=0; j < size.height(); j++ )
+            {
+              TilePos tpos = t.epos() + TilePos( i, j );
+              Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
+                               tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
+
+              engine.draw( terrainPic, mappos + camOffset );
+            }
+        }
+        else
+        {
+          drawPass( engine, t, camOffset, Renderer::ground );
+          drawPass( engine, t, camOffset, Renderer::groundAnimation );
+        }
+      }
+    }
   }
 }
 
@@ -611,6 +645,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->currentTile = 0;
 
   _d->posMode = 0;
+  _d->terraintPic = MetaDataHolder::randomPicture( objects::terrain, 1 );
   _d->tilePosText.init( Size( 240, 80 ) );
 }
 

@@ -55,14 +55,14 @@ void SplashScreen::initialize()
   _d->background = Picture::load( "logo", 1 );
 
   // center the background on the screen
-  Size s = (engine.screenSize() - _d->background.size()) / 2;
+  Size s = (engine.virtualSize() - _d->background.size()) / 2;
   _d->background.setOffset( Point( s.width(), -s.height() ) );
 
   _d->textPic.init( Size( _d->background.width(), 30 ) );
-  _d->textPic->setOffset( Point( (engine.screenSize().width() - _d->textPic->width()) / 2,
+  _d->textPic->setOffset( Point( (engine.virtualSize().width() - _d->textPic->width()) / 2,
                                   _d->background.offset().y() - _d->background.height() - 5 ) );
 
-  _d->fadetx.init( engine.screenSize() );
+  _d->fadetx.init( engine.virtualSize() );
   _d->fadetx->fill( NColor(0xff, 0, 0, 0), Rect() );
 }
 
