@@ -251,7 +251,7 @@ void init()
   if( SteamUser()->BLoggedOn() )
   {
     Logger::warning( "Try receive steamID:" );
-    glbSteamId = SteamUser()->GetSteamID();
+    glbUserStats.steamId = SteamUser()->GetSteamID();
   }
   else
   {
