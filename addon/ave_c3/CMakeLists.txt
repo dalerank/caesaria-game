@@ -11,8 +11,8 @@ add_definitions(-DCAESARIA_ADDON_DEFINED)
 aux_source_directory(. SOURCES_LIST)
 file(GLOB HEADERS_LIST "*.hpp")
 
-set( DEP_SOURCES_LIST
-      
+set( DEP_SOURCES_LIST "${BASE_SOURCE_DIR}/gfx/picture.cpp"
+
 )
 
 set(ADDON_FILENAME "avec3.addon")

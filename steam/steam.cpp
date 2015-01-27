@@ -145,7 +145,7 @@ public:
       // already set any achievements in UnlockAchievement
 
       // set stats
-      steamUserStats->SetStat( "NumGames", totalGamesPlayed );
+      steamUserStats->SetStat( "stat_num_games", totalGamesPlayed );
       steamUserStats->SetStat( "NumWins", totalNumWins );
       steamUserStats->SetStat( "NumLosses", totalNumLosses );
       // Update average feet / second stat
@@ -416,7 +416,7 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
         }
 
       // load stats
-      steamUserStats->GetStat( "NumGames", &totalGamesPlayed );
+      steamUserStats->GetStat( "stat_num_games", &totalGamesPlayed );
       steamUserStats->GetStat( "NumWins", &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
     }
