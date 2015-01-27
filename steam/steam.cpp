@@ -27,15 +27,17 @@ namespace steamapi
 #define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }
 
 static const AppId_t CAESARIA_STEAM_APPID=327640;
+CAESARIA_LITERALCONST(stat_num_games)
 
 struct Achievement
 {
   AchievementType id;
   const char* uniqueName;
-  char name[128];
+  char caption[128];
   char description[256];
   bool reached;
   int idIconImage;
+  gfx::Picture image;
 };
 
 Achievement glbAchievements[achievementNumber] =
@@ -52,7 +54,7 @@ public:
   STEAM_CALLBACK( UserStats, updateAchievementInfo, UserAchievementStored_t, _callbackAchievementStored );
 
   CSteamID steamId;
-  gfx::Picture const* avatarImage;
+  gfx::Picture avatarImage;
   ISteamUserStats* steamUserStats;
   int32 campaignFirstMission;
   int32 totalGamesPlayed;
@@ -60,13 +62,13 @@ public:
   int32 totalNumLosses;
   bool needStoreStats;
   bool statsValid;
+  Signal0<> onStatsReceivedSignal;
 
   UserStats() :
     _callbackUserStatsReceived( this, &UserStats::receivedUserStats ),
     _callbackUserStatsStored( this, &UserStats::updateUserStats ),
     _callbackAchievementStored( this, &UserStats::updateAchievementInfo )
   {
-    avatarImage = 0;
     totalGamesPlayed = 0;
     totalNumWins = 0;
     campaignFirstMission = 0;
@@ -78,6 +80,7 @@ public:
 
   void requestStats()
   {
+    steamUserStats = SteamUserStats();
     if( !steamUserStats )
       return;
 
@@ -145,7 +148,7 @@ public:
       // already set any achievements in UnlockAchievement
 
       // set stats
-      steamUserStats->SetStat( "NumGames", totalGamesPlayed );
+      steamUserStats->SetStat( lc_stat_num_games, totalGamesPlayed );
       steamUserStats->SetStat( "NumWins", totalNumWins );
       steamUserStats->SetStat( "NumLosses", totalNumLosses );
       // Update average feet / second stat
@@ -231,9 +234,6 @@ bool connect()
     return false;
   }  
 
-  Logger::warning("Reqesting Current Stats:" );
-  glbUserStats.requestStats();
-
   return true;
 }
 
@@ -258,6 +258,9 @@ void init()
     Logger::warning( "SteamUser is null" );
   }
 #endif
+
+  Logger::warning("Reqesting Current Stats:" );
+  glbUserStats.requestStats();
 }
 
 void evaluateAchievements()
@@ -276,12 +279,27 @@ void unlockAchievement(AchievementType achivId)
 {
   if( achivId >=0 && achivId < achievementNumber )
   {
-    glbUserStats.unlockAchievement( glbAchievements[ achivId ] );
+    if( !glbAchievements[ achivId ].reached )
+      glbUserStats.unlockAchievement( glbAchievements[ achivId ] );
   }
   else
   {
     Logger::warning( "Unknown achievement ID:%d", achivId );
   }
+}
+
+const gfx::Picture& achievementImage(AchievementType achivId)
+{
+  if( achivId >=0 && achivId < achievementNumber )
+  {
+    return glbAchievements[ achivId ].image;
+  }
+  else
+  {
+    Logger::warning( "Unknown achievement ID:%d", achivId );
+  }
+
+  return gfx::Picture::getInvalid();
 }
 
 std::string userName()
@@ -295,45 +313,54 @@ std::string userName()
   return playerName;
 }
 
+const gfx::Picture& getSteamImage( int id )
+{
+  if ( id != -1 )
+  {
+    // We haven't created a texture for this image index yet, do so now
+    // Get the image size from Steam, making sure it looks valid afterwards
+    uint32 uAvatarWidth, uAvatarHeight;
+    SteamUtils()->GetImageSize( id, &uAvatarWidth, &uAvatarHeight );
+
+    Size newSize( uAvatarWidth, uAvatarHeight );
+    if( newSize.area() > 0 )
+    {
+      // Get the actual raw RGBA data from Steam and turn it into a texture in our game engine
+      const unsigned int imgSize = uAvatarWidth * uAvatarHeight * 4;
+      std::vector<unsigned char> avatarRGBA( imgSize );
+      SteamUtils()->GetImageRGBA( id, (uint8*)avatarRGBA.data(), imgSize );
+
+      int32* rImg = (int32*)avatarRGBA.data();
+      for( unsigned int y=0; y < uAvatarHeight; y++ )
+        for( unsigned int x=0; x< uAvatarWidth; x++ )
+        {
+          NColor cl( rImg[ y * uAvatarWidth + x ] );
+          rImg[ y * uAvatarWidth + x ] = cl.abgr();
+        }
+
+      return *gfx::Picture::create( newSize, avatarRGBA.data() );
+    }
+  }
+
+  return gfx::Picture::getInvalid();
+}
+
 const gfx::Picture& userImage()
 {
-  glbUserStats.avatarImage = &gfx::Picture::getInvalid();
   // We also want to use the Steam Avatar image inside the HUD if it is available.
   // We look it up via GetMediumFriendAvatar, which returns an image index we use
   // to look up the actual RGBA data below.
 
   if( glbUserStats.steamId.IsValid() )
   {
-    int iImage = SteamFriends()->GetMediumFriendAvatar( glbUserStats.steamId );
-    if ( iImage != -1 )
+    if( ( !glbUserStats.avatarImage.isValid() ) )
     {
-      // We haven't created a texture for this image index yet, do so now
-      // Get the image size from Steam, making sure it looks valid afterwards
-      uint32 uAvatarWidth, uAvatarHeight;
-      SteamUtils()->GetImageSize( iImage, &uAvatarWidth, &uAvatarHeight );
-
-      Size newSize( uAvatarWidth, uAvatarHeight );
-      if( newSize.area() > 0 && ( !glbUserStats.avatarImage || glbUserStats.avatarImage->size() != newSize) )
-      {
-        // Get the actual raw RGBA data from Steam and turn it into a texture in our game engine
-        const unsigned int imgSize = uAvatarWidth * uAvatarHeight * 4;
-        std::vector<unsigned char> avatarRGBA( imgSize );
-        SteamUtils()->GetImageRGBA( iImage, (uint8*)avatarRGBA.data(), imgSize );
-
-        int32* rImg = (int32*)avatarRGBA.data();
-        for( unsigned int y=0; y < uAvatarHeight; y++ )
-          for( unsigned int x=0; x< uAvatarWidth; x++ )
-          {
-            NColor cl( rImg[ y * uAvatarWidth + x ] );
-            rImg[ y * uAvatarWidth + x ] = cl.abgr();
-          }
-
-        glbUserStats.avatarImage = gfx::Picture::create( newSize, avatarRGBA.data() );
-      }
+      int iImage = SteamFriends()->GetMediumFriendAvatar( glbUserStats.steamId );
+      glbUserStats.avatarImage = getSteamImage( iImage );
     }
   }
 
-  return *glbUserStats.avatarImage;
+  return glbUserStats.avatarImage;
 }
 
 //-----------------------------------------------------------------------------
@@ -365,6 +392,8 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
     }
   }
 }
+
+Signal0<>& onStatsReceived() { return glbUserStats.onStatsReceivedSignal; }
 
 //-----------------------------------------------------------------------------
 // Purpose: An achievement was stored
@@ -411,20 +440,38 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
         {
           Achievement &ach = glbAchievements[iAch];
           steamUserStats->GetAchievement( ach.uniqueName, &ach.reached );
-          sprintf( ach.name, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "name" ) );
+          sprintf( ach.caption, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "name" ) );
           sprintf( ach.description, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "desc" ) );
+
+          ach.idIconImage = steamUserStats->GetAchievementIcon( ach.uniqueName );
+          ach.image = getSteamImage( ach.idIconImage );
         }
 
       // load stats
-      steamUserStats->GetStat( "NumGames", &totalGamesPlayed );
+      steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
       steamUserStats->GetStat( "NumWins", &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
+      emit onStatsReceivedSignal();
     }
     else
     {
       Logger::warning( "RequestStats - failed, %d\n", pCallback->m_eResult );
     }
-    }
+  }
+}
+
+std::string achievementCaption(AchievementType achivId)
+{
+  if( achivId >=0 && achivId < achievementNumber )
+  {
+    return glbAchievements[ achivId ].caption;
+  }
+  else
+  {
+    Logger::warning( "Unknown achievement ID:%d", achivId );
+  }
+
+  return "unknown_achv";
 }
 
 bool isAchievementReached(AchievementType achivId)

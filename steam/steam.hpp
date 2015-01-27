@@ -20,6 +20,7 @@
 
 #include <string>
 #include "gfx/picture.hpp"
+#include "core/signals.hpp"
 
 namespace steamapi
 {
@@ -40,9 +41,13 @@ void init();
 void evaluateAchievements();
 void unlockAchievement( AchievementType achivId );
 bool isAchievementReached( AchievementType achivId );
+const gfx::Picture& achievementImage( AchievementType achivId );
+std::string achievementCaption( AchievementType achivId );
 
 std::string userName();
 const gfx::Picture& userImage();
+
+Signal0<>& onStatsReceived();
 
 }
 

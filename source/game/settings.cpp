@@ -243,7 +243,6 @@ void Settings::checkCmdOptions(char* argv[], int argc)
       i++;
     }
   }
-
 }
 
 void Settings::checkC3present()

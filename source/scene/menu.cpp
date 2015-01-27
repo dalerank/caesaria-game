@@ -53,9 +53,8 @@
 #include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/utils.hpp"
-#ifdef CAESARIA_USE_STEAM
-  #include "steam.hpp"
-#endif
+#include "gui/image.hpp"
+#include "steam.hpp"
 
 using namespace gfx;
 using namespace gui;
@@ -94,7 +93,7 @@ public:
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
   void resolveSelectFile( std::string fileName );
   void setPlayerName( std::string name );
-  void openSteamPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
+  void openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640" ); }
   void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
@@ -104,6 +103,7 @@ public:
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
   void playMenuSoundTheme();
+  void resolveSteamStats();
   void reload();
 };
 
@@ -135,6 +135,27 @@ void StartMenu::Impl::fitScreenResolution()
 void StartMenu::Impl::playMenuSoundTheme()
 {
   audio::Engine::instance().play( "rome6", 50, audio::themeSound );
+}
+
+void scene::StartMenu::Impl::resolveSteamStats()
+{
+#ifdef CAESARIA_USE_STEAM
+  int offset = 0;
+  for( int k=0; k < steamapi::achievementNumber; k++ )
+  {
+    steamapi::AchievementType achivId = steamapi::AchievementType(k);
+    if( steamapi::isAchievementReached( achivId ) )
+    {
+      gfx::Picture pic = steamapi::achievementImage( achivId );
+      if( pic.isValid() )
+      {
+        gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
+        img->setTooltipText( steamapi::achievementCaption( achivId ) );
+        offset += 65;
+      }
+    }
+  }
+#endif
 }
 
 void StartMenu::Impl::reload()
@@ -454,6 +475,7 @@ void StartMenu::handleEvent( NEvent& event )
 
 void StartMenu::initialize()
 {
+  events::Dispatcher::instance().reset();
   Logger::warning( "ScreenMenu: initialize start");
   std::string resName = SETTINGS_VALUE( titleResource ).toString();
   _d->bgPicture = Picture::load( resName, 1);
@@ -514,6 +536,8 @@ void StartMenu::initialize()
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
+
+  steamapi::onStatsReceived().connect( _d.data(), &Impl::resolveSteamStats );
 #endif
 }
 
@@ -523,6 +547,10 @@ void scene::StartMenu::afterFrame()
 
   static unsigned int saveTime = 0;
   events::Dispatcher::instance().update( *_d->game, saveTime++ );
+
+#ifdef CAESARIA_USE_STEAM
+  steamapi::update();
+#endif
 }
 
 int StartMenu::result() const{  return _d->result;}
