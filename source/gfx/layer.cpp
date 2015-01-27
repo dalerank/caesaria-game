@@ -362,7 +362,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->epos().z() == depth && !master->rwd() )
+  if( !master->rwd() && master->epos().z() == depth )
   {
     drawTile( engine, *master, offset );
   }
@@ -437,20 +437,14 @@ void Layer::drawLands( Engine& engine, Camera* camera )
     Tile& t = **it;
     if( !t.isFlat() )
     {
+      Tile* master = t.masterTile();
+      master = master == 0 ? &t : master;
+
       if( t.rov().isNull() )
       {
-        Tile* master = t.masterTile();
-
-        if( 0 == master )    // single-tile
-        {
-          drawPass( engine, t, camOffset, Renderer::ground );
-          drawPass( engine, t, camOffset, Renderer::groundAnimation );
-          continue;
-        }
-
         // multi-tile: draw the master tile.
         // and it is time to draw the master tile
-        if( master->epos().z() == t.epos().z() && !master->rwd() )
+        if( !master->rwd() && master == &t )
         {
           drawPass( engine, *master, camOffset, Renderer::ground );
           drawPass( engine, *master, camOffset, Renderer::groundAnimation );
@@ -459,22 +453,25 @@ void Layer::drawLands( Engine& engine, Camera* camera )
       else
       {
         Size size = t.rov()->size();
-        if( size.width() > 1 )
+        if( !master->rwd() && master == &t )
         {
-          for( int i=0; i < size.width(); i++ )
-            for( int j=0; j < size.height(); j++ )
-            {
-              TilePos tpos = t.epos() + TilePos( i, j );
-              Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
-                               tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
+          if( size.width() > 1 )
+          {
+            for( int i=0; i < size.width(); i++ )
+              for( int j=0; j < size.height(); j++ )
+              {
+                TilePos tpos = t.epos() + TilePos( i, j );
+                Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
+                                 tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
 
-              engine.draw( terrainPic, mappos + camOffset );
-            }
-        }
-        else
-        {
-          drawPass( engine, t, camOffset, Renderer::ground );
-          drawPass( engine, t, camOffset, Renderer::groundAnimation );
+                engine.draw( terrainPic, mappos + camOffset );
+              }
+          }
+          else
+          {
+            drawPass( engine, *master, camOffset, Renderer::ground );
+            drawPass( engine, *master, camOffset, Renderer::groundAnimation );
+          }
         }
       }
     }

@@ -13,11 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdlib>
 #include <iostream>
-
 
 #include "core/addon_requirements.hpp"
 
@@ -26,10 +25,10 @@ extern "C"
 
 void initialize(const addon::GameInfo& gameInfo)
 {
-    std::cout << "Im initialized" << std::endl;
+  std::cout << "Im initialized" << std::endl;
 }
 
 unsigned int getApiVersion() { return addon::API_VERSION; }
-unsigned int getLevel() { return 0; }
+unsigned int getLevel() { return addon::mainMenu; }
 
 }

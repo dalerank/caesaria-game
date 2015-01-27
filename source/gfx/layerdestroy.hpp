@@ -42,7 +42,6 @@ public:
 private:
   Destroy( Camera& camera, PlayerCityPtr city );
 
-  void _drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset);
   void _clearAll();
   unsigned int _checkMoney4destroy( const Tile& tile );
 

@@ -24,7 +24,7 @@
 #include "core/addon_requirements.hpp"
 #include "core/singleton.hpp"
 
-namespace addons
+namespace addon
 {
 
 class Addon : public ReferenceCounted
@@ -50,7 +50,7 @@ public:
 
   void load( vfs::Directory folder );
   void load( vfs::Path path, bool ls );
-  void initAll();
+  void initAddons4level( addon::Type type );
 
 private:
   Manager();

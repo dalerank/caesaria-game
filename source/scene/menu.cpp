@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "menu.hpp"
 
@@ -260,17 +260,19 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##graphics##"),
                          " ",
-                         "Dmitry Plotnikov",
-                         "dimitrius (caesar-iii.ru)",
-                         "aneurysm (4pda.ru)",
+                         "Dmitry Plotnikov",                         
+                         " ",
+                         _("##music##"),
+                         " ",
+                         "Aliaksandr BeatCheat (www.beatcheat.net)",
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko (?)",
+                         "Alexander Klimenko, Manuel Alvarez",
                          " ",
                          _("##thanks_to##"),
                          " ",
-                         "vk.com/caesaria-game",
+                         "vk.com/caesaria-game, dimitrius (caesar-iii.ru), aneurysm (4pda.ru)",
                          "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
                          "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
                          "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
@@ -494,10 +496,10 @@ void StartMenu::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::init();  
+  steamapi::init();
 
-  std::string steamName = steamapi::Handler::userName();
-  _d->userImage = steamapi::Handler::userImage();
+  std::string steamName = steamapi::userName();
+  _d->userImage = steamapi::userImage();
   if( steamName.empty() )
   {
     OSystem::error( "Error", "Cant login in Steam" );

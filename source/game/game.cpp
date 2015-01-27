@@ -244,9 +244,8 @@ void Game::Impl::initPictures()
 
 void Game::Impl::initAddons()
 {
-  addons::Manager& am = addons::Manager::instance();
+  addon::Manager& am = addon::Manager::instance();
   am.load( vfs::Directory( std::string( ":/addons" ) ) );
-  am.initAll();
 }
 
 void Game::Impl::initHotkeys()
@@ -468,12 +467,16 @@ bool Game::exec()
   }
 
   Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
     case SCREEN_MENU:
     {
       _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
-    } break;
+      am.initAddons4level( addon::mainMenu );
+    }
+    break;
+
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
@@ -483,15 +486,19 @@ bool Game::exec()
                                                         _d->saveTime, _d->timeX10,
                                                         _d->timeMultiplier, _d->manualTicksCounterX10,
                                                         _d->nextFilename, _d->restartFile );
-    } break;
+      am.initAddons4level( addon::level );
+    }
+    break;
+
     case SCREEN_BRIEFING:
     {
       _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
-    } break;
+      am.initAddons4level( addon::briefing );
+    }
+    break;
 
     default:
-    Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-    //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+      Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;

@@ -576,7 +576,7 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
 
   if( barbarians.size() < maxBarbariansGroups )
   {
-    BarbarianPtr brb = Barbarian::create( empire, Point( 1000, 0 ) );
+    BarbarianPtr brb = Barbarian::create( empire, Point( 1500, 100 ) );
     empire->addObject( ptr_cast<Object>( brb ) );
   }
 }

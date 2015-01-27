@@ -47,8 +47,6 @@ void Base::drawFrame(gfx::Engine& engine )
    engine.endRenderFrame();
 }
 
-void Base::handleEvent( NEvent& event ) {}
-void Base::afterFrame() {}
 void Base::stop(){ _isStopped = true;}
 
 void Base::update(gfx::Engine& engine )
