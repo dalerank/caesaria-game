@@ -28,6 +28,7 @@ namespace steamapi
 
 static const AppId_t CAESARIA_STEAM_APPID=327640;
 CAESARIA_LITERALCONST(stat_num_games)
+CAESARIA_LITERALCONST(stat_num_wins)
 
 struct Achievement
 {
@@ -42,8 +43,9 @@ struct Achievement
 
 Achievement glbAchievements[achievementNumber] =
 {
-  _ACH_ID( achievementNewVillage,  "achv_new_village"  ),
+  _ACH_ID( achievementFirstWin, "achv_first_win" ),
   _ACH_ID( achievementNewGraphics, "achv_new_graphics" ),
+  _ACH_ID( achievementNewVillage,  "achv_new_village"  ),
 };
 
 class UserStats
@@ -55,7 +57,6 @@ public:
 
   CSteamID steamId;
   gfx::Picture avatarImage;
-  ISteamUserStats* steamUserStats;
   int32 campaignFirstMission;
   int32 totalGamesPlayed;
   int32 totalNumWins;
@@ -75,12 +76,11 @@ public:
     totalNumLosses = 0;
     needStoreStats = false;
     statsValid = false;
-    steamUserStats = SteamUserStats();
   }
 
   void requestStats()
   {
-    steamUserStats = SteamUserStats();
+    ISteamUserStats* steamUserStats = SteamUserStats();
     if( !steamUserStats )
       return;
 
@@ -98,20 +98,10 @@ public:
 
     switch ( achievement.id )
     {
-    case achievementNewVillage:
-      if ( campaignFirstMission > 0 )
-      {
-        unlockAchievement( achievement );
-      }
-    break;
+    case achievementNewVillage: if(campaignFirstMission>0){unlockAchievement(achievement);} break;
+    case achievementFirstWin: if(totalNumWins>0){ unlockAchievement(achievement);} break;
 
-    /*case ACH_TRAVEL_FAR_ACCUM:
-      if ( m_flTotalFeetTraveled >= 5280 )
-      {
-              UnlockAchievement( achievement );
-      }
-    break;
-
+    /*
     case ACH_TRAVEL_FAR_SINGLE:
       if ( m_flGameFeetTraveled > 500 )
       {
@@ -126,6 +116,7 @@ public:
   //-----------------------------------------------------------------------------
   void unlockAchievement( Achievement &achievement )
   {
+    ISteamUserStats* steamUserStats = SteamUserStats();
     achievement.reached = true;
 
     // the icon may change once it's unlocked
@@ -143,13 +134,14 @@ public:
   //-----------------------------------------------------------------------------
   void storeStatsIfNecessary()
   {
+    ISteamUserStats* steamUserStats = SteamUserStats();
     if ( needStoreStats )
     {
       // already set any achievements in UnlockAchievement
 
       // set stats
       steamUserStats->SetStat( lc_stat_num_games, totalGamesPlayed );
-      steamUserStats->SetStat( "NumWins", totalNumWins );
+      steamUserStats->SetStat( lc_stat_num_wins, totalNumWins );
       steamUserStats->SetStat( "NumLosses", totalNumLosses );
       // Update average feet / second stat
       //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
@@ -247,20 +239,21 @@ void update()
 
 void init()
 {
-#ifndef CAESARIA_PLATFORM_WIN //strange bug on windows bl, access violation when using SteamUser()((
-  if( SteamUser()->BLoggedOn() )
+#ifndef CAESARIA_PLATFORM_WIN //steam not support mingw (
+  ISteamUser* user = SteamUser();
+  if( user->BLoggedOn() )
   {
     Logger::warning( "Try receive steamID:" );
-    glbUserStats.steamId = SteamUser()->GetSteamID();
+    glbUserStats.steamId = user->GetSteamID();
   }
   else
   {
     Logger::warning( "SteamUser is null" );
   }
-#endif
 
   Logger::warning("Reqesting Current Stats:" );
   glbUserStats.requestStats();
+#endif
 }
 
 void evaluateAchievements()
@@ -423,6 +416,7 @@ void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
 //-----------------------------------------------------------------------------
 void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
 {
+  ISteamUserStats* steamUserStats = SteamUserStats();
   if ( !steamUserStats )
     return;
 
@@ -449,7 +443,7 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
 
       // load stats
       steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
-      steamUserStats->GetStat( "NumWins", &totalNumWins );
+      steamUserStats->GetStat( lc_stat_num_wins, &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
       emit onStatsReceivedSignal();
     }
@@ -485,6 +479,13 @@ bool isAchievementReached(AchievementType achivId)
     Logger::warning( "Unknown achievement ID:%d", achivId );    
   }
   return false;
+}
+
+void missionWin()
+{
+  glbUserStats.totalNumWins++;
+  glbUserStats.totalGamesPlayed++;
+  evaluateAchievements();
 }
 
 }

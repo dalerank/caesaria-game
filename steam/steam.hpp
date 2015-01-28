@@ -29,6 +29,7 @@ enum AchievementType
 {
   achievementNewVillage = 0,
   achievementNewGraphics = 1,
+  achievementFirstWin = 2,
   achievementNumber
 };
 
@@ -38,8 +39,8 @@ void close();
 void update();
 void init();
 
-void evaluateAchievements();
 void unlockAchievement( AchievementType achivId );
+void missionWin();
 bool isAchievementReached( AchievementType achivId );
 const gfx::Picture& achievementImage( AchievementType achivId );
 std::string achievementCaption( AchievementType achivId );

@@ -42,7 +42,7 @@ const unsigned int API_VERSION = 0x1001;
 
 struct GameInfo
 {
-
+  //virtual void createPicture( const char* name, unsigned int width, unsigned int height, char* data ) = 0;
 };
 
 }

@@ -22,16 +22,11 @@ namespace events
 
 GameEventPtr MissionWin::create()
 {
-
+  steamapi::missionWin();
 }
 
-void MissionWin::_exec(Game& game, unsigned int)
-{
-}
-
+void MissionWin::_exec(Game& game, unsigned int) {}
 bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
-
-MissionWin::MissionWin()
-{}
+MissionWin::MissionWin() {}
 
 }

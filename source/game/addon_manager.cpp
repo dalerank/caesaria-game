@@ -120,7 +120,16 @@ Manager::~Manager() {}
 void Manager::load(vfs::Directory folder)
 {
   vfs::Entries flist = folder.getEntries();
-  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, ".addon" );
+  std::string addonExtension = ".unk";
+#if defined(CAESARIA_PLATFORM_WIN)
+  addonExtension = ".win";
+#elif defined(CAESARIA_PLATFORM_LINUX)
+  addonExtension = ".linux"
+#elif  defined(CAESARIA_PLATFORM_MACOSX)
+  addonExtension = ".macos"
+#endif
+
+  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, addonExtension );
 
   foreach( it, flist )
   {
