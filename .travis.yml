@@ -31,7 +31,7 @@ after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
 - cp $TRAVIS_BUILD_DIR/xcompile/mac_install_libs.sh install_libs.sh
 # Prepare ZIP archive
-- ZIPNAME=caesaria-0.4-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- ZIPNAME=caesaria-0.5-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
