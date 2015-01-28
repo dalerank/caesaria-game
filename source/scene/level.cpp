@@ -83,6 +83,7 @@
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
 #include "events/movecamera.hpp"
+#include "events/missionwin.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -151,9 +152,7 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->engine = &engine;
 }
 
-Level::~Level()
-{
-}
+Level::~Level() {}
 
 void Level::initialize()
 {
@@ -254,9 +253,11 @@ void Level::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
+#ifdef DEBUG
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+#endif
 
 #ifdef CAESARIA_USE_STEAM
   DialogBox* blackTexturesWarning = new DialogBox( ui.rootWidget(), Rect(), "PLEASE READ",
@@ -672,6 +673,12 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
     CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
     CONNECT( wnd, onContinueRules(), this, Impl::extendReign )
+  }
+
+  if( success )
+  {
+    events::GameEventPtr e = events::MissionWin::create();
+    e->dispatch();
   }
 }
 

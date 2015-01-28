@@ -4,7 +4,6 @@ CMakeLists.txt.user
 \#*#
 stdout.txt
 caesar3
-steam
 .travis.yml
 
 #coredump files

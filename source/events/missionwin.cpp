@@ -12,39 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
-#define __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
+#include "missionwin.hpp"
+#include "game/game.hpp"
+#include "steam.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
-  #ifdef CAESARIA_ADDON_DEFINED
-    #define  ADDON_EXPORT __declspec(dllexport)
-  #else
-    #define  ADDON_EXPORT __declspec(dllimport)
-  #endif 
-#else 
- #define ADDON_EXPORT
-#endif
-
-namespace addon
+namespace events
 {
 
-enum Type
+GameEventPtr MissionWin::create()
 {
-  mainMenu=0,
-  level,
-  briefing
-};
-
-const unsigned int API_VERSION = 0x1001;
-
-struct GameInfo
-{
-  //virtual void createPicture( const char* name, unsigned int width, unsigned int height, char* data ) = 0;
-};
-
+  steamapi::missionWin();
 }
 
-#endif // __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
+void MissionWin::_exec(Game& game, unsigned int) {}
+bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
+MissionWin::MissionWin() {}
+
+}

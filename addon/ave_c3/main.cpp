@@ -3275,7 +3275,7 @@ static const char* image =
 
 void initializeAchievement()
 {
-  char const* ptr = image;
+  /*char const* ptr = image;
   std::vector<unsigned long> pixels;
   pixels.resize( width * height );
 
@@ -3290,17 +3290,17 @@ void initializeAchievement()
 
 
   gfx::Picture* pic = gfx::Picture::create( Size( width, height ), (unsigned char*)&pixels[0] );
-  gfx::PictureBank::instance().setPicture( name, *pic );
+  gfx::PictureBank::instance().setPicture( name, *pic );*/
 }
 
 void initialize(const addon::GameInfo& gameInfo)
 {
-  bool reached = steamapi::isAchievementReached( steamapi::achievementNewGraphics );
+ /* bool reached = steamapi::isAchievementReached( steamapi::achievementNewGraphics );
   if( !reached )
   {
     steamapi::unlockAchievement( steamapi::achievementNewGraphics );
   }
-
+  */
 
 }
 
