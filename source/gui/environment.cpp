@@ -193,36 +193,36 @@ Widget *Ui::findWidget(int id)
 
 void Ui::deleteLater( Widget* ptrElement )
 {
-	try
-	{
+  try
+  {
     if( !ptrElement || !isMyChild( ptrElement ) )
-		{
-			return;
-		}
-
-		if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
     {
-			_d->focusedElement = WidgetPtr();
+      return;
     }
 
-		if( _d->hovered.object() == ptrElement || ptrElement->isMyChild( _d->hovered.object() ) )
-		{
-			_d->hovered = WidgetPtr();
-			_d->hoveredNoSubelement = WidgetPtr();
-		}
+    if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
+    {
+      _d->focusedElement = WidgetPtr();
+    }
+
+    if( _d->hovered.object() == ptrElement || ptrElement->isMyChild( _d->hovered.object() ) )
+    {
+      _d->hovered = WidgetPtr();
+      _d->hoveredNoSubelement = WidgetPtr();
+    }
 
     foreach( widget, _d->deletionQueue )
     {
       if( (*widget) == ptrElement )
       {
-				return;
+        return;
       }
     }
 
-		_d->deletionQueue.push_back( ptrElement );
-	}
-	catch(...)
-	{}
+    _d->deletionQueue.push_back( ptrElement );
+  }
+  catch(...)
+  {}
 }
 
 Widget* Ui::createWidget(const std::string& type, Widget* parent)
@@ -256,12 +256,12 @@ WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
 void Ui::_drawTooltip( unsigned int time )
 {
   // launch tooltip
-  if ( _d->toolTip.element.isNull()
-       && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != rootWidget()
-       && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
-       || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
-       && _d->hoveredNoSubelement->tooltipText().size()
-      )
+  if( _d->toolTip.element.isNull()
+      && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != rootWidget()
+      && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
+      || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
+      && _d->hoveredNoSubelement->tooltipText().size()
+    )
   {
     if( _d->hoveredNoSubelement.isValid() )
     {
@@ -271,14 +271,13 @@ void Ui::_drawTooltip( unsigned int time )
 
     _d->toolTip.element = _d->createStandartTooltip( this );
     _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
-    if( _d->toolTip.element->screenBottom() > (int)height() )
+    if( _d->toolTip.element->screenBottom() > (int)height() ||
+         _d->toolTip.element->screenLeft() < (int)0 )
     {
-      int delta = _d->toolTip.element->screenBottom() - height();
       Rect geom = _d->toolTip.element->absoluteRect();
-      geom -= Point( 0, delta );
+      geom.constrainTo( absoluteRect() );
       _d->toolTip.element->setGeometry( geom );
     }
-
   }
 
   if( _d->toolTip.element.isValid() && _d->toolTip.element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)

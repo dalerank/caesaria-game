@@ -15,6 +15,7 @@ include_directories(
   ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
+  ${STEAM_API_DIR}/public/opensteam
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -101,7 +102,6 @@ endif(UNIX)
 
 if(USE_STEAM)
   if(WIN32)
-    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/Steam.lib")
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
   elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")

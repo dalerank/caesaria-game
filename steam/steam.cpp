@@ -12,14 +12,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "steam.hpp"
 
 #ifdef CAESARIA_USE_STEAM
 
-#include "public/steam/steam_api.h"
 #include "core/osystem.hpp"
 #include "core/logger.hpp"
+#include "public/steam/steam_api.h"
 
 namespace steamapi
 {
@@ -40,6 +42,12 @@ struct Achievement
   int idIconImage;
   gfx::Picture image;
 };
+
+struct XClient
+{
+  ISteamUser* user;
+  ISteamUserStats* stats;
+} xclient;
 
 Achievement glbAchievements[achievementNumber] =
 {
@@ -78,15 +86,6 @@ public:
     statsValid = false;
   }
 
-  void requestStats()
-  {
-    ISteamUserStats* steamUserStats = SteamUserStats();
-    if( !steamUserStats )
-      return;
-
-    steamUserStats->RequestCurrentStats();
-  }
-
   //-----------------------------------------------------------------------------
   // Purpose: see if we should unlock this achievement
   //-----------------------------------------------------------------------------
@@ -116,14 +115,13 @@ public:
   //-----------------------------------------------------------------------------
   void unlockAchievement( Achievement &achievement )
   {
-    ISteamUserStats* steamUserStats = SteamUserStats();
     achievement.reached = true;
 
     // the icon may change once it's unlocked
     achievement.idIconImage = 0;
 
     // mark it down
-    bool result = steamUserStats->SetAchievement( achievement.uniqueName );
+    bool result = xclient.stats->SetAchievement( achievement.uniqueName );
 
     // Store stats end of frame
     needStoreStats = true;
@@ -133,21 +131,20 @@ public:
   // Purpose: Store stats in the Steam database
   //-----------------------------------------------------------------------------
   void storeStatsIfNecessary()
-  {
-    ISteamUserStats* steamUserStats = SteamUserStats();
-    if ( needStoreStats )
+  {    
+    if( needStoreStats )
     {
       // already set any achievements in UnlockAchievement
 
       // set stats
-      steamUserStats->SetStat( lc_stat_num_games, totalGamesPlayed );
-      steamUserStats->SetStat( lc_stat_num_wins, totalNumWins );
-      steamUserStats->SetStat( "NumLosses", totalNumLosses );
+      xclient.stats->SetStat( lc_stat_num_games, totalGamesPlayed );
+      xclient.stats->SetStat( lc_stat_num_wins, totalNumWins );
+      xclient.stats->SetStat( "NumLosses", totalNumLosses );
       // Update average feet / second stat
       //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
       // The averaged result is calculated for us
 
-      bool bSuccess = steamUserStats->StoreStats();
+      bool bSuccess = xclient.stats->StoreStats();
       // If this failed, we never sent anything to the server, try
       // again later.
       needStoreStats = !bSuccess;
@@ -216,9 +213,7 @@ bool connect()
   // Ensure that the user has logged into Steam. This will always return true if the game is launched
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
-  ISteamApps* apps = SteamApps();
-
-  Logger::warning( "CurrentGameLanguage: %s", apps->GetCurrentGameLanguage() );
+  Logger::warning( "CurrentGameLanguage: %s", SteamApps()->GetCurrentGameLanguage() );
   if ( !SteamUser()->BLoggedOn() )
   {
     Logger::warning( "Steam user is not logged in\n" );
@@ -239,12 +234,17 @@ void update()
 
 void init()
 {
-#ifndef CAESARIA_PLATFORM_WIN //steam not support mingw (
-  ISteamUser* user = SteamUser();
-  if( user->BLoggedOn() )
+  xclient.user = SteamUser();
+  xclient.stats = SteamUserStats();
+
+#if defined(CAESARIA_PLATFORM_WIN) && defined(__GNUC__)
+  xclient.user = 0;
+  xclient.stats = 0;
+#else
+  if( xclient.user->BLoggedOn() )
   {
     Logger::warning( "Try receive steamID:" );
-    glbUserStats.steamId = user->GetSteamID();
+    glbUserStats.steamId = xclient.user->GetSteamID();
   }
   else
   {
@@ -252,7 +252,7 @@ void init()
   }
 
   Logger::warning("Reqesting Current Stats:" );
-  glbUserStats.requestStats();
+  xclient.stats->RequestCurrentStats();
 #endif
 }
 
