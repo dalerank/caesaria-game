@@ -22,6 +22,7 @@
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -141,7 +142,21 @@ void DialogBox::draw(gfx::Engine& painter )
 
 DialogBox* DialogBox::information(Widget *parent, const std::string &title, const std::string &text)
 {
-  return new DialogBox( parent, Rect(), title, text, btnOk );
+  DialogBox* ret = new DialogBox( parent, Rect(), title, text, btnOk );
+  ret->setModal();
+  CONNECT( ret, onOk(), ret, DialogBox::deleteLater );
+
+  return ret;
+}
+
+DialogBox *DialogBox::confirmation(Widget *parent, const std::string &title, const std::string &text)
+{
+  DialogBox* ret = new DialogBox( parent, Rect(), title, text, btnOkCancel );
+  ret->setModal();
+  CONNECT( ret, onOk(), ret, DialogBox::deleteLater );
+  CONNECT( ret, onCancel(), ret, DialogBox::deleteLater );
+
+  return ret;
 }
 
 }//end namespace gui

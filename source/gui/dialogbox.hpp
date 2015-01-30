@@ -42,6 +42,9 @@ public:
   static DialogBox* information( Widget* parent,
                                  const std::string& title,
                                  const std::string& text );
+  static DialogBox* confirmation( Widget* parent,
+                                  const std::string& title,
+                                  const std::string& text );
 
 signals public:  
   Signal1<int>& onResult();

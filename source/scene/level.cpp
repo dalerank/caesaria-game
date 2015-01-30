@@ -260,10 +260,8 @@ void Level::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  DialogBox* blackTexturesWarning = new DialogBox( ui.rootWidget(), Rect(), "PLEASE READ",
-                                                   "Black objects are not drawing yet. Those will add when be done.",
-                                                   DialogBox::btnOk);
-  CONNECT( blackTexturesWarning, onOk(), blackTexturesWarning, DialogBox::deleteLater );
+  DialogBox::information( ui.rootWidget(), "PLEASE READ",
+                          "Black objects are not drawing yet. Those will add when be done." );
 #endif
 }
 
@@ -685,9 +683,8 @@ void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 
 void Level::_requestExitGame()
 {
-  DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
+  DialogBox* dlg = DialogBox::confirmation( _d->game->gui()->rootWidget(), "", _("##exit_without_saving_question##") );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
-  CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)
