@@ -273,19 +273,6 @@ void Level::Impl::showSaveDialog()
 {
   events::GameEventPtr e = events::SaveGame::create();
   e->dispatch();
-  /*vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-
-  if( !saveDir.exist() )
-  {
-    gui::DialogBox* dialog = new gui::DialogBox( game->gui()->rootWidget(), Rect(), "##warning##",
-                                                 "##save_directory_not_exist##", gui::DialogBox::btnOk );
-    dialog->show();
-    return;
-  }
-
-  SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), game, Game::save );*/
 }
 
 void Level::Impl::setVideoOptions()
