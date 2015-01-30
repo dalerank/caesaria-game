@@ -186,7 +186,7 @@ bool Ui::isHovered( const Widget* element )
   return element != NULL ? (_d->hovered.object() == element) : false;
 }
 
-Widget *Ui::findWidget(int id)
+Widget* Ui::findWidget(int id)
 {
   return Widget::findChild( id, true );
 }
