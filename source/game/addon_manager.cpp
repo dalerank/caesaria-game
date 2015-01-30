@@ -69,7 +69,8 @@ Addon::~Addon()
 # ifdef CAESARIA_PLATFORM_WIN
   ::FreeLibrary(_d->library);
 # else
-  ::dlclose(_d->library);
+  if( _d->library != 0 )
+    ::dlclose(_d->library);
 # endif
 }
 
@@ -124,9 +125,9 @@ void Manager::load(vfs::Directory folder)
 #if defined(CAESARIA_PLATFORM_WIN)
   addonExtension = ".win";
 #elif defined(CAESARIA_PLATFORM_LINUX)
-  addonExtension = ".linux"
+  addonExtension = ".linux";
 #elif  defined(CAESARIA_PLATFORM_MACOSX)
-  addonExtension = ".macos"
+  addonExtension = ".macos";
 #endif
 
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, addonExtension );

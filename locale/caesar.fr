@@ -525,6 +525,8 @@
 "##mainmenu_loadmap##":"Charger une carte"
 "##Load_save##":""
 "##mainmenu_playmission##":"Charger un scenario"
+"##package_options##":""
+"##mainmenu_package##":""
 "##fileload_load_tlp##":"Chargé cette partie sauvegardée"
 "##initialize_animations##":""
 "##initialize_names##":""
