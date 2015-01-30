@@ -13,24 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "missionwin.hpp"
-#include "game/game.hpp"
-#include "steam.hpp"
+#ifndef _CAESARIA_EVENT_SAVEGAME_H_INCLUDE_
+#define _CAESARIA_EVENT_SAVEGAME_H_INCLUDE_
+
+#include "event.hpp"
 
 namespace events
 {
 
-GameEventPtr MissionWin::create()
+class SaveGame : public GameEvent
 {
-  steamapi::missionWin();
-  GameEventPtr ret( new MissionWin() );
-  ret->drop();
+public:
+  static GameEventPtr create();
 
-  return ret;
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
+
+private:
+  SaveGame();
+};
+
 }
 
-void MissionWin::_exec(Game& game, unsigned int) {}
-bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
-MissionWin::MissionWin() {}
-
-}
+#endif //_CAESARIA_EVENT_SAVEGAME_H_INCLUDE_

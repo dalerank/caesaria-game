@@ -139,4 +139,9 @@ void DialogBox::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
+DialogBox* DialogBox::information(Widget *parent, const std::string &title, const std::string &text)
+{
+  return new DialogBox( parent, Rect(), title, text, btnOk );
+}
+
 }//end namespace gui

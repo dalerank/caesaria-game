@@ -36,7 +36,6 @@
 #include "core/time.hpp"
 #include "core/utils.hpp"
 #include "gui/empiremap_window.hpp"
-#include "gui/save_dialog.hpp"
 #include "gui/advisors_window.hpp"
 #include "game/alarm_event_holder.hpp"
 #include "gfx/city_renderer.hpp"
@@ -84,6 +83,7 @@
 #include "city/build_options.hpp"
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
+#include "events/savegame.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -271,7 +271,9 @@ std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
+  events::GameEventPtr e = events::SaveGame::create();
+  e->dispatch();
+  /*vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
   if( !saveDir.exist() )
@@ -283,7 +285,7 @@ void Level::Impl::showSaveDialog()
   }
 
   SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), game, Game::save );
+  CONNECT( dialog, onFileSelected(), game, Game::save );*/
 }
 
 void Level::Impl::setVideoOptions()
