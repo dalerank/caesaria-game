@@ -19,7 +19,6 @@
 #define __CAESARIA_GUIENVIRONMENT_INCLUDE_
 
 #include "widget.hpp"
-#include <memory>
 
 namespace gfx
 {

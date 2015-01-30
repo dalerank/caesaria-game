@@ -36,7 +36,6 @@
 #include "core/time.hpp"
 #include "core/utils.hpp"
 #include "gui/empiremap_window.hpp"
-#include "gui/save_dialog.hpp"
 #include "gui/advisors_window.hpp"
 #include "game/alarm_event_holder.hpp"
 #include "gfx/city_renderer.hpp"
@@ -83,6 +82,8 @@
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
 #include "events/movecamera.hpp"
+#include "events/missionwin.hpp"
+#include "events/savegame.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -151,9 +152,7 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->engine = &engine;
 }
 
-Level::~Level()
-{
-}
+Level::~Level() {}
 
 void Level::initialize()
 {
@@ -254,15 +253,15 @@ void Level::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
+#ifdef DEBUG
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+#endif
 
 #ifdef CAESARIA_USE_STEAM
-  DialogBox* blackTexturesWarning = new DialogBox( ui.rootWidget(), Rect(), "PLEASE READ",
-                                                   "Black objects are not drawing yet. Those will add when be done.",
-                                                   DialogBox::btnOk);
-  CONNECT( blackTexturesWarning, onOk(), blackTexturesWarning, DialogBox::deleteLater );
+  DialogBox::information( ui.rootWidget(), "PLEASE READ",
+                          "Black objects are not drawing yet. Those will add when be done." );
 #endif
 }
 
@@ -270,19 +269,8 @@ std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-
-  if( !saveDir.exist() )
-  {
-    gui::DialogBox* dialog = new gui::DialogBox( game->gui()->rootWidget(), Rect(), "##warning##",
-                                                 "##save_directory_not_exist##", gui::DialogBox::btnOk );
-    dialog->show();
-    return;
-  }
-
-  SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), game, Game::save );
+  events::GameEventPtr e = events::SaveGame::create();
+  e->dispatch();
 }
 
 void Level::Impl::setVideoOptions()
@@ -673,6 +661,12 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
     CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
     CONNECT( wnd, onContinueRules(), this, Impl::extendReign )
   }
+
+  if( success )
+  {
+    events::GameEventPtr e = events::MissionWin::create();
+    e->dispatch();
+  }
 }
 
 int Level::result() const {  return _d->result; }
@@ -689,9 +683,8 @@ void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 
 void Level::_requestExitGame()
 {
-  DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
+  DialogBox* dlg = DialogBox::confirmation( _d->game->gui()->rootWidget(), "", _("##exit_without_saving_question##") );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
-  CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)

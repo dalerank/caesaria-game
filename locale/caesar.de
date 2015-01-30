@@ -525,6 +525,8 @@
 "##mainmenu_loadmap##":"Karte laden"
 "##Load_save##":"Gespeichertes Spiel laden"
 "##mainmenu_playmission##":"Lade Szenario"
+"##package_options##":""
+"##mainmenu_package##":""
 "##fileload_load_tlp##":"Dieses gespeicherte Spiel laden"
 "##initialize_animations##":"Lade Animationen"
 "##initialize_names##":"Lade Bürgernamen"

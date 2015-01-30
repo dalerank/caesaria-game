@@ -12,39 +12,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
-#define __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
+#ifndef _CAESARIA_EVENT_SAVEGAME_H_INCLUDE_
+#define _CAESARIA_EVENT_SAVEGAME_H_INCLUDE_
 
-#ifdef CAESARIA_PLATFORM_WIN
-  #ifdef CAESARIA_ADDON_DEFINED
-    #define  ADDON_EXPORT __declspec(dllexport)
-  #else
-    #define  ADDON_EXPORT __declspec(dllimport)
-  #endif 
-#else 
- #define ADDON_EXPORT
-#endif
+#include "event.hpp"
 
-namespace addon
+namespace events
 {
 
-enum Type
+class SaveGame : public GameEvent
 {
-  mainMenu=0,
-  level,
-  briefing
-};
+public:
+  static GameEventPtr create();
 
-const unsigned int API_VERSION = 0x1001;
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
-struct GameInfo
-{
-  //virtual void createPicture( const char* name, unsigned int width, unsigned int height, char* data ) = 0;
+private:
+  SaveGame();
 };
 
 }
 
-#endif // __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
+#endif //_CAESARIA_EVENT_SAVEGAME_H_INCLUDE_

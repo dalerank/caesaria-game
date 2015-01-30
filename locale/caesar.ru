@@ -525,6 +525,8 @@
 "##mainmenu_loadmap##":"Загрузить карту"
 "##Load_save##":"Загрузить сохраненную игру"
 "##mainmenu_playmission##":"Загрузить сценарий"
+"##package_options##":"Доп. настройки"
+"##mainmenu_package##":"Доп. настройки"
 "##fileload_load_tlp##":"Загрузить эту игру"
 "##initialize_animations##":"Загрузка анимаций"
 "##initialize_names##":"Загрузка имен горожан"
