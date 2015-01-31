@@ -22,7 +22,10 @@ namespace events
 
 GameEventPtr MissionWin::create()
 {
+#ifdef CAESARIA_USE_STEAM
   steamapi::missionWin();
+#endif
+
   GameEventPtr ret( new MissionWin() );
   ret->drop();
 
