@@ -40,11 +40,6 @@ static void __loadTranslator( vfs::Path filename )
   VariantMap trs = config::load( directory/filename );
   Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
 
-  foreach( it, translator )
-  {
-    it->second.text.clear();
-  }
-
   foreach( it, trs )
   {
     int hash = utils::hash( it->first );
@@ -77,6 +72,12 @@ void Locale::setDirectory(vfs::Directory dir)
 void Locale::setLanguage(std::string language)
 {
   currentLanguage = language;
+
+  foreach( it, translator )
+  {
+    it->second.text.clear();
+  }
+
   addTranslation( "caesar" );
 }
 

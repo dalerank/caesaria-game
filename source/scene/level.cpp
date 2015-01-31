@@ -260,8 +260,8 @@ void Level::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  DialogBox::information( ui.rootWidget(), "PLEASE READ",
-                          "Black objects are not drawing yet. Those will add when be done." );
+  DialogBox::information( ui.rootWidget(), "Please note",
+                          "Black object are not done yet and will be added as soon as finished." );
 #endif
 }
 
