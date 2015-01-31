@@ -84,6 +84,7 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
+#include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_fire.hpp"
@@ -519,8 +520,18 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( w, _d->walkers )
   {
     VariantMap vm_walker;
-    (*w)->save( vm_walker );
-    vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    walker::Type wtype = walker::unknown;
+    try
+    {
+      wtype = (*w)->type();
+      (*w)->save( vm_walker );
+      vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    }
+    catch(...)
+    {
+      Logger::warning( "ERROR: Cant save walker type " + WalkerHelper::getTypename( wtype ) );
+    }
+
     walkedId++;
   }
   stream[ "walkers" ] = vm_walkers;
@@ -530,9 +541,19 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
-    (*overlay)->save( vm_overlay );
-    vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
-                                                      (*overlay)->pos().j() ) ] = vm_overlay;
+    TileOverlay::Type otype = objects::unknown;
+
+    try
+    {
+      otype = (*overlay)->type();
+      (*overlay)->save( vm_overlay );
+      vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
+                                                 (*overlay)->pos().j() ) ] = vm_overlay;
+    }
+    catch(...)
+    {
+      Logger::warning( "ERROR: Cant save overlay type " + MetaDataHolder::findTypename( otype ) );
+    }
   }
   stream[ "overlays" ] = vm_overlays;
 

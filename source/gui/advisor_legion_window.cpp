@@ -207,10 +207,7 @@ void Legion::_handleServiceEmpire(FortPtr fort)
 
   if( !maySendExpedition )
   {
-    DialogBox* dialog = new DialogBox( this, Rect(), "", _(reasonFailed), DialogBox::btnOk );
-
-    dialog->show();
-    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
+    DialogBox::information( this, "", _(reasonFailed) );
     return;
   }
 

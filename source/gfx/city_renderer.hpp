@@ -29,15 +29,15 @@ namespace gfx
 {
 
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
-class CityRenderer : public gfx::Renderer
+class CityRenderer : public Renderer
 {
 public:
   CityRenderer();
   virtual ~CityRenderer();
 
-  void initialize(PlayerCityPtr city, gfx::Engine* engine, gui::Ui *guienv);
+  void initialize(PlayerCityPtr city, Engine* engine, gui::Ui *guienv);
 
-  gfx::Camera* camera();
+  Camera* camera();
 
   // draws the tilemap on the screen,
   // using a dumb back to front drawing of all pictures.

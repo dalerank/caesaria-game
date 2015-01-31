@@ -61,10 +61,17 @@ void Dispatcher::update(Game& game, unsigned int time )
   {
     GameEventPtr e = *it;
 
-    e->tryExec( game, time );
+    try
+    {
+      e->tryExec( game, time );
 
-    if( e->isDeleted() ) { it = _d->events.erase( it ); }
-    else { ++it; }
+      if( e->isDeleted() ) { it = _d->events.erase( it ); }
+      else { ++it; }
+    }
+    catch(...)
+    {
+      _d->events.erase( it );
+    }
   }
 
   if( !_d->newEvents.empty() )

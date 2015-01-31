@@ -117,10 +117,8 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
+    DialogBox* dialog = DialogBox::confirmation( ui()->rootWidget(),  "", "##dispatch_emperor_request_question##" );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
-    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
-    CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
   }
 
   Signal1<city::request::RequestPtr> _onExecRequestSignal;
@@ -156,8 +154,7 @@ void Emperor::_showChangeSalaryWindow()
 {
   if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
-    DialogBox* dialog = new DialogBox( this, Rect(), "", _("##disabled_draw_salary_for_free_reign##"), DialogBox::btnYes );
-    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
+    DialogBox::information( this, "", _("##disabled_draw_salary_for_free_reign##") );
     return;
   }
 
@@ -304,11 +301,9 @@ void Emperor::Impl::sendGift(int money)
 {
   if( money > city->player()->money() )
   {
-    DialogBox* dlg = new DialogBox( lbEmperorFavour->ui()->rootWidget(), Rect(),
-                                    _("##nomoney_for_gift_title##"), _("##nomoney_for_gift_text##"),
-                                    DialogBox::btnOk );
-    dlg->setModal();
-    CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
+                            _("##nomoney_for_gift_title##"),
+                            _("##nomoney_for_gift_text##") );
     return;
   }
 
@@ -324,10 +319,9 @@ void Emperor::Impl::changeSalary( int money )
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
-                                    "##changesalary_warning##", "##changesalary_greater_salary##",
-                                    DialogBox::btnYes );
-    CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+    DialogBox::information( lbEmperorFavour->parent(),
+                            "##changesalary_warning##",
+                            "##changesalary_greater_salary##" );
   }
 }
 

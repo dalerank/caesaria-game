@@ -26,39 +26,39 @@ namespace gui
 class ModalScreen : public Widget
 {
 public:
-	static void assignTo(Widget* widget);
+  static void assignTo(Widget* widget);
 
-	//! constructor
-	ModalScreen( Widget* parent, int id=-1 );
+  //! constructor
+  ModalScreen( Widget* parent, int id=-1 );
 
-	//! called if an event happened.
-	virtual bool onEvent(const NEvent& event);
+  //! called if an event happened.
+  virtual bool onEvent(const NEvent& event);
 
-	//! Removes a child.
-	virtual void removeChild(Widget* child);
+  //! Removes a child.
+  virtual void removeChild(Widget* child);
 
-	//! Adds a child
-	virtual void addChild(Widget* child);
+  //! Adds a child
+  virtual void addChild(Widget* child);
 
-	//! draws the element and its children
-	virtual void draw( gfx::Engine& painter );
+  //! draws the element and its children
+virtual void draw( gfx::Engine& painter );
 
   //! Modalscreen is not a typical element, but rather acts like a state for it's children.
   //! isVisible is overriden to give this a useful behaviour, so that a modal will no longer
   //! be active when its parent is invisible or all its children are invisible.
-	virtual bool visible() const;
+  virtual bool visible() const;
 
-	//! Modals are infinite so every point is inside
-	virtual bool isPointInside(const Point& point) const;
+  //! Modals are infinite so every point is inside
+  virtual bool isPointInside(const Point& point) const;
 
 protected:
-	virtual bool _canTakeFocus(Widget* target) const;
+  virtual bool _canTakeFocus(Widget* target) const;
 
-	//! Updates the absolute position.
-	virtual void _resizeEvent();
+  //! Updates the absolute position.
+  virtual void _resizeEvent();
 
 private:        
-	unsigned int _mouseDownTime;
+  unsigned int _mouseDownTime;
 };
 
 }//end namespace gui
