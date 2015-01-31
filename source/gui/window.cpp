@@ -301,8 +301,8 @@ void Window::setBackground(Window::BackgroundType type)
 
 void Window::setModal()
 {
-	ModalScreen* mdScr = new ModalScreen( parent() );
-	mdScr->addChild( this );
+  ModalScreen* mdScr = new ModalScreen( parent() );
+  mdScr->addChild( this );
 }
 
 Picture Window::background() const {return _d->backgroundImage; }

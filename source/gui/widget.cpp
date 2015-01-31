@@ -791,8 +791,7 @@ void Widget::remove()
 
 bool Widget::onEvent( const NEvent& event )
 {
-  __D_IMPL(_d,Widget)
-  foreach( item, _d->eventHandlers )
+  foreach( item, _dfunc()->eventHandlers )
   {
     bool handled = (*item)->onEvent( event );
     if( handled )
@@ -808,17 +807,17 @@ bool Widget::onEvent( const NEvent& event )
 
 bool Widget::isMyChild( Widget* child ) const
 {
-    if (!child)
-        return false;
+  if (!child)
+    return false;
 
-    do
-    {
-        if( child->parent() )
-            child = child->parent();
+  do
+  {
+    if( child->parent() )
+     child = child->parent();
 
-    } while (child->parent() && child != this);
+  } while (child->parent() && child != this);
 
-	return child == this;
+  return child == this;
 }
 
 void Widget::setWidth( unsigned int width )

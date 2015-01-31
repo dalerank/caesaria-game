@@ -12,7 +12,7 @@ aux_source_directory(. SOURCES_LIST)
 file(GLOB HEADERS_LIST "*.hpp")
 
 set( DEP_SOURCES_LIST
-      
+
 )
 
 set(ADDON_FILENAME "avec3.addon")

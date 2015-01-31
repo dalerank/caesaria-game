@@ -65,8 +65,8 @@ public:
 
   Point getOffset( const PointF& center )
   {
-    return Point( virtualSize.width() / 2 - tileMapSize.width() * (center.x() + 1) + 1,
-                  virtualSize.height()/ 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
+    return Point( virtualSize.width() / 2  - tileMapSize.width()  * (center.x() + 1) + 1,
+                  virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
   } 
 
   void cacheFlatTiles();
@@ -129,6 +129,9 @@ void TilemapCamera::setCenter(TilePos pos)
 
 void TilemapCamera::move(PointF relative)
 {
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  relative *= _d->scrollSpeed / 100.f * koeffX;
+
   MovableOrders mv = _d->mayMove( _d->centerMapXZ + relative);
 
   if( relative.x() < 0 && !mv.left ) { relative.setX( 0 ); }

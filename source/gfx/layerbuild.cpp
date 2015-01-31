@@ -426,6 +426,9 @@ void Build::_drawBuildTiles( Engine& engine)
       engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
 
+    drawPass( engine, *postTile, offset, Renderer::ground );
+    drawPass( engine, *postTile, offset, Renderer::groundAnimation );
+
     drawProminentTile( engine, *postTile, offset, postTile->epos().z(), true );
   }
 

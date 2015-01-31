@@ -463,13 +463,11 @@ void EmpireMapWindow::Impl::resetInfoPanel()
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( gbox->ui()->rootWidget(), Rect( 0, 0, 0, 0 ),
-                                     _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
-                                     DialogBox::btnOk | DialogBox::btnCancel  );
+  DialogBox* dialog = DialogBox::confirmation( gbox->ui()->rootWidget(),
+                                               _("##emp_open_trade_route##"),
+                                               _("##emp_pay_open_this_route_question##") );
 
   CONNECT( dialog, onOk(), this, Impl::createTradeRoute );
-  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
-  CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
 }
 
 EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )

@@ -60,12 +60,15 @@
   }
 
   cartPusher : {
-    none : { rc : "citizen01", start : 929, frames : 1, action : 0, step : 8 }
-    move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen01", start : 1033, frames : 11, action : 1, step : 8, delay : 2 }
+    die : { rc : "wd", start : 1, frames : 9, action : 3, step : 0 }
+    none : { rc : "citizen01", start : 1033, frames : 1, action : 0, step : 8 }
   }
 
   supplier : {
-    move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen01", start : 1033, frames : 11, action : 1, step : 8, delay : 2 }
+    die : { rc : "wd", start : 1, frames : 9, action : 3, step : 0 }
+    none : { rc : "citizen01", start : 1033, frames : 1, action : 0, step : 8 }
   }
 
   immigrant :
