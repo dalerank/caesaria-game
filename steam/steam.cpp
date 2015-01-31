@@ -121,7 +121,10 @@ public:
     achievement.idIconImage = 0;
 
     // mark it down
-    bool result = xclient.stats->SetAchievement( achievement.uniqueName );
+    if( xclient.stats )
+    {
+        bool result = xclient.stats->SetAchievement( achievement.uniqueName );
+    }
 
     // Store stats end of frame
     needStoreStats = true;
@@ -132,6 +135,9 @@ public:
   //-----------------------------------------------------------------------------
   void storeStatsIfNecessary()
   {    
+    if( !xclient.stats )
+      return;
+
     if( needStoreStats )
     {
       // already set any achievements in UnlockAchievement
