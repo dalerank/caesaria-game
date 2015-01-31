@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "empire.hpp"
 #include "computer_city.hpp"
@@ -271,7 +271,7 @@ void Empire::load( const VariantMap& stream )
 
   VariantMap objects = stream.get( "objects" ).toMap();
   _loadObjects( objects );
-
+  _d->emperor.load( stream.get( "emperor" ).toMap() ); //path from keeeeper
   _d->emperor.checkCities();
 }
 

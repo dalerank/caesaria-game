@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_STEAM_HANDLER_INCLUDE_H_
 #define _CAESARIA_STEAM_HANDLER_INCLUDE_H_
@@ -20,6 +22,7 @@
 
 #include <string>
 #include "gfx/picture.hpp"
+#include "core/signals.hpp"
 
 namespace steamapi
 {
@@ -28,6 +31,7 @@ enum AchievementType
 {
   achievementNewVillage = 0,
   achievementNewGraphics = 1,
+  achievementFirstWin = 2,
   achievementNumber
 };
 
@@ -37,12 +41,16 @@ void close();
 void update();
 void init();
 
-void evaluateAchievements();
 void unlockAchievement( AchievementType achivId );
+void missionWin();
 bool isAchievementReached( AchievementType achivId );
+const gfx::Picture& achievementImage( AchievementType achivId );
+std::string achievementCaption( AchievementType achivId );
 
 std::string userName();
 const gfx::Picture& userImage();
+
+Signal0<>& onStatsReceived();
 
 }
 

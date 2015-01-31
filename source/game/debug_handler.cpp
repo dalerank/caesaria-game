@@ -46,6 +46,9 @@
 #include "events/random_fire.hpp"
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
+#include "vfs/archive.hpp"
+#include "vfs/filesystem.hpp"
+#include "game/resourceloader.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -87,6 +90,7 @@ enum {
   send_exporter,
   random_fire,
   random_collapse,
+  reload_aqueducts,
   run_script
 };
 
@@ -149,6 +153,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( "city", run_script )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
+  ADD_DEBUG_EVENT( "options", reload_aqueducts )
   ADD_DEBUG_EVENT( "options", toggle_experimental_options )
 
   ADD_DEBUG_EVENT( "draw", toggle_grid_visibility )
@@ -311,6 +316,21 @@ void DebugHandler::Impl::handleEvent(int event)
     TilePos stop( math::random(mapsize), math::random(mapsize) );
     events::GameEventPtr e = events::EarthQuake::create( start, stop );
     e->dispatch();
+  }
+  break;
+
+  case reload_aqueducts:
+  {
+     vfs::ArchivePtr archive = vfs::FileSystem::instance().mountArchive( ":/gfx/pics_aqueducts.zip" );
+
+     if( archive.isNull() )
+     {
+       return;
+     }
+
+     ResourceLoader rc;
+     rc.loadFiles( archive );
+     vfs::FileSystem::instance().unmountArchive(archive);
   }
   break;
 

@@ -23,4 +23,9 @@
     resistance : 0.5
     obsoleteOverlays : [ "gatehouse", "roadBlock" ]
   }
+
+  engineer : {
+    nation : "rome"
+    obsoleteOverlays : [ "gatehouse", "roadBlock" ]
+  }
 }

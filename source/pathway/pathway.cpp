@@ -176,7 +176,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
 
   if( !tmap.isInside( TilePos( _d->destination ) ) )
   {
-    Logger::warning( "Destination[%d, %d] out of map", _d->destination.i(), _d->destination.j() );
+    //Logger::warning( "Destination[%d, %d] out of map", _d->destination.i(), _d->destination.j() );
   }
   else
   {
@@ -202,7 +202,7 @@ void Pathway::setNextTile( const Tile& tile )
   else if (dI==-1 && dJ==1){ direction = northWest; }
   else
   {
-    Logger::warning( "Destination[%d, %d] out of map", dI, dJ );
+    Logger::warning( "WARNING!!! Pathway::setNextTile() destination[%d, %d] out of map", dI, dJ );
     direction = noneDirection;
   }
 

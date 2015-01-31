@@ -28,7 +28,7 @@ using namespace constants;
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::waymark, Waymark)
 
 Waymark::Waymark()
-  : TileOverlay( constants::objects::tree, Size(1) )
+  : TileOverlay( constants::objects::waymark, Size(1) )
 {
 }
 

@@ -64,10 +64,7 @@ WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string
 
   if( !winText.empty() )
   {
-    DialogBox* lbWin = new DialogBox( ui()->rootWidget(), Rect(), "",  _(winText), DialogBox::btnOk );
-    //lbWin->setTextAlignment( align::center, align::center );
-    //lbWin->setWordwrap( true );
-    CONNECT( lbWin, onOk(), lbWin, DialogBox::deleteLater );
+    DialogBox::information( ui()->rootWidget(), "",  _(winText) );
   }
 
   if( btnContinue2years ) btnContinue2years->setVisible( mayContinue );

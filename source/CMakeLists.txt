@@ -15,6 +15,7 @@ include_directories(
   ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
+  ${STEAM_API_DIR}/public/opensteam
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -101,11 +102,7 @@ endif(UNIX)
 
 if(USE_STEAM)
   if(WIN32)
-    if(X64_BUILD)
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win64/steam_api.lib")
-    else()
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win32/steam_api.lib")
-    endif()
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
   elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
   elseif(UNIX)
@@ -248,26 +245,17 @@ ADD_CUSTOM_COMMAND(
 
 if(USE_STEAM)
   if(WIN32)
-    if(X64_BUILD)
-      ADD_CUSTOM_COMMAND(
-          TARGET ${PROJECT_NAME}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/dkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-      )
-    else()
-      ADD_CUSTOM_COMMAND(
-          TARGET ${PROJECT_NAME}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-      )
-    endif()
+    ADD_CUSTOM_COMMAND(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+    )
   elseif(APPLE)
     ADD_CUSTOM_COMMAND(
         TARGET ${PROJECT_NAME}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib" "${WORK_DIR}/libsteam_api.dylib"
     )
   elseif(UNIX)
@@ -275,14 +263,14 @@ if(USE_STEAM)
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
       )
     else()
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
      )
     endif()

@@ -36,6 +36,7 @@ public:
   ~Game();
 
   void save(std::string filename) const;
+  bool load(std::string filename);
 
   void initialize();
 
@@ -64,7 +65,7 @@ public:
   void setTimeMultiplier(int percent);
   int timeMultiplier() const;
   void setNextScreen( scene::ScreenType screen);
-  bool load(std::string filename);
+
 
 public signals:
   Signal1<std::string>& onSaveAccepted();

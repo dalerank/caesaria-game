@@ -525,6 +525,8 @@
 "##mainmenu_loadmap##":"Load map"
 "##Load_save##":"Load saved game"
 "##mainmenu_playmission##":"Load scenario"
+"##package_options##":"Adv. settings"
+"##mainmenu_package##":"Adv. settings"
 "##fileload_load_tlp##":"Load this saved game"
 "##initialize_animations##":"Loading animations"
 "##initialize_names##":"Load citizen's names"
