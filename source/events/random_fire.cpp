@@ -24,6 +24,7 @@
 #include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
@@ -34,6 +35,8 @@ namespace {
 CAESARIA_LITERALCONST(population)
 CAESARIA_LITERALCONST(strong)
 }
+
+REGISTER_EVENT_IN_FACTORY(RandomFire, "random_fire")
 
 class RandomFire::Impl
 {

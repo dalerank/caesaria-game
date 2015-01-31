@@ -19,9 +19,12 @@
 #include "core/variant_map.hpp"
 #include "gui/tutorial_window.hpp"
 #include "gui/environment.hpp"
+#include "factory.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ShowTutorial, "tutorial_window")
 
 GameEventPtr ShowTutorial::create(std::string tutorial)
 {
@@ -49,4 +52,5 @@ void ShowTutorial::_exec(Game& game, unsigned int)
 }
 
 bool ShowTutorial::_mayExec(Game&, unsigned int) const { return true; }
+
 }

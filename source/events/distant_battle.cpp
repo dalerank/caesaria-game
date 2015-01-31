@@ -19,11 +19,14 @@
 #include "game/game.hpp"
 #include "world/empire.hpp"
 #include "world/object.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(DistantBattle, "distant_battle")
 
 GameEventPtr DistantBattle::create()
 {

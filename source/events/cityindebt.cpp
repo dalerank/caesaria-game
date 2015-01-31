@@ -31,9 +31,12 @@
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
+#include "factory.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(CityIndebt, "city_indebt")
 
 class CityIndebt::Impl
 {

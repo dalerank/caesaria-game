@@ -233,11 +233,14 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
 void StartMenu::Impl::handleStartCareer()
 {
+  menu->clear();
+
   dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
-  dlg->setModal();
   playerName = dlg->text();
+
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onClose(), this, Impl::handleNewGame );
+  CONNECT( dlg, onNewGame(), this, Impl::handleNewGame );
+  CONNECT( dlg, onClose(), this, Impl::showMainMenu );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -530,8 +533,7 @@ void StartMenu::initialize()
     return;
   }
 
-  std::string text = utils::format( 0xff, "ver %d.%d.%d\n%s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
-                                                                      CAESARIA_VERSION_REVSN, steamName.c_str() );
+  std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_STRING, steamName.c_str() );
   _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );

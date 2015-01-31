@@ -28,12 +28,15 @@
 #include "core/variant_map.hpp"
 #include "walker/walkers_factory.hpp"
 #include "gfx/tilemap.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(RandomAnimals, "random_animals")
 
 class RandomAnimals::Impl
 {

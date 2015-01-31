@@ -22,11 +22,14 @@
 #include "scene/level.hpp"
 #include "objects/colosseum.hpp"
 #include "postpone.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(StartWork,"start_work")
 
 GameEventPtr StartWork::create()
 {

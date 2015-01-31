@@ -26,11 +26,14 @@
 #include "gui/event_messagebox.hpp"
 #include "good/goodhelper.hpp"
 #include "game/gamedate.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ShowInfobox, "messagebox")
 
 class ShowInfobox::Impl
 {
