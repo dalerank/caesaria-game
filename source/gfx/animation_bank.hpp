@@ -40,9 +40,10 @@ public:
     animSimpleCart   =100,
     animBigCart      =200,
     animMegaCart     =300,
-    animImmigrantCart =400,
+    animImmigrantCart=400,
     animCircusCart   =500,
     animTree         =600,
+    animFire         =700
   } AnimationGroup;
 
   typedef std::map< DirectedAction, Animation > MovementAnimation;
