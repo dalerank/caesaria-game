@@ -303,6 +303,7 @@
     image.ext : {
       s1 : { size: 1, rc : "prefecture", start : 1, count : 4 }
     }
+    animation : { rc : "prefecture_anim", start : 1, count : 1, offset : [ 51, 27 ], delay : 3 }
     class : "security"
   },  
  

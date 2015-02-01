@@ -173,17 +173,17 @@ void StartMenu::Impl::showSoundOptions()
 void StartMenu::Impl::showLanguageOptions()
 {
   gui::Widget* parent = game->gui()->rootWidget();
-  Size rootSize = parent->size();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
 
-  gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
+  gui::Label* frame = new gui::Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
   gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
   gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), "Apply" );
 
+  WidgetEscapeCloser::insertTo( frame );
+  frame->setCenter( parent->center() );
+  lbx->setFocus();
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
+  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
 
   VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   std::string currentLang = SETTINGS_VALUE( language ).toString();

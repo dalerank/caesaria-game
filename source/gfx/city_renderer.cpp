@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_renderer.hpp"
 
@@ -220,9 +220,14 @@ void CityRenderer::handleEvent( NEvent& event )
 
     if( event.mouse.type == mouseWheel )
     {
-      int lastZoom = _d->zoom;
-      _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10, 30, 300 );
-      _d->zoomChanged = (lastZoom != _d->zoom);
+      if( _d->city->getOption( PlayerCity::zoomEnabled ) )
+      {
+        int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
+
+        int lastZoom = _d->zoom;
+        _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10 * zoomInvert, 30, 300 );
+        _d->zoomChanged = (lastZoom != _d->zoom);
+      }
     }
   }
 

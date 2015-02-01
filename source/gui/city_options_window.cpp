@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -37,10 +38,14 @@ public:
   GameAutoPause locker;
   PushButton* btnGodEnabled;
   PushButton* btnWarningsEnabled;
+  PushButton* btnZoomEnabled;
+  PushButton* btnInvertZoom;
   PlayerCityPtr city;
 
   void update();
   void toggleGods();
+  void toggleZoomEnabled();
+  void invertZoom();
   void toggleWarnings();
 };
 
@@ -52,14 +57,18 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   setupUI( ":/gui/cityoptions.gui" );
 
   setCenter( parent->center() );
-  PushButton* btnClose;
 
-  GET_WIDGET_FROM_UI( btnClose )
   GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
   GET_DWIDGET_FROM_UI( _d, btnWarningsEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnZoomEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
+  CONNECT( _d->btnZoomEnabled, onClicked(), _d.data(), Impl::toggleZoomEnabled )
+  CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
 
   _d->update();
@@ -71,6 +80,20 @@ void CityOptionsWindow::Impl::toggleGods()
 {
   bool value = city->getOption( PlayerCity::godEnabled );
   city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleZoomEnabled()
+{
+  bool value = city->getOption( PlayerCity::zoomEnabled );
+  city->setOption( PlayerCity::zoomEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::invertZoom()
+{
+  bool value = city->getOption( PlayerCity::zoomInvert );
+  city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
   update();
 }
 
@@ -95,6 +118,20 @@ void CityOptionsWindow::Impl::update()
     btnWarningsEnabled->setText( city->getOption( PlayerCity::warningsEnabled ) > 0
                               ? _("##city_warnings_on##")
                               : _("##city_warnings_off##") );
+  }
+
+  if( btnZoomEnabled )
+  {
+    btnZoomEnabled->setText( city->getOption( PlayerCity::zoomEnabled ) > 0
+                              ? _("##city_zoom_on##")
+                              : _("##city_zoom_off##") );
+  }
+
+  if( btnInvertZoom )
+  {
+    btnInvertZoom->setText( city->getOption( PlayerCity::zoomInvert ) > 0
+                              ? _("##city_zoominv_on##")
+                              : _("##city_zoominv_off##") );
   }
 }
 

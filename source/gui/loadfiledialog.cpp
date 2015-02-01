@@ -31,6 +31,7 @@
 #include "widget_helper.hpp"
 #include "filelistbox.hpp"
 #include "vfs/file.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -73,6 +74,8 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   Widget::setupUI( ":/gui/loadfile.gui" );
   setCenter( parent->center() );
 
+  WidgetEscapeCloser::insertTo( this );
+
   // create the title
   GET_DWIDGET_FROM_UI( _d, lbTitle )
 
@@ -93,6 +96,7 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   {
     _d->lbxFiles->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
     _d->lbxFiles->setItemDefaultColor( ListBoxItem::hovered, 0xff000000 );
+    _d->lbxFiles->setFocus();
   }
 
   CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )

@@ -22,6 +22,7 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include <set>
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -558,12 +559,19 @@ Engine::Modes SdlEngine::modes() const
   /* Get available fullscreen/hardware modes */
   int num = SDL_GetNumDisplayModes(0);
 
+  std::set<uint> uniqueModes;
+
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
-      ret.push_back(Size(mode.w, mode.h));
+      uint modeHash = (mode.w << 16) + mode.h;
+      if( uniqueModes.count( modeHash ) == 0)
+      {
+        ret.push_back(Size(mode.w, mode.h));
+        uniqueModes.insert( modeHash );
+      }
     }
   }
 
