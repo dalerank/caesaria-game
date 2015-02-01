@@ -165,7 +165,7 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
   if( !_options.isGroupAvailable( menuType ) )
     return;
 
-  BuildButton* button = new BuildButton( this, text, Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
+  BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
   button->setCost(-1);  // no display
 

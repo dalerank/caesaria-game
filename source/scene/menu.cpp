@@ -262,7 +262,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          "dalerank (dalerankn8@gmail.com)",
                          "gathanase (gathanase@gmail.com) render, game mechanics ",
-                         "gecube (gb12335@gmail.com)",
+                         "gecube (gb12335@gmail.com), Softer (softer@lin.in.ua)",
                          "pecunia (pecunia@heavengames.com) game mechanics",
                          "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
