@@ -72,7 +72,6 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   _d->btnLoad = 0;
 
   Widget::setupUI( ":/gui/loadfile.gui" );
-  setCenter( parent->center() );
 
   WidgetEscapeCloser::insertTo( this );
 
