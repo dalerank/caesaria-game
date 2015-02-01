@@ -122,6 +122,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
+  wnd->setText( _("##load_this_game##") );
 }
 
 void StartMenu::Impl::fitScreenResolution()
@@ -440,6 +441,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
   result = StartMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadmap##") );
+  wnd->setText( _("##start_this_map##") );
 }
 
 StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
