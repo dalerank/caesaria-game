@@ -74,6 +74,7 @@ public:
   DateTime lastTaxationDate;
   std::string evolveInfo;
   CitizenGroup habitants;
+  Animation healthAnimation;
   unsigned int taxesThisYear;
   bool isFlat;
   int currentYear;

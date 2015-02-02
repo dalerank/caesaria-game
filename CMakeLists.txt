@@ -130,13 +130,13 @@ endif()
 # Include individual projects
 message("")
 # We always build game otherwise we would miss the generated header
-message("Building CaesarIA-game")
+message("\nBuilding CaesarIA-game")
 add_subdirectory(source source)
 
-message("Building CaesarIA-updater")
+message("\nBuilding CaesarIA-updater")
 add_subdirectory(updater updater)
 
-message("Building AveC3-addon")
+message("\nBuilding AveC3-addon")
 add_subdirectory(addon/ave_c3 addon/ave_c3)
 
 #set(NO_USE_SYSTEM_ZLIB ON)

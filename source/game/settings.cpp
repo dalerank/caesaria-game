@@ -263,6 +263,7 @@ void Settings::checkC3present()
     _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.c3" ) );
     _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
     _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
+    _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;

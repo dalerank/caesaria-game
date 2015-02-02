@@ -122,6 +122,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
+  wnd->setText( _("##load_this_game##") );
 }
 
 void StartMenu::Impl::fitScreenResolution()
@@ -226,6 +227,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
   SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
+  game::Settings::save();
 
   Locale::setLanguage( lang );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
@@ -440,6 +442,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
   result = StartMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadmap##") );
+  wnd->setText( _("##start_this_map##") );
 }
 
 StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )

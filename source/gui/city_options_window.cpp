@@ -28,6 +28,8 @@
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
+#include "contextmenuitem.hpp"
+#include "topmenu.hpp"
 
 namespace gui
 {
@@ -39,14 +41,17 @@ public:
   PushButton* btnGodEnabled;
   PushButton* btnWarningsEnabled;
   PushButton* btnZoomEnabled;
+  PushButton* btnDebugEnabled;
   PushButton* btnInvertZoom;
   PlayerCityPtr city;
 
   void update();
+  void toggleDebug();
   void toggleGods();
   void toggleZoomEnabled();
   void invertZoom();
   void toggleWarnings();
+  Widget* findDebugMenu(Ui *ui);
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -67,6 +72,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
   CONNECT( _d->btnZoomEnabled, onClicked(), _d.data(), Impl::toggleZoomEnabled )
   CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
+  CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
@@ -80,6 +86,16 @@ void CityOptionsWindow::Impl::toggleGods()
 {
   bool value = city->getOption( PlayerCity::godEnabled );
   city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleDebug()
+{
+  Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
+  if( menu )
+  {
+    menu->setVisible( !menu->visible() );
+  }
   update();
 }
 
@@ -102,6 +118,21 @@ void CityOptionsWindow::Impl::toggleWarnings()
   bool value = city->getOption( PlayerCity::warningsEnabled );
   city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
   update();
+}
+
+Widget* CityOptionsWindow::Impl::findDebugMenu( Ui* ui )
+{
+  const Widgets& children = ui->rootWidget()->children();
+  foreach( it, children )
+  {
+    TopMenu* ret = safety_cast<TopMenu*>( *it );
+    if( ret != 0 )
+    {
+      return ret->findItem( "Debug" );
+    }
+  }
+
+  return 0;
 }
 
 void CityOptionsWindow::Impl::update()
@@ -132,6 +163,14 @@ void CityOptionsWindow::Impl::update()
     btnInvertZoom->setText( city->getOption( PlayerCity::zoomInvert ) > 0
                               ? _("##city_zoominv_on##")
                               : _("##city_zoominv_off##") );
+  }
+
+  if( btnDebugEnabled )
+  {
+    Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
+    btnDebugEnabled->setText( (menu ? menu->visible() : false)
+                                ? _("##city_zoominv_on##")
+                                : _("##city_zoominv_off##") );
   }
 }
 

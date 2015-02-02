@@ -103,6 +103,7 @@ endif(UNIX)
 if(USE_STEAM)
   if(WIN32)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/helper/steam_helper.lib")
   elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
   elseif(UNIX)
@@ -250,6 +251,7 @@ if(USE_STEAM)
         POST_BUILD
         #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/helper/steam_helper.dll" "${WORK_DIR}/steam_helper.dll"
     )
   elseif(APPLE)
     ADD_CUSTOM_COMMAND(
