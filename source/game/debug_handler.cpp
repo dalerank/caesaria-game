@@ -108,7 +108,7 @@ public signals:
   Signal2<scene::Level*, bool> winMissionSignal;
 };
 
-void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
+void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 {
   _d->game = game;
 
