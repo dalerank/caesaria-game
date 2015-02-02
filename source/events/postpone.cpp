@@ -175,7 +175,7 @@ void PostponeEvent::Impl::executeRequest( Game& game, const std::string& type, b
 
 void PostponeEvent::Impl::executeEvent( Game& game, const std::string& type, bool& r  )
 {
-  GameEventPtr e = GameEventFactory::create( type );
+  GameEventPtr e = EFactory::create( type );
   if( e.isValid() )
   {
     e->load( options );

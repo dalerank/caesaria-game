@@ -977,6 +977,7 @@
 "##start_condition##":"Starting conditions"
 "##replay_game##":"Replay map"
 "##start_this_map##":"Start this map"
+"##load_this_file##":"Load"
 "##plname_start_new_game##":"Start new career"
 "##devastate_warehouse##":"START emptying warehouse"
 "##empiremap_our_city##":"Our city!"

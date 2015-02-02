@@ -12,28 +12,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-201 Dalerank, dalerankn8@gmail.com
 
-#include "missionwin.hpp"
-#include "game/game.hpp"
-#include "steam.hpp"
+#ifndef _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
+#define _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
+
+#include "event.hpp"
+#include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
 namespace events
 {
 
-GameEventPtr MissionWin::create()
+class RandomPlague : public GameEvent
 {
-#ifdef CAESARIA_USE_STEAM
-  steamapi::missionWin();
-#endif
+public:
+  static GameEventPtr create();
+  virtual bool isDeleted() const;
 
-  GameEventPtr ret( new MissionWin() );
-  ret->drop();
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
 
-  return ret;
-}
+protected:
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
-void MissionWin::_exec(Game& game, unsigned int) {}
-bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
-MissionWin::MissionWin() {}
+private:
+  RandomPlague();
 
-}
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
+}//namespace events
+
+#endif //_CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_

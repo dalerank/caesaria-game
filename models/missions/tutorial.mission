@@ -19,13 +19,16 @@
     next : ":/missions/tutorial2.mission"
     title : "##clerk##"
     may_continue : false
-    win.text : "##tutorial_win_text##"
     short : "##build_some_houses##"
     finishDate : "-300.01.01"
     maxHouseLevel : "big_villa"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
-                  "@img=picture2_00002" ]
+                  "@img=picture2_00002",
+                  "##tutorial_text_roads##",
+                  "@img=picture3_00002",
+                  "##tutorial_text_roads2##",
+                  "@img=picture3_00003" ]
   }
 	
   empire : {

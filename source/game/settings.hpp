@@ -86,6 +86,7 @@ public:
   __GS_PROPERTY(forbidenTile)
   __GS_PROPERTY(layersOptsModel)
   __GS_PROPERTY(experimental)
+  __GS_PROPERTY(scrollSpeed)
   __GS_PROPERTY(buildMenuModel)
 #undef __GS_PROPERTY
 

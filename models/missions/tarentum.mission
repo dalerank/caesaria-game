@@ -27,13 +27,15 @@
                   "##tarentum_3_overview_2##"]
   }
 	
-  empire : {
+  empire :
+  {
     enabled : true
     maxBarbariansGroups : 1
 
     cities :
     {
-      Brundisium : {
+      Brundisium :
+      {
         location : [ 940, 560 ]
         romecity : true
         sea : true
@@ -335,7 +337,7 @@
     "barbarian_invasion3#enemy_attack" : {
       date : "-335.07.01"
       type : "enemy_attack"
-	  target : "food"
+      target : "food"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -359,58 +361,72 @@
 	  }
     }
 
-    "barbarian_invasion1#enemy_attack" : {
+    barbarian_invasion1#enemy_attack :
+    {
       date : "-330.03.01"
       type : "enemy_attack"
-	  target : "food"
-      items : {
-        troop_soldiers : {
+      target : "food"
+
+      items :
+      {
+        troop_soldiers :
+        {
           type : "etruscanSoldier"
           count : 20
           location : "random"
         }
 
-        troop_archers : {
+        troop_archers :
+        {
           type : "etruscanArcher"
           count : 12
           location : "random"
         }
       }
 
-      exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
-		}
-	  }
-    }
+      exec :
+      {
+        barbarian_attack#messagebox :
+        {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : ":/smk/Spy_Barbarian.smk"
+        }
+      }
+   }
 
-	"barbarian_invasion1#enemy_attack" : {
+   barbarian_invasion1#enemy_attack :
+   {
       date : "-325.07.01"
       type : "enemy_attack"
-	  target : "food"
-      items : {
-        troop_soldiers : {
+      target : "food"
+
+      items :
+      {
+        troop_soldiers :
+        {
           type : "etruscanSoldier"
           count : 32
           location : "random"
         }
 
-        troop_archers : {
+        troop_archers :
+        {
           type : "etruscanArcher"
           count : 16
           location : "random"
         }
       }
 
-      exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
-		}
-	  }
+      exec :
+      {
+        barbarian_attack#messagebox :
+        {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : ":/smk/Spy_Barbarian.smk"
+        }
+      }
     }
   }
 	

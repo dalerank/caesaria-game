@@ -51,9 +51,9 @@ Prefecture::Prefecture()
   //setPicture( ResourceGroup::security, 1 );
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
   
-  _animationRef().load( ResourceGroup::security, 2, 10);
-  _animationRef().setDelay( 4 );
-  _animationRef().setOffset( Point( 20, 36 ) );
+  //_animationRef().load( ResourceGroup::security, 2, 10);
+  //_animationRef().setDelay( 4 );
+  //_animationRef().setOffset( Point( 20, 36 ) );
   _fgPicturesRef().resize(1);
 }
 

@@ -22,6 +22,7 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include <set>
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -238,8 +239,8 @@ void SdlEngine::init()
 
   Logger::warning( "SDLGraficEngine: set caption");
   std::string versionStr = utils::format(0xff, "CaesarIA: SDL %d.%d R%d [%s:%s]",
-                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
-                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+                                   CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
+                                   CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
@@ -558,12 +559,19 @@ Engine::Modes SdlEngine::modes() const
   /* Get available fullscreen/hardware modes */
   int num = SDL_GetNumDisplayModes(0);
 
+  std::set<unsigned int> uniqueModes;
+
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
-      ret.push_back(Size(mode.w, mode.h));
+      unsigned int modeHash = (mode.w << 16) + mode.h;
+      if( uniqueModes.count( modeHash ) == 0)
+      {
+        ret.push_back(Size(mode.w, mode.h));
+        uniqueModes.insert( modeHash );
+      }
     }
   }
 

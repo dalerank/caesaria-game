@@ -109,7 +109,7 @@ public:
 
 void StartMenu::Impl::resolveShowLoadGameWnd()
 {
-  gui::Widget* parent = game->gui()->rootWidget();
+  Widget* parent = game->gui()->rootWidget();
 
   vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
@@ -117,11 +117,11 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
   result = StartMenu::loadSavedGame;
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
   wnd->setShowExtension( false );
-  wnd->setCenter( parent->center() );
   wnd->setMayDelete( true );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
+  wnd->setText( _("##load_this_game##") );
 }
 
 void StartMenu::Impl::fitScreenResolution()
@@ -172,18 +172,18 @@ void StartMenu::Impl::showSoundOptions()
 
 void StartMenu::Impl::showLanguageOptions()
 {
-  gui::Widget* parent = game->gui()->rootWidget();
-  Size rootSize = parent->size();
+  Widget* parent = game->gui()->rootWidget();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
 
-  gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
-  gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), "Apply" );
+  Label* frame = new Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
+  ListBox* lbx = new ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
+  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), "Apply" );
 
+  WidgetEscapeCloser::insertTo( frame );
+  frame->setCenter( parent->center() );
+  lbx->setFocus();
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
+  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
 
   VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   std::string currentLang = SETTINGS_VALUE( language ).toString();
@@ -226,6 +226,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
   SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
+  game::Settings::save();
 
   Locale::setLanguage( lang );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
@@ -233,11 +234,14 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
 void StartMenu::Impl::handleStartCareer()
 {
+  menu->clear();
+
   dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
-  dlg->setModal();
   playerName = dlg->text();
+
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onClose(), this, Impl::handleNewGame );
+  CONNECT( dlg, onNewGame(), this, Impl::handleNewGame );
+  CONNECT( dlg, onClose(), this, Impl::showMainMenu );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -248,7 +252,7 @@ void StartMenu::Impl::handleNewGame()
 void StartMenu::Impl::resolveCredits()
 {
   audio::Engine::instance().play( "combat_long", 50, audio::themeSound );
-  gui::Widget* parent = game->gui()->rootWidget();
+  Widget* parent = game->gui()->rootWidget();
 
   Size size = engine->screenSize();
   std::string strs[] = { _("##original_game##"),
@@ -259,7 +263,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          "dalerank (dalerankn8@gmail.com)",
                          "gathanase (gathanase@gmail.com) render, game mechanics ",
-                         "gecube (gb12335@gmail.com)",
+                         "gecube (gb12335@gmail.com), Softer (softer@lin.in.ua)",
                          "pecunia (pecunia@heavengames.com) game mechanics",
                          "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
@@ -306,13 +310,13 @@ void StartMenu::Impl::resolveCredits()
                          "rad.n,jsimek.cz, saintech,phdarcy, Casey Knauss, meikit2000",
                          "" };
 
-  gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
-  gui::WidgetEscapeCloser::insertTo( frame );
+  Label* frame = new Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
+  WidgetEscapeCloser::insertTo( frame );
   frame->setAlpha( 0xa0 );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {
-    Label* lb = new gui::Label( frame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
+    Label* lb = new Label( frame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
     lb->setTextAlignment( align::center, align::center );
     lb->setFont( Font::create( FONT_2_WHITE ) );
     lb->setSubElement( true );
@@ -333,7 +337,7 @@ void StartMenu::Impl::showLoadMenu()
 {
   menu->clear();
 
-  gui::PushButton* btn = menu->addButton( _("##mainmenu_playmission##"), -1 );
+  PushButton* btn = menu->addButton( _("##mainmenu_playmission##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showMissionSelector );
 
   btn = menu->addButton( _("##mainmenu_loadgame##"), -1 );
@@ -363,7 +367,7 @@ void StartMenu::Impl::showOptionsMenu()
 {
   menu->clear();
 
-  gui::PushButton* btn = menu->addButton( _("##mainmenu_language##"), -1 );
+  PushButton* btn = menu->addButton( _("##mainmenu_language##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLanguageOptions );
 
   btn = menu->addButton( _("##mainmenu_video##"), -1 );
@@ -383,7 +387,7 @@ void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
 
-  gui::PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
+  PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
 
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
@@ -425,18 +429,18 @@ void StartMenu::Impl::setPlayerName(std::string name) {  playerName = name; }
 
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
-  gui::Widget* parent = game->gui()->rootWidget();
+  Widget* parent = game->gui()->rootWidget();
 
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                      Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                      -1 );
-  wnd->setCenter( parent->center() );
+  LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
+                                                 Rect(),
+                                                 vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                 -1 );
   wnd->setMayDelete( false );
 
   result = StartMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadmap##") );
+  wnd->setText( _("##start_this_map##") );
 }
 
 StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
@@ -489,11 +493,11 @@ void StartMenu::initialize()
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
   Size scrSize = _d->engine->virtualSize();
-  gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
+  TexturedButton* btnHomePage = new TexturedButton( _d->game->gui()->rootWidget(),
                                                               Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
                                                               "logo_rdt", 1, 2, 2, 2 );
 
-  gui::TexturedButton* btnSteamPage = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
+  TexturedButton* btnSteamPage = new TexturedButton( _d->game->gui()->rootWidget(), Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
                                                                 "steam_icon", 1, 2, 2, 2 );
 
   CONNECT( btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
@@ -530,9 +534,8 @@ void StartMenu::initialize()
     return;
   }
 
-  std::string text = utils::format( 0xff, "ver %d.%d.%d\n%s", CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR,
-                                                                      CAESARIA_VERSION_REVSN, steamName.c_str() );
-  _d->lbSteamName = new gui::Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
+  std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_STRING, steamName.c_str() );
+  _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
