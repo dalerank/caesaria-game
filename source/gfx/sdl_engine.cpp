@@ -559,14 +559,14 @@ Engine::Modes SdlEngine::modes() const
   /* Get available fullscreen/hardware modes */
   int num = SDL_GetNumDisplayModes(0);
 
-  std::set<uint> uniqueModes;
+  std::set<unsigned int> uniqueModes;
 
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
-      uint modeHash = (mode.w << 16) + mode.h;
+      unsigned int modeHash = (mode.w << 16) + mode.h;
       if( uniqueModes.count( modeHash ) == 0)
       {
         ret.push_back(Size(mode.w, mode.h));
