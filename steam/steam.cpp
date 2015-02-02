@@ -276,7 +276,10 @@ bool connect()
   return true;
 }
 
-void close() { SteamAPI_Shutdown(); }
+void close()
+{
+  SteamAPI_Shutdown();
+}
 
 void update()
 {
