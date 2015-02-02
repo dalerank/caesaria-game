@@ -17,9 +17,12 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "city/build_options.hpp"
+#include "factory.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ChangeBuildingOptions, "building_options" )
 
 GameEventPtr ChangeBuildingOptions::create()
 {

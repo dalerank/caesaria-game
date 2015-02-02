@@ -196,6 +196,8 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
+  setOption( zoomEnabled, 1 );
+  setOption( zoomInvert, 1 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
 }
@@ -504,6 +506,9 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "climate"    ] = _d->climate;
   stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
   stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
+  stream[ "godEnabled" ] = getOption( PlayerCity::godEnabled );
+  stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
+  stream[ "zoomInvert"] = getOption( PlayerCity::zoomInvert );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -591,6 +596,9 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: parse options" );
   setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
   setOption( fishPlaceEnabled, stream.get( lc_fishPlaceEnabled, 1 ) );
+  setOption( godEnabled, stream.get( "godEnabled", 1 ) );
+  setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
+  setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );

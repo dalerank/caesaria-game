@@ -13,42 +13,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-201 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
-#define _CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
+#ifndef _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
+#define _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
 
-#include "window.hpp"
-#include "core/signals.hpp"
+#include "event.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
-namespace gui
+namespace events
 {
 
-namespace dialog
-{
-
-class ChangePlayerName : public Window
+class RandomPlague : public GameEvent
 {
 public:
-  ChangePlayerName( Widget* parent );
-  virtual ~ChangePlayerName();
+  static GameEventPtr create();
+  virtual bool isDeleted() const;
 
-  virtual std::string text() const;
-  virtual void setModal();
-  virtual bool onEvent(const NEvent &event);
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
 
-public signals:
-  Signal0<>& onNewGame();
-  Signal0<>& onClose();
-  Signal1<std::string>& onNameChange();
+protected:
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  RandomPlague();
+
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-}//end namespace dialog
+}//namespace events
 
-}//end namespace gui
-#endif //_CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
+#endif //_CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_

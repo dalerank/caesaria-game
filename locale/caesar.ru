@@ -977,6 +977,7 @@
 "##start_condition##":"Начальные условия"
 "##replay_game##":"Начать заново"
 "##start_this_map##":"Начать игру на этой карте"
+"##load_this_game##":"Загрузить"
 "##plname_start_new_game##":"Начать новую игру"
 "##devastate_warehouse##":"НАЧАТЬ опустошение склада"
 "##empiremap_our_city##":"Наш город!"

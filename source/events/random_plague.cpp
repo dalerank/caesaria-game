@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "random_fire.hpp"
+#include "random_plague.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
@@ -36,9 +36,9 @@ CAESARIA_LITERALCONST(population)
 CAESARIA_LITERALCONST(strong)
 }
 
-REGISTER_EVENT_IN_FACTORY(RandomFire, "random_fire")
+REGISTER_EVENT_IN_FACTORY(RandomPlague, "random_plague")
 
-class RandomFire::Impl
+class RandomPlague::Impl
 {
 public:
   int minPopulation, maxPopulation;
@@ -46,50 +46,43 @@ public:
   int strong;
 };
 
-GameEventPtr RandomFire::create()
+GameEventPtr RandomPlague::create()
 {
-  GameEventPtr ret( new RandomFire() );
+  GameEventPtr ret( new RandomPlague() );
   ret->drop();
 
   return ret;
 }
 
-void RandomFire::_exec( Game& game, unsigned int time)
+void RandomPlague::_exec( Game& game, unsigned int time)
 {
   int population = game.city()->population();
   if( population > _d->minPopulation && population < _d->maxPopulation )
   {
-    Logger::warning( "Execute random fire event" );
+    Logger::warning( "Execute random plague event" );
     _d->isDeleted = true;
 
-    Priorities<int> exclude;
-    exclude << objects::waterGroup
-            << objects::roadGroup
-            << objects::disasterGroup;
+    HouseList houses;
+    houses << game.city()->overlays();
 
-    ConstructionList ctrs;
-    ctrs << game.city()->overlays();
-
-    for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
-    {
-      if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
-      else { ++it; }
-    }
-
-    unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
+    unsigned int number4burn = math::clamp<unsigned int>( (houses.size() * _d->strong / 100), 1u, 100u );
 
     for( unsigned int k=0; k < number4burn; k++ )
     {
-      ConstructionPtr building = ctrs.random();
-      building->burn();
+      HousePtr house = houses.random();
+      house->setState( House::health, 0 );
+      /*
+      e = events::Disaster::create( building->tile(), events::Disaster::plague );
+      e->dispatch();
+      */
     }
   }
 }
 
-bool RandomFire::_mayExec(Game&, unsigned int) const { return true; }
-bool RandomFire::isDeleted() const {  return _d->isDeleted; }
+bool RandomPlague::_mayExec(Game&, unsigned int) const { return true; }
+bool RandomPlague::isDeleted() const {  return _d->isDeleted; }
 
-void RandomFire::load(const VariantMap& stream)
+void RandomPlague::load(const VariantMap& stream)
 {
   VariantList vl = stream.get( lc_population ).toList();
   _d->minPopulation = vl.get( 0, 0 ).toInt();
@@ -97,7 +90,7 @@ void RandomFire::load(const VariantMap& stream)
   _d->strong = stream.get( lc_strong, 10 );
 }
 
-VariantMap RandomFire::save() const
+VariantMap RandomPlague::save() const
 {
   VariantMap ret;
   VariantList vl_pop;
@@ -108,7 +101,7 @@ VariantMap RandomFire::save() const
   return ret;
 }
 
-RandomFire::RandomFire() : _d( new Impl )
+RandomPlague::RandomPlague() : _d( new Impl )
 {
   _d->isDeleted = false;
   _d->minPopulation = 0;

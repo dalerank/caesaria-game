@@ -85,6 +85,7 @@ __REG_PROPERTY(forbidenTile)
 __REG_PROPERTY(layersOptsModel)
 __REG_PROPERTY(experimental)
 __REG_PROPERTY(buildMenuModel)
+__REG_PROPERTY(scrollSpeed)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -145,6 +146,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
+  _d->options[ scrollSpeed         ] = 30;
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
@@ -261,6 +263,7 @@ void Settings::checkC3present()
     _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.c3" ) );
     _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
     _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
+    _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;

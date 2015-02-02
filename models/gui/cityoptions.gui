@@ -22,6 +22,24 @@
     text : "##city_warnings_mode##"
   }
 
+  btnZoomEnabled#PushButton : {
+    geometry : [ 16, 100, 220, 120 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_zoom_mode##"
+  }
+
+  btnInvertZoom#PushButton : {
+    geometry : [ 16, 125, 220, 145 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_zoominv_mode##"
+  }
+
+  btnDebugEnabled#PushButton : {
+    geometry : [ 16, 150, 220, 175 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_debug_mode##"
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]
