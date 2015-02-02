@@ -110,7 +110,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    _animationRef().setDelay( math::random( 4 )+1 );
+    _animationRef().setDelay( math::random( 2 )+1 );
   }
 }
 
@@ -242,11 +242,13 @@ PlagueRuins::PlagueRuins() : Ruins( objects::plague_ruins )
   setState( Construction::collapsibility, 0 );
 
   setPicture( ResourceGroup::land2a, 187 );
-  _animationRef().load( ResourceGroup::land2a, 188, 8 );
-  _animationRef().setOffset( Point( 14, 26 ) );
+  _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
+
+  //_animationRef().load( ResourceGroup::land2a, 188, 8 );
+  //_animationRef().setOffset( Point( 14, 26 ) );
   _fgPicturesRef().resize(2);
   _fgPicturesRef()[ 1 ] = Picture::load( ResourceGroup::sprites, 218 );
-  _fgPicturesRef()[ 1 ].setOffset( Point( 16, 32 ) );
+  _fgPicturesRef()[ 1 ].setOffset( Point( 20, 35 ) );
 }
 
 void PlagueRuins::timeStep(const unsigned long time)
@@ -262,16 +264,20 @@ void PlagueRuins::timeStep(const unsigned long time)
       if( state( Construction::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
-        _animationRef().clear();
-        _animationRef().load( ResourceGroup::land2a, 215, 8);
-        _animationRef().setOffset( Point( 14, 26 ) );
+        _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
+
+        //_animationRef().clear();
+        //_animationRef().load( ResourceGroup::land2a, 215, 8);
+        //_animationRef().setOffset( Point( 14, 26 ) );
       }
       else if( state( Construction::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
-        _animationRef().clear();
-        _animationRef().load(ResourceGroup::land2a, 224, 8);
-        _animationRef().setOffset( Point( 14, 18 ) );
+        _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
+
+        //_animationRef().clear();
+        //_animationRef().load(ResourceGroup::land2a, 224, 8);
+        //_animationRef().setOffset( Point( 14, 18 ) );
       }
     }
     else

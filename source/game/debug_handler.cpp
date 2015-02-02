@@ -46,6 +46,7 @@
 #include "events/random_fire.hpp"
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
+#include "events/random_plague.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
@@ -90,6 +91,7 @@ enum {
   send_exporter,
   random_fire,
   random_collapse,
+  random_plague,
   reload_aqueducts,
   run_script
 };
@@ -141,6 +143,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( "disaster", random_fire )
   ADD_DEBUG_EVENT( "disaster", random_collapse )
+  ADD_DEBUG_EVENT( "disaster", random_plague )
   ADD_DEBUG_EVENT( "disaster", earthquake )
 
   ADD_DEBUG_EVENT( "game", win_mission )
@@ -298,6 +301,13 @@ void DebugHandler::Impl::handleEvent(int event)
   case random_fire:
   {
     events::GameEventPtr e = events::RandomFire::create();
+    e->dispatch();
+  }
+  break;
+
+  case random_plague:
+  {
+    events::GameEventPtr e = events::RandomPlague::create();
     e->dispatch();
   }
   break;

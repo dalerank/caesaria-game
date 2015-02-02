@@ -103,6 +103,7 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   _d->fillFiles();
 
   setMayDelete( false );
+  setCenter( parent->center() );
 }
 
 LoadFileDialog::~LoadFileDialog(){}

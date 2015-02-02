@@ -67,6 +67,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnWarningsEnabled )
   GET_DWIDGET_FROM_UI( _d, btnZoomEnabled )
   GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
+  GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
@@ -169,8 +170,8 @@ void CityOptionsWindow::Impl::update()
   {
     Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
     btnDebugEnabled->setText( (menu ? menu->visible() : false)
-                                ? _("##city_zoominv_on##")
-                                : _("##city_zoominv_off##") );
+                                ? _("##city_debug_on##")
+                                : _("##city_debug_off##") );
   }
 }
 
