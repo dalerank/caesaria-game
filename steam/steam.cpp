@@ -563,7 +563,6 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
       steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
       steamUserStats->GetStat( lc_stat_num_wins, &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
-      emit onStatsReceivedSignal();
     }
     else
     {
