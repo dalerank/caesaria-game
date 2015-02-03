@@ -121,6 +121,7 @@ House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl 
   _d->services[ Service::crime ] = 0;
 
   _update( true );
+  //_animationRef()
 }
 
 void House::_makeOldHabitants()
@@ -1344,6 +1345,11 @@ void House::Impl::updateHealthLevel( HousePtr house )
   float decrease = 2.f / delim;
 
   house->updateState( (Construction::Param)House::health, -decrease );
+  int value = 100 - house->state( House::health );
+  if( value > 25 )
+  {
+
+  }
 }
 
 void House::Impl::initGoodStore(int size)
