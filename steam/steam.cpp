@@ -77,8 +77,7 @@ public:
   int32 totalNumWins;
   int32 totalNumLosses;
   bool needStoreStats;
-  bool statsValid;
-  Signal0<> onStatsReceivedSignal;
+  bool statsValid, statsUpdate;
 
 #ifndef CAESARIA_PLATFORM_WIN
   STEAM_CALLBACK( UserStats, receivedUserStats, UserStatsReceived_t, _callbackUserStatsReceived );
@@ -102,6 +101,7 @@ public:
     totalNumWins = 0;
     campaignFirstMission = 0;
     totalNumLosses = 0;
+    statsUpdate = false;
     needStoreStats = false;
     statsValid = false;
   }    
@@ -465,7 +465,12 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
 }
 #endif
 
-Signal0<>& onStatsReceived() { return glbUserStats.onStatsReceivedSignal; }
+bool isStatsReceived()
+{
+  bool ret = glbUserStats.statsValid;
+  glbUserStats.statsValid = false;
+  return ret;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: An achievement was stored
@@ -524,8 +529,6 @@ void UserStats::receivedUserStats()
     // load stats
     totalGamesPlayed = sth_getStat( lc_stat_num_games );
     totalNumWins = sth_getStat( lc_stat_num_wins );
-    totalNumLosses = sth_getStat( "NumLosses" );
-    emit onStatsReceivedSignal();
   }
 }
 #else

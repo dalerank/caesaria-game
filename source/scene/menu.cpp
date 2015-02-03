@@ -539,12 +539,10 @@ void StartMenu::initialize()
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
-
-  steamapi::onStatsReceived().connect( _d.data(), &Impl::resolveSteamStats );
 #endif
 }
 
-void scene::StartMenu::afterFrame()
+void StartMenu::afterFrame()
 {
   Base::afterFrame();
 
@@ -553,6 +551,8 @@ void scene::StartMenu::afterFrame()
 
 #ifdef CAESARIA_USE_STEAM
   steamapi::update();
+  if( steamapi::isStatsReceived() )
+    _d->resolveSteamStats();
 #endif
 }
 
