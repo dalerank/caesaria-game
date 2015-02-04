@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "layerbuild.hpp"
 #include "objects/aqueduct.hpp"
@@ -515,7 +515,7 @@ void Build::init(Point cursor)
   _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
   _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
   _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;  
-  _d->lastLayer = _d->renderer->currentLayer();
+  changeLayer( _d->renderer->currentLayer()->type() );
 
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, false );
 }

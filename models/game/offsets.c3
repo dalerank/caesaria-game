@@ -24,4 +24,8 @@
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
+  warehouse_base: { rc : "warehouse", start : 1, stop : 1, offset : [ 60, 56 ] }
+  waherhose_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ 56, 93 ] }
+  warehouse_work : { rc : "warehouse", start : 2, stop : 17, offset : [ 55, 75 ] }
+  warehouse_flag : { rc : "warehouse", start : 84, stop : 91, offset : [ 79, 108 ] }
 }
