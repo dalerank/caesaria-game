@@ -492,18 +492,23 @@ void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   Point cursorPos = engine.cursorPos();
-  Size screenSize = engine.screenSize();
+  Size screenSize = engine.virtualSize();
   Point offset = _d->camera->offset();
   Point moveValue;
 
   //on edge cursor moving
   DrawOptions& opts = DrawOptions::instance();
-  if( opts.isFlag( DrawOptions::windowActive ) )
+  if( opts.isFlag( DrawOptions::windowActive | DrawOptions::borderMoving ) )
   {
     if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
-    else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+    else
+      if( cursorPos.x() > screenSize.width() - 2 )
+        moveValue.rx() += 1;
+
     if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
-    else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+    else
+      if( cursorPos.y() > screenSize.height() - 2 )
+        moveValue.ry() -= 1;
 
     if( moveValue.x() != 0 || moveValue.y() != 0 )
     {

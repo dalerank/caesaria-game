@@ -49,7 +49,6 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_level.hpp"
 #include "walker/name_generator.hpp"
-#include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"

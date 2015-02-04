@@ -1,0 +1,27 @@
+{
+  housng1b : { start : 1, stop : 45, offset : [-1,-1] }
+  housng1c : { start : 1, stop : 45, offset : [-1,-1] }
+  housng1d : { start : 1, stop : 45, offset : [-1,-1] }
+  engineering : { start : 1, stop : 5, offset : [-1,-1] }
+  prefecture : { start : 1, stop : 5, offset : [-1,-1] }
+  land1a : { start: 160, stop : 199, offset : [-1,-1] }
+  meadow : { start: 1, stop : 1, offset : [-1,-1] }
+  org_land : { start: 1, stop : 5, offset : [-1,-1] }
+  land1a : { start: 1188, stop : 1198, offset : [-1,-1] }
+  plaza :  { start: 3139, stop : 3144, offset : [-1,-1] }
+  well : { start: 1, stop : 4, offset : [-1, -1] }
+  test_fountain_base : { rc: "utilitya", start: 50, stop : 50, offset : [-1, -1] }
+  test_fountain_anim : { rc: "utilitya", start: 51, stop : 57, offset : [-1, -1] }
+  smlceres : { start : 1, stop : 1, offset : [ -1, -1] }
+  smlmars : { start : 1, stop : 1, offset : [ -1, -1] }
+  smlmercury : { start : 1, stop : 1, offset : [ -1, -1] }
+  smlneptune : { start : 1, stop : 1, offset : [ -1, -1] }
+  smlvenus : { start : 1, stop : 1, offset : [ -1, -1] }
+  security : { start : 45, stop : 53, offset : [ -1, -1 ] }
+  roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
+  etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
+  citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
+  circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
+  carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
+}

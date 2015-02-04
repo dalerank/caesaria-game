@@ -137,6 +137,9 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( layer::Indigene::create( _d->camera, city ) );
 
   _d->setLayer( citylayer::simple );
+
+  DrawOptions::instance().setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
+  DrawOptions::instance().setFlag( DrawOptions::windowActive, true );
 }
 
 void CityRenderer::Impl::resetWalkersAfterTurn()
