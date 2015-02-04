@@ -673,6 +673,7 @@ bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovT
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
+void Layer::changeLayer(int type) {}
 void Layer::_setNextLayer(int layer) { _dfunc()->nextLayer = layer;}
 Layer::~Layer(){}
 void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }

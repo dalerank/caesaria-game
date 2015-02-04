@@ -40,6 +40,7 @@ public:
   virtual void afterRender(Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(Engine &engine);
+  virtual void changeLayer(int type);
 
   static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
 
@@ -51,7 +52,7 @@ private:
   void _buildAll();
   void _finishBuild();
   void _drawBuildTiles( Engine& engine );
-  void _handeLayerSwitch(int layer);
+  void _exitBuildMode();
 
   Build( Renderer* renderer, PlayerCityPtr city );
 

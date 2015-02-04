@@ -58,6 +58,8 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT( _d->btnChangeCellw, onClicked(), this, PackageOptions::_changeCellw );
 
   _update();
+
+  if( _d->btnApply ) _d->btnApply->setFocus();
 }
 
 PackageOptions::~PackageOptions() {}

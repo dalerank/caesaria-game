@@ -53,11 +53,11 @@ public:
 
   void addLayer( layer::LayerPtr layer );
   layer::LayerPtr currentLayer() const;
+  layer::LayerPtr getLayer(int type) const;
   void setLayer( int layertype );
   int  layerType() const;
 
   TilePos screen2tilepos( Point point ) const;
-
   void setViewport( const Size& size );
 
 public signals:

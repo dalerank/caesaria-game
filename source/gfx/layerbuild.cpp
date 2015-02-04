@@ -150,7 +150,6 @@ void Build::_checkPreviewBuild(TilePos pos)
   else
   {
     //bldCommand->setCanBuild(false);
-
     const Picture& grnPicture = Picture::load( d->resForbiden, 1);
     const Picture& redPicture = Picture::load( d->resForbiden, 2);
 
@@ -310,6 +309,13 @@ void Build::_buildAll()
   }
 }
 
+void Build::_exitBuildMode()
+{
+  DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
+  _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
+  _discardPreview();
+}
+
 void Build::handleEvent(NEvent& event)
 {
   __D_IMPL(_d,Build);
@@ -357,16 +363,8 @@ void Build::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease:
-    {
-      int nextLayer = _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple;
-      _setNextLayer( nextLayer );
-      _discardPreview();
-    }
-    break;
-
-    default:
-    break;
+    case mouseRbtnRelease: { _exitBuildMode(); } break;
+    default:    break;
     }
   }
 
@@ -381,7 +379,8 @@ void Build::handleEvent(NEvent& event)
     case KEY_DOWN:  _camera()->moveDown ( moveValue ); break;
     case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
     case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
-    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); _discardPreview(); break;
+    case KEY_ESCAPE: _exitBuildMode(); break;
+
     case KEY_RETURN:
     {
       if( !event.keyboard.pressed )  //button was left up
@@ -433,20 +432,6 @@ void Build::_drawBuildTiles( Engine& engine)
   }
 
   engine.resetColorMask();
-}
-
-void Build::_handeLayerSwitch(int layer)
-{
-  __D_IMPL(_d,Build);
-  if( layer != type() )
-  {
-    _d->lastLayer = LayerPtr();
-    CityRenderer* cRenderer = safety_cast<CityRenderer*>( _d->renderer );
-    if( cRenderer )
-    {
-      _d->lastLayer = cRenderer->currentLayer();
-    }
-  }
 }
 
 void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
@@ -523,9 +508,15 @@ void Build::init(Point cursor)
   _d->startTilePos = TilePos(-1, -1);
 
   BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
+
+  Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
+
   _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
   _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
-  _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
+  _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;  
+  _d->lastLayer = _d->renderer->currentLayer();
+
+  DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, false );
 }
 
 void Build::beforeRender(Engine& engine)
@@ -561,6 +552,17 @@ void Build::renderUi(Engine &engine)
   engine.draw( *_dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
+void Build::changeLayer(int layer)
+{
+  __D_IMPL(_d,Build);
+  if( layer != type() )
+  {
+    _d->lastLayer = _d->renderer
+                          ? _d->renderer->getLayer( layer )
+                          : LayerPtr();
+  }
+}
+
 LayerPtr Build::create(Renderer* renderer, PlayerCityPtr city)
 {
   LayerPtr ret( new Build( renderer, city ) );
@@ -583,9 +585,6 @@ Build::Build(Renderer* renderer, PlayerCityPtr city)
   d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );
-
-  CityRenderer* cRenderer = safety_cast<CityRenderer*>( d->renderer );
-  CONNECT( cRenderer, onLayerSwitch(), this, Build::_handeLayerSwitch )
 }
 
 }//end namespace layer
