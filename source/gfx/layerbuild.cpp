@@ -311,6 +311,7 @@ void Build::_buildAll()
 
 void Build::_exitBuildMode()
 {
+  __D_IMPL(_d,Build);
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
   _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
   _discardPreview();

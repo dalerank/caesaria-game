@@ -320,8 +320,8 @@ void Emperor::Impl::changeSalary( int money )
   if( salKoeff > 1.f )
   {
     DialogBox::information( lbEmperorFavour->parent(),
-                            "##changesalary_warning##",
-                            "##changesalary_greater_salary##" );
+                            _("##changesalary_warning##"),
+                            _("##changesalary_greater_salary##") );
   }
 }
 
