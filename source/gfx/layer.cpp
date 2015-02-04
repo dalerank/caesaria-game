@@ -362,7 +362,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( !master->rwd() && master->epos().z() == depth )
+  if( !master->rwd() && master == &tile )
   {
     drawTile( engine, *master, offset );
   }
@@ -432,6 +432,8 @@ void Layer::drawLands( Engine& engine, Camera* camera )
     drawTile( engine, **it, camOffset );
   }
 
+  bool oldgfx = DrawOptions::instance().isFlag( DrawOptions::oldGraphics );
+
   foreach( it, visibleTiles )
   {
     Tile& t = **it;
@@ -445,9 +447,9 @@ void Layer::drawLands( Engine& engine, Camera* camera )
         // multi-tile: draw the master tile.
         // and it is time to draw the master tile
         if( !master->rwd() && master == &t )
-        {
+        {            
           drawPass( engine, *master, camOffset, Renderer::ground );
-          drawPass( engine, *master, camOffset, Renderer::groundAnimation );
+          drawPass( engine, *master, camOffset, Renderer::groundAnimation );          
         }
       }
       else
@@ -474,6 +476,9 @@ void Layer::drawLands( Engine& engine, Camera* camera )
           }
         }
       }
+
+      if( oldgfx )
+        master->setWasDrawn();
     }
   }
 }

@@ -54,6 +54,7 @@
 #include "city/city.hpp"
 #include "layertroubles.hpp"
 #include "layerindigene.hpp"
+#include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
@@ -95,7 +96,7 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv )
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv, bool oldGraphic )
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();
@@ -139,6 +140,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   DrawOptions::instance().setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
   DrawOptions::instance().setFlag( DrawOptions::windowActive, true );
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
+  DrawOptions::instance().setFlag( DrawOptions::oldGraphics, oldGraphic );
 
   _d->setLayer( citylayer::simple );
 }

@@ -19,6 +19,7 @@
 #include "objects/metadata.hpp"
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
+#include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
 
 using namespace constants;
@@ -48,6 +49,10 @@ public:
     return inst;
   }
 
+  typedef std::set<int> Types;
+  typedef std::map<Branch, Types> Config;
+  Config config;
+
   BranchHelper() : EnumsHelper<Branch>( unknown )
   {
 #define __REG_BR(a) append( a, CAESARIA_STR_EXT(a) );
@@ -67,7 +72,7 @@ public:
     __REG_BR( big_temple )
     __REG_BR( all )
 #undef __REG_BR
-  }
+  }  
 };
 
 class Options::Impl
@@ -271,6 +276,30 @@ bool Options::isBuildingAvailble(const TileOverlay::Type type ) const
 
 Branch toBranch(const std::string& name) { return BranchHelper::instance().findType( name ); }
 std::string toString(Branch branch) { return BranchHelper::instance().findName( branch ); }
+
+void loadBranchOptions(const std::string &filename)
+{
+  BranchHelper& helper = BranchHelper::instance();
+  VariantMap vm = config::load( filename );
+  BranchHelper::Config& conf = helper.config;
+
+  foreach( it, vm )
+  {
+    Branch branch = helper.findType( it->first );
+    if( branch != development::unknown )
+    {
+      BranchHelper::Types& branchData = conf[ branch];
+      VariantList vmTypes = it->second.toList();
+
+      foreach( bIt, vmTypes )
+      {
+        TileOverlay::Type ovType = MetaDataHolder::findType( bIt->toString() );
+        if( ovType != constants::objects::unknown )
+          branchData.insert( ovType );
+      }
+    }
+  }
+}
 
 }//end namespace development
 

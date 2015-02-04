@@ -160,7 +160,8 @@ void Level::initialize()
   PlayerCityPtr city = _d->game->city();
   gui::Ui& ui = *_d->game->gui();
 
-  _d->renderer.initialize( city, _d->engine, &ui );
+  bool oldGraphics = SETTINGS_VALUE( oldgfx ).toBool() || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
   const int topMenuHeight = 23;
