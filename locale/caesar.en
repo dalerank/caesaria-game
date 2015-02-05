@@ -239,6 +239,8 @@
 "##tradeadv_industrystate_tip##":"Turn production on or off for this activity throughout the city"
 "##warehouse_gettinfull_warning##":"WARNING This warehouse is getting full. It can only accept some existing stocks, and no new goods types will be checked in at all."
 "##warehouse_full_warning##":"WARNING This warehouse is completely full. It cannot accept any more goods."
+"##emperor_advisor_title##":"Pending..."
+"##changesalary_warning##":"Pending..."
 "##changesalary_greater_salary##":"Warning: Paying yourself a salary greater than your current rank will not impress the Emperor."
 "##working_build_poor_labor_warning##":"WARNING: Poor access to employees"
 "##working_building_need_road##":"WARNING. This building is not operational. It is not adjacent to a road and so has no access for its employees"
