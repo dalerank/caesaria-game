@@ -25,6 +25,7 @@ resources/*
 dependencies/*
 application/*
 en/*
+dep/
 
 # Compiled translation files
 *.mo
@@ -52,3 +53,9 @@ Win32
 *.suo
 *.opensdf
 *.user
+
+
+addon/ave_c3/libAveC3.so
+source/caesaria.linux
+updater/updater.linux
+			
