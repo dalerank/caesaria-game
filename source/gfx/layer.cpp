@@ -284,6 +284,7 @@ void Layer::render( Engine& engine)
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
+  //FIRST PART: draw lands
   drawLands( engine, _d->camera );
 
   DrawOptions& opts = DrawOptions::instance();
@@ -371,25 +372,16 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   if( !tile.rwd() )
-  {    
+  {
     tile.setWasDrawn();
-    //drawPass( engine, tile, offset, Renderer::ground );
-    //drawPass( engine, tile, offset, Renderer::groundAnimation );
+    if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
+    {
+      drawPass( engine, tile, offset, Renderer::ground );
+      drawPass( engine, tile, offset, Renderer::groundAnimation );
+    }
 
     if( tile.rov().isValid() )
     {
-      //Size size = tile.rov()->size();
-      /*if( size.width() > 1 )
-      {
-        __D_IMPL(_d,Layer)
-        Tilemap& tmap = _d->city->tilemap();
-        for( int i=0; i < size.width(); i++ )
-          for( int j=0; j < size.height(); j++ )
-          {
-            drawPass( engine, tmap.at( tile.pos() + TilePos( i, j ) ), offset, Renderer::ground );
-          }
-      }*/
-
       registerTileForRendering( tile );     
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
@@ -432,7 +424,8 @@ void Layer::drawLands( Engine& engine, Camera* camera )
     drawTile( engine, **it, camOffset );
   }
 
-  bool oldgfx = DrawOptions::instance().isFlag( DrawOptions::oldGraphics );
+  if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
+    return;
 
   foreach( it, visibleTiles )
   {
@@ -440,7 +433,7 @@ void Layer::drawLands( Engine& engine, Camera* camera )
     if( !t.isFlat() )
     {
       Tile* master = t.masterTile();
-      master = master == 0 ? &t : master;
+      master = (master == 0 ? &t : master);
 
       if( t.rov().isNull() )
       {
@@ -464,7 +457,7 @@ void Layer::drawLands( Engine& engine, Camera* camera )
               {
                 TilePos tpos = t.epos() + TilePos( i, j );
                 Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
-                                 tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
+                                      tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
 
                 engine.draw( terrainPic, mappos + camOffset );
               }
@@ -476,9 +469,6 @@ void Layer::drawLands( Engine& engine, Camera* camera )
           }
         }
       }
-
-      if( oldgfx )
-        master->setWasDrawn();
     }
   }
 }
