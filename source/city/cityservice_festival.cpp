@@ -37,8 +37,8 @@ namespace {
   int firstFestivalSentinment[ftCount] = { 7, 9, 12 };
   int secondFesivalSentiment[ftCount] = { 2, 3, 5 };
 
-  const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
-  const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
+  const char* festivalTitles[ftCount] = { "", _("##small_festival##"), _("##middle_festival##"), _("##great_festival##") };
+  const char* festivalDesc[ftCount] = { "", _("##small_fest_description##"), _("##middle_fest_description##"), _("##big_fest_description##") };
   const char* festivalVideo[ftCount] = { "", ":/smk/festival1_feast.smk", ":/smk/festival3_Glad.smk", ":/smk/festival2_chariot.smk" };
 }
 
