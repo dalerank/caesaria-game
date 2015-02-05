@@ -1269,6 +1269,9 @@
 "##sldr_shaken##":"Shaken"
 "##cartPusher_normal_life##":"Things seem to be working well here"
 "##engineer_average_life##":"Everything seems to be working well here"
+"##advchief_religion##":"Religion"
+"##advchief_entertainment##":"Entertainment"
+"##advchief_migration##":"Migration"
 
 "##scholar_average_life##":"This city seems all right"
 "##taxCollector_average_life##":"This city seems to be running smoothly"

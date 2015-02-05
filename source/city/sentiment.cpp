@@ -20,6 +20,7 @@
 #include "helper.hpp"
 #include "objects/house.hpp"
 #include "core/variant_map.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 
@@ -162,7 +163,7 @@ std::string Sentiment::reason() const
   else if( v > 5 ) { ret = "##sentiment_people_veryangry_you##"; }
   else if( v > 0 ) { ret = "##city_loathed_you##"; }
 
-  return ret;
+  return _(ret);
 }
 
 VariantMap Sentiment::save() const
