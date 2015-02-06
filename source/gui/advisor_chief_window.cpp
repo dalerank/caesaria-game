@@ -308,7 +308,7 @@ void AdvisorChief::Impl::drawFoodStockState()
     }
   }
 
-  drawReportRow( foodStockState, text );
+  drawReportRow( foodStockState, _(text) );
 }
 
 void AdvisorChief::Impl::drawFoodConsumption()

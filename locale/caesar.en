@@ -56,6 +56,7 @@
 "##priest_high_workless##":"Unemployment is worryingly high here"
 "##advemployer_panel_workless##":"Unemployed workforce "
 "##rioter_in_city_title##":"Rioting in the city"
+"#denaries#":"denaries"
 
 "##library##":"Library"
 "##wt_librarian##":"Librarian"
@@ -1289,6 +1290,7 @@
 "##wt_criminal##":"Criminal"
 "##prefect_low_entertainment##":"The criminals I lock up have better entertainment than this city!"
 "##advchief_crime##":"Crime"
+"##advchief_no_crime":"No Crime"
 "##layer_crime##":"Crime"
 "##advchief_high_crime##":"Crime is endemic in the city."
 "##advchief_which_crime##":"Crime is becoming a problem."
@@ -1672,6 +1674,7 @@
 "##wage_level_tip##":"Set a wage level (your people will compare this to wages in Rome)"
 "##set_amount_to_donate##":"Set the amount to donate."
 "##wt_teacher##":"Teacher"
+"##advchief_education_ok##":"Education is ok"
 
 "##file##":"File"
 "##month_2_short##":"Feb"
@@ -1715,6 +1718,7 @@
 "##wt_romeGuard##":"Sentry"
 "##money_stolen_text##":"Still frustrated, some citizens have begun stealing. More law-abiding citizens are talking of moving out. Act now to improve the mood of your people."
 
+"##peoples##":"people"
 "##more_people##":"more people"
 "##person##":"Person"
 "##more_person##":"more person"
