@@ -232,6 +232,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         }
       }
 
+#ifdef DEBUG
       const world::Route& way = mobj->way();
       if( !way.empty() )
       {
@@ -242,6 +243,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
           lastPos = way[ k ];
         }
       }
+#endif
     }
   }
 }
