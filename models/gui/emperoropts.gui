@@ -1,7 +1,8 @@
 {  
   geometry : [ 0, 0, 640, 432 ]
   bgtype : "whiteFrame"
-
+  static : true
+  
   lbIcon#Label : {
     geometry : [ 10, 10, 50, 50 ]
     image : "paneling_00257"

@@ -1,5 +1,6 @@
 {
   geometry : [ 0, 0, 640, 432 ]
+  static : true
   
   lbBackground#Label :
   {
