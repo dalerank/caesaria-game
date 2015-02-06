@@ -756,6 +756,7 @@
 "##road_paved_text##":"People prefer plazas!"
 "##migration_peoples_arrived_in_city##":"People are immigrating to the city"
 "##we_produce_less_than_eat##":"People are eating more food than they are producing"
+"##we_noproduce_food##":"We no produce food"
 "##month_5_short##":"May"
 "##macedonian_soldier##":"A Macedonian soldier"
 "##small_villa##":"Small villa"
@@ -1978,5 +1979,17 @@
 "##spirit_of_mars_text##":"The spirit guardian conjured by Mars to protect you awakens, and lays low some of those who dare to attack his chosen city."
 "##statue_desc##":""
 
+"##import##":"Importing"
+"##export##":"Exporting"
+"##stacking##":"Stacking"
+"##disable##":"Industry off"
+"##trade_btn_import_text##":"Importing"
+"##trade_btn_export_text##":"Exporting"
+"##trade_btn_qty##":"quantity"
 "##non_cvrg##":"no corevage"
-"##healthadv_unknown_reason##":"unknown reason"}
+"##healthadv_unknown_reason##":"unknown reason"
+"##entertainment_not_need##":"entertainment no needed"
+"##click_rmb_for_exit##":"right click for exit"
+"##click_on_rating_for_info##":"Click on rating for more info"}
+"##blessing_of_ceres_title##":"Pending..."
+"##blessing_of_ceres_description##":"Pending..."
