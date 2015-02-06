@@ -251,6 +251,7 @@ void Game::Impl::initHotkeys()
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
   hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+
   CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
