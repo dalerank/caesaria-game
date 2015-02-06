@@ -201,7 +201,7 @@ void Options::clear() {  _d->rules.clear(); }
 void Options::load(const VariantMap& options)
 {
   setGroupAvailable( development::farm, options.get( "farm" ) );
-  setGroupAvailable( development::raw_material, options.get( "raw_material" ) );
+  setGroupAvailable( development::raw_material, options.get( "raw_materials" ) );
   setGroupAvailable( development::factory, options.get( "factory" ) );
   setGroupAvailable( development::water, options.get( "water" ) );
   setGroupAvailable( development::health, options.get( "health" ) );
