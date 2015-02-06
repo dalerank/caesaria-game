@@ -53,6 +53,7 @@
 #include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/utils.hpp"
+#include "walker/name_generator.hpp"
 #include "gui/image.hpp"
 #include "steam.hpp"
 
@@ -84,6 +85,7 @@ public:
   void handleNewGame();
   void resolveCredits();
   void showLoadMenu();
+  void showNewGame();
   void showOptionsMenu();
   void resolveLoadRandommap();
   void showMainMenu();
@@ -229,6 +231,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
   game::Settings::save();
 
   Locale::setLanguage( lang );
+  NameGenerator::instance().setLanguage( lang );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
 }
 
@@ -346,11 +349,8 @@ void StartMenu::Impl::showLoadMenu()
   btn = menu->addButton( _("##mainmenu_loadmap##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
 
-  btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
+  //btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
   //CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
-
-  btn = menu->addButton( _("##mainmenu_randommap##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolveLoadRandommap );
 
   btn = menu->addButton( _("##cancel##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );
@@ -383,12 +383,26 @@ void StartMenu::Impl::showOptionsMenu()
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );
 }
 
+void StartMenu::Impl::showNewGame()
+{
+  menu->clear();
+
+  PushButton* btn = menu->addButton( _("##mainmenu_startcareer##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
+
+  btn = menu->addButton( _("##mainmenu_randommap##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveLoadRandommap );
+
+  btn = menu->addButton( _("##cancel##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showMainMenu );
+}
+
 void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
 
   PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
+  CONNECT( btn, onClicked(), this, Impl::showNewGame );
 
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
