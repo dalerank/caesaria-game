@@ -1990,7 +1990,7 @@
 "##healthadv_unknown_reason##":"unknown reason"
 "##entertainment_not_need##":"entertainment no needed"
 "##click_rmb_for_exit##":"right click for exit"
-"##click_on_rating_for_info##":"Click on rating for more info"}
+"##click_on_rating_for_info##":"Click on rating for more info"
 "##blessing_of_ceres_title##":"Pending..."
 "##blessing_of_ceres_description##":"Pending..."
 "##factory_units##":"units
@@ -2009,4 +2009,4 @@
 "##city_warnings_off##":"warnings off"
 "##city_opts_god_on##":"opts god on"
 "##city_opts_god_off##":"opts god off"
-"##savedlg_continue##":"Continue"
+"##savedlg_continue##":"Continue"}
