@@ -52,6 +52,7 @@ enum {
 
 namespace {
 static const std::string readerTypename=CAESARIA_STR_EXT(Sg2ArchiveReader);
+static const char* arch555ext = "555";
 }
 
 Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem*)
@@ -154,7 +155,8 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
       if( sir.flags[0] > 0 ) //is external resource file???
       {
         Directory p555_d = file.path().directory();
-        Path tmpPath = p555_d/Path( sbr.filename ).changeExtension( ".555" );
+        Path p555_filename = Path( sbr.filename ).changeExtension( arch555ext );
+        Path tmpPath = p555_d/p555_filename;
         SgFileEntry tmpEntry = { tmpPath.toString(), sir };
         p555 = _find555File( tmpEntry );
         //std::string p555_2 = p555 + "555/" + sbr.filename;
@@ -165,7 +167,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
       }
       else
       {
-        p555 = file.path().changeExtension( ".555" );
+        p555 = file.path().changeExtension( arch555ext );
       }
 
       if( !p555.exist() )
