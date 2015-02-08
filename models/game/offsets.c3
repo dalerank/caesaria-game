@@ -28,4 +28,9 @@
   waherhose_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ 56, 93 ] }
   warehouse_work : { rc : "warehouse", start : 2, stop : 17, offset : [ 55, 75 ] }
   warehouse_flag : { rc : "warehouse", start : 84, stop : 91, offset : [ 79, 108 ] }
+  pretty_fountain : { rc : "utilitya", start : 3, stop : 9, offset : [ 9, 41 ] }
+  simpleFountain : { rc : "utilitya", start : 11, stop : 17, offset : [ 12, 24 ] }
+  awesomeFountain : { rc : "utilitya", start : 19, stop : 25, offset : [ 12, 24 ] }
+  patricianFountain : { rc : "utilitya", start : 27, stop : 33, offset : [ 14, 26 ] }
+  reservoir_full : { rc : "utilitya", start : 35, stop : 42, offset : [ 47, 63 ] }
 }
