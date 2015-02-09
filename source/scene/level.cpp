@@ -256,10 +256,13 @@ void Level::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
-#ifdef DEBUG
   _d->dhandler.insertTo( _d->game, _d->topMenu );
+  _d->dhandler.setVisible( false );
+
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+#ifdef DEBUG  
+  _d->dhandler.setVisible( true );
 #endif
 
 #ifdef CAESARIA_USE_STEAM

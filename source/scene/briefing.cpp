@@ -93,6 +93,7 @@ public:
 
   void resolveSelecMission( std::string mission, std::string title )
   {
+    btnContinue->setEnabled( true );
     cityCaption->setText( title );
     fileMap = mission;
   }
@@ -148,7 +149,7 @@ void Briefing::initialize()
       Point location = miss_vm.get( "location" ).toPoint() + startImgPos;
       std::string mission = miss_vm.get( "mission" ).toString();
       gui::MissionButton* btn = new gui::MissionButton( mapback, location, title, mission );
-      CONNECT( btn, onMissionSelect, _d.data(), Impl::resolveSelecMission );
+      CONNECT( btn, onMissionSelect, _d.data(), Impl::resolveSelecMission );      
     }
 
     std::string missionTt = vm.get( "title" ).toString();
@@ -158,6 +159,7 @@ void Briefing::initialize()
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
 
     _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
+    _d->btnContinue->setEnabled( false );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }
   else
@@ -169,6 +171,6 @@ void Briefing::initialize()
 
 int Briefing::result() const{  return _d->result; }
 bool Briefing::isStopped() const{  return _d->isStopped;}
-std::string Briefing::getMapName() const{  return _d->fileMap;}
+std::string Briefing::getMapName() const{ return _d->fileMap; }
 
 }//end namespace scene
