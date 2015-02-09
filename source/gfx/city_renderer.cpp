@@ -168,22 +168,23 @@ void CityRenderer::Impl::setLayer(int type)
     return;
   }
 
-  currentLayer = 0;
+  LayerPtr newLayer;
   foreach( it, layers )
   {
     if( (*it)->type() == type )
     {
-      currentLayer = *it;
+      newLayer = *it;
       break;
     }
   }
 
-  if( currentLayer.isNull() )
+  if( newLayer.isNull() )
   {
-    currentLayer = layers.front();
+    newLayer = layers.front();
   }
 
-  currentLayer->init( currentCursorPos );
+  newLayer->init( currentCursorPos );
+  currentLayer = newLayer;
   emit onLayerSwitchSignal( currentLayer->type() );
 }
 

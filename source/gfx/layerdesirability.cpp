@@ -70,7 +70,9 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      engine.draw( tile.picture(), screenPos );
+      //engine.draw( tile.picture(), screenPos );
+      drawPass( engine, tile, offset, Renderer::ground );
+      drawPass( engine, tile, offset, Renderer::groundAnimation );
     }
   }
   else
