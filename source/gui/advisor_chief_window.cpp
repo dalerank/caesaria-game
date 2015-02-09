@@ -444,7 +444,7 @@ void AdvisorChief::Impl::drawCrime()
     text = ds->reason();
   }
 
-  text = text.empty() ? _("##advchief_no_crime##") : text;
+  text = text.empty() ? "##advchief_no_crime##" : text;
 
   drawReportRow( atCrime, _(text) );
 }
@@ -460,7 +460,7 @@ void AdvisorChief::Impl::drawHealth()
     text = cityHealth->reason();
   }
 
-  text = text.empty() ? _("##advchief_health_good##") : text;
+  text = text.empty() ? "##advchief_health_good##" : text;
 
   drawReportRow( atHealth, _(text));
 }
@@ -489,8 +489,8 @@ void AdvisorChief::Impl::drawEducation()
   text = reasons.random();
 
   text = text.empty()
-    ? _("##advchief_education_ok##")
-    : _(text);
+    ? "##advchief_education_ok##"
+    : text;
 
 
   drawReportRow( atEducation, _( text ) );
