@@ -98,7 +98,7 @@ int OC3::climateType(const std::string& filename)
 
 bool OC3::isLoadableFileExtension( const std::string& filename )
 {
-  return filename.substr( filename.size() - 8 ) == ".oc3save";
+  return vfs::Path( filename ).isMyExtension( ".oc3save" );
 }
 
 std::string OC3::restartFile() const { return _d->restartFile; }
