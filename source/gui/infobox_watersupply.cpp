@@ -40,6 +40,7 @@ namespace infobox
 AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
+  setupUI( ":/gui/infoboxfountain.gui" );
   setTitle( _("##fountain##") );
 
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
