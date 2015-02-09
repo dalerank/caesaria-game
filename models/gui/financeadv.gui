@@ -31,7 +31,7 @@
 
   lbRegPayers#Label : { 
     font : "FONT_1_WHITE"  
-    geometry : [ 75, 95, 200, 120 ]
+    geometry : [ 75, 95, 300, 120 ]
   }
 
   lbLastYear#Label : {

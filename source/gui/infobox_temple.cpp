@@ -36,6 +36,8 @@ namespace infobox
 AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
+  setupUI( ":/gui/infoboxtemple.gui" );
+
   TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
   DivinityPtr divn = temple->divinity();
 

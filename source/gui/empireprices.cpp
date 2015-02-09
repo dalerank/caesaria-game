@@ -43,25 +43,25 @@ EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, Player
   Font font = Font::create( FONT_1 );
   Point startPos( 140, 50 );
   for( good::Product gtype=good::wheat; gtype < good::prettyWine; ++gtype )
+  {
+    if( gtype == good::fish || gtype == good::denaries)
     {
-      if( gtype == good::fish || gtype == good::denaries)
-        {
-          continue;
-        }
-
-      Picture goodIcon = good::Helper::picture( gtype );
-      new Image( this, startPos, goodIcon );
-
-      std::string priceStr = utils::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
-      Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
-      lb->setFont( font );
-
-      priceStr = utils::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
-      lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
-      lb->setFont( font );
-
-      startPos += Point( 30, 0 );
+      continue;
     }
+
+    Picture goodIcon = good::Helper::picture( gtype );
+    new Image( this, startPos, goodIcon );
+
+    std::string priceStr = utils::i2str( ctrade.buyPrice( gtype ) );
+    Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
+    lb->setFont( font );
+
+    priceStr = utils::i2str( ctrade.sellPrice( gtype ) );
+    lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
+    lb->setFont( font );
+
+    startPos += Point( 30, 0 );
+  }
 }
 
 void EmpirePrices::draw(Engine &painter)

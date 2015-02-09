@@ -43,6 +43,8 @@ namespace infobox
 AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 42) )
 {
+  setupUI( ":/gui/infoboxfactory.gui" );
+
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
