@@ -368,7 +368,7 @@ void Entertainment::Impl::updateFestivalInfo()
                          24, 24, 24, 24,
                          24, 24, 31, 31 };
 
-    text = utils::format( 0xff, "%s%d%s", "##more_", strIndex[ math::clamp( monthFromLastFestival, 0, 32) ], "_month_from_festival##" );
+    text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ math::clamp( monthFromLastFestival, 0, 32) ] );
     if( lbInfoAboutLastFestival ) { lbInfoAboutLastFestival->setText( _( text ) ); }
   }
 }
