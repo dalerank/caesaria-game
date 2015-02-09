@@ -46,6 +46,8 @@ namespace {
 AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
+  setupUI( ":/gui/infoboxsenate.gui" );
+
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
   std::string title = MetaDataHolder::instance().getData( objects::senate ).prettyName();
   setTitle( _(title) );

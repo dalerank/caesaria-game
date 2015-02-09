@@ -156,9 +156,7 @@ void BuildMenu::initialize()
   }
 }
 
-BuildMenu::~BuildMenu()
-{
-}
+BuildMenu::~BuildMenu() {}
 
 void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
 {
@@ -171,7 +169,6 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 
   setHeight( height() + 30 );
 }
-
 
 void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
 {

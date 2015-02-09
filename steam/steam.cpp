@@ -77,8 +77,7 @@ public:
   int32 totalNumWins;
   int32 totalNumLosses;
   bool needStoreStats;
-  bool statsValid;
-  Signal0<> onStatsReceivedSignal;
+  bool statsValid, statsUpdate;
 
 #ifndef CAESARIA_PLATFORM_WIN
   STEAM_CALLBACK( UserStats, receivedUserStats, UserStatsReceived_t, _callbackUserStatsReceived );
@@ -102,6 +101,7 @@ public:
     totalNumWins = 0;
     campaignFirstMission = 0;
     totalNumLosses = 0;
+    statsUpdate = false;
     needStoreStats = false;
     statsValid = false;
   }    
@@ -237,6 +237,9 @@ bool checkSteamRunning()
 
 bool connect()
 {
+#ifdef CAESARIA_PLATFORM_MACOSX
+  SteamAPI_Shutdown();
+#endif
   // Initialize SteamAPI, if this fails we bail out since we depend on Steam for lots of stuff.
   // You don't necessarily have to though if you write your code to check whether all the Steam
   // interfaces are NULL before using them and provide alternate paths when they are unavailable.
@@ -465,7 +468,12 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
 }
 #endif
 
-Signal0<>& onStatsReceived() { return glbUserStats.onStatsReceivedSignal; }
+bool isStatsReceived()
+{
+  bool ret = glbUserStats.statsValid;
+  glbUserStats.statsValid = false;
+  return ret;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: An achievement was stored
@@ -524,8 +532,6 @@ void UserStats::receivedUserStats()
     // load stats
     totalGamesPlayed = sth_getStat( lc_stat_num_games );
     totalNumWins = sth_getStat( lc_stat_num_wins );
-    totalNumLosses = sth_getStat( "NumLosses" );
-    emit onStatsReceivedSignal();
   }
 }
 #else
@@ -560,7 +566,6 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
       steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
       steamUserStats->GetStat( lc_stat_num_wins, &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
-      emit onStatsReceivedSignal();
     }
     else
     {

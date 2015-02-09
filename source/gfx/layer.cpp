@@ -284,6 +284,7 @@ void Layer::render( Engine& engine)
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
+  //FIRST PART: draw lands
   drawLands( engine, _d->camera );
 
   DrawOptions& opts = DrawOptions::instance();
@@ -362,7 +363,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( !master->rwd() && master->epos().z() == depth )
+  if( !master->rwd() && master == &tile )
   {
     drawTile( engine, *master, offset );
   }
@@ -371,25 +372,16 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   if( !tile.rwd() )
-  {    
+  {
     tile.setWasDrawn();
-    //drawPass( engine, tile, offset, Renderer::ground );
-    //drawPass( engine, tile, offset, Renderer::groundAnimation );
+    if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
+    {
+      drawPass( engine, tile, offset, Renderer::ground );
+      drawPass( engine, tile, offset, Renderer::groundAnimation );
+    }
 
     if( tile.rov().isValid() )
     {
-      //Size size = tile.rov()->size();
-      /*if( size.width() > 1 )
-      {
-        __D_IMPL(_d,Layer)
-        Tilemap& tmap = _d->city->tilemap();
-        for( int i=0; i < size.width(); i++ )
-          for( int j=0; j < size.height(); j++ )
-          {
-            drawPass( engine, tmap.at( tile.pos() + TilePos( i, j ) ), offset, Renderer::ground );
-          }
-      }*/
-
       registerTileForRendering( tile );     
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
@@ -432,22 +424,25 @@ void Layer::drawLands( Engine& engine, Camera* camera )
     drawTile( engine, **it, camOffset );
   }
 
+  if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
+    return;
+
   foreach( it, visibleTiles )
   {
     Tile& t = **it;
     if( !t.isFlat() )
     {
       Tile* master = t.masterTile();
-      master = master == 0 ? &t : master;
+      master = (master == 0 ? &t : master);
 
       if( t.rov().isNull() )
       {
         // multi-tile: draw the master tile.
         // and it is time to draw the master tile
         if( !master->rwd() && master == &t )
-        {
+        {            
           drawPass( engine, *master, camOffset, Renderer::ground );
-          drawPass( engine, *master, camOffset, Renderer::groundAnimation );
+          drawPass( engine, *master, camOffset, Renderer::groundAnimation );          
         }
       }
       else
@@ -462,7 +457,7 @@ void Layer::drawLands( Engine& engine, Camera* camera )
               {
                 TilePos tpos = t.epos() + TilePos( i, j );
                 Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
-                                 tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
+                                      tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
 
                 engine.draw( terrainPic, mappos + camOffset );
               }
@@ -492,18 +487,23 @@ void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   Point cursorPos = engine.cursorPos();
-  Size screenSize = engine.screenSize();
+  Size screenSize = engine.virtualSize();
   Point offset = _d->camera->offset();
   Point moveValue;
 
   //on edge cursor moving
   DrawOptions& opts = DrawOptions::instance();
-  if( opts.isFlag( DrawOptions::windowActive ) )
+  if( opts.isFlag( DrawOptions::windowActive | DrawOptions::borderMoving ) )
   {
     if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
-    else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+    else
+      if( cursorPos.x() > screenSize.width() - 2 )
+        moveValue.rx() += 1;
+
     if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
-    else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+    else
+      if( cursorPos.y() > screenSize.height() - 2 )
+        moveValue.ry() -= 1;
 
     if( moveValue.x() != 0 || moveValue.y() != 0 )
     {
@@ -668,6 +668,7 @@ bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovT
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
+void Layer::changeLayer(int type) {}
 void Layer::_setNextLayer(int layer) { _dfunc()->nextLayer = layer;}
 Layer::~Layer(){}
 void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }

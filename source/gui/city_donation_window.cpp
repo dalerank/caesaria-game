@@ -55,12 +55,9 @@ CityDonation::CityDonation( Widget* p, int money )
   setupUI( ":/gui/money2city.gui" );
   setCenter( parent()->center() );
 
-  PushButton* btnSend;
-  PushButton* btnCancel;
-  Label* lbBlack;
-  GET_WIDGET_FROM_UI( lbBlack )
-  GET_WIDGET_FROM_UI( btnCancel )
-  GET_WIDGET_FROM_UI( btnSend )
+  INIT_WIDGET_FROM_UI( Label*, lbBlack )
+  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
+  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
   GET_DWIDGET_FROM_UI( d, lbDonation )
 
   d->updateDonationText();

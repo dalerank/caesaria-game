@@ -80,8 +80,7 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
 
   WidgetEscapeCloser::insertTo( this );
 
-  TexturedButton* btnExit;
-  GET_WIDGET_FROM_UI( btnExit )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
   CONNECT( btnExit, onClicked(), this, MissionTargets::deleteLater );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )

@@ -177,29 +177,29 @@ void Employer::Impl::decreaseSalary() { changeSalary( -1 );}
 
 void Employer::Impl::updateWorkersState()
 {
+  if( !lbWorkersState )
+    return;
+
   int workers = statistic::getAvailableWorkersNumber( city );
   int worklessPercent = statistic::getWorklessPercent( city );
   int withoutWork = statistic::getWorklessNumber( city );
-  std::string strWorkerState = utils::format( 0xff, "%d %s     %d %s  ( %d%% )",
-                                                     workers, _("##advemployer_panel_workers##"),
-                                                     withoutWork, _("##advemployer_panel_workless##"),
-                                                     worklessPercent );
 
-  if( lbWorkersState )
-  {
-    lbWorkersState->setText( strWorkerState );
-  }
+  std::string strWorkerState = utils::format( 0xff, "%d %s     %d %s  ( %d%% )",
+                                              workers, _("##advemployer_panel_workers##"),
+                                              withoutWork, _("##advemployer_panel_workless##"),
+                                              worklessPercent );
+  lbWorkersState->setText( strWorkerState );
 }
 
 void Employer::Impl::updateYearlyWages()
 {
-  if( lbYearlyWages )
-  {
-    int wages = statistic::getMonthlyWorkersWages( city ) * DateTime::monthsInYear;
-    std::string wagesStr = utils::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
+  if( !lbYearlyWages )
+    return;
 
-    lbYearlyWages->setText( wagesStr );
-  }
+  int wages = statistic::getMonthlyWorkersWages( city ) * DateTime::monthsInYear;
+  std::string wagesStr = utils::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
+
+  lbYearlyWages->setText( wagesStr );
 }
 
 void Employer::Impl::changeSalary(int relative)
@@ -309,10 +309,8 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->empButtons.resize( industry::count );
 
-  TexturedButton* btnIncreaseSalary;
-  TexturedButton* btnDecreaseSalary;
-  GET_WIDGET_FROM_UI( btnIncreaseSalary )
-  GET_WIDGET_FROM_UI( btnDecreaseSalary )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnIncreaseSalary )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnDecreaseSalary )
 
   CONNECT( btnIncreaseSalary, onClicked(), _d.data(), Impl::increaseSalary );
   CONNECT( btnDecreaseSalary, onClicked(), _d.data(), Impl::decreaseSalary );
@@ -360,10 +358,7 @@ bool Employer::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void Employer::_showHelp()
-{
-  DictionaryWindow::show( this, "labor_advisor" );
-}
+void Employer::_showHelp() { DictionaryWindow::show( this, "labor_advisor" ); }
 
 }
 
