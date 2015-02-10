@@ -46,6 +46,12 @@
     text : "##city_mmbmoving_mode##"
   }
 
+  btnLockInfobox#PushButton : {
+    geometry : [ 16, 210, 220, 235 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_lockinfo_mode##"
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]

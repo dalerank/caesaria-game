@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "special_orders_window.hpp"
 #include "good/goodhelper.hpp"
+#include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
 
 using namespace constants;
@@ -37,6 +38,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(granary,objects::granery,AboutGranary)
 
 AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )

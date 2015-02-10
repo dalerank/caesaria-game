@@ -13,51 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
 #include "info_box.hpp"
-
-#include "gfx/tile.hpp"
-#include "core/exception.hpp"
-#include "core/gettext.hpp"
-#include "gfx/decorator.hpp"
-#include "objects/metadata.hpp"
-#include "objects/house_level.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/event.hpp"
-#include "core/variant_map.hpp"
-#include "texturedbutton.hpp"
-#include "gui/label.hpp"
-#include "city/city.hpp"
-#include "objects/market.hpp"
-#include "core/utils.hpp"
-#include "good/goodhelper.hpp"
-#include "objects/farm.hpp"
-#include "objects/entertainment.hpp"
-#include "objects/house.hpp"
-#include "objects/religion.hpp"
-#include "religion/romedivinity.hpp"
-#include "objects/warehouse.hpp"
-#include "gfx/engine.hpp"
-#include "gui/special_orders_window.hpp"
-#include "good/goodstore.hpp"
-#include "environment.hpp"
-#include "groupbox.hpp"
-#include "walker/walker.hpp"
-#include "objects/watersupply.hpp"
-#include "objects/senate.hpp"
-#include "core/logger.hpp"
-#include "objects/constants.hpp"
-#include "events/event.hpp"
-#include "objects/well.hpp"
-#include "image.hpp"
-#include "core/foreach.hpp"
-#include "dictionary.hpp"
+#include "widget_helper.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
-#include "widget_helper.hpp"
+#include "core/logger.hpp"
+#include "label.hpp"
+#include "core/event.hpp"
+#include "core/variant_map.hpp"
+#include "core/utils.hpp"
+#include "core/gettext.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -174,7 +144,7 @@ bool Simple::onEvent( const NEvent& event)
   break;
   }
 
-  return Widget::onEvent( event );
+  return Window::onEvent( event );
 }
 
 void Simple::setTitle( const std::string& title )
