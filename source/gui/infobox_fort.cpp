@@ -24,6 +24,7 @@
 #include "dictionary.hpp"
 #include "walker/soldier.hpp"
 #include "label.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -33,6 +34,11 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(legionary,objects::fort_legionaries,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(javelin,objects::fort_javelin,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(mounted,objects::fort_horse,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(fortarea,objects::fortArea,AboutFort)
 
 class AboutFort::Impl
 {
