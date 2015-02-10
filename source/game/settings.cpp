@@ -87,6 +87,7 @@ __REG_PROPERTY(experimental)
 __REG_PROPERTY(buildMenuModel)
 __REG_PROPERTY(scrollSpeed)
 __REG_PROPERTY(borderMoving)
+__REG_PROPERTY(mmb_moving)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -149,6 +150,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ borderMoving        ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ scrollSpeed         ] = 30;
+  _d->options[ mmb_moving          ] = false;
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;

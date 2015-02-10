@@ -89,6 +89,7 @@ public:
   __GS_PROPERTY(scrollSpeed)
   __GS_PROPERTY(buildMenuModel)
   __GS_PROPERTY(borderMoving)
+  __GS_PROPERTY(mmb_moving)
 #undef __GS_PROPERTY
 
   static Settings& instance();

@@ -229,43 +229,36 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       {
         int size = 1;
 
+	{
+	  int dj;
+	  try
+	  {
+	    // find size, 5 is maximal size for building
+	    for (dj = 0; dj < 5; ++dj)
+	    {
+						int edd = edgeData[ i ][ j - dj ];
+	      // find bottom left corner
+						if (edd == 8 * dj + 0x40)
 	      {
-	        int dj;
-	        try
-	        {
-	          // find size, 5 is maximal size for building
-	          for (dj = 0; dj < 5; ++dj)
-	          {
-							int edd = edgeData[ i ][ j - dj ];
-	            // find bottom left corner
-							if (edd == 8 * dj + 0x40)
-	            {
-	              size = dj + 1;
-	              break;
-	            }
-	          }
-	        }
-	        catch(...)
-	        {
-	          size = dj + 1;
-	        }
+		size = dj + 1;
+		break;
 	      }
+	    }
+	  }
+	  catch(...)
+	  {
+	    size = dj + 1;
+	  }
+	}
 
-				//Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
-
-	      Tile& master = oTilemap.at(i, j - size + 1);
-
-				//Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
-
-	      for (int di = 0; di < size; ++di)
+        Tile& master = oTilemap.at(i, j - size + 1);
+        for (int di = 0; di < size; ++di)
         {
-	        for (int dj = 0; dj < size; ++dj)
-					{
-						oTilemap.at(master.pos() + TilePos( di, dj ) ).setMasterTile(&master);
-	        }
+          for (int dj = 0; dj < size; ++dj)
+          {
+            oTilemap.at(master.pos() + TilePos( di, dj ) ).setMasterTile(&master);
+          }
         }
-
-        //Logger::warning( " decoding " );
       }
 
       // Check if it is building and type of building

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_options_window.hpp"
 #include "pushbutton.hpp"
@@ -29,7 +29,10 @@
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
+#include "gfx/layer.hpp"
 #include "topmenu.hpp"
+
+using namespace gfx::layer;
 
 namespace gui
 {
@@ -43,6 +46,7 @@ public:
   PushButton* btnZoomEnabled;
   PushButton* btnDebugEnabled;
   PushButton* btnInvertZoom;
+  PushButton* btnMmbMoving;
   PlayerCityPtr city;
 
   void update();
@@ -51,6 +55,7 @@ public:
   void toggleZoomEnabled();
   void invertZoom();
   void toggleWarnings();
+  void toggleLeftMiddleMouse();
   Widget* findDebugMenu(Ui *ui);
 };
 
@@ -61,6 +66,8 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   _d->locker.activate();
   setupUI( ":/gui/cityoptions.gui" );
 
+  WidgetEscapeCloser::insertTo( this );
+
   setCenter( parent->center() );
 
   GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
@@ -68,15 +75,18 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnZoomEnabled )
   GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
   GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnMmbMoving )
 
-  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
-  CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
+  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
+  CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
   CONNECT( _d->btnZoomEnabled, onClicked(), _d.data(), Impl::toggleZoomEnabled )
   CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
   CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
+  CONNECT( _d->btnMmbMoving, onClicked(), _d.data(), Impl::toggleLeftMiddleMouse )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
+  if( btnClose ) btnClose->setFocus();
 
   _d->update();
 }
@@ -118,6 +128,13 @@ void CityOptionsWindow::Impl::toggleWarnings()
 {
   bool value = city->getOption( PlayerCity::warningsEnabled );
   city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleLeftMiddleMouse()
+{
+  bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
+  DrawOptions::instance().setFlag( DrawOptions::mmbMoving, !value );
   update();
 }
 
@@ -172,6 +189,14 @@ void CityOptionsWindow::Impl::update()
     btnDebugEnabled->setText( (menu ? menu->visible() : false)
                                 ? _("##city_debug_on##")
                                 : _("##city_debug_off##") );
+  }
+
+  if( btnMmbMoving )
+  {
+    bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
+    btnMmbMoving->setText( value
+                                ? _("##city_mmbmoving##")
+                                : _("##city_lmbmoving##") );
   }
 }
 

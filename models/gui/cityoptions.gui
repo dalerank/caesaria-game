@@ -40,6 +40,12 @@
     text : "##city_debug_mode##"
   }
 
+  btnMmbMoving#PushButton : {
+    geometry : [ 16, 180, 220, 205 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_mmbmoving_mode##"
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]

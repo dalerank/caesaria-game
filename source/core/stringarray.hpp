@@ -49,4 +49,4 @@ public:
   }
 };
 
-#endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__
+#endif //__CAESARIA_STRINGARRAY_H_INCLUDED__
