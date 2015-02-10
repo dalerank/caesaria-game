@@ -126,8 +126,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
   addLayer( Crime::create( _d->camera, city ) ) ;
-  addLayer( Build::create( this, city ) );
-  addLayer( Destroy::create( _d->camera, city ) );
+  addLayer( Build::create( *this, city ) );
+  addLayer( Destroy::create( *this, city ) );
   addLayer( Tax::create( _d->camera, city ) );
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
   addLayer( Education::create( _d->camera, city, citylayer::school ) );

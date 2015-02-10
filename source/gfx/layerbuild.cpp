@@ -37,6 +37,7 @@
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
 #include "city_renderer.hpp"
+#include "layerdestroy.hpp"
 
 using namespace constants;
 using namespace gui;
@@ -500,6 +501,17 @@ void Build::render( Engine& engine)
   _drawBuildTiles( engine );
 }
 
+void Build::_initBuildMode()
+{
+  __D_IMPL(_d,Build);
+  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
+  Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
+
+  _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
+  _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
+  _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
+}
+
 void Build::init(Point cursor)
 {
   __D_IMPL(_d,Build);
@@ -508,13 +520,6 @@ void Build::init(Point cursor)
   _d->lastTilePos = TilePos(-1, -1);
   _d->startTilePos = TilePos(-1, -1);
 
-  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
-
-  Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
-
-  _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
-  _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
-  _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;  
   changeLayer( _d->renderer->currentLayer()->type() );
 
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, false );
@@ -558,13 +563,23 @@ void Build::changeLayer(int layer)
   __D_IMPL(_d,Build);
   if( layer != type() )
   {
-    _d->lastLayer = _d->renderer
+    if( layer == citylayer::destroyd )
+    {
+       //_d->lastLayer = LayerPtr();
+       _exitBuildMode();
+    }
+    else
+    {
+      _d->lastLayer = _d->renderer
                           ? _d->renderer->getLayer( layer )
                           : LayerPtr();
+    }
   }
+
+  _initBuildMode();
 }
 
-LayerPtr Build::create(Renderer* renderer, PlayerCityPtr city)
+LayerPtr Build::create(Renderer& renderer, PlayerCityPtr city)
 {
   LayerPtr ret( new Build( renderer, city ) );
   ret->drop();
@@ -572,14 +587,15 @@ LayerPtr Build::create(Renderer* renderer, PlayerCityPtr city)
   return ret;
 }
 
+LayerPtr Build::drawLayer() const { return _dfunc()->lastLayer; }
 Build::~Build() {}
 
-Build::Build(Renderer* renderer, PlayerCityPtr city)
-  : Layer( renderer->camera(), city ),
+Build::Build( Renderer& renderer, PlayerCityPtr city)
+  : Layer( renderer.camera(), city ),
     __INIT_IMPL(Build)
 {
   __D_IMPL(d,Build);
-  d->renderer = renderer;
+  d->renderer = &renderer;
   d->frameCount = 0;
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = TilePos( -1, -1 );

@@ -666,6 +666,8 @@ void Layer::_fillVisibleObjects(int ltype)
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
 bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
+
+void Layer::destroy() {}
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
 void Layer::changeLayer(int type) {}

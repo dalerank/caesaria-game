@@ -41,8 +41,9 @@ public:
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(Engine &engine);
   virtual void changeLayer(int type);
+  LayerPtr drawLayer() const;
 
-  static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
+  static LayerPtr create(Renderer &renderer, PlayerCityPtr city );
 
   virtual ~Build();
 private:
@@ -51,10 +52,11 @@ private:
   void _discardPreview();
   void _buildAll();
   void _finishBuild();
+  void _initBuildMode();
   void _drawBuildTiles( Engine& engine );
   void _exitBuildMode();
 
-  Build( Renderer* renderer, PlayerCityPtr city );
+  Build( Renderer& renderer, PlayerCityPtr city );
 
   __DECLARE_IMPL(Build)
 };

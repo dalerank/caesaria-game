@@ -36,13 +36,18 @@ public:
   virtual void render( Engine& engine);
   virtual void renderUi(Engine &engine);
   virtual void init( Point cursor );
+  virtual void changeLayer(int type);
+  virtual void beforeRender(Engine &engine);
+  virtual void afterRender(Engine &engine);
+  LayerPtr drawLayer() const;
 
-  static LayerPtr create( Camera& camera, PlayerCityPtr city );
+  static LayerPtr create( Renderer& renderer, PlayerCityPtr city );
 
 private:
-  Destroy( Camera& camera, PlayerCityPtr city );
+  Destroy(Renderer &renderer, PlayerCityPtr city );
 
   void _clearAll();
+  void _exitDestroyTool();
   unsigned int _checkMoney4destroy( const Tile& tile );
 
   class Impl;
