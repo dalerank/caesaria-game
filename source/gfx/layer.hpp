@@ -80,6 +80,7 @@ public:
   virtual void registerTileForRendering(Tile&);
   virtual void changeLayer( int type );
   virtual int nextLayer() const;
+  virtual void destroy();
 
   virtual ~Layer();
 
