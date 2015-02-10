@@ -548,6 +548,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
 

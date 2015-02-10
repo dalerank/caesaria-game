@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
-#define _OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
+#ifndef _CAESARIA_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
+#define _CAESARIA_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
 
 #include "core/signals.hpp"
 #include "core/size.hpp"
@@ -45,4 +45,4 @@ signals public:
 };
 
 }//end namespace gui
-#endif //_OPENCAESAR3_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_
+#endif //_CAESARIA_CONTEXT_MENU_ITEM_PRIVATE_H_INCLUDE_

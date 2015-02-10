@@ -66,6 +66,8 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   _d->locker.activate();
   setupUI( ":/gui/cityoptions.gui" );
 
+  WidgetEscapeCloser::insertTo( this );
+
   setCenter( parent->center() );
 
   GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
@@ -84,6 +86,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
+  if( btnClose ) btnClose->setFocus();
 
   _d->update();
 }

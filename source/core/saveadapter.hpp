@@ -27,4 +27,4 @@ VariantMap load( vfs::NFile file );
 bool save( const VariantMap& options, const vfs::Path& filename );
 }
 
-#endif //__OPENCAESAR3_SAVEADAPTER_H_INCLUDED__
+#endif //__CAESARIA_SAVEADAPTER_H_INCLUDED__
