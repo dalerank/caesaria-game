@@ -179,7 +179,7 @@ void RqGood::fail( PlayerCityPtr city )
     _startDate = _finishDate;
 
     //std::string text = utils::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    e = events::ShowInfobox::create( "##emperor_anger##", "##emperor_anger_text##" );
+    e = events::ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
     e->dispatch();
 
     _finishDate.appendMonth( _d->failAppendMonth );
@@ -190,7 +190,7 @@ void RqGood::fail( PlayerCityPtr city )
   {
     Request::fail( city );
 
-    e = events::ShowInfobox::create( "##emperor_anger##", "##request_faild_text##" );
+    e = events::ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
     e->dispatch();
   }
 }
@@ -203,7 +203,7 @@ void RqGood::update()
   {
     _d->alsoRemind = true;
 
-    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, "##imperial_reminder##", "", "##imperial_reminder_text##" );
+    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, _("##imperial_reminder##"), "", _("##imperial_reminder_text##") );
     e->dispatch();
   }
 }
