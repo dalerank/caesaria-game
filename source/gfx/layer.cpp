@@ -95,13 +95,14 @@ void Layer::handleEvent(NEvent& event)
     case mouseMoved:
     {
       Point savePos = _d->lastCursorPos;
+      bool movingPressed = _isMovingButtonPressed( event );
       _d->lastCursorPos = event.mouse.pos();
-      if( !event.mouse.isLeftPressed() || _d->startCursorPos.x() < 0 )
+      if( !movingPressed || _d->startCursorPos.x() < 0 )
       {
         _d->startCursorPos = _d->lastCursorPos;
       }
 
-      if( event.mouse.isLeftPressed() )
+      if( movingPressed )
       {
         Point delta = _d->lastCursorPos - savePos;
         _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );        
@@ -120,6 +121,7 @@ void Layer::handleEvent(NEvent& event)
     break;
 
     case mouseLbtnRelease:            // left button
+    case mouseMbtnRelease:
     {
       Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -678,6 +680,14 @@ void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
 Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
 Tile* Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
+
+bool Layer::_isMovingButtonPressed(NEvent &event) const
+{
+  return DrawOptions::instance().isFlag( DrawOptions::mmbMoving )
+            ? event.mouse.isMiddlePressed()
+            : event.mouse.isLeftPressed();
+}
+
 
 void Layer::Impl::updateOutlineTexture( Tile* tile )
 {
