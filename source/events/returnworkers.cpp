@@ -50,16 +50,10 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
       HousePtr house = *it;
       if( house.isValid() )
       {
-	//int lastWorkersCount = house->getServiceValue( Service::recruter );
 	int lastWorkersCount = house->workersCount();
 	int append = math::clamp<int>(_workers, 0, lastWorkersCount);
 	house->appendServiceValue(Service::recruter, append);
-        //house->appendServiceValue( Service::recruter, _workers );
-        //int currentWorkers = (int)house->getServiceValue( Service::recruter );
-	//int currentWorkers = lastWorkersCount + _workers;
-	
-        //int mayAppend = math::clamp<int>( _workers, 0, currentWorkers - lastWorkersCount );
-        //_workers -= mayAppend;
+
 	_workers -= append;
       }
 
