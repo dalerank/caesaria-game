@@ -22,6 +22,7 @@
 #include "core/gettext.hpp"
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
+#include "game/infoboxmanager.hpp"
 #include "label.hpp"
 
 using namespace constants;
@@ -32,6 +33,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(theater,objects::theater,AboutTheater)
 
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )

@@ -90,6 +90,7 @@ public:
   __GS_PROPERTY(buildMenuModel)
   __GS_PROPERTY(borderMoving)
   __GS_PROPERTY(mmb_moving)
+  __GS_PROPERTY(lockInfobox)
 #undef __GS_PROPERTY
 
   static Settings& instance();

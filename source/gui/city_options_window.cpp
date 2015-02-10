@@ -30,6 +30,7 @@
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
 #include "gfx/layer.hpp"
+#include "game/settings.hpp"
 #include "topmenu.hpp"
 
 using namespace gfx::layer;
@@ -47,6 +48,7 @@ public:
   PushButton* btnDebugEnabled;
   PushButton* btnInvertZoom;
   PushButton* btnMmbMoving;
+  PushButton* btnLockInfobox;
   PlayerCityPtr city;
 
   void update();
@@ -56,6 +58,7 @@ public:
   void invertZoom();
   void toggleWarnings();
   void toggleLeftMiddleMouse();
+  void toggleLockInfobox();
   Widget* findDebugMenu(Ui *ui);
 };
 
@@ -76,6 +79,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
   GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
   GET_DWIDGET_FROM_UI( _d, btnMmbMoving )
+  GET_DWIDGET_FROM_UI( _d, btnLockInfobox )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -83,6 +87,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
   CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
   CONNECT( _d->btnMmbMoving, onClicked(), _d.data(), Impl::toggleLeftMiddleMouse )
+  CONNECT( _d->btnLockInfobox, onClicked(), _d.data(), Impl::toggleLockInfobox )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
@@ -121,6 +126,13 @@ void CityOptionsWindow::Impl::invertZoom()
 {
   bool value = city->getOption( PlayerCity::zoomInvert );
   city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleLockInfobox()
+{
+  bool value = SETTINGS_VALUE( lockInfobox );
+  SETTINGS_SET_VALUE( lockInfobox, !value );
   update();
 }
 
@@ -197,6 +209,14 @@ void CityOptionsWindow::Impl::update()
     btnMmbMoving->setText( value
                                 ? _("##city_mmbmoving##")
                                 : _("##city_lmbmoving##") );
+  }
+
+  if( btnLockInfobox )
+  {
+    bool value = SETTINGS_VALUE( lockInfobox );
+    btnLockInfobox->setText( value
+                                ? _("##city_lockinfo_on##")
+                                : _("##city_lockinfo_off##") );
   }
 }
 

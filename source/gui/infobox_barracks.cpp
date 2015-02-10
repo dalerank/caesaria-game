@@ -22,6 +22,7 @@
 #include "objects/barracks.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -31,6 +32,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(barracks,objects::barracks,AboutBarracks)
 
 class AboutBarracks::Impl
 {
