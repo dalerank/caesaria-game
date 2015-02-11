@@ -25,6 +25,7 @@
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "core/gettext.hpp"
 #include "objects/metadata.hpp"
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
@@ -183,7 +184,7 @@ void WorkersHire::timeStep( const unsigned int time )
     int workersNeed = statistic::getWorkersNeed( _city() );
     if( workersNeed > 20 )
     {
-      events::GameEventPtr e = events::ShowInfobox::create( "##city_need_workers_title##", "##city_need_workers_text##",
+      events::GameEventPtr e = events::ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
                                                             events::ShowInfobox::send2scribe );
       e->dispatch();
     }

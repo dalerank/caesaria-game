@@ -104,6 +104,7 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
   }
 
   _afterCreate();
+  setModal();
 }
 
 void Simple::setText( const std::string& text )
