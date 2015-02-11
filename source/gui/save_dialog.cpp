@@ -103,6 +103,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   CONNECT( _d->btnCancel, onClicked(), this, SaveDialog::deleteLater );
 
   _d->findFiles();
+  setModal();
 }
 
 void SaveDialog::draw(gfx::Engine& painter )
