@@ -26,13 +26,14 @@
 #include "corpse.hpp"
 #include "helper.hpp"
 #include "ability.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-namespace {
-CAESARIA_LITERALCONST(destination)
-}
+REGISTER_CLASS_IN_WALKERFACTORY(walker::sheep, Sheep)
+REGISTER_CLASS_IN_WALKERFACTORY(walker::wolf, Wolf)
+REGISTER_CLASS_IN_WALKERFACTORY(walker::zebra, Zebra)
 
 class Animal::Impl
 {
@@ -62,13 +63,13 @@ Animal::~Animal() {}
 void Animal::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ lc_destination ] = _d->destination;
+  VARIANT_SAVE_ANY_D( stream, _d, destination )
 }
 
 void Animal::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->destination = stream.get( lc_destination ).toTilePos();
+  VARIANT_LOAD_ANY_D( _d, destination, stream )
 }
 
 std::string Animal::thoughts(Thought th) const

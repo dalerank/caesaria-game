@@ -34,9 +34,12 @@
 #include "game/gamedate.hpp"
 #include "walker/workerhunter.hpp"
 #include "events/returnworkers.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fountain, Fountain)
 
 namespace {
 static const unsigned int fillDistanceNormal = 4;
@@ -44,7 +47,7 @@ static const unsigned int fillDistanceDesert = 3;
 }
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
-               awesomeFountain=18, patricianFountain=26, testFountain=50 } FontainConstant;
+               awesomeFountain=18, patricianFountain=26, testFountain=10 } FontainConstant;
 
 class Fountain::Impl
 {
@@ -139,7 +142,7 @@ bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
   if( tile.param( Tile::pReservoirWater ) )
   {
     thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 11 ) );
-    thisp->_fgPicturesRef().back().setOffset( 12, 8 + picture().offset().y() );
+    //thisp->_fgPicturesRef().back().setOffset( 12, 8 + picture().offset().y() );
   }
 
   return ret;
@@ -226,7 +229,7 @@ void Fountain::_initAnimation()
   _fgPicture( 0 ) = Picture::getInvalid();
   _animationRef().stop();
 
-  switch ( _d->lastPicId )
+  /*switch ( _d->lastPicId )
   {
   case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   //case testFountain: _animationRef().setOffset( Point( 0, 31 ) ); break;
@@ -234,5 +237,5 @@ void Fountain::_initAnimation()
   case awesomeFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   case patricianFountain: _animationRef().setOffset( Point( 14, 26 ) ); break;
   default: break;
-  }
+  }*/
 }

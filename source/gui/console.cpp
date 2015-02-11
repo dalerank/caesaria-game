@@ -42,14 +42,14 @@ void Console::SaveCommands_()																	//
     commands[ *it ] = "";
   }
 
-  SaveAdapter::save( commands, path );
+  config::save( commands, path );
 }
 
 void Console::LoadSaveCommands_()													//
 {
   vfs::Path path( ":/commands.model" );					//
 
-  VariantMap commands = SaveAdapter::load( path );
+  VariantMap commands = config::load( path );
   foreach( it, commands )
 	{
     console_history_.push_back( it->first );

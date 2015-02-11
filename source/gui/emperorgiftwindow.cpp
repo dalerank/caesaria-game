@@ -60,14 +60,10 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   setupUI( ":/gui/gift4emperor.gui" );
   setCenter( parent()->center() );
 
-  PushButton* btnSend;
-  PushButton* btnCancel;
-  ListBox* lbxGifts;
-  Label* lbLastGiftDate;
-  GET_WIDGET_FROM_UI( lbLastGiftDate )
-  GET_WIDGET_FROM_UI( lbxGifts )
-  GET_WIDGET_FROM_UI( btnCancel )
-  GET_WIDGET_FROM_UI( btnSend )
+  INIT_WIDGET_FROM_UI( Label*, lbLastGiftDate )
+  INIT_WIDGET_FROM_UI( ListBox*, lbxGifts )
+  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
+  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
 
   CONNECT( lbxGifts, onItemSelected(), _dfunc().data(), Impl::selectGift );
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendGift );
@@ -96,7 +92,7 @@ void EmperorGift::Impl::fillGifts(ListBox* lbx)
   if( !lbx )
     return;
 
-  VariantMap giftModel = SaveAdapter::load( ":/gifts.model" );
+  VariantMap giftModel = config::load( ":/gifts.model" );
   StringArray gifts = giftModel.get( "items" ).toStringArray();
 
   lbx->setTextAlignment( align::center, align::center );

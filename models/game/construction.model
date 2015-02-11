@@ -303,6 +303,7 @@
     image.ext : {
       s1 : { size: 1, rc : "prefecture", start : 1, count : 4 }
     }
+    animation : { rc : "prefecture_anim", start : 1, count : 1, offset : [ 51, 27 ], delay : 3 }
     class : "security"
   },  
  
@@ -332,7 +333,7 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
+    animation : { rc : "smlceres", start : 2, count : 6, offset : [ 41, 27 ], delay : 3 }
     employers : 2
     class : "religion"
     image : [ "smlceres", 1 ]    
@@ -644,6 +645,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "wheat"
     productRate : 9.6
     sound : [ "wheatfarm", 1 ]
   }, 
@@ -655,6 +657,7 @@
     employers : 10
     productRate : 9.6
     class : "food"
+    output : "vegetable"
     sound : [ "vegetablefarm", 1 ]
   },
  
@@ -663,6 +666,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    output : "fruit"
     productRate : 9.6
     class : "food"
   },
@@ -673,6 +677,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "olive"
     productRate : 9.6
     sound : [ "olivesfarm", 1 ]
   },
@@ -683,6 +688,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "grape"
     productRate : 4.8
     sound : [ "grapefarm", 1 ]
   },
@@ -693,6 +699,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "meat"
     productRate : 4.8
     sound : [ "meatfarm", 1 ]
   },
@@ -703,6 +710,7 @@
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
     class : "rawmaterial"
+    output : "marble"
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
     image : [ "commerce", 43 ]
@@ -713,6 +721,7 @@
     cost : 50,
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
+    output : "iron"
     class : "rawmaterial"
     productRate : 2.4
     sound : [ "ironmine", 1 ]
@@ -723,6 +732,7 @@
     cost : 40,
     desirability : { base : -4,	range : 4,	step : 1 }
     employers : 10
+    output : "timber"
     class : "rawmaterial"
     productRate : 4.8
     sound : [ "lumbermill", 1 ]
@@ -735,6 +745,7 @@
     employers : 10
     image : [ "commerce", 61 ]
     productRate : 4.8
+    output : "clay"
     class : "rawmaterial"
     animation : { rc : "commerce", start : 62, count : 10, offset : [ 14, 32 ], delay : 3 }
     sound : [ "claypit", 1 ]
@@ -746,6 +757,7 @@
     desirability : { base : -1,	range : 1,	step : 1 }
     employers : 10
     productRate : 4.8
+    output : "wine"
     class : "industry"
     sound : [ "winery", 1 ]
   },
@@ -755,6 +767,7 @@
     cost : 50,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "oil"
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
@@ -766,6 +779,7 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     productRate : 2.4
+    output : "weapon"
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
   },
@@ -777,6 +791,7 @@
     employers : 10
     class : "industry"
     productRate : 2.4
+    output : "furniture"
     sound : [ "furniture", 1 ]
     image : [ "commerce", 117 ]
     animation : { rc : "commerce", start : 118, count : 14, delay : 4 }
@@ -787,6 +802,7 @@
     cost : 40,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "pottery"
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]

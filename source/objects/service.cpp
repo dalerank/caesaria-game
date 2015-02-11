@@ -97,6 +97,9 @@ void ServiceBuilding::destroy()
 
 void ServiceBuilding::deliverService()
 {
+  if( !isActive() )
+    return;
+
   // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
   serviceman->send2City( this, _getWalkerOrders() );

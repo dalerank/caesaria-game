@@ -161,7 +161,7 @@ void PictureBank::setPicture( const std::string &name, const Picture& pic )
 
 void PictureBank::addAtlas( const std::string& filename )
 {
-  VariantMap options = SaveAdapter::load( filename );
+  VariantMap options = config::load( filename );
   if( !options.empty() )
   {
     Logger::warning( "PictureBank: load atlas " + filename );
@@ -284,7 +284,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     return;
   }
 
-  VariantMap info = SaveAdapter::load( filePath );
+  VariantMap info = config::load( filePath );
 
   vfs::Path texturePath = info.get( "texture" ).toString();
 

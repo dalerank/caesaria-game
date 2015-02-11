@@ -35,6 +35,8 @@ using namespace gfx;
 namespace gui
 {
 
+static const char* defaultExt = "en";
+
 class DictionaryWindow::Impl
 {
 public:
@@ -78,7 +80,7 @@ vfs::Path DictionaryWindow::_convUri2path(std::string uri)
   vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
 
   if( !fpath.exist() )
-    fpath = fpath.changeExtension( ".en" );
+    fpath = fpath.changeExtension( defaultExt );
 
   return fpath;
 }
@@ -130,7 +132,7 @@ void DictionaryWindow::load(const std::string& uri)
 {
   vfs::Path filePath = _convUri2path( uri );
 
-  VariantMap vm = SaveAdapter::load( filePath );
+  VariantMap vm = config::load( filePath );
 
   std::string text = vm.get( "text" ).toString();
   std::string title = vm.get( "title" ).toString();

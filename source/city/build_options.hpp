@@ -53,6 +53,7 @@ typedef enum
 
 Branch toBranch( const std::string& name );
 std::string toString( Branch branch );
+void loadBranchOptions( const std::string& filename );
 
 class Options : public ReferenceCounted
 {

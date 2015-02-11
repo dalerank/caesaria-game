@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -53,12 +54,12 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
-  ListBox* lbxModes;
   GET_DWIDGET_FROM_UI( _d, btnSwitchMode )
-  GET_WIDGET_FROM_UI( lbxModes )
 
   _d->fullScreen = fullscreen;
   _d->haveChanges = false;
+
+  INIT_WIDGET_FROM_UI( ListBox*, lbxModes )
   if( lbxModes )
   {
     std::string modeStr;
@@ -71,6 +72,10 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   }
 
   _update();
+  WidgetEscapeCloser::insertTo( this );
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnOk )
+  if( btnOk ) btnOk->setFocus();
 }
 
 VideoOptions::~VideoOptions( void ){}
@@ -97,10 +102,7 @@ bool VideoOptions::onEvent(const NEvent& event)
     default:
       if( _d->haveChanges )
       {
-        Widget* parent = ui()->rootWidget();
-        DialogBox* dlg = new DialogBox( parent, Rect(), "",
-                                        _("##need_restart_for_apply_changes##"), DialogBox::btnOk );
-        CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+        DialogBox::information( ui()->rootWidget(), "", _("##need_restart_for_apply_changes##"));
       }
       deleteLater();
     break;

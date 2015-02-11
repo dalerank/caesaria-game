@@ -32,8 +32,12 @@
 #include "world/merchant.hpp"
 #include "objects/dock.hpp"
 #include "game/gamedate.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+using namespace city;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::seaMerchant, SeaMerchant)
 
 class SeaMerchant::Impl
 {
@@ -160,18 +164,18 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
     {
-      city::TradeOptions& options = city->tradeOptions();
-      city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city, false );
+      trade::Options& options = city->tradeOptions();
+      statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
       //request goods
-      for( int n = good::wheat; n<good::goodCount; n++ )
+      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
       {
-        good::Type goodType = (good::Type)n;
         int needQty = buy.freeQty( goodType );
         if (!options.isExporting(goodType))
         {
           continue;
         }
-        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, needQty );
+        int exportLimit = options.tradeLimit( trade::exporting, goodType ) * 100;
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
         {
@@ -198,11 +202,10 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     if( myDock.isValid() )
     {
-      city::TradeOptions& options = city->tradeOptions();
+      trade::Options& options = city->tradeOptions();
       //try buy goods
-      for( int n = good::wheat; n<good::goodCount; ++n )
+      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
       {
-        good::Type goodType = (good::Type) n;
         if (!options.isExporting(goodType))
         {
           continue;
@@ -271,20 +274,19 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() )
     {
-      city::TradeOptions& options = city->tradeOptions();
+      trade::Options& options = city->tradeOptions();
       const good::Store& importing = options.importingGoods();
       //try sell goods
-      for( int n = good::wheat; n<good::goodCount; ++n)
+      for( good::Product goodType= good::wheat; goodType<good::goodCount; ++goodType)
       {
-        good::Type type = (good::Type)n;
-        if (!options.isImporting(type))
+        if (!options.isImporting(goodType))
         {
           continue;
         }
 
-        if( sell.qty(type) > 0 && importing.capacity(type) > 0)
+        if( sell.qty(goodType) > 0 && importing.capacity(goodType) > 0)
         {
-          currentSell += myDock->importingGoods( sell.getStock(type) );
+          currentSell += myDock->importingGoods( sell.getStock(goodType) );
           anySell = true;
         }
       }

@@ -36,10 +36,13 @@
 #include "events/disaster.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/helper.hpp"
+#include "walkers_factory.hpp"
 #include "events/fireworkers.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::prefect, Prefect)
 
 namespace {
   const Walker::Action acDragWater = Walker::Action( Walker::acMax + 1 );
@@ -514,6 +517,7 @@ float Prefect::serviceValue() const {  return 5; }
 PrefectPtr Prefect::create(PlayerCityPtr city )
 {
   PrefectPtr ret( new Prefect( city ) );
+  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
   ret->drop();
 
   return ret;

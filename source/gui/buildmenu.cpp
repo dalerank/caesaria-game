@@ -105,7 +105,7 @@ void BuildMenu::initialize()
   Size textSize;
   Font font = Font::create( FONT_2 );
 
-  VariantMap allItems = SaveAdapter::load( SETTINGS_RC_PATH( buildMenuModel ) );
+  VariantMap allItems = config::load( SETTINGS_RC_PATH( buildMenuModel ) );
   VariantMap config = allItems.get( city::development::toString( _branch ) ).toMap();
   VariantList submenu = config.get( "submenu" ).toList();
   VariantList buildings = config.get( "buildings" ).toList();
@@ -156,22 +156,19 @@ void BuildMenu::initialize()
   }
 }
 
-BuildMenu::~BuildMenu()
-{
-}
+BuildMenu::~BuildMenu() {}
 
 void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
 {
   if( !_options.isGroupAvailable( menuType ) )
     return;
 
-  BuildButton* button = new BuildButton( this, text, Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
+  BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
   button->setCost(-1);  // no display
 
   setHeight( height() + 30 );
 }
-
 
 void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
 {

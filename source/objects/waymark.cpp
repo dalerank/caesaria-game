@@ -21,14 +21,15 @@
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
-
+using namespace constants;
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::waymark, Waymark)
 
 Waymark::Waymark()
-  : TileOverlay( constants::objects::tree, Size(1) )
+  : TileOverlay( constants::objects::waymark, Size(1) )
 {
-
 }
 
 void Waymark::timeStep( const unsigned long time )
@@ -69,6 +70,14 @@ bool Waymark::build( const CityAreaInfo& info )
   else if( pos.j() == 0 || pos.j() == tmap.size() - 1 )
   {
     picIndex += (pos.j() == 0 ? 2 : 0 );
+  }
+  else
+  {
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+    Tile& oTile = tmap.at( info.pos );
+    oTile.setPicture( pic );
+    oTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+    deleteLater();
   }
 
   setPicture( ResourceGroup::land3a, picIndex );

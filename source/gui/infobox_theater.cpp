@@ -36,6 +36,8 @@ namespace infobox
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
 {
+  setupUI( ":/gui/infoboxtheater.gui" );
+
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
   setTitle( _( theater->name() ) );
 
@@ -50,7 +52,7 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   {
     if( theater->isShow() )
     {
-      VariantMap shows = SaveAdapter::load( ":/theater_shows.model" );
+      VariantMap shows = config::load( ":/theater_shows.model" );
       VariantMap::iterator currentShowIt = shows.begin();
 
       std::advance( currentShowIt, theater->showsCount() % shows.size() );

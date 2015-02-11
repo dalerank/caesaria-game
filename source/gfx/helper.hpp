@@ -36,6 +36,7 @@ namespace tile
   int turnCoastTile(int imgid , constants::Direction newDirection);
   unsigned int hash( const TilePos& pos );
   Point tilepos2screen( const TilePos& pos );
+  TilePos screen2tilepos( const Point& point, int mapsize );
   void decode( Tile& tile, const int bitset);
   Tile& getInvalid();
   void clear( Tile& tile );

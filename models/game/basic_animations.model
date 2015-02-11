@@ -24,7 +24,7 @@
     frames : 1
     delay : 12
     step : 1
-  }
+  }  
 
   tree_1 : {
     type : 601
@@ -79,5 +79,9 @@
     delay : 12
     step : 1
   }
+
+  fire_small : { type : 700, rc : "fire", start : 101, frames : 50, delay : 1, step : 1, offset : [15, 60] }
+  fire_middle : { type : 701, rc : "fire", start : 51, frames : 50, delay : 1, step : 1, offset : [15, 60] }
+  fire_big : { type : 702, rc : "fire", start : 1, frames : 50, delay : 1, step : 1, offset : [15, 60] }
 }
 

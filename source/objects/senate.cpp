@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 
 #include "senate.hpp"
@@ -27,12 +27,12 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
-// govt 4  - senate
-// govt 9  - advanced senate
-// govt 5 ~ 8 - senate flags
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::senate, Senate)
 
 class Senate::Impl
 {
@@ -161,7 +161,7 @@ int Senate::status(Senate::Status status) const
 {
   switch(status)
   {
-  case workless: return city::Statistic::getWorklessPercent( _city() );
+  case workless: return city::statistic::getWorklessPercent( _city() );
   case culture: return _city()->culture();
   case prosperity: return _city()->prosperity();
   case peace: return _city()->peace();

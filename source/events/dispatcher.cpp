@@ -22,6 +22,7 @@
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
+#include "core/saveadapter.hpp"
 
 namespace events
 {
@@ -60,10 +61,17 @@ void Dispatcher::update(Game& game, unsigned int time )
   {
     GameEventPtr e = *it;
 
-    e->tryExec( game, time );
+    try
+    {
+      e->tryExec( game, time );
 
-    if( e->isDeleted() ) { it = _d->events.erase( it ); }
-    else { ++it; }
+      if( e->isDeleted() ) { it = _d->events.erase( it ); }
+      else { ++it; }
+    }
+    catch(...)
+    {
+      _d->events.erase( it );
+    }
   }
 
   if( !_d->newEvents.empty() )
@@ -96,6 +104,16 @@ void Dispatcher::load(const VariantMap& stream)
       append( e );
     }
   }
+}
+
+void Dispatcher::load(vfs::Path filename, const std::string& section)
+{
+  VariantMap vm = config::load( filename );
+
+  if( !section.empty() )
+    vm = vm.get( section ).toMap();
+
+  load( vm );
 }
 
 void Dispatcher::reset() { _d->events.clear(); }

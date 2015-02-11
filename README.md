@@ -4,7 +4,7 @@ Master: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=
 
 ![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
-# CaesarIA 0.4
+# CaesarIA 0.5
 
 CaesarIA is an open-source remake of the popular
 citybuilder and economic sim Caesar III, videogame by

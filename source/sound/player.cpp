@@ -44,7 +44,7 @@ Player::Player( PlayerCityPtr city )
 
   if( path.exist() )
   {
-    _d->playlist = SaveAdapter::load( path ).get( "items" ).toStringArray();
+    _d->playlist = config::load( path ).get( "items" ).toStringArray();
   }
 
   _d->lastIndex = 0;

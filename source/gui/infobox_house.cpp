@@ -51,9 +51,13 @@
 #include "objects/constants.hpp"
 #include "events/event.hpp"
 #include "game/settings.hpp"
+#include "widget_helper.hpp"
 #include "image.hpp"
 #include "game/gamedate.hpp"
 #include "dictionary.hpp"
+#include "pushbutton.hpp"
+#include "environment.hpp"
+#include "dialogbox.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -87,18 +91,17 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
 
     houseInfo->setText( _(text) );
-  }
+  }  
 
-  std::string workerState = utils::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
-                                                  _house->habitants().count(),
-                                                  (int)_house->getServiceValue( Service::recruter ),
-                                                  _house->habitants().count( CitizenGroup::newborn ),
-                                                  _house->habitants().count( CitizenGroup::child ),
-                                                  _house->habitants().count( CitizenGroup::scholar ),
-                                                  _house->habitants().count( CitizenGroup::student ),
-                                                  _house->habitants().count( CitizenGroup::mature ),
-                                                  _house->habitants().count( CitizenGroup::aged ) );
-  new Label( this, Rect( 16, 125, width() - 16, 150 ), workerState );
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
+  {
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 40;
+    PushButton* btn = new PushButton( this, rect, "Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutHouse::_showInformation )
+  }
 
   drawHabitants( _house );
 
@@ -190,7 +193,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   lbHabitants->setText( freeRoomText );
 }
 
-void AboutHouse::drawGood( HousePtr house, const good::Type &goodType, const int col, const int row, const int startY )
+void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
   std::string text = utils::format( 0xff, "%d", qty);
@@ -226,9 +229,23 @@ bool AboutHouse::onEvent(const NEvent& event)
   return Simple::onEvent( event );
 }
 
-void AboutHouse::_showHelp()
+void AboutHouse::_showHelp() {  DictionaryWindow::show( this, "house" ); }
+
+void AboutHouse::_showInformation()
 {
-  DictionaryWindow::show( this, "house" );
+  std::string workerState = utils::format( 0xff, "Live=%d\nMay work=%d\nNewborn=%d\nChild=%d\nIn school=%d\nStudents=%d\nMature=%d\nAged(not work)=%d",
+                                                  _house->habitants().count(),
+                                                  (int)_house->getServiceValue( Service::recruter ),
+                                                  _house->habitants().count( CitizenGroup::newborn ),
+                                                  _house->habitants().count( CitizenGroup::child ),
+                                                  _house->habitants().count( CitizenGroup::scholar ),
+                                                  _house->habitants().count( CitizenGroup::student ),
+                                                  _house->habitants().count( CitizenGroup::mature ),
+                                                  _house->habitants().count( CitizenGroup::aged ) );
+
+  DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, DialogBox::btnOk );
+  dialog->setCenter( ui()->rootWidget()->center() );
+  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
 }
 
 }

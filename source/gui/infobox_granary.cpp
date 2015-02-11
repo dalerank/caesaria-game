@@ -42,9 +42,11 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   setupUI( ":/gui/granaryinfo.gui" );
+
   _granary = ptr_cast<Granary>( tile.overlay() );
 
   setBase( ptr_cast<Construction>( _granary ) );
+  _setWorkingVisible( true );
 
   PushButton* btnOrders;
   Label* lbUnits;
@@ -92,7 +94,7 @@ void AboutGranary::showSpecialOrdersWindow()
   new GranarySpecialOrdersWindow( parent(), pos, _granary );
 }
 
-void AboutGranary::drawGood( good::Type goodType, int col, int paintY)
+void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
 {
   std::string goodName = good::Helper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);

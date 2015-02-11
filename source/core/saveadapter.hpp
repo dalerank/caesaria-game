@@ -19,15 +19,12 @@
 #include "core/variant.hpp"
 #include "vfs/file.hpp"
 
-class SaveAdapter
+namespace config
 {
-public:
-  static VariantMap load( const vfs::Path& fileName );
-  static VariantMap load( vfs::NFile file );
+VariantMap load( const vfs::Path& fileName );
+VariantMap load( vfs::NFile file );
 
-  static bool save( const VariantMap& options, const vfs::Path& filename );
-private:
-  SaveAdapter();
-};
+bool save( const VariantMap& options, const vfs::Path& filename );
+}
 
 #endif //__OPENCAESAR3_SAVEADAPTER_H_INCLUDED__

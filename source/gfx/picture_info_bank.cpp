@@ -98,12 +98,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
   _d->setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
 
-  // warehouse
-  _d->setOne(ResourceGroup::warehouse, 1, 60, 56);
-  _d->setOne(ResourceGroup::warehouse, 18, 56, 93);
-  _d->setRange(ResourceGroup::warehouse, 2, 17, Point( 55, 75 ));
-  _d->setRange(ResourceGroup::warehouse, 84, 91, Point( 79, 108 ) );
-
   // granary
   _d->setOne(ResourceGroup::commerce, 141, 28, 109);
   _d->setOne(ResourceGroup::commerce, 142, 33, 75);
@@ -185,7 +179,7 @@ PictureInfoBank::~PictureInfoBank() {}
 void PictureInfoBank::initialize(vfs::Path filename)
 {
   Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
-  VariantMap m = SaveAdapter::load( filename );
+  VariantMap m = config::load( filename );
 
   foreach( it, m )
   {

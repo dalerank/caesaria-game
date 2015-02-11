@@ -41,13 +41,16 @@ namespace infobox
 {
 
 AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
-  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 42) )
 {
+  setupUI( ":/gui/infoboxfactory.gui" );
+
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );
   setTitle( _(title) );
+  _setWorkingVisible( true );
 
   if( !factory.isValid() )
   {
@@ -66,16 +69,6 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _lbEffciency = new Label( this, _lbProduction->relativeRect() + Point( lbSize.width(), 0 ), effciencyText );
   _lbEffciency->setFont( Font::create( FONT_2 ) );
 
-  PushButton* btnPrev;
-  GET_WIDGET_FROM_UI( btnPrev )
-
-  if( btnPrev )
-  {
-    _btnToggleWork = new PushButton( this, btnPrev->relativeRect() - Point( btnPrev->width(), 0 ),
-                                     factory->isActive() ? "Z" : "A",
-                                     -1, PushButton::whiteBorderUp );
-    CONNECT( _btnToggleWork, onClicked(), this, AboutFactory::_toggleWork )
-  }
 
   if( factory->produceGoodType() != good::none )
   {
@@ -111,16 +104,6 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 void AboutFactory::_showHelp()
 {
   DictionaryWindow::show( ui()->rootWidget(), _type );
-}
-
-void AboutFactory::_toggleWork()
-{
-  FactoryPtr factory = ptr_cast<Factory>( base() );
-  if( factory.isValid() )
-  {
-    factory->setActive( !factory->isActive() );
-    _btnToggleWork->setText( factory->isActive() ? "Z" : "A" );
-  }
 }
 
 AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& tile)

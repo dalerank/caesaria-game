@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "game.hpp"
 #include "scene/logo.hpp"
@@ -49,7 +49,6 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_level.hpp"
 #include "walker/name_generator.hpp"
-#include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
@@ -66,10 +65,12 @@
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
+#include "addon_manager.hpp"
 
 #include <list>
 
 using namespace gfx;
+using namespace scene;
 
 class Game::Impl
 {
@@ -96,6 +97,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initAddons();
   void initHotkeys();
   void initGuiEnvironment();
   void initArchiveLoaders();
@@ -222,7 +224,7 @@ void Game::Impl::initGuiEnvironment()
 
 void Game::Impl::initPantheon( vfs::Path filename)
 {
-  VariantMap pantheon = SaveAdapter::load( filename );
+  VariantMap pantheon = config::load( filename );
   religion::rome::Pantheon::instance().load( pantheon );
 }
 
@@ -239,10 +241,17 @@ void Game::Impl::initPictures()
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
 }
 
+void Game::Impl::initAddons()
+{
+  addon::Manager& am = addon::Manager::instance();
+  am.load( vfs::Directory( std::string( ":/addons" ) ) );
+}
+
 void Game::Impl::initHotkeys()
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
   hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+
   CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
@@ -378,13 +387,14 @@ void Game::initialize()
   if( cellWidth != 30 && cellWidth != 60 )
   {
     cellWidth = 30;
-  }
+  }    
 
   tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
+  _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
@@ -421,6 +431,7 @@ void Game::initialize()
 
   screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
+  NameGenerator::instance().setLanguage( SETTINGS_VALUE( language ).toString() );
 
   screen.setText( "##initialize_house_specification##" );
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
@@ -457,12 +468,16 @@ bool Game::exec()
   }
 
   Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
     case SCREEN_MENU:
     {
       _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
-    } break;
+      am.initAddons4level( addon::mainMenu );
+    }
+    break;
+
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
@@ -472,15 +487,19 @@ bool Game::exec()
                                                         _d->saveTime, _d->timeX10,
                                                         _d->timeMultiplier, _d->manualTicksCounterX10,
                                                         _d->nextFilename, _d->restartFile );
-    } break;
+      am.initAddons4level( addon::level );
+    }
+    break;
+
     case SCREEN_BRIEFING:
     {
       _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
-    } break;
+      am.initAddons4level( addon::briefing );
+    }
+    break;
 
     default:
-    Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-    //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+      Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;

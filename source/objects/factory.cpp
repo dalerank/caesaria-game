@@ -36,16 +36,20 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wine_workshop, Winery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oil_workshop, Creamery)
 
 class FactoryStore : public good::SimpleStore
 {
 public:
   FactoryStore() : factory( NULL ) {}
 
-  virtual int getMaxStore(const good::Type goodType)
+  virtual int getMaxStore(const good::Product goodType)
   {
     if( !factory || factory->numberWorkers() == 0 )
     {
@@ -81,15 +85,15 @@ public:
   float progress;  // progress of the work, in percent (0-100).
   Picture stockPicture; // stock of input good
   FactoryStore store;
-  good::Type inGoodType;
+  good::Product inGoodType;
   unsigned int lowWorkerWeeksNumber;
   unsigned int maxUnworkingWeeks;
-  good::Type outGoodType;
+  good::Product outGoodType;
   bool produceGood;
   unsigned int finishedQty;
 };
 
-Factory::Factory( const good::Type inType, const good::Type outType,
+Factory::Factory(const good::Product inType, const good::Product outType,
                   const TileOverlay::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
@@ -112,7 +116,7 @@ Factory::Factory( const good::Type inType, const good::Type outType,
 good::Stock& Factory::inStockRef(){   return _d->store.getStock(_d->inGoodType);}
 const good::Stock& Factory::inStockRef() const { return _d->store.getStock(_d->inGoodType);}
 good::Stock &Factory::outStockRef(){  return _d->store.getStock(_d->outGoodType);}
-good::Type Factory::consumeGoodType() const{  return _d->inGoodType; }
+good::Product Factory::consumeGoodType() const{  return _d->inGoodType; }
 int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
 
@@ -340,7 +344,22 @@ std::string Factory::cartStateDesc() const
 
   return "";
 }
-good::Type Factory::produceGoodType() const{  return _d->outGoodType;}
+
+void Factory::initialize(const MetaData& mdata)
+{
+  WorkingBuilding::initialize( mdata );
+
+  setProductRate( (float)mdata.getOption( "productRate", 9.6f ) );
+  Variant outputProduct = mdata.getOption( "output" );
+  if( outputProduct.isValid() )
+  {
+    good::Product pr = good::Helper::getType( outputProduct.toString() );
+    if( pr != good::none )
+      _d->outGoodType = pr;
+  }
+}
+
+good::Product Factory::produceGoodType() const{  return _d->outGoodType;}
 
 void Factory::receiveGood()
 {

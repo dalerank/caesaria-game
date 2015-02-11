@@ -27,6 +27,9 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
+#include "widgetescapecloser.hpp"
+#include "contextmenuitem.hpp"
+#include "topmenu.hpp"
 
 namespace gui
 {
@@ -37,11 +40,18 @@ public:
   GameAutoPause locker;
   PushButton* btnGodEnabled;
   PushButton* btnWarningsEnabled;
+  PushButton* btnZoomEnabled;
+  PushButton* btnDebugEnabled;
+  PushButton* btnInvertZoom;
   PlayerCityPtr city;
 
   void update();
+  void toggleDebug();
   void toggleGods();
+  void toggleZoomEnabled();
+  void invertZoom();
   void toggleWarnings();
+  Widget* findDebugMenu(Ui *ui);
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -52,14 +62,20 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   setupUI( ":/gui/cityoptions.gui" );
 
   setCenter( parent->center() );
-  PushButton* btnClose;
 
-  GET_WIDGET_FROM_UI( btnClose )
   GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
   GET_DWIDGET_FROM_UI( _d, btnWarningsEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnZoomEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
+  GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
+  CONNECT( _d->btnZoomEnabled, onClicked(), _d.data(), Impl::toggleZoomEnabled )
+  CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
+  CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
 
   _d->update();
@@ -74,11 +90,50 @@ void CityOptionsWindow::Impl::toggleGods()
   update();
 }
 
+void CityOptionsWindow::Impl::toggleDebug()
+{
+  Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
+  if( menu )
+  {
+    menu->setVisible( !menu->visible() );
+  }
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleZoomEnabled()
+{
+  bool value = city->getOption( PlayerCity::zoomEnabled );
+  city->setOption( PlayerCity::zoomEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::invertZoom()
+{
+  bool value = city->getOption( PlayerCity::zoomInvert );
+  city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
+  update();
+}
+
 void CityOptionsWindow::Impl::toggleWarnings()
 {
   bool value = city->getOption( PlayerCity::warningsEnabled );
   city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
   update();
+}
+
+Widget* CityOptionsWindow::Impl::findDebugMenu( Ui* ui )
+{
+  const Widgets& children = ui->rootWidget()->children();
+  foreach( it, children )
+  {
+    TopMenu* ret = safety_cast<TopMenu*>( *it );
+    if( ret != 0 )
+    {
+      return ret->findItem( "Debug" );
+    }
+  }
+
+  return 0;
 }
 
 void CityOptionsWindow::Impl::update()
@@ -95,6 +150,28 @@ void CityOptionsWindow::Impl::update()
     btnWarningsEnabled->setText( city->getOption( PlayerCity::warningsEnabled ) > 0
                               ? _("##city_warnings_on##")
                               : _("##city_warnings_off##") );
+  }
+
+  if( btnZoomEnabled )
+  {
+    btnZoomEnabled->setText( city->getOption( PlayerCity::zoomEnabled ) > 0
+                              ? _("##city_zoom_on##")
+                              : _("##city_zoom_off##") );
+  }
+
+  if( btnInvertZoom )
+  {
+    btnInvertZoom->setText( city->getOption( PlayerCity::zoomInvert ) > 0
+                              ? _("##city_zoominv_on##")
+                              : _("##city_zoominv_off##") );
+  }
+
+  if( btnDebugEnabled )
+  {
+    Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
+    btnDebugEnabled->setText( (menu ? menu->visible() : false)
+                                ? _("##city_debug_on##")
+                                : _("##city_debug_off##") );
   }
 }
 

@@ -2,7 +2,8 @@
   /*notes_action : { acNone : 0, acMove : 1, acFight : 2, acDie : 3, acWork : 4 }*/
 
   citizen : {
-    move : { rc : "citizen01", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen", start : 1, frames : 11, action : 1, step : 8 }
+    die : { rc : "citizen", start : 100, frames : 8, action : 3, step : 0 }
   }
 
   recruter : {
@@ -27,7 +28,7 @@
   }
 
   priest : {
-    move : { rc : "citizen01", start : 209, frames : 12, action : 1, step : 8 }
+    move : { rc : "priest", start : 1, frames : 11, action : 1, step : 8, delay : 2 }
   }
 
   actor : {
@@ -59,12 +60,15 @@
   }
 
   cartPusher : {
-    none : { rc : "citizen01", start : 929, frames : 1, action : 0, step : 8 }
-    move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen01", start : 1033, frames : 11, action : 1, step : 8, delay : 2 }
+    die : { rc : "wd", start : 1, frames : 9, action : 3, step : 0 }
+    none : { rc : "citizen01", start : 1033, frames : 1, action : 0, step : 8 }
   }
 
   supplier : {
-    move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
+    move : { rc : "citizen01", start : 1033, frames : 11, action : 1, step : 8, delay : 2 }
+    die : { rc : "wd", start : 1, frames : 9, action : 3, step : 0 }
+    none : { rc : "citizen01", start : 1033, frames : 1, action : 0, step : 8 }
   }
 
   immigrant :
@@ -153,6 +157,10 @@
   }
 
   merchant : {
+    move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
+  }
+
+  merchantCamel : {
     move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
   }
 

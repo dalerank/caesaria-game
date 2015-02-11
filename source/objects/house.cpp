@@ -41,10 +41,13 @@
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
+#include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 using namespace events;
+using namespace city;
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::house, House)
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
@@ -71,6 +74,7 @@ public:
   DateTime lastTaxationDate;
   std::string evolveInfo;
   CitizenGroup habitants;
+  Animation healthAnimation;
   unsigned int taxesThisYear;
   bool isFlat;
   int currentYear;
@@ -117,6 +121,7 @@ House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl 
   _d->services[ Service::crime ] = 0;
 
   _update( true );
+  //_animationRef()
 }
 
 void House::_makeOldHabitants()
@@ -246,7 +251,7 @@ void House::_updateTax()
 
 void House::_updateCrime()
 {
-  float cityKoeff = city::Statistic::getBalanceKoeff( _city() );
+  float cityKoeff = statistic::getBalanceKoeff( _city() );
 
   const int currentHabtn = habitants().count();
 
@@ -265,7 +270,7 @@ void House::_updateCrime()
   int wagesInfluence4happiness = 0; ///!!!
   if( !spec().isPatrician() )
   {
-    int diffWages = city::Statistic::getWagesDiff( _city() );
+    int diffWages = statistic::getWagesDiff( _city() );
     if( diffWages < 0)
     {
       wagesInfluence4happiness = diffWages;
@@ -276,7 +281,7 @@ void House::_updateCrime()
     }
   }
 
-  int taxValue = city::Statistic::getTaxValue( _city() );
+  int taxValue = statistic::getTaxValue( _city() );
   int taxInfluence4happiness = happines4tax[ math::clamp( taxValue, 0, 25 ) ]; ///!!!
   if( spec().isPatrician() )
   {
@@ -290,9 +295,9 @@ void House::_updateCrime()
   {
     int foodStoreQty = 0;
     int foodTypeCount = 0;
-    for( int k=good::wheat; k <= good::vegetable; k++ )
+    for( good::Product k=good::wheat; k <= good::vegetable; ++k )
     {
-      int qty = _d->goodStore.qty( (good::Type)k );
+      int qty = _d->goodStore.qty( k );
       foodStoreQty += qty;
       foodTypeCount += (qty > 0 ? 1 : 0);
     }
@@ -808,9 +813,8 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  for (int i = 0; i < good::goodCount; ++i)
+  for (good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
   {
-    good::Type goodType = (good::Type) i;
     int houseQty = houseStore.qty(goodType);
     int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
                        + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
@@ -928,9 +932,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
     MarketPtr market = ptr_cast<Market>( walker->base() );
     good::Store& marketStore = market->goodStore();
     good::Store& houseStore = goodStore();
-    for (int i = 0; i < good::goodCount; ++i)
+    for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
     {
-      good::Type goodType = (good::Type) i;
       int houseQty = houseStore.qty(goodType) / 10;
       int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false)
                          + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
@@ -1009,7 +1012,7 @@ void House::_update( bool needChangeTexture )
 
   bool lastFlat = _d->isFlat;
 
-  _d->isFlat = picture().height() <= ( tilemap::cellPicSize().height() * size().width() );
+  _d->isFlat = false;//picture().height() <= ( tilemap::cellPicSize().height() * size().width() );
   if( lastFlat != _d->isFlat && _city().isValid() )
     _city()->setOption( PlayerCity::updateTiles, true );
 
@@ -1193,8 +1196,8 @@ void House::burn()
 
 int House::Impl::getFoodLevel() const
 {
-  const good::Type f[] = { good::wheat, good::fish, good::meat, good::fruit, good::vegetable };
-  std::set<good::Type> foods( f, f+5 );
+  const good::Product f[] = { good::wheat, good::fish, good::meat, good::fruit, good::vegetable };
+  std::set<good::Product> foods( f, f+5 );
 
   int ret = 0;
   int foodLevel = spec.minFoodLevel();
@@ -1203,7 +1206,7 @@ int House::Impl::getFoodLevel() const
 
   while( foodLevel > 0 )
   {
-    good::Type maxFtype = good::none;
+    good::Product maxFtype = good::none;
     int maxFoodQty = 0;
     foreach( ft, foods )
     {
@@ -1342,6 +1345,11 @@ void House::Impl::updateHealthLevel( HousePtr house )
   float decrease = 2.f / delim;
 
   house->updateState( (Construction::Param)House::health, -decrease );
+  int value = 100 - house->state( House::health );
+  if( value > 25 )
+  {
+
+  }
 }
 
 void House::Impl::initGoodStore(int size)
@@ -1370,9 +1378,8 @@ void House::Impl::consumeServices()
 
 void House::Impl::consumeGoods( HousePtr house )
 {
-  for( int i = good::olive; i < good::goodCount; ++i)
+  for( good::Product goodType = good::olive; goodType < good::goodCount; ++goodType)
   {
-     good::Type goodType = (good::Type) i;
      int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
      goodStore.setQty( goodType, std::max( goodStore.qty(goodType) - montlyGoodsQty, 0) );
   }
@@ -1387,9 +1394,9 @@ void House::Impl::consumeFoods(HousePtr house)
   const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / game::Date::days2ticks( 30 );
 
   int availableFoodLevel = 0;
-  for( int afl=good::wheat; afl <= good::vegetable; afl++ )
+  for( good::Product afl=good::wheat; afl <= good::vegetable; ++afl )
   {
-    availableFoodLevel += ( goodStore.qty( (good::Type)afl ) > 0 ? 1 : 0 );
+    availableFoodLevel += ( goodStore.qty( afl ) > 0 ? 1 : 0 );
   }
   availableFoodLevel = std::min( availableFoodLevel, foodLevel );
   bool haveFoods4Eating = ( availableFoodLevel > 0 );
@@ -1400,9 +1407,8 @@ void House::Impl::consumeFoods(HousePtr house)
     while( alsoNeedFood > 0 )
     {
       int realConsumedQty = 0;
-      for( int k=good::wheat; k <= good::vegetable; k++ )
+      for( good::Product gType=good::wheat; gType <= good::vegetable; ++gType )
       {
-        good::Type gType = (good::Type)k;
         int vQty = std::min( goodStore.qty( gType ), needFoodQty / availableFoodLevel );
         vQty = std::min( vQty, alsoNeedFood );
         if( vQty > 0 )

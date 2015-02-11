@@ -92,6 +92,7 @@ enum Type
   circusCharioter,
   docker,
   gladiatorRiot,
+  merchantCamel,
   all = 0xff,
   any = all
 };

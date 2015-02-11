@@ -23,4 +23,8 @@
     resistance : 0.5
     obsoleteOverlays : [ "gatehouse", "roadBlock" ]
   }
+
+  dustCloud : {
+    animation : { rc : "dust", start : 1, frames : 19, delay : 4 }
+  }
 }

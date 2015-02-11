@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_renderer.hpp"
 
@@ -54,6 +54,7 @@
 #include "city/city.hpp"
 #include "layertroubles.hpp"
 #include "layerindigene.hpp"
+#include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
@@ -95,12 +96,12 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv )
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv, bool oldGraphic )
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->screenSize() );
+  _d->camera.init( *_d->tilemap, engine->virtualSize() );
   _d->engine = engine;
   _d->zoom = 100;
   _d->zoomChanged = false;
@@ -136,6 +137,11 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
   addLayer( layer::Indigene::create( _d->camera, city ) );
 
+  DrawOptions::instance().setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
+  DrawOptions::instance().setFlag( DrawOptions::windowActive, true );
+  DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
+  DrawOptions::instance().setFlag( DrawOptions::oldGraphics, oldGraphic );
+
   _d->setLayer( citylayer::simple );
 }
 
@@ -152,12 +158,22 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
 
 void CityRenderer::Impl::setLayer(int type)
 {
-  currentLayer = 0;
-  foreach( layer, layers )
+  if( currentLayer.isValid() )
   {
-    if( (*layer)->type() == type )
+    currentLayer->changeLayer( type );
+  }
+
+  if( !DrawOptions::instance().isFlag( DrawOptions::mayChangeLayer ) )
+  {
+    return;
+  }
+
+  currentLayer = 0;
+  foreach( it, layers )
+  {
+    if( (*it)->type() == type )
     {
-      currentLayer = *layer;
+      currentLayer = *it;
       break;
     }
   }
@@ -220,13 +236,19 @@ void CityRenderer::handleEvent( NEvent& event )
 
     if( event.mouse.type == mouseWheel )
     {
-      int lastZoom = _d->zoom;
-      _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10, 30, 300 );
-      _d->zoomChanged = (lastZoom != _d->zoom);
+      if( _d->city->getOption( PlayerCity::zoomEnabled ) )
+      {
+        int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
+
+        int lastZoom = _d->zoom;
+        _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10 * zoomInvert, 30, 300 );
+        _d->zoomChanged = (lastZoom != _d->zoom);
+      }
     }
   }
 
-  _d->currentLayer->handleEvent( event );
+  if( _d->currentLayer.isValid() )
+    _d->currentLayer->handleEvent( event );
 }
 
 int CityRenderer::layerType() const
@@ -277,6 +299,17 @@ void CityRenderer::setLayer(int layertype)
     layertype = citylayer::simple;
 
   _d->setLayer( layertype );
+}
+
+LayerPtr CityRenderer::getLayer(int type) const
+{
+  foreach( it, _d->layers)
+  {
+    if( (*it)->type() == type )
+      return *it;
+  }
+
+  return LayerPtr();
 }
 
 Camera* CityRenderer::camera() {  return &_d->camera; }

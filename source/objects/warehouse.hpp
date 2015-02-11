@@ -14,27 +14,34 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WAREHOUSE_HPP_INCLUDE_
 #define _CAESARIA_WAREHOUSE_HPP_INCLUDE_
 
 #include "working.hpp"
 #include "game/enums.hpp"
-#include "good/good.hpp"
+#include "good/goodstore.hpp"
 #include "core/position.hpp"
-
-namespace good
-{
-class Store;
-}
 
 class Warehouse: public WorkingBuilding
 {
-  friend class WarehouseStore;
-
 public:
+  class Room : public good::Stock
+  {
+  public:
+    static const unsigned int basicCapacity = 400;
+
+    Room( const TilePos& pos );
+    void computePicture();
+
+    TilePos location;
+    gfx::Picture picture;
+  };
+
   typedef enum { sellGoodsBuff, buyGoodsBuff } Buff;
+  typedef std::vector<Room> Rooms;
+
   Warehouse();
 
   virtual void timeStep(const unsigned long time);
@@ -48,6 +55,8 @@ public:
   bool onlyDispatchGoods() const;
   bool isGettingFull() const;
   float tradeBuff( Buff type ) const;
+
+  Rooms& rooms();
 
   virtual std::string troubleDesc() const;
 

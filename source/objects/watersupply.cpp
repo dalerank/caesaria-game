@@ -29,10 +29,13 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
 
 class WaterSource::Impl
 {
@@ -88,7 +91,7 @@ Reservoir::Reservoir()
   _animationRef().load( ResourceGroup::utilitya, 35, 8);
   _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
   _animationRef().setDelay( 11 );
-  _animationRef().setOffset( Point( 47, 63 ) );
+  //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPicturesRef().resize(1);
 }

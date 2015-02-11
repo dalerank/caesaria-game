@@ -36,6 +36,8 @@ namespace infobox
 AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
+  setupUI( ":/gui/infoboxtemple.gui" );
+
   TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
   DivinityPtr divn = temple->divinity();
 
@@ -44,8 +46,8 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   bool bigTemple = temple->size().width() > 2;
   std::string desc = _( divn->shortDescription() );
   std::string text = _( utils::format( 0xff, "##%s_%s_temple##",
-                                                 bigTemple ? "big" : "small",
-                                                 divn->debugName().c_str() ) );
+                                             bigTemple ? "big" : "small",
+                                             divn->debugName().c_str() ) );
   setTitle( text + " ( " + desc + " )" );
 
   _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );
@@ -54,8 +56,8 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   bool goodRelation = divn->relation() >= 50;
 
   std::string descr = utils::format(0xff, "##%s_%s_info##",
-                                                  divn->internalName().c_str(),
-                                                  goodRelation ? "goodmood" : "badmood" );
+                                          divn->internalName().c_str(),
+                                          goodRelation ? "goodmood" : "badmood" );
   img->setTooltipText( _(descr) );
 }
 

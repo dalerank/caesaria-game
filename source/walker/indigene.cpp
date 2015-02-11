@@ -19,9 +19,12 @@
 #include "core/gettext.hpp"
 #include "city/helper.hpp"
 #include "objects/native.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::indigene, Indigene)
 
 class Indigene::Impl
 {

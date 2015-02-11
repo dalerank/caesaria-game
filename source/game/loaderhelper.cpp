@@ -139,14 +139,14 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
+    /*bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
     oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
     if( !oldgfx )
     {
       Picture pic = MetaDataHolder::randomPicture( objects::meadow, Size(1) );
       oTile.setPicture( pic );
       changeId = imgid::fromResource( pic.name() );
-    }
+    }*/
   }
   else if( (imgId >= 372 && imgId <= 427) )
   {
@@ -158,6 +158,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   {
     Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
+    oTile.setFlag( Tile::clearAll, true );
     changeId = imgid::fromResource( pic.name() );
   }
   else

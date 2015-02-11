@@ -43,7 +43,6 @@ public:
     unsigned int RelaunchTime;
   };
 
-
   SToolTip toolTip;
   bool preRenderFunctionCalled;
 
@@ -55,7 +54,6 @@ public:
 
   Widget::Widgets deletionQueue;
 
-  Rect _desiredRect;
   gfx::Engine* engine;
   Point cursorPos;
   WidgetFactory factory;
@@ -65,7 +63,7 @@ public:
 };
 
 Ui::Ui(Engine& painter )
-  : Widget( 0, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
+  : Widget( 0, -1, Rect() ), _d( new Impl )
 {
   setDebugName( "GuiEnv" );
 
@@ -82,7 +80,7 @@ Ui::Ui(Engine& painter )
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
 
-  setGeometry( Rect( Point(), painter.screenSize() ) );
+  setGeometry( Rect( Point(), painter.virtualSize() ) );
 }
 
 //! Returns if the element has focus
@@ -113,7 +111,7 @@ void Ui::clear()
 
   _updateHovered( Point( -9999, -9999 ) );
 
-  for( ConstChildIterator it = children().begin(); it != children().end(); it++ )
+  foreach( it, children() )
     deleteLater( *it );
 }
 
@@ -127,8 +125,8 @@ void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-   Logger::warning( "Call beforeDraw() function needed" );
-   return;
+    Logger::warning( "Call beforeDraw() function needed" );
+    return;
   }
 
   Widget::draw( *_d->engine );
@@ -139,46 +137,46 @@ void Ui::draw()
 
 bool Ui::setFocus( Widget* element )
 {
-    if( _d->focusedElement == element )
+  if( _d->focusedElement == element )
+  {
+    return false;
+  }
+
+  // guard element from being deleted
+  // not delete this line
+  WidgetPtr saveElement = element;
+
+  // focus may change or be removed in this call
+  WidgetPtr currentFocus;
+  if( _d->focusedElement.isValid() )
+  {
+    currentFocus = _d->focusedElement;
+
+    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
     {
-        return false;
+      return false;
     }
 
-    // guard element from being deleted
-    // not delete this line
-    WidgetPtr saveElement = element;
+    currentFocus = WidgetPtr();
+  }
 
-    // focus may change or be removed in this call
-    WidgetPtr currentFocus;
-    if( _d->focusedElement.isValid() )
+  if( element )
+  {
+    currentFocus = _d->focusedElement;
+
+    // send focused event
+    if( element->onEvent( NEvent::Gui( element, _d->focusedElement.object(), guiElementFocused ) ))
     {
-      currentFocus = _d->focusedElement;
-
-      if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
-      {
-        return false;
-      }
-
       currentFocus = WidgetPtr();
+
+      return false;
     }
+  }
 
-    if( element )
-    {
-      currentFocus = _d->focusedElement;
+  // element is the new focus so it doesn't have to be dropped
+  _d->focusedElement = element;
 
-      // send focused event
-      if( element->onEvent( NEvent::Gui( element, _d->focusedElement.object(), guiElementFocused ) ))
-      {
-        currentFocus = WidgetPtr();
-
-        return false;
-      }
-    }
-
-    // element is the new focus so it doesn't have to be dropped
-    _d->focusedElement = element;
-
-    return true;
+  return true;
 }
 
 Widget* Ui::getFocus() const { return _d->focusedElement.object(); }
@@ -188,43 +186,43 @@ bool Ui::isHovered( const Widget* element )
   return element != NULL ? (_d->hovered.object() == element) : false;
 }
 
-Widget *Ui::findWidget(int id)
+Widget* Ui::findWidget(int id)
 {
   return Widget::findChild( id, true );
 }
 
 void Ui::deleteLater( Widget* ptrElement )
 {
-	try
-	{
+  try
+  {
     if( !ptrElement || !isMyChild( ptrElement ) )
-		{
-			return;
-		}
-
-		if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
     {
-			_d->focusedElement = WidgetPtr();
+      return;
     }
 
-		if( _d->hovered.object() == ptrElement || ptrElement->isMyChild( _d->hovered.object() ) )
-		{
-			_d->hovered = WidgetPtr();
-			_d->hoveredNoSubelement = WidgetPtr();
-		}
+    if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
+    {
+      _d->focusedElement = WidgetPtr();
+    }
+
+    if( _d->hovered.object() == ptrElement || ptrElement->isMyChild( _d->hovered.object() ) )
+    {
+      _d->hovered = WidgetPtr();
+      _d->hoveredNoSubelement = WidgetPtr();
+    }
 
     foreach( widget, _d->deletionQueue )
     {
       if( (*widget) == ptrElement )
       {
-				return;
+        return;
       }
     }
 
-		_d->deletionQueue.push_back( ptrElement );
-	}
-	catch(...)
-	{}
+    _d->deletionQueue.push_back( ptrElement );
+  }
+  catch(...)
+  {}
 }
 
 Widget* Ui::createWidget(const std::string& type, Widget* parent)
@@ -257,45 +255,44 @@ WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
 
 void Ui::_drawTooltip( unsigned int time )
 {
-    // launch tooltip
-    if ( _d->toolTip.element.isNull()
-         && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != rootWidget()
-    		 && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
-         || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
-		     && _d->hoveredNoSubelement->tooltipText().size()
-        )
+  // launch tooltip
+  if( _d->toolTip.element.isNull()
+      && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != rootWidget()
+      && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
+      || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
+      && _d->hoveredNoSubelement->tooltipText().size()
+    )
+  {
+    if( _d->hoveredNoSubelement.isValid() )
     {
-      if( _d->hoveredNoSubelement.isValid() )
-      {
-        NEvent e;
-        _d->hoveredNoSubelement->onEvent( e );
-      }
-
-      _d->toolTip.element = _d->createStandartTooltip( this );
-      _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
-      if( _d->toolTip.element->screenBottom() > (int)height() )
-      {
-        int delta = _d->toolTip.element->screenBottom() - height();
-        Rect geom = _d->toolTip.element->absoluteRect();
-        geom -= Point( 0, delta );
-        _d->toolTip.element->setGeometry( geom );
-      }
-
+      NEvent e;
+      _d->hoveredNoSubelement->onEvent( e );
     }
 
-    if( _d->toolTip.element.isValid() && _d->toolTip.element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
+    _d->toolTip.element = _d->createStandartTooltip( this );
+    _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
+    if( _d->toolTip.element->screenBottom() > (int)height() ||
+         _d->toolTip.element->screenLeft() < (int)0 )
     {
-      _d->toolTip.LastTime = time;
-
-      // got invisible or removed in the meantime?
-      if( _d->hoveredNoSubelement.isNull()
-          || !_d->hoveredNoSubelement->visible() 
-          || !_d->hoveredNoSubelement->parent() )
-      {
-        _d->toolTip.element->deleteLater();
-        _d->toolTip.element = WidgetPtr();
-      }
+      Rect geom = _d->toolTip.element->absoluteRect();
+      geom.constrainTo( absoluteRect() );
+      _d->toolTip.element->setGeometry( geom );
     }
+  }
+
+  if( _d->toolTip.element.isValid() && _d->toolTip.element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
+  {
+    _d->toolTip.LastTime = time;
+
+    // got invisible or removed in the meantime?
+    if( _d->hoveredNoSubelement.isNull()
+        || !_d->hoveredNoSubelement->visible()
+        || !_d->hoveredNoSubelement->parent() )
+    {
+      _d->toolTip.element->deleteLater();
+      _d->toolTip.element = WidgetPtr();
+    }
+  }
 }
 
 void Ui::_updateHovered( const Point& mousePos )
@@ -362,49 +359,48 @@ void Ui::_updateHovered( const Point& mousePos )
 //! Returns the next element in the tab group starting at the focused element
 Widget* Ui::next(bool reverse, bool group)
 {
-    // start the search at the root of the current tab group
-    Widget *startPos = getFocus() ? getFocus()->tabgroup() : 0;
-    int startOrder = -1;
+  // start the search at the root of the current tab group
+  Widget *startPos = getFocus() ? getFocus()->tabgroup() : 0;
+  int startOrder = -1;
 
-    // if we're searching for a group
-    if (group && startPos)
-    {
-        startOrder = startPos->tabOrder();
-    }
-    else
-        if (!group && getFocus() && !getFocus()->hasTabgroup())
-        {
-            startOrder = getFocus()->tabOrder();
-            if (startOrder == -1)
-            {
-                // this element is not part of the tab cycle,
-                // but its parent might be...
-                Widget *el = getFocus();
-                while (el && el->parent() && startOrder == -1)
-                {
-                    el = el->parent();
-                    startOrder = el->tabOrder();
-                }
+  // if we're searching for a group
+  if (group && startPos)
+  {
+      startOrder = startPos->tabOrder();
+  }
+  else if (!group && getFocus() && !getFocus()->hasTabgroup())
+  {
+      startOrder = getFocus()->tabOrder();
+      if (startOrder == -1)
+      {
+          // this element is not part of the tab cycle,
+          // but its parent might be...
+          Widget *el = getFocus();
+          while (el && el->parent() && startOrder == -1)
+          {
+              el = el->parent();
+              startOrder = el->tabOrder();
+          }
 
-            }
-        }
+      }
+  }
 
-        if (group || !startPos)
-            startPos = rootWidget(); // start at the root
+  if (group || !startPos)
+      startPos = rootWidget(); // start at the root
 
-        // find the element
-        Widget *closest = 0;
-        Widget *first = 0;
-        startPos->next(startOrder, reverse, group, first, closest);
+  // find the element
+  Widget *closest = 0;
+  Widget *first = 0;
+  startPos->next(startOrder, reverse, group, first, closest);
 
-        if (closest)
-            return closest; // we found an element
-        else if (first)
-            return first; // go to the end or the start
-        else if (group)
-            return rootWidget(); // no group found? root group
-        else
-            return 0;
+  if (closest)
+      return closest; // we found an element
+  else if (first)
+      return first; // go to the end or the start
+  else if (group)
+      return rootWidget(); // no group found? root group
+  else
+      return 0;
 }
 
 //! posts an input event to the environment
@@ -518,8 +514,8 @@ Widget* Ui::hovered() const {  return _d->hovered.object(); }
 
 void Ui::beforeDraw()
 {
-  const Size screenSize( _d->engine->screenSize() );
-  const Point rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
+  const Size screenSize( _d->engine->virtualSize() );
+  const Point& rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {

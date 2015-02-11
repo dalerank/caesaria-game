@@ -24,11 +24,14 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 #include "objects/well.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ContaminatedWater, "contaminated_water")
 
 class ContaminatedWater::Impl
 {

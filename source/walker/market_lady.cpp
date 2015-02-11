@@ -21,8 +21,11 @@
 #include "pathway/pathway.hpp"
 #include "objects/market.hpp"
 #include "good/goodstore.hpp"
+#include "walkers_factory.hpp"
 
 using namespace constants;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::marketLady, MarketLady)
 
 ServiceWalkerPtr MarketLady::create(PlayerCityPtr city)
 {

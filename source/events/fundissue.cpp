@@ -37,7 +37,7 @@ GameEventPtr FundIssueEvent::create(int type, int value)
   return ret;
 }
 
-GameEventPtr FundIssueEvent::import(good::Type good, int qty, float buff)
+GameEventPtr FundIssueEvent::import(good::Product good, int qty, float buff)
 {
   FundIssueEvent* ev = new FundIssueEvent();
   ev->_gtype = good;
@@ -49,7 +49,7 @@ GameEventPtr FundIssueEvent::import(good::Type good, int qty, float buff)
   return ret;
 }
 
-GameEventPtr FundIssueEvent::exportg(good::Type good, int qty, float buff)
+GameEventPtr FundIssueEvent::exportg(good::Product good, int qty, float buff)
 {
   FundIssueEvent* ev = new FundIssueEvent();
   ev->_gtype = good;

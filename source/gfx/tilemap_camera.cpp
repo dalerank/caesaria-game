@@ -65,8 +65,8 @@ public:
 
   Point getOffset( const PointF& center )
   {
-    return Point( virtualSize.width() / 2 - tileMapSize.width() * (center.x() + 1) + 1,
-                  virtualSize.height()/ 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
+    return Point( virtualSize.width() / 2  - tileMapSize.width()  * (center.x() + 1) + 1,
+                  virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
   } 
 
   void cacheFlatTiles();
@@ -80,7 +80,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
 {
   _d->tileMapSize = tilemap::cellSize();
   _d->tmap = NULL;
-  _d->scrollSpeed = 10;
+  _d->scrollSpeed = 30;
   _d->viewSize = Size( 0 );
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );
@@ -129,6 +129,9 @@ void TilemapCamera::setCenter(TilePos pos)
 
 void TilemapCamera::move(PointF relative)
 {
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  relative *= _d->scrollSpeed / 100.f * koeffX;
+
   MovableOrders mv = _d->mayMove( _d->centerMapXZ + relative);
 
   if( relative.x() < 0 && !mv.left ) { relative.setX( 0 ); }
@@ -202,8 +205,9 @@ void TilemapCamera::refresh(){  _d->tiles.clear(); }
 
 Tile* TilemapCamera::at(const Point& pos, bool overborder) const
 {
-  float koeff = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
-  Point virtPos = pos * koeff;
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
+  Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
   return _d->tmap->at( virtPos - _d->offset, overborder );
 }
 

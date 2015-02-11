@@ -84,6 +84,7 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
+#include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_fire.hpp"
@@ -127,7 +128,7 @@ public:
   TilePos cameraStart;
 
   city::development::Options buildOptions;
-  city::TradeOptions tradeOptions;
+  city::trade::Options tradeOptions;
   city::VictoryConditions targets;
   Options options;
   ClimateType climate;   
@@ -195,6 +196,8 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
+  setOption( zoomEnabled, 1 );
+  setOption( zoomInvert, 1 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
 }
@@ -355,7 +358,7 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
-  int wages = city::Statistic::getMonthlyWorkersWages( city );
+  int wages = city::statistic::getMonthlyWorkersWages( city );
 
   if( funds.haveMoneyForAction( wages ) )
   {
@@ -363,7 +366,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
     HouseList houses;
     houses << city->overlays();
 
-    float salary = city::Statistic::getMonthlyOneWorkerWages( city );
+    float salary = city::statistic::getMonthlyOneWorkerWages( city );
     float wages = 0;
     foreach( it, houses )
     {
@@ -503,6 +506,9 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "climate"    ] = _d->climate;
   stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
   stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
+  stream[ "godEnabled" ] = getOption( PlayerCity::godEnabled );
+  stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
+  stream[ "zoomInvert"] = getOption( PlayerCity::zoomInvert );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -519,8 +525,18 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( w, _d->walkers )
   {
     VariantMap vm_walker;
-    (*w)->save( vm_walker );
-    vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    walker::Type wtype = walker::unknown;
+    try
+    {
+      wtype = (*w)->type();
+      (*w)->save( vm_walker );
+      vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
+    }
+    catch(...)
+    {
+      Logger::warning( "ERROR: Cant save walker type " + WalkerHelper::getTypename( wtype ) );
+    }
+
     walkedId++;
   }
   stream[ "walkers" ] = vm_walkers;
@@ -530,9 +546,19 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
-    (*overlay)->save( vm_overlay );
-    vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
-                                                      (*overlay)->pos().j() ) ] = vm_overlay;
+    TileOverlay::Type otype = objects::unknown;
+
+    try
+    {
+      otype = (*overlay)->type();
+      (*overlay)->save( vm_overlay );
+      vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
+                                                 (*overlay)->pos().j() ) ] = vm_overlay;
+    }
+    catch(...)
+    {
+      Logger::warning( "ERROR: Cant save overlay type " + MetaDataHolder::findTypename( otype ) );
+    }
   }
   stream[ "overlays" ] = vm_overlays;
 
@@ -570,6 +596,9 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: parse options" );
   setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
   setOption( fishPlaceEnabled, stream.get( lc_fishPlaceEnabled, 1 ) );
+  setOption( godEnabled, stream.get( "godEnabled", 1 ) );
+  setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
+  setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -698,11 +727,11 @@ void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { 
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
 
-city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
+city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 
 const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
-const good::Store &PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -832,7 +861,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
 }
 
-void PlayerCity::empirePricesChanged(good::Type gtype, int bCost, int sCost)
+void PlayerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
 {
   _d->tradeOptions.setBuyPrice( gtype, bCost );
   _d->tradeOptions.setSellPrice( gtype, sCost );

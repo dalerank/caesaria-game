@@ -298,6 +298,7 @@
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 6
     image : [ "security", 1 ]
+    animation : { rc : "security", start : 2, count : 10, offset : [ 20, 36 ], delay : 4 }
     class : "security"
   },  
  
@@ -327,7 +328,7 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
+    image : [ "security", 45 ]
     employers : 2
     class : "religion"
     sound : [ "templeceres", 1 ]
@@ -338,9 +339,8 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    sound : [ "templeneptune", 1 ]
+    sound : [ "security", 47 ]
     image : [ "smlneptune", 1 ]
-    animation : { rc : "smlneptune", start : 2, count : 6, offset : [ 35, 34 ], delay : 3 }
     image.offset : [-1, -1]
   }, 
   
@@ -349,9 +349,8 @@
     desirability : { base : 4, 	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlmercury", 1 ]
+    image : [ "security", 49 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlmercury", start : 2, count : 6, offset : [ 38, 32 ], delay : 3 }
     sound : [ "templemercury", 1 ]
   },
  
@@ -360,9 +359,8 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlmars", 1 ]
+    image : [ "security", 51 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlmars", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templemars", 1 ]
   },
 
@@ -371,9 +369,8 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlvenus", 1 ]
+    image : [ "security", 53 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlvenus", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templevenus", 1 ]
   },
  
@@ -382,6 +379,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 46 ]
     sound : [ "templeceres", 2 ]
   }, 
   
@@ -390,6 +388,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 48 ]
     sound : [ "templeneptune", 2 ]
   }, 
   
@@ -398,6 +397,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 50 ]
     sound : [ "templemercury", 2 ]
   },
   
@@ -406,6 +406,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 52 ]
     sound : [ "templemars", 2 ]
   },
   
@@ -413,6 +414,7 @@
     cost : 150,
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
+    image : [ "security", 54 ]
     class : "religion"
     sound : [ "templevenus", 2 ]
   }, 
@@ -634,6 +636,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    output : "wheat"
     class : "food"
     productRate : 9.6
     sound : [ "wheatfarm", 1 ]
@@ -644,6 +647,7 @@
     cost : 40,
     desirability : { base : -2, 	range : 2,	step : 1 }
     employers : 10
+    output : "vegetable"
     productRate : 9.6
     class : "food"
     sound : [ "vegetablefarm", 1 ]
@@ -654,6 +658,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    output : "fruit"
     productRate : 9.6
     class : "food"
   },
@@ -663,6 +668,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    output : "olive"
     class : "food"
     productRate : 9.6
     sound : [ "olivesfarm", 1 ]
@@ -673,6 +679,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    output : "grape"
     class : "food"
     productRate : 4.8
     sound : [ "grapefarm", 1 ]
@@ -684,6 +691,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    output : "meat"
     productRate : 4.8
     sound : [ "meatfarm", 1 ]
   },
@@ -693,6 +701,7 @@
     cost : 50,
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
+    output : "marble"
     class : "rawmaterial"
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
@@ -704,6 +713,7 @@
     cost : 50,
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
+    output : "iron"
     class : "rawmaterial"
     productRate : 2.4
     sound : [ "ironmine", 1 ]
@@ -714,6 +724,7 @@
     cost : 40,
     desirability : { base : -4,	range : 4,	step : 1 }
     employers : 10
+    output : "timber"
     class : "rawmaterial"
     productRate : 4.8
     sound : [ "lumbermill", 1 ]
@@ -724,6 +735,7 @@
     cost : 40,
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 10
+    output : "clay"
     image : [ "commerce", 61 ]
     productRate : 4.8
     class : "rawmaterial"
@@ -736,6 +748,7 @@
     cost : 45,
     desirability : { base : -1,	range : 1,	step : 1 }
     employers : 10
+    output : "wine"
     productRate : 4.8
     class : "industry"
     sound : [ "winery", 1 ]
@@ -746,6 +759,7 @@
     cost : 50,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "oil"
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
@@ -756,6 +770,7 @@
     cost : 50,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "weapon"
     productRate : 2.4
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
@@ -766,6 +781,7 @@
     cost : 40,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "furniture"
     class : "industry"
     productRate : 2.4
     sound : [ "furniture", 1 ]
@@ -778,6 +794,7 @@
     cost : 40,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    output : "pottery"
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]

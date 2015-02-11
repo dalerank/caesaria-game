@@ -46,7 +46,7 @@ ResourceLoader::~ResourceLoader(){  }
 
 void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
-  VariantMap archives = SaveAdapter::load( path2model );
+  VariantMap archives = config::load( path2model );
   foreach( a, archives )
   {
     Path absArchivePath( a->second.toString() );
@@ -69,6 +69,8 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 
       NFile archiveInfo = archive->createAndOpenFile( archiveDescFile );
       loadAtlases( archiveInfo, true );
+
+      //FileSystem::instance().unmountArchive( archive );
     }
     else
     {
@@ -81,7 +83,7 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
 {
   if( archiveInfo.isOpen() )
   {
-    VariantMap vm = SaveAdapter::load( archiveInfo );
+    VariantMap vm = config::load( archiveInfo );
 
     VariantList atlasNames = vm.get( atlasListSection ).toList();
     foreach( it, atlasNames )
@@ -102,10 +104,13 @@ void ResourceLoader::loadFiles(Path path)
 {
   ArchivePtr archive = FileSystem::instance().mountArchive( path );
   if( archive.isValid() )
+  {
     loadFiles( archive );
+    FileSystem::instance().unmountArchive( archive );
+  }
 }
 
-void ResourceLoader::loadFiles(ArchivePtr archive )
+void ResourceLoader::loadFiles(ArchivePtr archive)
 {
   const vfs::Entries::Items& files = archive->entries()->items();
   gfx::PictureBank& pb = gfx::PictureBank::instance();

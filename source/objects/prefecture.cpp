@@ -27,8 +27,12 @@
 #include "city/helper.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::prefecture, Prefecture)
 
 class Prefecture::Impl
 {
@@ -47,9 +51,9 @@ Prefecture::Prefecture()
   //setPicture( ResourceGroup::security, 1 );
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
   
-  _animationRef().load( ResourceGroup::security, 2, 10);
-  _animationRef().setDelay( 4 );
-  _animationRef().setOffset( Point( 20, 36 ) );
+  //_animationRef().load( ResourceGroup::security, 2, 10);
+  //_animationRef().setDelay( 4 );
+  //_animationRef().setOffset( Point( 20, 36 ) );
   _fgPicturesRef().resize(1);
 }
 
@@ -62,6 +66,9 @@ void Prefecture::timeStep(const unsigned long time)
 
 void Prefecture::deliverService()
 {
+  if( !isActive() )
+    return;
+
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TilePos fireDetectPos = _d->checkFireDetect( _city(), pos() );

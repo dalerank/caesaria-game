@@ -39,9 +39,11 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   setupUI( ":/gui/warehouseinfo.gui" );
+
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
   setBase( ptr_cast<Construction>( _warehouse ) );
+  _setWorkingVisible( true );
 
   /*StringArray warnings;
   if( _warehouse->onlyDispatchGoods() )  { warnings << "##warehouse_low_personal_warning##";  }
@@ -102,7 +104,7 @@ void AboutWarehouse::showSpecialOrdersWindow()
   new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
 }
 
-void AboutWarehouse::drawGood( const good::Type &goodType, int col, int paintY )
+void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY )
 {
   std::string goodName = good::Helper::name( goodType );
   int qty = _warehouse->store().qty(goodType);

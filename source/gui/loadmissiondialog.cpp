@@ -69,7 +69,7 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
   fn = directory/fn;
 
   std::string missionName = vfs::Path( fn ).baseName( false ).toString();
-  VariantMap vm = SaveAdapter::load( fn );
+  VariantMap vm = config::load( fn );
   Locale::addTranslation( missionName );
 
   std::string text = vm.get( "preview.text" ).toString();
@@ -103,6 +103,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
   if( _d->lbxFiles ) _d->lbxFiles->setShowTime( false );
 
   _d->fillFiles();
+  if( _d->lbxFiles ) _d->lbxFiles->setFocus();
 }
 
 void LoadMission::Impl::fillFiles()

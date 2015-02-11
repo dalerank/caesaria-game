@@ -21,9 +21,12 @@
 #include "world/empire.hpp"
 #include "good/goodhelper.hpp"
 #include "world/computer_city.hpp"
+#include "factory.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ChangeTradingOptions, "trading_options")
 
 GameEventPtr ChangeTradingOptions::create()
 {
@@ -63,7 +66,7 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
   VariantMap goodsVm = _options.get( "goods" ).toMap();
   foreach( it, goodsVm )
   {
-    good::Type gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it->first );
     if( gtype != good::none )
     {
       VariantMap goodInfo = it->second.toMap();

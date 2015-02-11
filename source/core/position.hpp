@@ -27,36 +27,36 @@ class PointF;
 class Point : public Vector2<int>
 {
 public:
-    Point( const int x, const int y ) : Vector2<int>( x, y ) {}
-    Point() : Vector2<int>( 0, 0 ) {}
-    Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
+  Point( const int x, const int y ) : Vector2<int>( x, y ) {}
+  Point() : Vector2<int>( 0, 0 ) {}
+  Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
 
-    Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
-    Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
-    Point operator -() const { return Point( -_x, -_y); }
-    Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
+  Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
+  Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
+  Point operator -() const { return Point( -_x, -_y); }
+  Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
 
-    void setX( const int nx ) { _x = nx; }
-    void setY( const int ny ) { _y = ny; }
+  void setX( const int nx ) { _x = nx; }
+  void setY( const int ny ) { _y = ny; }
 
-    float distanceTo( const Point& other ) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
+  float distanceTo( const Point& other ) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
 
-    PointF toPointF() const; 
+  PointF toPointF() const;
 };
 
 class PointF : public Vector2<float>
 {
 public:
-    PointF( const float x, const float y ) : Vector2<float>( x, y ) {}
-    PointF() : Vector2<float>( 0, 0 ) {}
-    PointF( const Vector2<float>& pos ) : Vector2<float>( pos ) {}
+  PointF( const float x, const float y ) : Vector2<float>( x, y ) {}
+  PointF() : Vector2<float>( 0, 0 ) {}
+  PointF( const Vector2<float>& pos ) : Vector2<float>( pos ) {}
 
-    PointF operator+(const PointF& other) const { return PointF( _x + other._x, _y + other._y ); }
+  PointF operator+(const PointF& other) const { return PointF( _x + other._x, _y + other._y ); }
 
-    void setX( const float nx ) { _x = nx; }
-    void setY( const float ny ) { _y = ny; }
+  void setX( const float nx ) { _x = nx; }
+  void setY( const float ny ) { _y = ny; }
 
-    Point toPoint() const { return Point( (int)_x, (int)_y ); }
+  Point toPoint() const { return Point( (int)_x, (int)_y ); }
 };
 
 inline PointF Point::toPointF() const
@@ -112,8 +112,8 @@ public:
 
   TilePos nextStep( const TilePos& dst ) const
   {
-    return TilePos( math::signnum( dst.i() - i() ),
-                    math::signnum( dst.j() - j() ) );
+    return *this + TilePos( math::signnum( dst.i() - i() ),
+                            math::signnum( dst.j() - j() ) );
   }
 };
 

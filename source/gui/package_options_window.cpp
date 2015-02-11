@@ -21,6 +21,7 @@
 #include "texturedbutton.hpp"
 #include "game/settings.hpp"
 #include "editbox.hpp"
+#include "widgetescapecloser.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -57,7 +58,11 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT( _d->edCaesar3Path, onTextChanged(), this, PackageOptions::_setCaesar3Path );
   CONNECT( _d->btnChangeCellw, onClicked(), this, PackageOptions::_changeCellw );
 
+  WidgetEscapeCloser::insertTo( this );
+
   _update();
+
+  if( _d->btnApply ) _d->btnApply->setFocus();
 }
 
 PackageOptions::~PackageOptions() {}

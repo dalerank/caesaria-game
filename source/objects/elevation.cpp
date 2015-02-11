@@ -21,8 +21,12 @@
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(objects::elevation, Elevation)
 
 namespace {
   static const int startElevationId = 845;
@@ -66,7 +70,7 @@ void Elevation::changeDirection(Tile* masterTile, constants::Direction direction
   setPicture( imgid::toPicture( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
 }
 
-bool Elevation::isDestructible() const{  return false;}
+bool Elevation::isDestructible() const { return false; }
 
 bool Elevation::build( const CityAreaInfo& info )
 {

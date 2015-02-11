@@ -154,6 +154,10 @@
     move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
   }
 
+  merchantCamel : {
+    move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
+  }
+
   /*
   camelMerchant : {
     move : { rc : "carts", start : 273, frames : 12, action : 1, step : 8 }
