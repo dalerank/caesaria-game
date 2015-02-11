@@ -104,6 +104,7 @@ public:
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
   void runScript(std::string filename);
+  gui::ContextMenu* debugMenu;
 
 public signals:
   Signal2<scene::Level*, bool> failedMissionSignal;
@@ -115,9 +116,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   _d->game = game;
 
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
-  gui::ContextMenu* debugMenu = tmp->addSubMenu();
+  _d->debugMenu = tmp->addSubMenu();
 
-#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = debugMenu->addItem( section, #ev, ev ); \
+#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( section, #ev, ev ); \
                                        CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
 
   ADD_DEBUG_EVENT( "enemies", add_enemy_archers )
@@ -170,6 +171,12 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 #undef ADD_DEBUG_EVENT
 }
 
+void DebugHandler::setVisible(bool visible)
+{
+  if( _d->debugMenu != 0)
+    _d->debugMenu->setVisible( visible );
+}
+
 DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
@@ -194,7 +201,7 @@ Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissio
 
 DebugHandler::DebugHandler() : _d(new Impl)
 {
-
+  _d->debugMenu = 0;
 }
 
 void DebugHandler::Impl::handleEvent(int event)

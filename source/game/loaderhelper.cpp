@@ -105,7 +105,9 @@ unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
                                                 ovType = objects::house;    break;
     case 0xc4c: case 0xc4d: case 0xc4e: case 0xc4f:
                                                 ovType = objects::garden;    break;
-    case 0xc5d: case 0xc52:                     ovType = objects::prefecture;    break;
+
+    case 0x29c: case 0x29d: case 0x2a1:         ovType = objects::aqueduct; break;
+    case 0xc5d: case 0xc52:                     ovType = objects::prefecture; break;
     case 0xcd1:                                 ovType = objects::engineering_post;    break;
     case 0xc81 + 76:                            ovType = objects::wharf;    break;
     case 0xb8a:                                 ovType = objects::school;    break;
@@ -147,8 +149,16 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
       oTile.setPicture( pic );
       changeId = imgid::fromResource( pic.name() );
     }*/
+  } 
+  else if( imgId >= 0x29c && imgId <= 0x2a1 ) //aqueduct
+  {
+    ovType = objects::aqueduct;
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+    oTile.setPicture( pic );
+    oTile.setFlag( Tile::clearAll, true );
+    changeId = imgid::fromResource( pic.name() );
   }
-  else if( (imgId >= 372 && imgId <= 427) )
+  else if( imgId >= 372 && imgId <= 427 )
   {
     oTile.setFlag( Tile::tlCoast, true );
     if( imgId >= 388 )

@@ -50,4 +50,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#endif //__CAESARIA_MARKETLADY_H_INCLUDED__

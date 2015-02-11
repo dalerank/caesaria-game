@@ -58,4 +58,4 @@ private:
 
 } //end namespace world
 
-#endif //_OPENCAESAR3_WORLD_TRADING_INCLUDE_H_
+#endif //_CAESARIA_WORLD_MERCHANT_INCLUDE_H_

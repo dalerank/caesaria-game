@@ -256,10 +256,13 @@ void Level::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
-#ifdef DEBUG
   _d->dhandler.insertTo( _d->game, _d->topMenu );
+  _d->dhandler.setVisible( false );
+
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+#ifdef DEBUG  
+  _d->dhandler.setVisible( true );
 #endif
 
 #ifdef CAESARIA_USE_STEAM
@@ -684,7 +687,7 @@ void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
 void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
-void Level::Impl::saveScrollSpeed(int speed) {  SETTINGS_SET_VALUE( scrollSpeed, speed ); }
+void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 
 void Level::_requestExitGame()
 {
