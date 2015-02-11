@@ -139,6 +139,7 @@ public:
   void layerChanged( int layer );
   void makeFullScreenshot();
   void extendReign( int years );
+  void saveScrollSpeed( int speed );
   void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
@@ -159,7 +160,8 @@ void Level::initialize()
   PlayerCityPtr city = _d->game->city();
   gui::Ui& ui = *_d->game->gui();
 
-  _d->renderer.initialize( city, _d->engine, &ui );
+  bool oldGraphics = SETTINGS_VALUE( oldgfx ).toBool() || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
   const int topMenuHeight = 23;
@@ -194,6 +196,7 @@ void Level::initialize()
 
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
+  _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
   _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
   //specific android actions bar
@@ -283,11 +286,12 @@ void Level::Impl::showGameSpeedOptionsDialog()
 {
   dialog::GameSpeedOptions* dialog = new dialog::GameSpeedOptions( game->gui()->rootWidget(),
                                                                    game->timeMultiplier(),
-                                                                   0,
+                                                                   SETTINGS_VALUE( scrollSpeed ),
                                                                    SETTINGS_VALUE( autosaveInterval ) );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
+  CONNECT( dialog, onScrollSpeedChange(), this, Impl::saveScrollSpeed );
   CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
 }
 
@@ -680,6 +684,7 @@ void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
 void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
+void Level::Impl::saveScrollSpeed(int speed) {  SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 
 void Level::_requestExitGame()
 {

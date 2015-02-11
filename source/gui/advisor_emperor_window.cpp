@@ -246,8 +246,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   Widget::setupUI( ":/gui/emperoropts.gui" );
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  gui::Label* lbTitle;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
 
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavour )
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavourDesc  )
@@ -319,9 +318,9 @@ void Emperor::Impl::changeSalary( int money )
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox::information( lbEmperorFavour->parent(),
-                            "##changesalary_warning##",
-                            "##changesalary_greater_salary##" );
+    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
+                            _("##changesalary_warning##"),
+                            _("##changesalary_greater_salary##") );
   }
 }
 

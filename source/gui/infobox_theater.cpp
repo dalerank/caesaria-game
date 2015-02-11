@@ -36,6 +36,8 @@ namespace infobox
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
 {
+  setupUI( ":/gui/infoboxtheater.gui" );
+
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
   setTitle( _( theater->name() ) );
 

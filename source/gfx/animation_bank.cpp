@@ -195,10 +195,14 @@ void AnimationBank::Impl::loadStage( int type, const std::string& stageName, con
   case stgSimple:
     {
       VARIANT_LOAD_ANY( type, stageInfo )
+      VARIANT_INIT_ANY( Variant, offset, stageInfo )
+
       Logger::warning( "AnimationBank: load simple animations for " + stageName );
       Animation& animation = simpleAnimations[ type ];
       animation.load( rc, start, frames, reverse, step );
       animation.setDelay( delay );
+      if( offset.isValid() )
+        animation.setOffset( offset.toPoint() );
     }
   break;
 

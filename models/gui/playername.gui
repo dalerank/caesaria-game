@@ -41,7 +41,7 @@
 
   lbExitHelp#Label :
   {
-    geometry : [ 18, 100, 300, 117 ]
+    geometry : [ 18, 90, 300, 110 ]
     text : "##press_escape_to_exit##"
     font : "FONT_1"
   }

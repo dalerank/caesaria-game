@@ -138,12 +138,9 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
 
   _d->icon = good::Helper::picture( type );
 
-  Label* lbTitle;
-  Label* lbStackedQty;
-  TexturedButton* btnExit;
-  GET_WIDGET_FROM_UI( lbTitle )
-  GET_WIDGET_FROM_UI( lbStackedQty )
-  GET_WIDGET_FROM_UI( btnExit )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbStackedQty )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbIndustryInfo )
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )

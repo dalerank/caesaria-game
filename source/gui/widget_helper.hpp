@@ -33,5 +33,7 @@ inline T findChildA( const std::string& internalName, bool recursiveFind, const 
 #define GET_DWIDGET_FROM_UI( d, element ) d->element = findChildA<__typeof__( d->element )>( #element, true, this ); \
                                           if( 0 == d->element ) { Logger::warning( "Cannot fint %s in %s:%d", #element, __FILE__, __LINE__ ); }
 
+#define INIT_WIDGET_FROM_UI( type, element ) type element; GET_WIDGET_FROM_UI( element );
+
 
 #endif //_CAESARIA_WIDGET_HELPER_H_INCLUDE_

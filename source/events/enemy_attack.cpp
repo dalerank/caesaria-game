@@ -27,6 +27,7 @@
 #include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
 #include "walker/helper.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -39,6 +40,8 @@ CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(items)
 CAESARIA_LITERALCONST(target)
 }
+
+REGISTER_EVENT_IN_FACTORY(EnemyAttack, "enemy_attack" )
 
 class AttackPriorityHelper : public EnumsHelper<EnemySoldier::AttackPriority>
 {

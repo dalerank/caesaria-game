@@ -98,8 +98,7 @@ AWindow::AWindow( Widget* parent, int id )
 
   WidgetEscapeCloser::insertTo( this );
 
-  Image* imgBgButtons;
-  GET_WIDGET_FROM_UI( imgBgButtons )
+  INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
 
   if( imgBgButtons )
     imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );

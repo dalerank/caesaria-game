@@ -5,13 +5,17 @@
 #define __CAESARIA_RENDERER_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
-#include "picturesarray.hpp"
 #include "core/smartptr.hpp"
+
+#include <vector>
 
 namespace gfx
 {
 
 class Camera;
+namespace  layer {
+  class Layer;
+}
 
 //!  Surface Loader for PNG files
 class Renderer : public ReferenceCounted
@@ -36,10 +40,12 @@ public:
   public:
     virtual ~Mode() {}
   };
-  typedef SmartPtr< Mode > ModePtr;
 
+  typedef SmartPtr< Mode > ModePtr;
   virtual void render() = 0;
   virtual Camera* camera() = 0;
+  virtual SmartPtr<layer::Layer> currentLayer() const = 0;
+  virtual SmartPtr<layer::Layer> getLayer(int type) const = 0;
   virtual Renderer::ModePtr mode() const = 0;
 };
 

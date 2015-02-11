@@ -29,7 +29,8 @@ public:
   ~NameGenerator();
 
   static std::string rand( NameType type );
-  void initialize( const vfs::Path& filename );
+  void initialize(vfs::Path filename );
+  void setLanguage( const std::string& language );
 
 private:
   NameGenerator();

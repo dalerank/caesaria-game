@@ -298,6 +298,7 @@
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 6
     image : [ "security", 1 ]
+    animation : { rc : "security", start : 2, count : 10, offset : [ 20, 36 ], delay : 4 }
     class : "security"
   },  
  

@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -53,12 +54,12 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
-  ListBox* lbxModes;
   GET_DWIDGET_FROM_UI( _d, btnSwitchMode )
-  GET_WIDGET_FROM_UI( lbxModes )
 
   _d->fullScreen = fullscreen;
   _d->haveChanges = false;
+
+  INIT_WIDGET_FROM_UI( ListBox*, lbxModes )
   if( lbxModes )
   {
     std::string modeStr;
@@ -71,6 +72,10 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   }
 
   _update();
+  WidgetEscapeCloser::insertTo( this );
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnOk )
+  if( btnOk ) btnOk->setFocus();
 }
 
 VideoOptions::~VideoOptions( void ){}
