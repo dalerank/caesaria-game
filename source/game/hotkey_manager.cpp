@@ -35,6 +35,7 @@ public:
     _HK(KEY_F4) _HK(KEY_F5) _HK(KEY_F6)
     _HK(KEY_F7) _HK(KEY_F8) _HK(KEY_F9)
     _HK(KEY_F10) _HK(KEY_F11) _HK(KEY_F12)
+    _HK(KEY_PLUS) _HK(KEY_MINUS)
 #undef _HK
   }
 };
@@ -64,10 +65,7 @@ void HotkeyManager::execute( int keyCode )
   }
 }
 
-Signal1<const VariantMap&>& HotkeyManager::onHotkey()
-{
-  return _d->onHotkeySignal;
-}
+Signal1<const VariantMap&>& HotkeyManager::onHotkey() { return _d->onHotkeySignal; }
 
 void HotkeyManager::load(vfs::Path file)
 {
@@ -89,14 +87,10 @@ void HotkeyManager::load(vfs::Path file)
     }
 
     _d->scripts[ hotkey ] = it->second.toMap();
-    }
+  }
 }
 
-HotkeyManager::HotkeyManager() : _d(new Impl)
-{
-
-}
-
+HotkeyManager::HotkeyManager() : _d(new Impl) {}
 
 } //end namespace game
 

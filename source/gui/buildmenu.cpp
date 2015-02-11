@@ -156,22 +156,19 @@ void BuildMenu::initialize()
   }
 }
 
-BuildMenu::~BuildMenu()
-{
-}
+BuildMenu::~BuildMenu() {}
 
 void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
 {
   if( !_options.isGroupAvailable( menuType ) )
     return;
 
-  BuildButton* button = new BuildButton( this, text, Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
+  BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
   button->setCost(-1);  // no display
 
   setHeight( height() + 30 );
 }
-
 
 void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
 {

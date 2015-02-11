@@ -158,6 +158,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   {
     Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
     oTile.setPicture( pic );
+    oTile.setFlag( Tile::clearAll, true );
     changeId = imgid::fromResource( pic.name() );
   }
   else

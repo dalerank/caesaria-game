@@ -46,6 +46,7 @@
     health : "enabled"
     religion : "enabled"
     education : "enabled"
+    commerce : "enabled"
     entertainment : "enabled"
     govt : "enabled"
     engineering : "enabled"

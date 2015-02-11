@@ -48,6 +48,11 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
                       : Window( parent, rectangle, "" ), _d( new Impl )
 {
   Font font = Font::create( FONT_3 );
+
+  button( buttonClose )->hide();
+  button( buttonMin )->hide();
+  button( buttonMax )->hide();
+
   int titleHeight = font.getTextSize( "A" ).height();
   if( rectangle.size() == Size( 0, 0 ) )
   {    

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LAYERBUILD_H_INCLUDED__
 #define __CAESARIA_LAYERBUILD_H_INCLUDED__
@@ -40,6 +40,7 @@ public:
   virtual void afterRender(Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(Engine &engine);
+  virtual void changeLayer(int type);
 
   static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
 
@@ -51,7 +52,7 @@ private:
   void _buildAll();
   void _finishBuild();
   void _drawBuildTiles( Engine& engine );
-  void _handeLayerSwitch(int layer);
+  void _exitBuildMode();
 
   Build( Renderer* renderer, PlayerCityPtr city );
 

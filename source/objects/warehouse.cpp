@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "warehouse.hpp"
 
@@ -246,7 +246,7 @@ float Warehouse::tradeBuff(Warehouse::Buff type) const
   return res;
 }
 
-Warehouse::Rooms &Warehouse::rooms() { return _d->rooms; }
+Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
 
 std::string Warehouse::troubleDesc() const
 {

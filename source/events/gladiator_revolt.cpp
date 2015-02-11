@@ -34,11 +34,14 @@
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(GladiatorRevolt, "gladiator_revolt")
 
 class GladiatorRevolt::Impl
 {

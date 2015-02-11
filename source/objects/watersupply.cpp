@@ -91,7 +91,7 @@ Reservoir::Reservoir()
   _animationRef().load( ResourceGroup::utilitya, 35, 8);
   _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
   _animationRef().setDelay( 11 );
-  _animationRef().setOffset( Point( 47, 63 ) );
+  //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPicturesRef().resize(1);
 }

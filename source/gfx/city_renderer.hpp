@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYRENDERER_H_INCLUDED__
 #define __CAESARIA_CITYRENDERER_H_INCLUDED__
@@ -35,7 +35,8 @@ public:
   CityRenderer();
   virtual ~CityRenderer();
 
-  void initialize(PlayerCityPtr city, Engine* engine, gui::Ui *guienv);
+  void initialize(PlayerCityPtr city, Engine* engine, gui::Ui *guienv,
+                  bool oldGraphic=false);
 
   Camera* camera();
 
@@ -53,11 +54,11 @@ public:
 
   void addLayer( layer::LayerPtr layer );
   layer::LayerPtr currentLayer() const;
+  layer::LayerPtr getLayer(int type) const;
   void setLayer( int layertype );
   int  layerType() const;
 
   TilePos screen2tilepos( Point point ) const;
-
   void setViewport( const Size& size );
 
 public signals:

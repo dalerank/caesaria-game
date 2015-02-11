@@ -159,7 +159,7 @@ ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSear
   return NULL;
 }
 
-ContextMenuItem*ContextMenu::findItem(const std::string& name) const
+ContextMenuItem* ContextMenu::findItem(const std::string& name) const
 {
   foreach( it, _d->items )
   {

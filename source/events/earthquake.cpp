@@ -24,12 +24,15 @@
 #include "core/logger.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/disaster.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(EarthQuake, "earthquake")
 
 class EarthQuake::Impl
 {

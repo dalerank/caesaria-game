@@ -80,7 +80,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
 {
   _d->tileMapSize = tilemap::cellSize();
   _d->tmap = NULL;
-  _d->scrollSpeed = 10;
+  _d->scrollSpeed = 30;
   _d->viewSize = Size( 0 );
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );

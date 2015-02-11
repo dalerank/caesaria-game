@@ -22,11 +22,14 @@
 #include "core/variant_map.hpp"
 #include "objects/senate.hpp"
 #include "core/logger.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ShowAdvisorWindow, "advisor_window")
 
 GameEventPtr ShowAdvisorWindow::create()
 {
