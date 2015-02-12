@@ -115,6 +115,8 @@ void Info::beforeRender(Engine& engine)
 
 void Info::afterRender(Engine& engine)
 {
+  Point camOffset = _camera()->offset();
+
   foreach( it, _d->columns )
   {
     drawColumn( engine, it->pos, it->value );
@@ -122,7 +124,7 @@ void Info::afterRender(Engine& engine)
 
   foreach( it, _d->pictures )
   {
-    engine.draw( it->pic, it->pos );
+    engine.draw( it->pic, camOffset + it->pos );
   }
 
   Layer::afterRender( engine );
