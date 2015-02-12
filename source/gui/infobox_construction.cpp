@@ -86,7 +86,7 @@ void AboutConstruction::_setWorkingVisible(bool show)
 void AboutConstruction::_setWorkingActive(bool working)
 {
   if( _btnToggleWorking )
-    _btnToggleWorking->setText( working ? "Working" : "Not working");
+    _btnToggleWorking->setText( working ? _("##abwrk_working##") : _("##abwrk_not_working##") );
 }
 
 void AboutConstruction::_updateWorkingText()
