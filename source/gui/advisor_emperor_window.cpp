@@ -61,7 +61,7 @@ namespace advisorwnd
 {
 
 namespace {
-  Point requestButtonOffset = Point( 0, 60 );
+  Point requestButtonOffset = Point( 0, 55 );
   Size requestButtonSize = Size( 560, 40 );
 }
 
@@ -221,7 +221,7 @@ void Emperor::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( request, reqs.begin() ), *request );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( reqs.begin(), request ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );

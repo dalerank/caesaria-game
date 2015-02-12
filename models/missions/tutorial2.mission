@@ -127,6 +127,7 @@
     buildings : 
     { 
       well : true
+      missionaryPost : false
       engineering_post : true
       prefecture : true
       small_ceres_temple : true

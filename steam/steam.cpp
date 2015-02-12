@@ -33,6 +33,7 @@ namespace steamapi
 #define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }
 
 static const AppId_t CAESARIA_STEAM_APPID=327640;
+static bool glbOfflineMode = false;
 CAESARIA_LITERALCONST(stat_num_games)
 CAESARIA_LITERALCONST(stat_num_wins)
 
@@ -111,7 +112,10 @@ public:
   void storeStatsIfNecessary();
 };
 
-
+void checkOfflineMode(const char *cmdopt)
+{
+  glbOfflineMode = !strcmp( cmdopt, "-nosteam" );
+}
 //-----------------------------------------------------------------------------
 // Purpose: Unlock this achievement
 //-----------------------------------------------------------------------------
@@ -237,6 +241,9 @@ bool checkSteamRunning()
 
 bool connect()
 {
+  if( glbOfflineMode )
+    return true;
+
 #ifdef CAESARIA_PLATFORM_MACOSX
   SteamAPI_Shutdown();
 #endif
@@ -281,11 +288,17 @@ bool connect()
 
 void close()
 {
+  if( glbOfflineMode )
+    return;
+
   SteamAPI_Shutdown();
 }
 
 void update()
 {
+  if( glbOfflineMode )
+    return;
+
 // Run Steam client callbacks
 #ifdef CAESARIA_PLATFORM_WIN
   sth_runCallbacks();
@@ -297,6 +310,9 @@ void update()
 
 void init()
 {
+  if( glbOfflineMode )
+    return;
+
   xclient.user = SteamUser();
   xclient.stats = SteamUserStats();
 
@@ -335,6 +351,9 @@ void evaluateAchievements()
 
 void unlockAchievement(AchievementType achivId)
 {
+  if( glbOfflineMode )
+    return;
+
   if( achivId >=0 && achivId < achievementNumber )
   {
     if( !glbAchievements[ achivId ].reached )
@@ -348,13 +367,17 @@ void unlockAchievement(AchievementType achivId)
 
 const gfx::Picture& achievementImage(AchievementType achivId)
 {
-  if( achivId >=0 && achivId < achievementNumber )
+  if( !glbOfflineMode )
   {
-    return glbAchievements[ achivId ].image;
-  }
-  else
-  {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+
+    if( achivId >=0 && achivId < achievementNumber )
+    {
+      return glbAchievements[ achivId ].image;
+    }
+    else
+    {
+      Logger::warning( "Unknown achievement ID:%d", achivId );
+    }
   }
 
   return gfx::Picture::getInvalid();
@@ -362,6 +385,9 @@ const gfx::Picture& achievementImage(AchievementType achivId)
 
 std::string userName()
 {
+  if( glbOfflineMode )
+    return "offline";
+
   // We use Steam persona names for our players in-game name.  To get these we
   // just call SteamFriends()->GetFriendPersonaName() this call will work on friends,
   // players on the same game server as us (if using the Steam game server auth API)
@@ -470,6 +496,9 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
 
 bool isStatsReceived()
 {
+  if( glbOfflineMode )
+    return false;
+
   bool ret = glbUserStats.statsValid;
   glbUserStats.statsValid = false;
   return ret;
@@ -577,13 +606,16 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
 
 std::string achievementCaption(AchievementType achivId)
 {
-  if( achivId >=0 && achivId < achievementNumber )
+  if( glbOfflineMode )
   {
-    return glbAchievements[ achivId ].caption;
-  }
-  else
-  {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    if( achivId >=0 && achivId < achievementNumber )
+    {
+      return glbAchievements[ achivId ].caption;
+    }
+    else
+    {
+      Logger::warning( "Unknown achievement ID:%d", achivId );
+    }
   }
 
   return "unknown_achv";
@@ -591,6 +623,9 @@ std::string achievementCaption(AchievementType achivId)
 
 bool isAchievementReached(AchievementType achivId)
 {
+  if( glbOfflineMode )
+    return false;
+
   if( achivId >=0 && achivId < achievementNumber )
   {
     return glbAchievements[ achivId ].reached;
@@ -604,6 +639,9 @@ bool isAchievementReached(AchievementType achivId)
 
 void missionWin()
 {
+  if( glbOfflineMode )
+    return;
+
   glbUserStats.totalNumWins++;
   glbUserStats.totalGamesPlayed++;
   evaluateAchievements();
