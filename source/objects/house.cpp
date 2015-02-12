@@ -164,13 +164,15 @@ void House::_updateHabitants( const CitizenGroup& group )
   _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
 
   int firedWorkersNumber = _d->services[ Service::recruter ] + deltaWorkersNumber;
-  _d->services[ Service::recruter ] += deltaWorkersNumber;
-
+  
   if( firedWorkersNumber < 0 )
   {
     GameEventPtr e = FireWorkers::create( pos(), abs( firedWorkersNumber ) );
     e->dispatch();
-  }
+    
+  } 
+  // return workers to house
+  _d->services[ Service::recruter ] += abs (deltaWorkersNumber); 
 }
 
 void House::_checkEvolve()
@@ -900,7 +902,7 @@ void House::applyService( ServiceWalkerPtr walker )
     RecruterPtr recuter = ptr_cast<Recruter>( walker );
     if( recuter.isValid() )
     {
-      int hiredWorkers = math::clamp( svalue, 0, recuter->needWorkers() );
+      int hiredWorkers = math::min(svalue, recuter->needWorkers());
       appendServiceValue( service, -hiredWorkers );
       recuter->hireWorkers( hiredWorkers );
     }
@@ -1173,13 +1175,13 @@ void House::load( const VariantMap& stream )
 
 void House::_disaster()
 {
-  unsigned int habitantsNuumber = _d->habitants.count();
-  unsigned int buriedCitizens = habitantsNuumber - math::random( habitantsNuumber );
+  unsigned int habitantsNumber = _d->habitants.count();
+  unsigned int buriedCitizens = habitantsNumber - math::random( habitantsNumber );
+
+  GameEventPtr e = FireWorkers::create( pos(), workersCount() );
+  e->dispatch();
 
   CitizenGroup buriedGroup = _d->habitants.retrieve( buriedCitizens );
-
-  GameEventPtr e = FireWorkers::create( pos(), buriedGroup.count( CitizenGroup::mature ) );
-  e->dispatch();
 }
 
 void House::collapse()

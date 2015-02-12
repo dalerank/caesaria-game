@@ -223,7 +223,7 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() - buriedCitizens );
+  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers());
   e->dispatch();
 
   e = RemoveCitizens::create( pos(), buriedCitizens );
