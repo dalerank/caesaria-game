@@ -1043,14 +1043,25 @@ void House::addHabitants( CitizenGroup& habitants )
   }
 }
 
+void House::remHabitants( CitizenGroup& group )
+{
+  CitizenGroup newGroup = _d->habitants;
+  newGroup.exclude( group );
+
+  _updateHabitants( newGroup );
+
+  return;
+}
+
 CitizenGroup House::remHabitants(int count)
 {
   count = math::clamp<int>( count, 0, _d->habitants.count() );
-  CitizenGroup hb = _d->habitants.retrieve( count );
+  CitizenGroup nb = _d->habitants;
+  CitizenGroup retrieve = nb.retrieve( count );
 
-  _updateHabitants( _d->habitants );
+  _updateHabitants( nb );
 
-  return hb;
+  return retrieve;
 }
 
 void House::destroy()
@@ -1176,12 +1187,14 @@ void House::load( const VariantMap& stream )
 void House::_disaster()
 {
   unsigned int habitantsNumber = _d->habitants.count();
-  unsigned int buriedCitizens = habitantsNumber - math::random( habitantsNumber );
+  unsigned int buriedCitizens = math::random( habitantsNumber );
+  unsigned int workers4fire = workersCount();
 
-  GameEventPtr e = FireWorkers::create( pos(), workersCount() );
+  GameEventPtr e = FireWorkers::create( pos(), workers4fire );
   e->dispatch();
 
-  CitizenGroup buriedGroup = _d->habitants.retrieve( buriedCitizens );
+   //this really killed people, cant calculate their
+  _d->habitants.retrieve( buriedCitizens );
 }
 
 void House::collapse()

@@ -313,6 +313,7 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
+  screen.setImage( "freska", 1 );
   screen.update( *_d->engine );
 
   vfs::Path fPath( filename );

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
 #include "city/helper.hpp"
@@ -208,10 +208,10 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers());
+  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
   e->dispatch();
 
-  e = RemoveCitizens::create( pos(), buriedCitizens );
+  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
   e->dispatch();
 
   setWorkers( 0 );

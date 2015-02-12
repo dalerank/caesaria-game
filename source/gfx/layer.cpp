@@ -399,7 +399,9 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   Tile* baseTile = area.front();
   TileOverlayPtr overlay = baseTile->overlay();
   int leftBorderAtI = baseTile->i();
-  int rightBorderAtJ = overlay->size().height() - 1 + baseTile->j();
+  int rightBorderAtJ = overlay.isValid()
+                          ? overlay->size().height() - 1 + baseTile->j()
+                          : baseTile->j();
   foreach( it, area )
   {
     Tile* tile = *it;

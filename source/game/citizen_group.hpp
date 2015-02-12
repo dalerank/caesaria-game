@@ -32,6 +32,7 @@ public:
 
   CitizenGroup retrieve( unsigned int count );
   CitizenGroup retrieve( Age group, unsigned int count );
+  void exclude( CitizenGroup& group );
 
   unsigned int &operator []( unsigned int age);
   CitizenGroup& operator += ( const CitizenGroup& b );
@@ -44,6 +45,7 @@ public:
   void load( const VariantList& stream );
 
   CitizenGroup();
+  CitizenGroup( Age age, int value );
 private:
   typedef std::vector< unsigned int > Peoples;
   Peoples _peoples;
