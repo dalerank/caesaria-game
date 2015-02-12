@@ -37,6 +37,7 @@ public:
   void initialize();
 
   virtual void draw();
+  void setImage(const std::string& image, int index);
   void exitScene(bool showDevText);
   void setText( std::string text );
   void setPrefix( std::string prefix );

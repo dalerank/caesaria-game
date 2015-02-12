@@ -90,6 +90,7 @@ public:
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int paramCount );
+  void remHabitants( CitizenGroup& group );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();

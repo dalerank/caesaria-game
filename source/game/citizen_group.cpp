@@ -117,6 +117,26 @@ CitizenGroup CitizenGroup::retrieve( Age group, unsigned int rcount)
   return ret;
 }
 
+void CitizenGroup::exclude(CitizenGroup& group)
+{
+  for( int index=newborn; index <= longliver; index++ )
+  {
+    if( group[index] == 0 || _peoples[ index ] == 0)
+      continue;
+
+    if( _peoples[ index ] >= group[ index ] )
+    {
+      _peoples[ index ] -= group[ index ];
+      group[ index ] = 0;
+    }
+    else
+    {
+      group[ index ] -= _peoples[ index ];
+      _peoples[ index ] = 0;
+    }
+  }
+}
+
 unsigned int& CitizenGroup::operator[](unsigned int age)
 {
   return _peoples[ age ];
@@ -180,4 +200,11 @@ CitizenGroup::CitizenGroup()
 {
   _peoples.resize( longliver+1 );
   _peoples.reserve( longliver+2 );
+}
+
+CitizenGroup::CitizenGroup(CitizenGroup::Age age, int value)
+{
+  _peoples.resize( longliver+1 );
+  _peoples.reserve( longliver+2 );
+  _peoples[ age ] = value;
 }

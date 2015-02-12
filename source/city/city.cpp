@@ -196,7 +196,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
-  setOption( zoomEnabled, 1 );
+  setOption( zoomEnabled, 0 );
   setOption( zoomInvert, 1 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );

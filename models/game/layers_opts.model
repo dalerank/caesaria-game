@@ -27,7 +27,7 @@
 
   fire : {
     visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "prefecture", "waymark" ]
+                       "highBridge", "elevation", "rift", "tree", "burningRuins", "prefecture", "burningRuins", "waymark" ]
   }
 
   food : {

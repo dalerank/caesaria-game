@@ -52,18 +52,11 @@ void SplashScreen::initialize()
 {
   Engine& engine = Engine::instance();
 
-  _d->background = Picture::load( "logo", 1 );
-
-  // center the background on the screen
-  Size s = (engine.virtualSize() - _d->background.size()) / 2;
-  _d->background.setOffset( Point( s.width(), -s.height() ) );
-
-  _d->textPic.init( Size( _d->background.width(), 30 ) );
-  _d->textPic->setOffset( Point( (engine.virtualSize().width() - _d->textPic->width()) / 2,
-                                  _d->background.offset().y() - _d->background.height() - 5 ) );
-
+  _d->textPic.init( Size( 800, 30 ) );
   _d->fadetx.init( engine.virtualSize() );
   _d->fadetx->fill( NColor(0xff, 0, 0, 0), Rect() );
+
+  setImage( "logo", 1 );
 }
 
 void SplashScreen::draw()
@@ -85,6 +78,20 @@ void SplashScreen::draw()
 
   engine.draw( _d->background, 0, 0);
   engine.draw( *_d->textPic, 0, 0 );
+}
+
+void SplashScreen::setImage(const std::string &image, int index)
+{
+  Engine& engine = Engine::instance();
+  Picture splash = Picture::load( image, index );
+  _d->background = splash.isValid() ? splash : Picture::load( "logo", 1 );
+
+  // center the background on the screen
+  Size s = (engine.virtualSize() - _d->background.size()) / 2;
+  _d->background.setOffset( Point( s.width(), -s.height() ) );
+
+  _d->textPic->setOffset( Point( (engine.virtualSize().width() - _d->textPic->width()) / 2,
+                                  _d->background.offset().y() - _d->background.height() - 5 ) );
 }
 
 void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offset )

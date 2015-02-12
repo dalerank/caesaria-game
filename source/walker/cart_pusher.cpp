@@ -460,7 +460,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), 1 );
+  events::GameEventPtr e = events::RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
   e->dispatch();
 
   if( !created )
