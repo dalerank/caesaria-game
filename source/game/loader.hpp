@@ -14,13 +14,14 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_GAME_LOADER_H_INCLUDE_
 #define _CAESARIA_GAME_LOADER_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
-#include "vfs/entries.hpp"
+#include "vfs/path.hpp"
+#include "core/signals.hpp"
 
 class Game;
 
@@ -35,6 +36,9 @@ public:
 
   bool load(vfs::Path filename, Game& game);
   std::string restartFile() const;
+
+public signals:
+  Signal1<std::string>& onUpdate();
 
 private:
   class Impl;

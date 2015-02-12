@@ -61,6 +61,7 @@ public:
     _mood = 0;
     _xWrathOffset = 400;
 
+    _wrathPic = Picture::load( ResourceGroup::panelBackground, 334 );
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
@@ -78,11 +79,16 @@ public:
       rfont.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
       fontBlack.draw( *texture, utils::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
-      rfont.draw( *texture, utils::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
-      rfont.draw( *texture, utils::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
-      rfont.draw( *texture, utils::format( 0xff, "%d", _lastFestival ), 350, 0 );
+      rfont.draw( *texture, utils::i2str( _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, utils::i2str( _bigTempleCount ), 280, 0 );
 
-      rfont.draw( *texture, _( _divinity->moodDescription() ), _xWrathOffset + _divinity->wrathPoints() / 15 * 15, 0 );
+#ifdef DEBUG
+      rfont.draw( *texture, utils::format( 0xff, "%d/f_%d", _lastFestival, _divinity->relation() ), 350, 0 );
+#else
+      rfont.draw( *texture, utils::i2str( _lastFestival ), 350, 0 );
+#endif
+
+      rfont.draw( *texture, _( _divinity->moodDescription() ), _xWrathOffset + _divinity->wrathPoints() / 15 * 15, 0 );            
     }
     else
     {
@@ -95,18 +101,18 @@ public:
   {
     Label::draw( painter );
 
-    Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
     if( _divinity.isValid() )
     {
       for( int k=0; k < _divinity->wrathPoints() / 15; k++ )
       {
-        painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), &absoluteClippingRectRef() );
+        painter.draw( _wrathPic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), &absoluteClippingRectRef() );
       }
-    }
+    } 
   }
 
 private:
   DivinityPtr _divinity;
+  Picture _wrathPic;
   int _smallTempleCount;
   int _bigTempleCount;
   int _lastFestival;

@@ -57,6 +57,7 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
 GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
+int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );

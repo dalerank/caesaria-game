@@ -104,9 +104,12 @@ void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offse
   }
 }
 
-void SplashScreen::exitScene()
+void SplashScreen::exitScene(bool showDevText)
 {
-#ifndef DEBUG
+#ifdef DEBUG
+  showDevText = false;
+#endif
+
   Engine& engine = Engine::instance();
 
   int offset = 3;
@@ -119,38 +122,39 @@ void SplashScreen::exitScene()
 #endif
 
   _d->fade( engine, _d->background, true, offset );
-
   _d->textPic.init( engine.screenSize() );
   _d->textPic->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic->size() ) );
 
-  std::string text[6] = {
-                              "This is a development version of CaesarIA!",
-                              "therefore this game still has a lot of bugs and some features are not complete!",
-                              "This version is not tested, as well, be aware of that",
-                              "You can support the development of this game at",
-                              " www.bitbucket.org/dalerank/caesaria",
-                              "If you encounter bugs or crashes please send us a report"
-			};
-	for( int i=0; i<6; i++ )
+  if( showDevText )
   {
-    Rect textRect = textFont.getTextRect( text[i], Rect( Point(), _d->textPic->size() ), align::center, align::center );
-    bool defaultColor = (text[i][0] != ' ');
-    textFont.setColor( defaultColor ? DefaultColors::dodgerBlue : DefaultColors::indianRed );
-    textFont.draw( *_d->textPic, text[i], textRect.left(), textRect.top() + 20 * i, false, true );
-  }
+    StringArray text;
+    text << "This is a development version of CaesarIA!"
+         << "therefore this game still has a lot of bugs and some features are not complete!"
+         << "This version is not tested, as well, be aware of that"
+         << "You can support the development of this game at"
+         << " www.bitbucket.org/dalerank/caesaria"
+         << "If you encounter bugs or crashes please send us a report";
 
-  _d->fade( engine, *_d->textPic, false, offset );
-  engine.delay( 3000 );
+    int offset = 0;
+    foreach( it, text )
+    {
+      Rect textRect = textFont.getTextRect( *it, Rect( Point(), _d->textPic->size() ), align::center, align::center );
+      bool defaultColor = ( (*it)[0] != ' ');
+      textFont.setColor( defaultColor ? DefaultColors::dodgerBlue : DefaultColors::indianRed );
+      textFont.draw( *_d->textPic, *it, textRect.left(), textRect.top() + offset, false, true );
+      offset += 20;
+    }
+
+    _d->fade( engine, *_d->textPic, false, offset );
+    engine.delay( 3000 );
+  }
   _d->fade( engine, *_d->textPic, true, offset );
-#endif
 }
 
 void SplashScreen::setText(std::string text)
 {
   _d->text = _d->prefix + " " + _( text );
-
-  Engine& engine = Engine::instance();
-  update( engine );
+  update( Engine::instance() );
 }
 
 void SplashScreen::setPrefix(std::string prefix) { _d->prefix = _( prefix ); }
