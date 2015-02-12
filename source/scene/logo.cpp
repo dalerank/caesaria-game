@@ -154,9 +154,7 @@ void SplashScreen::exitScene(bool showDevText)
 void SplashScreen::setText(std::string text)
 {
   _d->text = _d->prefix + " " + _( text );
-
-  Engine& engine = Engine::instance();
-  update( engine );
+  update( Engine::instance() );
 }
 
 void SplashScreen::setPrefix(std::string prefix) { _d->prefix = _( prefix ); }
