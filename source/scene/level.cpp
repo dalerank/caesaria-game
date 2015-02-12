@@ -734,6 +734,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_MINUS:
     case KEY_PLUS:
     case KEY_SUBTRACT:
+    case KEY_EQUALS:
     case KEY_ADD:
     {
       events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)

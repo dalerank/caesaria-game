@@ -20,6 +20,7 @@
 #include "game/settings.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
+#include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
 
 using namespace constants;
