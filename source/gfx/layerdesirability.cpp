@@ -63,8 +63,8 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     //draw background
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
-      int picOffset = __des2index( desirability );
-      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+      int desIndex = __des2index( desirability );
+      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + desIndex );
 
       engine.draw( pic, screenPos );
     }
@@ -102,10 +102,10 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( desirability != 0 )
   {
-    Picture* tx = _d->debugFont.once( utils::format( 0xff, "%d", desirability) );
+    Picture* tx = _d->debugFont.once( utils::i2str( desirability ) );
     _d->debugText.push_back( tx );
 
-    _addPicture( screenPos + Point( 20, -15 ), *tx );
+    _addPicture( tile.mappos() + Point( 20, -15 ), *tx );
   }
 
   tile.setWasDrawn();

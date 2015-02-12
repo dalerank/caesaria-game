@@ -18,6 +18,7 @@
 #include "working.hpp"
 #include "city/helper.hpp"
 #include "walker/walker.hpp"
+#include "city/statistic.hpp"
 #include "events/returnworkers.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
@@ -161,23 +162,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
-    city::Helper helper( _city() );
-    TilePos offset( 8, 8 );
-    TilePos myPos = pos();
-    HouseList houses = helper.find<House>( objects::house, myPos - offset, myPos + offset );
-    float averageDistance = 0;
-    foreach( it, houses )
-    {
-      if( (*it)->spec().level() < HouseLevel::smallVilla )
-      {
-        averageDistance += myPos.distanceFrom( (*it)->pos() );
-      }
-    }
-
-    if( houses.size() > 0 )
-      averageDistance /= houses.size();
-
-    _d->laborAccessKoeff = math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
+    _d->laborAccessKoeff = city::statistic::getLaborAccessValue( _city(), this );
   }
 
   if( isActive() )
