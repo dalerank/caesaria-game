@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "build.hpp"
 #include "objects/objects_factory.hpp"
@@ -23,6 +23,7 @@
 #include "playsound.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/statistic.hpp"
+#include "core/logger.hpp"
 #include "warningmessage.hpp"
 
 using namespace constants;
@@ -80,7 +81,10 @@ void BuildAny::_exec( Game& game, unsigned int )
     bool buildOk = _overlay->build( info );
 
     if( !buildOk )
+    {
+      Logger::warning( "BuildAny: some error when build [%d,%d] type:%s", _pos.i(), _pos.j(), _overlay->name().c_str() );
       return;
+    }
 
     helper.updateDesirability( _overlay, city::Helper::onDesirability );
     game.city()->addOverlay( _overlay );
@@ -118,6 +122,13 @@ void BuildAny::_exec( Game& game, unsigned int )
         if( worklessCount < wb->maximumWorkers() )
         {
           GameEventPtr e = WarningMessage::create( "##city_need_more_workers##" );
+          e->dispatch();
+        }
+
+        int laborAccessKoeff = city::statistic::getLaborAccessValue( game.city(), wb );
+        if( laborAccessKoeff < 50 )
+        {
+          GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##" );
           e->dispatch();
         }
       }
