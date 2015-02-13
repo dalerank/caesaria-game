@@ -92,9 +92,7 @@ void Dispatcher::timeStep(const unsigned int time)
       }
 
       bool isReady = request->isReady( _city() );
-      isReady;
-
-      if( !request->isAnnounced() )
+      if( !request->isAnnounced() && isReady )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
         request->setAnnounced( true );
@@ -102,8 +100,11 @@ void Dispatcher::timeStep(const unsigned int time)
       }
 
       request->update();
-    }
+    }    
+  }
 
+  if( game::Date::isDayChanged() )
+  {
     _d->updateRequests();
   }
 }
@@ -150,8 +151,11 @@ void Dispatcher::Impl::updateRequests()
     else { ++i; }
   }
 
-  requests << newRequests;
-  newRequests.clear();
+  if( !newRequests.empty() )
+  {
+    requests << newRequests;
+    newRequests.clear();
+  }
 }
 
 }//end namespace request

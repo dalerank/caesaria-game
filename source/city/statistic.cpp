@@ -143,7 +143,7 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
   int workersNumber = 0;
   foreach( h, houses )
   {
-    workersNumber += (*h)->habitants().count( CitizenGroup::mature );
+    workersNumber += (*h)->habitants().mature_n();
   }
 
   return workersNumber;
@@ -178,7 +178,7 @@ unsigned int getWorklessNumber(PlayerCityPtr city)
   HouseList houses = helper.find<House>( objects::house );
 
   int worklessNumber = 0;
-  foreach( h, houses ) { worklessNumber += (*h)->getServiceValue( Service::recruter ); }
+  foreach( h, houses ) { worklessNumber += (*h)->unemployed(); }
 
   return worklessNumber;
 }
@@ -245,7 +245,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
     if( maxhb == 0 )
       continue;
 
-    int maturehb = (*house)->habitants().count( CitizenGroup::mature );
+    int maturehb = (*house)->habitants().mature_n();
     int housetax = (*house)->spec().taxRate();
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
@@ -354,6 +354,27 @@ GoodsMap getGoodsMap(PlayerCityPtr city, bool includeGranary)
   }
 
   return cityGoodsAvailable;
+}
+
+int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
+{
+  city::Helper helper( city );
+  TilePos offset( 8, 8 );
+  TilePos wbpos = wb->pos();
+  HouseList houses = helper.find<House>( objects::house, wbpos - offset, wbpos + offset );
+  float averageDistance = 0;
+  foreach( it, houses )
+  {
+    if( (*it)->spec().level() < HouseLevel::smallVilla )
+    {
+      averageDistance += wbpos.distanceFrom( (*it)->pos() );
+    }
+  }
+
+  if( houses.size() > 0 )
+    averageDistance /= houses.size();
+
+  return math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
 }
 
 }//end namespace statistic

@@ -51,6 +51,7 @@ public:
 
   operator float() const { return _value; }
 
+
   Service& operator=( float i) { set( i ); return *this; }
   Service& operator-=(float i) { set( _value - i ); return *this; }
   Service& operator+=(float i) { set( _value + i ); return *this; }

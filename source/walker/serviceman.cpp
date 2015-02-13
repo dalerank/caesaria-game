@@ -259,7 +259,9 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        res += (*it)->evaluateService( ServiceWalkerPtr( this ) );        
+        int oneTileValue = (*it)->evaluateService( ServiceWalkerPtr( this ) );
+        // mul serviceValue for buildingSize, need for more effectively count of path result
+        res += (oneTileValue * (*it)->size().area() );
       }
     }
     distance++;

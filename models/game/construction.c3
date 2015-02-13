@@ -339,9 +339,9 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    sound : [ "security", 47 ]
-    image : [ "smlneptune", 1 ]
+    image : [ "security", 47 ]
     image.offset : [-1, -1]
+    sound : [ "templeneptune", 1 ]
   }, 
   
   small_mercury_temple : {
@@ -548,6 +548,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
 

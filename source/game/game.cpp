@@ -310,6 +310,12 @@ bool Game::load(std::string filename)
   Logger::warning( "Game: reseting variables" );
   reset();
 
+  scene::SplashScreen screen;
+
+  screen.initialize();
+  screen.setImage( "freska", 1 );
+  screen.update( *_d->engine );
+
   vfs::Path fPath( filename );
   if( !fPath.exist() )
   {
@@ -338,6 +344,8 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: try find loader" );
   game::Loader loader;
+  loader.onUpdate().connect( &screen, &scene::SplashScreen::setText );
+
   bool loadOk = loader.load( fPath, *this );
 
   if( !loadOk )
@@ -370,6 +378,8 @@ bool Game::load(std::string filename)
   Pathfinder::instance().update( _d->city->tilemap() );
 
   Logger::warning( "Game: load finished" );
+
+  screen.exitScene( scene::SplashScreen::hideDevText );
   return true;
 }
 
@@ -448,7 +458,7 @@ void Game::initialize()
   screen.setText( "##ready_to_game##" );
 
   if( game::Settings::get( "no-fade" ).isNull() )
-    screen.exitScene();
+    screen.exitScene( scene::SplashScreen::showDevText );
 
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );

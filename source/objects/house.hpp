@@ -71,7 +71,8 @@ public:
 
   virtual double state( ParameterType param) const;
 
-  unsigned int workersCount() const;
+  unsigned int hired() const;
+  unsigned int unemployed() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
@@ -90,6 +91,7 @@ public:
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int paramCount );
+  void remHabitants( CitizenGroup& group );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();

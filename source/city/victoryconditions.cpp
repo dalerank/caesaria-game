@@ -108,6 +108,7 @@ void VictoryConditions::load( const VariantMap& stream )
 VariantMap VictoryConditions::save() const
 {
   VariantMap ret;
+  ret[ "maxHouselevel" ] = Variant( HouseSpecHelper::instance().getSpec( _d->maxHouseLevel ).levelName() );
   VARIANT_SAVE_ANY_D( ret, _d, success )
   VARIANT_SAVE_ANY_D( ret, _d, culture )
   VARIANT_SAVE_ANY_D( ret, _d, population )
@@ -157,6 +158,7 @@ std::string VictoryConditions::nextMission() const { return _d->next; }
 std::string VictoryConditions::newTitle() const { return _d->title; }
 std::string VictoryConditions::winText() const{ return _d->winText; }
 int VictoryConditions::needPopulation() const{  return _d->population;}
+int VictoryConditions::maxHouseLevel() const { return _d->maxHouseLevel; }
 const StringArray& VictoryConditions::overview() const{  return _d->overview;}
 void VictoryConditions::addReignYears(int value){  _d->reignYears += value;}
 void VictoryConditions::decreaseReignYear(){ _d->reignYears = std::max<int>( _d->reignYears-1, 0); }

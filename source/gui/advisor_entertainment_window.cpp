@@ -183,7 +183,7 @@ void Entertainment::draw( Engine& painter )
 
 void Entertainment::_showFestivalWindow()
 {
-  dialog::FestivalPlaning* wnd = dialog::FestivalPlaning::create( this, _d->city, -1 );
+  dialog::FestivalPlanning* wnd = dialog::FestivalPlanning::create( this, _d->city, -1 );
   CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
@@ -261,7 +261,7 @@ void Entertainment::Impl::updateInfo()
     HousePtr house = *it;
 
     maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
-    int habitants = house->habitants().count( CitizenGroup::mature );
+    int habitants = house->habitants().mature_n();
 
     const HouseSpecification& lspec = house->spec();
 

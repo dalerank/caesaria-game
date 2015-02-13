@@ -496,7 +496,7 @@
   
   engineering_post : {
     cost : 30,
-    desirability : { base : 0, 	range : 0,	step : 0 }
+    desirability : { base :-2,	range : 2,	step : 1 }
     employers : 5
     class : "engineer"
 
@@ -556,6 +556,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 0, 0 ]
     sound : [ "reservoir", 1 ]
   }, 
 

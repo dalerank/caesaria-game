@@ -23,6 +23,7 @@
 #include "good/goodhelper.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -32,6 +33,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(market,objects::market,AboutMarket)
 
 AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )

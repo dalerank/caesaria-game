@@ -28,6 +28,7 @@
 #include "texturedbutton.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "core/logger.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,6 +38,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(senate,objects::senate,AboutSenate)
 
 namespace {
   int advisorBtnId = 0x2552;

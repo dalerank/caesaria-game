@@ -233,7 +233,7 @@ void ScribesMessagestWindow::_showMessage(int index)
     city::Info::ScribeMessage mt = srvc->getMessage( index );
     mt.opened = true;
     srvc->changeMessage( index, mt );
-    EventMessageBox* mbox = new EventMessageBox( parent(), mt.title, mt.text, mt.date, mt.gtype );
+    Widget* mbox = new infobox::AboutEvent( parent(), mt.title, mt.text, mt.date, mt.gtype );
     mbox->show();
   }
 
