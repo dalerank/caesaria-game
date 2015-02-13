@@ -32,14 +32,23 @@ public:
 
   CitizenGroup retrieve( unsigned int count );
   CitizenGroup retrieve( Age group, unsigned int count );
+  CitizenGroup& include( CitizenGroup& b );
   void exclude( CitizenGroup& group );
 
   unsigned int &operator []( unsigned int age);
   CitizenGroup& operator += ( const CitizenGroup& b );
+  CitizenGroup operator-( const CitizenGroup& b) const;
+  CitizenGroup operator+( const CitizenGroup& b ) const;
 
   bool empty() const;
   void clear();
   void makeOld();
+
+  unsigned int child_n() const;
+  unsigned int mature_n() const;
+  unsigned int aged_n() const;
+  unsigned int scholar_n() const;
+  unsigned int student_n() const;
 
   VariantList save() const;
   void load( const VariantList& stream );

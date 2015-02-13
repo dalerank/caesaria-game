@@ -261,7 +261,7 @@ void Entertainment::Impl::updateInfo()
     HousePtr house = *it;
 
     maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
-    int habitants = house->habitants().count( CitizenGroup::mature );
+    int habitants = house->habitants().mature_n();
 
     const HouseSpecification& lspec = house->spec();
 

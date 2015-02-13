@@ -183,8 +183,6 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 
         _d->fumigateHouseNumber++;
         CitizenGroup citizens = house->remHabitants( 1000 ); //all habitants will killed
-        events::GameEventPtr e = events::FireWorkers::create( house->pos(), citizens.count() );
-        e->dispatch();
 
         e = events::Disaster::create( house->tile(), events::Disaster::plague );
         e->dispatch();

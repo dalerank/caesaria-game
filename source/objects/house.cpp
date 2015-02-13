@@ -132,8 +132,7 @@ void House::_makeOldHabitants()
   unsigned int houseHealth = state( House::health );
 
   newHabitants[ CitizenGroup::longliver ] = 0; //death-health function from oldest habitants count
-  unsigned int agedPeoples = newHabitants.count( CitizenGroup::aged );
-  unsigned int peoples2remove = math::random( agedPeoples * ( 100 - houseHealth ) / 100 );
+  unsigned int peoples2remove = math::random( newHabitants.aged_n() * ( 100 - houseHealth ) / 100 );
   newHabitants.retrieve( CitizenGroup::aged, peoples2remove+1 );
 
   unsigned int studentNumber = newHabitants.count( 10, 19 );
@@ -157,20 +156,16 @@ void House::_makeOldHabitants()
 
 void House::_updateHabitants( const CitizenGroup& group )
 {
-  int deltaWorkersNumber = group.count( CitizenGroup::mature ) - _d->habitants.count( CitizenGroup::mature );
-
-  _d->habitants = group;
-
-  _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
-
-  int firedWorkersNumber = _d->services[ Service::recruter ] + deltaWorkersNumber;
-  _d->services[ Service::recruter ] += deltaWorkersNumber;
-
+  int firedWorkersNumber = (int)group.mature_n() - (int)_d->habitants.mature_n();
   if( firedWorkersNumber < 0 )
   {
+    Logger::warning( "House::levelDown fire %d workers", firedWorkersNumber );
     GameEventPtr e = FireWorkers::create( pos(), abs( firedWorkersNumber ) );
     e->dispatch();
   }
+
+  _d->habitants = group;
+  _d->services[ Service::recruter ].setMax( _d->habitants.mature_n() );
 }
 
 void House::_checkEvolve()
@@ -354,14 +349,7 @@ void House::_checkHomeless()
   if( homelessCount > 0 )
   {
     homelessCount /= (homelessCount > 4 ? 2 : 1);
-    CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
-
-    int workersFireCount = homeless.count( CitizenGroup::mature );
-    if( workersFireCount > 0 )
-    {
-      GameEventPtr e = FireWorkers::create( pos(), workersFireCount );
-      e->dispatch();
-    }
+    CitizenGroup homeless = remHabitants( homelessCount );
 
     Emigrant::send2city( _city(), homeless, tile(), "##emigrant_no_home##" );
   }
@@ -655,7 +643,7 @@ void House::_levelUp()
 
     if( _d->houseLevel == HouseLevel::smallVilla )
     {
-      events::GameEventPtr e = events::FireWorkers::create( pos(), habitants().count( CitizenGroup::mature ) );
+      events::GameEventPtr e = events::FireWorkers::create( pos(), habitants().mature_n() );
       e->dispatch();
     }
 
@@ -731,7 +719,7 @@ void House::_levelDown()
       int currentPeople = math::clamp( math::random( homelessCount+1 ), 0, 8 );
 
       homelessCount -= currentPeople;
-      CitizenGroup homeless = _d->habitants.retrieve( currentPeople );
+      CitizenGroup homeless = remHabitants( currentPeople );
 
       EmigrantPtr em = Emigrant::send2city( _city(), homeless, tile(), "##emigrant_no_home##" );
 
@@ -766,11 +754,10 @@ void House::_levelDown()
       foreach( tile, perimetr )
       {
         HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( objects::house ) );
-        house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
-        //house->_d->houseId = HouseLevel::smallHovel;
-        //house->_update( true );
+        CitizenGroup moveGroup = remHabitants( peoplesPerHouse );
+        house->addHabitants( moveGroup );
 
-        GameEventPtr event = BuildAny::create( (*tile)->pos(), house.object() );
+        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<TileOverlay>( house ) );
         event->dispatch();
       }
 
@@ -1026,7 +1013,8 @@ void House::addHabitants( CitizenGroup& habitants )
 {
   int peoplesCount = math::max(_d->maxHabitants - _d->habitants.count(), 0u);
   CitizenGroup newState = _d->habitants;
-  newState += habitants.retrieve( peoplesCount );
+  CitizenGroup peopleFromGroup = habitants.retrieve( peoplesCount );
+  newState += peopleFromGroup;
 
   _updateHabitants( newState );
 
@@ -1054,10 +1042,10 @@ void House::remHabitants( CitizenGroup& group )
 CitizenGroup House::remHabitants(int count)
 {
   count = math::clamp<int>( count, 0, _d->habitants.count() );
-  CitizenGroup nb = _d->habitants;
-  CitizenGroup retrieve = nb.retrieve( count );
+  CitizenGroup newState = _d->habitants;
+  CitizenGroup retrieve = newState.retrieve( count );
 
-  _updateHabitants( nb );
+  _updateHabitants( newState );
 
   return retrieve;
 }
@@ -1067,19 +1055,12 @@ void House::destroy()
   _d->maxHabitants = 0;
 
   const unsigned int maxCitizenInGroup = 8;
-  const unsigned int workers2fire = workersCount();
   do
   {
-    CitizenGroup homeless = _d->habitants.retrieve( std::min( _d->habitants.count(), maxCitizenInGroup ) );
+    CitizenGroup homeless = remHabitants( std::min( _d->habitants.count(), maxCitizenInGroup ) );
     Emigrant::send2city( _city(), homeless, tile(), math::random( 10 ) > 5 ? "##emigrant_thrown_from_house##" : "##emigrant_no_home##" );
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
-
-  if( workers2fire > 0 )
-  {
-    GameEventPtr e = FireWorkers::create( pos(), workersCount() );
-    e->dispatch();
-  }
 
   _d->habitants.clear();
 
@@ -1184,13 +1165,8 @@ void House::load( const VariantMap& stream )
 
 void House::_disaster()
 {
-  unsigned int workers4fire = workersCount();
-
   //this really killed people, cant calculate their
-  _d->habitants.retrieve( math::random( _d->habitants.count() ) );
-
-  GameEventPtr e = FireWorkers::create( pos(), workers4fire );
-  e->dispatch();
+  remHabitants( math::random( _d->habitants.count() ) );
 }
 
 void House::collapse()
@@ -1238,10 +1214,15 @@ int House::Impl::getFoodLevel() const
   return ret;
 }
 
-unsigned int House::workersCount() const
+unsigned int House::hired() const
 {
   const Service& srvc = _d->services[ Service::recruter ];
   return srvc.max() - srvc.value();
+}
+
+unsigned int House::unemployed() const
+{
+  return _d->services[ Service::recruter ].value();
 }
 
 bool House::isEducationNeed(Service::Type type) const

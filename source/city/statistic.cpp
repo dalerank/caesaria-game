@@ -143,7 +143,7 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
   int workersNumber = 0;
   foreach( h, houses )
   {
-    workersNumber += (*h)->habitants().count( CitizenGroup::mature );
+    workersNumber += (*h)->habitants().cmature();
   }
 
   return workersNumber;
@@ -178,7 +178,7 @@ unsigned int getWorklessNumber(PlayerCityPtr city)
   HouseList houses = helper.find<House>( objects::house );
 
   int worklessNumber = 0;
-  foreach( h, houses ) { worklessNumber += (*h)->getServiceValue( Service::recruter ); }
+  foreach( h, houses ) { worklessNumber += (*h)->unemployed(); }
 
   return worklessNumber;
 }
@@ -245,7 +245,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
     if( maxhb == 0 )
       continue;
 
-    int maturehb = (*house)->habitants().count( CitizenGroup::mature );
+    int maturehb = (*house)->habitants().cmature();
     int housetax = (*house)->spec().taxRate();
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
