@@ -1,12 +1,12 @@
 {
- title : "##garden##"
+ title : "##gardens_title##"
  items : [ "##can_build_gardens##",
-      "@img=picture4_00002",
+            "@img=picture4_00002",
 			"##gardens_get_desirable##",
-      "@img=picture4_00003",
+            "@img=picture4_00003",
 			"##can_build_theaters##",
-      "@img=picture4_00004",
-      "@img=picture4_00005",
-			"##build_more_farms##"
+            "@img=picture4_00004",
+     		"##build_more_farms##",
+            "@img=picture4_00005"
 		]
 }
