@@ -41,6 +41,7 @@
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
+#include "city/victoryconditions.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -606,6 +607,9 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
 void House::_levelUp()
 {
   if( _d->houseLevel >= HouseLevel::greatPalace )
+    return;
+
+  if( _d->houseLevel >= _city()->victoryConditions().maxHouseLevel() )
     return;
 
   int nextLevel = math::clamp<int>( _d->houseLevel+1, HouseLevel::vacantLot, HouseLevel::greatPalace );
