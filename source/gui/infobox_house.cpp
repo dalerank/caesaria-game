@@ -235,13 +235,13 @@ void AboutHouse::_showInformation()
 {
   std::string workerState = utils::format( 0xff, "Live=%d\nMay work=%d\nNewborn=%d\nChild=%d\nIn school=%d\nStudents=%d\nMature=%d\nAged(not work)=%d",
                                                   _house->habitants().count(),
-                                                  (int)_house->getServiceValue( Service::recruter ),
+                                                  (int)_house->unemployed(),
                                                   _house->habitants().count( CitizenGroup::newborn ),
-                                                  _house->habitants().count( CitizenGroup::child ),
-                                                  _house->habitants().count( CitizenGroup::scholar ),
-                                                  _house->habitants().count( CitizenGroup::student ),
-                                                  _house->habitants().count( CitizenGroup::mature ),
-                                                  _house->habitants().count( CitizenGroup::aged ) );
+                                                  _house->habitants().child_n(),
+                                                  _house->habitants().scholar_n(),
+                                                  _house->habitants().student_n(),
+                                                  _house->habitants().mature_n(),
+                                                  _house->habitants().aged_n() );
 
   DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, DialogBox::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );

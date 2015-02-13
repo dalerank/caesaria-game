@@ -117,6 +117,14 @@ CitizenGroup CitizenGroup::retrieve( Age group, unsigned int rcount)
   return ret;
 }
 
+CitizenGroup& CitizenGroup::include(CitizenGroup& b)
+{
+  *this += b;
+  b.clear();
+
+  return *this;
+}
+
 void CitizenGroup::exclude(CitizenGroup& group)
 {
   for( int index=newborn; index <= longliver; index++ )
@@ -152,6 +160,22 @@ CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
   return *this;
 }
 
+CitizenGroup CitizenGroup::operator-(const CitizenGroup &b) const
+{
+  CitizenGroup result = *this;
+  CitizenGroup rb = b;
+  result.exclude( rb );
+
+  return result;
+}
+
+CitizenGroup CitizenGroup::operator+(const CitizenGroup &b) const
+{
+  CitizenGroup result = *this;
+  result += b;
+  return result;
+}
+
 bool CitizenGroup::empty() const {  return (_peoples.empty() || (0 == count())); }
 
 void CitizenGroup::clear()
@@ -164,6 +188,12 @@ void CitizenGroup::makeOld()
   _peoples.pop_back();
   _peoples.insert( _peoples.begin(), 1, 0 );
 }
+
+unsigned int CitizenGroup::child_n() const { return count( child ); }
+unsigned int CitizenGroup::mature_n() const { return count( mature ); }
+unsigned int CitizenGroup::aged_n() const { return count( aged ); }
+unsigned int CitizenGroup::scholar_n() const { return count( scholar); }
+unsigned int CitizenGroup::student_n() const { return count( student ); }
 
 VariantList CitizenGroup::save() const
 {

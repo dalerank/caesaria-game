@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "clay_pit.hpp"
 #include "game/resourcegroup.hpp"
@@ -36,7 +36,7 @@ ClayPit::ClayPit()
 {
   _fgPicturesRef().resize(2);
 
-  _setUnworkingInterval( 8 );
+  _setUnworkingInterval( 12 );
 }
 
 void ClayPit::timeStep( const unsigned long time )
