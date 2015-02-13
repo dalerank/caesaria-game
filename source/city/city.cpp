@@ -418,6 +418,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
     }
     else { ++walkerIt; }
   }
+
   walkers << newWalkers;
   newWalkers.clear();
 }
@@ -460,7 +461,7 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
-    }
+  }
 }
 
 void PlayerCity::Impl::resolveNewIssue(city::Funds::IssueType type)
