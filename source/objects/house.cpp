@@ -156,16 +156,21 @@ void House::_makeOldHabitants()
 
 void House::_updateHabitants( const CitizenGroup& group )
 {
-  int firedWorkersNumber = (int)group.mature_n() - (int)_d->habitants.mature_n();
-  if( firedWorkersNumber < 0 )
-  {
-    Logger::warning( "House::levelDown fire %d workers", firedWorkersNumber );
-    GameEventPtr e = FireWorkers::create( pos(), abs( firedWorkersNumber ) );
-    e->dispatch();
-  }
+  int deltaWorkersNumber = (int)group.mature_n() - (int)_d->habitants.mature_n();
 
   _d->habitants = group;
   _d->services[ Service::recruter ].setMax( _d->habitants.mature_n() );
+
+  if( deltaWorkersNumber < 0 )
+  {
+    Logger::warning( "House::levelDown fire %d workers", deltaWorkersNumber );
+    GameEventPtr e = FireWorkers::create( pos(), abs( deltaWorkersNumber ) );
+    e->dispatch();
+  }
+  else
+  {
+    _d->services[ Service::recruter ] += deltaWorkersNumber;
+  }
 }
 
 void House::_checkEvolve()
@@ -1024,8 +1029,11 @@ void House::addHabitants( CitizenGroup& habitants )
     _d->spec = _d->spec.next();
     _update( true );
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    if( _city().isValid() )
+    {
+      city::Helper helper( _city() );
+      helper.updateDesirability( this, city::Helper::onDesirability );
+    }
   }
 }
 

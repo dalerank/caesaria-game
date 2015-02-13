@@ -233,9 +233,10 @@ void AboutHouse::_showHelp() {  DictionaryWindow::show( this, "house" ); }
 
 void AboutHouse::_showInformation()
 {
-  std::string workerState = utils::format( 0xff, "Live=%d\nMay work=%d\nNewborn=%d\nChild=%d\nIn school=%d\nStudents=%d\nMature=%d\nAged(not work)=%d",
+  std::string workerState = utils::format( 0xff, "Live=%d\nUnemployed=%d\nHired=%d\nNewborn=%d\nChild=%d\nIn school=%d\nStudents=%d\nMature=%d\nAged(not work)=%d",
                                                   _house->habitants().count(),
                                                   (int)_house->unemployed(),
+                                                  _house->hired(),
                                                   _house->habitants().count( CitizenGroup::newborn ),
                                                   _house->habitants().child_n(),
                                                   _house->habitants().scholar_n(),
