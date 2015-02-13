@@ -28,6 +28,7 @@
 #include "texturedbutton.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "core/logger.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -38,6 +39,8 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_INFOBOX_IN_FACTORY(senate,objects::senate,AboutSenate)
+
 namespace {
   int advisorBtnId = 0x2552;
   Signal0<> invalidBtnClickedSignal;
@@ -46,6 +49,8 @@ namespace {
 AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
+  setupUI( ":/gui/infoboxsenate.gui" );
+
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
   std::string title = MetaDataHolder::instance().getData( objects::senate ).prettyName();
   setTitle( _(title) );

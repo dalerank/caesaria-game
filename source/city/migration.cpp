@@ -395,7 +395,8 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {
-    int houseWorkless = (*i)->getServiceValue( Service::recruter );
+    int houseWorkless = (*i)->unemployed();
+
     if( !(*i)->enterArea().empty() && houseWorkless > minWorkersNumber ) { ++i; }
     else { i = houses.erase( i ); }
   }

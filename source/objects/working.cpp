@@ -13,11 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
 #include "city/helper.hpp"
 #include "walker/walker.hpp"
+#include "city/statistic.hpp"
 #include "events/returnworkers.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
@@ -161,23 +162,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
-    city::Helper helper( _city() );
-    TilePos offset( 8, 8 );
-    TilePos myPos = pos();
-    HouseList houses = helper.find<House>( objects::house, myPos - offset, myPos + offset );
-    float averageDistance = 0;
-    foreach( it, houses )
-    {
-      if( (*it)->spec().level() < HouseLevel::smallVilla )
-      {
-        averageDistance += myPos.distanceFrom( (*it)->pos() );
-      }
-    }
-
-    if( houses.size() > 0 )
-      averageDistance /= houses.size();
-
-    _d->laborAccessKoeff = math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
+    _d->laborAccessKoeff = city::statistic::getLaborAccessValue( _city(), this );
   }
 
   if( isActive() )
@@ -223,10 +208,10 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() - buriedCitizens );
+  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
   e->dispatch();
 
-  e = RemoveCitizens::create( pos(), buriedCitizens );
+  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
   e->dispatch();
 
   setWorkers( 0 );

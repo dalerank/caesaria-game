@@ -61,7 +61,7 @@ namespace advisorwnd
 {
 
 namespace {
-  Point requestButtonOffset = Point( 0, 60 );
+  Point requestButtonOffset = Point( 0, 55 );
   Size requestButtonSize = Size( 560, 40 );
 }
 
@@ -221,7 +221,7 @@ void Emperor::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( request, reqs.begin() ), *request );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( reqs.begin(), request ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -246,8 +246,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   Widget::setupUI( ":/gui/emperoropts.gui" );
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  gui::Label* lbTitle;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
 
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavour )
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavourDesc  )
@@ -319,7 +318,7 @@ void Emperor::Impl::changeSalary( int money )
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox::information( lbEmperorFavour->parent(),
+    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
                             _("##changesalary_warning##"),
                             _("##changesalary_greater_salary##") );
   }

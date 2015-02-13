@@ -215,9 +215,16 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
     if( (*obj)->isMovable() )
     {
       world::MovableObjectPtr mobj = ptr_cast<world::MovableObject>( *obj );
+      if( !mobj.isValid() )
+      {
+        Logger::warning( "Object %s not movable", (*obj)->name().c_str() );
+        continue;
+      }
+
       Point mappos = mobj->location();
       painter.draw( mobj->pictures(), offset + mobj->location() );
 
+#ifdef DEBUG
       int distance = mobj->viewDistance();
       if( distance > 0 )
       {
@@ -232,7 +239,6 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         }
       }
 
-#ifdef DEBUG
       const world::Route& way = mobj->way();
       if( !way.empty() )
       {
@@ -313,7 +319,7 @@ void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor co
 
 world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
 {
-  world::ObjectList objs = city->empire()->findObjects( -offset + pos, 20 );
+  world::ObjectList objs = city->empire()->findObjects( -offset + pos, 15 );
 
   return objs.empty() ? world::ObjectPtr() : objs.front();
 }
@@ -323,13 +329,14 @@ void EmpireMapWindow::Impl::createTradeRoute()
   if( currentCity != 0 )
   {
     world::EmpirePtr empire = city->empire();
-    unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
-    e->dispatch();
     world::TraderoutePtr route = empire->createTradeRoute( city->name(), currentCity->name() );
 
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
+      unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
+      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
+      e->dispatch();
+
       city::Helper helper( city );
       DockList docks = helper.find<Dock>( constants::objects::dock );
       if( docks.empty() )
@@ -353,7 +360,7 @@ void EmpireMapWindow::Impl::drawCityInfo()
   }
   else if( is_kind_of<world::ComputerCity>(currentCity) )
   {
-    SmartPtr<world::ComputerCity> compCity = ptr_cast<world::ComputerCity>( currentCity );
+    world::ComputerCityPtr compCity = ptr_cast<world::ComputerCity>( currentCity );
     if( compCity->isDistantCity() )
     {
       lb->setText( _("##empiremap_distant_city##") );
@@ -683,11 +690,7 @@ void EmpireMapWindow::_changePosition()
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
-
-void EmpireMapWindow::_showHelp()
-{
-  DictionaryWindow::show( this, "empiremap" );
-}
+void EmpireMapWindow::_showHelp() {   DictionaryWindow::show( this, "empiremap" ); }
 
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {

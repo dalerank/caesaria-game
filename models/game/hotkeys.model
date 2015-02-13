@@ -1,5 +1,5 @@
 {
-  KEY_F1 :
+  KEY_KEY_1 :
   {
     employers#advisor_window :
     {
@@ -9,7 +9,7 @@
     }
   }
 
-  KEY_F2 :
+  KEY_KEY_2 :
   {
     military#advisor_window :
     {
@@ -19,7 +19,7 @@
     }
   }
 
-  KEY_F3 :
+  KEY_KEY_3 :
   {
     empire#advisor_window :
     {
@@ -29,7 +29,7 @@
     }
   }
 
-  KEY_F4 :
+  KEY_KEY_4 :
   {
     ratings#advisor_window :
     {
@@ -39,7 +39,7 @@
     }
   }
 
-  KEY_F5 :
+  KEY_KEY_5 :
   {
     trading#advisor_window :
     {
@@ -49,7 +49,7 @@
     }
   }
 
-  KEY_F6 :
+  KEY_KEY_6 :
   {
     population#advisor_window :
     {
@@ -59,7 +59,7 @@
     }
   }
 
-  KEY_F7 :
+  KEY_KEY_7 :
   {
     health#advisor_window :
     {
@@ -69,7 +69,7 @@
     }
   }
 
-  KEY_F8 :
+  KEY_KEY_8 :
   {
     education#advisor_window :
     {
@@ -79,7 +79,7 @@
     }
   }
 
-  KEY_F9 :
+  KEY_KEY_9 :
   {
     entertainment#advisor_window :
     {
@@ -89,7 +89,7 @@
     }
   }
 
-  KEY_F10 :
+  KEY_KEY_0 :
   {
     religion#advisor_window :
     {
@@ -99,7 +99,7 @@
     }
   }
 
-  KEY_F11 :
+  KEY_KEY_00 :
   {
     finance#advisor_window :
     {
@@ -109,7 +109,7 @@
     }
   }
 
-  KEY_F12 :
+  KEY_KEY_01 :
   {
     main#advisor_window :
     {

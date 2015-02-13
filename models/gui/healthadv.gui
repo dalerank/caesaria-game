@@ -1,7 +1,8 @@
 {
   geometry : [ 0, 0, 640, 290 ]
   bgtype : "whiteFrame"
-
+  static : true
+  
   lbBlackframe#Label : {
     geometry : [ 35, 90, "pw-35", 175 ]
     bgtype : "blackFrame"

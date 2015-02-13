@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_ratings_window.hpp"
 #include "gfx/picture.hpp"
@@ -319,8 +319,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   setupUI( ":/gui/ratingsadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* lbNeedPopulation;
-  GET_WIDGET_FROM_UI( lbNeedPopulation )
+  INIT_WIDGET_FROM_UI( Label*, lbNeedPopulation )
   GET_DWIDGET_FROM_UI( _d, lbRatingInfo )
 
   const city::VictoryConditions& targets = city->victoryConditions();
@@ -330,7 +329,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wndrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
   _d->btnCulture->setValue( _d->city->culture() );
-  _d->updateColumn( _d->btnCulture->relativeRect().center(), 0 );
+  _d->updateColumn( _d->btnCulture->relativeRect().center(), _d->city->culture() );
   CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
   _d->btnProsperity = new RatingButton( this, Point( 200, 290), "##wndrt_prosperity##", "##wndrt_prosperity_tooltip##" );
@@ -342,13 +341,13 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   _d->btnPeace      = new RatingButton( this, Point( 320, 290), "##wndrt_peace##", "##wndrt_peace_tooltip##" );
   _d->btnPeace->setValue( _d->city->peace() );
   _d->btnPeace->setTarget( targets.needPeace() );
-  _d->updateColumn( _d->btnPeace->relativeRect().center(), 0 );
+  _d->updateColumn( _d->btnPeace->relativeRect().center(), _d->city->peace() );
   CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
   _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
   _d->btnFavour->setValue( _d->city->favour() );
   _d->btnFavour->setTarget( targets.needFavour() );
-  _d->updateColumn( _d->btnFavour->relativeRect().center(), 0 );
+  _d->updateColumn( _d->btnFavour->relativeRect().center(), _d->city->favour() );
   CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -365,10 +364,7 @@ void Ratings::draw( gfx::Engine& painter )
   painter.draw( _d->columns, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 }
 
-void Ratings::_showHelp()
-{
-  DictionaryWindow::show( this, "ratings_advisor" );
-}
+void Ratings::_showHelp() { DictionaryWindow::show( this, "ratings_advisor" ); }
 
 }
 

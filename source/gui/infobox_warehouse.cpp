@@ -26,8 +26,10 @@
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 namespace gui
 {
@@ -35,10 +37,13 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_INFOBOX_IN_FACTORY(warehouse,objects::warehouse,AboutWarehouse)
+
 AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   setupUI( ":/gui/warehouseinfo.gui" );
+
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
   setBase( ptr_cast<Construction>( _warehouse ) );

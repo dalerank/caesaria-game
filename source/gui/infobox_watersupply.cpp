@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "objects/watersupply.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,9 +38,14 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_INFOBOX_IN_FACTORY(reservoir,objects::reservoir,AboutReservoir)
+REGISTER_INFOBOX_IN_FACTORY(fountain,objects::fountain,AboutFontain)
+REGISTER_INFOBOX_IN_FACTORY(well,objects::well,AboutWell)
+
 AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
+  setupUI( ":/gui/infoboxfountain.gui" );
   setTitle( _("##fountain##") );
 
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );

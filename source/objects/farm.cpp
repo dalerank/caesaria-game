@@ -31,6 +31,7 @@
 #include "walker/locust.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -102,7 +103,7 @@ Farm::Farm(const good::Product outGood, const Type type )
   : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
-  _d->pictureBuilding.addOffset( 30, 15);
+  _d->pictureBuilding.addOffset( tilemap::cellPicSize().width()/2, tilemap::cellPicSize().height()/2 );
 
   setPicture( _d->pictureBuilding );
   outStockRef().setCapacity( 100 );

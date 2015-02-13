@@ -196,7 +196,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
-  setOption( zoomEnabled, 1 );
+  setOption( zoomEnabled, 0 );
   setOption( zoomInvert, 1 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
@@ -370,7 +370,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
     float wages = 0;
     foreach( it, houses )
     {
-      int workers = (*it)->workersCount();
+      int workers = (*it)->hired();
       float house_wages = salary * workers;
       (*it)->appendMoney( house_wages );
       wages += house_wages;
@@ -837,7 +837,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       }
     }
 
-    events::GameEventPtr e = events::ShowInfobox::create( "##romechastener_attack_title##", "##romechastener_attack_text##", true );
+    events::GameEventPtr e = events::ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
     e->dispatch();
   }
   else if( is_kind_of<world::Barbarian>( object ) )
@@ -850,7 +850,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       soldier->wait( game::Date::days2ticks( k ) / 2 );
     }
 
-    events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
+    events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "/smk/spy_army.smk" );
     e->dispatch();
   }
   else if( is_kind_of<world::Messenger>( object ) )

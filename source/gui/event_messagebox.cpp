@@ -24,7 +24,10 @@ using namespace gfx;
 namespace gui
 {
 
-EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
+namespace infobox
+{
+
+AboutEvent::AboutEvent(Widget* parent, const std::string& title,
                                   const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
   : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
@@ -66,6 +69,8 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   }    
 }
 
-EventMessageBox::~EventMessageBox() {}
+AboutEvent::~AboutEvent() {}
+
+}//end namespace infobox
 
 }//end namespace gui

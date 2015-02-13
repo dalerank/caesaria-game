@@ -85,6 +85,7 @@ public:
   LayerPtr currentLayer;
   void setLayer( int type );
   void resetWalkersAfterTurn();
+  void saveSettings();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -94,7 +95,10 @@ CityRenderer::CityRenderer() : _d( new Impl )
 {
 }
 
-CityRenderer::~CityRenderer() {}
+CityRenderer::~CityRenderer()
+{
+  _d->saveSettings();
+}
 
 void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv, bool oldGraphic )
 {
@@ -126,8 +130,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
   addLayer( Crime::create( _d->camera, city ) ) ;
-  addLayer( Build::create( this, city ) );
-  addLayer( Destroy::create( _d->camera, city ) );
+  addLayer( Build::create( *this, city ) );
+  addLayer( Destroy::create( *this, city ) );
   addLayer( Tax::create( _d->camera, city ) );
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
   addLayer( Education::create( _d->camera, city, citylayer::school ) );
@@ -137,10 +141,12 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
   addLayer( layer::Indigene::create( _d->camera, city ) );
 
-  DrawOptions::instance().setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
-  DrawOptions::instance().setFlag( DrawOptions::windowActive, true );
-  DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
-  DrawOptions::instance().setFlag( DrawOptions::oldGraphics, oldGraphic );
+  DrawOptions& dopts = DrawOptions::instance();
+  dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
+  dopts.setFlag( DrawOptions::windowActive, true );
+  dopts.setFlag( DrawOptions::mayChangeLayer, true );
+  dopts.setFlag( DrawOptions::oldGraphics, oldGraphic );
+  dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
 
   _d->setLayer( citylayer::simple );
 }
@@ -156,6 +162,12 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
   }
 }
 
+void CityRenderer::Impl::saveSettings()
+{
+  DrawOptions& dopts = DrawOptions::instance();
+  SETTINGS_SET_VALUE( mmb_moving, dopts.isFlag( DrawOptions::mmbMoving ) );
+}
+
 void CityRenderer::Impl::setLayer(int type)
 {
   if( currentLayer.isValid() )
@@ -168,22 +180,23 @@ void CityRenderer::Impl::setLayer(int type)
     return;
   }
 
-  currentLayer = 0;
+  LayerPtr newLayer;
   foreach( it, layers )
   {
     if( (*it)->type() == type )
     {
-      currentLayer = *it;
+      newLayer = *it;
       break;
     }
   }
 
-  if( currentLayer.isNull() )
+  if( newLayer.isNull() )
   {
-    currentLayer = layers.front();
+    newLayer = layers.front();
   }
 
-  currentLayer->init( currentCursorPos );
+  newLayer->init( currentCursorPos );
+  currentLayer = newLayer;
   emit onLayerSwitchSignal( currentLayer->type() );
 }
 

@@ -36,6 +36,7 @@ enum AchievementType
 };
 
 bool checkSteamRunning();
+void checkOfflineMode( const char* cmdopt );
 bool connect();
 void close();
 void update();

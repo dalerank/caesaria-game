@@ -68,10 +68,8 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
     }
   }
 
-  PushButton* btnCancel;
-  PushButton* btnOk;
-  GET_WIDGET_FROM_UI( btnCancel  )
-  GET_WIDGET_FROM_UI( btnOk )
+  INIT_WIDGET_FROM_UI( PushButton*, btnCancel  )
+  INIT_WIDGET_FROM_UI( PushButton*, btnOk )
 
   CONNECT( btnCancel, onClicked(), this, ChangeSalary::deleteLater );
   CONNECT( btnOk, onClicked(), _dfunc().data(), Impl::setNewSalary );

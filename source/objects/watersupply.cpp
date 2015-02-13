@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "watersupply.hpp"
 
@@ -43,6 +45,7 @@ public:
   int  water;
   bool lastWaterState;
   int  daysWithoutWater;
+  Point fullOffset;
   bool isRoad;
   std::string errorStr;
 };
@@ -79,6 +82,13 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
+void Reservoir::initialize(const MetaData& mdata)
+{
+  WaterSource::initialize( mdata );
+
+  _d->fullOffset = mdata.getOption( "fullOffset" );
+}
+
 Reservoir::Reservoir()
     : WaterSource( objects::reservoir, Size( 3 ) )
 {  
@@ -91,7 +101,7 @@ Reservoir::Reservoir()
   _animationRef().load( ResourceGroup::utilitya, 35, 8);
   _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
   _animationRef().setDelay( 11 );
-  _animationRef().setOffset( Point( 47, 63 ) );
+  //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPicturesRef().resize(1);
 }
@@ -173,7 +183,7 @@ bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
   if( nearWater )
   {
     thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 35 )  );
-    thisp->_fgPicturesRef().back().setOffset( 47, -10+picture().offset().y() );
+    thisp->_fgPicturesRef().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
 }

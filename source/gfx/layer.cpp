@@ -95,13 +95,14 @@ void Layer::handleEvent(NEvent& event)
     case mouseMoved:
     {
       Point savePos = _d->lastCursorPos;
+      bool movingPressed = _isMovingButtonPressed( event );
       _d->lastCursorPos = event.mouse.pos();
-      if( !event.mouse.isLeftPressed() || _d->startCursorPos.x() < 0 )
+      if( !movingPressed || _d->startCursorPos.x() < 0 )
       {
         _d->startCursorPos = _d->lastCursorPos;
       }
 
-      if( event.mouse.isLeftPressed() )
+      if( movingPressed )
       {
         Point delta = _d->lastCursorPos - savePos;
         _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );        
@@ -120,6 +121,7 @@ void Layer::handleEvent(NEvent& event)
     break;
 
     case mouseLbtnRelease:            // left button
+    case mouseMbtnRelease:
     {
       Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -397,7 +399,9 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   Tile* baseTile = area.front();
   TileOverlayPtr overlay = baseTile->overlay();
   int leftBorderAtI = baseTile->i();
-  int rightBorderAtJ = overlay->size().height() - 1 + baseTile->j();
+  int rightBorderAtJ = overlay.isValid()
+                          ? overlay->size().height() - 1 + baseTile->j()
+                          : baseTile->j();
   foreach( it, area )
   {
     Tile* tile = *it;
@@ -666,6 +670,8 @@ void Layer::_fillVisibleObjects(int ltype)
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
 bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
+
+void Layer::destroy() {}
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
 void Layer::changeLayer(int type) {}
@@ -676,6 +682,14 @@ void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
 Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
 Tile* Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
+
+bool Layer::_isMovingButtonPressed(NEvent &event) const
+{
+  return DrawOptions::instance().isFlag( DrawOptions::mmbMoving )
+            ? event.mouse.isMiddlePressed()
+            : event.mouse.isLeftPressed();
+}
+
 
 void Layer::Impl::updateOutlineTexture( Tile* tile )
 {

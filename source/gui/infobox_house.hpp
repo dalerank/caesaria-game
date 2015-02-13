@@ -39,7 +39,10 @@ public:
    void drawGood(HousePtr house, const good::Product &goodType, const int col, const int row, const int startY );
 
    virtual bool onEvent(const NEvent &event);
+
+protected:
    virtual void _showHelp();
+   virtual void _showInformation();
 
 private:
    HousePtr _house;

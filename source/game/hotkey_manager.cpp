@@ -35,7 +35,10 @@ public:
     _HK(KEY_F4) _HK(KEY_F5) _HK(KEY_F6)
     _HK(KEY_F7) _HK(KEY_F8) _HK(KEY_F9)
     _HK(KEY_F10) _HK(KEY_F11) _HK(KEY_F12)
-    _HK(KEY_PLUS) _HK(KEY_MINUS)
+    _HK(KEY_PLUS) _HK(KEY_MINUS) _HK(KEY_KEY_0)
+    _HK(KEY_KEY_1) _HK(KEY_KEY_2) _HK(KEY_KEY_3)
+    _HK(KEY_KEY_4) _HK(KEY_KEY_5) _HK(KEY_KEY_6)
+    _HK(KEY_KEY_7) _HK(KEY_KEY_8) _HK(KEY_KEY_9)
 #undef _HK
   }
 };
