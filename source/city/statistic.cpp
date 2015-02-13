@@ -143,7 +143,7 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
   int workersNumber = 0;
   foreach( h, houses )
   {
-    workersNumber += (*h)->habitants().cmature();
+    workersNumber += (*h)->habitants().mature_n();
   }
 
   return workersNumber;
@@ -245,7 +245,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
     if( maxhb == 0 )
       continue;
 
-    int maturehb = (*house)->habitants().cmature();
+    int maturehb = (*house)->habitants().mature_n();
     int housetax = (*house)->spec().taxRate();
     taxValue += housetax * maturehb * taxRate / maxhb;
   }

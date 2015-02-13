@@ -370,7 +370,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
     float wages = 0;
     foreach( it, houses )
     {
-      int workers = (*it)->workersCount();
+      int workers = (*it)->hired();
       float house_wages = salary * workers;
       (*it)->appendMoney( house_wages );
       wages += house_wages;

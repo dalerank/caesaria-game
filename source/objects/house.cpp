@@ -1007,7 +1007,7 @@ void House::_update( bool needChangeTexture )
   _d->initGoodStore( size().area() );
 }
 
-int House::roadAccessDistance() const {  return 2; }
+int House::roadAccessDistance() const { return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {

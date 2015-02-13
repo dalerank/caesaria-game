@@ -188,7 +188,7 @@ void Factory::timeStep(const unsigned long time)
         _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
       }
 
-      if( _d->lowWorkerWeeksNumber > 8 &&  _d->lowWorkerWeeksNumber > (unsigned int)math::random( 42 ) )
+      if( math::random( _d->lowWorkerWeeksNumber ) > _d->maxUnworkingWeeks )
       {
         _reachUnworkingTreshold();
       }
@@ -296,6 +296,7 @@ void Factory::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, productionRate )
   VARIANT_SAVE_ANY_D( stream, _d, progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
+  VARIANT_SAVE_ANY_D( stream, _d, maxUnworkingWeeks )
   stream[ "goodStore" ] = _d->store.save();
 }
 
@@ -306,7 +307,7 @@ void Factory::load( const VariantMap& stream)
   VARIANT_LOAD_ANYDEF_D( _d, progress, 0.f, stream )
   VARIANT_LOAD_ANYDEF_D( _d, productionRate, 9.6f, stream )
   VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, maxUnworkingWeeks, 0, stream )
 
   _storeChanged();
 }
