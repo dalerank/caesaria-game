@@ -896,7 +896,7 @@ void House::applyService( ServiceWalkerPtr walker )
     RecruterPtr recuter = ptr_cast<Recruter>( walker );
     if( recuter.isValid() )
     {
-      int hiredWorkers = math::clamp( svalue, 0, recuter->needWorkers() );
+      int hiredWorkers = math::min(svalue, recuter->needWorkers());
       appendServiceValue( service, -hiredWorkers );
       recuter->hireWorkers( hiredWorkers );
     }
