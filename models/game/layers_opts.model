@@ -11,7 +11,7 @@
 
   desirability : {
     visibleObjects : [ "road", "plaza", "garden", "collapsedRuins", "burnedRuins", "collapsedRuins", "lowBridge",
-                       "highBridge", "tree", "elevation", "rift", "burningRuins", "waymark" ]
+                       "highBridge", "tree", "elevation", "rift", "burningRuins", "waymark", "senate" ]
   }
 
   education : {

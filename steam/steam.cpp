@@ -112,10 +112,6 @@ public:
   void storeStatsIfNecessary();
 };
 
-void checkOfflineMode(const char *cmdopt)
-{
-  glbOfflineMode = !strcmp( cmdopt, "-nosteam" );
-}
 //-----------------------------------------------------------------------------
 // Purpose: Unlock this achievement
 //-----------------------------------------------------------------------------
@@ -241,9 +237,6 @@ bool checkSteamRunning()
 
 bool connect()
 {
-  if( glbOfflineMode )
-    return true;
-
 #ifdef CAESARIA_PLATFORM_MACOSX
   SteamAPI_Shutdown();
 #endif
@@ -276,11 +269,20 @@ bool connect()
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
   Logger::warning( "CurrentGameLanguage: %s", SteamApps()->GetCurrentGameLanguage() );
-  if ( !SteamUser()->BLoggedOn() )
+  glbOfflineMode = !SteamUser()->BLoggedOn();
+
+  bool mayStart = SteamApps()->BIsSubscribedApp( CAESARIA_STEAM_APPID );
+  if( !mayStart )
   {
-    Logger::warning( "Steam user is not logged in\n" );
-    OSystem::error( "Fatal Error", "Steam user must be logged in to play this game (SteamUser()->BLoggedOn() returned false).\n" );
+    Logger::warning( "Cant play in this account" );
+    OSystem::error( "Warning", "Cant play in this account" );
     return false;
+  }
+
+  if( glbOfflineMode )
+  {
+    Logger::warning( "Game work in offline mode" );
+    OSystem::error( "Warning", "Game work in offline mode" );
   }  
 
   return true;
@@ -288,17 +290,11 @@ bool connect()
 
 void close()
 {
-  if( glbOfflineMode )
-    return;
-
   SteamAPI_Shutdown();
 }
 
 void update()
 {
-  if( glbOfflineMode )
-    return;
-
 // Run Steam client callbacks
 #ifdef CAESARIA_PLATFORM_WIN
   sth_runCallbacks();
@@ -310,9 +306,6 @@ void update()
 
 void init()
 {
-  if( glbOfflineMode )
-    return;
-
   xclient.user = SteamUser();
   xclient.stats = SteamUserStats();
 
@@ -351,9 +344,6 @@ void evaluateAchievements()
 
 void unlockAchievement(AchievementType achivId)
 {
-  if( glbOfflineMode )
-    return;
-
   if( achivId >=0 && achivId < achievementNumber )
   {
     if( !glbAchievements[ achivId ].reached )
@@ -367,17 +357,13 @@ void unlockAchievement(AchievementType achivId)
 
 const gfx::Picture& achievementImage(AchievementType achivId)
 {
-  if( !glbOfflineMode )
+  if( achivId >=0 && achivId < achievementNumber )
   {
-
-    if( achivId >=0 && achivId < achievementNumber )
-    {
-      return glbAchievements[ achivId ].image;
-    }
-    else
-    {
-      Logger::warning( "Unknown achievement ID:%d", achivId );
-    }
+    return glbAchievements[ achivId ].image;
+  }
+  else
+  {
+    Logger::warning( "Unknown achievement ID:%d", achivId );
   }
 
   return gfx::Picture::getInvalid();
@@ -385,9 +371,6 @@ const gfx::Picture& achievementImage(AchievementType achivId)
 
 std::string userName()
 {
-  if( glbOfflineMode )
-    return "offline";
-
   // We use Steam persona names for our players in-game name.  To get these we
   // just call SteamFriends()->GetFriendPersonaName() this call will work on friends,
   // players on the same game server as us (if using the Steam game server auth API)
@@ -496,9 +479,6 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
 
 bool isStatsReceived()
 {
-  if( glbOfflineMode )
-    return false;
-
   bool ret = glbUserStats.statsValid;
   glbUserStats.statsValid = false;
   return ret;
@@ -606,16 +586,13 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
 
 std::string achievementCaption(AchievementType achivId)
 {
-  if( glbOfflineMode )
+  if( achivId >=0 && achivId < achievementNumber )
   {
-    if( achivId >=0 && achivId < achievementNumber )
-    {
-      return glbAchievements[ achivId ].caption;
-    }
-    else
-    {
-      Logger::warning( "Unknown achievement ID:%d", achivId );
-    }
+    return glbAchievements[ achivId ].caption;
+  }
+  else
+  {
+    Logger::warning( "Unknown achievement ID:%d", achivId );
   }
 
   return "unknown_achv";
@@ -623,9 +600,6 @@ std::string achievementCaption(AchievementType achivId)
 
 bool isAchievementReached(AchievementType achivId)
 {
-  if( glbOfflineMode )
-    return false;
-
   if( achivId >=0 && achivId < achievementNumber )
   {
     return glbAchievements[ achivId ].reached;
@@ -639,9 +613,6 @@ bool isAchievementReached(AchievementType achivId)
 
 void missionWin()
 {
-  if( glbOfflineMode )
-    return;
-
   glbUserStats.totalNumWins++;
   glbUserStats.totalGamesPlayed++;
   evaluateAchievements();
