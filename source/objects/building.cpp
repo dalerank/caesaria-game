@@ -71,8 +71,8 @@ void Building::timeStep(const unsigned long time)
   {
     // exp growth: g = xt = x0 * (1 + r)^t
     float popkoeff = 1 + statistic::getBalanceKoeff( _city() );
-    updateState( Construction::damage, pow(popkoeff, time) * state( Construction::collapsibility ) );
-    updateState( Construction::fire, pow(popkoeff, time) * state( Construction::inflammability ) );
+    updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
+    updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
   }
 
   Construction::timeStep(time);
