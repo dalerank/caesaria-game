@@ -79,7 +79,7 @@ void BurningRuins::timeStep(const unsigned long time)
       if( (*it)->group() != objects::disasterGroup )
       {
 	float popkoeff = 1 + statistic::getBalanceKoeff( _city() );
-        (*it)->updateState( Construction::fire, pow(popkoeff, time) * state(Construction::inflammability) );
+        (*it)->updateState( Construction::fire, popkoeff * state(Construction::inflammability) );
       }
     }
 

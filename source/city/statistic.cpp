@@ -60,13 +60,22 @@ void getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& maxWorkers )
 
 float getBalanceKoeff(PlayerCityPtr city)
 {
+  float result = .5f;
+  
   if( city.isNull() )
   {
     Logger::warning( "Statistic::getBalanceKoeff cityptr is null");
     return 1.f;
   }
 
-  return 0.01f * atan( city->population() / 10000.f );
+  if(city->population() <= 3000)
+    result = .5f;
+  else if(city->population() <= 5000)
+    result = 1.f;
+  else if(city->population() > 5000)
+    result = 1 + city->population() / 50000;
+
+  return result;
 }
 
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
