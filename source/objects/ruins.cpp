@@ -21,6 +21,7 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
+#include "city/statistic.hpp"
 #include "city/helper.hpp"
 #include "events/build.hpp"
 #include "constants.hpp"
@@ -34,6 +35,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurnedRuins)
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burning_ruins, BurningRuins)
@@ -76,7 +78,8 @@ void BurningRuins::timeStep(const unsigned long time)
     {
       if( (*it)->group() != objects::disasterGroup )
       {
-        (*it)->updateState( Construction::fire, 0.2 );
+	float popkoeff = 1 + statistic::getBalanceKoeff( _city() );
+        (*it)->updateState( Construction::fire, pow(popkoeff, time) * state(Construction::inflammability) );
       }
     }
 
