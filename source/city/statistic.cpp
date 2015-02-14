@@ -66,7 +66,7 @@ float getBalanceKoeff(PlayerCityPtr city)
     return 1.f;
   }
 
-  return atan( city->population() / 10000.f );
+  return 0.01f * atan( city->population() / 10000.f );
 }
 
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
