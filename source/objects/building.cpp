@@ -69,9 +69,10 @@ void Building::timeStep(const unsigned long time)
 {
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    float popkoeff = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
-    updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
-    updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
+    //float popkoeff = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
+    float popkoeff = 1 + statistic::getBalanceKoeff( _city() );
+    updateState( Construction::damage, pow(popkoeff, time) * state( Construction::collapsibility ) );
+    updateState( Construction::fire, pow(popkoeff, time) * state( Construction::inflammability ) );
   }
 
   Construction::timeStep(time);
