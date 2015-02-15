@@ -68,7 +68,7 @@ float getBalanceKoeff(PlayerCityPtr city)
     return 1.f;
   }
 
-  return math::clamp(result, 0.5, result);
+  return math::clamp(result, 0.5, 2);
 }
 
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
