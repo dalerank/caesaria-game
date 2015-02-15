@@ -92,7 +92,7 @@ protected:
     VariantMap options = item.data().toMap();
     DateTime time = options[ lc_date ].toDateTime();
 
-    item.draw( util::date2str( time ), font, Point( 30, 0 ) );
+    item.draw( util::date2str( time, true ), font, Point( 30, 0 ) );
     item.draw( item.text(), font, Point( width() / 2, 0 ));
   }
 

@@ -106,10 +106,13 @@ void TopMenu::setFunds( int value )
 
 void TopMenu::Impl::updateDate()
 {
-  if( !lbDate || saveDate.month() == game::Date::current().month() )
+  if( !lbDate )
     return;
 
-  lbDate->setText( util::date2str( game::Date::current() ) );
+  if( !game::Date::isDayChanged() )
+    return;
+
+  lbDate->setText( util::date2str( game::Date::current(), true ) );
 }
 
 void TopMenu::Impl::showShortKeyInfo()
