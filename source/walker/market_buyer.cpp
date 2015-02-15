@@ -33,6 +33,7 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "city/trade_options.hpp"
 
 using namespace constants;
 using namespace gfx;
