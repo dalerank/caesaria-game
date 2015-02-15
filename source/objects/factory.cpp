@@ -154,7 +154,6 @@ void Factory::_setUnworkingInterval(unsigned int weeks)
 
 void Factory::_reachUnworkingTreshold()
 {
-  collapse();
 }
 
 bool Factory::haveMaterial() const {  return (consumeGoodType() != good::none && !inStockRef().empty()); }

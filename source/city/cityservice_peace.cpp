@@ -19,7 +19,7 @@
 #include "core/priorities.hpp"
 #include "objects/house.hpp"
 #include "cityservice_military.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "walker/rioter.hpp"
 #include "events/disaster.hpp"
 #include "events/showinfobox.hpp"

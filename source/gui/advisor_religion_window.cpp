@@ -27,7 +27,7 @@
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "game/enums.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"

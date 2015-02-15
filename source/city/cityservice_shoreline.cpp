@@ -82,7 +82,7 @@ Shoreline::Shoreline( PlayerCityPtr city )
 
 void Shoreline::timeStep( const unsigned int time )
 {
-  //if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
   if( _d->slTiles.empty() )
@@ -138,7 +138,6 @@ void Shoreline::timeStep( const unsigned int time )
     {
       tile->setPicture( picName );
     }
-
   }
 }
 

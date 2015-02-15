@@ -50,6 +50,8 @@ void ClayPit::_reachUnworkingTreshold()
 
   events::GameEventPtr e = events::ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
   e->dispatch();
+
+  collapse();
 }
 
 bool ClayPit::canBuild( const CityAreaInfo& areaInfo ) const

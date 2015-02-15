@@ -17,6 +17,7 @@
 #include "game/game.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
+#include "objects/house_spec.hpp"
 #include "playsound.hpp"
 #include "objects/objects_factory.hpp"
 #include "dispatcher.hpp"
