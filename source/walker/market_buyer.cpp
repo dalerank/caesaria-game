@@ -123,12 +123,12 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   std::list<good::Product> priorityGoods;
   
   //only look at goods that shall not be stockpiled
-  foreach( goodType, allPriorityGoods)
+  foreach(goodType, allPriorityGoods)
   {
     if( !_city()->tradeOptions().isGoodsStacking(*goodType) )
       priorityGoods.push_back(*goodType);
   }
-  
+
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
   if( priorityGoods.size() > 0 )
