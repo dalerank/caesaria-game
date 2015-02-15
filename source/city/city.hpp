@@ -28,14 +28,17 @@
 #include "world/city.hpp"
 #include "walker/constants.hpp"
 #include "game/climate.hpp"
+#include "trade_options.hpp"
+
+using namespace city::trade;
 
 namespace city
 {
 class Funds;
 class VictoryConditions;
 
-namespace trade { class Options; }
-namespace development { class Options; }
+  //namespace trade { class city::trade::Options; }
+  namespace development { class Options; }
 }
 
 struct BorderInfo
@@ -114,7 +117,7 @@ public:
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
 
-  city::trade::Options& tradeOptions();
+  Options& tradeOptions();
 
   virtual void delayTrade(unsigned int month);
   virtual void addObject( world::ObjectPtr object );
