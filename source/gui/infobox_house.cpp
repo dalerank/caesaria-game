@@ -24,7 +24,7 @@
 #include "core/gettext.hpp"
 #include "gfx/decorator.hpp"
 #include "objects/metadata.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "texturedbutton.hpp"

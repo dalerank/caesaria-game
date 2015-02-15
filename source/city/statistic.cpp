@@ -22,7 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "objects/granary.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "good/goodstore.hpp"
 #include "city/funds.hpp"
 #include "objects/farm.hpp"

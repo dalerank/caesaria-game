@@ -47,7 +47,7 @@
 #include "vfs/directory.hpp"
 #include "core/locale.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"

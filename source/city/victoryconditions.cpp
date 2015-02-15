@@ -17,6 +17,7 @@
 
 #include "victoryconditions.hpp"
 #include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "core/variant_map.hpp"
 
 namespace city
@@ -83,6 +84,9 @@ bool VictoryConditions::mayContinue() const { return _d->may_continue; }
 void VictoryConditions::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::instance().getLevel( stream.get( "maxHouseLevel" ).toString() );
+  if( _d->maxHouseLevel == 0 )
+    _d->maxHouseLevel = HouseLevel::greatPalace;
+
   VARIANT_LOAD_ANY_D( _d, success, stream )
   VARIANT_LOAD_ANY_D( _d, population, stream )
   VARIANT_LOAD_ANY_D( _d, culture, stream )

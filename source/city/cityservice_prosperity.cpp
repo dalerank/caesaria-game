@@ -23,7 +23,7 @@
 #include "core/position.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
 #include "objects/entertainment.hpp"
 #include "game/gamedate.hpp"
