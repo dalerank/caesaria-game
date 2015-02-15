@@ -28,9 +28,6 @@
 #include "world/city.hpp"
 #include "walker/constants.hpp"
 #include "game/climate.hpp"
-//#include "trade_options.hpp"
-
-//using namespace city::trade;
 
 namespace city
 {
