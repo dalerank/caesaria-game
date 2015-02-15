@@ -37,7 +37,6 @@ namespace city
 class Funds;
 class VictoryConditions;
 
-  //namespace trade { class city::trade::Options; }
   namespace development { class Options; }
 }
 
