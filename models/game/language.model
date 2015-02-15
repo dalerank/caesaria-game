@@ -1,9 +1,10 @@
 {
-  English : { ext : "en", talks : "/audio/wavs_citizen_en.zip" }
-  Русский : { ext : "ru", talks : "/audio/wavs_citizen_ru.zip" }
-  Deutsch : { ext : "de", talks : "/audio/wavs_citizen_de.zip" }
-  Svenska : { ext : "sv", talks : "/audio/wavs_citizen_en.zip" }
-  Español : { ext : "sp", talks : "/audio/wavs_citizen_sp.zip" }
-  Român   : { ext : "ro", talks : "/audio/wavs_citizen_en.zip" }
-  Français: { ext : "fr", talks : "/audio/wavs_citizen_en.zip" }
+  English    : { ext : "en", talks : "/audio/wavs_citizen_en.zip" }
+  Русский    : { ext : "ru", talks : "/audio/wavs_citizen_ru.zip" }
+  Українська : { ext : "ua", talks : "/audio/wavs_citizen_en.zip" }
+  Deutsch    : { ext : "de", talks : "/audio/wavs_citizen_de.zip" }
+  Svenska    : { ext : "sv", talks : "/audio/wavs_citizen_en.zip" }
+  Español    : { ext : "sp", talks : "/audio/wavs_citizen_sp.zip" }
+  Român      : { ext : "ro", talks : "/audio/wavs_citizen_en.zip" }
+  Français   : { ext : "fr", talks : "/audio/wavs_citizen_en.zip" }
 }
