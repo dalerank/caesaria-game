@@ -50,9 +50,9 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
       HousePtr house = *it;
       if( house.isValid() )
       {
-        int lastWorkersCount = (int)house->getServiceValue( Service::recruter ); //save value, forexample 5 (max 8)
+        int lastWorkersCount = (int)house->unemployed(); //save value, forexample 5 (max 8)
         house->appendServiceValue( Service::recruter, _workers );                //add some people, current value 8
-        int delta = (int)house->getServiceValue( Service::recruter );   //check delta 8 - 5 == 3
+        int delta = (int)house->unemployed();   //check delta 8 - 5 == 3
 
         int mayAppend = math::clamp<int>( _workers, 0, delta - lastWorkersCount );
         _workers -= mayAppend;

@@ -222,7 +222,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, game::Date::current() );
+    _d->monthStep( this, game::Date::current() );      
   }
 
   if( game::Date::isWeekChanged() )

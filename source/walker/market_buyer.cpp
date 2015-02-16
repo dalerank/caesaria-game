@@ -33,6 +33,7 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "city/trade_options.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -118,7 +119,15 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<good::Product> priorityGoods = _d->market->mostNeededGoods();
+  std::list<good::Product> allPriorityGoods = _d->market->mostNeededGoods();
+  std::list<good::Product> priorityGoods;
+  
+  //only look at goods that shall not be stockpiled
+  foreach(goodType, allPriorityGoods)
+  {
+    if( !_city()->tradeOptions().isGoodsStacking(*goodType) )
+      priorityGoods.push_back(*goodType);
+  }
 
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 

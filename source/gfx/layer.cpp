@@ -374,20 +374,20 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   if( !tile.rwd() )
-  {
-    tile.setWasDrawn();
-    if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
-    {
-      drawPass( engine, tile, offset, Renderer::ground );
-      drawPass( engine, tile, offset, Renderer::groundAnimation );
-    }
-
+  {   
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );     
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }
+    else
+    {
+      drawPass( engine, tile, offset, Renderer::ground );
+      drawPass( engine, tile, offset, Renderer::groundAnimation );
+    }
+
+    tile.setWasDrawn();
   }
 }
 
@@ -443,11 +443,15 @@ void Layer::drawLands( Engine& engine, Camera* camera )
       {
         // multi-tile: draw the master tile.
         // and it is time to draw the master tile
-        if( !master->rwd() && master == &t )
+        if( t.getFlag( Tile::tlRock ) )
+        {
+          t.setFlag( Tile::tlRock, true);
+        }
+        /*if( !master->rwd() && master == &t )
         {            
           drawPass( engine, *master, camOffset, Renderer::ground );
-          drawPass( engine, *master, camOffset, Renderer::groundAnimation );          
-        }
+          drawPass( engine, *master, camOffset, Renderer::groundAnimation );
+        }*/
       }
       else
       {
@@ -475,6 +479,8 @@ void Layer::drawLands( Engine& engine, Camera* camera )
       }
     }
   }
+
+
 }
 
 void Layer::init( Point cursor )

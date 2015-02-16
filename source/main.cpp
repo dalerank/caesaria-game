@@ -65,8 +65,6 @@ int main(int argc, char* argv[])
   Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
 
 #ifdef CAESARIA_USE_STEAM
-  steamapi::checkOfflineMode( argc > 1 ? argv[ 1 ] : "" );
-
   if( !steamapi::connect() )
     return EXIT_FAILURE;
 #endif

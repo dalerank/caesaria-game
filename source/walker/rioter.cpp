@@ -20,7 +20,7 @@
 #include "pathway/path_finding.hpp"
 #include "constants.hpp"
 #include "city/helper.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
 #include "pathway/astarpathfinding.hpp"

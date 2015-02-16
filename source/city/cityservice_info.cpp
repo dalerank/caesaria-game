@@ -20,7 +20,7 @@
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
 #include "city/helper.hpp"
 #include "good/goodhelper.hpp"

@@ -21,7 +21,7 @@
     may_continue : false
     short : "##build_some_houses##"
     finishDate : "-300.01.01"
-    maxHouseLevel : "big_villa"
+    maxHouseLevel : "hut"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002",

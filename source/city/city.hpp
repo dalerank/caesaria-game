@@ -34,8 +34,8 @@ namespace city
 class Funds;
 class VictoryConditions;
 
-namespace trade { class Options; }
-namespace development { class Options; }
+  namespace trade { class Options; }
+  namespace development { class Options; }
 }
 
 struct BorderInfo

@@ -14,11 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
 #include "gfx/helper.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "walker/workerhunter.hpp"
@@ -41,6 +41,7 @@
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
+#include "city/victoryconditions.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -156,16 +157,21 @@ void House::_makeOldHabitants()
 
 void House::_updateHabitants( const CitizenGroup& group )
 {
-  int firedWorkersNumber = (int)group.mature_n() - (int)_d->habitants.mature_n();
-  if( firedWorkersNumber < 0 )
-  {
-    Logger::warning( "House::levelDown fire %d workers", firedWorkersNumber );
-    GameEventPtr e = FireWorkers::create( pos(), abs( firedWorkersNumber ) );
-    e->dispatch();
-  }
+  int deltaWorkersNumber = (int)group.mature_n() - (int)_d->habitants.mature_n();
 
   _d->habitants = group;
   _d->services[ Service::recruter ].setMax( _d->habitants.mature_n() );
+
+  if( deltaWorkersNumber < 0 )
+  {
+    Logger::warning( "House::levelDown fire %d workers", deltaWorkersNumber );
+    GameEventPtr e = FireWorkers::create( pos(), abs( deltaWorkersNumber ) );
+    e->dispatch();
+  }
+  else
+  {
+    _d->services[ Service::recruter ] += deltaWorkersNumber;
+  }
 }
 
 void House::_checkEvolve()
@@ -603,6 +609,9 @@ void House::_levelUp()
   if( _d->houseLevel >= HouseLevel::greatPalace )
     return;
 
+  if( _d->houseLevel >= _city()->victoryConditions().maxHouseLevel() )
+    return;
+
   int nextLevel = math::clamp<int>( _d->houseLevel+1, HouseLevel::vacantLot, HouseLevel::greatPalace );
   bool mayUpgrade = false;
 
@@ -887,7 +896,7 @@ void House::applyService( ServiceWalkerPtr walker )
     RecruterPtr recuter = ptr_cast<Recruter>( walker );
     if( recuter.isValid() )
     {
-      int hiredWorkers = math::clamp( svalue, 0, recuter->needWorkers() );
+      int hiredWorkers = math::min(svalue, recuter->needWorkers());
       appendServiceValue( service, -hiredWorkers );
       recuter->hireWorkers( hiredWorkers );
     }
@@ -1024,8 +1033,11 @@ void House::addHabitants( CitizenGroup& habitants )
     _d->spec = _d->spec.next();
     _update( true );
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    if( _city().isValid() )
+    {
+      city::Helper helper( _city() );
+      helper.updateDesirability( this, city::Helper::onDesirability );
+    }
   }
 }
 
