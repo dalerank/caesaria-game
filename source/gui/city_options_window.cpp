@@ -31,6 +31,7 @@
 #include "contextmenuitem.hpp"
 #include "gfx/layer.hpp"
 #include "game/settings.hpp"
+#include "texturedbutton.hpp"
 #include "topmenu.hpp"
 
 using namespace gfx::layer;
@@ -48,6 +49,9 @@ public:
   PushButton* btnDebugEnabled;
   PushButton* btnInvertZoom;
   PushButton* btnMmbMoving;
+  Label* lbFireRisk;
+  TexturedButton* btnIncreaseFireRisk;
+  TexturedButton* btnDecreaseFireRisk;
   PushButton* btnLockInfobox;
   PlayerCityPtr city;
 
@@ -60,6 +64,8 @@ public:
   void toggleLeftMiddleMouse();
   void toggleLockInfobox();
   Widget* findDebugMenu(Ui *ui);
+  void increaseFireRisk();
+  void decreaseFireRisk();
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -80,6 +86,10 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
   GET_DWIDGET_FROM_UI( _d, btnMmbMoving )
   GET_DWIDGET_FROM_UI( _d, btnLockInfobox )
+  GET_DWIDGET_FROM_UI( _d, lbFireRisk )
+  GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
+  GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
+
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -88,6 +98,8 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
   CONNECT( _d->btnMmbMoving, onClicked(), _d.data(), Impl::toggleLeftMiddleMouse )
   CONNECT( _d->btnLockInfobox, onClicked(), _d.data(), Impl::toggleLockInfobox )
+  CONNECT( _d->btnIncreaseFireRisk, onClicked(), _d.data(), Impl::increaseFireRisk )
+  CONNECT( _d->btnDecreaseFireRisk, onClicked(), _d.data(), Impl::decreaseFireRisk )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
@@ -100,7 +112,7 @@ CityOptionsWindow::~CityOptionsWindow() {}
 
 void CityOptionsWindow::Impl::toggleGods()
 {
-  bool value = city->getOption( PlayerCity::godEnabled );
+  bool value = city->getOption( PlayerCity::godEnabled ) > 0;
   city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
   update();
 }
@@ -115,16 +127,30 @@ void CityOptionsWindow::Impl::toggleDebug()
   update();
 }
 
+void CityOptionsWindow::Impl::increaseFireRisk()
+{
+  int value = city->getOption( PlayerCity::fireKoeff );
+  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value + 10, 0, 9999 ) );
+  update();
+}
+
+void CityOptionsWindow::Impl::decreaseFireRisk()
+{
+  int value = city->getOption( PlayerCity::fireKoeff );
+  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value - 10, 0, 9999) );
+  update();
+}
+
 void CityOptionsWindow::Impl::toggleZoomEnabled()
 {
-  bool value = city->getOption( PlayerCity::zoomEnabled );
+  bool value = city->getOption( PlayerCity::zoomEnabled ) > 0;
   city->setOption( PlayerCity::zoomEnabled, value > 0 ? 0 : 1 );
   update();
 }
 
 void CityOptionsWindow::Impl::invertZoom()
 {
-  bool value = city->getOption( PlayerCity::zoomInvert );
+  bool value = city->getOption( PlayerCity::zoomInvert ) > 0;
   city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
   update();
 }
@@ -138,7 +164,7 @@ void CityOptionsWindow::Impl::toggleLockInfobox()
 
 void CityOptionsWindow::Impl::toggleWarnings()
 {
-  bool value = city->getOption( PlayerCity::warningsEnabled );
+  bool value = city->getOption( PlayerCity::warningsEnabled ) > 0;
   city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
   update();
 }
@@ -205,7 +231,7 @@ void CityOptionsWindow::Impl::update()
 
   if( btnMmbMoving )
   {
-    bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
+    bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving ) > 0;
     btnMmbMoving->setText( value
                                 ? _("##city_mmbmoving##")
                                 : _("##city_lmbmoving##") );
@@ -217,6 +243,12 @@ void CityOptionsWindow::Impl::update()
     btnLockInfobox->setText( value
                                 ? _("##city_lockinfo_on##")
                                 : _("##city_lockinfo_off##") );
+  }
+
+  if( lbFireRisk )
+  {
+    int value = city->getOption( PlayerCity::fireKoeff );
+    lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
   }
 }
 

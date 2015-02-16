@@ -88,6 +88,8 @@ namespace utils
       if( (*it)->isDeleted() ) { it = items.erase( it ); }
       else { ++it; }
     }
+
+    return items;
   }
 }
 

@@ -46,11 +46,15 @@ class Building::Impl
 {
 public:
   typedef std::map< constants::walker::Type, int> TraineeMap;
+  typedef std::set<walker::Type> WalkerTypeSet;
+  typedef std::set<Service::Type> ServiceSet;
 
   TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
-  std::set<Service::Type> reservedServices;  // a serviceWalker is on the way
+  WalkerTypeSet reservedTrainees;  // a trainee is on the way
+  ServiceSet reservedServices;  // a serviceWalker is on the way
 
   int stateDecreaseInterval;
+  float cachedPopkoef;
 };
 
 Building::Building(const TileOverlay::Type type, const Size& size )
@@ -58,6 +62,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
 {
   setState( Construction::inflammability, 1 );
   setState( Construction::collapsibility, 1 );
+  _d->cachedPopkoef = 1;
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
@@ -67,11 +72,15 @@ void Building::initTerrain( Tile& ) {}
 
 void Building::timeStep(const unsigned long time)
 {
+  if( game::Date::isWeekChanged() )
+  {
+    _updateBalanceKoeffs();
+  }
+
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    float popkoeff = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
-    updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
-    updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
+    updateState( Construction::damage, _d->cachedPopkoef * state( Construction::collapsibility ) );
+    updateState( Construction::fire, _d->cachedPopkoef * state( Construction::inflammability ) );
   }
 
   Construction::timeStep(time);
@@ -122,6 +131,8 @@ bool Building::build( const CityAreaInfo& info )
   default: break;
   }
 
+  _updateBalanceKoeffs();
+
   return true;
 }
 
@@ -148,7 +159,7 @@ float Building::evaluateTrainee(walker::Type traineeType)
 {
    float res = 0.0;
 
-   if( _reservedTrainees.count(traineeType) == 1 )
+   if( _d->reservedTrainees.count(traineeType) == 1 )
    {
       // don't allow two reservations of the same type
       return 0.0;
@@ -163,12 +174,12 @@ float Building::evaluateTrainee(walker::Type traineeType)
    return res;
 }
 
-void Building::reserveTrainee(walker::Type traineeType) { _reservedTrainees.insert(traineeType); }
-void Building::cancelTrainee(walker::Type traineeType) { _reservedTrainees.erase(traineeType);}
+void Building::reserveTrainee(walker::Type traineeType) { _d->reservedTrainees.insert(traineeType); }
+void Building::cancelTrainee(walker::Type traineeType) { _d->reservedTrainees.erase(traineeType);}
 
 void Building::updateTrainee(  TraineeWalkerPtr walker )
 {
-   _reservedTrainees.erase( walker->type() );
+   _d->reservedTrainees.erase( walker->type() );
    _d->traineeMap[ walker->type() ] += walker->value() ;
 }
 
@@ -184,3 +195,9 @@ int Building::traineeValue(walker::Type traineeType) const
 }
 
 Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
+
+void Building::_updateBalanceKoeffs()
+{
+  _d->cachedPopkoef = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
+  _d->cachedPopkoef *= _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+}
