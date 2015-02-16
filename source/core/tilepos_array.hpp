@@ -13,26 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_PREDEFINITIONS_H_INCLUDED__
-
-#include "smartptr.hpp"
-#include "position.hpp"
-#include "smartlist.hpp"
+#ifndef CAESARIA_TILEPOS_ARRAY_HPP
+#define CAESARIA_TILEPOS_ARRAY_HPP
 
 #include <vector>
+#include "position.hpp"
+#include "variant.hpp"
 
-#define PREDEFINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
-#define PREDEFINE_CLASS_SMARTLIST(a,b) PREDEFINE_CLASS_SMARTPOINTER(a); typedef SmartList< a > a##b;
+class TilePosArray : public std::vector< TilePos >
+{
+public:
+  TilePosArray& operator<<(const TilePos& pos )
+  {
+    push_back( pos );
+    return *this;
+  }
 
-class TilePos;
-class Size;
-class VariantMap;
-class DateTime;
-typedef long unsigned int ThreadID;
+  VariantList toVList() const
+  {
+    VariantList ret;
+    foreach( it, *this ) { ret << *it; }
+    return ret;
+  }
 
-typedef std::vector< Point > PointsArray;
+  void fromVList( const VariantList& vlist )
+  {
+    clear();
+    foreach( it, vlist )
+      push_back( it->toTilePos() );
+  }
+};
 
-#endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__
+#endif//CAESARIA_TILEPOS_ARRAY_HPP

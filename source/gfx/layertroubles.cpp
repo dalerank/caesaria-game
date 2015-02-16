@@ -42,7 +42,7 @@ int Troubles::type() const{ return _type;}
 
 void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
-  Point screenPos = tile.mappos() + offset;
+  //Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
