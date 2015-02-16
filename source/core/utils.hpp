@@ -21,6 +21,7 @@
 #include <string>
 #include <cstdarg>
 #include "stringarray.hpp"
+#include "smartlist.hpp"
 
 class Font;
 
@@ -78,6 +79,18 @@ namespace utils
   std::string trim( const std::string& str );
 
   std::string i2str( int valie );
+
+  template< class Item >
+  SmartList<Item>& eraseDeletedElements( SmartList<Item>& items )
+  {
+    for( typename SmartList<Item>::iterator it=items.begin(); it != items.end(); )
+    {
+      if( (*it)->isDeleted() ) { it = items.erase( it ); }
+      else { ++it; }
+    }
+
+    return items;
+  }
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

@@ -36,10 +36,12 @@ class GameSpeedOptions::Impl
 {
 public:
   GameAutoPause locker;
+  int speedValue, scrollValue, autosaveInterval;
+
+public signals:
   Signal1<int> onGameSpeedChangeSignal;
   Signal1<int> onScrollSpeedChangeSignal;
   Signal1<int> onAutosaveIntervalShangeSignal;
-  int speedValue, scrollValue, autosaveInterval;
 };
 
 GameSpeedOptions::GameSpeedOptions( Widget* parent,

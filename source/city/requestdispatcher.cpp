@@ -145,11 +145,7 @@ RequestList Dispatcher::requests() const {  return _d->requests; }
 
 void Dispatcher::Impl::updateRequests()
 {
-  for( RequestList::iterator i=requests.begin(); i != requests.end(); )
-  {
-    if( (*i)->isDeleted() ) { i = requests.erase( i ); }
-    else { ++i; }
-  }
+  utils::eraseDeletedElements( requests );
 
   if( !newRequests.empty() )
   {
