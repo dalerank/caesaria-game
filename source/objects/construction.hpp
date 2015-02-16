@@ -32,7 +32,6 @@ class Construction : public gfx::TileOverlay
 public:
   typedef int ParameterType;
   typedef enum { fire=0, damage, inflammability, collapsibility, destroyable, paramCount } Param;
-  Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
   virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
@@ -65,6 +64,8 @@ public:
   virtual const ConstructionExtensionList& extensions() const;
   virtual void initialize(const MetaData &mdata);
 protected:
+  Construction( const TileOverlay::Type type, const Size& size );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
