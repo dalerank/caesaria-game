@@ -23,6 +23,7 @@
 #include "romechastenerarmy.hpp"
 #include "city.hpp"
 #include "core/saveadapter.hpp"
+#include "core/utils.hpp"
 #include "empire.hpp"
 #include "core/variant_map.hpp"
 
@@ -40,6 +41,8 @@ struct Relation
   unsigned int lastSoldiersSent;
   DateTime lastGiftDate;
   DateTime lastTaxDate;
+  unsigned int wrathPoint;
+  unsigned int tryCount;
   int chastenerFailed;
   int lastGiftValue;
   bool debtMessageSent;
@@ -47,8 +50,9 @@ struct Relation
   Relation()
     : value( 0 ),
       soldiersSent( 0 ), lastSoldiersSent( 0 ),
-      lastGiftDate( DateTime( -351, 1, 1 ) ), lastGiftValue( 0 ),
-      debtMessageSent(false)
+      lastGiftDate( DateTime( -351, 1, 1 ) ),
+      wrathPoint(0), tryCount( 0 ),
+      lastGiftValue( 0 ), debtMessageSent(false)
   {
 
   }
@@ -208,9 +212,18 @@ void Emperor::timeStep(unsigned int time)
       CityPtr city = d->empire->findCity( it->first );
       Relation& relation = d->relations[ it->first ];
 
-      if( city.isValid() && relation.value < 20 && relation.soldiersSent == 0 )
+      if( city.isValid() )
       {
-        troubleCities << city;
+        if( relation.value < 20  )
+        {
+          relation.wrathPoint += math::clamp( 20 - relation.value, 0, 20 );
+          if( relation.soldiersSent == 0 )
+            troubleCities << city;
+        }
+        else
+        {
+          relation.wrathPoint = 0;
+        }
       }
     }
 
@@ -223,6 +236,17 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
   foreach( it, cities )
   {
     Relation& relation = relations[ (*it)->name() ];
+    float rule2destroy = utils::eventProbability( math::clamp( relation.wrathPoint / 100.f, 0.f, 1.f ),
+                                                 math::clamp<int>( relation.tryCount, 0, DateTime::monthsInYear ),
+                                                 DateTime::monthsInYear );
+
+    relation.tryCount++;
+
+    if( rule2destroy < 0.9 )
+      continue;
+
+    relation.wrathPoint = 0;
+    relation.tryCount = 0;
     relation.soldiersSent = relation.lastSoldiersSent * 2;
 
     unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );

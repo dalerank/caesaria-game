@@ -91,6 +91,8 @@ namespace utils
 
     return items;
   }
+
+  float eventProbability(float probability, int k, int n);
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__
