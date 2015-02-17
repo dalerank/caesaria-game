@@ -74,6 +74,8 @@ struct Relation
     VARIANT_SAVE_ANY(ret, lastSoldiersSent)
     VARIANT_SAVE_ANY(ret, debtMessageSent )
     VARIANT_SAVE_ANY(ret, chastenerFailed )
+    VARIANT_SAVE_ANY(ret, wrathPoint)
+    VARIANT_SAVE_ANY(ret, tryCount)
 
     return ret;
   }
@@ -88,6 +90,8 @@ struct Relation
     VARIANT_LOAD_ANY(soldiersSent, stream)
     VARIANT_LOAD_ANY(debtMessageSent, stream)
     VARIANT_LOAD_ANY(chastenerFailed, stream)
+    VARIANT_LOAD_ANY(wrathPoint, stream)
+    VARIANT_LOAD_ANY(tryCount, stream)
   }
 };
 
