@@ -47,6 +47,7 @@
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 #include "events/random_plague.hpp"
+#include "world/emperor.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
@@ -93,6 +94,7 @@ enum {
   random_collapse,
   random_plague,
   reload_aqueducts,
+  crash_favor,
   run_script
 };
 
@@ -154,6 +156,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
   ADD_DEBUG_EVENT( "city", add_city_border )
   ADD_DEBUG_EVENT( "city", send_exporter )
+  ADD_DEBUG_EVENT( "city", crash_favor )
   ADD_DEBUG_EVENT( "city", run_script )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
@@ -303,6 +306,10 @@ void DebugHandler::Impl::handleEvent(int event)
       brb->attach();
     }
   }
+  break;
+
+  case crash_favor:
+    game->empire()->emperor().updateRelation( game->city()->name(), -100 );
   break;
 
   case random_fire:

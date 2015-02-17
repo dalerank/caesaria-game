@@ -34,11 +34,13 @@ public:
 
 protected:
   std::string _parent;
+  float _value;
   bool _alsoBuilt;
 };
 
 class BurningRuins : public Ruins
 {
+  static const int defaultForce = 2;
 public:
   BurningRuins();
 

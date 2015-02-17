@@ -60,11 +60,7 @@ void BurningRuins::timeStep(const unsigned long time)
   Building::timeStep(time);
 
   _animationRef().update( time );
-  const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() )
-  {
-     _fgPicturesRef().back() = _animationRef().currentFrame();
-  }
+  _fgPicturesRef().back() = _animationRef().currentFrame();
 
   if( game::Date::isDayChanged() )
   {
@@ -76,7 +72,7 @@ void BurningRuins::timeStep(const unsigned long time)
     {
       if( (*it)->group() != objects::disasterGroup )
       {
-        (*it)->updateState( Construction::fire, 0.2 );
+        (*it)->updateState( Construction::fire, _value );
       }
     }
 
@@ -147,6 +143,8 @@ bool BurningRuins::build( const CityAreaInfo& info)
 
   city::FirePtr fire;
   fire << info.city->findService( city::Fire::defaultName() );
+  _value = (info.city->getOption( PlayerCity::fireKoeff ) / 100.f) *
+           (defaultForce / 100.f);
 
   if( fire.isValid() )
   {
