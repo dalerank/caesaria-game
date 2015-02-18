@@ -48,6 +48,18 @@ Construction::Construction(const Type type, const Size& size)
   _d->params[ damage ] = 0;
 }
 
+void Construction::_checkDestroyState()
+{
+  if( state( Construction::damage ) >= 100 )
+  {
+    collapse();
+  }
+  else if( state( Construction::fire ) >= 100 )
+  {
+    burn();
+  }
+}
+
 bool Construction::canBuild(const CityAreaInfo& areaInfo) const
 {
   Tilemap& tilemap = areaInfo.city->tilemap();
@@ -165,6 +177,11 @@ const Picture& Construction::picture() const { return TileOverlay::picture(); }
 void Construction::setState( ParameterType param, double value)
 {
   _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );
+
+  if( param == damage || param == fire )
+  {
+    _checkDestroyState();
+  }
 }
 
 void Construction::updateState(Construction::ParameterType name, double value)
@@ -260,16 +277,7 @@ TilesArray Construction::enterArea() const
 }
 
 void Construction::timeStep(const unsigned long time)
-{
-  if( state( Construction::damage ) >= 100 )
-  {    
-    collapse();
-  }
-  else if( state( Construction::fire ) >= 100 )
-  {
-    burn();
-  }
-
+{  
   for( ConstructionExtensionList::iterator it=_d->extensions.begin();
        it != _d->extensions.end(); )
   {

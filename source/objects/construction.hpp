@@ -65,6 +65,7 @@ public:
   virtual void initialize(const MetaData &mdata);
 protected:
   Construction( const TileOverlay::Type type, const Size& size );
+  void _checkDestroyState();
 
   class Impl;
   ScopedPtr< Impl > _d;
