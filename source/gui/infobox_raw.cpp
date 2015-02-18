@@ -77,8 +77,8 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   if( lbDamage != NULL )
   {
     std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->state( Construction::damage ),
-                                            (int)rawmb->state( Construction::fire ) );
+                                            (int)rawmb->state( pr::damage ),
+                                            (int)rawmb->state( pr::fire ) );
     lbDamage->setText( text );
   }
 

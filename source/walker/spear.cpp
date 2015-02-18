@@ -50,7 +50,7 @@ void Spear::_onTarget()
 
   if( c.isValid() )
   {
-    c->updateState( Construction::damage, 5 );
+    c->updateState( pr::damage, 5 );
   }
 }
 

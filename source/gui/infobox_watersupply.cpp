@@ -167,7 +167,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
           HousePtr house = ptr_cast<House>( (*it)->overlay() );
           if( house.isValid() )
           {
-            haveLowHealthHouse |= house->state( (Construction::Param)House::health ) < 10;
+            haveLowHealthHouse |= house->state( pr::health ) < 10;
           }
         }
 

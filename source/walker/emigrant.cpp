@@ -83,14 +83,14 @@ void Emigrant::_lockHouse( HousePtr house )
     if( oldHouse.isValid() )
     {
       _d->housePosLock = TilePos( -1, -1 );
-      oldHouse->setState( House::settleLock, 0 );
+      oldHouse->setState( pr::settleLock, 0 );
     }
   }
 
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( House::settleLock, tile::hash( _d->housePosLock ) );
+    house->setState( pr::settleLock, tile::hash( _d->housePosLock ) );
   }
 }
 
@@ -341,7 +341,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
       normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
     }
 
-    unsigned int settleLockId = house->state( House::settleLock );
+    unsigned int settleLockId = house->state( pr::settleLock );
     if( settleLockId == houseLockId )
     {
       hlist.clear();

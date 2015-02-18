@@ -70,9 +70,9 @@ public:
     return true;
   }
 
-  virtual void setState(ParameterType name, double value)
+  virtual void setState( Param name, double value)
   {
-    if( _parent && name == Construction::destroyable && value )
+    if( _parent && name == pr::destroyable && value )
     {
       _parent->hide();
     }
@@ -455,7 +455,7 @@ bool LowBridge::canDestroy() const
     }
   }
 
-  bool mayDestroy = state( Construction::destroyable );
+  bool mayDestroy = state( pr::destroyable );
   if( !mayDestroy )
   {
     _d->error = "##really_destroy_bridge_qst##";
@@ -508,7 +508,7 @@ void LowBridge::load(const VariantMap& stream)
 
 void LowBridge::hide()
 {
-  setState( Construction::destroyable, 1);
+  setState( pr::destroyable, 1);
   foreach( it, _d->subtiles )
   {
     (*it)->hide();

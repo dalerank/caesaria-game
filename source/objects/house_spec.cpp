@@ -526,7 +526,7 @@ float HouseSpecification::evaluateHealthNeed(HousePtr house, const Service::Type
       res = (float)( 100 - house->getServiceValue(service) );
    }
 
-   return std::max<float>( res, 100 - house->state( (Construction::Param)House::health ) );
+   return std::max<float>( res, 100 - house->state( pr::health ) );
 }
 
 float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Type service)

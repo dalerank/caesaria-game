@@ -68,7 +68,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     else if( overlay->type() == objects::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
-      damageLevel = (int)house->state( Construction::damage );
+      damageLevel = (int)house->state( pr::damage );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
       if( !needDrawAnimations )
@@ -82,7 +82,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
       BuildingPtr building = ptr_cast<Building>( overlay );
       if( building.isValid() )
       {
-        damageLevel = (int)building->state( Construction::damage );
+        damageLevel = (int)building->state( pr::damage );
       }
 
       city::Helper helper( _city() );
@@ -126,7 +126,7 @@ void Damage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 10, 0, 7 );
+          int damageLevel = math::clamp<int>( construction->state( pr::damage ) / 10, 0, 7 );
           text = damageLevelName[ damageLevel ];
         }
       }
