@@ -23,7 +23,7 @@
 #include "objects/constants.hpp"
 #include "objects/granary.hpp"
 #include "objects/house_spec.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
 #include "world/empire.hpp"

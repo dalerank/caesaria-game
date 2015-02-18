@@ -23,7 +23,7 @@
 #include "gfx/picture.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "walker/helper.hpp"
 #include "picture_info_bank.hpp"
 #include "core/variant_map.hpp"

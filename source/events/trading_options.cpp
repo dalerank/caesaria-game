@@ -19,7 +19,7 @@
 #include "core/utils.hpp"
 #include "game/game.hpp"
 #include "world/empire.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "world/computer_city.hpp"
 #include "factory.hpp"
 

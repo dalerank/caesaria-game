@@ -16,39 +16,50 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_GOOD_H_INCLUDE_
-#define _CAESARIA_GOOD_H_INCLUDE_
+#ifndef _CAESARIA_GOODSTOCK_H_INCLUDE_
+#define _CAESARIA_GOODSTOCK_H_INCLUDE_
 
-#include "core/namedtype.hpp"
+#include <string>
+#include "good.hpp"
+
+class VariantList;
 
 namespace good
 {
 
-DEFINE_NAMEDTYPE(Product)
+class Stock : Product
+{
+public:
+  Stock();
+  Stock(const Product& which, const int maxQty, const int currentQty=0);
+  ~Stock();
 
-const Product none( 0 );
-const Product wheat( 1 );
-const Product fish( 2 );
-const Product meat( 3 );
-const Product fruit( 4 );
-const Product vegetable( 5 );
-const Product olive( 6 );
-const Product oil( 7 );
-const Product grape( 8 );
-const Product wine( 9 );
-const Product timber( 10 );
-const Product furniture( 11 );
-const Product clay( 12 );
-const Product pottery( 13 );
-const Product iron( 14 );
-const Product weapon( 15 );
-const Product marble( 16 );
-const Product denaries( 17 );
-const Product prettyWine( 18 );
-const Product goodCount( 19 );
+  void setType( Product goodType );
+  const Product& type() const;
 
-class Stock;
-class Store;
+  void setCapacity( const int maxQty );
+  int capacity() const { return _capacity; }
+
+  void setQty( const int qty ) { _qty = qty; }
+  int qty() const { return _qty; }
+
+  int freeQty() const;
+
+  void push( const int qty ) { _qty += qty; }
+  void pop( const int qty );
+
+  /** amount: if -1, amount=stock._currentQty */
+  void append( Stock& stock, const int amount = -1);
+
+  VariantList save() const;
+  void load( const VariantList& options );
+
+  bool empty() const;
+
+protected:
+  int _capacity;
+  int _qty;
+};
 
 }//end namespace good
     

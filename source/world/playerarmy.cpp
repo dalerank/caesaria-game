@@ -17,7 +17,7 @@
 
 #include "playerarmy.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "merchant.hpp"

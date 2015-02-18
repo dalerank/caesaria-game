@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "goodstore_simple.hpp"
+#include "storage.hpp"
 #include "core/math.hpp"
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
@@ -39,7 +39,7 @@ public:
 };
 
 
-class SimpleStore::Impl
+class Storage::Impl
 {
 public:
   typedef std::vector<SmStock::Ptr> StockList;
@@ -57,16 +57,16 @@ public:
   }
 };
 
-SimpleStore::SimpleStore() : _gsd( new Impl )
+Storage::Storage() : _gsd( new Impl )
 {
   _gsd->capacity = 0;
   _gsd->reset();
 }
 
-void SimpleStore::setCapacity(const int maxQty) {  _gsd->capacity = maxQty;}
-int SimpleStore::capacity() const {  return _gsd->capacity; }
+void Storage::setCapacity(const int maxQty) {  _gsd->capacity = maxQty;}
+int Storage::capacity() const {  return _gsd->capacity; }
 
-int SimpleStore::qty() const
+int Storage::qty() const
 {
   int qty = 0;
   foreach( goodIt, _gsd->stocks )
@@ -77,11 +77,11 @@ int SimpleStore::qty() const
   return qty;
 }
 
-good::Stock& SimpleStore::getStock(const Product& goodType){  return *(_gsd->stocks[goodType.toInt()].object());}
-int SimpleStore::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->qty();}
-int SimpleStore::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->capacity();}
+good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[goodType.toInt()].object());}
+int Storage::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->qty();}
+int Storage::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->capacity();}
 
-void SimpleStore::setCapacity(const good::Product& goodType, const int maxQty)
+void Storage::setCapacity(const good::Product& goodType, const int maxQty)
 {
   if( goodType == good::goodCount )
   {
@@ -96,9 +96,9 @@ void SimpleStore::setCapacity(const good::Product& goodType, const int maxQty)
   }
 }
 
-void SimpleStore::setQty(const good::Product& goodType, const int currentQty){  _gsd->stocks[goodType.toInt()]->setQty( currentQty );}
+void Storage::setQty(const good::Product& goodType, const int currentQty){  _gsd->stocks[goodType.toInt()]->setQty( currentQty );}
 
-int SimpleStore::getMaxStore(const good::Product goodType)
+int Storage::getMaxStore(const good::Product goodType)
 {
   int freeRoom = 0;
   if( !isDevastation() )
@@ -119,7 +119,7 @@ int SimpleStore::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void SimpleStore::applyStorageReservation(good::Stock &stock, const int reservationID)
+void Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
@@ -140,7 +140,7 @@ void SimpleStore::applyStorageReservation(good::Stock &stock, const int reservat
   stock.pop( amount );
 }
 
-void SimpleStore::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+void Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
@@ -162,7 +162,7 @@ void SimpleStore::applyRetrieveReservation(good::Stock& stock, const int reserva
   stock.push( amount );
 }
 
-VariantMap SimpleStore::save() const
+VariantMap Storage::save() const
 {
   VariantMap stream = good::Store::save();
 
@@ -179,7 +179,7 @@ VariantMap SimpleStore::save() const
   return stream;
 }
 
-void SimpleStore::load( const VariantMap& stream )
+void Storage::load( const VariantMap& stream )
 {
   good::Store::load( stream );
   _gsd->capacity = (int)stream.get( "max" );
@@ -194,9 +194,9 @@ void SimpleStore::load( const VariantMap& stream )
   }
 }
 
-SimpleStore::~SimpleStore(){}
+Storage::~Storage(){}
 
-void SimpleStore::resize(const Store &other )
+void Storage::resize(const Store &other )
 {
   setCapacity( other.capacity() );
 

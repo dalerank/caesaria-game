@@ -31,7 +31,7 @@
 #include "city/city.hpp"
 #include "city/request.hpp"
 #include "core/foreach.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"

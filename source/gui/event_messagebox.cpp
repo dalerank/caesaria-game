@@ -15,7 +15,7 @@
 
 #include "event_messagebox.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/datetimehelper.hpp"
 
 using namespace constants;

@@ -19,7 +19,7 @@
 #include "city/trade_options.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "label.hpp"
 #include "objects/factory.hpp"
 #include "city/helper.hpp"

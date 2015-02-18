@@ -21,12 +21,12 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/foreach.hpp"
 #include "walker/seamerchant.hpp"
 #include "core/foreach.hpp"
 #include "walker/cart_supplier.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "constants.hpp"
 #include "events/event.hpp"
 #include "game/gamedate.hpp"
@@ -45,9 +45,9 @@ class Dock::Impl
 public:
   enum { southPic=29, northPic=5, westPic=41, eastPic=17 };
 
-  good::SimpleStore exportGoods;
-  good::SimpleStore importGoods;
-  good::SimpleStore requestGoods;
+  good::Storage exportGoods;
+  good::Storage importGoods;
+  good::Storage requestGoods;
   DateTime dateSendGoods;
   std::vector<int> saveTileInfo;
   Direction direction;

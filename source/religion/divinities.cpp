@@ -26,7 +26,7 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "walker/fishing_boat.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/warehouse.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"

@@ -24,7 +24,7 @@
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "walker/cart_pusher.hpp"
 
 using namespace constants;

@@ -15,8 +15,8 @@
 
 #include "trade_options.hpp"
 #include "core/utils.hpp"
-#include "good/goodhelper.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/helper.hpp"
+#include "good/storage.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
 
@@ -80,7 +80,7 @@ public:
 
   typedef std::map< good::Product, GoodInfo > GoodsInfo;
   GoodsInfo goods;
-  good::SimpleStore buys, sells;
+  good::Storage buys, sells;
 
   void updateLists()
   {
