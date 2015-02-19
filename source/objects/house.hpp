@@ -31,8 +31,6 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::paramCount, health, happiness, happinessBuff, healthBuff, settleLock };
-
   House( HouseLevel::ID level=HouseLevel::vacantLot );
 
   virtual void timeStep(const unsigned long time);
@@ -53,7 +51,7 @@ public:
   virtual gfx::TilesArray enterArea() const;
   virtual bool build( const CityAreaInfo& info );
 
-  virtual double state( ParameterType param) const;
+  virtual double state( Param param) const;
 
   unsigned int hired() const;
   unsigned int unemployed() const;

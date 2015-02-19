@@ -159,8 +159,8 @@ bool Fountain::build( const CityAreaInfo& info )
                      ? fillDistanceDesert
                      : fillDistanceNormal;
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
   return true;
 }
 

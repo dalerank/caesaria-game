@@ -52,8 +52,8 @@ const Point hippodromeSectionOffset[] = {
 HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction direction, Type type )
   : Building( objects::fortArea, Size(5) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
   _fgPicturesRef().resize( 1 );
 

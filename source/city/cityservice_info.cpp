@@ -23,7 +23,7 @@
 #include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
 #include "city/helper.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"

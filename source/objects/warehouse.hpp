@@ -21,7 +21,7 @@
 
 #include "working.hpp"
 #include "game/enums.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/position.hpp"
 
 class Warehouse: public WorkingBuilding

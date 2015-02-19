@@ -19,7 +19,7 @@
 #include "factory.hpp"
 
 #include "gfx/tile.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "walker/cart_pusher.hpp"
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
@@ -30,7 +30,7 @@
 #include "core/variant_map.hpp"
 #include "walker/cart_supplier.hpp"
 #include "core/utils.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
@@ -44,7 +44,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wine_workshop, Winery)
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oil_workshop, Creamery)
 
-class FactoryStore : public good::SimpleStore
+class FactoryStore : public good::Storage
 {
 public:
   FactoryStore() : factory( NULL ) {}
@@ -56,18 +56,18 @@ public:
       return 0;
     }
 
-    return good::SimpleStore::getMaxStore( goodType );
+    return good::Storage::getMaxStore( goodType );
   }
 
   virtual void applyStorageReservation( good::Stock &stock, const int reservationID )
   {
-    good::SimpleStore::applyStorageReservation( stock, reservationID );
+    good::Storage::applyStorageReservation( stock, reservationID );
     emit onChangeState();
   }
 
   virtual void applyRetrieveReservation( good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
+    good::Storage::applyRetrieveReservation( stock, reservationID );
     emit onChangeState();
   }
 

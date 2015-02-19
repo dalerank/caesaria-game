@@ -22,7 +22,7 @@
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
 #include "objects/house_level.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "objects/watersupply.hpp"

@@ -19,7 +19,7 @@
 #define __CAESARIA_BARRACKS_H_INCLUDED__
 
 #include "training.hpp"
-#include "good/goodstore.hpp"
+#include "good/good.hpp"
 
 class Barracks : public TrainingBuilding
 {

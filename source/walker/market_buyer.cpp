@@ -26,7 +26,7 @@
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
@@ -47,7 +47,7 @@ public:
   good::Product priorityGood;
   int maxDistance;
   MarketPtr market;
-  good::SimpleStore basket;
+  good::Storage basket;
   int reservationID;
 };
 
@@ -76,7 +76,7 @@ MarketBuyer::~MarketBuyer(){}
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                               MarketPtr market, good::SimpleStore& basket, const good::Product what,
+                               MarketPtr market, good::Storage& basket, const good::Product what,
                                Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;

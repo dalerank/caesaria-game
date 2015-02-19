@@ -53,7 +53,7 @@
 #include "world/city.hpp"
 #include "world/empire.hpp"
 #include "trade_options.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "world/trading.hpp"
 #include "walker/merchant.hpp"
 #include "game/gamedate.hpp"

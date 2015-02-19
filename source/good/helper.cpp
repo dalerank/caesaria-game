@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "goodhelper.hpp"
-#include "good.hpp"
+#include "helper.hpp"
+#include "stock.hpp"
 #include "core/enumerator.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
@@ -112,7 +112,7 @@ public:
   }
 };
 
-Helper& Helper::getInstance()
+Helper& Helper::instance()
 {
   static Helper inst;
   return inst;
@@ -147,15 +147,15 @@ Helper::~Helper() {}
 
 std::string Helper::name(Product type )
 {
-  Impl::GoodNames::iterator it = getInstance()._d->goodName.find( type );
-  return it != getInstance()._d->goodName.end() ? it->second : "";
+  Impl::GoodNames::iterator it = instance()._d->goodName.find( type );
+  return it != instance()._d->goodName.end() ? it->second : "";
 }
 
 Product Helper::getType( const std::string& name )
 {
-  good::Product type = getInstance()._d->findType( name );
+  good::Product type = instance()._d->findType( name );
 
-  if( type == getInstance()._d->getInvalid() )
+  if( type == instance()._d->getInvalid() )
   {
     Logger::warning( "Can't find type for goodName " + name );
     return good::none;
@@ -167,7 +167,7 @@ Product Helper::getType( const std::string& name )
 
 std::string Helper::getTypeName(Product type )
 {
-  return getInstance()._d->findName( type );
+  return instance()._d->findName( type );
 }
 
 float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, int qty)

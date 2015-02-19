@@ -19,7 +19,7 @@
 #define __CAESARIA_GOODCARAVAN_H_INCLUDED__
 
 #include "movableobject.hpp"
-#include "good/goodstore.hpp"
+#include "good/good.hpp"
 
 namespace world
 {

@@ -13,29 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "dock_pusher.hpp"
-#include "city/city.hpp"
-#include "good/stock.hpp"
-#include "walkers_factory.hpp"
+#ifndef __CAESARIA_OBJECTPARAM_H_INCLUDED__
+#define __CAESARIA_OBJECTPARAM_H_INCLUDED__
 
-using namespace constants;
+#include "core/namedtype.hpp"
 
-REGISTER_CLASS_IN_WALKERFACTORY(walker::docker, Docker)
+DEFINE_NAMEDTYPE(Param)
 
-Docker::Docker( PlayerCityPtr city )
-  : CartPusher( city )
+namespace pr
 {
-  _setType( walker::docker );
-  stock().setCapacity( bigCart );
+const Param fire( 0 );
+const Param damage( 1 );
+const Param inflammability(2);
+const Param collapsibility(3);
+const Param destroyable(4);
+const Param health(5);
+const Param happiness(6);
+const Param happinessBuff(7);
+const Param healthBuff(8);
+const Param settleLock(9);
+const Param lockTerrain(10);
+const Param food(11);
+const Param paramCount(12);
 }
 
-DockerPtr Docker::create(PlayerCityPtr city )
-{
-  DockerPtr ret( new Docker( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
-}
+#endif //__CAESARIA_OBJECTPARAM_H_INCLUDED__

@@ -17,7 +17,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "warehouse_store.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"

@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "good.hpp"
+#include "stock.hpp"
 
 #include "core/gettext.hpp"
 #include "core/exception.hpp"

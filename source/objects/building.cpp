@@ -60,8 +60,8 @@ public:
 Building::Building(const TileOverlay::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
-  setState( Construction::inflammability, 1 );
-  setState( Construction::collapsibility, 1 );
+  setState( pr::inflammability, 1 );
+  setState( pr::collapsibility, 1 );
   _d->cachedPopkoef = 1;
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
@@ -79,8 +79,8 @@ void Building::timeStep(const unsigned long time)
 
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    updateState( Construction::damage, _d->cachedPopkoef * state( Construction::collapsibility ) );
-    updateState( Construction::fire, _d->cachedPopkoef * state( Construction::inflammability ) );
+    updateState( pr::damage, _d->cachedPopkoef * state( pr::collapsibility ) );
+    updateState( pr::fire, _d->cachedPopkoef * state( pr::inflammability ) );
   }
 
   Construction::timeStep(time);
@@ -113,8 +113,8 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 
    switch(service)
    {
-   case Service::engineer: res = state( Construction::damage ); break;
-   case Service::prefect: res = state( Construction::fire ); break;
+   case Service::engineer: res = state( pr::damage ); break;
+   case Service::prefect: res = state( pr::fire ); break;
    default: break;
    }
    return res;
@@ -126,8 +126,8 @@ bool Building::build( const CityAreaInfo& info )
 
   switch( info.city->climate() )
   {
-  case game::climate::northen: setState( Construction::inflammability, 0.5 ); break;
-  case game::climate::desert: setState( Construction::inflammability, 2 ); break;
+  case game::climate::northen: setState( pr::inflammability, 0.5 ); break;
+  case game::climate::desert: setState( pr::inflammability, 2 ); break;
   default: break;
   }
 
@@ -149,8 +149,8 @@ void Building::applyService( ServiceWalkerPtr walker)
 
    switch( service )
    {
-   case Service::engineer: setState( Construction::damage, 0 ); break;
-   case Service::prefect: setState( Construction::fire, 0 ); break;
+   case Service::engineer: setState( pr::damage, 0 ); break;
+   case Service::prefect: setState( pr::fire, 0 ); break;
    default: break;
    }
 }

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "infobox_raw.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -77,8 +77,8 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   if( lbDamage != NULL )
   {
     std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->state( Construction::damage ),
-                                            (int)rawmb->state( Construction::fire ) );
+                                            (int)rawmb->state( pr::damage ),
+                                            (int)rawmb->state( pr::fire ) );
     lbDamage->setText( text );
   }
 

@@ -33,7 +33,7 @@ using namespace gfx;
 class Construction::Impl
 {
 public:
-  typedef std::map<int, double> Params;
+  typedef std::map<Param, double> Params;
   TilesArray accessRoads;
   Params params;
 
@@ -44,8 +44,20 @@ public:
 Construction::Construction(const Type type, const Size& size)
   : TileOverlay( type, size ), _d( new Impl )
 {
-  _d->params[ fire ] = 0;
-  _d->params[ damage ] = 0;
+  _d->params[ pr::fire ] = 0;
+  _d->params[ pr::damage ] = 0;
+}
+
+void Construction::_checkDestroyState()
+{
+  if( state( pr::damage ) >= 100 )
+  {
+    collapse();
+  }
+  else if( state( pr::fire ) >= 100 )
+  {
+    burn();
+  }
 }
 
 bool Construction::canBuild(const CityAreaInfo& areaInfo) const
@@ -74,8 +86,8 @@ std::string Construction::troubleDesc() const
   }
 
   int lvlTrouble = 0;
-  int damage = state( Construction::fire );
-  int fire = state( Construction::damage );
+  int damage = state( pr::fire );
+  int fire = state( pr::damage );
 
   if( fire > 50 || damage > 50 )
   {
@@ -162,12 +174,17 @@ void Construction::collapse()
 
 const Picture& Construction::picture() const { return TileOverlay::picture(); }
 
-void Construction::setState( ParameterType param, double value)
+void Construction::setState( Param param, double value)
 {
   _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );
+
+  if( param == pr::damage || param == pr::fire )
+  {
+    _checkDestroyState();
+  }
 }
 
-void Construction::updateState(Construction::ParameterType name, double value)
+void Construction::updateState( Param name, double value)
 {
   setState( name, state( name ) + value );
 }
@@ -178,7 +195,7 @@ void Construction::save( VariantMap& stream) const
   VariantList vl_states;
   foreach( it, _d->params )
   {
-    vl_states.push_back( VariantList() << (int)it->first << (double)it->second );
+    vl_states.push_back( VariantList() << (int)it->first.toInt() << (double)it->second );
   }
 
   VariantMap vm_extensions;
@@ -201,7 +218,7 @@ void Construction::load( const VariantMap& stream )
   foreach( it, vl_states )
   {
     const VariantList& param = it->toList();
-    _d->params[ (Construction::Param)param.get( 0 ).toInt() ] = param.get( 1, 0.f ).toDouble();
+    _d->params[ Param( param.get( 0 ).toInt() ) ] = param.get( 1, 0.f ).toDouble();
   }
 
   VariantMap vm_extensions = stream.get( "extensions" ).toMap();
@@ -247,7 +264,7 @@ void Construction::initialize(const MetaData& mdata)
   }
 }
 
-double Construction::state( ParameterType param) const { return _d->params[ param ]; }
+double Construction::state(Param param) const { return _d->params[ param ]; }
 
 TilesArray Construction::enterArea() const
 {
@@ -260,16 +277,7 @@ TilesArray Construction::enterArea() const
 }
 
 void Construction::timeStep(const unsigned long time)
-{
-  if( state( Construction::damage ) >= 100 )
-  {    
-    collapse();
-  }
-  else if( state( Construction::fire ) >= 100 )
-  {
-    burn();
-  }
-
+{  
   for( ConstructionExtensionList::iterator it=_d->extensions.begin();
        it != _d->extensions.end(); )
   {

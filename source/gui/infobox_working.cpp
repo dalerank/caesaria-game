@@ -50,8 +50,8 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
   setText( "" );
 
   std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->state( Construction::damage ),
-                                           (int)_working->state( Construction::fire ));
+                                           (int)_working->state( pr::damage ),
+                                           (int)_working->state( pr::fire ));
   if( is_kind_of<ServiceBuilding>( _working ) )
   {
     ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );

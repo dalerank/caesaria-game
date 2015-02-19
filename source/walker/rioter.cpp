@@ -197,9 +197,9 @@ void Rioter::timeStep(const unsigned long time)
         foreach( it, constructions )
         {
           ConstructionPtr c = *it;
-          c->updateState( Construction::fire, 1 );
-          c->updateState( Construction::damage, 1 );
-          if( c->state( Construction::damage ) < 10 || c->state( Construction::fire ) < 10 )
+          c->updateState( pr::fire, 1 );
+          c->updateState( pr::damage, 1 );
+          if( c->state( pr::damage ) < 10 || c->state( pr::fire ) < 10 )
           {
             events::GameEventPtr e = events::Disaster::create( c->tile(), events::Disaster::riots );
             e->dispatch();
