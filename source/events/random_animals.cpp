@@ -74,7 +74,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
   {
     Tilemap& tmap = game.city()->tilemap();
     TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-    border = border.walkableTiles( true );
+    border = border.walkables( true );
 
     Tile* randomTile = border.random();
 

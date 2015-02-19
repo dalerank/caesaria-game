@@ -70,7 +70,7 @@ void Animals::timeStep(const unsigned int time)
 
   Tilemap& tmap = _city()->tilemap();
   TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-  border = border.walkableTiles( true );
+  border = border.walkables( true );
 
   foreach( winfo, _d->maxAnimal )
   {

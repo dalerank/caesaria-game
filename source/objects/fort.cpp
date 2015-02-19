@@ -331,7 +331,7 @@ TilePos Fort::freeSlot() const
   break;
   }
 
-  tiles = tiles.walkableTiles( true );
+  tiles = tiles.walkables( true );
   if( !tiles.empty() )
   {
     foreach( it, tiles )
