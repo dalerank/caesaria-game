@@ -20,6 +20,7 @@
 #define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "core/namedtype.hpp"
+#include <list>
 
 namespace good
 {
@@ -49,6 +50,8 @@ const Product goodCount( 19 );
 
 class Stock;
 class Store;
+
+typedef std::list<Product> Products;
 
 }//end namespace good
     

@@ -22,6 +22,7 @@
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "objects/building.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "pathway/path_finding.hpp"

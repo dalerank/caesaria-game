@@ -96,7 +96,7 @@ void Market::deliverService()
 unsigned int Market::walkerDistance() const {  return 26; }
 good::Store &Market::goodStore(){  return _d->store; }
 
-std::list<good::Product> Market::mostNeededGoods()
+good::Products Market::mostNeededGoods()
 {
   std::list<good::Product> res;
 

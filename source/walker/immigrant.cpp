@@ -19,6 +19,7 @@
 #include "core/position.hpp"
 #include "objects/road.hpp"
 #include "gfx/animation_bank.hpp"
+#include "gfx/cart_animation.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
@@ -44,11 +45,11 @@ Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
   _setType( walker::immigrant );
 }
 
-Animation& Immigrant::_cart()
+CartAnimation& Immigrant::_cart()
 {
   if( !Emigrant::_cart().isValid() )
   {
-    _setCart( AnimationBank::getCart( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, 0, direction()) );
+    _cart().load( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, direction() );
   }
 
   return Emigrant::_cart();
@@ -85,7 +86,7 @@ void Immigrant::getPictures( Pictures& oPics)
 void Immigrant::_changeDirection()
 {
   Emigrant::_changeDirection();
-  _setCart( Animation() );  // need to get the new graphic
+  _setCart( CartAnimation() );  // need to get the new graphic
 }
 
 void Immigrant::_updateThoughts()

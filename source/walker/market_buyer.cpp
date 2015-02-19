@@ -119,13 +119,12 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<good::Product> allPriorityGoods = _d->market->mostNeededGoods();
-  std::list<good::Product> priorityGoods;
+  good::Products priorityGoods;
   
   //only look at goods that shall not be stockpiled
-  foreach(goodType, allPriorityGoods)
+  foreach(goodType, _d->market->mostNeededGoods() )
   {
-    if( !_city()->tradeOptions().isGoodsStacking(*goodType) )
+    if( !_city()->tradeOptions().isStacking(*goodType) )
       priorityGoods.push_back(*goodType);
   }
 

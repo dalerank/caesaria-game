@@ -26,6 +26,7 @@
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "walkers_factory.hpp"
+#include "objects/construction.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -45,7 +46,7 @@ FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
   _setType( walker::fishPlace );
   setSpeedMultiplier( 0.1f );
 
-  setName( _("##ship##") );
+  setName( _("##fish_place##") );
 
   _d->fishCount = rand() % 100;
 
