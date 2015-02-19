@@ -24,11 +24,14 @@
 #include "core/variant_map.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Fishery,fishery)
 
 class Fishery::Impl
 {

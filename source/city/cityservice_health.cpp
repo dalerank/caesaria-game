@@ -20,11 +20,14 @@
 #include "helper.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(HealthCare,healtCare)
 
 namespace {
 const int maxDescriptionLevel = 12;

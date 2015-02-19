@@ -37,12 +37,15 @@
 #include "cityservice_info.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Migration,migration)
 
 namespace {
 const int possibleTaxLevel = 7;

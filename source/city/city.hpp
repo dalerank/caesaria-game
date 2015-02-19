@@ -51,7 +51,7 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
-                 fireKoeff } OptionType;
+                 fireKoeff, barbarianAttack } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();

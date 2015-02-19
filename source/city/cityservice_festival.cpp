@@ -27,11 +27,14 @@
 #include "events/updatehouseservice.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace religion;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Festival,festival)
 
 namespace {
   typedef enum { ftNone=0, ftSmall, ftMiddle, ftBig, ftCount } FestType;

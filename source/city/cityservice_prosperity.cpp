@@ -31,12 +31,15 @@
 #include "world/empire.hpp"
 #include "objects/hippodrome.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
 #include "cityservice_info.hpp"
 
 using namespace  constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(ProsperityRating,prosperity)
 
 class ProsperityRating::Impl
 {

@@ -34,11 +34,14 @@
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "cityservice_military.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Info,info)
 
 CAESARIA_LITERALCONST(lastHistory)
 CAESARIA_LITERALCONST(allHistory)

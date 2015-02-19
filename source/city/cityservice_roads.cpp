@@ -25,12 +25,15 @@
 #include "objects/house_spec.hpp"
 #include "objects/road.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Roads,roads)
 
 class Roads::Impl
 {

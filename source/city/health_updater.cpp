@@ -25,11 +25,14 @@
 #include "objects/house.hpp"
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(HealthUpdater,health_updater)
 
 class HealthUpdater::Impl
 {

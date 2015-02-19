@@ -25,12 +25,15 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "walker/walkers_factory.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Animals,animals)
 
 namespace {
 static const unsigned int defaultMaxAnimals = 10;
