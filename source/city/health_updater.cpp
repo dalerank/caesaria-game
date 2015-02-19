@@ -59,7 +59,7 @@ void HealthUpdater::timeStep( const unsigned int time)
 
     foreach( it, houses )
     {
-      (*it)->updateState( House::health, _d->value );
+      (*it)->updateState( pr::health, _d->value );
     }
   }
 }

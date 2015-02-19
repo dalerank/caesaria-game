@@ -52,6 +52,30 @@
     text : "##city_lockinfo_mode##"
   }
 
+  lbFireRisk#Label :
+  {
+    geometry : [ 16, 240, 220, 265 ]
+    font : "FONT_2"
+  }
+
+  btnIncreaseFireRisk#TexturedButton : {
+    geometry : [ 220, 240, 244, 264 ]
+    normal : [ "paneling", 601 ]
+    hovered : [ "paneling", 602 ]
+    pressed : [ "paneling", 603 ]
+    disabled : [ "paneling", 304 ]
+    id : 1
+  }
+
+  btnDeccreaseFireRisk#TexturedButton : {
+    geometry : [ 245, 240, 269, 264 ]
+    normal : [ "paneling", 605 ]
+    hovered : [ "paneling", 606 ]
+    pressed : [ "paneling", 607 ]
+    disabled : [ "paneling", 305 ]
+    id : 2
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]

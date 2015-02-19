@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "goodstore.hpp"
-#include "goodstore_simple.hpp"
-#include "goodorders.hpp"
+#include "store.hpp"
+#include "storage.hpp"
+#include "orders.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
-#include "goodhelper.hpp"
+#include "helper.hpp"
 
 namespace good
 {
@@ -124,7 +124,7 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
 }
 
 
-void Store::applyStorageReservation(SimpleStore &goodStore, const int reservationID)
+void Store::applyStorageReservation(Storage &goodStore, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID);
   good::Stock &stock = goodStore.getStock(reservedStock.type() );
@@ -133,7 +133,7 @@ void Store::applyStorageReservation(SimpleStore &goodStore, const int reservatio
 }
 
 
-void Store::applyRetrieveReservation(SimpleStore &goodStore, const int reservationID)
+void Store::applyRetrieveReservation(Storage &goodStore, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID);
   good::Stock &stock = goodStore.getStock(reservedStock.type() );

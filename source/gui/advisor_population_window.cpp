@@ -25,7 +25,7 @@
 #include "gfx/engine.hpp"
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "city/migration.hpp"
 #include "label.hpp"
 #include "texturedbutton.hpp"

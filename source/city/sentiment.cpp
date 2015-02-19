@@ -127,11 +127,11 @@ void Sentiment::timeStep(const unsigned int time )
     foreach( it, houses )
     {
       HousePtr h = *it;
-      h->setState( House::happinessBuff, _d->buffValue );
+      h->setState( pr::happinessBuff, _d->buffValue );
 
       if( h->habitants().count() > 0 )
       {
-        _d->finishValue += h->state( House::happiness );
+        _d->finishValue += h->state( pr::happiness );
         houseNumber++;
       }
     }

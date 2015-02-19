@@ -19,7 +19,7 @@
 #include "core/gettext.hpp"
 #include "city/helper.hpp"
 #include "objects/wharf.hpp"
-#include "good/good.hpp"
+#include "good/stock.hpp"
 #include "walker/fish_place.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/utils.hpp"

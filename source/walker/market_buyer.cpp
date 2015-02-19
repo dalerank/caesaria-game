@@ -26,13 +26,14 @@
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "city/trade_options.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -46,7 +47,7 @@ public:
   good::Product priorityGood;
   int maxDistance;
   MarketPtr market;
-  good::SimpleStore basket;
+  good::Storage basket;
   int reservationID;
 };
 
@@ -75,7 +76,7 @@ MarketBuyer::~MarketBuyer(){}
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                               MarketPtr market, good::SimpleStore& basket, const good::Product what,
+                               MarketPtr market, good::Storage& basket, const good::Product what,
                                Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;
@@ -122,12 +123,12 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   std::list<good::Product> priorityGoods;
   
   //only look at goods that shall not be stockpiled
-  foreach( goodType, allPriorityGoods)
+  foreach(goodType, allPriorityGoods)
   {
-    if( ! _city().tradeOptions().isGoodsStacking(goodType) )
-      priorityGoods.push_back(goodType);
+    if( !_city()->tradeOptions().isGoodsStacking(*goodType) )
+      priorityGoods.push_back(*goodType);
   }
-  
+
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
   if( priorityGoods.size() > 0 )

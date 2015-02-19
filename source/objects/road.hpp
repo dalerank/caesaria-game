@@ -23,7 +23,6 @@
 class Road : public Construction
 {
 public:
-  typedef enum { lockTerrain=Construction::paramCount+1 } RoadFlag;
   Road();
 
   virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;

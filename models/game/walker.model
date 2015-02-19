@@ -24,6 +24,11 @@
     obsoleteOverlays : [ "gatehouse", "roadBlock" ]
   }
 
+  engineer : {
+    nation : "rome"
+    obsoleteOverlays : [ "gatehouse", "roadBlock" ]
+  }
+
   dustCloud : {
     animation : { rc : "dust", start : 1, frames : 19, delay : 4 }
   }

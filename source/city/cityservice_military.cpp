@@ -80,15 +80,8 @@ void Military::timeStep(const unsigned int time )
     {
       world::ObjectPtr object = empire->findObject( it->objectName );
 
-      if( object.isValid() )
-      {
-
-        ++it;
-      }
-      else
-      {
-        it = _d->notifications.erase( it );
-      }
+      if( object.isValid() ) { ++it; }
+      else { it = _d->notifications.erase( it ); }
     }
   }
 

@@ -34,8 +34,8 @@ namespace city
 class Funds;
 class VictoryConditions;
 
-namespace trade { class Options; }
-namespace development { class Options; }
+  namespace trade { class Options; }
+  namespace development { class Options; }
 }
 
 struct BorderInfo
@@ -50,7 +50,8 @@ class PlayerCity : public world::City
 {
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
-                 forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert } OptionType;
+                 forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
+                 fireKoeff } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();

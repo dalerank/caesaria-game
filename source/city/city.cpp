@@ -53,7 +53,7 @@
 #include "world/city.hpp"
 #include "world/empire.hpp"
 #include "trade_options.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "world/trading.hpp"
 #include "walker/merchant.hpp"
 #include "game/gamedate.hpp"
@@ -200,6 +200,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( zoomInvert, 1 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
+  setOption( fireKoeff, 100 );
 }
 
 void PlayerCity::_initAnimation()
@@ -222,7 +223,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, game::Date::current() );
+    _d->monthStep( this, game::Date::current() );      
   }
 
   if( game::Date::isWeekChanged() )
@@ -418,6 +419,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
     }
     else { ++walkerIt; }
   }
+
   walkers << newWalkers;
   newWalkers.clear();
 }
@@ -460,7 +462,7 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
-    }
+  }
 }
 
 void PlayerCity::Impl::resolveNewIssue(city::Funds::IssueType type)
@@ -508,7 +510,8 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
   stream[ "godEnabled" ] = getOption( PlayerCity::godEnabled );
   stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
-  stream[ "zoomInvert"] = getOption( PlayerCity::zoomInvert );
+  stream[ "zoomInvert" ] = getOption( PlayerCity::zoomInvert );
+  stream[ "fireKoeff"  ] = getOption( PlayerCity::fireKoeff );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -599,6 +602,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( godEnabled, stream.get( "godEnabled", 1 ) );
   setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
+  setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );

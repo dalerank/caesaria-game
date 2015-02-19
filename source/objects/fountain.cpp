@@ -142,7 +142,6 @@ bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
   if( tile.param( Tile::pReservoirWater ) )
   {
     thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 11 ) );
-    //thisp->_fgPicturesRef().back().setOffset( 12, 8 + picture().offset().y() );
   }
 
   return ret;
@@ -160,8 +159,8 @@ bool Fountain::build( const CityAreaInfo& info )
                      ? fillDistanceDesert
                      : fillDistanceNormal;
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
   return true;
 }
 

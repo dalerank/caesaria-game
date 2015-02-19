@@ -21,7 +21,7 @@
     title : "##engineer##"
     may_continue : false
     short : "##tt2_short##"
-    maxHouseLevel : "big_villa"
+    maxHouseLevel : "hut"
     caption : "##tt2_caption##"
     overview :  [ "##tutorial_priority##",
                   "@img=picture3_00004",
