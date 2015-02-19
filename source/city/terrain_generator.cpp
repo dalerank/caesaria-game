@@ -625,6 +625,24 @@ static void __createRoad(Game& game )
   oCity->setBorderInfo( borderInfo );
 }
 
+void __createMeadows( Game& game )
+{
+  PlayerCityPtr oCity = game.city();
+  Tilemap& oTilemap = oCity->tilemap();
+
+  TilesArray tiles = oTilemap.allTiles();
+  int fieldSize = math::max<int>( tiles.size() / 10000.f, 1 );
+  int maxMeadowTiles = pow( fieldSize, 2);
+  for( int k=0; k < maxMeadowTiles; k++ )
+  {
+    Tile* tile = tiles.random();
+    TilesArray meadows = oTilemap.getArea( math::random( fieldSize ), tile->pos() );
+    meadows = meadows.terrains();
+
+    foreach( it, meadows ) (*it)->setFlag( Tile::tlMeadow, true );
+  }
+}
+
 void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrainSq)
 {
   MidpointDisplacement diamond_square = MidpointDisplacement(n2size, 8, 8, smooth, terrainSq);
@@ -798,7 +816,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __finalizeMap( game, passCheckInsideCornerTiles );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
-
+  __createMeadows( game );
   __finalizeMap( game, 0xff );
 
   //update pathfinder map

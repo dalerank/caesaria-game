@@ -100,7 +100,9 @@ TilesArray TilesArray::terrains() const
   TilesArray ret;
   foreach( i, *this)
   {
-    if( (*i)->getFlag( Tile::tlWater ) || (*i)->getFlag( Tile::tlDeepWater ) )
+    if( (*i)->getFlag( Tile::tlWater ) || (*i)->getFlag( Tile::tlDeepWater )
+        || (*i)->getFlag( Tile::tlRock ) || (*i)->getFlag( Tile::tlCoast )
+        || (*i)->getFlag( Tile::tlRift) )
       continue;
 
     ret.push_back( *i );
