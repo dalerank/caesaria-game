@@ -67,7 +67,12 @@ public:
 
   void removeAt( int index )
   {
+    if( index < size() )
+      return;
 
+    typename SmartList<T>::const_iterator it = this->begin();
+    std::advance( it, index );
+    this->erase( it );
   }
 
   template< class W >
