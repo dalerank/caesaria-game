@@ -247,7 +247,7 @@ void MarketBuyer::_reachedPathway()
         // take other goods if possible
         for ( good::Product goodType = good::wheat; goodType<=good::vegetable; ++goodType)
         {
-            if( !_city()->tradeOptions().isGoodsStacking(goodType) )
+            if( !_city()->tradeOptions().isStacking(goodType) )
             {
                 // for all types of good (except G_NONE)
                 int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -274,7 +274,7 @@ void MarketBuyer::_reachedPathway()
         // take other goods if possible
         for ( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
         {
-            if( !_city()->tradeOptions().isGoodsStacking(goodType) )
+            if( !_city()->tradeOptions().isStacking(goodType) )
             {
                 // for all types of good (except G_NONE)
                 int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
