@@ -153,10 +153,7 @@ Order Options::getOrder( good::Product type ) const
   return ( it == _d->goods.end() ? trade::noTrade : it->second.order);
 }
 
-Options::~Options()
-{
-
-}
+Options::~Options() {}
 
 Order Options::switchOrder( good::Product type )
 {
@@ -196,7 +193,7 @@ void Options::setTradeLimit( Order o, good::Product type, unsigned int qty)
   _d->updateLists();
 }
 
-bool Options::isGoodsStacking( good::Product type )
+bool Options::isStacking( good::Product type )
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.stacking );

@@ -18,6 +18,7 @@
 #include "serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant_map.hpp"
+#include "objects/service.hpp"
 #include "city/city.hpp"
 #include "pathway/path_finding.hpp"
 #include "pathway/pathway_helper.hpp"

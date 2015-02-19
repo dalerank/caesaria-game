@@ -19,6 +19,8 @@
 #define __CAESARIA_MARKET_KID_H_INCLUDED__
 
 #include "human.hpp"
+#include "good/good.hpp"
+#include "objects/predefinitions.hpp"
 
 class MarketKid : public Human
 {

@@ -40,7 +40,6 @@ public:
 
   static float exportPrice( PlayerCityPtr city, good::Product gtype, int qty );
   static float importPrice( PlayerCityPtr city, good::Product gtype, int qty );
-  static const gfx::Animation& getCartPicture( const good::Stock& stock, constants::Direction direction );
   static good::Product random();
   ~Helper();
 private:

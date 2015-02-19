@@ -19,6 +19,8 @@
 #define __CAESARIA_SERVICEWALKER_H_INCLUDED__
 
 #include "human.hpp"
+#include "gfx/tile.hpp"
+#include "game/service.hpp"
 #include "pathway/predefinitions.hpp"
 #include "walkers_factory_creator.hpp"
 
