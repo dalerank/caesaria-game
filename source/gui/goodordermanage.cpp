@@ -273,7 +273,7 @@ void GoodOrderManageWindow::toggleIndustryEnable()
 
 void GoodOrderManageWindow::toggleStackingGoods()
 {
-  bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
+  bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
   _d->city->tradeOptions().setStackMode( _d->type, !isStacking );
 
   updateStackingState();
@@ -282,7 +282,7 @@ void GoodOrderManageWindow::toggleStackingGoods()
 
 void GoodOrderManageWindow::updateStackingState()
 {
-  bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
+  bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
   std::string text;
   if( isStacking )
   {

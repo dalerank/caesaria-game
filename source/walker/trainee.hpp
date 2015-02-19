@@ -19,6 +19,7 @@
 #define __CAESARIA_TRAINEEWALKER_H_INCLUDED__
 
 #include "human.hpp"
+#include "gfx/tileoverlay.hpp"
 #include "walkers_factory_creator.hpp"
 
 class Propagator;

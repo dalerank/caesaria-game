@@ -34,8 +34,10 @@
 #include "good/store.hpp"
 #include "objects/constants.hpp"
 #include "events/removecitizen.hpp"
+#include "city/trade_options.hpp"
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
+#include "gfx/cart_animation.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -52,7 +54,7 @@ public:
   good::Stock stock;
   TilePos storageBuildingPos;
   TilePos baseBuildingPos;
-  Animation anim;
+  CartAnimation anim;
   int maxDistance;
   long rcvReservationID;
   long reservationID;
@@ -135,11 +137,11 @@ void CartSupplier::_reachedPathway()
 }
 
 
-const Animation& CartSupplier::_cart()
+const gfx::CartAnimation& CartSupplier::_cart()
 {
   if( !_d->anim.isValid() )
   {
-    _d->anim = good::Helper::getCartPicture( _d->stock, direction() );
+    _d->anim.load( _d->stock, direction() );
   }
 
   return _d->anim;
@@ -148,7 +150,7 @@ const Animation& CartSupplier::_cart()
 void CartSupplier::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->anim = Animation();  // need to get the new graphic
+   _d->anim = CartAnimation();  // need to get the new graphic
 }
 
 void CartSupplier::getPictures( Pictures& oPics)
@@ -191,8 +193,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( DirectPRoutes::iterator pathWayIt= pathWayList.begin();
-       pathWayIt != pathWayList.end(); ++pathWayIt)
+  foreach( pathWayIt, pathWayList )
   {
     // for every warehouse within range
     BuildingPtr building= ptr_cast<Building>( pathWayIt->first );
@@ -225,6 +226,9 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
 void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Product type, const int qty )
 {
   _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
+
+  if( _city()->tradeOptions().isStacking( type ) )
+    return;
 
   // we have something to buy!
   // get the list of buildings within reach

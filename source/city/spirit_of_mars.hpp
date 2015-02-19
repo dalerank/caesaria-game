@@ -15,28 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_INDIGENE_H_INCLUDED__
-#define __CAESARIA_INDIGENE_H_INCLUDED__
+#ifndef _CAESARIA_SPIRITOFMARS_H_INCLUDE_
+#define _CAESARIA_SPIRITOFMARS_H_INCLUDE_
 
-#include "human.hpp"
-#include "objects/predefinitions.hpp"
+#include "cityservice.hpp"
+#include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
-class Indigene : public Human
+namespace city
+{
+
+class SpiritOfMars : public Srvc
 {
 public:
-  static IndigenePtr create( PlayerCityPtr city );
+  static SrvcPtr create(PlayerCityPtr city , int month=3);
+  virtual void timeStep( const unsigned int time);
 
-  void send2city( BuildingPtr base );
+  static std::string defaultName();
+  virtual bool isDeleted() const;
 
-protected:
-  virtual void _reachedPathway();
-  void _updateState();
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
 
 private:
-  Indigene( PlayerCityPtr city );
+  SpiritOfMars( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_INDIGENE_H_INCLUDED__
+}//end namespace city
+
+#endif //_CAESARIA_SPIRITOFMARS_H_INCLUDE_

@@ -184,12 +184,6 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
   return price * units.ivalue();
 }
 
-const Animation& Helper::getCartPicture(const good::Stock& stock, constants::Direction direction)
-{
-  int index = (stock.empty() ? good::none : stock.type()).toInt();
-  return AnimationBank::getCart( index, stock.capacity(), direction );
-}
-
 Product Helper::random()
 {
   return Product( math::random( goodCount.toInt() ));

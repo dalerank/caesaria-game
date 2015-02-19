@@ -18,6 +18,7 @@
 #include "corpse.hpp"
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
+#include "objects/construction.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"

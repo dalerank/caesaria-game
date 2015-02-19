@@ -65,6 +65,11 @@ public:
     }
   }
 
+  void removeAt( int index )
+  {
+
+  }
+
   template< class W >
   SmartList exclude() const
   {

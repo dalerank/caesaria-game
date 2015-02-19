@@ -21,20 +21,22 @@
 #include <string>
 #include <memory>
 
-#include "objects/building.hpp"
 #include "walker/action.hpp"
-#include "objects/service.hpp"
-#include "gfx/picture.hpp"
+#include "gfx/picturesarray.hpp"
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
-#include "world/nation.hpp"
-#include "pathway/predefinitions.hpp"
-#include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
-#include "predefinitions.hpp"
+#include "pathway/predefinitions.hpp"
+#include "core/referencecounted.hpp"
+#include "city/predefinitions.hpp"
+#include "constants.hpp"
 #include "core/debug_queue.hpp"
+#include "world/nation.hpp"
+#include "core/smartptr.hpp"
+#include "predefinitions.hpp"
 
 class Pathway;
+namespace gfx { class Tile; class Animation; }
 
 class Walker : public Serializable, public ReferenceCounted
 {

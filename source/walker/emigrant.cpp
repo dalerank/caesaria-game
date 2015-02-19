@@ -32,6 +32,7 @@
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -46,7 +47,7 @@ CAESARIA_LITERALCONST(peoples)
 class Emigrant::Impl
 {
 public:
-  Animation cart;
+  CartAnimation cart;
   CitizenGroup peoples;
   int failedWayCount;
   TilePos housePosLock;
@@ -444,8 +445,8 @@ Emigrant::~Emigrant()
   _lockHouse( HousePtr() );
 }
 
-void Emigrant::_setCart( const Animation& anim ){  _d->cart = anim;}
-Animation& Emigrant::_cart(){  return _d->cart; }
+void Emigrant::_setCart( const CartAnimation& anim ){  _d->cart = anim; }
+CartAnimation& Emigrant::_cart(){  return _d->cart; }
 const CitizenGroup& Emigrant::peoples() const{  return _d->peoples;}
 void Emigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 

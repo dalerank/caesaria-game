@@ -13,30 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_INDIGENE_H_INCLUDED__
-#define __CAESARIA_INDIGENE_H_INCLUDED__
+#ifndef __CAESARIA_CARTANIMATION_H_INCLUDE_
+#define __CAESARIA_CARTANIMATION_H_INCLUDE_
 
-#include "human.hpp"
-#include "objects/predefinitions.hpp"
+#include "animation.hpp"
+#include "good/good.hpp"
+#include "core/direction.hpp"
 
-class Indigene : public Human
+namespace gfx
+{
+
+class CartAnimation : public Animation
 {
 public:
-  static IndigenePtr create( PlayerCityPtr city );
+  CartAnimation();
+  virtual ~CartAnimation();
 
-  void send2city( BuildingPtr base );
-
-protected:
-  virtual void _reachedPathway();
-  void _updateState();
-
-private:
-  Indigene( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  void load(const good::Stock& stock, constants::Direction direction);
+  void load(int animIndex, constants::Direction direction );
 };
 
-#endif //__CAESARIA_INDIGENE_H_INCLUDED__
+}//end namespace gfx
+#endif //__CAESARIA_CARTANIMATION_H_INCLUDE_

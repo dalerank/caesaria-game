@@ -119,13 +119,12 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<good::Product> allPriorityGoods = _d->market->mostNeededGoods();
-  std::list<good::Product> priorityGoods;
+  good::Products priorityGoods;
   
   //only look at goods that shall not be stockpiled
-  foreach(goodType, allPriorityGoods)
+  foreach(goodType, _d->market->mostNeededGoods() )
   {
-    if( !_city()->tradeOptions().isGoodsStacking(*goodType) )
+    if( !_city()->tradeOptions().isStacking(*goodType) )
       priorityGoods.push_back(*goodType);
   }
 
@@ -248,19 +247,22 @@ void MarketBuyer::_reachedPathway()
         // take other goods if possible
         for ( good::Product goodType = good::wheat; goodType<=good::vegetable; ++goodType)
         {
-          // for all types of good (except G_NONE)
-          int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
-          if (qty > 0)
-          {
-            qty = std::min(qty, granary->store().getMaxRetrieve(goodType));
-            qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
-            if (qty > 0)
+            if( !_city()->tradeOptions().isGoodsStacking(goodType) )
             {
-              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              good::Stock& stock = _d->basket.getStock(goodType);
-              granary->store().retrieve(stock, qty);
+                // for all types of good (except G_NONE)
+                int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
+                if (qty > 0)
+                {
+                    qty = std::min(qty, granary->store().getMaxRetrieve(goodType));
+                    qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
+                    if (qty > 0)
+                    {
+                        // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+                        good::Stock& stock = _d->basket.getStock(goodType);
+                        granary->store().retrieve(stock, qty);
+                    }
+                }
             }
-          }
         }
       }
       else if( is_kind_of<Warehouse>( building ) )
@@ -272,19 +274,22 @@ void MarketBuyer::_reachedPathway()
         // take other goods if possible
         for ( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
         {
-          // for all types of good (except G_NONE)
-          int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
-          if (qty > 0)
-          {
-            qty = std::min(qty, warehouse->store().getMaxRetrieve(goodType));
-            qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
-            if (qty > 0)
+            if( !_city()->tradeOptions().isGoodsStacking(goodType) )
             {
-              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              good::Stock& stock = _d->basket.getStock(goodType);
-              warehouse->store().retrieve(stock, qty);
+                // for all types of good (except G_NONE)
+                int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
+                if (qty > 0)
+                {
+                    qty = std::min(qty, warehouse->store().getMaxRetrieve(goodType));
+                    qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
+                    if (qty > 0)
+                    {
+                        // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+                        good::Stock& stock = _d->basket.getStock(goodType);
+                        warehouse->store().retrieve(stock, qty);
+                    }
+                }
             }
-          }
         }
       }
 
