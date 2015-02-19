@@ -84,6 +84,7 @@
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
 #include "events/savegame.hpp"
+#include "core/tilerect.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -720,6 +721,15 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
       case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
       case KEY_KEY_G: _d->renderer.setLayer( citylayer::desirability); break;
+      case KEY_KEY_E:
+      {
+          TilePos center = _d->renderer.camera()->center();
+          TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
+          const BorderInfo& binfo = _d->game->city()->borderInfo();
+          center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
+          _d->renderer.camera()->setCenter( center );
+      }
+      break;
 
       default:
         handled = false;

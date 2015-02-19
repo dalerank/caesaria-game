@@ -23,6 +23,7 @@
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
+#include "walker/enemysoldier.hpp"
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 
@@ -58,17 +59,18 @@ void SpiritOfMars::timeStep( const unsigned int time)
     Logger::warning( "SpiritOfMars: execute service" );
 
     EnemySoldierList enemies;
-    enemies << city->walkers( walker::any );
+    enemies << _city()->walkers( walker::any );
 
     if( enemies.size() > 0 )
     {
-      int step = std::min( enemies.size(), 32 );
+      int step = std::min<int>( enemies.size(), 32 );
       for( int k=0; k < step; k++ )
       {
         EnemySoldierPtr ptr = enemies.random();
         enemies.remove( ptr );
         ptr->die();
       }
+
       _d->isDeleted = true;
     }
   }
@@ -80,14 +82,14 @@ bool SpiritOfMars::isDeleted() const {  return _d->isDeleted; }
 void SpiritOfMars::load(const VariantMap& stream)
 {
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
-  VARIANT_LOAD_ANY_D( _d, isDeleted, strema )
+  VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
 }
 
 VariantMap SpiritOfMars::save() const
 {
-  VariantMap ret;
-  ret[ "endTime" ] = _d->endTime;
-  ret[ "value" ] = _d->value;
+  VariantMap ret = Srvc::save();
+  VARIANT_SAVE_ANY_D( ret, _d, endTime )
+  VARIANT_SAVE_ANY_D( ret, _d, isDeleted )
 
   return ret;
 }

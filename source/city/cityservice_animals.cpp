@@ -25,12 +25,15 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "walker/walkers_factory.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Animals,animals)
 
 namespace {
 static const unsigned int defaultMaxAnimals = 10;
@@ -67,7 +70,7 @@ void Animals::timeStep(const unsigned int time)
 
   Tilemap& tmap = _city()->tilemap();
   TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-  border = border.walkableTiles( true );
+  border = border.walkables( true );
 
   foreach( winfo, _d->maxAnimal )
   {

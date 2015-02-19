@@ -28,6 +28,7 @@
 #include "events/event.hpp"
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
@@ -39,6 +40,8 @@ const int crimeDescLimiter = 10;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Disorder,disorder)
 
 class Disorder::Impl
 {

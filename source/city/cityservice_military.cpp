@@ -26,11 +26,14 @@
 #include "objects/fort.hpp"
 #include "core/variant_map.hpp"
 #include "core/flagholder.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Military,military)
 
 class Military::Impl
 {

@@ -273,7 +273,7 @@ TilesArray Construction::enterArea() const
                                                                   pos() + TilePos(s, s),
                                                                   !Tilemap::checkCorners );  
 
-  return near.walkableTiles( true );
+  return near.walkables( true );
 }
 
 void Construction::timeStep(const unsigned long time)

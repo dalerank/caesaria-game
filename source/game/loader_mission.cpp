@@ -90,6 +90,7 @@ bool Mission::load( const std::string& filename, Game& game )
       float smooth = rndvm.get( "smooth", 2.6 );
       float terrain = rndvm.get( "terrain", 4 );
       targar.create( game, n2size, smooth, terrain );
+      game.city()->setCameraPos( game.city()->borderInfo().roadEntry );
     }
     else
     {

@@ -30,6 +30,7 @@
       "key t  : show troubles layer",
       "key w  : show water layer",
       "key g  : show desirabilirty layer",
+      "key e  : move camer to city enter/exit",
       "spacebar  : show last active layer",
       ", (Period) : make one step (if game paused)",
       ". (Comma) : make 25 steps (day) (if game paused)"

@@ -25,11 +25,14 @@
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
 #include "walker/river_wave.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Shoreline, shoreline)
 
 class Shoreline::Impl
 {

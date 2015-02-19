@@ -52,6 +52,12 @@
     text : "##city_lockinfo_mode##"
   }
 
+  btnBarbarianMayAttack#PushButton : {
+    geometry : [ 16, 210, 220, 235 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_lockinfo_mode##"
+  }
+
   lbFireRisk#Label :
   {
     geometry : [ 16, 240, 220, 265 ]
@@ -83,5 +89,11 @@
     hovered : [ "paneling", 533 ]
     pressed : [ "paneling", 534 ]
     disabled : [ "paneling", 535 ]
+  }
+
+  btnBarbarianMayAttack#PushButton : {
+    geometry : [ 16, 270, 220, 295 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_barbarian_mode##"
   }
 }

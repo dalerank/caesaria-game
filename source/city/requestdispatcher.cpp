@@ -24,12 +24,15 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "cityservice_factory.hpp"
 
 namespace city
 {
 
 namespace request
 {
+
+REGISTER_SERVICE_IN_FACTORY(Dispatcher,requestDispatcher)
 
 class Dispatcher::Impl
 {

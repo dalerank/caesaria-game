@@ -67,7 +67,7 @@ public:
 
   void removeAt( int index )
   {
-    if( index < size() )
+    if( index < this->size() )
       return;
 
     typename SmartList<T>::const_iterator it = this->begin();

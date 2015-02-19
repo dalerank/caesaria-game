@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "objects/house_level.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
@@ -38,6 +39,8 @@ CAESARIA_LITERALCONST(endTime)
 CAESARIA_LITERALCONST(value)
 CAESARIA_LITERALCONST(service)
 }
+
+REGISTER_SERVICE_IN_FACTORY(ServiceUpdater,serviceUpdater)
 
 class ServiceUpdater::Impl
 {

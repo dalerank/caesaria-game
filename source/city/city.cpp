@@ -201,6 +201,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
+  setOption( barbarianAttack, 1 );
 }
 
 void PlayerCity::_initAnimation()
@@ -512,6 +513,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
   stream[ "zoomInvert" ] = getOption( PlayerCity::zoomInvert );
   stream[ "fireKoeff"  ] = getOption( PlayerCity::fireKoeff );
+  stream[ "barbarianAttack" ] = getOption( PlayerCity::barbarianAttack );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -603,6 +605,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
   setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
+  setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -846,16 +849,19 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
   else if( is_kind_of<world::Barbarian>( object ) )
   {
-    world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
-    for( int k=0; k < brb->strength() / 2; k++ )
+    if( getOption( barbarianAttack ) > 0 )
     {
-      EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
-      soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( game::Date::days2ticks( k ) / 2 );
-    }
+      world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
+      for( int k=0; k < brb->strength() / 2; k++ )
+      {
+        EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
+        soldier->send2City( borderInfo().roadEntry );
+        soldier->wait( game::Date::days2ticks( k ) / 2 );
+      }
 
-    events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "/smk/spy_army.smk" );
-    e->dispatch();
+      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "/smk/spy_army.smk" );
+      e->dispatch();
+    }
   }
   else if( is_kind_of<world::Messenger>( object ) )
   {
