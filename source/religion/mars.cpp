@@ -53,9 +53,9 @@ void Mars::updateRelation(float income, PlayerCityPtr city)
 void Mars::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr message = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
-                                                            _("##wrath_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Mars.smk" );
+                                                              _("##wrath_of_mars_text##"),
+                                                              events::ShowInfobox::send2scribe,
+                                                              ":/smk/God_Mars.smk" );
   message->dispatch();
 
 
@@ -92,27 +92,10 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
 
 void Mars::_doBlessing(PlayerCityPtr city)
 {
-  EnemySoldierList enemies;
-  enemies << city->walkers( walker::any );
-
-  bool blessingDone = false;
-  int step = enemies.size() / 3;
-  for( int k=0; k < step; k++ )
-  {
-    int index = math::random( enemies.size() );
-    EnemySoldierList::iterator it = enemies.begin();
-    std::advance( it, index );
-    (*it)->die();
-    blessingDone = true;
-  }
-
-  if( blessingDone )
-  {
-    events::GameEventPtr event = events::ShowInfobox::create( _("##spirit_of_mars_title##"),
-                                                              _("##spirit_of_mars_text##"),
-                                                              events::ShowInfobox::send2scribe );
-    event->dispatch();
-  }
+  events::GameEventPtr event = events::ShowInfobox::create( _("##spirit_of_mars_title##"),
+                                                            _("##spirit_of_mars_text##"),
+                                                            events::ShowInfobox::send2scribe );
+  event->dispatch();
 }
 
 }//end namespace rome

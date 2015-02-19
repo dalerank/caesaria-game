@@ -193,8 +193,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( DirectPRoutes::iterator pathWayIt= pathWayList.begin();
-       pathWayIt != pathWayList.end(); ++pathWayIt)
+  foreach( pathWayIt, pathWayList )
   {
     // for every warehouse within range
     BuildingPtr building= ptr_cast<Building>( pathWayIt->first );

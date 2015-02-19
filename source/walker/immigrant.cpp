@@ -49,7 +49,7 @@ CartAnimation& Immigrant::_cart()
 {
   if( !Emigrant::_cart().isValid() )
   {
-    _cart().load( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, direction() );
+    Emigrant::_cart().load( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, direction() );
   }
 
   return Emigrant::_cart();
