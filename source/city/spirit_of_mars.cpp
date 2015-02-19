@@ -66,9 +66,10 @@ void SpiritOfMars::timeStep( const unsigned int time)
       for( int k=0; k < step; k++ )
       {
         EnemySoldierPtr ptr = enemies.random();
-        enemies.remove( );
+        enemies.remove( ptr );
         ptr->die();
       }
+      _d->isDeleted = true;
     }
   }
 }
@@ -78,7 +79,8 @@ bool SpiritOfMars::isDeleted() const {  return _d->isDeleted; }
 
 void SpiritOfMars::load(const VariantMap& stream)
 {
-  _d->endTime = stream.get( "endTime" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, endTime, stream )
+  VARIANT_LOAD_ANY_D( _d, isDeleted, strema )
 }
 
 VariantMap SpiritOfMars::save() const
