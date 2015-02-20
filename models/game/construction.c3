@@ -22,6 +22,7 @@
 
   roadBlock : {
     cost : 10
+    c3logic : false
     class : "road"
     image : [ "roadBlock", 1 ]
   }

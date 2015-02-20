@@ -89,6 +89,7 @@ __REG_PROPERTY(scrollSpeed)
 __REG_PROPERTY(borderMoving)
 __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
+__REG_PROPERTY(c3gameplay)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -149,6 +150,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
+  _d->options[ c3gameplay          ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ scrollSpeed         ] = 30;
   _d->options[ mmb_moving          ] = false;
