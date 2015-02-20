@@ -62,6 +62,7 @@ namespace{
 struct ActionAnimation
 {
   int ownerType;
+  bool isBack;
   AnimationBank::MovementAnimation actions;
 };
 
@@ -230,6 +231,8 @@ void AnimationBank::Impl::loadStage( int type, const std::string& stageName, con
 
       VARIANT_INIT_ANY( int, back, stageInfo )
       VARIANT_INIT_ANY( int, addh, stageInfo )
+
+      carts[ type ].isBack = back;
       fixCartOffset( type, back, addh );
     }
   break;
@@ -324,7 +327,7 @@ void AnimationBank::Impl::fixCartOffset( int who, bool back, int addh )
 #undef __CDA
 }
 
-const Animation& AnimationBank::getCart(int good, int capacity, constants::Direction direction)
+const Animation& AnimationBank::getCart(int good, int capacity, constants::Direction direction, bool& isBack)
 {
   int index = 0;
   if( good != good::none.toInt() )
@@ -333,7 +336,9 @@ const Animation& AnimationBank::getCart(int good, int capacity, constants::Direc
     else if( capacity > animSimpleCart ) index = animBigCart;
   }
 
-  MovementAnimation& ma = instance()._d->carts[ index + good ].actions;
+  ActionAnimation& dAction = instance()._d->carts[ index + good ];
+  MovementAnimation& ma = dAction.actions;
+  isBack = dAction.isBack;
   return ma[ DirectedAction( Walker::acMove, direction ) ];
 }
 

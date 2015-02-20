@@ -204,6 +204,11 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    break;
    }
 
+   if( _d->anim.isBack() )
+   {
+     std::iter_swap( oPics.begin(), oPics.begin() + 1);
+   }
+
    foreach( it, oPics ) { it->addOffset( offset ); }
 }
 

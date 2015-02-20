@@ -95,7 +95,6 @@ void Animals::timeStep(const unsigned int time)
 
 void Animals::setAnimalsNumber( constants::walker::Type animal_type, unsigned int number)
 {
-  //walker::Type wtype = WalkerHelper::getType( animal_type );
   _d->maxAnimal[ animal_type ] = number;
 }
 

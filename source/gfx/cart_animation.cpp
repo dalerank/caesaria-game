@@ -36,12 +36,14 @@ CartAnimation::~CartAnimation(){}
 void CartAnimation::load(const good::Stock &stock, constants::Direction direction)
 {
   int index = (stock.empty() ? good::none : stock.type()).toInt();
-  *((Animation*)this) = AnimationBank::getCart( index, stock.capacity(), direction );
+  *((Animation*)this) = AnimationBank::getCart( index, stock.capacity(), direction, _isBack );
 }
 
 void CartAnimation::load(int animIndex, constants::Direction direction)
 {
-  *((Animation*)this) = AnimationBank::getCart( animIndex, 0, direction );
+  *((Animation*)this) = AnimationBank::getCart( animIndex, 0, direction, _isBack );
 }
+
+bool CartAnimation::isBack() const { return _isBack; }
 
 }//end namespace gfx

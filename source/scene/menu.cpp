@@ -439,7 +439,7 @@ void StartMenu::Impl::resolveSelectFile(std::string fileName)
   isStopped = true;
 }
 
-void StartMenu::Impl::setPlayerName(std::string name) {  playerName = name; }
+void StartMenu::Impl::setPlayerName(std::string name) { playerName = name; }
 
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
