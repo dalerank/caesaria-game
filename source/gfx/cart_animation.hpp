@@ -33,6 +33,10 @@ public:
 
   void load(const good::Stock& stock, constants::Direction direction);
   void load(int animIndex, constants::Direction direction );
+  bool isBack() const;
+
+private:
+  bool _isBack;
 };
 
 }//end namespace gfx

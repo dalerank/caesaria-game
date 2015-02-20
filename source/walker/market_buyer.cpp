@@ -120,9 +120,10 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
   good::Products priorityGoods;
+  good::Products marketGoods = _d->market->mostNeededGoods();
   
   //only look at goods that shall not be stockpiled
-  foreach(goodType, _d->market->mostNeededGoods() )
+  foreach(goodType, marketGoods )
   {
     if( !_city()->tradeOptions().isStacking(*goodType) )
       priorityGoods.push_back(*goodType);

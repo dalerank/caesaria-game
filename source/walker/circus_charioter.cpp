@@ -85,7 +85,8 @@ const Animation& CircusCharioter::Impl::cart( Direction direction )
 {
   if( !animation.isValid() )
   {
-    animation = AnimationBank::getCart( AnimationBank::animCircusCart, 0, direction );
+    bool isBack;
+    animation = AnimationBank::getCart( AnimationBank::animCircusCart, 0, direction, isBack );
     animation.addOffset( Point( 8, -12 ) );
   }
 

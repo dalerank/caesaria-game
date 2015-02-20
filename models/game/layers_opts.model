@@ -1,75 +1,76 @@
 {
   crime : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge", "highBridge",
-                       "elevation", "tree", "rift", "prefecture", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge", "high_bridge",
+                       "elevation", "tree", "rift", "prefecture", "burning_ruins", "waymark" ]
   }
 
   damage : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "engineerPost", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "engineerPost", "waymark" ]
   }
 
   desirability : {
-    visibleObjects : [ "road", "plaza", "garden", "collapsedRuins", "burnedRuins", "collapsedRuins", "lowBridge",
-                       "highBridge", "tree", "elevation", "rift", "burningRuins", "waymark", "senate" ]
+    visibleObjects : [ "road", "plaza", "garden", "collapsed_ruins", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "senate" ]
   }
 
   education : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge",
-                       "highBridge", "tree", "elevation", "rift", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark" ]
 
   }
 
   entertainment : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "lowBridge",
-                       "highBridge", "tree", "elevation", "rift", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark" ]
   }
 
   fire : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "prefecture", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "prefecture", "waymark" ]
   }
 
   food : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "market", "granary", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "market", "granary", "waymark" ]
   }
 
   health : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark" ]
   }
 
   aborigen : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "nativeCenter", "nativeField", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "nativeCenter", "nativeField", "waymark" ]
   }
 
   religion : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "templeCeres",
-                       "templeMars", "templeMercury", "templeNeptune", "templeVenus", "cathedralCeres",
-                       "cathedralMars", "cathedralMercury", "cathedralNeptune", "cathedralVenus", "oracle", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "small_temple_ceres",
+                       "small_temple_mars", "tsmall_temple_mercury", "small_temple_neptune", "small_temple_venus",
+                       "big_temple_ceres",
+                       "big_temple_mars", "big_temple_mercury", "big_temple_neptune", "big_temple_venus", "oracle", "waymark" ]
   }
 
   tax : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "seante", "forum", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "seante", "forum", "waymark" ]
   }
 
   troubles : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark" ]
   }
 
   risks : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark" ]
   }
 
   water : {
-    visibleObjects : [ "road", "plaza", "garden", "burnedRuins", "collapsedRuins", "tree", "lowBridge",
-                       "highBridge", "elevation", "rift", "tree", "burningRuins", "reservoir",
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "reservoir",
                        "fountain", "well", "aqueduct", "tree", "waymark" ]
   }
 }

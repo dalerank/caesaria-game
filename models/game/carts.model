@@ -9,7 +9,7 @@
   }
 
   wheat : {
-    small : { back : false, rc : "cartwheat", start : 1, frames : 7, step : 8, delay : 2 }
+    small : { back : true, rc : "cartwheat", start : 1, frames : 7, step : 8, delay : 2 }
   }
 
   wine : {
