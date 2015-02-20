@@ -54,6 +54,7 @@ public:
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
   PushButton* btnLockInfobox;
+  PushButton* btnC3Gameplay;
   PlayerCityPtr city;
 
   void update();
@@ -68,6 +69,7 @@ public:
   void increaseFireRisk();
   void decreaseFireRisk();
   void toggleBarbarianAttack();
+  void toggleC3Gameplay();
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -92,6 +94,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnBarbarianMayAttack )
+  GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -103,6 +106,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnIncreaseFireRisk, onClicked(), _d.data(), Impl::increaseFireRisk )
   CONNECT( _d->btnDecreaseFireRisk, onClicked(), _d.data(), Impl::decreaseFireRisk )
   CONNECT( _d->btnBarbarianMayAttack, onClicked(), _d.data(), Impl::toggleBarbarianAttack )
+  CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3Gameplay )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
@@ -148,6 +152,13 @@ void CityOptionsWindow::Impl::toggleBarbarianAttack()
 {
   bool value = city->getOption( PlayerCity::barbarianAttack ) > 0;
   city->setOption( PlayerCity::barbarianAttack, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleC3Gameplay()
+{
+  bool value = SETTINGS_VALUE( c3gameplay );
+  SETTINGS_SET_VALUE( c3gameplay, !value );
   update();
 }
 
@@ -267,6 +278,14 @@ void CityOptionsWindow::Impl::update()
     btnBarbarianMayAttack->setText( value
                                     ? _("##city_barbarian_on##")
                                     : _("##city_barbarian_off##")  );
+  }
+
+  if( btnC3Gameplay )
+  {
+    bool value = SETTINGS_VALUE( c3gameplay );
+    btnBarbarianMayAttack->setText( value
+                                    ? _("##city_c3rules_on##")
+                                    : _("##city_c3rules_off##")  );
   }
 }
 

@@ -84,7 +84,7 @@
   },
 
   roadBlock : {
-    cost : 10
+    cost : 10     
     class : "road"
     image : [ "roadBlock", 1 ]
   }
