@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "layerwater.hpp"
 #include "objects/constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
 #include "tilemap.hpp"
@@ -49,8 +49,11 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    engine.draw( tile.picture(), screenPos );
+    //draw background    
+    //engine.draw( tile.picture(), screenPos );
+
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {
@@ -70,7 +73,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
       if ( overlay->type() == objects::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
-        needDrawAnimations = (h->spec().level() == 1) && h->habitants().empty();
+        needDrawAnimations = (h->spec().level() == HouseLevel::hovel) && h->habitants().empty();
 
         tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);

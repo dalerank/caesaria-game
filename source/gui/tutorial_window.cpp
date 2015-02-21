@@ -88,6 +88,8 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
       lbxHelp->fitText( _( text ) );
     }
   }
+
+  setModal();
 }
 
 TutorialWindow::~TutorialWindow() {}

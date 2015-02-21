@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_INFOBOX_MANAGER_H_INCLUDE_
 #define __CAESARIA_INFOBOX_MANAGER_H_INCLUDE_
@@ -23,6 +23,7 @@
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
 #include "enums.hpp"
+#include "gfx/tilemap.hpp"
 #include "gui/info_box.hpp"
 
 namespace gui
@@ -40,10 +41,48 @@ public:
   virtual gui::infobox::Simple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
+template< class T >
+class BaseInfoboxCreator : public InfoboxCreator
+{
+public:
+  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  {
+    return new T( parent, city, city->tilemap().at( pos ) );
+  }
+};
+
+class StaticInfoboxCreator : public InfoboxCreator
+{
+public:
+  StaticInfoboxCreator( const std::string& caption,
+                       const std::string& desc );
+
+  virtual ~StaticInfoboxCreator() {}
+
+  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
+
+  std::string title, text;
+};
+
+class ServiceInfoboxCreator : public InfoboxCreator
+{
+public:
+  ServiceInfoboxCreator( const std::string& caption,
+                             const std::string& descr,
+                             bool drawWorkers=false );
+
+  virtual ~ServiceInfoboxCreator() {}
+
+  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
+
+  std::string title, text;
+  bool isDrawWorkers;
+};
+
 class Manager : public ReferenceCounted
 {
 public:
-  static Manager& getInstance();
+  static Manager& instance();
 
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
@@ -58,7 +97,26 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace infobox
+
+}//end namespave gui
+
+#define REGISTER_INFOBOX_IN_FACTORY(name,type,a) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new BaseInfoboxCreator<a>() ); }}; \
+static Registrator_##name rtor_##name; \
 }
 
+#define REGISTER_STATICINFOBOX_IN_FACTORY(name,type,a,b) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new StaticInfoboxCreator(a,b) ); }}; \
+static Registrator_##name rtor_##name; \
 }
+
+#define REGISTER_SERVICEINFOBOX_IN_FACTORY(name,type,a,b) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new ServiceInfoboxCreator(a,b) ); }}; \
+static Registrator_##name rtor_##name; \
+}
+
 #endif //__CAESARIA_INFOBOX_MANAGER_H_INCLUDE_

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "metadata.hpp"
 
@@ -35,6 +35,7 @@ using namespace gfx;
 const char* MetaDataOptions::cost = "cost";
 const char* MetaDataOptions::requestDestroy = "requestDestroy";
 const char* MetaDataOptions::employers = "employers";
+const char* MetaDataOptions::c3logic = "c3logic";
 
 MetaData MetaData::invalid = MetaData( objects::unknown, "unknown" );
 

@@ -18,8 +18,8 @@
 
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
-#include "good.hpp"
-#include "goodorders.hpp"
+#include "stock.hpp"
+#include "orders.hpp"
 #include "core/variant.hpp"
 
 #include <set>
@@ -58,7 +58,7 @@ private:
   unsigned int _idCounter;
 };
 
-class SimpleStore;
+class Storage;
 class Store
 {
 public:
@@ -102,8 +102,8 @@ public:
   virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
 
   // store/retrieve to goodStore
-  void applyStorageReservation(SimpleStore& goodStore, const int reservationID);
-  void applyRetrieveReservation(SimpleStore& goodStore, const int reservationID);
+  void applyStorageReservation(Storage& goodStore, const int reservationID);
+  void applyRetrieveReservation(Storage& goodStore, const int reservationID);
 
   // immediate store/retrieve, exception if impossible
   virtual void store( good::Stock& stock, const int amount);

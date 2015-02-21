@@ -53,7 +53,7 @@ void Well::deliverService()
     HousePtr house = ptr_cast<House>( *it );
     if( house.isValid() )
     {
-      lowHealth = std::min<unsigned int>( lowHealth, house->state( (Construction::Param)House::health ) );
+      lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
       houses << house;
     }
   }
@@ -63,9 +63,9 @@ void Well::deliverService()
     lowHealth = (100 - lowHealth) / 10;
     foreach( it, houses)
     {
-      if( (*it)->state( (Construction::Param)House::health ) > 10 )
+      if( (*it)->state( pr::health ) > 10 )
       {
-        (*it)->updateState( (Construction::Param)House::health, -lowHealth );
+        (*it)->updateState( pr::health, -lowHealth );
       }
     }
   }
@@ -85,11 +85,10 @@ bool Well::build( const CityAreaInfo& info )
 
   setPicture( rpic );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
   return true;
 }
-
 
 TilesArray Well::coverageArea() const
 {

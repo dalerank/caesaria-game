@@ -53,7 +53,7 @@
 #include "world/city.hpp"
 #include "world/empire.hpp"
 #include "trade_options.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "world/trading.hpp"
 #include "walker/merchant.hpp"
 #include "game/gamedate.hpp"
@@ -196,8 +196,12 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
+  setOption( zoomEnabled, 1 );
+  setOption( zoomInvert, 1 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
+  setOption( fireKoeff, 100 );
+  setOption( barbarianAttack, 1 );
 }
 
 void PlayerCity::_initAnimation()
@@ -220,7 +224,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, game::Date::current() );
+    _d->monthStep( this, game::Date::current() );      
   }
 
   if( game::Date::isWeekChanged() )
@@ -368,7 +372,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
     float wages = 0;
     foreach( it, houses )
     {
-      int workers = (*it)->workersCount();
+      int workers = (*it)->hired();
       float house_wages = salary * workers;
       (*it)->appendMoney( house_wages );
       wages += house_wages;
@@ -416,6 +420,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
     }
     else { ++walkerIt; }
   }
+
   walkers << newWalkers;
   newWalkers.clear();
 }
@@ -458,7 +463,7 @@ void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
       serviceIt = services.erase(serviceIt);
     }
     else { ++serviceIt; }
-    }
+  }
 }
 
 void PlayerCity::Impl::resolveNewIssue(city::Funds::IssueType type)
@@ -504,6 +509,11 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "climate"    ] = _d->climate;
   stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
   stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
+  stream[ "godEnabled" ] = getOption( PlayerCity::godEnabled );
+  stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
+  stream[ "zoomInvert" ] = getOption( PlayerCity::zoomInvert );
+  stream[ "fireKoeff"  ] = getOption( PlayerCity::fireKoeff );
+  stream[ "barbarianAttack" ] = getOption( PlayerCity::barbarianAttack );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -591,6 +601,11 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: parse options" );
   setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
   setOption( fishPlaceEnabled, stream.get( lc_fishPlaceEnabled, 1 ) );
+  setOption( godEnabled, stream.get( "godEnabled", 1 ) );
+  setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
+  setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
+  setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
+  setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -829,21 +844,24 @@ void PlayerCity::addObject( world::ObjectPtr object )
       }
     }
 
-    events::GameEventPtr e = events::ShowInfobox::create( "##romechastener_attack_title##", "##romechastener_attack_text##", true );
+    events::GameEventPtr e = events::ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
     e->dispatch();
   }
   else if( is_kind_of<world::Barbarian>( object ) )
   {
-    world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
-    for( int k=0; k < brb->strength() / 2; k++ )
+    if( getOption( barbarianAttack ) > 0 )
     {
-      EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
-      soldier->send2City( borderInfo().roadEntry );
-      soldier->wait( game::Date::days2ticks( k ) / 2 );
-    }
+      world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
+      for( int k=0; k < brb->strength() / 2; k++ )
+      {
+        EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
+        soldier->send2City( borderInfo().roadEntry );
+        soldier->wait( game::Date::days2ticks( k ) / 2 );
+      }
 
-    events::GameEventPtr e = events::ShowInfobox::create( "##barbarian_attack_title##", "##barbarian_attack_text##", "/smk/spy_army.smk" );
-    e->dispatch();
+      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "/smk/spy_army.smk" );
+      e->dispatch();
+    }
   }
   else if( is_kind_of<world::Messenger>( object ) )
   {

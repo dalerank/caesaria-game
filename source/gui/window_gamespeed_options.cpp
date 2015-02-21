@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "window_gamespeed_options.hpp"
 #include "gfx/engine.hpp"
@@ -36,14 +36,18 @@ class GameSpeedOptions::Impl
 {
 public:
   GameAutoPause locker;
+  int speedValue, scrollValue, autosaveInterval;
+
+public signals:
   Signal1<int> onGameSpeedChangeSignal;
   Signal1<int> onScrollSpeedChangeSignal;
   Signal1<int> onAutosaveIntervalShangeSignal;
-  int speedValue, scrollValue, autosaveInterval;
 };
 
-GameSpeedOptions::GameSpeedOptions( Widget* parent, int gameSpeed, int scrollSpeed,
-                                               int autosaveInterval)
+GameSpeedOptions::GameSpeedOptions( Widget* parent,
+                                    int gameSpeed,
+                                    int scrollSpeed,
+                                    int autosaveInterval)
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->speedValue = gameSpeed;
@@ -95,12 +99,9 @@ Signal1<int>& GameSpeedOptions::onAutosaveIntervalChange(){ return _d->onAutosav
 
 void GameSpeedOptions::_update()
 {
-  Label* lbGameSpeedPercent;
-  Label* lbScrollSpeedPercent;
-  Label* lbAutosaveInterval;
-  GET_WIDGET_FROM_UI( lbGameSpeedPercent )
-  GET_WIDGET_FROM_UI( lbScrollSpeedPercent )
-  GET_WIDGET_FROM_UI( lbAutosaveInterval )
+  INIT_WIDGET_FROM_UI( Label*, lbGameSpeedPercent )
+  INIT_WIDGET_FROM_UI( Label*, lbScrollSpeedPercent )
+  INIT_WIDGET_FROM_UI( Label*, lbAutosaveInterval )
 
   _d->speedValue = math::clamp( _d->speedValue, 10, 300 );
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );

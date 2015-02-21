@@ -41,8 +41,8 @@ static const int rioterGenerateLevel = 80;
 NativeBuilding::NativeBuilding(const Type type, const Size& size )
 : Building( type, size )
 {
-  setState( inflammability, 0 );
-  setState( collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 void NativeBuilding::save( VariantMap& stream) const 

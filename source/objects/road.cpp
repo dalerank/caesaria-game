@@ -200,7 +200,7 @@ bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
 {
-  if( state( lockTerrain ) > 0 )
+  if( state( pr::lockTerrain ) > 0 )
     return;
 
   city::Helper helper( _city() );
@@ -298,7 +298,7 @@ bool Plaza::build( const CityAreaInfo& info )
   RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
   {
-    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    road->setState( pr::lockTerrain, 1 );
   }
 
   Construction::build( info );

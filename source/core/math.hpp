@@ -42,6 +42,10 @@ const float PI = 3.14159265359f;
 
 //! Constant for reciprocal of PI.
 const float RECIPROCAL_PI	= 1.0f/PI;
+const float RECIPROCAL_2PI	= RECIPROCAL_PI/2.f;
+const float SQRT_PI	= sqrt(PI);
+const float SQRT_2PI	= sqrt(2*PI);
+const float RECIPROCAL_SQRT_2PI	= 1.0f/SQRT_2PI;
 
 //! Constant for half of PI.
 const float HALF_PI	= PI/2.0f;

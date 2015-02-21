@@ -92,7 +92,7 @@ protected:
     VariantMap options = item.data().toMap();
     DateTime time = options[ lc_date ].toDateTime();
 
-    item.draw( util::date2str( time ), font, Point( 30, 0 ) );
+    item.draw( util::date2str( time, true ), font, Point( 30, 0 ) );
     item.draw( item.text(), font, Point( width() / 2, 0 ));
   }
 
@@ -233,7 +233,7 @@ void ScribesMessagestWindow::_showMessage(int index)
     city::Info::ScribeMessage mt = srvc->getMessage( index );
     mt.opened = true;
     srvc->changeMessage( index, mt );
-    EventMessageBox* mbox = new EventMessageBox( parent(), mt.title, mt.text, mt.date, mt.gtype );
+    Widget* mbox = new infobox::AboutEvent( parent(), mt.title, mt.text, mt.date, mt.gtype );
     mbox->show();
   }
 

@@ -80,12 +80,13 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
 {
   _d->tileMapSize = tilemap::cellSize();
   _d->tmap = NULL;
-  _d->scrollSpeed = 10;
+  _d->scrollSpeed = 30;
   _d->viewSize = Size( 0 );
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
   _d->borderSize = Size( 90 );
+  _d->tiles.reserve( 2000 );
 }
 
 TilemapCamera::~TilemapCamera() {}
@@ -238,7 +239,7 @@ const TilesArray& TilemapCamera::tiles() const
       int xstart = cx - sizeT.width();
       if ((xstart + z) % 2 == 0)
       {
-	      ++xstart;
+        ++xstart;
       }
 
       for (int x = xstart; x<=cx + sizeT.width(); x+=2)

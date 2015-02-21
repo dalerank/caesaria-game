@@ -22,6 +22,7 @@
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 #include "timber_logger.hpp"
+#include "good/stock.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;

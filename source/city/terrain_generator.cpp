@@ -435,13 +435,13 @@ public:
     pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::canBuildRoad ) );
 
     TilesArray tiles = sideTiles( startSide, oTilemap );
-    tiles = tiles.walkableTiles( true );
+    tiles = tiles.walkables( true );
 
     if( tiles.empty() )
       return Pathway();
 
     TilesArray otherTiles = sideTiles( endSide, oTilemap );
-    otherTiles = otherTiles.walkableTiles( true );
+    otherTiles = otherTiles.walkables( true );
 
     return findWay( tiles, otherTiles );
   }
@@ -587,6 +587,9 @@ static void __createRoad(Game& game )
       break;
   }
 
+  BorderInfo borderInfo = oCity->borderInfo();
+  int lastIndex = oTilemap.size()-1;
+  TilesArray borderTiles = oTilemap.getRectangle( TilePos(0,0), TilePos(lastIndex,lastIndex) );
   if( way.isValid() )
   {
     TilesArray wayTiles = way.allTiles();
@@ -604,11 +607,39 @@ static void __createRoad(Game& game )
       oCity->overlays().push_back( overlay );
     }
 
-    BorderInfo borderInfo = oCity->borderInfo();
-
     borderInfo.roadEntry = way.startPos();
     borderInfo.roadExit = way.stopPos();
-    oCity->setBorderInfo( borderInfo );
+  }
+  else
+  {
+    TilesArray terrain = borderTiles.terrains();
+
+    borderInfo.roadEntry = terrain.random()->pos();
+    borderInfo.roadExit = terrain.random()->pos();
+  }
+
+  TilesArray water = borderTiles.waters();
+  borderInfo.boatEntry = water.random()->pos();
+  borderInfo.boatExit = water.random()->pos();
+
+  oCity->setBorderInfo( borderInfo );
+}
+
+void __createMeadows( Game& game )
+{
+  PlayerCityPtr oCity = game.city();
+  Tilemap& oTilemap = oCity->tilemap();
+
+  TilesArray tiles = oTilemap.allTiles();
+  int fieldSize = math::max<int>( tiles.size() / 10000.f, 1 );
+  int maxMeadowTiles = pow( fieldSize, 2);
+  for( int k=0; k < maxMeadowTiles; k++ )
+  {
+    Tile* tile = tiles.random();
+    TilesArray meadows = oTilemap.getArea( math::random( fieldSize ), tile->pos() );
+    meadows = meadows.terrains();
+
+    foreach( it, meadows ) (*it)->setFlag( Tile::tlMeadow, true );
   }
 }
 
@@ -785,7 +816,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __finalizeMap( game, passCheckInsideCornerTiles );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
-
+  __createMeadows( game );
   __finalizeMap( game, 0xff );
 
   //update pathfinder map

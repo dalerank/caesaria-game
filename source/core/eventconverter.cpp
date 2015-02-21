@@ -169,6 +169,7 @@ void EventConverter::Impl::createKeyMap()
     init_key( SDLK_COMMA,   KEY_COMMA);
     init_key( SDLK_MINUS,   KEY_MINUS);
     init_key( SDLK_PERIOD,  KEY_PERIOD);
+    init_key( SDLK_EQUALS,  KEY_EQUALS);
 }
 
 NEvent EventConverter::get( const SDL_Event& sdlEvent )

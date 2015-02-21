@@ -73,4 +73,4 @@ public:
   }
 };
 
-#endif // __OPENCAESAR3_VARIANTPRIVATE_H_INCLUDED__
+#endif // __CAESARIA_VARIANT_MAP_H_INCLUDED__

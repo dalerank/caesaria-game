@@ -18,6 +18,7 @@
 #include "dustcloud.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
+#include "objects/construction.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"

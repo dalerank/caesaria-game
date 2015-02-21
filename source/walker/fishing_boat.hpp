@@ -19,6 +19,7 @@
 #define _CAESARIA_FISHING_BOAT_INCLUDE_H_
 
 #include "ship.hpp"
+#include "objects/predefinitions.hpp"
 
 class FishingBoat : public Ship
 {

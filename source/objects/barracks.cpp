@@ -19,7 +19,7 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "walker/trainee.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "walker/cart_supplier.hpp"
@@ -32,7 +32,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barracks, Barracks)
 class Barracks::Impl
 {
 public:
-  good::SimpleStore store;
+  good::Storage store;
   bool notNeedSoldiers;
 };
 

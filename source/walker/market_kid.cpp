@@ -20,7 +20,7 @@
 #include "objects/market.hpp"
 #include "city/helper.hpp"
 #include "pathway/pathway.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"

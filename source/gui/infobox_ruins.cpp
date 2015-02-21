@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_ruins.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -25,6 +25,7 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
+#include "game/infoboxmanager.hpp"
 #include "objects/ruins.hpp"
 
 using namespace constants;
@@ -35,6 +36,10 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_INFOBOX_IN_FACTORY(collapsed,objects::collapsed_ruins,AboutRuins)
+REGISTER_INFOBOX_IN_FACTORY(burned,objects::burned_ruins,AboutRuins)
+REGISTER_INFOBOX_IN_FACTORY(plague,objects::plague_ruins,AboutRuins)
 
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )

@@ -21,7 +21,7 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "wharf.hpp"
 #include "pathway/pathway.hpp"
 #include "city/helper.hpp"

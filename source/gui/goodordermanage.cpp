@@ -19,7 +19,7 @@
 #include "city/trade_options.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "label.hpp"
 #include "objects/factory.hpp"
 #include "city/helper.hpp"
@@ -138,12 +138,9 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
 
   _d->icon = good::Helper::picture( type );
 
-  Label* lbTitle;
-  Label* lbStackedQty;
-  TexturedButton* btnExit;
-  GET_WIDGET_FROM_UI( lbTitle )
-  GET_WIDGET_FROM_UI( lbStackedQty )
-  GET_WIDGET_FROM_UI( btnExit )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbStackedQty )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbIndustryInfo )
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
@@ -276,7 +273,7 @@ void GoodOrderManageWindow::toggleIndustryEnable()
 
 void GoodOrderManageWindow::toggleStackingGoods()
 {
-  bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
+  bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
   _d->city->tradeOptions().setStackMode( _d->type, !isStacking );
 
   updateStackingState();
@@ -285,7 +282,7 @@ void GoodOrderManageWindow::toggleStackingGoods()
 
 void GoodOrderManageWindow::updateStackingState()
 {
-  bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
+  bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
   std::string text;
   if( isStacking )
   {

@@ -1,17 +1,35 @@
-// this file was created by rt (www.tomkorp.com), based on ttk's png-reader
-// i wanted to be able to read in PNG images with opencaesar :)
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_RENDERER_H_INCLUDED__
 #define __CAESARIA_RENDERER_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
-#include "picturesarray.hpp"
 #include "core/smartptr.hpp"
+
+#include <vector>
 
 namespace gfx
 {
 
 class Camera;
+namespace  layer {
+  class Layer;
+}
 
 //!  Surface Loader for PNG files
 class Renderer : public ReferenceCounted
@@ -36,10 +54,12 @@ public:
   public:
     virtual ~Mode() {}
   };
-  typedef SmartPtr< Mode > ModePtr;
 
+  typedef SmartPtr< Mode > ModePtr;
   virtual void render() = 0;
   virtual Camera* camera() = 0;
+  virtual SmartPtr<layer::Layer> currentLayer() const = 0;
+  virtual SmartPtr<layer::Layer> getLayer(int type) const = 0;
   virtual Renderer::ModePtr mode() const = 0;
 };
 

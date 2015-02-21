@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "merchant.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "objects/warehouse.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "pathway/path_finding.hpp"
@@ -32,7 +32,7 @@
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "merchant_camel.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -62,8 +62,8 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // warehouse
-  good::SimpleStore sell;
-  good::SimpleStore buy;
+  good::Storage sell;
+  good::Storage buy;
   int attemptCount;
   int waitInterval;
   std::string baseCityName;
@@ -91,7 +91,7 @@ Merchant::Merchant(PlayerCityPtr city )
 
 Merchant::~Merchant(){}
 
-DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::SimpleStore& basket, PlayerCityPtr city)
+DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerCityPtr city)
 {
   DirectPRoutes routes = pathPropagator.getRoutes( objects::warehouse );
 
@@ -127,7 +127,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::SimpleStore& ba
   return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : DirectRoute();
 }
 
-DirectRoute getWarehouse4Sells( Propagator &pathPropagator, good::SimpleStore& basket )
+DirectRoute getWarehouse4Sells( Propagator &pathPropagator, good::Storage& basket )
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( objects::warehouse );
 

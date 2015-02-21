@@ -21,7 +21,7 @@
 #include "gfx/picture.hpp"
 #include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
@@ -39,7 +39,7 @@ static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::o
 static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass + 1 );
 }
 
-class GranaryStore : public good::SimpleStore
+class GranaryStore : public good::Storage
 {
 public:
   static const int maxCapacity = 2400;
@@ -59,7 +59,7 @@ public:
   virtual int reserveStorage( good::Stock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
-              ? good::SimpleStore::reserveStorage( stock, time )
+              ? good::Storage::reserveStorage( stock, time )
               : 0;
   }
 
@@ -70,26 +70,26 @@ public:
       return;
     }
     
-    good::SimpleStore::store( stock, amount );
+    good::Storage::store( stock, amount );
   }
 
   virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyStorageReservation( stock, reservationID );
+    good::Storage::applyStorageReservation( stock, reservationID );
 
     granary->computePictures();
   }
 
   virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
+    good::Storage::applyRetrieveReservation( stock, reservationID );
 
     granary->computePictures();
   }
   
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
   {
-    good::SimpleStore::setOrder( type, order );
+    good::Storage::setOrder( type, order );
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
   }
 

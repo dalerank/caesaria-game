@@ -47,9 +47,8 @@
 #include "vfs/directory.hpp"
 #include "core/locale.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
-#include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
@@ -252,6 +251,7 @@ void Game::Impl::initHotkeys()
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
   hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+
   CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
@@ -310,6 +310,13 @@ bool Game::load(std::string filename)
   Logger::warning( "Game: reseting variables" );
   reset();
 
+  scene::SplashScreen screen;
+
+  screen.initialize();
+  bool usingOldgfx = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
+  screen.update( *_d->engine );
+
   vfs::Path fPath( filename );
   if( !fPath.exist() )
   {
@@ -338,6 +345,8 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: try find loader" );
   game::Loader loader;
+  loader.onUpdate().connect( &screen, &scene::SplashScreen::setText );
+
   bool loadOk = loader.load( fPath, *this );
 
   if( !loadOk )
@@ -370,6 +379,8 @@ bool Game::load(std::string filename)
   Pathfinder::instance().update( _d->city->tilemap() );
 
   Logger::warning( "Game: load finished" );
+
+  screen.exitScene( scene::SplashScreen::hideDevText );
   return true;
 }
 
@@ -431,6 +442,7 @@ void Game::initialize()
 
   screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
+  NameGenerator::instance().setLanguage( SETTINGS_VALUE( language ).toString() );
 
   screen.setText( "##initialize_house_specification##" );
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
@@ -447,7 +459,7 @@ void Game::initialize()
   screen.setText( "##ready_to_game##" );
 
   if( game::Settings::get( "no-fade" ).isNull() )
-    screen.exitScene();
+    screen.exitScene( scene::SplashScreen::showDevText );
 
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );

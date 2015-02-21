@@ -28,12 +28,15 @@
 #include "core/variant_map.hpp"
 #include "walker/walkers_factory.hpp"
 #include "gfx/tilemap.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(RandomAnimals, "random_animals")
 
 class RandomAnimals::Impl
 {
@@ -71,7 +74,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
   {
     Tilemap& tmap = game.city()->tilemap();
     TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-    border = border.walkableTiles( true );
+    border = border.walkables( true );
 
     Tile* randomTile = border.random();
 

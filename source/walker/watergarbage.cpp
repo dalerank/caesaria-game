@@ -20,6 +20,7 @@
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
+#include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;

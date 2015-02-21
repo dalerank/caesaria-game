@@ -72,7 +72,7 @@ bool RoadBlock::build( const CityAreaInfo& info )
   RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
   {
-    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    road->setState( pr::lockTerrain, 1 );
   }
 
   Construction::build( info );

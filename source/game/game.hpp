@@ -66,7 +66,6 @@ public:
   int timeMultiplier() const;
   void setNextScreen( scene::ScreenType screen);
 
-
 public signals:
   Signal1<std::string>& onSaveAccepted();
 

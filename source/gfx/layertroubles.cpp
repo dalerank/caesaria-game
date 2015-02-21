@@ -22,7 +22,7 @@
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
 #include "objects/house_level.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "objects/watersupply.hpp"
@@ -42,12 +42,14 @@ int Troubles::type() const{ return _type;}
 
 void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
-  Point screenPos = tile.mappos() + offset;
+  //Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.draw( tile.picture(), screenPos );
+    //engine.draw( tile.picture(), screenPos );
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {

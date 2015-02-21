@@ -22,6 +22,7 @@
 
   roadBlock : {
     cost : 10
+    c3logic : false
     class : "road"
     image : [ "roadBlock", 1 ]
   }
@@ -298,6 +299,7 @@
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 6
     image : [ "security", 1 ]
+    animation : { rc : "security", start : 2, count : 10, offset : [ 20, 36 ], delay : 4 }
     class : "security"
   },  
  
@@ -338,9 +340,9 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    sound : [ "security", 47 ]
-    image : [ "smlneptune", 1 ]
+    image : [ "security", 47 ]
     image.offset : [-1, -1]
+    sound : [ "templeneptune", 1 ]
   }, 
   
   small_mercury_temple : {
@@ -547,6 +549,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
 

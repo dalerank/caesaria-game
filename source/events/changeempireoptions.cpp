@@ -22,6 +22,7 @@
 #include "world/emperor.hpp"
 #include "events/showinfobox.hpp"
 #include "world/empire.hpp"
+#include "factory.hpp"
 #include "core/gettext.hpp"
 
 namespace events
@@ -30,6 +31,8 @@ namespace events
 namespace {
 CAESARIA_LITERALCONST(enabled)
 }
+
+REGISTER_EVENT_IN_FACTORY(ChangeEmpireOptions, "empire_options")
 
 GameEventPtr ChangeEmpireOptions::create()
 {

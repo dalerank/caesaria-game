@@ -18,20 +18,19 @@
     favour : 0
     finishDate : "-300.01.01"
     next : ":/missions/mission3.briefing"
-    title : "##win_clerk_title##"
-    win.text : "##tutorial2_win_text##"
+    title : "##engineer##"
     may_continue : false
-    short : "##tt2_caption##"
-    maxHouseLevel : "big_villa"
+    short : "##tt2_short##"
+    maxHouseLevel : "hut"
     caption : "##tt2_caption##"
-    overview :  [ "##tutorial_markets_text##",
-                  "@img=picture2_00008",
-                  "##tutorial_granary_text##",
-                  "@img=picture3_00006",
+    overview :  [ "##tutorial_priority##",
+                  "@img=picture3_00004",
                   "##tutorial_granary_text2##",
                   "@img=picture3_00005",
-                  "##tutorial_priority##",
-                  "@img=picture3_00004" ]
+                  "##tutorial_granary_text##",
+                  "@img=picture3_00006",
+                  "##tutorial_markets_text##",
+                  "@img=picture2_00008" ]
   }
 	
   empire : {
@@ -127,6 +126,7 @@
     buildings : 
     { 
       well : true
+      missionaryPost : false
       engineering_post : true
       prefecture : true
       small_ceres_temple : true

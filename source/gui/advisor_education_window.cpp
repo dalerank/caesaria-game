@@ -30,7 +30,7 @@
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
 #include "core/foreach.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
 #include "core/logger.hpp"
@@ -153,8 +153,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   HouseList houses = helper.find<House>( objects::house );
   foreach( house, houses )
   {
-    sumScholars += (*house)->habitants().count( CitizenGroup::scholar );
-    sumStudents += (*house)->habitants().count( CitizenGroup::student );
+    sumScholars += (*house)->habitants().scholar_n();
+    sumStudents += (*house)->habitants().student_n();
   }
 
   std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
