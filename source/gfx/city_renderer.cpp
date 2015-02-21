@@ -54,6 +54,7 @@
 #include "city/city.hpp"
 #include "layertroubles.hpp"
 #include "layerindigene.hpp"
+#include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
@@ -84,6 +85,7 @@ public:
   LayerPtr currentLayer;
   void setLayer( int type );
   void resetWalkersAfterTurn();
+  void saveSettings();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -93,9 +95,12 @@ CityRenderer::CityRenderer() : _d( new Impl )
 {
 }
 
-CityRenderer::~CityRenderer() {}
+CityRenderer::~CityRenderer()
+{
+  _d->saveSettings();
+}
 
-void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv )
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv, bool oldGraphic )
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();
@@ -125,8 +130,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
   addLayer( Crime::create( _d->camera, city ) ) ;
-  addLayer( Build::create( this, city ) );
-  addLayer( Destroy::create( _d->camera, city ) );
+  addLayer( Build::create( *this, city ) );
+  addLayer( Destroy::create( *this, city ) );
   addLayer( Tax::create( _d->camera, city ) );
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
   addLayer( Education::create( _d->camera, city, citylayer::school ) );
@@ -135,6 +140,13 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
   addLayer( layer::Indigene::create( _d->camera, city ) );
+
+  DrawOptions& dopts = DrawOptions::instance();
+  dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
+  dopts.setFlag( DrawOptions::windowActive, true );
+  dopts.setFlag( DrawOptions::mayChangeLayer, true );
+  dopts.setFlag( DrawOptions::oldGraphics, oldGraphic );
+  dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
 
   _d->setLayer( citylayer::simple );
 }
@@ -150,24 +162,41 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
   }
 }
 
+void CityRenderer::Impl::saveSettings()
+{
+  DrawOptions& dopts = DrawOptions::instance();
+  SETTINGS_SET_VALUE( mmb_moving, dopts.isFlag( DrawOptions::mmbMoving ) );
+}
+
 void CityRenderer::Impl::setLayer(int type)
 {
-  currentLayer = 0;
-  foreach( layer, layers )
+  if( currentLayer.isValid() )
   {
-    if( (*layer)->type() == type )
+    currentLayer->changeLayer( type );
+  }
+
+  if( !DrawOptions::instance().isFlag( DrawOptions::mayChangeLayer ) )
+  {
+    return;
+  }
+
+  LayerPtr newLayer;
+  foreach( it, layers )
+  {
+    if( (*it)->type() == type )
     {
-      currentLayer = *layer;
+      newLayer = *it;
       break;
     }
   }
 
-  if( currentLayer.isNull() )
+  if( newLayer.isNull() )
   {
-    currentLayer = layers.front();
+    newLayer = layers.front();
   }
 
-  currentLayer->init( currentCursorPos );
+  newLayer->init( currentCursorPos );
+  currentLayer = newLayer;
   emit onLayerSwitchSignal( currentLayer->type() );
 }
 
@@ -231,7 +260,8 @@ void CityRenderer::handleEvent( NEvent& event )
     }
   }
 
-  _d->currentLayer->handleEvent( event );
+  if( _d->currentLayer.isValid() )
+    _d->currentLayer->handleEvent( event );
 }
 
 int CityRenderer::layerType() const
@@ -282,6 +312,17 @@ void CityRenderer::setLayer(int layertype)
     layertype = citylayer::simple;
 
   _d->setLayer( layertype );
+}
+
+LayerPtr CityRenderer::getLayer(int type) const
+{
+  foreach( it, _d->layers)
+  {
+    if( (*it)->type() == type )
+      return *it;
+  }
+
+  return LayerPtr();
 }
 
 Camera* CityRenderer::camera() {  return &_d->camera; }

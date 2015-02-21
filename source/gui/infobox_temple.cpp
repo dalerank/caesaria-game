@@ -22,6 +22,7 @@
 #include "religion/romedivinity.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -33,9 +34,23 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_INFOBOX_IN_FACTORY(smceres,objects::small_ceres_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(smmars,objects::small_mars_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(smneptune,objects::small_neptune_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(smvenus,objects::small_venus_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(smmercury,objects::small_mercury_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(bgceres,objects::big_ceres_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(bgmars,objects::big_mars_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(bgneptune,objects::big_neptune_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(bgvenus,objects::big_venus_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(bgmercury,objects::big_mercury_temple,AboutTemple)
+REGISTER_INFOBOX_IN_FACTORY(oracle,objects::oracle,AboutTemple)
+
 AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
+  setupUI( ":/gui/infoboxtemple.gui" );
+
   TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
   DivinityPtr divn = temple->divinity();
 

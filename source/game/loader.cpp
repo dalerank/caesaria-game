@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "loader.hpp"
 
@@ -61,11 +61,14 @@ public:
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
-  void finalize( Game& game );
+  void finalize( Game& game );  
   bool maySetSign( const Tile& tile )
   {
     return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
   }
+
+public signals:
+  Signal1<std::string> onUpdateSignal;
 };
 
 Loader::Loader() : _d( new Impl )
@@ -159,32 +162,32 @@ void Loader::Impl::initLoaders()
   loaders.push_back( new loader::OMap() );
 }
 
+Signal1<std::string>& Loader::onUpdate() { return _d->onUpdateSignal; }
+
 bool Loader::load( vfs::Path filename, Game& game )
 {
   // try to load file based on file extension
-  Impl::LoaderIterator it = _d->loaders.begin();
-  for( ; it != _d->loaders.end(); ++it)
+  foreach( it, _d->loaders )
   {
-    if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
-        (*it)->isLoadableFileFormat(file) */ )
+    if( !(*it)->isLoadableFileExtension( filename.toString() ) )
+      continue;
+
+    ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
+    if( currentClimate >= 0  )
     {
-      ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
-      if( currentClimate >= 0  )
-      {
-        game::climate::initialize( currentClimate );
-      }
-
-      bool loadok = (*it)->load( filename.toString(), game );      
-      
-      if( loadok )
-      {
-        _d->restartFile = (*it)->restartFile();
-        _d->finalize( game );
-      }
-
-      return loadok;
+      game::climate::initialize( currentClimate );
     }
+
+    bool loadok = (*it)->load( filename.toString(), game );
+    if( loadok )
+    {
+      _d->restartFile = (*it)->restartFile();
+      _d->finalize( game );
+    }
+
+    return loadok;
   }
+
   Logger::warning( "GameLoader: not found loader for " + filename.toString() );
 
   return false; // failed to load

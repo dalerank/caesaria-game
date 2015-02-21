@@ -19,6 +19,7 @@
 #include "game/gamedate.hpp"
 #include "city.hpp"
 #include "city/statistic.hpp"
+#include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
@@ -26,11 +27,14 @@
 #include "events/updatehouseservice.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace religion;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Festival,festival)
 
 namespace {
   typedef enum { ftNone=0, ftSmall, ftMiddle, ftBig, ftCount } FestType;
@@ -111,7 +115,7 @@ void Festival::timeStep(const unsigned int time )
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
-    events::GameEventPtr e = events::ShowFeastival::create( festivalDesc[ id ], festivalTitles[ id ],
+    events::GameEventPtr e = events::ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
                                                               _city()->player()->name(), festivalVideo[ id ] );
     e->dispatch();
 

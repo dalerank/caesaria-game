@@ -20,11 +20,14 @@
 #include "helper.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(HealthCare,healtCare)
 
 namespace {
 const int maxDescriptionLevel = 12;
@@ -68,7 +71,7 @@ void HealthCare::timeStep(const unsigned int time )
     _d->minHealthLevel = 0;
     foreach( house, houses )
     {
-      unsigned int hLvl = (*house)->state( (Construction::Param)House::health );
+      unsigned int hLvl = (*house)->state( pr::health );
       _d->value = ( _d->value + hLvl ) / 2;
     }
   }

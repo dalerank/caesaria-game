@@ -21,6 +21,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
+#include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -50,7 +51,7 @@ void Spear::_onTarget()
 
   if( c.isValid() )
   {
-    c->updateState( Construction::damage, 5 );
+    c->updateState( pr::damage, 5 );
   }
 }
 

@@ -84,6 +84,7 @@
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
 #include "events/savegame.hpp"
+#include "core/tilerect.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -160,7 +161,8 @@ void Level::initialize()
   PlayerCityPtr city = _d->game->city();
   gui::Ui& ui = *_d->game->gui();
 
-  _d->renderer.initialize( city, _d->engine, &ui );
+  bool oldGraphics = SETTINGS_VALUE( oldgfx ).toBool() || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
   const int topMenuHeight = 23;
@@ -255,10 +257,13 @@ void Level::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
-#ifdef DEBUG
   _d->dhandler.insertTo( _d->game, _d->topMenu );
+  _d->dhandler.setVisible( false );
+
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+#ifdef DEBUG  
+  _d->dhandler.setVisible( true );
 #endif
 
 #ifdef CAESARIA_USE_STEAM
@@ -683,7 +688,7 @@ void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
 void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
-void Level::Impl::saveScrollSpeed(int speed) {  SETTINGS_SET_VALUE( scrollSpeed, speed ); }
+void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 
 void Level::_requestExitGame()
 {
@@ -715,6 +720,16 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
       case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
       case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
+      case KEY_KEY_G: _d->renderer.setLayer( citylayer::desirability); break;
+      case KEY_KEY_E:
+      {
+          TilePos center = _d->renderer.camera()->center();
+          TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
+          const BorderInfo& binfo = _d->game->city()->borderInfo();
+          center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
+          _d->renderer.camera()->setCenter( center );
+      }
+      break;
 
       default:
         handled = false;
@@ -730,6 +745,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_MINUS:
     case KEY_PLUS:
     case KEY_SUBTRACT:
+    case KEY_EQUALS:
     case KEY_ADD:
     {
       events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
@@ -757,23 +773,17 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F5:
-      if( event.keyboard.control )
-      {
-        _d->makeFastSave();
-        handled = true;
-      }
+      _d->makeFastSave();
+      handled = true;
     break;
 
     case KEY_F9:
-      if( event.keyboard.control )
-      {
-        _resolveLoadGame( "" );
-        handled = true;
-      }
+      _resolveLoadGame( "" );
+      handled = true;
     break;
 
-    case KEY_KEY_1: case KEY_KEY_2:
-    case KEY_KEY_3: case KEY_KEY_4:
+    case KEY_F1: case KEY_F2:
+    case KEY_F3: case KEY_F4:
     {
       if( event.keyboard.control )
       {

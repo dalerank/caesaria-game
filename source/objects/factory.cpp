@@ -19,7 +19,7 @@
 #include "factory.hpp"
 
 #include "gfx/tile.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "walker/cart_pusher.hpp"
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
@@ -30,7 +30,7 @@
 #include "core/variant_map.hpp"
 #include "walker/cart_supplier.hpp"
 #include "core/utils.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
@@ -44,7 +44,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wine_workshop, Winery)
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oil_workshop, Creamery)
 
-class FactoryStore : public good::SimpleStore
+class FactoryStore : public good::Storage
 {
 public:
   FactoryStore() : factory( NULL ) {}
@@ -56,18 +56,18 @@ public:
       return 0;
     }
 
-    return good::SimpleStore::getMaxStore( goodType );
+    return good::Storage::getMaxStore( goodType );
   }
 
   virtual void applyStorageReservation( good::Stock &stock, const int reservationID )
   {
-    good::SimpleStore::applyStorageReservation( stock, reservationID );
+    good::Storage::applyStorageReservation( stock, reservationID );
     emit onChangeState();
   }
 
   virtual void applyRetrieveReservation( good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
+    good::Storage::applyRetrieveReservation( stock, reservationID );
     emit onChangeState();
   }
 
@@ -154,7 +154,6 @@ void Factory::_setUnworkingInterval(unsigned int weeks)
 
 void Factory::_reachUnworkingTreshold()
 {
-  collapse();
 }
 
 bool Factory::haveMaterial() const {  return (consumeGoodType() != good::none && !inStockRef().empty()); }
@@ -188,7 +187,7 @@ void Factory::timeStep(const unsigned long time)
         _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
       }
 
-      if( _d->lowWorkerWeeksNumber > 8 &&  _d->lowWorkerWeeksNumber > (unsigned int)math::random( 42 ) )
+      if( math::random( (int)_d->lowWorkerWeeksNumber ) > _d->maxUnworkingWeeks )
       {
         _reachUnworkingTreshold();
       }
@@ -296,6 +295,7 @@ void Factory::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, productionRate )
   VARIANT_SAVE_ANY_D( stream, _d, progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
+  VARIANT_SAVE_ANY_D( stream, _d, maxUnworkingWeeks )
   stream[ "goodStore" ] = _d->store.save();
 }
 
@@ -306,7 +306,7 @@ void Factory::load( const VariantMap& stream)
   VARIANT_LOAD_ANYDEF_D( _d, progress, 0.f, stream )
   VARIANT_LOAD_ANYDEF_D( _d, productionRate, 9.6f, stream )
   VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, maxUnworkingWeeks, 0, stream )
 
   _storeChanged();
 }

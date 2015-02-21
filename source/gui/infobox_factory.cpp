@@ -22,7 +22,8 @@
 #include "core/gettext.hpp"
 #include "label.hpp"
 #include "image.hpp"
-#include "good/goodhelper.hpp"
+#include "good/stock.hpp"
+#include "good/helper.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "objects/shipyard.hpp"
@@ -30,6 +31,7 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "city/city.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -40,9 +42,19 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_INFOBOX_IN_FACTORY(shipyard,objects::shipyard,AboutShipyard)
+REGISTER_INFOBOX_IN_FACTORY(wharf,objects::wharf,AboutWharf)
+REGISTER_INFOBOX_IN_FACTORY(pottery,objects::pottery_workshop,AboutFactory)
+REGISTER_INFOBOX_IN_FACTORY(weapons,objects::weapons_workshop,AboutFactory)
+REGISTER_INFOBOX_IN_FACTORY(furniture,objects::furniture_workshop,AboutFactory)
+REGISTER_INFOBOX_IN_FACTORY(wine,objects::wine_workshop,AboutFactory)
+REGISTER_INFOBOX_IN_FACTORY(oil,objects::oil_workshop,AboutFactory)
+
 AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 42) )
 {
+  setupUI( ":/gui/infoboxfactory.gui" );
+
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();

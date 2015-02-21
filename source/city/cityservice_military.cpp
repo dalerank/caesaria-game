@@ -26,11 +26,14 @@
 #include "objects/fort.hpp"
 #include "core/variant_map.hpp"
 #include "core/flagholder.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Military,military)
 
 class Military::Impl
 {
@@ -80,15 +83,8 @@ void Military::timeStep(const unsigned int time )
     {
       world::ObjectPtr object = empire->findObject( it->objectName );
 
-      if( object.isValid() )
-      {
-
-        ++it;
-      }
-      else
-      {
-        it = _d->notifications.erase( it );
-      }
+      if( object.isValid() ) { ++it; }
+      else { it = _d->notifications.erase( it ); }
     }
   }
 

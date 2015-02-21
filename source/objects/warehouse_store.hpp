@@ -21,7 +21,7 @@
 
 #include "warehouse.hpp"
 #include "game/enums.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 
 class WarehouseStore : public good::Store
 {

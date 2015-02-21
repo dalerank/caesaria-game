@@ -53,6 +53,7 @@
 #include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/utils.hpp"
+#include "walker/name_generator.hpp"
 #include "gui/image.hpp"
 #include "steam.hpp"
 
@@ -84,6 +85,7 @@ public:
   void handleNewGame();
   void resolveCredits();
   void showLoadMenu();
+  void showNewGame();
   void showOptionsMenu();
   void resolveLoadRandommap();
   void showMainMenu();
@@ -229,6 +231,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
   game::Settings::save();
 
   Locale::setLanguage( lang );
+  NameGenerator::instance().setLanguage( lang );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
 }
 
@@ -346,11 +349,8 @@ void StartMenu::Impl::showLoadMenu()
   btn = menu->addButton( _("##mainmenu_loadmap##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
 
-  btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
+  //btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
   //CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
-
-  btn = menu->addButton( _("##mainmenu_randommap##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolveLoadRandommap );
 
   btn = menu->addButton( _("##cancel##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );
@@ -383,12 +383,26 @@ void StartMenu::Impl::showOptionsMenu()
   CONNECT( btn, onClicked(), this, Impl::showMainMenu );
 }
 
+void StartMenu::Impl::showNewGame()
+{
+  menu->clear();
+
+  PushButton* btn = menu->addButton( _("##mainmenu_startcareer##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
+
+  btn = menu->addButton( _("##mainmenu_randommap##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveLoadRandommap );
+
+  btn = menu->addButton( _("##cancel##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showMainMenu );
+}
+
 void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
 
   PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
+  CONNECT( btn, onClicked(), this, Impl::showNewGame );
 
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
@@ -425,7 +439,7 @@ void StartMenu::Impl::resolveSelectFile(std::string fileName)
   isStopped = true;
 }
 
-void StartMenu::Impl::setPlayerName(std::string name) {  playerName = name; }
+void StartMenu::Impl::setPlayerName(std::string name) { playerName = name; }
 
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
@@ -534,17 +548,15 @@ void StartMenu::initialize()
     return;
   }
 
-  std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_STRING, steamName.c_str() );
+  std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
   _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
   _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
   _d->lbSteamName->setWordwrap( true );
   _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
-
-  steamapi::onStatsReceived().connect( _d.data(), &Impl::resolveSteamStats );
 #endif
 }
 
-void scene::StartMenu::afterFrame()
+void StartMenu::afterFrame()
 {
   Base::afterFrame();
 
@@ -553,6 +565,8 @@ void scene::StartMenu::afterFrame()
 
 #ifdef CAESARIA_USE_STEAM
   steamapi::update();
+  if( steamapi::isStatsReceived() )
+    _d->resolveSteamStats();
 #endif
 }
 

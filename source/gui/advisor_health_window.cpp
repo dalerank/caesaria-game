@@ -122,9 +122,8 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* lbBlackframe;
   GET_DWIDGET_FROM_UI( _d, lbAdvice )
-  GET_WIDGET_FROM_UI( lbBlackframe )
+  INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
 
   Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
   Size labelSize( lbBlackframe->width() - 6, 20 );

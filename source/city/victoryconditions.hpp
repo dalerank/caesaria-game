@@ -45,6 +45,7 @@ public:
   std::string newTitle() const;
   std::string winText() const;
   int needPopulation() const;
+  int maxHouseLevel() const;
   const StringArray& overview() const;
 
   void addReignYears( int value );

@@ -26,13 +26,11 @@
 #include "game/service.hpp"
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
+#include "param.hpp"
 
 class Construction : public gfx::TileOverlay
 {
 public:
-  typedef int ParameterType;
-  typedef enum { fire=0, damage, inflammability, collapsibility, destroyable, paramCount } Param;
-  Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
   virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
@@ -51,9 +49,9 @@ public:
   virtual bool canDestroy() const;
   virtual void destroy();
 
-  virtual void updateState( ParameterType name, double value );
-  virtual void setState( ParameterType name, double value );
-  virtual double state( ParameterType name ) const;
+  virtual void updateState( Param name, double value );
+  virtual void setState( Param name, double value );
+  virtual double state( Param name ) const;
 
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
@@ -65,6 +63,9 @@ public:
   virtual const ConstructionExtensionList& extensions() const;
   virtual void initialize(const MetaData &mdata);
 protected:
+  Construction( const TileOverlay::Type type, const Size& size );
+  void _checkDestroyState();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

@@ -32,8 +32,8 @@ MissionaryPost::MissionaryPost()
   setWorkers( 0 );
   setPicture( ResourceGroup::transport, 93 );
 
-  setState( inflammability, 0 );
-  setState( collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 void MissionaryPost::deliverService()

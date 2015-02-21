@@ -19,7 +19,7 @@
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "game/resourcegroup.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
 #include "core/event.hpp"
 #include "tilemap_camera.hpp"
@@ -63,7 +63,10 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.draw( tile.picture(), screenPos );
+    //engine.draw( tile.picture(), screenPos );
+
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {

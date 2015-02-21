@@ -47,7 +47,7 @@ static const unsigned int fillDistanceDesert = 3;
 }
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
-               awesomeFountain=18, patricianFountain=26, testFountain=50 } FontainConstant;
+               awesomeFountain=18, patricianFountain=26, testFountain=10 } FontainConstant;
 
 class Fountain::Impl
 {
@@ -142,7 +142,6 @@ bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
   if( tile.param( Tile::pReservoirWater ) )
   {
     thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 11 ) );
-    thisp->_fgPicturesRef().back().setOffset( 12, 8 + picture().offset().y() );
   }
 
   return ret;
@@ -160,8 +159,8 @@ bool Fountain::build( const CityAreaInfo& info )
                      ? fillDistanceDesert
                      : fillDistanceNormal;
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
   return true;
 }
 
@@ -229,7 +228,7 @@ void Fountain::_initAnimation()
   _fgPicture( 0 ) = Picture::getInvalid();
   _animationRef().stop();
 
-  switch ( _d->lastPicId )
+  /*switch ( _d->lastPicId )
   {
   case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   //case testFountain: _animationRef().setOffset( Point( 0, 31 ) ); break;
@@ -237,5 +236,5 @@ void Fountain::_initAnimation()
   case awesomeFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   case patricianFountain: _animationRef().setOffset( Point( 14, 26 ) ); break;
   default: break;
-  }
+  }*/
 }

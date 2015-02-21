@@ -915,7 +915,12 @@ void ListBox::setupUI(const VariantMap& ui)
       ListBoxItem& item = addItem( _(text), f );
       item.setTag( tag );
       item.setUrl( vm.get( "url").toString() );
+      align::Helper alignHelper;
+      item.setTextAlignment( alignHelper.findType( vm.get( "align").toString() ),
+                             align::center );
     }
+
+
   }
 }
 

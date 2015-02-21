@@ -24,11 +24,14 @@
 #include "core/variant_map.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Fishery,fishery)
 
 class Fishery::Impl
 {
@@ -92,12 +95,7 @@ void Fishery::timeStep(const unsigned int time )
     _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
   }
 
-  FishPlaceList::iterator fit = _d->places.begin();
-  while( fit != _d->places.end() )
-  {
-    if( (*fit)->isDeleted() )     {      fit = _d->places.erase( fit );    }
-    else {  ++fit;    }
-  }
+  utils::eraseDeletedElements( _d->places );
 }
 
 bool Fishery::isDeleted() const { return _d->failedCounter > 3; }

@@ -40,6 +40,46 @@
     text : "##city_debug_mode##"
   }
 
+  btnMmbMoving#PushButton : {
+    geometry : [ 16, 180, 220, 205 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_mmbmoving_mode##"
+  }
+
+  btnLockInfobox#PushButton : {
+    geometry : [ 16, 210, 220, 235 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_lockinfo_mode##"
+  }
+
+  btnBarbarianMayAttack#PushButton : {
+    geometry : [ 16, 210, 220, 235 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_lockinfo_mode##"
+  }
+
+  lbFireRisk#Label :
+  {
+    geometry : [ 16, 240, 220, 265 ]
+    font : "FONT_2"
+  }
+
+  btnIncreaseFireRisk#TexturedButton : {
+    geometry : [ 180, 240, 204, 264 ]
+    normal : [ "paneling", 605 ]
+    hovered : [ "paneling", 606 ]
+    pressed : [ "paneling", 607 ]
+    disabled : [ "paneling", 305 ]
+  }
+
+  btnDecreaseFireRisk#TexturedButton : {
+    geometry : [ 206, 240, 230, 264 ]
+    normal : [ "paneling", 601 ]
+    hovered : [ "paneling", 602 ]
+    pressed : [ "paneling", 603 ]
+    disabled : [ "paneling", 304 ]
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]
@@ -47,5 +87,11 @@
     hovered : [ "paneling", 533 ]
     pressed : [ "paneling", 534 ]
     disabled : [ "paneling", 535 ]
+  }
+
+  btnBarbarianMayAttack#PushButton : {
+    geometry : [ 16, 270, 220, 295 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_barbarian_mode##"
   }
 }

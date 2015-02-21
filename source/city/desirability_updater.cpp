@@ -26,12 +26,15 @@
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "gfx/tilemap.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(DesirabilityUpdater,desirabilityUpdater)
 
 class DesirabilityUpdater::Impl
 {

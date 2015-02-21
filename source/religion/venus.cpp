@@ -104,7 +104,7 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
     {
       ConstructionPtr house;
       house << houses.random();
-      ConstructionParamUpdater::assignTo( house, House::healthBuff, true, -2, DateTime::weekInMonth * 5 );
+      ConstructionParamUpdater::assignTo( house, pr::healthBuff, true, -2, DateTime::weekInMonth * 5 );
     }
   }
   break;

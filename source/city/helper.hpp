@@ -86,7 +86,7 @@ public:
     {
       TilePos offset( currentRange, currentRange );
       gfx::TilesArray tiles = _city->tilemap().getRectangle( currentPos - offset, currentPos + offset );
-      tiles = tiles.walkableTiles( true );
+      tiles = tiles.walkables( true );
 
       float crntDistance = target.distanceFrom( currentPos );
       foreach( itile, tiles )

@@ -42,4 +42,4 @@ private:
 };
 
 }//end namespace gui
-#endif //__OPENCAESAR3_SAVE_DIALOG_H_INCLUDED__
+#endif //__CAESARIA_SAVE_DIALOG_H_INCLUDED__

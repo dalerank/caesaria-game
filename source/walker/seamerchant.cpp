@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "seamerchant.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "city/helper.hpp"
 #include "core/variant_map.hpp"
@@ -53,8 +53,8 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // dock
-  good::SimpleStore sell;
-  good::SimpleStore buy;
+  good::Storage sell;
+  good::Storage buy;
   int tryDockCount;
   int maxTryDockCount;
   int waitInterval;

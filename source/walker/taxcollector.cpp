@@ -25,7 +25,7 @@
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
 #include "core/foreach.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"

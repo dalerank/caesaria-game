@@ -86,6 +86,10 @@ __REG_PROPERTY(layersOptsModel)
 __REG_PROPERTY(experimental)
 __REG_PROPERTY(buildMenuModel)
 __REG_PROPERTY(scrollSpeed)
+__REG_PROPERTY(borderMoving)
+__REG_PROPERTY(mmb_moving)
+__REG_PROPERTY(lockInfobox)
+__REG_PROPERTY(c3gameplay)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -114,7 +118,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ houseModel          ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel   ] = Variant( std::string( "/construction.model" ) );
   _d->options[ citiesModel         ] = Variant( std::string( "/cities.model" ) );
-  _d->options[ ctNamesModel        ] = Variant( std::string( "/names.model" ) );
+  _d->options[ ctNamesModel        ] = Variant( std::string( "/locale/names." ) );
   _d->options[ settingsPath        ] = Variant( std::string( "/settings.model" ) );
   _d->options[ langModel           ] = Variant( std::string( "/language.model" ) );
   _d->options[ archivesModel       ] = Variant( std::string( "/archives.model" ) );
@@ -145,11 +149,15 @@ Settings::Settings() : _d( new Impl )
   _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
+  _d->options[ borderMoving        ] = false;
+  _d->options[ c3gameplay          ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ scrollSpeed         ] = 30;
+  _d->options[ mmb_moving          ] = false;
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
+  _d->options[ lockInfobox         ] = true;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;
@@ -264,6 +272,7 @@ void Settings::checkC3present()
     _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
     _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
     _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
+    _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.c3" ) );
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;

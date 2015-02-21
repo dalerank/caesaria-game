@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_options_window.hpp"
 #include "pushbutton.hpp"
@@ -29,7 +29,12 @@
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
+#include "gfx/layer.hpp"
+#include "game/settings.hpp"
+#include "texturedbutton.hpp"
 #include "topmenu.hpp"
+
+using namespace gfx::layer;
 
 namespace gui
 {
@@ -43,6 +48,13 @@ public:
   PushButton* btnZoomEnabled;
   PushButton* btnDebugEnabled;
   PushButton* btnInvertZoom;
+  PushButton* btnMmbMoving;
+  PushButton* btnBarbarianMayAttack;
+  Label* lbFireRisk;
+  TexturedButton* btnIncreaseFireRisk;
+  TexturedButton* btnDecreaseFireRisk;
+  PushButton* btnLockInfobox;
+  PushButton* btnC3Gameplay;
   PlayerCityPtr city;
 
   void update();
@@ -51,7 +63,13 @@ public:
   void toggleZoomEnabled();
   void invertZoom();
   void toggleWarnings();
+  void toggleLeftMiddleMouse();
+  void toggleLockInfobox();
   Widget* findDebugMenu(Ui *ui);
+  void increaseFireRisk();
+  void decreaseFireRisk();
+  void toggleBarbarianAttack();
+  void toggleC3Gameplay();
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -61,6 +79,8 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   _d->locker.activate();
   setupUI( ":/gui/cityoptions.gui" );
 
+  WidgetEscapeCloser::insertTo( this );
+
   setCenter( parent->center() );
 
   GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
@@ -68,15 +88,29 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnZoomEnabled )
   GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
   GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnMmbMoving )
+  GET_DWIDGET_FROM_UI( _d, btnLockInfobox )
+  GET_DWIDGET_FROM_UI( _d, lbFireRisk )
+  GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
+  GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
+  GET_DWIDGET_FROM_UI( _d, btnBarbarianMayAttack )
+  GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
 
-  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
-  CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
+  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
+  CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
   CONNECT( _d->btnZoomEnabled, onClicked(), _d.data(), Impl::toggleZoomEnabled )
   CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
   CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
+  CONNECT( _d->btnMmbMoving, onClicked(), _d.data(), Impl::toggleLeftMiddleMouse )
+  CONNECT( _d->btnLockInfobox, onClicked(), _d.data(), Impl::toggleLockInfobox )
+  CONNECT( _d->btnIncreaseFireRisk, onClicked(), _d.data(), Impl::increaseFireRisk )
+  CONNECT( _d->btnDecreaseFireRisk, onClicked(), _d.data(), Impl::decreaseFireRisk )
+  CONNECT( _d->btnBarbarianMayAttack, onClicked(), _d.data(), Impl::toggleBarbarianAttack )
+  CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3Gameplay )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
+  if( btnClose ) btnClose->setFocus();
 
   _d->update();
 }
@@ -85,7 +119,7 @@ CityOptionsWindow::~CityOptionsWindow() {}
 
 void CityOptionsWindow::Impl::toggleGods()
 {
-  bool value = city->getOption( PlayerCity::godEnabled );
+  bool value = city->getOption( PlayerCity::godEnabled ) > 0;
   city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
   update();
 }
@@ -100,24 +134,66 @@ void CityOptionsWindow::Impl::toggleDebug()
   update();
 }
 
+void CityOptionsWindow::Impl::increaseFireRisk()
+{
+  int value = city->getOption( PlayerCity::fireKoeff );
+  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value + 10, 0, 9999 ) );
+  update();
+}
+
+void CityOptionsWindow::Impl::decreaseFireRisk()
+{
+  int value = city->getOption( PlayerCity::fireKoeff );
+  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value - 10, 0, 9999) );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleBarbarianAttack()
+{
+  bool value = city->getOption( PlayerCity::barbarianAttack ) > 0;
+  city->setOption( PlayerCity::barbarianAttack, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleC3Gameplay()
+{
+  bool value = SETTINGS_VALUE( c3gameplay );
+  SETTINGS_SET_VALUE( c3gameplay, !value );
+  update();
+}
+
 void CityOptionsWindow::Impl::toggleZoomEnabled()
 {
-  bool value = city->getOption( PlayerCity::zoomEnabled );
+  bool value = city->getOption( PlayerCity::zoomEnabled ) > 0;
   city->setOption( PlayerCity::zoomEnabled, value > 0 ? 0 : 1 );
   update();
 }
 
 void CityOptionsWindow::Impl::invertZoom()
 {
-  bool value = city->getOption( PlayerCity::zoomInvert );
+  bool value = city->getOption( PlayerCity::zoomInvert ) > 0;
   city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleLockInfobox()
+{
+  bool value = SETTINGS_VALUE( lockInfobox );
+  SETTINGS_SET_VALUE( lockInfobox, !value );
   update();
 }
 
 void CityOptionsWindow::Impl::toggleWarnings()
 {
-  bool value = city->getOption( PlayerCity::warningsEnabled );
+  bool value = city->getOption( PlayerCity::warningsEnabled ) > 0;
   city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleLeftMiddleMouse()
+{
+  bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
+  DrawOptions::instance().setFlag( DrawOptions::mmbMoving, !value );
   update();
 }
 
@@ -172,6 +248,44 @@ void CityOptionsWindow::Impl::update()
     btnDebugEnabled->setText( (menu ? menu->visible() : false)
                                 ? _("##city_debug_on##")
                                 : _("##city_debug_off##") );
+  }
+
+  if( btnMmbMoving )
+  {
+    bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving ) > 0;
+    btnMmbMoving->setText( value
+                                ? _("##city_mmbmoving##")
+                                : _("##city_lmbmoving##") );
+  }
+
+  if( btnLockInfobox )
+  {
+    bool value = SETTINGS_VALUE( lockInfobox );
+    btnLockInfobox->setText( value
+                                ? _("##city_lockinfo_on##")
+                                : _("##city_lockinfo_off##") );
+  }
+
+  if( lbFireRisk )
+  {
+    int value = city->getOption( PlayerCity::fireKoeff );
+    lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
+  }
+
+  if( btnBarbarianMayAttack )
+  {
+    int value = city->getOption( PlayerCity::barbarianAttack );
+    btnBarbarianMayAttack->setText( value
+                                    ? _("##city_barbarian_on##")
+                                    : _("##city_barbarian_off##")  );
+  }
+
+  if( btnC3Gameplay )
+  {
+    bool value = SETTINGS_VALUE( c3gameplay );
+    btnBarbarianMayAttack->setText( value
+                                    ? _("##city_c3rules_on##")
+                                    : _("##city_c3rules_off##")  );
   }
 }
 

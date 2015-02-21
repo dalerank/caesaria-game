@@ -22,15 +22,18 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "objects/road.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Roads,roads)
 
 class Roads::Impl
 {
