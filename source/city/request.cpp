@@ -17,7 +17,7 @@
 
 #include "city.hpp"
 #include "request.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "statistic.hpp"
 #include "events/removegoods.hpp"
 #include "events/fundissue.hpp"
@@ -30,6 +30,7 @@
 #include "world/empire.hpp"
 #include "events/showrequestwindow.hpp"
 #include "world/goodcaravan.hpp"
+#include "good/store.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 

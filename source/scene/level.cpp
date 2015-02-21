@@ -84,6 +84,7 @@
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
 #include "events/savegame.hpp"
+#include "core/tilerect.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -719,6 +720,16 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
       case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
       case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
+      case KEY_KEY_G: _d->renderer.setLayer( citylayer::desirability); break;
+      case KEY_KEY_E:
+      {
+          TilePos center = _d->renderer.camera()->center();
+          TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
+          const BorderInfo& binfo = _d->game->city()->borderInfo();
+          center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
+          _d->renderer.camera()->setCenter( center );
+      }
+      break;
 
       default:
         handled = false;
@@ -762,23 +773,17 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F5:
-      if( event.keyboard.control )
-      {
-        _d->makeFastSave();
-        handled = true;
-      }
+      _d->makeFastSave();
+      handled = true;
     break;
 
     case KEY_F9:
-      if( event.keyboard.control )
-      {
-        _resolveLoadGame( "" );
-        handled = true;
-      }
+      _resolveLoadGame( "" );
+      handled = true;
     break;
 
-    case KEY_KEY_1: case KEY_KEY_2:
-    case KEY_KEY_3: case KEY_KEY_4:
+    case KEY_F1: case KEY_F2:
+    case KEY_F3: case KEY_F4:
     {
       if( event.keyboard.control )
       {

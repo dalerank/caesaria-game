@@ -14,11 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
 #include "gfx/helper.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "walker/workerhunter.hpp"
@@ -29,7 +29,7 @@
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
@@ -69,7 +69,7 @@ public:
   int poverity;
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
-  good::SimpleStore goodStore;
+  good::Storage goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   unsigned int maxHabitants;
   DateTime lastTaxationDate;
@@ -104,9 +104,9 @@ House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl 
   _d->taxesThisYear = 0;
   _d->currentYear = game::Date::current().year();
 
-  setState( House::health, 100 );
-  setState( House::fire, 0 );
-  setState( House::happiness, 100 );
+  setState( pr::health, 100 );
+  setState( pr::fire, 0 );
+  setState( pr::happiness, 100 );
 
   _d->initGoodStore( 1 );
 
@@ -130,7 +130,7 @@ void House::_makeOldHabitants()
   CitizenGroup newHabitants = _d->habitants;
   newHabitants.makeOld();
 
-  unsigned int houseHealth = state( House::health );
+  unsigned int houseHealth = state( pr::health );
 
   newHabitants[ CitizenGroup::longliver ] = 0; //death-health function from oldest habitants count
   unsigned int peoples2remove = math::random( newHabitants.aged_n() * ( 100 - houseHealth ) / 100 );
@@ -321,7 +321,7 @@ void House::_updateCrime()
                   + foodAbundanceInfluence4happines
                   + foodStockInfluence4happines
                   + poverity4happiness
-                  + (int)state( happinessBuff );
+                  + (int)state( pr::happinessBuff );
 
   if( monthWithFood > 0 )
   {
@@ -341,7 +341,7 @@ void House::_updateCrime()
     curHappiness += desInfluence4happines;
   }
 
-  setState( House::happiness, curHappiness );
+  setState( pr::happiness, curHappiness );
 
   int unhappyValue = 100 - curHappiness;
   int signChange = math::signnum( unhappyValue - getServiceValue( Service::crime) );
@@ -398,7 +398,7 @@ void House::timeStep(const unsigned long time)
 
   if( game::Date::isMonthChanged() )
   {
-    setState( settleLock, 0 );
+    setState( pr::settleLock, 0 );
     _updateTax(); 
 
     if( _d->money > 0 ) { _d->poverity--; }
@@ -864,7 +864,7 @@ void House::applyService( ServiceWalkerPtr walker )
 
   case Service::hospital:
   case Service::doctor:
-    updateState( (Construction::Param)House::health, 10 );
+    updateState( pr::health, 10 );
     setServiceValue(service, 100);
   break;
 
@@ -920,8 +920,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   switch(service)
   {
-  case Service::engineer: res = state( Construction::damage ); break;
-  case Service::prefect: res = state( Construction::fire ); break;
+  case Service::engineer: res = state( pr::damage ); break;
+  case Service::prefect: res = state( pr::fire ); break;
 
   case Service::market:
   {
@@ -982,15 +982,11 @@ bool House::build( const CityAreaInfo& info )
   return ret;
 }
 
-double House::state( ParameterType param) const
+double House::state(Param param) const
 {
-  switch( (int)param )
-  {
-  case House::food: return _d->getFoodLevel();
-  case House::health: return Building::state( House::health ) + Building::state( House::healthBuff );
-
-  default: return Building::state( param );
-  }
+  if( param == pr::food ) { return _d->getFoodLevel(); }
+  else if( param == pr::health ) { return Building::state( pr::health ) + Building::state( pr::healthBuff ); }
+  else return Building::state( param );
 }
 
 void House::_update( bool needChangeTexture )
@@ -1115,7 +1111,7 @@ void House::save( VariantMap& stream ) const
   stream[ "desirability" ] = _d->desirability.base;
   stream[ "currentHubitants" ] = _d->habitants.save();
   stream[ "goodstore" ] = _d->goodStore.save();
-  stream[ "healthLevel" ] = state( (Construction::Param)House::health );
+  stream[ "healthLevel" ] = state( pr::health );
   VARIANT_SAVE_ANY_D(stream, _d, maxHabitants )
   VARIANT_SAVE_ANY_D(stream, _d, houseLevel )
   VARIANT_SAVE_ANY_D(stream, _d, changeCondition )
@@ -1348,8 +1344,8 @@ void House::Impl::updateHealthLevel( HousePtr house )
 
   float decrease = 2.f / delim;
 
-  house->updateState( (Construction::Param)House::health, -decrease );
-  int value = 100 - house->state( House::health );
+  house->updateState( pr::health, -decrease );
+  int value = 100 - house->state( pr::health );
   if( value > 25 )
   {
 

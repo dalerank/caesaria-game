@@ -18,6 +18,7 @@
 #include "routefinder.hpp"
 #include "empiremap.hpp"
 #include "core/delegate.hpp"
+#include "core/tilepos_array.hpp"
 #include "core/foreach.hpp"
 
 namespace world

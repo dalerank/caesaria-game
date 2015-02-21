@@ -47,7 +47,7 @@
 #include "vfs/directory.hpp"
 #include "core/locale.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
@@ -313,7 +313,8 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  screen.setImage( "freska", 1 );
+  bool usingOldgfx = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_d->engine );
 
   vfs::Path fPath( filename );

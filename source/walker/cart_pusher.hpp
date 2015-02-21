@@ -14,13 +14,14 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_CART_PUSHER_H_INCLUDE_
 #define _CAESARIA_CART_PUSHER_H_INCLUDE_
 
 #include "human.hpp"
-#include "core/predefinitions.hpp"
+#include "good/good.hpp"
+#include "objects/predefinitions.hpp"
 
 /** This walker delivers goods */
 class CartPusher : public Human

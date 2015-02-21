@@ -17,7 +17,7 @@
 
 #include "rome.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/funds.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
@@ -38,7 +38,7 @@ class Rome::Impl
 {
 public:
   city::Funds funds;
-  good::SimpleStore gstore;
+  good::Storage gstore;
   DateTime lastAttack;
   int strength;
 };

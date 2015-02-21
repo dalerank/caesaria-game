@@ -19,6 +19,7 @@
 #include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
 using namespace constants;

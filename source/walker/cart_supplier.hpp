@@ -19,7 +19,10 @@
 #define __CAESARIA_CART_SUPPLIER_H_INCLUDED__
 
 #include "human.hpp"
-#include "core/predefinitions.hpp"
+#include "good/good.hpp"
+#include "objects/predefinitions.hpp"
+
+namespace gfx { class CartAnimation; }
 
 /** This walker delivers goods */
 class CartSupplier : public Human
@@ -45,7 +48,7 @@ public:
 
 protected:
   CartSupplier( PlayerCityPtr city );
-  virtual const gfx::Animation& _cart();
+  virtual const gfx::CartAnimation& _cart();
   virtual void _changeDirection();
   virtual void _reachedPathway();
 

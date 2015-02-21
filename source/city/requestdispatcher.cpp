@@ -24,12 +24,15 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "cityservice_factory.hpp"
 
 namespace city
 {
 
 namespace request
 {
+
+REGISTER_SERVICE_IN_FACTORY(Dispatcher,requestDispatcher)
 
 class Dispatcher::Impl
 {
@@ -145,11 +148,7 @@ RequestList Dispatcher::requests() const {  return _d->requests; }
 
 void Dispatcher::Impl::updateRequests()
 {
-  for( RequestList::iterator i=requests.begin(); i != requests.end(); )
-  {
-    if( (*i)->isDeleted() ) { i = requests.erase( i ); }
-    else { ++i; }
-  }
+  utils::eraseDeletedElements( requests );
 
   if( !newRequests.empty() )
   {

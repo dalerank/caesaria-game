@@ -20,7 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/market_buyer.hpp"
 #include "core/variant_map.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/city.hpp"
 #include "walker/serviceman.hpp"
 #include "objects/constants.hpp"
@@ -36,7 +36,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(objects::market, Market)
 class Market::Impl
 {
 public:
-  good::SimpleStore store;
+  good::Storage store;
 
   bool isAnyGoodStored()
   {
@@ -96,7 +96,7 @@ void Market::deliverService()
 unsigned int Market::walkerDistance() const {  return 26; }
 good::Store &Market::goodStore(){  return _d->store; }
 
-std::list<good::Product> Market::mostNeededGoods()
+good::Products Market::mostNeededGoods()
 {
   std::list<good::Product> res;
 

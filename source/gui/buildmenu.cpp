@@ -72,7 +72,7 @@ public:
       char buffer[32];
       sprintf( buffer, "%d", _cost );
       Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
-                                                align::lowerRight, verticalTextAlign() );
+                                             align::lowerRight, verticalTextAlign() );
       f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
     }
   }
@@ -136,19 +136,17 @@ void BuildMenu::initialize()
     {
       textSize = font.getTextSize( button->text());
       max_text_width = std::max(max_text_width, textSize.width() );
-
-      std::string text = utils::format( 0xff, "%i", button->cost() );
-      textSize = font.getTextSize( text );
+      textSize = font.getTextSize( utils::i2str( button->cost() ) );
       max_cost_width = std::max(max_cost_width, textSize.width());
     }
   }
 
-  setWidth( std::max(150, max_text_width + max_cost_width + 20) );
+  setWidth( std::max(150, max_text_width + max_cost_width + 30) );
 
   // set the same size for all buttons
   foreach( widget, children() )
   {
-    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
+    BuildButton *button = safety_cast< BuildButton* >( *widget );
     if( button )
     {
       button->setWidth( width() );
@@ -173,10 +171,15 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
-  const MetaData &buildingData = MetaDataHolder::instance().getData( buildingType );
+  const MetaData& buildingData = MetaDataHolder::instance().getData( buildingType );
 
   int cost = buildingData.getOption( MetaDataOptions::cost );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
+  if( SETTINGS_VALUE( c3gameplay ).toBool() )
+  {
+    mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
+  }
+
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "goodorders.hpp"
+#include "orders.hpp"
 #include "core/foreach.hpp"
 #include <map>
 
@@ -23,8 +23,8 @@ namespace good
 class Orders::Impl
 {
 public:
-  typedef std::map< good::Product, Order > Orders;
-  Orders orders;
+  typedef std::map< good::Product, Order > ROrders;
+  ROrders orders;
 };
 
 Orders::~Orders()
@@ -55,7 +55,7 @@ void Orders::set(const Product type, Order rule )
 
 Orders::Order Orders::get( const good::Product type )
 {
-  Impl::Orders::iterator it = _d->orders.find( type );
+  Impl::ROrders::iterator it = _d->orders.find( type );
   return it != _d->orders.end() ? (*it).second : Orders::none;
 }
 

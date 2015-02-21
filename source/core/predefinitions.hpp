@@ -33,7 +33,6 @@ class VariantMap;
 class DateTime;
 typedef long unsigned int ThreadID;
 
-typedef std::vector< TilePos > TilePosArray;
 typedef std::vector< Point > PointsArray;
 
 #endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__

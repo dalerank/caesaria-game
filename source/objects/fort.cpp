@@ -122,8 +122,8 @@ FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
 {
   setPicture( ResourceGroup::security, 13 );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 FortArea::~FortArea() {}
@@ -174,9 +174,9 @@ Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) )
   _d->formation = frmSquad;
   _d->attackAnimals = false;
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
-  setState( Construction::destroyable, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
+  setState( pr::destroyable, 0 );
 }
 
 float Fort::evaluateTrainee(walker::Type traineeType)
@@ -209,7 +209,7 @@ void Fort::timeStep( const unsigned long time )
   WorkingBuilding::timeStep( time );
 }
 
-bool Fort::canDestroy() const { return state( Construction::destroyable ) > 0; }
+bool Fort::canDestroy() const { return state( pr::destroyable ) > 0; }
 Fort::TroopsFormation Fort::formation() const {  return _d->formation; }
 void Fort::setFormation(Fort::TroopsFormation formation){  _d->formation = formation; }
 
@@ -331,7 +331,7 @@ TilePos Fort::freeSlot() const
   break;
   }
 
-  tiles = tiles.walkableTiles( true );
+  tiles = tiles.walkables( true );
   if( !tiles.empty() )
   {
     foreach( it, tiles )

@@ -67,7 +67,7 @@ void _decreaseHousesHealth( objects::Type btype, PlayerCityPtr city, int value )
     {
       //HouseList::iterator it = houses.begin();
       //std::advance( it, math::random( houses.size() ) );
-      (*itHouse)->updateState( House::health, value );
+      (*itHouse)->updateState( pr::health, value );
     }
   }
 }

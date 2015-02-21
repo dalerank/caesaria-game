@@ -30,7 +30,7 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "festival_planing_window.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "objects/entertainment.hpp"
 #include "city/cityservice_festival.hpp"
 #include "religion/romedivinity.hpp"

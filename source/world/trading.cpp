@@ -18,13 +18,13 @@
 #include "trading.hpp"
 #include "empire.hpp"
 #include "city.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
 
 namespace world

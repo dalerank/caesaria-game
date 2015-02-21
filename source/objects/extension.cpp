@@ -256,13 +256,13 @@ ConstructionExtensionPtr ConstructionParamUpdater::create()
   return ret;
 }
 
-ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, int paramName, bool relative, int value, int week2finish)
+ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, Param paramName, bool relative, int value, int week2finish)
 {
   ConstructionParamUpdater* buff = new ConstructionParamUpdater();
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;
-  buff->_options[ "param" ] = paramName;
+  buff->_options[ "param" ] = paramName.toInt();
   buff->_finishDate = game::Date::current();
   buff->_finishDate.appendWeek( week2finish );
 
@@ -283,7 +283,7 @@ void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int tim
     {
       int value = _options[ "value" ];
       int finishValue = _options[ "finishValue" ];
-      parent->updateState( _options[ "param" ], value );
+      parent->updateState( Param( _options[ "param" ].toInt() ), value );
       finishValue += value;
     }
   }
@@ -296,7 +296,7 @@ void ConstructionParamUpdater::destroy(ConstructionPtr parent)
   if( parent.isValid() )
   {
     int finishValue = _options[ "finishValue" ];
-    parent->updateState( _options[ "param" ], -finishValue );
+    parent->updateState( Param( _options[ "param" ].toInt() ), -finishValue );
   }
 }
 

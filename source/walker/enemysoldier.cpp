@@ -400,7 +400,7 @@ void EnemySoldier::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
 
       turn( b->pos() );
-      b->updateState( Construction::damage, 1 );
+      b->updateState( pr::damage, 1 );
     }
     else
     {

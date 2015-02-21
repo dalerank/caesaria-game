@@ -17,7 +17,7 @@
 #include "objects/constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
 #include "core/utils.hpp"

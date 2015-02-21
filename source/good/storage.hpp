@@ -16,20 +16,17 @@
 #ifndef __CAESARIA_GOODSTORE_SIMPLE_H_INCLUDED__
 #define __CAESARIA_GOODSTORE_SIMPLE_H_INCLUDED__
 
-#include "goodstore.hpp"
+#include "store.hpp"
 #include "core/scopedptr.hpp"
 
 namespace good
 {
 
-class SimpleStore : public Store
+class Storage : public Store
 {
 public:
-  //using GoodStore::applyStorageReservation;
-  //using GoodStore::applyRetrieveReservation;
-
-  SimpleStore();
-  virtual ~SimpleStore();
+  Storage();
+  virtual ~Storage();
 
   virtual void setCapacity(const int maxQty);
   virtual int capacity() const;

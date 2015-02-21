@@ -30,11 +30,14 @@
 #include "objects/education.hpp"
 #include "objects/constants.hpp"
 #include "objects/theater.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(CultureRating,culture)
 
 struct Coverage2Point{
   double coverage;

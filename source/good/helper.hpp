@@ -31,16 +31,15 @@ namespace good
 class Helper
 {
 public:
-  static Helper& getInstance();
+  static Helper& instance();
 
   static std::string name( good::Product type );
   static gfx::Picture picture( good::Product type, bool emp=false );
   static good::Product getType( const std::string& name );
   static std::string getTypeName( good::Product type );
-  static float convQty2Units( int qty );
+
   static float exportPrice( PlayerCityPtr city, good::Product gtype, int qty );
   static float importPrice( PlayerCityPtr city, good::Product gtype, int qty );
-  static const gfx::Animation& getCartPicture( const good::Stock& stock, constants::Direction direction );
   static good::Product random();
   ~Helper();
 private:

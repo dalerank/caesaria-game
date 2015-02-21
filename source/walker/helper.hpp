@@ -84,7 +84,7 @@ SmartPtr<Wlk> findNearestWalker( TilePos pos, const SmartList<Wlk>& walkers )
   SmartPtr< Wlk > p;
 
   int minDistance=99;
-  for( typename SmartList<Wlk>::const_iterator it=walkers.begin(); it != walkers.end(); ++it )
+  foreach( it, walkers )
   {
     int distance = (*it)->pos().distanceFrom( pos );
     if( distance < minDistance )

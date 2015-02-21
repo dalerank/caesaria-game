@@ -84,7 +84,7 @@
   },
 
   roadBlock : {
-    cost : 10
+    cost : 10     
     class : "road"
     image : [ "roadBlock", 1 ]
   }
@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ 23, 25 ], delay : 2 }
+    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 109 ], delay : 2 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 

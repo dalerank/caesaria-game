@@ -31,6 +31,7 @@
 #include "core/logger.hpp"
 #include "core/safetycast.hpp"
 #include "events/showinfobox.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -41,6 +42,8 @@ CAESARIA_LITERALCONST(lastMessageDate)
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Religion,religion)
 
 class Religion::Impl
 {

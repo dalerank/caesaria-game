@@ -23,10 +23,10 @@
 #include "core/gettext.hpp"
 #include "objects/granary.hpp"
 #include "core/utils.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/logger.hpp"
 #include "special_orders_window.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
 

@@ -18,27 +18,7 @@
 #include "cityservice_factory.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "city/migration.hpp"
-#include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
-#include "cityservice_prosperity.hpp"
-#include "cityservice_religion.hpp"
-#include "cityservice_festival.hpp"
-#include "cityservice_roads.hpp"
-#include "cityservice_fishplace.hpp"
-#include "cityservice_shoreline.hpp"
-#include "cityservice_info.hpp"
-#include "migration.hpp"
-#include "requestdispatcher.hpp"
-#include "cityservice_disorder.hpp"
-#include "cityservice_animals.hpp"
-#include "cityservice_culture.hpp"
-#include "health_updater.hpp"
-#include "desirability_updater.hpp"
-#include "cityservice_military.hpp"
-#include "cityservice_health.hpp"
-#include "goods_updater.hpp"
-#include "service_updater.hpp"
 
 namespace city
 {
@@ -97,25 +77,6 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
 
 ServiceFactory::ServiceFactory() : _d( new Impl )
 {
-  addCreator<Migration>();
-  addCreator<WorkersHire>();
-  addCreator<ProsperityRating>();
-  addCreator<Shoreline>();
-  addCreator<Info>();
-  addCreator<CultureRating>();
-  addCreator<Animals>();
-  addCreator<Religion>();
-  addCreator<Festival>();
-  addCreator<Roads>();
-  addCreator<Fishery>();
-  addCreator<Disorder>();
-  addCreator<request::Dispatcher>();
-  addCreator<HealthUpdater>();
-  addCreator<DesirabilityUpdater>();
-  addCreator<Military>();
-  addCreator<HealthCare>();
-  addCreator<GoodsUpdater>();
-  addCreator<ServiceUpdater>();
 }
 
 }//end namespace city

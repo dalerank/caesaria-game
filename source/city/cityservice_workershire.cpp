@@ -30,6 +30,7 @@
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
 #include "core/saveadapter.hpp"
+#include "cityservice_factory.hpp"
 #include "core/variant_map.hpp"
 
 using namespace constants;
@@ -38,6 +39,8 @@ using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(WorkersHire,workers_hire)
 
 namespace {
 CAESARIA_LITERALCONST(priorities)

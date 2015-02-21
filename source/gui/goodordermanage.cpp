@@ -19,7 +19,7 @@
 #include "city/trade_options.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "label.hpp"
 #include "objects/factory.hpp"
 #include "city/helper.hpp"
@@ -273,7 +273,7 @@ void GoodOrderManageWindow::toggleIndustryEnable()
 
 void GoodOrderManageWindow::toggleStackingGoods()
 {
-  bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
+  bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
   _d->city->tradeOptions().setStackMode( _d->type, !isStacking );
 
   updateStackingState();
@@ -282,7 +282,7 @@ void GoodOrderManageWindow::toggleStackingGoods()
 
 void GoodOrderManageWindow::updateStackingState()
 {
-  bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
+  bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
   std::string text;
   if( isStacking )
   {

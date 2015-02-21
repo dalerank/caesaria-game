@@ -19,15 +19,16 @@
 #include "game/game.hpp"
 #include "objects/construction.hpp"
 #include "helper.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
 #include "core/variant_map.hpp"
 #include "objects/house.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "objects/house_level.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
@@ -37,6 +38,8 @@ namespace city
 namespace {
 CAESARIA_LITERALCONST(good)
 }
+
+REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
 
 class GoodsUpdater::Impl
 {

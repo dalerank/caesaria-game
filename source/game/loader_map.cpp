@@ -26,6 +26,7 @@
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
+#include "world/emperor.hpp"
 #include "loaderhelper.hpp"
 
 using namespace constants;
@@ -106,9 +107,10 @@ bool C3Map::load(const std::string& filename, Game& game)
 
   _d->initCameraStartPos(f, game.city() );
 
-  game.city()->setOption( PlayerCity::adviserEnabled, 1 );
+  game.city()->setOption( PlayerCity::adviserEnabled, 1 );  
 
   game.empire()->setCitiesAvailable( true );
+  game.empire()->emperor().checkCities();
 
   f.close();
 
