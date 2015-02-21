@@ -53,8 +53,8 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(objects::triumphal_arch, TriumphalArch)
 
 SmallStatue::SmallStatue() : Building( objects::statue_small, Size(1) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
   setPicture( ResourceGroup::govt, 1 );
 }
@@ -63,8 +63,8 @@ bool SmallStatue::isNeedRoadAccess() const {  return false; }
 
 MediumStatue::MediumStatue() : Building( objects::statue_middle, Size(2) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
   setPicture( ResourceGroup::govt, 2);
 }
@@ -73,8 +73,8 @@ bool MediumStatue::isNeedRoadAccess() const {  return false; }
 
 BigStatue::BigStatue() : Building( objects::statue_big, Size(3))
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
   setPicture( ResourceGroup::govt, 3 );
 }

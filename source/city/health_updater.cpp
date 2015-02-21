@@ -25,11 +25,14 @@
 #include "objects/house.hpp"
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(HealthUpdater,health_updater)
 
 class HealthUpdater::Impl
 {
@@ -59,7 +62,7 @@ void HealthUpdater::timeStep( const unsigned int time)
 
     foreach( it, houses )
     {
-      (*it)->updateState( House::health, _d->value );
+      (*it)->updateState( pr::health, _d->value );
     }
   }
 }

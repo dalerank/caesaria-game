@@ -59,8 +59,8 @@ Tower::Tower()
   setMaximumWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 void Tower::save(VariantMap& stream) const

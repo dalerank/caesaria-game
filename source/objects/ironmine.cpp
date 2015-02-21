@@ -40,7 +40,7 @@ IronMine::IronMine()
   _animationRef().setDelay( 5 );
   _fgPicturesRef().resize( 2 );
 
-  _setUnworkingInterval( 8 );
+  _setUnworkingInterval( 12 );
 }
 
 bool IronMine::canBuild( const CityAreaInfo& areaInfo ) const
@@ -68,6 +68,8 @@ void IronMine::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collpase_by_low_support##");
+  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
   e->dispatch();
+
+  collapse();
 }

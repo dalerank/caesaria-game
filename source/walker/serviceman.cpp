@@ -18,6 +18,7 @@
 #include "serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant_map.hpp"
+#include "objects/service.hpp"
 #include "city/city.hpp"
 #include "pathway/path_finding.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -259,7 +260,9 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        res += (*it)->evaluateService( ServiceWalkerPtr( this ) );        
+        int oneTileValue = (*it)->evaluateService( ServiceWalkerPtr( this ) );
+        // mul serviceValue for buildingSize, need for more effectively count of path result
+        res += (oneTileValue * (*it)->size().area() );
       }
     }
     distance++;

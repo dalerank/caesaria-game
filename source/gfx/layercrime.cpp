@@ -19,7 +19,7 @@
 #include "tileoverlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "layerconstants.hpp"
@@ -58,7 +58,10 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.draw( tile.picture(), screenPos );
+    //engine.draw( tile.picture(), screenPos );
+
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {

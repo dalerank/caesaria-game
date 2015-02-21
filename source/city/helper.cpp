@@ -60,7 +60,7 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
 
 TilesArray Helper::getArea(TileOverlayPtr overlay)
 {
-  if( !_city.isValid() )
+  if( _city.isNull() || overlay.isNull() )
   {
     Logger::warning( "WARNING !!!: Helper::getArea city is null" );
     return TilesArray();

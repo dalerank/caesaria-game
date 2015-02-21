@@ -71,6 +71,14 @@ bool Waymark::build( const CityAreaInfo& info )
   {
     picIndex += (pos.j() == 0 ? 2 : 0 );
   }
+  else
+  {
+    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+    Tile& oTile = tmap.at( info.pos );
+    oTile.setPicture( pic );
+    oTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+    deleteLater();
+  }
 
   setPicture( ResourceGroup::land3a, picIndex );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();

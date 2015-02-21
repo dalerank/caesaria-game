@@ -41,7 +41,11 @@ public:
 
   TilesArray& append( const TilesArray& a );
 
-  TilesArray walkableTiles( bool alllands=false ) const;
+  TilesArray walkables( bool alllands=false ) const;
+
+  TilesArray terrains() const;
+
+  TilesArray waters() const;
 
   TilesArray& remove(const TilePos &pos );
 

@@ -21,13 +21,18 @@
 namespace gui
 {
 
-class EventMessageBox : public infobox::Simple
+namespace infobox
+{
+
+class AboutEvent : public Simple
 {
 public:
-  EventMessageBox(Widget* parent, const std::string& title, const std::string& message,
+  AboutEvent(Widget* parent, const std::string& title, const std::string& message,
                    DateTime time, good::Product gtype, const std::string& additional="" );
-  virtual ~EventMessageBox();
+  virtual ~AboutEvent();
 };
+
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_EVENT_MESSAGEBOX_H_INCLUDE_

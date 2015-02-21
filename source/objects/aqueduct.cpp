@@ -66,7 +66,7 @@ bool Aqueduct::build( const CityAreaInfo& info )
   RoadPtr road = ptr_cast<Road>( terrain.overlay() );
   if( road.isValid() )
   {
-    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    road->setState( pr::lockTerrain, 1 );
   }
 
   WaterSource::build( info );

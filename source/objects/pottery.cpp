@@ -21,7 +21,7 @@
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;

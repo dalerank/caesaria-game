@@ -38,7 +38,7 @@ public:
   void setTradeLimit( Order state, good::Product type, unsigned int qty);
   
   void setStackMode( good::Product type, bool stacking );
-  bool isGoodsStacking( good::Product type );
+  bool isStacking( good::Product type );
 
   bool isExporting( good::Product type ) const;
   bool isImporting( good::Product type ) const;

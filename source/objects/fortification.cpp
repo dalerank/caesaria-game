@@ -58,8 +58,8 @@ Fortification::Fortification() : Wall(), _d( new Impl )
   setType( objects::fortification );
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 Fortification::~Fortification() {}

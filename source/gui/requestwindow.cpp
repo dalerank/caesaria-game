@@ -21,7 +21,7 @@
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "image.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"

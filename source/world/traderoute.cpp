@@ -20,7 +20,7 @@
 #include "core/variant_map.hpp"
 #include "merchant.hpp"
 #include "city.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
@@ -205,7 +205,7 @@ void Traderoute::load(const VariantMap& stream)
   VariantMap merchants = stream.get( "merchants" ).toMap();
   foreach( it, merchants )
   {
-    good::SimpleStore sell, buy;
+    good::Storage sell, buy;
     MerchantPtr m = addMerchant( _d->begin, sell, buy );
 
     if( m.isValid() )

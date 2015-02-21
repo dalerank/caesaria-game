@@ -20,6 +20,7 @@
 
 #include "human.hpp"
 #include "objects/constants.hpp"
+#include "objects/predefinitions.hpp"
 
 class Rioter : public Human
 {

@@ -25,6 +25,7 @@
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "core/priorities.hpp"
+#include "factory.hpp"
 
 using namespace constants;
 
@@ -34,6 +35,8 @@ namespace events
 namespace {
 CAESARIA_LITERALCONST(population)
 }
+
+REGISTER_EVENT_IN_FACTORY(RandomDamage, "random_collapse")
 
 class RandomDamage::Impl
 {

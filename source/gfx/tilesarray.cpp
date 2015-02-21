@@ -83,12 +83,40 @@ TilesArray&TilesArray::append(const TilesArray& a)
   return *this;
 }
 
-TilesArray TilesArray::walkableTiles(bool alllands) const
+TilesArray TilesArray::walkables(bool alllands) const
 {
   TilesArray ret;
   foreach( i, *this)
   {
     if( (*i)->isWalkable( alllands ) )
+      ret.push_back( *i );
+  }
+
+  return ret;
+}
+
+TilesArray TilesArray::terrains() const
+{
+  TilesArray ret;
+  foreach( i, *this)
+  {
+    if( (*i)->getFlag( Tile::tlWater ) || (*i)->getFlag( Tile::tlDeepWater )
+        || (*i)->getFlag( Tile::tlRock ) || (*i)->getFlag( Tile::tlCoast )
+        || (*i)->getFlag( Tile::tlRift) )
+      continue;
+
+    ret.push_back( *i );
+  }
+
+  return ret;
+}
+
+TilesArray TilesArray::waters() const
+{
+  TilesArray ret;
+  foreach( i, *this)
+  {
+    if( (*i)->getFlag( Tile::tlWater ) || (*i)->getFlag( Tile::tlDeepWater ) )
       ret.push_back( *i );
   }
 

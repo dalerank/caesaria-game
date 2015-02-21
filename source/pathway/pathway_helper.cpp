@@ -142,7 +142,7 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
 {
   TilePos offset( walkRadius / 2, walkRadius / 2 );
   TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
-  tiles = tiles.walkableTiles( true );
+  tiles = tiles.walkables( true );
 
   int loopCounter = 0; //loop limiter
   if( !tiles.empty() )
@@ -180,7 +180,7 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
       break;
 
     TilesArray border = tmap.getRectangle( start, stop );
-    border = border.walkableTiles( true );
+    border = border.walkables( true );
     foreach( it, border )
     {
       Tile* tile = *it;

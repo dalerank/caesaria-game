@@ -17,7 +17,7 @@
 #include "tileoverlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "layerconstants.hpp"
@@ -52,7 +52,10 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.draw( tile.picture(), screenPos );
+    //engine.draw( tile.picture(), screenPos );
+
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {
@@ -67,7 +70,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     else if( overlay->type() == objects::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
-      fireLevel = (int)house->state( Construction::fire );
+      fireLevel = (int)house->state( pr::fire );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
       city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
@@ -77,7 +80,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
       ConstructionPtr constr = ptr_cast<Construction>( overlay );
       if( constr != 0 )
       {
-        fireLevel = (int)constr->state( Construction::fire );
+        fireLevel = (int)constr->state( pr::fire );
       }
 
       city::Helper helper( _city() );
@@ -113,7 +116,7 @@ void Fire::handleEvent(NEvent& event)
         ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
         if( constr != 0 )
         {
-          int fireLevel = math::clamp<int>( constr->state( Construction::fire ), 0, 100 );
+          int fireLevel = math::clamp<int>( constr->state( pr::fire ), 0, 100 );
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
       }

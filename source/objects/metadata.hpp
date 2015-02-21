@@ -33,6 +33,7 @@ public:
   static const char* cost;
   static const char* requestDestroy;
   static const char* employers;
+  static const char* c3logic;
 };
 
 class MetaData

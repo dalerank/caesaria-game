@@ -14,41 +14,23 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_HOUSE_H_INCLUDED__
 #define __CAESARIA_HOUSE_H_INCLUDED__
 
 #include "objects/building.hpp"
 #include "core/scopedptr.hpp"
+#include "house_level.hpp"
 #include "game/citizen_group.hpp"
 #include "good/good.hpp"
 
 class HouseSpecification;
 
-class HouseLevel
-{
-public:
-  typedef enum { vacantLot=0,
-                 hovel=1, tent,
-                 shack, hut, //4
-                 domus, bigDomus, //6
-                 mansion, bigMansion, //8
-                 insula, middleInsula,   //10
-                 bigInsula, beatyfullInsula, //12
-                 smallVilla,  middleVilla,  bigVilla,  greatVilla,
-                 smallPalace, middlePalace, bigPalace, greatPalace,
-                 count } ID;
-
-  typedef enum { maxSize2=2, maxSize3, maxSize4 } HouseMaxSize;
-};
-
 class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::paramCount, health, happiness, happinessBuff, healthBuff, settleLock };
-
   House( HouseLevel::ID level=HouseLevel::vacantLot );
 
   virtual void timeStep(const unsigned long time);
@@ -69,9 +51,10 @@ public:
   virtual gfx::TilesArray enterArea() const;
   virtual bool build( const CityAreaInfo& info );
 
-  virtual double state( ParameterType param) const;
+  virtual double state( Param param) const;
 
-  unsigned int workersCount() const;
+  unsigned int hired() const;
+  unsigned int unemployed() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
@@ -90,6 +73,7 @@ public:
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int paramCount );
+  void remHabitants( CitizenGroup& group );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();

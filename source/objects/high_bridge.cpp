@@ -147,9 +147,9 @@ public:
     //_fgPicturesRef().clear();
   }
 
-  void setState( ParameterType name, double value )
+  void setState( Param name, double value )
   {
-    if( _parent && name == Construction::destroyable && value )
+    if( _parent && name == pr::destroyable && value )
     {
       _parent->hide();
     }
@@ -530,12 +530,12 @@ bool HighBridge::canDestroy() const
     }
   }
 
-  if( !state( Construction::destroyable ) )
+  if( !state( pr::destroyable ) )
   {
     _d->error = "##destroy_bridge_warning##";
   }
 
-  return state( Construction::destroyable );
+  return state( pr::destroyable );
 }
 
 void HighBridge::destroy()
@@ -544,7 +544,7 @@ void HighBridge::destroy()
   foreach( it, _d->subtiles )
   {
     (*it)->_parent = 0;
-    (*it)->setState( Construction::destroyable, true );
+    (*it)->setState( pr::destroyable, true );
     (*it)->deleteLater();
   }
 
@@ -591,7 +591,7 @@ void HighBridge::load(const VariantMap& stream)
 
 void HighBridge::hide()
 {
-  setState( Construction::destroyable, 1);
+  setState( pr::destroyable, 1);
   foreach( it, _d->subtiles )
   {
     (*it)->hide();

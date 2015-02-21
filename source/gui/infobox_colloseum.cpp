@@ -23,6 +23,7 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -33,9 +34,13 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_INFOBOX_IN_FACTORY(colloseum,objects::colloseum,AboutColosseum)
+
 AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
+  setupUI( ":/gui/infoboxcolosseum.gui" );
+
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
   setBase( ptr_cast<Construction>( coloseum ) );
   _setWorkingVisible( true );

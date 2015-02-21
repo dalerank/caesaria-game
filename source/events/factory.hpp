@@ -42,11 +42,11 @@ public:
   }
 };
 
-class GameEventFactory
+class EFactory
 {
 public:
   static GameEventPtr create( const std::string& name );
-  static GameEventFactory& instance();
+  static EFactory& instance();
   void addCreator( const std::string& name, GameEventCreatorPtr creator );
 
   template<class T>
@@ -57,11 +57,17 @@ public:
   }
 
 private:
-  GameEventFactory();
+  EFactory();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+#define REGISTER_EVENT_IN_FACTORY(type,a) \
+namespace { \
+struct Registrator_##type { Registrator_##type() { EFactory::instance().addCreator<type>( a ); }}; \
+static Registrator_##type rtor_##type; \
+}
 
 }//end namespace events
 

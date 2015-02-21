@@ -20,6 +20,7 @@
 #include "helper.hpp"
 #include "objects/house.hpp"
 #include "core/variant_map.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 
@@ -126,11 +127,11 @@ void Sentiment::timeStep(const unsigned int time )
     foreach( it, houses )
     {
       HousePtr h = *it;
-      h->setState( House::happinessBuff, _d->buffValue );
+      h->setState( pr::happinessBuff, _d->buffValue );
 
       if( h->habitants().count() > 0 )
       {
-        _d->finishValue += h->state( House::happiness );
+        _d->finishValue += h->state( pr::happiness );
         houseNumber++;
       }
     }
@@ -162,7 +163,7 @@ std::string Sentiment::reason() const
   else if( v > 5 ) { ret = "##sentiment_people_veryangry_you##"; }
   else if( v > 0 ) { ret = "##city_loathed_you##"; }
 
-  return ret;
+  return _(ret);
 }
 
 VariantMap Sentiment::save() const

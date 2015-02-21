@@ -23,7 +23,7 @@
 #include "core/position.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
 #include "objects/entertainment.hpp"
 #include "game/gamedate.hpp"
@@ -31,12 +31,15 @@
 #include "world/empire.hpp"
 #include "objects/hippodrome.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
 #include "cityservice_info.hpp"
 
 using namespace  constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(ProsperityRating,prosperity)
 
 class ProsperityRating::Impl
 {

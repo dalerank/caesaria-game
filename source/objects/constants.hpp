@@ -192,6 +192,7 @@ enum Type
   water,
   meadow,
   roadBlock,
+  farmtile,
 
   typeCount,
   userType=1000

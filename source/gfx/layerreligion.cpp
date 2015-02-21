@@ -17,7 +17,7 @@
 #include "objects/constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
 #include "core/utils.hpp"
@@ -45,7 +45,9 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.draw( tile.picture(), screenPos );
+    //engine.draw( tile.picture(), screenPos );
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {

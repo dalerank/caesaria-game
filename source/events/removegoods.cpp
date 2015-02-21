@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "removegoods.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
 #include "city/helper.hpp"

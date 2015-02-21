@@ -308,7 +308,7 @@ void AdvisorChief::Impl::drawFoodStockState()
     }
   }
 
-  drawReportRow( foodStockState, text );
+  drawReportRow( foodStockState, _(text) );
 }
 
 void AdvisorChief::Impl::drawFoodConsumption()
@@ -489,8 +489,8 @@ void AdvisorChief::Impl::drawEducation()
   text = reasons.random();
 
   text = text.empty()
-            ? "##advchief_education_ok##"
-            : text;
+    ? "##advchief_education_ok##"
+    : text;
 
 
   drawReportRow( atEducation, _( text ) );

@@ -103,6 +103,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
   if( _d->lbxFiles ) _d->lbxFiles->setShowTime( false );
 
   _d->fillFiles();
+  if( _d->lbxFiles ) _d->lbxFiles->setFocus();
 }
 
 void LoadMission::Impl::fillFiles()

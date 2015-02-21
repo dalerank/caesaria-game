@@ -22,6 +22,7 @@
 #include "core/smartptr.hpp"
 #include "engine.hpp"
 #include "tile.hpp"
+#include "renderer.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
@@ -39,7 +40,8 @@ class DrawOptions : public FlagHolder<int>
 {
 public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
-                 showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100 } Flags;
+                 showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100,
+                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000 } Flags;
   static DrawOptions& instance();
 
 private:
@@ -71,15 +73,14 @@ public:
   virtual void drawLands( Engine& engine, Camera* camera );
   virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
-
   virtual void beforeRender( Engine& engine);
   virtual void afterRender( Engine& engine);
   virtual void render( Engine& engine);
-  //virtual void renderPass( Engine& engine, Renderer::Pass pass);
   virtual void renderUi( Engine& engine );
-
   virtual void registerTileForRendering(Tile&);
+  virtual void changeLayer( int type );
   virtual int nextLayer() const;
+  virtual void destroy();
 
   virtual ~Layer();
 
@@ -89,6 +90,7 @@ protected:
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
   Tile* _currentTile() const;
+  bool _isMovingButtonPressed( NEvent& event ) const;
   void _setTooltipText( const std::string& text );
   void _addWalkerType( constants::walker::Type wtype );
   void _fillVisibleObjects( int ltype );
