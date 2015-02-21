@@ -40,12 +40,15 @@
 #include "events/dispatcher.hpp"
 #include "gui/loadfiledialog.hpp"
 #include "gfx/tilemap.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
+#include "good/store.hpp"
 #include "world/goodcaravan.hpp"
 #include "events/earthquake.hpp"
 #include "events/random_fire.hpp"
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
+#include "events/random_plague.hpp"
+#include "world/emperor.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
@@ -90,7 +93,9 @@ enum {
   send_exporter,
   random_fire,
   random_collapse,
+  random_plague,
   reload_aqueducts,
+  crash_favor,
   run_script
 };
 
@@ -102,20 +107,21 @@ public:
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
   void runScript(std::string filename);
+  gui::ContextMenu* debugMenu;
 
 public signals:
   Signal2<scene::Level*, bool> failedMissionSignal;
   Signal2<scene::Level*, bool> winMissionSignal;
 };
 
-void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
+void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 {
   _d->game = game;
 
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
-  gui::ContextMenu* debugMenu = tmp->addSubMenu();
+  _d->debugMenu = tmp->addSubMenu();
 
-#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = debugMenu->addItem( section, #ev, ev ); \
+#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( section, #ev, ev ); \
                                        CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
 
   ADD_DEBUG_EVENT( "enemies", add_enemy_archers )
@@ -141,6 +147,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
 
   ADD_DEBUG_EVENT( "disaster", random_fire )
   ADD_DEBUG_EVENT( "disaster", random_collapse )
+  ADD_DEBUG_EVENT( "disaster", random_plague )
   ADD_DEBUG_EVENT( "disaster", earthquake )
 
   ADD_DEBUG_EVENT( "game", win_mission )
@@ -150,6 +157,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
   ADD_DEBUG_EVENT( "city", add_city_border )
   ADD_DEBUG_EVENT( "city", send_exporter )
+  ADD_DEBUG_EVENT( "city", crash_favor )
   ADD_DEBUG_EVENT( "city", run_script )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
@@ -165,6 +173,12 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu *menu)
   ADD_DEBUG_EVENT( "draw", toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( "draw", toggle_show_flat_tiles )
 #undef ADD_DEBUG_EVENT
+}
+
+void DebugHandler::setVisible(bool visible)
+{
+  if( _d->debugMenu != 0)
+    _d->debugMenu->setVisible( visible );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -191,7 +205,7 @@ Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissio
 
 DebugHandler::DebugHandler() : _d(new Impl)
 {
-
+  _d->debugMenu = 0;
 }
 
 void DebugHandler::Impl::handleEvent(int event)
@@ -295,9 +309,20 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case crash_favor:
+    game->empire()->emperor().updateRelation( game->city()->name(), -100 );
+  break;
+
   case random_fire:
   {
     events::GameEventPtr e = events::RandomFire::create();
+    e->dispatch();
+  }
+  break;
+
+  case random_plague:
+  {
+    events::GameEventPtr e = events::RandomPlague::create();
     e->dispatch();
   }
   break;

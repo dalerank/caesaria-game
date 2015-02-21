@@ -21,7 +21,7 @@
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "game/gamedate.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"

@@ -17,14 +17,14 @@
 #include "tileoverlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "layerconstants.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "walker/cart_pusher.hpp"
 
 using namespace constants;
@@ -44,7 +44,10 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.draw( tile.picture(), screenPos );
+    //engine.draw( tile.picture(), screenPos );
+
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
   else
   {
@@ -60,7 +63,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     {
       city::Helper helper( _city() );
       HousePtr house = ptr_cast<House>( overlay );
-      foodLevel = (int) house->state( (Construction::Param)House::food );
+      foodLevel = (int) house->state( pr::food );
       needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
       if( !needDrawAnimations )
       {

@@ -50,8 +50,8 @@ Gatehouse::Gatehouse() : Building( objects::gatehouse, Size( 2 ) ), _d( new Impl
   setPicture( ResourceGroup::land2a, 150 );
   _d->gatehouseSprite.resize( 1 );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 bool Gatehouse::_update( const CityAreaInfo& areaInfo )
@@ -176,7 +176,7 @@ bool Gatehouse::build( const CityAreaInfo& info )
     RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
     if( road.isValid() )
     {
-      road->setState( (Construction::Param)Road::lockTerrain, 1 );
+      road->setState( pr::lockTerrain, 1 );
     }
   }
 

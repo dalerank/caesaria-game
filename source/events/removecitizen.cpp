@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "removecitizen.hpp"
 #include "game/game.hpp"
@@ -28,11 +28,11 @@ using namespace gfx;
 namespace events
 {
 
-GameEventPtr RemoveCitizens::create(TilePos center, unsigned int count)
+GameEventPtr RemoveCitizens::create(TilePos center, const CitizenGroup& group)
 {
   RemoveCitizens* e = new RemoveCitizens();
   e->_center  = center;
-  e->_count = count;
+  e->_group = group;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -53,11 +53,9 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
       HousePtr house = *it;
       if( house.isValid() )
       {
-        if( house->habitants().count() >= _count )
-        {
-          house->remHabitants( _count );
+        house->remHabitants( _group );
+        if( _group.empty() )
           break;
-        }
       }
     }
   }
@@ -65,8 +63,6 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
 
 bool RemoveCitizens::_mayExec(Game&, unsigned int) const { return true; }
 
-RemoveCitizens::RemoveCitizens() : _count( 0 )
-{
-}
+RemoveCitizens::RemoveCitizens() {}
 
 }

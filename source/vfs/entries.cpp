@@ -103,15 +103,17 @@ void Entries::_updateCache()
 {
   _d->hashedIndex.clear();
   _d->hashedIcIndex.clear();
-  for( unsigned int k=0; k < _d->files.size(); k++ )
+  int k=0;
+  foreach( it, _d->files )
   {
-    EntryInfo& info = _d->files[ k ];
+    EntryInfo& info = *it;
     info.fphash = utils::hash( info.fullpath.toString() );
     info.nhash = utils::hash( info.name.toString() );
     info.nihash = utils::hash( utils::localeLower( info.name.toString() ) );
 
     _d->hashedIndex[ info.nhash ] = k;
     _d->hashedIcIndex[ info.nihash ] = k;
+    k++;
   }
 }
 

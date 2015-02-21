@@ -39,4 +39,4 @@ protected:
   ScopedPtr<Impl> _d;
 };
 
-#endif //__OPENCAESAR3_CORPSE_H_INCLUDED__
+#endif //__CAESARIA_ENGINEER_H_INCLUDED__

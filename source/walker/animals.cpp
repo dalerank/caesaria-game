@@ -76,7 +76,7 @@ std::string Animal::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    return "##sheep_baa##";
+    return _("##sheep_baa##");
   }
 
   return "";

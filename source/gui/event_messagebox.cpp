@@ -15,7 +15,7 @@
 
 #include "event_messagebox.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/datetimehelper.hpp"
 
 using namespace constants;
@@ -24,7 +24,10 @@ using namespace gfx;
 namespace gui
 {
 
-EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
+namespace infobox
+{
+
+AboutEvent::AboutEvent(Widget* parent, const std::string& title,
                                   const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
   : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
@@ -40,7 +43,7 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   Rect rect = _lbTextRef()->relativeRect();
   rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, util::date2str( time ) );
+  Label* lbTime = new Label( this, rect, util::date2str( time, true ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
 
   if( !additional.empty() )
@@ -66,6 +69,8 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   }    
 }
 
-EventMessageBox::~EventMessageBox() {}
+AboutEvent::~AboutEvent() {}
+
+}//end namespace infobox
 
 }//end namespace gui

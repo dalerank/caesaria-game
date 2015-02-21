@@ -25,7 +25,7 @@
 #include "gfx/engine.hpp"
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "city/migration.hpp"
 #include "label.hpp"
 #include "texturedbutton.hpp"
@@ -147,12 +147,9 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbYearMigrationValue )
   GET_DWIDGET_FROM_UI( _d, lbAdvice )
 
-  Label* lbNextChartArea;
-  Label* lbChart;
-  Label* lbPrevChartArea;
-  GET_WIDGET_FROM_UI( lbPrevChartArea )
-  GET_WIDGET_FROM_UI( lbNextChartArea )
-  GET_WIDGET_FROM_UI( lbChart )
+  INIT_WIDGET_FROM_UI( Label*, lbPrevChartArea )
+  INIT_WIDGET_FROM_UI( Label*, lbNextChartArea )
+  INIT_WIDGET_FROM_UI( Label*, lbChart )
 
   if( lbNextChartArea )
   {

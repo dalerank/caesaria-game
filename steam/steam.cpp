@@ -23,12 +23,17 @@
 #include "core/logger.hpp"
 #include "public/steam/steam_api.h"
 
+#ifdef CAESARIA_PLATFORM_WIN
+#include "helper/helper.h"
+#endif
+
 namespace steamapi
 {
 
 #define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }
 
 static const AppId_t CAESARIA_STEAM_APPID=327640;
+static bool glbOfflineMode = false;
 CAESARIA_LITERALCONST(stat_num_games)
 CAESARIA_LITERALCONST(stat_num_wins)
 
@@ -41,6 +46,8 @@ struct Achievement
   bool reached;
   int idIconImage;
   gfx::Picture image;
+
+  void unlockAchievement(steamapi::Achievement &achievement);
 };
 
 struct XClient
@@ -59,104 +66,143 @@ Achievement glbAchievements[achievementNumber] =
 class UserStats
 {
 public:
-  STEAM_CALLBACK( UserStats, receivedUserStats, UserStatsReceived_t, _callbackUserStatsReceived );
-  STEAM_CALLBACK( UserStats, updateUserStats, UserStatsStored_t, _callbackUserStatsStored );
-  STEAM_CALLBACK( UserStats, updateAchievementInfo, UserAchievementStored_t, _callbackAchievementStored );
-
+#ifdef CAESARIA_PLATFORM_WIN
+  uint64 steamId;
+#else
   CSteamID steamId;
+#endif
+
   gfx::Picture avatarImage;
   int32 campaignFirstMission;
   int32 totalGamesPlayed;
   int32 totalNumWins;
   int32 totalNumLosses;
   bool needStoreStats;
-  bool statsValid;
-  Signal0<> onStatsReceivedSignal;
+  bool statsValid, statsUpdate;
 
-  UserStats() :
+#ifndef CAESARIA_PLATFORM_WIN
+  STEAM_CALLBACK( UserStats, receivedUserStats, UserStatsReceived_t, _callbackUserStatsReceived );
+  STEAM_CALLBACK( UserStats, updateUserStats, UserStatsStored_t, _callbackUserStatsStored );
+  STEAM_CALLBACK( UserStats, updateAchievementInfo, UserAchievementStored_t, _callbackAchievementStored );
+
+  UserStats()
+    :
     _callbackUserStatsReceived( this, &UserStats::receivedUserStats ),
     _callbackUserStatsStored( this, &UserStats::updateUserStats ),
     _callbackAchievementStored( this, &UserStats::updateAchievementInfo )
+#else
+  void receivedUserStats();
+  void updateUserStats();
+  void updateAchievementInfo();
+
+  UserStats()
+#endif
   {
     totalGamesPlayed = 0;
     totalNumWins = 0;
     campaignFirstMission = 0;
     totalNumLosses = 0;
+    statsUpdate = false;
     needStoreStats = false;
     statsValid = false;
-  }
+  }    
 
-  //-----------------------------------------------------------------------------
-  // Purpose: see if we should unlock this achievement
-  //-----------------------------------------------------------------------------
-  void evaluateAchievement( Achievement& achievement )
-  {
-    // Already have it?
-    if ( achievement.reached )
-      return;
-
-    switch ( achievement.id )
-    {
-    case achievementNewVillage: if(campaignFirstMission>0){unlockAchievement(achievement);} break;
-    case achievementFirstWin: if(totalNumWins>0){ unlockAchievement(achievement);} break;
-
-    /*
-    case ACH_TRAVEL_FAR_SINGLE:
-      if ( m_flGameFeetTraveled > 500 )
-      {
-              UnlockAchievement( achievement );
-      }
-    break;*/
-    }
-  }
-
-  //-----------------------------------------------------------------------------
-  // Purpose: Unlock this achievement
-  //-----------------------------------------------------------------------------
-  void unlockAchievement( Achievement &achievement )
-  {
-    achievement.reached = true;
-
-    // the icon may change once it's unlocked
-    achievement.idIconImage = 0;
-
-    // mark it down
-    if( xclient.stats )
-    {
-        bool result = xclient.stats->SetAchievement( achievement.uniqueName );
-    }
-
-    // Store stats end of frame
-    needStoreStats = true;
-  }
-
-  //-----------------------------------------------------------------------------
-  // Purpose: Store stats in the Steam database
-  //-----------------------------------------------------------------------------
-  void storeStatsIfNecessary()
-  {    
-    if( !xclient.stats )
-      return;
-
-    if( needStoreStats )
-    {
-      // already set any achievements in UnlockAchievement
-
-      // set stats
-      xclient.stats->SetStat( lc_stat_num_games, totalGamesPlayed );
-      xclient.stats->SetStat( lc_stat_num_wins, totalNumWins );
-      xclient.stats->SetStat( "NumLosses", totalNumLosses );
-      // Update average feet / second stat
-      //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
-      // The averaged result is calculated for us
-
-      bool bSuccess = xclient.stats->StoreStats();
-      // If this failed, we never sent anything to the server, try
-      // again later.
-      needStoreStats = !bSuccess;
-    }
-  }
+  void unlockAchievement( Achievement &achievement );
+  void evaluateAchievement( Achievement& achievement );
+  void storeStatsIfNecessary();
 };
+
+//-----------------------------------------------------------------------------
+// Purpose: Unlock this achievement
+//-----------------------------------------------------------------------------
+void UserStats::unlockAchievement( Achievement &achievement )
+{
+  achievement.reached = true;
+
+  // the icon may change once it's unlocked
+  achievement.idIconImage = 0;
+
+  // mark it down
+#ifdef  CAESARIA_PLATFORM_WIN
+  sth_setAchievement( achievement.uniqueName );
+#else
+  if( xclient.stats )
+  {
+      bool result = xclient.stats->SetAchievement( achievement.uniqueName );
+  }
+#endif
+
+  // Store stats end of frame
+  needStoreStats = true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: see if we should unlock this achievement
+//-----------------------------------------------------------------------------
+void UserStats::evaluateAchievement( Achievement& achievement )
+{
+  // Already have it?
+  if ( achievement.reached )
+    return;
+
+  switch ( achievement.id )
+  {
+  case achievementNewVillage: if(campaignFirstMission>0){unlockAchievement(achievement);} break;
+  case achievementFirstWin: if(totalNumWins>0){ unlockAchievement(achievement);}; break;
+
+  /*
+  case ACH_TRAVEL_FAR_SINGLE:
+    if ( m_flGameFeetTraveled > 500 )
+    {
+            UnlockAchievement( achievement );
+    }
+  break;*/
+  }
+}
+
+void UserStats::storeStatsIfNecessary()
+{
+#ifdef CAESARIA_PLATFORM_WIN
+  if( needStoreStats )
+  {
+    // already set any achievements in UnlockAchievement
+
+    // set stats
+    sth_SetStat( lc_stat_num_games, totalGamesPlayed );
+    sth_SetStat( lc_stat_num_wins, totalNumWins );
+    sth_SetStat( "NumLosses", totalNumLosses );
+    // Update average feet / second stat
+    //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
+    // The averaged result is calculated for us
+
+    bool bSuccess = sth_StoreStats();
+    // If this failed, we never sent anything to the server, try
+    // again later.
+    needStoreStats = !bSuccess;
+  }
+#else
+  if( !xclient.stats )
+    return;
+
+  if( needStoreStats )
+  {
+    // already set any achievements in UnlockAchievement
+
+    // set stats
+    xclient.stats->SetStat( lc_stat_num_games, totalGamesPlayed );
+    xclient.stats->SetStat( lc_stat_num_wins, totalNumWins );
+    xclient.stats->SetStat( "NumLosses", totalNumLosses );
+    // Update average feet / second stat
+    //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
+    // The averaged result is calculated for us
+
+    bool bSuccess = xclient.stats->StoreStats();
+    // If this failed, we never sent anything to the server, try
+    // again later.
+    needStoreStats = !bSuccess;
+  }
+#endif
+}
 
 static UserStats glbUserStats;
 
@@ -191,6 +237,9 @@ bool checkSteamRunning()
 
 bool connect()
 {
+#ifdef CAESARIA_PLATFORM_MACOSX
+  SteamAPI_Shutdown();
+#endif
   // Initialize SteamAPI, if this fails we bail out since we depend on Steam for lots of stuff.
   // You don't necessarily have to though if you write your code to check whether all the Steam
   // interfaces are NULL before using them and provide alternate paths when they are unavailable.
@@ -220,22 +269,39 @@ bool connect()
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
   Logger::warning( "CurrentGameLanguage: %s", SteamApps()->GetCurrentGameLanguage() );
-  if ( !SteamUser()->BLoggedOn() )
+  glbOfflineMode = !SteamUser()->BLoggedOn();
+
+  bool mayStart = SteamApps()->BIsSubscribedApp( CAESARIA_STEAM_APPID );
+  if( !mayStart )
   {
-    Logger::warning( "Steam user is not logged in\n" );
-    OSystem::error( "Fatal Error", "Steam user must be logged in to play this game (SteamUser()->BLoggedOn() returned false).\n" );
+    Logger::warning( "Cant play in this account" );
+    OSystem::error( "Warning", "Cant play in this account" );
     return false;
+  }
+
+  if( glbOfflineMode )
+  {
+    Logger::warning( "Game work in offline mode" );
+    OSystem::error( "Warning", "Game work in offline mode" );
   }  
 
   return true;
 }
 
-void close() { SteamAPI_Shutdown(); }
+void close()
+{
+  SteamAPI_Shutdown();
+}
 
 void update()
 {
-  // Run Steam client callbacks
+// Run Steam client callbacks
+#ifdef CAESARIA_PLATFORM_WIN
+  sth_runCallbacks();
+  glbUserStats.receivedUserStats();
+#else
   SteamAPI_RunCallbacks();
+#endif
 }
 
 void init()
@@ -246,6 +312,8 @@ void init()
 #if defined(CAESARIA_PLATFORM_WIN) && defined(__GNUC__)
   xclient.user = 0;
   xclient.stats = 0;
+  glbUserStats.steamId = sth_getSteamID();
+  sth_requestCurrentStats();
 #else
   if( xclient.user->BLoggedOn() )
   {
@@ -349,15 +417,25 @@ const gfx::Picture& userImage()
   // We also want to use the Steam Avatar image inside the HUD if it is available.
   // We look it up via GetMediumFriendAvatar, which returns an image index we use
   // to look up the actual RGBA data below.
-
+#ifdef CAESARIA_PLATFORM_WIN
+  if( glbUserStats.steamId != 0 )
+  {
+    if( !glbUserStats.avatarImage.isValid() )
+    {
+      int iImage = sth_getMediumFriendAvatar( glbUserStats.steamId );
+      glbUserStats.avatarImage = getSteamImage( iImage );
+    }
+  }
+#else
   if( glbUserStats.steamId.IsValid() )
   {
-    if( ( !glbUserStats.avatarImage.isValid() ) )
+    if( !glbUserStats.avatarImage.isValid() )
     {
       int iImage = SteamFriends()->GetMediumFriendAvatar( glbUserStats.steamId );
       glbUserStats.avatarImage = getSteamImage( iImage );
     }
   }
+#endif
 
   return glbUserStats.avatarImage;
 }
@@ -365,6 +443,12 @@ const gfx::Picture& userImage()
 //-----------------------------------------------------------------------------
 // Purpose: Our stats data was stored!
 //-----------------------------------------------------------------------------
+#ifdef CAESARIA_PLATFORM_WIN
+void UserStats::updateUserStats()
+{
+
+}
+#else
 void UserStats::updateUserStats( UserStatsStored_t *pCallback )
 {
   // we may get callbacks for other games' stats arriving, ignore them
@@ -391,12 +475,24 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
     }
   }
 }
+#endif
 
-Signal0<>& onStatsReceived() { return glbUserStats.onStatsReceivedSignal; }
+bool isStatsReceived()
+{
+  bool ret = glbUserStats.statsValid;
+  glbUserStats.statsValid = false;
+  return ret;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: An achievement was stored
 //-----------------------------------------------------------------------------
+#ifdef CAESARIA_PLATFORM_WIN
+void UserStats::updateAchievementInfo()
+{
+
+}
+#else
 void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
 {
   // we may get callbacks for other games' stats arriving, ignore them
@@ -420,6 +516,34 @@ void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
 // Purpose: We have stats data from Steam. It is authoritative, so update
 //			our data with those results now.
 //-----------------------------------------------------------------------------
+#endif
+
+
+#ifdef CAESARIA_PLATFORM_WIN
+void UserStats::receivedUserStats()
+{
+  if( sth_isStatsAvailable() )
+  {
+    statsValid = true;
+
+    // load achievements
+    for( int iAch = 0; iAch < achievementNumber; ++iAch )
+    {
+      Achievement &ach = glbAchievements[iAch];
+      ach.reached = sth_getAchievementReached( ach.uniqueName );
+      sth_getAchievementAttribute( ach.uniqueName, "name", ach.caption );
+      sth_getAchievementAttribute( ach.uniqueName, "desc", ach.description );
+
+      ach.idIconImage = sth_getAchievementIcon( ach.uniqueName );
+      ach.image = getSteamImage( ach.idIconImage );
+    }
+
+    // load stats
+    totalGamesPlayed = sth_getStat( lc_stat_num_games );
+    totalNumWins = sth_getStat( lc_stat_num_wins );
+  }
+}
+#else
 void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
 {
   ISteamUserStats* steamUserStats = SteamUserStats();
@@ -451,7 +575,6 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
       steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
       steamUserStats->GetStat( lc_stat_num_wins, &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
-      emit onStatsReceivedSignal();
     }
     else
     {
@@ -459,6 +582,7 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
     }
   }
 }
+#endif
 
 std::string achievementCaption(AchievementType achivId)
 {

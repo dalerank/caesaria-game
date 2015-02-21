@@ -31,6 +31,7 @@
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
 #include "core/font.hpp"
+#include "layerbuild.hpp"
 #include "game/settings.hpp"
 
 using namespace constants;
@@ -49,6 +50,8 @@ public:
   PictureRef textPic;
   unsigned int savesum, money4destroy;
   TilePos startTilePos;
+  LayerPtr lastLayer;
+  Renderer* renderer;
   Font textFont;
 };
 
@@ -230,12 +233,70 @@ void Destroy::renderUi(Engine &engine)
   engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
+void Destroy::changeLayer(int layer)
+{
+  if( layer != type() )
+  {
+    if( layer == citylayer::build )
+    {
+      _exitDestroyTool();
+    }
+    else
+    {
+      _d->lastLayer = _d->renderer
+                          ? _d->renderer->getLayer( layer )
+                          : LayerPtr();
+    }
+    }
+}
+
+void Destroy::beforeRender(Engine &engine)
+{
+  if( _d->lastLayer.isValid() )
+    _d->lastLayer->beforeRender( engine );
+  else
+    Layer::beforeRender( engine );
+}
+
+void Destroy::afterRender(Engine &engine)
+{
+  if( _d->lastLayer.isValid() )
+    _d->lastLayer->afterRender( engine );
+  else
+    Layer::beforeRender( engine );
+}
+
 void Destroy::init(Point cursor)
 {
   Layer::init( cursor );
+
   _setLastCursorPos( cursor );
   _setStartCursorPos( cursor );
+
   _d->startTilePos = TilePos( -1, -1 );
+
+  LayerPtr layer = _d->renderer->currentLayer();
+  if( layer.isValid() )
+  {
+    SmartPtr<Build> buildLayer = ptr_cast<Build>( layer );
+    if( buildLayer.isValid() )
+    {
+      _d->lastLayer = buildLayer->drawLayer();
+    }
+    else if( layer->type() != type() )
+    {
+      _d->lastLayer = layer;
+    }
+  }
+
+  DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, false );
+}
+
+void Destroy::_exitDestroyTool()
+{
+  _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
+  _city()->setOption( PlayerCity::updateTiles, 1 );
+  DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
 }
 
 void Destroy::handleEvent(NEvent& event)
@@ -257,12 +318,6 @@ void Destroy::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
-    {
-      _setStartCursorPos( _lastCursorPos() );
-    }
-    break;
-
     case mouseLbtnRelease:            // left button
     {
       _clearAll();
@@ -272,12 +327,8 @@ void Destroy::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease:
-    {
-      _setNextLayer( citylayer::simple );
-      _city()->setOption( PlayerCity::updateTiles, 1 );
-    }
-    break;
+    case mouseLbtnPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
+    case mouseRbtnRelease: { _exitDestroyTool(); } break;
 
     default:
     break;
@@ -302,6 +353,7 @@ void Destroy::handleEvent(NEvent& event)
 }
 
 int Destroy::type() const {  return citylayer::destroyd; }
+LayerPtr Destroy::drawLayer() const { return _d->lastLayer; }
 
 void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
@@ -312,20 +364,28 @@ void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
     registerTileForRendering( tile );
   }
 
-  Layer::drawTile( engine, tile, offset );
+  if( _d->lastLayer.isValid() )
+  {
+    _d->lastLayer->drawTile( engine, tile, offset );
+  }
+  else
+  {
+    Layer::drawTile( engine, tile, offset );
+  }
 }
 
-LayerPtr Destroy::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Destroy::create(Renderer &renderer, PlayerCityPtr city)
 {
-  LayerPtr ret( new Destroy( camera, city ) );
+  LayerPtr ret( new Destroy( renderer, city ) );
   ret->drop();
 
   return ret;
 }
 
-Destroy::Destroy( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city ), _d( new Impl )
+Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
+  : Layer( renderer.camera(), city ), _d( new Impl )
 {
+  _d->renderer = &renderer;
   _d->shovelPic = Picture::load( "shovel", 1 );
   std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
   _d->clearPic = Picture::load( rcLand, 2 );

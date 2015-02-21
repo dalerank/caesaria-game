@@ -16,17 +16,17 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "house_level.hpp"
+#include "house_spec.hpp"
 
 #include "objects/house.hpp"
 #include "core/exception.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
@@ -526,7 +526,7 @@ float HouseSpecification::evaluateHealthNeed(HousePtr house, const Service::Type
       res = (float)( 100 - house->getServiceValue(service) );
    }
 
-   return std::max<float>( res, 100 - house->state( (Construction::Param)House::health ) );
+   return std::max<float>( res, 100 - house->state( pr::health ) );
 }
 
 float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Type service)

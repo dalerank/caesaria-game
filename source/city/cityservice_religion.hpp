@@ -44,4 +44,4 @@ private:
 
 }//end namespace city
 
-#endif //__OPENCAESAR3_CITYSERVICE_RELIGION_H_INCLUDED__
+#endif //__CAESARIA_CITYSERVICE_RELIGION_H_INCLUDED__

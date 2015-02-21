@@ -813,7 +813,7 @@
       school : true
       academy : true
       library : true
-      mission_post : true
+      missionaryPost : true
       senate : true
       gatehouse : true
       wall : true

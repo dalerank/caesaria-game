@@ -13,12 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
 #define _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
 
 #include "event.hpp"
+#include "game/citizen_group.hpp"
 
 namespace events
 {
@@ -26,7 +27,7 @@ namespace events
 class RemoveCitizens : public GameEvent
 {
 public:
-  static GameEventPtr create(TilePos center, unsigned int workers);
+  static GameEventPtr create(TilePos center, const CitizenGroup& group );
 
 protected:
   virtual void _exec(Game& game, unsigned int time );
@@ -36,7 +37,7 @@ private:
   RemoveCitizens();
 
   TilePos _center;
-  unsigned int _count;
+  CitizenGroup _group;
 };
 
 }

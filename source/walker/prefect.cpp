@@ -176,17 +176,15 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
     HousePtr house = ptr_cast<House>( building );
     if( house.isValid() )
     {
-      int healthLevel = house->state( (Construction::Param)House::health );
+      int healthLevel = house->state( pr::health );
       if( healthLevel < 1 )
       {
         house->deleteLater();
 
         _d->fumigateHouseNumber++;
-        CitizenGroup citizens = house->remHabitants( 1000 ); //all habitants will killed
-        events::GameEventPtr e = events::FireWorkers::create( house->pos(), citizens.count() );
-        e->dispatch();
+        house->remHabitants( 1000 ); //all habitants will killed
 
-        e = events::Disaster::create( house->tile(), events::Disaster::plague );
+        events::GameEventPtr e = events::Disaster::create( house->tile(), events::Disaster::plague );
         e->dispatch();
 
         if( _d->fumigateHouseNumber > 5 )

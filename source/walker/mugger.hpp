@@ -19,6 +19,7 @@
 #define __CAESARIA_MUGGER_H_INCLUDE_
 
 #include "human.hpp"
+#include "objects/predefinitions.hpp"
 
 class Mugger : public Human
 {

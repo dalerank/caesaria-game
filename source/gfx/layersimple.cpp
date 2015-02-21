@@ -70,13 +70,9 @@ void Simple::afterRender(Engine& engine)
 
   _d->lastOverlay = 0;
   Tile* tile = _currentTile();
-  if( tile )
+  if( tile && is_kind_of<Building>( tile->overlay() ) )
   {
-    TileOverlayPtr curOverlay = tile->overlay();
-    if( is_kind_of<Building>( curOverlay ) )
-    {
-      _d->lastOverlay = curOverlay;
-    }
+    _d->lastOverlay = tile->overlay();
   }
 }
 

@@ -19,11 +19,6 @@
 #ifndef _CAESARIA_BUILDING_H_INCLUDE_
 #define _CAESARIA_BUILDING_H_INCLUDE_
 
-#include <string>
-#include <map>
-#include <list>
-#include <set>
-
 #include "construction.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
@@ -66,7 +61,7 @@ public:
   virtual gfx::Renderer::PassQueue passQueue() const;
 
 protected:
-  std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
+  void _updateBalanceKoeffs();
 
   class Impl;
   ScopedPtr< Impl > _d;

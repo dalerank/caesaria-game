@@ -47,4 +47,4 @@ private:
 }//end advisorwnd
 
 }//end namespace gui
-#endif //__OPENCAESAR3_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_ADVISOR_FINANCE_WINDOW_H_INCLUDED__

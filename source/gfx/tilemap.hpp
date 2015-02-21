@@ -93,4 +93,4 @@ private:
 };
 
 }//end namespace gfx
-#endif //__OPENCAESAR3_TILEMAP_H_INCLUDED__
+#endif //__CAESARIA_TILEMAP_H_INCLUDED__

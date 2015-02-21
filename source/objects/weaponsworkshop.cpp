@@ -19,6 +19,7 @@
 #include "weaponsworkshop.hpp"
 #include "constants.hpp"
 #include "gfx/picture.hpp"
+#include "good/stock.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects_factory.hpp"
 #include "city/helper.hpp"

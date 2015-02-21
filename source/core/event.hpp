@@ -160,6 +160,7 @@ enum KeyCode
     KEY_COMMA            = 0xBC,  // Comma Key  (,)
     KEY_MINUS            = 0xBD,  // Minus Key  (-)
     KEY_PERIOD           = 0xBE,  // Period Key (.)
+    KEY_EQUALS           = 0xBF,
     KEY_ATTN             = 0xF6,  // Attn key
     KEY_CRSEL            = 0xF7,  // CrSel key
     KEY_EXSEL            = 0xF8,  // ExSel key
