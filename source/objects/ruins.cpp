@@ -70,7 +70,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
     foreach( it, buildings)
     {
-      if( (*it)->group() != objects::disasterGroup )
+      if( (*it)->group() != object::group::disaster )
       {
         (*it)->updateState( pr::fire, _value );
       }

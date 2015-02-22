@@ -73,9 +73,9 @@ std::string LoaderHelper::getDefaultCityName(unsigned int location)
   return "unknown city";
 }
 
-unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
+objects::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
 {
-  Overlay::Type ovType = objects::unknown;
+  constants::objects::Type ovType = objects::unknown;
   switch ( imgId )
   {
     case 0xb0e:                                 ovType = objects::well;    break;
@@ -124,7 +124,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
 {
   int changeId = 0;
   unsigned int imgId = oTile.originalImgId();
-  Overlay::Type ovType = objects::unknown;
+  constants::objects::Type ovType = objects::unknown;
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     ovType = objects::road;

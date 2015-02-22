@@ -32,7 +32,7 @@
 class Building : public Construction
 {
 public:
-  Building(const Type type, const Size& size=Size(1) );
+  Building(const constants::objects::Type type, const Size& size=Size(1) );
   virtual ~Building();
   virtual void initTerrain( gfx::Tile& terrain);
 

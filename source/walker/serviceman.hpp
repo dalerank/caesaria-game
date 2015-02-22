@@ -77,7 +77,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
-  void _addObsoleteOverlay( Overlay::Type type );
+  void _addObsoleteOverlay( constants::objects::Type type );
 
 private:
   class Impl;

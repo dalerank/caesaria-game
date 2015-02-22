@@ -27,6 +27,7 @@
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
+#include "walker/constants.hpp"
 
 #include <set>
 
@@ -51,7 +52,7 @@ private:
 class Layer : public ReferenceCounted
 {
 public:
-  typedef std::set<int> WalkerTypes;
+  typedef std::set<constants::walker::Type> WalkerTypes;
 
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;

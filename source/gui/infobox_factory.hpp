@@ -37,7 +37,7 @@ protected:
   virtual void _showHelp();
 
 protected:
-  Overlay::Type _type;
+  constants::objects::Type _type;
   Label* _lbProduction;
   Label* _lbEffciency;
 };

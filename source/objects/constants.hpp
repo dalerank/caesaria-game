@@ -19,41 +19,51 @@
 #ifndef _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 #define _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 
+#include "predefinitions.hpp"
+#include <set>
+
+namespace object
+{
+
+namespace group
+{
+const Group unknown(0);
+const Group any(0);
+const Group industry(1);
+const Group obtain(2);
+const Group food(3);
+const Group disaster(4);
+const Group religion(5);
+const Group military(6);
+const Group native(7);
+const Group water(8);
+const Group administration(9);
+const Group bridge(10);
+const Group engineering(11);
+const Group trade(12);
+const Group tower(13);
+const Group gate(14);
+const Group security(15);
+const Group education(16);
+const Group health(17);
+const Group sight(18);
+const Group garden(19);
+const Group road(20);
+const Group entertainment(21);
+const Group house(22);
+const Group wall(23);
+}
+
+typedef std::set<Group> GroupSet;
+typedef std::vector<Group> Groups;
+
+}
+
 namespace constants
 {
 
 namespace objects
 {
-
-enum Group
-{
-  unknownGroup=0,
-  industryGroup,
-  obtainGroup,
-  foodGroup,
-  disasterGroup,
-  religionGroup,
-  militaryGroup,
-  nativeGroup,
-  waterGroup,
-  administrationGroup,
-  bridgeGroup,
-  engineeringGroup,
-  tradeGroup,
-  towerGroup,
-  gateGroup,
-  securityGroup,
-  educationGroup,
-  healthGroup,
-  sightGroup,
-  gardenGroup,
-  roadGroup,
-  entertainmentGroup,
-  houseGroup,
-  wallGroup,
-  countGroup,
-  anyGroup=countGroup
-};
 
 enum Type
 {

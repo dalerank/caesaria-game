@@ -63,7 +63,7 @@ public:
   virtual const ConstructionExtensionList& extensions() const;
   virtual void initialize(const MetaData &mdata);
 protected:
-  Construction( const Overlay::Type type, const Size& size );
+  Construction( const constants::objects::Type type, const Size& size );
   void _checkDestroyState();
 
   class Impl;

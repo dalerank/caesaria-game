@@ -190,7 +190,7 @@ bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Reservoir::isNeedRoadAccess() const{  return false; }
 
-WaterSource::WaterSource(const Type type, const Size& size )
+WaterSource::WaterSource(const objects::Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {

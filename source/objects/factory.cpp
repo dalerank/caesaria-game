@@ -94,7 +94,7 @@ public:
 };
 
 Factory::Factory(const good::Product inType, const good::Product outType,
-                  const Overlay::Type type, const Size& size )
+                  const constants::objects::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
   _d->productionRate = 2.f;

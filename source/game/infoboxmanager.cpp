@@ -103,8 +103,8 @@ class Manager::Impl
 public:
   bool showDebugInfo;
 
-  typedef std::map< Overlay::Type, InfoboxCreator* > InfoboxCreators;
-  std::map< std::string, Overlay::Type > name2typeMap;
+  typedef std::map< constants::objects::Type, InfoboxCreator* > InfoboxCreators;
+  std::map< std::string, constants::objects::Type > name2typeMap;
 
   InfoboxCreators constructors;
 };
@@ -132,7 +132,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 {
   Tile& tile = city->tilemap().at( pos );
   OverlayPtr overlay = tile.overlay();
-  Overlay::Type type;
+  constants::objects::Type type;
 
   if( _d->showDebugInfo )
   {
@@ -165,7 +165,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
 void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = showInfo; }
 
-void Manager::addInfobox( const Overlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
+void Manager::addInfobox( const constants::objects::Type type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
 
@@ -180,7 +180,7 @@ void Manager::addInfobox( const Overlay::Type type, const std::string& typeName,
   }
 }
 
-bool Manager::canCreate(const Overlay::Type type) const
+bool Manager::canCreate(const constants::objects::Type type) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

@@ -19,6 +19,7 @@
 #define __CAESARIA_BUILDING_PREDEFINITIONS_H_INCLUDED__
 
 #include "core/predefinitions.hpp"
+#include "core/namedtype.hpp"
 
 PREDEFINE_CLASS_SMARTLIST(Building,List)
 PREDEFINE_CLASS_SMARTLIST(Factory, List)
@@ -76,6 +77,11 @@ PREDEFINE_CLASS_SMARTLIST(Waymark,List)
 PREDEFINE_CLASS_SMARTLIST(Overlay,List)
 
 PREDEFINE_CLASS_SMARTPOINTER(FortArea)
+
+namespace object
+{
+DEFINE_NAMEDTYPE(Group)
+}
 
 
 #endif //__CAESARIA_BUILDING_PREDEFINITIONS_H_INCLUDED__

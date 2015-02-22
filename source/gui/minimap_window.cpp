@@ -77,7 +77,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
-  Overlay::Type ovType = objects::unknown;
+  constants::objects::Type ovType = objects::unknown;
   if( tile.overlay().isValid() )
     ovType = tile.overlay()->type();
 
@@ -153,7 +153,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
   if (overlay == NULL)
     return;
 
-  Overlay::Type type = overlay->type();
+  constants::objects::Type type = overlay->type();
 
   switch(type)
   {

@@ -52,6 +52,9 @@ class VariantMap;
 #define VARIANT_SAVE_ENUM_D(vm,d,param) vm[ #param ] = (int)d->param;
 #define VARIANT_LOAD_ENUM_D(d,param,vm) d->param = (__typeof__(d->param))vm.get( #param ).toInt();
 
+#define VARIANT_SAVE_ITYPE_D(vm,d,param) vm[ #param ] = d->param.toInt();
+#define VARIANT_LOAD_ITYPE_D(d,param,vm) d->param = (__typeof__(d->param))(vm.get( #param ).toInt());
+
 #define VARIANT_LOAD_STR_D(d,param,vm) d->param = vm.get( #param ).toString();
 #define VARIANT_LOAD_TIME_D(d,param,vm) d->param = vm.get( #param ).toDateTime();
 #define VARIANT_LOAD_VMAP( param, vm ) param = vm.get( #param ).toMap();

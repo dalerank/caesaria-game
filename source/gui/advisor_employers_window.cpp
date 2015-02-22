@@ -142,7 +142,7 @@ private:
 class Employer::Impl
 {
 public:
-  typedef std::vector< Overlay::Type > BldTypes;
+  typedef std::vector< constants::objects::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalaries;
@@ -265,7 +265,7 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  std::vector<objects::Group> bldGroups = city::industry::toGroups( type );
+  object::Groups bldGroups = city::industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );

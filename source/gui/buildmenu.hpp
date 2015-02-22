@@ -42,7 +42,7 @@ public:
   void addSubmenuButton(const city::development::Branch menuType, const std::string &text);
 
   // add the button in the menu.
-  void addBuildButton(const Overlay::Type buildingType);
+  void addBuildButton(const constants::objects::Type buildingType);
 
   virtual bool isPointInside(const Point& point) const;
 

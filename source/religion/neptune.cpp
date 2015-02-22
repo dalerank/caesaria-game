@@ -89,7 +89,7 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 void Neptune::_doBlessing(PlayerCityPtr city)
 {
   city::Helper helper( city );
-  FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
+  FishingBoatList boats = helper.findw<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
 
   FishingBoatPtr boat = boats.random();
   foreach( it, boats )

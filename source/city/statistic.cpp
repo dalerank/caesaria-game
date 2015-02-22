@@ -226,7 +226,7 @@ unsigned int getFoodProducing(PlayerCityPtr city)
   Helper helper( city );
 
   int foodProducing = 0;
-  FarmList farms = helper.find<Farm>( objects::foodGroup );
+  FarmList farms = helper.find<Farm>( object::group::food );
 
   foreach( f, farms ) { foodProducing += (*f)->produceQty(); }
 
@@ -314,7 +314,7 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<int>& checkTy
 
   foreach( it, houses )
   {
-    Overlay::Type btype;
+    constants::objects::Type btype;
     (*it)->spec().next().checkHouse( *it, NULL, &btype );
     if( checkTypes.count( btype ) )
     {    

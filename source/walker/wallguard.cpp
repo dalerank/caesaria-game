@@ -196,7 +196,7 @@ std::string WallGuard::thoughts(Thought th) const
     city::Helper helper( _city() );
 
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = helper.findw<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts(th);

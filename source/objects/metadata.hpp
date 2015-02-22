@@ -42,7 +42,7 @@ class MetaData
 
   static MetaData invalid;
 public:
-  MetaData( const Overlay::Type type, const std::string& name );
+  MetaData( const constants::objects::Type type, const std::string& name );
   MetaData( const MetaData& a );
 
   ~MetaData();
@@ -51,8 +51,8 @@ public:
   std::string sound() const;
   std::string prettyName() const;
   std::string description() const;
-  Overlay::Type type() const;
-  Overlay::Group group() const;
+  constants::objects::Type type() const;
+  object::Group group() const;
   gfx::Picture picture( int size=0 ) const;
   Desirability desirability() const;
 
@@ -68,24 +68,24 @@ private:
 class MetaDataHolder
 {
 public:
-  typedef std::vector<Overlay::Type> OverlayTypes;
+  typedef std::vector<constants::objects::Type> OverlayTypes;
   static MetaDataHolder& instance();
 
   void addData(const MetaData& data);
-  static const MetaData& getData(const Overlay::Type buildingType);
-  bool hasData(const Overlay::Type buildingType) const;
+  static const MetaData& getData(const constants::objects::Type buildingType);
+  bool hasData(const constants::objects::Type buildingType) const;
   OverlayTypes availableTypes() const;
 
   // return factory that consume good
-  Overlay::Type getConsumerType(const good::Product inGoodType) const;
+  constants::objects::Type getConsumerType(const good::Product inGoodType) const;
 
-  static Overlay::Type findType( const std::string& name );
-  static std::string findTypename( Overlay::Type type );
-  static Overlay::Group findGroup( const std::string& name );
+  static constants::objects::Type findType( const std::string& name );
+  static std::string findTypename( constants::objects::Type type );
+  static object::Group findGroup( const std::string& name );
 
-  static std::string findPrettyName( Overlay::Type type );
-  static std::string findDescription( Overlay::Type type );
-  static gfx::Picture randomPicture( Overlay::Type type, Size size );
+  static std::string findPrettyName( constants::objects::Type type );
+  static std::string findDescription( constants::objects::Type type );
+  static gfx::Picture randomPicture( constants::objects::Type type, Size size );
 
   void initialize(vfs::Path filename );
   ~MetaDataHolder();

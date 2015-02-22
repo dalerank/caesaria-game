@@ -45,7 +45,7 @@ public:
   DivinityPtr divinity;
 };
 
-Temple::Temple( DivinityPtr divinity, Overlay::Type type, int imgId, const Size& size )
+Temple::Temple( DivinityPtr divinity, constants::objects::Type type, int imgId, const Size& size )
 : ServiceBuilding( divinity.isValid()
                     ? divinity->serviceType()
                     : Service::srvCount, type, size ), _td( new Impl )
@@ -132,7 +132,7 @@ bool TempleOracle::build( const city::AreaInfo& info )
   return true;
 }
 
-SmallTemple::SmallTemple( DivinityPtr divinity, Overlay::Type type, int imgId )
+SmallTemple::SmallTemple( DivinityPtr divinity, constants::objects::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
   setMaximumWorkers( 2 );
@@ -140,7 +140,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, Overlay::Type type, int imgId )
 
 unsigned int SmallTemple::parishionerNumber() const {  return 750; }
 
-BigTemple::BigTemple( DivinityPtr divinity, Overlay::Type type, int imgId )
+BigTemple::BigTemple( DivinityPtr divinity, constants::objects::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
   setMaximumWorkers( 8 );

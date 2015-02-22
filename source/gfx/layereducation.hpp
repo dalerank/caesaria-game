@@ -40,7 +40,7 @@ private:
   int _getLevelValue(HousePtr house ) const;
   std::string _getAccessLevel( int lvl ) const;
 
-  std::set<int> _flags;
+  std::set< constants::objects::Type > _flags;
   int _type;
 };
 

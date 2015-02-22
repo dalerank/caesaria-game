@@ -46,7 +46,7 @@ public:
   // returns True if patrician villa
   bool isPatrician() const;
 
-  bool checkHouse(HousePtr house, std::string* retMissing = 0, Overlay::Type* needBuilding = 0);
+  bool checkHouse(HousePtr house, std::string* retMissing = 0, constants::objects::Type* needBuilding = 0);
   unsigned int getServiceConsumptionInterval() const;
   unsigned int foodConsumptionInterval() const;
   unsigned int getGoodConsumptionInterval() const;

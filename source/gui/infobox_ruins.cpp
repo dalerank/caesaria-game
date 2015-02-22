@@ -74,7 +74,7 @@ AboutRuins::~AboutRuins()
 
 void AboutRuins::_showHelp()
 {
-  std::string helpValue = MetaDataHolder::findTypename( _ruinType );
+  std::string helpValue = MetaDataHolder::findTypename( constants::objects::Type(_ruinType) );
 
   DictionaryWindow::show( this, helpValue );
 }

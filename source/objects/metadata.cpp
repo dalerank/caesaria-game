@@ -39,10 +39,10 @@ const char* MetaDataOptions::c3logic = "c3logic";
 
 MetaData MetaData::invalid = MetaData( objects::unknown, "unknown" );
 
-class BuildingTypeHelper : public EnumsHelper<Overlay::Type>
+class BuildingTypeHelper : public EnumsHelper<constants::objects::Type>
 {
 public:
-  BuildingTypeHelper() : EnumsHelper<Overlay::Type>( objects::unknown )
+  BuildingTypeHelper() : EnumsHelper<constants::objects::Type>( objects::unknown )
   {
 #define __REG_TOTYPE(a) append(objects::a, CAESARIA_STR_EXT(a) );
 #define __REG_ALTTYPE(a, b) alias(objects::a, b );
@@ -146,35 +146,35 @@ public:
  }
 };
 
-class BuildingClassHelper : public EnumsHelper<Overlay::Group>
+class BuildingClassHelper : public EnumsHelper<object::Group>
 {
 public:
-  BuildingClassHelper() : EnumsHelper<Overlay::Group>( objects::unknownGroup )
+  BuildingClassHelper() : EnumsHelper<object::Group>( object::group::unknown )
   {
-    append( objects::industryGroup, "industry" );
-    append( objects::obtainGroup, "rawmaterial" );
-    append( objects::foodGroup, "food" );
-    append( objects::disasterGroup, "disaster" );
-    append( objects::religionGroup, "religion" );
-    append( objects::militaryGroup, "military" );
-    append( objects::nativeGroup, "native" );
-    append( objects::waterGroup, "water" );
-    append( objects::administrationGroup, "administration" );
-    append( objects::bridgeGroup, "bridge" );
-    append( objects::engineeringGroup, "engineer" );
-    append( objects::tradeGroup, "trade" );
-    append( objects::tower, "tower" );
-    append( objects::gateGroup, "gate" );
-    append( objects::securityGroup, "security" );
-    append( objects::educationGroup, "education" );
-    append( objects::healthGroup, "health" );
-    append( objects::sightGroup, "sight" );
-    append( objects::gardenGroup, "garden" );
-    append( objects::roadGroup, "road" );
-    append( objects::entertainmentGroup, "entertainment" );
-    append( objects::houseGroup, "house" );
-    append( objects::wallGroup, "wall" );
-    append( objects::unknown, "" );
+    append( object::group::industry, "industry" );
+    append( object::group::obtain, "rawmaterial" );
+    append( object::group::food, "food" );
+    append( object::group::disaster, "disaster" );
+    append( object::group::religion, "religion" );
+    append( object::group::military, "military" );
+    append( object::group::native, "native" );
+    append( object::group::water, "water" );
+    append( object::group::administration, "administration" );
+    append( object::group::bridge, "bridge" );
+    append( object::group::engineering, "engineer" );
+    append( object::group::trade, "trade" );
+    append( object::group::tower, "tower" );
+    append( object::group::gate, "gate" );
+    append( object::group::security, "security" );
+    append( object::group::education, "education" );
+    append( object::group::health, "health" );
+    append( object::group::sight, "sight" );
+    append( object::group::garden, "garden" );
+    append( object::group::road, "road" );
+    append( object::group::entertainment, "entertainment" );
+    append( object::group::house, "house" );
+    append( object::group::wall, "wall" );
+    append( object::group::unknown, "" );
   }
 };
 
@@ -182,8 +182,8 @@ class MetaData::Impl
 {
 public:
   Desirability desirability;
-  Overlay::Type tileovType;
-  Overlay::Group group;
+  constants::objects::Type tileovType;
+  object::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
   StringArray desc;
@@ -193,12 +193,12 @@ public:
   std::map< int, StringArray > pictures;
 };
 
-MetaData::MetaData(const Overlay::Type buildingType, const std::string& name )
+MetaData::MetaData(const constants::objects::Type buildingType, const std::string& name )
   : _d( new Impl )
 {
   _d->prettyName = "##" + name + "##";
   _d->tileovType = buildingType;
-  _d->group = objects::unknownGroup;
+  _d->group = object::group::unknown;
   _d->name = name;  
 }
 
@@ -220,7 +220,7 @@ std::string MetaData::description() const
   return _d->desc[ rand() % _d->desc.size() ];
 }
 
-Overlay::Type MetaData::type() const {  return _d->tileovType;}
+constants::objects::Type MetaData::type() const {  return _d->tileovType;}
 Desirability MetaData::desirability() const{  return _d->desirability;}
 
 Picture MetaData::picture(int size) const
@@ -250,7 +250,7 @@ MetaData& MetaData::operator=(const MetaData &a)
   return *this;
 }
 
-Overlay::Group MetaData::group() const {  return _d->group; }
+object::Group MetaData::group() const {  return _d->group; }
 
 class MetaDataHolder::Impl
 {
@@ -258,8 +258,8 @@ public:
   BuildingTypeHelper typeHelper;
   BuildingClassHelper classHelper;
 
-  typedef std::map<Overlay::Type, MetaData> ObjectsMap;
-  typedef std::map<good::Product, Overlay::Type> FactoryInMap;
+  typedef std::map<constants::objects::Type, MetaData> ObjectsMap;
+  typedef std::map<good::Product, constants::objects::Type> FactoryInMap;
 
   ObjectsMap objectsInfo;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -271,9 +271,9 @@ MetaDataHolder& MetaDataHolder::instance()
   return inst;
 }
 
-Overlay::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) const
+constants::objects::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) const
 {
-  Overlay::Type res = objects::unknown;
+  constants::objects::Type res = objects::unknown;
 
   Impl::FactoryInMap::iterator mapIt;
   mapIt = _d->mapBuildingByInGood.find(inGoodType);
@@ -284,7 +284,7 @@ Overlay::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) co
   return res;
 }
 
-const MetaData& MetaDataHolder::getData(const Overlay::Type buildingType)
+const MetaData& MetaDataHolder::getData(const constants::objects::Type buildingType)
 {
   Impl::ObjectsMap::iterator mapIt;
   mapIt = instance()._d->objectsInfo.find(buildingType);
@@ -296,7 +296,7 @@ const MetaData& MetaDataHolder::getData(const Overlay::Type buildingType)
   return mapIt->second;
 }
 
-bool MetaDataHolder::hasData(const Overlay::Type buildingType) const
+bool MetaDataHolder::hasData(const constants::objects::Type buildingType) const
 {
   bool res = true;
   Impl::ObjectsMap::iterator mapIt;
@@ -317,7 +317,7 @@ MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
 
 void MetaDataHolder::addData(const MetaData &data)
 {
-  Overlay::Type buildingType = data.type();
+  constants::objects::Type buildingType = data.type();
 
   if (hasData(buildingType))
   {
@@ -348,7 +348,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
   {
     VariantMap options = mapItem->second.toMap();
 
-    const Overlay::Type btype = findType( mapItem->first );
+    const constants::objects::Type btype = findType( mapItem->first );
     if( btype == objects::unknown )
     {
       Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
@@ -421,9 +421,9 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
 MetaDataHolder::~MetaDataHolder() {}
 
-Overlay::Type MetaDataHolder::findType( const std::string& name )
+constants::objects::Type MetaDataHolder::findType( const std::string& name )
 {
-  Overlay::Type type = instance()._d->typeHelper.findType( name );
+  constants::objects::Type type = instance()._d->typeHelper.findType( name );
 
   if( type == instance()._d->typeHelper.getInvalid() )
   {
@@ -434,35 +434,35 @@ Overlay::Type MetaDataHolder::findType( const std::string& name )
   return type;
 }
 
-std::string MetaDataHolder::findTypename(Overlay::Type type)
+std::string MetaDataHolder::findTypename(constants::objects::Type type)
 {
   return instance()._d->typeHelper.findName( type );
 }
 
-Overlay::Group MetaDataHolder::findGroup( const std::string& name )
+object::Group MetaDataHolder::findGroup( const std::string& name )
 {
-  Overlay::Group type = instance()._d->classHelper.findType( name );
+  object::Group type = instance()._d->classHelper.findType( name );
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
     Logger::warning( "MetaDataHolder: can't find object class for className %s", name.c_str() );
-    return objects::unknownGroup;
+    return object::group::unknown;
   }
 
   return type;
 }
 
-std::string MetaDataHolder::findPrettyName(Overlay::Type type)
+std::string MetaDataHolder::findPrettyName(constants::objects::Type type)
 {
   return instance().getData( type ).prettyName();
 }
 
-std::string MetaDataHolder::findDescription(Overlay::Type type)
+std::string MetaDataHolder::findDescription(constants::objects::Type type)
 {
   return instance().getData( type ).description();
 }
 
-Picture MetaDataHolder::randomPicture(Overlay::Type type, Size size)
+Picture MetaDataHolder::randomPicture(constants::objects::Type type, Size size)
 {
   const MetaData& md = getData( type );
   return md.picture( size.width() );

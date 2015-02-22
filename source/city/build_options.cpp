@@ -35,7 +35,7 @@ static const char* disable_all = "disable_all";
 
 struct BuildingRule
 {
-  Overlay::Type type;
+  constants::objects::Type type;
   bool mayBuild;
   unsigned int quotes;
 };
@@ -78,7 +78,7 @@ public:
 class Options::Impl
 {
 public:
-  typedef std::map< Overlay::Type, BuildingRule > BuildingRules;
+  typedef std::map< constants::objects::Type, BuildingRule > BuildingRules;
   typedef std::vector< TilePos > MemPoints;
 
   BuildingRules rules;
@@ -97,22 +97,22 @@ Options::Options() : _d( new Impl )
 
 Options::~Options() {}
 
-void Options::setBuildingAvailble( const Overlay::Type type, bool mayBuild )
+void Options::setBuildingAvailble( const constants::objects::Type type, bool mayBuild )
 {
   _d->rules[ type ].mayBuild = mayBuild;
 }
 
-void Options::setBuildingAvailble( const Overlay::Type start, const Overlay::Type stop, bool mayBuild )
+void Options::setBuildingAvailble( const constants::objects::Type start, const constants::objects::Type stop, bool mayBuild )
 {
   for( int i=start; i <= stop; i++ )
-    _d->rules[ (Overlay::Type)i ].mayBuild = mayBuild;
+    _d->rules[ (constants::objects::Type)i ].mayBuild = mayBuild;
 }
 
-bool Options::isBuildingsAvailble( const Overlay::Type start, const Overlay::Type stop ) const
+bool Options::isBuildingsAvailble( const constants::objects::Type start, const constants::objects::Type stop ) const
 {
   bool mayBuild = false;
   for( int i=start; i <= stop; i++ )
-    mayBuild |= _d->rules[ (Overlay::Type)i ].mayBuild;
+    mayBuild |= _d->rules[ (constants::objects::Type)i ].mayBuild;
 
   return mayBuild;
 }
@@ -178,7 +178,7 @@ bool Options::isGroupAvailable(const Branch type) const
   return false;
 }
 
-unsigned int Options::getBuildingsQuote(const Overlay::Type type) const
+unsigned int Options::getBuildingsQuote(const constants::objects::Type type) const
 {
   Impl::BuildingRules::const_iterator it = _d->rules.find( type );
   return it != _d->rules.end() ? it->second.quotes : 999;
@@ -216,7 +216,7 @@ void Options::load(const VariantMap& options)
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )
   {
-    Overlay::Type btype = MetaDataHolder::findType( item->first );
+    constants::objects::Type btype = MetaDataHolder::findType( item->first );
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
@@ -268,7 +268,7 @@ Options& Options::operator=(const development::Options& a)
   return *this;
 }
 
-bool Options::isBuildingAvailble(const Overlay::Type type ) const
+bool Options::isBuildingAvailble(const constants::objects::Type type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
@@ -293,7 +293,7 @@ void loadBranchOptions(const std::string &filename)
 
       foreach( bIt, vmTypes )
       {
-        Overlay::Type ovType = MetaDataHolder::findType( bIt->toString() );
+        constants::objects::Type ovType = MetaDataHolder::findType( bIt->toString() );
         if( ovType != constants::objects::unknown )
           branchData.insert( ovType );
       }

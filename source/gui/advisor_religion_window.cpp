@@ -138,7 +138,7 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const Overlay::Type small, const Overlay::Type big )
+  InfrastructureInfo getInfo( PlayerCityPtr city, const constants::objects::Type small, const constants::objects::Type big )
   {
     city::Helper helper( city );
 

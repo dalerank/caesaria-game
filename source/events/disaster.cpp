@@ -119,7 +119,7 @@ void Disaster::_exec( Game& game, unsigned int )
       OverlayPtr ov;
       if( needBuildRuins )
       {
-        Overlay::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
+        constants::objects::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
                                             objects::plague_ruins, objects::collapsed_ruins,
                                             objects::collapsed_ruins };
 
@@ -132,7 +132,7 @@ void Disaster::_exec( Game& game, unsigned int )
           {
             std::string typev = _infoType > 1000
                                   ? utils::format( 0xff, "house%02d", _infoType - 1000 )
-                                  : MetaDataHolder::findTypename( _infoType );
+                                  : MetaDataHolder::findTypename( constants::objects::Type(_infoType) );
             ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
             ruins->afterBuild();
           }

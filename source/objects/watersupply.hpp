@@ -25,7 +25,7 @@
 class WaterSource : public Construction
 {
 public:
-  WaterSource( const Overlay::Type type, const Size& size );
+  WaterSource( const constants::objects::Type type, const Size& size );
   ~WaterSource();
   
   virtual void addWater( const WaterSource& source );

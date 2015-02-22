@@ -36,7 +36,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::gladiatorSchool, GladiatorSchool)
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::lionsNursery, LionsNursery)
 
-TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
+TrainingBuilding::TrainingBuilding(const objects::Type type, const Size& size )
   : WorkingBuilding( type, size )
 {
    _trainingDelay = DateTime::daysInWeek;

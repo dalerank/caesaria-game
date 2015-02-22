@@ -522,7 +522,7 @@ bool HighBridge::canDestroy() const
 
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = helper.findw<Walker>( walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";

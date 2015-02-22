@@ -48,7 +48,7 @@ public:
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
   int houseLevel;
   State state;
-  std::set<Overlay::Group> excludeGroups;
+  std::set<object::Group> excludeGroups;
 
 public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
@@ -59,7 +59,7 @@ Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
   _setType( walker::rioter );
 
   addAbility( Illness::create( 0.3, 4) );
-  excludeAttack( objects::disasterGroup );
+  excludeAttack( object::group::disaster );
 }
 
 void Rioter::_reachedPathway()
@@ -128,8 +128,8 @@ void Rioter::timeStep(const unsigned long time)
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
-      Overlay::Type type = (*it)->type();
-      Overlay::Group group = (*it)->group();
+      constants::objects::Type type = (*it)->type();
+      object::Group group = (*it)->group();
       if( type == objects::house || type == objects::road
           || _d->excludeGroups.count( group ) > 0 ) { it=constructions.erase( it ); }
       else { it++; }
@@ -277,7 +277,7 @@ void Rioter::load(const VariantMap& stream)
 }
 
 int Rioter::agressive() const { return 1; }
-void Rioter::excludeAttack(objects::Group group) { _d->excludeGroups.insert( group ); }
+void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
 Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
 {  
@@ -313,5 +313,5 @@ NativeRioter::NativeRioter(PlayerCityPtr city)
   : Rioter( city )
 {
   _setType( walker::indigeneRioter );
-  excludeAttack( objects::nativeGroup );
+  excludeAttack( object::group::native );
 }

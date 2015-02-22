@@ -52,7 +52,7 @@ private:
 class BuildMode : public LayerMode
 {
 public:
-  static Renderer::ModePtr create( Overlay::Type type );
+  static Renderer::ModePtr create( constants::objects::Type type );
 
   ConstructionPtr getContruction() const;
   bool isBorderBuilding() const;

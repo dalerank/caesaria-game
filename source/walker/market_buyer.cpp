@@ -75,7 +75,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
 MarketBuyer::~MarketBuyer(){}
 
 template< class T >
-TilePos getWalkerDestination2( Propagator &pathPropagator, const Overlay::Type type,
+TilePos getWalkerDestination2( Propagator &pathPropagator, const constants::objects::Type type,
                                MarketPtr market, good::Storage& basket, const good::Product what,
                                Pathway& oPathWay, int& reservId )
 {

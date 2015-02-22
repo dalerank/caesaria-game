@@ -115,7 +115,7 @@ public:
   int lastProgress;
 };
 
-Farm::Farm(const good::Product outGood, const Type type )
+Farm::Farm(const good::Product outGood, const objects::Type type )
   : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   outStockRef().setCapacity( 100 );
@@ -265,7 +265,7 @@ std::string FarmWheat::troubleDesc() const
 {
   city::Helper helper( _city() );
 
-  LocustList lc = helper.find<Locust>( walker::locust, pos() );
+  LocustList lc = helper.findw<Locust>( walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";

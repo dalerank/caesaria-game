@@ -23,6 +23,7 @@
 #include "core/logger.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
@@ -33,8 +34,8 @@ class Overlay::Impl
 {
 public:  
   Pictures fgPictures;
-  Overlay::Type overlayType;
-  Overlay::Group overlayClass;
+  objects::Type overlayType;
+  object::Group overlayClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
   std::string name;
   Picture picture;
@@ -44,7 +45,7 @@ public:
   PlayerCityPtr city;
 };
 
-Overlay::Overlay(const Type type, const Size& size)
+Overlay::Overlay(const objects::Type type, const Size& size)
 : _d( new Impl )
 {
   _d->masterTile = 0;
@@ -64,7 +65,7 @@ Desirability Overlay::desirability() const
   return MetaDataHolder::getData( type() ).desirability();
 }
 
-void Overlay::setType(const Type type)
+void Overlay::setType(const objects::Type type)
 {
   const MetaData& bd = MetaDataHolder::getData( type );
 
@@ -209,18 +210,18 @@ PlayerCityPtr Overlay::_city() const{ return _d->city;}
 gfx::Pictures& Overlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
 Picture& Overlay::_pictureRef(){  return _d->picture;}
-Overlay::Group Overlay::group() const{  return _d->overlayClass;}
+object::Group Overlay::group() const{  return _d->overlayClass;}
 void Overlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& Overlay::picture() const{  return _d->picture;}
 void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation& Overlay::animation() const { return _d->animation;}
 void Overlay::deleteLater(){  _d->isDeleted  = true;}
 void Overlay::destroy(){}
-Size Overlay::size() const{  return _d->size;}
-bool Overlay::isDeleted() const{  return _d->isDeleted;}
+Size Overlay::size() const{ return _d->size;}
+bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
-Overlay::Type Overlay::type() const{ return _d->overlayType;}
+objects::Type Overlay::type() const{ return _d->overlayType;}
 
 Overlay::~Overlay()
 {

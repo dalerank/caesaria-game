@@ -23,7 +23,7 @@
 class NativeBuilding : public Building
 {
 public:
-  NativeBuilding( const Overlay::Type type, const Size& size );
+  NativeBuilding( const constants::objects::Type type, const Size& size );
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 

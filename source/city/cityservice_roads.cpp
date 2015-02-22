@@ -40,7 +40,7 @@ class Roads::Impl
 public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
   typedef std::vector< UpdateInfo > Updates;
-  typedef std::pair<Overlay::Type, int> UpdateBuilding;
+  typedef std::pair<constants::objects::Type, int> UpdateBuilding;
 
   int defaultIncreasePaved;
   int defaultDecreasePaved;

@@ -120,7 +120,7 @@ void CultureRating::timeStep(const unsigned int time )
 
     Helper helper( _city() );
 
-    TempleList temples = helper.find<Temple>( objects::religionGroup );
+    TempleList temples = helper.find<Temple>( object::group::religion );
     foreach( temple, temples )
     {
       _d->parishionersCount += (*temple)->parishionerNumber();

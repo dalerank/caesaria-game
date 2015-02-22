@@ -43,7 +43,7 @@ public:
 };
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const Overlay::Type type,
+                                             const constants::objects::Type type,
                                              Size size )
   : ServiceBuilding(service, type, size), _d( new Impl )
 {

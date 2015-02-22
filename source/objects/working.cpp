@@ -43,7 +43,7 @@ public:
   float laborAccessKoeff;
 };
 
-WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
+WorkingBuilding::WorkingBuilding(const objects::Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;

@@ -213,7 +213,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-void ServiceWalker::_addObsoleteOverlay(Overlay::Type type) { _d->obsoleteOvs.insert( type ); }
+void ServiceWalker::_addObsoleteOverlay(constants::objects::Type type) { _d->obsoleteOvs.insert( type ); }
 unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
@@ -506,7 +506,7 @@ void ServiceWalker::initialize(const VariantMap& options)
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
   foreach( it, oboletesOvs )
   {
-    Overlay::Type ovType = MetaDataHolder::findType( it->toString() );
+    constants::objects::Type ovType = MetaDataHolder::findType( it->toString() );
     if( ovType != objects::unknown )
       _addObsoleteOverlay( ovType );
   }

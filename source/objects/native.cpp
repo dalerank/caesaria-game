@@ -38,7 +38,7 @@ namespace {
 static const int rioterGenerateLevel = 80;
 }
 
-NativeBuilding::NativeBuilding(const Type type, const Size& size )
+NativeBuilding::NativeBuilding(const objects::Type type, const Size& size )
 : Building( type, size )
 {
   setState( pr::inflammability, 0 );

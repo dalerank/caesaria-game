@@ -33,7 +33,7 @@ using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
-typedef Priorities<Overlay::Type> NecessaryBuildings;
+typedef Priorities<constants::objects::Type> NecessaryBuildings;
 
 class TraineeWalker::Impl
 {
@@ -169,7 +169,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   }
 }
 
-void TraineeWalker::checkDestination(const Overlay::Type buildingType, Propagator &pathPropagator)
+void TraineeWalker::checkDestination(const constants::objects::Type buildingType, Propagator &pathPropagator)
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 

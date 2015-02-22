@@ -76,7 +76,7 @@ Renderer::ModePtr DestroyMode::create()
   return ret;
 }
 
-Renderer::ModePtr BuildMode::create(Overlay::Type type )
+Renderer::ModePtr BuildMode::create(constants::objects::Type type )
 {
   BuildMode* newCommand = new BuildMode();
   OverlayPtr overlay = TileOverlayFactory::instance().create( type );

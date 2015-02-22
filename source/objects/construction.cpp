@@ -29,6 +29,7 @@
 #include "core/json.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 class Construction::Impl
 {
@@ -41,7 +42,7 @@ public:
   ConstructionExtensionList extensions;
 };
 
-Construction::Construction(const Type type, const Size& size)
+Construction::Construction(const objects::Type type, const Size& size)
   : Overlay( type, size ), _d( new Impl )
 {
   _d->params[ pr::fire ] = 0;

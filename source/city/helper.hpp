@@ -45,17 +45,17 @@ public:
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
-  SmartList< T > find( const Overlay::Type type );
+  SmartList< T > find( const constants::objects::Type type );
 
   template< class T >
-  SmartList< T > find( constants::objects::Group group )
+  SmartList< T > find( object::Group group )
   {
     SmartList< T > ret;
     OverlayList& buildings = _city->overlays();
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
-      if( b.isValid() && (b->group() == group || group == constants::objects::anyGroup ) )
+      if( b.isValid() && (b->group() == group || group == object::group::any ) )
       {
         ret.push_back( b );
       }
@@ -112,7 +112,7 @@ public:
   }
 
   template< class T >
-  SmartPtr< T > find( const Overlay::Type type, const TilePos& pos )
+  SmartPtr< T > find( const constants::objects::Type type, const TilePos& pos )
   {   
     OverlayPtr overlay = _city->getOverlay( pos );
     if( overlay.isValid() && (overlay->type() == type || type == constants::objects::any) )
@@ -124,8 +124,8 @@ public:
   }  
 
   template< class T >
-  SmartList< T > find( constants::walker::Type type,
-                       TilePos start, TilePos stop=Helper::invalidPos )
+  SmartList< T > findw( constants::walker::Type type,
+                        TilePos start, TilePos stop=Helper::invalidPos )
   {
     WalkerList walkersInArea;
 
@@ -185,7 +185,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > find( constants::objects::Group group, TilePos start, TilePos stop )
+  SmartList< T > find( object::Group group, TilePos start, TilePos stop )
   {
     SmartList< T > ret;
 
@@ -194,7 +194,7 @@ public:
     foreach( tile, area )
     {
       SmartPtr<T> obj = ptr_cast< T >((*tile)->overlay());
-      if( obj.isValid() && (obj->getClass() == group || group == constants::objects::anyGroup) )
+      if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
       {
         ret.push_back( obj );
       }
@@ -248,7 +248,7 @@ SmartPtr<T> Helper::prew(const SmartPtr<T> current)
 }
 
 template< class T >
-SmartList< T > Helper::find( const Overlay::Type type )
+SmartList< T > Helper::find( const constants::objects::Type type )
 {
   SmartList< T > ret;
   OverlayList& buildings = _city->overlays();

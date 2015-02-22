@@ -27,12 +27,12 @@ using namespace gfx;
 class TileOverlayFactory::Impl
 {
 public:
-  typedef std::map< Overlay::Type, TileOverlayConstructor* > Constructors;
-  std::map< std::string, Overlay::Type > name2typeMap;
+  typedef std::map< constants::objects::Type, TileOverlayConstructor* > Constructors;
+  std::map< std::string, constants::objects::Type > name2typeMap;
   Constructors constructors;
 };
 
-OverlayPtr TileOverlayFactory::create(const Overlay::Type type) const
+OverlayPtr TileOverlayFactory::create(const constants::objects::Type type) const
 {
   Impl::Constructors::iterator findConstructor = _d->constructors.find( type );
 
@@ -59,7 +59,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
 }
 
-void TileOverlayFactory::addCreator( const Overlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )
+void TileOverlayFactory::addCreator( const constants::objects::Type type, const std::string& typeName, TileOverlayConstructor* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
 
@@ -74,7 +74,7 @@ void TileOverlayFactory::addCreator( const Overlay::Type type, const std::string
   }
 }
 
-bool TileOverlayFactory::canCreate( const Overlay::Type type ) const
+bool TileOverlayFactory::canCreate( const constants::objects::Type type ) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

@@ -551,7 +551,7 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
-    Overlay::Type otype = objects::unknown;
+    constants::objects::Type otype = objects::unknown;
 
     try
     {
@@ -622,7 +622,7 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap overlayParams = item->second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    Overlay::Type overlayType = (Overlay::Type)config.get( 0 ).toInt();
+    constants::objects::Type overlayType = (constants::objects::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
     OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );

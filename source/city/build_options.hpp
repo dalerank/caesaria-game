@@ -61,14 +61,14 @@ public:
   Options();
   virtual ~Options();
 
-  void setBuildingAvailble( const Overlay::Type type, bool mayBuild );
+  void setBuildingAvailble( const constants::objects::Type type, bool mayBuild );
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
-  unsigned int getBuildingsQuote( const Overlay::Type type ) const;
+  unsigned int getBuildingsQuote( const constants::objects::Type type ) const;
   TilePos memPoint( unsigned int index ) const;
   void setMemPoint( unsigned int index, TilePos point );
 
-  bool isBuildingAvailble( const Overlay::Type type ) const;
+  bool isBuildingAvailble( const constants::objects::Type type ) const;
 
   void clear();
 
@@ -77,8 +77,8 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const Overlay::Type start, const Overlay::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const Overlay::Type start, const Overlay::Type stop) const;
+  void setBuildingAvailble(const constants::objects::Type start, const constants::objects::Type stop, bool mayBuild);
+  bool isBuildingsAvailble(const constants::objects::Type start, const constants::objects::Type stop) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

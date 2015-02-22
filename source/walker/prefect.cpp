@@ -89,7 +89,7 @@ WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
   city::Helper helper( _city() );
-  WalkerList walkers = helper.find<Walker>( walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = helper.findw<Walker>( walker::any, pos() - offset, pos() + offset );
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {

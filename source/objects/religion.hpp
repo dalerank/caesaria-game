@@ -32,7 +32,7 @@ public:
   virtual void deliverService();
 
 protected:
-  Temple( religion::DivinityPtr divinity, Overlay::Type type, int imgId, const Size& size );
+  Temple( religion::DivinityPtr divinity, constants::objects::Type type, int imgId, const Size& size );
 
   virtual unsigned int walkerDistance() const;
 
@@ -44,14 +44,14 @@ private:
 class SmallTemple : public Temple
 {
 protected:
-  SmallTemple( religion::DivinityPtr divinity, Overlay::Type type, int imgId );
+  SmallTemple( religion::DivinityPtr divinity, constants::objects::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( religion::DivinityPtr divinity, Overlay::Type type, int imgId );
+  BigTemple( religion::DivinityPtr divinity, constants::objects::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 
   virtual bool build(const city::AreaInfo &info);

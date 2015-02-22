@@ -32,6 +32,7 @@
 #include "core/utils.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 namespace {
 static const unsigned int defaultMaxWorkersNumber = 5;
@@ -50,7 +51,7 @@ public:
 };
 
 ServiceBuilding::ServiceBuilding(const Service::Type service,
-                                 const Type type, const Size& size)
+                                 const objects::Type type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->service = service;

@@ -44,7 +44,7 @@ REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
 class GoodsUpdater::Impl
 {
 public:
-  typedef std::set<Overlay::Type> BuildingTypes;
+  typedef std::set<constants::objects::Type> BuildingTypes;
 
   DateTime endTime;
   bool isDeleted;
@@ -95,7 +95,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   VariantList vl_buildings = stream.get( "buildings" ).toList();
   foreach( it, vl_buildings )
   {
-    Overlay::Type type = MetaDataHolder::findType( it->toString() );
+    constants::objects::Type type = MetaDataHolder::findType( it->toString() );
     if( type != objects::unknown )
     {
       _d->supportBuildings.insert( type );
@@ -112,7 +112,7 @@ VariantMap GoodsUpdater::save() const
   VariantList vl_buildings;
   foreach( it, _d->supportBuildings )
   {
-    vl_buildings.push_back( Variant( MetaDataHolder::findTypename( (Overlay::Type)*it ) ));
+    vl_buildings.push_back( Variant( MetaDataHolder::findTypename( (constants::objects::Type)*it ) ));
   }
 
   ret[ lc_good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );

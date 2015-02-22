@@ -30,16 +30,14 @@
 #include "city/areainfo.hpp"
 #include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
+#include "constants.hpp"
 
 class MetaData;
 
 class Overlay : public Serializable, public ReferenceCounted
 {
 public:
-  typedef int Type;
-  typedef int Group;
-
-  Overlay( const Overlay::Type type, const Size& size=Size(1));
+  Overlay( const constants::objects::Type type, const Size& size=Size(1));
   virtual ~Overlay();
 
   gfx::Tile& tile() const;  // master tile, in case of multi-tile area
@@ -79,8 +77,8 @@ public:
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
 
-  Type type() const;
-  Group group() const;
+  constants::objects::Type type() const;
+  object::Group group() const;
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );
@@ -88,7 +86,7 @@ public:
   virtual void initialize( const MetaData& mdata );
 
 protected:
-  void setType(const Type type);
+  void setType(const constants::objects::Type type);
   gfx::Animation& _animationRef();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;

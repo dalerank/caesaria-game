@@ -46,7 +46,7 @@ public:
 };
 
 CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
-                               const Overlay::Type type, Size size) : Factory(consume, produce, type, size),
+                               const constants::objects::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
 }
