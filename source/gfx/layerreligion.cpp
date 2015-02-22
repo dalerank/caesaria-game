@@ -52,7 +52,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
 
     int religionLevel = -1;
     if( _isVisibleObject( overlay->type() ) )

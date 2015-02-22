@@ -46,7 +46,7 @@ bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
 bool Garden::isNeedRoadAccess() const{  return false;}
 
-bool Garden::build( const CityAreaInfo& info )
+bool Garden::build( const city::AreaInfo& info )
 {
   // this is the same arrangement of garden tiles as existed in C3
   Construction::build( info );
@@ -76,7 +76,7 @@ void Garden::load(const VariantMap& stream)
   //after loading size may change to 2
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
   }
 
@@ -133,7 +133,7 @@ void Garden::update()
   {   
     foreach( tile, nearTiles )
     {
-      TileOverlayPtr overlay = (*tile)->overlay();
+      OverlayPtr overlay = (*tile)->overlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )
@@ -145,7 +145,7 @@ void Garden::update()
     city::Helper helper( _city() );
     helper.updateDesirability( this, city::Helper::offDesirability );
     setSize( 2 );
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
     helper.updateDesirability( this, city::Helper::onDesirability );

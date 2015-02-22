@@ -51,15 +51,15 @@ const unsigned int defaultHireDistance = 36;
 class WorkersHire::Impl
 {
 public:
-  typedef std::vector<TileOverlay::Type> BuildingsType;
-  typedef std::map<TileOverlay::Group, BuildingsType> GroupBuildings;
+  typedef std::vector<Overlay::Type> BuildingsType;
+  typedef std::map<Overlay::Group, BuildingsType> GroupBuildings;
 
   WalkerList hrInCity;
   unsigned int distance;
   DateTime lastMessageDate;
   HirePriorities priorities;
   GroupBuildings industryBuildings;
-  std::set<TileOverlay::Type> excludeTypes;
+  std::set<Overlay::Type> excludeTypes;
 
 public:
   void fillIndustryMap();

@@ -58,7 +58,7 @@ public:
   bool isWalkable() const { return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  bool build( const CityAreaInfo& info )
+  bool build( const city::AreaInfo& info )
   {
     Construction::build( info );
     _fgPicturesRef().clear();
@@ -153,14 +153,14 @@ public:
   }
 };
 
-bool LowBridge::canBuild( const CityAreaInfo& areaInfo ) const
+bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
   _d->direction=noneDirection;
 
-  TileOverlayPtr bridge = areaInfo.city->getOverlay( areaInfo.pos );
+  OverlayPtr bridge = areaInfo.city->getOverlay( areaInfo.pos );
   if( bridge.isNull() )
   {
     _d->subtiles.clear();
@@ -376,7 +376,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
 }
 
-bool LowBridge::build( const CityAreaInfo& info )
+bool LowBridge::build( const city::AreaInfo& info )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;

@@ -110,8 +110,8 @@ public:
 
   PlayerPtr player;
 
-  TileOverlayList newOverlays;
-  TileOverlayList overlays;
+  OverlayList newOverlays;
+  OverlayList overlays;
 
   WalkerList newWalkers;
   WalkerList walkers;
@@ -142,7 +142,7 @@ public:
   void payWages( PlayerCityPtr city );
   void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
-  void beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay );
+  void beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay );
   void updateWalkers(unsigned int time);
   void updateOverlays( PlayerCityPtr city, unsigned int time);
   void updateServices( PlayerCityPtr city, unsigned int time );
@@ -307,7 +307,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-TileOverlayList&  PlayerCity::overlays()         { return _d->overlays; }
+OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
@@ -399,7 +399,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   emit onPopulationChangedSignal( pop );
 }
 
-void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
+void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay)
 {
   city::Helper helper( city );
   helper.updateDesirability( overlay, city::Helper::offDesirability );
@@ -427,7 +427,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 {
-  TileOverlayList::iterator overlayIt = overlays.begin();
+  OverlayList::iterator overlayIt = overlays.begin();
   while( overlayIt != overlays.end() )
   {
     (*overlayIt)->timeStep( time );
@@ -551,7 +551,7 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
-    TileOverlay::Type otype = objects::unknown;
+    Overlay::Type otype = objects::unknown;
 
     try
     {
@@ -622,13 +622,13 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap overlayParams = item->second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    TileOverlay::Type overlayType = (TileOverlay::Type)config.get( 0 ).toInt();
+    Overlay::Type overlayType = (Overlay::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
-    TileOverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
+    OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && pos.i() >= 0 )
     {
-      CityAreaInfo info = { this, pos, TilesArray() };
+      city::AreaInfo info = { this, pos, TilesArray() };
       overlay->build( info );
       overlay->load( overlayParams );
       _d->overlays.push_back( overlay );
@@ -693,7 +693,7 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
+void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
@@ -731,7 +731,7 @@ Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOpti
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
-TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
+OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
 
 city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }

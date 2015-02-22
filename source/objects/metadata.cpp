@@ -39,10 +39,10 @@ const char* MetaDataOptions::c3logic = "c3logic";
 
 MetaData MetaData::invalid = MetaData( objects::unknown, "unknown" );
 
-class BuildingTypeHelper : public EnumsHelper<TileOverlay::Type>
+class BuildingTypeHelper : public EnumsHelper<Overlay::Type>
 {
 public:
-  BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( objects::unknown )
+  BuildingTypeHelper() : EnumsHelper<Overlay::Type>( objects::unknown )
   {
 #define __REG_TOTYPE(a) append(objects::a, CAESARIA_STR_EXT(a) );
 #define __REG_ALTTYPE(a, b) alias(objects::a, b );
@@ -146,10 +146,10 @@ public:
  }
 };
 
-class BuildingClassHelper : public EnumsHelper<TileOverlay::Group>
+class BuildingClassHelper : public EnumsHelper<Overlay::Group>
 {
 public:
-  BuildingClassHelper() : EnumsHelper<TileOverlay::Group>( objects::unknownGroup )
+  BuildingClassHelper() : EnumsHelper<Overlay::Group>( objects::unknownGroup )
   {
     append( objects::industryGroup, "industry" );
     append( objects::obtainGroup, "rawmaterial" );
@@ -182,8 +182,8 @@ class MetaData::Impl
 {
 public:
   Desirability desirability;
-  TileOverlay::Type tileovType;
-  TileOverlay::Group group;
+  Overlay::Type tileovType;
+  Overlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
   StringArray desc;
@@ -193,7 +193,7 @@ public:
   std::map< int, StringArray > pictures;
 };
 
-MetaData::MetaData(const gfx::TileOverlay::Type buildingType, const std::string& name )
+MetaData::MetaData(const Overlay::Type buildingType, const std::string& name )
   : _d( new Impl )
 {
   _d->prettyName = "##" + name + "##";
@@ -220,7 +220,7 @@ std::string MetaData::description() const
   return _d->desc[ rand() % _d->desc.size() ];
 }
 
-TileOverlay::Type MetaData::type() const {  return _d->tileovType;}
+Overlay::Type MetaData::type() const {  return _d->tileovType;}
 Desirability MetaData::desirability() const{  return _d->desirability;}
 
 Picture MetaData::picture(int size) const
@@ -250,7 +250,7 @@ MetaData& MetaData::operator=(const MetaData &a)
   return *this;
 }
 
-TileOverlay::Group MetaData::group() const {  return _d->group; }
+Overlay::Group MetaData::group() const {  return _d->group; }
 
 class MetaDataHolder::Impl
 {
@@ -258,8 +258,8 @@ public:
   BuildingTypeHelper typeHelper;
   BuildingClassHelper classHelper;
 
-  typedef std::map<TileOverlay::Type, MetaData> ObjectsMap;
-  typedef std::map<good::Product, TileOverlay::Type> FactoryInMap;
+  typedef std::map<Overlay::Type, MetaData> ObjectsMap;
+  typedef std::map<good::Product, Overlay::Type> FactoryInMap;
 
   ObjectsMap objectsInfo;// key=building_type, value=data
   FactoryInMap mapBuildingByInGood;
@@ -271,9 +271,9 @@ MetaDataHolder& MetaDataHolder::instance()
   return inst;
 }
 
-gfx::TileOverlay::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) const
+Overlay::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) const
 {
-  TileOverlay::Type res = objects::unknown;
+  Overlay::Type res = objects::unknown;
 
   Impl::FactoryInMap::iterator mapIt;
   mapIt = _d->mapBuildingByInGood.find(inGoodType);
@@ -284,7 +284,7 @@ gfx::TileOverlay::Type MetaDataHolder::getConsumerType(const good::Product inGoo
   return res;
 }
 
-const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
+const MetaData& MetaDataHolder::getData(const Overlay::Type buildingType)
 {
   Impl::ObjectsMap::iterator mapIt;
   mapIt = instance()._d->objectsInfo.find(buildingType);
@@ -296,7 +296,7 @@ const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
   return mapIt->second;
 }
 
-bool MetaDataHolder::hasData(const TileOverlay::Type buildingType) const
+bool MetaDataHolder::hasData(const Overlay::Type buildingType) const
 {
   bool res = true;
   Impl::ObjectsMap::iterator mapIt;
@@ -317,7 +317,7 @@ MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
 
 void MetaDataHolder::addData(const MetaData &data)
 {
-  TileOverlay::Type buildingType = data.type();
+  Overlay::Type buildingType = data.type();
 
   if (hasData(buildingType))
   {
@@ -348,7 +348,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
   {
     VariantMap options = mapItem->second.toMap();
 
-    const TileOverlay::Type btype = findType( mapItem->first );
+    const Overlay::Type btype = findType( mapItem->first );
     if( btype == objects::unknown )
     {
       Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
@@ -421,9 +421,9 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
 MetaDataHolder::~MetaDataHolder() {}
 
-TileOverlay::Type MetaDataHolder::findType( const std::string& name )
+Overlay::Type MetaDataHolder::findType( const std::string& name )
 {
-  TileOverlay::Type type = instance()._d->typeHelper.findType( name );
+  Overlay::Type type = instance()._d->typeHelper.findType( name );
 
   if( type == instance()._d->typeHelper.getInvalid() )
   {
@@ -434,14 +434,14 @@ TileOverlay::Type MetaDataHolder::findType( const std::string& name )
   return type;
 }
 
-std::string MetaDataHolder::findTypename(TileOverlay::Type type)
+std::string MetaDataHolder::findTypename(Overlay::Type type)
 {
   return instance()._d->typeHelper.findName( type );
 }
 
-TileOverlay::Group MetaDataHolder::findGroup( const std::string& name )
+Overlay::Group MetaDataHolder::findGroup( const std::string& name )
 {
-  TileOverlay::Group type = instance()._d->classHelper.findType( name );
+  Overlay::Group type = instance()._d->classHelper.findType( name );
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
@@ -452,17 +452,17 @@ TileOverlay::Group MetaDataHolder::findGroup( const std::string& name )
   return type;
 }
 
-std::string MetaDataHolder::findPrettyName(TileOverlay::Type type)
+std::string MetaDataHolder::findPrettyName(Overlay::Type type)
 {
   return instance().getData( type ).prettyName();
 }
 
-std::string MetaDataHolder::findDescription(TileOverlay::Type type)
+std::string MetaDataHolder::findDescription(Overlay::Type type)
 {
   return instance().getData( type ).description();
 }
 
-Picture MetaDataHolder::randomPicture(TileOverlay::Type type, Size size)
+Picture MetaDataHolder::randomPicture(Overlay::Type type, Size size)
 {
   const MetaData& md = getData( type );
   return md.picture( size.width() );

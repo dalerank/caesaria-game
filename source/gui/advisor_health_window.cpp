@@ -49,7 +49,7 @@ namespace advisorwnd
 class HealthInfoLabel : public Label
 {
 public:
-  HealthInfoLabel( Widget* parent, const Rect& rect, const TileOverlay::Type service,
+  HealthInfoLabel( Widget* parent, const Rect& rect, const Overlay::Type service,
                    int workBulding, int numberBuilding, int peoplesCount  )
     : Label( parent, rect )
   {
@@ -88,7 +88,7 @@ public:
   }
 
 private:
-  TileOverlay::Type _service;
+  Overlay::Type _service;
   int _workingBuilding;
   int _numberBuilding;
   int _peoplesCount;
@@ -111,7 +111,7 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  InfrastructureInfo getInfo( PlayerCityPtr city, const Overlay::Type service );
   void updateAdvice( PlayerCityPtr city );
 };
 
@@ -165,7 +165,7 @@ void Health::_showHelp()
   DictionaryWindow::show( this, "health_advisor" );
 }
 
-Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
+Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const Overlay::Type service)
 {
   city::Helper helper( city );
 

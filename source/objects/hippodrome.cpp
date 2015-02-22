@@ -173,7 +173,7 @@ std::string Hippodrome::troubleDesc() const
   return ret;
 }
 
-bool Hippodrome::canBuild( const CityAreaInfo& areaInfo ) const
+bool Hippodrome::canBuild( const city::AreaInfo& areaInfo ) const
 {
   const_cast<Hippodrome*>( this )->_checkDirection( areaInfo );
   if( _d->direction != noneDirection )
@@ -213,7 +213,7 @@ void Hippodrome::deliverService()
   _d->sectionMiddle->setAnimationVisible( animation().isRunning() );
 }
 
-bool Hippodrome::build( const CityAreaInfo& info )
+bool Hippodrome::build( const city::AreaInfo& info )
 {
   _checkDirection( info );
 
@@ -331,14 +331,14 @@ void Hippodrome::_init( bool onBuild )
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  CityAreaInfo info = { _city(), pos() + offset, TilesArray() };
+  city::AreaInfo info = { _city(), pos() + offset, TilesArray() };
   ret->build( info );
   ret->drop();
 
   return ret;
 }
 
-void Hippodrome::_checkDirection( const CityAreaInfo& areaInfo )
+void Hippodrome::_checkDirection( const city::AreaInfo& areaInfo )
 {
   const_cast<Hippodrome*>( this )->setSize( Size( 15, 5 ) );
   _d->direction = west;

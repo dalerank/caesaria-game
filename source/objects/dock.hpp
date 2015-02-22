@@ -27,8 +27,8 @@ public:
   Dock();
   ~Dock();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool build(const city::AreaInfo &info);
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);

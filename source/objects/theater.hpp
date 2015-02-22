@@ -25,7 +25,7 @@ class Theater : public EntertainmentBuilding
 public:
   Theater();
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void timeStep(const unsigned long time);
   virtual int visitorsNumber() const;
   virtual void deliverService();

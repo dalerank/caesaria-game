@@ -44,7 +44,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
   event->_type = type;
   event->_infoType = 0;
 
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
   {
     overlay->deleteLater();
@@ -83,7 +83,7 @@ void Disaster::_exec( Game& game, unsigned int )
   {
     Size size( 1 );
 
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
@@ -116,10 +116,10 @@ void Disaster::_exec( Game& game, unsigned int )
     {
       bool needBuildRuins = !( _type == Disaster::rift && (*tile)->pos() == _pos );      
 
-      TileOverlayPtr ov;
+      OverlayPtr ov;
       if( needBuildRuins )
       {
-        TileOverlay::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
+        Overlay::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
                                             objects::plague_ruins, objects::collapsed_ruins,
                                             objects::collapsed_ruins };
 

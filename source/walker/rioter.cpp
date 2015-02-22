@@ -48,7 +48,7 @@ public:
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
   int houseLevel;
   State state;
-  std::set<TileOverlay::Group> excludeGroups;
+  std::set<Overlay::Group> excludeGroups;
 
 public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
@@ -128,8 +128,8 @@ void Rioter::timeStep(const unsigned long time)
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
-      TileOverlay::Type type = (*it)->type();
-      TileOverlay::Group group = (*it)->group();
+      Overlay::Type type = (*it)->type();
+      Overlay::Group group = (*it)->group();
       if( type == objects::house || type == objects::road
           || _d->excludeGroups.count( group ) > 0 ) { it=constructions.erase( it ); }
       else { it++; }

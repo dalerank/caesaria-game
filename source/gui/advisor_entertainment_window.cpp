@@ -62,7 +62,7 @@ class EntertainmentInfoLabel : public Label
 {
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
-                          const TileOverlay::Type service, InfrastructureInfo info  )
+                          const Overlay::Type service, InfrastructureInfo info  )
     : Label( parent, rect ),
       _service( service ),
       _info( info )
@@ -99,7 +99,7 @@ public:
   }
 
 private:
-  TileOverlay::Type _service;
+  Overlay::Type _service;
   InfrastructureInfo _info;
 };
 
@@ -121,7 +121,7 @@ public:
   city::FestivalPtr srvc;
   int monthFromLastFestival;
 
-  InfrastructureInfo getInfo(const TileOverlay::Type service );
+  InfrastructureInfo getInfo(const Overlay::Type service );
   void updateInfo();
   void updateFestivalInfo();
 };
@@ -187,7 +187,7 @@ void Entertainment::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
-InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service)
+InfrastructureInfo Entertainment::Impl::getInfo( const Overlay::Type service)
 {
   city::Helper helper( city );
 

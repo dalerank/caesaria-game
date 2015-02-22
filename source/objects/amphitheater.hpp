@@ -25,7 +25,7 @@ class Amphitheater : public EntertainmentBuilding
 public:
   Amphitheater();
 
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
 
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);  

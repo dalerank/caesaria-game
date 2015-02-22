@@ -33,13 +33,13 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-River::River() : TileOverlay( objects::river, Size(1) )
+River::River() : Overlay( objects::river, Size(1) )
 {
 }
 
-bool River::build( const CityAreaInfo& info )
+bool River::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
   setPicture( computePicture() );
 
   RiverList rifts = neighbors();

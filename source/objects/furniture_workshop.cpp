@@ -30,12 +30,12 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY( objects::furniture_workshop, FurnitureWorkshop)
 
-bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
+bool FurnitureWorkshop::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return Factory::canBuild( areaInfo );
 }
 
-bool FurnitureWorkshop::build( const CityAreaInfo& info )
+bool FurnitureWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 

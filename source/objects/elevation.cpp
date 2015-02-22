@@ -39,7 +39,7 @@ public:
 };
 
 Elevation::Elevation()
-  : TileOverlay( constants::objects::elevation, Size( 2 ) ), _d( new Impl )
+  : Overlay( constants::objects::elevation, Size( 2 ) ), _d( new Impl )
 {
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }
@@ -66,15 +66,15 @@ void Elevation::changeDirection(Tile* masterTile, constants::Direction direction
 {
   int imgid = _d->basicImgId - startElevationId;
 
-  TileOverlay::changeDirection( masterTile, direction );
+  Overlay::changeDirection( masterTile, direction );
   setPicture( imgid::toPicture( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
 }
 
 bool Elevation::isDestructible() const { return false; }
 
-bool Elevation::build( const CityAreaInfo& info )
+bool Elevation::build( const city::AreaInfo& info )
 {
-  bool res = TileOverlay::build( info );
+  bool res = Overlay::build( info );
   _d->basicImgId = info.city->tilemap().at( info.pos ).originalImgId();
 
   return res;

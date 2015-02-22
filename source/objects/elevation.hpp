@@ -18,9 +18,9 @@
 #ifndef _CAESARIA_ELEVATION_H_INCLUDE_
 #define _CAESARIA_ELEVATION_H_INCLUDE_
 
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
-class Elevation : public gfx::TileOverlay
+class Elevation : public Overlay
 {
 public:
   Elevation();
@@ -32,7 +32,7 @@ public:
   virtual Point offset( const gfx::Tile& tile, const Point &subpos) const;
   virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
   virtual bool isDestructible() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 private:
   class Impl;
   ScopedPtr<Impl> _d;

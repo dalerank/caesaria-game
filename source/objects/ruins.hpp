@@ -46,7 +46,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
@@ -67,7 +67,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
 };
@@ -81,7 +81,7 @@ public:
   CollapsedRuins();
 
   virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void collapse();
 
   virtual bool isWalkable() const;
@@ -97,7 +97,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void burn();
   virtual bool isDestructible() const;
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual bool isWalkable() const;
   virtual void destroy();
 

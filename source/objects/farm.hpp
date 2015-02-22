@@ -23,7 +23,7 @@
 class Farm : public Factory
 {
 public:
-  Farm(const good::Product outGood, const TileOverlay::Type type );
+  Farm(const good::Product outGood, const Overlay::Type type );
 
   virtual ~Farm();
   void init();
@@ -31,8 +31,8 @@ public:
   void computePictures();
 
   virtual void timeStep(const unsigned long time);
-  virtual bool build(const CityAreaInfo &info);
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
+  virtual bool build(const city::AreaInfo &info);
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
@@ -49,7 +49,7 @@ class FarmWheat : public Farm
 public:
   FarmWheat();
   virtual std::string troubleDesc() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 };
 
 class FarmOlive : public Farm

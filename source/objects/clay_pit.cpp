@@ -54,7 +54,7 @@ void ClayPit::_reachUnworkingTreshold()
   collapse();
 }
 
-bool ClayPit::canBuild( const CityAreaInfo& areaInfo ) const
+bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
   bool near_water = false;

@@ -57,7 +57,7 @@ public:
   float cachedPopkoef;
 };
 
-Building::Building(const TileOverlay::Type type, const Size& size )
+Building::Building(const Overlay::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
   setState( pr::inflammability, 1 );
@@ -120,7 +120,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-bool Building::build( const CityAreaInfo& info )
+bool Building::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 

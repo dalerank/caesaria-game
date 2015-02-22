@@ -75,7 +75,7 @@ std::string LoaderHelper::getDefaultCityName(unsigned int location)
 
 unsigned int LoaderHelper::convImgId2ovrType( unsigned int imgId )
 {
-  TileOverlay::Type ovType = objects::unknown;
+  Overlay::Type ovType = objects::unknown;
   switch ( imgId )
   {
     case 0xb0e:                                 ovType = objects::well;    break;
@@ -124,7 +124,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
 {
   int changeId = 0;
   unsigned int imgId = oTile.originalImgId();
-  TileOverlay::Type ovType = objects::unknown;
+  Overlay::Type ovType = objects::unknown;
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     ovType = objects::road;
@@ -180,7 +180,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( ovType == objects::unknown )
     return;
 
-  TileOverlayPtr overlay; // This is the overlay object, if any
+  OverlayPtr overlay; // This is the overlay object, if any
   overlay = TileOverlayFactory::instance().create( ovType );
   if( ovType == objects::elevation )
   {
@@ -194,7 +194,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     if( oTile.overlay().isValid() )
       return;
 
-    CityAreaInfo info = { city, oTile.pos(), TilesArray() };
+    city::AreaInfo info = { city, oTile.pos(), TilesArray() };
     overlay->build( info );
     city->overlays().push_back( overlay );
   }

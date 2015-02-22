@@ -18,7 +18,7 @@
 #include "tile.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
@@ -199,8 +199,8 @@ void Tile::setFlag(Tile::Type type, bool value)
   }
 }
 
-TileOverlayPtr Tile::overlay() const{ return _overlay;}
-void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
+OverlayPtr Tile::overlay() const{ return _overlay;}
+void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
 unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }

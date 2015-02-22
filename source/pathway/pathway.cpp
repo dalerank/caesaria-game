@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "pathway.hpp"
+#include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "core/direction.hpp"
 #include "core/variant_map.hpp"

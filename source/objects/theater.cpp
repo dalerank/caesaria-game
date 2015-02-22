@@ -35,7 +35,7 @@ Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, S
   _addNecessaryWalker( walker::actor );
 }
 
-bool Theater::build( const CityAreaInfo& info )
+bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 

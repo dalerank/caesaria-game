@@ -71,7 +71,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
 
     int entertainmentLevel = -1;
     if( _isVisibleObject( overlay->type() ) )

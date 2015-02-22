@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layer.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
 #include "tilesarray.hpp"
@@ -397,7 +397,7 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
     return;
 
   Tile* baseTile = area.front();
-  TileOverlayPtr overlay = baseTile->overlay();
+  OverlayPtr overlay = baseTile->overlay();
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay.isValid()
                           ? overlay->size().height() - 1 + baseTile->j()
@@ -619,7 +619,7 @@ void Layer::afterRender( Engine& engine)
       _d->debugFont.draw( *_d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
     }
 
-    TileOverlayPtr ov = tile->overlay();
+    OverlayPtr ov = tile->overlay();
     if( ov.isValid() )
     {
       size = ov->size();

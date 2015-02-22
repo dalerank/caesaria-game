@@ -75,7 +75,7 @@ bool Well::isNeedRoadAccess() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
-bool Well::build( const CityAreaInfo& info )
+bool Well::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 

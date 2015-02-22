@@ -108,7 +108,7 @@ Reservoir::Reservoir()
 
 Reservoir::~Reservoir(){}
 
-bool Reservoir::build( const CityAreaInfo& info )
+bool Reservoir::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 
@@ -173,7 +173,7 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
-bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
+bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 

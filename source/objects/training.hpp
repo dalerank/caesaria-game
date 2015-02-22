@@ -24,7 +24,7 @@
 class TrainingBuilding : public WorkingBuilding
 {
 public:
-   TrainingBuilding(const TileOverlay::Type type, const Size& size);
+   TrainingBuilding(const Overlay::Type type, const Size& size);
 
    virtual void timeStep(const unsigned long time);
 

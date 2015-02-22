@@ -314,7 +314,7 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<int>& checkTy
 
   foreach( it, houses )
   {
-    gfx::TileOverlay::Type btype;
+    Overlay::Type btype;
     (*it)->spec().next().checkHouse( *it, NULL, &btype );
     if( checkTypes.count( btype ) )
     {    

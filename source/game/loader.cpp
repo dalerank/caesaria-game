@@ -105,8 +105,8 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   if( maySetSign( signTile ) )
   {
     tile::clear( signTile );
-    gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
-    CityAreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    OverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
+    city::AreaInfo info = { city, tlPos + tlOffset, TilesArray() };
     waymark->build( info );
     city->addOverlay( waymark );
   }

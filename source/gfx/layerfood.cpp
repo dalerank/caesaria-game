@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "layerfood.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
@@ -52,7 +52,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     int foodLevel = -1;
     if( _isVisibleObject( overlay->type() ) )
     {

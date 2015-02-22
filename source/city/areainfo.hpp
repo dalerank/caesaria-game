@@ -13,31 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_RIFT_H_INCLUDE__
-#define __CAESARIA_RIFT_H_INCLUDE__
+#ifndef __CAESARIA_CITYAREAINFO_H_INCLUDED__
+#define __CAESARIA_CITYAREAINFO_H_INCLUDED__
 
-#include "objects/overlay.hpp"
+#include "predefinitions.hpp"
+#include "gfx/predefinitions.hpp"
 
-class Rift : public Overlay
+namespace city
 {
-public:
-  Rift();
 
-  virtual gfx::Picture computePicture();
-  void updatePicture();
-  RiftList neighbors() const;
-
-  virtual bool build(const city::AreaInfo &info);
-  virtual void initTerrain( gfx::Tile &terrain);
-  virtual bool isWalkable() const;
-  virtual bool isFlat() const;
-  virtual void destroy();
-  virtual bool isDestructible() const;
-
-  virtual void load(const VariantMap &stream);
-  virtual gfx::Renderer::PassQueue passQueue() const;
+struct AreaInfo
+{
+  PlayerCityPtr city;
+  TilePos pos;
+  const gfx::TilesArray& aroundTiles;
 };
 
-#endif //__CAESARIA_RIFT_H_INCLUDE__
+}//end namespace city
+
+#endif //__CAESARIA_CITYAREAINFO_H_INCLUDED__

@@ -23,17 +23,17 @@ class Wall : public Building
 public:
   Wall();
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 
   virtual void initTerrain( gfx::Tile& terrain);
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
 
   void updatePicture(PlayerCityPtr city);
 
-  const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
+  const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
 };
 
 #endif // __CAESARIA_WALL_H_INCLUDED__

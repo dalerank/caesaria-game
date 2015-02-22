@@ -38,7 +38,7 @@ TimberLogger::TimberLogger()
   _fgPicturesRef().resize(2);
 }
 
-bool TimberLogger::canBuild( const CityAreaInfo& areaInfo ) const
+bool TimberLogger::canBuild( const city::AreaInfo& areaInfo ) const
 {
    bool is_constructible = WorkingBuilding::canBuild( areaInfo );
    bool near_forest = false;  // tells if the factory is next to a forest

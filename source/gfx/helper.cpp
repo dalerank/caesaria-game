@@ -18,7 +18,7 @@
 #include "helper.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "animation_bank.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"

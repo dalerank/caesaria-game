@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layercrime.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
@@ -66,7 +66,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     int crime = -1;
 
     if( _isVisibleObject( overlay->type() ) )

@@ -134,7 +134,7 @@ void BurningRuins::collapse() {}
 
 void BurningRuins::burn(){}
 
-bool BurningRuins::build( const CityAreaInfo& info)
+bool BurningRuins::build( const city::AreaInfo& info)
 {
   Building::build( info );
   //while burning can't remove it
@@ -185,7 +185,7 @@ BurnedRuins::BurnedRuins() : Ruins( objects::burned_ruins )
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
-bool BurnedRuins::build( const CityAreaInfo& info )
+bool BurnedRuins::build( const city::AreaInfo& info )
 {
   Building::build( info );
 
@@ -213,7 +213,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsed_ruins)
 
 void CollapsedRuins::burn() {}
 
-bool CollapsedRuins::build( const CityAreaInfo& info )
+bool CollapsedRuins::build( const city::AreaInfo& info )
 {
   Building::build( info );
 
@@ -303,7 +303,7 @@ void PlagueRuins::applyService(ServiceWalkerPtr walker){}
 void PlagueRuins::burn(){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
-bool PlagueRuins::build( const CityAreaInfo& info )
+bool PlagueRuins::build( const city::AreaInfo& info )
 {
   Building::build( info );
   //while burning can't remove it

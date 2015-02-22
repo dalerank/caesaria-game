@@ -103,8 +103,8 @@ class Manager::Impl
 public:
   bool showDebugInfo;
 
-  typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
-  std::map< std::string, TileOverlay::Type > name2typeMap;
+  typedef std::map< Overlay::Type, InfoboxCreator* > InfoboxCreators;
+  std::map< std::string, Overlay::Type > name2typeMap;
 
   InfoboxCreators constructors;
 };
@@ -131,8 +131,8 @@ Manager& Manager::instance()
 void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 {
   Tile& tile = city->tilemap().at( pos );
-  TileOverlayPtr overlay = tile.overlay();
-  TileOverlay::Type type;
+  OverlayPtr overlay = tile.overlay();
+  Overlay::Type type;
 
   if( _d->showDebugInfo )
   {
@@ -165,7 +165,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
 void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = showInfo; }
 
-void Manager::addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
+void Manager::addInfobox( const Overlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
 
@@ -180,7 +180,7 @@ void Manager::addInfobox( const TileOverlay::Type type, const std::string& typeN
   }
 }
 
-bool Manager::canCreate(const TileOverlay::Type type) const
+bool Manager::canCreate(const Overlay::Type type) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }
@@ -195,7 +195,7 @@ Simple *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos
   Simple* infoBox = new Simple( parent, Rect( 0, 0, 510, 300 ) );
   infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2,
                                size.height() - infoBox->height()) );
-  TileOverlayPtr overlay = city->getOverlay( pos );
+  OverlayPtr overlay = city->getOverlay( pos );
 
   std::string caption = overlay.isValid()
       ? MetaDataHolder::findPrettyName( overlay->type() )

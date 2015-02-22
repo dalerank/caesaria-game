@@ -28,8 +28,6 @@ class TilemapCamera;
 class TilesArray;
 class Renderer;
 
-PREDEFINE_CLASS_SMARTLIST(TileOverlay,List)
-
 namespace layer
 {
 PREDEFINE_CLASS_SMARTLIST(Layer,List)

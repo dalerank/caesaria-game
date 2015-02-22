@@ -20,7 +20,7 @@
 
 #include "window.hpp"
 #include "core/signals.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 namespace gui
 {
@@ -28,7 +28,7 @@ namespace gui
 class DictionaryWindow : public Window
 {
 public:
-  static void show( Widget* parent, gfx::TileOverlay::Type type );
+  static void show( Widget* parent, Overlay::Type type );
   static void show( Widget* parent, const std::string& uri );
 
   virtual ~DictionaryWindow();

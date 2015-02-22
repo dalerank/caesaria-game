@@ -27,7 +27,7 @@ class Factory : public WorkingBuilding
 {
 public:
   Factory( const good::Product inGood, const good::Product outGood,
-           const TileOverlay::Type type, const Size& size );
+           const Overlay::Type type, const Size& size );
   virtual ~Factory();
 
   good::Stock& inStockRef();
@@ -87,8 +87,8 @@ class Winery : public Factory
 {
 public:
   Winery();
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
 
 protected:
   virtual void _storeChanged();
@@ -99,8 +99,8 @@ class Creamery : public Factory
 public:
   Creamery();
 
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
+  virtual bool build(const city::AreaInfo &info);
 protected:
   virtual void _storeChanged();
 };

@@ -25,12 +25,12 @@ class Road : public Construction
 public:
   Road();
 
-  virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
+  virtual const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
   void updatePicture();
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void initTerrain( gfx::Tile &terrain);
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
@@ -53,10 +53,10 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual const gfx::Picture& picture(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual const gfx::Picture& picture(const city::AreaInfo& areaInfo) const;
   virtual void appendPaved(int value);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual const gfx::Picture& picture() const;

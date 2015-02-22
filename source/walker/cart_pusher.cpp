@@ -281,7 +281,7 @@ void CartPusher::_computeWalkerDestination()
 }
 
 template< class T >
-BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
+BuildingPtr reserveShortestPath( const Overlay::Type buildingType,
                                  good::Stock& stock, long& reservationID,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
@@ -339,7 +339,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
+  Overlay::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
 
   if (buildingType == objects::unknown)
   {

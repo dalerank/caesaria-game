@@ -61,7 +61,7 @@ namespace {
 class EducationInfoLabel : public Label
 {
 public:
-  EducationInfoLabel( Widget* parent, const Rect& rect, const TileOverlay::Type service,
+  EducationInfoLabel( Widget* parent, const Rect& rect, const Overlay::Type service,
                       const InfrastructureInfo& info )
     : Label( parent, rect ), _service( service ), _info( info )
   {
@@ -103,7 +103,7 @@ public:
   }
 
 private:
-  TileOverlay::Type _service;
+  Overlay::Type _service;
   InfrastructureInfo _info;
 };
 
@@ -118,7 +118,7 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  InfrastructureInfo getInfo( PlayerCityPtr city, const Overlay::Type service );
   std::string getTrouble( PlayerCityPtr city );
 };
 
@@ -181,7 +181,7 @@ void Education::_showHelp()
   DictionaryWindow::show( this, "education_advisor" );
 }
 
-InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
+InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const Overlay::Type bType)
 {
   city::Helper helper( city );
 

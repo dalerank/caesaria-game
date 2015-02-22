@@ -64,7 +64,7 @@ Fortification::Fortification() : Wall(), _d( new Impl )
 
 Fortification::~Fortification() {}
 
-bool Fortification::build( const CityAreaInfo& info )
+bool Fortification::build( const city::AreaInfo& info )
 {
   // we can't build if already have wall here
   WallPtr wall = ptr_cast<Wall>( info.city->getOverlay( info.pos ) );
@@ -138,7 +138,7 @@ Point Fortification::offset( const Tile& tile, const Point& subpos) const
   return _d->offset;
 }
 
-const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
+const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
 {
   // find correct picture as for roads
   Tilemap& tmap = areaInfo.city->tilemap();
@@ -173,7 +173,7 @@ const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
   }
 
   // get overlays for all directions
-  TileOverlayPtr overlay_d[countDirection];
+  OverlayPtr overlay_d[countDirection];
   overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
   overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
   overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
@@ -451,7 +451,7 @@ int Fortification::getDirection() const {  return _d->direction;}
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  CityAreaInfo info = { city, pos(), TilesArray() };
+  city::AreaInfo info = { city, pos(), TilesArray() };
   setPicture( picture( info) );
 }
 
@@ -483,7 +483,7 @@ void Fortification::load(const VariantMap& stream)
 
 bool Fortification::Impl::isFortification( PlayerCityPtr city, TilePos pos, bool tower )
 {
-  TileOverlayPtr ov = city->getOverlay( pos );
+  OverlayPtr ov = city->getOverlay( pos );
   return tower
             ? is_kind_of<Tower>( ov )
             : is_kind_of<Tower>( ov ) || is_kind_of<Gatehouse>( ov );

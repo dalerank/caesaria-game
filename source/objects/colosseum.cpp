@@ -84,7 +84,7 @@ Service::Type Colosseum::serviceType() const
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 
-bool Colosseum::build( const CityAreaInfo& info )
+bool Colosseum::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 

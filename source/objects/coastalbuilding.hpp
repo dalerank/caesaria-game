@@ -26,9 +26,9 @@ class CoastalFactory : public Factory
 {
 public:
   CoastalFactory( const good::Product consume, const good::Product produce,
-                  const TileOverlay::Type type, Size size );
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
-  virtual bool build(const CityAreaInfo &info);
+                  const Overlay::Type type, Size size );
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool build(const city::AreaInfo &info);
   virtual void destroy();
 
   virtual void save(VariantMap &stream) const;

@@ -57,7 +57,7 @@ Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ),
   _fgPicturesRef()[ 3 ].setOffset( 230, -10 );
 }
 
-bool Senate::canBuild( const CityAreaInfo& areaInfo ) const
+bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 {
   _d->errorStr = "";
   bool mayBuild = ServiceBuilding::canBuild( areaInfo );
@@ -96,7 +96,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-bool Senate::build( const CityAreaInfo& info )
+bool Senate::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
   _updateUnemployers();

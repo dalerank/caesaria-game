@@ -37,7 +37,7 @@ protected:
   virtual void _showHelp();
 
 protected:
-  gfx::TileOverlay::Type _type;
+  Overlay::Type _type;
   Label* _lbProduction;
   Label* _lbEffciency;
 };

@@ -213,7 +213,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-void ServiceWalker::_addObsoleteOverlay(TileOverlay::Type type) { _d->obsoleteOvs.insert( type ); }
+void ServiceWalker::_addObsoleteOverlay(Overlay::Type type) { _d->obsoleteOvs.insert( type ); }
 unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
@@ -416,7 +416,7 @@ void ServiceWalker::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, lastHousePos, stream )
 
   TilePos basePos = stream.get( "base" ).toTilePos();
-  TileOverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();
+  OverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();
 
   _d->base = ptr_cast<Building>( overlay );
   if( _d->base.isNull() )
@@ -506,7 +506,7 @@ void ServiceWalker::initialize(const VariantMap& options)
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
   foreach( it, oboletesOvs )
   {
-    TileOverlay::Type ovType = MetaDataHolder::findType( it->toString() );
+    Overlay::Type ovType = MetaDataHolder::findType( it->toString() );
     if( ovType != objects::unknown )
       _addObsoleteOverlay( ovType );
   }

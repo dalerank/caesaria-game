@@ -37,7 +37,7 @@ class Simple::Impl
 public:
   SenatePopupInfo senateInfo;
   PictureRef selectedBuildingPic;
-  TileOverlayPtr lastOverlay;
+  OverlayPtr lastOverlay;
 };
 
 int Simple::type() const { return citylayer::simple; }
@@ -52,7 +52,7 @@ LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
 
 void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
-  TileOverlayPtr curOverlay = tile.overlay();
+  OverlayPtr curOverlay = tile.overlay();
 
   bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay);
   if( blowTile )
@@ -83,7 +83,7 @@ void Simple::renderUi(Engine &engine)
   Tile* lastTile = _currentTile();
   if( lastTile )
   {
-    TileOverlayPtr ov = lastTile->overlay();
+    OverlayPtr ov = lastTile->overlay();
     SenatePtr senate = ptr_cast<Senate>( ov );
     if( senate.isValid() )
     {

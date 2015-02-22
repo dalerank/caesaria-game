@@ -77,7 +77,7 @@ FortMounted::FortMounted()
   _addFormation( frmOpen );
 }
 
-bool FortMounted::build( const CityAreaInfo& info )
+bool FortMounted::build( const city::AreaInfo& info )
 {
   return Fort::build( info );
 }

@@ -25,7 +25,7 @@ class EntertainmentBuilding : public ServiceBuilding
 public:
   typedef std::vector<constants::walker::Type> NecessaryWalkers;
 
-  EntertainmentBuilding( const Service::Type service, const TileOverlay::Type type,
+  EntertainmentBuilding( const Service::Type service, const Overlay::Type type,
                          Size size);
 
   virtual ~EntertainmentBuilding();

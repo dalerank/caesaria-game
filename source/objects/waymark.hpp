@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_WAYMARK_H_INCLUDED__
 #define __CAESARIA_WAYMARK_H_INCLUDED__
 
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
-class Waymark : public gfx::TileOverlay
+class Waymark : public Overlay
 {
 public:
   Waymark();
@@ -30,7 +30,7 @@ public:
   virtual bool isDestructible() const;
   virtual void initTerrain(gfx::Tile &terrain);
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 private:
   bool _isFlat;
 };

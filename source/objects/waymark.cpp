@@ -28,13 +28,13 @@ using namespace constants;
 REGISTER_CLASS_IN_OVERLAYFACTORY(objects::waymark, Waymark)
 
 Waymark::Waymark()
-  : TileOverlay( constants::objects::waymark, Size(1) )
+  : Overlay( constants::objects::waymark, Size(1) )
 {
 }
 
 void Waymark::timeStep( const unsigned long time )
 {
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
 }
 
 bool Waymark::isFlat() const { return _isFlat; }
@@ -45,7 +45,7 @@ void Waymark::initTerrain(Tile& terrain)
 
 }
 
-bool Waymark::build( const CityAreaInfo& info )
+bool Waymark::build( const city::AreaInfo& info )
 {  
   bool isEntryMark = false;
 
@@ -83,5 +83,5 @@ bool Waymark::build( const CityAreaInfo& info )
   setPicture( ResourceGroup::land3a, picIndex );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
 
-  return TileOverlay::build( info );
+  return Overlay::build( info );
 }

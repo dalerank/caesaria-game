@@ -43,7 +43,7 @@ IronMine::IronMine()
   _setUnworkingInterval( 12 );
 }
 
-bool IronMine::canBuild( const CityAreaInfo& areaInfo ) const
+bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = WorkingBuilding::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain

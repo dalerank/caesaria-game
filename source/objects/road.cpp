@@ -44,12 +44,12 @@ Road::Road()
   _paved = 0;
 }
 
-bool Road::build( const CityAreaInfo& info )
+bool Road::build( const city::AreaInfo& info )
 {
   info.city->setOption( PlayerCity::updateRoads, 1 );
 
   Tilemap& tilemap = info.city->tilemap();
-  TileOverlayPtr overlay = tilemap.at( info.pos ).overlay();
+  OverlayPtr overlay = tilemap.at( info.pos ).overlay();
 
   if( is_kind_of<Road>( overlay ) )
   {
@@ -69,14 +69,14 @@ bool Road::build( const CityAreaInfo& info )
   return true;
 }
 
-bool Road::canBuild( const CityAreaInfo& areaInfo ) const
+bool Road::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_free = Construction::canBuild( areaInfo );
 
   if( is_free )
     return true; // we try to build on free tile
 
-  TileOverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
+  OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
   Picture pic = picture( areaInfo );
   const_cast<Road*>( this )->setPicture( pic );
@@ -89,7 +89,7 @@ void Road::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
+const gfx::Picture& Road::picture( const city::AreaInfo& areaInfo) const
 {
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   if (!areaInfo.aroundTiles.empty())
@@ -193,7 +193,7 @@ bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
 void Road::updatePicture()
 {
-  CityAreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
+  city::AreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
   setPicture( picture( info ) );
 }
 bool Road::isNeedRoadAccess() const {  return false; }
@@ -270,7 +270,7 @@ Plaza::Plaza()
 // Plazas can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-bool Plaza::canBuild(const CityAreaInfo& areaInfo) const
+bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = areaInfo.city->tilemap();
@@ -286,14 +286,14 @@ bool Plaza::canBuild(const CityAreaInfo& areaInfo) const
   return is_constructible;
 }
 
-const Picture& Plaza::picture(const CityAreaInfo& areaInfo) const
+const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
 {
   return picture();
 }
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build( const CityAreaInfo& info )
+bool Plaza::build( const city::AreaInfo& info )
 {
   RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
@@ -333,7 +333,7 @@ void Plaza::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
   }
 
@@ -372,7 +372,7 @@ void Plaza::updatePicture()
     city::Helper helper( _city() );
     helper.updateDesirability( this, city::Helper::offDesirability );
     setSize( 2 );
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
     helper.updateDesirability( this, city::Helper::onDesirability );

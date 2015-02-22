@@ -22,6 +22,7 @@
 #include "gfx/tile.hpp"
 #include "game/service.hpp"
 #include "pathway/predefinitions.hpp"
+#include "objects/overlay.hpp"
 #include "walkers_factory_creator.hpp"
 
 /** This walker gives a service to buildings along the road */
@@ -76,7 +77,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
-  void _addObsoleteOverlay( gfx::TileOverlay::Type type );
+  void _addObsoleteOverlay( Overlay::Type type );
 
 private:
   class Impl;

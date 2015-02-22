@@ -43,7 +43,7 @@ void MarbleQuarry::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool MarbleQuarry::canBuild( const CityAreaInfo& areaInfo ) const
+bool MarbleQuarry::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain

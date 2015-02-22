@@ -86,8 +86,9 @@ int OMap::climateType(const std::string& filename)
   VariantMap vm = config::load( filename );
   _d->climate = vm.get( "climate" ).toInt();
 
-  return _d->climate; }
+  return _d->climate;
 }
+
 std::string OMap::restartFile() const {  return _d->restartFile; }
 OMap::OMap() : _d( new Impl ) {}
 

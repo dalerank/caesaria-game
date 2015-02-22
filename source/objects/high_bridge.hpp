@@ -25,9 +25,9 @@ class HighBridge : public Construction
 public:
   HighBridge();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual void initTerrain( gfx::Tile& terrain );
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool canDestroy() const;
   virtual void destroy();
   virtual std::string errorDesc() const;

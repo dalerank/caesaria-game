@@ -19,7 +19,7 @@
 #include "gfx/tilemap.hpp"
 #include "game/minimap_colours.hpp"
 #include "gfx/tile.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
@@ -77,7 +77,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
-  TileOverlay::Type ovType = objects::unknown;
+  Overlay::Type ovType = objects::unknown;
   if( tile.overlay().isValid() )
     ovType = tile.overlay()->type();
 
@@ -148,12 +148,12 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 {
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
 
   if (overlay == NULL)
     return;
 
-  TileOverlay::Type type = overlay->type();
+  Overlay::Type type = overlay->type();
 
   switch(type)
   {

@@ -45,7 +45,7 @@ public:
   DivinityPtr divinity;
 };
 
-Temple::Temple( DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size )
+Temple::Temple( DivinityPtr divinity, Overlay::Type type, int imgId, const Size& size )
 : ServiceBuilding( divinity.isValid()
                     ? divinity->serviceType()
                     : Service::srvCount, type, size ), _td( new Impl )
@@ -119,7 +119,7 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), objects::oracle, 55 )
 
 unsigned int TempleOracle::parishionerNumber() const {  return 500; }
 
-bool TempleOracle::build( const CityAreaInfo& info )
+bool TempleOracle::build( const city::AreaInfo& info )
 {
   BigTemple::build( info );
 
@@ -132,7 +132,7 @@ bool TempleOracle::build( const CityAreaInfo& info )
   return true;
 }
 
-SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
+SmallTemple::SmallTemple( DivinityPtr divinity, Overlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
   setMaximumWorkers( 2 );
@@ -140,7 +140,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgI
 
 unsigned int SmallTemple::parishionerNumber() const {  return 750; }
 
-BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
+BigTemple::BigTemple( DivinityPtr divinity, Overlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
   setMaximumWorkers( 8 );
@@ -148,7 +148,7 @@ BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
 
 unsigned int BigTemple::parishionerNumber() const {  return 1500; }
 
-bool BigTemple::build( const CityAreaInfo& info )
+bool BigTemple::build( const city::AreaInfo& info )
 {  
   if( info.city->getOption( PlayerCity::forceBuild ) > 0 )  //load from savefiles
   {

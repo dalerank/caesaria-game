@@ -55,7 +55,7 @@ void NativeBuilding::load( const VariantMap& stream)
   Building::load(stream);
 }
 
-bool NativeBuilding::build( const CityAreaInfo& info )
+bool NativeBuilding::build( const city::AreaInfo& info )
 {
   tile().setFlag( Tile::tlRock, true );
   return Building::build( info );

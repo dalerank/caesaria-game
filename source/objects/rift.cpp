@@ -35,13 +35,13 @@ namespace{
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rift::Rift() : TileOverlay( objects::rift, Size(1) )
+Rift::Rift() : Overlay( objects::rift, Size(1) )
 {  
 }
 
-bool Rift::build( const CityAreaInfo& info )
+bool Rift::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
   setPicture( computePicture() );
 
   RiftList rifts = neighbors();

@@ -490,7 +490,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       setSize( growSize  );
       //_update( false );
 
-      CityAreaInfo info = { _city(), pos(), TilesArray() };
+      city::AreaInfo info = { _city(), pos(), TilesArray() };
       build( info );
       //set new desirability level
       helper.updateDesirability( this, city::Helper::onDesirability );
@@ -547,7 +547,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
           break;
         }
 
-        TileOverlayPtr overlay = (*it)->overlay();
+        OverlayPtr overlay = (*it)->overlay();
         if( overlay.isNull() )
         {
           if( !(*it)->getFlag( Tile::isConstructible ) )
@@ -572,7 +572,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         helper.updateDesirability( this, city::Helper::offDesirability );
         setSize( minSize );
         _update( true );
-        CityAreaInfo info = { _city(), buildPos, TilesArray() };
+        city::AreaInfo info = { _city(), buildPos, TilesArray() };
         build( info );
 
         _d->desirability.base = desirability;
@@ -706,7 +706,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     }
 
     setSize( rsize );
-    CityAreaInfo info = { _city(), bpos + moveVector, TilesArray() };
+    city::AreaInfo info = { _city(), bpos + moveVector, TilesArray() };
     build( info );
   }
   //set new desirability level
@@ -766,7 +766,7 @@ void House::_levelDown()
         CitizenGroup moveGroup = remHabitants( peoplesPerHouse );
         house->addHabitants( moveGroup );
 
-        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<TileOverlay>( house ) );
+        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<Overlay>( house ) );
         event->dispatch();
       }
 
@@ -975,7 +975,7 @@ TilesArray House::enterArea() const
   }
 }
 
-bool House::build( const CityAreaInfo& info )
+bool House::build( const city::AreaInfo& info )
 {
   bool ret = Building::build( info );
   _update( true );
@@ -1162,7 +1162,7 @@ void House::load( const VariantMap& stream )
     _d->services[ type ] = vl_services.get( i+1 ).toFloat(); //serviceValue
   }
 
-  CityAreaInfo info = { _city(), pos(), TilesArray() };
+  city::AreaInfo info = { _city(), pos(), TilesArray() };
   Building::build( info );
 
   if( !picture().isValid() )

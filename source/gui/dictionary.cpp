@@ -85,7 +85,7 @@ vfs::Path DictionaryWindow::_convUri2path(std::string uri)
   return fpath;
 }
 
-void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
+void DictionaryWindow::show(Widget* parent, Overlay::Type type)
 {
   DictionaryWindow* wnd = new DictionaryWindow( parent );
   if( wnd->_d->lbText )

@@ -23,7 +23,7 @@
 #include "core/scopedptr.hpp"
 #include "game/enums.hpp"
 #include "core/variant.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 namespace city
 {  
@@ -61,14 +61,14 @@ public:
   Options();
   virtual ~Options();
 
-  void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
+  void setBuildingAvailble( const Overlay::Type type, bool mayBuild );
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
-  unsigned int getBuildingsQuote( const gfx::TileOverlay::Type type ) const;
+  unsigned int getBuildingsQuote( const Overlay::Type type ) const;
   TilePos memPoint( unsigned int index ) const;
   void setMemPoint( unsigned int index, TilePos point );
 
-  bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
+  bool isBuildingAvailble( const Overlay::Type type ) const;
 
   void clear();
 
@@ -77,8 +77,8 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
+  void setBuildingAvailble(const Overlay::Type start, const Overlay::Type stop, bool mayBuild);
+  bool isBuildingsAvailble(const Overlay::Type start, const Overlay::Type stop) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

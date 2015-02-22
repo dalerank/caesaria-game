@@ -62,7 +62,7 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
 
     int healthLevel = -1;
     if( _isVisibleObject( overlay->type() ) )

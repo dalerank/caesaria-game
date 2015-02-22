@@ -43,9 +43,9 @@ class Hippodrome : public EntertainmentBuilding
 public:
   Hippodrome();
   virtual std::string troubleDesc() const;
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
   virtual void deliverService();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   constants::Direction direction() const;
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
@@ -59,7 +59,7 @@ protected:
 private:
   void _init(bool onBuild=false);
   HippodromeSectionPtr _addSection( HippodromeSection::Type type, TilePos offset );
-  void _checkDirection( const CityAreaInfo& areaInfo );
+  void _checkDirection( const city::AreaInfo& areaInfo );
 
   class Impl;
   ScopedPtr<Impl> _d;

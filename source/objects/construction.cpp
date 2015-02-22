@@ -42,7 +42,7 @@ public:
 };
 
 Construction::Construction(const Type type, const Size& size)
-  : TileOverlay( type, size ), _d( new Impl )
+  : Overlay( type, size ), _d( new Impl )
 {
   _d->params[ pr::fire ] = 0;
   _d->params[ pr::damage ] = 0;
@@ -60,7 +60,7 @@ void Construction::_checkDestroyState()
   }
 }
 
-bool Construction::canBuild(const CityAreaInfo& areaInfo) const
+bool Construction::canBuild(const city::AreaInfo& areaInfo) const
 {
   Tilemap& tilemap = areaInfo.city->tilemap();
 
@@ -103,13 +103,13 @@ std::string Construction::troubleDesc() const
 std::string Construction::errorDesc() const { return ""; }
 TilesArray Construction::getAccessRoads() const { return _d->accessRoads; }
 bool Construction::canDestroy() const { return true; }
-void Construction::destroy() { TileOverlay::destroy(); }
+void Construction::destroy() { Overlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{ return true; }
 Construction::~Construction() {}
 
-bool Construction::build( const CityAreaInfo& info )
+bool Construction::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
 
   std::string name =  utils::format( 0xff, "%s_%d_%d",
                                             MetaDataHolder::findTypename( type() ).c_str(),
@@ -172,7 +172,7 @@ void Construction::collapse()
   Logger::warning( "Construction collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
-const Picture& Construction::picture() const { return TileOverlay::picture(); }
+const Picture& Construction::picture() const { return Overlay::picture(); }
 
 void Construction::setState( Param param, double value)
 {
@@ -191,7 +191,7 @@ void Construction::updateState( Param name, double value)
 
 void Construction::save( VariantMap& stream) const
 {
-  TileOverlay::save( stream );
+  Overlay::save( stream );
   VariantList vl_states;
   foreach( it, _d->params )
   {
@@ -213,7 +213,7 @@ void Construction::save( VariantMap& stream) const
 
 void Construction::load( const VariantMap& stream )
 {
-  TileOverlay::load( stream );
+  Overlay::load( stream );
   VariantList vl_states = stream.get( "states" ).toList();
   foreach( it, vl_states )
   {
@@ -241,7 +241,7 @@ const ConstructionExtensionList&Construction::extensions() const { return _d->ex
 
 void Construction::initialize(const MetaData& mdata)
 {
-  TileOverlay::initialize( mdata );
+  Overlay::initialize( mdata );
 
   VariantMap anMap = mdata.getOption( "animation" ).toMap();
   if( !anMap.empty() )
@@ -293,11 +293,11 @@ void Construction::timeStep(const unsigned long time)
     _d->newExtensions.clear();
   }
 
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
 }
 
-const Picture& Construction::picture(const CityAreaInfo& areaInfo) const
+const Picture& Construction::picture(const city::AreaInfo& areaInfo) const
 {
-  return TileOverlay::picture();
+  return Overlay::picture();
 }
 

@@ -34,8 +34,8 @@ public:
   Fort( constants::objects::Type type, int picIdLogo );
   virtual ~Fort();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
 
   virtual bool isNeedRoadAccess() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);

@@ -55,7 +55,7 @@ Baths::Baths() : ServiceBuilding(Service::baths, objects::baths, Size(2) )
 
 unsigned int Baths::walkerDistance() const {  return 35;}
 
-bool Baths::build( const CityAreaInfo& info )
+bool Baths::build( const city::AreaInfo& info )
 {
   return ServiceBuilding::build( info );
 }

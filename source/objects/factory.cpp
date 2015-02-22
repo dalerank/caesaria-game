@@ -94,7 +94,7 @@ public:
 };
 
 Factory::Factory(const good::Product inType, const good::Product outType,
-                  const TileOverlay::Type type, const Size& size )
+                  const Overlay::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
   _d->productionRate = 2.f;
@@ -394,12 +394,12 @@ Winery::Winery() : Factory(good::grape, good::wine, objects::wine_workshop, Size
   _fgPicturesRef().resize(3);
 }
 
-bool Winery::canBuild( const CityAreaInfo& areaInfo ) const
+bool Winery::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return Factory::canBuild( areaInfo );
 }
 
-bool Winery::build( const CityAreaInfo& info )
+bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
@@ -426,12 +426,12 @@ Creamery::Creamery() : Factory(good::olive, good::oil, objects::oil_workshop, Si
   _fgPicturesRef().resize( 3 );
 }
 
-bool Creamery::canBuild( const CityAreaInfo& areaInof ) const
+bool Creamery::canBuild( const city::AreaInfo& areaInof ) const
 {
   return Factory::canBuild( areaInof );
 }
 
-bool Creamery::build( const CityAreaInfo& info )
+bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 

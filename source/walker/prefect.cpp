@@ -264,7 +264,7 @@ bool Prefect::_findFire()
 
 void Prefect::_brokePathway(TilePos p)
 {
-  TileOverlayPtr overlay = _city()->getOverlay( p );
+  OverlayPtr overlay = _city()->getOverlay( p );
   if( overlay.isValid() && overlay->type() == objects::burning_ruins )
   {
     setSpeed( 0.f );

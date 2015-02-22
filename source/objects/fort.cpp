@@ -504,17 +504,17 @@ void Fort::_addFormation(Fort::TroopsFormation formation)
   _d->availableFormations.push_back( formation );
 }
 
-bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
+bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool isFreeFort = Building::canBuild( areaInfo );
-  CityAreaInfo fortArea = areaInfo;
+  city::AreaInfo fortArea = areaInfo;
   fortArea.pos += TilePos( 3, 0 );
   bool isFreeArea = _d->area->canBuild( fortArea );
 
   return (isFreeFort && isFreeArea);
 }
 
-bool Fort::build( const CityAreaInfo& info )
+bool Fort::build( const city::AreaInfo& info )
 {
   FortList forts;
   forts << info.city->overlays();
@@ -528,7 +528,7 @@ bool Fort::build( const CityAreaInfo& info )
 
   Building::build( info );
 
-  CityAreaInfo areaInfo = info;
+  city::AreaInfo areaInfo = info;
   areaInfo.pos += TilePos( 3, 0 );
   _d->area->build( areaInfo );
   _d->area->setBase( this );

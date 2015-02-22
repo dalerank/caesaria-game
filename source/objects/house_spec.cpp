@@ -85,15 +85,15 @@ int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
 //
 int HouseSpecification::minFoodLevel() const{  return _d->minFoodLevel;}
 
-bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, TileOverlay::Type* retBtype )
+bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Overlay::Type* retBtype )
 {
   bool res = true;
   int value;
   std::string reason;
   std::string defaultStr;
-  TileOverlay::Type defaultNeedType;
+  Overlay::Type defaultNeedType;
   std::string& ref = retMissing ? *retMissing : defaultStr;
-  TileOverlay::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
+  Overlay::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
 
   needBuilding = objects::unknown;
 

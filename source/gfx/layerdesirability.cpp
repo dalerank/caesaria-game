@@ -77,7 +77,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
   }
   else
   {
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects

@@ -21,7 +21,7 @@
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
 #include "game/enums.hpp"
-#include "tileoverlay.hpp"
+#include "objects/predefinitions.hpp"
 #include "predefinitions.hpp"
 #include "core/direction.hpp"
 
@@ -50,7 +50,7 @@ public:
   inline const TilePos& epos() const { return _epos; }
   inline const Point& mappos() const { return _mappos; }
 
-  inline const TileOverlayPtr& rov() const { return _overlay; }
+  inline const OverlayPtr& rov() const { return _overlay; }
   void setEPos( const TilePos& epos );
 
   Point center() const;
@@ -85,8 +85,8 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
-  TileOverlayPtr overlay() const;
-  void setOverlay( TileOverlayPtr overlay );
+  OverlayPtr overlay() const;
+  void setOverlay( OverlayPtr overlay );
   unsigned int originalImgId() const;
   void setOriginalImgId( unsigned short int id );
 
@@ -133,7 +133,7 @@ private:
   bool _wasDrawn;
   int _height;
   gfx::Animation _animation;
-  TileOverlayPtr _overlay;
+  OverlayPtr _overlay;
 
 private:
   Tile( const Tile& base );

@@ -129,7 +129,7 @@ void Fountain::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
+bool Fountain::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
@@ -147,7 +147,7 @@ bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
   return ret;
 }
 
-bool Fountain::build( const CityAreaInfo& info )
+bool Fountain::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
@@ -171,7 +171,7 @@ bool Fountain::haveReservoirAccess() const
   TilesArray reachedTiles = _city()->tilemap().getArea( 10, pos() );
   foreach( tile, reachedTiles )
   {
-    TileOverlayPtr overlay = (*tile)->overlay();
+    OverlayPtr overlay = (*tile)->overlay();
     if( overlay.isValid() && (objects::reservoir == overlay->type()) )
     {
       return true;

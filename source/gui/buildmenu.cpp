@@ -122,7 +122,7 @@ void BuildMenu::initialize()
 
   foreach( it, buildings )
   {
-    TileOverlay::Type bType = MetaDataHolder::findType( it->toString() );
+    Overlay::Type bType = MetaDataHolder::findType( it->toString() );
     if( bType != objects::unknown )
     {
       addBuildButton( bType );
@@ -168,7 +168,7 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
   setHeight( height() + 30 );
 }
 
-void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
+void BuildMenu::addBuildButton(const Overlay::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
   const MetaData& buildingData = MetaDataHolder::instance().getData( buildingType );

@@ -73,7 +73,7 @@ void Tower::load(const VariantMap& stream)
   Building::load( stream );
 }
 
-bool Tower::canBuild(const CityAreaInfo& areaInfo) const
+bool Tower::canBuild(const city::AreaInfo& areaInfo) const
 {
   Tilemap& tmap = areaInfo.city->tilemap();
 

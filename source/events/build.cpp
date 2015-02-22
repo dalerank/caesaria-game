@@ -33,12 +33,12 @@ using namespace city;
 namespace events
 {
 
-GameEventPtr BuildAny::create( const TilePos& pos, const TileOverlay::Type type )
+GameEventPtr BuildAny::create( const TilePos& pos, const Overlay::Type type )
 {
   return create( pos, TileOverlayFactory::instance().create( type ) );
 }
 
-GameEventPtr BuildAny::create(const TilePos& pos, TileOverlayPtr overlay)
+GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
 {
   BuildAny* ev = new BuildAny();
   ev->_pos = pos;
@@ -57,7 +57,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   if( _overlay.isNull() )
     return;
 
-  TileOverlayPtr ctOv = game.city()->getOverlay( _pos );
+  OverlayPtr ctOv = game.city()->getOverlay( _pos );
 
   bool mayBuild = true;
   if( ctOv.isValid() )
@@ -77,7 +77,7 @@ void BuildAny::_exec( Game& game, unsigned int )
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-    CityAreaInfo info = { game.city(), _pos, TilesArray() };
+    city::AreaInfo info = { game.city(), _pos, TilesArray() };
     bool buildOk = _overlay->build( info );
 
     if( !buildOk )

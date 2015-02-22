@@ -141,7 +141,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   }
 }
 
-void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
+void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 {
   if( overlay.isNull() )
   {

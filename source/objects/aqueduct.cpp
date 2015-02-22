@@ -50,7 +50,7 @@ Aqueduct::Aqueduct() : WaterSource( objects::aqueduct, Size(1) )
   // land2a 134 - 148       - aqueduct without water
 }
 
-bool Aqueduct::build( const CityAreaInfo& info )
+bool Aqueduct::build( const city::AreaInfo& info )
 {
   Tilemap& tilemap = info.city->tilemap();
   Tile& terrain = tilemap.at( info.pos );
@@ -111,9 +111,9 @@ void Aqueduct::destroy()
     RoadPtr r( new Road() );
     r->drop();
 
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     r->build( info );
-    _city()->addOverlay( ptr_cast<TileOverlay>( r ) );
+    _city()->addOverlay( ptr_cast<Overlay>( r ) );
   }
 }
 
@@ -122,7 +122,7 @@ void Aqueduct::timeStep(const unsigned long time)
   WaterSource::timeStep( time );
 }
 
-bool Aqueduct::canBuild( const CityAreaInfo& areaInfo) const
+bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
 {
   bool is_free = Construction::canBuild( areaInfo );
 
@@ -186,7 +186,7 @@ bool Aqueduct::canBuild( const CityAreaInfo& areaInfo) const
   return false;
 }
 
-const Picture& Aqueduct::picture( const CityAreaInfo& info ) const
+const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 {
   // find correct picture as for roads
   Tilemap& tmap = info.city->tilemap();
@@ -216,7 +216,7 @@ const Picture& Aqueduct::picture( const CityAreaInfo& info ) const
   }
 
   // get overlays for all directions
-  TileOverlayPtr overlay_d[countDirection];
+  OverlayPtr overlay_d[countDirection];
   overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
   overlay_d[east ] = tmap.at( tile_pos_d[east]  ).overlay();
   overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
@@ -365,7 +365,7 @@ const Picture& Aqueduct::picture( const CityAreaInfo& info ) const
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
 {
-  CityAreaInfo info = { city, _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() };
+  city::AreaInfo info = { city, _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() };
   setPicture( picture( info ) );
 }
 

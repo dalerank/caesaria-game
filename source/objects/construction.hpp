@@ -19,7 +19,7 @@
 #ifndef _CAESARIA_CONSTRUCTION_H_INCLUDE_
 #define _CAESARIA_CONSTRUCTION_H_INCLUDE_
 
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 #include "predefinitions.hpp"
@@ -28,15 +28,15 @@
 #include "gfx/tilesarray.hpp"
 #include "param.hpp"
 
-class Construction : public gfx::TileOverlay
+class Construction : public Overlay
 {
 public:
   virtual ~Construction();
 
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
   virtual std::string errorDesc() const;
   virtual std::string troubleDesc() const;
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual void burn();
   virtual void collapse();
   virtual const gfx::Picture& picture() const;
@@ -54,7 +54,7 @@ public:
   virtual double state( Param name ) const;
 
   virtual void timeStep(const unsigned long time);
-  virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
+  virtual const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
@@ -63,7 +63,7 @@ public:
   virtual const ConstructionExtensionList& extensions() const;
   virtual void initialize(const MetaData &mdata);
 protected:
-  Construction( const TileOverlay::Type type, const Size& size );
+  Construction( const Overlay::Type type, const Size& size );
   void _checkDestroyState();
 
   class Impl;

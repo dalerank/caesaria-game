@@ -142,7 +142,7 @@ private:
 class Employer::Impl
 {
 public:
-  typedef std::vector< TileOverlay::Type > BldTypes;
+  typedef std::vector< Overlay::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalaries;

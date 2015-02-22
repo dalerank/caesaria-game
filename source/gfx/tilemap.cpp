@@ -56,7 +56,7 @@ public:
   struct TurnInfo {
     Tile* tile;
     Picture pic;
-    TileOverlayPtr overlay;
+    OverlayPtr overlay;
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;

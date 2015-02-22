@@ -49,7 +49,7 @@ public:
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
 
   virtual double state( Param param) const;
 

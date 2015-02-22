@@ -19,7 +19,7 @@
 #define __CAESARIA_CITYHELPER_H_INCLUDED__
 
 #include "city.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "gfx/tilesarray.hpp"
 #include "good/good.hpp"
 #include "gfx/tilesarray.hpp"
@@ -45,13 +45,13 @@ public:
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
-  SmartList< T > find( const gfx::TileOverlay::Type type );
+  SmartList< T > find( const Overlay::Type type );
 
   template< class T >
   SmartList< T > find( constants::objects::Group group )
   {
     SmartList< T > ret;
-    gfx::TileOverlayList& buildings = _city->overlays();
+    OverlayList& buildings = _city->overlays();
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
@@ -112,9 +112,9 @@ public:
   }
 
   template< class T >
-  SmartPtr< T > find( const gfx::TileOverlay::Type type, const TilePos& pos )
+  SmartPtr< T > find( const Overlay::Type type, const TilePos& pos )
   {   
-    gfx::TileOverlayPtr overlay = _city->getOverlay( pos );
+    OverlayPtr overlay = _city->getOverlay( pos );
     if( overlay.isValid() && (overlay->type() == type || type == constants::objects::any) )
     {
       return ptr_cast< T >( overlay );
@@ -212,13 +212,13 @@ public:
   template< class T >
   SmartPtr< T > prew( const SmartPtr< T > current );
 
-  gfx::TilesArray getArea( gfx::TileOverlayPtr overlay );
-  gfx::TilesArray getAroundTiles(gfx::TileOverlayPtr building );
+  gfx::TilesArray getArea( OverlayPtr overlay );
+  gfx::TilesArray getAroundTiles(OverlayPtr building );
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   HirePriorities getHirePriorities() const;
   void updateTilePics();
 
-  void updateDesirability(gfx::TileOverlayPtr overlay, bool onBuild );
+  void updateDesirability(OverlayPtr overlay, bool onBuild );
 
 protected:
   PlayerCityPtr _city;
@@ -248,10 +248,10 @@ SmartPtr<T> Helper::prew(const SmartPtr<T> current)
 }
 
 template< class T >
-SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
+SmartList< T > Helper::find( const Overlay::Type type )
 {
   SmartList< T > ret;
-  gfx::TileOverlayList& buildings = _city->overlays();
+  OverlayList& buildings = _city->overlays();
   foreach( item, buildings )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
@@ -268,7 +268,7 @@ template< class T >
 SmartList<T> Helper::getProducers(const good::Product goodtype )
 {
   SmartList< T > ret;
-  gfx::TileOverlayList& overlays = _city->overlays();
+  OverlayList& overlays = _city->overlays();
   foreach( item, overlays )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );

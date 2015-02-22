@@ -56,7 +56,7 @@ public:
   Picture& getPicture();
   virtual void initTerrain(gfx::Tile&) {}
   virtual bool isFlat() const { return false; }
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 
   static Picture computePicture( const good::Product outGood, const int percent);
 
@@ -102,7 +102,7 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
   //_picture.addOffset( tile::tilepos2screen( _farmpos ));
 }
 
-bool FarmTile::build(const CityAreaInfo &info)
+bool FarmTile::build(const city::AreaInfo &info)
 {
   return Construction::build( info );
 }
@@ -137,7 +137,7 @@ Farm::Farm(const good::Product outGood, const Type type )
   init();
 }
 
-bool Farm::canBuild( const CityAreaInfo& areaInfo ) const
+bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
   bool on_meadow = false;
@@ -199,10 +199,10 @@ void Farm::timeStep(const unsigned long time)
   }
 }
 
-bool Farm::build( const CityAreaInfo& info )
+bool Farm::build( const city::AreaInfo& info )
 {
   setSize( 2 );
-  CityAreaInfo upInfo = info;
+  city::AreaInfo upInfo = info;
   if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
   {
     upInfo.pos += TilePos(0,1);
@@ -210,9 +210,9 @@ bool Farm::build( const CityAreaInfo& info )
     TilePosArray locations;
     foreach( it, _d->sublocs )
     {
-      CityAreaInfo tInfo = info;
+      city::AreaInfo tInfo = info;
       tInfo.pos += *it;
-      TileOverlayPtr farmtile( new FarmTile( produceGoodType(), upInfo.pos ) );
+      OverlayPtr farmtile( new FarmTile( produceGoodType(), upInfo.pos ) );
       farmtile->drop();
 
       farmtile->build( tInfo );
@@ -274,7 +274,7 @@ std::string FarmWheat::troubleDesc() const
   return Factory::troubleDesc();
 }
 
-bool FarmWheat::build( const CityAreaInfo& info )
+bool FarmWheat::build( const city::AreaInfo& info )
 {
   bool ret = Farm::build( info );
   if( info.city->climate() == game::climate::central )

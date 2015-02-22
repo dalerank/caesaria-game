@@ -16,6 +16,7 @@
 #include "throwing_weapon.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
@@ -53,7 +54,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _city()->addWalker( this );
   const Tile& tile = _city()->tilemap().at( src );
-  TileOverlayPtr ov = tile.overlay();
+  OverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, xOffset ).y();

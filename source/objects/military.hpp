@@ -44,7 +44,7 @@ class FortMounted : public Fort
 {
 public:  
   FortMounted();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 
 protected:
   virtual void _readyNewSoldier();

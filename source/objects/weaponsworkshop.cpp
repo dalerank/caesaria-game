@@ -38,12 +38,12 @@ WeaponsWorkshop::WeaponsWorkshop()
   _fgPicturesRef().resize(2);
 }
 
-bool WeaponsWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
+bool WeaponsWorkshop::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return Factory::canBuild( areaInfo );
 }
 
-bool WeaponsWorkshop::build( const CityAreaInfo& info )
+bool WeaponsWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 

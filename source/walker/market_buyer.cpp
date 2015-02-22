@@ -75,7 +75,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
 MarketBuyer::~MarketBuyer(){}
 
 template< class T >
-TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
+TilePos getWalkerDestination2( Propagator &pathPropagator, const Overlay::Type type,
                                MarketPtr market, good::Storage& basket, const good::Product what,
                                Pathway& oPathWay, int& reservId )
 {
@@ -236,7 +236,7 @@ void MarketBuyer::_reachedPathway()
    else
    {
       // get goods from destination building
-      TileOverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
+      OverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
       
       if( is_kind_of<Granary>( building ) )
       {

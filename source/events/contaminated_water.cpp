@@ -54,7 +54,7 @@ void _decreaseHousesHealth( objects::Type btype, PlayerCityPtr city, int value )
   city::Helper helper( city );
   TilePos offset( 2, 2 );
 
-  gfx::TileOverlayList buildings = city->overlays();
+  OverlayList buildings = city->overlays();
 
   foreach( itB, buildings )
   {

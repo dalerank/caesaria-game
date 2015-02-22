@@ -255,7 +255,7 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackIndustry:
   {
     ConstructionList tmpRet;
-    TileOverlay::Group needGroup;
+    Overlay::Group needGroup;
     switch( _atPriority )
     {
     case attackIndustry: needGroup = objects::industryGroup; break;

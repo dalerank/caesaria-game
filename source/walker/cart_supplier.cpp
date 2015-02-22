@@ -182,7 +182,7 @@ void CartSupplier::getPictures( Pictures& oPics)
 }
 
 template< class T >
-TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
+TilePos getSupplierDestination2( Propagator &pathPropagator, const Overlay::Type type,
                                  const good::Product what, const int needQty,
                                  Pathway &oPathWay, long& reservId )
 {

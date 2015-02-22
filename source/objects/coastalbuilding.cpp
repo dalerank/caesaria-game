@@ -46,12 +46,12 @@ public:
 };
 
 CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
-                               const TileOverlay::Type type, Size size) : Factory(consume, produce, type, size),
+                               const Overlay::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
 }
 
-bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
+bool CoastalFactory::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -62,7 +62,7 @@ bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
   return (is_constructible && direction != noneDirection );
 }
 
-bool CoastalFactory::build( const CityAreaInfo& info )
+bool CoastalFactory::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos ) );
 

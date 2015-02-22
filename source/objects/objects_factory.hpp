@@ -20,21 +20,21 @@
 
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "metadata.hpp"
 
 class TileOverlayConstructor
 {
 public:
-  virtual gfx::TileOverlayPtr create() = 0;
+  virtual OverlayPtr create() = 0;
 };
 
 template< class T > class BaseCreator : public TileOverlayConstructor
 {
 public:
-  virtual gfx::TileOverlayPtr create()
+  virtual OverlayPtr create()
   {
-    gfx::TileOverlayPtr ret( new T() );
+    OverlayPtr ret( new T() );
     ret->initialize( MetaDataHolder::instance().getData( ret->type() ) );
     ret->drop();
 
@@ -46,11 +46,11 @@ class TileOverlayFactory
 {
 public:
   static TileOverlayFactory& instance();
-  gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
-  gfx::TileOverlayPtr create( const std::string& typeName ) const;
+  OverlayPtr create( const Overlay::Type type ) const;
+  OverlayPtr create( const std::string& typeName ) const;
 
-  bool canCreate( const gfx::TileOverlay::Type type ) const;
-  void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+  bool canCreate( const Overlay::Type type ) const;
+  void addCreator( const Overlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
   TileOverlayFactory();
 

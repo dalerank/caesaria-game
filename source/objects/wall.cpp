@@ -39,7 +39,7 @@ Wall::Wall()
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 }
 
-bool Wall::build( const CityAreaInfo& info )
+bool Wall::build( const city::AreaInfo& info )
 {
   Tilemap& tilemap = info.city->tilemap();
   Tile& terrain = tilemap.at( info.pos );
@@ -91,7 +91,7 @@ void Wall::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow );
 }
 
-bool Wall::canBuild( const CityAreaInfo& areaInfo ) const
+bool Wall::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
@@ -104,7 +104,7 @@ bool Wall::canBuild( const CityAreaInfo& areaInfo ) const
   return ret;
 }
 
-const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
+const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 {
   // find correct picture as for roads
   Tilemap& tmap = areaInfo.city->tilemap();
@@ -137,7 +137,7 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
   }
 
   // get overlays for all directions
-  TileOverlayPtr overlay_d[countDirection];
+  OverlayPtr overlay_d[countDirection];
   overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
   overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
   overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
@@ -242,7 +242,7 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  CityAreaInfo areaInfo = { city, TilePos(), TilesArray() };
+  city::AreaInfo areaInfo = { city, TilePos(), TilesArray() };
   setPicture( picture( areaInfo ) );
 }
 

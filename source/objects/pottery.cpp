@@ -34,13 +34,13 @@ Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery_worksho
   _fgPicturesRef().resize( 3 );
 }
 
-bool Pottery::canBuild( const CityAreaInfo& areaInfo ) const
+bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Factory::canBuild( areaInfo );
   return ret;
 }
 
-bool Pottery::build( const CityAreaInfo& info )
+bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
   city::Helper helper( info.city );

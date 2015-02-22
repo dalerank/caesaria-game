@@ -76,7 +76,7 @@ Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
   _setClearAnimationOnStop( false );
 }
 
-bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
+bool Dock::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -87,7 +87,7 @@ bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
   return (is_constructible && direction != noneDirection );
 }
 
-bool Dock::build( const CityAreaInfo& info )
+bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );
 

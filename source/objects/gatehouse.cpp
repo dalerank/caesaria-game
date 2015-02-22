@@ -54,7 +54,7 @@ Gatehouse::Gatehouse() : Building( objects::gatehouse, Size( 2 ) ), _d( new Impl
   setState( pr::collapsibility, 0 );
 }
 
-bool Gatehouse::_update( const CityAreaInfo& areaInfo )
+bool Gatehouse::_update( const city::AreaInfo& areaInfo )
 {
   Tilemap& tmap = areaInfo.city->tilemap();
 
@@ -165,7 +165,7 @@ void Gatehouse::destroy()
   foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
 }
 
-bool Gatehouse::build( const CityAreaInfo& info )
+bool Gatehouse::build( const city::AreaInfo& info )
 {
   _update( info );
   _d->updateSprite();
@@ -183,7 +183,7 @@ bool Gatehouse::build( const CityAreaInfo& info )
   return Building::build( info );
 }
 
-bool Gatehouse::canBuild( const CityAreaInfo& areaInfo ) const
+bool Gatehouse::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return const_cast< Gatehouse* >( this )->_update( areaInfo );
 }
