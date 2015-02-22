@@ -28,17 +28,9 @@
 #include "core/direction.hpp"
 #include "game/predefinitions.hpp"
 #include "core/debug_queue.hpp"
+#include "city/desirability.hpp"
 
 class MetaData;
-
-struct Desirability
-{
- Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
-
- int base;
- int range;
- int step;
-};
 
 struct CityAreaInfo
 {
