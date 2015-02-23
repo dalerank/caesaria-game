@@ -24,7 +24,7 @@ class name \
 protected: \
   int _type;\
 public:   \
-  explicit name( int which=0) { _type = which; } \
+  explicit name(int which=0) { _type = which; } \
   inline int toInt() const { return _type; } \
   inline bool operator==( const name& a ) const { return _type == a._type; } \
   inline bool operator!=( const name& a ) const { return _type != a._type; } \

@@ -31,4 +31,5 @@
   awesomeFountain : { rc : "utilitya", start : 19, stop : 25, offset : [ 12, 24 ] }
   patricianFountain : { rc : "utilitya", start : 27, stop : 33, offset : [ 14, 26 ] }
   reservoir_full : { rc : "utilitya", start : 35, stop : 42, offset : [ -1, -1 ] }
+  granary_ofs : { rc : "commerce", start : 140, stop : 152, offset : [ -1, -1 ] }
 }
