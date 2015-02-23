@@ -22,7 +22,6 @@
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city

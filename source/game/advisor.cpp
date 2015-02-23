@@ -18,20 +18,21 @@
 #include "advisor.hpp"
 #include "core/enumerator.hpp"
 
-namespace constants
-{
-
 namespace advisor
 {
 
-Type findType(const std::string& advisorName)
+class Helper : public EnumsHelper<Type>
 {
-  static EnumsHelper<Type> names( count );
-
-#define ADD_ADVISOR(type) names.append(type,CAESARIA_STR_EXT(type) );
-
-  if( names.empty() )
+public:
+  static Helper& instance()
   {
+    static Helper inst;
+    return inst;
+  }
+
+  Helper() : EnumsHelper<Type>(unknown)
+  {
+#define ADD_ADVISOR(type) append(type,CAESARIA_STR_EXT(type) );
     ADD_ADVISOR(employers)
     ADD_ADVISOR(military)
     ADD_ADVISOR(empire)
@@ -44,13 +45,18 @@ Type findType(const std::string& advisorName)
     ADD_ADVISOR(religion)
     ADD_ADVISOR(finance)
     ADD_ADVISOR(main)
-  }
-
 #undef ADD_ADVISOR
+  }
+};
 
-  return names.findType( advisorName );
+Type::Type(const std::string &name)
+{
+  *this = Helper::instance().findType( name );
+}
+
+bool Type::operator>=(const advisor::Type &a) const
+{
+  return toInt() >= a.toInt();
 }
 
 } //end namespace advisor
-
-} //end namespace constants

@@ -34,7 +34,6 @@
 #include "widgetescapecloser.hpp"
 #include "listbox.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -219,18 +218,18 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
-  advisersMenu->addItem( _("##visit_labor_advisor##"), advisor::employers );
-  advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
-  advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire );
-  advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings );
-  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading);
-  advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population );
-  advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health );
-  advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education );
-  advisersMenu->addItem( _("##visit_religion_advisor##"   ), advisor::religion );
-  advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment );
-  advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance );
-  advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main );
+  advisersMenu->addItem( _("##visit_labor_advisor##"), advisor::employers.toInt() );
+  advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military.toInt() );
+  advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire.toInt() );
+  advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings.toInt() );
+  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading.toInt());
+  advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population.toInt() );
+  advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health.toInt() );
+  advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education.toInt() );
+  advisersMenu->addItem( _("##visit_religion_advisor##"   ), advisor::religion.toInt() );
+  advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment.toInt() );
+  advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance.toInt() );
+  advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main.toInt() );
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
@@ -240,7 +239,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
 Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
 Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
 Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
-Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
+Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
 Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
 Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }

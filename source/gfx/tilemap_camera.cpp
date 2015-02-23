@@ -28,8 +28,6 @@
 
 #include <set>
 
-using namespace constants;
-
 namespace gfx
 {
 

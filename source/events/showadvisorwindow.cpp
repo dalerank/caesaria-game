@@ -54,16 +54,14 @@ void ShowAdvisorWindow::load(const VariantMap &stream)
 
   _show = stream.get( "show" );
   Variant adv = stream.get( "advisor" );
-  if( adv.type() == Variant::String ) { _advisor = advisor::findType( adv.toString() ); }
+  if( adv.type() == Variant::String ) { _advisor = Advisor( adv.toString() ); }
   else { _advisor = (advisor::Type)adv.toInt(); }
 }
 
 bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::count )
+ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::unknown )
 {
-  _show = false;
-  _advisor = advisor::count;
 }
 
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)

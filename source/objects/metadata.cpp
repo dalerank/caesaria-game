@@ -29,7 +29,6 @@
 #include "constants.hpp"
 #include "gfx/picture_info_bank.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 const char* MetaDataOptions::cost = "cost";
