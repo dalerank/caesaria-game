@@ -33,7 +33,7 @@
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 #include "events/postpone.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "sound/engine.hpp"
 #include "vfs/directory.hpp"
 #include "objects/fort.hpp"
@@ -55,7 +55,7 @@
 
 using namespace constants;
 using namespace gfx;
-using namespace gfx::layer;
+using namespace citylayer;
 
 enum {
   add_enemy_archers=0,

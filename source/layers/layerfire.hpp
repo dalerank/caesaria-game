@@ -12,22 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_LAYERFIRE_H_INCLUDED__
+#define __CAESARIA_LAYERFIRE_H_INCLUDED__
 
-#include "core/predefinitions.hpp"
+#include "layerinfo.hpp"
 
-namespace gfx
+namespace citylayer
 {
 
-class Tile;
-class Picture;
-class Tilemap;
-class TilemapCamera;
-class TilesArray;
-class Renderer;
+class Fire : public Info
+{
+public:
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void handleEvent( NEvent& event );
 
-}
+  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
-#endif //__CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+private:
+  Fire( gfx::Camera& camera, PlayerCityPtr city );
+};
+
+}//end namespace citylayer
+
+#endif //__CAESARIA_LAYERFIRE_H_INCLUDED__
