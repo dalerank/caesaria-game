@@ -335,17 +335,15 @@ void Destroy::handleEvent(NEvent& event)
 
   if( event.EventType == sEventKeyboard )
   {
-    bool pressed = event.keyboard.pressed;
-    int moveValue = _camera()->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    bool handled = _moveCamera( event );
 
-    switch( event.keyboard.key )
+    if( !handled )
     {
-    case KEY_UP:    _camera()->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  _camera()->moveDown ( moveValue ); break;
-    case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
-    case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
-    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
-    default: break;
+      switch( event.keyboard.key )
+      {
+      case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
+      default: break;
+      }
     }
   }
 }
