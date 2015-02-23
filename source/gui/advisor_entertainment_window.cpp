@@ -25,7 +25,6 @@
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
@@ -43,6 +42,21 @@
 using namespace constants;
 using namespace gfx;
 
+struct EntertInfo
+{
+  object::Type type;
+  std::string building;
+  std::string people;
+};
+
+static EntertInfo infos[] = {
+                              { object::theater, "##theaters##", "##peoples##" },
+                              { object::amphitheater, "##amphitheatres##" "##peoples##" },
+                              { object::colloseum, "##colloseum##", "##peoples##" },
+                              { object::hippodrome, "##hippodromes##",  "-" },
+                              { object::unknown, "", "" }
+                            };
+
 namespace gui
 {
 
@@ -58,11 +72,22 @@ struct InfrastructureInfo
   int peoplesServed;
 };
 
+static EntertInfo findInfo( const object::Type service )
+{
+  for( int index=0; infos[index].type != object::unknown; index++ )
+  {
+    if( service == infos[index].type )
+        return infos[index];
+  }
+
+  return EntertInfo();
+}
+
 class EntertainmentInfoLabel : public Label
 {
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
-                          const TileOverlay::Type service, InfrastructureInfo info  )
+                          const object::Type service, InfrastructureInfo info  )
     : Label( parent, rect ),
       _service( service ),
       _info( info )
@@ -79,27 +104,18 @@ public:
   {
     Label::_updateTexture( painter );
 
-    std::string buildingStr, peoplesStr;
-    switch( _service )
-    {
-    case objects::theater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
-    case objects::amphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
-    case objects::colloseum: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
-    case objects::hippodrome: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
-    default:
-    break;
-    }
+    EntertInfo info = findInfo( _service );
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
-    rfont.draw( *texture, utils::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
-    rfont.draw( *texture, utils::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
-    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
+    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.buildingCount, _( info.building ) ), 0, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingWork ), 165, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingShow ), 245, 0 );
+    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.peoplesServed, _(info.people) ), 305, 0 );
   }
 
 private:
-  TileOverlay::Type _service;
+  object::Type _service;
   InfrastructureInfo _info;
 };
 
@@ -121,7 +137,7 @@ public:
   city::FestivalPtr srvc;
   int monthFromLastFestival;
 
-  InfrastructureInfo getInfo(const TileOverlay::Type service );
+  InfrastructureInfo getInfo(const object::Type service );
   void updateInfo();
   void updateFestivalInfo();
 };
@@ -155,17 +171,17 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( objects::theater );
-  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), objects::theater, info );
+  info = _d->getInfo( object::theater );
+  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::theater, info );
 
-  info = _d->getInfo( objects::amphitheater );
-  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), objects::amphitheater,
+  info = _d->getInfo( object::amphitheater );
+  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::amphitheater,
                                                         info );
-  info = _d->getInfo( objects::colloseum );
-  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), objects::colloseum, info );
+  info = _d->getInfo( object::colloseum );
+  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::colloseum, info );
 
-  info = _d->getInfo( objects::hippodrome );
-  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), objects::hippodrome, info );
+  info = _d->getInfo( object::hippodrome );
+  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), object::hippodrome, info );
 
   CONNECT( _d->btnNewFestival, onClicked(), this, Entertainment::_showFestivalWindow );
 
@@ -187,7 +203,7 @@ void Entertainment::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
-InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service)
+InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
 {
   city::Helper helper( city );
 
@@ -199,28 +215,17 @@ InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service
   ret.buildingCount = 0;
   ret.partlyWork = 0;
 
-  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
+  EntertainmentBuildingList servBuildings = helper.find<EntertainmentBuilding>( service );
   foreach( b, servBuildings )
   {
-    ServiceBuildingPtr building = *b;
-    if( building->numberWorkers() > 0 )
+    if( (*b)->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-
-      int maxServing = 0;
-      switch( service )
-      {
-      case objects::theater: maxServing = 500; break;
-      case objects::amphitheater: maxServing = 800; break;
-      case objects::colloseum: maxServing = 1500; break;
-      default:
-      break;
-      }
-
-      ret.peoplesServed += maxServing * building->numberWorkers() / building->maximumWorkers();
+      ret.peoplesServed += (*b)->maxVisitors() * (*b)->numberWorkers() / (*b)->maximumWorkers();
     }
+
     ret.buildingCount++;
-    ret.partlyWork += (building->numberWorkers() != building->maximumWorkers() ? 1 : 0);
+    ret.partlyWork += ((*b)->numberWorkers() != (*b)->maximumWorkers() ? 1 : 0);
   }
 
   return ret;
@@ -255,7 +260,7 @@ void Entertainment::Impl::updateInfo()
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = helper.find<House>( object::house );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -323,7 +328,7 @@ void Entertainment::Impl::updateInfo()
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
-  HippodromeList hippodromes = helper.find<Hippodrome>( objects::hippodrome );
+  HippodromeList hippodromes = helper.find<Hippodrome>( object::hippodrome );
   foreach( h, hippodromes )
   {
     if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }

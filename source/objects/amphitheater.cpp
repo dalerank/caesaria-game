@@ -34,7 +34,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::amphitheater, Amphitheater)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::amphitheater, Amphitheater)
 
 class Amphitheater::Impl
 {
@@ -43,7 +43,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, objects::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
 {
   _fgPicturesRef().resize(2);
 
@@ -74,18 +74,18 @@ std::string Amphitheater::workersStateDesc() const
   return EntertainmentBuilding::workersStateDesc();
 }
 
-bool Amphitheater::build( const CityAreaInfo& info)
+bool Amphitheater::build( const city::AreaInfo& info)
 {
   EntertainmentBuilding::build( info );
 
   city::Helper helper( info.city );
-  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
+  ActorColonyList actors = helper.find<ActorColony>( object::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( object::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );
@@ -134,6 +134,7 @@ void Amphitheater::load(const VariantMap& stream)
 
 DateTime Amphitheater::lastShowDate() const { return _d->lastDateShow; }
 DateTime Amphitheater::lastBoutsDate() const{ return _d->lastDateGl; }
+int Amphitheater::maxVisitors() const { return 800; }
 
 Service::Type Amphitheater::_getServiceManType() const
 {

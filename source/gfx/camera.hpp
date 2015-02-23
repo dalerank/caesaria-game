@@ -55,7 +55,7 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
-  virtual Signal1<constants::Direction>& onDirectionChanged() = 0;
+  virtual Signal1<Direction>& onDirectionChanged() = 0;
 };
 
 } //end namespace gfx

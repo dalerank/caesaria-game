@@ -102,13 +102,13 @@ HousePtr Emigrant::_findBlankHouse()
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = hlp.find<House>( objects::house, pos() - offset, pos() + offset );
+  HouseList houses = hlp.find<House>( object::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
   if( houses.empty() )
   {
-    houses = hlp.find<House>( objects::house );
+    houses = hlp.find<House>( object::house );
     _checkHouses( houses );
   }
 
@@ -221,7 +221,7 @@ bool Emigrant::_checkNearestHouse()
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = helper.find<House>( objects::house, pos()-offset, pos() + offset );
+    HouseList houses = helper.find<House>( object::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
     foreach( it, houses )

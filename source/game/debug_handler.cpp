@@ -277,7 +277,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case kill_all_enemies:
   {
      city::Helper helper( game->city() );
-     EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, city::Helper::invalidPos );
+     EnemySoldierList enemies = helper.findw<EnemySoldier>( walker::any, city::Helper::invalidPos );
 
      foreach( it, enemies )
        (*it)->die();

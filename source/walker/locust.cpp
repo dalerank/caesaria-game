@@ -82,7 +82,7 @@ void Locust::timeStep(const unsigned long time)
   {
     FarmPtr farm;
     farm << _city()->getOverlay( pos() );
-    if( farm.isValid() && farm->type() != objects::meat_farm )
+    if( farm.isValid() && farm->type() != object::meat_farm )
     {
       farm->updateProgress( -50 );
     }

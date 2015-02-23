@@ -54,7 +54,7 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
 
     if( _isVisibleObject( overlay->type() ) )
     {

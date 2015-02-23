@@ -29,7 +29,7 @@ namespace city
 
 const TilePos Helper::invalidPos = TilePos( -1, -1 );
 
-void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
+void Helper::updateDesirability( OverlayPtr overlay, bool onBuild )
 {
   Tilemap& tilemap = _city->tilemap();
 
@@ -58,7 +58,7 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
   }
 }
 
-TilesArray Helper::getArea(TileOverlayPtr overlay)
+TilesArray Helper::getArea(OverlayPtr overlay)
 {
   if( _city.isNull() || overlay.isNull() )
   {
@@ -69,7 +69,7 @@ TilesArray Helper::getArea(TileOverlayPtr overlay)
   return _city->tilemap().getArea( overlay->pos(), overlay->size() );
 }
 
-TilesArray Helper::getAroundTiles(TileOverlayPtr overlay)
+TilesArray Helper::getAroundTiles(OverlayPtr overlay)
 {
   return _city->tilemap().getArea( overlay->pos()-TilePos(1,1), overlay->size()+Size(2) );
 }

@@ -15,27 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "tileoverlay.hpp"
+#include "overlay.hpp"
 #include "objects/metadata.hpp"
 #include "city/city.hpp"
-#include "tilemap.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
 
-namespace gfx
-{
+using namespace gfx;
+using namespace constants;
 
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
 }
 
-class TileOverlay::Impl
+class Overlay::Impl
 {
 public:  
   Pictures fgPictures;
-  TileOverlay::Type overlayType;
-  TileOverlay::Group overlayClass;
+  object::Type overlayType;
+  object::Group overlayClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
   std::string name;
   Picture picture;
@@ -45,7 +45,7 @@ public:
   PlayerCityPtr city;
 };
 
-TileOverlay::TileOverlay(const Type type, const Size& size)
+Overlay::Overlay(const object::Type type, const Size& size)
 : _d( new Impl )
 {
   _d->masterTile = 0;
@@ -60,12 +60,12 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
 #endif
 }
 
-Desirability TileOverlay::desirability() const
+Desirability Overlay::desirability() const
 {
   return MetaDataHolder::getData( type() ).desirability();
 }
 
-void TileOverlay::setType(const Type type)
+void Overlay::setType(const object::Type type)
 {
   const MetaData& bd = MetaDataHolder::getData( type );
 
@@ -74,19 +74,19 @@ void TileOverlay::setType(const Type type)
    _d->name = bd.name();
 }
 
-void TileOverlay::timeStep(const unsigned long) {}
+void Overlay::timeStep(const unsigned long) {}
 
-void TileOverlay::changeDirection( Tile* masterTile, constants::Direction direction)
+void Overlay::changeDirection( Tile* masterTile, Direction direction)
 {
   _d->masterTile = masterTile;
 }
 
-void TileOverlay::setPicture(Picture picture)
+void Overlay::setPicture(Picture picture)
 {
   _d->picture = picture;
 }
 
-bool TileOverlay::build(const CityAreaInfo &info)
+bool Overlay::build(const city::AreaInfo &info)
 {
   Tilemap &tilemap = info.city->tilemap();
 
@@ -114,7 +114,7 @@ bool TileOverlay::build(const CityAreaInfo &info)
   return true;
 }
 
-Tile& TileOverlay::tile() const
+Tile& Overlay::tile() const
 {
   if( !_d->masterTile )
   {
@@ -125,7 +125,7 @@ Tile& TileOverlay::tile() const
   return *_d->masterTile;
 }
 
-const Pictures& TileOverlay::pictures( Renderer::Pass pass ) const
+const Pictures& Overlay::pictures( Renderer::Pass pass ) const
 {
   switch( pass )
   {
@@ -136,10 +136,10 @@ const Pictures& TileOverlay::pictures( Renderer::Pass pass ) const
   return invalidPictures;
 }
 
-void TileOverlay::save( VariantMap& stream ) const
+void Overlay::save( VariantMap& stream ) const
 {
   VariantList config;
-  config.push_back( (int)_d->overlayType );
+  config.push_back( _d->overlayType.toInt() );
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
@@ -157,7 +157,7 @@ void TileOverlay::save( VariantMap& stream ) const
   stream[ "name" ] = Variant( _d->name );
 }
 
-void TileOverlay::load( const VariantMap& stream )
+void Overlay::load( const VariantMap& stream )
 {
   _d->name = stream.get( "name" ).toString();
   _d->size = stream.get( "size", Size(1) ).toSize();
@@ -173,7 +173,7 @@ void TileOverlay::load( const VariantMap& stream )
   tile().setHeight( stream.get( "height" ).toInt() );
 }
 
-void TileOverlay::initialize(const MetaData& mdata)
+void Overlay::initialize(const MetaData& mdata)
 {
   if( mdata.picture().isValid() )
   {
@@ -181,11 +181,11 @@ void TileOverlay::initialize(const MetaData& mdata)
   }
 }
 
-bool TileOverlay::isWalkable() const{  return false;}
-bool TileOverlay::isDestructible() const { return true; }
-bool TileOverlay::isFlat() const { return false;}
+bool Overlay::isWalkable() const{  return false;}
+bool Overlay::isDestructible() const { return true; }
+bool Overlay::isFlat() const { return false;}
 
-TilePos TileOverlay::pos() const
+TilePos Overlay::pos() const
 {
   if( !_d->masterTile )
   {
@@ -195,35 +195,35 @@ TilePos TileOverlay::pos() const
   return _d->masterTile->pos();
 }
 
-std::string TileOverlay::sound() const
+std::string Overlay::sound() const
 {
   const MetaData& md = MetaDataHolder::instance().getData( type() );
   return md.sound();
 }
 
-void TileOverlay::setName( const std::string& name ){ _d->name = name;}
-void TileOverlay::setSize( const Size& size ){  _d->size = size;}
-Point TileOverlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
-Animation& TileOverlay::_animationRef(){  return _d->animation;}
-Tile* TileOverlay::_masterTile(){  return _d->masterTile;}
-PlayerCityPtr TileOverlay::_city() const{ return _d->city;}
-gfx::Pictures& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
-Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
-Picture& TileOverlay::_pictureRef(){  return _d->picture;}
-TileOverlay::Group TileOverlay::group() const{  return _d->overlayClass;}
-void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
-const Picture& TileOverlay::picture() const{  return _d->picture;}
-void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
-const Animation& TileOverlay::animation() const { return _d->animation;}
-void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
-void TileOverlay::destroy(){}
-Size TileOverlay::size() const{  return _d->size;}
-bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
-Renderer::PassQueue TileOverlay::passQueue() const{ return defaultPassQueue;}
-std::string TileOverlay::name(){  return _d->name;}
-TileOverlay::Type TileOverlay::type() const{ return _d->overlayType;}
+void Overlay::setName( const std::string& name ){ _d->name = name;}
+void Overlay::setSize( const Size& size ){  _d->size = size;}
+Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
+Animation& Overlay::_animationRef(){  return _d->animation;}
+Tile* Overlay::_masterTile(){  return _d->masterTile;}
+PlayerCityPtr Overlay::_city() const{ return _d->city;}
+gfx::Pictures& Overlay::_fgPicturesRef(){  return _d->fgPictures; }
+Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
+Picture& Overlay::_pictureRef(){  return _d->picture;}
+object::Group Overlay::group() const{  return _d->overlayClass;}
+void Overlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
+const Picture& Overlay::picture() const{  return _d->picture;}
+void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
+const Animation& Overlay::animation() const { return _d->animation;}
+void Overlay::deleteLater(){  _d->isDeleted  = true;}
+void Overlay::destroy(){}
+Size Overlay::size() const{ return _d->size;}
+bool Overlay::isDeleted() const{ return _d->isDeleted;}
+Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
+std::string Overlay::name(){  return _d->name;}
+object::Type Overlay::type() const{ return _d->overlayType;}
 
-TileOverlay::~TileOverlay()
+Overlay::~Overlay()
 {
 #ifdef DEBUG
   OverlayDebugQueue::instance().rem( this );
@@ -239,13 +239,11 @@ void OverlayDebugQueue::print()
     Logger::warning( "PRINT OVERLAY DEBUG QUEUE" );
     foreach( it, inst._pointers )
     {
-      TileOverlay* ov = (TileOverlay*)*it;
+      Overlay* ov = (Overlay*)*it;
       Logger::warning( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
-                                          MetaDataHolder::findTypename( ov->type() ).c_str(),
+                                          ov->type().toString().c_str(),
                                           ov->pos().i(), ov->pos().j(), ov->rcount() );
     }
   }
 }
 #endif
-
-}//end namespace gfx

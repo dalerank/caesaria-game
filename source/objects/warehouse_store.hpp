@@ -20,7 +20,6 @@
 #define _CAESARIA_WAREHOUSESTORE_HPP_INCLUDE_
 
 #include "warehouse.hpp"
-#include "game/enums.hpp"
 #include "good/store.hpp"
 
 class WarehouseStore : public good::Store

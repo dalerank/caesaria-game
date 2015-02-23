@@ -24,11 +24,9 @@
 #include "core/logger.hpp"
 #include "gfx/helper.hpp"
 #include "core/foreach.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 #include <set>
-
-using namespace constants;
 
 namespace gfx
 {

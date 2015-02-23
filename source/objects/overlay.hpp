@@ -15,49 +15,29 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_TILEOVERLAY_H_INCLUDE_
-#define _CAESARIA_TILEOVERLAY_H_INCLUDE_
+#ifndef _CAESARIA_OVERLAY_H_INCLUDE_
+#define _CAESARIA_OVERLAY_H_INCLUDE_
 
 #include "predefinitions.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/animation.hpp"
-#include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
 #include "core/direction.hpp"
 #include "game/predefinitions.hpp"
+#include "city/areainfo.hpp"
+#include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
+#include "constants.hpp"
 
 class MetaData;
 
-struct Desirability
-{
- Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
-
- int base;
- int range;
- int step;
-};
-
-struct CityAreaInfo
-{
-  PlayerCityPtr city;
-  TilePos pos;
-  const gfx::TilesArray& aroundTiles;
-};
-
-namespace gfx
-{
-
-class TileOverlay : public Serializable, public ReferenceCounted
+class Overlay : public Serializable, public ReferenceCounted
 {
 public:
-  typedef int Type;
-  typedef int Group;
-
-  TileOverlay( const Type type, const Size& size=Size(1));
-  virtual ~TileOverlay();
+  Overlay( const object::Type type, const Size& size=Size(1));
+  virtual ~Overlay();
 
   gfx::Tile& tile() const;  // master tile, in case of multi-tile area
   TilePos pos() const;
@@ -72,19 +52,19 @@ public:
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
 
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual void destroy();  // handles the delete
 
-  virtual Point offset(const Tile &tile, const Point& subpos ) const;
+  virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
-  virtual void changeDirection(Tile *masterTile, constants::Direction direction);
+  virtual void changeDirection( gfx::Tile *masterTile, Direction direction);
 
   // graphic
-  virtual void setPicture(Picture picture);
+  virtual void setPicture(gfx::Picture picture);
   virtual void setPicture(const char* resource, const int index);
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
-  virtual const Picture& picture() const;
+  virtual const gfx::Picture& picture() const;
   virtual std::string sound() const;
 
   void setAnimation( const gfx::Animation& animation );
@@ -96,9 +76,8 @@ public:
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
 
-  Type type() const;
-  Group group() const;
-  void setType(const Type type);
+  object::Type type() const;
+  object::Group group() const;
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );
@@ -106,12 +85,13 @@ public:
   virtual void initialize( const MetaData& mdata );
 
 protected:
+  void setType(const object::Type type);
   gfx::Animation& _animationRef();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
   gfx::Pictures& _fgPicturesRef();
-  Picture&_fgPicture(unsigned int index);
-  Picture& _pictureRef();
+  gfx::Picture&_fgPicture(unsigned int index);
+  gfx::Picture& _pictureRef();
 
 private:
   class Impl;
@@ -119,13 +99,11 @@ private:
 };
 
 #ifdef DEBUG
-class OverlayDebugQueue : public DebugQueue<TileOverlay>
+class OverlayDebugQueue : public DebugQueue<Overlay>
 {
 public:
   static void print();
 };
 #endif
 
-}//end namespace gfx
-
-#endif //_CAESARIA_TILEOVERLAY_H_INCLUDE_
+#endif //_CAESARIA_OVERLAY_H_INCLUDE_

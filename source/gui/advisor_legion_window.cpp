@@ -227,10 +227,8 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
   city::MilitaryPtr mil;
   mil << city->findService( city::Military::defaultName() );
 
-  city::Helper helper( city );
-
-  WalkerList chasteners = helper.find<Walker>( walker::romeChastenerSoldier );
-  WalkerList elephants = helper.find<Walker>( walker::romeChastenerElephant );
+  WalkerList chasteners = city->walkers( walker::romeChastenerSoldier );
+  WalkerList elephants = city->walkers( walker::romeChastenerElephant );
 
   if( chasteners.size() || elephants.size() )
   {

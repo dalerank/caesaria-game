@@ -89,7 +89,7 @@ GladiatorRevolt::GladiatorRevolt() : _d( new Impl )
 void GladiatorRevolt::_exec(Game& game, unsigned int)
 {
   city::Helper helper( game.city() );
-  GladiatorSchoolList gladSchool = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  GladiatorSchoolList gladSchool = helper.find<GladiatorSchool>( object::gladiatorSchool );
 
   if( !gladSchool.empty() )
   {

@@ -37,9 +37,9 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(collapsed,objects::collapsed_ruins,AboutRuins)
-REGISTER_INFOBOX_IN_FACTORY(burned,objects::burned_ruins,AboutRuins)
-REGISTER_INFOBOX_IN_FACTORY(plague,objects::plague_ruins,AboutRuins)
+REGISTER_INFOBOX_IN_FACTORY(collapsed,object::collapsed_ruins,AboutRuins)
+REGISTER_INFOBOX_IN_FACTORY(burned,object::burned_ruins,AboutRuins)
+REGISTER_INFOBOX_IN_FACTORY(plague,object::plague_ruins,AboutRuins)
 
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )
@@ -68,15 +68,11 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   lb->setWordwrap( true );
 }
 
-AboutRuins::~AboutRuins()
-{
-}
+AboutRuins::~AboutRuins() {}
 
 void AboutRuins::_showHelp()
 {
-  std::string helpValue = MetaDataHolder::findTypename( _ruinType );
-
-  DictionaryWindow::show( this, helpValue );
+  DictionaryWindow::show( this, _ruinType.toString() );
 }
 
 }

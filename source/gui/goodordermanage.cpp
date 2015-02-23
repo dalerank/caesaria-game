@@ -219,7 +219,7 @@ bool GoodOrderManageWindow::isIndustryEnabled()
   city::Helper helper( _d->city );
   //if any factory work in city, that industry work too
   bool anyFactoryWork = false;
-  FactoryList factories = helper.getProducers<Factory>( _d->type );
+  FactoryList factories = helper.findProducers<Factory>( _d->type );
   foreach( factory, factories )
   {
     anyFactoryWork |= (*factory)->isActive();
@@ -232,7 +232,7 @@ void GoodOrderManageWindow::updateIndustryState()
 {
   city::Helper helper( _d->city );
   int workFactoryCount=0, idleFactoryCount=0;
-  FactoryList factories = helper.getProducers<Factory>( _d->type );
+  FactoryList factories = helper.findProducers<Factory>( _d->type );
   foreach( factory, factories )
   {
     ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
@@ -264,7 +264,7 @@ void GoodOrderManageWindow::toggleIndustryEnable()
 
   bool industryEnabled = isIndustryEnabled();
   //up or down all factory for this industry
-  FactoryList factories = helper.getProducers<Factory>( _d->type );
+  FactoryList factories = helper.findProducers<Factory>( _d->type );
   foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
 
   updateIndustryState();

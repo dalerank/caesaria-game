@@ -35,7 +35,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(tree,objects::tree,AboutLand)
+REGISTER_INFOBOX_IN_FACTORY(tree,object::tree,AboutLand)
 
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
@@ -88,14 +88,14 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    int ovType = tile.overlay().isValid() ? tile.overlay()->type() : objects::unknown;
-    if(ovType == objects::plaza )
+    object::Type ovType = tile.overlay().isValid() ? tile.overlay()->type() : object::unknown;
+    if(ovType == object::plaza )
     {
       title = "##plaza_caption##";
       _helpUri = "plaza";
       text = "##plaza_text##";
     }
-    else if( ovType == objects::road )
+    else if( ovType == object::road )
     {
       _helpUri = "paved_road";
       RoadPtr road = ptr_cast<Road>( tile.overlay() );

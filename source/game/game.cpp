@@ -32,7 +32,6 @@
 #include "gui/environment.hpp"
 #include "settings.hpp"
 #include "vfs/filesystem.hpp"
-#include "enums.hpp"
 #include "gfx/animation_bank.hpp"
 #include "vfs/entries.hpp"
 #include "world/empire.hpp"
@@ -61,7 +60,7 @@
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
@@ -365,7 +364,7 @@ bool Game::load(std::string filename)
   }
 
   Logger::warning( "Game: calculate road access for buildings" );
-  TileOverlayList& llo = _d->city->overlays();
+  OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );
@@ -541,8 +540,8 @@ void Game::clear()
   WalkerDebugQueue::print();
   WalkerDebugQueue::instance().clear();
 
-  gfx::OverlayDebugQueue::print();
-  gfx::OverlayDebugQueue::instance().clear();
+  OverlayDebugQueue::print();
+  OverlayDebugQueue::instance().clear();
 #endif
 }
 

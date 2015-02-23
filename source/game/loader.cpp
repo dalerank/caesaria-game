@@ -105,8 +105,8 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   if( maySetSign( signTile ) )
   {
     tile::clear( signTile );
-    gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
-    CityAreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
+    city::AreaInfo info = { city, tlPos + tlOffset, TilesArray() };
     waymark->build( info );
     city->addOverlay( waymark );
   }
@@ -132,7 +132,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
       const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
       if( !(*it)->picture().isValid() )
       {
-        Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+        Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
         (*it)->setPicture( pic );
       }
       (*it)->setAnimation( meadow );

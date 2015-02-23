@@ -30,7 +30,7 @@
 
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::shipyard, Shipyard)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::shipyard, Shipyard)
 
 class Shipyard::Impl
 {
@@ -45,7 +45,7 @@ public:
   WharfPtr findFreeWharf( PlayerCityPtr city );
 };
 
-Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, objects::shipyard, Size(2)),
+Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard, Size(2)),
   _d( new Impl )
 {
   // transport 1 2 3 4
@@ -132,10 +132,10 @@ void Shipyard::_updatePicture(Direction direction)
 {
   switch( direction )
   {
-  case south: setPicture( ResourceGroup::shipyard, Impl::southPic ); break;
-  case north: setPicture( ResourceGroup::shipyard, Impl::northPic ); break;
-  case west: setPicture( ResourceGroup::shipyard, Impl::westPic ); break;
-  case east: setPicture( ResourceGroup::shipyard, Impl::eastPic ); break;
+  case direction::south: setPicture( ResourceGroup::shipyard, Impl::southPic ); break;
+  case direction::north: setPicture( ResourceGroup::shipyard, Impl::northPic ); break;
+  case direction::west: setPicture( ResourceGroup::shipyard, Impl::westPic ); break;
+  case direction::east: setPicture( ResourceGroup::shipyard, Impl::eastPic ); break;
 
   default: break;
   }
@@ -154,7 +154,7 @@ WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
 {
   city::Helper helper( city );
 
-  WharfList wharfs = helper.find<Wharf>( objects::wharf );
+  WharfList wharfs = helper.find<Wharf>( object::wharf );
   foreach( wharf, wharfs )
   {
     if( (*wharf)->getBoat().isNull() )

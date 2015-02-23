@@ -46,40 +46,40 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_STATICINFOBOX_IN_FACTORY(elevation,objects::elevation,"", "##elevation_info##" )
-REGISTER_STATICINFOBOX_IN_FACTORY(aqueduct,objects::aqueduct,"", "##aqueduct_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(garden,objects::garden,"", "##garden_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(stsmall,objects::statue_small,"", "##statue_small_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(stmiddle,objects::statue_middle,"", "##statue_middle_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(stbig,objects::statue_big,"", "##statue_big_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(native_hut,objects::native_hut,"", "##nativeHut_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(gatehouse,objects::gatehouse,"", "##gatehouse_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(native_field,objects::native_field,"", "##nativeField_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(native_center,objects::native_center,"", "##nativeCenter_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(hbrifge,objects::high_bridge,"", "##high_bridge_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(lbridge,objects::low_bridge,"", "##bridge_extends_city_area##")
-REGISTER_STATICINFOBOX_IN_FACTORY(burning_ruins,objects::burning_ruins,"", "##this_fire_can_spread##" )
-REGISTER_STATICINFOBOX_IN_FACTORY(rift,objects::rift,"", "##these_rift_info##" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(prefecture,objects::prefecture,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(engineering_post,objects::engineering_post,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(clinic, objects::clinic,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(baths, objects::baths,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(barber, objects::barber,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(hospital, objects::hospital,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(missionaryPost, objects::missionaryPost, "", "")
-REGISTER_SERVICEINFOBOX_IN_FACTORY(school, objects::school,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(academy, objects::academy,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(library, objects::library,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(dock,objects::dock,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(actorcolony,objects::actorColony,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( gladiatorSchool, objects::gladiatorSchool,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( lionsNursery, objects::lionsNursery,"", "")
-REGISTER_SERVICEINFOBOX_IN_FACTORY( hippodrome, objects::hippodrome,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( chariotSchool, objects::chariotSchool, "", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( forum, objects::forum, "", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( governorHouse, objects::governorHouse, "", "##governor_house_text##")
-REGISTER_SERVICEINFOBOX_IN_FACTORY( governorVilla, objects::governorVilla, "", "##governor_villa_text##")
-REGISTER_SERVICEINFOBOX_IN_FACTORY( governorPalace, objects::governorPalace,  "", "##governor_palace_text##")
+REGISTER_STATICINFOBOX_IN_FACTORY(elevation,object::elevation,"", "##elevation_info##" )
+REGISTER_STATICINFOBOX_IN_FACTORY(aqueduct,object::aqueduct,"", "##aqueduct_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(garden,object::garden,"", "##garden_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(stsmall,object::statue_small,"", "##statue_small_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(stmiddle,object::statue_middle,"", "##statue_middle_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(stbig,object::statue_big,"", "##statue_big_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(native_hut,object::native_hut,"", "##nativeHut_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(gatehouse,object::gatehouse,"", "##gatehouse_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(native_field,object::native_field,"", "##nativeField_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(native_center,object::native_center,"", "##nativeCenter_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(hbrifge,object::high_bridge,"", "##high_bridge_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(lbridge,object::low_bridge,"", "##bridge_extends_city_area##")
+REGISTER_STATICINFOBOX_IN_FACTORY(burning_ruins,object::burning_ruins,"", "##this_fire_can_spread##" )
+REGISTER_STATICINFOBOX_IN_FACTORY(rift,object::rift,"", "##these_rift_info##" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(prefecture,object::prefecture,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(engineering_post,object::engineering_post,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(clinic, object::clinic,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(baths, object::baths,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(barber, object::barber,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(hospital, object::hospital,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(missionaryPost, object::missionaryPost, "", "")
+REGISTER_SERVICEINFOBOX_IN_FACTORY(school, object::school,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(academy, object::academy,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(library, object::library,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(dock,object::dock,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(actorcolony,object::actorColony,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY( gladiatorSchool, object::gladiatorSchool,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY( lionsNursery, object::lionsNursery,"", "")
+REGISTER_SERVICEINFOBOX_IN_FACTORY( hippodrome, object::hippodrome,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY( chariotSchool, object::chariotSchool, "", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY( forum, object::forum, "", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY( governorHouse, object::governorHouse, "", "##governor_house_text##")
+REGISTER_SERVICEINFOBOX_IN_FACTORY( governorVilla, object::governorVilla, "", "##governor_villa_text##")
+REGISTER_SERVICEINFOBOX_IN_FACTORY( governorPalace, object::governorPalace,  "", "##governor_palace_text##")
 
 class InfoboxHouseCreator : public InfoboxCreator
 {
@@ -103,8 +103,8 @@ class Manager::Impl
 public:
   bool showDebugInfo;
 
-  typedef std::map< TileOverlay::Type, InfoboxCreator* > InfoboxCreators;
-  std::map< std::string, TileOverlay::Type > name2typeMap;
+  typedef std::map< object::Type, InfoboxCreator* > InfoboxCreators;
+  std::map< std::string, object::Type > name2typeMap;
 
   InfoboxCreators constructors;
 };
@@ -116,7 +116,7 @@ Manager::Manager() : _d( new Impl )
   citizen::PManager::instance().loadInfoboxes( *this );
 
 #define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator);
-  ADD_INFOBOX( objects::house,        InfoboxHouseCreator() )
+  ADD_INFOBOX( object::house,        InfoboxHouseCreator() )
 
 }
 
@@ -131,15 +131,15 @@ Manager& Manager::instance()
 void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 {
   Tile& tile = city->tilemap().at( pos );
-  TileOverlayPtr overlay = tile.overlay();
-  TileOverlay::Type type;
+  OverlayPtr overlay = tile.overlay();
+  object::Type type;
 
   if( _d->showDebugInfo )
   {
     Logger::warning( "Tile debug info: dsrbl=%d", tile.param( Tile::pDesirability ) );
   }
 
-  type = overlay.isNull() ? objects::unknown : overlay->type();
+  type = overlay.isNull() ? object::unknown : overlay->type();
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
@@ -165,7 +165,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
 void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = showInfo; }
 
-void Manager::addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
+void Manager::addInfobox( const object::Type type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
 
@@ -180,7 +180,7 @@ void Manager::addInfobox( const TileOverlay::Type type, const std::string& typeN
   }
 }
 
-bool Manager::canCreate(const TileOverlay::Type type) const
+bool Manager::canCreate(const object::Type type) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }
@@ -195,7 +195,7 @@ Simple *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos
   Simple* infoBox = new Simple( parent, Rect( 0, 0, 510, 300 ) );
   infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2,
                                size.height() - infoBox->height()) );
-  TileOverlayPtr overlay = city->getOverlay( pos );
+  OverlayPtr overlay = city->getOverlay( pos );
 
   std::string caption = overlay.isValid()
       ? MetaDataHolder::findPrettyName( overlay->type() )

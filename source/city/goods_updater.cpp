@@ -44,7 +44,7 @@ REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
 class GoodsUpdater::Impl
 {
 public:
-  typedef std::set<gfx::TileOverlay::Type> BuildingTypes;
+  typedef std::set<object::Type> BuildingTypes;
 
   DateTime endTime;
   bool isDeleted;
@@ -95,8 +95,8 @@ void GoodsUpdater::load(const VariantMap& stream)
   VariantList vl_buildings = stream.get( "buildings" ).toList();
   foreach( it, vl_buildings )
   {
-    gfx::TileOverlay::Type type = MetaDataHolder::findType( it->toString() );
-    if( type != objects::unknown )
+    object::Type type = MetaDataHolder::findType( it->toString() );
+    if( type != object::unknown )
     {
       _d->supportBuildings.insert( type );
     }
@@ -112,7 +112,7 @@ VariantMap GoodsUpdater::save() const
   VariantList vl_buildings;
   foreach( it, _d->supportBuildings )
   {
-    vl_buildings.push_back( Variant( MetaDataHolder::findTypename( (gfx::TileOverlay::Type)*it ) ));
+    vl_buildings.push_back( Variant( it->toString() ) );
   }
 
   ret[ lc_good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );

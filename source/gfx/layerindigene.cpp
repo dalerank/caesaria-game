@@ -51,13 +51,13 @@ void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     int discontentLevel = 0;
     if( _isVisibleObject( overlay->type() ) )
     {
       needDrawAnimations = true;
     }
-    else if( overlay->type() == objects::native_hut )
+    else if( overlay->type() == object::native_hut )
     {
       NativeHutPtr hut = ptr_cast<NativeHut>( overlay );
       discontentLevel = (int)hut->discontent();

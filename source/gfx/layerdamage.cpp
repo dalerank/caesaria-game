@@ -58,14 +58,14 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     int damageLevel = 0;
 
     if( _isVisibleObject( overlay->type() ) )
     {
       needDrawAnimations = true;
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       damageLevel = (int)house->state( pr::damage );

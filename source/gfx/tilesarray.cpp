@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "objects/overlay.hpp"
 
 namespace gfx
 {
@@ -137,9 +138,9 @@ TilesArray& TilesArray::remove( const TilePos& pos)
   return *this;
 }
 
-TileOverlayList TilesArray::overlays() const
+OverlayList TilesArray::overlays() const
 {
-  TileOverlayList ret;
+  OverlayList ret;
   foreach( i, *this)
   {
     if( (*i)->overlay().isValid() )

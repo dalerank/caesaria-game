@@ -104,7 +104,7 @@ void FishingBoat::timeStep(const unsigned long time)
       _setAction( acWork );
 
       city::Helper helper( _city() );
-      FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
+      FishPlaceList places = helper.findw<FishPlace>( walker::fishPlace, pos() );
 
       if( !places.empty() )
       {
@@ -219,7 +219,7 @@ void FishingBoat::_reachedPathway()
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
   city::Helper helper( city );
-  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, city::Helper::invalidPos );
+  FishPlaceList places = helper.findw<FishPlace>( walker::fishPlace, city::Helper::invalidPos );
 
   int minDistance = 999;
   FishPlacePtr nearest;

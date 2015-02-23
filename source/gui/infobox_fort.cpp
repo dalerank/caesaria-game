@@ -35,10 +35,10 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(legionary,objects::fort_legionaries,AboutFort)
-REGISTER_INFOBOX_IN_FACTORY(javelin,objects::fort_javelin,AboutFort)
-REGISTER_INFOBOX_IN_FACTORY(mounted,objects::fort_horse,AboutFort)
-REGISTER_INFOBOX_IN_FACTORY(fortarea,objects::fortArea,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(legionary,object::fort_legionaries,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(javelin,object::fort_javelin,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(mounted,object::fort_horse,AboutFort)
+REGISTER_INFOBOX_IN_FACTORY(fortarea,object::fortArea,AboutFort)
 
 class AboutFort::Impl
 {

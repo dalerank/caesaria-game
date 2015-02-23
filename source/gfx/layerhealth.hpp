@@ -17,6 +17,7 @@
 #define __CAESARIA_LAYERHEALTH_H_INCLUDED__
 
 #include "layerinfo.hpp"
+#include "objects/constants.hpp"
 
 namespace gfx
 {
@@ -37,7 +38,7 @@ private:
   Health(Camera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house);
 
-  std::set<int> _flags;
+  std::set<object::Type> _flags;
   int _type;
 };
 

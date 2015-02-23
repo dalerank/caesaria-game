@@ -83,7 +83,7 @@ std::string TaxCollector::thoughts(Thought th) const
   {
     city::Helper helper( _city() );
     TilePos offset( 2, 2 );
-    HouseList houses = helper.find<House>( objects::house, pos() - offset, pos() + offset );
+    HouseList houses = helper.find<House>( object::house, pos() - offset, pos() + offset );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 

@@ -160,18 +160,18 @@ void CartSupplier::getPictures( Pictures& oPics)
    // depending on the walker direction, the cart is ahead or behind
    switch (direction())
    {
-   case constants::west:
-   case constants::northWest:
-   case constants::north:
-   case constants::northEast:
+   case direction::west:
+   case direction::northWest:
+   case direction::north:
+   case direction::northEast:
       oPics.push_back( _cart().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
-   case constants::east:
-   case constants::southEast:
-   case constants::south:
-   case constants::southWest:
+   case direction::east:
+   case direction::southEast:
+   case direction::south:
+   case direction::southWest:
       oPics.push_back( getMainPicture() );
       oPics.push_back( _cart().currentFrame() );
    break;
@@ -179,10 +179,15 @@ void CartSupplier::getPictures( Pictures& oPics)
    default:
    break;
    }
+
+   if( _d->anim.isBack() )
+   {
+     std::iter_swap( oPics.begin(), oPics.begin() + 1);
+   }
 }
 
 template< class T >
-TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
+TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type type,
                                  const good::Product what, const int needQty,
                                  Pathway &oPathWay, long& reservId )
 {
@@ -239,13 +244,13 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, objects::granery,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, object::granery,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
-    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, objects::warehouse,
+    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, object::warehouse,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 

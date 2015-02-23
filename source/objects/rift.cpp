@@ -26,22 +26,21 @@
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::rift, Rift)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::rift, Rift)
 
 namespace{
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rift::Rift() : TileOverlay( objects::rift, Size(1) )
+Rift::Rift() : Overlay( object::rift, Size(1) )
 {  
 }
 
-bool Rift::build( const CityAreaInfo& info )
+bool Rift::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
   setPicture( computePicture() );
 
   RiftList rifts = neighbors();

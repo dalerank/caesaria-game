@@ -35,7 +35,7 @@ public:
   virtual std::string workersProblemDesc() const;
 
 private:
-  virtual void _updatePicture( constants::Direction direction );
+  virtual void _updatePicture( Direction direction );
 
 private:
   class Impl;

@@ -39,7 +39,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fountain, Fountain)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fountain, Fountain)
 
 namespace {
 static const unsigned int fillDistanceNormal = 4;
@@ -60,7 +60,7 @@ public:
 };
 
 Fountain::Fountain()
-  : ServiceBuilding(Service::fountain, objects::fountain, Size(1)),
+  : ServiceBuilding(Service::fountain, object::fountain, Size(1)),
     _d( new Impl )
 {  
   setPicture( ResourceGroup::utilitya, 10 );
@@ -129,7 +129,7 @@ void Fountain::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
+bool Fountain::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
@@ -147,7 +147,7 @@ bool Fountain::canBuild( const CityAreaInfo& areaInfo ) const
   return ret;
 }
 
-bool Fountain::build( const CityAreaInfo& info )
+bool Fountain::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
@@ -171,8 +171,8 @@ bool Fountain::haveReservoirAccess() const
   TilesArray reachedTiles = _city()->tilemap().getArea( 10, pos() );
   foreach( tile, reachedTiles )
   {
-    TileOverlayPtr overlay = (*tile)->overlay();
-    if( overlay.isValid() && (objects::reservoir == overlay->type()) )
+    OverlayPtr overlay = (*tile)->overlay();
+    if( overlay.isValid() && (object::reservoir == overlay->type()) )
     {
       return true;
     }

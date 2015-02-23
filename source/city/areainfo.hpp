@@ -15,36 +15,22 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
-#define __CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
+#ifndef __CAESARIA_CITYAREAINFO_H_INCLUDED__
+#define __CAESARIA_CITYAREAINFO_H_INCLUDED__
 
-#include "layerinfo.hpp"
+#include "predefinitions.hpp"
+#include "gfx/predefinitions.hpp"
 
-namespace gfx
+namespace city
 {
 
-namespace layer
+struct AreaInfo
 {
-
-class Education : public Info
-{
-public:
-  virtual int type() const;
-  virtual void drawTile( Engine& engine, Tile& tile, const Point& offset );
-
-  static LayerPtr create( Camera& camera, PlayerCityPtr city, int type );
-  virtual void handleEvent(NEvent& event);
-
-private:
-  Education( Camera& camera, PlayerCityPtr city, int type );
-  int _getLevelValue(HousePtr house ) const;
-  std::string _getAccessLevel( int lvl ) const;
-
-  std::set< object::Type > _flags;
-  int _type;
+  PlayerCityPtr city;
+  TilePos pos;
+  const gfx::TilesArray& aroundTiles;
 };
 
-}
+}//end namespace city
 
-}//end namespace gfx
-#endif //__CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
+#endif //__CAESARIA_CITYAREAINFO_H_INCLUDED__

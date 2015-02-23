@@ -27,13 +27,13 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::well, Well)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::well, Well)
 
 namespace {
 const unsigned int wellServiceRange = 2;
 }
 
-Well::Well() : ServiceBuilding( Service::well, objects::well, Size(1) )
+Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
 {
   setWorkers( 0 );
 }
@@ -75,7 +75,7 @@ bool Well::isNeedRoadAccess() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
-bool Well::build( const CityAreaInfo& info )
+bool Well::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 

@@ -86,7 +86,7 @@ void Indigene::_updateState()
 
     TilePos offset( 1, 1 );
     city::Helper helper( _city() );
-    NativeFieldList fields = helper.find<NativeField>( objects::native_field, pos() - offset, pos() + offset );
+    NativeFieldList fields = helper.find<NativeField>( object::native_field, pos() - offset, pos() + offset );
     foreach( i, fields )
     {
       _d->wheatQty += (*i)->catchCrops();
@@ -120,7 +120,7 @@ void Indigene::_updateState()
   {
     TilePos offset( 1, 1 );
     city::Helper helper( _city() );
-    NativeCenterList centerList = helper.find<NativeCenter>( objects::native_center, pos() - offset, pos() + offset );
+    NativeCenterList centerList = helper.find<NativeCenter>( object::native_center, pos() - offset, pos() + offset );
     if( !centerList.empty() )
     {
       centerList.front()->store( _d->wheatQty );
@@ -162,7 +162,7 @@ void Indigene::_updateState()
     city::Helper helper( _city() );
 
     TilePos offset( 1, 1 );
-    BuildingList huts = helper.find<Building>( objects::native_hut, pos() - offset, pos() + offset );
+    BuildingList huts = helper.find<Building>( object::native_hut, pos() - offset, pos() + offset );
 
     Pathway way;
     if( huts.empty() )
@@ -201,7 +201,7 @@ Pathway Indigene::Impl::findWay2bestField(PlayerCityPtr city, TilePos pos)
 {
   city::Helper helper( city );
   TilePos offset( 5, 5 );
-  NativeFieldList fields = helper.find<NativeField>( objects::native_field, pos - offset, pos + offset );
+  NativeFieldList fields = helper.find<NativeField>( object::native_field, pos - offset, pos + offset );
 
   Pathway way;
   if( !fields.empty() )

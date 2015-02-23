@@ -28,7 +28,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::roadBlock, RoadBlock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::roadBlock, RoadBlock)
 
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 RoadBlock::RoadBlock()
@@ -37,14 +37,14 @@ RoadBlock::RoadBlock()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(objects::roadBlock);
+  setType(object::roadBlock);
   setPicture( ResourceGroup::roadBlock, 1 );
 }
 
 // Plazas can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-bool RoadBlock::canBuild(const CityAreaInfo& areaInfo) const
+bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = areaInfo.city->tilemap();
@@ -60,14 +60,14 @@ bool RoadBlock::canBuild(const CityAreaInfo& areaInfo) const
   return is_constructible;
 }
 
-const Picture& RoadBlock::picture(const CityAreaInfo& areaInfo) const
+const Picture& RoadBlock::picture(const city::AreaInfo& areaInfo) const
 {
   return picture();
 }
 
 void RoadBlock::appendPaved(int) {}
 
-bool RoadBlock::build( const CityAreaInfo& info )
+bool RoadBlock::build( const city::AreaInfo& info )
 {
   RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
@@ -94,7 +94,7 @@ void RoadBlock::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
   }
 

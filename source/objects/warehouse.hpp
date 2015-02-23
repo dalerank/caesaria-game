@@ -20,7 +20,6 @@
 #define _CAESARIA_WAREHOUSE_HPP_INCLUDE_
 
 #include "working.hpp"
-#include "game/enums.hpp"
 #include "good/store.hpp"
 #include "core/position.hpp"
 

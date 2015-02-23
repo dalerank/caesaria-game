@@ -23,10 +23,12 @@
 #include "engine.hpp"
 #include "tile.hpp"
 #include "renderer.hpp"
+#include "objects/constants.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
+#include "walker/constants.hpp"
 
 #include <set>
 
@@ -51,7 +53,7 @@ private:
 class Layer : public ReferenceCounted
 {
 public:
-  typedef std::set<int> WalkerTypes;
+  typedef std::set<constants::walker::Type> WalkerTypes;
 
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
@@ -95,7 +97,7 @@ protected:
   void _addWalkerType( constants::walker::Type wtype );
   void _fillVisibleObjects( int ltype );
   WalkerTypes& _visibleWalkers();
-  bool _isVisibleObject( int ovType );
+  bool _isVisibleObject( object::Type ovType );
 
   TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 

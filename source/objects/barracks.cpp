@@ -27,7 +27,7 @@
 
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barracks, Barracks)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::barracks, Barracks)
 
 class Barracks::Impl
 {
@@ -36,7 +36,7 @@ public:
   bool notNeedSoldiers;
 };
 
-Barracks::Barracks() : TrainingBuilding( objects::barracks, Size( 3 ) ),
+Barracks::Barracks() : TrainingBuilding( object::barracks, Size( 3 ) ),
   _d( new Impl )
 {
   setMaximumWorkers(5);

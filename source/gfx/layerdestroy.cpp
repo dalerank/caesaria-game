@@ -67,7 +67,7 @@ void Destroy::_clearAll()
 
 unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
 {
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
   {
     const MetaData& mdata = MetaDataHolder::getData( overlay->type() );
@@ -103,7 +103,7 @@ void Destroy::render( Engine& engine )
     Tile* tile = *it;
     hashDestroyArea.insert( tile::hash(tile->epos()));
 
-    TileOverlayPtr overlay = tile->overlay();
+    OverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
       TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
@@ -357,7 +357,7 @@ LayerPtr Destroy::drawLayer() const { return _d->lastLayer; }
 
 void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 {
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
 
   if( overlay.isValid() )
   {

@@ -27,24 +27,24 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::pottery_workshop, Pottery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::pottery_workshop, Pottery)
 
-Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery_workshop, Size(2))
+Pottery::Pottery() : Factory(good::clay, good::pottery, object::pottery_workshop, Size(2))
 {
   _fgPicturesRef().resize( 3 );
 }
 
-bool Pottery::canBuild( const CityAreaInfo& areaInfo ) const
+bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Factory::canBuild( areaInfo );
   return ret;
 }
 
-bool Pottery::build( const CityAreaInfo& info )
+bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
   city::Helper helper( info.city );
-  bool haveClaypit = !helper.find<Building>( objects::clay_pit ).empty();
+  bool haveClaypit = !helper.find<Building>( object::clay_pit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 

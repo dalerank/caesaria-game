@@ -25,9 +25,9 @@ class LowBridge : public Construction
 public:
   LowBridge();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual void initTerrain( gfx::Tile& terrain );
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual bool canDestroy() const;
   virtual void destroy();
   virtual std::string errorDesc() const;
@@ -38,8 +38,8 @@ public:
   void hide();
 
 private:
-  void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );
-  void _checkParams( PlayerCityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
+  void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir );
+  void _checkParams( PlayerCityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -121,7 +121,7 @@ void Build::_checkPreviewBuild(TilePos pos)
     }
   }
 
-  CityAreaInfo areaInfo = { _city(), pos, d->buildTiles };
+  city::AreaInfo areaInfo = { _city(), pos, d->buildTiles };
   if( !walkersOnTile && overlay->canBuild( areaInfo ) )
   {
     //bldCommand->setCanBuild(true);
@@ -143,7 +143,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         }
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMasterTile( masterTile );
-        tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
+        tile->setOverlay( ptr_cast<Overlay>( overlay ) );
         d->buildTiles.push_back( tile );
       }
     }
@@ -284,7 +284,7 @@ void Build::_buildAll()
   }
 
   bool buildOk = false;  
-  CityAreaInfo areaInfo = { _city(), TilePos(), TilesArray() };
+  city::AreaInfo areaInfo = { _city(), TilePos(), TilesArray() };
   foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
@@ -409,7 +409,7 @@ void Build::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,Build);
   Point offset = _camera()->offset();
-  CityAreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
+  city::AreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
   foreach( it, _d->buildTiles )
   {
     Tile* postTile = *it;
@@ -442,7 +442,7 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   Point screenPos = tile.mappos() + offset;
 
   ConstructionPtr cntr = ptr_cast<Construction>( tile.overlay() );
-  CityAreaInfo info = { _city(), tile.epos(), _d->buildTiles };
+  city::AreaInfo info = { _city(), tile.epos(), _d->buildTiles };
 
   if( _d->drawTileBasicPicture )
   {

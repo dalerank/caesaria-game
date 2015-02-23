@@ -57,7 +57,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
   }
   else
   {
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects
@@ -70,7 +70,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
       bool haveWater = tile.param( Tile::pFountainWater ) > 0 || tile.param( Tile::pWellWater ) > 0;
       needDrawAnimations = false;
 
-      if ( overlay->type() == objects::house )
+      if ( overlay->type() == object::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
         needDrawAnimations = (h->spec().level() == HouseLevel::hovel) && h->habitants().empty();

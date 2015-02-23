@@ -28,7 +28,7 @@ public:
   virtual void deliverService();
   virtual bool isNeedRoadAccess() const;
   virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool isDestructible() const;
   gfx::TilesArray coverageArea() const;
 };

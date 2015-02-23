@@ -41,8 +41,8 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wine_workshop, Winery)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oil_workshop, Creamery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::oil_workshop, Creamery)
 
 class FactoryStore : public good::Storage
 {
@@ -94,7 +94,7 @@ public:
 };
 
 Factory::Factory(const good::Product inType, const good::Product outType,
-                  const TileOverlay::Type type, const Size& size )
+                  const object::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
   _d->productionRate = 2.f;
@@ -385,7 +385,7 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Winery::Winery() : Factory(good::grape, good::wine, objects::wine_workshop, Size(2) )
+Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
 
@@ -394,17 +394,17 @@ Winery::Winery() : Factory(good::grape, good::wine, objects::wine_workshop, Size
   _fgPicturesRef().resize(3);
 }
 
-bool Winery::canBuild( const CityAreaInfo& areaInfo ) const
+bool Winery::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return Factory::canBuild( areaInfo );
 }
 
-bool Winery::build( const CityAreaInfo& info )
+bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveVinegrad = !helper.find<Building>( objects::vinard ).empty();
+  bool haveVinegrad = !helper.find<Building>( object::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -417,7 +417,7 @@ void Winery::_storeChanged()
   _fgPicturesRef()[1].setOffset( 40, -10 );
 }
 
-Creamery::Creamery() : Factory(good::olive, good::oil, objects::oil_workshop, Size(2) )
+Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 99 );
 
@@ -426,17 +426,17 @@ Creamery::Creamery() : Factory(good::olive, good::oil, objects::oil_workshop, Si
   _fgPicturesRef().resize( 3 );
 }
 
-bool Creamery::canBuild( const CityAreaInfo& areaInof ) const
+bool Creamery::canBuild( const city::AreaInfo& areaInof ) const
 {
   return Factory::canBuild( areaInof );
 }
 
-bool Creamery::build( const CityAreaInfo& info )
+bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveOliveFarm = !helper.find<Building>( objects::olive_farm ).empty();
+  bool haveOliveFarm = !helper.find<Building>( object::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

@@ -25,18 +25,17 @@
 #include "core/variant_map.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tree, Tree)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::tree, Tree)
 
 Tree::Tree()
-  : TileOverlay( constants::objects::tree, Size(1) )
+  : Overlay( object::tree, Size(1) )
 {
 }
 
 void Tree::timeStep( const unsigned long time )
 {
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
 }
 
 bool Tree::isFlat() const { return _isFlat; }
@@ -46,24 +45,24 @@ void Tree::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlTree, true );
 }
 
-bool Tree::build( const CityAreaInfo& info )
+bool Tree::build( const city::AreaInfo& info )
 {
   std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
   setPicture( Picture::load( picname ) );
   _isFlat = (picture().height() <= tilemap::cellPicSize().height());
-  return TileOverlay::build( info );
+  return Overlay::build( info );
 }
 
 void Tree::save(VariantMap& stream) const
 {
-  TileOverlay::save( stream );
+  Overlay::save( stream );
 
   stream[ "treeFlat" ] = _isFlat;
 }
 
 void Tree::load(const VariantMap& stream)
 {
-  TileOverlay::load( stream );
+  Overlay::load( stream );
 
   _isFlat = stream.get( "treeFlat" );
 }

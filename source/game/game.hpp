@@ -25,7 +25,6 @@
 #include "scene/base.hpp"
 #include "gfx/engine.hpp"
 #include "scene/constants.hpp"
-#include "enums.hpp"
 
 class Scene;
 

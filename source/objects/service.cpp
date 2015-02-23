@@ -32,6 +32,7 @@
 #include "core/utils.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 namespace {
 static const unsigned int defaultMaxWorkersNumber = 5;
@@ -50,7 +51,7 @@ public:
 };
 
 ServiceBuilding::ServiceBuilding(const Service::Type service,
-                                 const Type type, const Size& size)
+                                 const object::Type type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->service = service;
@@ -136,7 +137,7 @@ unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; 
 
 std::string ServiceBuilding::workersStateDesc() const
 {
-  std::string srvcType = MetaDataHolder::findTypename( type() );
+  std::string srvcType = type().toString();
   std::string state = "unknown";
 
   if( walkers().size() > 0 )

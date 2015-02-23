@@ -52,7 +52,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
   else
   {
     bool needDrawAnimations = false;
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
 
     int religionLevel = -1;
     if( _isVisibleObject( overlay->type() ) )
@@ -60,7 +60,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
       // Base set of visible objects
       needDrawAnimations = true;      
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       religionLevel = (int) house->getServiceValue(Service::religionMercury);

@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layer.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
 #include "tilesarray.hpp"
@@ -49,7 +49,7 @@ namespace layer
 class Layer::Impl
 {
 public:
-  typedef std::set<int> AlwaysDrawObjects;
+  typedef std::set<object::Type> AlwaysDrawObjects;
 
   Point lastCursorPos;
   Point startCursorPos;
@@ -397,7 +397,7 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
     return;
 
   Tile* baseTile = area.front();
-  TileOverlayPtr overlay = baseTile->overlay();
+  OverlayPtr overlay = baseTile->overlay();
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay.isValid()
                           ? overlay->size().height() - 1 + baseTile->j()
@@ -619,7 +619,7 @@ void Layer::afterRender( Engine& engine)
       _d->debugFont.draw( *_d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
     }
 
-    TileOverlayPtr ov = tile->overlay();
+    OverlayPtr ov = tile->overlay();
     if( ov.isValid() )
     {
       size = ov->size();
@@ -652,7 +652,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->terraintPic = MetaDataHolder::randomPicture( objects::terrain, 1 );
+  _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, 1 );
   _d->tilePosText.init( Size( 240, 80 ) );
 }
 
@@ -667,14 +667,14 @@ void Layer::_fillVisibleObjects(int ltype)
   VariantList vl = vm.get( "visibleObjects" ).toList();
   foreach( it, vl )
   {
-    int ovType = MetaDataHolder::findType( it->toString() );
-    if( ovType != objects::unknown )
+    object::Type ovType = MetaDataHolder::findType( it->toString() );
+    if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
     }
 }
 
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
-bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
+bool Layer::_isVisibleObject(object::Type ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 
 void Layer::destroy() {}

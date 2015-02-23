@@ -35,10 +35,10 @@
 #include "gatehouse.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace direction;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fortification, Fortification)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fortification, Fortification)
 
 class Fortification::Impl
 {
@@ -55,7 +55,7 @@ public:
 
 Fortification::Fortification() : Wall(), _d( new Impl )
 {
-  setType( objects::fortification );
+  setType( object::fortification );
   setPicture( ResourceGroup::wall, 178 ); // default picture for wall
 
   setState( pr::inflammability, 0 );
@@ -64,7 +64,7 @@ Fortification::Fortification() : Wall(), _d( new Impl )
 
 Fortification::~Fortification() {}
 
-bool Fortification::build( const CityAreaInfo& info )
+bool Fortification::build( const city::AreaInfo& info )
 {
   // we can't build if already have wall here
   WallPtr wall = ptr_cast<Wall>( info.city->getOverlay( info.pos ) );
@@ -83,11 +83,11 @@ bool Fortification::build( const CityAreaInfo& info )
   Building::build( info );
 
   city::Helper helper( info.city );
-  FortificationList fortifications = helper.find<Fortification>( objects::fortification );  
+  FortificationList fortifications = helper.find<Fortification>( object::fortification );
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
 
-  TowerList towers = helper.find<Tower>( objects::tower );
+  TowerList towers = helper.find<Tower>( object::tower );
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( info.city );
@@ -138,7 +138,7 @@ Point Fortification::offset( const Tile& tile, const Point& subpos) const
   return _d->offset;
 }
 
-const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
+const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
 {
   // find correct picture as for roads
   Tilemap& tmap = areaInfo.city->tilemap();
@@ -150,9 +150,9 @@ const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
 
-  TilePos tile_pos_d[countDirection];
-  bool is_border[countDirection] = { 0 };
-  bool is_busy[countDirection] = { 0 };
+  TilePos tile_pos_d[direction::count];
+  bool is_border[direction::count] = { 0 };
+  bool is_busy[direction::count] = { 0 };
 
   tile_pos_d[north] = tile_pos + TilePos(  0,  1);
   tile_pos_d[east]  = tile_pos + TilePos(  1,  0);
@@ -165,7 +165,7 @@ const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
 
 
   // all tiles must be in map range
-  for (int i = 0; i < countDirection; ++i)
+  for (int i = 0; i < direction::count; ++i)
   {
     is_border[i] = !tmap.isInside(tile_pos_d[i]);
     if (is_border[i])
@@ -173,7 +173,7 @@ const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
   }
 
   // get overlays for all directions
-  TileOverlayPtr overlay_d[countDirection];
+  OverlayPtr overlay_d[direction::count];
   overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
   overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
   overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
@@ -190,7 +190,7 @@ const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
     foreach( it, areaInfo.aroundTiles )
     {
       if( (*it)->overlay().isNull()
-          || (*it)->overlay()->type() != objects::fortification )
+          || (*it)->overlay()->type() != object::fortification )
         continue;
 
       TilePos rpos = (*it)->pos();
@@ -209,10 +209,10 @@ const Picture& Fortification::picture(const CityAreaInfo& areaInfo) const
   }
 
   // calculate directions
-  for (int i = 0; i < countDirection; ++i)
+  for (int i = 0; i < direction::count; ++i)
   {
     if (!is_border[i] &&
-        ( (overlay_d[i].isValid() && overlay_d[i]->type() == objects::fortification) || is_busy[i]))
+        ( (overlay_d[i].isValid() && overlay_d[i]->type() == object::fortification) || is_busy[i]))
     {
       switch (i)
       {
@@ -451,7 +451,7 @@ int Fortification::getDirection() const {  return _d->direction;}
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  CityAreaInfo info = { city, pos(), TilesArray() };
+  city::AreaInfo info = { city, pos(), TilesArray() };
   setPicture( picture( info) );
 }
 
@@ -483,7 +483,7 @@ void Fortification::load(const VariantMap& stream)
 
 bool Fortification::Impl::isFortification( PlayerCityPtr city, TilePos pos, bool tower )
 {
-  TileOverlayPtr ov = city->getOverlay( pos );
+  OverlayPtr ov = city->getOverlay( pos );
   return tower
             ? is_kind_of<Tower>( ov )
             : is_kind_of<Tower>( ov ) || is_kind_of<Gatehouse>( ov );

@@ -21,7 +21,6 @@
 #include "widget.hpp"
 
 #include "gfx/picture.hpp"
-#include "game/enums.hpp"
 
 namespace gui
 {

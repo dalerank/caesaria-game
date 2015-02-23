@@ -29,7 +29,7 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual std::string workersProblemDesc() const;
   virtual void deliverService();
 

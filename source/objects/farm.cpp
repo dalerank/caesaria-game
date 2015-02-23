@@ -37,26 +37,25 @@
 #include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fig_farm, FarmFruit)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wheat_farm, FarmWheat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::vinard, FarmGrape)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::meat_farm, FarmMeat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::olive_farm, FarmOlive)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::vegetable_farm, FarmVegetable)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm, FarmFruit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm, FarmWheat)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard, FarmGrape)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm, FarmMeat)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm, FarmOlive)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 
 class FarmTile : public Construction
 {
 public:
-  FarmTile() : Construction( objects::farmtile, 1 ) {}
+  FarmTile() : Construction( object::farmtile, 1 ) {}
   FarmTile(const good::Product outGood, const TilePos& farmpos);
   virtual ~FarmTile() {}
   Picture& getPicture();
   virtual void initTerrain(gfx::Tile&) {}
   virtual bool isFlat() const { return false; }
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 
   static Picture computePicture( const good::Product outGood, const int percent);
 
@@ -64,10 +63,10 @@ private:
   TilePos _farmpos;
 };
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::farmtile, FarmTile)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::farmtile, FarmTile)
 
 FarmTile::FarmTile( const good::Product outGood, const TilePos& farmpos )
- : Construction( objects::farmtile, 1 )
+ : Construction( object::farmtile, 1 )
 {
   _farmpos = farmpos;
   //_animation.load( ResourceGroup::commerce, picIdx, 5);
@@ -102,7 +101,7 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
   //_picture.addOffset( tile::tilepos2screen( _farmpos ));
 }
 
-bool FarmTile::build(const CityAreaInfo &info)
+bool FarmTile::build(const city::AreaInfo &info)
 {
   return Construction::build( info );
 }
@@ -115,7 +114,7 @@ public:
   int lastProgress;
 };
 
-Farm::Farm(const good::Product outGood, const Type type )
+Farm::Farm(const good::Product outGood, const object::Type type )
   : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   outStockRef().setCapacity( 100 );
@@ -137,7 +136,7 @@ Farm::Farm(const good::Product outGood, const Type type )
   init();
 }
 
-bool Farm::canBuild( const CityAreaInfo& areaInfo ) const
+bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
   bool on_meadow = false;
@@ -199,10 +198,10 @@ void Farm::timeStep(const unsigned long time)
   }
 }
 
-bool Farm::build( const CityAreaInfo& info )
+bool Farm::build( const city::AreaInfo& info )
 {
   setSize( 2 );
-  CityAreaInfo upInfo = info;
+  city::AreaInfo upInfo = info;
   if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
   {
     upInfo.pos += TilePos(0,1);
@@ -210,9 +209,9 @@ bool Farm::build( const CityAreaInfo& info )
     TilePosArray locations;
     foreach( it, _d->sublocs )
     {
-      CityAreaInfo tInfo = info;
+      city::AreaInfo tInfo = info;
       tInfo.pos += *it;
-      TileOverlayPtr farmtile( new FarmTile( produceGoodType(), upInfo.pos ) );
+      OverlayPtr farmtile( new FarmTile( produceGoodType(), upInfo.pos ) );
       farmtile->drop();
 
       farmtile->build( tInfo );
@@ -257,7 +256,7 @@ unsigned int Farm::produceQty() const
 
 Farm::~Farm() {}
 
-FarmWheat::FarmWheat() : Farm(good::wheat, objects::wheat_farm)
+FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 {
 }
 
@@ -265,7 +264,7 @@ std::string FarmWheat::troubleDesc() const
 {
   city::Helper helper( _city() );
 
-  LocustList lc = helper.find<Locust>( walker::locust, pos() );
+  LocustList lc = helper.findw<Locust>( constants::walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";
@@ -274,7 +273,7 @@ std::string FarmWheat::troubleDesc() const
   return Factory::troubleDesc();
 }
 
-bool FarmWheat::build( const CityAreaInfo& info )
+bool FarmWheat::build( const city::AreaInfo& info )
 {
   bool ret = Farm::build( info );
   if( info.city->climate() == game::climate::central )
@@ -285,22 +284,22 @@ bool FarmWheat::build( const CityAreaInfo& info )
   return ret;
 }
 
-FarmOlive::FarmOlive() : Farm(good::olive, objects::olive_farm)
+FarmOlive::FarmOlive() : Farm(good::olive, object::olive_farm)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(good::grape, objects::vinard)
+FarmGrape::FarmGrape() : Farm(good::grape, object::vinard)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(good::meat, objects::meat_farm)
+FarmMeat::FarmMeat() : Farm(good::meat, object::meat_farm)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(good::fruit, objects::fig_farm)
+FarmFruit::FarmFruit() : Farm(good::fruit, object::fig_farm)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(good::vegetable, objects::vegetable_farm)
+FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 {
 }

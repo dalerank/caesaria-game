@@ -27,10 +27,10 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::lumber_mill, TimberLogger)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::lumber_mill, TimberLogger)
 
 TimberLogger::TimberLogger()
-  : Factory(good::none, good::timber, objects::lumber_mill, Size(2) )
+  : Factory(good::none, good::timber, object::lumber_mill, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 72 );
 
@@ -38,7 +38,7 @@ TimberLogger::TimberLogger()
   _fgPicturesRef().resize(2);
 }
 
-bool TimberLogger::canBuild( const CityAreaInfo& areaInfo ) const
+bool TimberLogger::canBuild( const city::AreaInfo& areaInfo ) const
 {
    bool is_constructible = WorkingBuilding::canBuild( areaInfo );
    bool near_forest = false;  // tells if the factory is next to a forest

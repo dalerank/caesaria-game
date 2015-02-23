@@ -44,7 +44,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
   event->_type = type;
   event->_infoType = 0;
 
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
   {
     overlay->deleteLater();
@@ -55,7 +55,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
     }
     else
     {
-      event->_infoType = overlay->type();
+      event->_infoType = overlay->type().toInt();
     }
   }
 
@@ -83,7 +83,7 @@ void Disaster::_exec( Game& game, unsigned int )
   {
     Size size( 1 );
 
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
@@ -116,12 +116,12 @@ void Disaster::_exec( Game& game, unsigned int )
     {
       bool needBuildRuins = !( _type == Disaster::rift && (*tile)->pos() == _pos );      
 
-      TileOverlayPtr ov;
+      OverlayPtr ov;
       if( needBuildRuins )
       {
-        TileOverlay::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
-                                            objects::plague_ruins, objects::collapsed_ruins,
-                                            objects::collapsed_ruins };
+        object::Type dstr2constr[] = { object::burning_ruins, object::collapsed_ruins,
+                                       object::plague_ruins, object::collapsed_ruins,
+                                       object::collapsed_ruins };
 
         ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
 
@@ -132,7 +132,7 @@ void Disaster::_exec( Game& game, unsigned int )
           {
             std::string typev = _infoType > 1000
                                   ? utils::format( 0xff, "house%02d", _infoType - 1000 )
-                                  : MetaDataHolder::findTypename( _infoType );
+                                  : object::Type(_infoType).toString();
             ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
             ruins->afterBuild();
           }
@@ -140,7 +140,7 @@ void Disaster::_exec( Game& game, unsigned int )
       }
       else
       {
-        ov = TileOverlayFactory::instance().create( objects::rift );
+        ov = TileOverlayFactory::instance().create( object::rift );
 
         TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 

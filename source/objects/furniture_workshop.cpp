@@ -28,26 +28,26 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY( objects::furniture_workshop, FurnitureWorkshop)
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::furniture_workshop, FurnitureWorkshop)
 
-bool FurnitureWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
+bool FurnitureWorkshop::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return Factory::canBuild( areaInfo );
 }
 
-bool FurnitureWorkshop::build( const CityAreaInfo& info )
+bool FurnitureWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
   city::Helper helper( info.city );
-  bool haveTimberLogger = !helper.find<TimberLogger>( objects::lumber_mill ).empty();
+  bool haveTimberLogger = !helper.find<TimberLogger>( object::lumber_mill ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
   return true;
 }
 
-FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, objects::furniture_workshop, Size(2) )
+FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, object::furniture_workshop, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 117 );
   _fgPicturesRef().resize( 3 );

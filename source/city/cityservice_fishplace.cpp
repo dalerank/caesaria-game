@@ -70,7 +70,7 @@ void Fishery::timeStep(const unsigned int time )
   if( _d->places.empty() )
   {
     Helper helper( _city() );
-    _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = helper.findw<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
   }
 
   while( _d->places.size() < _d->maxFishPlace )

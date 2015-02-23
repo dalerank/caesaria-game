@@ -48,7 +48,7 @@ using namespace gfx;
 using namespace constants;
 using namespace metric;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::warehouse, Warehouse)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
 namespace {
 CAESARIA_LITERALCONST(tiles)
@@ -116,7 +116,7 @@ public:
   WarehouseStore goodStore;
 };
 
-Warehouse::Warehouse() : WorkingBuilding( constants::objects::warehouse, Size( 3 )), _d( new Impl )
+Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new Impl )
 {
    // _name = _("Entrepot");
   setPicture( ResourceGroup::warehouse, 19 );

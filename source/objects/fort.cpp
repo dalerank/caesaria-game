@@ -117,7 +117,7 @@ public:
   TilePos basePos;
 };
 
-FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
+FortArea::FortArea() : Building( object::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -154,7 +154,7 @@ FortPtr FortArea::base() const
   return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
-Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
+Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
   Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
@@ -225,6 +225,8 @@ TilesArray Fort::enterArea() const
 
   return tiles;
 }
+
+int Fort::flagIndex() const { return 0; }
 
 void Fort::destroy()
 {
@@ -504,17 +506,17 @@ void Fort::_addFormation(Fort::TroopsFormation formation)
   _d->availableFormations.push_back( formation );
 }
 
-bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
+bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool isFreeFort = Building::canBuild( areaInfo );
-  CityAreaInfo fortArea = areaInfo;
+  city::AreaInfo fortArea = areaInfo;
   fortArea.pos += TilePos( 3, 0 );
   bool isFreeArea = _d->area->canBuild( fortArea );
 
   return (isFreeFort && isFreeArea);
 }
 
-bool Fort::build( const CityAreaInfo& info )
+bool Fort::build( const city::AreaInfo& info )
 {
   FortList forts;
   forts << info.city->overlays();
@@ -528,7 +530,7 @@ bool Fort::build( const CityAreaInfo& info )
 
   Building::build( info );
 
-  CityAreaInfo areaInfo = info;
+  city::AreaInfo areaInfo = info;
   areaInfo.pos += TilePos( 3, 0 );
   _d->area->build( areaInfo );
   _d->area->setBase( this );

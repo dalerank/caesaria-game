@@ -192,7 +192,7 @@ bool Trade::Impl::getWorkState(good::Product gtype )
   city::Helper helper( city );
 
   bool industryActive = false;
-  FactoryList producers = helper.getProducers<Factory>( gtype );
+  FactoryList producers = helper.findProducers<Factory>( gtype );
 
   foreach( it, producers ) { industryActive |= (*it)->isActive(); }
 

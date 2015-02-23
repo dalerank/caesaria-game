@@ -27,10 +27,9 @@
 #include "walker/walker.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::low_bridge, LowBridge)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::low_bridge, LowBridge)
 
 namespace {
   Point spanswOffset = Point( 10, -25 );
@@ -41,7 +40,7 @@ class LowBridgeSubTile : public Construction
 public:
   enum { liftingWest=67, spanWest=68, descentWest=69, liftingNorth=70, spanNorth=71, descentNorth=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
-    : Construction( objects::low_bridge, Size( 1 ) )
+    : Construction( object::low_bridge, Size( 1 ) )
   {
     _info = 0;
     _imgId = 0;
@@ -58,7 +57,7 @@ public:
   bool isWalkable() const { return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  bool build( const CityAreaInfo& info )
+  bool build( const city::AreaInfo& info )
   {
     Construction::build( info );
     _fgPicturesRef().clear();
@@ -153,14 +152,14 @@ public:
   }
 };
 
-bool LowBridge::canBuild( const CityAreaInfo& areaInfo ) const
+bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
 {
   //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
-  _d->direction=noneDirection;
+  _d->direction= direction::none;
 
-  TileOverlayPtr bridge = areaInfo.city->getOverlay( areaInfo.pos );
+  OverlayPtr bridge = areaInfo.city->getOverlay( areaInfo.pos );
   if( bridge.isNull() )
   {
     _d->subtiles.clear();
@@ -169,16 +168,16 @@ bool LowBridge::canBuild( const CityAreaInfo& areaInfo ) const
 
     _checkParams( areaInfo.city, _d->direction, startPos, endPos, areaInfo.pos );
 
-    if( _d->direction != noneDirection )
+    if( _d->direction != direction::none)
     {
       thisp->_computePictures( areaInfo.city, startPos, endPos, _d->direction );
     }
   }
 
-  return (_d->direction != noneDirection);
+  return (_d->direction != direction::none);
 }
 
-LowBridge::LowBridge() : Construction( constants::objects::low_bridge, Size(1) ), _d( new Impl )
+LowBridge::LowBridge() : Construction( object::low_bridge, Size(1) ), _d( new Impl )
 {
   Picture pic;
   setPicture( pic );
@@ -188,13 +187,13 @@ void LowBridge::initTerrain(Tile& terrain )
 {
 }
 
-void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir )
+void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
 {
   Tilemap& tilemap = city->tilemap();
   //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
-  case northWest:
+  case direction::northWest:
     {
       TilesArray tiles = tilemap.getArea( endPos, startPos );
 
@@ -212,7 +211,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
     }
   break;
 
-  case northEast:
+  case direction::northEast:
     {
       TilesArray tiles = tilemap.getArea( startPos, endPos );
 
@@ -230,7 +229,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
     }
     break;
 
-  case southEast:
+  case direction::southEast:
     {
       TilesArray tiles = tilemap.getArea( startPos, endPos );
 
@@ -250,7 +249,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
     }
   break;
 
-  case southWest:
+  case direction::southWest:
     {
       TilesArray tiles = tilemap.getArea( endPos, startPos );
 
@@ -280,7 +279,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
   }
 }
 
-void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
+void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
 {
   start = curPos;
 
@@ -303,12 +302,12 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
         stop = (*it)->pos();
-        direction = abs(stop.i() - start.i()) > 1 ? northWest : noneDirection;
+        direction = abs(stop.i() - start.i()) > 1 ? direction::northWest : direction::none;
         break;
       }
       else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
       {
-        direction = noneDirection;
+        direction = direction::none;
         break;
       }
     }
@@ -322,12 +321,12 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = (*it)->pos();
-        direction = abs(stop.i() - start.i()) > 1 ? southEast : noneDirection;
+        direction = abs(stop.i() - start.i()) > 1 ? direction::southEast : direction::none;
         break;
       }
       else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
       {
-        direction = noneDirection;
+        direction = direction::none;
         break;
       }
     }
@@ -341,12 +340,12 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->pos();
-        direction = abs(stop.j() - start.j()) > 1 ? northEast : noneDirection;
+        direction = abs(stop.j() - start.j()) > 1 ? direction::northEast : direction::none;
         break;
       }
       else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
       {
-        direction = noneDirection;
+        direction = direction::none;
         break;
       }
     }
@@ -360,26 +359,26 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->pos();
-        direction = abs(stop.j() - start.j()) > 1 ? southWest : noneDirection;
+        direction = abs(stop.j() - start.j()) > 1 ? direction::southWest : direction::none;
         break;
       }
       else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
       {
-        direction = noneDirection;
+        direction = direction::none;
         break;
       }
     }
   }
   else
   {
-    direction = noneDirection;
+    direction = direction::none;
   }
 }
 
-bool LowBridge::build( const CityAreaInfo& info )
+bool LowBridge::build( const city::AreaInfo& info )
 {
   TilePos endPos, startPos;
-  _d->direction=noneDirection;
+  _d->direction=direction::none;
   setSize( Size(0) );
   Construction::build( info );
 
@@ -392,29 +391,29 @@ bool LowBridge::build( const CityAreaInfo& info )
   _checkParams( info.city, _d->direction, startPos, endPos, info.pos );
   int signSum = 1;
 
-  if( _d->direction != noneDirection )
+  if( _d->direction != direction::none)
   {
     switch( _d->direction )
     {
-    case northEast:
-      _computePictures( info.city, endPos, startPos, southWest );
+    case direction::northEast:
+      _computePictures( info.city, endPos, startPos, direction::southWest );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
       signSum = -1;
     break;
 
-    case northWest:
-      _computePictures( info.city, endPos, startPos, southEast );
+    case direction::northWest:
+      _computePictures( info.city, endPos, startPos, direction::southEast );
       std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
       std::swap( startPos, endPos );
       signSum = -1;
     break;
 
-    case southWest:
+    case direction::southWest:
       _computePictures( info.city, startPos, endPos, _d->direction );
       std::swap( startPos, endPos );
     break;
 
-    case southEast:
+    case direction::southEast:
       _computePictures( info.city, startPos, endPos, _d->direction );
     break;
 
@@ -447,7 +446,7 @@ bool LowBridge::canDestroy() const
   city::Helper helper( _city() );
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = helper.findw<Walker>( constants::walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";

@@ -35,10 +35,10 @@
 #include "pathway/pathway_helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
+using namespace direction;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::dock, Dock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::dock, Dock)
 
 class Dock::Impl
 {
@@ -60,7 +60,7 @@ public:
   void initStores();
 };
 
-Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
+Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 {
   // dock pictures
   // transport 5        animation = 6~16
@@ -76,7 +76,7 @@ Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
   _setClearAnimationOnStop( false );
 }
 
-bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
+bool Dock::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -84,10 +84,10 @@ bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
 
   const_cast< Dock* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != noneDirection );
+  return (is_constructible && direction != direction::none );
 }
 
-bool Dock::build( const CityAreaInfo& info )
+bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );
 
@@ -153,7 +153,7 @@ void Dock::load(const VariantMap& stream)
 {
   Building::load( stream );
 
-  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), (int)southWest ).toInt();
+  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), direction::southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
 
   Variant tmp = stream.get( "exportGoods" );
@@ -178,7 +178,7 @@ std::string Dock::workersProblemDesc() const
 bool Dock::isBusy() const
 {
   city::Helper helper( _city() );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = helper.findw<SeaMerchant>( constants::walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -189,10 +189,10 @@ const Tile& Dock::landingTile() const
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
-  case south: offset = TilePos( 0, -1 ); break;
-  case west: offset = TilePos( -1, 0 ); break;
-  case north: offset = TilePos( 0, 3 ); break;
-  case east: offset = TilePos( 3, 0 ); break;
+  case direction::south: offset = TilePos( 0, -1 ); break;
+  case direction::west: offset = TilePos( -1, 0 ); break;
+  case direction::north: offset = TilePos( 0, 3 ); break;
+  case direction::east: offset = TilePos( 3, 0 ); break;
 
   default: break;
   }
@@ -204,8 +204,8 @@ int Dock::queueSize() const
 {
   city::Helper helper( _city() );
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant,
-                                                        pos() - offset, pos() + offset );
+  SeaMerchantList merchants = helper.findw<SeaMerchant>( constants::walker::seaMerchant,
+                                                         pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
@@ -302,10 +302,10 @@ void Dock::_updatePicture(Direction direction)
   Point offset;
   switch( direction )
   {
-  case south: index = Impl::southPic; offset = Point( 35, 51 ); break;
-  case north: index = Impl::northPic; offset = Point( 107, 61 );break;
-  case west:  index = Impl::westPic;  offset = Point( 48, 70 ); break;
-  case east:  index = Impl::eastPic;  offset = Point( 62, 36 ); break;
+  case direction::south: index = Impl::southPic; offset = Point( 35, 51 ); break;
+  case direction::north: index = Impl::northPic; offset = Point( 107, 61 );break;
+  case direction::west:  index = Impl::westPic;  offset = Point( 48, 70 ); break;
+  case direction::east:  index = Impl::eastPic;  offset = Point( 62, 36 ); break;
 
   default: break;
   }
@@ -360,7 +360,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return east; }
 
-  return noneDirection;
+  return none;
 }
 
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)

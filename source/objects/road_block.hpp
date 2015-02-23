@@ -24,10 +24,10 @@ class RoadBlock : public Road
 {
 public:
   RoadBlock();
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual const gfx::Picture& picture(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual const gfx::Picture& picture(const city::AreaInfo& areaInfo) const;
   virtual void appendPaved(int value);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual const gfx::Picture& picture() const;

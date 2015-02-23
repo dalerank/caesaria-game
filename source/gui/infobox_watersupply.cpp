@@ -38,9 +38,9 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(reservoir,objects::reservoir,AboutReservoir)
-REGISTER_INFOBOX_IN_FACTORY(fountain,objects::fountain,AboutFontain)
-REGISTER_INFOBOX_IN_FACTORY(well,objects::well,AboutWell)
+REGISTER_INFOBOX_IN_FACTORY(reservoir,object::reservoir,AboutReservoir)
+REGISTER_INFOBOX_IN_FACTORY(fountain,object::fountain,AboutFontain)
+REGISTER_INFOBOX_IN_FACTORY(well,object::well,AboutWell)
 
 AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
@@ -84,7 +84,7 @@ AboutFontain::~AboutFontain(){}
 
 void AboutFontain::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::fountain );
+  DictionaryWindow::show( parent(), object::fountain );
 }
 
 AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -113,7 +113,7 @@ AboutReservoir::~AboutReservoir() {}
 
 void AboutReservoir::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::reservoir );
+  DictionaryWindow::show( parent(), object::reservoir );
 }
 
 AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -185,7 +185,7 @@ AboutWell::~AboutWell() {}
 
 void AboutWell::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::well );
+  DictionaryWindow::show( parent(), object::well );
 }
 
 }

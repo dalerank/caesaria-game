@@ -23,7 +23,6 @@
 
 #include "walker/action.hpp"
 #include "gfx/picturesarray.hpp"
-#include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "pathway/predefinitions.hpp"
@@ -80,7 +79,7 @@ public:
   void setFlag( Flag flag, bool value );
   bool getFlag( Flag flag ) const;
 
-  constants::Direction direction() const;
+  Direction direction() const;
   Walker::Action action() const;
 
   virtual double health() const;
@@ -138,7 +137,7 @@ protected:
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  void _setDirection( constants::Direction direction );
+  void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
   void _setType( constants::walker::Type type );

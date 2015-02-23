@@ -85,17 +85,17 @@ int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
 //
 int HouseSpecification::minFoodLevel() const{  return _d->minFoodLevel;}
 
-bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, TileOverlay::Type* retBtype )
+bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, object::Type* retBtype )
 {
   bool res = true;
   int value;
   std::string reason;
   std::string defaultStr;
-  TileOverlay::Type defaultNeedType;
+  object::Type defaultNeedType;
   std::string& ref = retMissing ? *retMissing : defaultStr;
-  TileOverlay::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
+  object::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
 
-  needBuilding = objects::unknown;
+  needBuilding = object::unknown;
 
   if( house->habitants().count() == 0 )
   {
@@ -107,7 +107,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   if( house->isCheckedDesirability() && value < _d->minDesirability )
   {
     ref = "##low_desirability##";
-    needBuilding = objects::garden;
+    needBuilding = object::garden;
     return false;
   }
 
@@ -115,7 +115,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   if( value > 0 )
   {
     ref = "##nearby_building_negative_effect##";
-    needBuilding = objects::house;
+    needBuilding = object::house;
     return false;
   }
 
@@ -125,17 +125,17 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
     if( value == 0 )
     {
       ref = "##missing_entertainment##";
-      needBuilding = objects::theater;
+      needBuilding = object::theater;
     }
     else
     {
       switch( _d->minEntertainmentLevel / 20 )
       {
-      case 0: ref = "##missing_entertainment_theater##"; needBuilding = objects::theater; break;
-      case 1: ref = "##missing_entertainment_amph##"; needBuilding = objects::amphitheater; break;
-      case 2: ref = "##missing_entertainment_also##"; needBuilding = objects::amphitheater; break;
-      case 3: ref = "##missing_entertainment_colloseum##"; needBuilding = objects::colloseum; break;
-      case 4: ref = "##missing_entertainment_hippodrome##"; needBuilding = objects::hippodrome; break;
+      case 0: ref = "##missing_entertainment_theater##"; needBuilding = object::theater; break;
+      case 1: ref = "##missing_entertainment_amph##"; needBuilding = object::amphitheater; break;
+      case 2: ref = "##missing_entertainment_also##"; needBuilding = object::amphitheater; break;
+      case 3: ref = "##missing_entertainment_colloseum##"; needBuilding = object::colloseum; break;
+      case 4: ref = "##missing_entertainment_hippodrome##"; needBuilding = object::hippodrome; break;
         //##missing_entertainment_patrician##
       }
     }
@@ -148,9 +148,9 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
     ref = /*_("##missing_education##") + */reason;
     switch( value )
     {
-    case 0: case 1: needBuilding = objects::school; break;
-    case 2: needBuilding = objects::academy; break;
-    case 3: needBuilding = objects::library; break;
+    case 0: case 1: needBuilding = object::school; break;
+    case 2: needBuilding = object::academy; break;
+    case 3: needBuilding = object::library; break;
     }
 
     return false;
@@ -163,10 +163,10 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
 
     switch( value )
     {
-    case 1: needBuilding = objects::baths; break;
-    case 2: needBuilding = objects::barber; break;
-    case 3: needBuilding = objects::clinic; break;
-    case 4: needBuilding = objects::hospital; break;
+    case 1: needBuilding = object::baths; break;
+    case 2: needBuilding = object::barber; break;
+    case 3: needBuilding = object::clinic; break;
+    case 4: needBuilding = object::hospital; break;
     }
 
     return false;
@@ -182,7 +182,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
     case 2: ref = "##missing_second_religion##"; break;
     case 3: ref = "##missing_third_religion##"; break;
     }
-    needBuilding = objects::oracle;
+    needBuilding = object::oracle;
     return false;
   }
 
@@ -190,7 +190,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
   if( value < _d->minWaterLevel )
   {
     ref = reason;
-    needBuilding = objects::fountain;
+    needBuilding = object::fountain;
     return false;
   }
 
@@ -207,42 +207,42 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
       case 3: ref = "##missing_third_food##"; break;
       }
     }
-    needBuilding = objects::market;
+    needBuilding = object::market;
     return false;
   }
 
   if( _d->requiredGoods[good::pottery] != 0 && house->goodStore().qty(good::pottery) == 0)
   {
     ref = "##missing_pottery##";
-    needBuilding = objects::pottery_workshop;
+    needBuilding = object::pottery_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::furniture] != 0 && house->goodStore().qty(good::furniture) == 0)
   {
     ref = "##missing_furniture##";
-    needBuilding = objects::furniture_workshop;
+    needBuilding = object::furniture_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::oil] != 0 && house->goodStore().qty(good::oil) == 0)
   {
     ref = "##missing_oil##";
-    needBuilding = objects::oil_workshop;
+    needBuilding = object::oil_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::wine] != 0 && house->goodStore().qty(good::wine) == 0)
   {
     ref = "##missing_wine##";
-    needBuilding = objects::wine_workshop;
+    needBuilding = object::wine_workshop;
     return false;
   }
 
   if( _d->requiredGoods[good::prettyWine] != 0 && house->goodStore().qty(good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
-    needBuilding = objects::wine_workshop;
+    needBuilding = object::wine_workshop;
     return false;
   }
 
@@ -260,7 +260,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   Size size = house->size();
   TilePos offset( size.width(), size.height() );
   TilePos housePos = house->pos();
-  HouseList houses = helper.find<House>( constants::objects::house, housePos - offset, housePos + offset );
+  HouseList houses = helper.find<House>( object::house, housePos - offset, housePos + offset );
 
   int ret = 0;
   foreach( it, houses )
@@ -270,7 +270,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      oMissingRequirement = MetaDataHolder::findTypename( (*it)->type() );
+      oMissingRequirement = (*it)->type().toString();
       break;
     }
   }

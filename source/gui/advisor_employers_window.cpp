@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
-#include "game/enums.hpp"
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "city/funds.hpp"
@@ -142,7 +141,7 @@ private:
 class Employer::Impl
 {
 public:
-  typedef std::vector< TileOverlay::Type > BldTypes;
+  typedef std::vector< object::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalaries;
@@ -265,7 +264,7 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  std::vector<objects::Group> bldGroups = city::industry::toGroups( type );
+  object::Groups bldGroups = city::industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );

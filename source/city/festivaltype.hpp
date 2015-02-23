@@ -16,10 +16,9 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
-#ifndef _CAESARIA_ENUMS_INCLUDE_H_
-#define _CAESARIA_ENUMS_INCLUDE_H_
+#ifndef _CAESARIA_FESTIVALTYPE_INCLUDE_H_
+#define _CAESARIA_FESTIVALTYPE_INCLUDE_H_
 
 enum FestivalType { smallFest=1, middleFest, greatFest };
 
-#endif  //_CAESARIA_ENUMS_INCLUDE_H_
+#endif  //_CAESARIA_FESTIVALTYPE_INCLUDE_H_

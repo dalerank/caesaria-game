@@ -76,46 +76,40 @@ Renderer::ModePtr DestroyMode::create()
   return ret;
 }
 
-Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
+Renderer::ModePtr BuildMode::create(object::Type type )
 {
   BuildMode* newCommand = new BuildMode();
-  TileOverlayPtr overlay = TileOverlayFactory::instance().create( type );
+  OverlayPtr overlay = TileOverlayFactory::instance().create( type );
   newCommand->_d->construction = ptr_cast<Construction>( overlay );
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
   newCommand->_d->isRoadAssignment = false;
   newCommand->_d->isCheckWalkers = true;
 
-  switch( type )
+  if( type == object::road )
   {
-  case objects::road:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
     newCommand->_d->isCheckWalkers = false;
     newCommand->_d->isRoadAssignment = false;
-  break;
-
-  case objects::aqueduct:
-  case objects::wall:
-  case objects::fortification:
+  }
+  else if( type == object::aqueduct ||
+           type == object::wall ||
+           type == object::fortification )
+  {
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
-  break;
-
-  case objects::garden:
+  }
+  else if( type == object::garden )
+  {
     newCommand->_d->isMultiBuilding = true;
     newCommand->_d->isCheckWalkers = true;
-  break;
-
-  case objects::house:
-  case objects::plaza:
+  }
+  else if( type == object::house || type == object::plaza )
+  {
     newCommand->_d->isMultiBuilding = true;
     newCommand->_d->isCheckWalkers = false;
-  break;
-
-  default:
-  break;
-  }   
+  }
 
   Renderer::ModePtr ret( newCommand );
   ret->drop();
