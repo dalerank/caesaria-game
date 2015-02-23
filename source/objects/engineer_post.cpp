@@ -30,9 +30,6 @@ EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engin
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
   //setPicture( ResourceGroup::buildingEngineer, 56 );
 
-  _animationRef().load( ResourceGroup::buildingEngineer, 57, 10 );
-  _animationRef().setDelay( 4 );
-  _animationRef().setOffset( Point( 10, 42 ) );
   _fgPicturesRef().resize(1);
 }
 

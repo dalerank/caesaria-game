@@ -288,7 +288,7 @@ const MetaData& MetaDataHolder::getData(const object::Type buildingType)
   mapIt = instance()._d->objectsInfo.find(buildingType);
   if (mapIt == instance()._d->objectsInfo.end())
   {
-    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType );
+    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType.toInt() );
     return MetaData::invalid;
   }
   return mapIt->second;

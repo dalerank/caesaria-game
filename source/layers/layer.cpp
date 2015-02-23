@@ -95,6 +95,7 @@ void Layer::handleEvent(NEvent& event)
       Point savePos = _d->lastCursorPos;
       bool movingPressed = _isMovingButtonPressed( event );
       _d->lastCursorPos = event.mouse.pos();
+
       if( !movingPressed || _d->startCursorPos.x() < 0 )
       {
         _d->startCursorPos = _d->lastCursorPos;
@@ -103,7 +104,7 @@ void Layer::handleEvent(NEvent& event)
       if( movingPressed )
       {
         Point delta = _d->lastCursorPos - savePos;
-        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );        
+        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );
       }
 
       Tile* selectedTile = _d->camera->at( _d->lastCursorPos, true );

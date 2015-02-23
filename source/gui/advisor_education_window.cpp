@@ -222,7 +222,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
   SrvcInfo info = findInfo( bType );
   if( info.service == Service::srvCount )
   {
-    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
+    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType.toInt() );
   }
 
   foreach( it, servBuildings )

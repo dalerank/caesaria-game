@@ -1,6 +1,6 @@
 {
   none : {
-    move : { back : true, rc : "cartnone", start : 1, frames : 7, step : 8 }
+    move : { back : false, rc : "cartnone", start : 1, frames : 7, step : 8 }
   }
 
   immigrantScarb : {

@@ -162,7 +162,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
 void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = showInfo; }
 
-void Manager::addInfobox( const object::Type type, const std::string& typeName, InfoboxCreator* ctor )
+void Manager::addInfobox( const object::Type& type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
 

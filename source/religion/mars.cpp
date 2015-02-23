@@ -79,7 +79,7 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
   }
   else
   {
-    title = "##smallcurse_of_mars_title##";
+    title = "##smallcurse_of_mars_failed_title##";
     text = "##smallcurse_of_mars_failed_text##";
   }
 

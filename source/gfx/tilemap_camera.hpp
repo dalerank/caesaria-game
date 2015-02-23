@@ -63,6 +63,7 @@ public:
   int scrollSpeed() const;
 
   Tile* at( const Point& pos, bool overborder ) const;
+  virtual Point mpos( const Point& pos ) const;
   Tile* at( const TilePos& pos ) const;
   Tile* centerTile() const;
 

@@ -86,7 +86,7 @@ public:
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
-  void addInfobox( const object::Type type, const std::string& typeName, InfoboxCreator* ctor );
+  void addInfobox( const object::Type& type, const std::string& typeName, InfoboxCreator* ctor );
   bool canCreate( const object::Type type ) const;
 private:
   Manager();
