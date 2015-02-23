@@ -77,7 +77,7 @@ bool StartWork::_mayExec(Game& game, unsigned int ) const
 
     foreach( i, _bldTypes )
     {
-      WorkingBuildingList bld = helper.find<WorkingBuilding>( constants::objects::Type(*i) );
+      WorkingBuildingList bld = helper.find<WorkingBuilding>( object::Type(*i) );
 
       ret = !bld.empty();
 

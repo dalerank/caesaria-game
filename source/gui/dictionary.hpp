@@ -28,7 +28,7 @@ namespace gui
 class DictionaryWindow : public Window
 {
 public:
-  static void show( Widget* parent, constants::objects::Type type );
+  static void show( Widget* parent, object::Type type );
   static void show( Widget* parent, const std::string& uri );
 
   virtual ~DictionaryWindow();

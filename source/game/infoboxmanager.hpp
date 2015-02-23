@@ -22,7 +22,6 @@
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
-#include "enums.hpp"
 #include "gfx/tilemap.hpp"
 #include "gui/info_box.hpp"
 
@@ -87,8 +86,8 @@ public:
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
-  void addInfobox( const constants::objects::Type type, const std::string& typeName, InfoboxCreator* ctor );
-  bool canCreate( const constants::objects::Type type ) const;
+  void addInfobox( const object::Type type, const std::string& typeName, InfoboxCreator* ctor );
+  bool canCreate( const object::Type type ) const;
 private:
   Manager();
   virtual ~Manager();

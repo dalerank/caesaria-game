@@ -27,7 +27,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -81,7 +81,7 @@ public:
 Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
-  _d->direction = north;
+  _d->direction = direction::north;
   _d->virtWidth = tilemap::cellSize().width() * 2;
 }
 

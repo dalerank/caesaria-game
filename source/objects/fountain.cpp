@@ -39,7 +39,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fountain, Fountain)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fountain, Fountain)
 
 namespace {
 static const unsigned int fillDistanceNormal = 4;
@@ -60,7 +60,7 @@ public:
 };
 
 Fountain::Fountain()
-  : ServiceBuilding(Service::fountain, objects::fountain, Size(1)),
+  : ServiceBuilding(Service::fountain, object::fountain, Size(1)),
     _d( new Impl )
 {  
   setPicture( ResourceGroup::utilitya, 10 );
@@ -172,7 +172,7 @@ bool Fountain::haveReservoirAccess() const
   foreach( tile, reachedTiles )
   {
     OverlayPtr overlay = (*tile)->overlay();
-    if( overlay.isValid() && (objects::reservoir == overlay->type()) )
+    if( overlay.isValid() && (object::reservoir == overlay->type()) )
     {
       return true;
     }

@@ -37,20 +37,19 @@
 #include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fig_farm, FarmFruit)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wheat_farm, FarmWheat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::vinard, FarmGrape)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::meat_farm, FarmMeat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::olive_farm, FarmOlive)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::vegetable_farm, FarmVegetable)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm, FarmFruit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm, FarmWheat)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard, FarmGrape)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm, FarmMeat)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm, FarmOlive)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 
 class FarmTile : public Construction
 {
 public:
-  FarmTile() : Construction( objects::farmtile, 1 ) {}
+  FarmTile() : Construction( object::farmtile, 1 ) {}
   FarmTile(const good::Product outGood, const TilePos& farmpos);
   virtual ~FarmTile() {}
   Picture& getPicture();
@@ -64,10 +63,10 @@ private:
   TilePos _farmpos;
 };
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::farmtile, FarmTile)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::farmtile, FarmTile)
 
 FarmTile::FarmTile( const good::Product outGood, const TilePos& farmpos )
- : Construction( objects::farmtile, 1 )
+ : Construction( object::farmtile, 1 )
 {
   _farmpos = farmpos;
   //_animation.load( ResourceGroup::commerce, picIdx, 5);
@@ -115,7 +114,7 @@ public:
   int lastProgress;
 };
 
-Farm::Farm(const good::Product outGood, const objects::Type type )
+Farm::Farm(const good::Product outGood, const object::Type type )
   : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
 {
   outStockRef().setCapacity( 100 );
@@ -257,7 +256,7 @@ unsigned int Farm::produceQty() const
 
 Farm::~Farm() {}
 
-FarmWheat::FarmWheat() : Farm(good::wheat, objects::wheat_farm)
+FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 {
 }
 
@@ -265,7 +264,7 @@ std::string FarmWheat::troubleDesc() const
 {
   city::Helper helper( _city() );
 
-  LocustList lc = helper.findw<Locust>( walker::locust, pos() );
+  LocustList lc = helper.findw<Locust>( constants::walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";
@@ -285,22 +284,22 @@ bool FarmWheat::build( const city::AreaInfo& info )
   return ret;
 }
 
-FarmOlive::FarmOlive() : Farm(good::olive, objects::olive_farm)
+FarmOlive::FarmOlive() : Farm(good::olive, object::olive_farm)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(good::grape, objects::vinard)
+FarmGrape::FarmGrape() : Farm(good::grape, object::vinard)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(good::meat, objects::meat_farm)
+FarmMeat::FarmMeat() : Farm(good::meat, object::meat_farm)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(good::fruit, objects::fig_farm)
+FarmFruit::FarmFruit() : Farm(good::fruit, object::fig_farm)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(good::vegetable, objects::vegetable_farm)
+FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 {
 }

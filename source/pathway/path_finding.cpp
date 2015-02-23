@@ -58,7 +58,7 @@ Propagator::Propagator(PlayerCityPtr city) : _d( new Impl )
 
 void Propagator::setAllLands(const bool value) {   _d->allLands = value;}
 void Propagator::setAllDirections(const bool value){  _d->allDirections = value;}
-void Propagator::setObsoleteOverlay( constants::objects::Type type){ _d->obsoleteOvs.insert( type ); }
+void Propagator::setObsoleteOverlay( object::Type type){ _d->obsoleteOvs.insert( type ); }
 void Propagator::init(TilePos origin){  init( _d->tilemap->at( origin ) );}
 
 void Propagator::setObsoleteOverlays(const Propagator::ObsoleteOverlays& ovs)
@@ -175,7 +175,7 @@ void Propagator::propagate(const unsigned int maxDistance)
    }
 }
 
-DirectPRoutes Propagator::getRoutes(const constants::objects::Type buildingType)
+DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
 {
   DirectPRoutes ret;
   // init the building list
@@ -334,7 +334,7 @@ DirectRoute Propagator::getShortestRoute(const DirectPRoutes& routes )
   return ret;
 }
 
-DirectRoute Propagator::getShortestRoute(const constants::objects::Type buildingType )
+DirectRoute Propagator::getShortestRoute(const object::Type buildingType )
 {
   DirectPRoutes routes = getRoutes( buildingType );
 

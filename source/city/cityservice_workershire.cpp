@@ -51,7 +51,7 @@ const unsigned int defaultHireDistance = 36;
 class WorkersHire::Impl
 {
 public:
-  typedef std::vector<constants::objects::Type> BuildingsType;
+  typedef std::vector<object::Type> BuildingsType;
   typedef std::map<object::Group, BuildingsType> GroupBuildings;
 
   WalkerList hrInCity;
@@ -59,7 +59,7 @@ public:
   DateTime lastMessageDate;
   HirePriorities priorities;
   GroupBuildings industryBuildings;
-  std::set<constants::objects::Type> excludeTypes;
+  std::set<object::Type> excludeTypes;
 
 public:
   void fillIndustryMap();
@@ -81,7 +81,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
 {
   _d->lastMessageDate = game::Date::current();
-  _d->excludeTypes.insert( objects::fountain );
+  _d->excludeTypes.insert( object::fountain );
   _d->fillIndustryMap();
   _d->distance = defaultHireDistance;
 
@@ -152,7 +152,7 @@ void WorkersHire::timeStep( const unsigned int time )
   _d->hrInCity = _city()->walkers( walker::recruter );
 
   city::Helper helper( _city() );
-  WorkingBuildingList buildings = helper.find< WorkingBuilding >( objects::any );
+  WorkingBuildingList buildings = helper.find< WorkingBuilding >( object::any );
 
   if( !_d->priorities.empty() )
   {

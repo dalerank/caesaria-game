@@ -26,11 +26,10 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::garden, Garden)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::garden, Garden)
 
-Garden::Garden() : Construction(constants::objects::garden, Size(1) )
+Garden::Garden() : Construction( object::garden, Size(1) )
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed

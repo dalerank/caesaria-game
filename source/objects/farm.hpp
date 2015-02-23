@@ -23,7 +23,7 @@
 class Farm : public Factory
 {
 public:
-  Farm(const good::Product outGood, const constants::objects::Type type );
+  Farm(const good::Product outGood, const object::Type type );
 
   virtual ~Farm();
   void init();

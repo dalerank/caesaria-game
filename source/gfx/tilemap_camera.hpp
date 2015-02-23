@@ -71,7 +71,7 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged();
-  virtual Signal1<constants::Direction>& onDirectionChanged();
+  virtual Signal1<Direction>& onDirectionChanged();
   
 private:
   void _setCenter(Point pos, bool checkBorder);

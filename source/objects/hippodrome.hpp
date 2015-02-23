@@ -25,7 +25,7 @@ class HippodromeSection : public Building
 {
 public:
   typedef enum { middle, ended } Type;
-  HippodromeSection( Hippodrome& base, constants::Direction direction, Type type );
+  HippodromeSection( Hippodrome& base, Direction direction, Type type );
 
   virtual ~HippodromeSection();
   virtual void destroy();
@@ -33,7 +33,7 @@ public:
   void setAnimationVisible( bool visible );
 private:
   TilePos _basepos;
-  constants::Direction _direction;
+  Direction _direction;
   Type _type;
 };
 typedef SmartPtr<HippodromeSection> HippodromeSectionPtr;
@@ -46,7 +46,7 @@ public:
   virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
   virtual void deliverService();
   virtual bool build(const city::AreaInfo &info);
-  constants::Direction direction() const;
+  Direction direction() const;
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
   virtual void destroy();

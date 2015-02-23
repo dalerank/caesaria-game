@@ -59,7 +59,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     // Base set of visible objects
       needDrawAnimations = true;
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       //taxLevel = house->getServiceValue( Service::forum );

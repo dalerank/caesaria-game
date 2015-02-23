@@ -29,9 +29,8 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::market, Market)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::market, Market)
 
 class Market::Impl
 {
@@ -64,7 +63,7 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, constants::objects::market, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
   _d( new Impl )
 {
   _fgPicturesRef().resize(1);  // animation

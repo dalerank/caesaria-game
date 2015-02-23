@@ -42,7 +42,7 @@ public:
   ConstructionExtensionList extensions;
 };
 
-Construction::Construction(const objects::Type type, const Size& size)
+Construction::Construction(const object::Type type, const Size& size)
   : Overlay( type, size ), _d( new Impl )
 {
   _d->params[ pr::fire ] = 0;
@@ -113,7 +113,7 @@ bool Construction::build( const city::AreaInfo& info )
   Overlay::build( info );
 
   std::string name =  utils::format( 0xff, "%s_%d_%d",
-                                            MetaDataHolder::findTypename( type() ).c_str(),
+                                            type().toString().c_str(),
                                             info.pos.i(), info.pos.j() );
   setName( name );
 

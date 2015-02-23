@@ -46,11 +46,11 @@ class TileOverlayFactory
 {
 public:
   static TileOverlayFactory& instance();
-  OverlayPtr create( const constants::objects::Type type ) const;
+  OverlayPtr create( const object::Type type ) const;
   OverlayPtr create( const std::string& typeName ) const;
 
-  bool canCreate( const constants::objects::Type type ) const;
-  void addCreator( const constants::objects::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+  bool canCreate( const object::Type type ) const;
+  void addCreator( const object::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
   TileOverlayFactory();
 

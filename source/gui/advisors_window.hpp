@@ -19,7 +19,6 @@
 #define __CAESARIA_ADVISORSWINDOW_H_INCLUDED__
 
 #include "window.hpp"
-#include "game/enums.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui

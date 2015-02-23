@@ -48,7 +48,7 @@ using namespace constants;
 using namespace gfx;
 using namespace events;
 using namespace city;
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::house, House)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::house, House)
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
@@ -90,7 +90,7 @@ public:
   int getFoodLevel() const;
 };
 
-House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl )
+House::House( HouseLevel::ID level ) : Building( object::house ), _d( new Impl )
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
@@ -558,7 +558,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         }
         else
         {
-          if( overlay->type() != objects::garden )
+          if( overlay->type() != object::garden )
           {
             mayGrow = false; //not garden, can't grow
             break;
@@ -762,7 +762,7 @@ void House::_levelDown()
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( objects::house ) );
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( object::house ) );
         CitizenGroup moveGroup = remHabitants( peoplesPerHouse );
         house->addHabitants( moveGroup );
 

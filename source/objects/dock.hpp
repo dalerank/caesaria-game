@@ -50,8 +50,8 @@ public:
   void storeGoods( good::Stock& stock, const int amount);
 
 private:
-  void _setDirection( constants::Direction direction );
-  virtual void _updatePicture( constants::Direction direction );
+  void _setDirection( Direction direction );
+  virtual void _updatePicture( Direction direction );
   void _tryReceiveGoods();
   void _tryDeliverGoods();
 

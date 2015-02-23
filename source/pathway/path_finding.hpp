@@ -30,14 +30,14 @@
 class Propagator
 {
 public:
-  typedef std::set<constants::objects::Type> ObsoleteOverlays;
+  typedef std::set<object::Type> ObsoleteOverlays;
 
   Propagator( PlayerCityPtr city );
   ~Propagator();
 
   void setAllLands(const bool value);
   void setAllDirections(const bool value);
-  void setObsoleteOverlay( constants::objects::Type type );
+  void setObsoleteOverlay( object::Type type );
   void setObsoleteOverlays( const ObsoleteOverlays& ovs );
 
   /** propagate some data in the road network
@@ -52,10 +52,10 @@ public:
 
   /** returns all paths starting at origin */
   PathwayList getWays(const unsigned int maxDistance);
-  DirectPRoutes getRoutes(const constants::objects::Type buildingType);
+  DirectPRoutes getRoutes(const object::Type buildingType);
 
   DirectRoute getShortestRoute( const DirectPRoutes& routes );
-  DirectRoute getShortestRoute( const constants::objects::Type buildingType );
+  DirectRoute getShortestRoute( const object::Type buildingType );
 
 private:
   class Impl;

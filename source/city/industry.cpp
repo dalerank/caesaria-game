@@ -17,8 +17,6 @@
 
 #include "industry.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

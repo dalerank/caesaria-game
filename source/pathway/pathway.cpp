@@ -28,7 +28,7 @@ namespace {
 static Tile invalidTile( TilePos(-1, -1) );
 }
 
-class Directions : public std::vector<constants::Direction>
+class Directions : public std::vector<Direction>
 {
 public:
   Directions& operator =(const Directions& a )
@@ -107,7 +107,7 @@ const Tile& Pathway::current() const
            : invalidTile;
 }
 
-constants::Direction Pathway::direction()
+Direction Pathway::direction()
 {
   if( !_d->tiles.empty() )
   {
@@ -123,7 +123,7 @@ constants::Direction Pathway::direction()
     }
   }
 
-  return constants::noneDirection;
+  return direction::none;
 }
 
 void Pathway::toggleDirection()
@@ -161,14 +161,14 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
 {
   switch (direction)
   {
-  case north      : _d->destination += TilePos( 0, 1 );  break;
-  case northEast  : _d->destination += TilePos( 1, 1 );  break;
-  case east       : _d->destination += TilePos( 1, 0 );  break;
-  case southEast  : _d->destination += TilePos( 1, -1 ); break;
-  case south      : _d->destination += TilePos( 0, -1 ); break;
-  case southWest  : _d->destination += TilePos( -1, -1 );break;
-  case west       : _d->destination += TilePos( -1, 0 ); break;
-  case northWest  : _d->destination += TilePos( -1, 1 ); break;
+  case direction::north      : _d->destination += TilePos( 0, 1 );  break;
+  case direction::northEast  : _d->destination += TilePos( 1, 1 );  break;
+  case direction::east       : _d->destination += TilePos( 1, 0 );  break;
+  case direction::southEast  : _d->destination += TilePos( 1, -1 ); break;
+  case direction::south      : _d->destination += TilePos( 0, -1 ); break;
+  case direction::southWest  : _d->destination += TilePos( -1, -1 );break;
+  case direction::west       : _d->destination += TilePos( -1, 0 ); break;
+  case direction::northWest  : _d->destination += TilePos( -1, 1 ); break;
   default:
     _d->destination += TilePos( 0, 1 );  break;
     Logger::warning( "Unexpected Direction:%d", direction);
@@ -192,19 +192,19 @@ void Pathway::setNextTile( const Tile& tile )
 
   Direction direction;
 
-  if (dI==0 && dJ==0) {  direction = noneDirection; }
-  else if (dI==0 && dJ==1) { direction = north; }
-  else if (dI==1 && dJ==1) { direction = northEast; }
-  else if (dI==1 && dJ==0) { direction = east; }
-  else if (dI==1 && dJ==-1){ direction = southEast; }
-  else if (dI==0 && dJ==-1){ direction = south; }
-  else if (dI==-1 && dJ==-1){ direction = southWest;}
-  else if (dI==-1 && dJ==0) {direction = west;}
-  else if (dI==-1 && dJ==1){ direction = northWest; }
+  if (dI==0 && dJ==0) {  direction = direction::none; }
+  else if (dI==0 && dJ==1) { direction = direction::north; }
+  else if (dI==1 && dJ==1) { direction = direction::northEast; }
+  else if (dI==1 && dJ==0) { direction = direction::east; }
+  else if (dI==1 && dJ==-1){ direction = direction::southEast; }
+  else if (dI==0 && dJ==-1){ direction = direction::south; }
+  else if (dI==-1 && dJ==-1){ direction = direction::southWest;}
+  else if (dI==-1 && dJ==0) {direction = direction::west;}
+  else if (dI==-1 && dJ==1){ direction = direction::northWest; }
   else
   {
     Logger::warning( "WARNING!!! Pathway::setNextTile() destination[%d, %d] out of map", dI, dJ );
-    direction = noneDirection;
+    direction = direction::none;
   }
 
   _d->tiles.push_back( const_cast<Tile*>( &tile ) );
@@ -239,14 +239,14 @@ void Pathway::prettyPrint() const
 
     switch (direction)
     {
-    case north: strDir += "N";  break;
-    case northEast: strDir += "NE"; break;
-    case east: strDir += "E"; break;
-    case southEast: strDir += "SE"; break;
-    case south: strDir += "S";   break;
-    case southWest: strDir += "SW"; break;
-    case west: strDir += "W";  break;
-    case northWest: strDir += "NW"; break;
+    case direction::north: strDir += "N";  break;
+    case direction::northEast: strDir += "NE"; break;
+    case direction::east: strDir += "E"; break;
+    case direction::southEast: strDir += "SE"; break;
+    case direction::south: strDir += "S";   break;
+    case direction::southWest: strDir += "SW"; break;
+    case direction::west: strDir += "W";  break;
+    case direction::northWest: strDir += "NW"; break;
     default:
       //"Unexpected Direction:"
       _CAESARIA_DEBUG_BREAK_IF( direction );

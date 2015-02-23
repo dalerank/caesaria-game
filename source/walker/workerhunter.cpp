@@ -23,7 +23,6 @@
 #include "servicewalker_helper.hpp"
 #include "city/helper.hpp"
 #include "core/variant_map.hpp"
-#include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/logger.hpp"

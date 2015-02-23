@@ -18,20 +18,25 @@
 #ifndef __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 #define __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 
-#define DEFINE_NAMEDTYPE(name) \
+#define BEGIN_NAMEDTYPE(name) \
 class name \
 { \
+protected: \
+  int _type;\
 public:   \
   explicit name( int which=0) { _type = which; } \
-  int toInt() const { return _type; } \
-  bool operator==( const name& a ) const { return _type == a._type; } \
-  bool operator!=( const name& a ) const { return _type != a._type; } \
-  bool operator<( const name& a ) const { return _type < a._type; } \
-  bool operator>( const name& a ) const { return _type > a._type; } \
-  bool operator<=( const name& a ) const { return _type <= a._type; } \
-  name& operator++() { ++_type; return *this; } \
-protected: \
-  int _type; \
-};
+  inline int toInt() const { return _type; } \
+  inline bool operator==( const name& a ) const { return _type == a._type; } \
+  inline bool operator!=( const name& a ) const { return _type != a._type; } \
+  inline bool operator<( const name& a ) const { return _type < a._type; } \
+  inline bool operator>( const name& a ) const { return _type > a._type; } \
+  inline bool operator<=( const name& a ) const { return _type <= a._type; } \
+  inline name& operator++() { ++_type; return *this; }
+
+#define END_NAMEDTYPE(name) };
+
+#define DEFINE_NAMEDTYPE(name) \
+  BEGIN_NAMEDTYPE(name) \
+  END_NAMEDTYPE(name)
 
 #endif //__CAESARIA_NAMEDTYPE_INCLUDE_HPP__

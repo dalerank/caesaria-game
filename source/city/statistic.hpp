@@ -23,9 +23,9 @@
 #include "core/signals.hpp"
 #include "good/good.hpp"
 #include "predefinitions.hpp"
-#include "objects/predefinitions.hpp"
+#include "city/festivaltype.hpp"
+#include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
-#include "game/enums.hpp"
 #include "game/service.hpp"
 #include <set>
 
@@ -53,7 +53,7 @@ unsigned int getHealth( PlayerCityPtr city );
 int months2lastAttack( PlayerCityPtr city );
 int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
-HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
+HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<object::Type> &checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
 GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );

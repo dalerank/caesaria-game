@@ -30,8 +30,8 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::road, Road)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::plaza, Plaza)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::road, Road)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::plaza, Plaza)
 
 namespace {
 static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
@@ -39,7 +39,7 @@ typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 
 }
 
 Road::Road()
-  : Construction( objects::road, Size(1) )
+  : Construction( object::road, Size(1) )
 {
   _paved = 0;
 }
@@ -262,7 +262,7 @@ Plaza::Plaza()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(objects::plaza);
+  setType(object::plaza);
   setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
   setSize( Size( 1 ) );
 }

@@ -73,7 +73,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     {
       needDrawAnimations = true;
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       crime = (int)house->getServiceValue( Service::crime );

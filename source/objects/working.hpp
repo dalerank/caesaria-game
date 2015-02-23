@@ -24,7 +24,7 @@
 class WorkingBuilding : public Building
 {
 public:
-  WorkingBuilding(const constants::objects::Type type, const Size& size);
+  WorkingBuilding(const object::Type type, const Size& size);
   virtual ~WorkingBuilding();
 
   void setMaximumWorkers(const unsigned int maximumWorkers);

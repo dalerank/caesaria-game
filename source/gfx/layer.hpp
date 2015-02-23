@@ -23,6 +23,7 @@
 #include "engine.hpp"
 #include "tile.hpp"
 #include "renderer.hpp"
+#include "objects/constants.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
@@ -96,7 +97,7 @@ protected:
   void _addWalkerType( constants::walker::Type wtype );
   void _fillVisibleObjects( int ltype );
   WalkerTypes& _visibleWalkers();
-  bool _isVisibleObject( int ovType );
+  bool _isVisibleObject( object::Type ovType );
 
   TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 

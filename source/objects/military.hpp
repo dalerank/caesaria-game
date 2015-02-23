@@ -26,6 +26,7 @@ class FortLegionary : public Fort
 {
 public:  
   FortLegionary();
+  virtual int flagIndex() const;
 
 protected:
   virtual void _readyNewSoldier();
@@ -35,6 +36,7 @@ class FortJaveline : public Fort
 {
 public:  
   FortJaveline();
+  virtual int flagIndex() const;
 
 protected:
   virtual void _readyNewSoldier();
@@ -45,6 +47,7 @@ class FortMounted : public Fort
 public:  
   FortMounted();
   virtual bool build(const city::AreaInfo &info);
+  virtual int flagIndex() const;
 
 protected:
   virtual void _readyNewSoldier();

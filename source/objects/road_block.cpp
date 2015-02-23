@@ -28,7 +28,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::roadBlock, RoadBlock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::roadBlock, RoadBlock)
 
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 RoadBlock::RoadBlock()
@@ -37,7 +37,7 @@ RoadBlock::RoadBlock()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(objects::roadBlock);
+  setType(object::roadBlock);
   setPicture( ResourceGroup::roadBlock, 1 );
 }
 

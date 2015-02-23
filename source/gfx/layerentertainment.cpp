@@ -88,7 +88,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
       //  drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       //}
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       entertainmentLevel = _getLevelValue( house );
@@ -196,33 +196,33 @@ Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
   switch( type )
   {
   case citylayer::entertainment:
-    _flags << objects::unknown << objects::theater
-           << objects::amphitheater << objects::colloseum
-           << objects::hippodrome << objects::actorColony
-           << objects::gladiatorSchool << objects::lionsNursery
-           << objects::chariotSchool;
+    _flags << object::unknown << object::theater
+           << object::amphitheater << object::colloseum
+           << object::hippodrome << object::actorColony
+           << object::gladiatorSchool << object::lionsNursery
+           << object::chariotSchool;
 
     _visibleWalkers() << walker::actor << walker::gladiator
                       << walker::lionTamer << walker::charioteer;
   break;
 
   case citylayer::theater:
-    _flags << objects::theater << objects::actorColony;
+    _flags << object::theater << object::actorColony;
     _visibleWalkers() << walker::actor;
   break;
 
   case citylayer::amphitheater:
-    _flags << objects::amphitheater << objects::actorColony << objects::gladiatorSchool;
+    _flags << object::amphitheater << object::actorColony << object::gladiatorSchool;
     _visibleWalkers() << walker::actor << walker::gladiator;
   break;
 
   case citylayer::colloseum:
-    _flags << objects::colloseum << objects::gladiatorSchool << objects::lionsNursery;
+    _flags << object::colloseum << object::gladiatorSchool << object::lionsNursery;
     _visibleWalkers() << walker::gladiator << walker::lionTamer;
   break;
 
   case citylayer::hippodrome:
-    _flags << objects::hippodrome << objects::chariotSchool;
+    _flags << object::hippodrome << object::chariotSchool;
     _addWalkerType( walker::charioteer );
   break;
 

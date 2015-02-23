@@ -54,7 +54,7 @@ WalkerPtr Corpse::create(PlayerCityPtr city)
 WalkerPtr Corpse::create( PlayerCityPtr city, WalkerPtr wlk )
 {
   AnimationBank::MovementAnimation ma = AnimationBank::find( wlk->type() );
-  DirectedAction action( acDie, north );
+  DirectedAction action( acDie, direction::north );
   Animation animation = ma[ action ];
 
   if( animation.isValid() )

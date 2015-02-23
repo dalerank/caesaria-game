@@ -27,12 +27,11 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::clay_pit, ClayPit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::clay_pit, ClayPit)
 
 ClayPit::ClayPit()
-  : Factory( good::none, good::clay, constants::objects::clay_pit, Size(2) )
+  : Factory( good::none, good::clay, object::clay_pit, Size(2) )
 {
   _fgPicturesRef().resize(2);
 

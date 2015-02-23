@@ -57,7 +57,7 @@ public:
   float cachedPopkoef;
 };
 
-Building::Building(const constants::objects::Type type, const Size& size )
+Building::Building(const object::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
   setState( pr::inflammability, 1 );

@@ -49,7 +49,7 @@ namespace layer
 class Layer::Impl
 {
 public:
-  typedef std::set<int> AlwaysDrawObjects;
+  typedef std::set<object::Type> AlwaysDrawObjects;
 
   Point lastCursorPos;
   Point startCursorPos;
@@ -652,7 +652,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->terraintPic = MetaDataHolder::randomPicture( objects::terrain, 1 );
+  _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, 1 );
   _d->tilePosText.init( Size( 240, 80 ) );
 }
 
@@ -667,14 +667,14 @@ void Layer::_fillVisibleObjects(int ltype)
   VariantList vl = vm.get( "visibleObjects" ).toList();
   foreach( it, vl )
   {
-    int ovType = MetaDataHolder::findType( it->toString() );
-    if( ovType != objects::unknown )
+    object::Type ovType = MetaDataHolder::findType( it->toString() );
+    if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
     }
 }
 
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
-bool Layer::_isVisibleObject(int ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
+bool Layer::_isVisibleObject(object::Type ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 
 void Layer::destroy() {}

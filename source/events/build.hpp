@@ -26,7 +26,7 @@ namespace events
 class BuildAny : public GameEvent
 {
 public:
-  static GameEventPtr create( const TilePos&, constants::objects::Type type );
+  static GameEventPtr create( const TilePos&, object::Type type );
   static GameEventPtr create( const TilePos&, OverlayPtr overlay );
 
 protected:

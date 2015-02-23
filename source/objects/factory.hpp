@@ -27,7 +27,7 @@ class Factory : public WorkingBuilding
 {
 public:
   Factory( const good::Product inGood, const good::Product outGood,
-           const constants::objects::Type type, const Size& size );
+           const object::Type type, const Size& size );
   virtual ~Factory();
 
   good::Stock& inStockRef();

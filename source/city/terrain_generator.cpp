@@ -541,7 +541,7 @@ static void __createRivers(Game& game )
 
       foreach( it, wayTiles )
       {
-        OverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::river );
+        OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
 
         //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
         (*it)->setPicture( Picture::getInvalid() );
@@ -596,7 +596,7 @@ static void __createRoad(Game& game )
 
     foreach( it, wayTiles )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::road );
+      OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
       Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );
@@ -762,13 +762,13 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture land = MetaDataHolder::randomPicture( constants::objects::terrain, Size(1) );
+        Picture land = MetaDataHolder::randomPicture( object::terrain, Size(1) );
         tile.setPicture( land );
 
         Picture tree = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
 
-        OverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::tree );
+        OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
         if( overlay != NULL )
         {
           city::AreaInfo info = { oCity, tile.pos(), TilesArray() };

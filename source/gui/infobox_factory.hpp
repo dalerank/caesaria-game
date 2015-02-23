@@ -37,7 +37,7 @@ protected:
   virtual void _showHelp();
 
 protected:
-  constants::objects::Type _type;
+  object::Type _type;
   Label* _lbProduction;
   Label* _lbEffciency;
 };

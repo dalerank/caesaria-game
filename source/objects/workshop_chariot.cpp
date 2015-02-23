@@ -30,9 +30,9 @@
 
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::chariotSchool, WorkshopChariot)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::chariotSchool, WorkshopChariot)
 
-WorkshopChariot::WorkshopChariot() : TrainingBuilding( objects::chariotSchool, Size(3) )
+WorkshopChariot::WorkshopChariot() : TrainingBuilding( object::chariotSchool, Size(3) )
 {
   _fgPicturesRef().resize(1);
 }

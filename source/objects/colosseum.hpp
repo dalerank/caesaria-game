@@ -32,6 +32,7 @@ public:
   bool isNeedGladiators() const;
   bool isShowGladiatorBattles() const;
   bool isShowLionBattles() const;
+  virtual int maxVisitors() const;
 
   DateTime lastAnimalBoutDate() const;
   DateTime lastGladiatorBoutDate() const;

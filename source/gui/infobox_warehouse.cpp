@@ -37,7 +37,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(warehouse,objects::warehouse,AboutWarehouse)
+REGISTER_INFOBOX_IN_FACTORY(warehouse,object::warehouse,AboutWarehouse)
 
 AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )

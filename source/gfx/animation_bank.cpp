@@ -28,7 +28,7 @@
 #include "picture_info_bank.hpp"
 #include "core/variant_map.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -160,7 +160,7 @@ void AnimationBank::Impl::loadStage( DirectedAnimations& refMap , int who, const
                                      int delay)
 {
   MovementAnimation& ioMap = refMap[ who ].actions;
-  DirectedAction action( wa, noneDirection );
+  DirectedAction action( wa, direction::none );
 
   if( step == 0 )
   {
@@ -214,7 +214,7 @@ void AnimationBank::Impl::loadStage( int type, const std::string& stageName, con
       VARIANT_LOAD_ANYDEF( offset, stageInfo, offset );
       pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
 
-      std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
+      std::string typeName = WalkerHelper::getTypename( (constants::walker::Type)type );
       Logger::warning( "AnimationBank: load animations for " + typeName + ":" + stageName );
       loadStage( objects, type, rc, start, frames, (Walker::Action)action, step, delay );
     }
@@ -261,7 +261,7 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations(i
   if( it == objects.end() )
   {
     Logger::warning( "WARNING !!!: AnimationBank can't find config for type %d", wtype );
-    const AnimationBank::MovementAnimation& elMuleta = objects[ walker::unknown ].actions;
+    const AnimationBank::MovementAnimation& elMuleta = objects[ constants::walker::unknown ].actions;
     objects[ wtype ].ownerType = wtype;
     objects[ wtype ].actions = elMuleta;
     return elMuleta;
@@ -293,8 +293,8 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
 
   foreach( i, items )
   {
-    walker::Type wtype = WalkerHelper::getType( i->first );
-    if( wtype != walker::unknown )
+    constants::walker::Type wtype = WalkerHelper::getType( i->first );
+    if( wtype != constants::walker::unknown )
     {
       Logger::warning( "Load config animations for " + i->first );
       _d->animConfigs[ wtype ] = i->second.toMap();
@@ -327,7 +327,7 @@ void AnimationBank::Impl::fixCartOffset( int who, bool back, int addh )
 #undef __CDA
 }
 
-const Animation& AnimationBank::getCart(int good, int capacity, constants::Direction direction, bool& isBack)
+const Animation& AnimationBank::getCart(int good, int capacity, Direction direction, bool& isBack)
 {
   int index = 0;
   if( good != good::none.toInt() )

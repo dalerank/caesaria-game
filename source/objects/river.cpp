@@ -27,13 +27,13 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::river, River)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::river, River)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-River::River() : Overlay( objects::river, Size(1) )
+River::River() : Overlay( object::river, Size(1) )
 {
 }
 

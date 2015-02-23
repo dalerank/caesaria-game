@@ -29,10 +29,10 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::iron_mine, IronMine)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::iron_mine, IronMine)
 
 IronMine::IronMine()
-  : Factory(good::none, good::iron, objects::iron_mine, Size(2) )
+  : Factory(good::none, good::iron, object::iron_mine, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 54 );
 

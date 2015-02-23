@@ -19,7 +19,6 @@
 #include "city.hpp"
 #include "objects/construction.hpp"
 #include "gfx/tile.hpp"
-#include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
@@ -322,7 +321,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 int PlayerCity::strength() const
 {
   city::Helper helper( const_cast<PlayerCity*>( this ) );
-  FortList forts = helper.find<Fort>( objects::any );
+  FortList forts = helper.find<Fort>( object::any );
 
   int ret = 0;
   foreach( i, forts )
@@ -349,10 +348,10 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   city::Helper hlp( city );
   float lastMonthTax = 0;
   
-  ForumList forums = hlp.find< Forum >( objects::forum );
+  ForumList forums = hlp.find< Forum >( object::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = hlp.find< Senate >( objects::senate );
+  SenateList senates = hlp.find< Senate >( object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
@@ -391,7 +390,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
   city::Helper helper( city );
 
-  HouseList houseList = helper.find<House>( objects::house );
+  HouseList houseList = helper.find<House>( object::house );
 
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
@@ -551,7 +550,7 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
-    constants::objects::Type otype = objects::unknown;
+    object::Type otype = object::unknown;
 
     try
     {
@@ -562,7 +561,7 @@ void PlayerCity::save( VariantMap& stream) const
     }
     catch(...)
     {
-      Logger::warning( "ERROR: Cant save overlay type " + MetaDataHolder::findTypename( otype ) );
+      Logger::warning( "ERROR: Cant save overlay type " + otype.toString() );
     }
   }
   stream[ "overlays" ] = vm_overlays;
@@ -622,7 +621,7 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap overlayParams = item->second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    constants::objects::Type overlayType = (constants::objects::Type)config.get( 0 ).toInt();
+    object::Type overlayType = (object::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
     OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );

@@ -76,7 +76,7 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
       //city::Helper helper( _city() );
       //drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
       healthLevel = _getLevelValue( house );
@@ -177,29 +177,29 @@ Health::Health(Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::health:
-    _flags << objects::clinic << objects::hospital
-           << objects::barber << objects::baths;
+    _flags << object::clinic << object::hospital
+           << object::barber << object::baths;
     _visibleWalkers() << walker::doctor << walker::surgeon
                       << walker::barber << walker::bathlady;
   break;
 
   case citylayer::doctor:
-    _flags << objects::clinic;
+    _flags << object::clinic;
     _visibleWalkers() << walker::doctor;
   break;
 
   case citylayer::hospital:
-    _flags << objects::hospital;
+    _flags << object::hospital;
     _visibleWalkers() << walker::surgeon;
   break;
 
   case citylayer::barber:
-    _flags << objects::barber;
+    _flags << object::barber;
     _visibleWalkers() << walker::barber;
   break;
 
   case citylayer::baths:
-    _flags << objects::baths;
+    _flags << object::baths;
     _visibleWalkers() << walker::bathlady;
   break;
   }

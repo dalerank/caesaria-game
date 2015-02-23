@@ -37,7 +37,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)
 
 class WaterSource::Impl
 {
@@ -90,7 +90,7 @@ void Reservoir::initialize(const MetaData& mdata)
 }
 
 Reservoir::Reservoir()
-    : WaterSource( objects::reservoir, Size( 3 ) )
+    : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
   setPicture( ResourceGroup::utilitya, 34 );
@@ -190,7 +190,7 @@ bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Reservoir::isNeedRoadAccess() const{  return false; }
 
-WaterSource::WaterSource(const objects::Type type, const Size& size )
+WaterSource::WaterSource(const object::Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
@@ -276,14 +276,14 @@ void WaterSource::load(const VariantMap &stream)
 }
 
 
-TilePos Reservoir::entry(constants::Direction direction)
+TilePos Reservoir::entry(Direction direction)
 {
   switch( direction )
   {
-  case north: return pos() + TilePos( 1, 2 );
-  case east: return pos() + TilePos( 2, 1 );
-  case south: return pos() + TilePos( 1, 0 );
-  case west: return pos() + TilePos( 0, 1 );
+  case direction::north: return pos() + TilePos( 1, 2 );
+  case direction::east: return pos() + TilePos( 2, 1 );
+  case direction::south: return pos() + TilePos( 1, 0 );
+  case direction::west: return pos() + TilePos( 0, 1 );
   default: return TilePos( -1, -1 );
   }
 }

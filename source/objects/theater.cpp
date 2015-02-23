@@ -26,9 +26,9 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::theater, Theater)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size(2))
 {
   _fgPicturesRef().resize(2);
 
@@ -40,7 +40,7 @@ bool Theater::build( const city::AreaInfo& info )
   ServiceBuilding::build( info );
 
   city::Helper helper( info.city );
-  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
+  ActorColonyList actors = helper.find<ActorColony>( object::actorColony );
 
   if( actors.empty() )
   {
@@ -51,7 +51,7 @@ bool Theater::build( const city::AreaInfo& info )
 }
 
 void Theater::timeStep(const unsigned long time) { EntertainmentBuilding::timeStep( time );}
-int Theater::visitorsNumber() const { return 500; }
+int Theater::currentVisitors() const { return 500; }
 
 void Theater::deliverService()
 {
@@ -69,6 +69,7 @@ void Theater::deliverService()
 }
 
 bool Theater::mayWork() const {  return (numberWorkers() > 0 && traineeValue(walker::actor) > 0); }
+int Theater::maxVisitors() const { return 500; }
 
 WalkerList Theater::_specificWorkers() const
 {

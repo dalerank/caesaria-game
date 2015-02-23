@@ -21,7 +21,6 @@
 #include "build_options.hpp"
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
-#include "game/enums.hpp"
 #include "core/variant.hpp"
 #include "objects/overlay.hpp"
 
@@ -61,14 +60,14 @@ public:
   Options();
   virtual ~Options();
 
-  void setBuildingAvailble( const constants::objects::Type type, bool mayBuild );
+  void setBuildingAvailble( const object::Type type, bool mayBuild );
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
-  unsigned int getBuildingsQuote( const constants::objects::Type type ) const;
+  unsigned int getBuildingsQuote( const object::Type type ) const;
   TilePos memPoint( unsigned int index ) const;
   void setMemPoint( unsigned int index, TilePos point );
 
-  bool isBuildingAvailble( const constants::objects::Type type ) const;
+  bool isBuildingAvailble( const object::Type type ) const;
 
   void clear();
 
@@ -77,8 +76,8 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const constants::objects::Type start, const constants::objects::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const constants::objects::Type start, const constants::objects::Type stop) const;
+  void setBuildingAvailble(const object::Type start, const object::Type stop, bool mayBuild);
+  bool isBuildingsAvailble(const object::Type start, const object::Type stop) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

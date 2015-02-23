@@ -103,7 +103,7 @@ void Tile::setEPos(const TilePos& epos)
                    tilemap::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * tilemap::cellSize().height() );
 }
 
-void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
+void Tile::changeDirection(Tile *masterTile, Direction newDirection)
 {
   if( masterTile && _overlay.isValid() )
   {

@@ -129,15 +129,15 @@ void CultureRating::timeStep(const unsigned int time )
     _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;
     _d->religionPoints = _d->convCoverage2Points( religionPoints, _d->religionCoverage );
 
-    TheaterList theaters = helper.find<Theater>( objects::theater );
+    TheaterList theaters = helper.find<Theater>( object::theater );
     foreach( theater, theaters )
     {
-      _d->theaterVisitors += (*theater)->visitorsNumber();
+      _d->theaterVisitors += (*theater)->currentVisitors();
     }
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
 
-    LibraryList libraries = helper.find<Library>( objects::library );
+    LibraryList libraries = helper.find<Library>( object::library );
     foreach( library, libraries )
     {
       _d->libraryVisitors += (*library)->getVisitorsNumber();
@@ -145,7 +145,7 @@ void CultureRating::timeStep(const unsigned int time )
     _d->libraryCoverage = _d->libraryVisitors / (float)cityPopulation;
     _d->libraryPoints = _d->convCoverage2Points( librariesPoints, _d->libraryCoverage );
 
-    SchoolList schools = helper.find<School>( objects::school );
+    SchoolList schools = helper.find<School>( object::school );
     foreach( school, schools )
     {
       _d->schoolVisitors += (*school)->getVisitorsNumber();
@@ -153,7 +153,7 @@ void CultureRating::timeStep(const unsigned int time )
     _d->schoolCoverage = _d->schoolVisitors / (float)cityPopulation;
     _d->schoolPoints = _d->convCoverage2Points( schoolsPoints, _d->schoolCoverage );
 
-    AcademyList colleges = helper.find<Academy>( objects::academy );
+    AcademyList colleges = helper.find<Academy>( object::academy );
     foreach( college, colleges )
     {
       _d->collegeVisitors += (*college)->getVisitorsNumber();

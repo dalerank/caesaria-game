@@ -81,7 +81,7 @@ public:
   void turnRight();
   void turnLeft();
 
-  constants::Direction direction() const;
+  Direction direction() const;
 
   TilePos fit( const TilePos& pos ) const;
 

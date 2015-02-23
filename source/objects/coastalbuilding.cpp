@@ -27,7 +27,7 @@
 #include "good/store.hpp"
 #include "constants.hpp"
 
-using namespace constants;
+using namespace direction;
 using namespace gfx;
 
 class CoastalFactory::Impl
@@ -46,7 +46,7 @@ public:
 };
 
 CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
-                               const constants::objects::Type type, Size size) : Factory(consume, produce, type, size),
+                               const object::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
 }
@@ -59,7 +59,7 @@ bool CoastalFactory::canBuild( const city::AreaInfo& areaInfo ) const
 
   const_cast< CoastalFactory* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != noneDirection );
+  return (is_constructible && direction != none );
 }
 
 bool CoastalFactory::build( const city::AreaInfo& info )
@@ -171,5 +171,5 @@ Direction CoastalFactory::Impl::getDirection(PlayerCityPtr city, TilePos pos)
     return east;
   }
 
-  return noneDirection;
+  return none;
 }

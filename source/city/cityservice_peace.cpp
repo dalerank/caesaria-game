@@ -43,7 +43,7 @@ public:
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Priorities<int> unsignificantBuildings;
+  Priorities<object::Type> unsignificantBuildings;
 };
 
 city::SrvcPtr Peace::create( PlayerCityPtr city )
@@ -64,20 +64,20 @@ Peace::Peace( PlayerCityPtr city )
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
 
-  _d->unsignificantBuildings << objects::prefecture
-                         << objects::engineering_post
-                         << objects::well
-                         << objects::fortArea
-                         << objects::fort_javelin
-                         << objects::fort_legionaries
-                         << objects::fort_horse
-                         << objects::gatehouse
-                         << objects::fortification
-                         << objects::road
-                         << objects::plaza
-                         << objects::high_bridge
-                         << objects::low_bridge
-                         << objects::tower;
+  _d->unsignificantBuildings << object::prefecture
+                         << object::engineering_post
+                         << object::well
+                         << object::fortArea
+                         << object::fort_javelin
+                         << object::fort_legionaries
+                         << object::fort_horse
+                         << object::gatehouse
+                         << object::fortification
+                         << object::road
+                         << object::plaza
+                         << object::high_bridge
+                         << object::low_bridge
+                         << object::tower;
 }
 
 void Peace::timeStep(const unsigned int time )

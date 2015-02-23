@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(colloseum,objects::colloseum,AboutColosseum)
+REGISTER_INFOBOX_IN_FACTORY(colloseum,object::colloseum,AboutColosseum)
 
 AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
@@ -44,7 +44,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
   setBase( ptr_cast<Construction>( coloseum ) );
   _setWorkingVisible( true );
-  setTitle( _( MetaDataHolder::findPrettyName( objects::colloseum ) ) );
+  setTitle( _( MetaDataHolder::findPrettyName( object::colloseum ) ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, coloseum->maximumWorkers(), coloseum->numberWorkers() );
   

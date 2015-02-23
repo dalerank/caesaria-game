@@ -27,17 +27,17 @@
 using namespace constants;
 using namespace religion;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_ceres_temple, TempleCeres)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_mars_temple, TempleMars)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_mercury_temple, TempleMercury)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_neptune_temple, TempleNeptune)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::small_venus_temple, TempleVenus)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_ceres_temple, BigTempleCeres)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_mars_temple, BigTempleMars)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_mercury_temple, BigTempleMercury)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_neptune_temple, BigTempleNeptune)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::big_venus_temple, BigTempleVenus)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::oracle, TempleOracle)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_ceres_temple, TempleCeres)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_mars_temple, TempleMars)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_mercury_temple, TempleMercury)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_neptune_temple, TempleNeptune)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_venus_temple, TempleVenus)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::big_ceres_temple, BigTempleCeres)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::big_mars_temple, BigTempleMars)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::big_mercury_temple, BigTempleMercury)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::big_neptune_temple, BigTempleNeptune)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::big_venus_temple, BigTempleVenus)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::oracle, TempleOracle)
 
 class Temple::Impl
 {
@@ -45,7 +45,7 @@ public:
   DivinityPtr divinity;
 };
 
-Temple::Temple( DivinityPtr divinity, constants::objects::Type type, int imgId, const Size& size )
+Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& size )
 : ServiceBuilding( divinity.isValid()
                     ? divinity->serviceType()
                     : Service::srvCount, type, size ), _td( new Impl )
@@ -69,47 +69,47 @@ unsigned int Temple::walkerDistance() const { return 26;}
 
 Temple::~Temple(){}
 
-TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), objects::small_ceres_temple, 45 )
+TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), object::small_ceres_temple, 45 )
 {
 }
 
-BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), objects::big_ceres_temple, 46 )
+BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), object::big_ceres_temple, 46 )
 {
 }
 
-TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), objects::small_neptune_temple, 47 )
+TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), object::small_neptune_temple, 47 )
 {
 }
 
-BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), objects::big_neptune_temple, 48 )
+BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), object::big_neptune_temple, 48 )
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), objects::small_mars_temple, 51 )
+TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), object::small_mars_temple, 51 )
 {
 }
 
-BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), objects::big_mars_temple, 52 )
+BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), object::big_mars_temple, 52 )
 {
 }
 
-TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), objects::small_venus_temple, 53 )
+TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), object::small_venus_temple, 53 )
 {
 }
 
-BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), objects::big_venus_temple, 54 )
+BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), object::big_venus_temple, 54 )
 {
 }
 
-TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), objects::small_mercury_temple, 49 )
+TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), object::small_mercury_temple, 49 )
 {
 }
 
-BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), objects::big_mercury_temple, 50 )
+BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), object::big_mercury_temple, 50 )
 {
 }
 
-TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), objects::oracle, 55 )
+TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
 {
   setSize( Size( 2 ) );
   _animationRef().load( ResourceGroup::security, 56, 6);
@@ -132,7 +132,7 @@ bool TempleOracle::build( const city::AreaInfo& info )
   return true;
 }
 
-SmallTemple::SmallTemple( DivinityPtr divinity, constants::objects::Type type, int imgId )
+SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
   setMaximumWorkers( 2 );
@@ -140,7 +140,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, constants::objects::Type type, i
 
 unsigned int SmallTemple::parishionerNumber() const {  return 750; }
 
-BigTemple::BigTemple( DivinityPtr divinity, constants::objects::Type type, int imgId )
+BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
   setMaximumWorkers( 8 );

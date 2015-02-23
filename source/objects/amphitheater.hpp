@@ -37,6 +37,7 @@ public:
 
   DateTime lastShowDate() const;
   DateTime lastBoutsDate() const;
+  virtual int maxVisitors() const;
 
   bool isShowGladiatorBouts() const;
   bool isActorsShow() const;

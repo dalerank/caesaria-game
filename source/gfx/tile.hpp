@@ -20,7 +20,6 @@
 
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
-#include "game/enums.hpp"
 #include "objects/predefinitions.hpp"
 #include "predefinitions.hpp"
 #include "core/direction.hpp"
@@ -68,7 +67,7 @@ public:
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
-  void changeDirection( Tile* masterTile, constants::Direction newDirection);
+  void changeDirection( Tile* masterTile, Direction newDirection);
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 

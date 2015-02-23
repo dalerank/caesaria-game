@@ -38,7 +38,7 @@ private:
   Health(Camera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house);
 
-  std::set<constants::objects::Type> _flags;
+  std::set<object::Type> _flags;
   int _type;
 };
 

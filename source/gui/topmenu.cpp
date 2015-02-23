@@ -25,7 +25,6 @@
 #include "core/utils.hpp"
 #include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
-#include "game/enums.hpp"
 #include "game/gamedate.hpp"
 #include "environment.hpp"
 #include "widget_helper.hpp"

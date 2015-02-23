@@ -26,7 +26,7 @@
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -175,7 +175,7 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
   return imgid;
 }
 
-int turnCoastTile(int imgid, constants::Direction newDirection )
+int turnCoastTile(int imgid, Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
   imgid -= 372;

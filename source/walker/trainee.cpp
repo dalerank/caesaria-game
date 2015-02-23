@@ -33,7 +33,7 @@ using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
-typedef Priorities<constants::objects::Type> NecessaryBuildings;
+typedef Priorities<object::Type> NecessaryBuildings;
 
 class TraineeWalker::Impl
 {
@@ -57,17 +57,17 @@ void TraineeWalker::_init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case walker::actor:      _d->necBuildings << objects::theater
-                                           << objects::amphitheater;  break;
-  case walker::gladiator:  _d->necBuildings << objects::amphitheater
-                                              << objects::colloseum;  break;
-  case walker::lionTamer:  _d->necBuildings << objects::colloseum;  break;
-  case walker::soldier:    _d->necBuildings << objects::military_academy
-                                            << objects::fort_legionaries
-                                            << objects::fort_horse
-                                            << objects::fort_javelin
-                                            << objects::tower;  break;
-  case walker::charioteer:  _d->necBuildings << objects::hippodrome;  break;
+  case walker::actor:      _d->necBuildings << object::theater
+                                           << object::amphitheater;  break;
+  case walker::gladiator:  _d->necBuildings << object::amphitheater
+                                              << object::colloseum;  break;
+  case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
+  case walker::soldier:    _d->necBuildings << object::military_academy
+                                            << object::fort_legionaries
+                                            << object::fort_horse
+                                            << object::fort_javelin
+                                            << object::tower;  break;
+  case walker::charioteer:  _d->necBuildings << object::hippodrome;  break;
   default: break;
   }
 
@@ -169,7 +169,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   }
 }
 
-void TraineeWalker::checkDestination(const constants::objects::Type buildingType, Propagator &pathPropagator)
+void TraineeWalker::checkDestination(const object::Type buildingType, Propagator &pathPropagator)
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 

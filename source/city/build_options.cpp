@@ -35,7 +35,7 @@ static const char* disable_all = "disable_all";
 
 struct BuildingRule
 {
-  constants::objects::Type type;
+  object::Type type;
   bool mayBuild;
   unsigned int quotes;
 };
@@ -49,7 +49,7 @@ public:
     return inst;
   }
 
-  typedef std::set<int> Types;
+  typedef std::set<object::Type> Types;
   typedef std::map<Branch, Types> Config;
   Config config;
 
@@ -78,7 +78,7 @@ public:
 class Options::Impl
 {
 public:
-  typedef std::map< constants::objects::Type, BuildingRule > BuildingRules;
+  typedef std::map< object::Type, BuildingRule > BuildingRules;
   typedef std::vector< TilePos > MemPoints;
 
   BuildingRules rules;
@@ -97,22 +97,22 @@ Options::Options() : _d( new Impl )
 
 Options::~Options() {}
 
-void Options::setBuildingAvailble( const constants::objects::Type type, bool mayBuild )
+void Options::setBuildingAvailble( const object::Type type, bool mayBuild )
 {
   _d->rules[ type ].mayBuild = mayBuild;
 }
 
-void Options::setBuildingAvailble( const constants::objects::Type start, const constants::objects::Type stop, bool mayBuild )
+void Options::setBuildingAvailble( const object::Type start, const object::Type stop, bool mayBuild )
 {
-  for( int i=start; i <= stop; i++ )
-    _d->rules[ (constants::objects::Type)i ].mayBuild = mayBuild;
+  for( object::Type i=start; i <= stop; ++i )
+    _d->rules[ i ].mayBuild = mayBuild;
 }
 
-bool Options::isBuildingsAvailble( const constants::objects::Type start, const constants::objects::Type stop ) const
+bool Options::isBuildingsAvailble( const object::Type start, const object::Type stop ) const
 {
   bool mayBuild = false;
-  for( int i=start; i <= stop; i++ )
-    mayBuild |= _d->rules[ (constants::objects::Type)i ].mayBuild;
+  for( object::Type i=start; i <= stop; ++i )
+    mayBuild |= _d->rules[ i ].mayBuild;
 
   return mayBuild;
 }
@@ -128,25 +128,30 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   bool mayBuild = (vmb.toString() != disable_all);
   switch( type )
   {
-  case development::farm: setBuildingAvailble( objects::wheat_farm, objects::meat_farm, mayBuild ); break;
-  case development::water: setBuildingAvailble( objects::reservoir, objects::well, mayBuild ); break;
-  case development::health: setBuildingAvailble( objects::clinic, objects::barber, mayBuild ); break;
-  case development::raw_material: setBuildingAvailble( objects::quarry, objects::clay_pit, mayBuild ); break;
-  case development::religion: setBuildingAvailble( objects::small_ceres_temple, objects::oracle, mayBuild ); break;
-  case development::factory: setBuildingAvailble( objects::wine_workshop, objects::pottery_workshop, mayBuild ); break;
-  case development::education: setBuildingAvailble( objects::school, objects::library, mayBuild ); break;
-  case development::entertainment: setBuildingAvailble( objects::amphitheater, objects::chariotSchool, mayBuild ); break;
-  case development::administration: setBuildingAvailble( objects::senate, objects::governorPalace, mayBuild ); break;
+  case development::farm: setBuildingAvailble( object::wheat_farm, object::meat_farm, mayBuild ); break;
+  case development::water: setBuildingAvailble( object::reservoir, object::well, mayBuild ); break;
+  case development::health: setBuildingAvailble( object::clinic, object::barber, mayBuild ); break;
+  case development::raw_material: setBuildingAvailble( object::quarry, object::clay_pit, mayBuild ); break;
+  case development::religion: setBuildingAvailble( object::small_ceres_temple, object::oracle, mayBuild ); break;
+  case development::factory: setBuildingAvailble( object::wine_workshop, object::pottery_workshop, mayBuild ); break;
+  case development::education: setBuildingAvailble( object::school, object::library, mayBuild ); break;
+  case development::entertainment: setBuildingAvailble( object::amphitheater, object::chariotSchool, mayBuild ); break;
+  case development::administration: setBuildingAvailble( object::senate, object::governorPalace, mayBuild ); break;
   case development::engineering:
-    setBuildingAvailble( objects::engineering_post, objects::wharf, mayBuild );
-    setBuildingAvailble( objects::plaza, mayBuild );
-    setBuildingAvailble( objects::garden, mayBuild );
+    setBuildingAvailble( object::engineering_post, object::wharf, mayBuild );
+    setBuildingAvailble( object::plaza, mayBuild );
+    setBuildingAvailble( object::garden, mayBuild );
   break;
-  case development::security: setBuildingAvailble( objects::prefecture, objects::fortArea, mayBuild ); break;
-  case development::commerce: setBuildingAvailble( objects::market, objects::warehouse, mayBuild ); break;
-  case development::temple: setBuildingAvailble( objects::small_ceres_temple, objects::small_venus_temple, mayBuild ); break;
-  case development::big_temple: setBuildingAvailble( objects::big_ceres_temple, objects::big_venus_temple, mayBuild ); break;
-  case development::all: setBuildingAvailble( objects::unknown, objects::typeCount, mayBuild );
+  case development::security: setBuildingAvailble( object::prefecture, object::fortArea, mayBuild ); break;
+  case development::commerce: setBuildingAvailble( object::market, object::warehouse, mayBuild ); break;
+  case development::temple: setBuildingAvailble( object::small_ceres_temple, object::small_venus_temple, mayBuild ); break;
+  case development::big_temple: setBuildingAvailble( object::big_ceres_temple, object::big_venus_temple, mayBuild ); break;
+  case development::all:
+  {
+    MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
+    foreach( it, types )
+      setBuildingAvailble( *it, mayBuild );
+  }
 
   default:
   break;
@@ -157,20 +162,20 @@ bool Options::isGroupAvailable(const Branch type) const
 {
   switch( type )
   {
-  case development::farm:         return isBuildingsAvailble( objects::wheat_farm, objects::meat_farm ); break;
-  case development::water:        return isBuildingsAvailble( objects::reservoir, objects::well ); break;
-  case development::health:       return isBuildingsAvailble( objects::clinic, objects::barber ); break;
-  case development::raw_material: return isBuildingsAvailble( objects::quarry, objects::clay_pit ); break;
-  case development::religion:     return isBuildingsAvailble( objects::small_ceres_temple, objects::oracle ); break;
-  case development::factory:      return isBuildingsAvailble( objects::wine_workshop, objects::pottery_workshop ); break;
-  case development::education:    return isBuildingsAvailble( objects::school, objects::library ); break;
-  case development::entertainment:return isBuildingsAvailble( objects::amphitheater, objects::chariotSchool ); break;
-  case development::administration:return isBuildingsAvailble( objects::senate, objects::governorPalace ); break;
-  case development::engineering:  return isBuildingsAvailble( objects::engineering_post, objects::wharf ); break;
-  case development::security:     return isBuildingsAvailble( objects::prefecture, objects::fortArea ); break;
-  case development::commerce:     return isBuildingsAvailble( objects::market, objects::warehouse ); break;
-  case development::temple:       return isBuildingsAvailble( objects::small_ceres_temple, objects::small_venus_temple ); break;
-  case development::big_temple:   return isBuildingsAvailble( objects::big_ceres_temple, objects::big_venus_temple ); break;
+  case development::farm:         return isBuildingsAvailble( object::wheat_farm, object::meat_farm ); break;
+  case development::water:        return isBuildingsAvailble( object::reservoir, object::well ); break;
+  case development::health:       return isBuildingsAvailble( object::clinic, object::barber ); break;
+  case development::raw_material: return isBuildingsAvailble( object::quarry, object::clay_pit ); break;
+  case development::religion:     return isBuildingsAvailble( object::small_ceres_temple, object::oracle ); break;
+  case development::factory:      return isBuildingsAvailble( object::wine_workshop, object::pottery_workshop ); break;
+  case development::education:    return isBuildingsAvailble( object::school, object::library ); break;
+  case development::entertainment:return isBuildingsAvailble( object::amphitheater, object::chariotSchool ); break;
+  case development::administration:return isBuildingsAvailble(object::senate, object::governorPalace ); break;
+  case development::engineering:  return isBuildingsAvailble( object::engineering_post, object::wharf ); break;
+  case development::security:     return isBuildingsAvailble( object::prefecture, object::fortArea ); break;
+  case development::commerce:     return isBuildingsAvailble( object::market, object::warehouse ); break;
+  case development::temple:       return isBuildingsAvailble( object::small_ceres_temple, object::small_venus_temple ); break;
+  case development::big_temple:   return isBuildingsAvailble( object::big_ceres_temple, object::big_venus_temple ); break;
   default:
   break;
   }
@@ -178,7 +183,7 @@ bool Options::isGroupAvailable(const Branch type) const
   return false;
 }
 
-unsigned int Options::getBuildingsQuote(const constants::objects::Type type) const
+unsigned int Options::getBuildingsQuote(const object::Type type) const
 {
   Impl::BuildingRules::const_iterator it = _d->rules.find( type );
   return it != _d->rules.end() ? it->second.quotes : 999;
@@ -216,7 +221,7 @@ void Options::load(const VariantMap& options)
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )
   {
-    constants::objects::Type btype = MetaDataHolder::findType( item->first );
+    object::Type btype = MetaDataHolder::findType( item->first );
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
@@ -238,7 +243,7 @@ VariantMap Options::save() const
   VariantMap quotes;
   foreach( it, _d->rules )
   {
-    std::string typeName = MetaDataHolder::findTypename( it->first );
+    std::string typeName = it->first.toString();
     blds[ typeName ] = it->second.mayBuild;
     quotes[ typeName ] = it->second.quotes;
   }
@@ -268,7 +273,7 @@ Options& Options::operator=(const development::Options& a)
   return *this;
 }
 
-bool Options::isBuildingAvailble(const constants::objects::Type type ) const
+bool Options::isBuildingAvailble(const object::Type type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
@@ -293,8 +298,8 @@ void loadBranchOptions(const std::string &filename)
 
       foreach( bIt, vmTypes )
       {
-        constants::objects::Type ovType = MetaDataHolder::findType( bIt->toString() );
-        if( ovType != constants::objects::unknown )
+        object::Type ovType = MetaDataHolder::findType( bIt->toString() );
+        if( ovType != object::unknown )
           branchData.insert( ovType );
       }
     }

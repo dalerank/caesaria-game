@@ -92,7 +92,7 @@ void Mugger::timeStep(const unsigned long time)
     city::Helper helper( _city() );
     TilePos offset(10, 10);
 
-    HouseList houses = helper.find<House>( objects::house, pos() - offset, pos() + offset );
+    HouseList houses = helper.find<House>( object::house, pos() - offset, pos() + offset );
     std::map< int, HouseList > houseEpxens;
     foreach( it, houses )
     {
@@ -152,7 +152,7 @@ void Mugger::timeStep(const unsigned long time)
     if( game::Date::isDayChanged() )
     {
       city::Helper helper( _city() );
-      HouseList houses = helper.find<House>( objects::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = helper.find<House>( object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       foreach( it, houses )
       {

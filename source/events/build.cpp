@@ -33,7 +33,7 @@ using namespace city;
 namespace events
 {
 
-GameEventPtr BuildAny::create( const TilePos& pos, const constants::objects::Type type )
+GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
   return create( pos, TileOverlayFactory::instance().create( type ) );
 }

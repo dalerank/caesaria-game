@@ -32,7 +32,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::senate, Senate)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::senate, Senate)
 
 class Senate::Impl
 {
@@ -41,7 +41,7 @@ public:
   std::string errorStr;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
@@ -65,7 +65,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
   if( mayBuild )
   {
     city::Helper helper( areaInfo.city );
-    bool isSenatePresent = !helper.find<Building>(objects::senate).empty();
+    bool isSenatePresent = !helper.find<Building>(object::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }

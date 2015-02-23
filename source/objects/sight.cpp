@@ -36,10 +36,10 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::statue_small, SmallStatue)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::statue_middle, MediumStatue)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::statue_big, BigStatue)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::triumphal_arch, TriumphalArch)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_small, SmallStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_middle, MediumStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_big, BigStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::triumphal_arch, TriumphalArch)
 
 // govt     1  - small statue        1 x 1
 // govt     2  - medium statue       2 x 2
@@ -51,7 +51,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(objects::triumphal_arch, TriumphalArch)
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
-SmallStatue::SmallStatue() : Building( objects::statue_small, Size(1) )
+SmallStatue::SmallStatue() : Building( object::statue_small, Size(1) )
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -61,7 +61,7 @@ SmallStatue::SmallStatue() : Building( objects::statue_small, Size(1) )
 
 bool SmallStatue::isNeedRoadAccess() const {  return false; }
 
-MediumStatue::MediumStatue() : Building( objects::statue_middle, Size(2) )
+MediumStatue::MediumStatue() : Building( object::statue_middle, Size(2) )
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -71,7 +71,7 @@ MediumStatue::MediumStatue() : Building( objects::statue_middle, Size(2) )
 
 bool MediumStatue::isNeedRoadAccess() const {  return false; }
 
-BigStatue::BigStatue() : Building( objects::statue_big, Size(3))
+BigStatue::BigStatue() : Building( object::statue_big, Size(3))
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -82,7 +82,7 @@ BigStatue::BigStatue() : Building( objects::statue_big, Size(3))
 bool BigStatue::isNeedRoadAccess() const {  return false;}
 
 // second arch pictures is land3a 45 + 46	
-TriumphalArch::TriumphalArch() : Building( objects::triumphal_arch, Size(3) )
+TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size(3) )
 {
   setPicture( ResourceGroup::land3a, 43 );
   _animationRef().load("land3a", 44, 1);

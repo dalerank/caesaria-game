@@ -35,13 +35,13 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurnedRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burning_ruins, BurningRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::collapsed_ruins, CollapsedRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::plague_ruins, PlagueRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::burned_ruins, BurnedRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::burning_ruins, BurningRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::collapsed_ruins, CollapsedRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::plague_ruins, PlagueRuins)
 
 BurningRuins::BurningRuins()
-  : Ruins( objects::burning_ruins )
+  : Ruins( object::burning_ruins )
 {
   setState( pr::fire, 99 );
   setState( pr::inflammability, 0 );
@@ -66,7 +66,7 @@ void BurningRuins::timeStep(const unsigned long time)
   {
     TilePos offset( 2, 2 );
     city::Helper helper( _city() );
-    BuildingList buildings = helper.find<Building>( objects::any, pos() - offset, pos() + offset );
+    BuildingList buildings = helper.find<Building>( object::any, pos() - offset, pos() + offset );
 
     foreach( it, buildings)
     {
@@ -180,7 +180,7 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 bool BurningRuins::isNeedRoadAccess() const{  return false; }
 void BurnedRuins::timeStep( const unsigned long ){}
 
-BurnedRuins::BurnedRuins() : Ruins( objects::burned_ruins )
+BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 {
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
@@ -198,7 +198,7 @@ bool BurnedRuins::isFlat() const{ return true;}
 bool BurnedRuins::isNeedRoadAccess() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
 
-CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsed_ruins)
+CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
 {
   setState( pr::damage, 1 );
   setState( pr::inflammability, 0 );
@@ -234,7 +234,7 @@ bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 
-PlagueRuins::PlagueRuins() : Ruins( objects::plague_ruins )
+PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
 {
   setState( pr::fire, 99 );
   setState( pr::collapsibility, 0 );
@@ -317,7 +317,7 @@ bool PlagueRuins::build( const city::AreaInfo& info )
 bool PlagueRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool PlagueRuins::isNeedRoadAccess() const{  return false;}
 
-Ruins::Ruins(objects::Type type)
+Ruins::Ruins(object::Type type)
   : Building( type, Size(1) ), _alsoBuilt( true )
 {
 

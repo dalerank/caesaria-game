@@ -30,7 +30,7 @@ public:
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual Point offset( const gfx::Tile& tile, const Point &subpos) const;
-  virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
+  virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   virtual bool isDestructible() const;
   virtual bool build(const city::AreaInfo &info);
 private:

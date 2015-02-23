@@ -34,7 +34,7 @@ class Overlay::Impl
 {
 public:  
   Pictures fgPictures;
-  objects::Type overlayType;
+  object::Type overlayType;
   object::Group overlayClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
   std::string name;
@@ -45,7 +45,7 @@ public:
   PlayerCityPtr city;
 };
 
-Overlay::Overlay(const objects::Type type, const Size& size)
+Overlay::Overlay(const object::Type type, const Size& size)
 : _d( new Impl )
 {
   _d->masterTile = 0;
@@ -65,7 +65,7 @@ Desirability Overlay::desirability() const
   return MetaDataHolder::getData( type() ).desirability();
 }
 
-void Overlay::setType(const objects::Type type)
+void Overlay::setType(const object::Type type)
 {
   const MetaData& bd = MetaDataHolder::getData( type );
 
@@ -76,7 +76,7 @@ void Overlay::setType(const objects::Type type)
 
 void Overlay::timeStep(const unsigned long) {}
 
-void Overlay::changeDirection( Tile* masterTile, constants::Direction direction)
+void Overlay::changeDirection( Tile* masterTile, Direction direction)
 {
   _d->masterTile = masterTile;
 }
@@ -139,7 +139,7 @@ const Pictures& Overlay::pictures( Renderer::Pass pass ) const
 void Overlay::save( VariantMap& stream ) const
 {
   VariantList config;
-  config.push_back( (int)_d->overlayType );
+  config.push_back( _d->overlayType.toInt() );
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
@@ -221,7 +221,7 @@ Size Overlay::size() const{ return _d->size;}
 bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
-objects::Type Overlay::type() const{ return _d->overlayType;}
+object::Type Overlay::type() const{ return _d->overlayType;}
 
 Overlay::~Overlay()
 {
@@ -241,7 +241,7 @@ void OverlayDebugQueue::print()
     {
       Overlay* ov = (Overlay*)*it;
       Logger::warning( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
-                                          MetaDataHolder::findTypename( ov->type() ).c_str(),
+                                          ov->type().toString().c_str(),
                                           ov->pos().i(), ov->pos().j(), ov->rcount() );
     }
   }

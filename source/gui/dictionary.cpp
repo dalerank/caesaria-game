@@ -85,12 +85,12 @@ vfs::Path DictionaryWindow::_convUri2path(std::string uri)
   return fpath;
 }
 
-void DictionaryWindow::show(Widget* parent, constants::objects::Type type)
+void DictionaryWindow::show(Widget* parent, object::Type type)
 {
   DictionaryWindow* wnd = new DictionaryWindow( parent );
   if( wnd->_d->lbText )
   {
-    wnd->load( MetaDataHolder::findTypename( type ) );
+    wnd->load( type.toString() );
   }
 }
 

@@ -12,34 +12,23 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WHARF_INCLUDE_H_
-#define _CAESARIA_WHARF_INCLUDE_H_
+#include "constants.hpp"
+#include "metadata.hpp"
 
-#include "coastalbuilding.hpp"
-#include "core/direction.hpp"
-
-class Wharf : public CoastalFactory
+namespace object
 {
-public:
-  Wharf();
 
-  virtual void destroy();
-  virtual void timeStep(const unsigned long time);
+std::string Type::toString() const
+{
+  return MetaDataHolder::instance().findTypename( *this );
+}
 
-  ShipPtr getBoat() const;
-  virtual void assignBoat( ShipPtr boat );
+std::string Group::toString() const
+{
+  return MetaDataHolder::instance().findGroupname( *this );
+}
 
-  virtual bool mayWork() const;
-  virtual std::string workersProblemDesc() const;
-  virtual std::string troubleDesc() const;
-
-private:
-  virtual void _updatePicture( Direction direction );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-#endif //_CAESARIA_WHARF_INCLUDE_H_
+}//end namespace object

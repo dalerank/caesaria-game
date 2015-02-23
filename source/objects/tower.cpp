@@ -31,7 +31,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tower, Tower)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::tower, Tower)
 
 class Tower::Impl
 {
@@ -53,7 +53,7 @@ public:
 };
 
 Tower::Tower()
-  : ServiceBuilding( Service::guard, objects::tower, Size( 2 ) ), _d( new Impl )
+  : ServiceBuilding( Service::guard, object::tower, Size( 2 ) ), _d( new Impl )
 {
   _d->noEntry = false;
   setMaximumWorkers( 6 );
@@ -77,23 +77,23 @@ bool Tower::canBuild(const city::AreaInfo& areaInfo) const
 {
   Tilemap& tmap = areaInfo.city->tilemap();
 
-  bool freeMap[ countDirection ] = { 0 };
+  bool freeMap[ direction::count] = { 0 };
   const TilePos& pos = areaInfo.pos;
-  freeMap[ noneDirection ] = tmap.at( pos ).getFlag( Tile::isConstructible );
-  freeMap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
-  freeMap[ east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );
-  freeMap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
+  freeMap[ direction::none ] = tmap.at( pos ).getFlag( Tile::isConstructible );
+  freeMap[ direction::north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
+  freeMap[ direction::east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );
+  freeMap[ direction::northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
-  bool frtMap[ countDirection ] = { 0 };
-  frtMap[ noneDirection ] = is_kind_of<Fortification>( tmap.at( pos ).overlay() );
-  frtMap[ north ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 0, 1 ) ).overlay() );
-  frtMap[ northEast ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 1 ) ).overlay() );
-  frtMap[ east  ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 0 ) ).overlay() );
+  bool frtMap[ direction::count ] = { 0 };
+  frtMap[ direction::none ] = is_kind_of<Fortification>( tmap.at( pos ).overlay() );
+  frtMap[ direction::north ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 0, 1 ) ).overlay() );
+  frtMap[ direction::northEast ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 1 ) ).overlay() );
+  frtMap[ direction::east  ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 0 ) ).overlay() );
 
-  bool mayConstruct = ((frtMap[ noneDirection ] || freeMap[ noneDirection ]) &&
-                       (frtMap[ north ] || freeMap[ north ]) &&
-                       (frtMap[ east ] || freeMap[ east ]) &&
-                       (frtMap[ northEast ] || freeMap[ northEast ]) );
+  bool mayConstruct = ((frtMap[ direction::none ] || freeMap[ direction::none ]) &&
+                       (frtMap[ direction::north ] || freeMap[ direction::north ]) &&
+                       (frtMap[ direction::east ] || freeMap[ direction::east ]) &&
+                       (frtMap[ direction::northEast ] || freeMap[ direction::northEast ]) );
 
   if( !mayConstruct )
   {

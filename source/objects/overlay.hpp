@@ -21,7 +21,6 @@
 #include "predefinitions.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/animation.hpp"
-#include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
@@ -37,7 +36,7 @@ class MetaData;
 class Overlay : public Serializable, public ReferenceCounted
 {
 public:
-  Overlay( const constants::objects::Type type, const Size& size=Size(1));
+  Overlay( const object::Type type, const Size& size=Size(1));
   virtual ~Overlay();
 
   gfx::Tile& tile() const;  // master tile, in case of multi-tile area
@@ -58,7 +57,7 @@ public:
 
   virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
-  virtual void changeDirection( gfx::Tile *masterTile, constants::Direction direction);
+  virtual void changeDirection( gfx::Tile *masterTile, Direction direction);
 
   // graphic
   virtual void setPicture(gfx::Picture picture);
@@ -77,7 +76,7 @@ public:
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
 
-  constants::objects::Type type() const;
+  object::Type type() const;
   object::Group group() const;
 
   virtual void save( VariantMap& stream) const;
@@ -86,7 +85,7 @@ public:
   virtual void initialize( const MetaData& mdata );
 
 protected:
-  void setType(const constants::objects::Type type);
+  void setType(const object::Type type);
   gfx::Animation& _animationRef();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;

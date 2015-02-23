@@ -26,10 +26,10 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::quarry, MarbleQuarry)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::quarry, MarbleQuarry)
 
 MarbleQuarry::MarbleQuarry()
-  : Factory(good::none, good::marble, objects::quarry, Size(2) )
+  : Factory(good::none, good::marble, object::quarry, Size(2) )
 {
   _animationRef().load( ResourceGroup::commerce, 44, 10);
   _animationRef().setDelay( 4 );

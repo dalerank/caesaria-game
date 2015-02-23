@@ -26,7 +26,6 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
-#include "game/enums.hpp"
 #include "objects/house_spec.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"
@@ -138,7 +137,7 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const constants::objects::Type small, const constants::objects::Type big )
+  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type small, const object::Type big )
   {
     city::Helper helper( city );
 
@@ -162,27 +161,27 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, objects::small_ceres_temple, objects::big_ceres_temple );
+  Impl::InfrastructureInfo info = _d->getInfo( city, object::small_ceres_temple, object::big_ceres_temple );
   _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), rome::Pantheon::ceres(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_neptune_temple, objects::big_neptune_temple );
+  info = _d->getInfo( city, object::small_neptune_temple, object::big_neptune_temple );
   _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), rome::Pantheon::neptune(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_mercury_temple, objects::big_mercury_temple );
+  info = _d->getInfo( city, object::small_mercury_temple, object::big_mercury_temple );
   _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), rome::Pantheon::mercury(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_mars_temple, objects::big_mars_temple );
+  info = _d->getInfo( city, object::small_mars_temple, object::big_mars_temple );
   _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), rome::Pantheon::mars(),
                                           info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_venus_temple, objects::big_venus_temple );
+  info = _d->getInfo( city, object::small_venus_temple, object::big_venus_temple );
   _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), rome::Pantheon::venus(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::oracle, objects::oracle );
+  info = _d->getInfo( city, object::oracle, object::oracle );
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
@@ -210,7 +209,7 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
   city::Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = helper.find<House>( object::house );
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;

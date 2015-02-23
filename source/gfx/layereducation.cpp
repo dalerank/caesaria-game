@@ -90,7 +90,7 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
       //city::Helper helper( _city() );
       //drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
 
@@ -211,13 +211,13 @@ Education::Education( Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::education:
-    _flags << objects::school << objects::library << objects::academy;
+    _flags << object::school << object::library << object::academy;
     _visibleWalkers() << walker::scholar << walker::librarian << walker::teacher;
   break;
 
-  case citylayer::school: _flags << objects::school; _visibleWalkers() << walker::scholar; break;
-  case citylayer::library: _flags << objects::library; _visibleWalkers() << walker::librarian; break;
-  case citylayer::academy: _flags << objects::academy; _visibleWalkers() << walker::teacher; break;
+  case citylayer::school: _flags << object::school; _visibleWalkers() << walker::scholar; break;
+  case citylayer::library: _flags << object::library; _visibleWalkers() << walker::librarian; break;
+  case citylayer::academy: _flags << object::academy; _visibleWalkers() << walker::teacher; break;
   }
 
   _fillVisibleObjects( citylayer::education );

@@ -25,12 +25,11 @@
 #include "core/variant_map.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tree, Tree)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::tree, Tree)
 
 Tree::Tree()
-  : Overlay( constants::objects::tree, Size(1) )
+  : Overlay( object::tree, Size(1) )
 {
 }
 

@@ -32,7 +32,6 @@
 #include "gui/environment.hpp"
 #include "settings.hpp"
 #include "vfs/filesystem.hpp"
-#include "enums.hpp"
 #include "gfx/animation_bank.hpp"
 #include "vfs/entries.hpp"
 #include "world/empire.hpp"

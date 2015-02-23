@@ -27,10 +27,10 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::lumber_mill, TimberLogger)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::lumber_mill, TimberLogger)
 
 TimberLogger::TimberLogger()
-  : Factory(good::none, good::timber, objects::lumber_mill, Size(2) )
+  : Factory(good::none, good::timber, object::lumber_mill, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 72 );
 

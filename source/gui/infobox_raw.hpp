@@ -33,7 +33,7 @@ public:
   virtual void _showHelp();
 
 private:
-  constants::objects::Type _type;
+  object::Type _type;
 };
 
 }

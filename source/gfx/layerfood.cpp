@@ -59,7 +59,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
       // Base set of visible objects
       needDrawAnimations = true;     
     }
-    else if( overlay->type() == objects::house )
+    else if( overlay->type() == object::house )
     {
       city::Helper helper( _city() );
       HousePtr house = ptr_cast<House>( overlay );

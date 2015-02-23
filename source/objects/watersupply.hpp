@@ -25,7 +25,7 @@
 class WaterSource : public Construction
 {
 public:
-  WaterSource( const constants::objects::Type type, const Size& size );
+  WaterSource( const object::Type type, const Size& size );
   ~WaterSource();
   
   virtual void addWater( const WaterSource& source );
@@ -65,7 +65,7 @@ public:
   virtual void addWater( const WaterSource& source );
   virtual void initialize(const MetaData &mdata);
 
-  TilePos entry( constants::Direction direction );
+  TilePos entry( Direction direction );
 
 private:
   bool _isWaterSource;

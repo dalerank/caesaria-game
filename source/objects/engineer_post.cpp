@@ -22,11 +22,10 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY( objects::engineering_post, EngineerPost)
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::engineering_post, EngineerPost)
 
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineering_post, Size(1) )
+EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1) )
 {
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
   //setPicture( ResourceGroup::buildingEngineer, 56 );

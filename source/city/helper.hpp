@@ -45,7 +45,7 @@ public:
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
-  SmartList< T > find( const constants::objects::Type type );
+  SmartList< T > find( const object::Type type );
 
   template< class T >
   SmartList< T > find( object::Group group )
@@ -112,10 +112,10 @@ public:
   }
 
   template< class T >
-  SmartPtr< T > find( const constants::objects::Type type, const TilePos& pos )
+  SmartPtr< T > find( const object::Type type, const TilePos& pos )
   {   
     OverlayPtr overlay = _city->getOverlay( pos );
-    if( overlay.isValid() && (overlay->type() == type || type == constants::objects::any) )
+    if( overlay.isValid() && (overlay->type() == type || type == object::any) )
     {
       return ptr_cast< T >( overlay );
     }
@@ -167,7 +167,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > find( const constants::objects::Type type, TilePos start, TilePos stop=TilePos(-1,-1) )
+  SmartList< T > find( const object::Type type, TilePos start, TilePos stop=TilePos(-1,-1) )
   {
     SmartList< T > ret;
 
@@ -175,7 +175,7 @@ public:
     foreach( tile, area )
     {
       SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
-      if( obj.isValid() && (obj->type() == type || type == constants::objects::any) )
+      if( obj.isValid() && (obj->type() == type || type == object::any) )
       {
         ret.push_back( obj );
       }
@@ -204,7 +204,7 @@ public:
   }
 
   template< class T >
-  SmartList< T > getProducers( const good::Product goodtype );
+  SmartList< T > findProducers( const good::Product goodtype );
 
   template< class T >
   SmartPtr< T > next( const SmartPtr< T > current );
@@ -248,14 +248,14 @@ SmartPtr<T> Helper::prew(const SmartPtr<T> current)
 }
 
 template< class T >
-SmartList< T > Helper::find( const constants::objects::Type type )
+SmartList< T > Helper::find( const object::Type type )
 {
   SmartList< T > ret;
   OverlayList& buildings = _city->overlays();
   foreach( item, buildings )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
-    if( b.isValid() && (b->type() == type || type == constants::objects::any ) )
+    if( b.isValid() && (b->type() == type || type == object::any ) )
     {
       ret.push_back( b );
     }
@@ -265,10 +265,10 @@ SmartList< T > Helper::find( const constants::objects::Type type )
 }
 
 template< class T >
-SmartList<T> Helper::getProducers(const good::Product goodtype )
+SmartList<T> Helper::findProducers(const good::Product goodtype )
 {
   SmartList< T > ret;
-  OverlayList& overlays = _city->overlays();
+  const OverlayList& overlays = _city->overlays();
   foreach( item, overlays )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );

@@ -117,7 +117,7 @@ public:
   TilePos basePos;
 };
 
-FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
+FortArea::FortArea() : Building( object::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -154,7 +154,7 @@ FortPtr FortArea::base() const
   return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
-Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
+Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
   Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
@@ -225,6 +225,8 @@ TilesArray Fort::enterArea() const
 
   return tiles;
 }
+
+int Fort::flagIndex() const { return 0; }
 
 void Fort::destroy()
 {
