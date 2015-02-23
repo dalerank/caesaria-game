@@ -610,7 +610,10 @@ void House::_levelUp()
     return;
 
   if( _d->houseLevel >= _city()->victoryConditions().maxHouseLevel() )
+  {
+    _d->evolveInfo = "##emperor_limit_houseupgrade##";
     return;
+  }
 
   int nextLevel = math::clamp<int>( _d->houseLevel+1, HouseLevel::vacantLot, HouseLevel::greatPalace );
   bool mayUpgrade = false;
