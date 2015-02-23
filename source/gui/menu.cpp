@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "gfx/layerconstants.hpp"
+#include "layers/layerconstants.hpp"
 #include "menu.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/picture.hpp"

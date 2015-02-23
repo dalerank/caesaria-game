@@ -13,21 +13,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_LAYERHEALTH_H_INCLUDED__
+#define __CAESARIA_LAYERHEALTH_H_INCLUDED__
 
-#include "core/predefinitions.hpp"
+#include "layerinfo.hpp"
+#include "objects/constants.hpp"
 
-namespace gfx
+namespace citylayer
 {
 
-class Tile;
-class Picture;
-class Tilemap;
-class TilemapCamera;
-class TilesArray;
-class Renderer;
+class Health : public Info
+{
+public:
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
 
-}
+  static LayerPtr create( gfx::TilemapCamera& camera, PlayerCityPtr city, int type );
+  virtual void handleEvent(NEvent& event);
 
-#endif //__CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+private:
+  Health(gfx::Camera& camera, PlayerCityPtr city, int type );
+  int _getLevelValue(HousePtr house);
+
+  std::set<object::Type> _flags;
+  int _type;
+};
+
+}//end namespace citylayer
+
+#endif //__CAESARIA_LAYERHEALTH_H_INCLUDED__

@@ -12,22 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_LAYERTAX_H_INCLUDED__
+#define __CAESARIA_LAYERTAX_H_INCLUDED__
 
-#include "core/predefinitions.hpp"
+#include "layerinfo.hpp"
 
-namespace gfx
+namespace citylayer
 {
 
-class Tile;
-class Picture;
-class Tilemap;
-class TilemapCamera;
-class TilesArray;
-class Renderer;
+class Tax : public Info
+{
+public:
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
 
-}
+  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void handleEvent(NEvent& event);
+private:
+  Tax( gfx::Camera& camera, PlayerCityPtr city );
+};
 
-#endif //__CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+}//end namespace citylayer
+
+#endif //__CAESARIA_LAYERTAX_H_INCLUDED__
