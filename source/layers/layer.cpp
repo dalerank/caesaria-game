@@ -166,19 +166,14 @@ void Layer::handleEvent(NEvent& event)
   }
   else if( event.EventType == sEventKeyboard )
   {
-    bool pressed = event.keyboard.pressed;
-    int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
-
-    moveValue *= ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
-
-    switch( event.keyboard.key )
+    bool handled = _moveCamera( event );
+    if( !handled )
     {
-    case KEY_UP:    /*case KEY_KEY_W:*/ _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  /*case KEY_KEY_S:*/ _d->camera->moveDown ( moveValue ); break;
-    case KEY_RIGHT: /*case KEY_KEY_D:*/ _d->camera->moveRight( moveValue ); break;
-    case KEY_LEFT:  /*case KEY_KEY_A:*/ _d->camera->moveLeft ( moveValue ); break;
-    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
-    default: break;
+      switch( event.keyboard.key )
+      {
+      case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
+      default: break;
+      }
     }
   }
 }
@@ -671,10 +666,30 @@ void Layer::_fillVisibleObjects(int ltype)
     }
 }
 
+bool Layer::_moveCamera(NEvent &event)
+{
+  __D_IMPL(_d,Layer)
+  bool pressed = event.keyboard.pressed;
+  int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
+
+  moveValue *= ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+
+  switch( event.keyboard.key )
+  {
+  case KEY_UP:    _d->camera->moveUp   ( moveValue ); break;
+  case KEY_DOWN:  _d->camera->moveDown ( moveValue ); break;
+  case KEY_RIGHT: _d->camera->moveRight( moveValue ); break;
+  case KEY_LEFT:  _d->camera->moveLeft ( moveValue ); break;
+  default:
+      return false;
+  }
+
+  return true;
+}
+
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
 bool Layer::_isVisibleObject(object::Type ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
-
 void Layer::destroy() {}
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}

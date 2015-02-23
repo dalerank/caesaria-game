@@ -95,6 +95,7 @@ protected:
   void _fillVisibleObjects( int ltype );
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );
+  bool _moveCamera( NEvent& event );
 
   gfx::TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 
