@@ -19,7 +19,7 @@
 #include "gfx/helper.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "good/helper.hpp"
 #include "core/foreach.hpp"
@@ -109,9 +109,7 @@ bool Dock::build( const city::AreaInfo& info )
 
 void Dock::destroy()
 {
-  city::Helper helper( _city() );
-
-  TilesArray area = helper.getArea( this );
+  TilesArray area = city::statistic::area( _city(), this );
 
   int index=0;
   foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
@@ -177,8 +175,7 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  city::Helper helper( _city() );
-  SeaMerchantList merchants = helper.findw<SeaMerchant>( constants::walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -202,10 +199,9 @@ const Tile& Dock::landingTile() const
 
 int Dock::queueSize() const
 {
-  city::Helper helper( _city() );
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = helper.findw<SeaMerchant>( constants::walker::seaMerchant,
-                                                         pos() - offset, pos() + offset );
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant,
+                                                                   pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
@@ -219,15 +215,14 @@ int Dock::queueSize() const
 const Tile& Dock::queueTile() const
 {
   TilePos offset( 3, 3 );
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
+  TilesArray tiles = city::statistic::tiles( _city(), pos() - offset, pos() + offset );
 
   foreach( it, tiles )
   {
     if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
       bool needMove;
-      bool busyTile = helper.isTileBusy<SeaMerchant>( (*it)->pos(), WalkerPtr(), needMove );
+      bool busyTile = city::statistic::isTileBusy<SeaMerchant>( _city(), (*it)->pos(), WalkerPtr(), needMove );
       if( !busyTile )
       {
         return *(*it);

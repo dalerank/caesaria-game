@@ -65,9 +65,8 @@ void BuildAny::_exec( Game& game, unsigned int )
     mayBuild = ctOv->isDestructible();
   }
 
-  city::Helper helper( game.city() );
   TilePos offset(10, 10);
-  EnemySoldierList enemies = helper.findw<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
+  EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
   if( !enemies.empty() && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##" );
@@ -86,7 +85,7 @@ void BuildAny::_exec( Game& game, unsigned int )
       return;
     }
 
-    helper.updateDesirability( _overlay, city::Helper::onDesirability );
+    Desirability::update( game.city(), _overlay, Desirability::on );
     game.city()->addOverlay( _overlay );
 
     ConstructionPtr construction = ptr_cast<Construction>( _overlay );

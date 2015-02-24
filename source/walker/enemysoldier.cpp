@@ -21,7 +21,8 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
+#include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
@@ -29,7 +30,6 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
-#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
@@ -92,9 +92,8 @@ bool EnemySoldier::_tryAttack()
 
   if( action() == acFight )
   {
-    city::Helper helper( _city() );
     bool needMeMove = false;
-    helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
+    city::statistic::isTileBusy<EnemySoldier>( _city(), pos(), this, needMeMove );
 
     if( needMeMove )
     {

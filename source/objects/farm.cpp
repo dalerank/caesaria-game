@@ -31,6 +31,7 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "walker/locust.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "core/tilepos_array.hpp"
 #include "game/gamedate.hpp"
@@ -262,9 +263,7 @@ FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  city::Helper helper( _city() );
-
-  LocustList lc = helper.findw<Locust>( constants::walker::locust, pos() );
+  LocustList lc = city::statistic::findw<Locust>( _city(), constants::walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";

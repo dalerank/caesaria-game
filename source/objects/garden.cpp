@@ -18,7 +18,7 @@
 #include "garden.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/variant_map.hpp"
@@ -106,8 +106,7 @@ std::string Garden::sound() const
 
 void Garden::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = city::statistic::area( _city(), this );
   foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
 }
 
@@ -141,12 +140,12 @@ void Garden::update()
       }
     }
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
+
     setSize( 2 );
     city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::on );
   }
 }

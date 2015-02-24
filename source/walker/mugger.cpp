@@ -19,7 +19,7 @@
 #include "objects/house.hpp"
 #include "pathway/path_finding.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
@@ -89,10 +89,9 @@ void Mugger::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    city::Helper helper( _city() );
     TilePos offset(10, 10);
 
-    HouseList houses = helper.find<House>( object::house, pos() - offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
     std::map< int, HouseList > houseEpxens;
     foreach( it, houses )
     {
@@ -151,8 +150,7 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      city::Helper helper( _city() );
-      HouseList houses = helper.find<House>( object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       foreach( it, houses )
       {

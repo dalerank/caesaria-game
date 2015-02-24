@@ -21,7 +21,7 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
@@ -65,8 +65,7 @@ void BurningRuins::timeStep(const unsigned long time)
   if( game::Date::isDayChanged() )
   {
     TilePos offset( 2, 2 );
-    city::Helper helper( _city() );
-    BuildingList buildings = helper.find<Building>( object::any, pos() - offset, pos() + offset );
+    BuildingList buildings = city::statistic::findo<Building>( _city(), object::any, pos() - offset, pos() + offset );
 
     foreach( it, buildings)
     {

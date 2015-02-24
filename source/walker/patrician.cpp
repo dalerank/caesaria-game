@@ -20,9 +20,11 @@
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "objects/construction.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
@@ -70,15 +72,14 @@ void Patrician::load( const VariantMap& stream )
 
 void Patrician::_findNewWay( const TilePos& start )
 {
-  city::Helper helper( _city() );
-  std::vector< object::Type > bTypes;
-  bTypes.push_back( object::senate );
+  object::TypeSet bTypes;
+  bTypes << object::senate;
 
   ConstructionList buildings;
 
   foreach( it, bTypes )
   {
-    buildings << helper.find<Construction>( *it );
+    buildings << city::statistic::findo<Construction>( _city(), *it );
   }
 
   Pathway pathway;

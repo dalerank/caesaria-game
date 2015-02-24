@@ -19,7 +19,7 @@
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "city/funds.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -276,8 +276,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     city::Helper helper( game->city() );
-     EnemySoldierList enemies = helper.findw<EnemySoldier>( walker::any, city::Helper::invalidPos );
+     EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game->city(), walker::any, TilePos(-1, -1) );
 
      foreach( it, enemies )
        (*it)->die();

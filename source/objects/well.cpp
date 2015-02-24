@@ -20,7 +20,7 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "house.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
@@ -95,7 +95,6 @@ TilesArray Well::coverageArea() const
   TilesArray ret;
 
   TilePos offset( wellServiceRange, wellServiceRange );
-  city::Helper helper( _city() );
-  ret = helper.getArea( pos() - offset, pos() + offset );
+  ret = city::statistic::tiles( _city(), pos() - offset, pos() + offset );
   return ret;
 }

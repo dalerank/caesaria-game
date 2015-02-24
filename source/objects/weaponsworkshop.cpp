@@ -22,7 +22,7 @@
 #include "good/stock.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects_factory.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -47,8 +47,7 @@ bool WeaponsWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  city::Helper helper( info.city );
-  bool haveIronMine = !helper.find<Building>( object::iron_mine ).empty();
+  bool haveIronMine = !city::statistic::findo<Building>( info.city, object::iron_mine ).empty();
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
 

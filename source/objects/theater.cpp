@@ -17,7 +17,7 @@
 
 #include "theater.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "actor_colony.hpp"
 #include "walker/walker.hpp"
@@ -39,8 +39,7 @@ bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  city::Helper helper( info.city );
-  ActorColonyList actors = helper.find<ActorColony>( object::actorColony );
+  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
 
   if( actors.empty() )
   {

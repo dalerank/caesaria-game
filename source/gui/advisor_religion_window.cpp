@@ -27,7 +27,7 @@
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "objects/house_spec.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
@@ -139,12 +139,10 @@ public:
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type small, const object::Type big )
   {
-    city::Helper helper( city );
-
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = helper.find<ServiceBuilding>( small ).size();
-    ret.bigTempleCount = helper.find<ServiceBuilding>( big ).size();
+    ret.smallTemplCount = city::statistic::findo<ServiceBuilding>( city, small ).size();
+    ret.bigTempleCount = city::statistic::findo<ServiceBuilding>( city, big ).size();
 
     return ret;
   }
@@ -208,8 +206,7 @@ void Religion::_showHelp()
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
-  city::Helper helper( city );
-  HouseList houses = helper.find<House>( object::house );
+  HouseList houses = city::statistic::findo<House>( city, object::house );
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;

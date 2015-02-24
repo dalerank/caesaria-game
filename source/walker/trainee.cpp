@@ -19,12 +19,13 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "objects/building.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -95,12 +96,11 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  city::Helper helper( _city() );
 
   BuildingList buildings;
   foreach( buildingType, _d->necBuildings )
   {
-    BuildingList tmpBuildings = helper.find<Building>( *buildingType );
+    BuildingList tmpBuildings = city::statistic::findo<Building>( _city(), *buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 

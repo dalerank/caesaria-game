@@ -21,7 +21,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/road.hpp"
 #include "core/direction.hpp"
@@ -53,8 +53,7 @@ bool Wall::build( const city::AreaInfo& info )
 
   Construction::build( info );
 
-  city::Helper helper( info.city );
-  WallList walls = helper.find<Wall>( object::wall );
+  WallList walls = city::statistic::findo<Wall>( info.city, object::wall );
 
   foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
 

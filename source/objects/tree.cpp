@@ -18,7 +18,7 @@
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects_factory.hpp"
@@ -69,8 +69,7 @@ void Tree::load(const VariantMap& stream)
 
 void Tree::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = city::statistic::area( _city(), this );
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlTree, false );

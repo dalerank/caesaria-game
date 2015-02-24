@@ -18,6 +18,7 @@
 #include "cityservice_health.hpp"
 #include "objects/house.hpp"
 #include "helper.hpp"
+#include "statistic.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
 #include "cityservice_factory.hpp"

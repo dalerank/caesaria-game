@@ -27,7 +27,7 @@
 #include "senate.hpp"
 #include "core/logger.hpp"
 #include "events/fundissue.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -113,9 +113,8 @@ float Forum::collectTaxes()
 
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
-  city::Helper helper( city );
   SenatePtr senate;
-  SenateList senates = helper.find<Senate>( object::senate );
+  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
   if( !senates.empty() )
     senate = senates.front();
 

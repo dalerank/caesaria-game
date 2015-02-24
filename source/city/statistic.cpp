@@ -378,6 +378,40 @@ int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
   return math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
 }
 
+HouseList findh(PlayerCityPtr city, std::set<int> levels )
+{
+  HouseList ret;
+  HouseList houses = findo( city, object::house );
+  if( levels.empty() )
+    return houses;
+
+  foreach( it, houses )
+  {
+    if( levels.count( (*it)->spec().level() ) > 0 )
+    {
+      ret << *it;
+    }
+  }
+
+  return ret;
+}
+
+gfx::TilesArray tiles( PlayerCityPtr r, const TilePos &start, const TilePos &stop)
+{
+  return r->tilemap().getArea( start, stop );
+}
+
+gfx::TilesArray area( PlayerCityPtr r, OverlayPtr overlay )
+{
+  if( _city.isNull() || overlay.isNull() )
+    {
+      Logger::warning( "WARNING !!!: Helper::getArea city is null" );
+      return TilesArray();
+    }
+
+  return r->tilemap().getArea( overlay->pos(), overlay->size() );
+}
+
 }//end namespace statistic
 
 }//end namespace city

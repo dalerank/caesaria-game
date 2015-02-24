@@ -293,11 +293,9 @@ void Population::Impl::updateStates()
 
   if( lbAdvice )
   {
-    city::Helper helper( city );
-
     int maxHabitants = 0;
     int currentHabitants = 0;
-    HouseList houses = helper.find<House>( object::house );
+    HouseList houses = city::statistic::findh( city );
     foreach( it, houses )
     {
       HousePtr house = *it;
@@ -415,8 +413,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_society:
     {
-      city::Helper helper( city );
-      HouseList houses = helper.find<House>( object::house );
+      HouseList houses = city::statistic::findh( city );
 
       _values.clear();
       _maxValue = 5;

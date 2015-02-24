@@ -24,7 +24,7 @@
 #include "objects/road.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 #include "objects/building.hpp"
 
@@ -179,8 +179,7 @@ DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
 {
   DirectPRoutes ret;
   // init the building list
-  city::Helper helper( _d->city );
-  ConstructionList constructionList = helper.find<Construction>( buildingType );
+  ConstructionList constructionList = city::statistic::findo<Construction>( _d->city, buildingType );
 
   // for each destination building
   foreach( it, constructionList )

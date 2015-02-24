@@ -23,6 +23,7 @@
 #include "walker/cart_pusher.hpp"
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/predefinitions.hpp"
@@ -31,7 +32,7 @@
 #include "walker/cart_supplier.hpp"
 #include "core/utils.hpp"
 #include "good/storage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
@@ -403,8 +404,7 @@ bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  city::Helper helper( info.city );
-  bool haveVinegrad = !helper.find<Building>( object::vinard ).empty();
+  bool haveVinegrad = !city::statistic::findo<Building>( info.city, object::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -435,8 +435,7 @@ bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  city::Helper helper( info.city );
-  bool haveOliveFarm = !helper.find<Building>( object::olive_farm ).empty();
+  bool haveOliveFarm = !city::statistic::findo<Building>( info.city, object::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

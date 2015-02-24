@@ -24,7 +24,7 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
@@ -403,9 +403,7 @@ void AdvisorChief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    city::Helper helper( city );
-
-    BarracksList barracks = helper.find<Barracks>( object::barracks );
+    BarracksList barracks = city::statistic::findo<Barracks>( city, object::barracks );
 
     bool needWeapons = false;
     foreach( it, barracks )

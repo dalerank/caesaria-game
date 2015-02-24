@@ -25,7 +25,7 @@
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "festival_planing_window.hpp"
@@ -205,8 +205,6 @@ void Entertainment::_showFestivalWindow()
 
 InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
 {
-  city::Helper helper( city );
-
   InfrastructureInfo ret;
 
   ret.buildingWork = 0;
@@ -215,7 +213,7 @@ InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
   ret.buildingCount = 0;
   ret.partlyWork = 0;
 
-  EntertainmentBuildingList servBuildings = helper.find<EntertainmentBuilding>( service );
+  EntertainmentBuildingList servBuildings = city::statistic::findo<EntertainmentBuilding>( city, service );
   foreach( b, servBuildings )
   {
     if( (*b)->numberWorkers() > 0 )
@@ -251,7 +249,6 @@ void Entertainment::Impl::updateInfo()
   const InfrastructureInfo& clsInfo = lbColisseumInfo->getInfo();
   //const InfrastructureInfo& hpdInfo = lbHippodromeInfo->getInfo();
 
-  city::Helper helper( city );
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
   int minTheaterSrvc = 100;
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
@@ -260,7 +257,7 @@ void Entertainment::Impl::updateInfo()
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = helper.find<House>( object::house );
+  HouseList houses = city::statistic::findh( city );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -328,7 +325,7 @@ void Entertainment::Impl::updateInfo()
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
-  HippodromeList hippodromes = helper.find<Hippodrome>( object::hippodrome );
+  HippodromeList hippodromes = city::statistic::findo<Hippodrome>( city, object::hippodrome );
   foreach( h, hippodromes )
   {
     if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }

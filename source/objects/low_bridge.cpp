@@ -18,7 +18,7 @@
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
@@ -443,10 +443,9 @@ bool LowBridge::build( const city::AreaInfo& info )
 
 bool LowBridge::canDestroy() const
 {
-  city::Helper helper( _city() );
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.findw<Walker>( constants::walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = city::statistic::findw<Walker>( _city(), constants::walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";

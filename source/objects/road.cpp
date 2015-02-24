@@ -23,7 +23,7 @@
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
 
@@ -203,8 +203,7 @@ void Road::destroy()
   if( state( pr::lockTerrain ) > 0 )
     return;
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = city::statistic::area( _city(), this );
 
   foreach( it, tiles )
   {
@@ -369,12 +368,11 @@ void Plaza::updatePicture()
       }
     }
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
     setSize( 2 );
     city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::on );
   }
 }

@@ -30,7 +30,7 @@
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
 #include "good/storage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "events/build.hpp"
@@ -420,8 +420,6 @@ void House::timeStep(const unsigned long time)
 
 bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char desirability )
 {
-  city::Helper helper( _city() );
-
   if( size().width() == 1 )
   {
     Tilemap& tmap = _city()->tilemap();
@@ -485,7 +483,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       setServiceValue( Service::recruter, sumFreeWorkers );
 
       //reset desirability level with old house size
-      helper.updateDesirability( this, city::Helper::offDesirability );
+      Desirability::update( _city(), this, Desirability::off );
 
       setSize( growSize  );
       //_update( false );
@@ -493,24 +491,23 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       city::AreaInfo info = { _city(), pos(), TilesArray() };
       build( info );
       //set new desirability level
-      helper.updateDesirability( this, city::Helper::onDesirability );
+      Desirability::update( _city(), this, Desirability::on );
     }
   }
 
   //that this house will be upgrade, we need decrease current desirability level
-  helper.updateDesirability( this, city::Helper::offDesirability );
+  Desirability::update( _city(), this, Desirability::off );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //now upgrade groud area to new desirability
-  helper.updateDesirability( this, city::Helper::onDesirability );
+  Desirability::update( _city(), this, Desirability::on );
 
   return true;
 }
 
 bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char desirability )
 {
-  city::Helper helper( _city() );
   //startPic += math::random( 10 ) > 5 ? 1 : 0;
   bool mayGrow = true;
   TilePos buildPos = tile().pos();
@@ -569,7 +566,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
       if( mayGrow )
       {
         buildPos = itArea->first;
-        helper.updateDesirability( this, city::Helper::offDesirability );
+        Desirability::update( _city(), this, Desirability::off );
         setSize( minSize );
         _update( true );
         city::AreaInfo info = { _city(), buildPos, TilesArray() };
@@ -578,7 +575,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         _d->desirability.base = desirability;
         _d->desirability.step = desirability < 0 ? 1 : -1;
 
-        helper.updateDesirability( this, city::Helper::onDesirability );
+        Desirability::update( _city(), this, Desirability::on );
         break;
       }
     }
@@ -587,13 +584,13 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
   if( mayGrow )
   {
     //that this house will be upgrade, we need decrease current desirability level
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
 
     _d->desirability.base = desirability;
     _d->desirability.step = desirability < 0 ? 1 : -1;
 
     //now upgrade groud area to new desirability
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::on );
     return true;
   }
   else
@@ -665,14 +662,13 @@ void House::_levelUp()
 
 void House::_tryDegrage_12_to_2_lvl( const char desirability )
 {
-  city::Helper helper( _city() );
   //clear current desirability influence
-  helper.updateDesirability( this, city::Helper::offDesirability );
+  Desirability::update( _city(), this, Desirability::off );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //set new desirability level
-  helper.updateDesirability( this, city::Helper::onDesirability );
+  Desirability::update( _city(), this, Desirability::on );
 }
 
 void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
@@ -681,10 +677,8 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
   //_d->houseId = startPicId;
   //_d->picIdOffset = startPicId + ( math::random( 10 ) > 6 ? 1 : 0 );
 
-  city::Helper helper( _city() );  
-
   //clear current desirability influence
-  helper.updateDesirability( this, city::Helper::offDesirability );
+  Desirability::update( _city(), this, Desirability::off );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
@@ -701,7 +695,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
                             math::signnum( roadPos.j() - bpos.j() ) );
     }
 
-    TilesArray lastArea = helper.getArea( this );
+    TilesArray lastArea = city::statistic::area( _city(), this );
     foreach( tile, lastArea )
     {
       (*tile)->setMasterTile( 0 );
@@ -713,7 +707,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     build( info );
   }
   //set new desirability level
-  helper.updateDesirability( this, city::Helper::onDesirability );
+  Desirability::update( _city(), this, Desirability::on );
 }
 
 void House::_levelDown()
@@ -750,8 +744,7 @@ void House::_levelDown()
   {
   case HouseLevel::vacantLot:
   {
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
   }
   break;
 
@@ -1034,8 +1027,7 @@ void House::addHabitants( CitizenGroup& habitants )
 
     if( _city().isValid() )
     {
-      city::Helper helper( _city() );
-      helper.updateDesirability( this, city::Helper::onDesirability );
+      Desirability::update( _city(), this, Desirability::on );
     }
   }
 }

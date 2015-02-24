@@ -23,7 +23,7 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
@@ -88,8 +88,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
-  city::Helper helper( _city() );
-  WalkerList walkers = helper.findw<Walker>( walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = city::statistic::findw<Walker>( _city(), walker::any, pos() - offset, pos() + offset );
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {

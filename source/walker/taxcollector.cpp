@@ -16,12 +16,12 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "taxcollector.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "city/funds.hpp"
 #include "objects/house.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
-#include "pathway/pathway.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
 #include "core/foreach.hpp"
@@ -81,9 +81,8 @@ std::string TaxCollector::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    city::Helper helper( _city() );
     TilePos offset( 2, 2 );
-    HouseList houses = helper.find<House>( object::house, pos() - offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 
