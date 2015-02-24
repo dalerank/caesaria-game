@@ -215,9 +215,10 @@ void TraineeWalker::_reachedPathway()
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "originBldPos" ] = _d->base->pos();
-  stream[ "destBldPos" ] = _d->destination->pos();
-  stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "originBldPos" ] = _d->base.isValid() ? _d->base->pos() : TilePos(-1, -1);
+  stream[ "destBldPos" ] = _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1);
+
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   stream[ "traineeType" ] = type();
   stream[ "type" ] = (int)walker::trainee;
 }
@@ -228,7 +229,7 @@ void TraineeWalker::load( const VariantMap& stream )
 
   _d->base << _city()->getOverlay( stream.get( "originBldPos" ).toTilePos() );
   _d->destination << _city()->getOverlay( stream.get( "destBldPos" ).toTilePos() );
-  _d->maxDistance = (int)stream.get( "maxDistance" );
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 
   _setType( wtype );

@@ -31,6 +31,7 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual const gfx::Picture& picture() const;
+  virtual std::string errorDesc() const;
 };
 
 #endif //__CAESARIA_ROADBLOCK_H_INCLUDED__
