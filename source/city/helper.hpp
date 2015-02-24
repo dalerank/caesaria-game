@@ -41,23 +41,6 @@ public:
   static const TilePos invalidPos;
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
-  template< class T >
-  SmartList< T > find( object::Group group )
-  {
-    SmartList< T > ret;
-    OverlayList& buildings = _city->overlays();
-    foreach( item, buildings )
-    {
-      SmartPtr< T > b = ptr_cast< T >(*item);
-      if( b.isValid() && (b->group() == group || group == object::group::any ) )
-      {
-        ret.push_back( b );
-      }
-    }
-
-    return ret;
-  }
-
   template<class T>
   Pathway findFreeTile( TilePos target, TilePos currentPos, const int range )
   {

@@ -20,7 +20,7 @@
 #include "gfx/camera.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/font.hpp"
 #include "core/event.hpp"
 #include "core/utils.hpp"
@@ -88,8 +88,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
       int picOffset = __des2index( desirability );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
-      city::Helper helper( _city() );
-      TilesArray tiles4clear = helper.getArea( overlay );
+      TilesArray tiles4clear = overlay->area();
 
       foreach( tile, tiles4clear )
       {

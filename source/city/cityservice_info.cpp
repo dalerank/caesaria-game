@@ -133,8 +133,7 @@ void Info::timeStep(const unsigned int time )
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( object::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;

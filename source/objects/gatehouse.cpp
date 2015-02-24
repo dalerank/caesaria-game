@@ -159,7 +159,7 @@ void Gatehouse::initTerrain(Tile& terrain)
 
 void Gatehouse::destroy()
 {
-  TilesArray tiles = city::statistic::area( _city(), this );
+  TilesArray tiles = area();
 
   foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
 }

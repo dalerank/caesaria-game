@@ -23,6 +23,7 @@
 #include "constants.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -55,6 +56,12 @@ bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
+  }
+
+  if( !is_constructible )
+  {
+    events::GameEventPtr e = events::WarningMessage::create( "##roadblock_build_over_road##" );
+    e->dispatch();
   }
 
   return is_constructible;

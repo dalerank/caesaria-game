@@ -206,7 +206,7 @@ bool Granary::isWalkable() const { return true; }
 
 void Granary::destroy()
 {
-  TilesArray tiles = city::statistic::area( _city(), this );
+  TilesArray tiles = area();
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlRoad, false );

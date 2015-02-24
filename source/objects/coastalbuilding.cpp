@@ -75,10 +75,10 @@ bool CoastalFactory::build( const city::AreaInfo& info )
 
 void CoastalFactory::destroy()
 {
-  TilesArray area = city::statistic::area( _city(), this );
+  TilesArray tiles = area();
 
   int index=0;
-  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, tiles ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }

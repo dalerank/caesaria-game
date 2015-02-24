@@ -18,7 +18,7 @@
 #include "service_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -66,8 +66,7 @@ void ServiceUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( object::house );
+    HouseList houses = statistic::findh( _city() );
 
     foreach( it, houses )
     {

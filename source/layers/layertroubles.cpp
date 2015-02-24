@@ -20,7 +20,7 @@
 #include "core/gettext.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house_level.hpp"
 #include "good/helper.hpp"
 #include "game/resourcegroup.hpp"
@@ -76,8 +76,7 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
   }
 

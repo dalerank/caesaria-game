@@ -69,7 +69,7 @@ void Tree::load(const VariantMap& stream)
 
 void Tree::destroy()
 {
-  TilesArray tiles = city::statistic::area( _city(), this );
+  TilesArray tiles = area();
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlTree, false );

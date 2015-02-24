@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "objects/warehouse.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "mars.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
@@ -66,8 +66,7 @@ void Mars::_doWrath(PlayerCityPtr city)
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
-  city::Helper helper( city );
-  FortList forts = helper.find<Fort>( object::group::military );
+  FortList forts = city::statistic::findo<Fort>( city, object::group::military );
 
   std::string text, title;
   if( !forts.empty() )

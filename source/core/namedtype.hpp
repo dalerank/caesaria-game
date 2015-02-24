@@ -27,6 +27,7 @@ public:   \
   explicit name(int which) { _type = which; } \
   name(const name& a) { _type = a._type; } \
   name() { _type = 0; } \
+  inline name& operator=(const name& a) { _type = a._type; return *this; } \
   inline int toInt() const { return _type; } \
   inline bool operator==( const name& a ) const { return _type == a._type; } \
   inline bool operator!=( const name& a ) const { return _type != a._type; } \

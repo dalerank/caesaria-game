@@ -67,7 +67,7 @@ void Baths::timeStep(const unsigned long time)
   if( game::Date::isWeekChanged() )
   {
     bool haveWater = false;
-    TilesArray tiles = city::statistic::area( _city(), this );
+    TilesArray tiles = area();
     foreach( tile, tiles ) { haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0; }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
   }

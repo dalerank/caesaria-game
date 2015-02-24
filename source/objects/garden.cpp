@@ -106,7 +106,7 @@ std::string Garden::sound() const
 
 void Garden::destroy()
 {
-  TilesArray tiles = city::statistic::area( _city(), this );
+  TilesArray tiles = area();
   foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
 }
 

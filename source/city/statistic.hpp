@@ -55,7 +55,7 @@ unsigned int getHealth( PlayerCityPtr city );
 int months2lastAttack( PlayerCityPtr city );
 int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
-HouseList getEvolveHouseReadyBy(PlayerCityPtr, object::TypeSet &checkTypes);
+HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
 GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
@@ -64,15 +64,14 @@ int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Type type );
-template< class T >SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current );
-template< class T >SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current );
+template< class T > SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current );
+template< class T > SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current );
+template< class T > SmartList< T > findo( PlayerCityPtr r, object::Group group );
 template<class T> bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove );
 template< class T > SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
                                           TilePos start, TilePos stop=TilePos(-1, -1) );
 HouseList findh( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
 gfx::TilesArray tiles( PlayerCityPtr r, const TilePos& start, const TilePos& stop=TilePos(-1,-1));
-gfx::TilesArray area(PlayerCityPtr r, OverlayPtr overlay);
-
 
 template< class T >
 SmartList< T > findo( PlayerCityPtr r, object::Type type )
@@ -227,6 +226,23 @@ SmartList< T > find( PlayerCityPtr r, object::Group group, const TilePos& start,
     if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
     {
       ret.push_back( obj );
+    }
+  }
+
+  return ret;
+}
+
+template< class T >
+SmartList< T > findo( PlayerCityPtr r, object::Group group )
+{
+  SmartList< T > ret;
+  OverlayList& buildings = r->overlays();
+  foreach( item, buildings )
+  {
+    SmartPtr< T > b = ptr_cast< T >(*item);
+    if( b.isValid() && (b->group() == group || group == object::group::any ) )
+    {
+      ret.push_back( b );
     }
   }
 

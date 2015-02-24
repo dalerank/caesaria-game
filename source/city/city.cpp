@@ -320,8 +320,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 
 int PlayerCity::strength() const
 {
-  city::Helper helper( const_cast<PlayerCity*>( this ) );
-  FortList forts = helper.find<Fort>( object::any );
+  FortList forts = city::statistic::findo<Fort>( const_cast<PlayerCity*>( this ), object::any );
 
   int ret = 0;
   foreach( i, forts )
@@ -345,13 +344,12 @@ world::Nation PlayerCity::nation() const { return world::rome; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
-  city::Helper hlp( city );
   float lastMonthTax = 0;
   
-  ForumList forums = hlp.find< Forum >( object::forum );
+  ForumList forums = city::statistic::findo< Forum >( city, object::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = hlp.find< Senate >( object::senate );
+  SenateList senates = city::statistic::findo< Senate >( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
@@ -387,10 +385,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
   unsigned int pop = 0;
-
-  city::Helper helper( city );
-
-  HouseList houseList = helper.find<House>( object::house );
+  HouseList houseList = city::statistic::findh( city );
 
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
@@ -400,8 +395,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay)
 {
-  city::Helper helper( city );
-  helper.updateDesirability( overlay, city::Helper::offDesirability );
+  Desirability::update( city, overlay, Desirability::off );
 }
 
 void PlayerCity::Impl::updateWalkers( unsigned int time )

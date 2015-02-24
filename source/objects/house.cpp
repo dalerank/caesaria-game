@@ -695,7 +695,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
                             math::signnum( roadPos.j() - bpos.j() ) );
     }
 
-    TilesArray lastArea = city::statistic::area( _city(), this );
+    TilesArray lastArea = area();
     foreach( tile, lastArea )
     {
       (*tile)->setMasterTile( 0 );

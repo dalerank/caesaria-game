@@ -21,7 +21,7 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
@@ -82,8 +82,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
         tileNumber += (haveWater ? OverlayPic::haveWater : 0);
         tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? OverlayPic::reservoirRange : 0;
 
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
+        drawArea( engine, overlay->area(), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
         areaSize = 0;
       }

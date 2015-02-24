@@ -25,6 +25,7 @@
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/foreach.hpp"
+#include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -203,7 +204,7 @@ void Road::destroy()
   if( state( pr::lockTerrain ) > 0 )
     return;
 
-  TilesArray tiles = city::statistic::area( _city(), this );
+  TilesArray tiles = area();
 
   foreach( it, tiles )
   {
@@ -280,6 +281,12 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
+  }
+
+  if( !is_constructible )
+  {
+    events::GameEventPtr e = events::WarningMessage::create( "##plaza_build_over_road##" );
+    e->dispatch();
   }
 
   return is_constructible;
