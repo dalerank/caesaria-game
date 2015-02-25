@@ -71,14 +71,9 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   setEPos( pos );
 }
 
-int Tile::i() const    {   return _pos.i();   }
-int Tile::j() const    {   return _pos.j();   }
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
 void Tile::setPicture(const char* rc, const int index){ setPicture( Picture::load( rc, index ) );}
 void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name ) );}
-
-const Picture& Tile::picture() const {  return _picture; }
-Tile* Tile::masterTile() const{  return _master;}
 void Tile::setMasterTile(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
@@ -196,12 +191,11 @@ void Tile::setFlag(Tile::Type type, bool value)
   case wasDrawn: _wasDrawn = value; break;
   case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
-  }
+    }
 }
 
-OverlayPtr Tile::overlay() const{ return _overlay;}
+OverlayPtr Tile::overlay() const  { return _overlay;}
 void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
 void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }

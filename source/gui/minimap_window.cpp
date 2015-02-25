@@ -73,19 +73,19 @@ void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
-  int rndData = tile.originalImgId();
-  int num3 = rndData & 0x3;
-  int num7 = rndData & 0x7;
-
-  object::Type ovType = object::unknown;
-  if( tile.overlay().isValid() )
-    ovType = tile.overlay()->type();
-
   if( tile.i() < 0 || tile.j() < 0 )
   {
     c1 = c2 = 0xff000000;
     return;
   }
+
+  object::Type ovType = object::unknown;
+  if( tile.rov().isValid() )
+    ovType = tile.rov()->type();
+
+  int rndData = tile.originalImgId();
+  int num3 = rndData & 0x3;
+  int num7 = rndData & 0x7;
 
   if (tile.getFlag( Tile::tlTree ))
   {
@@ -225,12 +225,15 @@ void Minimap::Impl::updateImage()
   TilePos startPos = tpos - offset;
   TilePos stopPos = tpos + offset;
 
-  int w = minimap->width()-1;
-  int h = minimap->height();
+  int mmapWithMinus1 = minimap->width()-1;
+  int mmapWidth = minimap->width();
+  int mmapHeight = minimap->height();
   unsigned int* pixels = minimap->lock();
 
   if( pixels != 0)
   {
+    int c1, c2;
+    Point pnt;
     minimap->fill( 0xff000000, Rect() );
     for( int i = startPos.i(); i < stopPos.i(); i++)
     {
@@ -238,15 +241,14 @@ void Minimap::Impl::updateImage()
       {
         const Tile& tile = tilemap.at(i, j);
 
-        Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
-        int c1, c2;
+        pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
         getTerrainColours( tile, c1, c2);
 
-        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= w || pnt.y() >= h )
+        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= mmapWithMinus1 || pnt.y() >= mmapHeight )
           continue;
 
         unsigned int* bufp32;
-        bufp32 = pixels + pnt.y() * minimap->width() + pnt.x();
+        bufp32 = pixels + pnt.y() * mmapWidth + pnt.x();
         *bufp32 = c1;
         *(bufp32+1) = c2;
       }
@@ -257,16 +259,16 @@ void Minimap::Impl::updateImage()
     TileRect trect( startPos, stopPos );
     //TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
     //TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
-    foreach( w, walkers)
+    foreach( mmapWithMinus1, walkers)
     {
-      TilePos pos = (*w)->pos();
+      TilePos pos = (*mmapWithMinus1)->pos();
       if( trect.contain( pos ) )
       {
         NColor cl;
-        if ((*w)->agressive() != 0)
+        if ((*mmapWithMinus1)->agressive() != 0)
         {
 
-          if ((*w)->agressive() > 0)
+          if ((*mmapWithMinus1)->agressive() > 0)
           {
             cl = DefaultColors::red;
           }

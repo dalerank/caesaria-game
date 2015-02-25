@@ -43,8 +43,8 @@ public:
   explicit Tile(const TilePos& pos);
 
   // tile coordinates
-  int i() const;
-  int j() const;
+  inline int i() const { return _pos.i(); }
+  inline int j() const { return _pos.j(); }
   inline const TilePos& pos() const{ return _pos; }
   inline const TilePos& epos() const { return _epos; }
   inline const Point& mappos() const { return _mappos; }
@@ -58,12 +58,12 @@ public:
   void setPicture( const Picture& picture );
   void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
-  const Picture& picture() const;
+  inline const Picture& picture() const {  return _picture; }
 
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
   // non-constructible tiles have no foreground => master used for background
-  Tile* masterTile() const;
+  inline Tile* masterTile() const {  return _master;}
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
@@ -86,7 +86,7 @@ public:
 
   OverlayPtr overlay() const;
   void setOverlay( OverlayPtr overlay );
-  unsigned int originalImgId() const;
+  inline unsigned int originalImgId() const { return _terrain.imgid;}
   void setOriginalImgId( unsigned short int id );
 
   inline int height() const { return _height; }

@@ -75,7 +75,7 @@ class Colors {
 		* @param number - 0-7, or one of the SPRITE_* constants
 		* @return int representing a colour
 		*/
-		int colour(int type, int number);
+    inline int colour(int type, int number) const {	return map[type][number];}
 };
 
 }//end namespace minimap
