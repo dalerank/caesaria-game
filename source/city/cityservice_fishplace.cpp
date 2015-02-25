@@ -17,7 +17,7 @@
 
 #include "cityservice_fishplace.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/utils.hpp"
 #include "core/position.hpp"
@@ -69,8 +69,7 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    Helper helper( _city() );
-    _d->places = helper.findw<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = city::statistic::findw<FishPlace>( _city(), walker::fishPlace, TilePos(-1, -1) );
   }
 
   while( _d->places.size() < _d->maxFishPlace )

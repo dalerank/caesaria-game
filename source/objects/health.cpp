@@ -18,7 +18,7 @@
 #include "game/gamedate.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
@@ -66,10 +66,8 @@ void Baths::timeStep(const unsigned long time)
 {
   if( game::Date::isWeekChanged() )
   {
-    city::Helper helper( _city() );
-
     bool haveWater = false;
-    TilesArray tiles = helper.getArea( this );
+    TilesArray tiles = area();
     foreach( tile, tiles ) { haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0; }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
   }

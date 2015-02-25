@@ -18,7 +18,7 @@
 #include "goods_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "good/helper.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
@@ -69,11 +69,10 @@ void GoodsUpdater::timeStep(const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "GoodsUpdater: execute service" );
-    Helper helper( _city() );
 
     foreach( bldType, _d->supportBuildings )
     {
-      BuildingList buildings = helper.find<Building>( *bldType );
+      BuildingList buildings = city::statistic::findo<Building>( _city(), *bldType );
       foreach( it, buildings )
       {
         good::Stock stock( _d->gtype, _d->value, _d->value );

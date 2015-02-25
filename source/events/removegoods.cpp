@@ -17,7 +17,7 @@
 #include "good/store.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "game/game.hpp"
 
@@ -45,8 +45,7 @@ void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what
 #ifdef CAESARIA_PLATFORM_HAIKU
   bList << city->overlays();
 #else
-  city::Helper helper( city );
-  bList = helper.find<T>( btype );
+  bList = city::statistic::findo<T>( city, btype );
 #endif
   foreach( it, bList )
   {

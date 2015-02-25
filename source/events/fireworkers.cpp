@@ -17,10 +17,11 @@
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/working.hpp"
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 
 using namespace gfx;
@@ -71,8 +72,7 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    city::Helper helper( game.city() );
-    WorkingBuildingList  wb = helper.find<WorkingBuilding>( object::any );
+    WorkingBuildingList wb = city::statistic::findo<WorkingBuilding>( game.city(), object::any );
     foreach( it, wb )
     {
       int removedFromWb = (*it)->removeWorkers( _workers );

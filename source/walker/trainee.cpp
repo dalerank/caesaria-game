@@ -19,12 +19,13 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "objects/building.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -95,12 +96,11 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  city::Helper helper( _city() );
 
   BuildingList buildings;
   foreach( buildingType, _d->necBuildings )
   {
-    BuildingList tmpBuildings = helper.find<Building>( *buildingType );
+    BuildingList tmpBuildings = city::statistic::findo<Building>( _city(), *buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 
@@ -215,9 +215,10 @@ void TraineeWalker::_reachedPathway()
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "originBldPos" ] = _d->base->pos();
-  stream[ "destBldPos" ] = _d->destination->pos();
-  stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "originBldPos" ] = _d->base.isValid() ? _d->base->pos() : TilePos(-1, -1);
+  stream[ "destBldPos" ] = _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1);
+
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   stream[ "traineeType" ] = type();
   stream[ "type" ] = (int)walker::trainee;
 }
@@ -228,7 +229,7 @@ void TraineeWalker::load( const VariantMap& stream )
 
   _d->base << _city()->getOverlay( stream.get( "originBldPos" ).toTilePos() );
   _d->destination << _city()->getOverlay( stream.get( "destBldPos" ).toTilePos() );
-  _d->maxDistance = (int)stream.get( "maxDistance" );
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 
   _setType( wtype );

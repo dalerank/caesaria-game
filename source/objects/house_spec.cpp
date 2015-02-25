@@ -25,7 +25,7 @@
 #include "core/saveadapter.hpp"
 #include "good/store.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "good/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
@@ -255,12 +255,10 @@ unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->
 
 int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
 {
-  city::Helper helper( house->_city() );
-
   Size size = house->size();
   TilePos offset( size.width(), size.height() );
   TilePos housePos = house->pos();
-  HouseList houses = helper.find<House>( object::house, housePos - offset, housePos + offset );
+  HouseList houses = city::statistic::findo<House>( house->_city(), object::house, housePos - offset, housePos + offset );
 
   int ret = 0;
   foreach( it, houses )

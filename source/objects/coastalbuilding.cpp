@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "coastalbuilding.hpp"
 #include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
@@ -75,12 +75,10 @@ bool CoastalFactory::build( const city::AreaInfo& info )
 
 void CoastalFactory::destroy()
 {
-  city::Helper helper( _city() );
-
-  TilesArray area = helper.getArea( this );
+  TilesArray tiles = area();
 
   int index=0;
-  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, tiles ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }

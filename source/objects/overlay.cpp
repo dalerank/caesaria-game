@@ -223,6 +223,17 @@ Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
 object::Type Overlay::type() const{ return _d->overlayType;}
 
+TilesArray Overlay::area() const
+{
+  if( _city().isNull() )
+  {
+    Logger::warning( "WARNING !!!: Helper::getArea city is null" );
+    return gfx::TilesArray();
+  }
+
+  return _city()->tilemap().getArea( pos(), size() );
+}
+
 Overlay::~Overlay()
 {
 #ifdef DEBUG

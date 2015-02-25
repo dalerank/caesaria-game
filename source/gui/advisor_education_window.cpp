@@ -24,7 +24,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
@@ -168,11 +168,10 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   info = _d->getInfo( city, object::library );
   _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
 
-  city::Helper helper( city );
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = helper.find<House>( object::house );
+  HouseList houses = city::statistic::findh( city );
   foreach( house, houses )
   {
     sumScholars += (*house)->habitants().scholar_n();
@@ -205,8 +204,6 @@ void Education::_showHelp()
 
 InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
-  city::Helper helper( city );
-
   InfrastructureInfo ret;
 
   ret.buildingWork = 0;
@@ -216,13 +213,13 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( bType );
+  ServiceBuildingList servBuildings = city::statistic::findo<ServiceBuilding>( city, bType );
 
   ret.buildingCount = servBuildings.size();
   SrvcInfo info = findInfo( bType );
   if( info.service == Service::srvCount )
   {
-    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
+    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType.toInt() );
   }
 
   foreach( it, servBuildings )
@@ -235,7 +232,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
     }
   }
 
-  HouseList houses = helper.find<House>( object::house );
+  HouseList houses = city::statistic::findo<House>( city, object::house );
   int minAccessLevel = 100;
   foreach( it, houses )
   {

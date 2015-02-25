@@ -23,8 +23,9 @@
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "events/warningmessage.hpp"
 #include "objects/road.hpp"
 #include "core/variant_map.hpp"
@@ -81,13 +82,11 @@ bool Fortification::build( const city::AreaInfo& info )
   }
 
   Building::build( info );
-
-  city::Helper helper( info.city );
-  FortificationList fortifications = helper.find<Fortification>( object::fortification );
+  FortificationList fortifications = city::statistic::findo<Fortification>( info.city, object::fortification );
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
 
-  TowerList towers = helper.find<Tower>( object::tower );
+  TowerList towers = city::statistic::findo<Tower>( info.city, object::tower );
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( info.city );

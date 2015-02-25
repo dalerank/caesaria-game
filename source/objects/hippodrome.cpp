@@ -19,7 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
 #include "gfx/picture.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
@@ -181,8 +181,7 @@ bool Hippodrome::canBuild( const city::AreaInfo& areaInfo ) const
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  city::Helper helper( areaInfo.city );
-  HippodromeList hpList = helper.find<Hippodrome>( object::hippodrome );
+  HippodromeList hpList = city::statistic::findo<Hippodrome>( areaInfo.city, object::hippodrome );
   if( !hpList.empty() )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");

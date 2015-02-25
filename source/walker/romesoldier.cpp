@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "romesoldier.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
@@ -175,17 +175,15 @@ std::string RomeSoldier::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    city::Helper helper( _city() );
-
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = helper.findw<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts( th );
     }
     else
     {
-      RomeSoldierList ourSoldiers = helper.findw<RomeSoldier>( walker::any, pos() - offset, pos() + offset );
+      RomeSoldierList ourSoldiers = city::statistic::findw<RomeSoldier>( _city(), walker::any, pos() - offset, pos() + offset );
       int enemyStrength = 0;
       int ourStrength = 0;
 
@@ -291,9 +289,8 @@ bool RomeSoldier::_tryAttack()
 
   if( action() == acFight )
   {
-    city::Helper helper( _city() );
     bool needMove = false;
-    helper.isTileBusy<Soldier>( pos(), this, needMove );
+    city::statistic::isTileBusy<Soldier>( _city(), pos(), this, needMove );
     if( needMove )
     {
       _move2freePos( targetPos );
@@ -378,8 +375,7 @@ void RomeSoldier::_reachedPathway()
 
   case go2position:
   {
-    city::Helper helper( _city() );
-    WalkerList walkersOnTile = helper.findw<Walker>( type(), pos() );
+    WalkerList walkersOnTile = city::statistic::findw<Walker>( _city(), type(), pos() );
     walkersOnTile.remove( this );
 
     if( walkersOnTile.size() > 0 ) //only me in this tile

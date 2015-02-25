@@ -17,7 +17,7 @@
 
 #include "contaminated_water.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
@@ -51,7 +51,6 @@ GameEventPtr ContaminatedWater::create()
 
 void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
 {
-  city::Helper helper( city );
   TilePos offset( 2, 2 );
 
   OverlayList buildings = city->overlays();
@@ -61,7 +60,7 @@ void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
     if( (*itB)->type() != btype )
         continue;
 
-    HouseList houses = helper.find<House>( object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
+    HouseList houses = city::statistic::findo<House>( city, object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
 
     foreach( itHouse, houses )
     {

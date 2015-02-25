@@ -18,7 +18,7 @@
 
 #include "furniture_workshop.hpp"
 
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 #include "timber_logger.hpp"
@@ -39,8 +39,7 @@ bool FurnitureWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  city::Helper helper( info.city );
-  bool haveTimberLogger = !helper.find<TimberLogger>( object::lumber_mill ).empty();
+  bool haveTimberLogger = !city::statistic::findo<TimberLogger>( info.city, object::lumber_mill ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 

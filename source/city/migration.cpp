@@ -17,7 +17,7 @@
 
 #include "migration.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city/cityservice_military.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
@@ -342,8 +342,7 @@ void Migration::citizenLeaveCity(WalkerPtr walker)
 unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
-  Helper helper( city );
-  HouseList houses = helper.find<House>(object::house);
+  HouseList houses = city::statistic::findh(city);
   foreach( house, houses )
   {
     if( (*house)->getAccessRoads().size() > 0 )
@@ -411,8 +410,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>(object::house);
+  HouseList houses = city::statistic::findh( city );
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {

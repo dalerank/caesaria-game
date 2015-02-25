@@ -25,7 +25,7 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
@@ -183,15 +183,13 @@ void Health::_showHelp()
 
 Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type service)
 {
-  city::Helper helper( city );
-
   InfrastructureInfo ret;
 
   ret.buildingWork = 0;
   ret.peoplesServed = 0;
   ret.buildingCount = 0;
 
-  ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
+  ServiceBuildingList srvBuildings = city::statistic::findo<ServiceBuilding>( city, service );
   foreach( b, srvBuildings )
   {
     ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
@@ -226,8 +224,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      city::Helper helper( c );
-      HouseList houses =  helper.find<House>( object::house );
+      HouseList houses =  city::statistic::findo<House>( c, object::house );
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;

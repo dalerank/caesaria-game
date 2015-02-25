@@ -22,8 +22,9 @@
 #include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
 #include "gfx/tilemap_camera.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/event.hpp"
+#include "core/priorities.hpp"
 #include "core/gettext.hpp"
 
 using namespace constants;
@@ -96,14 +97,12 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
     }
     else
     {
       //other buildings
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )

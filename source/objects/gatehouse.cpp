@@ -18,7 +18,7 @@
 #include "gatehouse.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "objects/road.hpp"
@@ -159,8 +159,7 @@ void Gatehouse::initTerrain(Tile& terrain)
 
 void Gatehouse::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
 
   foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
 }

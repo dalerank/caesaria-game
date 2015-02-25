@@ -17,7 +17,7 @@
 
 #include "cityservice_roads.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
@@ -82,12 +82,10 @@ void Roads::timeStep( const unsigned int time )
   btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, 4));
   btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, 4));
 
-  Helper helper( _city() );
-
   Impl::Updates positions;
   foreach( it, btypes )
   {
-    BuildingList tmp = helper.find<Building>( it->first );
+    BuildingList tmp = city::statistic::findo<Building>( _city(), it->first );
 
     foreach( b, tmp )
     {
@@ -95,7 +93,7 @@ void Roads::timeStep( const unsigned int time )
     }
   }
 
-  HouseList houses = helper.find<House>( object::house );
+  HouseList houses = city::statistic::findh( _city() );
   foreach( house, houses )
   {
     if( (*house)->spec().level() >= HouseLevel::bigMansion )
@@ -112,7 +110,7 @@ void Roads::timeStep( const unsigned int time )
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = helper.find<Road>( object::road );
+    RoadList roads = city::statistic::findo<Road>( _city(), object::road );
     foreach( road, roads )
     {
       (*road)->appendPaved( _d->defaultDecreasePaved );

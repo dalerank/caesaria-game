@@ -24,7 +24,7 @@
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -72,14 +72,12 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     }
     else
     {
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )

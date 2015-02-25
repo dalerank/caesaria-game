@@ -18,7 +18,7 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "warningmessage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "objects/senate.hpp"
 #include "core/logger.hpp"
@@ -74,8 +74,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     return;
   }
 
-  city::Helper helper( game.city() );
-  SenateList senates = helper.find<Senate>( object::senate );
+  SenateList senates = city::statistic::findo<Senate>( game.city(), object::senate );
   if( senates.empty() )
   {
     events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##" );

@@ -17,7 +17,7 @@
 
 #include "cityservice_religion.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "game/gamedate.hpp"
@@ -93,8 +93,7 @@ void Religion::timeStep( const unsigned int time )
     _d->templesCoverity.clear();
 
     //update temples info
-    Helper helper( _city() );
-    TempleList temples = helper.find<Temple>( object::group::religion );
+    TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
     foreach( it, temples)
     {
       if( (*it)->divinity().isValid() )

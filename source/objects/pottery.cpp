@@ -18,7 +18,7 @@
 #include "pottery.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
 #include "good/store.hpp"
@@ -43,8 +43,7 @@ bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
-  city::Helper helper( info.city );
-  bool haveClaypit = !helper.find<Building>( object::clay_pit ).empty();
+  bool haveClaypit = !city::statistic::findo<Building>( info.city, object::clay_pit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 

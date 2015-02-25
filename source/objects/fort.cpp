@@ -18,7 +18,7 @@
 #include "fort.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
@@ -265,9 +265,7 @@ TilePos Fort::freeSlot() const
     }
   }
 
-  city::Helper helper( _city() );
   TilesArray tiles;
-
   TroopsFormation formation = (patrolPos == _d->area->pos() + TilePos( 0, 3 )
                                  ? frmParade
                                  : _d->formation);
@@ -278,7 +276,7 @@ TilePos Fort::freeSlot() const
   {
   case frmOpen:
     offset = TilePos( 3, 3 );
-    tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
+    tiles = city::statistic::tiles( _city(), patrolPos - offset, patrolPos + offset );
   break;
 
   case frmWestLine:
@@ -324,12 +322,12 @@ TilePos Fort::freeSlot() const
   break;
 
   case frmParade:
-    tiles = helper.getArea( patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
+    tiles = city::statistic::tiles( _city(), patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
   break;
 
   case frmSquad:
     offset = TilePos( 2, 2 );
-    tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
+    tiles = city::statistic::tiles( _city(), patrolPos - offset, patrolPos + offset );
   break;
   }
 

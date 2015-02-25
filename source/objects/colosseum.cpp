@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
@@ -38,7 +38,8 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::colloseum, Colosseum)
 class Colosseum::Impl
 {
 public:
-  DateTime lastDateGl, lastDateLion;
+  DateTime lastDateGl,
+           lastDateLion;
 };
 
 Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5) ), _d( new Impl )
@@ -88,9 +89,8 @@ bool Colosseum::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  city::Helper helper( info.city );
-  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( object::gladiatorSchool );
-  LionsNurseryList lionsNs = helper.find<LionsNursery>( object::lionsNursery );
+  GladiatorSchoolList glSchools = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
+  LionsNurseryList lionsNs = city::statistic::findo<LionsNursery>( info.city, object::lionsNursery );
 
   _d->lastDateGl = game::Date::current();
   _d->lastDateLion = game::Date::current();
@@ -129,8 +129,7 @@ std::string Colosseum::troubleDesc() const
 
 bool Colosseum::isNeedGladiators() const
 {
-  city::Helper helper( _city() );
-  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( object::gladiatorSchool );
+  GladiatorSchoolList colloseums = city::statistic::findo<GladiatorSchool>( _city(), object::gladiatorSchool );
 
   return colloseums.empty();
 }

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "shipyard.hpp"
 
@@ -24,7 +24,7 @@
 #include "good/store.hpp"
 #include "wharf.hpp"
 #include "pathway/pathway.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "walker/fishing_boat.hpp"
 #include "objects_factory.hpp"
 
@@ -152,9 +152,7 @@ bool Shipyard::Impl::isNeedCreateBoat(PlayerCityPtr city )
 
 WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
 {
-  city::Helper helper( city );
-
-  WharfList wharfs = helper.find<Wharf>( object::wharf );
+  WharfList wharfs = city::statistic::findo<Wharf>( city, object::wharf );
   foreach( wharf, wharfs )
   {
     if( (*wharf)->getBoat().isNull() )

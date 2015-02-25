@@ -23,8 +23,10 @@
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "core/utils.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
+#include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -203,8 +205,7 @@ void Road::destroy()
   if( state( pr::lockTerrain ) > 0 )
     return;
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
 
   foreach( it, tiles )
   {
@@ -255,6 +256,10 @@ void Road::load(const VariantMap& stream)
   updatePicture();
 }
 
+namespace pr
+{
+const Param errorBuild( utils::hash("plaza_error") );
+}
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {
@@ -283,7 +288,17 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
   }
 
+  const_cast<Plaza*>( this )->setState( pr::errorBuild, !is_constructible  );
+
   return is_constructible;
+}
+
+std::string Plaza::errorDesc() const
+{
+  if( state( pr::errorBuild ) )
+    return "##need_road_for_build##";
+
+  return "";
 }
 
 const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
@@ -369,12 +384,11 @@ void Plaza::updatePicture()
       }
     }
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
     setSize( 2 );
     city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::on );
   }
 }

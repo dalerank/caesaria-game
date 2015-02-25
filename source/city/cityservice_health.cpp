@@ -17,7 +17,8 @@
 
 #include "cityservice_health.hpp"
 #include "objects/house.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
+#include "statistic.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
 #include "cityservice_factory.hpp"
@@ -64,8 +65,7 @@ void HealthCare::timeStep(const unsigned int time )
 {
   if( game::Date::isMonthChanged() )
   {
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( object::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     _d->value = 0;
     _d->minHealthLevel = 0;
@@ -93,8 +93,7 @@ std::string HealthCare::reason() const
   int lvl = math::clamp<int>( _d->value / (100/maxDescriptionLevel), 0, maxDescriptionLevel-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  Helper helper( _city() );
-  BuildingList clinics = helper.find<Building>( object::clinic );
+  BuildingList clinics = city::statistic::findo<Building>( _city(), object::clinic );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 

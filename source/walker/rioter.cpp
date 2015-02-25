@@ -19,7 +19,7 @@
 #include "objects/house.hpp"
 #include "pathway/path_finding.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
@@ -28,6 +28,7 @@
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "corpse.hpp"
+#include "core/priorities.hpp"
 #include "ability.hpp"
 #include "core/variant_map.hpp"
 #include "events/disaster.hpp"
@@ -48,7 +49,7 @@ public:
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
   int houseLevel;
   State state;
-  std::set<object::Group> excludeGroups;
+  object::GroupSet excludeGroups;
 
 public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
@@ -96,8 +97,7 @@ void Rioter::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    city::Helper helper( _city() );
-    ConstructionList constructions = helper.find<Construction>( object::house );
+    ConstructionList constructions = city::statistic::findo<Construction>( _city(), object::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       HousePtr h = ptr_cast<House>( *it );
@@ -123,8 +123,7 @@ void Rioter::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    city::Helper helper( _city() );
-    ConstructionList constructions = helper.find<Construction>( object::house );
+    ConstructionList constructions = city::statistic::findo<Construction>( _city(), object::house );
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
@@ -176,8 +175,9 @@ void Rioter::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      city::Helper helper( _city() );
-      ConstructionList constructions = helper.find<Construction>( object::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      ConstructionList constructions = city::statistic::findo<Construction>( _city(),
+                                                                             object::any,
+                                                                             pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {

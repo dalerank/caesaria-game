@@ -19,7 +19,7 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "layerconstants.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
@@ -69,8 +69,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
       HousePtr house = ptr_cast<House>( overlay );
       fireLevel = (int)house->state( pr::fire );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
     }
     else //other buildings
     {
@@ -80,8 +79,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
         fireLevel = (int)constr->state( pr::fire );
       }
 
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
     }
 
     if( needDrawAnimations )

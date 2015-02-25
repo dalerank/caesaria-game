@@ -19,7 +19,7 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "layerconstants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -71,14 +71,12 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     }
     else
     {
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )

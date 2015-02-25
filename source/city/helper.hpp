@@ -38,46 +38,8 @@ namespace city
 class Helper
 {
 public:
-  enum { offDesirability=false,
-         onDesirability=true };
-
   static const TilePos invalidPos;
   Helper( PlayerCityPtr city ) : _city( city ) {}
-
-  template< class T >
-  SmartList< T > find( const object::Type type );
-
-  template< class T >
-  SmartList< T > find( object::Group group )
-  {
-    SmartList< T > ret;
-    OverlayList& buildings = _city->overlays();
-    foreach( item, buildings )
-    {
-      SmartPtr< T > b = ptr_cast< T >(*item);
-      if( b.isValid() && (b->group() == group || group == object::group::any ) )
-      {
-        ret.push_back( b );
-      }
-    }
-
-    return ret;
-  }
-
-  template<class T>
-  bool isTileBusy( TilePos p, WalkerPtr caller, bool& needMeMove )
-  {
-    needMeMove = false;
-    SmartList<T> walkers;
-    walkers << _city->walkers( p );
-
-    if( !walkers.empty() )
-    {
-      needMeMove = (caller.object() != walkers.front().object());
-    }
-
-    return walkers.empty() > 1;
-  }
 
   template<class T>
   Pathway findFreeTile( TilePos target, TilePos currentPos, const int range )
@@ -121,87 +83,7 @@ public:
     }
 
     return SmartPtr<T>();
-  }  
-
-  template< class T >
-  SmartList< T > findw( constants::walker::Type type,
-                        TilePos start, TilePos stop=Helper::invalidPos )
-  {
-    WalkerList walkersInArea;
-
-    TilePos invalidPos( -1, -1 );
-    TilePos stopPos = stop;
-
-    if( start == invalidPos )
-    {
-      const WalkerList& all = _city->walkers();
-      walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
-    }
-    else if( stopPos == invalidPos )
-    {
-      const WalkerList& wlkOnTile = _city->walkers( start );
-      walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
-    }
-    else
-    {
-      gfx::TilesArray area = _city->tilemap().getArea( start, stop );
-      foreach( tile, area)
-      {
-        const WalkerList& wlkOnTile = _city->walkers( (*tile)->pos() );
-        walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
-      }
-    }
-
-    SmartList< T > result;
-    foreach( w, walkersInArea )
-    {
-      if( (*w)->type() == type || type == constants::walker::any )
-      {
-        SmartPtr< T > ptr = ptr_cast<T>( *w );
-        if( ptr.isValid() )
-          result.push_back( ptr );
-      }
-    }
-
-    return result;
-  }
-
-  template< class T >
-  SmartList< T > find( const object::Type type, TilePos start, TilePos stop=TilePos(-1,-1) )
-  {
-    SmartList< T > ret;
-
-    gfx::TilesArray area = getArea( start, stop );
-    foreach( tile, area )
-    {
-      SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
-      if( obj.isValid() && (obj->type() == type || type == object::any) )
-      {
-        ret.push_back( obj );
-      }
-    }    
-
-    return ret;
-  }
-
-  template< class T >
-  SmartList< T > find( object::Group group, TilePos start, TilePos stop )
-  {
-    SmartList< T > ret;
-
-    gfx::TilesArray area = getArea( start, stop );
-
-    foreach( tile, area )
-    {
-      SmartPtr<T> obj = ptr_cast< T >((*tile)->overlay());
-      if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
-      {
-        ret.push_back( obj );
-      }
-    }
-
-    return ret;
-  }
+  }    
 
   template< class T >
   SmartList< T > findProducers( const good::Product goodtype );
@@ -212,57 +94,13 @@ public:
   template< class T >
   SmartPtr< T > prew( const SmartPtr< T > current );
 
-  gfx::TilesArray getArea( OverlayPtr overlay );
   gfx::TilesArray getAroundTiles(OverlayPtr building );
-  gfx::TilesArray getArea( TilePos start, TilePos stop );
   HirePriorities getHirePriorities() const;
   void updateTilePics();
-
-  void updateDesirability(OverlayPtr overlay, bool onBuild );
 
 protected:
   PlayerCityPtr _city;
 };
-
-template<class T>
-SmartPtr<T> Helper::prew(const SmartPtr<T> current)
-{
-  if( current.isNull() )
-    return SmartPtr<T>();
-
-  SmartList< T > objects = find<T>( current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      if (obj == objects.begin()) // MSVC compiler doesn't support sircular lists. Neither standart does.
-      {
-        obj = objects.end();
-      }      
-      obj--;
-     return *obj;
-    }
-  }
-
-  return SmartPtr<T>();
-}
-
-template< class T >
-SmartList< T > Helper::find( const object::Type type )
-{
-  SmartList< T > ret;
-  OverlayList& buildings = _city->overlays();
-  foreach( item, buildings )
-  {
-    SmartPtr< T > b = ptr_cast<T>( *item );
-    if( b.isValid() && (b->type() == type || type == object::any ) )
-    {
-      ret.push_back( b );
-    }
-  }
-
-  return ret;
-}
 
 template< class T >
 SmartList<T> Helper::findProducers(const good::Product goodtype )
@@ -279,26 +117,6 @@ SmartList<T> Helper::findProducers(const good::Product goodtype )
   }
 
   return ret;
-}
-
-template< class T >
-SmartPtr< T > Helper::next( const SmartPtr< T > current )
-{
-  if( current.isNull() )
-    return SmartPtr<T>();
-
-  SmartList< T > objects = find<T>( current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      obj++;
-      if( obj == objects.end() ) { return *objects.begin(); }
-      else { return *obj; }
-    }
-  }
-
-  return SmartPtr<T>();
 }
 
 }//end namespace city

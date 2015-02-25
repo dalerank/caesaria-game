@@ -22,7 +22,7 @@
 #include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
 #include "good/storage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
@@ -206,8 +206,7 @@ bool Granary::isWalkable() const { return true; }
 
 void Granary::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlRoad, false );

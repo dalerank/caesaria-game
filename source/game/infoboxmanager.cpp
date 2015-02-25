@@ -48,7 +48,7 @@ namespace infobox
 
 REGISTER_STATICINFOBOX_IN_FACTORY(elevation,object::elevation,"", "##elevation_info##" )
 REGISTER_STATICINFOBOX_IN_FACTORY(aqueduct,object::aqueduct,"", "##aqueduct_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(garden,object::garden,"", "##garden_info##")
+REGISTER_STATICINFOBOX_IN_FACTORY(garden, object::garden,"", "##garden_info##")
 REGISTER_STATICINFOBOX_IN_FACTORY(stsmall,object::statue_small,"", "##statue_small_info##")
 REGISTER_STATICINFOBOX_IN_FACTORY(stmiddle,object::statue_middle,"", "##statue_middle_info##")
 REGISTER_STATICINFOBOX_IN_FACTORY(stbig,object::statue_big,"", "##statue_big_info##")
@@ -72,14 +72,14 @@ REGISTER_SERVICEINFOBOX_IN_FACTORY(academy, object::academy,"", "" )
 REGISTER_SERVICEINFOBOX_IN_FACTORY(library, object::library,"", "" )
 REGISTER_SERVICEINFOBOX_IN_FACTORY(dock,object::dock,"", "" )
 REGISTER_SERVICEINFOBOX_IN_FACTORY(actorcolony,object::actorColony,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( gladiatorSchool, object::gladiatorSchool,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( lionsNursery, object::lionsNursery,"", "")
-REGISTER_SERVICEINFOBOX_IN_FACTORY( hippodrome, object::hippodrome,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( chariotSchool, object::chariotSchool, "", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( forum, object::forum, "", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY( governorHouse, object::governorHouse, "", "##governor_house_text##")
-REGISTER_SERVICEINFOBOX_IN_FACTORY( governorVilla, object::governorVilla, "", "##governor_villa_text##")
-REGISTER_SERVICEINFOBOX_IN_FACTORY( governorPalace, object::governorPalace,  "", "##governor_palace_text##")
+REGISTER_SERVICEINFOBOX_IN_FACTORY(gladiatorSchool, object::gladiatorSchool,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(lionsNursery, object::lionsNursery,"", "")
+REGISTER_SERVICEINFOBOX_IN_FACTORY(hippodrome, object::hippodrome,"", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(chariotSchool, object::chariotSchool, "", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(forum, object::forum, "", "" )
+REGISTER_SERVICEINFOBOX_IN_FACTORY(governorHouse, object::governorHouse, "", "##governor_house_text##")
+REGISTER_SERVICEINFOBOX_IN_FACTORY(governorVilla, object::governorVilla, "", "##governor_villa_text##")
+REGISTER_SERVICEINFOBOX_IN_FACTORY(governorPalace, object::governorPalace,  "", "##governor_palace_text##")
 
 class InfoboxHouseCreator : public InfoboxCreator
 {
@@ -87,7 +87,7 @@ public:
   Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
-    if( house->habitants().count() > 0 )
+    if( house.isValid() && house->habitants().count() > 0 )
     {
       return new AboutHouse( parent, city, city->tilemap().at( pos ) );
     }
@@ -114,10 +114,7 @@ Manager::Manager() : _d( new Impl )
   _d->showDebugInfo = true;
 
   citizen::PManager::instance().loadInfoboxes( *this );
-
-#define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator);
-  ADD_INFOBOX( object::house,        InfoboxHouseCreator() )
-
+  addInfobox( object::house, "house", new InfoboxHouseCreator() );
 }
 
 Manager::~Manager() {}
@@ -165,7 +162,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
 void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = showInfo; }
 
-void Manager::addInfobox( const object::Type type, const std::string& typeName, InfoboxCreator* ctor )
+void Manager::addInfobox( const object::Type& type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
 

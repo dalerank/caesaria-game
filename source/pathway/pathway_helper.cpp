@@ -17,7 +17,7 @@
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -111,8 +111,7 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
 DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
-  city::Helper helper( city );
-  ConstructionList constructions = helper.find<Construction>( buildingType );
+  ConstructionList constructions = city::statistic::findo<Construction>( city, buildingType );
 
   foreach( it, constructions )
   {

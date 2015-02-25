@@ -22,7 +22,7 @@
 #include "objects/house.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
@@ -97,18 +97,16 @@ void Emigrant::_lockHouse( HousePtr house )
 
 HousePtr Emigrant::_findBlankHouse()
 {
-  city::Helper hlp( _city() );
-
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = hlp.find<House>( object::house, pos() - offset, pos() + offset );
+  HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
   if( houses.empty() )
   {
-    houses = hlp.find<House>( object::house );
+    houses = city::statistic::findh( _city() );
     _checkHouses( houses );
   }
 
@@ -216,12 +214,10 @@ void Emigrant::_append2house( HousePtr house )
 
 bool Emigrant::_checkNearestHouse()
 {
-  city::Helper helper( _city() );
-
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = helper.find<House>( object::house, pos()-offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
     foreach( it, houses )

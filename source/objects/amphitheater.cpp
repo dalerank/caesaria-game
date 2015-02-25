@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
@@ -78,14 +78,13 @@ bool Amphitheater::build( const city::AreaInfo& info)
 {
   EntertainmentBuilding::build( info );
 
-  city::Helper helper( info.city );
-  ActorColonyList actors = helper.find<ActorColony>( object::actorColony );
+  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( object::gladiatorSchool );
+  GladiatorSchoolList gladiators = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );

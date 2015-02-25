@@ -21,7 +21,7 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "layerconstants.hpp"
 #include "core/gettext.hpp"
 #include "core/event.hpp"
@@ -77,13 +77,11 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
       crime = (int)house->getServiceValue( Service::crime );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
 
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
     }
     else
     {
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
     }
 
     if( needDrawAnimations )

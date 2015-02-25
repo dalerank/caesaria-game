@@ -54,6 +54,7 @@ class Plaza : public Road
 public:
   Plaza();
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual std::string errorDesc() const;
   virtual const gfx::Picture& picture(const city::AreaInfo& areaInfo) const;
   virtual void appendPaved(int value);
   virtual bool build(const city::AreaInfo &info);
