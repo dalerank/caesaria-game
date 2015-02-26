@@ -49,14 +49,9 @@ public:
   }
 };
 
-Type::Type(const std::string &name)
+Type fromString(const std::string &name)
 {
-  *this = Helper::instance().findType( name );
-}
-
-bool Type::operator>=(const advisor::Type &a) const
-{
-  return toInt() >= a.toInt();
+  return Helper::instance().findType( name );
 }
 
 } //end namespace advisor

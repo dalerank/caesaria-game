@@ -18,28 +18,7 @@
 #ifndef __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 #define __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 
-#define BEGIN_NAMEDTYPE(name) \
-class name \
-{ \
-protected: \
-  int _type;\
-public:   \
-  explicit name(int which) { _type = which; } \
-  name(const name& a) { _type = a._type; } \
-  name() { _type = 0; } \
-  inline name& operator=(const name& a) { _type = a._type; return *this; } \
-  inline int toInt() const { return _type; } \
-  inline bool operator==( const name& a ) const { return _type == a._type; } \
-  inline bool operator!=( const name& a ) const { return _type != a._type; } \
-  inline bool operator<( const name& a ) const { return _type < a._type; } \
-  inline bool operator>( const name& a ) const { return _type > a._type; } \
-  inline bool operator<=( const name& a ) const { return _type <= a._type; } \
-  inline name& operator++() { ++_type; return *this; }
-
-#define END_NAMEDTYPE(name) };
-
-#define DEFINE_NAMEDTYPE(name) \
-  BEGIN_NAMEDTYPE(name) \
-  END_NAMEDTYPE(name)
+#define DEFINE_NAMEDTYPE(type,start) enum type { start=0 };
+#define REGISTER_NAMEDTYPE(type,name,id) static const type name(id);
 
 #endif //__CAESARIA_NAMEDTYPE_INCLUDE_HPP__

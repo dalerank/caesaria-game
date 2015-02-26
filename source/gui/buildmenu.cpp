@@ -183,10 +183,10 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName().c_str()),
+    BuildButton* button = new BuildButton( this, _(buildingData.prettyName()),
                                            Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
-    button->setID( buildingType.toInt() );
+    button->setID( buildingType );
 
     setHeight( height() + 30 );
 

@@ -39,7 +39,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(senate,object::senate,AboutSenate)
+REGISTER_OBJECT_BASEINFOBOX(senate,AboutSenate)
 
 namespace {
   int advisorBtnId = 0x2552;

@@ -37,9 +37,9 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(collapsed,object::collapsed_ruins,AboutRuins)
-REGISTER_INFOBOX_IN_FACTORY(burned,object::burned_ruins,AboutRuins)
-REGISTER_INFOBOX_IN_FACTORY(plague,object::plague_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(collapsed_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(burned_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(plague_ruins,AboutRuins)
 
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )
