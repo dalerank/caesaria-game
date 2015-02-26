@@ -664,7 +664,7 @@ void Layer::_fillVisibleObjects(int ltype)
     object::Type ovType = object::toType( it->toString() );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
-    }
+  }
 }
 
 bool Layer::_moveCamera(NEvent &event)
