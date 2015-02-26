@@ -355,7 +355,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return east; }
 
-  return none;
+  return direction::none;
 }
 
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
@@ -382,30 +382,30 @@ bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 
 void Dock::Impl::initStores()
 {
-  importGoods.setCapacity( good::goodCount, 1000 );
-  exportGoods.setCapacity( good::goodCount, 1000 );
-  requestGoods.setCapacity( good::goodCount, 1000 );
+  importGoods.setCapacity( good::any(), 1000 );
+  exportGoods.setCapacity( good::any(), 1000 );
+  requestGoods.setCapacity( good::any(), 1000 );
 
-  importGoods.setCapacity( 1000 * good::goodCount.toInt() );
-  exportGoods.setCapacity( 1000 * good::goodCount.toInt() );
-  requestGoods.setCapacity( 1000 * good::goodCount.toInt() );
+  importGoods.setCapacity( 1000 * good::any() );
+  exportGoods.setCapacity( 1000 * good::any() );
+  requestGoods.setCapacity( 1000 * good::any() );
 }
 
 void Dock::_tryDeliverGoods()
 {
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
     if( walkers().size() > 2 )
     {
       return;
     }
 
-    int qty = std::min( _d->importGoods.getMaxRetrieve( gtype ), 400 );
+    int qty = std::min( _d->importGoods.getMaxRetrieve( *gtype ), 400 );
 
     if( qty > 0 )
     {
       CartPusherPtr walker = CartPusher::create( _city() );
-      good::Stock pusherStock( gtype, qty, 0 );
+      good::Stock pusherStock( *gtype, qty, 0 );
       _d->importGoods.retrieve( pusherStock, qty );
       walker->send2city( BuildingPtr( this ), pusherStock );
 
@@ -432,29 +432,29 @@ void Dock::_tryDeliverGoods()
 
 void Dock::_tryReceiveGoods()
 {
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
     if( walkers().size() >= 2 )
     {
       return;
     }
 
-    if( _d->requestGoods.qty( gtype ) > 0 )
+    if( _d->requestGoods.qty( *gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _city() );
-      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );
-      cart->send2city( this, gtype, qty );
+      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( *gtype ) );
+      cart->send2city( this, *gtype, qty );
 
       if( !cart->isDeleted() )
       {
         addWalker( cart.object() );
-        good::Stock tmpStock( gtype, qty, 0 );
+        good::Stock tmpStock( *gtype, qty, 0 );
         _d->requestGoods.retrieve( tmpStock, qty );
         return;
       }
       else
       {
-        _d->requestGoods.setQty( gtype, 0 );
+        _d->requestGoods.setQty( *gtype, 0 );
       }
     }
   }

@@ -39,7 +39,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_BASEINFOBOX_IN_FACTORY(granary,object::granery,AboutGranary)
+REGISTER_OBJECT_BASEINFOBOX(granery,AboutGranary)
 
 AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )

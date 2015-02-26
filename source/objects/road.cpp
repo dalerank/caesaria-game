@@ -258,7 +258,7 @@ void Road::load(const VariantMap& stream)
 
 namespace pr
 {
-const Param errorBuild( utils::hash("plaza_error") );
+REGISTER_PARAM_H( errorBuild )
 }
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()

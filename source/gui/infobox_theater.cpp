@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_BASEINFOBOX_IN_FACTORY(theater,object::theater,AboutTheater)
+REGISTER_OBJECT_BASEINFOBOX(theater,AboutTheater)
 
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )

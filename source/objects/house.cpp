@@ -805,22 +805,22 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  for (good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+  foreach( goodType, good::all() )
   {
-    int houseQty = houseStore.qty(goodType);
-    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
-                       + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
+    int houseQty = houseStore.qty(*goodType);
+    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, *goodType, false )
+                       + _d->spec.next().computeMonthlyGoodConsumption( this, *goodType, false );
     houseSafeQty *= 6;
 
-    int marketQty = marketStore.qty(goodType);
+    int marketQty = marketStore.qty(*goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
        int qty = std::min( houseSafeQty - houseQty, marketQty);
-       qty = math::clamp( qty, 0, houseStore.freeQty( goodType ) );
+       qty = math::clamp( qty, 0, houseStore.freeQty( *goodType ) );
 
        if( qty > 0 )
        {
-         good::Stock stock(goodType, qty);
+         good::Stock stock( *goodType, qty);
          marketStore.retrieve(stock, qty);
 
          stock.setCapacity( qty );
@@ -924,12 +924,12 @@ float House::evaluateService(ServiceWalkerPtr walker)
     MarketPtr market = ptr_cast<Market>( walker->base() );
     good::Store& marketStore = market->goodStore();
     good::Store& houseStore = goodStore();
-    for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+    foreach( goodType, good::all() )
     {
-      int houseQty = houseStore.qty(goodType) / 10;
-      int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false)
-                         + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
-      int marketQty = marketStore.qty(goodType);
+      int houseQty = houseStore.qty( *goodType) / 10;
+      int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, *goodType, false)
+                         + _d->spec.next().computeMonthlyGoodConsumption( this, *goodType, false );
+      int marketQty = marketStore.qty( *goodType );
       if( houseQty < houseSafeQty && marketQty > 0)
       {
          res += std::min( houseSafeQty - houseQty, marketQty);
@@ -1373,7 +1373,7 @@ void House::Impl::consumeServices()
 
 void House::Impl::consumeGoods( HousePtr house )
 {
-  for( good::Product goodType = good::olive; goodType < good::goodCount; ++goodType)
+  for( good::Product goodType = good::olive; goodType < good::any(); ++goodType)
   {
      int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
      goodStore.setQty( goodType, std::max( goodStore.qty(goodType) - montlyGoodsQty, 0) );

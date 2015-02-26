@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_BASEINFOBOX_IN_FACTORY(market,object::market,AboutMarket)
+REGISTER_OBJECT_BASEINFOBOX(market,AboutMarket)
 
 AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )

@@ -220,7 +220,7 @@ void Options::load(const VariantMap& options)
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )
   {
-    object::Type btype = MetaDataHolder::findType( item->first );
+    object::Type btype = object::toType( item->first );
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
@@ -242,7 +242,7 @@ VariantMap Options::save() const
   VariantMap quotes;
   foreach( it, _d->rules )
   {
-    std::string typeName = it->first.toString();
+    std::string typeName = object::toString( it->first );
     blds[ typeName ] = it->second.mayBuild;
     quotes[ typeName ] = it->second.quotes;
   }
@@ -297,7 +297,7 @@ void loadBranchOptions(const std::string &filename)
 
       foreach( bIt, vmTypes )
       {
-        object::Type ovType = MetaDataHolder::findType( bIt->toString() );
+        object::Type ovType = object::toType( bIt->toString() );
         if( ovType != object::unknown )
           branchData.insert( ovType );
       }

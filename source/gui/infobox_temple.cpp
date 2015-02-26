@@ -34,17 +34,17 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_BASEINFOBOX_IN_FACTORY(smceres,object::small_ceres_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(smmars,object::small_mars_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(smneptune,object::small_neptune_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(smvenus,object::small_venus_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(smmercury,object::small_mercury_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(bgceres,object::big_ceres_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(bgmars,object::big_mars_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(bgneptune,object::big_neptune_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(bgvenus,object::big_venus_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(bgmercury,object::big_mercury_temple,AboutTemple)
-REGISTER_BASEINFOBOX_IN_FACTORY(oracle,object::oracle,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(small_ceres_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(small_mars_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(small_neptune_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(small_venus_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(small_mercury_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(big_ceres_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(big_mars_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(big_neptune_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(big_venus_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(big_mercury_temple,AboutTemple)
+REGISTER_OBJECT_BASEINFOBOX(oracle,AboutTemple)
 
 AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )

@@ -62,13 +62,13 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
   const TilePos& pos = areaInfo.pos;
 
   bool freemap[ count ] = { 0 };
-  freemap[ none ] = tmap.at( pos ).getFlag( Tile::isConstructible );
+  freemap[ direction::none ] = tmap.at( pos ).getFlag( Tile::isConstructible );
   freemap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
   freemap[ east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );
   freemap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
   bool rmap[ direction::count ] = { 0 };
-  rmap[ none ] = is_kind_of<Road>( tmap.at( pos ).overlay() );
+  rmap[ direction::none ] = is_kind_of<Road>( tmap.at( pos ).overlay() );
   rmap[ north ] = is_kind_of<Road>( tmap.at( pos + TilePos( 0, 1 ) ).overlay() );
   rmap[ northEast ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 1 ) ).overlay() );
   rmap[ east  ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 0 ) ).overlay() );
@@ -76,7 +76,7 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
   rmap[ northWest ] = is_kind_of<Road>(  tmap.at( pos + TilePos( -1, 1 ) ).overlay() );
 
   int index = 150;
-  if( (rmap[ none ] && rmap[ north ]) ||
+  if( (rmap[ direction::none ] && rmap[ north ]) ||
       (rmap[ east ] && rmap[ northEast ]) ||
       Building::canBuild( areaInfo ) )
   {
@@ -84,7 +84,7 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
     index = 150;
   }
 
-  if( (rmap[ none ] && rmap[ east ]) ||
+  if( (rmap[ direction::none ] && rmap[ east ]) ||
       (rmap[ northEast ] && rmap[ north ] ) )
   {
       _d->direction = west;
@@ -93,7 +93,7 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
 
   setPicture( ResourceGroup::land2a, index );
 
-  bool mayConstruct = ((rmap[ none ] || freemap[ none ]) &&
+  bool mayConstruct = ((rmap[ direction::none ] || freemap[ direction::none ]) &&
                        (rmap[ north ] || freemap[ north ]) &&
                        (rmap[ east ] || freemap[ east ]) &&
                        (rmap[ northEast ] || freemap[ northEast ]) );
@@ -102,14 +102,14 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
   switch( _d->direction )
   {
   case north:
-    wrongBorder = ( rmap[ none ] && rmap[ west ] );
+    wrongBorder = ( rmap[ direction::none ] && rmap[ west ] );
     wrongBorder |= ( rmap[ north ] && rmap[ northWest ] );
     wrongBorder |= rmap[ east ] &&  is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 2, 0 ) ) );
     wrongBorder |= rmap[ northEast ] && is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 2, 1 ) ) );
   break;
 
   case west:
-    wrongBorder = ( rmap[ none ] && is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 0, -1 ) ) ) );
+    wrongBorder = ( rmap[ direction::none ] && is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 0, -1 ) ) ) );
     wrongBorder |= ( rmap[ east ] && is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 1, -1 ) ) ) );
     wrongBorder |= ( rmap[ north ] && is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 0, 2 ) ) ) );
     wrongBorder |= ( rmap[ northEast ] && is_kind_of<Road>( areaInfo.city->getOverlay( pos + TilePos( 1, 2 ) ) ) );
@@ -190,7 +190,7 @@ bool Gatehouse::canBuild( const city::AreaInfo& areaInfo ) const
 
 void Gatehouse::Impl::updateSprite()
 {
-  if( direction != none )
+  if( direction != direction::none )
   {
     gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, direction == north ? 224 : 225 );
     gatehouseSprite[ 0 ].setOffset( direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );

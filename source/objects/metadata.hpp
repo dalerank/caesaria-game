@@ -80,8 +80,6 @@ public:
   // return factory that consume good
   object::Type getConsumerType(const good::Product inGoodType) const;
 
-  static object::Type findType( const std::string& name );
-  static std::string findTypename( object::Type type );
   static object::Group findGroup( const std::string& name );
   static std::string findGroupname( object::Group group );
 

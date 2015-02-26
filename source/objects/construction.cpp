@@ -115,8 +115,8 @@ bool Construction::build( const city::AreaInfo& info )
   Overlay::build( info );
 
   std::string name =  utils::format( 0xff, "%s_%d_%d",
-                                            type().toString().c_str(),
-                                            info.pos.i(), info.pos.j() );
+                                     object::toString( type() ).c_str(),
+                                     info.pos.i(), info.pos.j() );
   setName( name );
 
   computeRoadside();
@@ -198,7 +198,7 @@ void Construction::save( VariantMap& stream) const
   VariantList vl_states;
   foreach( it, _d->params )
   {
-    vl_states.push_back( VariantList() << (int)it->first.toInt() << (double)it->second );
+    vl_states.push_back( VariantList() << (int)it->first << (double)it->second );
   }
 
   VariantMap vm_extensions;

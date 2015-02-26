@@ -52,11 +52,11 @@ public:
   bool isDestination() const;
 
   void next();
-  Direction direction();
+  Direction direction() const;
 
   void setNextDirection(const gfx::Tilemap& tmap, Direction direction );
   void setNextTile( const gfx::Tile& tile);
-  bool contains( gfx::Tile& tile);
+  bool contains(const gfx::Tile &tile);
   const gfx::TilesArray& allTiles() const;
 
   void prettyPrint() const;

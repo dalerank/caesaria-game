@@ -23,7 +23,6 @@
 #include "walker/predefinitions.hpp"
 #include "walker/constants.hpp"
 
-
 namespace gui
 {
 
@@ -48,10 +47,10 @@ class PManager
 public:
   static PManager& instance();
 
-  void loadInfoboxes( Manager& manager );
   virtual ~PManager();
 
   void addCreator( constants::walker::Type type, CreatorPtr c );
+  void loadInfoboxes();
 
   gui::infobox::Simple* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
 private:

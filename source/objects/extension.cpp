@@ -262,7 +262,7 @@ ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr cons
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;
-  buff->_options[ "param" ] = paramName.toInt();
+  buff->_options[ "param" ] = paramName;
   buff->_finishDate = game::Date::current();
   buff->_finishDate.appendWeek( week2finish );
 

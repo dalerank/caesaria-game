@@ -320,9 +320,9 @@ GoodsMap getGoodsMap(PlayerCityPtr city, bool includeGranary)
 
   foreach( wh, warehouses )
   {
-    for( good::Product goodType=good::wheat; goodType < good::goodCount; ++goodType )
+    foreach( goodType, good::all() )
     {
-      cityGoodsAvailable[ goodType ] += (*wh)->store().qty( goodType );
+      cityGoodsAvailable[ *goodType ] += (*wh)->store().qty( *goodType );
     }
   }
 

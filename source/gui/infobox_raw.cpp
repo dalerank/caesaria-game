@@ -37,16 +37,16 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_BASEINFOBOX_IN_FACTORY(vinard,object::vinard,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(wheat_farm,object::wheat_farm,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(vegetable_farm,object::vegetable_farm,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(olive_farm,object::olive_farm,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(fig_farm,object::fig_farm,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(meat_farm,object::meat_farm,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(clay_pit,object::clay_pit,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(lumber_mill,object::lumber_mill,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(quarry,object::quarry,AboutRawMaterial)
-REGISTER_BASEINFOBOX_IN_FACTORY(iron_mine,object::iron_mine,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vinard,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(wheat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vegetable_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(olive_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(fig_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(meat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(clay_pit,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(lumber_mill,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
 
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )

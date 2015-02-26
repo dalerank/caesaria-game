@@ -87,7 +87,7 @@ public:
   }
 };
 
-REGISTER_INFOBOX_IN_FACTORY(house,object::house, new InfoboxHouseCreator())
+REGISTER_OBJECT_INFOBOX( house, new InfoboxHouseCreator() )
 
 AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )

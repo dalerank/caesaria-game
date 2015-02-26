@@ -41,40 +41,40 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_STATICINFOBOX_IN_FACTORY(elevation,object::elevation,"", "##elevation_info##" )
-REGISTER_STATICINFOBOX_IN_FACTORY(aqueduct,object::aqueduct,"", "##aqueduct_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(garden, object::garden,"", "##garden_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(stsmall,object::statue_small,"", "##statue_small_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(stmiddle,object::statue_middle,"", "##statue_middle_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(stbig,object::statue_big,"", "##statue_big_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(native_hut,object::native_hut,"", "##nativeHut_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(gatehouse,object::gatehouse,"", "##gatehouse_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(native_field,object::native_field,"", "##nativeField_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(native_center,object::native_center,"", "##nativeCenter_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(hbrifge,object::high_bridge,"", "##high_bridge_info##")
-REGISTER_STATICINFOBOX_IN_FACTORY(lbridge,object::low_bridge,"", "##bridge_extends_city_area##")
-REGISTER_STATICINFOBOX_IN_FACTORY(burning_ruins,object::burning_ruins,"", "##this_fire_can_spread##" )
-REGISTER_STATICINFOBOX_IN_FACTORY(rift,object::rift,"", "##these_rift_info##" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(prefecture,object::prefecture,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(engineering_post,object::engineering_post,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(clinic, object::clinic,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(baths, object::baths,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(barber, object::barber,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(hospital, object::hospital,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(missionaryPost, object::missionaryPost, "", "")
-REGISTER_SERVICEINFOBOX_IN_FACTORY(school, object::school,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(academy, object::academy,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(library, object::library,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(dock,object::dock,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(actorcolony,object::actorColony,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(gladiatorSchool, object::gladiatorSchool,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(lionsNursery, object::lionsNursery,"", "")
-REGISTER_SERVICEINFOBOX_IN_FACTORY(hippodrome, object::hippodrome,"", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(chariotSchool, object::chariotSchool, "", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(forum, object::forum, "", "" )
-REGISTER_SERVICEINFOBOX_IN_FACTORY(governorHouse, object::governorHouse, "", "##governor_house_text##")
-REGISTER_SERVICEINFOBOX_IN_FACTORY(governorVilla, object::governorVilla, "", "##governor_villa_text##")
-REGISTER_SERVICEINFOBOX_IN_FACTORY(governorPalace, object::governorPalace,  "", "##governor_palace_text##")
+REGISTER_OBJECT_STATICINFOBOX(elevation,"", "##elevation_info##" )
+REGISTER_OBJECT_STATICINFOBOX(aqueduct,"", "##aqueduct_info##")
+REGISTER_OBJECT_STATICINFOBOX(garden,"", "##garden_info##")
+REGISTER_OBJECT_STATICINFOBOX(statue_small,"", "##statue_small_info##")
+REGISTER_OBJECT_STATICINFOBOX(statue_middle,"", "##statue_middle_info##")
+REGISTER_OBJECT_STATICINFOBOX(statue_big,"", "##statue_big_info##")
+REGISTER_OBJECT_STATICINFOBOX(native_hut,"", "##nativeHut_info##")
+REGISTER_OBJECT_STATICINFOBOX(gatehouse,"", "##gatehouse_info##")
+REGISTER_OBJECT_STATICINFOBOX(native_field,"", "##nativeField_info##")
+REGISTER_OBJECT_STATICINFOBOX(native_center,"", "##nativeCenter_info##")
+REGISTER_OBJECT_STATICINFOBOX(high_bridge,"", "##high_bridge_info##")
+REGISTER_OBJECT_STATICINFOBOX(low_bridge,"", "##bridge_extends_city_area##")
+REGISTER_OBJECT_STATICINFOBOX(burning_ruins,"", "##this_fire_can_spread##" )
+REGISTER_OBJECT_STATICINFOBOX(rift,"", "##these_rift_info##" )
+REGISTER_OBJECT_SERVICEINFOBOX(prefecture,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(engineering_post,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(clinic,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(baths,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(barber,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(hospital,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(missionaryPost, "", "")
+REGISTER_OBJECT_SERVICEINFOBOX(school,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(academy,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(library,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(dock,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(actorColony,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(gladiatorSchool,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(lionsNursery,"", "")
+REGISTER_OBJECT_SERVICEINFOBOX(hippodrome,"", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(chariotSchool, "", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(forum, "", "" )
+REGISTER_OBJECT_SERVICEINFOBOX(governorHouse, "", "##governor_house_text##")
+REGISTER_OBJECT_SERVICEINFOBOX(governorVilla, "", "##governor_villa_text##")
+REGISTER_OBJECT_SERVICEINFOBOX(governorPalace,  "", "##governor_palace_text##")
 
 class Manager::Impl
 {
@@ -91,7 +91,7 @@ Manager::Manager() : _d( new Impl )
 {
   _d->showDebugInfo = true;
 
-  citizen::PManager::instance().loadInfoboxes( *this );  
+  citizen::PManager::instance().loadInfoboxes();
 }
 
 Manager::~Manager() {}
@@ -139,18 +139,19 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
 void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = showInfo; }
 
-void Manager::addInfobox( const object::Type& type, const std::string& typeName, InfoboxCreator* ctor )
+void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
 {
-  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
+  std::string name = object::toString( type );
+  bool alreadyHaveConstructor = _d->name2typeMap.find( name ) != _d->name2typeMap.end();
 
   if( !alreadyHaveConstructor )
   {
-    _d->name2typeMap[ typeName ] = type;
+    _d->name2typeMap[ name ] = type;
     _d->constructors[ type ] = ctor;
   }
   else
   {
-    Logger::warning( "InfoboxManager: already have constructor for type " + typeName );
+    Logger::warning( "InfoboxManager: already have constructor for type " + name );
   }
 }
 

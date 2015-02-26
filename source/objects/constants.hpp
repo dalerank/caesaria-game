@@ -20,46 +20,48 @@
 #define _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 
 #include "predefinitions.hpp"
+#include "core/enumerator.hpp"
+#include "core/utils.hpp"
 #include <set>
 
 namespace object
 {
 
-BEGIN_NAMEDTYPE(Group)
-  std::string toString() const;
-END_NAMEDTYPE(Group)
-
-BEGIN_NAMEDTYPE(Type)
-  std::string toString() const;
-END_NAMEDTYPE(Type)
+DEFINE_NAMEDTYPE(Type,unknown)
+DEFINE_NAMEDTYPE(Group,unknownGroup)
+std::string toString( const Type& t);
+Type toType( const std::string& name);
+std::string toString( const Group& g );
 
 namespace group
 {
-const Group unknown(0);
-const Group any(0);
-const Group industry(1);
-const Group obtain(2);
-const Group food(3);
-const Group disaster(4);
-const Group religion(5);
-const Group military(6);
-const Group native(7);
-const Group water(8);
-const Group administration(9);
-const Group bridge(10);
-const Group engineering(11);
-const Group trade(12);
-const Group tower(13);
-const Group gate(14);
-const Group security(15);
-const Group education(16);
-const Group health(17);
-const Group sight(18);
-const Group garden(19);
-const Group road(20);
-const Group entertainment(21);
-const Group house(22);
-const Group wall(23);
+#define REGISTER_GROUP(name,index) static const Group name = Group(index);
+
+REGISTER_GROUP(any,0)
+REGISTER_GROUP(unknown,0)
+REGISTER_GROUP(industry,1)
+REGISTER_GROUP(obtain,2)
+REGISTER_GROUP(food,3)
+REGISTER_GROUP(disaster,4)
+REGISTER_GROUP(religion,5)
+REGISTER_GROUP(military,6)
+REGISTER_GROUP(native,7)
+REGISTER_GROUP(water,8)
+REGISTER_GROUP(administration,9)
+REGISTER_GROUP(bridge,10)
+REGISTER_GROUP(engineering,11)
+REGISTER_GROUP(trade,12)
+REGISTER_GROUP(tower,13)
+REGISTER_GROUP(gate,14)
+REGISTER_GROUP(security,15)
+REGISTER_GROUP(education,16)
+REGISTER_GROUP(health,17)
+REGISTER_GROUP(sight,18)
+REGISTER_GROUP(garden,19)
+REGISTER_GROUP(road,20)
+REGISTER_GROUP(entertainment,21)
+REGISTER_GROUP(house,22)
+REGISTER_GROUP(wall,23)
 }
 
 typedef std::set<Group> GroupSet;
@@ -67,143 +69,155 @@ typedef std::vector<Group> Groups;
 typedef std::set<Type> TypeSet;
 typedef std::vector<Type> Types;
 
-//unknown building
-const Type unknown(0);
-const Type any(0);
-const Type road(1);
-const Type plaza(2);
-const Type garden(3);
+//stuff
+#define REGISTER_ID_OBJECT_TYPE(type,a) static const Type type = Type(a);
+REGISTER_ID_OBJECT_TYPE(any,0)
+REGISTER_ID_OBJECT_TYPE(road,1)
+REGISTER_ID_OBJECT_TYPE(plaza,2)
+REGISTER_ID_OBJECT_TYPE(garden,3)
 
 // entertainment
-const Type amphitheater(4);
-const Type theater(5);
-const Type hippodrome(6);
-const Type colloseum(7);
-const Type actorColony(8);
-const Type gladiatorSchool(9);
-const Type lionsNursery(10);
-const Type chariotSchool(11);
+REGISTER_ID_OBJECT_TYPE(amphitheater,4)
+REGISTER_ID_OBJECT_TYPE(theater,5)
+REGISTER_ID_OBJECT_TYPE(hippodrome,6)
+REGISTER_ID_OBJECT_TYPE(colloseum,7)
+REGISTER_ID_OBJECT_TYPE(actorColony,8)
+REGISTER_ID_OBJECT_TYPE(gladiatorSchool,9)
+REGISTER_ID_OBJECT_TYPE(lionsNursery,10)
+REGISTER_ID_OBJECT_TYPE(chariotSchool,11)
 
 //watersupply
-const Type reservoir(12);
-const Type aqueduct(13);
-const Type fountain(14);
-const Type well(15);
+REGISTER_ID_OBJECT_TYPE(reservoir,12)
+REGISTER_ID_OBJECT_TYPE(aqueduct,13)
+REGISTER_ID_OBJECT_TYPE(fountain,14)
+REGISTER_ID_OBJECT_TYPE(well,15)
 
 // house
-const Type house(16);
+REGISTER_ID_OBJECT_TYPE(house,16)
 
 // administration
-const Type senate(17);
-const Type forum(18);
-const Type governorHouse(19);
-const Type governorVilla(20);//20
-const Type governorPalace(21);
+REGISTER_ID_OBJECT_TYPE(senate,17)
+REGISTER_ID_OBJECT_TYPE(forum,18)
+REGISTER_ID_OBJECT_TYPE(governorHouse,19)
+REGISTER_ID_OBJECT_TYPE(governorVilla,20)
+REGISTER_ID_OBJECT_TYPE(governorPalace,21)
 
 // security
-const Type prefecture(22);
-const Type wall(23);
-const Type fortification(24);
-const Type tower(25);
-const Type gatehouse(26);
-const Type fort_legionaries(27);
-const Type fort_javelin(28);
-const Type fort_horse(29);
-const Type military_academy(30);
-const Type barracks(31);
-const Type fortArea(32);
+REGISTER_ID_OBJECT_TYPE(prefecture,22)
+REGISTER_ID_OBJECT_TYPE(wall,23)
+REGISTER_ID_OBJECT_TYPE(fortification,24)
+REGISTER_ID_OBJECT_TYPE(tower,25)
+REGISTER_ID_OBJECT_TYPE(gatehouse,26)
+REGISTER_ID_OBJECT_TYPE(fort_legionaries,27)
+REGISTER_ID_OBJECT_TYPE(fort_javelin,28)
+REGISTER_ID_OBJECT_TYPE(fort_horse,29)
+REGISTER_ID_OBJECT_TYPE(military_academy,30)
+REGISTER_ID_OBJECT_TYPE(barracks,31)
+REGISTER_ID_OBJECT_TYPE(fortArea,32)
 
 // commerce
-const Type market(33);
-const Type granery(34);
-const Type warehouse(35);
+REGISTER_ID_OBJECT_TYPE(market,33)
+REGISTER_ID_OBJECT_TYPE(granery,34)
+REGISTER_ID_OBJECT_TYPE(warehouse,35)
 
 // farms
-const Type wheat_farm(36);
-const Type fig_farm(37);
-const Type vegetable_farm(38);
-const Type olive_farm(39);
-const Type vinard(40);
-const Type meat_farm(41);
+REGISTER_ID_OBJECT_TYPE(wheat_farm,36)
+REGISTER_ID_OBJECT_TYPE(fig_farm,37)
+REGISTER_ID_OBJECT_TYPE(vegetable_farm,38)
+REGISTER_ID_OBJECT_TYPE(olive_farm,39)
+REGISTER_ID_OBJECT_TYPE(vinard,40)
+REGISTER_ID_OBJECT_TYPE(meat_farm,41)
 
 // raw materials
-const Type quarry(42);
-const Type iron_mine(43);
-const Type lumber_mill(44);
-const Type clay_pit(45);
+REGISTER_ID_OBJECT_TYPE(quarry,42)
+REGISTER_ID_OBJECT_TYPE(iron_mine,43)
+REGISTER_ID_OBJECT_TYPE(lumber_mill,44)
+REGISTER_ID_OBJECT_TYPE(clay_pit,45)
 
 // factories
-const Type wine_workshop(46);
-const Type oil_workshop(47);
-const Type weapons_workshop(48);
-const Type furniture_workshop(49);
-const Type pottery_workshop(50);
+REGISTER_ID_OBJECT_TYPE(wine_workshop,46)
+REGISTER_ID_OBJECT_TYPE(oil_workshop,47)
+REGISTER_ID_OBJECT_TYPE(weapons_workshop,48)
+REGISTER_ID_OBJECT_TYPE(furniture_workshop,49)
+REGISTER_ID_OBJECT_TYPE(pottery_workshop,50)
 
 // utility
-const Type engineering_post(51);
-const Type statue_small(52);
-const Type statue_middle(53);
-const Type statue_big(54);
-const Type low_bridge(55);
-const Type high_bridge(56);
-const Type shipyard(57);
-const Type dock(58);
-const Type wharf(59);
+REGISTER_ID_OBJECT_TYPE(engineering_post,51)
+REGISTER_ID_OBJECT_TYPE(statue_small,52)
+REGISTER_ID_OBJECT_TYPE(statue_middle,53)
+REGISTER_ID_OBJECT_TYPE(statue_big,54)
+REGISTER_ID_OBJECT_TYPE(low_bridge,55)
+REGISTER_ID_OBJECT_TYPE(high_bridge,56)
+REGISTER_ID_OBJECT_TYPE(shipyard,57)
+REGISTER_ID_OBJECT_TYPE(dock,58)
+REGISTER_ID_OBJECT_TYPE(wharf,59)
 
 // health
-const Type clinic(60);
-const Type hospital(61);
-const Type baths(62);
-const Type barber(63);
+REGISTER_ID_OBJECT_TYPE(clinic,60)
+REGISTER_ID_OBJECT_TYPE(hospital,61)
+REGISTER_ID_OBJECT_TYPE(baths,62)
+REGISTER_ID_OBJECT_TYPE(barber,63)
 
 // education
-const Type school(64);
-const Type academy(65);
-const Type library(66);
-const Type missionaryPost(67);
+REGISTER_ID_OBJECT_TYPE(school,64)
+REGISTER_ID_OBJECT_TYPE(academy,65)
+REGISTER_ID_OBJECT_TYPE(library,66)
+REGISTER_ID_OBJECT_TYPE(missionaryPost,67)
 
 // religion: small temples
-const Type small_ceres_temple(68);
-const Type small_mars_temple(69);
-const Type small_neptune_temple(70);
-const Type small_mercury_temple(71);
-const Type small_venus_temple(72);
+REGISTER_ID_OBJECT_TYPE(small_ceres_temple,68)
+REGISTER_ID_OBJECT_TYPE(small_mars_temple,69)
+REGISTER_ID_OBJECT_TYPE(small_neptune_temple,70)
+REGISTER_ID_OBJECT_TYPE(small_mercury_temple,71)
+REGISTER_ID_OBJECT_TYPE(small_venus_temple,72)
 
 // religion: big temples
-const Type big_ceres_temple(73);
-const Type big_mars_temple(74);
-const Type big_neptune_temple(75);
-const Type big_mercury_temple(76);
-const Type big_venus_temple(77);
+REGISTER_ID_OBJECT_TYPE(big_ceres_temple,73)
+REGISTER_ID_OBJECT_TYPE(big_mars_temple,74)
+REGISTER_ID_OBJECT_TYPE(big_neptune_temple,75)
+REGISTER_ID_OBJECT_TYPE(big_mercury_temple,76)
+REGISTER_ID_OBJECT_TYPE(big_venus_temple,77)
 
 // religion: others
-const Type oracle(78);
+REGISTER_ID_OBJECT_TYPE(oracle,78)
 
 // building of natives
-const Type native_hut(79);
-const Type native_center(80);
-const Type native_field(81);
+REGISTER_ID_OBJECT_TYPE(native_hut,79)
+REGISTER_ID_OBJECT_TYPE(native_center,80)
+REGISTER_ID_OBJECT_TYPE(native_field,81)
 
 //other
-const Type triumphal_arch(82);
-const Type burning_ruins(83);
-const Type burned_ruins(84);
-const Type collapsed_ruins(85);
-const Type plague_ruins(86);
+REGISTER_ID_OBJECT_TYPE(triumphal_arch,82)
+REGISTER_ID_OBJECT_TYPE(burning_ruins,83)
+REGISTER_ID_OBJECT_TYPE(burned_ruins,84)
+REGISTER_ID_OBJECT_TYPE(collapsed_ruins,85)
+REGISTER_ID_OBJECT_TYPE(plague_ruins,86)
+REGISTER_ID_OBJECT_TYPE(reserved_2,87)
+REGISTER_ID_OBJECT_TYPE(reserved_3,88)
+REGISTER_ID_OBJECT_TYPE(elevation,89)
+REGISTER_ID_OBJECT_TYPE(rift,91)
+REGISTER_ID_OBJECT_TYPE(river,92)
+REGISTER_ID_OBJECT_TYPE(tree,93)
+REGISTER_ID_OBJECT_TYPE(waymark,94)
+REGISTER_ID_OBJECT_TYPE(terrain,95)
+REGISTER_ID_OBJECT_TYPE(water,96)
+REGISTER_ID_OBJECT_TYPE(meadow,97)
+REGISTER_ID_OBJECT_TYPE(roadBlock,98)
+REGISTER_ID_OBJECT_TYPE(farmtile,99)
 
-const Type reserved_2(87);
-const Type reserved_3(88);
-const Type elevation(89);
-const Type rift(91);
-const Type river(92);
-const Type tree(93);
-const Type waymark(94);
-const Type terrain(95);
-const Type water(96);
-const Type meadow(97);
-const Type roadBlock(98);
-const Type farmtile(99);
+
+class Helper : public EnumsHelper<Type>
+{
+public:
+  static Helper& instance();
+private:
+  Helper();
+};
+
+Type findType( const std::string& name );
 
 } //end namespace object
+
+#define REGISTER_CUSTOM_OBJECT_TYPE(type)
 
 #endif  //_CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_

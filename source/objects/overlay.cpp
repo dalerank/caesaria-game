@@ -139,7 +139,7 @@ const Pictures& Overlay::pictures( Renderer::Pass pass ) const
 void Overlay::save( VariantMap& stream ) const
 {
   VariantList config;
-  config.push_back( _d->overlayType.toInt() );
+  config.push_back( _d->overlayType );
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
@@ -252,7 +252,7 @@ void OverlayDebugQueue::print()
     {
       Overlay* ov = (Overlay*)*it;
       Logger::warning( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
-                                          ov->type().toString().c_str(),
+                                          object::toString( ov->type() ).c_str(),
                                           ov->pos().i(), ov->pos().j(), ov->rcount() );
     }
   }

@@ -40,9 +40,9 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    for( good::Product i = good::none; i < good::goodCount; ++i)
+    foreach( i, good::all() )
     {
-      anyGoodStored |= ( store.qty( i ) >= 100 );
+      anyGoodStored |= ( store.qty( *i ) >= 100 );
     }
 
     return anyGoodStored;
@@ -101,18 +101,18 @@ good::Products Market::mostNeededGoods()
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+  foreach( goodType, good::all() )
   {
     // for all types of good
-    good::Stock &stock = _d->store.getStock(goodType);
+    good::Stock &stock = _d->store.getStock(*goodType);
     int demand = stock.capacity() - stock.qty();
     if (demand > 200)
     {
-      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), goodType));
+      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), *goodType));
     }
   }
 
-  for( std::multimap<float, good::Product>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  foreach( itMap, mapGoods )
   {
     good::Product goodType = itMap->second;
     res.push_back(goodType);

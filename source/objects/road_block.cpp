@@ -42,7 +42,7 @@ RoadBlock::RoadBlock()
 // gamer could place any number of plazas on one road tile (!!!)
 namespace pr
 {
-const Param errorBuild( utils::hash("rblock_error") );
+REGISTER_PARAM_H(errorBuild)
 }
 
 bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const

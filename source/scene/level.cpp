@@ -340,7 +340,7 @@ void Level::Impl::showTileHelp()
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = utils::hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  unsigned int id = Hash( CAESARIA_STR_A(ScribesMessagestWindow) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
@@ -837,7 +837,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTaretsWindow()
 {
-  int id = utils::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {

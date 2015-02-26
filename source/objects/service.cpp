@@ -137,7 +137,7 @@ unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; 
 
 std::string ServiceBuilding::workersStateDesc() const
 {
-  std::string srvcType = type().toString();
+  std::string srvcType = object::toString( type() );
   std::string state = "unknown";
 
   if( walkers().size() > 0 )

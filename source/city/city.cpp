@@ -555,7 +555,7 @@ void PlayerCity::save( VariantMap& stream) const
     }
     catch(...)
     {
-      Logger::warning( "ERROR: Cant save overlay type " + otype.toString() );
+      Logger::warning( "ERROR: Cant save overlay type " + object::toString( otype ) );
     }
   }
   stream[ "overlays" ] = vm_overlays;

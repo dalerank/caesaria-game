@@ -661,7 +661,7 @@ void Layer::_fillVisibleObjects(int ltype)
   VariantList vl = vm.get( "visibleObjects" ).toList();
   foreach( it, vl )
   {
-    object::Type ovType = MetaDataHolder::findType( it->toString() );
+    object::Type ovType = object::toType( it->toString() );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
     }

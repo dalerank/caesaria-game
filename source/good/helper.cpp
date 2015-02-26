@@ -107,7 +107,6 @@ public:
     __REG_GTYPE(marble )
     __REG_GTYPE(denaries )
     __REG_GTYPE(prettyWine )
-    append( good::goodCount, "unknown", "##unknown##" );
 #undef __REG_GTYPE
   }
 };
@@ -128,11 +127,11 @@ Picture Helper::picture(Product type, bool emp )
 
   if( emp )
   {
-    picId = empPicId[ type.toInt() ];
+    picId = empPicId[ type ];
   }
   else
   {
-    picId = localPicId[ type.toInt() ];
+    picId = localPicId[ type ];
   }
   
   if( picId > 0 )
@@ -186,7 +185,7 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
 
 Product Helper::random()
 {
-  return Product( math::random( goodCount.toInt() ));
+  return Product( math::random( good::any() ));
 }
 
 }//end namespace good
