@@ -27,7 +27,7 @@ public:
 
   virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
 

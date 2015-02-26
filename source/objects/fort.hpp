@@ -37,7 +37,7 @@ public:
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool build(const city::AreaInfo &info);
 
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
   virtual bool canDestroy() const;

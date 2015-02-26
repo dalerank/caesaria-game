@@ -38,9 +38,9 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(reservoir,object::reservoir,AboutReservoir)
-REGISTER_INFOBOX_IN_FACTORY(fountain,object::fountain,AboutFontain)
-REGISTER_INFOBOX_IN_FACTORY(well,object::well,AboutWell)
+REGISTER_BASEINFOBOX_IN_FACTORY(reservoir,object::reservoir,AboutReservoir)
+REGISTER_BASEINFOBOX_IN_FACTORY(fountain,object::fountain,AboutFontain)
+REGISTER_BASEINFOBOX_IN_FACTORY(well,object::well,AboutWell)
 
 AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )

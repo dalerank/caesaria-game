@@ -40,10 +40,10 @@ public:
   virtual void burn();
   virtual void collapse();
   virtual const gfx::Picture& picture() const;
-  virtual bool isNeedRoadAccess() const;
-  virtual gfx::TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
-  virtual void computeAccessRoads();  
-  virtual int  roadAccessDistance() const; // virtual because HOUSE has different behavior
+  virtual bool isNeedRoad() const;
+  virtual gfx::TilesArray roadside() const;  // return all road tiles adjacent to the construction
+  virtual void computeRoadside();
+  virtual int  roadsideDistance() const; // virtual because HOUSE has different behavior
   virtual gfx::TilesArray enterArea() const;
 
   virtual bool canDestroy() const;
@@ -64,8 +64,10 @@ public:
   virtual void initialize(const MetaData &mdata);
 protected:
   Construction( const object::Type type, const Size& size );
+  gfx::TilesArray& _roadside();
   void _checkDestroyState();
 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

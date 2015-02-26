@@ -100,9 +100,15 @@ private:
 
 }//end namespave gui
 
-#define REGISTER_INFOBOX_IN_FACTORY(name,type,a) \
+#define REGISTER_BASEINFOBOX_IN_FACTORY(name,type,a) \
 namespace { \
 struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new BaseInfoboxCreator<a>() ); }}; \
+static Registrator_##name rtor_##name; \
+}
+
+#define REGISTER_INFOBOX_IN_FACTORY(name,type,a) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), a ); }}; \
 static Registrator_##name rtor_##name; \
 }
 

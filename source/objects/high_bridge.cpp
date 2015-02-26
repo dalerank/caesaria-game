@@ -62,7 +62,7 @@ public:
 
   virtual ~HighBridgeSubTile()   {}
   bool isWalkable() const   {    return true;  }
-  bool isNeedRoadAccess() const { return false; }
+  bool isNeedRoad() const { return false; }
 
   bool build( const city::AreaInfo& info )
   {
@@ -560,7 +560,7 @@ void HighBridge::destroy()
 }
 
 std::string HighBridge::errorDesc() const {  return _d->error;}
-bool HighBridge::isNeedRoadAccess() const{  return false;}
+bool HighBridge::isNeedRoad() const{  return false;}
 
 void HighBridge::save(VariantMap& stream) const
 {

@@ -99,7 +99,6 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
 
   picIdx += math::clamp<int>( (percent * sequenceSize) / 100, 0, sequenceSize-1);
   return Picture::load( ResourceGroup::commerce, picIdx );
-  //_picture.addOffset( tile::tilepos2screen( _farmpos ));
 }
 
 bool FarmTile::build(const city::AreaInfo &info)
@@ -151,9 +150,34 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
   Farm* non_const_this = const_cast< Farm* >( this );
   non_const_this->_setError( on_meadow ? "" : _("##farm_need_farmland##") );
 
-  return (is_constructible && on_meadow);  
+  return (is_constructible && on_meadow);
 }
 
+void Farm::destroy()
+{
+  foreach( it, _d->subtiles )
+  {
+    OverlayPtr ov = (*it)->overlay();
+    if( ov.isValid() && ov->type() == object::farmtile )
+      ov->destroy();
+  }
+
+  Factory::destroy();
+}
+
+void Farm::computeRoadside()
+{
+  Factory::computeRoadside();
+
+  foreach( it, _d->subtiles )
+  {
+    ConstructionPtr ov = ptr_cast<Construction>( (*it)->overlay() );
+    if( ov.isValid() && ov->type() == object::farmtile )
+    {
+      _roadside().append( ov->roadside() );
+    }
+  }
+}
 
 void Farm::init()
 {

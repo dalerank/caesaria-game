@@ -93,7 +93,7 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
-  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  if( isNeedRoad() && roadside().empty() )
   {
     trouble = "##working_building_need_road##";
   }

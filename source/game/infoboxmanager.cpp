@@ -19,21 +19,16 @@
 #include "gui/info_box.hpp"
 #include "gui/environment.hpp"
 #include "gfx/tile.hpp"
-#include "objects/service.hpp"
-#include "gui/infobox_land.hpp"
 #include "core/utils.hpp"
-#include "objects/house.hpp"
 #include "core/gettext.hpp"
 #include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilemap.hpp"
-#include "gui/infobox_house.hpp"
-#include "objects/ruins.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
-#include "gui/infobox_working.hpp"
 #include "game/settings.hpp"
+#include "gui/infobox_working.hpp"
 #include <map>
 
 using namespace constants;
@@ -81,23 +76,6 @@ REGISTER_SERVICEINFOBOX_IN_FACTORY(governorHouse, object::governorHouse, "", "##
 REGISTER_SERVICEINFOBOX_IN_FACTORY(governorVilla, object::governorVilla, "", "##governor_villa_text##")
 REGISTER_SERVICEINFOBOX_IN_FACTORY(governorPalace, object::governorPalace,  "", "##governor_palace_text##")
 
-class InfoboxHouseCreator : public InfoboxCreator
-{
-public:
-  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
-  {
-    HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
-    if( house.isValid() && house->habitants().count() > 0 )
-    {
-      return new AboutHouse( parent, city, city->tilemap().at( pos ) );
-    }
-    else
-    {
-      return new AboutFreeHouse( parent, city, city->tilemap().at( pos ) );
-    }
-  }
-};
-
 class Manager::Impl
 {
 public:
@@ -113,8 +91,7 @@ Manager::Manager() : _d( new Impl )
 {
   _d->showDebugInfo = true;
 
-  citizen::PManager::instance().loadInfoboxes( *this );
-  addInfobox( object::house, "house", new InfoboxHouseCreator() );
+  citizen::PManager::instance().loadInfoboxes( *this );  
 }
 
 Manager::~Manager() {}

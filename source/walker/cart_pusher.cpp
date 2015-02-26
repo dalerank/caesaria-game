@@ -265,14 +265,14 @@ void CartPusher::_computeWalkerDestination()
    }
    else
    {
-     if( _d->producerBuilding->getAccessRoads().empty() )
+     if( _d->producerBuilding->roadside().empty() )
      {
        deleteLater();
      }
      else
      {
        Walker::wait( -1 );
-       setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
+       setPos( _d->producerBuilding->roadside().front()->pos() );
        _changeDirection();
        turn( _d->producerBuilding->pos() );
        getMainPicture();

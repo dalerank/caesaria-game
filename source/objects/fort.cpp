@@ -554,4 +554,4 @@ bool Fort::build( const city::AreaInfo& info )
   return true;
 }
 
-bool Fort::isNeedRoadAccess() const {  return false; }
+bool Fort::isNeedRoad() const {  return false; }

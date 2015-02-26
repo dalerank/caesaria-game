@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(amphitheater,object::amphitheater,AboutAmphitheater)
+REGISTER_BASEINFOBOX_IN_FACTORY(amphitheater,object::amphitheater,AboutAmphitheater)
 
 AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )

@@ -84,7 +84,7 @@ public:
   std::string evolveInfo() const;
   std::string levelName() const;
 
-  virtual int roadAccessDistance() const;
+  virtual int roadsideDistance() const;
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;

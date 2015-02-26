@@ -26,7 +26,7 @@ public:
   Well();
 
   virtual void deliverService();
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual void burn();
   virtual bool build(const city::AreaInfo &info);
   virtual bool isDestructible() const;

@@ -33,11 +33,11 @@ public:
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual void destroy();
   virtual void burn();
   virtual void appendPaved( int value );
-  virtual void computeAccessRoads();
+  virtual void computeRoadside();
   virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   int pavedValue() const;
   virtual gfx::Renderer::PassQueue passQueue() const;

@@ -35,7 +35,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(tree,object::tree,AboutLand)
+REGISTER_BASEINFOBOX_IN_FACTORY(tree,object::tree,AboutLand)
 
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
@@ -154,7 +154,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
   ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
   if( cnst.isValid() )
   {
-      setText( cnst->getAccessRoads().size() == 0
+      setText( cnst->roadside().size() == 0
                   ? _("##freehouse_text_noroad##")
                   : _("##freehouse_text##") );
   }

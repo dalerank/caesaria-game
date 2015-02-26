@@ -131,7 +131,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
   if( haveRecruter( bld ) )
     return;
 
-  if( bld->getAccessRoads().size() > 0 )
+  if( bld->roadside().size() > 0 )
   {
     RecruterPtr hr = Recruter::create( city );
     hr->setPriority( priorities );

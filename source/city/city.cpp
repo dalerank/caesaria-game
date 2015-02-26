@@ -252,7 +252,7 @@ void PlayerCity::timeStep(unsigned int time)
       if( construction != NULL )
       {
         // overlay matches the filter
-        construction->computeAccessRoads();
+        construction->computeRoadside();
       }
     }   
   }

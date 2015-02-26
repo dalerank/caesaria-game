@@ -43,7 +43,7 @@ void Garden::initTerrain(Tile& terrain)
 
 bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
-bool Garden::isNeedRoadAccess() const{  return false;}
+bool Garden::isNeedRoad() const{  return false;}
 
 bool Garden::build( const city::AreaInfo& info )
 {
