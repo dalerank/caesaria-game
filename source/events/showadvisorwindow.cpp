@@ -54,7 +54,7 @@ void ShowAdvisorWindow::load(const VariantMap &stream)
 
   _show = stream.get( "show" );
   Variant adv = stream.get( "advisor" );
-  if( adv.type() == Variant::String ) { _advisor = Advisor( adv.toString() ); }
+  if( adv.type() == Variant::String ) { _advisor = advisor::fromString( adv.toString() ); }
   else { _advisor = (advisor::Type)adv.toInt(); }
 }
 

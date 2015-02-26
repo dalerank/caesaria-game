@@ -24,24 +24,26 @@
 namespace advisor
 {
 
-BEGIN_NAMEDTYPE(Type)
-explicit Type( const std::string& name );
-bool operator>=(const Type& a) const;
-END_NAMEDTYPE(Type)
+DEFINE_NAMEDTYPE(Type,none)
 
-const Type employers(0);
-const Type military(1);
-const Type empire(2);
-const Type ratings(3);
-const Type trading(4);
-const Type population(5);
-const Type health(6);
-const Type education(7);
-const Type entertainment(8);
-const Type religion(9);
-const Type finance(10);
-const Type main(11);
-const Type unknown(12);
+#define REGISTER_ADVISOR(name,index) static const Type name = Type(index);
+
+Type fromString( const std::string& name );
+
+REGISTER_ADVISOR(employers,0)
+REGISTER_ADVISOR(military,1)
+REGISTER_ADVISOR(empire,2)
+REGISTER_ADVISOR(ratings,3)
+REGISTER_ADVISOR(trading,4)
+REGISTER_ADVISOR(population,5)
+REGISTER_ADVISOR(health,6)
+REGISTER_ADVISOR(education,7)
+REGISTER_ADVISOR(entertainment,8)
+REGISTER_ADVISOR(religion,9)
+REGISTER_ADVISOR(finance,10)
+REGISTER_ADVISOR(main,11)
+REGISTER_ADVISOR(unknown,12)
+
 
 } //end namespace advisor
 

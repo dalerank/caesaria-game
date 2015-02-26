@@ -55,7 +55,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
     }
     else
     {
-      event->_infoType = overlay->type().toInt();
+      event->_infoType = overlay->type();
     }
   }
 
@@ -132,7 +132,7 @@ void Disaster::_exec( Game& game, unsigned int )
           {
             std::string typev = _infoType > 1000
                                   ? utils::format( 0xff, "house%02d", _infoType - 1000 )
-                                  : object::Type(_infoType).toString();
+                                  : object::toString( object::Type( _infoType ) );
             ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
             ruins->afterBuild();
           }

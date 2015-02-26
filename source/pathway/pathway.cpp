@@ -106,7 +106,7 @@ const Tile& Pathway::current() const
            : invalidTile;
 }
 
-Direction Pathway::direction()
+Direction Pathway::direction() const
 {
   if( !_d->tiles.empty() )
   {
@@ -174,7 +174,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
   break;
   }
 
-  if( !tmap.isInside( TilePos( _d->destination ) ) )
+  if( !tmap.isInside( _d->destination ) )
   {
     //Logger::warning( "Destination[%d, %d] out of map", _d->destination.i(), _d->destination.j() );
   }
@@ -186,7 +186,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
 
 void Pathway::setNextTile( const Tile& tile )
 {
-  int dI = tile.i() - _d->destination.i();
+  /*int dI = tile.i() - _d->destination.i();
   int dJ = tile.j() - _d->destination.j();
 
   Direction direction;
@@ -204,12 +204,12 @@ void Pathway::setNextTile( const Tile& tile )
   {
     Logger::warning( "WARNING!!! Pathway::setNextTile() destination[%d, %d] out of map", dI, dJ );
     direction = direction::none;
-  }
+  }*/
 
   _d->tiles.push_back( const_cast<Tile*>( &tile ) );
 }
 
-bool Pathway::contains(Tile &tile)
+bool Pathway::contains(const Tile& tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;

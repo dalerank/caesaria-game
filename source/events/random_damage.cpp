@@ -108,7 +108,7 @@ void RandomDamage::load(const VariantMap& stream)
   _d->minPopulation = vl.get( 0, 0 ).toInt();
   _d->maxPopulation = vl.get( 1, 999999 ).toInt();
   VARIANT_LOAD_ANY_D( _d, strong, stream );
-  VARIANT_LOAD_ITYPE_D( _d, priority, stream );
+  VARIANT_LOAD_ENUM_D( _d, priority, stream );
 }
 
 VariantMap RandomDamage::save() const
@@ -119,7 +119,7 @@ VariantMap RandomDamage::save() const
 
   ret[ lc_population ] = vl_pop;
   VARIANT_SAVE_ANY_D(ret, _d, strong );
-  VARIANT_SAVE_ITYPE_D(ret, _d, priority );
+  VARIANT_SAVE_ENUM_D(ret, _d, priority );
 
   return ret;
 }

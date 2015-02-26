@@ -271,9 +271,10 @@ void Population::Impl::updateStates()
   {
     statistic::GoodsMap goods = statistic::getGoodsMap( city, true );
     int foodLevel = 0;
-    for( good::Product k=good::wheat; k <= good::vegetable; ++k )
+
+    foreach( k, good::foods )
     {
-      foodLevel += (goods[ k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ *k ] > 0 ? 1 : 0);
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
