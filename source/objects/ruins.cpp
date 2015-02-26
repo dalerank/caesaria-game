@@ -21,7 +21,7 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
@@ -35,17 +35,17 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burned_ruins, BurnedRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::burning_ruins, BurningRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::collapsed_ruins, CollapsedRuins)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::plague_ruins, PlagueRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::burned_ruins, BurnedRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::burning_ruins, BurningRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::collapsed_ruins, CollapsedRuins)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::plague_ruins, PlagueRuins)
 
 BurningRuins::BurningRuins()
-  : Ruins( objects::burning_ruins )
+  : Ruins( object::burning_ruins )
 {
-  setState( Construction::fire, 99 );
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::fire, 99 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
   setPicture( ResourceGroup::land2a, 187 );
   _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire+2 );
@@ -60,30 +60,25 @@ void BurningRuins::timeStep(const unsigned long time)
   Building::timeStep(time);
 
   _animationRef().update( time );
-  const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() )
-  {
-     _fgPicturesRef().back() = _animationRef().currentFrame();
-  }
+  _fgPicturesRef().back() = _animationRef().currentFrame();
 
   if( game::Date::isDayChanged() )
   {
     TilePos offset( 2, 2 );
-    city::Helper helper( _city() );
-    BuildingList buildings = helper.find<Building>( objects::any, pos() - offset, pos() + offset );
+    BuildingList buildings = city::statistic::findo<Building>( _city(), object::any, pos() - offset, pos() + offset );
 
     foreach( it, buildings)
     {
-      if( (*it)->group() != objects::disasterGroup )
+      if( (*it)->group() != object::group::disaster )
       {
-        (*it)->updateState( Construction::fire, 0.2 );
+        (*it)->updateState( pr::fire, _value );
       }
     }
 
-    if( state( Construction::fire ) > 0 )
+    if( state( pr::fire ) > 0 )
     {
-      updateState( Construction::fire, -1 );
-      if( state( Construction::fire ) == 50 )
+      updateState( pr::fire, -1 );
+      if( state( pr::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
@@ -91,7 +86,7 @@ void BurningRuins::timeStep(const unsigned long time)
         //_animationRef().load( ResourceGroup::land2a, 215, 8);
         //_animationRef().setOffset( Point( 14, 26 ) );
       }
-      else if( state( Construction::fire ) == 25 )
+      else if( state( pr::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
@@ -138,7 +133,7 @@ void BurningRuins::collapse() {}
 
 void BurningRuins::burn(){}
 
-bool BurningRuins::build( const CityAreaInfo& info)
+bool BurningRuins::build( const city::AreaInfo& info)
 {
   Building::build( info );
   //while burning can't remove it
@@ -147,6 +142,8 @@ bool BurningRuins::build( const CityAreaInfo& info)
 
   city::FirePtr fire;
   fire << info.city->findService( city::Fire::defaultName() );
+  _value = (info.city->getOption( PlayerCity::fireKoeff ) / 100.f) *
+           (defaultForce / 100.f);
 
   if( fire.isValid() )
   {
@@ -156,15 +153,15 @@ bool BurningRuins::build( const CityAreaInfo& info)
   return true;
 }   
 
-bool BurningRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
+bool BurningRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
-bool BurningRuins::canDestroy() const { return (state( Construction::fire ) == 0); }
+bool BurningRuins::canDestroy() const { return (state( pr::fire ) == 0); }
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   if ( Service::prefect == walker->serviceType() )
   {
-    return state( Construction::fire );
+    return state( pr::fire );
   }
 
   return 0;
@@ -175,19 +172,19 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
   if ( Service::prefect == walker->serviceType() )
   {
     double delta =  walker->serviceValue() / 2;
-    updateState( Construction::fire, -delta );
+    updateState( pr::fire, -delta );
   }
 }
 
 bool BurningRuins::isNeedRoadAccess() const{  return false; }
 void BurnedRuins::timeStep( const unsigned long ){}
 
-BurnedRuins::BurnedRuins() : Ruins( objects::burned_ruins )
+BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 {
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
-bool BurnedRuins::build( const CityAreaInfo& info )
+bool BurnedRuins::build( const city::AreaInfo& info )
 {
   Building::build( info );
 
@@ -200,11 +197,11 @@ bool BurnedRuins::isFlat() const{ return true;}
 bool BurnedRuins::isNeedRoadAccess() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
 
-CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsed_ruins)
+CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
 {
-  setState( Construction::damage, 1 );
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::damage, 1 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
   _animationRef().load( ResourceGroup::sprites, 1, 8 );
   _animationRef().setOffset( Point( 14, 26 ) );
@@ -215,7 +212,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(objects::collapsed_ruins)
 
 void CollapsedRuins::burn() {}
 
-bool CollapsedRuins::build( const CityAreaInfo& info )
+bool CollapsedRuins::build( const city::AreaInfo& info )
 {
   Building::build( info );
 
@@ -236,10 +233,10 @@ bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 
-PlagueRuins::PlagueRuins() : Ruins( objects::plague_ruins )
+PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
 {
-  setState( Construction::fire, 99 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::fire, 99 );
+  setState( pr::collapsibility, 0 );
 
   setPicture( ResourceGroup::land2a, 187 );
   _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
@@ -258,10 +255,10 @@ void PlagueRuins::timeStep(const unsigned long time)
 
   if( game::Date::isDayChanged() )
   {
-    if( state( Construction::fire ) > 0 )
+    if( state( pr::fire ) > 0 )
     {
-      updateState( Construction::fire, -1 );
-      if( state( Construction::fire ) == 50 )
+      updateState( pr::fire, -1 );
+      if( state( pr::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
@@ -270,7 +267,7 @@ void PlagueRuins::timeStep(const unsigned long time)
         //_animationRef().load( ResourceGroup::land2a, 215, 8);
         //_animationRef().setOffset( Point( 14, 26 ) );
       }
-      else if( state( Construction::fire ) == 25 )
+      else if( state( pr::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
@@ -305,7 +302,7 @@ void PlagueRuins::applyService(ServiceWalkerPtr walker){}
 void PlagueRuins::burn(){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
-bool PlagueRuins::build( const CityAreaInfo& info )
+bool PlagueRuins::build( const city::AreaInfo& info )
 {
   Building::build( info );
   //while burning can't remove it
@@ -316,10 +313,10 @@ bool PlagueRuins::build( const CityAreaInfo& info )
   return true;
 }
 
-bool PlagueRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
+bool PlagueRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool PlagueRuins::isNeedRoadAccess() const{  return false;}
 
-Ruins::Ruins(objects::Type type)
+Ruins::Ruins(object::Type type)
   : Building( type, Size(1) ), _alsoBuilt( true )
 {
 

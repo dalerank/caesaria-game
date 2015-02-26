@@ -22,7 +22,7 @@
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 #include "world/romechastenerarmy.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
 #include "core/variant_map.hpp"
@@ -88,8 +88,7 @@ GladiatorRevolt::GladiatorRevolt() : _d( new Impl )
 
 void GladiatorRevolt::_exec(Game& game, unsigned int)
 {
-  city::Helper helper( game.city() );
-  GladiatorSchoolList gladSchool = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  GladiatorSchoolList gladSchool = city::statistic::findo<GladiatorSchool>( game.city(), object::gladiatorSchool );
 
   if( !gladSchool.empty() )
   {

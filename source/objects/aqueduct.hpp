@@ -25,15 +25,15 @@ class Aqueduct : public WaterSource
 public:
   Aqueduct();
 
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual void addWater(const WaterSource &source);
   virtual void initTerrain( gfx::Tile& terrain);
-  virtual bool canBuild(const CityAreaInfo& areaInfo ) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const; 
-  virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
+  virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   virtual std::string sound() const;
   virtual const gfx::Picture& picture() const;
 
@@ -41,7 +41,7 @@ public:
   void addRoad();
   bool canAddRoad( PlayerCityPtr city, TilePos pos ) const;
 
-  virtual const gfx::Picture& picture(const CityAreaInfo& info) const;
+  virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 protected:
   virtual void _waterStateChanged();
 };

@@ -18,7 +18,7 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "warningmessage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "objects/senate.hpp"
 #include "core/logger.hpp"
@@ -54,16 +54,14 @@ void ShowAdvisorWindow::load(const VariantMap &stream)
 
   _show = stream.get( "show" );
   Variant adv = stream.get( "advisor" );
-  if( adv.type() == Variant::String ) { _advisor = advisor::findType( adv.toString() ); }
+  if( adv.type() == Variant::String ) { _advisor = advisor::fromString( adv.toString() ); }
   else { _advisor = (advisor::Type)adv.toInt(); }
 }
 
 bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::count )
+ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::unknown )
 {
-  _show = false;
-  _advisor = advisor::count;
 }
 
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)
@@ -76,8 +74,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     return;
   }
 
-  city::Helper helper( game.city() );
-  SenateList senates = helper.find<Senate>( objects::senate );
+  SenateList senates = city::statistic::findo<Senate>( game.city(), object::senate );
   if( senates.empty() )
   {
     events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##" );

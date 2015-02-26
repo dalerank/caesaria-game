@@ -24,8 +24,7 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
@@ -404,9 +403,7 @@ void AdvisorChief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    city::Helper helper( city );
-
-    BarracksList barracks = helper.find<Barracks>( objects::barracks );
+    BarracksList barracks = city::statistic::findo<Barracks>( city, object::barracks );
 
     bool needWeapons = false;
     foreach( it, barracks )
@@ -470,13 +467,13 @@ void AdvisorChief::Impl::drawEducation()
   std::string text;
 
   StringArray reasons;
-  int avTypes[] = { objects::school, objects::library, objects::academy, objects::unknown };
+  object::Type avTypes[] = { object::school, object::library, object::academy, object::unknown };
   std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
                               "##advchief_some_need_academy##", "" };
 
-  for( int i=0; avTypes[ i ] != objects::unknown; i++ )
+  for( int i=0; avTypes[ i ] != object::unknown; i++ )
   {
-    std::set<int> availableTypes;
+    std::set<object::Type> availableTypes;
     availableTypes.insert( avTypes[ i ] );
 
     HouseList houses = statistic::getEvolveHouseReadyBy( city, availableTypes );

@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "migration.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city/cityservice_military.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
@@ -33,15 +33,19 @@
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
+#include "events/warningmessage.hpp"
 #include "cityservice_info.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Migration,migration)
 
 namespace {
 const int possibleTaxLevel = 7;
@@ -63,6 +67,7 @@ public:
   int worklessMinInfluence;
   int checkRange;
   DateTime lastUpdate;
+  bool haveTroubles;
 
   float getMigrationKoeff(PlayerCityPtr city);
   Info::Parameters lastMonthParams(PlayerCityPtr city);
@@ -90,13 +95,24 @@ Migration::Migration( PlayerCityPtr city )
   _d->lastMonthMigration = 0;
   _d->lastMonthComing = 0;
   _d->lastMonthLeaving = 0;
+  _d->haveTroubles = false;
   _d->lastUpdate = game::Date::current();
   _d->updateTickInerval = game::Date::days2ticks( 7 );
   _d->emigrantsIndesirability = 0;
 }
 
 void Migration::timeStep( const unsigned int time )
-{  
+{
+  if( game::Date::isMonthChanged() )
+  {
+    std::string trouble = reason();
+    if( haveTroubles() )
+    {
+      events::GameEventPtr e = events::WarningMessage::create(trouble);
+      e->dispatch();
+    }
+  }
+
   if( time % _d->updateTickInerval != 1 )
     return;
 
@@ -261,6 +277,7 @@ std::string Migration::reason() const
     if( _d->isPoorHousing( params[ Info::shackNumber ], params[ Info::houseNumber ] ) ) { troubles << "##poor_housing_discourages_migration##";}
   }
 
+  _d->haveTroubles = troubles.empty();
   return troubles.empty()
            ? "##migration_peoples_arrived_in_city##"
            : troubles.random();
@@ -287,6 +304,8 @@ std::string Migration::leaveCityReason() const
 }
 
 std::string Migration::defaultName() { return CAESARIA_STR_EXT(Migration); }
+
+bool Migration::haveTroubles() const{ return _d->haveTroubles; }
 int Migration::lastMonthMigration() const { return _d->lastMonthMigration; }
 
 VariantMap Migration::save() const
@@ -297,6 +316,7 @@ VariantMap Migration::save() const
   VARIANT_SAVE_ANY_D( ret, _d, lastMonthMigration )
   VARIANT_SAVE_ANY_D( ret, _d, lastMonthComing )
   VARIANT_SAVE_ANY_D( ret, _d, lastMonthLeaving )
+  VARIANT_SAVE_ANY_D( ret, _d, haveTroubles )
 
   return ret;
 }
@@ -307,6 +327,7 @@ void Migration::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, lastMonthMigration, stream )
   VARIANT_LOAD_ANY_D( _d, lastMonthComing, stream )
   VARIANT_LOAD_ANY_D( _d, lastMonthLeaving, stream )
+  VARIANT_LOAD_ANY_D( _d, haveTroubles, stream )
 }
 
 void Migration::citizenLeaveCity(WalkerPtr walker)
@@ -321,8 +342,7 @@ void Migration::citizenLeaveCity(WalkerPtr walker)
 unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
-  Helper helper( city );
-  HouseList houses = helper.find<House>(objects::house);
+  HouseList houses = city::statistic::findh(city);
   foreach( house, houses )
   {
     if( (*house)->getAccessRoads().size() > 0 )
@@ -390,8 +410,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>(objects::house);
+  HouseList houses = city::statistic::findh( city );
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {

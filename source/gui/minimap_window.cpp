@@ -19,7 +19,7 @@
 #include "gfx/tilemap.hpp"
 #include "game/minimap_colours.hpp"
 #include "gfx/tile.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
@@ -77,7 +77,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
-  TileOverlay::Type ovType = objects::unknown;
+  object::Type ovType = object::unknown;
   if( tile.overlay().isValid() )
     ovType = tile.overlay()->type();
 
@@ -122,7 +122,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
     c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
   }
-  else if( ovType == objects::aqueduct  )
+  else if( ovType == object::aqueduct  )
   {
     c1 = colors->colour(minimap::Colors::MAP_AQUA, 0);
     c2 = colors->colour(minimap::Colors::MAP_AQUA, 1);
@@ -148,68 +148,59 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 {
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
 
   if (overlay == NULL)
     return;
 
-  TileOverlay::Type type = overlay->type();
+  object::Type type = overlay->type();
 
-  switch(type)
+  if(type == object::house)
   {
-    case objects::house:
+    switch (overlay->size().width())
     {
-      switch (overlay->size().width())
-      {
-        case 1:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-            c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
-          }
-        break;
-
-        default:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
-            c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-          }
+      case 1:
+        {
+          c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
+          c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
         }
-        break;
-      }
-      break;
-
-      case objects::reservoir:
-      {
-        c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
-        c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
-      }
-      break;
-
-      case objects::fort_javelin:
-      case objects::fort_legionaries:
-      case objects::fort_horse:
-      {
-        c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
-        c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
-      }
       break;
 
       default:
         {
-          switch (overlay->size().width())
-          {
-          case 1:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
-            c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
-            break;
-          }
-          default:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
-            c2 = colors->colour(minimap::Colors::MAP_BUILDING, 2);
-          }
+          c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
+          c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
         }
+      break;
+    }
+  }
+  else if(type == object::reservoir)
+  {
+     c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
+     c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
+  }
+  else if(type == object::fort_javelin ||
+          type == object::fort_legionaries ||
+          type == object::fort_horse )
+  {
+    c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+    c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+  }
+  else
+  {
+    switch (overlay->size().width())
+    {
+      case 1:
+      {
+        c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
+        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
+        break;
+      }
+      default:
+      {
+        c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
+        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 2);
+      }
     }
   }
 

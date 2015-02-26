@@ -21,8 +21,8 @@
 #include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "gfx/decorator.hpp"
-
-#include "gfx/picture.hpp"
+#include "gfx/tilesarray.hpp"
+#include "gfx/picturesarray.hpp"
 
 namespace gfx
 {

@@ -24,7 +24,7 @@
 class Ruins : public Building
 {
 public:
-  Ruins( constants::objects::Type type );
+  Ruins( object::Type type );
   void setInfo( std::string parent ) { _parent = parent; }
   std::string info() const { return _parent; }
 
@@ -34,17 +34,19 @@ public:
 
 protected:
   std::string _parent;
+  float _value;
   bool _alsoBuilt;
 };
 
 class BurningRuins : public Ruins
 {
+  static const int defaultForce = 2;
 public:
   BurningRuins();
 
   virtual void timeStep(const unsigned long time);
   virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
@@ -65,7 +67,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
 };
@@ -79,7 +81,7 @@ public:
   CollapsedRuins();
 
   virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void collapse();
 
   virtual bool isWalkable() const;
@@ -95,7 +97,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void burn();
   virtual bool isDestructible() const;
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual bool isWalkable() const;
   virtual void destroy();
 

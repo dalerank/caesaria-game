@@ -32,6 +32,7 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
+#include "layers/layerconstants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"
@@ -67,7 +68,6 @@
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
-#include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
 #include "events/postpone.hpp"
@@ -77,13 +77,14 @@
 #include "core/timer.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
 #include "events/savegame.hpp"
+#include "core/tilerect.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -425,7 +426,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  DirectionHelper dHelper;
+  direction::Helper dHelper;
 
   events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ) );
   e->dispatch();
@@ -678,7 +679,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
 int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
-void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
+void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
@@ -719,6 +720,16 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
       case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
       case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
+      case KEY_KEY_G: _d->renderer.setLayer( citylayer::desirability); break;
+      case KEY_KEY_E:
+      {
+          TilePos center = _d->renderer.camera()->center();
+          TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
+          const BorderInfo& binfo = _d->game->city()->borderInfo();
+          center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
+          _d->renderer.camera()->setCenter( center );
+      }
+      break;
 
       default:
         handled = false;
@@ -762,23 +773,17 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F5:
-      if( event.keyboard.control )
-      {
-        _d->makeFastSave();
-        handled = true;
-      }
+      _d->makeFastSave();
+      handled = true;
     break;
 
     case KEY_F9:
-      if( event.keyboard.control )
-      {
-        _resolveLoadGame( "" );
-        handled = true;
-      }
+      _resolveLoadGame( "" );
+      handled = true;
     break;
 
-    case KEY_KEY_1: case KEY_KEY_2:
-    case KEY_KEY_3: case KEY_KEY_4:
+    case KEY_F1: case KEY_F2:
+    case KEY_F3: case KEY_F4:
     {
       if( event.keyboard.control )
       {

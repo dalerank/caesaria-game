@@ -23,15 +23,14 @@
 class Road : public Construction
 {
 public:
-  typedef enum { lockTerrain=Construction::paramCount+1 } RoadFlag;
   Road();
 
-  virtual const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
+  virtual const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
   void updatePicture();
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void initTerrain( gfx::Tile &terrain);
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
@@ -39,7 +38,7 @@ public:
   virtual void burn();
   virtual void appendPaved( int value );
   virtual void computeAccessRoads();
-  virtual void changeDirection( gfx::Tile* masterTile, constants::Direction direction);
+  virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   int pavedValue() const;
   virtual gfx::Renderer::PassQueue passQueue() const;
 
@@ -54,10 +53,11 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual const gfx::Picture& picture(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual std::string errorDesc() const;
+  virtual const gfx::Picture& picture(const city::AreaInfo& areaInfo) const;
   virtual void appendPaved(int value);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual const gfx::Picture& picture() const;

@@ -20,6 +20,7 @@
 #include "lion.hpp"
 #include "pathway/pathway.hpp"
 #include "walkers_factory.hpp"
+#include "objects/building.hpp"
 
 using namespace constants;
 

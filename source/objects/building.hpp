@@ -19,11 +19,6 @@
 #ifndef _CAESARIA_BUILDING_H_INCLUDE_
 #define _CAESARIA_BUILDING_H_INCLUDE_
 
-#include <string>
-#include <map>
-#include <list>
-#include <set>
-
 #include "construction.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
@@ -37,7 +32,7 @@
 class Building : public Construction
 {
 public:
-  Building(const Type type, const Size& size=Size(1) );
+  Building(const object::Type type, const Size& size=Size(1) );
   virtual ~Building();
   virtual void initTerrain( gfx::Tile& terrain);
 
@@ -46,7 +41,7 @@ public:
 
   // evaluate the given service
   virtual float evaluateService( ServiceWalkerPtr walker);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 
   // handle service reservation
   void reserveService(const Service::Type service);
@@ -66,7 +61,7 @@ public:
   virtual gfx::Renderer::PassQueue passQueue() const;
 
 protected:
-  std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
+  void _updateBalanceKoeffs();
 
   class Impl;
   ScopedPtr< Impl > _d;

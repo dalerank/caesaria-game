@@ -17,7 +17,7 @@
 
 #include "contaminated_water.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
@@ -49,25 +49,24 @@ GameEventPtr ContaminatedWater::create()
   return ret;
 }
 
-void _decreaseHousesHealth( objects::Type btype, PlayerCityPtr city, int value )
+void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
 {
-  city::Helper helper( city );
   TilePos offset( 2, 2 );
 
-  gfx::TileOverlayList buildings = city->overlays();
+  OverlayList buildings = city->overlays();
 
   foreach( itB, buildings )
   {
     if( (*itB)->type() != btype )
         continue;
 
-    HouseList houses = helper.find<House>( objects::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
+    HouseList houses = city::statistic::findo<House>( city, object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
 
     foreach( itHouse, houses )
     {
       //HouseList::iterator it = houses.begin();
       //std::advance( it, math::random( houses.size() ) );
-      (*itHouse)->updateState( House::health, value );
+      (*itHouse)->updateState( pr::health, value );
     }
   }
 }
@@ -79,8 +78,8 @@ void ContaminatedWater::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute contaminated water service" );
     _d->isDeleted = _d->endDate < game::Date::current();
 
-    _decreaseHousesHealth( objects::well, game.city(), -_d->value );
-    _decreaseHousesHealth( objects::fountain, game.city(), -_d->value );
+    _decreaseHousesHealth( object::well, game.city(), -_d->value );
+    _decreaseHousesHealth( object::fountain, game.city(), -_d->value );
   }
 }
 

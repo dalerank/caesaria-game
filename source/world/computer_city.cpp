@@ -18,8 +18,8 @@
 #include "computer_city.hpp"
 #include "empire.hpp"
 #include "trading.hpp"
-#include "good/goodstore_simple.hpp"
-#include "good/goodhelper.hpp"
+#include "good/storage.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
@@ -46,9 +46,9 @@ public:
   int strength;
   unsigned int age;
   unsigned int tradeDelay;
-  good::SimpleStore sellStore;
-  good::SimpleStore buyStore;
-  good::SimpleStore realSells;
+  good::Storage sellStore;
+  good::Storage buyStore;
+  good::Storage realSells;
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   DateTime lastAttack;
@@ -330,7 +330,7 @@ void ComputerCity::timeStep( unsigned int time )
       return;
     }
 
-    good::SimpleStore sellGoods, buyGoods;
+    good::Storage sellGoods, buyGoods;
     sellGoods.setCapacity( 2000 );
     buyGoods.setCapacity( 2000 );
     for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )

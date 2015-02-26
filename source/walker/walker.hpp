@@ -21,20 +21,21 @@
 #include <string>
 #include <memory>
 
-#include "objects/building.hpp"
 #include "walker/action.hpp"
-#include "objects/service.hpp"
-#include "gfx/picture.hpp"
-#include "game/enums.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/serializer.hpp"
-#include "world/nation.hpp"
-#include "pathway/predefinitions.hpp"
-#include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
-#include "predefinitions.hpp"
+#include "pathway/predefinitions.hpp"
+#include "core/referencecounted.hpp"
+#include "city/predefinitions.hpp"
+#include "constants.hpp"
 #include "core/debug_queue.hpp"
+#include "world/nation.hpp"
+#include "core/smartptr.hpp"
+#include "predefinitions.hpp"
 
 class Pathway;
+namespace gfx { class Tile; class Animation; }
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -78,7 +79,7 @@ public:
   void setFlag( Flag flag, bool value );
   bool getFlag( Flag flag ) const;
 
-  constants::Direction direction() const;
+  Direction direction() const;
   Walker::Action action() const;
 
   virtual double health() const;
@@ -136,7 +137,7 @@ protected:
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  void _setDirection( constants::Direction direction );
+  void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
   void _setType( constants::walker::Type type );

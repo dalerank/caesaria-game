@@ -22,7 +22,6 @@
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
-#include "enums.hpp"
 #include "gfx/tilemap.hpp"
 #include "gui/info_box.hpp"
 
@@ -87,8 +86,8 @@ public:
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
-  void addInfobox( const gfx::TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
-  bool canCreate( const gfx::TileOverlay::Type type ) const;
+  void addInfobox(const object::Type& type, InfoboxCreator* ctor );
+  bool canCreate( const object::Type type ) const;
 private:
   Manager();
   virtual ~Manager();
@@ -101,21 +100,27 @@ private:
 
 }//end namespave gui
 
-#define REGISTER_INFOBOX_IN_FACTORY(name,type,a) \
+#define REGISTER_OBJECT_INFOBOX(name,a) \
 namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new BaseInfoboxCreator<a>() ); }}; \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, a ); }}; \
 static Registrator_##name rtor_##name; \
 }
 
-#define REGISTER_STATICINFOBOX_IN_FACTORY(name,type,a,b) \
+#define REGISTER_OBJECT_BASEINFOBOX(name,a) \
 namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new StaticInfoboxCreator(a,b) ); }}; \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new BaseInfoboxCreator<a>() ); }}; \
 static Registrator_##name rtor_##name; \
 }
 
-#define REGISTER_SERVICEINFOBOX_IN_FACTORY(name,type,a,b) \
+#define REGISTER_OBJECT_STATICINFOBOX(name,a,b) \
 namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( type, CAESARIA_STR_EXT(type), new ServiceInfoboxCreator(a,b) ); }}; \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new StaticInfoboxCreator(a,b) ); }}; \
+static Registrator_##name rtor_##name; \
+}
+
+#define REGISTER_OBJECT_SERVICEINFOBOX(name,a,b) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new ServiceInfoboxCreator(a,b) ); }}; \
 static Registrator_##name rtor_##name; \
 }
 

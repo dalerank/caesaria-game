@@ -15,7 +15,7 @@
 
 #include "event_messagebox.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/datetimehelper.hpp"
 
 using namespace constants;
@@ -43,7 +43,7 @@ AboutEvent::AboutEvent(Widget* parent, const std::string& title,
   Rect rect = _lbTextRef()->relativeRect();
   rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, util::date2str( time ) );
+  Label* lbTime = new Label( this, rect, util::date2str( time, true ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
 
   if( !additional.empty() )

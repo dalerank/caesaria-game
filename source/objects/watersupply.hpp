@@ -25,7 +25,7 @@
 class WaterSource : public Construction
 {
 public:
-  WaterSource( const TileOverlay::Type type, const Size& size );
+  WaterSource( const object::Type type, const Size& size );
   ~WaterSource();
   
   virtual void addWater( const WaterSource& source );
@@ -55,8 +55,8 @@ public:
   Reservoir();
   ~Reservoir();
 
-  virtual bool build(const CityAreaInfo &info);
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool isNeedRoadAccess() const;
   virtual void initTerrain(gfx::Tile& terrain);
   virtual void timeStep(const unsigned long time);
@@ -65,7 +65,7 @@ public:
   virtual void addWater( const WaterSource& source );
   virtual void initialize(const MetaData &mdata);
 
-  TilePos entry( constants::Direction direction );
+  TilePos entry( Direction direction );
 
 private:
   bool _isWaterSource;

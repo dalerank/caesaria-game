@@ -33,12 +33,12 @@ using namespace city;
 namespace events
 {
 
-GameEventPtr BuildAny::create( const TilePos& pos, const TileOverlay::Type type )
+GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
   return create( pos, TileOverlayFactory::instance().create( type ) );
 }
 
-GameEventPtr BuildAny::create(const TilePos& pos, TileOverlayPtr overlay)
+GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
 {
   BuildAny* ev = new BuildAny();
   ev->_pos = pos;
@@ -57,7 +57,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   if( _overlay.isNull() )
     return;
 
-  TileOverlayPtr ctOv = game.city()->getOverlay( _pos );
+  OverlayPtr ctOv = game.city()->getOverlay( _pos );
 
   bool mayBuild = true;
   if( ctOv.isValid() )
@@ -65,10 +65,9 @@ void BuildAny::_exec( Game& game, unsigned int )
     mayBuild = ctOv->isDestructible();
   }
 
-  city::Helper helper( game.city() );
   TilePos offset(10, 10);
-  EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() && _overlay->group() != objects::disasterGroup )
+  EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
+  if( !enemies.empty() && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##" );
     e->dispatch();
@@ -77,7 +76,7 @@ void BuildAny::_exec( Game& game, unsigned int )
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-    CityAreaInfo info = { game.city(), _pos, TilesArray() };
+    city::AreaInfo info = { game.city(), _pos, TilesArray() };
     bool buildOk = _overlay->build( info );
 
     if( !buildOk )
@@ -86,7 +85,7 @@ void BuildAny::_exec( Game& game, unsigned int )
       return;
     }
 
-    helper.updateDesirability( _overlay, city::Helper::onDesirability );
+    Desirability::update( game.city(), _overlay, Desirability::on );
     game.city()->addOverlay( _overlay );
 
     ConstructionPtr construction = ptr_cast<Construction>( _overlay );
@@ -96,7 +95,7 @@ void BuildAny::_exec( Game& game, unsigned int )
       game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                     -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
-      if( construction->group() != objects::disasterGroup )
+      if( construction->group() != object::group::disaster )
       {
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
         e->dispatch();

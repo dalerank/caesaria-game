@@ -17,7 +17,7 @@
 
 #include "cityservice_disorder.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/constants.hpp"
 #include "city/funds.hpp"
 #include "core/foreach.hpp"
@@ -28,6 +28,7 @@
 #include "events/event.hpp"
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
@@ -39,6 +40,8 @@ const int crimeDescLimiter = 10;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Disorder,disorder)
 
 class Disorder::Impl
 {
@@ -85,8 +88,7 @@ void Disorder::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  Helper helper( _city() );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findh( _city() );
 
   WalkerList walkers = _city()->walkers( walker::protestor );
 

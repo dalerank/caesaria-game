@@ -23,10 +23,10 @@
 #include "core/gettext.hpp"
 #include "objects/granary.hpp"
 #include "core/utils.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/logger.hpp"
 #include "special_orders_window.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
 
@@ -39,7 +39,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(granary,objects::granery,AboutGranary)
+REGISTER_OBJECT_BASEINFOBOX(granery,AboutGranary)
 
 AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )

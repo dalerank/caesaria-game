@@ -20,7 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/market_buyer.hpp"
 #include "core/variant_map.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/city.hpp"
 #include "walker/serviceman.hpp"
 #include "objects/constants.hpp"
@@ -29,14 +29,13 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::market, Market)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::market, Market)
 
 class Market::Impl
 {
 public:
-  good::SimpleStore store;
+  good::Storage store;
 
   bool isAnyGoodStored()
   {
@@ -64,7 +63,7 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, constants::objects::market, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
   _d( new Impl )
 {
   _fgPicturesRef().resize(1);  // animation
@@ -96,7 +95,7 @@ void Market::deliverService()
 unsigned int Market::walkerDistance() const {  return 26; }
 good::Store &Market::goodStore(){  return _d->store; }
 
-std::list<good::Product> Market::mostNeededGoods()
+good::Products Market::mostNeededGoods()
 {
   std::list<good::Product> res;
 

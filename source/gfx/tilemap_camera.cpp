@@ -24,11 +24,9 @@
 #include "core/logger.hpp"
 #include "gfx/helper.hpp"
 #include "core/foreach.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 #include <set>
-
-using namespace constants;
 
 namespace gfx
 {
@@ -86,6 +84,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->virtualSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
   _d->borderSize = Size( 90 );
+  _d->tiles.reserve( 2000 );
 }
 
 TilemapCamera::~TilemapCamera() {}
@@ -211,6 +210,14 @@ Tile* TilemapCamera::at(const Point& pos, bool overborder) const
   return _d->tmap->at( virtPos - _d->offset, overborder );
 }
 
+Point TilemapCamera::mpos(const Point &pos) const
+{
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
+  Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
+  return virtPos - _d->offset;
+}
+
 Tile* TilemapCamera::centerTile() const
 {
   return at( Point( _d->virtualSize.width() / 2, _d->virtualSize.height() / 2 ), true );
@@ -238,7 +245,7 @@ const TilesArray& TilemapCamera::tiles() const
       int xstart = cx - sizeT.width();
       if ((xstart + z) % 2 == 0)
       {
-	      ++xstart;
+        ++xstart;
       }
 
       for (int x = xstart; x<=cx + sizeT.width(); x+=2)

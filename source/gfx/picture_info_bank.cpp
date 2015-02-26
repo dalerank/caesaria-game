@@ -98,20 +98,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
   _d->setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
 
-  // granary
-  _d->setOne(ResourceGroup::commerce, 141, 28, 109);
-  _d->setOne(ResourceGroup::commerce, 142, 33, 75);
-  _d->setOne(ResourceGroup::commerce, 143, 56, 65);
-  _d->setOne(ResourceGroup::commerce, 144, 92, 65);
-  _d->setOne(ResourceGroup::commerce, 145, 118, 76);
-  _d->setOne(ResourceGroup::commerce, 146, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 147, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 148, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 149, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 150, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 151, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 152, 78, 69);
-
   //legion standart + flag
   _d->setRange( ResourceGroup::sprites, 21, 47, Point( -32, 29 ) );
   _d->setRange( ResourceGroup::sprites, 48, 68, Point( -32, 52 ) );

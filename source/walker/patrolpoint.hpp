@@ -19,6 +19,7 @@
 #define __CAESARIA_PATROLPOINT_H_INCLUDED__
 
 #include "walker.hpp"
+#include "objects/predefinitions.hpp"
 
 class PatrolPoint : public Walker
 {

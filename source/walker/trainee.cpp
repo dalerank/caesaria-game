@@ -19,12 +19,13 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "objects/building.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -33,7 +34,7 @@ using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
-typedef Priorities<TileOverlay::Type> NecessaryBuildings;
+typedef Priorities<object::Type> NecessaryBuildings;
 
 class TraineeWalker::Impl
 {
@@ -57,17 +58,17 @@ void TraineeWalker::_init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case walker::actor:      _d->necBuildings << objects::theater
-                                           << objects::amphitheater;  break;
-  case walker::gladiator:  _d->necBuildings << objects::amphitheater
-                                              << objects::colloseum;  break;
-  case walker::lionTamer:  _d->necBuildings << objects::colloseum;  break;
-  case walker::soldier:    _d->necBuildings << objects::military_academy
-                                            << objects::fort_legionaries
-                                            << objects::fort_horse
-                                            << objects::fort_javelin
-                                            << objects::tower;  break;
-  case walker::charioteer:  _d->necBuildings << objects::hippodrome;  break;
+  case walker::actor:      _d->necBuildings << object::theater
+                                           << object::amphitheater;  break;
+  case walker::gladiator:  _d->necBuildings << object::amphitheater
+                                              << object::colloseum;  break;
+  case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
+  case walker::soldier:    _d->necBuildings << object::military_academy
+                                            << object::fort_legionaries
+                                            << object::fort_horse
+                                            << object::fort_javelin
+                                            << object::tower;  break;
+  case walker::charioteer:  _d->necBuildings << object::hippodrome;  break;
   default: break;
   }
 
@@ -95,12 +96,11 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  city::Helper helper( _city() );
 
   BuildingList buildings;
   foreach( buildingType, _d->necBuildings )
   {
-    BuildingList tmpBuildings = helper.find<Building>( *buildingType );
+    BuildingList tmpBuildings = city::statistic::findo<Building>( _city(), *buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 
@@ -169,7 +169,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   }
 }
 
-void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
+void TraineeWalker::checkDestination(const object::Type buildingType, Propagator &pathPropagator)
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
@@ -215,9 +215,10 @@ void TraineeWalker::_reachedPathway()
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "originBldPos" ] = _d->base->pos();
-  stream[ "destBldPos" ] = _d->destination->pos();
-  stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "originBldPos" ] = _d->base.isValid() ? _d->base->pos() : TilePos(-1, -1);
+  stream[ "destBldPos" ] = _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1);
+
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   stream[ "traineeType" ] = type();
   stream[ "type" ] = (int)walker::trainee;
 }
@@ -228,7 +229,7 @@ void TraineeWalker::load( const VariantMap& stream )
 
   _d->base << _city()->getOverlay( stream.get( "originBldPos" ).toTilePos() );
   _d->destination << _city()->getOverlay( stream.get( "destBldPos" ).toTilePos() );
-  _d->maxDistance = (int)stream.get( "maxDistance" );
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 
   _setType( wtype );

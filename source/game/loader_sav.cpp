@@ -296,8 +296,8 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         }
         else
         {
-          TileOverlay::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
-          if( ovType == constants::objects::unknown )
+          object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
+          if( ovType == object::unknown )
           {
             Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
           }
@@ -309,7 +309,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
                  imgId == 0x1f8 || imgId == 0x1e5 || imgId == 0x1e6 || imgId == 0x201 ||
                  imgId == 0x208 || imgId == 0x1ea )
              {
-               Picture pic = MetaDataHolder::randomPicture( oldgfx ? objects::meadow : objects::terrain, Size(1) );
+               Picture pic = MetaDataHolder::randomPicture( oldgfx ? object::meadow : object::terrain, Size(1) );
                tile.setPicture( pic );
                tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
                tile.setFlag( Tile::clearAll, true );

@@ -19,6 +19,7 @@
 #include "core/position.hpp"
 #include "objects/road.hpp"
 #include "gfx/animation_bank.hpp"
+#include "gfx/cart_animation.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
@@ -44,11 +45,11 @@ Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
   _setType( walker::immigrant );
 }
 
-Animation& Immigrant::_cart()
+CartAnimation& Immigrant::_cart()
 {
   if( !Emigrant::_cart().isValid() )
   {
-    _setCart( AnimationBank::getCart( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, 0, direction()) );
+    Emigrant::_cart().load( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, direction() );
   }
 
   return Emigrant::_cart();
@@ -61,18 +62,18 @@ void Immigrant::getPictures( Pictures& oPics)
   // depending on the walker direction, the cart is ahead or behind
   switch (direction())
   {
-  case constants::north:
-  case constants::northEast:
-  case constants::northWest:
-  case constants::west:
+  case direction::north:
+  case direction::northEast:
+  case direction::northWest:
+  case direction::west:
     oPics.push_back( getMainPicture() );
     oPics.push_back( _cart().currentFrame() );
   break;
 
-  case constants::southWest:
-  case constants::southEast:
-  case constants::east:
-  case constants::south:
+  case direction::southWest:
+  case direction::southEast:
+  case direction::east:
+  case direction::south:
     oPics.push_back( _cart().currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
@@ -85,7 +86,7 @@ void Immigrant::getPictures( Pictures& oPics)
 void Immigrant::_changeDirection()
 {
   Emigrant::_changeDirection();
-  _setCart( Animation() );  // need to get the new graphic
+  _setCart( CartAnimation() );  // need to get the new graphic
 }
 
 void Immigrant::_updateThoughts()

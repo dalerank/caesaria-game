@@ -50,7 +50,8 @@ class PlayerCity : public world::City
 {
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
-                 forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert } OptionType;
+                 forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
+                 fireKoeff, barbarianAttack } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
@@ -68,7 +69,7 @@ public:
 
   const city::SrvcList& services() const;
 
-  gfx::TileOverlayList& overlays();
+  OverlayList& overlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -103,8 +104,8 @@ public:
   virtual void load( const VariantMap& stream );
 
   // add construction
-  void addOverlay( gfx::TileOverlayPtr overlay);
-  gfx::TileOverlayPtr getOverlay( const TilePos& pos ) const;
+  void addOverlay( OverlayPtr overlay);
+  OverlayPtr getOverlay( const TilePos& pos ) const;
 
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );

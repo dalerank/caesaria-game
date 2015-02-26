@@ -28,7 +28,6 @@ namespace city
 namespace industry
 {
 
-typedef std::vector<constants::objects::Group> BuildingGroups;
 typedef enum
 {
   factoryAndTrade=0,
@@ -43,7 +42,7 @@ typedef enum
   count
 } Type;
 
-BuildingGroups toGroups(Type type);
+object::Groups toGroups(Type type);
 } //end namespace industry
 
 typedef Priorities<industry::Type> HirePriorities;

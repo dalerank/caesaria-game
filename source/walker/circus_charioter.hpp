@@ -19,6 +19,7 @@
 #define _CAESARIA_CIRCUS_CHARIOTER_H_INCLUDE_
 
 #include "walker.hpp"
+#include "objects/predefinitions.hpp"
 
 class CircusCharioter : public Walker
 {

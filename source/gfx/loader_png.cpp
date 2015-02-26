@@ -63,7 +63,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
 {
   if(!file.isOpen())
   {
-    Logger::warning( "LOAD PNG: can't open file %s", file.path().toString().c_str() );
+    Logger::warning( "LOAD PNG: can't open file " + file.path().toString() );
     return Picture::getInvalid();
   }
 
@@ -71,14 +71,14 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   // Read the first few bytes of the PNG file
   if( file.read(buffer, 8) != 8 )
   {
-    Logger::warning( "LOAD PNG: can't read file %s", file.path().toString().c_str() );
+    Logger::warning( "LOAD PNG: can't read file " + file.path().toString() );
     return Picture::getInvalid();
   }
 
   // Check if it really is a PNG file
   if( png_sig_cmp(buffer, 0, 8) )
   {
-    Logger::warning( "LOAD PNG: not really a png %s", file.path().toString().c_str() );
+    Logger::warning( "LOAD PNG: not really a png " + file.path().toString() );
     return Picture::getInvalid();
   }
 
@@ -88,7 +88,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
                                                 (png_error_ptr)png_cpexcept_warn);
   if( !png_ptr )
   {
-    Logger::warning( "LOAD PNG: Internal PNG create read struct failure %s", file.path().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create read struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 
@@ -96,7 +96,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
   {
-    Logger::warning( "LOAD PNG: Internal PNG create info struct failure 5s", file.path().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create info struct failure " + file.path().toString() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }
@@ -104,12 +104,8 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   // for proper error handling
   if (setjmp(png_jmpbuf(png_ptr)))
   {
-        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-        /*
-        if( RowPointers )
-                                delete [] RowPointers;
-                        */
-        return Picture::getInvalid();
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    return Picture::getInvalid();
   }
 
   // changed by zola so we don't need to have public FILE pointers
@@ -124,14 +120,14 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   int BitDepth;
   int ColorType;
   {
-        // Use temporary variables to avoid passing casted pointers
-        png_uint_32 w,h;
-        // Extract info
-        png_get_IHDR(png_ptr, info_ptr,
-                &w, &h,
-                &BitDepth, &ColorType, NULL, NULL, NULL);
-        Width=w;
-        Height=h;
+    // Use temporary variables to avoid passing casted pointers
+    png_uint_32 w,h;
+    // Extract info
+    png_get_IHDR(png_ptr, info_ptr,
+                 &w, &h,
+                 &BitDepth, &ColorType, NULL, NULL, NULL);
+    Width=w;
+    Height=h;
   }
 
   // Convert palette color to true color
@@ -141,10 +137,10 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   // Convert low bit colors to 8 bit colors
   if (BitDepth < 8)
   {
-        if (ColorType==PNG_COLOR_TYPE_GRAY || ColorType==PNG_COLOR_TYPE_GRAY_ALPHA)
-                png_set_expand_gray_1_2_4_to_8(png_ptr);
-        else
-                png_set_packing(png_ptr);
+    if (ColorType==PNG_COLOR_TYPE_GRAY || ColorType==PNG_COLOR_TYPE_GRAY_ALPHA)
+      png_set_expand_gray_1_2_4_to_8(png_ptr);
+    else
+      png_set_packing(png_ptr);
   }
 
   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
@@ -165,25 +161,25 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
         png_set_gamma(png_ptr, screen_gamma, 0.45455);
   else
   {
-        double image_gamma;
-        if (png_get_gAMA(png_ptr, info_ptr, &image_gamma))
-                png_set_gamma(png_ptr, screen_gamma, image_gamma);
-        else
-                png_set_gamma(png_ptr, screen_gamma, 0.45455);
+    double image_gamma;
+    if (png_get_gAMA(png_ptr, info_ptr, &image_gamma))
+      png_set_gamma(png_ptr, screen_gamma, image_gamma);
+    else
+      png_set_gamma(png_ptr, screen_gamma, 0.45455);
   }
 
   // Update the changes in between, as we need to get the new color type
   // for proper processing of the RGBA type
   png_read_update_info(png_ptr, info_ptr);
   {
-     // Use temporary variables to avoid passing casted pointers
-     png_uint_32 w,h;
-     // Extract info
-     png_get_IHDR(png_ptr, info_ptr,
-             &w, &h,
-             &BitDepth, &ColorType, NULL, NULL, NULL);
-     Width=w;
-     Height=h;
+    // Use temporary variables to avoid passing casted pointers
+    png_uint_32 w,h;
+    // Extract info
+    png_get_IHDR(png_ptr, info_ptr,
+            &w, &h,
+            &BitDepth, &ColorType, NULL, NULL, NULL);
+    Width=w;
+    Height=h;
   }
 
   // Convert RGBA to BGRA
@@ -201,7 +197,8 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
 
   // Create array of pointers to rows in image data
   std::vector<unsigned char> bytes;
-  bytes.resize( Width * Height * 4 );
+  int pixelSize = (ColorType==PNG_COLOR_TYPE_RGB_ALPHA ? 4 : 3);
+  bytes.resize( Width * Height * pixelSize );
 
   ScopedPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
 
@@ -211,7 +208,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   for(unsigned int i=0; i<Height; ++i)
   {
     RowPointers.data()[i] = data;
-    data += Width * 4;
+    data += Width * pixelSize;
   }
 
   // for proper error handling
@@ -228,7 +225,25 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
   // Create the image structure to be filled by png data
-  Picture* pic = Picture::create( Size( Width, Height ), &bytes[0] );
+  Picture* pic;
+  if( ColorType==PNG_COLOR_TYPE_RGB_ALPHA )
+  {
+    pic = Picture::create( Size( Width, Height ), bytes.data() );
+  }
+  else
+  {
+    std::vector<unsigned char> b4;
+    b4.resize( Width * Height * 4 );
 
+    for( unsigned int index=0; index < Width * Height; index++ )
+    {
+      b4[ index*4+3 ] = 0xff;
+      b4[ index*4+0] = bytes[index*3+2];
+      b4[ index*4+1] = bytes[index*3+1];
+      b4[ index*4+2] = bytes[index*3+0];
+    }
+
+    pic = Picture::create( Size( Width, Height ), b4.data() );
+  }
   return *pic;
 }

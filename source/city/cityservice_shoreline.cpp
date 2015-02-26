@@ -21,15 +21,18 @@
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
 #include "walker/river_wave.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Shoreline, shoreline)
 
 class Shoreline::Impl
 {
@@ -82,7 +85,7 @@ Shoreline::Shoreline( PlayerCityPtr city )
 
 void Shoreline::timeStep( const unsigned int time )
 {
-  //if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
   if( _d->slTiles.empty() )
@@ -138,7 +141,6 @@ void Shoreline::timeStep( const unsigned int time )
     {
       tile->setPicture( picName );
     }
-
   }
 }
 

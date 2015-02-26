@@ -24,15 +24,15 @@
 #include "core/color.hpp"
 #include "world/empire.hpp"
 #include "world/computer_city.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "dialogbox.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "world/trading.hpp"
 #include "city/funds.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/settings.hpp"
 #include "events/showinfobox.hpp"
 #include "core/logger.hpp"
@@ -337,8 +337,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
       e->dispatch();
 
-      city::Helper helper( city );
-      DockList docks = helper.find<Dock>( constants::objects::dock );
+      DockList docks = city::statistic::findo<Dock>( city, object::dock );
       if( docks.empty() )
       {
         events::GameEventPtr e = events::ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );

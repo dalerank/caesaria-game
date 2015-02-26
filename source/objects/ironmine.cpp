@@ -29,10 +29,10 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::iron_mine, IronMine)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::iron_mine, IronMine)
 
 IronMine::IronMine()
-  : Factory(good::none, good::iron, objects::iron_mine, Size(2) )
+  : Factory(good::none, good::iron, object::iron_mine, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 54 );
 
@@ -43,7 +43,7 @@ IronMine::IronMine()
   _setUnworkingInterval( 12 );
 }
 
-bool IronMine::canBuild( const CityAreaInfo& areaInfo ) const
+bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = WorkingBuilding::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain
@@ -70,4 +70,6 @@ void IronMine::_reachUnworkingTreshold()
 
   events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
   e->dispatch();
+
+  collapse();
 }

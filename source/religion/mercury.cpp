@@ -20,7 +20,7 @@
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
 #include "core/utils.hpp"

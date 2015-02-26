@@ -31,7 +31,7 @@
 #include "city/city.hpp"
 #include "city/request.hpp"
 #include "core/foreach.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"
@@ -146,7 +146,7 @@ public:
 
   std::string getEmperorFavourStr()
   {
-    return utils::format( 0xff, "##emperor_favour_%02d##", (int)(city->favour() / 100.f) * 20 );
+    return utils::format( 0xff, "##emperor_favour_%02d##", city->favour() * 20 / 100  );
   }
 };
 

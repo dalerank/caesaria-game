@@ -19,7 +19,7 @@
 #include "city/funds.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "city/trade_options.hpp"
 
 using namespace constants;

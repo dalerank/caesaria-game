@@ -17,7 +17,7 @@
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -108,11 +108,10 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
   return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, PathwayHelper::WayType type)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
-  city::Helper helper( city );
-  ConstructionList constructions = helper.find<Construction>( buildingType );
+  ConstructionList constructions = city::statistic::findo<Construction>( city, buildingType );
 
   foreach( it, constructions )
   {
@@ -142,7 +141,7 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
 {
   TilePos offset( walkRadius / 2, walkRadius / 2 );
   TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
-  tiles = tiles.walkableTiles( true );
+  tiles = tiles.walkables( true );
 
   int loopCounter = 0; //loop limiter
   if( !tiles.empty() )
@@ -180,7 +179,7 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
       break;
 
     TilesArray border = tmap.getRectangle( start, stop );
-    border = border.walkableTiles( true );
+    border = border.walkables( true );
     foreach( it, border )
     {
       Tile* tile = *it;

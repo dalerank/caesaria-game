@@ -26,8 +26,8 @@ public:
   Fortification();
   virtual ~Fortification();
 
-  virtual bool build(const CityAreaInfo &info);
-  const gfx::Picture& picture( const CityAreaInfo& areaInfo ) const;
+  virtual bool build(const city::AreaInfo &info);
+  const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
 
   int getDirection() const;
 

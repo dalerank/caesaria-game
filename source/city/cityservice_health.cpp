@@ -17,14 +17,18 @@
 
 #include "cityservice_health.hpp"
 #include "objects/house.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
+#include "statistic.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(HealthCare,healtCare)
 
 namespace {
 const int maxDescriptionLevel = 12;
@@ -61,14 +65,13 @@ void HealthCare::timeStep(const unsigned int time )
 {
   if( game::Date::isMonthChanged() )
   {
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     _d->value = 0;
     _d->minHealthLevel = 0;
     foreach( house, houses )
     {
-      unsigned int hLvl = (*house)->state( (Construction::Param)House::health );
+      unsigned int hLvl = (*house)->state( pr::health );
       _d->value = ( _d->value + hLvl ) / 2;
     }
   }
@@ -90,22 +93,21 @@ std::string HealthCare::reason() const
   int lvl = math::clamp<int>( _d->value / (100/maxDescriptionLevel), 0, maxDescriptionLevel-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  Helper helper( _city() );
-  BuildingList clinics = helper.find<Building>( objects::clinic );
+  BuildingList clinics = city::statistic::findo<Building>( _city(), object::clinic );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 
   reasons << mainReason;
   if( lvl > maxDescriptionLevel / 3 )
   {
-    int avTypes[] = { objects::barber, objects::baths, objects::clinic, objects::hospital, objects::unknown };
+    object::Type avTypes[] = { object::barber, object::baths, object::clinic, object::hospital, object::unknown };
     std::string avReasons[] = { "##advchief_some_need_barber##", "##advchief_some_need_baths##",
                                 "##advchief_some_need_doctors##", "##advchief_some_need_hospital##",
                                 "" };
 
-    for( int i=0; avTypes[ i ] != objects::unknown; i++ )
+    for( int i=0; avTypes[ i ] != object::unknown; i++ )
     {
-      std::set<int> availableTypes;
+      std::set<object::Type> availableTypes;
       availableTypes.insert( avTypes[ i ] );
 
       HouseList houses = statistic::getEvolveHouseReadyBy( _city(), availableTypes );

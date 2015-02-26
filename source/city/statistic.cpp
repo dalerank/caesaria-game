@@ -22,8 +22,8 @@
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "objects/granary.hpp"
-#include "objects/house_level.hpp"
-#include "good/goodstore.hpp"
+#include "objects/house_spec.hpp"
+#include "good/store.hpp"
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
@@ -73,8 +73,7 @@ float getBalanceKoeff(PlayerCityPtr city)
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
 {
   int need = 0, have = 0;
-  city::Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -114,14 +113,13 @@ bool canProduce(PlayerCityPtr city, good::Product type)
 {
   Helper helper( city );
 
-  FactoryList buildings = helper.getProducers<Factory>( type );
+  FactoryList buildings = helper.findProducers<Factory>( type );
   return !buildings.empty();
 }
 
 CitizenGroup getPopulation(PlayerCityPtr city)
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findh( city );
 
   CitizenGroup ret;
   foreach( it, houses ) { ret += (*it)->habitants(); }
@@ -138,8 +136,7 @@ unsigned int getWorkersNeed(PlayerCityPtr city)
 
 unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city );
 
   int workersNumber = 0;
   foreach( h, houses )
@@ -174,9 +171,7 @@ float getMonthlyOneWorkerWages(PlayerCityPtr city)
 
 unsigned int getWorklessNumber(PlayerCityPtr city)
 {
-  Helper helper( city );
-
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city );
 
   int worklessNumber = 0;
   foreach( h, houses ) { worklessNumber += (*h)->unemployed(); }
@@ -199,11 +194,9 @@ unsigned int getCrimeLevel( PlayerCityPtr city )
 
 unsigned int getFoodStock(PlayerCityPtr city)
 {
-  Helper helper( city );
-
   int foodSum = 0;
 
-  GranaryList granaries = helper.find<Granary>( objects::granery );
+  GranaryList granaries = findo<Granary>( city, object::granery );
   foreach( gr, granaries ) { foodSum += (*gr)->store().qty(); }
 
   return foodSum;
@@ -211,10 +204,8 @@ unsigned int getFoodStock(PlayerCityPtr city)
 
 unsigned int getFoodMonthlyConsumption(PlayerCityPtr city)
 {
-  Helper helper( city );
-
   int foodComsumption = 0;
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city );
 
   foreach( h, houses ) { foodComsumption += (*h)->spec().computeMonthlyFoodConsumption( *h ); }
 
@@ -223,10 +214,8 @@ unsigned int getFoodMonthlyConsumption(PlayerCityPtr city)
 
 unsigned int getFoodProducing(PlayerCityPtr city)
 {
-  Helper helper( city );
-
   int foodProducing = 0;
-  FarmList farms = helper.find<Farm>( objects::foodGroup );
+  FarmList farms = findo<Farm>( city, object::group::food );
 
   foreach( f, farms ) { foodProducing += (*f)->produceQty(); }
 
@@ -235,8 +224,7 @@ unsigned int getFoodProducing(PlayerCityPtr city)
 
 unsigned int getTaxValue(PlayerCityPtr city)
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city  );
 
   float taxValue = 0.f;
   float taxRate = city->funds().taxRate();
@@ -256,8 +244,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
 
 unsigned int getTaxPayersPercent(PlayerCityPtr city)
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city );
 
   unsigned int registered = 0;
   unsigned int population = 0;
@@ -305,16 +292,15 @@ unsigned int getFestivalCost(PlayerCityPtr city, FestivalType type)
   return 0;
 }
 
-HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<int>& checkTypes )
+HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& checkTypes )
 {
   HouseList ret;
 
-  Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = findh( city );
 
   foreach( it, houses )
   {
-    gfx::TileOverlay::Type btype;
+    object::Type btype;
     (*it)->spec().next().checkHouse( *it, NULL, &btype );
     if( checkTypes.count( btype ) )
     {    
@@ -359,10 +345,9 @@ GoodsMap getGoodsMap(PlayerCityPtr city, bool includeGranary)
 
 int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
 {
-  city::Helper helper( city );
   TilePos offset( 8, 8 );
   TilePos wbpos = wb->pos();
-  HouseList houses = helper.find<House>( objects::house, wbpos - offset, wbpos + offset );
+  HouseList houses = findo<House>( city, object::house, wbpos - offset, wbpos + offset );
   float averageDistance = 0;
   foreach( it, houses )
   {
@@ -376,6 +361,29 @@ int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
     averageDistance /= houses.size();
 
   return math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
+}
+
+HouseList findh(PlayerCityPtr city, std::set<int> levels )
+{
+  HouseList ret;
+  HouseList houses = findo<House>( city, object::house );
+  if( levels.empty() )
+    return houses;
+
+  foreach( it, houses )
+  {
+    if( levels.count( (*it)->spec().level() ) > 0 )
+    {
+      ret << *it;
+    }
+  }
+
+  return ret;
+}
+
+gfx::TilesArray tiles( PlayerCityPtr r, const TilePos &start, const TilePos &stop)
+{
+  return r->tilemap().getArea( start, stop );
 }
 
 }//end namespace statistic

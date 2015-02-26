@@ -24,7 +24,7 @@
 #include "core/gettext.hpp"
 #include "gfx/decorator.hpp"
 #include "objects/metadata.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "texturedbutton.hpp"
@@ -33,7 +33,7 @@
 #include "objects/market.hpp"
 #include "objects/granary.hpp"
 #include "core/utils.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "objects/farm.hpp"
 #include "objects/entertainment.hpp"
 #include "objects/house.hpp"
@@ -42,7 +42,7 @@
 #include "objects/warehouse.hpp"
 #include "gfx/engine.hpp"
 #include "gui/special_orders_window.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "groupbox.hpp"
 #include "walker/walker.hpp"
 #include "objects/watersupply.hpp"
@@ -58,6 +58,8 @@
 #include "pushbutton.hpp"
 #include "environment.hpp"
 #include "dialogbox.hpp"
+#include "infobox_land.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -67,6 +69,25 @@ namespace gui
 
 namespace infobox
 {
+
+class InfoboxHouseCreator : public InfoboxCreator
+{
+public:
+  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  {
+    HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
+    if( house.isValid() && house->habitants().count() > 0 )
+    {
+      return new AboutHouse( parent, city, city->tilemap().at( pos ) );
+    }
+    else
+    {
+      return new AboutFreeHouse( parent, city, city->tilemap().at( pos ) );
+    }
+  }
+};
+
+REGISTER_OBJECT_INFOBOX( house, new InfoboxHouseCreator() )
 
 AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )

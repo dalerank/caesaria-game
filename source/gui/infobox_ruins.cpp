@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_ruins.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -37,9 +37,9 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(collapsed,objects::collapsed_ruins,AboutRuins)
-REGISTER_INFOBOX_IN_FACTORY(burned,objects::burned_ruins,AboutRuins)
-REGISTER_INFOBOX_IN_FACTORY(plague,objects::plague_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(collapsed_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(burned_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(plague_ruins,AboutRuins)
 
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 350 ) )
@@ -68,15 +68,11 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   lb->setWordwrap( true );
 }
 
-AboutRuins::~AboutRuins()
-{
-}
+AboutRuins::~AboutRuins() {}
 
 void AboutRuins::_showHelp()
 {
-  std::string helpValue = MetaDataHolder::findTypename( _ruinType );
-
-  DictionaryWindow::show( this, helpValue );
+  DictionaryWindow::show( this, _ruinType.toString() );
 }
 
 }

@@ -23,30 +23,30 @@
 #include "constants.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::roadBlock, RoadBlock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::roadBlock, RoadBlock)
 
-// I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 RoadBlock::RoadBlock()
 {
-  // somewhere we need to delete original road and then we need to think
-  // because as we remove original road we need to recompute adjacent tiles
-  // or we will run into big troubles
-
-  setType(objects::roadBlock);
+  setType(object::roadBlock);
   setPicture( ResourceGroup::roadBlock, 1 );
 }
 
-// Plazas can be built ONLY on top of existing roads
+// Blocks can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-bool RoadBlock::canBuild(const CityAreaInfo& areaInfo) const
+namespace pr
 {
-  //std::cout << "Plaza::canBuild" << std::endl;
+const Param errorBuild( utils::hash("rblock_error") );
+}
+
+bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
+{
   Tilemap& tilemap = areaInfo.city->tilemap();
 
   bool is_constructible = true;
@@ -57,22 +57,33 @@ bool RoadBlock::canBuild(const CityAreaInfo& areaInfo) const
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
   }
 
+  const_cast<RoadBlock*>( this )->setState( pr::errorBuild, !is_constructible );
+
   return is_constructible;
 }
 
-const Picture& RoadBlock::picture(const CityAreaInfo& areaInfo) const
+std::string RoadBlock::errorDesc() const
+{
+  if( state( pr::errorBuild ) )
+    return "##roadblock_build_over_road##";
+
+  return "";
+}
+
+
+const Picture& RoadBlock::picture(const city::AreaInfo& areaInfo) const
 {
   return picture();
 }
 
 void RoadBlock::appendPaved(int) {}
 
-bool RoadBlock::build( const CityAreaInfo& info )
+bool RoadBlock::build( const city::AreaInfo& info )
 {
   RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
   {
-    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    road->setState( pr::lockTerrain, 1 );
   }
 
   Construction::build( info );
@@ -94,7 +105,7 @@ void RoadBlock::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
   }
 

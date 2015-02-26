@@ -22,7 +22,7 @@
 #include "objects/house.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
@@ -32,6 +32,7 @@
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -46,7 +47,7 @@ CAESARIA_LITERALCONST(peoples)
 class Emigrant::Impl
 {
 public:
-  Animation cart;
+  CartAnimation cart;
   CitizenGroup peoples;
   int failedWayCount;
   TilePos housePosLock;
@@ -83,31 +84,29 @@ void Emigrant::_lockHouse( HousePtr house )
     if( oldHouse.isValid() )
     {
       _d->housePosLock = TilePos( -1, -1 );
-      oldHouse->setState( House::settleLock, 0 );
+      oldHouse->setState( pr::settleLock, 0 );
     }
   }
 
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( House::settleLock, tile::hash( _d->housePosLock ) );
+    house->setState( pr::settleLock, tile::hash( _d->housePosLock ) );
   }
 }
 
 HousePtr Emigrant::_findBlankHouse()
 {
-  city::Helper hlp( _city() );
-
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = hlp.find<House>( objects::house, pos() - offset, pos() + offset );
+  HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
   if( houses.empty() )
   {
-    houses = hlp.find<House>( objects::house );
+    houses = city::statistic::findh( _city() );
     _checkHouses( houses );
   }
 
@@ -215,12 +214,10 @@ void Emigrant::_append2house( HousePtr house )
 
 bool Emigrant::_checkNearestHouse()
 {
-  city::Helper helper( _city() );
-
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = helper.find<House>( objects::house, pos()-offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
     foreach( it, houses )
@@ -341,7 +338,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
       normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
     }
 
-    unsigned int settleLockId = house->state( House::settleLock );
+    unsigned int settleLockId = house->state( pr::settleLock );
     if( settleLockId == houseLockId )
     {
       hlist.clear();
@@ -444,8 +441,8 @@ Emigrant::~Emigrant()
   _lockHouse( HousePtr() );
 }
 
-void Emigrant::_setCart( const Animation& anim ){  _d->cart = anim;}
-Animation& Emigrant::_cart(){  return _d->cart; }
+void Emigrant::_setCart( const CartAnimation& anim ){  _d->cart = anim; }
+CartAnimation& Emigrant::_cart(){  return _d->cart; }
 const CitizenGroup& Emigrant::peoples() const{  return _d->peoples;}
 void Emigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 

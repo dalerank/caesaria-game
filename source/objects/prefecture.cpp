@@ -30,9 +30,8 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::prefecture, Prefecture)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::prefecture, Prefecture)
 
 class Prefecture::Impl
 {
@@ -44,7 +43,7 @@ public:
 };
 
 Prefecture::Prefecture()
-  : ServiceBuilding(Service::prefect, constants::objects::prefecture, Size(1)),
+  : ServiceBuilding(Service::prefect, object::prefecture, Size(1)),
     _d( new Impl )
 {
   _d->fireDetect = TilePos( -1, -1 );

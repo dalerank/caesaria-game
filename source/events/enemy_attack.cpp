@@ -103,7 +103,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       int lastIndex = tmap.size();
       TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
 
-      tiles = tiles.walkableTiles( true );
+      tiles = tiles.walkables( true );
 
       Tile* tile = tiles[ math::random( tiles.size() ) ];
       if( tile )

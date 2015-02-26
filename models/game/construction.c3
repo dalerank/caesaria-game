@@ -22,6 +22,7 @@
 
   roadBlock : {
     cost : 10
+    c3logic : false
     class : "road"
     image : [ "roadBlock", 1 ]
   }
@@ -492,8 +493,9 @@
   engineering_post : {
     cost : 30,
     desirability : { base : 0, 	range : 0,	step : 0 }
-    employers : 5
+    employers : 5   
     image : [ "transport", 56 ]
+    animation : { rc : "transport", start : 57, count : 10, offset : [ 10, 42 ], delay : 4 }
     class : "engineer"
   },
 

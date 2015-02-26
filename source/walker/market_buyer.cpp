@@ -26,7 +26,7 @@
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
@@ -47,7 +47,7 @@ public:
   good::Product priorityGood;
   int maxDistance;
   MarketPtr market;
-  good::SimpleStore basket;
+  good::Storage basket;
   int reservationID;
 };
 
@@ -75,8 +75,8 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
 MarketBuyer::~MarketBuyer(){}
 
 template< class T >
-TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
-                               MarketPtr market, good::SimpleStore& basket, const good::Product what,
+TilePos getWalkerDestination2( Propagator &pathPropagator, const object::Type type,
+                               MarketPtr market, good::Storage& basket, const good::Product what,
                                Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;
@@ -119,16 +119,16 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
-  std::list<good::Product> allPriorityGoods = _d->market->mostNeededGoods();
-  std::list<good::Product> priorityGoods;
+  good::Products priorityGoods;
+  good::Products marketGoods = _d->market->mostNeededGoods();
   
   //only look at goods that shall not be stockpiled
-  foreach(goodType, allPriorityGoods)
+  foreach(goodType, marketGoods )
   {
-      if( ! _city()->tradeOptions().isGoodsStacking(*goodType) )
-	priorityGoods.push_back(*goodType);
-   }
-  
+    if( !_city()->tradeOptions().isStacking(*goodType) )
+      priorityGoods.push_back(*goodType);
+  }
+
   _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
   if( priorityGoods.size() > 0 )
@@ -151,19 +151,19 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
           || _d->priorityGood == good::vegetable)
       {
         // try get that good from a granary
-        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, objects::granery, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
         if( _d->destBuildingPos.i() < 0 )
         {
-          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, objects::warehouse, _d->market,
+          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, object::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
       }
       else
       {
         // try get that good from a warehouse
-        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, objects::warehouse, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, object::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
       }
 
@@ -236,7 +236,7 @@ void MarketBuyer::_reachedPathway()
    else
    {
       // get goods from destination building
-      TileOverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
+      OverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
       
       if( is_kind_of<Granary>( building ) )
       {
@@ -248,19 +248,22 @@ void MarketBuyer::_reachedPathway()
         // take other goods if possible
         for ( good::Product goodType = good::wheat; goodType<=good::vegetable; ++goodType)
         {
-          // for all types of good (except G_NONE)
-          int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
-          if (qty > 0)
-          {
-            qty = std::min(qty, granary->store().getMaxRetrieve(goodType));
-            qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
-            if (qty > 0)
+            if( !_city()->tradeOptions().isStacking(goodType) )
             {
-              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              good::Stock& stock = _d->basket.getStock(goodType);
-              granary->store().retrieve(stock, qty);
+                // for all types of good (except G_NONE)
+                int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
+                if (qty > 0)
+                {
+                    qty = std::min(qty, granary->store().getMaxRetrieve(goodType));
+                    qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
+                    if (qty > 0)
+                    {
+                        // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+                        good::Stock& stock = _d->basket.getStock(goodType);
+                        granary->store().retrieve(stock, qty);
+                    }
+                }
             }
-          }
         }
       }
       else if( is_kind_of<Warehouse>( building ) )
@@ -272,19 +275,22 @@ void MarketBuyer::_reachedPathway()
         // take other goods if possible
         for ( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
         {
-          // for all types of good (except G_NONE)
-          int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
-          if (qty > 0)
-          {
-            qty = std::min(qty, warehouse->store().getMaxRetrieve(goodType));
-            qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
-            if (qty > 0)
+            if( !_city()->tradeOptions().isStacking(goodType) )
             {
-              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-              good::Stock& stock = _d->basket.getStock(goodType);
-              warehouse->store().retrieve(stock, qty);
+                // for all types of good (except G_NONE)
+                int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
+                if (qty > 0)
+                {
+                    qty = std::min(qty, warehouse->store().getMaxRetrieve(goodType));
+                    qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.qty(_d->priorityGood));
+                    if (qty > 0)
+                    {
+                        // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+                        good::Stock& stock = _d->basket.getStock(goodType);
+                        warehouse->store().retrieve(stock, qty);
+                    }
+                }
             }
-          }
         }
       }
 

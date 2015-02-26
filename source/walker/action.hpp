@@ -15,17 +15,17 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WALKER_ACTION_H_INCLUDED__
-#define __CAESARIA_WALKER_ACTION_H_INCLUDED__
+#ifndef __CAESARIA_DIRECTED_ACTION_H_INCLUDED__
+#define __CAESARIA_DIRECTED_ACTION_H_INCLUDED__
 
 #include "core/direction.hpp"
 
 struct DirectedAction
 {
   int action;
-  constants::Direction direction;
+  Direction direction;
 
-  DirectedAction(int a=0, constants::Direction d=constants::noneDirection) : action(a), direction(d) {}
+  DirectedAction(int a=0, Direction d=direction::none) : action(a), direction(d) {}
 
   inline bool operator<( const DirectedAction &a ) const
   {
@@ -35,4 +35,4 @@ struct DirectedAction
   }
 };
 
-#endif //__CAESARIA_WALKER_ACTION_H_INCLUDED__
+#endif //__CAESARIA_DIRECTED_ACTION_H_INCLUDED__

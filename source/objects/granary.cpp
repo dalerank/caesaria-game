@@ -21,8 +21,8 @@
 #include "gfx/picture.hpp"
 #include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
-#include "good/goodstore_simple.hpp"
-#include "city/helper.hpp"
+#include "good/storage.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
@@ -31,7 +31,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::granery, Granary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::granery, Granary)
 
 namespace {
 CAESARIA_LITERALCONST(goodStore)
@@ -39,7 +39,7 @@ static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::o
 static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass + 1 );
 }
 
-class GranaryStore : public good::SimpleStore
+class GranaryStore : public good::Storage
 {
 public:
   static const int maxCapacity = 2400;
@@ -59,7 +59,7 @@ public:
   virtual int reserveStorage( good::Stock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
-              ? good::SimpleStore::reserveStorage( stock, time )
+              ? good::Storage::reserveStorage( stock, time )
               : 0;
   }
 
@@ -70,26 +70,26 @@ public:
       return;
     }
     
-    good::SimpleStore::store( stock, amount );
+    good::Storage::store( stock, amount );
   }
 
   virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyStorageReservation( stock, reservationID );
+    good::Storage::applyStorageReservation( stock, reservationID );
 
     granary->computePictures();
   }
 
   virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
+    good::Storage::applyRetrieveReservation( stock, reservationID );
 
     granary->computePictures();
   }
   
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
   {
-    good::SimpleStore::setOrder( type, order );
+    good::Storage::setOrder( type, order );
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
   }
 
@@ -104,7 +104,7 @@ public:
   bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( constants::objects::granery, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
 {
   _d->store.granary = this;
 
@@ -206,8 +206,7 @@ bool Granary::isWalkable() const { return true; }
 
 void Granary::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlRoad, false );

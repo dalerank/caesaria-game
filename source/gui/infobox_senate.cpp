@@ -24,7 +24,7 @@
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "texturedbutton.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "core/logger.hpp"
@@ -39,7 +39,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(senate,objects::senate,AboutSenate)
+REGISTER_OBJECT_BASEINFOBOX(senate,AboutSenate)
 
 namespace {
   int advisorBtnId = 0x2552;
@@ -52,7 +52,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   setupUI( ":/gui/infoboxsenate.gui" );
 
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
-  std::string title = MetaDataHolder::instance().getData( objects::senate ).prettyName();
+  std::string title = MetaDataHolder::instance().getData( object::senate ).prettyName();
   setTitle( _(title) );
 
   // number of workers
