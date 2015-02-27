@@ -30,7 +30,7 @@ public:
   virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual bool haveReservoirAccess() const;
   virtual void destroy();
   virtual bool mayWork() const;

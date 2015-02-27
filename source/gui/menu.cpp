@@ -127,13 +127,13 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
 
   _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house.toInt(),
+  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house,
                                 !haveSubMenu, ResourceMenu::houseMidPicId, _("##build_housing##") );
 
   _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID,
                                 !haveSubMenu, ResourceMenu::clearMidPicId, _("##clear_land##") );
 
-  _d->roadButton = _addButton( 135, true, 2, object::road.toInt(), !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
+  _d->roadButton = _addButton( 135, true, 2, object::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
   _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, ResourceMenu::waterMidPicId, _("##water_build_tlp##") );
   _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip##") );
   _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip##") );
@@ -195,7 +195,7 @@ bool Menu::onEvent(const NEvent& event)
         return false;
 
     int id = event.gui.caller->ID();
-    if( id == object::house.toInt() || id == object::road.toInt() )
+    if( id == object::house || id == object::road )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );

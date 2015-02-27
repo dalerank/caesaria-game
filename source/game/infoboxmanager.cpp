@@ -19,20 +19,16 @@
 #include "gui/info_box.hpp"
 #include "gui/environment.hpp"
 #include "gfx/tile.hpp"
-#include "objects/service.hpp"
-#include "gui/infobox_land.hpp"
 #include "core/utils.hpp"
-#include "objects/house.hpp"
 #include "core/gettext.hpp"
 #include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilemap.hpp"
-#include "objects/ruins.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
-#include "gui/infobox_working.hpp"
 #include "game/settings.hpp"
+#include "gui/infobox_working.hpp"
 #include <map>
 
 using namespace constants;
@@ -145,7 +141,7 @@ void Manager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInfo = sho
 
 void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
 {
-  std::string name = type.toString();
+  std::string name = object::toString( type );
   bool alreadyHaveConstructor = _d->name2typeMap.find( name ) != _d->name2typeMap.end();
 
   if( !alreadyHaveConstructor )

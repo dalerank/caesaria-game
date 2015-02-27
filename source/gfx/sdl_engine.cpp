@@ -40,6 +40,7 @@
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
 #include "game/settings.hpp"
+#include "core/timer.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
@@ -314,9 +315,15 @@ void SdlEngine::endRenderFrame()
 {
   if( getFlag( Engine::debugInfo ) )
   {
-    std::string debugText = utils::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
-    _d->fpsText->fill( 0, Rect() );
-    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+    static int timeCount = 0;
+
+    if( DebugTimer::ticks() - timeCount > 500 )
+    {
+      std::string debugText = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
+      _d->fpsText->fill( 0, Rect() );
+      _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+      timeCount = DebugTimer::ticks();
+    }
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
   }
 

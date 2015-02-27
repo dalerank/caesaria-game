@@ -245,7 +245,7 @@ void Wall::updatePicture(PlayerCityPtr city)
   setPicture( picture( areaInfo ) );
 }
 
-bool Wall::isNeedRoadAccess() const
+bool Wall::isNeedRoad() const
 {
   return false;
 }

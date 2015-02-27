@@ -272,7 +272,7 @@ void Population::Impl::updateStates()
     statistic::GoodsMap goods = statistic::getGoodsMap( city, true );
     int foodLevel = 0;
 
-    foreach( k, good::foods )
+    foreach( k, good::foods() )
     {
       foodLevel += (goods[ *k ] > 0 ? 1 : 0);
     }

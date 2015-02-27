@@ -32,6 +32,7 @@ public:
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game&, unsigned int ) const;
+  ScribeMessage();
 
 private:
   std::string _title;

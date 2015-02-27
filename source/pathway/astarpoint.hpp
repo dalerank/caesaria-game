@@ -20,10 +20,12 @@
 #include "gfx/tile.hpp"
 
 using namespace gfx;
+namespace {
+static const TilePos invalidePos;
+}
 
 class AStarPoint
-{
-
+{  
 public:
   AStarPoint* parent;
   bool closed;
@@ -41,9 +43,9 @@ public:
     f = g = h = 0;
   }
 
-  TilePos getPos()
+  const TilePos& getPos()
   {
-    return tile ? tile->pos() : TilePos( 0, 0 );
+    return tile ? tile->pos() : invalidePos;
   }  
 
   AStarPoint( const Tile* t ) : tile( t )
@@ -63,15 +65,15 @@ public:
     int offset = (p->tile
                   ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +10)
                   : (+100) ) * ( useRoad ? 1 : 0 );
-    TilePos pos = tile ? tile->pos() : TilePos( 0, 0 );
+    const TilePos& pos = tile ? tile->pos() : invalidePos;
     TilePos otherPos = p->tile ? p->tile->pos() : getPos();
     return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14) + offset;
   }
 
   int getHScore(AStarPoint* p)
   {
-    TilePos pos = tile ? tile->pos() : TilePos( 0, 0 );
-    TilePos otherPos = p ? p->tile->pos() : TilePos( 0, 0 );
+    const TilePos& pos = tile ? tile->pos() : invalidePos;
+    const TilePos& otherPos = p ? p->tile->pos() : invalidePos;
     return (abs(otherPos.i() - pos.i()) + abs(otherPos.j() - pos.j())) * 10;
   }
 

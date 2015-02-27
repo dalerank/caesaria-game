@@ -31,11 +31,17 @@ static const Product __pAll[] = { none,
 static const Product __pFoods[] = { wheat, fish, meat, fruit, vegetable };
 static const Product __pMaterials[] = { olive, grape, timber, clay, iron, marble };
 
-#define ASSIGN(name,base) static const Products name = Products( base, sizeof(base) );
-ASSIGN(foods, __pFoods)
-ASSIGN(materials, __pMaterials )
-ASSIGN(all, __pAll )
+#define ASSIGN(name,base) static const Products name = Products( base, base+sizeof(base) );
+ASSIGN(__foods, __pFoods)
+ASSIGN(__materials, __pMaterials )
+ASSIGN(__all, __pAll )
 
 #undef ASSIGN
+
+static Product __pAny = Product( prettyWine + 1);
+const Product &any() { return __pAny; }
+const Products& all() { return __all; }
+const Products& materials() { return __materials; }
+const Products& foods() { return __foods; }
 
 }

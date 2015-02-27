@@ -77,7 +77,7 @@ void Prefecture::deliverService()
 
     if( fireDetect )
     {
-      TilePos startPos = getAccessRoads().front()->pos();
+      TilePos startPos = roadside().front()->pos();
 
       ConstructionPtr ruin = ptr_cast<Construction>( _city()->getOverlay( _d->fireDetect ) );
       Pathway pathway = PathwayHelper::create( startPos, ruin, PathwayHelper::allTerrain );

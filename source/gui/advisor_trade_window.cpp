@@ -169,19 +169,19 @@ void Trade::Impl::updateGoodsInfo()
   Size btnSize( gbInfo->width(), 20 );
   trade::Options& copt = city->tradeOptions();
   int indexOffset=0;
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
-    trade::Order tradeState = copt.getOrder( gtype );
+    trade::Order tradeState = copt.getOrder( *gtype );
     if( tradeState == trade::disabled )
     {
       continue;
     }
 
-    bool workState = getWorkState( gtype );
-    int tradeQty = copt.tradeLimit( trade::exporting, gtype );
+    bool workState = getWorkState( *gtype );
+    int tradeQty = copt.tradeLimit( trade::exporting, *gtype );
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            gtype, allgoods[ gtype ], workState, tradeState, tradeQty );
+                                            *gtype, allgoods[ *gtype ], workState, tradeState, tradeQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   } 

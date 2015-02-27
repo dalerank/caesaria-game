@@ -345,7 +345,7 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
   HouseList houses = city::statistic::findh(city);
   foreach( house, houses )
   {
-    if( (*house)->getAccessRoads().size() > 0 )
+    if( (*house)->roadside().size() > 0 )
     {
       vh += math::clamp<int>( (*house)->maxHabitants() - (*house)->habitants().count(), 0, 0xff );
     }

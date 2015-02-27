@@ -70,7 +70,7 @@ void Propagator::init( ConstructionPtr origin)
 {
    // init propagation on access roads
   _d->origin = &origin->tile();
-  init( origin->getAccessRoads() );
+  init( origin->roadside() );
 }
 
 void Propagator::init( Tile& origin )
@@ -187,7 +187,7 @@ DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
     ConstructionPtr destination = *it;
     std::set<PathwayPtr> destPath;  // paths to the current building, ordered by distance
 
-    TilesArray destTiles = destination->getAccessRoads();
+    TilesArray destTiles = destination->roadside();
     foreach( tile, destTiles )
     {
       // searches path to that given tile

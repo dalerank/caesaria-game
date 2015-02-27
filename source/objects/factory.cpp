@@ -313,7 +313,7 @@ void Factory::load( const VariantMap& stream)
 }
 
 Factory::~Factory(){}
-bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
+bool Factory::_mayDeliverGood() const {  return ( roadside().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}

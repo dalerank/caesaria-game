@@ -19,8 +19,10 @@
 #define __CAESARIA_OBJECTPARAM_H_INCLUDED__
 
 #include "core/namedtype.hpp"
+#include "core/hash.hpp"
 
 #define REGISTER_PARAM(name,id) static const Param name = Param(id);
+#define REGISTER_PARAM_H(name) static const Param name = Param( (int)Hash(#name) );
 
 DEFINE_NAMEDTYPE(Param,none)
 

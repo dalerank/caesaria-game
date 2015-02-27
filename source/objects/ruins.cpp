@@ -176,7 +176,7 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
   }
 }
 
-bool BurningRuins::isNeedRoadAccess() const{  return false; }
+bool BurningRuins::isNeedRoad() const{  return false; }
 void BurnedRuins::timeStep( const unsigned long ){}
 
 BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
@@ -194,7 +194,7 @@ bool BurnedRuins::build( const city::AreaInfo& info )
 
 bool BurnedRuins::isWalkable() const{  return true; }
 bool BurnedRuins::isFlat() const{ return true;}
-bool BurnedRuins::isNeedRoadAccess() const{  return false;}
+bool BurnedRuins::isNeedRoad() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
 
 CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
@@ -231,7 +231,7 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
 void CollapsedRuins::collapse() {}
 bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
-bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
+bool CollapsedRuins::isNeedRoad() const{  return false;}
 
 PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
 {
@@ -314,7 +314,7 @@ bool PlagueRuins::build( const city::AreaInfo& info )
 }
 
 bool PlagueRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
-bool PlagueRuins::isNeedRoadAccess() const{  return false;}
+bool PlagueRuins::isNeedRoad() const{  return false;}
 
 Ruins::Ruins(object::Type type)
   : Building( type, Size(1) ), _alsoBuilt( true )

@@ -115,7 +115,7 @@ void Troubles::handleEvent(NEvent& event)
             if( text.empty() && wb.isValid() )
             {
               int laborAccess = wb->laborAccessPercent();
-              if( wb->getAccessRoads().empty() || laborAccess == 0 )
+              if( wb->roadside().empty() || laborAccess == 0 )
               {
                 text = "##working_have_no_labor_access##";
               }              

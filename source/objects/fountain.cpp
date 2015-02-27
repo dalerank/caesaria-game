@@ -164,7 +164,7 @@ bool Fountain::build( const city::AreaInfo& info )
   return true;
 }
 
-bool Fountain::isNeedRoadAccess() const { return false; }
+bool Fountain::isNeedRoad() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {

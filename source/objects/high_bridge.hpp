@@ -31,7 +31,7 @@ public:
   virtual bool canDestroy() const;
   virtual void destroy();
   virtual std::string errorDesc() const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

@@ -426,7 +426,7 @@ bool Aqueduct::canAddRoad( PlayerCityPtr city, TilePos pos) const
   return false;
 }
 
-bool Aqueduct::isNeedRoadAccess() const {  return false; }
+bool Aqueduct::isNeedRoad() const {  return false; }
 void Aqueduct::_waterStateChanged(){  updatePicture( _city() ); }
 bool Aqueduct::isWalkable() const {  return _isRoad(); }
 

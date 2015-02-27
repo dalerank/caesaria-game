@@ -28,7 +28,7 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = utils::hash( CAESARIA_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = Hash( CAESARIA_STR_EXT(WindowMessageStack) );
 
 class WindowMessageStack::LabelA : public Label
 {

@@ -370,7 +370,7 @@ bool Game::load(std::string filename)
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );
     if( construction.isValid() )
     {
-      construction->computeAccessRoads();
+      construction->computeRoadside();
     }
   }
 

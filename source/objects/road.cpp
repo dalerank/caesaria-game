@@ -198,7 +198,7 @@ void Road::updatePicture()
   city::AreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
   setPicture( picture( info ) );
 }
-bool Road::isNeedRoadAccess() const {  return false; }
+bool Road::isNeedRoad() const {  return false; }
 
 void Road::destroy()
 {
@@ -226,9 +226,9 @@ void Road::appendPaved( int value )
   }
 }
 
-void Road::computeAccessRoads()
+void Road::computeRoadside()
 {
-  Construction::computeAccessRoads();
+  Construction::computeRoadside();
   updatePicture();
 }
 
@@ -258,7 +258,7 @@ void Road::load(const VariantMap& stream)
 
 namespace pr
 {
-const Param errorBuild( utils::hash("plaza_error") );
+REGISTER_PARAM_H( errorBuild )
 }
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()

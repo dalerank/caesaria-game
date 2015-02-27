@@ -29,8 +29,9 @@ namespace object
 
 DEFINE_NAMEDTYPE(Type,unknown)
 DEFINE_NAMEDTYPE(Group,unknownGroup)
-std::string toString(Type t);
-//std::string toString() const;
+std::string toString( const Type& t);
+Type toType( const std::string& name);
+std::string toString( const Group& g );
 
 namespace group
 {

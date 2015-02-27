@@ -59,7 +59,7 @@ SmallStatue::SmallStatue() : Building( object::statue_small, Size(1) )
   setPicture( ResourceGroup::govt, 1 );
 }
 
-bool SmallStatue::isNeedRoadAccess() const {  return false; }
+bool SmallStatue::isNeedRoad() const {  return false; }
 
 MediumStatue::MediumStatue() : Building( object::statue_middle, Size(2) )
 {
@@ -69,7 +69,7 @@ MediumStatue::MediumStatue() : Building( object::statue_middle, Size(2) )
   setPicture( ResourceGroup::govt, 2);
 }
 
-bool MediumStatue::isNeedRoadAccess() const {  return false; }
+bool MediumStatue::isNeedRoad() const {  return false; }
 
 BigStatue::BigStatue() : Building( object::statue_big, Size(3))
 {
@@ -79,7 +79,7 @@ BigStatue::BigStatue() : Building( object::statue_big, Size(3))
   setPicture( ResourceGroup::govt, 3 );
 }
 
-bool BigStatue::isNeedRoadAccess() const {  return false;}
+bool BigStatue::isNeedRoad() const {  return false;}
 
 // second arch pictures is land3a 45 + 46	
 TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size(3) )

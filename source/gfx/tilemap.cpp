@@ -72,6 +72,8 @@ public:
   Tile& at( const int i, const int j );
 
   bool isInside( const TilePos& pos );
+  inline bool isInside( const int i, const int j ) { return( i >= 0 && j>=0 && i < size && j < size); }
+
   void resize( const int s );
   void set( int i, int j, Tile* v );
   void saveMasterTiles( MasterTiles& mtiles );
@@ -539,7 +541,7 @@ Tile* Tilemap::Impl::ate(const int i, const int j)
 
 Tile& Tilemap::Impl::at(const int i, const int j)
 {
-  if( isInside( TilePos( i, j ) ) )
+  if( isInside( i, j ) )
   {
     return *(*this)[i][j];
   }

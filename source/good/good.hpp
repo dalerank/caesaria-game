@@ -48,17 +48,15 @@ REGISTER_PRODUCT(marble,16 )
 REGISTER_PRODUCT(denaries,17 )
 REGISTER_PRODUCT(prettyWine,18 )
 
-class Stock;
-class Store;
-
-Product operator++(const Product& a) { return Product(a+1); }
-
 typedef std::list<Product> Products;
 
-static const Products foods;
-static const Products materials;
-static const Products all;
+const Product& any();
+const Products& foods();
+const Products& materials();
+const Products& all();
 
+class Stock;
+class Store;
 }//end namespace good
     
 #endif //_CAESARIA_GOOD_H_INCLUDE_
