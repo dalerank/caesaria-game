@@ -106,14 +106,14 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::Storage& basket
     // for every warehouse within range
     WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
     int rating = 0;
-    for( good::Product gtype=good::wheat; gtype<good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      if (!options.isExporting(gtype))
+      if (!options.isExporting(*gtype))
       {
         continue;
       }
-      int qty = warehouse->store().getMaxRetrieve( gtype );
-      int need = basket.freeQty( gtype );
+      int qty = warehouse->store().getMaxRetrieve( *gtype );
+      int need = basket.freeQty( *gtype );
       rating = need > 0 ? ( qty ) : 0;
     }
 
@@ -245,28 +245,28 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         trade::Options& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
         //try buy goods
-        for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
+        foreach( goodType, good::all() )
         {
-          if (!options.isExporting(goodType))
+          if (!options.isExporting(*goodType))
           {
             continue;
           }
-          int needQty = buy.freeQty( goodType );
-          int exportLimit = options.tradeLimit( trade::exporting, goodType ) * 100;
-          int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, 9999 );
+          int needQty = buy.freeQty( *goodType );
+          int exportLimit = options.tradeLimit( trade::exporting, *goodType ) * 100;
+          int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
           {
-            int mayBuy = std::min( needQty, whStore.getMaxRetrieve( goodType ) );
+            int mayBuy = std::min( needQty, whStore.getMaxRetrieve( *goodType ) );
             mayBuy = std::min( mayBuy, maySell );
             if( mayBuy > 0 )
             {
-              good::Stock& stock = buy.getStock( goodType );
+              good::Stock& stock = buy.getStock( *goodType );
               whStore.retrieve( stock, mayBuy );
 
-              currentBuys += good::Helper::exportPrice( city, goodType, mayBuy );
+              currentBuys += good::Helper::exportPrice( city, *goodType, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy, tradeKoeff );
+              events::GameEventPtr e = events::FundIssueEvent::exportg( *goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }
@@ -332,37 +332,37 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       statistic::GoodsMap storedGoods = statistic::getGoodsMap( city, false );
       trade::Options& options = city->tradeOptions();
       //try sell goods
-      for (good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
+      foreach( goodType, good::all() )
       {
-        if (!options.isImporting(goodType))
+        if (!options.isImporting(*goodType))
         {
           continue;
         }
 
-        int importLimit = options.tradeLimit( trade::importing, goodType ) * 100;
+        int importLimit = options.tradeLimit( trade::importing, *goodType ) * 100;
         if( importLimit == 0 )
         {
           importLimit = 9999;
         }
         else
         {
-          importLimit = math::clamp<int>( importLimit - storedGoods[ goodType ], 0, 9999 );
+          importLimit = math::clamp<int>( importLimit - storedGoods[ *goodType ], 0, 9999 );
         }
 
-        int qty4sell = sell.qty( goodType );
-        if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
+        int qty4sell = sell.qty( *goodType );
+        if( qty4sell > 0 && cityOrders.capacity( *goodType ) > 0 )
         {
-          int maySells = std::min( qty4sell, warehouse->store().getMaxStore( goodType ) );
+          int maySells = std::min( qty4sell, warehouse->store().getMaxStore( *goodType ) );
           maySells = std::min( qty4sell, importLimit );
 
           if( maySells != 0 )
           {
-            good::Stock& stock = sell.getStock( goodType );
+            good::Stock& stock = sell.getStock( *goodType );
             warehouse->store().store( stock, maySells );
 
-            currentSell += good::Helper::importPrice( city, goodType, maySells );
+            currentSell += good::Helper::importPrice( city, *goodType, maySells );
 
-            events::GameEventPtr e = events::FundIssueEvent::import( goodType, maySells );
+            events::GameEventPtr e = events::FundIssueEvent::import( *goodType, maySells );
             e->dispatch();
           }
         }

@@ -268,7 +268,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      oMissingRequirement = (*it)->type().toString();
+      oMissingRequirement = object::toString( (*it)->type() );
       break;
     }
   }
@@ -732,9 +732,9 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    for (good::Product i = good::none; i < good::goodCount; ++i)
+    foreach(i, good::all() )
     {
-      spec._d->consumptionMuls[ i ] = 1;
+      spec._d->consumptionMuls[ *i ] = 1;
     }
 
     //load consumption goods koefficient

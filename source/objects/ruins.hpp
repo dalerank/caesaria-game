@@ -56,7 +56,7 @@ public:
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 };
 
 class BurnedRuins : public Ruins
@@ -68,7 +68,7 @@ public:
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool build(const city::AreaInfo &info);
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual void destroy();
 };
 
@@ -86,7 +86,7 @@ public:
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 };
 
 class PlagueRuins : public Ruins
@@ -103,7 +103,7 @@ public:
 
   virtual void applyService(ServiceWalkerPtr walker);
 
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 };
 
 #endif //__CAESARIA_RUINS_H_INCLUDE_

@@ -18,7 +18,10 @@
 #ifndef __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 #define __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 
-#define DEFINE_NAMEDTYPE(type,start) enum type { start=0 };
+#define DEFINE_NAMEDTYPE(type,start) \
+  enum type { start=0 }; \
+  inline type operator++(const type& a) { return type(a+1); }
+
 #define REGISTER_NAMEDTYPE(type,name,id) static const type name(id);
 
 #endif //__CAESARIA_NAMEDTYPE_INCLUDE_HPP__

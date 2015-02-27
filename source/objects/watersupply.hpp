@@ -57,7 +57,7 @@ public:
 
   virtual bool build(const city::AreaInfo &info);
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual void initTerrain(gfx::Tile& terrain);
   virtual void timeStep(const unsigned long time);
   virtual void destroy();

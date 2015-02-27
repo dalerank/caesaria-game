@@ -101,7 +101,7 @@ void BuildAny::_exec( Game& game, unsigned int )
         e->dispatch();
       }
 
-      if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
+      if( construction->isNeedRoad() && construction->roadside().empty() )
       {
         GameEventPtr e = WarningMessage::create( "##building_need_road_access##" );
         e->dispatch();

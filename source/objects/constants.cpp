@@ -30,7 +30,7 @@ Helper& Helper::instance()
 
 Helper::Helper() : EnumsHelper<Type>( Type(0) )
 {
-#define __REG_TYPE(a,index) Helper::append(a, CAESARIA_STR_EXT(a) );
+#define __REG_TYPE(a) append(a, CAESARIA_STR_EXT(a) );
     __REG_TYPE( amphitheater )
     __REG_TYPE( theater )
     __REG_TYPE( hippodrome )
@@ -130,12 +130,12 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
 #undef __REG_TYPE
 }
 
-std::string Type::toString(Type t)
+std::string toString(const Type& t)
 {
-  return MetaDataHolder::instance().findTypename( *this );
+  return Helper::instance().findName( t );
 }
 
-Type findType(const std::string &name)
+Type toType(const std::string &name)
 {
   object::Type type = Helper::instance().findType( name );
 
@@ -145,9 +145,9 @@ Type findType(const std::string &name)
   return type;
 }
 
-std::string Group::toString() const
+std::string toString( const Group& g)
 {
-  return MetaDataHolder::instance().findGroupname( *this );
+  return MetaDataHolder::instance().findGroupname( g );
 }
 
 }//end namespace object

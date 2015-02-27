@@ -29,7 +29,7 @@ public:
   virtual void addWater(const WaterSource &source);
   virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(const city::AreaInfo& areaInfo ) const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const; 

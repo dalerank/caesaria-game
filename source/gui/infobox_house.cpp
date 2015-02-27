@@ -58,8 +58,8 @@
 #include "pushbutton.hpp"
 #include "environment.hpp"
 #include "dialogbox.hpp"
-#include "infobox_land.hpp"
 #include "game/infoboxmanager.hpp"
+#include "infobox_land.hpp"
 
 using namespace constants;
 using namespace gfx;

@@ -35,7 +35,7 @@ CartAnimation::~CartAnimation(){}
 
 void CartAnimation::load(const good::Stock &stock, Direction direction)
 {
-  int index = (stock.empty() ? good::none : stock.type()).toInt();
+  int index = (stock.empty() ? good::none : stock.type());
   *((Animation*)this) = AnimationBank::getCart( index, stock.capacity(), direction, _isBack );
 }
 

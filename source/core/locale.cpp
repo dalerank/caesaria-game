@@ -42,7 +42,7 @@ static void __loadTranslator( vfs::Path filename )
 
   foreach( it, trs )
   {
-    int hash = utils::hash( it->first );
+    int hash = Hash( it->first );
     translator[ hash ].text = it->second.toString();
   }
 }
@@ -55,7 +55,7 @@ static void __loadDefault()
 
   foreach( it, trs )
   {
-    int hash = utils::hash( it->first );
+    int hash = Hash( it->first );
     translator[ hash ].def_text = it->second.toString();
   }
 }
@@ -94,7 +94,7 @@ void Locale::addTranslation(std::string filename)
 
 const char* Locale::translate( const std::string& text)
 {
-  int hash = utils::hash( text );
+  int hash = Hash( text );
   Translator::iterator it = translator.find( hash );
 
   if( it == translator.end() )

@@ -72,7 +72,7 @@ AboutRuins::~AboutRuins() {}
 
 void AboutRuins::_showHelp()
 {
-  DictionaryWindow::show( this, _ruinType.toString() );
+  DictionaryWindow::show( this, object::toString( _ruinType ) );
 }
 
 }

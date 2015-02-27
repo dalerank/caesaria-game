@@ -250,19 +250,6 @@ int compare( const std::string& a, const std::string& b, equaleMode mode )
   }
 }
 
-unsigned int hash( const std::string& text )
-{
-  unsigned int nHash = 0;
-  const char* key = text.c_str();
-  if( key )
-  {
-    while(*key)
-      nHash = (nHash<<5) + nHash + *key++;
-  }
-
-  return nHash;
-}
-
 unsigned int hash( unsigned int max_size, const char* fmt, ... )
 {
   va_list argument_list;
@@ -273,7 +260,7 @@ unsigned int hash( unsigned int max_size, const char* fmt, ... )
 
   va_end(argument_list);
 
-  return hash( fmtStr );
+  return Hash( fmtStr );
 }
 
 StringArray split( std::string str, std::string spl )

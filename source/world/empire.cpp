@@ -430,11 +430,11 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->playerCityName = city->name();
 
-  for( good::Product k=good::none; k < good::goodCount; ++k )
+  foreach( k, good::all() )
   {
     int buy, sell;
-    getPrice( k, buy, sell );
-    city->empirePricesChanged( k, buy, sell );
+    getPrice( *k, buy, sell );
+    city->empirePricesChanged( *k, buy, sell );
   }
 
   return ret;

@@ -85,11 +85,11 @@ void Rome::addObject(ObjectPtr obj)
     GoodCaravanPtr caravan = ptr_cast<GoodCaravan>( obj );
 
     good::Product gtype = good::none;
-    for( good::Product i=good::wheat; i < good::goodCount; ++i )
+    foreach( i, good::all())
     {
-      if( caravan->store().qty( i ) > 0 )
+      if( caravan->store().qty( *i ) > 0 )
       {
-        gtype = i;
+        gtype = *i;
         break;
       }
     }

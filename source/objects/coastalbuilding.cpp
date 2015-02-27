@@ -59,7 +59,7 @@ bool CoastalFactory::canBuild( const city::AreaInfo& areaInfo ) const
 
   const_cast< CoastalFactory* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != none );
+  return (is_constructible && direction != direction::none );
 }
 
 bool CoastalFactory::build( const city::AreaInfo& info )
@@ -169,5 +169,5 @@ Direction CoastalFactory::Impl::getDirection(PlayerCityPtr city, TilePos pos)
     return east;
   }
 
-  return none;
+  return direction::none;
 }

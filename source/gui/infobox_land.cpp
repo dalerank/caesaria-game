@@ -154,7 +154,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
   ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
   if( cnst.isValid() )
   {
-      setText( cnst->getAccessRoads().size() == 0
+      setText( cnst->roadside().size() == 0
                   ? _("##freehouse_text_noroad##")
                   : _("##freehouse_text##") );
   }

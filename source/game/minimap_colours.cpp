@@ -114,10 +114,7 @@ Colors::Colors(ClimateType climate) {
 	}
 }
 
-int Colors::colour(int type, int number)
-{
-	return map[type][number];
-}
+
 
 
 }//end namespace minimap

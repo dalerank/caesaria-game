@@ -90,7 +90,7 @@ void DictionaryWindow::show(Widget* parent, object::Type type)
   DictionaryWindow* wnd = new DictionaryWindow( parent );
   if( wnd->_d->lbText )
   {
-    wnd->load( type.toString() );
+    wnd->load( object::toString( type ) );
   }
 }
 

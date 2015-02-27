@@ -55,7 +55,7 @@ public:
 
   std::string errorDesc() const { return _parent ? _parent->errorDesc() : "";  }
   bool isWalkable() const { return true;  }
-  bool isNeedRoadAccess() const { return false; }
+  bool isNeedRoad() const { return false; }
 
   bool build( const city::AreaInfo& info )
   {
@@ -478,7 +478,7 @@ void LowBridge::destroy()
 }
 
 std::string LowBridge::errorDesc() const  { return _d->error; }
-bool LowBridge::isNeedRoadAccess() const { return false; }
+bool LowBridge::isNeedRoad() const { return false; }
 
 void LowBridge::save(VariantMap& stream) const
 {

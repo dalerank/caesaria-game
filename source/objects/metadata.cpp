@@ -181,7 +181,7 @@ const MetaData& MetaDataHolder::getData(const object::Type buildingType)
   mapIt = instance()._d->objectsInfo.find(buildingType);
   if (mapIt == instance()._d->objectsInfo.end())
   {
-    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType.toInt() );
+    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType );
     return MetaData::invalid;
   }
   return mapIt->second;
@@ -239,7 +239,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
   {
     VariantMap options = mapItem->second.toMap();
 
-    const object::Type btype = findType( mapItem->first );
+    const object::Type btype = object::toType( mapItem->first );
     if( btype == object::unknown )
     {
       Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
@@ -311,11 +311,6 @@ void MetaDataHolder::initialize( vfs::Path filename )
 }
 
 MetaDataHolder::~MetaDataHolder() {}
-
-std::string MetaDataHolder::findTypename(object::Type type)
-{
-  return instance()._d->typeHelper.findName( type );
-}
 
 object::Group MetaDataHolder::findGroup( const std::string& name )
 {

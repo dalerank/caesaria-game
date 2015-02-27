@@ -330,7 +330,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
   while( itHouse != hlist.end() )
   {
     HousePtr house = *itHouse;
-    bool haveRoad = !house->getAccessRoads().empty();
+    bool haveRoad = !house->roadside().empty();
     bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
     bool normalDesirability = true;
     if( bigcity )

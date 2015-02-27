@@ -22,6 +22,7 @@
 #include <cstdarg>
 #include "stringarray.hpp"
 #include "smartlist.hpp"
+#include "hash.hpp"
 
 class Font;
 
@@ -31,7 +32,6 @@ namespace utils
   std::string format( unsigned int max_size, const char* fmt, ...);
 
   unsigned int hash( unsigned int max_size, const char* fmt, ...);
-  unsigned int hash( const std::string& text );
   bool startsWith( std::string text, std::string start );
 
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.

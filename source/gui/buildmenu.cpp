@@ -122,7 +122,7 @@ void BuildMenu::initialize()
 
   foreach( it, buildings )
   {
-    object::Type bType = MetaDataHolder::findType( it->toString() );
+    object::Type bType = object::toType( it->toString() );
     if( bType != object::unknown )
     {
       addBuildButton( bType );

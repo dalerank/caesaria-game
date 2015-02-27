@@ -94,7 +94,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   VariantList vl_buildings = stream.get( "buildings" ).toList();
   foreach( it, vl_buildings )
   {
-    object::Type type = MetaDataHolder::findType( it->toString() );
+    object::Type type = object::toType( it->toString() );
     if( type != object::unknown )
     {
       _d->supportBuildings.insert( type );
@@ -111,7 +111,7 @@ VariantMap GoodsUpdater::save() const
   VariantList vl_buildings;
   foreach( it, _d->supportBuildings )
   {
-    vl_buildings.push_back( Variant( it->toString() ) );
+    vl_buildings.push_back( Variant( object::toString( *it ) ) );
   }
 
   ret[ lc_good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );

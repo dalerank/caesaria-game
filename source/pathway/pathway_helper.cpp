@@ -74,11 +74,11 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
     switch( type )
     {
     case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
-    case roadOnly: way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+    case roadOnly: way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
 
     case roadFirst:
     {
-      way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+      way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
 
       if( !way.isValid() )
       {
