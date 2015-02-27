@@ -76,7 +76,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
 
   // animations
-  _d->setRange(ResourceGroup::commerce, 2, 11, Point( 42, 34 ));  // market poor
   _d->setRange(ResourceGroup::commerce, 44, 53, Point( 66, 44 ));  // marble
   _d->setRange(ResourceGroup::commerce, 55, 60, Point( 45, 18 ));  // iron
   _d->setRange(ResourceGroup::commerce, 62, 71, Point( 15, 32 ));  // clay

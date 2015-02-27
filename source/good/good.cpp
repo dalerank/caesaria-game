@@ -17,31 +17,47 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "good.hpp"
+#include "core/priorities.hpp"
 
 namespace good
 {
 
-static const Product __pAll[] = { none,
-                                   wheat, fish, meat,fruit,vegetable,olive,oil,
-                                   grape, wine, timber, furniture, clay,
-                                   pottery, iron, weapon, marble, denaries,
-                                   prettyWine
-                                 };
+inline Products& operator<<(Products& t, const Product& a)
+{
+  t.push_back( a );
+  return t;
+}
 
-static const Product __pFoods[] = { wheat, fish, meat, fruit, vegetable };
-static const Product __pMaterials[] = { olive, grape, timber, clay, iron, marble };
+struct Stage
+{
+  Products foods;
+  Products materials;
+  Products all;
+  Products merchandise;
+  Product any;
 
-#define ASSIGN(name,base) static const Products name = Products( base, base+sizeof(base) );
-ASSIGN(__foods, __pFoods)
-ASSIGN(__materials, __pMaterials )
-ASSIGN(__all, __pAll )
+  Stage()
+  {
+    all << none << wheat
+        << fish << meat << fruit
+        << vegetable << olive << oil
+        << grape << wine << timber
+        << furniture << clay << pottery
+        << iron << weapon << marble << denaries
+        << prettyWine;
 
-#undef ASSIGN
+    foods << wheat << fish << meat << fruit << vegetable;
+    materials << olive << grape << timber << clay << iron << marble;
+    merchandise << wine << furniture << pottery << weapon << marble << prettyWine;
+    any = Product( all.size() );
+  }
+};
 
-static Product __pAny = Product( prettyWine + 1);
-const Product &any() { return __pAny; }
-const Products& all() { return __all; }
-const Products& materials() { return __materials; }
-const Products& foods() { return __foods; }
+static Stage stage;
+
+const Product& any() { return stage.any; }
+const Products& all() { return stage.all; }
+const Products& materials() { return stage.materials; }
+const Products& foods() { return stage.foods; }
 
 }

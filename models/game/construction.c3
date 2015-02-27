@@ -426,6 +426,7 @@
     employers : 5
     class : "food"
     image : [ "commerce", 1 ]
+    animation : { rc : "commerce", start : 2, count : 10, offset : [ 20, 54 ], delay : 4 }
     sound : [ "market", 1 ]
   }, 
 
