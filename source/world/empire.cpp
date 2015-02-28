@@ -447,8 +447,8 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
   ObjectList ret;
   foreach( i, _d->objects )
   {
-    if( (*i)->location().distanceTo( location ) < deviance )
-    {
+    if( (*i)->isAvailable() && (*i)->location().distanceTo( location ) < deviance )
+    {        
       ret << *i;
     }
   }

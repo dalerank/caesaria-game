@@ -32,6 +32,7 @@ public:
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;
+  virtual bool isAvailable() const { return true; }
   virtual std::string type() const;
   virtual void timeStep(const unsigned int time);
   virtual EmpirePtr empire() const;
