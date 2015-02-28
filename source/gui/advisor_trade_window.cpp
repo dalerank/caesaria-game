@@ -172,7 +172,7 @@ void Trade::Impl::updateGoodsInfo()
   foreach( gtype, good::all() )
   {
     trade::Order tradeState = copt.getOrder( *gtype );
-    if( tradeState == trade::disabled )
+    if( tradeState == trade::disabled || *gtype == good::none)
     {
       continue;
     }
