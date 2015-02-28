@@ -93,7 +93,7 @@ public:
       Font f = font( _state() );
       PictureRef& textPic = _textPictureRef();
       f.draw( *textPic, _( _goodName ), 55, 0, true, false );
-      f.draw( *textPic, utils::format( 0xff, "%d", _qty), 190, 0, true, false );
+      f.draw( *textPic, utils::format( 0xff, "%d", _qty / 100), 190, 0, true, false );
       f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
