@@ -1762,6 +1762,7 @@
 "##teacher_need_workers##":"Otroligt att det finns så många arbetstillfällen här."
 "##scholar_so_hungry##":"Jag svälter ihjäl!"
 "##month_1_short##":"Jan"
+"##city_need_workers_text##":"Вашему городу нужно больше рабочиx"
 "##smcurse_of_mercury_title##":"Merkurius är upprörd"
 "##smcurse_of_mercury_description##":"Förfärad över ditt bristande intresse för honom har Merkurius med andlig kraft avlägsnat en del varor från dina sädes- eller handelsmagasin."
 "##smallcurse_of_ceres_title##":"Ceres är upprörd"

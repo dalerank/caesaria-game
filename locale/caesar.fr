@@ -946,6 +946,8 @@
 "##engineer_gods_angry##":"Que les dieux aient pitié de moi ! Ce n'est pas de ma faute si le gouverneur les ignore !"
 "##wheat_farm##":"Plantation céréalière"
 "##advemployer_panel_haveworkers##":"travail"
+"##abwrk_working##":"travail"
+"##abwrk_not_working##":"travail"
 "##advemployer_panel_workers##":"Travailleurs"
 "##work##":"Travailler"
 "##forum_full_work##":"Tous nos percepteurs travaillent efficacement pour vérifier que tout le monde paye bien les taxes dues à la cité."

@@ -332,7 +332,7 @@ float eventProbability(float probability, int k, int n)
   probability = math::clamp<float>( probability, 0, 1);
   float q = 1 - probability;
 
-  float npq = sqrt( n * probability * q );
+  float npq = sqrt( n * probability * q )+0.000001;
   float rw = (k - n * probability)/npq;
   float res = 1 / npq * ( math::RECIPROCAL_SQRT_2PI * exp( -rw/2 ) );
 
