@@ -87,6 +87,14 @@ void Funds::resolveIssue( FundIssue issue )
 
     step[ (IssueType)issue.type ] += abs( issue.money );
 
+    if(issue.type == Funds::taxIncome || issue.type == Funds::exportGoods || issue.type == Funds::donation){
+    	 step[ Funds::debet ] += issue.money;
+    } else if (issue.type == Funds::importGoods || issue.type == Funds::workersWages || issue.type == Funds::buildConstruction
+    		|| issue.type == Funds::creditPercents || issue.type == Funds::playerSalary || issue.type == Funds::sundries
+			|| issue.type == Funds::empireTax) {
+    	 step[ Funds::credit ] += issue.money;
+    }
+
     if( needUpdateTreasury )
     {
       _d->money += issue.money;
