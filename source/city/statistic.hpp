@@ -52,6 +52,7 @@ unsigned int getFoodProducing( PlayerCityPtr city );
 unsigned int getTaxValue( PlayerCityPtr city );
 unsigned int getTaxPayersPercent( PlayerCityPtr city );
 unsigned int getHealth( PlayerCityPtr city );
+unsigned int blackHouses( PlayerCityPtr city );
 int months2lastAttack( PlayerCityPtr city );
 int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );

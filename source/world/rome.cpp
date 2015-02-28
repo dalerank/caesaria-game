@@ -47,7 +47,7 @@ Rome::Rome(EmpirePtr empire)
    : City( empire ), _d( new Impl )
 {
   gfx::Picture pic = gfx::Picture::load( "roma", 1 );
-  pic.setOffset( 0, 30 );
+  //pic.setOffset( 0, 30 );
   setPicture( pic );
 
   setLocation( Point( 870, 545 ) );

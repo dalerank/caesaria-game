@@ -377,11 +377,11 @@ void ComputerCity::_initTextures()
   else if( _d->romecity ) { index = PicID::romeCity; }
 
   Picture pic = Picture::load( ResourceGroup::empirebits, index );
-  pic.setOffset( 0, 30 );
+  //pic.addOffset( 0, 30 );
   setPicture( pic );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
-  _animation().setOffset( Point( 17, 24 ) );
+  //_animation().addOffset( Point( 17, 24 ) );
   _animation().setDelay( 2 );
 }
 

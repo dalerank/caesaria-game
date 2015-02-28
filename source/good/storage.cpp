@@ -49,7 +49,6 @@ public:
   void reset()
   {
     stocks.clear();
-    stocks.reserve(good::any());
     foreach( n, good::all() )
     {
       stocks.push_back( SmStock::create( *n ) );

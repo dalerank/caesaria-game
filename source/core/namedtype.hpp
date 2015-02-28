@@ -20,7 +20,7 @@
 
 #define DEFINE_NAMEDTYPE(type,start) \
   enum type { start=0 }; \
-  inline type operator++(const type& a) { return type(a+1); }
+  inline type& operator++(type& a) { a = type(a+1); return a; }
 
 #define REGISTER_NAMEDTYPE(type,name,id) static const type name(id);
 

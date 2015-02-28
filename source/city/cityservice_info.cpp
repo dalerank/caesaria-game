@@ -117,6 +117,7 @@ void Info::timeStep(const unsigned int time )
     last[ favour      ] = _city()->favour();
     last[ prosperity  ] = _city()->prosperity();
     last[ monthWtWar  ] = statistic::months2lastAttack( _city() );
+    last[ blackHouses ] = statistic::blackHouses( _city() );
     last[ peace       ] = 0;
 
     PeacePtr peaceSrvc;
@@ -337,8 +338,8 @@ VariantList Info::Parameters::save() const
 {
   VariantList vl;
   for( int k=0; k < Info::paramsCount; k++  )
-    {
-      vl.push_back( (*this)[ k ] );
+  {
+    vl.push_back( (*this)[ k ] );
   }
 
   return vl;
