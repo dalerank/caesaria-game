@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_SHIPYARD_H_INCLUDE_
 #define _CAESARIA_SHIPYARD_H_INCLUDE_
@@ -35,7 +35,7 @@ public:
   virtual std::string workersProblemDesc() const;
 
 private:
-  virtual void _updatePicture( constants::Direction direction );
+  virtual void _updatePicture( Direction direction );
 
 private:
   class Impl;

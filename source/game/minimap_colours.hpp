@@ -18,7 +18,6 @@
 #ifndef __CAESARIA_MINIMAP_COLOURS_H_INCLUDE_
 #define __CAESARIA_MINIMAP_COLOURS_H_INCLUDE_
 
-#include "enums.hpp"
 #include "game/climate.hpp"
 
 namespace constants
@@ -76,7 +75,7 @@ class Colors {
 		* @param number - 0-7, or one of the SPRITE_* constants
 		* @return int representing a colour
 		*/
-		int colour(int type, int number);
+    inline int colour(int type, int number) const {	return map[type][number];}
 };
 
 }//end namespace minimap

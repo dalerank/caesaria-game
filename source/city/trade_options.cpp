@@ -84,25 +84,25 @@ public:
 
   void updateLists()
   {
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      const GoodInfo& info = goods[ gtype ];
+      const GoodInfo& info = goods[ *gtype ];
 
       switch( info.order )
       {
       case trade::importing:
-        buys.setCapacity( gtype, 9999 );
-        sells.setCapacity( gtype, 0 );
+        buys.setCapacity( *gtype , 9999 );
+        sells.setCapacity( *gtype , 0 );
       break;
 
       case trade::exporting:
-        buys.setCapacity( gtype, 0 );
-        sells.setCapacity( gtype, 9999 );
+        buys.setCapacity( *gtype , 0 );
+        sells.setCapacity( *gtype , 9999 );
       break;
 
       case trade::noTrade:
-        buys.setCapacity( gtype, 0 );
-        buys.setCapacity( gtype, 0 );
+        buys.setCapacity( *gtype , 0 );
+        buys.setCapacity( *gtype , 0 );
       break;
 
       default: break;
@@ -114,14 +114,14 @@ public:
   {
     buys.setCapacity( 9999 );
     sells.setCapacity( 9999 );
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      goods[ gtype ].stacking = false;
-      goods[ gtype ].order = trade::noTrade;
-      goods[ gtype ].vendor = true;
-      goods[ gtype ].exportLimit = 0;
-      goods[ gtype ].sellPrice = 0;
-      goods[ gtype ].buyPrice = 0;
+      goods[ *gtype  ].stacking = false;
+      goods[ *gtype  ].order = trade::noTrade;
+      goods[ *gtype  ].vendor = true;
+      goods[ *gtype  ].exportLimit = 0;
+      goods[ *gtype  ].sellPrice = 0;
+      goods[ *gtype  ].buyPrice = 0;
     }
 
     goods[ good::fish ].order = trade::disabled;

@@ -42,13 +42,13 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(shipyard,objects::shipyard,AboutShipyard)
-REGISTER_INFOBOX_IN_FACTORY(wharf,objects::wharf,AboutWharf)
-REGISTER_INFOBOX_IN_FACTORY(pottery,objects::pottery_workshop,AboutFactory)
-REGISTER_INFOBOX_IN_FACTORY(weapons,objects::weapons_workshop,AboutFactory)
-REGISTER_INFOBOX_IN_FACTORY(furniture,objects::furniture_workshop,AboutFactory)
-REGISTER_INFOBOX_IN_FACTORY(wine,objects::wine_workshop,AboutFactory)
-REGISTER_INFOBOX_IN_FACTORY(oil,objects::oil_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(shipyard,AboutShipyard)
+REGISTER_OBJECT_BASEINFOBOX(wharf,AboutWharf)
+REGISTER_OBJECT_BASEINFOBOX(pottery_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(weapons_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(furniture_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(wine_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(oil_workshop,AboutFactory)
 
 AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 42) )

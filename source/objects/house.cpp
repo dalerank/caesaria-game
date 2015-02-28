@@ -30,7 +30,7 @@
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
 #include "good/storage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "events/build.hpp"
@@ -48,7 +48,7 @@ using namespace constants;
 using namespace gfx;
 using namespace events;
 using namespace city;
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::house, House)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::house, House)
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
@@ -90,7 +90,7 @@ public:
   int getFoodLevel() const;
 };
 
-House::House( HouseLevel::ID level ) : Building( objects::house ), _d( new Impl )
+House::House( HouseLevel::ID level ) : Building( object::house ), _d( new Impl )
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
@@ -232,7 +232,7 @@ void House::_checkPatricianDeals()
   if( !spec().isPatrician() )
     return;
 
-  TilesArray roads = getAccessRoads();
+  TilesArray roads = roadside();
   if( !roads.empty() )
   {
     PatricianPtr patric = Patrician::create( _city() );
@@ -420,8 +420,6 @@ void House::timeStep(const unsigned long time)
 
 bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char desirability )
 {
-  city::Helper helper( _city() );
-
   if( size().width() == 1 )
   {
     Tilemap& tmap = _city()->tilemap();
@@ -485,32 +483,31 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       setServiceValue( Service::recruter, sumFreeWorkers );
 
       //reset desirability level with old house size
-      helper.updateDesirability( this, city::Helper::offDesirability );
+      Desirability::update( _city(), this, Desirability::off );
 
       setSize( growSize  );
       //_update( false );
 
-      CityAreaInfo info = { _city(), pos(), TilesArray() };
+      city::AreaInfo info = { _city(), pos(), TilesArray() };
       build( info );
       //set new desirability level
-      helper.updateDesirability( this, city::Helper::onDesirability );
+      Desirability::update( _city(), this, Desirability::on );
     }
   }
 
   //that this house will be upgrade, we need decrease current desirability level
-  helper.updateDesirability( this, city::Helper::offDesirability );
+  Desirability::update( _city(), this, Desirability::off );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //now upgrade groud area to new desirability
-  helper.updateDesirability( this, city::Helper::onDesirability );
+  Desirability::update( _city(), this, Desirability::on );
 
   return true;
 }
 
 bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char desirability )
 {
-  city::Helper helper( _city() );
   //startPic += math::random( 10 ) > 5 ? 1 : 0;
   bool mayGrow = true;
   TilePos buildPos = tile().pos();
@@ -547,7 +544,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
           break;
         }
 
-        TileOverlayPtr overlay = (*it)->overlay();
+        OverlayPtr overlay = (*it)->overlay();
         if( overlay.isNull() )
         {
           if( !(*it)->getFlag( Tile::isConstructible ) )
@@ -558,7 +555,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         }
         else
         {
-          if( overlay->type() != objects::garden )
+          if( overlay->type() != object::garden )
           {
             mayGrow = false; //not garden, can't grow
             break;
@@ -569,16 +566,16 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
       if( mayGrow )
       {
         buildPos = itArea->first;
-        helper.updateDesirability( this, city::Helper::offDesirability );
+        Desirability::update( _city(), this, Desirability::off );
         setSize( minSize );
         _update( true );
-        CityAreaInfo info = { _city(), buildPos, TilesArray() };
+        city::AreaInfo info = { _city(), buildPos, TilesArray() };
         build( info );
 
         _d->desirability.base = desirability;
         _d->desirability.step = desirability < 0 ? 1 : -1;
 
-        helper.updateDesirability( this, city::Helper::onDesirability );
+        Desirability::update( _city(), this, Desirability::on );
         break;
       }
     }
@@ -587,13 +584,13 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
   if( mayGrow )
   {
     //that this house will be upgrade, we need decrease current desirability level
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
 
     _d->desirability.base = desirability;
     _d->desirability.step = desirability < 0 ? 1 : -1;
 
     //now upgrade groud area to new desirability
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::on );
     return true;
   }
   else
@@ -610,7 +607,10 @@ void House::_levelUp()
     return;
 
   if( _d->houseLevel >= _city()->victoryConditions().maxHouseLevel() )
+  {
+    _d->evolveInfo = "##emperor_limit_houseupgrade##";
     return;
+  }
 
   int nextLevel = math::clamp<int>( _d->houseLevel+1, HouseLevel::vacantLot, HouseLevel::greatPalace );
   bool mayUpgrade = false;
@@ -662,14 +662,13 @@ void House::_levelUp()
 
 void House::_tryDegrage_12_to_2_lvl( const char desirability )
 {
-  city::Helper helper( _city() );
   //clear current desirability influence
-  helper.updateDesirability( this, city::Helper::offDesirability );
+  Desirability::update( _city(), this, Desirability::off );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //set new desirability level
-  helper.updateDesirability( this, city::Helper::onDesirability );
+  Desirability::update( _city(), this, Desirability::on );
 }
 
 void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
@@ -678,10 +677,8 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
   //_d->houseId = startPicId;
   //_d->picIdOffset = startPicId + ( math::random( 10 ) > 6 ? 1 : 0 );
 
-  city::Helper helper( _city() );  
-
   //clear current desirability influence
-  helper.updateDesirability( this, city::Helper::offDesirability );
+  Desirability::update( _city(), this, Desirability::off );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
@@ -689,7 +686,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
   TilePos bpos = pos();
   if( bigSize )
   {
-    TilesArray roads = getAccessRoads();
+    TilesArray roads = roadside();
     TilePos moveVector = TilePos( 1, 1 );
     if( !roads.empty() )
     {
@@ -698,7 +695,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
                             math::signnum( roadPos.j() - bpos.j() ) );
     }
 
-    TilesArray lastArea = helper.getArea( this );
+    TilesArray lastArea = area();
     foreach( tile, lastArea )
     {
       (*tile)->setMasterTile( 0 );
@@ -706,11 +703,11 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     }
 
     setSize( rsize );
-    CityAreaInfo info = { _city(), bpos + moveVector, TilesArray() };
+    city::AreaInfo info = { _city(), bpos + moveVector, TilesArray() };
     build( info );
   }
   //set new desirability level
-  helper.updateDesirability( this, city::Helper::onDesirability );
+  Desirability::update( _city(), this, Desirability::on );
 }
 
 void House::_levelDown()
@@ -747,8 +744,7 @@ void House::_levelDown()
   {
   case HouseLevel::vacantLot:
   {
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
+    Desirability::update( _city(), this, Desirability::off );
   }
   break;
 
@@ -762,11 +758,11 @@ void House::_levelDown()
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( objects::house ) );
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( object::house ) );
         CitizenGroup moveGroup = remHabitants( peoplesPerHouse );
         house->addHabitants( moveGroup );
 
-        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<TileOverlay>( house ) );
+        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<Overlay>( house ) );
         event->dispatch();
       }
 
@@ -809,22 +805,22 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  for (good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+  foreach( goodType, good::all() )
   {
-    int houseQty = houseStore.qty(goodType);
-    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
-                       + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
+    int houseQty = houseStore.qty(*goodType);
+    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, *goodType, false )
+                       + _d->spec.next().computeMonthlyGoodConsumption( this, *goodType, false );
     houseSafeQty *= 6;
 
-    int marketQty = marketStore.qty(goodType);
+    int marketQty = marketStore.qty(*goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
        int qty = std::min( houseSafeQty - houseQty, marketQty);
-       qty = math::clamp( qty, 0, houseStore.freeQty( goodType ) );
+       qty = math::clamp( qty, 0, houseStore.freeQty( *goodType ) );
 
        if( qty > 0 )
        {
-         good::Stock stock(goodType, qty);
+         good::Stock stock( *goodType, qty);
          marketStore.retrieve(stock, qty);
 
          stock.setCapacity( qty );
@@ -928,12 +924,12 @@ float House::evaluateService(ServiceWalkerPtr walker)
     MarketPtr market = ptr_cast<Market>( walker->base() );
     good::Store& marketStore = market->goodStore();
     good::Store& houseStore = goodStore();
-    for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+    foreach( goodType, good::all() )
     {
-      int houseQty = houseStore.qty(goodType) / 10;
-      int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false)
-                         + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
-      int marketQty = marketStore.qty(goodType);
+      int houseQty = houseStore.qty( *goodType) / 10;
+      int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, *goodType, false)
+                         + _d->spec.next().computeMonthlyGoodConsumption( this, *goodType, false );
+      int marketQty = marketStore.qty( *goodType );
       if( houseQty < houseSafeQty && marketQty > 0)
       {
          res += std::min( houseSafeQty - houseQty, marketQty);
@@ -975,7 +971,7 @@ TilesArray House::enterArea() const
   }
 }
 
-bool House::build( const CityAreaInfo& info )
+bool House::build( const city::AreaInfo& info )
 {
   bool ret = Building::build( info );
   _update( true );
@@ -1012,7 +1008,7 @@ void House::_update( bool needChangeTexture )
   _d->initGoodStore( size().area() );
 }
 
-int House::roadAccessDistance() const { return 2; }
+int House::roadsideDistance() const { return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
@@ -1031,8 +1027,7 @@ void House::addHabitants( CitizenGroup& habitants )
 
     if( _city().isValid() )
     {
-      city::Helper helper( _city() );
-      helper.updateDesirability( this, city::Helper::onDesirability );
+      Desirability::update( _city(), this, Desirability::on );
     }
   }
 }
@@ -1162,7 +1157,7 @@ void House::load( const VariantMap& stream )
     _d->services[ type ] = vl_services.get( i+1 ).toFloat(); //serviceValue
   }
 
-  CityAreaInfo info = { _city(), pos(), TilesArray() };
+  city::AreaInfo info = { _city(), pos(), TilesArray() };
   Building::build( info );
 
   if( !picture().isValid() )
@@ -1378,7 +1373,7 @@ void House::Impl::consumeServices()
 
 void House::Impl::consumeGoods( HousePtr house )
 {
-  for( good::Product goodType = good::olive; goodType < good::goodCount; ++goodType)
+  for( good::Product goodType = good::olive; goodType < good::any(); ++goodType)
   {
      int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
      goodStore.setQty( goodType, std::max( goodStore.qty(goodType) - montlyGoodsQty, 0) );

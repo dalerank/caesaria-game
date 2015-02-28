@@ -29,12 +29,12 @@
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "game/settings.hpp"
 #include "texturedbutton.hpp"
 #include "topmenu.hpp"
 
-using namespace gfx::layer;
+using namespace citylayer;
 
 namespace gui
 {

@@ -17,7 +17,7 @@
 
 #include "migration.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city/cityservice_military.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
@@ -64,6 +64,7 @@ public:
   int emigrantsIndesirability;
   int lastMonthComing;
   int lastMonthLeaving;
+  int chanceCounter;
   int worklessMinInfluence;
   int checkRange;
   DateTime lastUpdate;
@@ -95,6 +96,7 @@ Migration::Migration( PlayerCityPtr city )
   _d->lastMonthMigration = 0;
   _d->lastMonthComing = 0;
   _d->lastMonthLeaving = 0;
+  _d->chanceCounter = 1;
   _d->haveTroubles = false;
   _d->lastUpdate = game::Date::current();
   _d->updateTickInerval = game::Date::days2ticks( 7 );
@@ -178,6 +180,7 @@ void Migration::timeStep( const unsigned int time )
   _d->emigrantsIndesirability += shacksInfluence;
   _d->emigrantsIndesirability += slumsInfluence;
   _d->emigrantsIndesirability += sentimentInfluence;
+  _d->emigrantsIndesirability += params[ Info::blackHouses ];
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
@@ -197,18 +200,7 @@ void Migration::timeStep( const unsigned int time )
 
     if( cityUnderAttack )
       _d->emigrantsIndesirability *= 2;
-  }
-
-  int goddesRandom = math::random( maxIndesirability );
-  if( goddesRandom > _d->emigrantsIndesirability )
-  {
-    _d->createMigrationToCity( _city() );
-    _d->updateTickInerval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
-  }
-  else
-  {
-    _d->updateTickInerval = game::Date::days2ticks( _d->checkRange );
-  }
+  }  
 
   if( _d->lastUpdate.monthsTo( game::Date::current() ) > 0 )
   {
@@ -218,15 +210,28 @@ void Migration::timeStep( const unsigned int time )
     _d->lastMonthLeaving = 0;
 
     Logger::warning( "MigrationSrvc: current workless=%f indesrbl=%f",
-                        curWorklessValue * migrationKoeff,
-                        _d->emigrantsIndesirability * migrationKoeff );
+                     curWorklessValue * migrationKoeff,
+                     _d->emigrantsIndesirability * migrationKoeff );
+  }
 
-    if( curWorklessValue * migrationKoeff > worklessCitizenAway
-        || _d->emigrantsIndesirability * migrationKoeff > maxIndesirability )
+  if( curWorklessValue * migrationKoeff > worklessCitizenAway
+      || _d->emigrantsIndesirability * migrationKoeff > maxIndesirability )
+  {
+
+  }
+  else
+  {
+    _d->chanceCounter++;
+    float variance = utils::eventProbability( (maxIndesirability-_d->emigrantsIndesirability)/100.f,
+                                             _d->chanceCounter, _d->emigrantsIndesirability );
+    if( variance > 1)
     {
-      _d->createMigrationFromCity( _city() );
+      _d->createMigrationToCity( _city() );
+      _d->chanceCounter = 0;
     }
   }
+
+  _d->updateTickInerval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
 }
 
 std::string Migration::reason() const
@@ -242,6 +247,11 @@ std::string Migration::reason() const
     if( params[ Info::monthWtWar ] < DateTime::monthsInYear )
     {
       troubles << "##migration_war_deterring##";
+    }
+
+    if( params[ Info::blackHouses ] > 0 )
+    {
+      troubles << "##migration_lack_indesrb_houses##";
     }
 
     if( params[ Info::monthWithFood ] < (int)SETTINGS_VALUE( minMonthWithFood ) )
@@ -277,7 +287,7 @@ std::string Migration::reason() const
     if( _d->isPoorHousing( params[ Info::shackNumber ], params[ Info::houseNumber ] ) ) { troubles << "##poor_housing_discourages_migration##";}
   }
 
-  _d->haveTroubles = troubles.empty();
+  _d->haveTroubles = !troubles.empty();
   return troubles.empty()
            ? "##migration_peoples_arrived_in_city##"
            : troubles.random();
@@ -342,11 +352,10 @@ void Migration::citizenLeaveCity(WalkerPtr walker)
 unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
-  Helper helper( city );
-  HouseList houses = helper.find<House>(objects::house);
+  HouseList houses = city::statistic::findh(city);
   foreach( house, houses )
   {
-    if( (*house)->getAccessRoads().size() > 0 )
+    if( (*house)->roadside().size() > 0 && (*house)->state( pr::settleLock ) == 0 )
     {
       vh += math::clamp<int>( (*house)->maxHabitants() - (*house)->habitants().count(), 0, 0xff );
     }
@@ -411,8 +420,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  Helper helper( city );
-  HouseList houses = helper.find<House>(objects::house);
+  HouseList houses = city::statistic::findh( city );
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {

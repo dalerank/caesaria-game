@@ -47,7 +47,7 @@ Rome::Rome(EmpirePtr empire)
    : City( empire ), _d( new Impl )
 {
   gfx::Picture pic = gfx::Picture::load( "roma", 1 );
-  pic.setOffset( 0, 30 );
+  //pic.setOffset( 0, 30 );
   setPicture( pic );
 
   setLocation( Point( 870, 545 ) );
@@ -85,11 +85,11 @@ void Rome::addObject(ObjectPtr obj)
     GoodCaravanPtr caravan = ptr_cast<GoodCaravan>( obj );
 
     good::Product gtype = good::none;
-    for( good::Product i=good::wheat; i < good::goodCount; ++i )
+    foreach( i, good::all())
     {
-      if( caravan->store().qty( i ) > 0 )
+      if( caravan->store().qty( *i ) > 0 )
       {
-        gtype = i;
+        gtype = *i;
         break;
       }
     }

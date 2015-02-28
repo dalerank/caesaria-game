@@ -32,6 +32,7 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
+#include "layers/layerconstants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"
@@ -67,7 +68,6 @@
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
-#include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
 #include "events/postpone.hpp"
@@ -77,7 +77,7 @@
 #include "core/timer.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
@@ -340,7 +340,7 @@ void Level::Impl::showTileHelp()
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = utils::hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  unsigned int id = Hash( CAESARIA_STR_A(ScribesMessagestWindow) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
@@ -426,7 +426,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  DirectionHelper dHelper;
+  direction::Helper dHelper;
 
   events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ) );
   e->dispatch();
@@ -679,7 +679,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
 int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
-void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
+void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
@@ -837,7 +837,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTaretsWindow()
 {
-  int id = utils::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {

@@ -16,7 +16,8 @@
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "engineer.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -64,9 +65,8 @@ std::string Engineer::thoughts(Thought th) const
 
 void Engineer::_centerTile()
 {
-  city::Helper helper( _city() );
   TilePos offset( reachDistance(), reachDistance() );
-  ConstructionList buildings = helper.find<Construction>( objects::any, pos() - offset, pos() + offset );
+  ConstructionList buildings = city::statistic::findo<Construction>( _city(), object::any, pos() - offset, pos() + offset );
   foreach( b, buildings )
   {
     if( !_d->_reachedBuildings.count( *b ) )

@@ -32,7 +32,7 @@ public:
   virtual void deliverService();
 
 protected:
-  Temple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
+  Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
 
   virtual unsigned int walkerDistance() const;
 
@@ -44,17 +44,17 @@ private:
 class SmallTemple : public Temple
 {
 protected:
-  SmallTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
+  SmallTemple( religion::DivinityPtr divinity, object::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
+  BigTemple( religion::DivinityPtr divinity, object::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 };
 
 class TempleCeres : public SmallTemple
@@ -123,7 +123,7 @@ public:
   TempleOracle();
   virtual unsigned int parishionerNumber() const;
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 };
 
 

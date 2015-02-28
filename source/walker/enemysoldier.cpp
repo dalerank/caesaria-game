@@ -21,7 +21,8 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
+#include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
@@ -29,7 +30,6 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
-#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
@@ -60,14 +60,14 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   setAttackPriority( attackAll );
   setAttackDistance( 1 );
 
-  _atExclude << objects::disasterGroup
-             << objects::roadGroup
-             << objects::gardenGroup;
+  _atExclude << object::group::disaster
+             << object::group::road
+             << object::group::garden;
 
   addFriend( type );
 }
 
-Priorities<int>& EnemySoldier::_excludeAttack() {  return _atExclude; }
+object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
@@ -92,9 +92,8 @@ bool EnemySoldier::_tryAttack()
 
   if( action() == acFight )
   {
-    city::Helper helper( _city() );
     bool needMeMove = false;
-    helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
+    city::statistic::isTileBusy<EnemySoldier>( _city(), pos(), this, needMeMove );
 
     if( needMeMove )
     {
@@ -255,14 +254,14 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackIndustry:
   {
     ConstructionList tmpRet;
-    TileOverlay::Group needGroup;
+    object::Group needGroup;
     switch( _atPriority )
     {
-    case attackIndustry: needGroup = objects::industryGroup; break;
-    case attackFood: needGroup = objects::foodGroup; break;
-    case attackCitizen:  needGroup = objects::houseGroup; break;
-    case attackSenate: needGroup = objects::administrationGroup; break;
-    default: needGroup = objects::unknownGroup; break;
+    case attackIndustry: needGroup = object::group::industry; break;
+    case attackFood: needGroup = object::group::food; break;
+    case attackCitizen:  needGroup = object::group::house; break;
+    case attackSenate: needGroup = object::group::administration; break;
+    default: needGroup = object::group::unknown; break;
     }
 
     foreach( it, ret )

@@ -430,11 +430,11 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->playerCityName = city->name();
 
-  for( good::Product k=good::none; k < good::goodCount; ++k )
+  foreach( k, good::all() )
   {
     int buy, sell;
-    getPrice( k, buy, sell );
-    city->empirePricesChanged( k, buy, sell );
+    getPrice( *k, buy, sell );
+    city->empirePricesChanged( *k, buy, sell );
   }
 
   return ret;
@@ -447,8 +447,8 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
   ObjectList ret;
   foreach( i, _d->objects )
   {
-    if( (*i)->location().distanceTo( location ) < deviance )
-    {
+    if( (*i)->isAvailable() && (*i)->location().distanceTo( location ) < deviance )
+    {        
       ret << *i;
     }
   }

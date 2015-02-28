@@ -29,10 +29,10 @@ WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( good::Product goodType=good::wheat; goodType <= good::goodCount; ++goodType )
+  foreach( goodType, good::all() )
   {
-    setOrder( goodType, good::Orders::accept );
-    _capacities[ goodType ] = 9999;
+    setOrder( *goodType, good::Orders::accept );
+    _capacities[ *goodType ] = 9999;
   }
 }
 
@@ -47,7 +47,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
 
   foreach( room, _warehouse->rooms() )
   {
-    if ( room->type() == goodType || goodType == good::goodCount )
+    if ( room->type() == goodType || goodType == good::any() )
     {
       amount += room->qty();
     }
@@ -56,7 +56,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
   return amount;
 }
 
-int WarehouseStore::qty() const {  return qty( good::goodCount ); }
+int WarehouseStore::qty() const {  return qty( good::any() ); }
 
 int WarehouseStore::getMaxStore(const good::Product goodType)
 {
@@ -69,9 +69,9 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   StockMap maxStore;
 
   // init the map
-  for( good::Product i = good::none; i != good::goodCount; ++i)
+  foreach( i, good::all() )
   {
-    maxStore[ i ] = 0;
+    maxStore[ *i ] = 0;
   }
   // put current stock in the map
   foreach( room, _warehouse->rooms() )
@@ -239,9 +239,9 @@ VariantMap WarehouseStore::save() const
 {
   VariantMap ret = Store::save();
   VariantList vl;
-  for( good::Product k=good::none; k < good::goodCount; ++k )
+  foreach( k, good::all() )
   {
-    StockMap::const_iterator it = _capacities.find( k );
+    StockMap::const_iterator it = _capacities.find( *k );
     vl << (it != _capacities.end() ? it->second : 0);
   }
   ret[ "capacities" ] = vl;

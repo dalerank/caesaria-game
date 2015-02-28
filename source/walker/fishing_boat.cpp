@@ -17,7 +17,7 @@
 
 #include "fishing_boat.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/wharf.hpp"
 #include "good/stock.hpp"
 #include "walker/fish_place.hpp"
@@ -103,8 +103,7 @@ void FishingBoat::timeStep(const unsigned long time)
       _animationRef().clear();
       _setAction( acWork );
 
-      city::Helper helper( _city() );
-      FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
+      FishPlaceList places = city::statistic::findw<FishPlace>( _city(), walker::fishPlace, pos() );
 
       if( !places.empty() )
       {
@@ -218,8 +217,7 @@ void FishingBoat::_reachedPathway()
 
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
-  city::Helper helper( city );
-  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, city::Helper::invalidPos );
+  FishPlaceList places = city::statistic::findw<FishPlace>( city, walker::fishPlace, TilePos(-1, -1) );
 
   int minDistance = 999;
   FishPlacePtr nearest;

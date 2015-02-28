@@ -19,7 +19,7 @@
 #define __CAESARIA_ENEMYSOLDIER_H_INCLUDED__
 
 #include "soldier.hpp"
-#include "core/priorities.hpp"
+#include "objects/constants.hpp"
 
 class EnemySoldier : public Soldier
 {
@@ -58,14 +58,14 @@ protected:
 
   EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
 
-  Priorities<int>& _excludeAttack();
+  object::GroupSet &_excludeAttack();
 
 private:
   Pathway _findFreeSlot(TilePos target, const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
 
   AttackPriority _atPriority;
-  Priorities<int> _atExclude;
+  object::GroupSet _atExclude;
 };
 
 #endif //__CAESARIA_ENEMYSOLDIER_H_INCLUDED__

@@ -49,7 +49,7 @@ public:
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
 
   virtual double state( Param param) const;
 
@@ -84,7 +84,7 @@ public:
   std::string evolveInfo() const;
   std::string levelName() const;
 
-  virtual int roadAccessDistance() const;
+  virtual int roadsideDistance() const;
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;

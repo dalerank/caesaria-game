@@ -62,14 +62,14 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
     TilePos offset;
     switch( direction )
     {
-    case north: offset = TilePos( 0, 1 ); break;
-    case northEast: offset = TilePos( 1, 1 ); break;
-    case east: offset = TilePos( 1, 0 ); break;
-    case southEast: offset = TilePos( 1, -1 ); break;
-    case south: offset = TilePos( 0, -1 ); break;
-    case southWest: offset = TilePos( -1, -1 ); break;
-    case west: offset = TilePos( -1, 0 ); break;
-    case northWest: offset = TilePos( -1, 1 ); break;
+    case direction::north: offset = TilePos( 0, 1 ); break;
+    case direction::northEast: offset = TilePos( 1, 1 ); break;
+    case direction::east: offset = TilePos( 1, 0 ); break;
+    case direction::southEast: offset = TilePos( 1, -1 ); break;
+    case direction::south: offset = TilePos( 0, -1 ); break;
+    case direction::southWest: offset = TilePos( -1, -1 ); break;
+    case direction::west: offset = TilePos( -1, 0 ); break;
+    case direction::northWest: offset = TilePos( -1, 1 ); break;
     }
 
     dc->send2City( start, start + offset * range);

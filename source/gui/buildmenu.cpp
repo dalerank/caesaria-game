@@ -122,8 +122,8 @@ void BuildMenu::initialize()
 
   foreach( it, buildings )
   {
-    TileOverlay::Type bType = MetaDataHolder::findType( it->toString() );
-    if( bType != objects::unknown )
+    object::Type bType = object::toType( it->toString() );
+    if( bType != object::unknown )
     {
       addBuildButton( bType );
     }
@@ -163,12 +163,12 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 
   BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
-  button->setCost(-1);  // no display
+  button->setCost(-1);  // no display cost
 
   setHeight( height() + 30 );
 }
 
-void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
+void BuildMenu::addBuildButton(const object::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
   const MetaData& buildingData = MetaDataHolder::instance().getData( buildingType );
@@ -183,7 +183,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName().c_str()),
+    BuildButton* button = new BuildButton( this, _(buildingData.prettyName()),
                                            Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );

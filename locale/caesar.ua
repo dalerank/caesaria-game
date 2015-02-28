@@ -1942,6 +1942,8 @@
 "##smallcurse_of_mercury_failed_title##":"Меркурій незадоволений"
 "##smallcurse_of_neptune_description##":"Разневавшись через нестачу уваги до своєї персони, Нептун викликав невеликий шторм"
 "##smallcurse_of_neptune_title##":"Нептун незадоволений"
+"##smallcurse_of_mars_failed_title##":"Гнів Марса"
+"##smallcurse_of_mars_failed_text##":"Марс гнівається на вас. Смійтеся, якщо не боїтеся, тому що хоча сьогодні ви не ведете війну, Марс не забуде нанесеної йому образи. Бережіться!"
 "##cartpusher_cantfind_destination##":"Нікуди нести!"
 "##bldm_raw_material##":"Сировину"
 "##advchief_no_crime##":"Немає жодних проблем"

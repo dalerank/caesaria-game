@@ -19,7 +19,7 @@
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "city/funds.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -33,7 +33,7 @@
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 #include "events/postpone.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "sound/engine.hpp"
 #include "vfs/directory.hpp"
 #include "objects/fort.hpp"
@@ -55,7 +55,7 @@
 
 using namespace constants;
 using namespace gfx;
-using namespace gfx::layer;
+using namespace citylayer;
 
 enum {
   add_enemy_archers=0,
@@ -276,8 +276,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     city::Helper helper( game->city() );
-     EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, city::Helper::invalidPos );
+     EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game->city(), walker::any, TilePos(-1, -1) );
 
      foreach( it, enemies )
        (*it)->die();

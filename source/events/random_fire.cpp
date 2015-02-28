@@ -62,10 +62,10 @@ void RandomFire::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute random fire event" );
     _d->isDeleted = true;
 
-    Priorities<int> exclude;
-    exclude << objects::waterGroup
-            << objects::roadGroup
-            << objects::disasterGroup;
+    Priorities<object::Group> exclude;
+    exclude << object::group::water
+            << object::group::road
+            << object::group::disaster;
 
     ConstructionList ctrs;
     ctrs << game.city()->overlays();

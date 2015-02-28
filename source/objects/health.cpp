@@ -18,19 +18,19 @@
 #include "game/gamedate.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::hospital, Hospital)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::clinic, Doctor)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::baths, Baths)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barber, Barber)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::hospital, Hospital)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::clinic, Doctor)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::baths, Baths)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::barber, Barber)
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, objects::clinic, Size(1)){
+Doctor::Doctor() : ServiceBuilding(Service::doctor, object::clinic, Size(1)){
 }
 
 unsigned int Doctor::walkerDistance() const{ return 26; }
@@ -43,11 +43,11 @@ void Doctor::deliverService()
   }
 }
 
-Hospital::Hospital() : ServiceBuilding(Service::hospital, objects::hospital, Size(3 ) )
+Hospital::Hospital() : ServiceBuilding(Service::hospital, object::hospital, Size(3 ) )
 {
 }
 
-Baths::Baths() : ServiceBuilding(Service::baths, objects::baths, Size(2) )
+Baths::Baths() : ServiceBuilding(Service::baths, object::baths, Size(2) )
 {
   _haveReservorWater = false;
   _fgPicturesRef().resize(1);
@@ -55,7 +55,7 @@ Baths::Baths() : ServiceBuilding(Service::baths, objects::baths, Size(2) )
 
 unsigned int Baths::walkerDistance() const {  return 35;}
 
-bool Baths::build( const CityAreaInfo& info )
+bool Baths::build( const city::AreaInfo& info )
 {
   return ServiceBuilding::build( info );
 }
@@ -66,10 +66,8 @@ void Baths::timeStep(const unsigned long time)
 {
   if( game::Date::isWeekChanged() )
   {
-    city::Helper helper( _city() );
-
     bool haveWater = false;
-    TilesArray tiles = helper.getArea( this );
+    TilesArray tiles = area();
     foreach( tile, tiles ) { haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0; }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
   }
@@ -85,7 +83,7 @@ void Baths::deliverService()
   }
 }
 
-Barber::Barber() : ServiceBuilding(Service::barber, objects::barber, Size(1))
+Barber::Barber() : ServiceBuilding(Service::barber, object::barber, Size(1))
 {
 }
 

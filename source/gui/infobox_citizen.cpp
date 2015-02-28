@@ -265,7 +265,7 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
 {
   destinationPos = pos;
   std::string destBuildingName;
-  gfx::TileOverlayPtr ov = city->getOverlay( pos );
+  OverlayPtr ov = city->getOverlay( pos );
   if( ov.isValid() )
   {
     destBuildingName = MetaDataHolder::findPrettyName( ov->type() );
@@ -282,7 +282,7 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
 void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 {
   baseBuildingPos = pos;
-  gfx::TileOverlayPtr ov = city->getOverlay( pos );
+  OverlayPtr ov = city->getOverlay( pos );
   std::string text;
 
   if( ov.isValid() )

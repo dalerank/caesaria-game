@@ -43,7 +43,7 @@ public:
   float laborAccessKoeff;
 };
 
-WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
+WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;
@@ -93,7 +93,7 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
-  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  if( isNeedRoad() && roadside().empty() )
   {
     trouble = "##working_building_need_road##";
   }
@@ -273,7 +273,7 @@ static const char* productivityDescription[] =
 
 std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, const std::string& prefix )
 {
-  std::string factoryType = MetaDataHolder::findTypename( w->type() );
+  std::string factoryType = object::toString( w->type() );
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
   workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
@@ -281,12 +281,12 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
   if( prefix.empty() )
   {
     return utils::format( 0xff, "##%s_%s##",
-                                 factoryType.c_str(), productivityDescription[ workKoeff ] );
+                          factoryType.c_str(), productivityDescription[ workKoeff ] );
   }
   else
   {
     return utils::format( 0xff, "##%s_%s_%s##",
-                                 factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
   }
 }
 

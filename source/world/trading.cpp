@@ -151,7 +151,7 @@ void Trading::sendMerchant(const std::string& begin, const std::string& end,
 
 TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& end )
 {
-  unsigned int routeId = utils::hash( begin ) + utils::hash( end );
+  unsigned int routeId = Hash( begin ) + Hash( end );
   Impl::TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
@@ -181,7 +181,7 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
     return route;
   }
 
-  unsigned int routeId = utils::hash( begin ) + utils::hash( end );
+  unsigned int routeId = Hash( begin ) + Hash( end );
 
   route = TraderoutePtr( new Traderoute( _d->empire, begin, end ) );
   _d->routes[ routeId ] = route;

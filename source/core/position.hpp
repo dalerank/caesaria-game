@@ -71,20 +71,20 @@ public:
   TilePos( const TilePos& other ) : Vector2<int>( other._x, other._y ) {}
   TilePos() : Vector2<int>( 0, 0 ) {}
 
-  int i() const { return _x; }
-  int j() const { return _y; }
-  int z() const { return _y - _x; }
+  inline int i() const { return _x; }
+  inline int j() const { return _y; }
+  inline int z() const { return _y - _x; }
 
-  int& ri() { return _x; }
-  int& rj() { return _y; }
+  inline int& ri() { return _x; }
+  inline int& rj() { return _y; }
 
   inline TilePos northnb() const { return TilePos( _x, _y+1 ); }
   inline TilePos southnb() const { return TilePos( _x, _y-1 ); }
   inline TilePos eastnb() const { return TilePos( _x+1, _y ); }
   inline TilePos westnb() const { return TilePos( _x-1, _y ); }
 
-  void setI( const int i ) { _x = i; }
-  void setJ( const int j ) { _y = j; }
+  inline void setI( const int i ) { _x = i; }
+  inline void setJ( const int j ) { _y = j; }
 
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
   int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}

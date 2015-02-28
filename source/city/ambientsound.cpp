@@ -20,7 +20,7 @@
 #include "gfx/tilemap_camera.hpp"
 #include "sound/engine.hpp"
 #include "core/utils.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/foreach.hpp"
 
 #include <set>
@@ -33,7 +33,7 @@ namespace city
 struct SoundEmitter
 {  
   Tile* tile;
-  TileOverlayPtr overlay;
+  OverlayPtr overlay;
   TilePos& camerapos;
 
   SoundEmitter( Tile* t, TilePos& cam ) : camerapos( cam )

@@ -32,7 +32,7 @@ public:
   virtual void timeStep( const unsigned int time );
   void addCriminal( WalkerPtr wlk );
 
-  void buildingDestroyed( gfx::TileOverlayPtr overlay, int why );
+  void buildingDestroyed( OverlayPtr overlay, int why );
 
   int value() const;
   static std::string defaultName();

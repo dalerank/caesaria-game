@@ -58,6 +58,8 @@
 #include "pushbutton.hpp"
 #include "environment.hpp"
 #include "dialogbox.hpp"
+#include "game/infoboxmanager.hpp"
+#include "infobox_land.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -67,6 +69,25 @@ namespace gui
 
 namespace infobox
 {
+
+class InfoboxHouseCreator : public InfoboxCreator
+{
+public:
+  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  {
+    HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
+    if( house.isValid() && house->habitants().count() > 0 )
+    {
+      return new AboutHouse( parent, city, city->tilemap().at( pos ) );
+    }
+    else
+    {
+      return new AboutFreeHouse( parent, city, city->tilemap().at( pos ) );
+    }
+  }
+};
+
+REGISTER_OBJECT_INFOBOX( house, new InfoboxHouseCreator() )
 
 AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )

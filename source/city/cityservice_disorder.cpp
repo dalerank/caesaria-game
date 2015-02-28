@@ -17,7 +17,7 @@
 
 #include "cityservice_disorder.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/constants.hpp"
 #include "city/funds.hpp"
 #include "core/foreach.hpp"
@@ -88,8 +88,7 @@ void Disorder::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  Helper helper( _city() );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findh( _city() );
 
   WalkerList walkers = _city()->walkers( walker::protestor );
 

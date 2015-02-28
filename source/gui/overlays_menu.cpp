@@ -22,7 +22,7 @@
 #include "environment.hpp"
 #include "core/foreach.hpp"
 #include <vector>
-#include "gfx/layerconstants.hpp"
+#include "layers/layerconstants.hpp"
 
 namespace gui
 {

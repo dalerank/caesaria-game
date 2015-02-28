@@ -84,7 +84,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->city = city;
   _d->tileSpeedKoeff = 1.f;
   _d->action.action = Walker::acMove;
-  _d->action.direction = constants::noneDirection;
+  _d->action.direction = direction::none;
   _d->type = walker::unknown;
   _d->health = 100;
   _d->location = 0;
@@ -175,7 +175,7 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 void Walker::_walk()
 {
-  if( constants::noneDirection == _d->action.direction
+  if( direction::none == _d->action.direction
       || !_pathwayRef().isValid() )
   {
     // nothing to do
@@ -187,23 +187,23 @@ void Walker::_walk()
   float speedKoeff = 1.f;
   switch( _d->action.direction )
   {
-  case constants::north:
-  case constants::south:
-  case constants::east:
-  case constants::west:
+  case direction::north:
+  case direction::south:
+  case direction::east:
+  case direction::west:
   break;
 
-  case constants::northEast:
-  case constants::southWest:
-  case constants::southEast:
-  case constants::northWest:
+  case direction::northEast:
+  case direction::southWest:
+  case direction::southEast:
+  case direction::northWest:
      speedKoeff = 0.7f;
   break;
 
   default:
      Logger::warning( "Walker: invalid move direction: %d", _d->action.direction );
      _d->action.action = acNone;
-     _d->action.direction = constants::noneDirection;
+     _d->action.direction = direction::none;
      return;
   break;
   }
@@ -294,14 +294,14 @@ const Tile& Walker::_nextTile() const
   TilePos p = pos();
   switch( _d->action.direction )
   {
-  case constants::north: p += TilePos( 0, 1 ); break;
-  case constants::northEast: p += TilePos( 1, 1 ); break;
-  case constants::east: p += TilePos( 1, 0 ); break;
-  case constants::southEast: p += TilePos( 1, -1 ); break;
-  case constants::south: p += TilePos( 0, -1 ); break;
-  case constants::southWest: p += TilePos( -1, -1 ); break;
-  case constants::west: p += TilePos( -1, 0 ); break;
-  case constants::northWest: p += TilePos( -1, 1 ); break;
+  case direction::north: p += TilePos( 0, 1 ); break;
+  case direction::northEast: p += TilePos( 1, 1 ); break;
+  case direction::east: p += TilePos( 1, 0 ); break;
+  case direction::southEast: p += TilePos( 1, -1 ); break;
+  case direction::south: p += TilePos( 0, -1 ); break;
+  case direction::southWest: p += TilePos( -1, -1 ); break;
+  case direction::west: p += TilePos( -1, 0 ); break;
+  case direction::northWest: p += TilePos( -1, 1 ); break;
   default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
   }
 
@@ -348,7 +348,7 @@ Pathway& Walker::_pathwayRef() {  return _d->pathway; }
 const Pathway& Walker::pathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
-void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
+void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 TilePos Walker::places(Walker::Place type) const { return TilePos(-1,-1); }
 void Walker::_setType(walker::Type type){  _d->type = type;}
@@ -428,9 +428,9 @@ const Picture& Walker::getMainPicture()
   {
     const AnimationBank::MovementAnimation& animMap = AnimationBank::find( type() );
     AnimationBank::MovementAnimation::const_iterator itAnimMap;
-    if( _d->action.direction == constants::noneDirection )
+    if( _d->action.direction == direction::none )
     {
-      itAnimMap = animMap.find( DirectedAction(_d->action.action, constants::north ) );
+      itAnimMap = animMap.find( DirectedAction(_d->action.action, direction::north ) );
     }
     else
     {
