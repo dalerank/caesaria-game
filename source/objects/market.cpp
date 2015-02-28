@@ -68,9 +68,6 @@ Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
 {
   _fgPicturesRef().resize(1);  // animation
   _d->initStore();
-
-  _animationRef().load( ResourceGroup::commerce, 2, 10 );
-  _animationRef().setDelay( 4 );
 }
 
 void Market::deliverService()

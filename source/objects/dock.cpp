@@ -386,9 +386,9 @@ void Dock::Impl::initStores()
   exportGoods.setCapacity( good::any(), 1000 );
   requestGoods.setCapacity( good::any(), 1000 );
 
-  importGoods.setCapacity( 1000 * good::any() );
-  exportGoods.setCapacity( 1000 * good::any() );
-  requestGoods.setCapacity( 1000 * good::any() );
+  importGoods.setCapacity( 4000 );
+  exportGoods.setCapacity( 4000 );
+  requestGoods.setCapacity( 4000 );
 }
 
 void Dock::_tryDeliverGoods()

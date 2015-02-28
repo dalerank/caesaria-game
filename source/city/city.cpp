@@ -209,7 +209,7 @@ void PlayerCity::_initAnimation()
 
   _animation().load( ResourceGroup::empirebits, 2, 6 );
   _animation().setLoop( true );
-  _animation().setOffset( Point( 18, -7 ));
+  //_animation().setOffset( Point( 18, -7 ));
   _animation().setDelay( 2 );
 }
 

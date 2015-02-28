@@ -39,4 +39,9 @@
   granary_lvl3 : { rc : "commerce", start : 144, stop : 144, offset : [ 92, 65 ] }
   granary_lvl4 : { rc : "commerce", start : 145, stop : 145, offset : [ 118, 76 ] }
   granary_animation : { rc : "commerce", start : 146, stop : 152, offset : [ 78, 69 ] }
+  market_poor_anim : { rc : "commerce", start : 2, stop : 11, offset : [ 42, 34 ] }
+  our_city_emp : { rc : "empire_bits", start : 1, stop : 1, offset : [ 0, 30 ] }
+  our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 17, 24 ] }
+  rome_city_emp : { rc : "empire_bits", start : 1, stop : 1, offset : [ 0, 30 ] }
+  foreing_city_emp : { rc : "empire_bits", start : 1, stop : 1, offset : [ 0, 30 ] }
 }

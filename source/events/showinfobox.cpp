@@ -109,7 +109,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
 {
   if( _d->video.toString().empty() )
   {
-    gui::Widget* msgWnd = new gui::infobox::AboutEvent( game.gui()->rootWidget(), _d->title, _d->text,
+    gui::Widget* msgWnd = new gui::infobox::AboutEvent( game.gui()->rootWidget(), _(_d->title), _(_d->text),
                                                         game::Date::current(), _d->gtype, _d->tip );
     msgWnd->show();
   }
@@ -123,7 +123,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
 
   if( _d->send2scribe )
   {
-    GameEventPtr e = ScribeMessage::create( _d->title, _d->text, _d->gtype, _d->position );
+    GameEventPtr e = ScribeMessage::create( _(_d->title), _(_d->text), _d->gtype, _d->position );
     e->dispatch();
   }
 }

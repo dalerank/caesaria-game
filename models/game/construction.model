@@ -431,6 +431,7 @@
     class : "food"
     image : [ "commerce", 1 ]
     sound : [ "market", 1 ]
+    animation : { rc : "commerce", start : 2, count : 9, offset : [ 90, 45 ], delay : 4 }
   }, 
 
   granery : {

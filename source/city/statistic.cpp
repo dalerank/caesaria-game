@@ -192,6 +192,19 @@ unsigned int getCrimeLevel( PlayerCityPtr city )
   return ds.isValid() ? ds->value() : 0;
 }
 
+unsigned int blackHouses( PlayerCityPtr city )
+{
+  unsigned int ret = 0;
+  HouseList houses = findh( city );
+  if( city->population() > 300 )
+  {
+    foreach( h, houses )
+      ret += ((*h)->tile().param( gfx::Tile::pDesirability ) > -10 ? 0 : 1);
+  }
+
+  return ret;
+}
+
 unsigned int getFoodStock(PlayerCityPtr city)
 {
   int foodSum = 0;

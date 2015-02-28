@@ -38,7 +38,7 @@ public:
                  romeWages, peace, milthreat,
                  houseNumber, slumNumber, shackNumber,
                  sentiment, foodStock, foodMontlyConsumption,
-                 favour, prosperity,
+                 favour, prosperity, blackHouses,
                  paramsCount } ParamName;
 
   class Parameters : public std::vector<int>
