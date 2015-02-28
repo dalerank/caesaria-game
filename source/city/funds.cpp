@@ -95,6 +95,8 @@ void Funds::resolveIssue( FundIssue issue )
     	 step[ Funds::credit ] += issue.money;
     }
 
+    step[ Funds::cityProfit ] = step[ Funds::debet ] + step[ Funds::credit ];
+
     if( needUpdateTreasury )
     {
       _d->money += issue.money;
