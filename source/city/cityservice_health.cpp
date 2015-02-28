@@ -21,6 +21,7 @@
 #include "statistic.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
+#include "events/warningmessage.hpp"
 #include "cityservice_factory.hpp"
 
 using namespace constants;
@@ -73,9 +74,15 @@ void HealthCare::timeStep(const unsigned int time )
     {
       unsigned int hLvl = (*house)->state( pr::health );
       _d->value = ( _d->value + hLvl ) / 2;
+      _d->minHealthLevel = math::min( _d->minHealthLevel, hLvl );
+    }
+
+    if( _d->minHealthLevel < 20 )
+    {
+      events::GameEventPtr e = events::WarningMessage::create( "##advchief_health_terrible##" );
+      e->dispatch();
     }
   }
-  //unsigned int vacantPop=0;
 }
 
 unsigned int HealthCare::value() const { return _d->value; }
