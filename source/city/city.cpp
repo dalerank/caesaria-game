@@ -201,6 +201,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
   setOption( barbarianAttack, 1 );
+  setOption( c3gameplay, 0 );
 }
 
 void PlayerCity::_initAnimation()

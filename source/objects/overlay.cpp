@@ -69,9 +69,9 @@ void Overlay::setType(const object::Type type)
 {
   const MetaData& bd = MetaDataHolder::getData( type );
 
-   _d->overlayType = type;
-   _d->overlayClass = bd.group();
-   _d->name = bd.name();
+  _d->overlayType = type;
+  _d->overlayClass = bd.group();
+  _d->name = bd.name();
 }
 
 void Overlay::timeStep(const unsigned long) {}
@@ -151,16 +151,16 @@ void Overlay::save( VariantMap& stream ) const
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.name() );
   stream[ "pictureOffset" ] = _d->picture.offset();
-  stream[ "size" ] = _d->size;
+  VARIANT_SAVE_ANY_D( stream, _d, size )
   stream[ "height" ] = tile().height();
-  stream[ "isDeleted" ] = _d->isDeleted;
+  VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "name" ] = Variant( _d->name );
 }
 
 void Overlay::load( const VariantMap& stream )
 {
   _d->name = stream.get( "name" ).toString();
-  _d->size = stream.get( "size", Size(1) ).toSize();
+  VARIANT_LOAD_ANY_D( _d, size, stream )
   //_d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
   std::string pictureName = stream.get( "picture" ).toString();
   _d->picture = Picture::load( pictureName );
@@ -169,7 +169,7 @@ void Overlay::load( const VariantMap& stream )
     Logger::warning( "TileOverlay: invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str() );
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
-  _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
+  VARIANT_LOAD_ANYDEF_D( _d, isDeleted, false, stream )
   tile().setHeight( stream.get( "height" ).toInt() );
 }
 
@@ -215,9 +215,9 @@ void Overlay::setPicture(const char* resource, const int index){  setPicture( Pi
 const Picture& Overlay::picture() const{  return _d->picture;}
 void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation& Overlay::animation() const { return _d->animation;}
-void Overlay::deleteLater(){  _d->isDeleted  = true;}
+void Overlay::deleteLater() { _d->isDeleted  = true;}
 void Overlay::destroy(){}
-Size Overlay::size() const{ return _d->size;}
+const Size& Overlay::size() const{ return _d->size;}
 bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}

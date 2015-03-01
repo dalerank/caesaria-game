@@ -97,6 +97,7 @@ public:
   void __debugChangeLevel( int change );
 
 private:
+  void _updateHealthLevel();
   void _levelUp();
   void _levelDown();
   void _disaster();

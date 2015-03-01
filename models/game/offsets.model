@@ -40,4 +40,5 @@
   foreing_city_emp : { rc : "empire_bits", start : 8, stop : 8, offset : [ 0, 20 ] }
   foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 18, 28 ] }
   rome_emp : { rc : "roma", start : 1, stop : 1, offset : [ 0, 35 ] }
+  illhouse_anim : { rc : "illhouse", start : 1, stop : 42, offset : [ -2, -2 ] }
 }

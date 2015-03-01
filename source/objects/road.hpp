@@ -40,7 +40,6 @@ public:
   virtual void computeRoadside();
   virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   int pavedValue() const;
-  virtual gfx::Renderer::PassQueue passQueue() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
