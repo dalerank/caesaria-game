@@ -112,7 +112,7 @@ void VictoryConditions::load( const VariantMap& stream )
 VariantMap VictoryConditions::save() const
 {
   VariantMap ret;
-  ret[ "maxHouselevel" ] = Variant( HouseSpecHelper::instance().getSpec( _d->maxHouseLevel ).internalName() );
+  ret[ "maxHouseLevel" ] = Variant( HouseSpecHelper::instance().getSpec( _d->maxHouseLevel ).internalName() );
   VARIANT_SAVE_ANY_D( ret, _d, success )
   VARIANT_SAVE_ANY_D( ret, _d, culture )
   VARIANT_SAVE_ANY_D( ret, _d, population )
