@@ -73,11 +73,14 @@ void HealthCare::timeStep(const unsigned int time )
     foreach( house, houses )
     {
       unsigned int hLvl = (*house)->state( pr::health );
-      _d->value = ( _d->value + hLvl ) / 2;
-      _d->minHealthLevel = math::min( _d->minHealthLevel, hLvl );
+      if( (*house)->habitants().count() > 0 )
+      {
+        _d->value = ( _d->value + hLvl ) / 2;
+        _d->minHealthLevel = math::min( _d->minHealthLevel, hLvl );
+      }
     }
 
-    if( _d->minHealthLevel < 20 )
+    if( _city()->population() > 0 && _d->minHealthLevel < 20 )
     {
       events::GameEventPtr e = events::WarningMessage::create( "##advchief_health_terrible##" );
       e->dispatch();
@@ -114,7 +117,7 @@ std::string HealthCare::reason() const
 
     for( int i=0; avTypes[ i ] != object::unknown; i++ )
     {
-      std::set<object::Type> availableTypes;
+      object::TypeSet availableTypes;
       availableTypes.insert( avTypes[ i ] );
 
       HouseList houses = statistic::getEvolveHouseReadyBy( _city(), availableTypes );

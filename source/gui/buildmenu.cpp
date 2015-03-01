@@ -175,7 +175,7 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
 
   int cost = buildingData.getOption( MetaDataOptions::cost );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
-  if( SETTINGS_VALUE( c3gameplay ).toBool() )
+  if( KILLSWITCH( c3gameplay ) )
   {
     mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
   }

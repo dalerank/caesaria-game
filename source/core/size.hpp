@@ -43,7 +43,7 @@ public:
     bool operator!=(const Size& other) const{ return (_x != other._x ) || ( _y != other._y ); }
     Size& operator+=(const Size& other) { _x += other._x; _y += other._y; return *this; }
     Size operator-(const Size& other) const { return Size( _x - other._x, _y - other._y ); }
-    Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
+    //Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
     Size operator/(float delim) const { return Size( int(_x/delim), int(_y/delim) ); }
     Size operator*(float delim) const { return Size( int(_x*delim), int(_y*delim) ); }
 };
