@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "locust.hpp"
+#include "house_plague.hpp"
 #include "core/variant_map.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
@@ -23,23 +23,25 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
-#include "objects/farm.hpp"
+#include "walker/walkers_factory.hpp"
+#include "house.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-class Locust::Impl
+REGISTER_CLASS_IN_WALKERFACTORY(walker::house_plague,HousePlague)
+
+class HousePlague::Impl
 {
 public:
   int counter;
   int time;
-  bool loop;
-  Picture picture;
+  Animation anim;
 };
 
-WalkerPtr Locust::create(PlayerCityPtr city)
+WalkerPtr HousePlague::create(PlayerCityPtr city)
 {
-  Locust* locust = new Locust( city );
+  HousePlague* locust = new HousePlague( city );
 
   WalkerPtr ret( locust );
   ret->drop();
@@ -47,44 +49,59 @@ WalkerPtr Locust::create(PlayerCityPtr city)
   return ret;
 }
 
-void Locust::create(PlayerCityPtr city, TilePos pos, int time)
+void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
 {
-  Locust* locust = new Locust( city );
-  locust->setPos( pos );
-  locust->_d->time = time;
+  HousePlagueList hpllist;
+  hpllist << city->walkers( pos );
+  if( !hpllist.empty() )
+  {
+    hpllist.front()->_d->counter = 0;
+    return;
+  }
 
-  WalkerPtr ret( locust );
+  HousePlague* hplague = new HousePlague( city );
+  hplague->setPos( pos );
+  hplague->_d->time = time;
+
+  WalkerPtr ret( hplague );
   ret->drop();
 
   city->addWalker( ret );
 }
 
-Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
+HousePlague::HousePlague( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
-  _setType( walker::locust );
+  _setType( walker::house_plague );
 
   _d->time = 0;
+  _d->counter = 0;
 
-  setName( _("##locust##") );
+  setName( _("##house_plague##") );
   _setHealth( 0 );
 
   setFlag( vividly, false );
+  _d->anim.load( "illhouse", 1, 20 );
+  _d->anim.setLoop( true );
+  _d->anim.setDelay( 2 );
 }
 
-Locust::~Locust() {}
+HousePlague::~HousePlague(){}
 
-void Locust::timeStep(const unsigned long time)
+void HousePlague::timeStep(const unsigned long time)
 {
   _d->counter++;
 
+  _d->anim.update( time );
+
   if( game::Date::isWeekChanged() )
   {
-    FarmPtr farm;
-    farm << _city()->getOverlay( pos() );
-    if( farm.isValid() && farm->type() != object::meat_farm )
+    HousePtr house;
+    house << _city()->getOverlay( pos() );
+    int ill_value = house.isValid() ? (house->state( pr::health ) < 20): 100;
+    if( ill_value > 20 )
     {
-      farm->updateProgress( -50 );
-    }
+      deleteLater();
+    }   
   }
 
   if( _d->counter > _d->time )
@@ -93,7 +110,7 @@ void Locust::timeStep(const unsigned long time)
   }
 }
 
-void Locust::save( VariantMap& stream ) const
+void HousePlague::save( VariantMap& stream ) const
 {
   Walker::save( stream );
 
@@ -101,15 +118,17 @@ void Locust::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, counter )
 }
 
-void Locust::load( const VariantMap& stream )
+void HousePlague::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
   VARIANT_LOAD_ANY_D( _d, time, stream )
   VARIANT_LOAD_ANY_D( _d, counter, stream )
+
+  //_d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
 }
 
-const Picture& Locust::getMainPicture()
+const Picture& HousePlague::getMainPicture()
 {
-  return _d->picture;
+  return _d->anim.currentFrame();
 }

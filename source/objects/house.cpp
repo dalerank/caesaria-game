@@ -42,6 +42,7 @@
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
 #include "city/victoryconditions.hpp"
+#include "house_plague.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -82,7 +83,6 @@ public:
   int changeCondition;
 
 public:
-  void updateHealthLevel( HousePtr house );
   void initGoodStore( int size );
   void consumeServices();
   void consumeGoods(HousePtr house);
@@ -382,7 +382,7 @@ void House::timeStep(const unsigned long time)
   if( time % spec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel( this );
+    _updateHealthLevel();
     cancelService( Service::recruter );
   }
 
@@ -1330,27 +1330,28 @@ std::string House::levelName() const
   return ret;
 }
 
-void House::Impl::updateHealthLevel( HousePtr house )
+void House::_updateHealthLevel()
 {
-  float delim = 1 + (((services[Service::well] > 0 || services[Service::fountain] > 0) ? 1 : 0))
-      + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
-      + (services[Service::baths] > 0 ? 0.7 : 0)
-      + (services[Service::barber] > 0 ? 0.3 : 0);
+  Impl::Services& s = _d->services;
+  float delim = 1 + (((s[Service::well] > 0 || s[Service::fountain] > 0) ? 1 : 0)) //if we have water then decrease ill
+      + ((s[Service::doctor] > 0 || s[Service::hospital] > 0) ? 1 : 0)             //doctor access also decrease ill
+      + (s[Service::baths] > 0 ? 0.7 : 0)                                          //baths and barber some decrease ill
+      + (s[Service::barber] > 0 ? 0.3 : 0);
 
   float decrease = 2.f / delim;
 
-  house->updateState( pr::health, -decrease );
-  int value = 100 - house->state( pr::health );
-  if( value > 25 )
-  {
+  updateState( pr::health, -decrease );
 
+  if( state( pr::health ) < 25 )
+  {
+    HousePlague::create( _city(), pos(), game::Date::days2ticks( 5 ) );
   }
 }
 
 void House::Impl::initGoodStore(int size)
 {
   int rsize = 25 * size * houseLevel;
-  goodStore.setCapacity( rsize * 10 );  // no limit
+  goodStore.setCapacity(rsize * 10 );  // no limit
   goodStore.setCapacity(good::wheat, rsize );
   goodStore.setCapacity(good::fish, rsize );
   goodStore.setCapacity(good::meat, rsize );
