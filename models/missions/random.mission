@@ -35,6 +35,10 @@
   		
   events :
   {
+    tutorial#random_collapse : {
+      population : 60
+      strong : 25
+    }
   }
 	
   buildoptions :
