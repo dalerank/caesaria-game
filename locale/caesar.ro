@@ -160,6 +160,8 @@
 "##clear_land_caption##":"Teren liber"
 "##engineer_gods_angry##":"Zeii să aibe milă de mine! Nu e vina mea că guvernatorul își bate joc de ei!"
 "##advemployer_panel_haveworkers##":"muncă"
+"##abwrk_working##":"muncă"
+"##abwrk_not_working##":"no muncă"
 "##advemployer_panel_workers##":"muncitori"
 "##adve_entertainment##":"Amuzament"
 "##entertainment_advisor_title##":"Amuzament"
@@ -246,4 +248,5 @@
 "##immigrant_want_to_be_liontamer##":"Am auzit că se găsesc slujbe aici. Vreau să fiu un îmblanzitor de lei!"
 "##teacher_need_workers##":"Este uimitor câte posturi nu sunt umplute aici"
 "##scholar_so_hungry##":"Sunt lihnit de foame!"
+"##city_need_workers_text##":"La ciudad necesita más trabajadores."
 }
