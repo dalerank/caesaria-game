@@ -156,10 +156,10 @@ VariantMap Funds::save() const
 {
   VariantMap ret;
 
-  ret[ "money" ] = _d->money;
-  ret[ "taxRate" ] = _d->taxRate;
-  ret[ "workerSalary" ] = _d->workerSalary;
-  ret[ "lastUpdate" ] = _d->lastYearUpdate;
+  VARIANT_SAVE_ANY_D( ret, _d, money )
+  VARIANT_SAVE_ANY_D( ret, _d, taxRate )
+  VARIANT_SAVE_ANY_D( ret, _d, workerSalary )
+  VARIANT_SAVE_ANY_D( ret, _d, lastYearUpdate )
   
   VariantList history;
   foreach(  stepIt, _d->history )
@@ -180,10 +180,10 @@ VariantMap Funds::save() const
 
 void Funds::load( const VariantMap& stream )
 {
-  _d->money = (int)stream.get( "money", 0 );
-  _d->taxRate = (int)stream.get( "taxRate", 7 );
-  _d->workerSalary = (int)stream.get( "workerSalary", 30 );
-  _d->lastYearUpdate = (int)stream.get( "lastUpdate" );
+  VARIANT_LOAD_ANY_D( _d, money, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, taxRate, 7, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, 30, stream )
+  VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
 
   VariantList history = stream.get( lc_history ).toList();
   _d->history.clear();
