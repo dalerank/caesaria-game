@@ -223,7 +223,7 @@ void Migration::timeStep( const unsigned int time )
   {
     _d->chanceCounter++;
     float variance = utils::eventProbability( (maxIndesirability-_d->emigrantsIndesirability)/100.f,
-                                             _d->chanceCounter, 50 + _d->emigrantsIndesirability );
+                                              _d->chanceCounter, _d->emigrantsIndesirability );
     if( variance >= 1)
     {
       _d->createMigrationToCity( _city() );

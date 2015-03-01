@@ -329,14 +329,18 @@ unsigned int toUint(const std::string& in)
 
 float eventProbability(float probability, int k, int n)
 {
-  probability = math::clamp<float>( probability, 0, 1);
+  int limit = math::random( n ) * (1 - probability);
+  return k > limit ? 1 : 0;
+
+  /*probability = math::clamp<float>( probability, 0, 1);
+  k = math::clamp( k, 0, n );
   float q = 1 - probability;
 
-  float npq = sqrt( n * probability * q )+0.000001;
-  float rw = (k - n * probability)/npq;
-  float res = 1 / npq * ( math::RECIPROCAL_SQRT_2PI * exp( -rw/2 ) );
+  float npq = n * probability * q;
+  float t = (k - n*probability)/sqrt(npq);
+  float res = (1 / sqrt( 2* math::PI * npq )) * exp( -pow(t,2)/2 ) ;
 
-  return res;
+  return res;*/
 }
 
 }//end namespace utils

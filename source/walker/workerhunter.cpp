@@ -50,6 +50,7 @@ public:
   city::HirePriorities priority;
   PriorityMap priorityMap;
   unsigned int reachDistance;
+  bool once_shot;
 
 public:
   bool isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding );
@@ -60,6 +61,7 @@ Recruter::Recruter(PlayerCityPtr city )
 {    
   _d->needWorkers = 0;
   _d->reachDistance = 2;
+  _d->once_shot = false;
   _setType( walker::recruter );
 }
 
@@ -161,6 +163,8 @@ void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed,
 {
   _d->needWorkers = workersNeed;
   _d->reachDistance = distance;
+  _d->once_shot = true;
+
   setBase( ptr_cast<Building>( building ) );
   setPos( building->pos() );
   _centerTile();
@@ -200,6 +204,12 @@ void Recruter::load(const VariantMap& stream)
 
 bool Recruter::die()
 {
+  if( _d->once_shot )
+  {
+    deleteLater();
+    return true;
+  }
+
   bool created = ServiceWalker::die();
 
   if( !created )
