@@ -43,8 +43,6 @@ public:
   int lastYearUpdate;
   int maxDebt;
 
-  typedef std::map< city::Funds::IssueType, int > IssuesValue;
-  typedef std::vector< IssuesValue > IssuesHistory;
   IssuesHistory history;
 
 signals public:
@@ -58,7 +56,7 @@ Funds::Funds() : _d( new Impl )
   _d->workerSalary = 30;
   _d->lastYearUpdate = 0;
   _d->maxDebt = -5000;
-  _d->history.push_back( Impl::IssuesValue() );
+  _d->history.push_back( IssuesValue() );
 }
 
 void Funds::resolveIssue( FundIssue issue )
@@ -79,13 +77,15 @@ void Funds::resolveIssue( FundIssue issue )
 
   default:
   {
-    Impl::IssuesValue& step = _d->history.front();
+    IssuesValue& step = _d->history.front();
     if( step.find( (IssueType)issue.type ) == step.end() )
     {
       step[ (IssueType)issue.type ] = 0;
     }
 
     step[ (IssueType)issue.type ] += abs( issue.money );
+
+    _updateCreditDebt(step, issue);
 
     if( needUpdateTreasury )
     {
@@ -101,6 +101,18 @@ void Funds::resolveIssue( FundIssue issue )
   {
     emit _d->onChangeSignal( _d->money );
   }
+}
+
+void Funds::_updateCreditDebt(IssuesValue& step, FundIssue issue){
+    if(issue.type == Funds::taxIncome || issue.type == Funds::exportGoods || issue.type == Funds::donation){
+    	 step[ Funds::debet ] += issue.money;
+    } else if (issue.type == Funds::importGoods || issue.type == Funds::workersWages || issue.type == Funds::buildConstruction
+    		|| issue.type == Funds::creditPercents || issue.type == Funds::playerSalary || issue.type == Funds::sundries
+			|| issue.type == Funds::empireTax) {
+    	 step[ Funds::credit ] += issue.money;
+    }
+
+    step[ Funds::cityProfit ] = step[ Funds::debet ] + step[ Funds::credit ];
 }
 
 int Funds::treasury() const { return _d->money; }
@@ -123,12 +135,12 @@ void Funds::updateHistory( const DateTime& date )
     return;
   }
 
-  Impl::IssuesValue& step = _d->history.front();
+  IssuesValue& step = _d->history.front();
   step[ Funds::balance ] = _d->money;
   step[ Funds::cityProfit ] = profit();
 
   _d->lastYearUpdate = date.year();
-  _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
+  _d->history.insert( _d->history.begin(), IssuesValue() );
 
   if( _d->history.size() > 2 )
   {
@@ -141,9 +153,9 @@ int Funds::getIssueValue( IssueType type, int age ) const
   if( (unsigned int)age >= _d->history.size() )
     return 0;
 
-  const Impl::IssuesValue& step = _d->history[ age ];
+  const IssuesValue& step = _d->history[ age ];
      
-  Impl::IssuesValue::const_iterator it = step.find( type );
+  IssuesValue::const_iterator it = step.find( type );
   return ( it == step.end() ) ? 0 : it->second;
 }
 
@@ -189,8 +201,8 @@ void Funds::load( const VariantMap& stream )
   _d->history.clear();
   foreach( it, history )
   {
-    _d->history.push_back( Impl::IssuesValue() );
-    Impl::IssuesValue& last = _d->history.back();
+    _d->history.push_back( IssuesValue() );
+    IssuesValue& last = _d->history.back();
     const VariantList& historyStep = (*it).toList();
     VariantList::const_iterator stepIt=historyStep.begin(); 
     while( stepIt != historyStep.end() )

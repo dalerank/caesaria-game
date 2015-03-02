@@ -364,7 +364,6 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 
   if( funds.haveMoneyForAction( wages ) )
   {
-    //funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
     HouseList houses;
     houses << city->overlays();
 
@@ -381,7 +380,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
   }
   else
   {
-
+	  // TODO affect citizen sentiment for no payment and request money to caesar.
   }
 }
 

@@ -76,7 +76,7 @@ void Festival::assignFestival( RomeDivinityType name, int size )
   _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
 
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
