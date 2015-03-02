@@ -157,8 +157,8 @@ void CityOptionsWindow::Impl::toggleBarbarianAttack()
 
 void CityOptionsWindow::Impl::toggleC3Gameplay()
 {
-  bool value = SETTINGS_VALUE( c3gameplay );
-  SETTINGS_SET_VALUE( c3gameplay, !value );
+  bool value = city->getOption( PlayerCity::c3gameplay );
+  city->setOption( PlayerCity::c3gameplay, value > 0 ? 0 : 1 );
   update();
 }
 
@@ -282,7 +282,7 @@ void CityOptionsWindow::Impl::update()
 
   if( btnC3Gameplay )
   {
-    bool value = SETTINGS_VALUE( c3gameplay );
+    bool value = city->getOption( PlayerCity::c3gameplay ) > 0;
     btnBarbarianMayAttack->setText( value
                                     ? _("##city_c3rules_on##")
                                     : _("##city_c3rules_off##")  );

@@ -131,6 +131,7 @@ protected:
   virtual const gfx::Picture& getMainPicture();
   virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
+  virtual Point& _rndOffset();
   virtual void _updateThoughts();
 
   Pathway& _pathwayRef();

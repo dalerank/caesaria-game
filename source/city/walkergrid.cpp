@@ -75,6 +75,28 @@ void WalkerGrid::remove( WalkerPtr a)
   }
 }
 
+static int compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
+{
+  const int a = one->pos().z();
+  const int b = two->pos().z();
+  if (a<b)
+     return -1;
+  if (a == b)
+     return 0;
+  return 1;
+}
+
+void WalkerGrid::sort()
+{
+  foreach( cell, _grid )
+  {
+    if( cell->size() > 1 )
+    {
+      std::sort( cell->begin(), cell->end(), compare_zvalue );
+    }
+  }
+}
+
 const WalkerList& WalkerGrid::at( const TilePos& pos)
 {
   unsigned int offset = _offset( pos );

@@ -67,6 +67,7 @@ public:
   bool centerReached;
   int health;
   std::string thinks;
+  Point rndOffset;
   float tileSpeedKoeff;
   AbilityList abilities;
   world::Nation nation;
@@ -319,7 +320,7 @@ Point Walker::mappos() const
       offset = tile.overlay()->offset( tile, tilesubpos() );
 
   const PointF& p = _d->wpos;
-  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset;
+  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset + _d->rndOffset;
 }
 
 void Walker::_brokePathway( TilePos pos ){}
@@ -471,6 +472,7 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_STR_D( stream, _d, thinks )
   VARIANT_SAVE_ANY_D( stream, _d, subSpeed )
   VARIANT_SAVE_ANY_D( stream, _d, lastCenterDst )
+  VARIANT_SAVE_ANY_D( stream, _d, rndOffset)
   stream[ "showDebugInfo" ] = getFlag( showDebugInfo );
 }
 
@@ -492,6 +494,7 @@ void Walker::load( const VariantMap& stream)
   VARIANT_LOAD_ENUM_D( _d, action.action, stream )
   VARIANT_LOAD_ENUM_D( _d, action.direction, stream )
   VARIANT_LOAD_ENUM_D( _d, uid, stream )
+  VARIANT_LOAD_ANY_D( _d, rndOffset, stream )
   VARIANT_LOAD_ANY_D( _d, subSpeed, stream )
   VARIANT_LOAD_ANY_D( _d, speedMultiplier, stream )
 
@@ -532,6 +535,7 @@ void Walker::_updatePathway( const Pathway& pathway)
   _computeDirection();
 }
 
+
 void Walker::_updateAnimation( const unsigned int time )
 {
   if( _d->animation.size() > 0 )
@@ -540,6 +544,7 @@ void Walker::_updateAnimation( const unsigned int time )
   }
 }
 
+Point& Walker::_rndOffset() { return _d->rndOffset; }
 void Walker::_setWpos( Point pos) { _d->wpos = pos.toPointF(); }
 
 void Walker::_updateThoughts()

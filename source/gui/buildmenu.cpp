@@ -94,6 +94,7 @@ BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
                       city::development::Branch branch )
     : Widget( parent, id, rectangle )
 {
+  _c3gameplay = false;
   _branch = branch;
 }
 
@@ -175,7 +176,7 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
 
   int cost = buildingData.getOption( MetaDataOptions::cost );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
-  if( KILLSWITCH( c3gameplay ) )
+  if( _c3gameplay )
   {
     mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
   }
@@ -194,7 +195,7 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
   }
 }
 
-BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent )
+BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent, bool c3gameplay )
 {
   BuildMenu* ret = 0;
   switch (menuType)
@@ -215,6 +216,10 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::big_temple:     ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
+  if( ret )
+  {
+    ret->_c3gameplay = c3gameplay;
+  }
 
   return ret;
 }

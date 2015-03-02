@@ -91,7 +91,6 @@ public:
   __GS_PROPERTY(borderMoving)
   __GS_PROPERTY(mmb_moving)
   __GS_PROPERTY(lockInfobox)
-  __GS_PROPERTY(c3gameplay)
 #undef __GS_PROPERTY
 
   static Settings& instance();

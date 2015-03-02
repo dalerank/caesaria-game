@@ -339,7 +339,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    List< BuildMenu* > menus = findChildren<BuildMenu*>();
    foreach( item, menus ) { (*item)->deleteLater(); }
 
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this );
+   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this, _d->city->getOption( PlayerCity::c3gameplay ) );
 
    if( buildMenu != NULL )
    {

@@ -42,7 +42,8 @@ public:
 
 protected:
    virtual void _showHelp();
-   virtual void _showInformation();
+   virtual void _showHbtInfo();
+   virtual void _showSrvcInfo();
 
 private:
    HousePtr _house;
