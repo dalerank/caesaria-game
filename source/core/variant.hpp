@@ -252,7 +252,7 @@ class Variant
     static std::string typeToName(Type type);
     static Type nameToType(const std::string& name);
 
-    void *data();
+    void* data();
     const void *constData() const;
     inline const void *data() const { return constData(); }
 

@@ -151,6 +151,7 @@ void Game::Impl::initSound()
   ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
   ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
   ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
+  ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
   Logger::warning( "Game: load talks archive" );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );

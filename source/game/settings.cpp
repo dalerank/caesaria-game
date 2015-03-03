@@ -91,6 +91,7 @@ __REG_PROPERTY(scrollSpeed)
 __REG_PROPERTY(borderMoving)
 __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
+__REG_PROPERTY(soundAlias)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -148,6 +149,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
   _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
   _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
+  _d->options[ soundAlias          ] = Variant( std::string( "sounds.model" ) );
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
@@ -272,6 +274,7 @@ void Settings::checkC3present()
     _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
     _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
     _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
+    _d->options[ soundAlias          ] = Variant( std::string( "/sounds.c3" ) );
     _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.c3" ) );
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
