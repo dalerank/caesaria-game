@@ -278,13 +278,12 @@ void AboutHouse::_showHbtInfo()
 void AboutHouse::_showSrvcInfo()
 {
   std::string srvcState = utils::format( 0xff, "Health=%d",
-                                               (int)_house->state( health ));
+                                               (int)_house->state( pr::health ));
 
   DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Services", srvcState, DialogBox::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );
   CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
 }
-
 
 }
 

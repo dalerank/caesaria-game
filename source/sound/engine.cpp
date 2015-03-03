@@ -57,9 +57,12 @@ public:
   static const int maxSamplesNumner = 64;
   bool useSound;
 
-  typedef std::map< std::string, Sample > Samples;
+  typedef std::map< int, Sample > Samples;
   typedef std::map< audio::SoundType, int > Volumes;
+  typedef std::map< int, int > Aliases;
+
   Samples samples;
+  Aliases aliases;
   Volumes volumes;
   vfs::Path currentTheme;
 
@@ -70,8 +73,8 @@ public:
 
 Engine& Engine::instance()
 {
-   static Engine _instance;
-   return _instance;
+  static Engine _instance;
+  return _instance;
 }
 
 void Engine::setVolume( audio::SoundType type, int value)
@@ -80,7 +83,12 @@ void Engine::setVolume( audio::SoundType type, int value)
   _updateSamplesVolume();
 }
 
-int Engine::volume( audio::SoundType type) const
+void Engine::loadAlias(const vfs::Path& filename)
+{
+  VariantMap alias = config::
+}
+
+int Engine::volume(audio::SoundType type) const
 {
   Impl::Volumes::const_iterator it = _d->volumes.find( type );
   return it != _d->volumes.end() ? it->second : 0;
@@ -205,7 +213,7 @@ bool Engine::_loadSound(vfs::Path filename)
   return true;
 }
 
-int Engine::play( vfs::Path filename, int volValue, SoundType type )
+int Engine::play( const vfs::Path& filename, int volValue, SoundType type )
 {
   if(_d->useSound )
   {
@@ -254,13 +262,13 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
   return -1;
 }
 
-int Engine::play(std::string rc, int index, int volume, SoundType type)
+int Engine::play(const std::string &rc, int index, int volume, SoundType type)
 {
   std::string filename = utils::format( 0xff, "%s_%05d.ogg", rc.c_str(), index );
   return play( filename, volume, type );
 }
 
-bool Engine::isPlaying(vfs::Path filename) const
+bool Engine::isPlaying(const vfs::Path& filename) const
 {
   if( !_d->useSound )
     return false;
@@ -276,7 +284,7 @@ bool Engine::isPlaying(vfs::Path filename) const
   return (i->second.channel >= 0 && Mix_Playing( i->second.channel ) > 0);
 }
 
-void Engine::stop( vfs::Path filename )
+void Engine::stop(const vfs::Path &filename ) const
 {
   if( !_d->useSound )
     return;

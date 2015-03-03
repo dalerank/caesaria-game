@@ -34,7 +34,8 @@ private:
   void _saveOptions();
   void _setResourcesPath(std::string);
   void _setCaesar3Path(std::string);
-  void _changeCellw();
+  void _setCaesar3Music(std::string);
+  void _setCaesar3Video(std::string);
   void _update();
 
   class Impl;
