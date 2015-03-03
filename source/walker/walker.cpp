@@ -57,6 +57,7 @@ public:
   int waitInterval;
   float speedMultiplier;
   Animation animation;  // current animation
+  Point mappos;
   PointF wpos;      // current world position
   PointF subSpeed;
   PointF nextwpos;  // next way point
@@ -159,6 +160,7 @@ void Walker::setPos( const TilePos& pos )
   _d->wpos = _d->location->center().toPointF();
 
   _computeDirection();
+  _updateMappos();
 }
 
 void Walker::setPathway( const Pathway& pathway)
@@ -217,6 +219,7 @@ void Walker::_walk()
   const int wcell = tilemap::cellSize().height();
   TilePos saveMpos( tmp.x() / wcell , tmp.y() / wcell );
   _d->wpos += delta;
+  _updateMappos();
 
   tmp = _d->wpos;
   TilePos Mpos( tmp.x() / wcell, tmp.y() / wcell );
@@ -240,6 +243,23 @@ void Walker::_walk()
     _d->location = &_d->city->tilemap().at( Mpos );
     _changeTile();
   }
+}
+
+void Walker::_updateMappos()
+{
+  if( !_d->location )
+  {
+    _d->mappos = Point( 0, 0 );
+    return;
+  }
+
+  const Tile& tile = *_d->location;
+  Point offset;
+  if( tile.overlay().isValid() )
+      offset = tile.overlay()->offset( tile, tilesubpos() );
+
+  const PointF& p = _d->wpos;
+  _d->mappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset + _d->rndOffset;
 }
 
 void Walker::_changeTile()
@@ -309,20 +329,7 @@ const Tile& Walker::_nextTile() const
   return _d->city->tilemap().at( p );
 }
 
-Point Walker::mappos() const
-{
-  if( !_d->location )
-    return Point( 0, 0 );
-
-  const Tile& tile = *_d->location;
-  Point offset;
-  if( tile.overlay().isValid() )
-      offset = tile.overlay()->offset( tile, tilesubpos() );
-
-  const PointF& p = _d->wpos;
-  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset + _d->rndOffset;
-}
-
+const Point& Walker::mappos() const { return _d->mappos;}
 void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
 void Walker::_waitFinished() { }
@@ -545,14 +552,19 @@ void Walker::_updateAnimation( const unsigned int time )
 }
 
 Point& Walker::_rndOffset() { return _d->rndOffset; }
-void Walker::_setWpos( Point pos) { _d->wpos = pos.toPointF(); }
+
+void Walker::_setWpos( const Point& pos)
+{
+  _d->wpos = pos.toPointF();
+  _updateMappos();
+}
 
 void Walker::_updateThoughts()
 {
   _d->thinks = WalkerThinks::check( this, _city() );
 }
 
-Point Walker::_wpos() const{  return _d->wpos.toPoint();}
+Point Walker::_wpos() const { return _d->wpos.toPoint(); }
 
 void Walker::go( float speed )
 {

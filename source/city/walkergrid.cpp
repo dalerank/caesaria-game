@@ -77,9 +77,9 @@ void WalkerGrid::remove( WalkerPtr a)
 
 static int compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
 {
-  const int a = one->pos().z();
-  const int b = two->pos().z();
-  if (a<b)
+  const int a = one->mappos().y()-one->mappos().x();
+  const int b = two->mappos().y()-two->mappos().x();
+  if (a>b)
      return -1;
   if (a == b)
      return 0;
