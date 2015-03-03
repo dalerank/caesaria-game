@@ -65,6 +65,7 @@
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
+#include "video_config.hpp"
 
 #include <list>
 
@@ -98,6 +99,7 @@ public:
   void initPictures();
   void initAddons();
   void initHotkeys();
+  void initMovie();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -109,6 +111,18 @@ public:
       currentScreen(0), engine(0), gui(0)
   {}
 };
+
+void Game::Impl::initMovie()
+{
+  movie::Config& config = movie::Config::instance();
+
+  config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
+
+  if( !SETTINGS_VALUE( c3video ).toString().empty() )
+  {
+    config.addFolder( SETTINGS_VALUE( c3video ).toString() );
+  }
+}
 
 void Game::Impl::initLocale( std::string localePath )
 {
@@ -152,6 +166,11 @@ void Game::Impl::initSound()
   ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
   ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
+
+  if( !SETTINGS_VALUE( c3music ).toString().empty() )
+  {
+    ae.addFolder( SETTINGS_VALUE( c3music ).toString() );
+  }
 
   Logger::warning( "Game: load talks archive" );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
@@ -409,6 +428,7 @@ void Game::initialize()
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
+  _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();

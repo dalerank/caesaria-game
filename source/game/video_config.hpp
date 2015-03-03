@@ -13,40 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_FILM_WIDGET_H_INCLUDE_
-#define _CAESARIA_FILM_WIDGET_H_INCLUDE_
+#ifndef _CAESARIA_VIDEO_CONFIG_H_INCLUDE_
+#define _CAESARIA_VIDEO_CONFIG_H_INCLUDE_
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
+#include "vfs/directory.hpp"
 
-namespace gui
+namespace movie
 {
 
-class FilmWidget : public Window
+class Config
 {
 public:
-  FilmWidget( Widget* parent, const std::string& film );
+  static Config& instance();
 
-  virtual ~FilmWidget(void);
+  void loadAlias(const vfs::Path& filename );
+  void addFolder( vfs::Directory dir );
+  vfs::Path realPath( const std::string& movie ) const;
 
-  //virtual bool onEvent(const NEvent &event);
-
-  virtual void setText(const std::string &text);
-  virtual void setReceiver(std::string text);
-  virtual void setTitle(std::string text);
-  virtual void setTime(DateTime time);
-
-public signals:
-  Signal0<>& onClose();
+  ~Config();
 
 private:
+  Config();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-} //end namespace gui
+} //end namespace movie
 
-#endif //_CAESARIA_FILM_WIDGET_H_INCLUDE_
+#endif //_CAESARIA_VIDEO_CONFIG_H_INCLUDE_
+

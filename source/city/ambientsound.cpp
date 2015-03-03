@@ -58,7 +58,7 @@ struct SoundEmitter
     {
       if( tile->getFlag( Tile::tlWater ) )
       {
-        return "river_00001.ogg";
+        return "river_00001";
       }
       else if( tile->getFlag( Tile::tlTree ) )
       {
@@ -66,7 +66,7 @@ struct SoundEmitter
       }
       else
       {
-        return utils::format( 0xff, "emptyland_%05d.ogg", (tile->i() * tile->j()) % 3 + 1  );
+        return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
       }
     }
 

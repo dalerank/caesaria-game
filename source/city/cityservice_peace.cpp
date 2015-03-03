@@ -177,13 +177,13 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
     case events::Disaster::fire:
       title = "##city_fire_title##";
       text = "##city_fire_text##";
-      video = ":/smk/city_fire.smk";
+      video = "city_fire";
     break;
 
     case events::Disaster::riots:
       title = "##destroyed_building_title##";
       text = "##rioter_rampaging_accross_city##";
-      video = ":/smk/riot.smk";
+      video = "riot";
     break;
     }
 

@@ -41,10 +41,6 @@ static void _resolveChannelFinished( int channel )
 {
   audio::Engine::instance().stop( channel );
 }
-static bool operator<(const vfs::Directory a, const vfs::Directory b )
-{
-  return a.toString() < b.toString();
-}
 
 namespace audio
 {
@@ -68,7 +64,7 @@ public:
   typedef std::map< unsigned int, Sample > Samples;
   typedef std::map< audio::SoundType, int > Volumes;
   typedef std::map< unsigned int, std::string > Aliases;
-  typedef std::set< vfs::Directory > Folders;
+  typedef std::list< vfs::Directory > Folders;
   typedef std::map< unsigned int, ByteArray > SoundCache;
 
   Samples samples;
@@ -106,7 +102,7 @@ void Engine::loadAlias(const vfs::Path& filename)
   }
 }
 
-void Engine::addFolder(vfs::Directory dir) {  _d->folders.insert( dir ); }
+void Engine::addFolder(vfs::Directory dir) {  _d->folders.push_back( dir ); }
 
 int Engine::volume(audio::SoundType type) const
 {

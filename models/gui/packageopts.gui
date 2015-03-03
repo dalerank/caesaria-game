@@ -60,7 +60,7 @@
   }
 
   lbCaesar3Video#Label : {
-    geometry : [ 12, 105, 100, 127 ]
+    geometry : [ 12, 132, 100, 154 ]
     font : "FONT_1"
     text : "C3 smk: "
     text.align : [ "upperLeft", "center" ]

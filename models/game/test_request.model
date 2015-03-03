@@ -2,7 +2,7 @@
   name : "test_request"
   type : "city_request"
   reqtype : "good_request"
-  video : "/smk/Urgent_message2.smk"
+  video : "Urgent_message2"
   month : 24
   good : { wheat : 5 }
   success : { favour : 10 }

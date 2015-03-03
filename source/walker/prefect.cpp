@@ -189,7 +189,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
         if( _d->fumigateHouseNumber > 5 )
         {
           e = events::ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                                           events::ShowInfobox::send2scribe, "/smk/SICK.SMK" );
+                                           events::ShowInfobox::send2scribe, "sick" );
           e->dispatch();
           _d->fumigateHouseNumber = -999;
         }
