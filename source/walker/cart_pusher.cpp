@@ -14,36 +14,28 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "cart_pusher.hpp"
 
 #include "objects/metadata.hpp"
-#include "core/exception.hpp"
-#include "city/city.hpp"
-#include "game/gamedate.hpp"
-#include "core/position.hpp"
+#include "name_generator.hpp"
+#include "good/store.hpp"
+#include "pathway/path_finding.hpp"
 #include "objects/granary.hpp"
 #include "objects/warehouse.hpp"
-#include "gfx/tile.hpp"
-#include "good/goodhelper.hpp"
-#include "core/variant.hpp"
-#include "pathway/path_finding.hpp"
-#include "gfx/picture_bank.hpp"
-#include "objects/factory.hpp"
-#include "good/goodstore.hpp"
-#include "core/utils.hpp"
-#include "name_generator.hpp"
-#include "gfx/tilemap.hpp"
+#include "city/city.hpp"
 #include "core/variant_map.hpp"
-#include "core/logger.hpp"
-#include "pathway/pathway_helper.hpp"
-#include "objects/constants.hpp"
-#include "corpse.hpp"
+#include "game/gamedate.hpp"
 #include "events/removecitizen.hpp"
-#include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
+#include "corpse.hpp"
+#include "gfx/cart_animation.hpp"
+#include "objects/factory.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
+#include "core/logger.hpp"
+#include "city/trade_options.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -63,7 +55,7 @@ public:
   good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
-  Animation anim;
+  CartAnimation anim;
   int maxDistance;
   long reservationID;
   bool cantUnloadGoods;
@@ -89,10 +81,10 @@ CartPusher::CartPusher(PlayerCityPtr city )
 void CartPusher::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->anim = Animation();
+  _d->anim = CartAnimation();
 
   if( _d->consumerBuilding != NULL )
-  {
+  {   
     GranaryPtr granary = ptr_cast<Granary>(_d->consumerBuilding);
     WarehousePtr warehouse = ptr_cast<Warehouse>(_d->consumerBuilding);
     FactoryPtr factory = ptr_cast<Factory>(_d->consumerBuilding);
@@ -148,15 +140,13 @@ void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuildi
 
 BuildingPtr CartPusher::producerBuilding()
 {
-   if( _d->producerBuilding.isNull() ) 
-     THROW("ProducerBuilding is not initialized");
+   Logger::warningIf( _d->producerBuilding.isNull(), "ProducerBuilding is not initialized");
    return _d->producerBuilding;
 }
 
 BuildingPtr CartPusher::consumerBuilding()
 {
-   if( _d->consumerBuilding.isNull() ) 
-     THROW("ConsumerBuilding is not initialized");
+   Logger::warningIf( _d->consumerBuilding.isNull(), "ConsumerBuilding is not initialized");
    
    return _d->consumerBuilding;
 }
@@ -165,7 +155,7 @@ Animation& CartPusher::getCartPicture()
 {
    if( !_d->anim.isValid() )
    {
-     _d->anim = good::Helper::getCartPicture(_d->stock, direction());
+     _d->anim.load(_d->stock, direction());
    }
 
    return _d->anim;
@@ -174,7 +164,7 @@ Animation& CartPusher::getCartPicture()
 void CartPusher::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->anim = Animation();  // need to get the new graphic
+   _d->anim = CartAnimation();  // need to get the new graphic
 }
 
 void CartPusher::getPictures( gfx::Pictures& oPics)
@@ -184,34 +174,39 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
 
    switch( direction() )
    {
-   case constants::west: offset = Point( 10, -5 ); break;
-   case constants::east: offset = Point( -10, 5 ); break;
-   case constants::north: offset = Point( -5, -5 ); break;
-   case constants::south: offset = Point( 5, 5 ); break;
+   case direction::west: offset = Point( 10, -5 ); break;
+   case direction::east: offset = Point( -10, 5 ); break;
+   case direction::north: offset = Point( -5, -5 ); break;
+   case direction::south: offset = Point( 5, 5 ); break;
    default: break;
    }
 
    // depending on the walker direction, the cart is ahead or behind
    switch( direction() )
    {
-   case constants::west:
-   case constants::northWest:
-   case constants::north:
-   case constants::northEast:
+   case direction::west:
+   case direction::northWest:
+   case direction::north:
+   case direction::northEast:
       oPics.push_back( getCartPicture().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
-   case constants::east:
-   case constants::southEast:
-   case constants::south:
-   case constants::southWest:
+   case direction::east:
+   case direction::southEast:
+   case direction::south:
+   case direction::southWest:
       oPics.push_back( getMainPicture() );
       oPics.push_back( getCartPicture().currentFrame() );
    break;
 
    default:
    break;
+   }
+
+   if( _d->anim.isBack() )
+   {
+     std::iter_swap( oPics.begin(), oPics.begin() + 1);
    }
 
    foreach( it, oPics ) { it->addOffset( offset ); }
@@ -236,6 +231,12 @@ void CartPusher::_computeWalkerDestination()
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
+   //if city save goods, need find warehouse first
+   if( _city()->tradeOptions().isStacking(_d->stock.type()) )
+   {
+      destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
+   }
+
    if (destBuilding == NULL)
    {
       // try send that good to a factory
@@ -264,14 +265,14 @@ void CartPusher::_computeWalkerDestination()
    }
    else
    {
-     if( _d->producerBuilding->getAccessRoads().empty() )
+     if( _d->producerBuilding->roadside().empty() )
      {
        deleteLater();
      }
      else
      {
        Walker::wait( -1 );
-       setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
+       setPos( _d->producerBuilding->roadside().front()->pos() );
        _changeDirection();
        turn( _d->producerBuilding->pos() );
        getMainPicture();
@@ -280,7 +281,7 @@ void CartPusher::_computeWalkerDestination()
 }
 
 template< class T >
-BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
+BuildingPtr reserveShortestPath( const object::Type buildingType,
                                  good::Stock& stock, long& reservationID,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
@@ -338,9 +339,9 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
+  object::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
 
-  if (buildingType == objects::unknown)
+  if (buildingType == object::unknown)
   {
      // no factory can use this good
      return 0;
@@ -355,7 +356,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
   BuildingPtr res;
 
-  res = reserveShortestPath<Warehouse>( objects::warehouse, stock, reservationID, pathPropagator, oPathWay );
+  res = reserveShortestPath<Warehouse>( object::warehouse, stock, reservationID, pathPropagator, oPathWay );
 
   return res;
 }
@@ -372,7 +373,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return 0;
    }
 
-   res = reserveShortestPath<Granary>( objects::granery, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( object::granery, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }
@@ -435,8 +436,7 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( lc_stock ).toList() );
 
   TilePos prPos( stream.get( lc_producerPos ).toTilePos() );
-  Tile& prTile = _city()->tilemap().at( prPos );
-  _d->producerBuilding = ptr_cast<Building>( prTile.overlay() );
+  _d->producerBuilding = ptr_cast<Building>( _city()->getOverlay( prPos ));
 
   if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
   {
@@ -460,7 +460,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), 1 );
+  events::GameEventPtr e = events::RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
   e->dispatch();
 
   if( !created )

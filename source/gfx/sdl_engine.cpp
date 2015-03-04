@@ -22,6 +22,7 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include <set>
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -39,6 +40,7 @@
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
 #include "game/settings.hpp"
+#include "core/timer.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
@@ -170,8 +172,8 @@ void SdlEngine::init()
   else
   {
     window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
         _srcSize.width(), _srcSize.height(),
         flags);
   }
@@ -194,11 +196,17 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
-  //SDL_SetHint("SDL_RENDER_OPENGL_SHADERS", "0" );
-  if (isFullscreen())
+  _virtualSize = _srcSize;
+  if( isFullscreen() )
   {
+    SDL_DisplayMode mode;
+    SDL_GetDisplayMode(0, 0, &mode);
+    unsigned int fullscreenVirtualWidth = mode.w;
+    unsigned int fullscreenVirtualHeight = mode.h;
+
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
+    SDL_RenderSetLogicalSize(renderer, fullscreenVirtualWidth, fullscreenVirtualHeight );
+    _virtualSize = Size( fullscreenVirtualWidth, fullscreenVirtualHeight );
   }
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -231,9 +239,8 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  std::string versionStr = utils::format(0xff, "CaesarIA: SDL %d.%d R%d [%s:%s]",
-                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
-                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = utils::format( 0xff, "CaesarIA: SDL build %d [%s:%s]",
+                                          CAESARIA_BUILD_NUMBER, CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
@@ -308,9 +315,15 @@ void SdlEngine::endRenderFrame()
 {
   if( getFlag( Engine::debugInfo ) )
   {
-    std::string debugText = utils::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
-    _d->fpsText->fill( 0, Rect() );
-    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+    static int timeCount = 0;
+
+    if( DebugTimer::ticks() - timeCount > 500 )
+    {
+      std::string debugText = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
+      _d->fpsText->fill( 0, Rect() );
+      _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+      timeCount = DebugTimer::ticks();
+    }
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
   }
 
@@ -552,12 +565,19 @@ Engine::Modes SdlEngine::modes() const
   /* Get available fullscreen/hardware modes */
   int num = SDL_GetNumDisplayModes(0);
 
+  std::set<unsigned int> uniqueModes;
+
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
-      ret.push_back(Size(mode.w, mode.h));
+      unsigned int modeHash = (mode.w << 16) + mode.h;
+      if( uniqueModes.count( modeHash ) == 0)
+      {
+        ret.push_back(Size(mode.w, mode.h));
+        uniqueModes.insert( modeHash );
+      }
     }
   }
 

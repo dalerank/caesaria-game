@@ -61,4 +61,4 @@ inline void v_clear(Variant2Impl *d, T* = 0)
   delete static_cast< T* >(d->data.ptr);
 }
 
-#endif // __OPENCAESAR3_VARIANTPRIVATE_H_INCLUDED__
+#endif // __CAESARIA_VARIANTPRIVATE_H_INCLUDED__

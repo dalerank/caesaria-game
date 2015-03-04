@@ -80,7 +80,7 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   std::string rcname = name.substr(0, dot_pos);
 
   // first: we deallocate the current picture, if any
-  unsigned int picId = utils::hash( rcname );
+  unsigned int picId = Hash( rcname );
   Picture* ptrPic = 0;
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
@@ -172,7 +172,7 @@ void PictureBank::addAtlas( const std::string& filename )
     VariantMap items = options.get( framesSection ).toMap();
     foreach( i, items )
     {
-      unsigned int hash = utils::hash( i->first );
+      unsigned int hash = Hash( i->first );
       atlas.images.insert( hash );
     }
 
@@ -187,7 +187,7 @@ void PictureBank::loadAtlas(const std::string& filename)
 
 Picture& PictureBank::getPicture(const std::string &name)
 {
-  const unsigned int hash = utils::hash( name );
+  const unsigned int hash = Hash( name );
   //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
@@ -254,7 +254,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
-  unsigned int hash = utils::hash( name );
+  unsigned int hash = Hash( name );
   foreach( i, atlases )
   {
     bool found = i->find( hash );

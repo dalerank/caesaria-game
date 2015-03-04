@@ -435,13 +435,13 @@ public:
     pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::canBuildRoad ) );
 
     TilesArray tiles = sideTiles( startSide, oTilemap );
-    tiles = tiles.walkableTiles( true );
+    tiles = tiles.walkables( true );
 
     if( tiles.empty() )
       return Pathway();
 
     TilesArray otherTiles = sideTiles( endSide, oTilemap );
-    otherTiles = otherTiles.walkableTiles( true );
+    otherTiles = otherTiles.walkables( true );
 
     return findWay( tiles, otherTiles );
   }
@@ -541,7 +541,7 @@ static void __createRivers(Game& game )
 
       foreach( it, wayTiles )
       {
-        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::river );
+        OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
 
         //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
         (*it)->setPicture( Picture::getInvalid() );
@@ -550,7 +550,7 @@ static void __createRivers(Game& game )
 
         bool isWater = (*it)->getFlag( Tile::tlWater );
 
-        CityAreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+        city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
         overlay->build( info );
         oCity->overlays().push_back( overlay );
 
@@ -587,28 +587,59 @@ static void __createRoad(Game& game )
       break;
   }
 
+  BorderInfo borderInfo = oCity->borderInfo();
+  int lastIndex = oTilemap.size()-1;
+  TilesArray borderTiles = oTilemap.getRectangle( TilePos(0,0), TilePos(lastIndex,lastIndex) );
   if( way.isValid() )
   {
     TilesArray wayTiles = way.allTiles();
 
     foreach( it, wayTiles )
     {
-      TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::road );
+      OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
       Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( imgid::fromResource( pic.name() ) );
 
-      CityAreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+      city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
       overlay->build( info );
       oCity->overlays().push_back( overlay );
     }
 
-    BorderInfo borderInfo = oCity->borderInfo();
-
     borderInfo.roadEntry = way.startPos();
     borderInfo.roadExit = way.stopPos();
-    oCity->setBorderInfo( borderInfo );
+  }
+  else
+  {
+    TilesArray terrain = borderTiles.terrains();
+
+    borderInfo.roadEntry = terrain.random()->pos();
+    borderInfo.roadExit = terrain.random()->pos();
+  }
+
+  TilesArray water = borderTiles.waters();
+  borderInfo.boatEntry = water.random()->pos();
+  borderInfo.boatExit = water.random()->pos();
+
+  oCity->setBorderInfo( borderInfo );
+}
+
+void __createMeadows( Game& game )
+{
+  PlayerCityPtr oCity = game.city();
+  Tilemap& oTilemap = oCity->tilemap();
+
+  TilesArray tiles = oTilemap.allTiles();
+  int fieldSize = math::max<int>( tiles.size() / 10000.f, 1 );
+  int maxMeadowTiles = pow( fieldSize, 2);
+  for( int k=0; k < maxMeadowTiles; k++ )
+  {
+    Tile* tile = tiles.random();
+    TilesArray meadows = oTilemap.getArea( math::random( fieldSize ), tile->pos() );
+    meadows = meadows.terrains();
+
+    foreach( it, meadows ) (*it)->setFlag( Tile::tlMeadow, true );
   }
 }
 
@@ -731,9 +762,19 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture pic = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
-        tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        Picture land = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+        tile.setPicture( land );
+
+        Picture tree = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
+        tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
+
+        OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
+        if( overlay != NULL )
+        {
+          city::AreaInfo info = { oCity, tile.pos(), TilesArray() };
+          overlay->build( info );
+          oCity->overlays().push_back( overlay );
+        }
       }
       break;
 
@@ -775,7 +816,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __finalizeMap( game, passCheckInsideCornerTiles );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
-
+  __createMeadows( game );
   __finalizeMap( game, 0xff );
 
   //update pathfinder map

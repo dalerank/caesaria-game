@@ -30,6 +30,8 @@
 #include "freeplay_finalizer.hpp"
 #include "steam.hpp"
 
+using namespace scene;
+
 namespace gamestate
 {
 
@@ -194,7 +196,7 @@ bool GameLoop::update(gfx::Engine* engine)
 
   _screen->update( *engine );
 
-  if( _game->city()->tilemap().direction() == constants::north )
+  if( _game->city()->tilemap().direction() == direction::north )
   {
     if( !_game->isPaused() )
     {

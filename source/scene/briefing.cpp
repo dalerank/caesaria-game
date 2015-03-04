@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "briefing.hpp"
 #include "gui/texturedbutton.hpp"
@@ -26,6 +26,7 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 
 using namespace gfx;
@@ -93,6 +94,7 @@ public:
 
   void resolveSelecMission( std::string mission, std::string title )
   {
+    btnContinue->setEnabled( true );
     cityCaption->setText( title );
     fileMap = mission;
   }
@@ -136,26 +138,35 @@ void Briefing::initialize()
 
     std::string mapToLoad = vm[ "image" ].toString();
     pic = Picture::load( mapToLoad );
-    gui::Image* img = new gui::Image( mapback, Point( 192, 144 ), pic );
+    if( !pic.isValid() )
+    {
+      pic = Picture::load( "europe01", 2 );
+    }
+
+    Point startImgPos( 192, 144 );
+    const unsigned int textYOffset = 400;
+    new gui::Image( mapback, startImgPos, pic );
 
     VariantMap items = vm[ "items" ].toMap();
     foreach( it, items )
     {
       VariantMap miss_vm = it->second.toMap();
       std::string title = miss_vm.get( "title" ).toString();
-      Point location = miss_vm.get( "location" ).toPoint();
+      Point location = miss_vm.get( "location" ).toPoint() + startImgPos;
       std::string mission = miss_vm.get( "mission" ).toString();
-      gui::MissionButton* btn = new gui::MissionButton( img, location, title, mission );
-      CONNECT( btn, onMissionSelect, _d.data(), Impl::resolveSelecMission );
+      gui::MissionButton* btn = new gui::MissionButton( mapback, location, title, mission );
+      CONNECT( btn, onMissionSelect, _d.data(), Impl::resolveSelecMission );      
     }
 
     std::string missionTt = vm.get( "title" ).toString();
-    _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 200 + img->width(), 600 ), missionTt );
+    _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
     _d->missionTitle->setFont( Font::create( FONT_5 ));
-    _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + img->width(), 630 ) );
+    _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + textYOffset, 630 ) );
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
+    _d->cityCaption->setText( _("##briefing_select_next_mission##") );
 
     _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
+    _d->btnContinue->setEnabled( false );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }
   else
@@ -167,6 +178,6 @@ void Briefing::initialize()
 
 int Briefing::result() const{  return _d->result; }
 bool Briefing::isStopped() const{  return _d->isStopped;}
-std::string Briefing::getMapName() const{  return _d->fileMap;}
+std::string Briefing::getMapName() const{ return _d->fileMap; }
 
 }//end namespace scene

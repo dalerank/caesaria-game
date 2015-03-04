@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "watersupply.hpp"
 
@@ -35,7 +37,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)
 
 class WaterSource::Impl
 {
@@ -43,6 +45,7 @@ public:
   int  water;
   bool lastWaterState;
   int  daysWithoutWater;
+  Point fullOffset;
   bool isRoad;
   std::string errorStr;
 };
@@ -79,8 +82,15 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
+void Reservoir::initialize(const MetaData& mdata)
+{
+  WaterSource::initialize( mdata );
+
+  _d->fullOffset = mdata.getOption( "fullOffset" );
+}
+
 Reservoir::Reservoir()
-    : WaterSource( objects::reservoir, Size( 3 ) )
+    : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
   setPicture( ResourceGroup::utilitya, 34 );
@@ -91,14 +101,14 @@ Reservoir::Reservoir()
   _animationRef().load( ResourceGroup::utilitya, 35, 8);
   _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
   _animationRef().setDelay( 11 );
-  _animationRef().setOffset( Point( 47, 63 ) );
+  //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPicturesRef().resize(1);
 }
 
 Reservoir::~Reservoir(){}
 
-bool Reservoir::build( const CityAreaInfo& info )
+bool Reservoir::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 
@@ -163,7 +173,7 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
-bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
+bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
@@ -173,22 +183,22 @@ bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
   if( nearWater )
   {
     thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 35 )  );
-    thisp->_fgPicturesRef().back().setOffset( 47, -10+picture().offset().y() );
+    thisp->_fgPicturesRef().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
 }
 
-bool Reservoir::isNeedRoadAccess() const{  return false; }
+bool Reservoir::isNeedRoad() const{  return false; }
 
-WaterSource::WaterSource(const Type type, const Size& size )
+WaterSource::WaterSource(const object::Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
   _d->water = 0;
   _d->lastWaterState = false;
 
-  setState( Building::inflammability, 0 );
-  setState( Building::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 WaterSource::~WaterSource(){}
@@ -266,14 +276,14 @@ void WaterSource::load(const VariantMap &stream)
 }
 
 
-TilePos Reservoir::entry(constants::Direction direction)
+TilePos Reservoir::entry(Direction direction)
 {
   switch( direction )
   {
-  case north: return pos() + TilePos( 1, 2 );
-  case east: return pos() + TilePos( 2, 1 );
-  case south: return pos() + TilePos( 1, 0 );
-  case west: return pos() + TilePos( 0, 1 );
+  case direction::north: return pos() + TilePos( 1, 2 );
+  case direction::east: return pos() + TilePos( 2, 1 );
+  case direction::south: return pos() + TilePos( 1, 0 );
+  case direction::west: return pos() + TilePos( 0, 1 );
   default: return TilePos( -1, -1 );
   }
 }

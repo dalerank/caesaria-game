@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "game.hpp"
 #include "scene/logo.hpp"
@@ -32,7 +32,6 @@
 #include "gui/environment.hpp"
 #include "settings.hpp"
 #include "vfs/filesystem.hpp"
-#include "enums.hpp"
 #include "gfx/animation_bank.hpp"
 #include "vfs/entries.hpp"
 #include "world/empire.hpp"
@@ -47,9 +46,8 @@
 #include "vfs/directory.hpp"
 #include "core/locale.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
-#include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
@@ -62,14 +60,17 @@
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
+#include "addon_manager.hpp"
+#include "video_config.hpp"
 
 #include <list>
 
 using namespace gfx;
+using namespace scene;
 
 class Game::Impl
 {
@@ -96,7 +97,9 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initAddons();
   void initHotkeys();
+  void initMovie();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -108,6 +111,18 @@ public:
       currentScreen(0), engine(0), gui(0)
   {}
 };
+
+void Game::Impl::initMovie()
+{
+  movie::Config& config = movie::Config::instance();
+
+  config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
+
+  if( !SETTINGS_VALUE( c3video ).toString().empty() )
+  {
+    config.addFolder( SETTINGS_VALUE( c3video ).toString() );
+  }
+}
 
 void Game::Impl::initLocale( std::string localePath )
 {
@@ -150,6 +165,12 @@ void Game::Impl::initSound()
   ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
   ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
   ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
+  ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
+
+  if( !SETTINGS_VALUE( c3music ).toString().empty() )
+  {
+    ae.addFolder( SETTINGS_VALUE( c3music ).toString() );
+  }
 
   Logger::warning( "Game: load talks archive" );
   audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
@@ -239,10 +260,17 @@ void Game::Impl::initPictures()
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
 }
 
+void Game::Impl::initAddons()
+{
+  addon::Manager& am = addon::Manager::instance();
+  am.load( vfs::Directory( std::string( ":/addons" ) ) );
+}
+
 void Game::Impl::initHotkeys()
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
   hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
+
   CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
@@ -301,6 +329,13 @@ bool Game::load(std::string filename)
   Logger::warning( "Game: reseting variables" );
   reset();
 
+  scene::SplashScreen screen;
+
+  screen.initialize();
+  bool usingOldgfx = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
+  screen.update( *_d->engine );
+
   vfs::Path fPath( filename );
   if( !fPath.exist() )
   {
@@ -329,6 +364,8 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: try find loader" );
   game::Loader loader;
+  loader.onUpdate().connect( &screen, &scene::SplashScreen::setText );
+
   bool loadOk = loader.load( fPath, *this );
 
   if( !loadOk )
@@ -347,13 +384,13 @@ bool Game::load(std::string filename)
   }
 
   Logger::warning( "Game: calculate road access for buildings" );
-  TileOverlayList& llo = _d->city->overlays();
+  OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );
     if( construction.isValid() )
     {
-      construction->computeAccessRoads();
+      construction->computeRoadside();
     }
   }
 
@@ -361,6 +398,8 @@ bool Game::load(std::string filename)
   Pathfinder::instance().update( _d->city->tilemap() );
 
   Logger::warning( "Game: load finished" );
+
+  screen.exitScene( scene::SplashScreen::hideDevText );
   return true;
 }
 
@@ -378,16 +417,18 @@ void Game::initialize()
   if( cellWidth != 30 && cellWidth != 60 )
   {
     cellWidth = 30;
-  }
+  }    
 
   tilemap::initTileBase( cellWidth );
   //mount default rcpath folder
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
+  _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
+  _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();
@@ -421,6 +462,7 @@ void Game::initialize()
 
   screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
+  NameGenerator::instance().setLanguage( SETTINGS_VALUE( language ).toString() );
 
   screen.setText( "##initialize_house_specification##" );
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
@@ -437,7 +479,7 @@ void Game::initialize()
   screen.setText( "##ready_to_game##" );
 
   if( game::Settings::get( "no-fade" ).isNull() )
-    screen.exitScene();
+    screen.exitScene( scene::SplashScreen::showDevText );
 
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
@@ -452,17 +494,20 @@ bool Game::exec()
       delete _d->currentScreen;
       _d->currentScreen = 0;
     }
-
     return true;
-  }
+  }    
 
   Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
     case SCREEN_MENU:
     {
       _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
-    } break;
+      am.initAddons4level( addon::mainMenu );
+    }
+    break;
+
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
@@ -472,15 +517,23 @@ bool Game::exec()
                                                         _d->saveTime, _d->timeX10,
                                                         _d->timeMultiplier, _d->manualTicksCounterX10,
                                                         _d->nextFilename, _d->restartFile );
-    } break;
+      am.initAddons4level( addon::level );
+    }
+    break;
+
     case SCREEN_BRIEFING:
     {
       _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
-    } break;
+      am.initAddons4level( addon::briefing );
+    }
+    break;
+
+    case SCREEN_QUIT:
+      Logger::warning( "game: prepare for quit" );
+    break;
 
     default:
-    Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-    //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;
@@ -511,12 +564,10 @@ void Game::clear()
   WalkerDebugQueue::print();
   WalkerDebugQueue::instance().clear();
 
-  gfx::OverlayDebugQueue::print();
-  gfx::OverlayDebugQueue::instance().clear();
+  OverlayDebugQueue::print();
+  OverlayDebugQueue::instance().clear();
 #endif
 }
 
-void Game::setNextScreen(ScreenType screen)
-{
-  _d->nextScreen = screen;
-}
+void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}
+

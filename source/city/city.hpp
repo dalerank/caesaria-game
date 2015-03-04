@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
-// Copyright 2012-2014 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2015 Gregoire Athanase, gathanase@gmail.com
 
 #ifndef __CAESARIA_PLAYERCITY_H_INCLUDED__
 #define __CAESARIA_PLAYERCITY_H_INCLUDED__
@@ -34,8 +34,8 @@ namespace city
 class Funds;
 class VictoryConditions;
 
-namespace trade { class Options; }
-namespace development { class Options; }
+  namespace trade { class Options; }
+  namespace development { class Options; }
 }
 
 struct BorderInfo
@@ -50,7 +50,8 @@ class PlayerCity : public world::City
 {
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
-                 forceBuild, warningsEnabled, updateTiles } OptionType;
+                 forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
+                 fireKoeff, barbarianAttack, c3gameplay } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
@@ -68,7 +69,7 @@ public:
 
   const city::SrvcList& services() const;
 
-  gfx::TileOverlayList& overlays();
+  OverlayList& overlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -103,8 +104,8 @@ public:
   virtual void load( const VariantMap& stream );
 
   // add construction
-  void addOverlay( gfx::TileOverlayPtr overlay);
-  gfx::TileOverlayPtr getOverlay( const TilePos& pos ) const;
+  void addOverlay( OverlayPtr overlay);
+  OverlayPtr getOverlay( const TilePos& pos ) const;
 
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );

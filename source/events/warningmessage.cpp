@@ -49,7 +49,7 @@ void WarningMessage::_exec(Game& game, unsigned int)
     return;
 
   gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
-                                      game.gui()->rootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
+                                      game.gui()->findWidget( gui::WindowMessageStack::defaultID ) );
 
   if( window && !_text.empty() )
   {

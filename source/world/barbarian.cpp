@@ -17,7 +17,7 @@
 
 #include "barbarian.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "merchant.hpp"
@@ -39,6 +39,7 @@ class Barbarian::Impl
 public:  
   typedef enum { findAny, go2object, hunting, goaway } Mode;
   Mode mode;
+  int minPop4attack;
   VariantMap options;
 };
 
@@ -78,6 +79,7 @@ void Barbarian::updateStrength(int value)
 }
 
 int Barbarian::viewDistance() const { return 60; }
+void Barbarian::setMinpop4attack(int value) { _d->minPop4attack = value; }
 
 bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
 {
@@ -122,8 +124,12 @@ void Barbarian::_check4attack()
      std::map< int, CityPtr > citymap;
 
      DateTime currentDate = game::Date::current();
+
      foreach( it, cities )
      {
+       if( (*it)->population() < _d->minPop4attack )
+         continue;
+
        float distance = location().distanceTo( (*it)->location() );
        int month2lastAttack = math::clamp<int>( 12 - (*it)->lastAttack().monthsTo( currentDate ), 0, 12 );
        citymap[ month2lastAttack * 100 + (int)distance ] = *it;
@@ -215,6 +221,7 @@ Barbarian::Barbarian( EmpirePtr empire )
  : Army( empire ), _d( new Impl )
 {
   _d->mode = Impl::findAny;
+  _d->minPop4attack = 1000;
   setSpeed( 4.f );
 
   _animation().clear();

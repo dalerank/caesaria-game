@@ -26,9 +26,8 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
-#include "game/enums.hpp"
-#include "objects/house_level.hpp"
-#include "city/helper.hpp"
+#include "objects/house_spec.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
@@ -61,6 +60,7 @@ public:
     _mood = 0;
     _xWrathOffset = 400;
 
+    _wrathPic = Picture::load( ResourceGroup::panelBackground, 334 );
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
@@ -78,11 +78,16 @@ public:
       rfont.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
       fontBlack.draw( *texture, utils::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
-      rfont.draw( *texture, utils::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
-      rfont.draw( *texture, utils::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
-      rfont.draw( *texture, utils::format( 0xff, "%d", _lastFestival ), 350, 0 );
+      rfont.draw( *texture, utils::i2str( _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, utils::i2str( _bigTempleCount ), 280, 0 );
 
-      rfont.draw( *texture, _( _divinity->moodDescription() ), _xWrathOffset + _divinity->wrathPoints() / 15 * 15, 0 );
+#ifdef DEBUG
+      rfont.draw( *texture, utils::format( 0xff, "%d/f_%d", _lastFestival, _divinity->relation() ), 350, 0 );
+#else
+      rfont.draw( *texture, utils::i2str( _lastFestival ), 350, 0 );
+#endif
+
+      rfont.draw( *texture, _( _divinity->moodDescription() ), _xWrathOffset + _divinity->wrathPoints() / 15 * 15, 0 );            
     }
     else
     {
@@ -95,18 +100,18 @@ public:
   {
     Label::draw( painter );
 
-    Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
     if( _divinity.isValid() )
     {
       for( int k=0; k < _divinity->wrathPoints() / 15; k++ )
       {
-        painter.draw( pic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), &absoluteClippingRectRef() );
+        painter.draw( _wrathPic, absoluteRect().lefttop() + Point( _xWrathOffset + k * 15, 0), &absoluteClippingRectRef() );
       }
-    }
+    } 
   }
 
 private:
   DivinityPtr _divinity;
+  Picture _wrathPic;
   int _smallTempleCount;
   int _bigTempleCount;
   int _lastFestival;
@@ -132,14 +137,12 @@ public:
     int bigTempleCount;
   };
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type small, const TileOverlay::Type big )
+  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type small, const object::Type big )
   {
-    city::Helper helper( city );
-
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = helper.find<ServiceBuilding>( small ).size();
-    ret.bigTempleCount = helper.find<ServiceBuilding>( big ).size();
+    ret.smallTemplCount = city::statistic::findo<ServiceBuilding>( city, small ).size();
+    ret.bigTempleCount = city::statistic::findo<ServiceBuilding>( city, big ).size();
 
     return ret;
   }
@@ -156,27 +159,27 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
-  Impl::InfrastructureInfo info = _d->getInfo( city, objects::small_ceres_temple, objects::big_ceres_temple );
+  Impl::InfrastructureInfo info = _d->getInfo( city, object::small_ceres_temple, object::big_ceres_temple );
   _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), rome::Pantheon::ceres(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_neptune_temple, objects::big_neptune_temple );
+  info = _d->getInfo( city, object::small_neptune_temple, object::big_neptune_temple );
   _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), rome::Pantheon::neptune(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_mercury_temple, objects::big_mercury_temple );
+  info = _d->getInfo( city, object::small_mercury_temple, object::big_mercury_temple );
   _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), rome::Pantheon::mercury(),
                                              info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_mars_temple, objects::big_mars_temple );
+  info = _d->getInfo( city, object::small_mars_temple, object::big_mars_temple );
   _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), rome::Pantheon::mars(),
                                           info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::small_venus_temple, objects::big_venus_temple );
+  info = _d->getInfo( city, object::small_venus_temple, object::big_venus_temple );
   _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), rome::Pantheon::venus(),
                                            info.smallTemplCount, info.bigTempleCount );
 
-  info = _d->getInfo( city, objects::oracle, objects::oracle );
+  info = _d->getInfo( city, object::oracle, object::oracle );
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
@@ -203,8 +206,7 @@ void Religion::_showHelp()
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
-  city::Helper helper( city );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findo<House>( city, object::house );
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;

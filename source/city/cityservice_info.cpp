@@ -20,10 +20,10 @@
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
 #include "city/helper.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
@@ -34,11 +34,14 @@
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "cityservice_military.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Info,info)
 
 CAESARIA_LITERALCONST(lastHistory)
 CAESARIA_LITERALCONST(allHistory)
@@ -114,6 +117,7 @@ void Info::timeStep(const unsigned int time )
     last[ favour      ] = _city()->favour();
     last[ prosperity  ] = _city()->prosperity();
     last[ monthWtWar  ] = statistic::months2lastAttack( _city() );
+    last[ blackHouses ] = statistic::blackHouses( _city() );
     last[ peace       ] = 0;
 
     PeacePtr peaceSrvc;
@@ -130,8 +134,7 @@ void Info::timeStep(const unsigned int time )
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
@@ -335,8 +338,8 @@ VariantList Info::Parameters::save() const
 {
   VariantList vl;
   for( int k=0; k < Info::paramsCount; k++  )
-    {
-      vl.push_back( (*this)[ k ] );
+  {
+    vl.push_back( (*this)[ k ] );
   }
 
   return vl;

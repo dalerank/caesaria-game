@@ -569,6 +569,7 @@ void GlEngine::init()
 
   _d->throwIfnoWindow();
   _d->viewportSize = _srcSize;
+  _virtualSize = _srcSize;
   _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);

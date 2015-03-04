@@ -21,6 +21,7 @@
 #include <vector>
 #include <string>
 #include "core/math.hpp"
+#include "core/foreach.hpp"
 
 class StringArray : public std::vector< std::string >
 {
@@ -30,6 +31,17 @@ public:
     return empty() ? "" : (*this)[ (int)math::random( size() ) ];
   }
 
+  bool contains( const std::string& str )
+  {
+    foreach( it, *this )
+    {
+      if( *it == str )
+        return true;
+    }
+
+    return false;
+  }
+
   inline StringArray& operator << ( const std::string& a )
   {
     push_back( a );
@@ -37,4 +49,4 @@ public:
   }
 };
 
-#endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__
+#endif //__CAESARIA_STRINGARRAY_H_INCLUDED__

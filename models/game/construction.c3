@@ -22,6 +22,7 @@
 
   roadBlock : {
     cost : 10
+    c3logic : false
     class : "road"
     image : [ "roadBlock", 1 ]
   }
@@ -298,6 +299,7 @@
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 6
     image : [ "security", 1 ]
+    animation : { rc : "security", start : 2, count : 10, offset : [ 20, 36 ], delay : 4 }
     class : "security"
   },  
  
@@ -327,7 +329,7 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
+    image : [ "security", 45 ]
     employers : 2
     class : "religion"
     sound : [ "templeceres", 1 ]
@@ -338,10 +340,9 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    sound : [ "templeneptune", 1 ]
-    image : [ "smlneptune", 1 ]
-    animation : { rc : "smlneptune", start : 2, count : 6, offset : [ 35, 34 ], delay : 3 }
+    image : [ "security", 47 ]
     image.offset : [-1, -1]
+    sound : [ "templeneptune", 1 ]
   }, 
   
   small_mercury_temple : {
@@ -349,9 +350,8 @@
     desirability : { base : 4, 	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlmercury", 1 ]
+    image : [ "security", 49 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlmercury", start : 2, count : 6, offset : [ 38, 32 ], delay : 3 }
     sound : [ "templemercury", 1 ]
   },
  
@@ -360,9 +360,8 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlmars", 1 ]
+    image : [ "security", 51 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlmars", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templemars", 1 ]
   },
 
@@ -371,9 +370,8 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    image : [ "smlvenus", 1 ]
+    image : [ "security", 53 ]
     image.offset : [-1, -1]
-    animation : { rc : "smlvenus", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templevenus", 1 ]
   },
  
@@ -382,6 +380,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 46 ]
     sound : [ "templeceres", 2 ]
   }, 
   
@@ -390,6 +389,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 48 ]
     sound : [ "templeneptune", 2 ]
   }, 
   
@@ -398,6 +398,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 50 ]
     sound : [ "templemercury", 2 ]
   },
   
@@ -406,6 +407,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "security", 52 ]
     sound : [ "templemars", 2 ]
   },
   
@@ -413,6 +415,7 @@
     cost : 150,
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
+    image : [ "security", 54 ]
     class : "religion"
     sound : [ "templevenus", 2 ]
   }, 
@@ -423,6 +426,7 @@
     employers : 5
     class : "food"
     image : [ "commerce", 1 ]
+    animation : { rc : "commerce", start : 2, count : 10, offset : [ 20, 54 ], delay : 4 }
     sound : [ "market", 1 ]
   }, 
 
@@ -490,8 +494,9 @@
   engineering_post : {
     cost : 30,
     desirability : { base : 0, 	range : 0,	step : 0 }
-    employers : 5
+    employers : 5   
     image : [ "transport", 56 ]
+    animation : { rc : "transport", start : 57, count : 10, offset : [ 10, 42 ], delay : 4 }
     class : "engineer"
   },
 
@@ -546,6 +551,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
 

@@ -19,14 +19,14 @@
 #include "gfx/helper.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/foreach.hpp"
 #include "walker/seamerchant.hpp"
 #include "core/foreach.hpp"
 #include "walker/cart_supplier.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "constants.hpp"
 #include "events/event.hpp"
 #include "game/gamedate.hpp"
@@ -35,19 +35,19 @@
 #include "pathway/pathway_helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
+using namespace direction;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::dock, Dock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::dock, Dock)
 
 class Dock::Impl
 {
 public:
   enum { southPic=29, northPic=5, westPic=41, eastPic=17 };
 
-  good::SimpleStore exportGoods;
-  good::SimpleStore importGoods;
-  good::SimpleStore requestGoods;
+  good::Storage exportGoods;
+  good::Storage importGoods;
+  good::Storage requestGoods;
   DateTime dateSendGoods;
   std::vector<int> saveTileInfo;
   Direction direction;
@@ -60,7 +60,7 @@ public:
   void initStores();
 };
 
-Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
+Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 {
   // dock pictures
   // transport 5        animation = 6~16
@@ -76,7 +76,7 @@ Dock::Dock(): WorkingBuilding( objects::dock, Size(3) ), _d( new Impl )
   _setClearAnimationOnStop( false );
 }
 
-bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
+bool Dock::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -84,10 +84,10 @@ bool Dock::canBuild( const CityAreaInfo& areaInfo ) const
 
   const_cast< Dock* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != noneDirection );
+  return (is_constructible && direction != direction::none );
 }
 
-bool Dock::build( const CityAreaInfo& info )
+bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );
 
@@ -109,12 +109,10 @@ bool Dock::build( const CityAreaInfo& info )
 
 void Dock::destroy()
 {
-  city::Helper helper( _city() );
-
-  TilesArray area = helper.getArea( this );
+  TilesArray tiles = area();
 
   int index=0;
-  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, tiles ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   WorkingBuilding::destroy();
 }
@@ -153,7 +151,7 @@ void Dock::load(const VariantMap& stream)
 {
   Building::load( stream );
 
-  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), (int)southWest ).toInt();
+  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), direction::southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
 
   Variant tmp = stream.get( "exportGoods" );
@@ -177,8 +175,7 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  city::Helper helper( _city() );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -189,10 +186,10 @@ const Tile& Dock::landingTile() const
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
-  case south: offset = TilePos( 0, -1 ); break;
-  case west: offset = TilePos( -1, 0 ); break;
-  case north: offset = TilePos( 0, 3 ); break;
-  case east: offset = TilePos( 3, 0 ); break;
+  case direction::south: offset = TilePos( 0, -1 ); break;
+  case direction::west: offset = TilePos( -1, 0 ); break;
+  case direction::north: offset = TilePos( 0, 3 ); break;
+  case direction::east: offset = TilePos( 3, 0 ); break;
 
   default: break;
   }
@@ -202,10 +199,9 @@ const Tile& Dock::landingTile() const
 
 int Dock::queueSize() const
 {
-  city::Helper helper( _city() );
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant,
-                                                        pos() - offset, pos() + offset );
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant,
+                                                                   pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
@@ -219,15 +215,14 @@ int Dock::queueSize() const
 const Tile& Dock::queueTile() const
 {
   TilePos offset( 3, 3 );
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
+  TilesArray tiles = city::statistic::tiles( _city(), pos() - offset, pos() + offset );
 
   foreach( it, tiles )
   {
     if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
       bool needMove;
-      bool busyTile = helper.isTileBusy<SeaMerchant>( (*it)->pos(), WalkerPtr(), needMove );
+      bool busyTile = city::statistic::isTileBusy<SeaMerchant>( _city(), (*it)->pos(), WalkerPtr(), needMove );
       if( !busyTile )
       {
         return *(*it);
@@ -302,10 +297,10 @@ void Dock::_updatePicture(Direction direction)
   Point offset;
   switch( direction )
   {
-  case south: index = Impl::southPic; offset = Point( 35, 51 ); break;
-  case north: index = Impl::northPic; offset = Point( 107, 61 );break;
-  case west:  index = Impl::westPic;  offset = Point( 48, 70 ); break;
-  case east:  index = Impl::eastPic;  offset = Point( 62, 36 ); break;
+  case direction::south: index = Impl::southPic; offset = Point( 35, 51 ); break;
+  case direction::north: index = Impl::northPic; offset = Point( 107, 61 );break;
+  case direction::west:  index = Impl::westPic;  offset = Point( 48, 70 ); break;
+  case direction::east:  index = Impl::eastPic;  offset = Point( 62, 36 ); break;
 
   default: break;
   }
@@ -360,7 +355,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return east; }
 
-  return noneDirection;
+  return direction::none;
 }
 
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
@@ -387,30 +382,30 @@ bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 
 void Dock::Impl::initStores()
 {
-  importGoods.setCapacity( good::goodCount, 1000 );
-  exportGoods.setCapacity( good::goodCount, 1000 );
-  requestGoods.setCapacity( good::goodCount, 1000 );
+  importGoods.setCapacity( good::any(), 1000 );
+  exportGoods.setCapacity( good::any(), 1000 );
+  requestGoods.setCapacity( good::any(), 1000 );
 
-  importGoods.setCapacity( 1000 * good::goodCount.toInt() );
-  exportGoods.setCapacity( 1000 * good::goodCount.toInt() );
-  requestGoods.setCapacity( 1000 * good::goodCount.toInt() );
+  importGoods.setCapacity( 4000 );
+  exportGoods.setCapacity( 4000 );
+  requestGoods.setCapacity( 4000 );
 }
 
 void Dock::_tryDeliverGoods()
 {
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
     if( walkers().size() > 2 )
     {
       return;
     }
 
-    int qty = std::min( _d->importGoods.getMaxRetrieve( gtype ), 400 );
+    int qty = std::min( _d->importGoods.getMaxRetrieve( *gtype ), 400 );
 
     if( qty > 0 )
     {
       CartPusherPtr walker = CartPusher::create( _city() );
-      good::Stock pusherStock( gtype, qty, 0 );
+      good::Stock pusherStock( *gtype, qty, 0 );
       _d->importGoods.retrieve( pusherStock, qty );
       walker->send2city( BuildingPtr( this ), pusherStock );
 
@@ -437,29 +432,29 @@ void Dock::_tryDeliverGoods()
 
 void Dock::_tryReceiveGoods()
 {
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
     if( walkers().size() >= 2 )
     {
       return;
     }
 
-    if( _d->requestGoods.qty( gtype ) > 0 )
+    if( _d->requestGoods.qty( *gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _city() );
-      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );
-      cart->send2city( this, gtype, qty );
+      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( *gtype ) );
+      cart->send2city( this, *gtype, qty );
 
       if( !cart->isDeleted() )
       {
         addWalker( cart.object() );
-        good::Stock tmpStock( gtype, qty, 0 );
+        good::Stock tmpStock( *gtype, qty, 0 );
         _d->requestGoods.retrieve( tmpStock, qty );
         return;
       }
       else
       {
-        _d->requestGoods.setQty( gtype, 0 );
+        _d->requestGoods.setQty( *gtype, 0 );
       }
     }
   }

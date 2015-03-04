@@ -32,7 +32,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::senate, Senate)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::senate, Senate)
 
 class Senate::Impl
 {
@@ -41,7 +41,7 @@ public:
   std::string errorStr;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), _d( new Impl )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
@@ -57,15 +57,14 @@ Senate::Senate() : ServiceBuilding( Service::senate, objects::senate, Size(5) ),
   _fgPicturesRef()[ 3 ].setOffset( 230, -10 );
 }
 
-bool Senate::canBuild( const CityAreaInfo& areaInfo ) const
+bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 {
   _d->errorStr = "";
   bool mayBuild = ServiceBuilding::canBuild( areaInfo );
 
   if( mayBuild )
   {
-    city::Helper helper( areaInfo.city );
-    bool isSenatePresent = !helper.find<Building>(objects::senate).empty();
+    bool isSenatePresent = !city::statistic::findo<Building>( areaInfo.city, object::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
@@ -96,7 +95,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-bool Senate::build( const CityAreaInfo& info )
+bool Senate::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
   _updateUnemployers();

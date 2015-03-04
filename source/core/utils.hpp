@@ -21,6 +21,8 @@
 #include <string>
 #include <cstdarg>
 #include "stringarray.hpp"
+#include "smartlist.hpp"
+#include "hash.hpp"
 
 class Font;
 
@@ -30,7 +32,6 @@ namespace utils
   std::string format( unsigned int max_size, const char* fmt, ...);
 
   unsigned int hash( unsigned int max_size, const char* fmt, ...);
-  unsigned int hash( const std::string& text );
   bool startsWith( std::string text, std::string start );
 
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
@@ -78,6 +79,20 @@ namespace utils
   std::string trim( const std::string& str );
 
   std::string i2str( int valie );
+
+  template< class Item >
+  SmartList<Item>& eraseDeletedElements( SmartList<Item>& items )
+  {
+    for( typename SmartList<Item>::iterator it=items.begin(); it != items.end(); )
+    {
+      if( (*it)->isDeleted() ) { it = items.erase( it ); }
+      else { ++it; }
+    }
+
+    return items;
+  }
+
+  float eventProbability(float probability, int k, int n);
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

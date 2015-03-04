@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "objects/watersupply.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,9 +38,14 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(reservoir,AboutReservoir)
+REGISTER_OBJECT_BASEINFOBOX(fountain,AboutFontain)
+REGISTER_OBJECT_BASEINFOBOX(well,AboutWell)
+
 AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
+  setupUI( ":/gui/infoboxfountain.gui" );
   setTitle( _("##fountain##") );
 
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
@@ -78,7 +84,7 @@ AboutFontain::~AboutFontain(){}
 
 void AboutFontain::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::fountain );
+  DictionaryWindow::show( parent(), object::fountain );
 }
 
 AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -107,7 +113,7 @@ AboutReservoir::~AboutReservoir() {}
 
 void AboutReservoir::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::reservoir );
+  DictionaryWindow::show( parent(), object::reservoir );
 }
 
 AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -161,7 +167,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
           HousePtr house = ptr_cast<House>( (*it)->overlay() );
           if( house.isValid() )
           {
-            haveLowHealthHouse |= house->state( (Construction::Param)House::health ) < 10;
+            haveLowHealthHouse |= house->state( pr::health ) < 10;
           }
         }
 
@@ -179,7 +185,7 @@ AboutWell::~AboutWell() {}
 
 void AboutWell::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::well );
+  DictionaryWindow::show( parent(), object::well );
 }
 
 }

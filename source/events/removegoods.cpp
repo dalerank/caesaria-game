@@ -14,10 +14,10 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "removegoods.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "game/game.hpp"
 
@@ -39,14 +39,13 @@ GameEventPtr RemoveGoods::create(good::Product type, int qty  )
 }
 
 template<class T>
-void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Product what, int& qty )
+void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what, int& qty )
 {
   SmartList<T> bList;	
 #ifdef CAESARIA_PLATFORM_HAIKU
   bList << city->overlays();
 #else
-  city::Helper helper( city );
-  bList = helper.find<T>( btype );
+  bList = city::statistic::findo<T>( city, btype );
 #endif
   foreach( it, bList )
   {
@@ -67,8 +66,8 @@ void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Product wha
 
 void RemoveGoods::_exec( Game& game, unsigned int time )
 {
-  _removeGoodFrom<Warehouse>( game.city(), objects::warehouse, _type, _qty );
-  _removeGoodFrom<Granary>( game.city(), objects::granery, _type, _qty );
+  _removeGoodFrom<Warehouse>( game.city(), object::warehouse, _type, _qty );
+  _removeGoodFrom<Granary>( game.city(), object::granery, _type, _qty );
 }
 
 bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }

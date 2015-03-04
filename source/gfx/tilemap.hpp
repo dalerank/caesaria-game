@@ -81,7 +81,7 @@ public:
   void turnRight();
   void turnLeft();
 
-  constants::Direction direction() const;
+  Direction direction() const;
 
   TilePos fit( const TilePos& pos ) const;
 
@@ -93,4 +93,4 @@ private:
 };
 
 }//end namespace gfx
-#endif //__OPENCAESAR3_TILEMAP_H_INCLUDED__
+#endif //__CAESARIA_TILEMAP_H_INCLUDED__

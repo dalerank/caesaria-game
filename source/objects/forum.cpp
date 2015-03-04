@@ -27,11 +27,11 @@
 #include "senate.hpp"
 #include "core/logger.hpp"
 #include "events/fundissue.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::forum, Forum)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::forum, Forum)
 
 class Forum::Impl
 {
@@ -41,7 +41,7 @@ public:
   void removeMoney( PlayerCityPtr city );
 };
 
-Forum::Forum() : ServiceBuilding(Service::forum, objects::forum, Size(2)), _d( new Impl )
+Forum::Forum() : ServiceBuilding(Service::forum, object::forum, Size(2)), _d( new Impl )
 {
   _d->taxValue = 0;
   setPicture( ResourceGroup::govt, 10 );
@@ -113,9 +113,8 @@ float Forum::collectTaxes()
 
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
-  city::Helper helper( city );
   SenatePtr senate;
-  SenateList senates = helper.find<Senate>( objects::senate );
+  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
   if( !senates.empty() )
     senate = senates.front();
 

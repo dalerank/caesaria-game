@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "clay_pit.hpp"
 #include "game/resourcegroup.hpp"
@@ -27,16 +27,15 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::clay_pit, ClayPit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::clay_pit, ClayPit)
 
 ClayPit::ClayPit()
-  : Factory( good::none, good::clay, constants::objects::clay_pit, Size(2) )
+  : Factory( good::none, good::clay, object::clay_pit, Size(2) )
 {
   _fgPicturesRef().resize(2);
 
-  _setUnworkingInterval( 8 );
+  _setUnworkingInterval( 12 );
 }
 
 void ClayPit::timeStep( const unsigned long time )
@@ -50,9 +49,11 @@ void ClayPit::_reachUnworkingTreshold()
 
   events::GameEventPtr e = events::ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
   e->dispatch();
+
+  collapse();
 }
 
-bool ClayPit::canBuild( const CityAreaInfo& areaInfo ) const
+bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
   bool near_water = false;

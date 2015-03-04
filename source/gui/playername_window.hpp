@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
 #define _CAESARIA_WINDOW_PLAYERNAME_H_INCLUDE_
@@ -36,8 +36,10 @@ public:
 
   virtual std::string text() const;
   virtual void setModal();
+  virtual bool onEvent(const NEvent &event);
 
 public signals:
+  Signal0<>& onNewGame();
   Signal0<>& onClose();
   Signal1<std::string>& onNameChange();
 

@@ -18,7 +18,7 @@
 #include "tile.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
@@ -71,14 +71,9 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   setEPos( pos );
 }
 
-int Tile::i() const    {   return _pos.i();   }
-int Tile::j() const    {   return _pos.j();   }
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
 void Tile::setPicture(const char* rc, const int index){ setPicture( Picture::load( rc, index ) );}
 void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name ) );}
-
-const Picture& Tile::picture() const {  return _picture; }
-Tile* Tile::masterTile() const{  return _master;}
 void Tile::setMasterTile(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
@@ -103,7 +98,7 @@ void Tile::setEPos(const TilePos& epos)
                    tilemap::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * tilemap::cellSize().height() );
 }
 
-void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
+void Tile::changeDirection(Tile *masterTile, Direction newDirection)
 {
   if( masterTile && _overlay.isValid() )
   {
@@ -165,7 +160,7 @@ bool Tile::getFlag(Tile::Type type) const
   {
     return _overlay.isValid()
               ? _overlay->isDestructible()
-              : _terrain.tree || _terrain.road;
+              : !(_terrain.rock || _terrain.water);
   }
   case tlGarden: return _terrain.garden;
   case tlElevation: return _terrain.elevation;
@@ -196,12 +191,11 @@ void Tile::setFlag(Tile::Type type, bool value)
   case wasDrawn: _wasDrawn = value; break;
   case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
-  }
+    }
 }
 
-TileOverlayPtr Tile::overlay() const{ return _overlay;}
-void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
+OverlayPtr Tile::overlay() const  { return _overlay;}
+void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
 void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "loader.hpp"
 
@@ -22,6 +22,7 @@
 #include "loader_sav.hpp"
 #include "loader_oc3save.hpp"
 #include "loader_mission.hpp"
+#include "loader_omap.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/utils.hpp"
@@ -39,6 +40,7 @@
 #include <vector>
 
 using namespace gfx;
+using namespace constants;
 
 namespace game
 {
@@ -59,11 +61,14 @@ public:
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
-  void finalize( Game& game );
+  void finalize( Game& game );  
   bool maySetSign( const Tile& tile )
   {
     return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
   }
+
+public signals:
+  Signal1<std::string> onUpdateSignal;
 };
 
 Loader::Loader() : _d( new Impl )
@@ -100,8 +105,8 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   if( maySetSign( signTile ) )
   {
     tile::clear( signTile );
-    gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
-    CityAreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
+    city::AreaInfo info = { city, tlPos + tlOffset, TilesArray() };
     waymark->build( info );
     city->addOverlay( waymark );
   }
@@ -111,22 +116,26 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
 
-  Animation water = AnimationBank::simple( AnimationBank::animWater );
-  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
-
-  foreach( tile, area )
+  foreach( it, area )
   {
-    int rId = (*tile)->originalImgId() - 364;
+    int rId = (*it)->originalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
+      Animation water = AnimationBank::simple( AnimationBank::animWater );
       water.setIndex( rId );
-      (*tile)->setAnimation( water );
-      (*tile)->setFlag( Tile::tlDeepWater, true );
+      (*it)->setAnimation( water );
+      (*it)->setFlag( Tile::tlDeepWater, true );
     }
 
-    if( (*tile)->getFlag( Tile::tlMeadow ) )
+    if( (*it)->getFlag( Tile::tlMeadow ) )
     {
-      (*tile)->setAnimation( meadow );
+      const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+      if( !(*it)->picture().isValid() )
+      {
+        Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+        (*it)->setPicture( pic );
+      }
+      (*it)->setAnimation( meadow );
     }
   }
 }
@@ -146,38 +155,39 @@ void Loader::Impl::finalize( Game& game )
 
 void Loader::Impl::initLoaders()
 {
-  loaders.push_back( loader::BasePtr( new loader::C3Map() ) );
-  loaders.push_back( loader::BasePtr( new loader::C3Sav() ) );
-  loaders.push_back( loader::BasePtr( new loader::OC3() ) );
-  loaders.push_back( loader::BasePtr( new loader::Mission() ) );
+  loaders.push_back( new loader::C3Map() );
+  loaders.push_back( new loader::C3Sav() );
+  loaders.push_back( new loader::OC3() );
+  loaders.push_back( new loader::Mission() );
+  loaders.push_back( new loader::OMap() );
 }
+
+Signal1<std::string>& Loader::onUpdate() { return _d->onUpdateSignal; }
 
 bool Loader::load( vfs::Path filename, Game& game )
 {
   // try to load file based on file extension
-  Impl::LoaderIterator it = _d->loaders.begin();
-  for( ; it != _d->loaders.end(); ++it)
+  foreach( it, _d->loaders )
   {
-    if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
-        (*it)->isLoadableFileFormat(file) */ )
+    if( !(*it)->isLoadableFileExtension( filename.toString() ) )
+      continue;
+
+    ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
+    if( currentClimate >= 0  )
     {
-      ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
-      if( currentClimate >= 0  )
-      {
-        game::climate::initialize( currentClimate );
-      }
-
-      bool loadok = (*it)->load( filename.toString(), game );      
-      
-      if( loadok )
-      {
-        _d->restartFile = (*it)->restartFile();
-        _d->finalize( game );
-      }
-
-      return loadok;
+      game::climate::initialize( currentClimate );
     }
+
+    bool loadok = (*it)->load( filename.toString(), game );
+    if( loadok )
+    {
+      _d->restartFile = (*it)->restartFile();
+      _d->finalize( game );
+    }
+
+    return loadok;
   }
+
   Logger::warning( "GameLoader: not found loader for " + filename.toString() );
 
   return false; // failed to load

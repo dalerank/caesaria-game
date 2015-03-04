@@ -32,8 +32,8 @@ class VideoOptions : public Window
 {
 public:
   VideoOptions( Widget* parent,
-                      gfx::Engine::Modes modes,
-                      bool fullscreen );
+                gfx::Engine::Modes modes,
+                bool fullscreen );
 
   //! Деструктор
   virtual ~VideoOptions(void);

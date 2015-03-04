@@ -20,7 +20,7 @@
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
 #include "core/utils.hpp"
@@ -59,7 +59,7 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),
                                                               events::ShowInfobox::send2scribe,
-                                                              ":/smk/God_Mercury.smk");
+                                                              "god_mercury");
     event->dispatch();
   }
 
@@ -69,12 +69,12 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
   foreach( it, buildings )
   {
     good::Store& store = (*it)->store();
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
+      int goodQty = math::random( (store.qty( *gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
-        good::Stock rmStock( gtype, goodQty );
+        good::Stock rmStock( *gtype, goodQty );
         store.retrieve( rmStock, goodQty );
       }
     }

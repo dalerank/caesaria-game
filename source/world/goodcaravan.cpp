@@ -17,7 +17,7 @@
 
 #include "goodcaravan.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "city.hpp"
@@ -31,7 +31,7 @@ class GoodCaravan::Impl
 public:
   CityPtr base;
   std::string destination;
-  good::SimpleStore store;
+  good::Storage store;
 
   VariantMap options;
 };
@@ -116,7 +116,7 @@ GoodCaravan::GoodCaravan( CityPtr city )
 {
   _d->base = city;
   _d->store.setCapacity( 10000 );
-  _d->store.setCapacity( good::goodCount, 10000 );
+  _d->store.setCapacity( good::any(), 10000 );
 
   setSpeed( 3.f );
 

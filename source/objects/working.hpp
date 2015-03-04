@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WORKINGBUILDING_H_INCLUDED__
 #define __CAESARIA_WORKINGBUILDING_H_INCLUDED__
@@ -24,7 +24,7 @@
 class WorkingBuilding : public Building
 {
 public:
-  WorkingBuilding(const TileOverlay::Type type, const Size& size);
+  WorkingBuilding(const object::Type type, const Size& size);
   virtual ~WorkingBuilding();
 
   void setMaximumWorkers(const unsigned int maximumWorkers);

@@ -20,7 +20,7 @@
 #include "city/city.hpp"
 #include "pathway/pathway.hpp"
 #include "objects/market.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;

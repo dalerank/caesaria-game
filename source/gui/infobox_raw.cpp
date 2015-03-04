@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "infobox_raw.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -26,6 +26,7 @@
 #include "infobox_factory.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -36,22 +37,31 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(vinard,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(wheat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vegetable_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(olive_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(fig_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(meat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(clay_pit,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(lumber_mill,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
+
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
-{
+{  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
+
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
   _type = rawmb->type();
 
   setBase( ptr_cast<Construction>( rawmb ) );
   _setWorkingVisible( true );
 
-  Label* lbDamage;
-  Label* lbProgress;
-  Label* lbProductivity;
-  GET_WIDGET_FROM_UI( lbProductivity )
-  GET_WIDGET_FROM_UI( lbProgress )
-  GET_WIDGET_FROM_UI( lbDamage )
+  INIT_WIDGET_FROM_UI( Label*, lbProductivity )
+  INIT_WIDGET_FROM_UI( Label*, lbProgress )
+  INIT_WIDGET_FROM_UI( Label*, lbDamage )
 
   if( rawmb->produceGoodType() != good::none )
   {
@@ -64,8 +74,8 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   if( lbDamage != NULL )
   {
     std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->state( Construction::damage ),
-                                            (int)rawmb->state( Construction::fire ) );
+                                            (int)rawmb->state( pr::damage ),
+                                            (int)rawmb->state( pr::fire ) );
     lbDamage->setText( text );
   }
 

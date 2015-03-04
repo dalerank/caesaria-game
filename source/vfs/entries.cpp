@@ -103,15 +103,17 @@ void Entries::_updateCache()
 {
   _d->hashedIndex.clear();
   _d->hashedIcIndex.clear();
-  for( unsigned int k=0; k < _d->files.size(); k++ )
+  int k=0;
+  foreach( it, _d->files )
   {
-    EntryInfo& info = _d->files[ k ];
-    info.fphash = utils::hash( info.fullpath.toString() );
-    info.nhash = utils::hash( info.name.toString() );
-    info.nihash = utils::hash( utils::localeLower( info.name.toString() ) );
+    EntryInfo& info = *it;
+    info.fphash = Hash( info.fullpath.toString() );
+    info.nhash = Hash( info.name.toString() );
+    info.nihash = Hash( utils::localeLower( info.name.toString() ) );
 
     _d->hashedIndex[ info.nhash ] = k;
     _d->hashedIcIndex[ info.nihash ] = k;
+    k++;
   }
 }
 
@@ -238,8 +240,8 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 
   std::string fname = filename.baseName().toString();
   unsigned int fnHash = (sType == Path::ignoreCase
-                            ? utils::hash( utils::localeLower( fname ) )
-                            : utils::hash( fname )
+                            ? Hash( utils::localeLower( fname ) )
+                            : Hash( fname )
                         );
 
   if( _d->hashedIndex.empty() )
@@ -297,12 +299,14 @@ void Entries::setSensType( Path::SensType type )
   _d->sensType = type;
 }
 
-Entries Entries::filter(int flags, const std::string &options)
+Entries Entries::filter(int flags, const std::string& options)
 {
   Entries ret;
   bool isFile = (flags & Entries::file) > 0;
   bool isDirectory = (flags & Entries::directory) > 0;
   bool checkFileExt = (flags & Entries::extFilter) > 0;
+
+  StringArray exts = utils::split( utils::trim( options ), "," );
 
   foreach( it, _d->files )
   {
@@ -312,7 +316,14 @@ Entries Entries::filter(int flags, const std::string &options)
 
     if( mayAdd && !(*it).isDirectory && checkFileExt )
     {
-      mayAdd = (*it).fullpath.isMyExtension( options );
+      if( exts.size() > 1 )
+      {
+        mayAdd = exts.contains( it->fullpath.extension() );
+      }
+      else
+      {
+        mayAdd = it->fullpath.isMyExtension( options );
+      }
     }
 
     if( mayAdd )

@@ -15,8 +15,8 @@
 
 #include "trade_options.hpp"
 #include "core/utils.hpp"
-#include "good/goodhelper.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/helper.hpp"
+#include "good/storage.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
 
@@ -80,29 +80,29 @@ public:
 
   typedef std::map< good::Product, GoodInfo > GoodsInfo;
   GoodsInfo goods;
-  good::SimpleStore buys, sells;
+  good::Storage buys, sells;
 
   void updateLists()
   {
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      const GoodInfo& info = goods[ gtype ];
+      const GoodInfo& info = goods[ *gtype ];
 
       switch( info.order )
       {
       case trade::importing:
-        buys.setCapacity( gtype, 9999 );
-        sells.setCapacity( gtype, 0 );
+        buys.setCapacity( *gtype , 9999 );
+        sells.setCapacity( *gtype , 0 );
       break;
 
       case trade::exporting:
-        buys.setCapacity( gtype, 0 );
-        sells.setCapacity( gtype, 9999 );
+        buys.setCapacity( *gtype , 0 );
+        sells.setCapacity( *gtype , 9999 );
       break;
 
       case trade::noTrade:
-        buys.setCapacity( gtype, 0 );
-        buys.setCapacity( gtype, 0 );
+        buys.setCapacity( *gtype , 0 );
+        buys.setCapacity( *gtype , 0 );
       break;
 
       default: break;
@@ -114,14 +114,14 @@ public:
   {
     buys.setCapacity( 9999 );
     sells.setCapacity( 9999 );
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      goods[ gtype ].stacking = false;
-      goods[ gtype ].order = trade::noTrade;
-      goods[ gtype ].vendor = true;
-      goods[ gtype ].exportLimit = 0;
-      goods[ gtype ].sellPrice = 0;
-      goods[ gtype ].buyPrice = 0;
+      goods[ *gtype  ].stacking = false;
+      goods[ *gtype  ].order = trade::noTrade;
+      goods[ *gtype  ].vendor = true;
+      goods[ *gtype  ].exportLimit = 0;
+      goods[ *gtype  ].sellPrice = 0;
+      goods[ *gtype  ].buyPrice = 0;
     }
 
     goods[ good::fish ].order = trade::disabled;
@@ -153,10 +153,7 @@ Order Options::getOrder( good::Product type ) const
   return ( it == _d->goods.end() ? trade::noTrade : it->second.order);
 }
 
-Options::~Options()
-{
-
-}
+Options::~Options() {}
 
 Order Options::switchOrder( good::Product type )
 {
@@ -196,7 +193,7 @@ void Options::setTradeLimit( Order o, good::Product type, unsigned int qty)
   _d->updateLists();
 }
 
-bool Options::isGoodsStacking( good::Product type )
+bool Options::isStacking( good::Product type )
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.stacking );

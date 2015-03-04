@@ -31,7 +31,7 @@
 #include "city/city.hpp"
 #include "city/request.hpp"
 #include "core/foreach.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"
@@ -61,7 +61,7 @@ namespace advisorwnd
 {
 
 namespace {
-  Point requestButtonOffset = Point( 0, 60 );
+  Point requestButtonOffset = Point( 0, 55 );
   Size requestButtonSize = Size( 560, 40 );
 }
 
@@ -117,10 +117,8 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
+    DialogBox* dialog = DialogBox::confirmation( ui()->rootWidget(),  "", "##dispatch_emperor_request_question##" );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
-    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
-    CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
   }
 
   Signal1<city::request::RequestPtr> _onExecRequestSignal;
@@ -148,7 +146,7 @@ public:
 
   std::string getEmperorFavourStr()
   {
-    return utils::format( 0xff, "##emperor_favour_%02d##", (int)(city->favour() / 100.f) * 20 );
+    return utils::format( 0xff, "##emperor_favour_%02d##", city->favour() * 20 / 100  );
   }
 };
 
@@ -156,8 +154,7 @@ void Emperor::_showChangeSalaryWindow()
 {
   if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
-    DialogBox* dialog = new DialogBox( this, Rect(), "", _("##disabled_draw_salary_for_free_reign##"), DialogBox::btnYes );
-    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
+    DialogBox::information( this, "", _("##disabled_draw_salary_for_free_reign##") );
     return;
   }
 
@@ -224,7 +221,7 @@ void Emperor::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( request, reqs.begin() ), *request );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( reqs.begin(), request ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -249,8 +246,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   Widget::setupUI( ":/gui/emperoropts.gui" );
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  gui::Label* lbTitle;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
 
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavour )
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavourDesc  )
@@ -304,11 +300,9 @@ void Emperor::Impl::sendGift(int money)
 {
   if( money > city->player()->money() )
   {
-    DialogBox* dlg = new DialogBox( lbEmperorFavour->ui()->rootWidget(), Rect(),
-                                    _("##nomoney_for_gift_title##"), _("##nomoney_for_gift_text##"),
-                                    DialogBox::btnOk );
-    dlg->setModal();
-    CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
+                            _("##nomoney_for_gift_title##"),
+                            _("##nomoney_for_gift_text##") );
     return;
   }
 
@@ -324,10 +318,9 @@ void Emperor::Impl::changeSalary( int money )
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
-                                    "##changesalary_warning##", "##changesalary_greater_salary##",
-                                    DialogBox::btnYes );
-    CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
+                            _("##changesalary_warning##"),
+                            _("##changesalary_greater_salary##") );
   }
 }
 

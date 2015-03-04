@@ -17,7 +17,7 @@
 
 #include "cityservice_religion.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "game/gamedate.hpp"
@@ -31,6 +31,7 @@
 #include "core/logger.hpp"
 #include "core/safetycast.hpp"
 #include "events/showinfobox.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -41,6 +42,8 @@ CAESARIA_LITERALCONST(lastMessageDate)
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Religion,religion)
 
 class Religion::Impl
 {
@@ -90,8 +93,7 @@ void Religion::timeStep( const unsigned int time )
     _d->templesCoverity.clear();
 
     //update temples info
-    Helper helper( _city() );
-    TempleList temples = helper.find<Temple>( objects::religionGroup );
+    TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
     foreach( it, temples)
     {
       if( (*it)->divinity().isValid() )

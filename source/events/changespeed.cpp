@@ -34,7 +34,7 @@ using namespace gfx;
 namespace events
 {
 
-static const int windowGamePausedId = utils::hash( "gamepause" );
+static const int windowGamePausedId = Hash( "gamepause" );
 
 GameEventPtr Pause::create( Mode mode )
 {

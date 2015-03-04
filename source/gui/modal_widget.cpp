@@ -26,15 +26,15 @@ namespace gui
 {
 
 //! constructor
-void ModalScreen::assignTo(Widget* widget)
+void ModalScreen::assignTo( Widget* widget )
 {
-	ModalScreen* mdScr = new ModalScreen( widget->parent() );
-	mdScr->addChild( widget );
+  ModalScreen* mdScr = new ModalScreen( widget->parent() );
+  mdScr->addChild( widget );
 }
 
 ModalScreen::ModalScreen( Widget* parent, int id)
-: Widget( parent, id, Rect(0, 0, parent->width(), parent->height() ) ),
-	_mouseDownTime(0)
+: Widget( parent->ui()->rootWidget(), id, Rect(0, 0, parent->width(), parent->height() ) ),
+          _mouseDownTime(0)
 {
   #ifdef _DEBUG
     setDebugName( "ModalWidget");
@@ -201,14 +201,14 @@ void ModalScreen::removeChild(Widget* child)
 //! adds a child
 void ModalScreen::addChild(Widget* child)
 {
-	Widget::addChild(child);
-	_environment->setFocus(child);
+  Widget::addChild(child);
+  _environment->setFocus(child);
 }
 
 
 void ModalScreen::_resizeEvent()
 {
-	//setGeometry( RectF( 0, 0, 1, 1 ) );
+  //setGeometry( RectF( 0, 0, 1, 1 ) );
 }
 
 }//end namespace gui

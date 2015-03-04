@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "empire.hpp"
 #include "computer_city.hpp"
@@ -271,7 +271,7 @@ void Empire::load( const VariantMap& stream )
 
   VariantMap objects = stream.get( "objects" ).toMap();
   _loadObjects( objects );
-
+  _d->emperor.load( stream.get( "emperor" ).toMap() ); //path from keeeeper
   _d->emperor.checkCities();
 }
 
@@ -430,11 +430,11 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->playerCityName = city->name();
 
-  for( good::Product k=good::none; k < good::goodCount; ++k )
+  foreach( k, good::all() )
   {
     int buy, sell;
-    getPrice( k, buy, sell );
-    city->empirePricesChanged( k, buy, sell );
+    getPrice( *k, buy, sell );
+    city->empirePricesChanged( *k, buy, sell );
   }
 
   return ret;
@@ -447,8 +447,8 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
   ObjectList ret;
   foreach( i, _d->objects )
   {
-    if( (*i)->location().distanceTo( location ) < deviance )
-    {
+    if( (*i)->isAvailable() && (*i)->location().distanceTo( location ) < deviance )
+    {        
       ret << *i;
     }
   }
@@ -576,7 +576,7 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
 
   if( barbarians.size() < maxBarbariansGroups )
   {
-    BarbarianPtr brb = Barbarian::create( empire, Point( 1000, 0 ) );
+    BarbarianPtr brb = Barbarian::create( empire, Point( 1500, 100 ) );
     empire->addObject( ptr_cast<Object>( brb ) );
   }
 }

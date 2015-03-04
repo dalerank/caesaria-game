@@ -23,7 +23,6 @@
 #include "servicewalker_helper.hpp"
 #include "city/helper.hpp"
 #include "core/variant_map.hpp"
-#include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/logger.hpp"
@@ -45,12 +44,13 @@ static const int noPriority = 999;
 class Recruter::Impl
 {
 public:
-  typedef std::map< objects::Group, int > PriorityMap;
+  typedef std::map< object::Group, int > PriorityMap;
 
   unsigned int needWorkers;
   city::HirePriorities priority;
   PriorityMap priorityMap;
   unsigned int reachDistance;
+  bool once_shot;
 
 public:
   bool isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding );
@@ -61,6 +61,7 @@ Recruter::Recruter(PlayerCityPtr city )
 {    
   _d->needWorkers = 0;
   _d->reachDistance = 2;
+  _d->once_shot = false;
   _setType( walker::recruter );
 }
 
@@ -81,7 +82,7 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   int priorityLevel = 1;
   foreach( i, _d->priority )
   {
-    city::industry::BuildingGroups groups = city::industry::toGroups( *i );
+    object::Groups groups = city::industry::toGroups( *i );
     foreach( grIt, groups )
     {
       _d->priorityMap[ *grIt ] = priorityLevel;
@@ -162,6 +163,8 @@ void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed,
 {
   _d->needWorkers = workersNeed;
   _d->reachDistance = distance;
+  _d->once_shot = true;
+
   setBase( ptr_cast<Building>( building ) );
   setPos( building->pos() );
   _centerTile();
@@ -201,6 +204,12 @@ void Recruter::load(const VariantMap& stream)
 
 bool Recruter::die()
 {
+  if( _d->once_shot )
+  {
+    deleteLater();
+    return true;
+  }
+
   bool created = ServiceWalker::die();
 
   if( !created )
@@ -214,8 +223,8 @@ bool Recruter::die()
 
 bool Recruter::Impl::isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding)
 {
-  PriorityMap::iterator myPrIt = priorityMap.find( (objects::Group)base->group() );
-  PriorityMap::iterator bldPrIt = priorityMap.find( (objects::Group)wbuilding->group() );
+  PriorityMap::iterator myPrIt = priorityMap.find( base->group() );
+  PriorityMap::iterator bldPrIt = priorityMap.find( wbuilding->group() );
   int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : noPriority);
   int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : noPriority);
 

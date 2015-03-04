@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "wallguard.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
 #include "core/variant_map.hpp"
@@ -33,6 +33,7 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
+
 
 using namespace constants;
 using namespace gfx;
@@ -193,10 +194,8 @@ std::string WallGuard::thoughts(Thought th) const
   {
   case thCurrent:
   {
-    city::Helper helper( _city() );
-
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts(th);

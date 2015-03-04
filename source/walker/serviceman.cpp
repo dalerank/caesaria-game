@@ -18,6 +18,8 @@
 #include "serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant_map.hpp"
+#include "objects/service.hpp"
+#include "helper.hpp"
 #include "city/city.hpp"
 #include "pathway/path_finding.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -185,7 +187,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
       ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
       foreach( it, reachedBuildings )
       {
-        if( (*it)->type() == objects::house )
+        if( (*it)->type() == object::house )
         {
           _d->lastHousePos = (*itTile)->pos();
         }
@@ -212,7 +214,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-void ServiceWalker::_addObsoleteOverlay(TileOverlay::Type type) { _d->obsoleteOvs.insert( type ); }
+void ServiceWalker::_addObsoleteOverlay(object::Type type) { _d->obsoleteOvs.insert( type ); }
 unsigned int ServiceWalker::reachDistance() const { return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = value;}
 
@@ -259,7 +261,9 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        res += (*it)->evaluateService( ServiceWalkerPtr( this ) );        
+        int oneTileValue = (*it)->evaluateService( ServiceWalkerPtr( this ) );
+        // mul serviceValue for buildingSize, need for more effectively count of path result
+        res += (oneTileValue * (*it)->size().area() );
       }
     }
     distance++;
@@ -396,7 +400,7 @@ void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
-  stream[ "base" ] = _d->base->pos();
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, reachDistance )
   VARIANT_SAVE_ANY_D( stream, _d, lastHousePos )
@@ -413,7 +417,7 @@ void ServiceWalker::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, lastHousePos, stream )
 
   TilePos basePos = stream.get( "base" ).toTilePos();
-  TileOverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();
+  OverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();
 
   _d->base = ptr_cast<Building>( overlay );
   if( _d->base.isNull() )
@@ -503,8 +507,8 @@ void ServiceWalker::initialize(const VariantMap& options)
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
   foreach( it, oboletesOvs )
   {
-    TileOverlay::Type ovType = MetaDataHolder::findType( it->toString() );
-    if( ovType != objects::unknown )
+    object::Type ovType = object::toType( it->toString() );
+    if( ovType != object::unknown )
       _addObsoleteOverlay( ovType );
   }
 }
@@ -526,6 +530,7 @@ TilePos ServiceWalker::places(Walker::Place type) const
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
 {
   ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
+  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
   ret->drop();
   return ret;
 }

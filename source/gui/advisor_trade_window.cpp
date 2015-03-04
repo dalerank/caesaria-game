@@ -19,7 +19,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
@@ -31,7 +31,7 @@
 #include "city/helper.hpp"
 #include "city/trade_options.hpp"
 #include "objects/warehouse.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "core/foreach.hpp"
@@ -93,7 +93,7 @@ public:
       Font f = font( _state() );
       PictureRef& textPic = _textPictureRef();
       f.draw( *textPic, _( _goodName ), 55, 0, true, false );
-      f.draw( *textPic, utils::format( 0xff, "%d", _qty), 190, 0, true, false );
+      f.draw( *textPic, utils::format( 0xff, "%d", _qty / 100), 190, 0, true, false );
       f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
@@ -169,19 +169,19 @@ void Trade::Impl::updateGoodsInfo()
   Size btnSize( gbInfo->width(), 20 );
   trade::Options& copt = city->tradeOptions();
   int indexOffset=0;
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
-    trade::Order tradeState = copt.getOrder( gtype );
-    if( tradeState == trade::disabled )
+    trade::Order tradeState = copt.getOrder( *gtype );
+    if( tradeState == trade::disabled || *gtype == good::none)
     {
       continue;
     }
 
-    bool workState = getWorkState( gtype );
-    int tradeQty = copt.tradeLimit( trade::exporting, gtype );
+    bool workState = getWorkState( *gtype );
+    int tradeQty = copt.tradeLimit( trade::exporting, *gtype );
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            gtype, allgoods[ gtype ], workState, tradeState, tradeQty );
+                                            *gtype, allgoods[ *gtype ], workState, tradeState, tradeQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   } 
@@ -192,7 +192,7 @@ bool Trade::Impl::getWorkState(good::Product gtype )
   city::Helper helper( city );
 
   bool industryActive = false;
-  FactoryList producers = helper.getProducers<Factory>( gtype );
+  FactoryList producers = helper.findProducers<Factory>( gtype );
 
   foreach( it, producers ) { industryActive |= (*it)->isActive(); }
 

@@ -244,7 +244,12 @@ std::string Path::removeExtension() const
 
 Path Path::changeExtension( const std::string& newExtension ) const
 {
-  return Path( this->removeExtension() + newExtension );
+  std::string ext = newExtension;
+  if( !ext.empty() )
+  {
+    ext = ( ext[0] == '.' ? ext : ("." + ext) );
+  }
+  return Path( this->removeExtension() + ext );
 }
 
 Path::~Path(){}

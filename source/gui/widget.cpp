@@ -1,11 +1,11 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -771,7 +771,7 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
         {
             (*it)->_recalculateAbsolutePosition(recursive);
         }
-    }
+      }
 }
 
 void Widget::animate( unsigned int timeMs )
@@ -791,8 +791,7 @@ void Widget::remove()
 
 bool Widget::onEvent( const NEvent& event )
 {
-  __D_IMPL(_d,Widget)
-  foreach( item, _d->eventHandlers )
+  foreach( item, _dfunc()->eventHandlers )
   {
     bool handled = (*item)->onEvent( event );
     if( handled )
@@ -808,17 +807,17 @@ bool Widget::onEvent( const NEvent& event )
 
 bool Widget::isMyChild( Widget* child ) const
 {
-    if (!child)
-        return false;
+  if (!child)
+    return false;
 
-    do
-    {
-        if( child->parent() )
-            child = child->parent();
+  do
+  {
+    if( child->parent() )
+     child = child->parent();
 
-    } while (child->parent() && child != this);
+  } while (child->parent() && child != this);
 
-	return child == this;
+  return child == this;
 }
 
 void Widget::setWidth( unsigned int width )

@@ -78,11 +78,12 @@ public:
   void showEmpireMapWindow();
 };
 
-PushButton* AWindow::addButton( const int pos, const int picId, std::string tooltip )
+PushButton* AWindow::addButton( Advisor adv, const int picId, std::string tooltip )
 {
   Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
-  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * pos, Size( 40 ), pos, picId, picId, picId + 13 );
+  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * adv, Size( 40 ),
+                                        adv, picId, picId, picId + 13 );
   btn->setIsPushButton( true );
   btn->setTooltipText( tooltip );
   return btn;
@@ -98,8 +99,7 @@ AWindow::AWindow( Widget* parent, int id )
 
   WidgetEscapeCloser::insertTo( this );
 
-  Image* imgBgButtons;
-  GET_WIDGET_FROM_UI( imgBgButtons )
+  INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
 
   if( imgBgButtons )
     imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );
@@ -117,15 +117,15 @@ AWindow::AWindow( Widget* parent, int id )
   addButton( advisor::finance,       265, _("##visit_financial_advisor##"    ));
   addButton( advisor::main,          266, _("##visit_chief_advisor##"        ));
 
-  PushButton* btn = addButton( advisor::count, 609 );
+  PushButton* btn = addButton( advisor::unknown, 609 );
   btn->setIsPushButton( false );
 
   CONNECT( btn, onClicked(), this, AWindow::deleteLater );
 }
 
-void AWindow::showAdvisor( const constants::advisor::Type type )
+void AWindow::showAdvisor(const Advisor type )
 {
-  if( type >= advisor::count )
+  if( type >= advisor::unknown )
     return;
 
   Widget::Widgets rchildren = children();
@@ -144,39 +144,28 @@ void AWindow::showAdvisor( const constants::advisor::Type type )
     _d->advisorPanel = 0;
   }
 
-  switch( type )
-  {
-  case advisor::employers: _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers ); break;
-  case advisor::military:
+  if( type == advisor::employers )  { _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers );  }
+  else if( type == advisor::military )
   {
     FortList forts;
     forts << _d->city->overlays();
     _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, _d->city, forts );
   }
-  break;
-
-  case advisor::population: _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); break;
-
-  case advisor::empire: _d->advisorPanel = new advisorwnd::Emperor( _d->city, this, advisor::empire ); break;
-  case advisor::ratings: _d->advisorPanel = new advisorwnd::Ratings( this, advisor::ratings, _d->city ); break;
-  case advisor::trading:
-    {
-      advisorwnd::Trade* wnd = new advisorwnd::Trade( _d->city, this, advisor::trading );
-      _d->advisorPanel =  wnd;
-      CONNECT( wnd, onEmpireMapRequest(), _d.data(), Impl::showEmpireMapWindow );
-    }
-  break;
-
-  case advisor::education: _d->advisorPanel = new advisorwnd::Education( _d->city, this, -1 ); break;
-  case advisor::health: _d->advisorPanel = new advisorwnd::Health( _d->city, this, -1 ); break;
-  case advisor::entertainment: _d->advisorPanel = new advisorwnd::Entertainment( _d->city, this, -1 ); break;
-  case advisor::religion: _d->advisorPanel = new advisorwnd::Religion( _d->city, this, -1 ); break;
-  case advisor::finance: _d->advisorPanel = new advisorwnd::Finance( _d->city, this, -1 ); break;
-  case advisor::main: _d->advisorPanel = new advisorwnd::AdvisorChief( _d->city, this, -1 );
-
-  default:
-  break;
+  else if( type == advisor::population ) { _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); }
+  else if( type ==  advisor::empire )     _d->advisorPanel = new advisorwnd::Emperor( _d->city, this, advisor::empire );
+  else if( type == advisor::ratings )     _d->advisorPanel = new advisorwnd::Ratings( this, advisor::ratings, _d->city );
+  else if( type == advisor::trading )
+  {
+    advisorwnd::Trade* wnd = new advisorwnd::Trade( _d->city, this, advisor::trading );
+    _d->advisorPanel =  wnd;
+    CONNECT( wnd, onEmpireMapRequest(), _d.data(), Impl::showEmpireMapWindow );
   }
+  else if( type == advisor::education )    _d->advisorPanel = new advisorwnd::Education( _d->city, this, -1 );
+  else if( type == advisor::health ) _d->advisorPanel = new advisorwnd::Health( _d->city, this, -1 );
+  else if( type == advisor::entertainment )_d->advisorPanel = new advisorwnd::Entertainment( _d->city, this, -1 );
+  else if( type == advisor::religion ) _d->advisorPanel = new advisorwnd::Religion( _d->city, this, -1 );
+  else if( type == advisor::finance ) _d->advisorPanel = new advisorwnd::Finance( _d->city, this, -1 );
+  else if( type == advisor::main )_d->advisorPanel = new advisorwnd::AdvisorChief( _d->city, this, -1 );
 }
 
 void AWindow::draw(gfx::Engine& engine )
@@ -198,16 +187,16 @@ bool AWindow::onEvent( const NEvent& event )
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->ID();
-    if( id >= 0 && id < advisor::count )
+    if( id >= 0 && id < advisor::unknown )
     {
-      showAdvisor( (constants::advisor::Type)event.gui.caller->ID() );
+      showAdvisor( Advisor( event.gui.caller->ID() ) );
     }
   }
 
   return Widget::onEvent( event );
 }
 
-AWindow* AWindow::create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city )
+AWindow* AWindow::create(Widget* parent, int id, const Advisor type, PlayerCityPtr city )
 {
   AWindow* ret = new AWindow( parent, id );
   ret->_d->city = city;

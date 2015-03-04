@@ -128,32 +128,32 @@ public:
       UpperLeftCorner.setY( y );
   }
 
-	//! Returns if a 2d point is within this rectangle.
-	/** \param pos Position to test if it lies within this rectangle.
-	\return True if the position is within the rectangle, false if not. */
-	bool isPointInside(const Vector2<T>& pos) const
-	{
-		return (UpperLeftCorner.x() <= pos.x() &&
-			UpperLeftCorner.y() <= pos.y() &&
-			LowerRightCorner.x() >= pos.x() &&
-			LowerRightCorner.y() >= pos.y() );
-	}
+  //! Returns if a 2d point is within this rectangle.
+  /** \param pos Position to test if it lies within this rectangle.
+  \return True if the position is within the rectangle, false if not. */
+  bool isPointInside(const Vector2<T>& pos) const
+  {
+          return (UpperLeftCorner.x() <= pos.x() &&
+                  UpperLeftCorner.y() <= pos.y() &&
+                  LowerRightCorner.x() >= pos.x() &&
+                  LowerRightCorner.y() >= pos.y() );
+  }
 
-	//! Check if the rectangle collides with another rectangle.
-	/** \param other RectT to test collision with
-	\return True if the rectangles collide. */
-	bool isRectCollided(const RectT<T>& other) const
-	{
-		return (LowerRightCorner.y() > other.UpperLeftCorner.y() &&
-			UpperLeftCorner.y() < other.LowerRightCorner.y() &&
-			LowerRightCorner.x() > other.UpperLeftCorner.x() &&
-			UpperLeftCorner.x() < other.LowerRightCorner.x());
-	}
+  //! Check if the rectangle collides with another rectangle.
+  /** \param other RectT to test collision with
+  \return True if the rectangles collide. */
+  bool isRectCollided(const RectT<T>& other) const
+  {
+          return (LowerRightCorner.y() > other.UpperLeftCorner.y() &&
+                  UpperLeftCorner.y() < other.LowerRightCorner.y() &&
+                  LowerRightCorner.x() > other.UpperLeftCorner.x() &&
+                  UpperLeftCorner.x() < other.LowerRightCorner.x());
+  }
 
-	//! Clips this rectangle with another one.
-	/** \param other RectT to clip with */
-	void clipAgainst(const RectT<T>& other)
-	{
+  //! Clips this rectangle with another one.
+  /** \param other RectT to clip with */
+  void clipAgainst(const RectT<T>& other)
+  {
 		if (other.LowerRightCorner.x() < LowerRightCorner.x())
 			LowerRightCorner.setX( other.LowerRightCorner.x() );
 

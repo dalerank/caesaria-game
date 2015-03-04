@@ -1,108 +1,120 @@
 {
-  KEY_F1 :
+  KEY_KEY_1 :
   {
     employers#advisor_window :
     {
+      checkInterval : 0
       show : true
       advisor : "employers"
     }
   }
 
-  KEY_F2 :
+  KEY_KEY_2 :
   {
     military#advisor_window :
     {
+      checkInterval : 0
       show : true
       advisor : "military"
     }
   }
 
-  KEY_F3 :
+  KEY_KEY_3 :
   {
     empire#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "empire"
     }
   }
 
-  KEY_F4 :
+  KEY_KEY_4 :
   {
     ratings#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "ratings"
     }
   }
 
-  KEY_F5 :
+  KEY_KEY_5 :
   {
     trading#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "trading"
     }
   }
 
-  KEY_F6 :
+  KEY_KEY_6 :
   {
     population#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "population"
     }
   }
 
-  KEY_F7 :
+  KEY_KEY_7 :
   {
     health#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "health"
     }
   }
 
-  KEY_F8 :
+  KEY_KEY_8 :
   {
     education#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "education"
     }
   }
 
-  KEY_F9 :
+  KEY_KEY_9 :
   {
     entertainment#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "entertainment"
     }
   }
 
-  KEY_F10 :
+  KEY_KEY_0 :
   {
     religion#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "religion"
     }
   }
 
-  KEY_F11 :
+  KEY_KEY_00 :
   {
     finance#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "finance"
     }
   }
 
-  KEY_F12 :
+  KEY_KEY_01 :
   {
     main#advisor_window :
     {
       show : true
+      checkInterval : 0
       advisor : "main"
     }
   }

@@ -16,6 +16,7 @@
 #include "throwing_weapon.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
@@ -29,6 +30,7 @@ class ThrowingWeapon::Impl
 public:
   Point offset;
   Point srcPos;
+  Point amappos;
   Point dstPos;
   PointF deltaMove;
   Picture pic;
@@ -41,8 +43,10 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 {
   _d->from = src;
   _d->dst = dst;
-  _d->dstPos = Point( dst.i(), dst.j() ) * 15 + Point( 7, 7 );
-  _d->srcPos = Point( src.i(), src.j() ) * 15 + Point( 7, 7 );
+  int yMultiplier = tilemap::cellSize().height();
+  Point xOffset( yMultiplier, yMultiplier );
+  _d->dstPos = Point( dst.i(), dst.j() ) * yMultiplier + xOffset;
+  _d->srcPos = Point( src.i(), src.j() ) * yMultiplier + xOffset;
 
   _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (dst.distanceFrom( src) * 2.f);
   _d->currentPos = _d->srcPos.toPointF();
@@ -51,15 +55,15 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _city()->addWalker( this );
   const Tile& tile = _city()->tilemap().at( src );
-  TileOverlayPtr ov = tile.overlay();
+  OverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
-    _d->height = ov->offset( tile, Point( 7, 7 ) ).y();
+    _d->height = ov->offset( tile, xOffset ).y();
     const Tile& dTile = _city()->tilemap().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {
-      float dHeight = ov->offset( dTile, Point( 7, 7) ).y();
+      float dHeight = ov->offset( dTile, xOffset ).y();
       _d->deltaHeight = (dHeight - _d->height) / 20.f;
     }
   }
@@ -67,10 +71,11 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   turn( dst );
 }
 
-Point ThrowingWeapon::mappos() const
+const Point& ThrowingWeapon::mappos() const
 {
   const Point& p = _wpos();
-  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+  _d->amappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+  return _d->amappos;
 }
 
 void ThrowingWeapon::timeStep(const unsigned long time)
@@ -105,7 +110,9 @@ void ThrowingWeapon::timeStep(const unsigned long time)
 
 void ThrowingWeapon::turn(TilePos p)
 {
-  PointF prPos = PointF( p.i(), p.j() ) * 15 + PointF( 7, 7 );
+  int yMultiplier = tilemap::cellSize().height();
+  PointF xOffset( yMultiplier, yMultiplier );
+  PointF prPos = PointF( p.i(), p.j() ) * yMultiplier + xOffset;
   float t = (_d->currentPos - prPos).getAngle();
   int angle = (int)( t / 22.5f);// 0 is east
 

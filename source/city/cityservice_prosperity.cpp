@@ -17,13 +17,13 @@
 
 #include "cityservice_prosperity.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/variant_map.hpp"
 #include "core/position.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
 #include "objects/entertainment.hpp"
 #include "game/gamedate.hpp"
@@ -31,12 +31,15 @@
 #include "world/empire.hpp"
 #include "objects/hippodrome.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
 #include "cityservice_info.hpp"
 
 using namespace  constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(ProsperityRating,prosperity)
 
 class ProsperityRating::Impl
 {
@@ -95,8 +98,7 @@ void ProsperityRating::timeStep(const unsigned int time )
       return;
     }
 
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -131,7 +133,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->percentPlebs = math::percentage( plebsCount, _city()->population() );
     _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
-    bool haveHippodrome = !helper.find<Hippodrome>( objects::hippodrome ).empty();
+    bool haveHippodrome = !city::statistic::findo<Hippodrome>( _city(), object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? 1 : 0);
 
     _d->worklessPercent = statistic::getWorklessPercent( _city() );

@@ -18,18 +18,21 @@
 #include "health_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(HealthUpdater,health_updater)
 
 class HealthUpdater::Impl
 {
@@ -54,12 +57,11 @@ void HealthUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "HealthUpdater: execute service" );
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     foreach( it, houses )
     {
-      (*it)->updateState( House::health, _d->value );
+      (*it)->updateState( pr::health, _d->value );
     }
   }
 }

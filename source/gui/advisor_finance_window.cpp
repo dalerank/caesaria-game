@@ -25,7 +25,6 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"
@@ -76,8 +75,7 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
 
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* lbCityHave;
-  GET_WIDGET_FROM_UI( lbCityHave )
+  INIT_WIDGET_FROM_UI( Label*, lbCityHave )
   if( lbCityHave ) lbCityHave->setText( utils::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") ) );
 
   GET_DWIDGET_FROM_UI( _d, lbTaxRateNow )
@@ -85,8 +83,7 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
 
   unsigned int regTaxPayers = statistic::getTaxPayersPercent( city );
   std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
-  Label* lbRegPayers;
-  GET_WIDGET_FROM_UI( lbRegPayers )
+  INIT_WIDGET_FROM_UI( Label*, lbRegPayers )
   if( lbRegPayers ) lbRegPayers->setText( strRegPaeyrs );
 
   Point sp = startPoint;

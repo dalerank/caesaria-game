@@ -35,6 +35,8 @@ using namespace gfx;
 namespace gui
 {
 
+static const char* defaultExt = "en";
+
 class DictionaryWindow::Impl
 {
 public:
@@ -78,17 +80,17 @@ vfs::Path DictionaryWindow::_convUri2path(std::string uri)
   vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
 
   if( !fpath.exist() )
-    fpath = fpath.changeExtension( ".en" );
+    fpath = fpath.changeExtension( defaultExt );
 
   return fpath;
 }
 
-void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
+void DictionaryWindow::show(Widget* parent, object::Type type)
 {
   DictionaryWindow* wnd = new DictionaryWindow( parent );
   if( wnd->_d->lbText )
   {
-    wnd->load( MetaDataHolder::findTypename( type ) );
+    wnd->load( object::toString( type ) );
   }
 }
 

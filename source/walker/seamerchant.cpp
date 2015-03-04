@@ -14,9 +14,9 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "seamerchant.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "pathway/pathway_helper.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tile.hpp"
@@ -53,8 +53,8 @@ public:
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // dock
-  good::SimpleStore sell;
-  good::SimpleStore buy;
+  good::Storage sell;
+  good::Storage buy;
   int tryDockCount;
   int maxTryDockCount;
   int waitInterval;
@@ -103,8 +103,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     // get the list of buildings within reach   
     if( tryDockCount < maxTryDockCount )
     {
-      city::Helper helper( city );
-      DockList docks = helper.find<Dock>( objects::dock );
+      DockList docks = city::statistic::findo<Dock>( city, object::dock );
 
       if( !docks.empty() )
       {
@@ -167,19 +166,19 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       trade::Options& options = city->tradeOptions();
       statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
       //request goods
-      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
+      foreach( goodType, good::all() )
       {
-        int needQty = buy.freeQty( goodType );
-        if (!options.isExporting(goodType))
+        int needQty = buy.freeQty( *goodType );
+        if (!options.isExporting(*goodType))
         {
           continue;
         }
-        int exportLimit = options.tradeLimit( trade::exporting, goodType ) * 100;
-        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, needQty );
+        int exportLimit = options.tradeLimit( trade::exporting, *goodType ) * 100;
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
         {
-          good::Stock stock( goodType, maySell, maySell );
+          good::Stock stock( *goodType, maySell, maySell );
           myDock->requestGoods( stock );
           anyBuy = true;
         }
@@ -204,18 +203,18 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       trade::Options& options = city->tradeOptions();
       //try buy goods
-      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
+      foreach( goodType, good::all() )
       {
-        if (!options.isExporting(goodType))
+        if (!options.isExporting(*goodType))
         {
           continue;
         }
 
-        int needQty = buy.freeQty( goodType );
+        int needQty = buy.freeQty( *goodType );
 
         if( needQty > 0 )
         {
-          good::Stock& stock = buy.getStock( goodType );
+          good::Stock& stock = buy.getStock( *goodType );
           currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
@@ -277,16 +276,16 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       trade::Options& options = city->tradeOptions();
       const good::Store& importing = options.importingGoods();
       //try sell goods
-      for( good::Product goodType= good::wheat; goodType<good::goodCount; ++goodType)
+      foreach( goodType, good::all() )
       {
-        if (!options.isImporting(goodType))
+        if (!options.isImporting(*goodType))
         {
           continue;
         }
 
-        if( sell.qty(goodType) > 0 && importing.capacity(goodType) > 0)
+        if( sell.qty(*goodType) > 0 && importing.capacity(*goodType) > 0)
         {
-          currentSell += myDock->importingGoods( sell.getStock(goodType) );
+          currentSell += myDock->importingGoods( sell.getStock(*goodType) );
           anySell = true;
         }
       }
@@ -388,8 +387,7 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
-  city::Helper helper( city );
-  DockList docks = helper.find<Dock>( objects::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  DockList docks = city::statistic::findo<Dock>( city, object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
     if( (*dock)->landingTile().pos() == walker->pos() )

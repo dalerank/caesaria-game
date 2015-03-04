@@ -57,7 +57,7 @@ private:
 class TerrainGenerator
 {
 public:
-  void setSaveFile( vfs::Path filename );
+  void setSaveFile( vfs::Path filename );  
   void create( Game& game, vfs::Path filename );
   void create( Game& game, int n2size, float smooth, float terrainSq );
 };

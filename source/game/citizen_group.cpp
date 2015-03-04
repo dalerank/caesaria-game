@@ -117,6 +117,34 @@ CitizenGroup CitizenGroup::retrieve( Age group, unsigned int rcount)
   return ret;
 }
 
+CitizenGroup& CitizenGroup::include(CitizenGroup& b)
+{
+  *this += b;
+  b.clear();
+
+  return *this;
+}
+
+void CitizenGroup::exclude(CitizenGroup& group)
+{
+  for( int index=newborn; index <= longliver; index++ )
+  {
+    if( group[index] == 0 || _peoples[ index ] == 0)
+      continue;
+
+    if( _peoples[ index ] >= group[ index ] )
+    {
+      _peoples[ index ] -= group[ index ];
+      group[ index ] = 0;
+    }
+    else
+    {
+      group[ index ] -= _peoples[ index ];
+      _peoples[ index ] = 0;
+    }
+  }
+}
+
 unsigned int& CitizenGroup::operator[](unsigned int age)
 {
   return _peoples[ age ];
@@ -132,6 +160,22 @@ CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
   return *this;
 }
 
+CitizenGroup CitizenGroup::operator-(const CitizenGroup &b) const
+{
+  CitizenGroup result = *this;
+  CitizenGroup rb = b;
+  result.exclude( rb );
+
+  return result;
+}
+
+CitizenGroup CitizenGroup::operator+(const CitizenGroup &b) const
+{
+  CitizenGroup result = *this;
+  result += b;
+  return result;
+}
+
 bool CitizenGroup::empty() const {  return (_peoples.empty() || (0 == count())); }
 
 void CitizenGroup::clear()
@@ -144,6 +188,12 @@ void CitizenGroup::makeOld()
   _peoples.pop_back();
   _peoples.insert( _peoples.begin(), 1, 0 );
 }
+
+unsigned int CitizenGroup::child_n() const { return count( child ); }
+unsigned int CitizenGroup::mature_n() const { return count( mature ); }
+unsigned int CitizenGroup::aged_n() const { return count( aged ); }
+unsigned int CitizenGroup::scholar_n() const { return count( scholar); }
+unsigned int CitizenGroup::student_n() const { return count( student ); }
 
 VariantList CitizenGroup::save() const
 {
@@ -180,4 +230,11 @@ CitizenGroup::CitizenGroup()
 {
   _peoples.resize( longliver+1 );
   _peoples.reserve( longliver+2 );
+}
+
+CitizenGroup::CitizenGroup(CitizenGroup::Age age, int value)
+{
+  _peoples.resize( longliver+1 );
+  _peoples.reserve( longliver+2 );
+  _peoples[ age ] = value;
 }

@@ -24,6 +24,7 @@
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "game/video_config.hpp"
 #include "smkviewer.hpp"
 #include "widget_helper.hpp"
 
@@ -46,7 +47,7 @@ public signals:
   Signal0<> onCloseSignal;
 };
 
-FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
+FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
@@ -63,7 +64,7 @@ FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
   GET_DWIDGET_FROM_UI( _d, lbReceiver )
   GET_DWIDGET_FROM_UI( _d, lbMessage )
 
-  _d->videoFile = film; //"/smk/Emmigrate.smk"
+  _d->videoFile = movie::Config::instance().realPath( movieName ); //"/smk/Emmigrate.smk"
 
   _d->smkViewer->setFilename( _d->videoFile );
 

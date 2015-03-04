@@ -22,6 +22,7 @@
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "objects/building.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "pathway/path_finding.hpp"
@@ -56,6 +57,7 @@ public:
   int waitInterval;
   float speedMultiplier;
   Animation animation;  // current animation
+  Point mappos;
   PointF wpos;      // current world position
   PointF subSpeed;
   PointF nextwpos;  // next way point
@@ -66,6 +68,7 @@ public:
   bool centerReached;
   int health;
   std::string thinks;
+  Point rndOffset;
   float tileSpeedKoeff;
   AbilityList abilities;
   world::Nation nation;
@@ -83,7 +86,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->city = city;
   _d->tileSpeedKoeff = 1.f;
   _d->action.action = Walker::acMove;
-  _d->action.direction = constants::noneDirection;
+  _d->action.direction = direction::none;
   _d->type = walker::unknown;
   _d->health = 100;
   _d->location = 0;
@@ -107,9 +110,6 @@ Walker::~Walker()
   WalkerDebugQueue::instance().rem( this );
 #endif
 }
-
-world::Nation Walker::nation() const{ return _d->nation; }
-void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -160,6 +160,7 @@ void Walker::setPos( const TilePos& pos )
   _d->wpos = _d->location->center().toPointF();
 
   _computeDirection();
+  _updateMappos();
 }
 
 void Walker::setPathway( const Pathway& pathway)
@@ -177,7 +178,7 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 void Walker::_walk()
 {
-  if( constants::noneDirection == _d->action.direction
+  if( direction::none == _d->action.direction
       || !_pathwayRef().isValid() )
   {
     // nothing to do
@@ -189,23 +190,23 @@ void Walker::_walk()
   float speedKoeff = 1.f;
   switch( _d->action.direction )
   {
-  case constants::north:
-  case constants::south:
-  case constants::east:
-  case constants::west:
+  case direction::north:
+  case direction::south:
+  case direction::east:
+  case direction::west:
   break;
 
-  case constants::northEast:
-  case constants::southWest:
-  case constants::southEast:
-  case constants::northWest:
+  case direction::northEast:
+  case direction::southWest:
+  case direction::southEast:
+  case direction::northWest:
      speedKoeff = 0.7f;
   break;
 
   default:
      Logger::warning( "Walker: invalid move direction: %d", _d->action.direction );
      _d->action.action = acNone;
-     _d->action.direction = constants::noneDirection;
+     _d->action.direction = direction::none;
      return;
   break;
   }
@@ -218,6 +219,7 @@ void Walker::_walk()
   const int wcell = tilemap::cellSize().height();
   TilePos saveMpos( tmp.x() / wcell , tmp.y() / wcell );
   _d->wpos += delta;
+  _updateMappos();
 
   tmp = _d->wpos;
   TilePos Mpos( tmp.x() / wcell, tmp.y() / wcell );
@@ -241,6 +243,23 @@ void Walker::_walk()
     _d->location = &_d->city->tilemap().at( Mpos );
     _changeTile();
   }
+}
+
+void Walker::_updateMappos()
+{
+  if( !_d->location )
+  {
+    _d->mappos = Point( 0, 0 );
+    return;
+  }
+
+  const Tile& tile = *_d->location;
+  Point offset;
+  if( tile.overlay().isValid() )
+      offset = tile.overlay()->offset( tile, tilesubpos() );
+
+  const PointF& p = _d->wpos;
+  _d->mappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset + _d->rndOffset;
 }
 
 void Walker::_changeTile()
@@ -296,38 +315,28 @@ const Tile& Walker::_nextTile() const
   TilePos p = pos();
   switch( _d->action.direction )
   {
-  case constants::north: p += TilePos( 0, 1 ); break;
-  case constants::northEast: p += TilePos( 1, 1 ); break;
-  case constants::east: p += TilePos( 1, 0 ); break;
-  case constants::southEast: p += TilePos( 1, -1 ); break;
-  case constants::south: p += TilePos( 0, -1 ); break;
-  case constants::southWest: p += TilePos( -1, -1 ); break;
-  case constants::west: p += TilePos( -1, 0 ); break;
-  case constants::northWest: p += TilePos( -1, 1 ); break;
+  case direction::north: p += TilePos( 0, 1 ); break;
+  case direction::northEast: p += TilePos( 1, 1 ); break;
+  case direction::east: p += TilePos( 1, 0 ); break;
+  case direction::southEast: p += TilePos( 1, -1 ); break;
+  case direction::south: p += TilePos( 0, -1 ); break;
+  case direction::southWest: p += TilePos( -1, -1 ); break;
+  case direction::west: p += TilePos( -1, 0 ); break;
+  case direction::northWest: p += TilePos( -1, 1 ); break;
   default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
   }
 
   return _d->city->tilemap().at( p );
 }
 
-Point Walker::mappos() const
-{
-  if( !_d->location )
-    return Point( 0, 0 );
-
-  const Tile& tile = *_d->location;
-  Point offset;
-  if( tile.overlay().isValid() )
-      offset = tile.overlay()->offset( tile, tilesubpos() );
-
-  const PointF& p = _d->wpos;
-  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset;
-}
-
+const Point& Walker::mappos() const { return _d->mappos;}
 void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
 void Walker::_waitFinished() { }
 
+world::Nation Walker::nation() const{ return _d->nation; }
+void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
+void Walker::_setLocation( Tile* location ){ _d->location = location; }
 Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
@@ -347,13 +356,14 @@ Pathway& Walker::_pathwayRef() {  return _d->pathway; }
 const Pathway& Walker::pathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
-void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
+void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 TilePos Walker::places(Walker::Place type) const { return TilePos(-1,-1); }
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
 bool Walker::getFlag(Walker::Flag flag) const{ return _d->flags.count( flag ) > 0; }
+const Tile& Walker::tile() const {  return _d->location ? *_d->location : invalidTile; }
 
 void Walker::setFlag(Walker::Flag flag, bool value)
 {
@@ -365,11 +375,6 @@ Point Walker::tilesubpos() const
 {
   Point tmp = Point( _d->location->i(), _d->location->j() ) * 15 + Point( 7, 7 );
   return tmp - _d->wpos.toPoint();
-}
-
-const Tile& Walker::tile() const
-{
-  return _d->location ? *_d->location : invalidTile;
 }
 
 void Walker::_setAction( Walker::Action action )
@@ -431,9 +436,9 @@ const Picture& Walker::getMainPicture()
   {
     const AnimationBank::MovementAnimation& animMap = AnimationBank::find( type() );
     AnimationBank::MovementAnimation::const_iterator itAnimMap;
-    if( _d->action.direction == constants::noneDirection )
+    if( _d->action.direction == direction::none )
     {
-      itAnimMap = animMap.find( DirectedAction(_d->action.action, constants::north ) );
+      itAnimMap = animMap.find( DirectedAction(_d->action.action, direction::north ) );
     }
     else
     {
@@ -474,6 +479,7 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_STR_D( stream, _d, thinks )
   VARIANT_SAVE_ANY_D( stream, _d, subSpeed )
   VARIANT_SAVE_ANY_D( stream, _d, lastCenterDst )
+  VARIANT_SAVE_ANY_D( stream, _d, rndOffset)
   stream[ "showDebugInfo" ] = getFlag( showDebugInfo );
 }
 
@@ -495,6 +501,7 @@ void Walker::load( const VariantMap& stream)
   VARIANT_LOAD_ENUM_D( _d, action.action, stream )
   VARIANT_LOAD_ENUM_D( _d, action.direction, stream )
   VARIANT_LOAD_ENUM_D( _d, uid, stream )
+  VARIANT_LOAD_ANY_D( _d, rndOffset, stream )
   VARIANT_LOAD_ANY_D( _d, subSpeed, stream )
   VARIANT_LOAD_ANY_D( _d, speedMultiplier, stream )
 
@@ -535,6 +542,7 @@ void Walker::_updatePathway( const Pathway& pathway)
   _computeDirection();
 }
 
+
 void Walker::_updateAnimation( const unsigned int time )
 {
   if( _d->animation.size() > 0 )
@@ -543,14 +551,20 @@ void Walker::_updateAnimation( const unsigned int time )
   }
 }
 
-void Walker::_setWpos( Point pos) { _d->wpos = pos.toPointF(); }
+Point& Walker::_rndOffset() { return _d->rndOffset; }
+
+void Walker::_setWpos( const Point& pos)
+{
+  _d->wpos = pos.toPointF();
+  _updateMappos();
+}
 
 void Walker::_updateThoughts()
 {
   _d->thinks = WalkerThinks::check( this, _city() );
 }
 
-Point Walker::_wpos() const{  return _d->wpos.toPoint();}
+Point Walker::_wpos() const { return _d->wpos.toPoint(); }
 
 void Walker::go( float speed )
 {

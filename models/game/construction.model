@@ -84,7 +84,7 @@
   },
 
   roadBlock : {
-    cost : 10
+    cost : 10     
     class : "road"
     image : [ "roadBlock", 1 ]
   }
@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ 23, 25 ], delay : 2 }
+    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 109 ], delay : 2 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 
@@ -303,6 +303,7 @@
     image.ext : {
       s1 : { size: 1, rc : "prefecture", start : 1, count : 4 }
     }
+    animation : { rc : "prefecture_anim", start : 1, count : 9, offset : [ 10, 60 ], delay : 3 }
     class : "security"
   },  
  
@@ -332,7 +333,7 @@
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    animation : { rc : "smlceres", start : 1, count : 6, offset : [ 41, 27 ], delay : 3 }
+    animation : { rc : "smlceres", start : 2, count : 6, offset : [ 41, 27 ], delay : 3 }
     employers : 2
     class : "religion"
     image : [ "smlceres", 1 ]    
@@ -430,6 +431,7 @@
     class : "food"
     image : [ "commerce", 1 ]
     sound : [ "market", 1 ]
+    animation : { rc : "commerce", start : 2, count : 9, offset : [ 90, 45 ], delay : 4 }
   }, 
 
   granery : {
@@ -495,10 +497,10 @@
   
   engineering_post : {
     cost : 30,
-    desirability : { base : 0, 	range : 0,	step : 0 }
+    desirability : { base :-2,	range : 2,	step : 1 }
     employers : 5
     class : "engineer"
-
+    animation : { rc : "engineeringa", start : 1, count : 9, offset : [ 20, 54 ], delay : 2 }
     image.ext : {
       type_1 : { size:1, rc : "engineering", start : 1, count : 4 }
     }
@@ -555,6 +557,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 0, 0 ]
     sound : [ "reservoir", 1 ]
   }, 
 

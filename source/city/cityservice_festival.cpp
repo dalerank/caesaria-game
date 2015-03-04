@@ -19,6 +19,7 @@
 #include "game/gamedate.hpp"
 #include "city.hpp"
 #include "city/statistic.hpp"
+#include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
@@ -26,11 +27,14 @@
 #include "events/updatehouseservice.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace religion;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Festival,festival)
 
 namespace {
   typedef enum { ftNone=0, ftSmall, ftMiddle, ftBig, ftCount } FestType;
@@ -39,7 +43,7 @@ namespace {
 
   const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
   const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
-  const char* festivalVideo[ftCount] = { "", ":/smk/festival1_feast.smk", ":/smk/festival3_Glad.smk", ":/smk/festival2_chariot.smk" };
+  const char* festivalVideo[ftCount] = { "", "festival1_feast", "festival3_glad", "festival2_chariot" };
 }
 
 class Festival::Impl
@@ -72,7 +76,7 @@ void Festival::assignFestival( RomeDivinityType name, int size )
   _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
 
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
@@ -111,7 +115,7 @@ void Festival::timeStep(const unsigned int time )
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
-    events::GameEventPtr e = events::ShowFeastival::create( festivalDesc[ id ], festivalTitles[ id ],
+    events::GameEventPtr e = events::ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
                                                               _city()->player()->name(), festivalVideo[ id ] );
     e->dispatch();
 

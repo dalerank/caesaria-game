@@ -27,7 +27,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -56,7 +56,7 @@ public:
   struct TurnInfo {
     Tile* tile;
     Picture pic;
-    TileOverlayPtr overlay;
+    OverlayPtr overlay;
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
@@ -72,6 +72,8 @@ public:
   Tile& at( const int i, const int j );
 
   bool isInside( const TilePos& pos );
+  inline bool isInside( const int i, const int j ) { return( i >= 0 && j>=0 && i < size && j < size); }
+
   void resize( const int s );
   void set( int i, int j, Tile* v );
   void saveMasterTiles( MasterTiles& mtiles );
@@ -81,7 +83,7 @@ public:
 Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
-  _d->direction = north;
+  _d->direction = direction::north;
   _d->virtWidth = tilemap::cellSize().width() * 2;
 }
 
@@ -539,7 +541,7 @@ Tile* Tilemap::Impl::ate(const int i, const int j)
 
 Tile& Tilemap::Impl::at(const int i, const int j)
 {
-  if( isInside( TilePos( i, j ) ) )
+  if( isInside( i, j ) )
   {
     return *(*this)[i][j];
   }

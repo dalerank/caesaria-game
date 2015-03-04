@@ -4,7 +4,7 @@
     name : "Ceres",
     type : "goddess",
     service : "srvc_religionCeres",
-    image : "picture1_00013"
+    image : "panelwindows_00017"
     relation : 50
   },
 	
@@ -13,7 +13,7 @@
     name : "Mars",
     type : "god",
     service : "srvc_religionMars",
-    image : "picture1_00012"
+    image : "panelwindows_00020"
     relation : 50
   },
 	
@@ -22,7 +22,7 @@
 		name : "Neptune"
 		type : "god",
     service : "srvc_religionNeptune"
-    image : "picture1_00015"
+    image : "panelwindows_00018"
     relation : 50
 	},
 	
@@ -31,7 +31,7 @@
     name : "Venus"
 		type : "goddes"
     service : "srvc_religionVenus"
-    image : "picture1_00011"
+    image : "panelwindows_00021"
     relation : 50
 	},		
 	
@@ -40,7 +40,7 @@
 		name : "Mercury"
 		type : "god",
     service : "srvc_religionMercury"
-    image : "picture1_00014"
+    image : "panelwindows_00019"
     relation : 50
 	}
  }

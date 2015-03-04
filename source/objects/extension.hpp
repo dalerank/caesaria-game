@@ -73,7 +73,7 @@ class ConstructionParamUpdater : public ConstructionExtension
 {
 public:
   static ConstructionExtensionPtr create();
-  static ConstructionExtensionPtr assignTo(ConstructionPtr construction, int paramName,  bool relative, int value, int week2finish );
+  static ConstructionExtensionPtr assignTo(ConstructionPtr construction, Param paramName,  bool relative, int value, int week2finish );
 
   virtual void timeStep(ConstructionPtr parent, unsigned int time);
   virtual std::string type() const;

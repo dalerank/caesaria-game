@@ -18,7 +18,7 @@
 #include "merchant.hpp"
 #include "empire.hpp"
 #include "city.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
@@ -33,8 +33,8 @@ class Merchant::Impl
 {
 public:
   TraderoutePtr route;
-  good::SimpleStore sells;
-  good::SimpleStore buys;
+  good::Storage sells;
+  good::Storage buys;
   PointsArray steps;
   unsigned int step;
   std::string destCity, baseCity;

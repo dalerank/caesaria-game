@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "objects/overlay.hpp"
 
 namespace gfx
 {
@@ -83,12 +84,40 @@ TilesArray&TilesArray::append(const TilesArray& a)
   return *this;
 }
 
-TilesArray TilesArray::walkableTiles(bool alllands) const
+TilesArray TilesArray::walkables(bool alllands) const
 {
   TilesArray ret;
   foreach( i, *this)
   {
     if( (*i)->isWalkable( alllands ) )
+      ret.push_back( *i );
+  }
+
+  return ret;
+}
+
+TilesArray TilesArray::terrains() const
+{
+  TilesArray ret;
+  foreach( i, *this)
+  {
+    if( (*i)->getFlag( Tile::tlWater ) || (*i)->getFlag( Tile::tlDeepWater )
+        || (*i)->getFlag( Tile::tlRock ) || (*i)->getFlag( Tile::tlCoast )
+        || (*i)->getFlag( Tile::tlRift) )
+      continue;
+
+    ret.push_back( *i );
+  }
+
+  return ret;
+}
+
+TilesArray TilesArray::waters() const
+{
+  TilesArray ret;
+  foreach( i, *this)
+  {
+    if( (*i)->getFlag( Tile::tlWater ) || (*i)->getFlag( Tile::tlDeepWater ) )
       ret.push_back( *i );
   }
 
@@ -109,9 +138,9 @@ TilesArray& TilesArray::remove( const TilePos& pos)
   return *this;
 }
 
-TileOverlayList TilesArray::overlays() const
+OverlayList TilesArray::overlays() const
 {
-  TileOverlayList ret;
+  OverlayList ret;
   foreach( i, *this)
   {
     if( (*i)->overlay().isValid() )

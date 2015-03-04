@@ -18,7 +18,7 @@
 #include "helper.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "animation_bank.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
@@ -26,7 +26,7 @@
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -175,7 +175,7 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
   return imgid;
 }
 
-int turnCoastTile(int imgid, constants::Direction newDirection )
+int turnCoastTile(int imgid, Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
   imgid -= 372;
@@ -217,7 +217,13 @@ unsigned int hash(const TilePos& pos)
 
 Point tilepos2screen(const TilePos& pos)
 {
-  return Point( tilemap::x_tileBase * (pos.i()+pos.j()), tilemap::y_tileBase * pos.z() );
+  return Point( tilemap::x_tileBase * (pos.j()+pos.i()),
+                tilemap::y_tileBase * (pos.j()-pos.i()) );
+}
+
+TilePos screen2tilepos( const Point& point, int mapsize )
+{
+  return TilePos( 0, 0 );
 }
 
 void decode(Tile& tile, const int bitset)

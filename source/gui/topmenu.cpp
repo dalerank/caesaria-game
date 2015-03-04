@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "topmenu.hpp"
 
@@ -25,7 +25,6 @@
 #include "core/utils.hpp"
 #include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
-#include "game/enums.hpp"
 #include "game/gamedate.hpp"
 #include "environment.hpp"
 #include "widget_helper.hpp"
@@ -35,7 +34,6 @@
 #include "widgetescapecloser.hpp"
 #include "listbox.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -106,10 +104,13 @@ void TopMenu::setFunds( int value )
 
 void TopMenu::Impl::updateDate()
 {
-  if( !lbDate || saveDate.month() == game::Date::current().month() )
+  if( !lbDate )
     return;
 
-  lbDate->setText( util::date2str( game::Date::current() ) );
+  if( !game::Date::isDayChanged() )
+    return;
+
+  lbDate->setText( util::date2str( game::Date::current(), true ) );
 }
 
 void TopMenu::Impl::showShortKeyInfo()
@@ -221,7 +222,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
   advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire );
   advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings );
-  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading);
+  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading );
   advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population );
   advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health );
   advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education );
@@ -238,7 +239,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
 Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
 Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
 Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
-Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
+Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
 Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
 Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "loader_sav.hpp"
 #include "gfx/helper.hpp"
@@ -28,6 +28,7 @@
 #include "vfs/path.hpp"
 #include "game/resourcegroup.hpp"
 #include "loaderhelper.hpp"
+#include "settings.hpp"
 
 #include <fstream>
 #include <climits>
@@ -35,6 +36,7 @@
 #include <map>
 
 using namespace gfx;
+using namespace constants;
 
 namespace game
 {
@@ -263,111 +265,129 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     // here goes the WORK!
     
     
-  // loads the graphics map
-  int border_size = (162 - size) / 2;
+    // loads the graphics map
+    int border_size = (162 - size) / 2;
 
-  std::map< int, std::map< int, unsigned char > > edgeData;
+    std::map< int, std::map< int, unsigned char > > edgeData;
 
-  game.city()->setCameraPos( TilePos( size/2, size/2 ) );
+    game.city()->setCameraPos( TilePos( size/2, size/2 ) );
 
-  for (int itA = 0; itA < size; ++itA)
-  {
-    for (int itB = 0; itB < size; ++itB)
+    bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
+    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
+
+    for (int itA = 0; itA < size; ++itA)
     {
-      int i = itB;
-      int j = size - itA - 1;
-
-      int index = 162 * (border_size + itA) + border_size + itB;
-
-      Tile& tile = oTilemap.at(i, j);
-
-      unsigned int imgId = graphicGrid[index];
-      Picture pic = imgid::toPicture( imgId );
-
-      if( pic.isValid() )
+      for (int itB = 0; itB < size; ++itB)
       {
-        tile.setPicture( pic );
-        tile.setOriginalImgId( imgId );
-      }
-      else
-      {
-        TileOverlay::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
-        if( ovType == constants::objects::unknown )
+        int i = itB;
+        int j = size - itA - 1;
+
+        int index = 162 * (border_size + itA) + border_size + itB;
+
+        Tile& tile = oTilemap.at(i, j);
+
+        unsigned int imgId = graphicGrid[index];
+        Picture pic = imgid::toPicture( imgId );
+
+        if( pic.isValid() )
         {
-          Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
+          tile.setPicture( pic );
+          tile.setOriginalImgId( imgId );
+        }
+        else
+        {
+          object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
+          if( ovType == object::unknown )
+          {
+            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
+          }
+          else
+          {
+             if( imgId == 0x203 || imgId == 0x207 || imgId == 0x20A || imgId == 0x20D ||
+                 imgId == 0x1DA || imgId == 0x1DD || imgId == 0x1E7 || imgId == 0x1e1 ||
+                 imgId == 0x1FF || imgId == 0x1FA || imgId == 0x1e2 || imgId == 0x1e9 ||
+                 imgId == 0x1f8 || imgId == 0x1e5 || imgId == 0x1e6 || imgId == 0x201 ||
+                 imgId == 0x208 || imgId == 0x1ea )
+             {
+               Picture pic = MetaDataHolder::randomPicture( oldgfx ? object::meadow : object::terrain, Size(1) );
+               tile.setPicture( pic );
+               tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+               tile.setFlag( Tile::clearAll, true );
+               tile.setFlag( Tile::tlMeadow, true );
+             }
+          }
+
+          baseBuildings[ tile.pos() ] = imgId;
+          pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
+          tile.setPicture( pic );
+          tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
         }
 
-        baseBuildings[ tile.pos() ] = imgId;
-        pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
-        tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        edgeData[ i ][ j ] = edgeGrid[index];
+        tile::decode( tile, terrainGrid[index] );
+        tile::fixPlateauFlags( tile );
       }
-
-      edgeData[ i ][ j ] = edgeGrid[index];
-      tile::decode( tile, terrainGrid[index] );
-      tile::fixPlateauFlags( tile );
     }
-  }    
 
-  for (int i = 0; i < size; ++i)
-  {
-    for (int j = 0; j < size; ++j)
+    for (int i = 0; i < size; ++i)
     {
-      unsigned char ed = edgeData[ i][ j ];
-      if( ed == 0x00)
+      for (int j = 0; j < size; ++j)
       {
-        int size = 1;
-
-				{
-					int dj;
-					try
-					{
-						// find size, 5 is maximal size for building
-						for (dj = 0; dj < 5; ++dj)
-						{
-							int edd = edgeData[ i ][ j - dj ];
-							// find bottom left corner
-							if (edd == 8 * dj + 0x40)
-							{
-								size = dj + 1;
-								break;
-							}
-						}
-					}
-					catch(...)
-					{
-						size = dj + 1;
-					}
-				}
-
-				Tile& master = oTilemap.at(i, j - size + 1);
-
-				//Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
-        for (int di = 0; di < size; ++di)
+        unsigned char ed = edgeData[ i][ j ];
+        if( ed == 0x00)
         {
-          for (int dj = 0; dj < size; ++dj)
+          int size = 1;
+
           {
-            oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
+            int dj;
+            try
+            {
+              // find size, 5 is maximal size for building
+              for (dj = 0; dj < 5; ++dj)
+              {
+                int edd = edgeData[ i ][ j - dj ];
+                // find bottom left corner
+                if (edd == 8 * dj + 0x40)
+                {
+                  size = dj + 1;
+                  break;
+                }
+              }
+            }
+            catch(...)
+            {
+                    size = dj + 1;
+            }
+          }
+
+          Tile& master = oTilemap.at(i, j - size + 1);
+
+                                  //Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
+          for (int di = 0; di < size; ++di)
+          {
+            for (int dj = 0; dj < size; ++dj)
+            {
+              oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
+            }
           }
         }
-      }
 
-      // Check if it is building and type of building
-      //if (ttile.getMasterTile() == NULL)      
-      std::map<TilePos, unsigned int>::iterator bbIt = baseBuildings.find( TilePos( i, j ) );
-      unsigned int bbImgId = bbIt == baseBuildings.end() ? 0 : bbIt->second;
+        // Check if it is building and type of building
+        //if (ttile.getMasterTile() == NULL)
+        std::map<TilePos, unsigned int>::iterator bbIt = baseBuildings.find( TilePos( i, j ) );
+        unsigned int bbImgId = bbIt == baseBuildings.end() ? 0 : bbIt->second;
 
-      Tile& tile = oTilemap.at( i, j );
-      Tile* masterTile = tile.masterTile();
-      if( !masterTile )
-        masterTile = &tile;
+        Tile& tile = oTilemap.at( i, j );
+        Tile* masterTile = tile.masterTile();
+        if( !masterTile )
+          masterTile = &tile;
 
-      if( masterTile->overlay().isNull() )
-      {
-        LoaderHelper::decodeTerrain( *masterTile, oCity, bbImgId );
+        if( masterTile->overlay().isNull() )
+        {
+          LoaderHelper::decodeTerrain( *masterTile, oCity, bbImgId );
+        }
       }
     }
-  }
     
   }
   catch(PKException)

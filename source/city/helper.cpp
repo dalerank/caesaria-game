@@ -29,54 +29,9 @@ namespace city
 
 const TilePos Helper::invalidPos = TilePos( -1, -1 );
 
-void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
-{
-  Tilemap& tilemap = _city->tilemap();
-
-  const Desirability& dsrbl = overlay->desirability();
-  int mul = ( onBuild ? 1 : -1);
-
-  //change desirability in selfarea
-  TilesArray area = tilemap.getArea( overlay->pos(), overlay->size() );
-  foreach( tile, area )
-  {
-    (*tile)->changeParam( Tile::pDesirability, mul * dsrbl.base );
-  }
-
-  //change deisirability around
-  int current = mul * dsrbl.base;
-  for( int curRange=1; curRange <= dsrbl.range; curRange++ )
-  {
-    TilesArray perimetr = tilemap.getRectangle( overlay->pos() - TilePos( curRange, curRange ),
-                                                 overlay->size() + Size( 2 * curRange ) );
-    foreach( tile, perimetr )
-    {
-      (*tile)->changeParam( Tile::pDesirability, current );
-    }
-
-    current += mul * dsrbl.step;
-  }
-}
-
-TilesArray Helper::getArea(TileOverlayPtr overlay)
-{
-  if( !_city.isValid() )
-  {
-    Logger::warning( "WARNING !!!: Helper::getArea city is null" );
-    return TilesArray();
-  }
-
-  return _city->tilemap().getArea( overlay->pos(), overlay->size() );
-}
-
-TilesArray Helper::getAroundTiles(TileOverlayPtr overlay)
+TilesArray Helper::getAroundTiles(OverlayPtr overlay)
 {
   return _city->tilemap().getArea( overlay->pos()-TilePos(1,1), overlay->size()+Size(2) );
-}
-
-TilesArray Helper::getArea(TilePos start, TilePos stop)
-{
-  return _city->tilemap().getArea( start, stop );
 }
 
 HirePriorities Helper::getHirePriorities() const

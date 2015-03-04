@@ -15,6 +15,7 @@ include_directories(
   ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
+  ${STEAM_API_DIR}/public/opensteam
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -38,6 +39,7 @@ file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
 file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
+file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
@@ -48,7 +50,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} ${HELP_LIST} )
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} )
 
 target_link_libraries(${PROJECT_NAME}
   ${SDL2_LIBRARY}
@@ -81,10 +83,6 @@ add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
 add_definitions( -DCAESARIA_USE_SHADERS )
 endif(BUILD_GL_FRAMEBUFFER)
 
-if( DEBUG_TIMERS )
-add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
-endif(DEBUG_TIMERS)
-
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
   target_link_libraries(${PROJECT_NAME} "winmm")
@@ -95,16 +93,14 @@ if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
   if(NOT APPLE)
     target_link_libraries(${PROJECT_NAME} "GL")
+    target_link_libraries(${PROJECT_NAME} "dl")
   endif()  
 endif(UNIX)
 
 if(USE_STEAM)
   if(WIN32)
-    if(X64_BUILD)
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win64/steam_api.lib")
-    else()
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win32/steam_api.lib")
-    endif()
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/helper/steam_helper.lib")
   elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
   elseif(UNIX)
@@ -133,6 +129,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in release mode")
   if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+  endif()
+
+  if(WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
   endif()
 else()
   message("CaesarIA-game: building in debug mode")
@@ -230,6 +230,12 @@ ADD_CUSTOM_COMMAND(
 ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/maps" "${WORK_DIR}/resources/maps"
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/locale" "${WORK_DIR}/resources/locale"
 )
 
@@ -241,26 +247,18 @@ ADD_CUSTOM_COMMAND(
 
 if(USE_STEAM)
   if(WIN32)
-    if(X64_BUILD)
-      ADD_CUSTOM_COMMAND(
-          TARGET ${PROJECT_NAME}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/dkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-      )
-    else()
-      ADD_CUSTOM_COMMAND(
-          TARGET ${PROJECT_NAME}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-      )
-    endif()
+    ADD_CUSTOM_COMMAND(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/helper/steam_helper.dll" "${WORK_DIR}/steam_helper.dll"
+    )
   elseif(APPLE)
     ADD_CUSTOM_COMMAND(
         TARGET ${PROJECT_NAME}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib" "${WORK_DIR}/libsteam_api.dylib"
     )
   elseif(UNIX)
@@ -268,14 +266,14 @@ if(USE_STEAM)
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
       )
     else()
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
      )
     endif()

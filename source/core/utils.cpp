@@ -250,19 +250,6 @@ int compare( const std::string& a, const std::string& b, equaleMode mode )
   }
 }
 
-unsigned int hash( const std::string& text )
-{
-  unsigned int nHash = 0;
-  const char* key = text.c_str();
-  if( key )
-  {
-    while(*key)
-      nHash = (nHash<<5) + nHash + *key++;
-  }
-
-  return nHash;
-}
-
 unsigned int hash( unsigned int max_size, const char* fmt, ... )
 {
   va_list argument_list;
@@ -273,7 +260,7 @@ unsigned int hash( unsigned int max_size, const char* fmt, ... )
 
   va_end(argument_list);
 
-  return hash( fmtStr );
+  return Hash( fmtStr );
 }
 
 StringArray split( std::string str, std::string spl )
@@ -338,6 +325,22 @@ bool startsWith(std::string text, std::string start)
 unsigned int toUint(const std::string& in)
 {
   return toUint( in.c_str(), 0 );
+}
+
+float eventProbability(float probability, int k, int n)
+{
+  int limit = math::random( n ) * (1 - probability);
+  return k > limit ? 1 : 0;
+
+  /*probability = math::clamp<float>( probability, 0, 1);
+  k = math::clamp( k, 0, n );
+  float q = 1 - probability;
+
+  float npq = n * probability * q;
+  float t = (k - n*probability)/sqrt(npq);
+  float res = (1 / sqrt( 2* math::PI * npq )) * exp( -pow(t,2)/2 ) ;
+
+  return res;*/
 }
 
 }//end namespace utils

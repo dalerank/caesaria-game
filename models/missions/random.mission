@@ -13,7 +13,7 @@
 	
   win :
   {
-    population : 150
+    population : 0
     culture : 0
     prosperity : 0
     peace : 0
@@ -22,7 +22,7 @@
     title : "##clerk##"
     finish : "300.01.01"
     may_continue : false
-    short : "##build_some_houses##"
+    short : "##win_or_die##"
     maxHouseLevel : "big_villa"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
@@ -35,6 +35,10 @@
   		
   events :
   {
+    tutorial#random_collapse : {
+      population : 60
+      strong : 25
+    }
   }
 	
   buildoptions :
@@ -46,6 +50,7 @@
     health : "enabled"
     religion : "enabled"
     education : "enabled"
+    commerce : "enabled"
     entertainment : "enabled"
     govt : "enabled"
     engineering : "enabled"

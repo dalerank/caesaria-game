@@ -19,7 +19,6 @@
 #define __CAESARIA_OVERLAYS_MENU_H_INCLUDED__
 
 #include "widget.hpp"
-#include "game/enums.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 

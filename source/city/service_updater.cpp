@@ -18,7 +18,7 @@
 #include "service_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "objects/house_level.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace constants;
 
@@ -38,6 +39,8 @@ CAESARIA_LITERALCONST(endTime)
 CAESARIA_LITERALCONST(value)
 CAESARIA_LITERALCONST(service)
 }
+
+REGISTER_SERVICE_IN_FACTORY(ServiceUpdater,serviceUpdater)
 
 class ServiceUpdater::Impl
 {
@@ -63,8 +66,7 @@ void ServiceUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = statistic::findh( _city() );
 
     foreach( it, houses )
     {

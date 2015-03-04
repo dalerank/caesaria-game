@@ -17,7 +17,7 @@
 
 #include "rome.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/funds.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
@@ -38,7 +38,7 @@ class Rome::Impl
 {
 public:
   city::Funds funds;
-  good::SimpleStore gstore;
+  good::Storage gstore;
   DateTime lastAttack;
   int strength;
 };
@@ -47,7 +47,7 @@ Rome::Rome(EmpirePtr empire)
    : City( empire ), _d( new Impl )
 {
   gfx::Picture pic = gfx::Picture::load( "roma", 1 );
-  pic.setOffset( 0, 30 );
+  //pic.setOffset( 0, 30 );
   setPicture( pic );
 
   setLocation( Point( 870, 545 ) );
@@ -85,11 +85,11 @@ void Rome::addObject(ObjectPtr obj)
     GoodCaravanPtr caravan = ptr_cast<GoodCaravan>( obj );
 
     good::Product gtype = good::none;
-    for( good::Product i=good::wheat; i < good::goodCount; ++i )
+    foreach( i, good::all())
     {
-      if( caravan->store().qty( i ) > 0 )
+      if( caravan->store().qty( *i ) > 0 )
       {
-        gtype = i;
+        gtype = *i;
         break;
       }
     }

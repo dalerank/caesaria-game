@@ -25,7 +25,7 @@ class ShowAdvisorWindow : public GameEvent
 {
 public:
   static GameEventPtr create();
-  static GameEventPtr create(bool show, constants::advisor::Type advisor );
+  static GameEventPtr create(bool show, advisor::Type advisor );
 
   virtual void load(const VariantMap& stream);
 
@@ -37,7 +37,7 @@ private:
   ShowAdvisorWindow();
 
   bool _show;
-  constants::advisor::Type _advisor;
+  advisor::Type _advisor;
 };
 
 } //end namespace events

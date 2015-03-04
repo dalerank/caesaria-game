@@ -23,6 +23,7 @@
 #include "core/utils.hpp"
 #include "sound/constants.hpp"
 #include "core/logger.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -62,6 +63,10 @@ SoundOptions::SoundOptions(Widget* parent, int gameSound, int ambientSound, int 
   _d->current = tmp;
 
   _update();
+  WidgetEscapeCloser::insertTo( this );
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnOk )
+  if( btnOk ) btnOk->setFocus();
 }
 
 SoundOptions::~SoundOptions( void ) {}
@@ -105,13 +110,9 @@ Signal0<>& SoundOptions::onClose(){  return _d->onCloseSignal;}
 
 void SoundOptions::_update()
 {
-  Label* lbGameSoundPercent;
-  Label* lbAmbientSoundPercent;
-  Label* lbThemeSoundPercent;
-
-  GET_WIDGET_FROM_UI( lbGameSoundPercent )
-  GET_WIDGET_FROM_UI( lbAmbientSoundPercent )
-  GET_WIDGET_FROM_UI( lbThemeSoundPercent )
+  INIT_WIDGET_FROM_UI( Label*, lbGameSoundPercent )
+  INIT_WIDGET_FROM_UI( Label*, lbAmbientSoundPercent )
+  INIT_WIDGET_FROM_UI( Label*, lbThemeSoundPercent )
 
   _d->current.game = math::clamp( _d->current.game, 0, 100 );
   _d->current.ambient = math::clamp( _d->current.ambient, 0, 100 );
