@@ -473,9 +473,8 @@ bool Game::exec()
       delete _d->currentScreen;
       _d->currentScreen = 0;
     }
-
     return true;
-  }
+  }    
 
   Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
   addon::Manager& am = addon::Manager::instance();
@@ -508,8 +507,12 @@ bool Game::exec()
     }
     break;
 
+    case SCREEN_QUIT:
+      Logger::warning( "game: prepare for quit" );
+    break;
+
     default:
-      Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
+      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;
@@ -545,7 +548,5 @@ void Game::clear()
 #endif
 }
 
-void Game::setNextScreen(ScreenType screen)
-{
-  _d->nextScreen = screen;
-}
+void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}
+
