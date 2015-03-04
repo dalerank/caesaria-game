@@ -140,7 +140,7 @@ void CityIndebt::_exec(Game& game, unsigned int)
   {
     if( _d->lastMessageSent.monthsTo( game::Date::current() ) > 11 )
     {
-      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, ":/smk/Emp_send_army.smk" );
+      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
       e->dispatch();
 
       world::CityPtr rome = game.empire()->rome();

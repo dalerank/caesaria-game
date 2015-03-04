@@ -25,6 +25,7 @@ Human::Human(PlayerCityPtr city)
 {
   setFlag( Walker::vividly, true );
   _setNation( city->nation() );
+  _rndOffset() = Point( math::random( 15), math::random( 15 ) ) - Point( 7, 7 );
 }
 
 Human::~Human()

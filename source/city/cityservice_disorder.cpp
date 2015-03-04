@@ -224,7 +224,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
       moneyStolen = math::random( 400 );
 
     events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                                          events::ShowInfobox::send2scribe, ":/smk/mugging.smk" );
+                                                          events::ShowInfobox::send2scribe, "mugging" );
     e->dispatch();
 
     city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );
@@ -236,7 +236,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
   events::GameEventPtr e = events::ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
-                                                        events::ShowInfobox::send2scribe, "/smk/spy_riot.smk" );
+                                                        events::ShowInfobox::send2scribe, "spy_riot" );
   e->dispatch();
   rioterInThisYear++;
 

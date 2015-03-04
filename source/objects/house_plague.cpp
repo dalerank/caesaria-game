@@ -97,8 +97,8 @@ void HousePlague::timeStep(const unsigned long time)
   {
     HousePtr house;
     house << _city()->getOverlay( pos() );
-    int ill_value = house.isValid() ? (house->state( pr::health ) < 20): 100;
-    if( ill_value > 20 )
+    int health_value = house.isValid() ? house->state( pr::health ) : 100;
+    if( health_value > 20 )
     {
       deleteLater();
     }   

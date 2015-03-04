@@ -94,13 +94,13 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     {
       text = "##rome_need_some_goods##";
       title = "##emperor_request_money##";
-      video = ":/smk/Urgent_message1.smk";
+      video = "urgent_message1";
     }
     else
     {
       text = "##rome_need_some_money##";
       title = "##emperor_request##";
-      video = ":/smk/Urgent_message2.smk";
+      video = "urgent_message2";
     }
 
     if( lbText ) { lbText->setText( _( text ) ); }

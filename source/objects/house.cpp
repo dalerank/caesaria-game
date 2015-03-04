@@ -44,6 +44,7 @@
 #include "city/victoryconditions.hpp"
 #include "house_plague.hpp"
 #include "objects_factory.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -242,9 +243,19 @@ void House::_checkPatricianDeals()
 
 void House::_updateTax()
 {
-  float cityTax = _city()->funds().taxRate() / 100.f;
-  cityTax = cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear;
-  cityTax = math::clamp<float>( cityTax, 0, _d->money );
+	  int difficulty = SETTINGS_VALUE(difficulty);
+	  float multiply = 1.0f;
+	  switch (difficulty)
+	  {
+		case 0: multiply = 3.0f; break;
+		case 1: multiply = 2.0f; break;
+		case 2: multiply = 1.5f; break;
+		case 3: multiply = 1.0f; break;
+		case 4: multiply = 0.75f; break;
+	  }
+
+	float cityTax = _city()->funds().taxRate() / 100.f;
+	cityTax = (multiply * _d->habitants.count( CitizenGroup::mature ) / _d->spec.taxRate()) * cityTax;
 
   _d->money -= cityTax;
   _d->tax += cityTax;

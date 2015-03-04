@@ -43,7 +43,7 @@ namespace {
 
   const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
   const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
-  const char* festivalVideo[ftCount] = { "", ":/smk/festival1_feast.smk", ":/smk/festival3_Glad.smk", ":/smk/festival2_chariot.smk" };
+  const char* festivalVideo[ftCount] = { "", "festival1_feast", "festival3_glad", "festival2_chariot" };
 }
 
 class Festival::Impl
@@ -76,7 +76,7 @@ void Festival::assignFestival( RomeDivinityType name, int size )
   _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
 
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
