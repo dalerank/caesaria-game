@@ -86,6 +86,7 @@ endif(BUILD_GL_FRAMEBUFFER)
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
   target_link_libraries(${PROJECT_NAME} "winmm")
+  target_link_libraries(${PROJECT_NAME} "imagehlp")
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
