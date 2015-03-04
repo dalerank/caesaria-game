@@ -246,7 +246,9 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
     }
   }
 
-  ret.coverage = math::percentage( ret.peoplesStuding, ret.need );
+  ret.coverage = ret.need == 0
+                    ? 100
+                    : math::percentage( ret.peoplesStuding, ret.need );
   return ret;
 }
 

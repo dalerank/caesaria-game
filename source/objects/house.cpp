@@ -1353,7 +1353,7 @@ void House::_updateHealthLevel()
 
   updateState( pr::health, -decrease );
 
-  if( state( pr::health ) < 25 )
+  if( state( pr::health ) < 25 && !_city()->getOption( PlayerCity::c3gameplay ))
   {
     HousePlague::create( _city(), pos(), game::Date::days2ticks( 5 ) );
   }

@@ -110,6 +110,30 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     {
       text =  "##greatPalace_info##";
     }
+    else
+    {
+      if( text == "##nearby_building_negative_effect_degrade##" ||
+          text == "##nearby_building_negative_effect##" )
+      {
+        object::Type objType;
+        TilePos pos;
+        std::string why;
+        _house->spec().checkHouse( _house, &why, &objType, &pos );
+
+        text = _(text);
+        OverlayPtr ov = city->getOverlay( pos );
+        std::string type;
+        if( ov->type() == object::house )
+        {
+
+        }
+        else
+        {
+          type = ov.isValid() ? ov->name() : "building";
+        }
+        text = utils::replace( text, "{0}", type );
+      }
+    }
 
     houseInfo->setText( _(text) );
   }  
