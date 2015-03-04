@@ -31,7 +31,9 @@
 #include "bytearray.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
+#include "vfs/directory.hpp"
 #include "osystem.hpp"
+#include <signal.h>
 
 #ifdef CAESARIA_PLATFORM_WIN
 #include <windows.h>
@@ -203,11 +205,11 @@ static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 void print(unsigned int starting_frame, unsigned int max_frames)
 {
 #if !defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_PLATFORM_ANDROID)
-  std::string dir = SETTINGS_VALUE( workDir ).toString();
+  std::string dir = vfs::Directory::getApplicationDir().toString();
   std::string msg = utils::format( 0xff,
                                    "CaesarIA has crashed.\n\n"
                                    "A stacktrace has been written to:\n"
-                                   "%s\\stdout.txt", dir );
+                                   "%s\\stdout.txt", dir.c_str() );
   OSystem::error( "CaesarIA: Unhandled exception", msg );
 
   Logger::warning("Stacktrace::begin :");
