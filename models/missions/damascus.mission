@@ -7,7 +7,7 @@
   date : "50.01.01"  
   adviserEnabled : true
   fishPlaceEnabled : false
-  climate : 1
+  climate : "desert"
   preview.text : "##damascus_preview_mission##"
   preview.title : "##damascus_preview_title##"
   preview.image : ""

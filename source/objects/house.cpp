@@ -75,6 +75,7 @@ public:
   Services services;  // value=access to the service (0=no access, 100=good access)
   unsigned int maxHabitants;
   DateTime lastTaxationDate;
+  Point randomOffset;
   std::string evolveInfo;
   CitizenGroup habitants;
   Animation healthAnimation;
@@ -190,7 +191,21 @@ void House::_checkEvolve()
   else
   {
     _d->evolveInfo = "";
-    bool mayUpgrade =  _d->spec.next().checkHouse( this, &_d->evolveInfo );
+    HouseSpecification nextSpec = _d->spec.next();
+
+    bool mayUpgrade =  nextSpec.checkHouse( this, &_d->evolveInfo );
+
+    object::Type needBuilding;
+    TilePos rPos;
+
+    int unwishCount = nextSpec.findUnwishedBuildingNearby( this, needBuilding, rPos );
+    int lowHouse = nextSpec.findLowLevelHouseNearby( this, rPos );
+    if( unwishCount > 0 || lowHouse > 0 )
+    {
+      _d->evolveInfo = "##nearby_building_negative_effect##";
+      mayUpgrade = false;
+    }
+
     if( mayUpgrade )
     {
       _d->changeCondition++;
@@ -984,7 +999,7 @@ TilesArray House::enterArea() const
 
 bool House::build( const city::AreaInfo& info )
 {
-  bool ret = Building::build( info );
+  bool ret = Building::build( info );  
   _update( true );
   return ret;
 }
@@ -1006,6 +1021,8 @@ void House::_update( bool needChangeTexture )
       Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
       pic = Picture::getInvalid();
     }
+    _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
+    pic.addOffset( _d->randomOffset );
     setPicture( pic );
   }
 

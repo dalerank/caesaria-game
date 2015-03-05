@@ -32,7 +32,7 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
-#include "layers/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"

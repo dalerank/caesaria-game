@@ -75,11 +75,17 @@ bool Mission::load( const std::string& filename, Game& game )
   if( currentVesion == vm[ "version" ].toInt() )
   {
     std::string mapToLoad = vm[ "map" ].toString();
-    int climateType = vm.get( lc_climate, -1 );
+    Variant vClimate = vm.get( lc_climate );
 
-    if( climateType >= 0 )
+    if( vClimate.isValid() )
     {
-      game::climate::initialize( (ClimateType)climateType );
+      ClimateType type = game::climate::central;
+      if( vClimate.type() == Variant::String )
+        type = game::climate::fromString( vClimate.toString() );
+      else
+        type = (ClimateType)vClimate.toInt();
+
+      game::climate::initialize( type );
     }
 
     if( mapToLoad == lc_random )

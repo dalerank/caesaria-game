@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "game/settings.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"

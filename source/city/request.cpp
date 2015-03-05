@@ -102,7 +102,7 @@ VariantMap RqGood::save() const
   ret[ "reqtype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
-  VARIANT_SAVE_ANY_D( stream, _d, alsoRemind )
+  VARIANT_SAVE_ANY_D( ret, _d, alsoRemind )
   VariantMap vm_win;
   vm_win[ "favour" ] = _d->winFavour;
   vm_win[ "money" ] = _d->winMoney;

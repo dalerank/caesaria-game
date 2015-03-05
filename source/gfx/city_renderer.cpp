@@ -38,7 +38,7 @@
 #include "layers/layerfire.hpp"
 #include "layers/layerfood.hpp"
 #include "layers/layerhealth.hpp"
-#include "layers/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "layers/layerreligion.hpp"
 #include "layers/build.hpp"
 #include "layers/layerdamage.hpp"
@@ -325,11 +325,12 @@ LayerPtr CityRenderer::getLayer(int type) const
   return LayerPtr();
 }
 
+TilePos CityRenderer::screen2tilepos(const Point& point ) const{  return _d->camera.at( point, true )->pos();}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
 

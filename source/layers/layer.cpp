@@ -30,7 +30,7 @@
 #include "gfx/tilemap_camera.hpp"
 #include "city/city.hpp"
 #include "core/font.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "gfx/decorator.hpp"
 #include "core/utils.hpp"
 #include "gfx/walker_debuginfo.hpp"

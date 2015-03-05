@@ -112,16 +112,19 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
     else
     {
-      if( text == "##nearby_building_negative_effect_degrade##" ||
-          text == "##nearby_building_negative_effect##" )
+      if( text == "##nearby_building_negative_effect##" )
       {
-        object::Type objType;
-        TilePos pos;
-        std::string why;
-        _house->spec().checkHouse( _house, &why, &objType, &pos );
+        object::Type needBuilding;
+        TilePos rPos;
+        HouseSpecification spec = _house->spec().next();
+
+        int unwish = spec.findUnwishedBuildingNearby( _house, needBuilding, rPos );
+
+        if( !unwish )
+          spec.findLowLevelHouseNearby( _house, rPos );
 
         text = _(text);
-        OverlayPtr ov = city->getOverlay( pos );
+        OverlayPtr ov = city->getOverlay( rPos );
         if( ov.isValid() )
         {
           std::string type;
@@ -132,10 +135,10 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
           }
           else
           {
-            type = ov.isValid() ? ov->name() : "building";
+            type = ov.isValid() ? MetaDataHolder::findPrettyName( ov->type() ) : "";
           }
 
-          text = utils::replace( text, "{0}", type );
+          text = utils::replace( text, "{0}", "( " + type + " )" );
         }
       }
     }

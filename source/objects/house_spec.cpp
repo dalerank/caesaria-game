@@ -115,21 +115,6 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
     return false;
   }
 
-  value = findLowLevelHouseNearby( house, rPos );
-  if( value > 0 )
-  {
-    ref = "##nearby_building_negative_effect##";
-    needBuilding = object::house;
-    return false;
-  }
-
-  value = findUnwishedBuildingNearby( house, needBuilding, rPos );
-  if( value > 0 )
-  {
-    ref = "##nearby_building_negative_effect##";
-    return false;
-  }
-
   value = computeEntertainmentLevel( house );
   if( value < _d->minEntertainmentLevel )
   {
@@ -269,13 +254,14 @@ int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type&
   int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
+  int houseDesrbl = house->desirability().base;
   BuildingList buildings = city::statistic::findo<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
 
   int ret = 0;
   foreach( it, buildings )
   {
     int desValue = (*it)->desirability().base;
-    if( desValue < 0 )
+    if( desValue < 0 && houseDesrbl > desValue && abs( houseDesrbl - desValue ) > 1 )
     {
       ret = 1;
       refPos = (*it)->pos();

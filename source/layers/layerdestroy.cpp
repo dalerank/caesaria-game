@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "layerdestroy.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "events/event.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"

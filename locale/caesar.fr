@@ -1018,7 +1018,6 @@
 "##messages##":"Messages"
 "##messageBtnTooltip##":"Messages de vos scribes"
 "##scribe_messages_title##":"Messages de vos scribes"
-"##nearby_building_negative_effect_degrade##":"La proximité de cet édifice a un effet négatif sur l'attrait de ce secteur. Placez des jardins, des statues ou des plazas, par exemple."
 "##nearby_building_negative_effect##":"La proximité de cet édifice a un effet négatif sur l'attrait de ce secteur. Placez des jardins, des statues ou des plazas, par exemple."
 "##gmenu_file_save##":"Sauvegarder"
 "##save_city##":"Sauvegarder votre cité"
