@@ -187,7 +187,6 @@ void ScribesMessagestWindow::_fillMessages()
   bool haveMessages = false;
   if( srvc.isValid() )
   {
-
     const city::Info::Messages& messages = srvc->messages();
     haveMessages = !messages.empty();
     foreach( it, messages )
