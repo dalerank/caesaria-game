@@ -122,16 +122,21 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
         text = _(text);
         OverlayPtr ov = city->getOverlay( pos );
-        std::string type;
-        if( ov->type() == object::house )
+        if( ov.isValid() )
         {
+          std::string type;
+          if( ov->type() == object::house )
+          {
+            HousePtr h = ptr_cast<House>( ov );
+            type = h.isValid() ? h->levelName() : "##unknown_house_type##";
+          }
+          else
+          {
+            type = ov.isValid() ? ov->name() : "building";
+          }
 
+          text = utils::replace( text, "{0}", type );
         }
-        else
-        {
-          type = ov.isValid() ? ov->name() : "building";
-        }
-        text = utils::replace( text, "{0}", type );
       }
     }
 

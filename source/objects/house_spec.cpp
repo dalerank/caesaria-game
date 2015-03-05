@@ -115,11 +115,18 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
     return false;
   }
 
-  value = findLowLevelHouseNearby( house, reason );
+  value = findLowLevelHouseNearby( house, rPos );
   if( value > 0 )
   {
     ref = "##nearby_building_negative_effect##";
     needBuilding = object::house;
+    return false;
+  }
+
+  value = findUnwishedBuildingNearby( house, needBuilding, rPos );
+  if( value > 0 )
+  {
+    ref = "##nearby_building_negative_effect##";
     return false;
   }
 
@@ -257,10 +264,33 @@ unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return 
 unsigned int HouseSpecification::foodConsumptionInterval() const{  return _d->foodInterval; }
 unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
 
-int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement) const
+int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
-  Size size = house->size();
-  TilePos offset( size.width(), size.height() );
+  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  TilePos offset( aresOffset, aresOffset );
+  TilePos housePos = house->pos();
+  BuildingList buildings = city::statistic::findo<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
+
+  int ret = 0;
+  foreach( it, buildings )
+  {
+    int desValue = (*it)->desirability().base;
+    if( desValue < 0 )
+    {
+      ret = 1;
+      refPos = (*it)->pos();
+      rType = (*it)->type();
+      break;
+    }
+  }
+
+  return ret;
+}
+
+int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos ) const
+{
+  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   HouseList houses = city::statistic::findo<House>( house->_city(), object::house, housePos - offset, housePos + offset );
 
@@ -272,7 +302,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      oMissingRequirement = object::toString( (*it)->type() );
+      refPos = (*it)->pos();
       break;
     }
   }

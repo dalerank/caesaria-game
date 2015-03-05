@@ -52,7 +52,8 @@ public:
   unsigned int foodConsumptionInterval() const;
   unsigned int getGoodConsumptionInterval() const;
 
-  int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement ) const;
+  int findLowLevelHouseNearby(HousePtr house, TilePos &refPos) const;
+  int findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos &refPos) const;
 
   HouseSpecification next() const;
 
