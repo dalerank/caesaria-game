@@ -204,7 +204,7 @@ void RqGood::update()
   {
     _d->alsoRemind = true;
 
-    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, _("##imperial_reminder##"), "", _("##imperial_reminder_text##") );
+    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
     e->dispatch();
   }
 }

@@ -62,6 +62,8 @@ DictionaryWindow::DictionaryWindow( Widget* p )
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
+
+  setModal();
 }
 
 void DictionaryWindow::_handleUriChange(std::string value)

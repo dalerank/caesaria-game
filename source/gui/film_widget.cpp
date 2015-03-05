@@ -70,6 +70,8 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
 
   CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
   CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );
+
+  setModal();
 }
 
 FilmWidget::~FilmWidget( void ) {}

@@ -39,7 +39,7 @@ class HealthCare::Impl
 {
 public:
   unsigned int value;
-  unsigned int minHealthLevel;
+  unsigned int avgMinHealth;
 };
 
 city::SrvcPtr HealthCare::create( PlayerCityPtr city )
@@ -58,7 +58,7 @@ std::string HealthCare::defaultName()
 HealthCare::HealthCare( PlayerCityPtr city )
   : Srvc( city, HealthCare::defaultName() ), _d( new Impl )
 {
-  _d->minHealthLevel = 0;
+  _d->avgMinHealth = 0;
   _d->value = 0;
 }
 
@@ -69,20 +69,30 @@ void HealthCare::timeStep(const unsigned int time )
     HouseList houses = city::statistic::findh( _city() );
 
     _d->value = 0;
-    _d->minHealthLevel = 0;
+    _d->avgMinHealth = 100;
+    int houseWithBadHealth = 0;
     foreach( house, houses )
     {
       unsigned int hLvl = (*house)->state( pr::health );
       if( (*house)->habitants().count() > 0 )
       {
-        _d->value = ( _d->value + hLvl ) / 2;
-        _d->minHealthLevel = math::min( _d->minHealthLevel, hLvl );
-      }
+        _d->value += hLvl;
+        if( hLvl < 40 )
+        {
+          _d->avgMinHealth += hLvl;
+          houseWithBadHealth++;
+        }
+      }           
     }
 
-    if( _city()->population() > 0 && _d->minHealthLevel < 20 )
+    _d->value /= (houses.size()+1);
+    _d->avgMinHealth /= (houseWithBadHealth+1);
+
+    if( _d->avgMinHealth < 40 )
     {
-      events::GameEventPtr e = events::WarningMessage::create( "##advchief_health_terrible##" );
+      events::GameEventPtr e = events::WarningMessage::create( _d->avgMinHealth < 20
+                                                                ? "##advchief_health_terrible##"
+                                                                : "##advchief_health_bad##" );
       e->dispatch();
     }
   }

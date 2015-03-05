@@ -85,15 +85,19 @@ int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
 //
 int HouseSpecification::minFoodLevel() const{  return _d->minFoodLevel;}
 
-bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, object::Type* retBtype )
+bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
+                                     object::Type* retBtype, TilePos* retPos ) const
 {
   bool res = true;
   int value;
   std::string reason;
   std::string defaultStr;
   object::Type defaultNeedType;
+  TilePos defaultPos;
+
   std::string& ref = retMissing ? *retMissing : defaultStr;
   object::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
+  TilePos& rPos = retPos ? *retPos : defaultPos;
 
   needBuilding = object::unknown;
 
@@ -253,7 +257,7 @@ unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return 
 unsigned int HouseSpecification::foodConsumptionInterval() const{  return _d->foodInterval; }
 unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
 
-int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
+int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement) const
 {
   Size size = house->size();
   TilePos offset( size.width(), size.height() );
@@ -276,7 +280,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   return ret;
 }
 
-int HouseSpecification::computeWaterLevel(HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeWaterLevel(HousePtr house, std::string &oMissingRequirement) const
 {
   // no water=0, well=1, fountain=2
   int res = 0;
@@ -297,7 +301,7 @@ int HouseSpecification::computeWaterLevel(HousePtr house, std::string &oMissingR
 }
 
 
-int HouseSpecification::computeFoodLevel(HousePtr house)
+int HouseSpecification::computeFoodLevel(HousePtr house) const
 {
   int res = 0;
 
@@ -323,7 +327,7 @@ int HouseSpecification::computeEntertainmentLevel(HousePtr house) const
 }
 
 
-int HouseSpecification::computeHealthLevel(HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeHealthLevel(HousePtr house, std::string &oMissingRequirement) const
 {
    // no health=0, bath=1, bath+doctor/hospital=2, bath+doctor/hospital+barber=3, bath+doctor+hospital+barber=4
    int res = 0;
@@ -373,7 +377,7 @@ int HouseSpecification::computeHealthLevel(HousePtr house, std::string &oMissing
 }
 
 
-int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMissingRequirement) const
 {
   int res = 0;
   bool haveSchool = house->hasServiceAccess(Service::school);

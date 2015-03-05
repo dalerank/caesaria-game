@@ -141,8 +141,9 @@ bool ScrollBar::onEvent(const NEvent& event)
 						_resolvePositionChanged();
 						return true;
 					}
-					break;
-				case mouseLbtnPressed:
+        break;
+
+        case mouseLbtnPressed:
 					{
 						if (isInside)
 						{

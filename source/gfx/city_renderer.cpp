@@ -40,7 +40,7 @@
 #include "layers/layerhealth.hpp"
 #include "layers/layerconstants.hpp"
 #include "layers/layerreligion.hpp"
-#include "layers/layerbuild.hpp"
+#include "layers/build.hpp"
 #include "layers/layerdamage.hpp"
 #include "layers/layerdesirability.hpp"
 #include "layers/layerentertainment.hpp"

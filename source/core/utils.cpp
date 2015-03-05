@@ -55,7 +55,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   {
     Logger::warning( "String::vformat: String truncated when processing " + str );
     if( outputStacktraceLog )
-      Stacktrace::print();
+      crashhandler::print(0,63);
   }
  
   str = buffer_ptr;

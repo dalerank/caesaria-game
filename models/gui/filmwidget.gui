@@ -1,6 +1,7 @@
 {  
   geometry : [ 0, 0, 415, 450 ]
   bgtype : "whiteFrame"
+  static : true
     
   lbTitle#Label :
   {

@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "layerbuild.hpp"
+#include "build.hpp"
 #include "objects/aqueduct.hpp"
 #include "layerconstants.hpp"
 #include "walker/constants.hpp"
