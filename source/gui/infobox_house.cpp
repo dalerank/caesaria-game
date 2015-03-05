@@ -156,7 +156,6 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     CONNECT( btn, onClicked(), this, AboutHouse::_showHbtInfo )
 
     rect += Point( btn->width() + 5, 0 );
-    rect.rright() += 60;
     btn = new PushButton( this, rect, "Services", -1, false, PushButton::whiteBorderUp );
     CONNECT( btn, onClicked(), this, AboutHouse::_showSrvcInfo )
   }

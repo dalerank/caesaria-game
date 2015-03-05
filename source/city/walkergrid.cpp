@@ -75,15 +75,11 @@ void WalkerGrid::remove( WalkerPtr a)
   }
 }
 
-static int compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
+bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
 {
-  const int a = one->mappos().y()-one->mappos().x();
-  const int b = two->mappos().y()-two->mappos().x();
-  if (a>b)
-     return -1;
-  if (a == b)
-     return 0;
-  return 1;
+  const int a = /*one->mappos().x() -*/ one->mappos().y();
+  const int b = /*two->mappos().x() -*/ two->mappos().y();
+  return a > b;
 }
 
 void WalkerGrid::sort()

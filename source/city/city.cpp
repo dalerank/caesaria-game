@@ -238,7 +238,6 @@ void PlayerCity::timeStep(unsigned int time)
   {
     _d->walkersGrid.append( *it );
   }
-
   _d->walkersGrid.sort();
 
   _d->updateWalkers( time );
