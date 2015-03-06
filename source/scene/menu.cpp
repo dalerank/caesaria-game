@@ -288,7 +288,7 @@ void StartMenu::Impl::resolveCredits()
                          " ",
                          _("##graphics##"),
                          " ",
-                         "Dmitry Plotnikov",                         
+                         "Dmitry Plotnikov, Jennifer Kin",                         
                          " ",
                          _("##music##"),
                          " ",
