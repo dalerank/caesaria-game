@@ -423,6 +423,18 @@ void StartMenu::Impl::showVideoOptions()
   event->dispatch();
 }
 
+void StartMenu::Impl::changePlayerNameIfNeeed()
+{
+  playerName = SETTINGS_VALUE( playername );
+  if( playerName.empty() )
+  {
+    dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
+    dlg->setText( playerName );
+
+    CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
+  }
+}
+
 void StartMenu::Impl::showMissionSelector()
 {
   Widget* parent = game->gui()->rootWidget();
