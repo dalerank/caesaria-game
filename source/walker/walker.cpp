@@ -405,7 +405,7 @@ int Walker::agressive() const { return 0; }
 
 void Walker::attach()
 {
-  if( _city().isValid() )
+  if( _city().isValid() && !isDeleted() )
     _city()->addWalker( this );
 }
 
@@ -592,7 +592,7 @@ bool Walker::die()
   WalkerPtr corpse = Corpse::create( _city(), this );
   if( corpse.isValid() )
   {
-    _city()->addWalker( corpse );
+    corpse->attach();
   }
   return corpse.isValid();
 }

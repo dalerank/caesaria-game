@@ -384,11 +384,7 @@ void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
   setProducerBuilding( building  );
 
   _computeWalkerDestination();
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void CartPusher::timeStep( const unsigned long time )

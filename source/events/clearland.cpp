@@ -62,7 +62,7 @@ void ClearTile::_exec( Game& game, unsigned int )
     ConstructionPtr constr = ptr_cast<Construction>(overlay);
     if( constr.isValid() && !constr->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ) );
+      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ), 1 );
       e->dispatch();
 
       const MetaData& md = MetaDataHolder::getData( constr->type() );

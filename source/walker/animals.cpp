@@ -53,10 +53,7 @@ Animal::Animal(PlayerCityPtr city )
 
 void Animal::send2City(const TilePos &start )
 {
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ) );
-  }
+  attach();
 }
 
 Animal::~Animal() {}
@@ -279,10 +276,7 @@ void Wolf::send2City(const TilePos &start )
 {
   _findNewWay( start );
 
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 Fish::Fish(PlayerCityPtr city)

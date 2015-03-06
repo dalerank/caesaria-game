@@ -77,7 +77,7 @@ bool Fortification::build( const city::AreaInfo& info )
   Pathway way2border = PathwayHelper::create( info.pos, info.city->borderInfo().roadEntry, PathwayHelper::allTerrain );
   if( !way2border.isValid() )
   {
-    events::GameEventPtr event = events::WarningMessage::create( "##walls_need_a_gatehouse##" );
+    events::GameEventPtr event = events::WarningMessage::create( "##walls_need_a_gatehouse##", 1 );
     event->dispatch();
   }
 

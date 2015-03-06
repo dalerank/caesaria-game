@@ -81,7 +81,7 @@ void MarketKid::send2City( MarketPtr destination )
     _d->marketPos = destination->pos();
     _pathwayRef().move( Pathway::reverse );
     _centerTile();
-    _city()->addWalker( this );
+    attach();
   }
   else
   {

@@ -429,7 +429,7 @@ void EnemySoldier::send2City( TilePos pos )
 {
   setPos( pos );
   _check4attack();
-  _city()->addWalker( this );
+  attach();
 
   events::GameEventPtr e = events::MilitaryThreat::create( 1 );
   e->dispatch();

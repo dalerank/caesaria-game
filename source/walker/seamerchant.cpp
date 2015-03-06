@@ -404,11 +404,7 @@ void SeaMerchant::send2city()
   _d->nextState = Impl::stFindDock;
   setPos( _city()->borderInfo().boatEntry );
   _d->resolveState( _city(), this );
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void SeaMerchant::save( VariantMap& stream ) const

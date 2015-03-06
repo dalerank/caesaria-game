@@ -318,7 +318,7 @@ void Game::save(std::string filename) const
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), 1 );
   e->dispatch();
 }
 

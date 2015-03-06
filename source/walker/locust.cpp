@@ -55,8 +55,7 @@ void Locust::create(PlayerCityPtr city, TilePos pos, int time)
 
   WalkerPtr ret( locust );
   ret->drop();
-
-  city->addWalker( ret );
+  ret->attach();
 }
 
 Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )

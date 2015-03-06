@@ -110,7 +110,7 @@ void Migration::timeStep( const unsigned int time )
     std::string trouble = reason();
     if( haveTroubles() )
     {
-      events::GameEventPtr e = events::WarningMessage::create(trouble);
+      events::GameEventPtr e = events::WarningMessage::create(trouble, 1);
       e->dispatch();
     }
   }

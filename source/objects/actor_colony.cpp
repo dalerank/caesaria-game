@@ -41,10 +41,7 @@ void ActorColony::deliverTrainee()
   TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::actor );
   trainee->send2City( this );
 
-  if( !trainee->isDeleted() )
-  {
-    addWalker( trainee.object() );
-  }
+  addWalker( trainee.object() );
 }
 
 void ActorColony::timeStep(const unsigned long time)

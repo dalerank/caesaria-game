@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layercrime.hpp"
+#include "crime.hpp"
 #include "objects/overlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"

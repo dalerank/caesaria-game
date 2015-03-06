@@ -245,9 +245,6 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 void FishingBoat::send2city( CoastalFactoryPtr base, TilePos start )
 {
   _d->base = base;
-  if( !isDeleted() )
-  {
-    setPos( start );
-    _city()->addWalker( this );
-  }
+  setPos( start );
+  attach();
 }

@@ -190,11 +190,7 @@ void Mugger::send2City( HousePtr house )
 
   setPos( tiles.random()->pos() );
   _d->state = Impl::searchHouse;
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ));
-  }
+  attach();
 }
 
 bool Mugger::die()

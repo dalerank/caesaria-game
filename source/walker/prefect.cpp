@@ -529,8 +529,7 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
   if( water > 0 )
   {
     setBase( prefecture.object() );
-
-    _city()->addWalker( this );
+    attach();
   }
   else
   {
@@ -628,8 +627,8 @@ void Prefect::load( const VariantMap& stream )
   PrefecturePtr prefecture = ptr_cast<Prefecture>( base() );
   if( prefecture.isValid() )
   {
-    prefecture->addWalker( WalkerPtr( this ) );
-    _city()->addWalker( WalkerPtr( this ) );
+    prefecture->addWalker( this );
+    attach();
   }
   
   if( prefecture.isNull() )

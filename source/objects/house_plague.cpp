@@ -65,8 +65,7 @@ void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
 
   WalkerPtr ret( hplague );
   ret->drop();
-
-  city->addWalker( ret );
+  ret->attach();
 }
 
 HousePlague::HousePlague( PlayerCityPtr city ) : Walker( city ), _d( new Impl )

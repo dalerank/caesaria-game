@@ -53,7 +53,8 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _setWpos( _d->srcPos );
 
-  _city()->addWalker( this );
+  attach();
+
   const Tile& tile = _city()->tilemap().at( src );
   OverlayPtr ov = tile.overlay();
   if( ov.isValid() )

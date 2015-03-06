@@ -275,11 +275,7 @@ void CartSupplier::send2city( BuildingPtr building, good::Product what, const in
   _d->baseBuildingPos = building->pos();
 
   computeWalkerDestination( building, what, qty );
-
-  if( !isDeleted()  )
-  {           
-    _city()->addWalker( WalkerPtr( this ) );
-  }
+  attach();
 }
 
 void CartSupplier::_reserveStorage()

@@ -375,10 +375,7 @@ void Factory::receiveGood()
     CartSupplierPtr walker = CartSupplier::create( _city() );
     walker->send2city( this, consumeGoodType(), qty );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 }
 

@@ -177,9 +177,6 @@ void Senate::deliverService()
     TaxCollectorPtr walker = TaxCollector::create( _city() );
     walker->send2City( this, TaxCollector::goLowerService|TaxCollector::anywayWhenFailed );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 }

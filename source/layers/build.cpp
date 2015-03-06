@@ -276,7 +276,7 @@ void Build::_buildAll()
 
   if( !_city()->funds().haveMoneyForAction( 1 ) )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##out_of_credit##" );
+    events::GameEventPtr e = events::WarningMessage::create( "##out_of_credit##", 2 );
     e->dispatch();
     return;
   }
@@ -303,7 +303,7 @@ void Build::_buildAll()
 
     events::GameEventPtr event = events::WarningMessage::create( errorStr.empty()
                                                                       ? "##need_build_on_cleared_area##"
-                                                                      : errorStr );
+                                                                      : errorStr, 1 );
     event->dispatch();
   }
 }

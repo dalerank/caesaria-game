@@ -241,10 +241,7 @@ void Rioter::send2City( BuildingPtr bld )
 
   _d->state = Impl::searchHouse;
 
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ));
-  }
+  attach();
 }
 
 bool Rioter::die()
