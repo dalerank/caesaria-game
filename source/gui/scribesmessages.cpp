@@ -57,9 +57,10 @@ public:
   ScribesListBox( Widget* p, const Rect& rect ) : ListBox( p, rect )
   {
     setFlag( selectOnMove, true );
+    setItemHeight( Font::create( FONT_1 ).getTextSize( "A" ).width() + 4 );
   }
 
-  virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 )
+  virtual ListBoxItem& addItem( const std::string& text, Font font, const int color=0 )
   {
     ListBoxItem& item = ListBox::addItem( text, font, color );
 
@@ -92,8 +93,10 @@ protected:
     VariantMap options = item.data().toMap();
     DateTime time = options[ lc_date ].toDateTime();
 
-    item.draw( util::date2str( time, true ), font, Point( 30, 0 ) );
-    item.draw( item.text(), font, Point( width() / 2, 0 ));
+    item.resetPicture( frameRect.size() );
+
+    item.draw( util::date2str( time, true ), font, Point( 35, 0 ) );
+    item.draw( item.text(), font, Point( width() / 2, 0 ) );
   }
 
   virtual bool onEvent(const NEvent &event)
@@ -118,8 +121,9 @@ protected:
           VariantMap options = itemUnderMouse.data().toMap();
           bool opened = options.get( lc_opened, false );
 
-          std::string text = opened ? "" : _("##scribemessages_unread##");
-          setTooltipText( text );
+          //std::string text = opened ? "" : _("##scribemessages_unread##");
+          //setTooltipText( text );
+          setSelected( index );
         }
       }
       break;
@@ -153,8 +157,6 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   setCenter( p->center() );
 
   WidgetEscapeCloser::insertTo( this );
-
-  WidgetEscapeCloser::insertTo( this );
   _d->lbxMessages = new ScribesListBox( this, Rect( 16, 60, width() - 16, height() - 50 ) );
 
   GET_DWIDGET_FROM_UI( _d, btnHelp )
@@ -167,6 +169,9 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessagestWindow::_removeMessage );
   CONNECT( _d->btnExit, onClicked(), this, ScribesMessagestWindow::deleteLater );
   CONNECT( _d->btnHelp, onClicked(), this, ScribesMessagestWindow::_showHelp );
+
+  if( _d->lbxMessages ) _d->lbxMessages->setFocus();
+  setModal();
 }
 
 void ScribesMessagestWindow::draw(gfx::Engine& painter )
@@ -192,7 +197,7 @@ void ScribesMessagestWindow::_fillMessages()
     foreach( it, messages )
     {
       const city::Info::ScribeMessage& mt = *it;
-      ListBoxItem& item = _d->lbxMessages->addItem( mt.title );
+      ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
       VariantMap options;
       options[ lc_opened ] = mt.opened;
       options[ lc_date   ] = mt.date;

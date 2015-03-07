@@ -544,7 +544,7 @@ void StartMenu::initialize()
   _d->userImage = steamapi::userImage();
   if( steamName.empty() )
   {
-    OSystem::error( "Error", "Cant login in Steam" );
+    OSystem::error( "Error", "Can't login in Steam" );
     _d->isStopped = true;
     _d->result = closeApplication;
     return;
