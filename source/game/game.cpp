@@ -544,6 +544,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
 
   _d->player = Player::create();
+  _d->player->setName( SETTINGS_VALUE( playerName ).toString() );
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;

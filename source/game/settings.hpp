@@ -95,6 +95,7 @@ public:
   __GS_PROPERTY(lockInfobox)
   __GS_PROPERTY(soundAlias)
   __GS_PROPERTY(videoAlias)
+  __GS_PROPERTY(playerName)
 #undef __GS_PROPERTY
 
   static Settings& instance();

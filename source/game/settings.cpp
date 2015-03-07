@@ -93,6 +93,7 @@ __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
 __REG_PROPERTY(soundAlias)
 __REG_PROPERTY(videoAlias)
+__REG_PROPERTY(playerName)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
