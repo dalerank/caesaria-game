@@ -106,16 +106,65 @@ void C3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 
 int C3Sav::climateType(const std::string& filename)
 {
-  /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+  std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
-  unsigned int i = 0;
-  f.seekg(kClimate, std::ios::beg);
-  f.read((char*)&i, 1);
+  char climateType=-1;
+  try
+  {
+    uint32_t tmp;
+    uint32_t lengthPkBlock;
+    f.seekg( 8, std::ios::cur ); // read dummy
+    SkipCompressed(f); // skip graphic ids
+    SkipCompressed(f); // skip edge ids
+
+    SkipCompressed(f); // skip building ids
+    SkipCompressed(f); // skip terrain ids
+    SkipCompressed(f);
+    SkipCompressed(f);
+    SkipCompressed(f);
+    SkipCompressed(f);
+
+    f.seekg( 26244, std::ios::cur );
+
+    SkipCompressed(f);
+    SkipCompressed(f);
+    SkipCompressed(f);
+    SkipCompressed(f);
+    SkipCompressed(f);
+    SkipCompressed(f); //skip walkers array
+
+    int length;
+    f.read((char*)&length, 4); // read next length :-)
+
+    if (length <= 0)
+      f.seekg(1200, std::ios::cur);
+    else
+      f.seekg(length, std::ios::cur);
+
+    SkipCompressed(f);
+    SkipCompressed(f);
+
+    // 3x int
+    f.seekg(12, std::ios::cur);
+    SkipCompressed(f);
+    f.seekg(70, std::ios::cur);
+    SkipCompressed(f); // skip building list
+    f.seekg(208, std::ios::cur);
+    SkipCompressed(f); // skip unknown
+    f.seekg(788, std::ios::cur); // skip unused data
+    f.seekg(4, std::ios::cur); //mapsize
+
+    //initEntryExit()
+
+    f.seekg(1312, std::ios::cur);
+    f.read( &climateType, 1);
+  }
+  catch(...)
+  {}
 
   f.close();
 
-  return i; */
-  return -1;
+  return climateType;
 }
 
 std::string C3Sav::restartFile() const { return _d->restartFile; }
@@ -123,9 +172,6 @@ std::string C3Sav::restartFile() const { return _d->restartFile; }
 bool C3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
-
-  //int climateType = getClimateType( filename );
-  //game.city()->setClimate( (ClimateType)climateType );
 
   _d->restartFile = filename;
 
@@ -263,8 +309,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     oCity->setClimate((ClimateType)climate);
     
     // here goes the WORK!
-    
-    
+
     // loads the graphics map
     int border_size = (162 - size) / 2;
 
