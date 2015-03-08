@@ -74,7 +74,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
 const Point& ThrowingWeapon::mappos() const
 {
-  const Point& p = _wpos();
+  const Point& p = wpos();
   _d->amappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
   return _d->amappos;
 }

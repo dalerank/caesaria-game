@@ -115,6 +115,7 @@ public:
   virtual world::Nation nation() const;
 
   void attach();
+  Point wpos() const;
 
 protected:
   void _walk();
@@ -147,7 +148,6 @@ protected:
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos(const Point &pos );
-  Point _wpos() const;
 
 private:
   class Impl;

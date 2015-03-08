@@ -93,6 +93,7 @@ namespace utils
   }
 
   float eventProbability(float probability, int k, int n);
+  std::wstring utf8toWString(const char* src, int size);
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

@@ -564,7 +564,7 @@ void Walker::_updateThoughts()
   _d->thinks = WalkerThinks::check( this, _city() );
 }
 
-Point Walker::_wpos() const { return _d->wpos.toPoint(); }
+Point Walker::wpos() const { return _d->wpos.toPoint(); }
 
 void Walker::go( float speed )
 {
