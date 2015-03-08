@@ -94,6 +94,7 @@ __REG_PROPERTY(lockInfobox)
 __REG_PROPERTY(soundAlias)
 __REG_PROPERTY(videoAlias)
 __REG_PROPERTY(playerName)
+__REG_PROPERTY(lastGame)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";

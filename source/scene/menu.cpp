@@ -105,6 +105,7 @@ public:
   void changeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
   void playMenuSoundTheme();
+  void continuePlay();
   void resolveSteamStats();
   void changePlayerNameIfNeed(bool force=false);
   void reload();
@@ -156,6 +157,12 @@ void StartMenu::Impl::fitScreenResolution()
 void StartMenu::Impl::playMenuSoundTheme()
 {
   audio::Engine::instance().play( "rome6", 50, audio::themeSound );
+}
+
+void StartMenu::Impl::continuePlay()
+{
+  result = StartMenu::loadSavedGame;
+  selectFile( SETTINGS_VALUE( lastGame ).toString() );
 }
 
 void scene::StartMenu::Impl::resolveSteamStats()
@@ -402,6 +409,10 @@ void StartMenu::Impl::showNewGame()
 void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
+
+  std::string lastGame = SETTINGS_VALUE( lastGame ).toString();
+  if( !lastGame.empty() )
+    ADD_MENU_BUTTON( "##mainmenu_continueplay##", Impl::continuePlay )
 
   ADD_MENU_BUTTON( "##mainmenu_newgame##", Impl::showNewGame )
   ADD_MENU_BUTTON( "##mainmenu_load##", Impl::showLoadMenu )

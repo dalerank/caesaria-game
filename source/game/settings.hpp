@@ -96,6 +96,7 @@ public:
   __GS_PROPERTY(soundAlias)
   __GS_PROPERTY(videoAlias)
   __GS_PROPERTY(playerName)
+  __GS_PROPERTY(lastGame)
 #undef __GS_PROPERTY
 
   static Settings& instance();
