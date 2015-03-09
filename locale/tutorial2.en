@@ -5,6 +5,7 @@
   "##reservoir_citizens_like_fountain##" : "Your citizens much prefer to have a fountain for their water than a well. Fountains deliver cleaner water, and cover a wider area than wells. There are lots of overlay reports to help you manage your city. The game continues running while overlays are displayed. When using an overlay, press the spacebar to temporarily see the  whole city. Leave your pointer over an object on the map, and some text will appear to explain what it means for that overlay."
   "##can_build_gardens##" : "Now you can build even more buildings. Bath-houses need to be in range of a reservoir and have access to labor."
   "##gardens_get_desirable##" : "Gardens make an area more desirable."
+  "##gardens_title##" : "Gardens"
   "##can_build_theaters##" : "Theaters are a popular entertainment venue, but they need actors to perform there. Build an actors' colony to supply them."
   "##build_more_farms##" : "Don't forget to build new farms before you run out of food."
   "##tax_tutorial##" : "Money. Building and running cities costs money. Rome gives you enough denarii to get started - but it won't be enough to complete your assignment. Taxes are an important source of income. Eventually, your city will grow beyond the Senate's tax collector routes. Build forums as bases for additional tax inspectors in other parts of your town."

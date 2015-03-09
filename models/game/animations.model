@@ -52,12 +52,12 @@
   }
 
   marketLady : {
-    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     die : { rc : "marketlady", start : 97, frames : 1, action : 3, step : 8 }
   }
 
   marketBuyer : {
-    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     die : { rc : "marketlady", start : 97, frames : 1, action : 3, step : 8 }
   }
 
@@ -173,7 +173,7 @@
   */
 
   marketKid : {
-    move : { rc : "marketkid", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "marketkid", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     die : { rc : "marketkid", start : 97, frames : 1, action : 3, step : 8 }
   }
 
