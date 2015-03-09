@@ -247,11 +247,12 @@ class Variant
     operator TilePos() const { return toTilePos(); }
     operator Point() const { return toPoint(); }
     operator PointF() const { return toPointF(); }
+    operator Size() const { return toSize(); }
 
     static std::string typeToName(Type type);
     static Type nameToType(const std::string& name);
 
-    void *data();
+    void* data();
     const void *constData() const;
     inline const void *data() const { return constData(); }
 

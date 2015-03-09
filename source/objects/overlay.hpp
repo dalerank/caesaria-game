@@ -41,7 +41,7 @@ public:
 
   gfx::Tile& tile() const;  // master tile, in case of multi-tile area
   TilePos pos() const;
-  Size size() const;  // size in tiles (1x1, 2x2, ...)
+  const Size& size() const;  // size in tiles (1x1, 2x2, ...)
   void setSize( const Size& size );
 
   bool isDeleted() const;  // returns true if the overlay should be forgotten

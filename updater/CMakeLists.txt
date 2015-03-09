@@ -26,6 +26,7 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/memfile.cpp"
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
+      "${BASE_SOURCE_DIR}/core/osystem.cpp"
 )
 
 file(GLOB HTTP_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/http/*.*")
@@ -86,6 +87,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if(WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+  target_link_libraries(${PROJECT_NAME} "imagehlp")
 endif(WIN32)
 
 # prepare working directory

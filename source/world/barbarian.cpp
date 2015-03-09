@@ -127,7 +127,7 @@ void Barbarian::_check4attack()
 
      foreach( it, cities )
      {
-       if( (*it)->population() < _d->minPop4attack )
+       if( (*it)->population() < (unsigned int)_d->minPop4attack )
          continue;
 
        float distance = location().distanceTo( (*it)->location() );

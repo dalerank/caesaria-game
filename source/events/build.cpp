@@ -69,7 +69,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
   if( !enemies.empty() && _overlay->group() != object::group::disaster)
   {
-    GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##" );
+    GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
     e->dispatch();
     return;
   }
@@ -103,14 +103,14 @@ void BuildAny::_exec( Game& game, unsigned int )
 
       if( construction->isNeedRoad() && construction->roadside().empty() )
       {
-        GameEventPtr e = WarningMessage::create( "##building_need_road_access##" );
+        GameEventPtr e = WarningMessage::create( "##building_need_road_access##", 1 );
         e->dispatch();
       }
 
       std::string error = construction->errorDesc();
       if( !error.empty() )
       {
-        GameEventPtr e = WarningMessage::create( error );
+        GameEventPtr e = WarningMessage::create( error, 1 );
         e->dispatch();
       }
 
@@ -120,14 +120,14 @@ void BuildAny::_exec( Game& game, unsigned int )
         unsigned int worklessCount = statistic::getWorklessNumber( game.city() );
         if( worklessCount < wb->maximumWorkers() )
         {
-          GameEventPtr e = WarningMessage::create( "##city_need_more_workers##" );
+          GameEventPtr e = WarningMessage::create( "##city_need_more_workers##", 2 );
           e->dispatch();
         }
 
         int laborAccessKoeff = city::statistic::getLaborAccessValue( game.city(), wb );
         if( laborAccessKoeff < 50 )
         {
-          GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##" );
+          GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );
           e->dispatch();
         }
       }
@@ -138,7 +138,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     ConstructionPtr construction = ptr_cast<Construction>( _overlay );
     if( construction.isValid() )
     {
-      GameEventPtr e = WarningMessage::create( construction->errorDesc() );
+      GameEventPtr e = WarningMessage::create( construction->errorDesc(), 1 );
       e->dispatch();
     }
   }

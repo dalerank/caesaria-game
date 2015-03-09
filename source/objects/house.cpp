@@ -42,7 +42,9 @@
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
 #include "city/victoryconditions.hpp"
+#include "house_plague.hpp"
 #include "objects_factory.hpp"
+#include "game/settings.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -73,6 +75,7 @@ public:
   Services services;  // value=access to the service (0=no access, 100=good access)
   unsigned int maxHabitants;
   DateTime lastTaxationDate;
+  Point randomOffset;
   std::string evolveInfo;
   CitizenGroup habitants;
   Animation healthAnimation;
@@ -82,7 +85,6 @@ public:
   int changeCondition;
 
 public:
-  void updateHealthLevel( HousePtr house );
   void initGoodStore( int size );
   void consumeServices();
   void consumeGoods(HousePtr house);
@@ -189,7 +191,21 @@ void House::_checkEvolve()
   else
   {
     _d->evolveInfo = "";
-    bool mayUpgrade =  _d->spec.next().checkHouse( this, &_d->evolveInfo );
+    HouseSpecification nextSpec = _d->spec.next();
+
+    bool mayUpgrade =  nextSpec.checkHouse( this, &_d->evolveInfo );
+
+    object::Type needBuilding;
+    TilePos rPos;
+
+    int unwishCount = nextSpec.findUnwishedBuildingNearby( this, needBuilding, rPos );
+    int lowHouse = nextSpec.findLowLevelHouseNearby( this, rPos );
+    if( unwishCount > 0 || lowHouse > 0 )
+    {
+      _d->evolveInfo = "##nearby_building_negative_effect##";
+      mayUpgrade = false;
+    }
+
     if( mayUpgrade )
     {
       _d->changeCondition++;
@@ -242,9 +258,19 @@ void House::_checkPatricianDeals()
 
 void House::_updateTax()
 {
-  float cityTax = _city()->funds().taxRate() / 100.f;
-  cityTax = cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear;
-  cityTax = math::clamp<float>( cityTax, 0, _d->money );
+	  int difficulty = SETTINGS_VALUE(difficulty);
+	  float multiply = 1.0f;
+	  switch (difficulty)
+	  {
+		case 0: multiply = 3.0f; break;
+		case 1: multiply = 2.0f; break;
+		case 2: multiply = 1.5f; break;
+		case 3: multiply = 1.0f; break;
+		case 4: multiply = 0.75f; break;
+	  }
+
+	float cityTax = _city()->funds().taxRate() / 100.f;
+	cityTax = (multiply * _d->habitants.count( CitizenGroup::mature ) / _d->spec.taxRate()) * cityTax;
 
   _d->money -= cityTax;
   _d->tax += cityTax;
@@ -382,7 +408,7 @@ void House::timeStep(const unsigned long time)
   if( time % spec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel( this );
+    _updateHealthLevel();
     cancelService( Service::recruter );
   }
 
@@ -973,7 +999,7 @@ TilesArray House::enterArea() const
 
 bool House::build( const city::AreaInfo& info )
 {
-  bool ret = Building::build( info );
+  bool ret = Building::build( info );  
   _update( true );
   return ret;
 }
@@ -995,6 +1021,8 @@ void House::_update( bool needChangeTexture )
       Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
       pic = Picture::getInvalid();
     }
+    _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
+    pic.addOffset( _d->randomOffset );
     setPicture( pic );
   }
 
@@ -1330,27 +1358,28 @@ std::string House::levelName() const
   return ret;
 }
 
-void House::Impl::updateHealthLevel( HousePtr house )
+void House::_updateHealthLevel()
 {
-  float delim = 1 + (((services[Service::well] > 0 || services[Service::fountain] > 0) ? 1 : 0))
-      + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
-      + (services[Service::baths] > 0 ? 0.7 : 0)
-      + (services[Service::barber] > 0 ? 0.3 : 0);
+  Impl::Services& s = _d->services;
+  float delim = 1 + (((s[Service::well] > 0 || s[Service::fountain] > 0) ? 1 : 0)) //if we have water then decrease ill
+      + ((s[Service::doctor] > 0 || s[Service::hospital] > 0) ? 1 : 0)             //doctor access also decrease ill
+      + (s[Service::baths] > 0 ? 0.7 : 0)                                          //baths and barber some decrease ill
+      + (s[Service::barber] > 0 ? 0.3 : 0);
 
   float decrease = 2.f / delim;
 
-  house->updateState( pr::health, -decrease );
-  int value = 100 - house->state( pr::health );
-  if( value > 25 )
-  {
+  updateState( pr::health, -decrease );
 
+  if( state( pr::health ) < 25 && !_city()->getOption( PlayerCity::c3gameplay ))
+  {
+    HousePlague::create( _city(), pos(), game::Date::days2ticks( 5 ) );
   }
 }
 
 void House::Impl::initGoodStore(int size)
 {
   int rsize = 25 * size * houseLevel;
-  goodStore.setCapacity( rsize * 10 );  // no limit
+  goodStore.setCapacity(rsize * 10 );  // no limit
   goodStore.setCapacity(good::wheat, rsize );
   goodStore.setCapacity(good::fish, rsize );
   goodStore.setCapacity(good::meat, rsize );

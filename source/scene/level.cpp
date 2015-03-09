@@ -32,7 +32,7 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
-#include "layers/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"
@@ -306,9 +306,9 @@ void Level::Impl::showCityOptionsDialog()
   wnd->show();
 }
 
-void Level::Impl::resolveWarningMessage(std::string text )
+void Level::Impl::resolveWarningMessage(std::string text)
 {
-  events::GameEventPtr e = events::WarningMessage::create( text );
+  events::GameEventPtr e = events::WarningMessage::create( text, 1 );
   e->dispatch();
 }
 
@@ -428,7 +428,7 @@ void Level::Impl::handleDirectionChange(Direction direction)
 {
   direction::Helper dHelper;
 
-  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ) );
+  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ), 1 );
   e->dispatch();
 }
 
@@ -525,7 +525,7 @@ void Level::Impl::showEmpireMapWindow()
 {
   events::GameEventPtr e;
   if( game->empire()->isAvailable() ) { e = events::ShowEmpireMap::create( true ); }
-  else {  e = events::WarningMessage::create( "##not_available##" ); }
+  else {  e = events::WarningMessage::create( "##not_available##", 1 ); }
 
   if( e.isValid() ) e->dispatch();
 }
@@ -602,7 +602,7 @@ void Level::Impl::makeScreenShot()
   Logger::warning( "Level: create screenshot %s", filename.c_str() );
 
   Engine::instance().createScreenshot( filename );
-  events::GameEventPtr e = events::WarningMessage::create( "Screenshot save to " + filename );
+  events::GameEventPtr e = events::WarningMessage::create( "Screenshot save to " + filename, 1 );
   e->dispatch();
 }
 

@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layersimple.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "walker/constants.hpp"
 #include "gfx/city_renderer.hpp"
 #include "city/city.hpp"

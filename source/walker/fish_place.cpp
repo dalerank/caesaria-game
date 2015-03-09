@@ -133,7 +133,7 @@ void FishPlace::_findway( TilePos start, TilePos end)
   }
   else
   {
-    _city()->addWalker( this );
+    attach();
     setPos( start );
     setPathway( pathway );
     go();

@@ -69,7 +69,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   bool advEnabled = game.city()->getOption( PlayerCity::adviserEnabled ) > 0;
   if( !advEnabled )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##not_available##" );
+    events::GameEventPtr e = events::WarningMessage::create( "##not_available##", 1 );
     e->dispatch();
     return;
   }
@@ -77,7 +77,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   SenateList senates = city::statistic::findo<Senate>( game.city(), object::senate );
   if( senates.empty() )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##" );
+    events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##", 1 );
     e->dispatch();
     return;
   }

@@ -324,10 +324,7 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
   setBase( base );
   _computeWalkerPath( orders );
 
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void ServiceWalker::_centerTile()

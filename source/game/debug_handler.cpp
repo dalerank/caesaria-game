@@ -48,6 +48,7 @@
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 #include "events/random_plague.hpp"
+#include "events/scribemessage.hpp"
 #include "world/emperor.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
@@ -96,6 +97,7 @@ enum {
   random_plague,
   reload_aqueducts,
   crash_favor,
+  add_scribe_messages,
   run_script
 };
 
@@ -158,6 +160,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "city", add_city_border )
   ADD_DEBUG_EVENT( "city", send_exporter )
   ADD_DEBUG_EVENT( "city", crash_favor )
+  ADD_DEBUG_EVENT( "city", add_scribe_messages )
   ADD_DEBUG_EVENT( "city", run_script )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
@@ -289,6 +292,13 @@ void DebugHandler::Impl::handleEvent(int event)
   {
     bool enable = SETTINGS_VALUE( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
+  }
+  break;
+
+  case add_scribe_messages:
+  {
+    events::GameEventPtr e = events::ScribeMessage::create( "test_message", "this is test message from yout scribes" );
+    e->dispatch();
   }
   break;
 

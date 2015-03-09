@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
-// Copyright 2012-2014 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2015 Gregoire Athanase, gathanase@gmail.com
 
 #ifndef __CAESARIA_PLAYERCITY_H_INCLUDED__
 #define __CAESARIA_PLAYERCITY_H_INCLUDED__
@@ -51,7 +51,7 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
-                 fireKoeff, barbarianAttack } OptionType;
+                 fireKoeff, barbarianAttack, c3gameplay } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();

@@ -97,8 +97,8 @@ WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
 
   WalkerPtr ret( corpse );
   ret->drop();
+  ret->attach();
 
-  city->addWalker( ret );
   return ret;
 }
 

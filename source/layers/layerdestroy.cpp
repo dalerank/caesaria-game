@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "layerdestroy.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "events/event.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
@@ -31,7 +31,8 @@
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
 #include "core/font.hpp"
-#include "layerbuild.hpp"
+#include "build.hpp"
+#include "objects/tree.hpp"
 #include "game/settings.hpp"
 
 using namespace constants;
@@ -56,9 +57,9 @@ public:
 void Destroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
-  foreach( tile, tiles4clear )
+  foreach( it, tiles4clear )
   {
-    events::GameEventPtr event = events::ClearTile::create( (*tile)->epos() );
+    events::GameEventPtr event = events::ClearTile::create( (*it)->epos() );
     event->dispatch();
   }
 }
@@ -66,16 +67,17 @@ void Destroy::_clearAll()
 unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
 {
   OverlayPtr overlay = tile.overlay();
+  int baseValue = 0;
   if( overlay.isValid() )
   {
     const MetaData& mdata = MetaDataHolder::getData( overlay->type() );
-    return mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
+    baseValue = mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
   }
 
-  if( tile.getFlag( Tile::tlTree ) ) return 6;
-  if( tile.getFlag( Tile::tlRoad) ) return 4;
+  baseValue += tile.getFlag( Tile::tlTree ) ? 6 : 0;
+  baseValue += tile.getFlag( Tile::tlRoad) ? 4 : 0;
 
-  return 0;
+  return baseValue;
 }
 
 void Destroy::render( Engine& engine )
@@ -109,7 +111,7 @@ void Destroy::render( Engine& engine )
       {
         hashDestroyArea.insert( tile::hash((*ovelayTile)->epos()));
       }
-    }
+    }    
 
     _d->money4destroy += _checkMoney4destroy( *tile );
   }

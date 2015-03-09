@@ -101,8 +101,5 @@ void LionsNursery::deliverTrainee()
   LionTamerPtr tamer = LionTamer::create( _city() );
   tamer->send2City( this, true );
 
-  if( !tamer->isDeleted() )
-  {
-    addWalker( tamer.object() );
-  }
+  addWalker( tamer.object() );
 }

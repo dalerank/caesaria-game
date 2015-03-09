@@ -20,7 +20,7 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"

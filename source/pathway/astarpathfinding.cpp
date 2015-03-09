@@ -394,8 +394,8 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     if( verbose > 0 )
     {
       Logger::warning( "AStarPathfinder: maxLoopCount reached from [%d,%d] to [%d,%d]",
-                     startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
-      Stacktrace::print();
+                       startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
+      crashhandler::print();
     }
     return false;
   }

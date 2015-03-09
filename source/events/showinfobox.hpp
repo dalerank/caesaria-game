@@ -31,8 +31,8 @@ public:
   static GameEventPtr create( const std::string& title, const std::string& text,
                               good::Product type, bool send2scribe=false );
 
-  static GameEventPtr create( const std::string& title, const std::string& text,
-                              bool send2scribe=false, const vfs::Path& video="" );
+  static GameEventPtr create(const std::string& title, const std::string& text,
+                              bool send2scribe=false, const std::string &video="" );
 
   virtual void load(const VariantMap &);
   virtual VariantMap save() const;

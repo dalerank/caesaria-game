@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
 #include "objects/construction.hpp"
@@ -201,6 +201,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
   setOption( barbarianAttack, 1 );
+  setOption( c3gameplay, 0 );
 }
 
 void PlayerCity::_initAnimation()
@@ -237,6 +238,7 @@ void PlayerCity::timeStep(unsigned int time)
   {
     _d->walkersGrid.append( *it );
   }
+  _d->walkersGrid.sort();
 
   _d->updateWalkers( time );
   _d->updateOverlays( this, time );
@@ -361,7 +363,6 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 
   if( funds.haveMoneyForAction( wages ) )
   {
-    //funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
     HouseList houses;
     houses << city->overlays();
 
@@ -378,7 +379,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
   }
   else
   {
-
+	  // TODO affect citizen sentiment for no payment and request money to caesar.
   }
 }
 
@@ -506,6 +507,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
   stream[ "zoomInvert" ] = getOption( PlayerCity::zoomInvert );
   stream[ "fireKoeff"  ] = getOption( PlayerCity::fireKoeff );
+  stream[ "c3gameplay" ] = getOption( PlayerCity::c3gameplay );
   stream[ "barbarianAttack" ] = getOption( PlayerCity::barbarianAttack );
   stream[ "population" ] = _d->population;
 
@@ -599,6 +601,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
   setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
   setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
+  setOption( c3gameplay, stream.get( "c3gameplay", 0 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -852,7 +855,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "/smk/spy_army.smk" );
+      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
       e->dispatch();
     }
   }

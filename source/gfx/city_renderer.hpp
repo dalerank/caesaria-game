@@ -58,7 +58,7 @@ public:
   void setLayer( int layertype );
   int  layerType() const;
 
-  TilePos screen2tilepos( Point point ) const;
+  TilePos screen2tilepos(const Point &point ) const;
   void setViewport( const Size& size );
 
 public signals:

@@ -51,7 +51,7 @@ void Ceres::_doWrath( PlayerCityPtr city )
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
                                                             _("##wrath_of_ceres_description##"),
                                                             events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Ceres.smk");
+                                                            "god_ceres");
   event->dispatch();
 
   FarmList farms;
@@ -94,7 +94,7 @@ void Ceres::_doSmallCurse(PlayerCityPtr city)
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -2, DateTime::weekInMonth * DateTime::monthsInYear );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -8, DateTime::weekInMonth * DateTime::monthsInYear );
   }
 }
 

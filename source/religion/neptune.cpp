@@ -53,7 +53,7 @@ void Neptune::_doWrath(PlayerCityPtr city)
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
                                                             _("##wrath_of_neptune_description##"),
                                                             events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Neptune.smk");
+                                                            "god_neptune");
   event->dispatch();
 
   ShipList boats;

@@ -110,6 +110,38 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     {
       text =  "##greatPalace_info##";
     }
+    else
+    {
+      if( text == "##nearby_building_negative_effect##" )
+      {
+        object::Type needBuilding;
+        TilePos rPos;
+        HouseSpecification spec = _house->spec().next();
+
+        int unwish = spec.findUnwishedBuildingNearby( _house, needBuilding, rPos );
+
+        if( !unwish )
+          spec.findLowLevelHouseNearby( _house, rPos );
+
+        text = _(text);
+        OverlayPtr ov = city->getOverlay( rPos );
+        if( ov.isValid() )
+        {
+          std::string type;
+          if( ov->type() == object::house )
+          {
+            HousePtr h = ptr_cast<House>( ov );
+            type = h.isValid() ? h->levelName() : "##unknown_house_type##";
+          }
+          else
+          {
+            type = ov.isValid() ? MetaDataHolder::findPrettyName( ov->type() ) : "";
+          }
+
+          text = utils::replace( text, "{0}", "( " + type + " )" );
+        }
+      }
+    }
 
     houseInfo->setText( _(text) );
   }  
@@ -119,9 +151,13 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   {
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
-    rect.rright() += 40;
-    PushButton* btn = new PushButton( this, rect, "Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( btn, onClicked(), this, AboutHouse::_showInformation )
+    rect.rright() += 60;
+    PushButton* btn = new PushButton( this, rect, "Habitants", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutHouse::_showHbtInfo )
+
+    rect += Point( btn->width() + 5, 0 );
+    btn = new PushButton( this, rect, "Services", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutHouse::_showSrvcInfo )
   }
 
   drawHabitants( _house );
@@ -250,9 +286,9 @@ bool AboutHouse::onEvent(const NEvent& event)
   return Simple::onEvent( event );
 }
 
-void AboutHouse::_showHelp() {  DictionaryWindow::show( this, "house" ); }
+void AboutHouse::_showHelp() { DictionaryWindow::show( this, "house" ); }
 
-void AboutHouse::_showInformation()
+void AboutHouse::_showHbtInfo()
 {
   std::string workerState = utils::format( 0xff, "Live=%d\nUnemployed=%d\nHired=%d\nNewborn=%d\nChild=%d\nIn school=%d\nStudents=%d\nMature=%d\nAged(not work)=%d",
                                                   _house->habitants().count(),
@@ -266,6 +302,16 @@ void AboutHouse::_showInformation()
                                                   _house->habitants().aged_n() );
 
   DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, DialogBox::btnOk );
+  dialog->setCenter( ui()->rootWidget()->center() );
+  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
+}
+
+void AboutHouse::_showSrvcInfo()
+{
+  std::string srvcState = utils::format( 0xff, "Health=%d",
+                                               (int)_house->state( pr::health ));
+
+  DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Services", srvcState, DialogBox::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );
   CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
 }

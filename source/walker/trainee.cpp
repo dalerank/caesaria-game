@@ -197,7 +197,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
   if( !isDeleted() && _d->destination.isValid() )
   {
     _d->destination->reserveTrainee( type() );
-    _city()->addWalker( this );
+    attach();
   }
 }
 

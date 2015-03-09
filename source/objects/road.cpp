@@ -36,7 +36,6 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::road, Road)
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::plaza, Plaza)
 
 namespace {
-static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
 typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 0x8 } RoadDirection;
 }
 
@@ -239,7 +238,6 @@ void Road::changeDirection(Tile *masterTile, Direction direction)
 }
 
 int Road::pavedValue() const {  return _paved; }
-Renderer::PassQueue Road::passQueue() const{  return roadPassQueue;}
 
 void Road::save(VariantMap& stream) const
 {

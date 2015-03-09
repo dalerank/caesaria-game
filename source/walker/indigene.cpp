@@ -64,10 +64,7 @@ void Indigene::send2city(BuildingPtr base)
     deleteLater();
   }
 
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void Indigene::_reachedPathway()

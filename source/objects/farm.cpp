@@ -36,6 +36,7 @@
 #include "core/tilepos_array.hpp"
 #include "game/gamedate.hpp"
 #include "gfx/helper.hpp"
+#include "events/clearland.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -121,7 +122,7 @@ Farm::Farm(const good::Product outGood, const object::Type type )
 
   _d->lastProgress = 0;
   _d->sublocs << TilePos( 0, 0) << TilePos( 1, 0)
-               << TilePos( 2, 0) << TilePos( 2, 1) << TilePos( 2, 2);
+              << TilePos( 2, 0) << TilePos( 2, 1) << TilePos( 2, 2);
 
   _fgPicturesRef().resize( _d->sublocs.size() );
 
@@ -159,7 +160,10 @@ void Farm::destroy()
   {
     OverlayPtr ov = (*it)->overlay();
     if( ov.isValid() && ov->type() == object::farmtile )
-      ov->destroy();
+    {
+      events::GameEventPtr e = events::ClearTile::create( ov->pos() );
+      e->dispatch();
+    }
   }
 
   Factory::destroy();

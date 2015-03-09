@@ -189,7 +189,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
         if( _d->fumigateHouseNumber > 5 )
         {
           e = events::ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                                           events::ShowInfobox::send2scribe, "/smk/SICK.SMK" );
+                                           events::ShowInfobox::send2scribe, "sick" );
           e->dispatch();
           _d->fumigateHouseNumber = -999;
         }
@@ -529,8 +529,7 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
   if( water > 0 )
   {
     setBase( prefecture.object() );
-
-    _city()->addWalker( this );
+    attach();
   }
   else
   {
@@ -628,8 +627,8 @@ void Prefect::load( const VariantMap& stream )
   PrefecturePtr prefecture = ptr_cast<Prefecture>( base() );
   if( prefecture.isValid() )
   {
-    prefecture->addWalker( WalkerPtr( this ) );
-    _city()->addWalker( WalkerPtr( this ) );
+    prefecture->addWalker( this );
+    attach();
   }
   
   if( prefecture.isNull() )

@@ -55,7 +55,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   {
     Logger::warning( "String::vformat: String truncated when processing " + str );
     if( outputStacktraceLog )
-      Stacktrace::print();
+      crashhandler::print(0,63);
   }
  
   str = buffer_ptr;
@@ -64,6 +64,66 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
     delete[] buffer_ptr;
 
   return length;
+}
+
+std::wstring utf8toWString(const char* src, int size)
+{
+  std::wstring dest;
+
+  dest.clear();
+  wchar_t w = 0;
+  int bytes = 0;
+  wchar_t err = L'�';
+
+  for(size_t i = 0; i < size; i++)
+  {
+    unsigned char c = (unsigned char)src[i];
+    if (c <= 0x7f)
+    {//first byte
+      if (bytes)
+      {
+        dest.push_back(err);
+        bytes = 0;
+      }
+      dest.push_back((wchar_t)c);
+    }
+    else if (c <= 0xbf)
+    {//second/third/etc byte
+      if (bytes)
+      {
+        w = ((w << 6)|(c & 0x3f));
+        bytes--;
+        if (bytes == 0)
+          dest.push_back(w);
+      }
+      else
+        dest.push_back(err);
+    }
+    else if (c <= 0xdf)
+    {//2byte sequence start
+      bytes = 1;
+      w = c & 0x1f;
+    }
+    else if (c <= 0xef)
+    {//3byte sequence start
+      bytes = 2;
+      w = c & 0x0f;
+    }
+    else if (c <= 0xf7)
+    {//3byte sequence start
+      bytes = 3;
+      w = c & 0x07;
+    }
+    else
+    {
+      dest.push_back(err);
+      bytes = 0;
+    }
+  }
+  if( bytes )
+    dest.push_back(err);
+
+  return dest;
 }
 
 void useStackTrace(bool enabled) {  outputStacktraceLog = enabled;}

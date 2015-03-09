@@ -449,11 +449,7 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
   setPos( pos );
   _d->basePos = base->pos();
   _back2base();
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void RomeSoldier::send2expedition(const std::string& name)

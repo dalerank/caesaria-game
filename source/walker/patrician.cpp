@@ -143,9 +143,5 @@ bool Patrician::die()
 void Patrician::send2City(TilePos start )
 {
   _findNewWay( start );
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }

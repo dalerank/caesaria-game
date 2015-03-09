@@ -51,7 +51,7 @@ RiverWave::RiverWave(PlayerCityPtr city )
 void RiverWave::send2City(const TilePos &location )
 {
   setPos( location );
-  _city()->addWalker( this );
+  attach();
 }
 
 void RiverWave::timeStep(const unsigned long time)

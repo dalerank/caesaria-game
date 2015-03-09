@@ -326,11 +326,7 @@ void MarketBuyer::_reachedPathway()
 void MarketBuyer::send2City( MarketPtr market )
 {
   computeWalkerDestination( market );
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ) );
-  }
+  attach();
 }
 
 void MarketBuyer::save( VariantMap& stream ) const

@@ -26,13 +26,14 @@ namespace events
 class WarningMessage : public GameEvent
 {
 public:
-  static GameEventPtr create( const std::string& text );
+  static GameEventPtr create( const std::string& text, int level );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 private:
   std::string _text;
+  int _level;
 };
 
 } //end namespace events

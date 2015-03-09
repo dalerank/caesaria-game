@@ -184,10 +184,7 @@ void Tower::deliverService()
     WallGuardPtr guard = WallGuard::create( _city(), walker::romeGuard );
     guard->send2city( this, *it );
 
-    if( !guard->isDeleted() )
-    {
-      addWalker( guard.object() );
-    }
+    addWalker( guard.object() );
   }
 
   if( trValue > 1 )

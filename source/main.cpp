@@ -41,6 +41,8 @@ int SDL_main(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {  
+  crashhandler::install();
+
   vfs::Directory workdir;
 #ifdef CAESARIA_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
@@ -78,12 +80,15 @@ int main(int argc, char* argv[])
   catch( Exception& e )
   {
     Logger::warning( "Critical error: " + e.getDescription() );
-    Stacktrace::print();
+
+    crashhandler::print();
   }
 
 #ifdef CAESARIA_USE_STEAM
   steamapi::close();
 #endif
+
+  crashhandler::remove();
 
   return 0;
 }

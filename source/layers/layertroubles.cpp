@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layertroubles.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "core/gettext.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"

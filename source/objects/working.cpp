@@ -219,7 +219,7 @@ void WorkingBuilding::_disaster()
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() )
+  if( walker.isValid() && !walker->isDeleted() )
   {
     _d->walkerList.push_back( walker );
   }

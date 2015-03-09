@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layers/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "menu.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/picture.hpp"
@@ -339,7 +339,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    List< BuildMenu* > menus = findChildren<BuildMenu*>();
    foreach( item, menus ) { (*item)->deleteLater(); }
 
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this );
+   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this, _d->city->getOption( PlayerCity::c3gameplay ) );
 
    if( buildMenu != NULL )
    {
