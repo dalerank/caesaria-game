@@ -41,7 +41,7 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
   for( int curRange=1; curRange <= dsrbl.range; curRange++ )
   {
     TilesArray perimetr = tilemap.getRectangle( overlay->pos() - TilePos( curRange, curRange ),
-                                                 overlay->size() + Size( 2 * curRange ) );
+                                                overlay->size() + Size( 2 * curRange ) );
     foreach( tile, perimetr )
     {
       (*tile)->changeParam( Tile::pDesirability, current );

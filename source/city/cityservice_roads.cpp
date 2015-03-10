@@ -35,6 +35,8 @@ namespace city
 
 REGISTER_SERVICE_IN_FACTORY(Roads,roads)
 
+enum { normalInfluence=4, senateInfluence=10 };
+
 class Roads::Impl
 {
 public:
@@ -75,12 +77,12 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = game::Date::current();
 
   std::vector< Impl::UpdateBuilding > btypes;
-  btypes.push_back( Impl::UpdateBuilding(object::senate, 10) );
-  btypes.push_back( Impl::UpdateBuilding(object::small_ceres_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(object::small_mars_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(object::small_mercury_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, 4));
+  btypes.push_back( Impl::UpdateBuilding(object::senate, senateInfluence) );
+  btypes.push_back( Impl::UpdateBuilding(object::small_ceres_temple, normalInfluence));
+  btypes.push_back( Impl::UpdateBuilding(object::small_mars_temple, normalInfluence));
+  btypes.push_back( Impl::UpdateBuilding(object::small_mercury_temple, normalInfluence));
+  btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, normalInfluence));
+  btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, normalInfluence));
 
   Impl::Updates positions;
   foreach( it, btypes )

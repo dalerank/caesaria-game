@@ -32,6 +32,9 @@ using namespace constants;
 namespace city
 {
 
+enum { minCh=1, middleCh=2, maxCh=5};
+static const int longTimeWithoutWar = 2;
+
 class Peace::Impl
 {
 public:
@@ -88,7 +91,7 @@ void Peace::timeStep(const unsigned int time )
   city::MilitaryPtr ml;
   ml << _city()->findService( city::Military::defaultName() );
 
-  int change= _d->protestorOrMugglerSeen ? -1: 0;
+  int change= _d->protestorOrMugglerSeen ? -minCh: 0;
 
   if( ml.isValid() )
   {
@@ -99,12 +102,12 @@ void Peace::timeStep(const unsigned int time )
       change -= 1;
   }
 
-  change -= std::min( _d->rioterSeen ? -5 : 0, _d->value );
-  change -= std::min( _d->significantBuildingsDestroyed ? -1 : 0, _d->value );
+  change -= std::min( _d->rioterSeen ? -maxCh : 0, _d->value );
+  change -= std::min( _d->significantBuildingsDestroyed ? -minCh : 0, _d->value );
 
   if( change == 0 )
   {
-    change = _d->peaceYears > 2 ? 5 : 2;
+    change = _d->peaceYears > longTimeWithoutWar ? maxCh : middleCh;
   }
 
   if( _d->protestorOrMugglerSeen || _d->rioterSeen )
@@ -116,7 +119,7 @@ void Peace::timeStep(const unsigned int time )
     _d->peaceYears++;
   }
 
-  change = math::clamp<int>( change, -5, 5 );
+  change = math::clamp<int>( change, -maxCh, maxCh );
 
   _d->value = math::clamp<int>( _d->value + change, 0, 100  );
   _d->protestorOrMugglerSeen  = false;

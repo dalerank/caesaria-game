@@ -32,6 +32,7 @@ namespace city
 
 namespace {
 CAESARIA_LITERALCONST(history)
+enum { defaultSalary=30 };
 }
 
 class Funds::Impl
@@ -53,7 +54,7 @@ signals public:
 Funds::Funds() : _d( new Impl )
 {
   _d->money = 0;
-  _d->workerSalary = 30;
+  _d->workerSalary = defaultSalary;
   _d->lastYearUpdate = 0;
   _d->maxDebt = -5000;
   _d->history.push_back( IssuesValue() );
@@ -194,7 +195,7 @@ void Funds::load( const VariantMap& stream )
 {
   VARIANT_LOAD_ANY_D( _d, money, stream )
   VARIANT_LOAD_ANYDEF_D( _d, taxRate, 7, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, 30, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, defaultSalary, stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
 
   VariantList history = stream.get( lc_history ).toList();

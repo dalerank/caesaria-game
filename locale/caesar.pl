@@ -185,7 +185,7 @@
 "##yes##":"Tak"
 "##date_tooltip##":"Data"
 "##date##":"Data"
-"##srcw_date##":"Data"
+"##scrw_date##":"Data"
 "##month_12_short##":"Gru"
 "##day##":"Dzień"
 "##advemployer_panel_denaries##":"dn"

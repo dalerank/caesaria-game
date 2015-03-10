@@ -34,6 +34,7 @@ public:
                  count } ID;
 
   typedef enum { maxSize2=2, maxSize3, maxSize4 } HouseMaxSize;
+  enum { plebsLevel=5 };
 };
 
 #endif //_CAESARIA_HOUSE_LEVEL_H_INCLUDE_
