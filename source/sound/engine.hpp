@@ -28,6 +28,8 @@
 namespace audio
 {
 
+static const int maxSndLevel = 256;
+
 class Engine
 {
 public:

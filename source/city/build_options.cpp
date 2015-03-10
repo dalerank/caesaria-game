@@ -31,6 +31,7 @@ namespace development
 {
 
 static const char* disable_all = "disable_all";
+static const int defaultMemPointsNumber = 10;
 
 struct BuildingRule
 {
@@ -90,7 +91,7 @@ Options::Options() : _d( new Impl )
 {
   _d->checkDesirability = true;
   _d->maximumForts = 999;
-  _d->memPoints.resize( 10 );
+  _d->memPoints.resize( defaultMemPointsNumber );
 }
 
 Options::~Options() {}
@@ -225,7 +226,7 @@ void Options::load(const VariantMap& options)
 
   VariantList vl_points = options.get("points").toList();
   _d->memPoints.fromVList( vl_points );
-  _d->memPoints.resize( 10 );
+  _d->memPoints.resize( defaultMemPointsNumber );
 
   _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
   _d->maximumForts = options.get( "maximumForts", _d->maximumForts );

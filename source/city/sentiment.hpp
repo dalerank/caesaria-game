@@ -28,6 +28,8 @@ namespace city
 class Sentiment : public city::Srvc
 {
 public:
+  static const int defaultValue = 60;
+
   static city::SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );

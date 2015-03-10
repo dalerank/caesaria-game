@@ -163,11 +163,11 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.boatExit = TilePos( 0, 0 );
   _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
-  _d->funds.setTaxRate( 7 );
+  _d->funds.setTaxRate( city::Funds::defaultTaxPrcnt );
   _d->age = 0;
   _d->walkerIdCount = 1;
   _d->climate = game::climate::central;
-  _d->sentiment = 60;
+  _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
   addService( city::Migration::create( this ) );
@@ -210,8 +210,7 @@ void PlayerCity::_initAnimation()
 
   _animation().load( ResourceGroup::empirebits, 2, 6 );
   _animation().setLoop( true );
-  //_animation().setOffset( Point( 18, -7 ));
-  _animation().setDelay( 2 );
+  _animation().setDelay( Animation::middle );
 }
 
 void PlayerCity::timeStep(unsigned int time)

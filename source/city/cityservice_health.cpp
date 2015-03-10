@@ -33,6 +33,8 @@ REGISTER_SERVICE_IN_FACTORY(HealthCare,healtCare)
 
 namespace {
 const int maxDescriptionLevel = 12;
+const int badHealthTreshold = 40;
+const int terribleHealthTreshold = 20;
 }
 
 class HealthCare::Impl
@@ -77,7 +79,7 @@ void HealthCare::timeStep(const unsigned int time )
       if( (*house)->habitants().count() > 0 )
       {
         _d->value += hLvl;
-        if( hLvl < 40 )
+        if( hLvl < badHealthTreshold )
         {
           _d->avgMinHealth += hLvl;
           houseWithBadHealth++;
@@ -88,9 +90,9 @@ void HealthCare::timeStep(const unsigned int time )
     _d->value /= (houses.size()+1);
     _d->avgMinHealth /= (houseWithBadHealth+1);
 
-    if( _d->avgMinHealth < 40 )
+    if( _d->avgMinHealth < badHealthTreshold )
     {
-      events::GameEventPtr e = events::WarningMessage::create( _d->avgMinHealth < 20
+      events::GameEventPtr e = events::WarningMessage::create( _d->avgMinHealth < terribleHealthTreshold
                                                                 ? "##advchief_health_terrible##"
                                                                 : "##advchief_health_bad##", 2 );
       e->dispatch();

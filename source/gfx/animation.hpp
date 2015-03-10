@@ -28,6 +28,7 @@ namespace gfx
 class Animation
 {
 public:
+  enum { nodelay=0, fast=1, middle=2, slow=3, verySlow=4 };
   static const bool reverse = true;
   static const bool straight = false;
   static const bool loopAnimation = true;

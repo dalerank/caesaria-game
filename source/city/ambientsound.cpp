@@ -166,7 +166,7 @@ void AmbientSound::timeStep( const unsigned int time )
     {
       processedSounds.insert( sound );
 
-      ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( sound, audio::maxSndLevel / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }
