@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "spirit_of_mars.hpp"
+#include "wrath_of_venus.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
 #include "helper.hpp"
@@ -25,82 +25,81 @@
 #include "objects/house.hpp"
 #include "walker/enemysoldier.hpp"
 #include "core/logger.hpp"
-#include "events/dispatcher.hpp"
 #include "cityservice_factory.hpp"
+#include "events/dispatcher.hpp"
 
 using namespace constants;
 
 namespace city
 {
 
-REGISTER_SERVICE_IN_FACTORY(SpiritOfMars,spiritOfMars)
+REGISTER_SERVICE_IN_FACTORY(WrathOfVenus,wrathOfVenus)
 
-class SpiritOfMars::Impl
+class WrathOfVenus::Impl
 {
 public:
   DateTime endTime;
+  int strong;
   bool isDeleted;
 };
 
-SrvcPtr SpiritOfMars::create( PlayerCityPtr city, int month )
+SrvcPtr WrathOfVenus::create( PlayerCityPtr city, int month, int strong )
 {
-  SpiritOfMars* ptr = new SpiritOfMars( city );
+  WrathOfVenus* ptr = new WrathOfVenus( city );
   ptr->_d->endTime = game::Date::current();
   ptr->_d->endTime.appendMonth( month );
+  ptr->_d->strong = strong;
   SrvcPtr ret( ptr );
   ret->drop();
 
   return ret;
 }
 
-void SpiritOfMars::timeStep( const unsigned int time)
+void WrathOfVenus::timeStep( const unsigned int time)
 {
-  if( game::Date::isWeekChanged() )
+  if( game::Date::isDayChanged() )
   {
     _d->isDeleted = (_d->endTime < game::Date::current());
 
-    Logger::warning( "SpiritOfMars: execute service" );
+    Logger::warning( "WrathOfVenus: execute service" );
 
-    EnemySoldierList enemies;
-    enemies << _city()->walkers( walker::any );
+    HumanList citizens;
+    citizens << _city()->walkers();
 
-    if( enemies.size() > 0 )
+    for( int i=0; i < _d->strong; i++ )
     {
-      int step = std::min<int>( enemies.size(), 32 );
-      for( int k=0; k < step; k++ )
-      {
-        EnemySoldierPtr ptr = enemies.random();
-        enemies.remove( ptr );
-        ptr->die();
-      }
-
-      _d->isDeleted = true;
+      HumanPtr ptr = citizens.random();
+      citizens.remove( ptr );
+      ptr->die();
     }
   }
 }
 
-std::string SpiritOfMars::defaultName() { return "spirit_of_mars"; }
-bool SpiritOfMars::isDeleted() const {  return _d->isDeleted; }
+std::string WrathOfVenus::defaultName() { return "wrath_of_venus"; }
+bool WrathOfVenus::isDeleted() const {  return _d->isDeleted; }
 
-void SpiritOfMars::load(const VariantMap& stream)
+void WrathOfVenus::load(const VariantMap& stream)
 {
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
+  VARIANT_LOAD_ANY_D( _d, strong, stream )
 }
 
-VariantMap SpiritOfMars::save() const
+VariantMap WrathOfVenus::save() const
 {
   VariantMap ret = Srvc::save();
   VARIANT_SAVE_ANY_D( ret, _d, endTime )
   VARIANT_SAVE_ANY_D( ret, _d, isDeleted )
+  VARIANT_SAVE_ANY_D( ret, _d, strong )
 
   return ret;
 }
 
-SpiritOfMars::SpiritOfMars(PlayerCityPtr city )
-  : Srvc( city, SpiritOfMars::defaultName() ), _d( new Impl )
+WrathOfVenus::WrathOfVenus(PlayerCityPtr city )
+  : Srvc( city, WrathOfVenus::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
+  _d->strong = 1;
 }
 
 }//end namespace city

@@ -112,7 +112,7 @@ bool Mission::load( const std::string& filename, Game& game )
       city->setName( vCityName.toString() );
     }
 
-    city->player()->setRank( vm.get( "player.rank", 0 ) );
+    city->mayor()->setRank( vm.get( "player.rank", 0 ) );
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");

@@ -31,6 +31,7 @@
 #include "cityservice_disorder.hpp"
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
+#include "objects/farm.hpp"
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
@@ -397,6 +398,22 @@ HouseList findh(PlayerCityPtr city, std::set<int> levels )
 gfx::TilesArray tiles( PlayerCityPtr r, const TilePos &start, const TilePos &stop)
 {
   return r->tilemap().getArea( start, stop );
+}
+
+FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which)
+{
+  FarmList ret;
+  FarmList farms = findo<Farm>( r, object::group::food );
+
+  foreach( it, farms )
+  {
+    if( which.count( (*it)->type() ) > 0 )
+    {
+      ret << *it;
+    }
+  }
+
+  return ret;
 }
 
 }//end namespace statistic

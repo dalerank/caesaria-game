@@ -99,9 +99,9 @@ void Festival::timeStep(const unsigned int time )
   {
     int sentimentValue = 0;
 
-    if( _d->prevFestivalDate.monthsTo( currentDate ) >= 12 )
+    if( _d->prevFestivalDate.monthsTo( currentDate ) >= DateTime::monthsInYear )
     {
-      int* sentimentValues = (_d->lastFestivalDate.monthsTo( game::Date::current() ) < 12)
+      int* sentimentValues = (_d->lastFestivalDate.monthsTo( game::Date::current() ) < DateTime::monthsInYear )
                                   ? secondFesivalSentiment
                                   : firstFestivalSentinment;
 
@@ -116,7 +116,7 @@ void Festival::timeStep(const unsigned int time )
 
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
     events::GameEventPtr e = events::ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
-                                                              _city()->player()->name(), festivalVideo[ id ] );
+                                                            _city()->mayor()->name(), festivalVideo[ id ] );
     e->dispatch();
 
     e = events::UpdateCitySentiment::create( sentimentValue );

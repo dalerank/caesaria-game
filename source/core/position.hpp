@@ -19,7 +19,6 @@
 #define __CAESARIA_POSITION_H_INCLUDED__
 
 #include <iostream>
-
 #include "vector2.hpp"
 
 class PointF;

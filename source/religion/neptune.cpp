@@ -59,13 +59,21 @@ void Neptune::_doWrath(PlayerCityPtr city)
   ShipList boats;
   boats << city->walkers();
 
-  int destroyBoats = math::random( boats.size() );
-  for( int i=0; i < destroyBoats; i++ )
+  if( boats.size() > 5 )
   {
-    ShipList::iterator it = boats.begin();
-    std::advance( it, math::random( boats.size() ) );
-    (*it)->deleteLater();
-    boats.erase( it );
+    int destroyBoats =  math::random( boats.size() );
+    for( int i=0; i < destroyBoats; i++ )
+    {
+      ShipPtr ship = boats.random();
+      ship->die();
+    }
+  }
+  else
+  {
+    foreach( ship, boats )
+    {
+      (*ship)->die();
+    }
   }
 }
 
@@ -94,10 +102,8 @@ void Neptune::_doBlessing(PlayerCityPtr city)
   foreach( it, boats )
   {
     if( (*it)->fishQty() < boat->fishQty() )
-      boat = *it;
+      (*it)->addFish( boat->fishMax() - boat->fishQty() );
   }
-
-  boat->addFish( boat->fishMax() - boat->fishQty() );
 }
 
 }//end namespace rome

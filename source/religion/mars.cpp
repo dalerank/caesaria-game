@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "objects/warehouse.hpp"
-#include "city/statistic.hpp"
 #include "mars.hpp"
+#include "city/city.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
@@ -24,8 +24,8 @@
 #include "events/postpone.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/fort.hpp"
-#include "game/settings.hpp"
 #include "objects/extension.hpp"
+#include "city/spirit_of_mars.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -58,15 +58,15 @@ void Mars::_doWrath(PlayerCityPtr city)
                                                               "god_mars" );
   message->dispatch();
 
-
-  VariantMap vm = config::load( game::Settings::rcpath( "mars_wrath.model" ) );
+  VariantMap vm = config::load( ":/mars_wrath.model" );
   events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
   barb_attack->dispatch();
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
-  FortList forts = city::statistic::findo<Fort>( city, object::group::military );
+  FortList forts;
+  forts << city->overlays();
 
   std::string text, title;
   if( !forts.empty() )
@@ -95,6 +95,9 @@ void Mars::_doBlessing(PlayerCityPtr city)
                                                             _("##spirit_of_mars_text##"),
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
+
+  city::SrvcPtr spiritOfmars = city::SpiritOfMars::create( city );
+  spiritOfmars->attach();
 }
 
 }//end namespace rome

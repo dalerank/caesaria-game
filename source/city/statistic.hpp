@@ -65,6 +65,7 @@ int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Type type );
+template< class T > SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which );
 template< class T > SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current );
 template< class T > SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Group group );
@@ -72,6 +73,7 @@ template<class T> bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller,
 template< class T > SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
                                           TilePos start, TilePos stop=TilePos(-1, -1) );
 HouseList findh( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
+FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
 gfx::TilesArray tiles( PlayerCityPtr r, const TilePos& start, const TilePos& stop=TilePos(-1,-1));
 
 template< class T >
@@ -151,6 +153,23 @@ SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
   }
 
   return result;
+}
+
+template< class T >
+SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which )
+{
+  OverlayList ret;
+  SmartList<T> ovs = r->overlays();
+
+  foreach( it, ovs )
+  {
+    if( which.count( (*it)->type ) > 0 )
+    {
+      ret << *it;
+    }
+  }
+
+  return ret;
 }
 
 template< class T >

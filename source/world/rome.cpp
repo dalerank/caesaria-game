@@ -71,7 +71,7 @@ void Rome::timeStep(const unsigned int time)
   City::timeStep( time );
 }
 
-SmartPtr<Player> Rome::player() const { return 0; }
+SmartPtr<Player> Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const good::Store& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}

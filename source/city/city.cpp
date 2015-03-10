@@ -728,7 +728,7 @@ const city::development::Options& PlayerCity::buildOptions() const { return _d->
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
-PlayerPtr PlayerCity::player() const { return _d->player; }
+PlayerPtr PlayerCity::mayor() const { return _d->player; }
 
 city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }

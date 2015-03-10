@@ -500,7 +500,7 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 
 float EmpireHelper::governorSalaryKoeff(CityPtr city)
 {
-  PlayerPtr pl = city->player();
+  PlayerPtr pl = city->mayor();
 
   float result = 1.f;
   if( pl.isValid() )

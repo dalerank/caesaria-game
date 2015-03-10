@@ -13,37 +13,43 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SPIRITOFMARS_H_INCLUDE_
-#define _CAESARIA_SPIRITOFMARS_H_INCLUDE_
+#ifndef __CAESARIA_CITYPARAMS_H_INCLUDED__
+#define __CAESARIA_CITYPARAMS_H_INCLUDED__
 
-#include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
+#include <map>
+#include "core/namedtype.hpp"
 
 namespace city
 {
 
-class SpiritOfMars : public Srvc
+namespace params
+{
+
+DEFINE_NAMEDTYPE(Param, unknown)
+REGISTER_NAMEDTYPE(Param,culture,1)
+REGISTER_NAMEDTYPE(Param,empireTaxPayed,2)
+REGISTER_NAMEDTYPE(Param,overduePayment,3)
+REGISTER_NAMEDTYPE(Param,maxForts,4)
+
+class Params : public std::map<int, int>
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city, int month=3);
-  virtual void timeStep( const unsigned int time);
+  int get( Param name ) const
+  {
+    const_iterator it = find( name );
+    return it != end() ? it->second : 0;
+  }
 
-  static std::string defaultName();
-  virtual bool isDeleted() const;
-
-  virtual void load(const VariantMap &stream);
-  virtual VariantMap save() const;
-
-private:
-  SpiritOfMars( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  void set( Param name, int value )
+  {
+    (*this)[ name ] = value;
+  }
 };
+
+}//end namespace params
 
 }//end namespace city
 
-#endif //_CAESARIA_SPIRITOFMARS_H_INCLUDE_
+#endif //__CAESARIA_CITYPARAMS_H_INCLUDED__

@@ -274,7 +274,7 @@ void Ratings::Impl::checkFavourRating()
   city::Info::Parameters current = info->lastParams();
   city::Info::Parameters lastYear = info->yearParams( 0 );
 
-  PlayerPtr player = city->player();
+  PlayerPtr player = city->mayor();
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
   float salaryKoeff = player->salary() / (float)rank.salary;
 

@@ -86,7 +86,7 @@ bool ComputerCity::isRomeCity() const{  return _d->romecity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
 
-SmartPtr<Player> ComputerCity::player() const { return 0; }
+SmartPtr<Player> ComputerCity::mayor() const { return 0; }
 
 void ComputerCity::save( VariantMap& options ) const
 {

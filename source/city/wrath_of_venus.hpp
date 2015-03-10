@@ -15,46 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_H_INCLUDED__
+#ifndef _CAESARIA_WRATHOFVENUS_H_INCLUDE_
+#define _CAESARIA_WRATHOFVENUS_H_INCLUDE_
 
-#include "core/smartptr.hpp"
-#include "core/variant.hpp"
+#include "cityservice.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 namespace city
 {
 
-class Srvc : public ReferenceCounted
+class WrathOfVenus : public Srvc
 {
 public:
-  virtual void timeStep( const unsigned int time ) = 0;
+  static SrvcPtr create(PlayerCityPtr city, int month=3, int strong=1);
+  virtual void timeStep( const unsigned int time);
 
-  std::string name() const;
-  void setName( const std::string& name  );
-  void attach();
-
+  static std::string defaultName();
   virtual bool isDeleted() const;
-  
-  virtual void destroy();
 
-  virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
-
-  virtual ~Srvc();
-
-protected:
-  Srvc( PlayerCityPtr city, const std::string& name );
-  PlayerCityPtr _city() const;
+  virtual VariantMap save() const;
 
 private:
+  WrathOfVenus( PlayerCityPtr city );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-typedef SmartPtr<Srvc> SrvcPtr;
-
 }//end namespace city
 
-#endif//__CAESARIA_CITYSERVICE_H_INCLUDED__
+#endif //_CAESARIA_WRATHOFVENUS_H_INCLUDE_

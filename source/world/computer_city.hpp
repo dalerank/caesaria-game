@@ -39,7 +39,7 @@ public:
   bool isRomeCity() const;
   virtual bool isAvailable() const;
   virtual void setAvailable(bool value);
-  virtual SmartPtr<Player> player() const;
+  virtual SmartPtr<Player> mayor() const;
   virtual void timeStep( unsigned int time );
   virtual DateTime lastAttack() const;
 

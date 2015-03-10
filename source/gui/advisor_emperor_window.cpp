@@ -158,7 +158,7 @@ void Emperor::_showChangeSalaryWindow()
     return;
   }
 
-  PlayerPtr pl = _d->city->player();
+  PlayerPtr pl = _d->city->mayor();
   dialog::ChangeSalary* dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
@@ -169,7 +169,7 @@ void Emperor::_showChangeSalaryWindow()
 
 void Emperor::_showSend2CityWindow()
 {
-  PlayerPtr pl = _d->city->player();
+  PlayerPtr pl = _d->city->mayor();
   dialog::CityDonation* dialog = new dialog::CityDonation( parent(), pl->money() );
   dialog->show();
 
@@ -178,7 +178,7 @@ void Emperor::_showSend2CityWindow()
 
 void Emperor::_showGiftWindow()
 {
-  PlayerPtr pl = _d->city->player();
+  PlayerPtr pl = _d->city->mayor();
   world::Emperor& emperor = _d->city->empire()->emperor();
 
   dialog::EmperorGift* dialog = new dialog::EmperorGift( parent(),
@@ -264,7 +264,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
 
   if( lbTitle )
   {
-    std::string text = city->player()->name();
+    std::string text = city->mayor()->name();
     if( text.empty() )
       text = _("##emperor_advisor_title##");
 
@@ -291,14 +291,14 @@ void Emperor::draw(gfx::Engine& painter )
 
 void Emperor::Impl::sendMoney( int money )
 {
-  city->player()->appendMoney( -money );
+  city->mayor()->appendMoney( -money );
   events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, money );
   e->dispatch();
 }
 
 void Emperor::Impl::sendGift(int money)
 {
-  if( money > city->player()->money() )
+  if( money > city->mayor()->money() )
   {
     DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
                             _("##nomoney_for_gift_title##"),
@@ -306,13 +306,13 @@ void Emperor::Impl::sendGift(int money)
     return;
   }
 
-  city->player()->appendMoney( -money );
+  city->mayor()->appendMoney( -money );
   city->empire()->emperor().sendGift( city->name(), money );
 }
 
 void Emperor::Impl::changeSalary( int money )
 {
-  PlayerPtr pl = city->player();
+  PlayerPtr pl = city->mayor();
   pl->setSalary( money );
 
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
