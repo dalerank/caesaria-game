@@ -45,6 +45,23 @@ namespace city
 namespace statistic
 {
 
+namespace {
+static const float popBalanceKoeff=1000.f;
+static const int   pop4blackHouseCalc=300;
+static const int   minServiceValue4Tax=25;
+static const int   greatFestivalCostLimiter=5;
+static const int   middleFestivalCostLimiter=10;
+static const int   smallFestivalCostLimiter=20;
+static const int   greatFestivalMinCost=40;
+static const int   middleFestivalMinCost=20;
+static const int   smallFestivalMinCost=10;
+static const int   minBlackHouseDesirability =-10;
+static const float maxBalanceKoeff=2.f;
+static const float normalBalanceKoeff=1.f;
+static const float minBalanceKoeff=.5f;
+static const int   maxLaborDistance=8;
+}
+
 void getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& maxWorkers )
 {
   WorkingBuildingList buildings;
@@ -64,11 +81,11 @@ float getBalanceKoeff(PlayerCityPtr city)
   if( city.isNull() )
   {
     Logger::warning( "Statistic::getBalanceKoeff cityptr is null");
-    return 1.f;
+    return normalBalanceKoeff;
   }
 
-  float result = atan( city->population() / 1000.f );
-  return math::clamp(result, 0.5f, 2.f);
+  float result = atan( city->population() / popBalanceKoeff );
+  return math::clamp(result, minBalanceKoeff, maxBalanceKoeff);
 }
 
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
@@ -197,10 +214,10 @@ unsigned int blackHouses( PlayerCityPtr city )
 {
   unsigned int ret = 0;
   HouseList houses = findh( city );
-  if( city->population() > 300 )
+  if( city->population() > pop4blackHouseCalc )
   {
     foreach( h, houses )
-      ret += ((*h)->tile().param( gfx::Tile::pDesirability ) > -10 ? 0 : 1);
+      ret += ((*h)->tile().param( gfx::Tile::pDesirability ) > minBlackHouseDesirability ? 0 : 1);
   }
 
   return ret;
@@ -266,7 +283,7 @@ unsigned int getTaxPayersPercent(PlayerCityPtr city)
   {
     unsigned int hbCount = (*house)->habitants().count();
     population += hbCount;
-    if( (*house)->getServiceValue( Service::forum ) > 25 )
+    if( (*house)->getServiceValue( Service::forum ) > minServiceValue4Tax )
     {
       registered += hbCount;
     }
@@ -298,9 +315,9 @@ unsigned int getFestivalCost(PlayerCityPtr city, FestivalType type)
 {
   switch( type )
   {
-  case smallFest: return int( city->population() / 20 ) + 10;
-  case middleFest: return int( city->population() / 10 ) + 20;
-  case greatFest: return int( city->population() / 5 ) + 40;
+  case smallFest: return int( city->population() / smallFestivalCostLimiter ) + smallFestivalMinCost;
+  case middleFest: return int( city->population() / middleFestivalCostLimiter ) + middleFestivalMinCost;
+  case greatFest: return int( city->population() / greatFestivalCostLimiter ) + greatFestivalMinCost;
   }
 
   return 0;
@@ -359,7 +376,7 @@ GoodsMap getGoodsMap(PlayerCityPtr city, bool includeGranary)
 
 int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
 {
-  TilePos offset( 8, 8 );
+  TilePos offset( maxLaborDistance, maxLaborDistance );
   TilePos wbpos = wb->pos();
   HouseList houses = findo<House>( city, object::house, wbpos - offset, wbpos + offset );
   float averageDistance = 0;
@@ -374,7 +391,7 @@ int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
   if( houses.size() > 0 )
     averageDistance /= houses.size();
 
-  return math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
+  return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
 }
 
 HouseList findh(PlayerCityPtr city, std::set<int> levels )

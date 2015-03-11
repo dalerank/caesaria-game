@@ -31,7 +31,7 @@ public:
                  bigInsula, beatyfullInsula, //12
                  smallVilla,  middleVilla,  bigVilla,  greatVilla,
                  smallPalace, middlePalace, bigPalace, greatPalace,
-                 count } ID;
+                 maxLevel } ID;
 
   typedef enum { maxSize2=2, maxSize3, maxSize4 } HouseMaxSize;
   enum { plebsLevel=5 };

@@ -35,6 +35,8 @@ namespace city
 
 REGISTER_SERVICE_IN_FACTORY(SpiritOfMars,spiritOfMars)
 
+enum { maxEnemies4destroy=32 };
+
 class SpiritOfMars::Impl
 {
 public:
@@ -66,7 +68,7 @@ void SpiritOfMars::timeStep( const unsigned int time)
 
     if( enemies.size() > 0 )
     {
-      int step = std::min<int>( enemies.size(), 32 );
+      int step = std::min<int>( enemies.size(), maxEnemies4destroy );
       for( int k=0; k < step; k++ )
       {
         EnemySoldierPtr ptr = enemies.random();
