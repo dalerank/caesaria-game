@@ -40,7 +40,7 @@ class Helper : public EnumsHelper<Value>
 public:
   Helper() : EnumsHelper<Value>( none )
   {
-#define ADD_DIRECTION(a) append(a, "##"#a"##" );
+#define ADD_DIRECTION(a) append(a, #a );
     ADD_DIRECTION(none)
     ADD_DIRECTION(north)
     ADD_DIRECTION(northWest)

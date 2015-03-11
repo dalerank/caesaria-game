@@ -169,12 +169,12 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   oCity->resize(map_size);
 
   // need to rewrite better
-  ScopedPtr<short> pGraphicGrid( new short[26244] );
-  ScopedPtr<unsigned char> pEdgeGrid( new unsigned char[26244] );
-  ScopedPtr<short> pTerrainGrid( new short[26244] );
-  ScopedPtr<unsigned char> pRndmTerGrid( new unsigned char[26244] );
-  ScopedPtr<unsigned char> pRandomGrid( new unsigned char[26244] );
-  ScopedPtr<unsigned char> pElevationGrid( new unsigned char[26244] );
+  ScopedArrayPtr<short> pGraphicGrid( new short[26244] );
+  ScopedArrayPtr<unsigned char> pEdgeGrid( new unsigned char[26244] );
+  ScopedArrayPtr<short> pTerrainGrid( new short[26244] );
+  ScopedArrayPtr<unsigned char> pRndmTerGrid( new unsigned char[26244] );
+  ScopedArrayPtr<unsigned char> pRandomGrid( new unsigned char[26244] );
+  ScopedArrayPtr<unsigned char> pElevationGrid( new unsigned char[26244] );
 
   if( pGraphicGrid.isNull() || pEdgeGrid.isNull() || pTerrainGrid.isNull() ||
       pRndmTerGrid.isNull() || pRandomGrid.isNull() || pElevationGrid.isNull() )

@@ -200,7 +200,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   int pixelSize = (ColorType==PNG_COLOR_TYPE_RGB_ALPHA ? 4 : 3);
   bytes.resize( Width * Height * pixelSize );
 
-  ScopedPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
+  ScopedArrayPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
 
   // Fill array of pointers to rows in image data
   unsigned char* data = &bytes[0];

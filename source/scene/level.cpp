@@ -428,7 +428,7 @@ void Level::Impl::handleDirectionChange(Direction direction)
 {
   direction::Helper dHelper;
 
-  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ), 1 );
+  events::GameEventPtr e = events::WarningMessage::create( _("##" + dHelper.findName( direction ) + "##"), 1 );
   e->dispatch();
 }
 
