@@ -29,6 +29,7 @@ using namespace constants;
 
 namespace events
 {
+static const int defaultReturnWorkersDistance = 40;
 
 GameEventPtr FireWorkers::create(TilePos center, unsigned int workers)
 {
@@ -50,9 +51,8 @@ FireWorkers::FireWorkers() : _workers( 0 ) {}
 void FireWorkers::_exec(Game& game, unsigned int)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
 
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
     TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
                                                  _center + TilePos( curRange, curRange ) );
@@ -84,4 +84,4 @@ void FireWorkers::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}// end namesopace events

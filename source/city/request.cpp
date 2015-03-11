@@ -71,7 +71,7 @@ void RqGood::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
-    Unit stockCap( _d->stock.capacity() );
+    Unit stockCap = Unit::fromValue( _d->stock.capacity() );
     good::Stock stock( _d->stock.type(), stockCap.toQty() );
     events::GameEventPtr e = events::RemoveGoods::create( stock.type(), stock.capacity() );
     e->dispatch();
@@ -88,7 +88,7 @@ bool RqGood::isReady( PlayerCityPtr city ) const
   city::statistic::GoodsMap gm = city::statistic::getGoodsMap( city, false );
 
   Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
-  Unit needCap(  _d->stock.capacity() );
+  Unit needCap = Unit::fromValue( _d->stock.capacity() );
   _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), stockCap );
   if( stockCap >= needCap )
   {

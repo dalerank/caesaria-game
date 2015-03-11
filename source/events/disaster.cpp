@@ -37,6 +37,8 @@ using namespace gfx;
 namespace events
 {
 
+static const int houseOffset=1000;
+
 GameEventPtr Disaster::create( const Tile& tile, Type type )
 {
   Disaster* event = new Disaster();
@@ -51,7 +53,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
     HousePtr house = ptr_cast< House >( overlay );
     if( house.isValid() )
     {
-      event->_infoType = 1000 + house->spec().level();
+      event->_infoType = houseOffset + house->spec().level();
     }
     else
     {
@@ -130,8 +132,8 @@ void Disaster::_exec( Game& game, unsigned int )
           SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
           if( ruins.isValid() )
           {
-            std::string typev = _infoType > 1000
-                                  ? utils::format( 0xff, "house%02d", _infoType - 1000 )
+            std::string typev = _infoType > houseOffset
+                                  ? utils::format( 0xff, "house%02d", _infoType - houseOffset )
                                   : object::toString( object::Type( _infoType ) );
             ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
             ruins->afterBuild();

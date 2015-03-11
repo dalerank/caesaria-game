@@ -269,8 +269,8 @@ void fixPlateauFlags(Tile& tile)
   {
     tile.setFlag( Tile::clearAll, true );
     Picture pic = imgid::toPicture( tile.originalImgId() );
-    int size = (pic.width() + 2) / 60;
-    bool flat = pic.height() <= 30 * size;
+    int size = (pic.width() + 2) / tilemap::x_tileBase;
+    bool flat = pic.height() <= tilemap::y_tileBase * size;
     tile.setFlag( Tile::tlRock, !flat );
   }
 }

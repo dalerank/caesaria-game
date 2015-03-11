@@ -246,7 +246,7 @@ void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
   unsigned int faithValue = 0;
   if( city->population() > 0 )
   {
-    faithValue = math::clamp( math::percentage( myTemples.parishionerNumber, city->population() ), 0u, 100u );
+    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->population() ), 0u, 100u );
   }
 
   Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );

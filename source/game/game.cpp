@@ -72,6 +72,8 @@
 using namespace gfx;
 using namespace scene;
 
+enum { minimumSpeed=10, defaultCellWidth=30, remakeCellWidth=60, maximuxSpeed=300 };
+
 class Game::Impl
 {
 public:
@@ -167,9 +169,10 @@ void Game::Impl::initSound()
   ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
-  if( !SETTINGS_VALUE( c3music ).toString().empty() )
+  std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
+  if( !c3musicFolder.empty() )
   {
-    ae.addFolder( SETTINGS_VALUE( c3music ).toString() );
+    ae.addFolder( c3musicFolder );
   }
 
   Logger::warning( "Game: load talks archive" );
@@ -307,7 +310,7 @@ Game::Game() : _d( new Impl )
 }
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, minimumSpeed, maximuxSpeed );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
 
 Game::~Game(){}
@@ -416,9 +419,9 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != 30 && cellWidth != 60 )
+  if( cellWidth != defaultCellWidth && cellWidth != remakeCellWidth )
   {
-    cellWidth = 30;
+    cellWidth = defaultCellWidth;
   }    
 
   tilemap::initTileBase( cellWidth );
