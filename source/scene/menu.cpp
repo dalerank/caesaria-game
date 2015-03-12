@@ -393,7 +393,7 @@ void StartMenu::Impl::showOptionsMenu()
   ADD_MENU_BUTTON( "##mainmenu_video##", Impl::showVideoOptions )
   ADD_MENU_BUTTON( "##mainmenu_sound##", Impl::showSoundOptions )
   ADD_MENU_BUTTON( "##mainmenu_package##", Impl::showPackageOptions )
-  ADD_MENU_BUTTON( "##mainmene_plname##", Impl::changePlayerName )
+  ADD_MENU_BUTTON( "##mainmenu_plname##", Impl::changePlayerName )
   ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
 }
 

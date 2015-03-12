@@ -205,6 +205,7 @@
 "##mainmenu_playmission##":"Wczytaj scenariusz"
 "##package_options##":"Zaaw. ustawienia"
 "##mainmenu_package##":"Zaaw. ustawienia"
+"##mainmenu_plname##":"Zmień imię"
 "##fileload_load_tlp##":"Wczytaj ten zapis gry"
 "##initialize_animations##":"Ładowanie animacji"
 "##initialize_walkers##":"Ładowanie ustawień przechodniów"
