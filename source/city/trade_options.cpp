@@ -133,17 +133,18 @@ Options::Options() : _d( new Impl )
 {  
 }
 
-unsigned int Options::tradeLimit( Order state, good::Product type) const
+metric::Unit Options::tradeLimit( Order state, good::Product type) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
+  metric::Unit ret;
   if( it == _d->goods.end() )
-    return 0;
+    return ret;
 
   switch( state )
   {
-  case importing: return it->second.importLimit;
-  case exporting: return it->second.exportLimit;
-  default: return 0;
+  case importing: ret = metric::Unit::fromValue( it->second.importLimit );
+  case exporting: ret = metric::Unit::fromValue( it->second.exportLimit );
+  default: break;
   }
 }
 
@@ -181,12 +182,12 @@ Order Options::switchOrder( good::Product type )
   return getOrder( type );
 }
 
-void Options::setTradeLimit( Order o, good::Product type, unsigned int qty)
+void Options::setTradeLimit(Order o, good::Product type, metric::Unit qty)
 {
   switch( o )
   {
-  case exporting: _d->goods[ type ].exportLimit = qty; break;
-  case importing: _d->goods[ type ].importLimit = qty; break;
+  case exporting: _d->goods[ type ].exportLimit = qty.ivalue(); break;
+  case importing: _d->goods[ type ].importLimit = qty.ivalue(); break;
   default: break;
   }
 

@@ -191,7 +191,7 @@ void GoodOrderManageWindow::updateTradeState()
 {
   trade::Options& ctrade = _d->city->tradeOptions();
   trade::Order order = ctrade.getOrder( _d->type );
-  int qty = ctrade.tradeLimit( order, _d->type );
+  int qty = ctrade.tradeLimit( order, _d->type ).ivalue();
   _d->btnTradeState->setTradeState( order, qty );
 }
 
@@ -296,7 +296,7 @@ void GoodOrderManageWindow::updateStackingState()
   _d->btnStackingState->setText( text );
 }
 
-Signal0<> &GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }
+Signal0<>& GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }
 
 void GoodOrderManageWindow::_changeTradeLimit(int value)
 {
@@ -306,9 +306,9 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   if( state == trade::importing ||
       state == trade::exporting )
   {
-    unsigned int limit = ctrade.tradeLimit( state, _d->type );
+    unsigned int limit = ctrade.tradeLimit( state, _d->type ).ivalue();
     limit = math::clamp<int>( limit+value, 0, 999 );
-    ctrade.setTradeLimit( state, _d->type, limit );
+    ctrade.setTradeLimit( state, _d->type, metric::Unit::fromValue( limit ) );
   }
   updateTradeState();
 }

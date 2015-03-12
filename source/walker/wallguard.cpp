@@ -33,7 +33,7 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
-
+#include "gfx/helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -52,7 +52,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   setName( NameGenerator::rand( NameGenerator::male ) );
 
   setAttackDistance( 5 );
-  _d->patrolPosition = TilePos( -1, -1 );
+  _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 WallGuard::~WallGuard(){}
@@ -159,7 +159,7 @@ void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
   stream[ "strikeForce" ] = _d->strikeForce;
   stream[ "resistance" ] = _d->resistance;
   stream[ "patrolPosition" ] = _d->patrolPosition;
@@ -217,7 +217,7 @@ TilePos WallGuard::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
   case plDestination: return _d->patrolPosition;
   default: break;
   }
@@ -381,7 +381,7 @@ void WallGuard::_brokePathway(TilePos p)
     {
       _setSubAction( patrol );
       setPathway( Pathway() );
-      wait( game::Date::days2ticks( 7 ) );
+      wait( game::Date::days2ticks( DateTime::daysInWeek ) );
     }
   }
 }

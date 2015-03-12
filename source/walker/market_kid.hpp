@@ -25,6 +25,7 @@
 class MarketKid : public Human
 {
 public:
+  enum { defaultCapacity=100 };
   static MarketKidPtr create( PlayerCityPtr city );
   static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
 

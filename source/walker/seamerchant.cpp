@@ -33,6 +33,7 @@
 #include "objects/dock.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "gfx/helper.hpp"
 
 using namespace constants;
 using namespace city;
@@ -97,7 +98,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
   case stFindDock:
   {    
-    destBuildingPos = TilePos( -1, -1 );  // no destination yet    
+    destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
     Pathway pathway;
     // get the list of buildings within reach   
@@ -146,7 +147,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stWaitFreeDock:
   {
-    waitInterval = game::Date::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( DateTime::daysInWeek );
     nextState = stFindDock;
   }
   break;
@@ -173,7 +174,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         {
           continue;
         }
-        int exportLimit = options.tradeLimit( trade::exporting, *goodType ) * 100;
+        int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
         int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
@@ -221,7 +222,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       }
 
       nextState = stWaitGoods;
-      waitInterval = anyBuy ? game::Date::days2ticks( 7 ) : 0;
+      waitInterval = anyBuy ? game::Date::days2ticks( DateTime::daysInWeek ) : 0;
 
       if( 0 == buy.freeQty() ) //all done
       {
@@ -262,7 +263,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stGoOutFromCity:
   {
     // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-    waitInterval = game::Date::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( DateTime::daysInWeek );
     goAwayFromCity( city, wlk );
     nextState = stBackToBaseCity;
   }
@@ -293,7 +294,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     nextState = stBuyGoods;
     resolveState( city, wlk );
-    waitInterval = anySell ? game::Date::days2ticks( 7 ) : 0;
+    waitInterval = anySell ? game::Date::days2ticks( DateTime::daysInWeek ) : 0;
   }
   break;
 

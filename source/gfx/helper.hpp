@@ -50,6 +50,8 @@ namespace tilemap
   const Point& cellCenter();
   const Size& cellPicSize();
   const Size& cellSize();
+  const TilePos& invalidLocation();
+  bool isValidLocation( const TilePos& pos );
 }
 
 }//end namespace gfx

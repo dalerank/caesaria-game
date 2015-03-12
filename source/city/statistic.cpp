@@ -433,6 +433,11 @@ FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which)
   return ret;
 }
 
+int taxValue(unsigned int population, int koeff)
+{
+  return population / 1000 * koeff;
+}
+
 }//end namespace statistic
 
 }//end namespace city

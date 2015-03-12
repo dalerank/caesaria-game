@@ -54,6 +54,7 @@ unsigned int getTaxPayersPercent( PlayerCityPtr city );
 unsigned int getHealth( PlayerCityPtr city );
 unsigned int blackHouses( PlayerCityPtr city );
 int months2lastAttack( PlayerCityPtr city );
+int taxValue( unsigned int population, int koeff);
 int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);

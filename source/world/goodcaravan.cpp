@@ -88,7 +88,7 @@ void GoodCaravan::save(VariantMap& stream) const
 
   stream[ "store" ] = _d->store.save();
   stream[ "base"  ] = Variant( _d->base.isValid() ? _d->base->name() : "" );
-  stream[ "destination" ] = Variant( _d->destination );
+  VARIANT_SAVE_STR_D( stream, _d, destination )
 }
 
 void GoodCaravan::load(const VariantMap& stream)
@@ -98,7 +98,7 @@ void GoodCaravan::load(const VariantMap& stream)
   _d->options = stream;
   _d->store.load( stream.get( "store").toMap() );
   _d->base = empire()->findCity( stream.get( "base" ).toString() );
-  _d->destination = stream.get( "destination" ).toString();
+  VARIANT_LOAD_STR_D( _d, destination, stream )
 }
 
 void GoodCaravan::_reachedWay()
@@ -115,10 +115,10 @@ GoodCaravan::GoodCaravan( CityPtr city )
  : MovableObject( city->empire() ), _d( new Impl )
 {
   _d->base = city;
-  _d->store.setCapacity( 10000 );
-  _d->store.setCapacity( good::any(), 10000 );
+  _d->store.setCapacity( defaultCapacity );
+  _d->store.setCapacity( good::any(), defaultCapacity );
 
-  setSpeed( 3.f );
+  setSpeed( deafaultSpeed );
 
   setPicture( gfx::Picture::load( ResourceGroup::panelBackground, 108 ) );
 }

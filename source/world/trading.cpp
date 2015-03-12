@@ -30,6 +30,8 @@
 namespace world
 {
 
+enum { idxBuyPrice=0, idxSellPrice=1 };
+
 class Trading::Impl
 {
 public:
@@ -126,7 +128,7 @@ void Trading::load(const VariantMap& stream)
     if( gtype != good::none )
     {
       VariantList vl = it->second.toList();
-      _d->setPrice( gtype, vl.get( 0, 0 ).toInt(), vl.get( 1, 0 ).toInt() );
+      _d->setPrice( gtype, vl.get( idxBuyPrice, 0 ).toInt(), vl.get( idxSellPrice, 0 ).toInt() );
     }
   }
 }
@@ -140,7 +142,7 @@ void Trading::sendMerchant(const std::string& begin, const std::string& end,
                             good::Store &sell, good::Store &buy )
 {
   TraderoutePtr route = findRoute( begin, end );
-  if( route != 0 )
+  if( route.isValid() )
   {
     Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
     return;
@@ -156,7 +158,7 @@ TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& e
   if( it == _d->routes.end() )
   {
     Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
-    return 0;
+    return TraderoutePtr();
   }
 
   return it->second;
@@ -165,7 +167,7 @@ TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& e
 TraderoutePtr Trading::findRoute( unsigned int index )
 {
   if( index >= _d->routes.size() )
-    return 0;
+    return TraderoutePtr();
 
   Impl::TradeRoutes::iterator it = _d->routes.begin();
   std::advance( it, index );
@@ -175,7 +177,7 @@ TraderoutePtr Trading::findRoute( unsigned int index )
 TraderoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
 {
   TraderoutePtr route = findRoute( begin, end );
-  if( route != 0 )
+  if( route.isNull() )
   {
     Logger::warning( "Trade route exist [%s to %s]", begin.c_str(), end.c_str() );
     return route;

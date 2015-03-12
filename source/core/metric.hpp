@@ -27,6 +27,7 @@ class Unit;
 class Qty
 {
 public:
+  Qty() { _value = 0; }
   explicit Qty( unsigned int value ) : _value( value ) {}
 
   operator unsigned int() const { return _value; }
@@ -39,6 +40,7 @@ private:
 class Unit
 {
 public:
+  Unit() { _value = 0; }
   Unit( const Qty& qty ) { _value = (unsigned int)qty / unit2QtyLimiter; }
   static Unit fromQty( unsigned int value ) { return Unit( value / unit2QtyLimiter ); }
   static Unit fromValue( unsigned int value ) { return Unit( value ); }

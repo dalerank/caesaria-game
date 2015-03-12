@@ -44,7 +44,7 @@ public:
 MovableObject::MovableObject( EmpirePtr empire )
   : Object( empire ), __INIT_IMPL(MovableObject)
 {
-  setSpeed( 1.f );
+  setSpeed( defaultSpeed );
 }
 
 MovableObject::~MovableObject(){}
@@ -83,7 +83,7 @@ void MovableObject::timeStep(const unsigned int time)
   }
 }
 
-int MovableObject::viewDistance() const { return 40; }
+int MovableObject::viewDistance() const { return defaultViewDistance; }
 const Route& MovableObject::way() const { return _dfunc()->way; }
 
 void MovableObject::_reachedWay()
@@ -151,10 +151,7 @@ public:
   std::string message;
 };
 
-Messenger::~Messenger()
-{
-
-}
+Messenger::~Messenger() {}
 
 void Messenger::now( EmpirePtr empire,
                      const std::string& cityname,

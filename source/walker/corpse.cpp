@@ -87,7 +87,7 @@ WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
   {
     corpse->_animationRef().load( rcGroup, startIndex, stopIndex - startIndex );
     corpse->_animationRef().setLoop( false );
-    corpse->_animationRef().setDelay( 1 );
+    corpse->_animationRef().setDelay( Animation::fast );
     corpse->_d->lastFrameIndex = corpse->_animationRef().index();
   }
   else
@@ -159,7 +159,7 @@ void Corpse::load( const VariantMap& stream )
   _animationRef().load( stream.get( "animation" ).toMap() );
   if( _animationRef().delay() == 0 )
   {
-    _animationRef().setDelay( 2 );
+    _animationRef().setDelay( Animation::middle );
     _animationRef().setLoop( false );
   }
 }

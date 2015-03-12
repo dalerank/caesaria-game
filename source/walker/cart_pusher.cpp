@@ -30,6 +30,7 @@
 #include "events/removecitizen.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
+#include "gfx/helper.hpp"
 #include "gfx/cart_animation.hpp"
 #include "objects/factory.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -271,7 +272,7 @@ void CartPusher::_computeWalkerDestination()
      }
      else
      {
-       Walker::wait( -1 );
+       Walker::wait( Walker::infiniteWait );
        setPos( _d->producerBuilding->roadside().front()->pos() );
        _changeDirection();
        turn( _d->producerBuilding->pos() );
@@ -344,7 +345,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropa
   if (buildingType == object::unknown)
   {
      // no factory can use this good
-     return 0;
+     return BuildingPtr();
   }
 
   res = reserveShortestPath<Factory>( buildingType, stock, reservationID, pathPropagator, oPathWay );
@@ -370,7 +371,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
          || p == good::meat || p == good::fruit || p == good::vegetable))
    {
       // this good cannot be stored in a granary
-      return 0;
+      return BuildingPtr();
    }
 
    res = reserveShortestPath<Granary>( object::granery, stock, reservationID, pathPropagator, oPathWay );
@@ -415,10 +416,10 @@ void CartPusher::save( VariantMap& stream ) const
   
   stream[ lc_stock ] = _d->stock.save();
   stream[ lc_producerPos ] = _d->producerBuilding.isValid()
-                                ? _d->producerBuilding->pos() : TilePos( -1, -1 );
+                                ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
 
   stream[ lc_consumerPos ] = _d->consumerBuilding.isValid()
-                                ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
+                                ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
@@ -503,8 +504,8 @@ TilePos CartPusher::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : TilePos( -1, -1 );
-  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
+  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
   default: break;
   }
 

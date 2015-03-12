@@ -60,7 +60,7 @@ public:
 
 inline PointF Point::toPointF() const
 { 
-    return PointF( (float)_x, (float)_y );
+  return PointF( (float)_x, (float)_y );
 }
 
 class TilePos : Vector2<int>

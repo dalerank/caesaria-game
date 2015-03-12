@@ -30,6 +30,7 @@
 #include "corpse.hpp"
 #include "core/foreach.hpp"
 #include "helper.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -179,7 +180,7 @@ TilePos Recruter::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return base().isValid() ? base()->pos() : TilePos( -1, -1 );
+  case plOrigin: return base().isValid() ? base()->pos() : gfx::tilemap::invalidLocation();
   default: break;
   }
 

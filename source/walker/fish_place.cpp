@@ -48,7 +48,7 @@ FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
 
   setName( _("##fish_place##") );
 
-  _d->fishCount = rand() % 100;
+  _d->fishCount = math::random( 100 );
 
   if( _d->fishCount > 1 )
   {
@@ -62,7 +62,7 @@ FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
     _d->basicOffset =  Point( 0, 55 );
     _d->animation.setOffset( _d->basicOffset );
   } //small fish place
-  _d->animation.setDelay( 4 );
+  _d->animation.setDelay( Animation::slow );
 
   setFlag( vividly, false );
 }

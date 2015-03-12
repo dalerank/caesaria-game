@@ -77,12 +77,12 @@ const double RADTODEG64 = 180.0 / PI64;
 */
 inline float rad2Degf( float radians)
 {
-	return RADTODEG * radians;
+  return RADTODEG * radians;
 }
 
 inline int percentage( int value, int base )
 {
-	return base > 0 ? (value * 100 / base) : 0;
+  return base > 0 ? (value * 100 / base) : 0;
 }
 
 inline int random( int max )

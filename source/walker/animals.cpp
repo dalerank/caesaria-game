@@ -36,6 +36,14 @@ REGISTER_CLASS_IN_WALKERFACTORY(walker::sheep, Sheep)
 REGISTER_CLASS_IN_WALKERFACTORY(walker::wolf, Wolf)
 REGISTER_CLASS_IN_WALKERFACTORY(walker::zebra, Zebra)
 
+namespace {
+const int defaultRandomDistance=10;
+const int maxWayAlert=30;
+const float illnesValue=0.2f;
+const int every4frame=4;
+const int defaultAttackValue=-5;
+}
+
 class Animal::Impl
 {
 public:
@@ -82,7 +90,7 @@ std::string Animal::thoughts(Thought th) const
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  Pathway pathway = PathwayHelper::randomWay( _city(), start, 10 );
+  Pathway pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
 
   if( pathway.isValid() )
   {
@@ -126,7 +134,7 @@ void Herbivorous::_brokePathway(TilePos p){  _findNewWay( pos() );}
 void Herbivorous::_noWay()
 {
   _noWayCount++;
-  if( _noWayCount > 30 )
+  if( _noWayCount > maxWayAlert )
   {
     die();
     return;
@@ -141,7 +149,7 @@ Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
   _setType( type );
   setName( WalkerHelper::getPrettyTypename( type ) );
 
-  addAbility( Illness::create( 0.2, 4 ) );
+  addAbility( Illness::create( illnesValue, every4frame ) );
   _noWayCount = 0;
 }
 
@@ -168,7 +176,7 @@ Wolf::Wolf( PlayerCityPtr city )
   setSpeedMultiplier( 0.8 + math::random( 60 ) / 100.f);
   setName( _("##wolf##") );
 
-  addAbility( Illness::create( 0.2, 4 ) );
+  addAbility( Illness::create( illnesValue, every4frame ) );
 }
 
 WalkerPtr Wolf::create(PlayerCityPtr city)
@@ -207,7 +215,7 @@ void Wolf::_centerTile()
 
 void Wolf::_findNewWay( const TilePos& start )
 {
-  TilePos offset(10,10);
+  TilePos offset(defaultRandomDistance,defaultRandomDistance);
   WalkerList walkers = city::statistic::findw<Walker>( _city(), walker::any, start - offset, start + offset );
   walkers = walkers.exclude<Wolf>();
 
@@ -220,7 +228,7 @@ void Wolf::_findNewWay( const TilePos& start )
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), start, 10 );
+    pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
   }
 
   if( pathway.isValid() )
@@ -257,7 +265,7 @@ void Wolf::timeStep(const unsigned long time)
 
     if( !walkers.empty() )
     {
-      walkers.front()->updateHealth( -1 );
+      walkers.front()->updateHealth( defaultAttackValue );
       walkers.front()->acceptAction( acFight, pos() );
     }
     else

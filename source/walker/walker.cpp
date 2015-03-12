@@ -41,7 +41,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-static const Tile invalidTile( TilePos(-1,-1) );
+const Tile invalidTile( gfx::tilemap::invalidLocation() );
 }
 
 class Walker::Impl
@@ -348,7 +348,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : TilePos( -1, -1 ) ;}
+TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : gfx::tilemap::invalidLocation() ;}
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
@@ -358,7 +358,7 @@ Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
-TilePos Walker::places(Walker::Place type) const { return TilePos(-1,-1); }
+TilePos Walker::places(Walker::Place type) const { return gfx::tilemap::invalidLocation(); }
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
