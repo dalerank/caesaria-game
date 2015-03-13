@@ -96,14 +96,14 @@ protected:
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2, true, false );
-    font.draw( *pic, utils::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
+    font.draw( *pic, utils::i2str( _needWorkers ), 375, 2, true, false );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, utils::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
+    font.draw( *pic, utils::i2str( _haveWorkers ), 480, 2, true, false );
 
     if( _priority > 0 )
     {
@@ -253,8 +253,8 @@ void Employer::Impl::updateSalaryLabel()
   int pay = city->funds().workerSalary();
   int romePay = city->empire()->workerSalary();
   std::string salaryString = utils::format( 0xff, "%s %d (%s %d)",
-                                                   _("##advemployer_panel_denaries##"), pay,
-                                                   _("##advemployer_panel_romepay##"), romePay );
+                                            _("##advemployer_panel_denaries##"), pay,
+                                            _("##advemployer_panel_romepay##"), romePay );
 
   if( lbSalaries )
   {

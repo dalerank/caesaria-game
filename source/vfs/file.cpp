@@ -142,7 +142,7 @@ int NFile::write( const ByteArray& bArray )
 
 bool NFile::isOpen() const
 {
-	return _entity.isValid() ? _entity->isOpen() : false;
+  return _entity.isValid() ? _entity->isOpen() : false;
 }
 
 void NFile::flush()

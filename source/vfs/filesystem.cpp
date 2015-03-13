@@ -144,41 +144,41 @@ void FileSystem::addArchiveLoader( ArchiveLoaderPtr loader)
 //! Returns the total number of archive loaders added.
 unsigned int FileSystem::archiveLoaderCount() const
 {
-	return _d->archiveLoaders.size();
+  return _d->archiveLoaders.size();
 }
 
 //! Gets the archive loader by index.
 ArchiveLoaderPtr FileSystem::getArchiveLoader(unsigned int index) const
 {
-	if (index < _d->archiveLoaders.size())
+  if (index < _d->archiveLoaders.size())
   {
-		return _d->archiveLoaders[index];
+    return _d->archiveLoaders[index];
   }
-	else
-		return ArchiveLoaderPtr();
+  else
+    return ArchiveLoaderPtr();
 }
 
 //! move the hirarchy of the filesystem. moves sourceIndex relative up or down
 bool FileSystem::moveArchive(unsigned int sourceIndex, int relative)
 {
-	bool r = false;
-	const int dest = (int) sourceIndex + relative;
-	const int dir = relative < 0 ? -1 : 1;
-	const int sourceEnd = ((int) _d->openArchives.size() ) - 1;
-	ArchivePtr t;
+  bool r = false;
+  const int dest = (int) sourceIndex + relative;
+  const int dir = relative < 0 ? -1 : 1;
+  const int sourceEnd = ((int) _d->openArchives.size() ) - 1;
+  ArchivePtr t;
 
-	for (int s = (int) sourceIndex;s != dest; s += dir)
-	{
-		if (s < 0 || s > sourceEnd || s + dir < 0 || s + dir > sourceEnd)
-			continue;
+  for (int s = (int) sourceIndex;s != dest; s += dir)
+  {
+    if (s < 0 || s > sourceEnd || s + dir < 0 || s + dir > sourceEnd)
+      continue;
 
-		t = _d->openArchives[s + dir];
-		_d->openArchives[s + dir] = _d->openArchives[s];
-		_d->openArchives[s] = t;
-		r = true;
-	}
+    t = _d->openArchives[s + dir];
+    _d->openArchives[s + dir] = _d->openArchives[s];
+    _d->openArchives[s] = t;
+    r = true;
+  }
 
-	return r;
+  return r;
 }
 
 
@@ -327,7 +327,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-        return archive;
+      return archive;
     }
 
     int i;
@@ -418,13 +418,13 @@ void FileSystem::setRcFolder( const Directory &folder) { _d->resourdFolder = fol
 ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 {
   Logger::warning( "FileSystem: mountArchive call for " + archive->getTypeName() );
-	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-	{
-		if( archive == _d->openArchives[i])
-		{
-			return archive;
-		}
-	}
+  for (unsigned int i=0; i < _d->openArchives.size(); ++i)
+  {
+    if( archive == _d->openArchives[i])
+    {
+      return archive;
+    }
+  }
 
 	_d->openArchives.push_back(archive);
   return archive;
@@ -434,15 +434,15 @@ ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 //! removes an archive from the file system.
 bool FileSystem::unmountArchive(unsigned int index)
 {
-	bool ret = false;
-	if (index < _d->openArchives.size())
-	{
+  bool ret = false;
+  if (index < _d->openArchives.size())
+  {
     Logger::warning( "FileSystem: unmountArchive %d", index );
-		_d->openArchives.erase( _d->openArchives.begin() + index );
-		ret = true;
-	}
+    _d->openArchives.erase( _d->openArchives.begin() + index );
+    ret = true;
+  }
 
-	return ret;
+  return ret;
 }
 
 
@@ -465,15 +465,15 @@ bool FileSystem::unmountArchive(const Path& filename)
 //! Removes an archive from the file system.
 bool FileSystem::unmountArchive( ArchivePtr archive)
 {
-	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-	{
-		if( archive == _d->openArchives[i] )
-		{
-			return unmountArchive(i);
-		}
-	}
+  foreach( i, _d->openArchives )
+  {
+    if( archive == *i )
+    {
+      return unmountArchive( *i );
+    }
+  }
 
-	return false;
+  return false;
 }
 
 //! gets an archive
@@ -481,108 +481,108 @@ unsigned int FileSystem::archiveCount() const {	return _d->openArchives.size(); 
 
 ArchivePtr FileSystem::getFileArchive(unsigned int index)
 {
-	return index < archiveCount() ? _d->openArchives[index] : 0;
+  return index < archiveCount() ? _d->openArchives[index] : 0;
 }
 
 //! Returns the string of the current working directory
 const Path& FileSystem::workingDirectory()
 {
-	int type = 0;
+  int type = 0;
 
-	if (type != fsNative)
-	{
-		type = fsVirtual;
-	}
-	else
-	{
-		#if defined(CAESARIA_PLATFORM_WIN)
-			char tmp[_MAX_PATH];
-			_getcwd(tmp, _MAX_PATH);
-      _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
-		#elif defined(CAESARIA_PLATFORM_UNIX)
-			// getting the CWD is rather complex as we do not know the size
-			// so try it until the call was successful
-			// Note that neither the first nor the second parameter may be 0 according to POSIX
-			unsigned int pathSize=256;
-            ScopedPtr< char > tmpPath( new char[pathSize] );
-      
-            while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
-			{
-				pathSize *= 2;
-				tmpPath.reset( new char[pathSize] );
-			}
+  if (type != fsNative)
+  {
+          type = fsVirtual;
+  }
+  else
+  {
+          #if defined(CAESARIA_PLATFORM_WIN)
+                  char tmp[_MAX_PATH];
+                  _getcwd(tmp, _MAX_PATH);
+          _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
+          #elif defined(CAESARIA_PLATFORM_UNIX)
+                  // getting the CWD is rather complex as we do not know the size
+                  // so try it until the call was successful
+                  // Note that neither the first nor the second parameter may be 0 according to POSIX
+                  unsigned int pathSize=256;
+      ScopedPtr< char > tmpPath( new char[pathSize] );
 
-            if( tmpPath )
-			{
-								_d->workingDirectory[fsNative] = Path( tmpPath.data() );
-			}
-		#endif //CAESARIA_PLATFORM_UNIX
+      while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
+                  {
+                          pathSize *= 2;
+                          tmpPath.reset( new char[pathSize] );
+                  }
 
-		//_d->workingDirectory[type].validate();
-	}
+      if( tmpPath )
+                  {
+                                                          _d->workingDirectory[fsNative] = Path( tmpPath.data() );
+                  }
+          #endif //CAESARIA_PLATFORM_UNIX
 
-	return _d->workingDirectory[type];
+          //_d->workingDirectory[type].validate();
+  }
+
+  return _d->workingDirectory[type];
 }
 
 
 //! Changes the current Working Directory to the given string.
 bool FileSystem::changeWorkingDirectoryTo(Path newDirectory)
 {
-	bool success=false;
+  bool success=false;
 
-    if ( _d->fileSystemType != fsNative)
-    {
-      // is this empty string constant really intended?
-      _d->workingDirectory[fsVirtual] = newDirectory.flattenFilename( "" );
-      success = true;
-    }
-    else
-    {
-        _d->workingDirectory[ fsNative ] = newDirectory;
+  if ( _d->fileSystemType != fsNative)
+  {
+    // is this empty string constant really intended?
+    _d->workingDirectory[fsVirtual] = newDirectory.flattenFilename( "" );
+    success = true;
+  }
+  else
+  {
+    _d->workingDirectory[ fsNative ] = newDirectory;
 #if defined(CAESARIA_PLATFORM_WIN)
-        success = ( _chdir( newDirectory.toString().c_str() ) == 0 );
+    success = ( _chdir( newDirectory.toString().c_str() ) == 0 );
 #elif defined(CAESARIA_PLATFORM_UNIX)
-        success = ( chdir( newDirectory.toString().c_str() ) == 0 );
+    success = ( chdir( newDirectory.toString().c_str() ) == 0 );
 #endif //CAESARIA_PLATFORM_UNIX
-    }
+  }
 
-    return success;
+  return success;
 }
 
 //! Sets the current file systen type
 FileSystem::Mode FileSystem::setMode( Mode listType)
 {
-	Mode current = _d->fileSystemType;
-	_d->fileSystemType = listType;
-	return current;
+  Mode current = _d->fileSystemType;
+  _d->fileSystemType = listType;
+  return current;
 }
 
 //! looks if file is in the same directory of path. returns offset of directory.
 //! 0 means in same directory. 1 means file is direct child of path
 inline int isInSameDirectory ( const Path& path, const Path& file )
 {
-	int subA = 0;
-	int subB = 0;
-	int pos;
+  int subA = 0;
+  int subB = 0;
+  int pos;
 
   if ( path.toString().size() && !utils::isEqualen( path.toString(), file.toString(), path.toString().size() ) )
-		return -1;
+    return -1;
 
-	pos = 0;
-	while ( (pos = path.toString().find( '/', pos )) >= 0 )
-	{
-		subA += 1;
-		pos += 1;
-	}
+  pos = 0;
+  while ( (pos = path.toString().find( '/', pos )) >= 0 )
+  {
+    subA += 1;
+    pos += 1;
+  }
 
-	pos = 0;
-	while ( (pos = file.toString().find ( '/', pos )) >= 0 )
-	{
-		subB += 1;
-		pos += 1;
-	}
+  pos = 0;
+  while ( (pos = file.toString().find ( '/', pos )) >= 0 )
+  {
+    subB += 1;
+    pos += 1;
+  }
 
-	return subB - subA;
+  return subB - subA;
 }
 
 //! Creates a list of files and directories in the current working directory
@@ -594,7 +594,7 @@ Entries FileSystem::getFileList()
   
   //Logger::warning( "FileSystem: start listing directory" );
 
-	//! Construct from native filesystem
+  //! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )
 	{
 		// --------------------------------------------

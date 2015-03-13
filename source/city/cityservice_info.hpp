@@ -29,6 +29,7 @@ namespace city
 class Info : public Srvc
 {
 public:
+  enum { lastMonth=1 };
   typedef enum { population=0, funds, tax, taxpayes,
                  monthWithFood, foodKoeff, godsMood,
                  needWorkers, maxWorkers, workless,

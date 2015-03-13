@@ -63,6 +63,8 @@ namespace advisorwnd
 namespace {
   Point requestButtonOffset = Point( 0, 55 );
   Size requestButtonSize = Size( 560, 40 );
+
+  enum { favourLimiter=20, maxFavourValue=100 };
 }
 
 class RequestButton : public PushButton
@@ -146,7 +148,7 @@ public:
 
   std::string getEmperorFavourStr()
   {
-    return utils::format( 0xff, "##emperor_favour_%02d##", city->favour() * 20 / 100  );
+    return utils::format( 0xff, "##emperor_favour_%02d##", city->favour() * favourLimiter / maxFavourValue  );
   }
 };
 
