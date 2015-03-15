@@ -143,6 +143,7 @@ public:
   void makeFullScreenshot();
   void extendReign( int years );
   void saveScrollSpeed( int speed );
+  void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
@@ -209,6 +210,7 @@ void Level::initialize()
   CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
   CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
   CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
+  CONNECT( androidBar, onChangeZoom(), &_d->renderer, gfx::CityRenderer::changeZoom );
 #endif
 
   //connect elements
@@ -251,9 +253,9 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
+  CONNECT( mmap, onZoomChange(), &_d->renderer, gfx::CityRenderer::changeZoom )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
-
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
