@@ -115,8 +115,7 @@ void Recruter::_centerTile()
         bool priorityOver = _d->isMyPriorityOver( base(), *it );
         if( priorityOver )
         {
-          WorkingBuildingPtr wbld = *it;
-          int removedFromWb = wbld->removeWorkers( _d->needWorkers );
+          int removedFromWb = (*it)->removeWorkers( _d->needWorkers );
           hireWorkers( removedFromWb );
         }
       }
