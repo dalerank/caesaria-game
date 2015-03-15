@@ -41,7 +41,7 @@ public:
     style = (lvl == WindowMessageStack::warning ? Decorator::redPanelSmall
                       : lvl == WindowMessageStack::info ? Decorator::brownPanelSmall : Decorator::greenPanelSmall );
 
-    if( style == WindowMessageStack::warning )
+    if( lvl == WindowMessageStack::warning )
      setColor( DefaultColors::red );
 
     setTextAlignment( align::center, align::center );

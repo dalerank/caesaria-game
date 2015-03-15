@@ -205,7 +205,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    break;
    }
 
-   if( _d->anim.isBack() )
+   if( !oPics.empty() && _d->anim.isBack() )
    {
      std::iter_swap( oPics.begin(), oPics.begin() + 1);
    }

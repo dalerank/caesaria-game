@@ -146,6 +146,9 @@ metric::Unit Options::tradeLimit( Order state, good::Product type) const
   case exporting: ret = metric::Unit::fromValue( it->second.exportLimit );
   default: break;
   }
+
+  return ret;\
+
 }
 
 Order Options::getOrder( good::Product type ) const
@@ -167,6 +170,7 @@ Order Options::switchOrder( good::Product type )
     default: break;
     }
   }
+  else
   {
     switch( getOrder( type ) )
     {

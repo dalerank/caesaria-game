@@ -96,10 +96,10 @@
   lionTamer_low_entairtenment   : "LIONTR_NOFUN1"
   lionTamer_need_workers        : "LIONTR_NEEDJOB1"
   lionTamer_so_hungry           : "LIONTR_STARV1"
-  lionTamer_normal_life
+/*  lionTamer_normal_life
   lionTamer_good_education
   lionTamer_find_ennemy
-
+*/
   marketBuyer_average_life      : "MARKET_GREAT1"
   marketBuyer_gods_angry        : "MARKET_RELIG1"
   marketBuyer_good_life         : "MARKET_GREAT2"

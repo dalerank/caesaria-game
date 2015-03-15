@@ -119,10 +119,11 @@ void Game::Impl::initMovie()
   movie::Config& config = movie::Config::instance();
 
   config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
+  std::string c3videoFile = SETTINGS_VALUE( c3video ).toString();
 
-  if( !SETTINGS_VALUE( c3video ).toString().empty() )
+  if( !c3videoFile.empty() )
   {
-    config.addFolder( SETTINGS_VALUE( c3video ).toString() );
+    config.addFolder( c3videoFile );
   }
 }
 

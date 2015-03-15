@@ -469,7 +469,8 @@ bool FileSystem::unmountArchive( ArchivePtr archive)
   {
     if( archive == *i )
     {
-      return unmountArchive( *i );
+      int index = std::distance( _d->openArchives.begin(), i );
+      return unmountArchive( index );
     }
   }
 
