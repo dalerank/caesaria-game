@@ -47,10 +47,6 @@ namespace infobox
 namespace citizen
 {
 
-namespace {
-static const char* sound_ext = ".ogg";
-}
-
 class CitizenScreenshot : public Label
 {
 public:
@@ -175,7 +171,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    events::GameEventPtr e = events::PlaySound::create( sound + sound_ext, 100 );
+    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
     e->dispatch();
   }
 

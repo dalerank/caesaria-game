@@ -1151,7 +1151,7 @@
 "##send_money##":"Spenden Sie der Stadt diese Summe aus Ihren persönlichen Ersparnissen"
 "##goto##":"Zur"
 "##goto_empire_map##":"Zur Karte des Imperiums gehen"
-"##go2_problem_area##":"Zum Problemgebiet gehen."
+"##disasterBtnTooltip##":"Zum Problemgebiet gehen."
 "##reorient_map_to_north##":"Ansicht nach Norden ausrichten"
 "##egift_persian_carpets##":"Persische Teppiche"
 "##wn_picts##":"Pikten"

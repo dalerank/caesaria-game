@@ -160,7 +160,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ render              ] = "sdl";
   _d->options[ scrollSpeed         ] = 30;
   _d->options[ mmb_moving          ] = false;
-  _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
+  _d->options[ talksArchive        ] = Variant( std::string( ":/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;

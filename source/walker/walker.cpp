@@ -411,7 +411,7 @@ void Walker::attach()
 
 std::string Walker::thoughts(Thought about) const
 {
-  if( thCurrent )
+  if( about == thCurrent )
   {
     if( _d->thinks.empty() )
     {
@@ -421,6 +421,7 @@ std::string Walker::thoughts(Thought about) const
     return _d->thinks;
   }
 
+  Logger::warning( "WARNING : no thougths for walker " + WalkerHelper::getPrettyTypename( type() ) );
   return "";
 }
 

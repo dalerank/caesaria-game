@@ -177,7 +177,7 @@ void Game::Impl::initSound()
   }
 
   Logger::warning( "Game: load talks archive" );
-  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)

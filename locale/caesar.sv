@@ -1050,7 +1050,7 @@
 "##send_money##":"Donera dessa pengar till staden från dina personliga besparingar"
 "##goto##":"Gå till"
 "##goto_empire_map##":"Gå till kartan över imperiet"
-"##go2_problem_area##":"Gå till problemområde."
+"##disasterBtnTooltip##":"Gå till problemområde."
 "##reorient_map_to_north##":"Ändra visningen norrut"
 "##egift_persian_carpets##":"Persiska mattor"
 "##wn_picts##":"Pikter"

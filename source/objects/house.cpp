@@ -1022,7 +1022,7 @@ void House::_update( bool needChangeTexture )
       pic = Picture::getInvalid();
     }
 
-    if( !_city().isValid() && !_city->getOption( PlayerCity::c3gameplay ) )
+    if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
     {
       _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
       pic.addOffset( _d->randomOffset );

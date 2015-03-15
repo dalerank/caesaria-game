@@ -258,7 +258,7 @@ void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
 
   Locale::setLanguage( lang );
   NameGenerator::instance().setLanguage( lang );
-  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
 }
 
 void StartMenu::Impl::handleStartCareer()
