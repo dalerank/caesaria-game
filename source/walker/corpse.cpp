@@ -145,16 +145,16 @@ void Corpse::save( VariantMap& stream ) const
   Walker::save( stream );
 
   stream[ "animation" ] = _animationRef().save();
-  stream[ "time" ] = _d->time;
-  stream[ "loop" ] = _d->loop;
+  VARIANT_SAVE_ANY_D( stream, _d, time )
+  VARIANT_SAVE_ANY_D( stream, _d, loop )
 }
 
 void Corpse::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->time = (int)stream.get( "time" );
-  _d->loop = stream.get( "loop" );
+  VARIANT_LOAD_ANY_D( _d, time, stream )
+  VARIANT_LOAD_ANY_D( _d, loop, stream )
 
   _animationRef().load( stream.get( "animation" ).toMap() );
   if( _animationRef().delay() == 0 )

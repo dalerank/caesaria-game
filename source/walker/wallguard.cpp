@@ -160,9 +160,9 @@ void WallGuard::save(VariantMap& stream) const
   Soldier::save( stream );
 
   stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
-  stream[ "strikeForce" ] = _d->strikeForce;
-  stream[ "resistance" ] = _d->resistance;
-  stream[ "patrolPosition" ] = _d->patrolPosition;
+  VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
+  VARIANT_SAVE_ANY_D( stream, _d, resistance )
+  VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(WallGuard) ) );
 }
 
@@ -170,9 +170,9 @@ void WallGuard::load(const VariantMap& stream)
 {
   Soldier::load( stream );
 
-  _d->strikeForce = stream.get( "strikeForce" );
-  _d->resistance = stream.get( "resistance" );
-  _d->patrolPosition = stream.get( "patrolPosition" );
+  VARIANT_LOAD_ANY_D( _d, strikeForce, stream )
+  VARIANT_LOAD_ANY_D( _d, resistance, stream )
+  VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
   TowerPtr tower = ptr_cast<Tower>( _city()->getOverlay( basePosition ) );

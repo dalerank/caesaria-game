@@ -337,7 +337,7 @@ void MarketBuyer::save( VariantMap& stream ) const
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos );
   stream[ "priorityGood" ] = _d->priorityGood;
-  stream[ "marketPos" ] = _d->market->pos();
+  stream[ "marketPos" ] = _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
 
   stream[ "basket" ] = _d->basket.save();
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance );

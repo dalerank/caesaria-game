@@ -55,7 +55,7 @@ void FishingBoat::save( VariantMap& stream ) const
 {
   Ship::save( stream );
 
-  stream[ "destination" ] = _d->destination;
+  VARIANT_SAVE_ANY_D( stream, _d, destination )
   stream[ "stock" ] = _d->stock.save();
   stream[ "mode" ] = (int)_d->mode;
   stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
@@ -64,7 +64,7 @@ void FishingBoat::save( VariantMap& stream ) const
 void FishingBoat::load( const VariantMap& stream )
 {
   Ship::load( stream );
-  _d->destination = stream.get( "destination" );
+  VARIANT_LOAD_ANY_D( _d, destination, stream )
   _d->stock.load( stream.get( "stock" ).toList() );
   _d->mode = (State)stream.get( "mode", (int)wait ).toInt();
 

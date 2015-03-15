@@ -192,7 +192,7 @@ unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 void Recruter::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
-  stream[ lc_priority ] = _d->priority.toVariantList();
+  stream[ lc_priority ] = _d->priority.toVList();
   VARIANT_SAVE_ANY_D( stream, _d, needWorkers );
 }
 

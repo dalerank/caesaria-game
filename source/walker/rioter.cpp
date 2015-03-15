@@ -261,16 +261,16 @@ void Rioter::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
-  stream[ "houseLevel" ] = _d->houseLevel;
-  stream[ "state" ] = (int)_d->state;
+  VARIANT_SAVE_ANY_D( stream, _d, houseLevel )
+  VARIANT_SAVE_ANY_D( stream, _d, state )
 }
 
 void Rioter::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  _d->houseLevel = stream.get( "houseLevel" );
-  _d->state = (Impl::State)stream.get( "state" ).toInt();
+  VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
+  VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 
 int Rioter::agressive() const { return 1; }

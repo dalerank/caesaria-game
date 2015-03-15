@@ -469,7 +469,7 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   VARIANT_SAVE_ANY_D( stream, _d, action.action )
   VARIANT_SAVE_ANY_D( stream, _d, action.direction )
-  stream[ "location" ] = _d->location->pos();
+  stream[ "location" ] = _d->location ? _d->location->pos() : gfx::tilemap::invalidLocation();
   VARIANT_SAVE_ANY_D( stream, _d, tileSpeedKoeff )
   VARIANT_SAVE_ANY_D( stream, _d, wpos )
   VARIANT_SAVE_ANY_D( stream, _d, nextwpos )
