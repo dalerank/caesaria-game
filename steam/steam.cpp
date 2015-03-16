@@ -139,7 +139,7 @@ void UserStats::unlockAchievement( Achievement &achievement )
 std::string language()
 {
 #ifdef CAESARIA_PLATFORM_WIN
-
+  return "";
 #else
   std::string lang = SteamUtils()->GetSteamUILanguage();
 
