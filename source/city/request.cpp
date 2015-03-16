@@ -89,7 +89,7 @@ bool RqGood::isReady( PlayerCityPtr city ) const
 
   Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
   Unit needCap = Unit::fromValue( _d->stock.capacity() );
-  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), stockCap );
+  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), stockCap.ivalue() );
   if( stockCap >= needCap )
   {
     return true;
