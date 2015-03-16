@@ -26,6 +26,7 @@ namespace world
 class Barbarian : public Army
 {
 public:
+  static const Point startLocation;
   static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1,-1) );
   virtual std::string type() const;
 

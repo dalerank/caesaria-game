@@ -44,7 +44,8 @@ struct Coverage2Point{
   int points;
 } ;
 
-typedef Coverage2Point CoveragePoints[6];
+static const int coverageValueNumber = 6;
+typedef Coverage2Point CoveragePoints[ coverageValueNumber ];
 static const CoveragePoints religionPoints  = { {1.0, 30}, {0.86,22}, {0.71,14}, {0.51, 9}, {0.31, 3}, {0.0, 0} };
 static const CoveragePoints theatresPoints  = { {1.0, 25}, {0.86,18}, {0.71,12}, {0.51, 8}, {0.31, 3}, {0.0, 0} };
 static const CoveragePoints librariesPoints = { {1.0, 20}, {0.86,14}, {0.71,8 }, {0.51, 4}, {0.31, 2}, {0.0, 0} };
@@ -76,7 +77,7 @@ public:
   int convCoverage2Points( const CoveragePoints& covp, double value )
   {
     value = std::min( value, 1.0 );
-    for( int i=0; i < 6; i++ )
+    for( int i=0; i < coverageValueNumber; i++ )
     {
       if( value >= covp[ i ].coverage )
       {

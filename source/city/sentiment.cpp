@@ -27,6 +27,11 @@ using namespace constants;
 namespace city
 {
 
+enum { veryAngry=5, angry=10, veryupset=15, upset=22,
+       annoyed=30, indifferent=40, defaultValue=50,
+       pleased=60, verypleased=70, extrimelypleased=80,
+       loveyou=90, idolizeyou=95 };
+
 struct BuffInfo
 {
 int value;
@@ -85,8 +90,8 @@ std::string Sentiment ::defaultName() { return CAESARIA_STR_EXT(Sentiment);}
 Sentiment::Sentiment( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->value = 50;
-  _d->finishValue = 50;
+  _d->value = defaultValue;
+  _d->finishValue = defaultValue;
   _d->affect = 0;
   _d->buffValue = 0;
 }
@@ -139,7 +144,7 @@ void Sentiment::timeStep(const unsigned int time )
     if( houseNumber > 0 )
       _d->finishValue /= houseNumber;
     else
-      _d->finishValue = 50;
+      _d->finishValue = defaultValue;
   }
 }
 
@@ -150,17 +155,17 @@ std::string Sentiment::reason() const
 {
   std::string ret = "##unknown_sentiment_reason##";
   int v = value();
-  if( v > 95 ) { ret = "##sentiment_people_idolize_you##"; }
-  else if( v > 90 ) { ret = "##sentiment_people_love_you##"; }
-  else if( v > 80 ) { ret = "##sentiment_people_extr_pleased_you##"; }
-  else if( v > 70 ) { ret = "##sentiment_people_verypleased_you##"; }
-  else if( v > 60 ) { ret = "##sentiment_people_pleased_you##"; }
-  else if( v > 40 ) { ret = "##sentiment_people_indiffirent_you##"; }
-  else if( v > 30 ) { ret = "##sentiment_people_annoyed_you##"; }
-  else if( v > 22 ) { ret = "##sentiment_people_upset_you##"; }
-  else if( v > 15 ) { ret = "##sentiment_people_veryupset_you##"; }
-  else if( v > 10 ) { ret = "##sentiment_people_angry_you##"; }
-  else if( v > 5 ) { ret = "##sentiment_people_veryangry_you##"; }
+  if( v > idolizeyou ) { ret = "##sentiment_people_idolize_you##"; }
+  else if( v > loveyou ) { ret = "##sentiment_people_love_you##"; }
+  else if( v > extrimelypleased ) { ret = "##sentiment_people_extr_pleased_you##"; }
+  else if( v > verypleased ) { ret = "##sentiment_people_verypleased_you##"; }
+  else if( v > pleased ) { ret = "##sentiment_people_pleased_you##"; }
+  else if( v > indifferent ) { ret = "##sentiment_people_indiffirent_you##"; }
+  else if( v > annoyed ) { ret = "##sentiment_people_annoyed_you##"; }
+  else if( v > upset ) { ret = "##sentiment_people_upset_you##"; }
+  else if( v > veryupset ) { ret = "##sentiment_people_veryupset_you##"; }
+  else if( v > angry ) { ret = "##sentiment_people_angry_you##"; }
+  else if( v > veryAngry ) { ret = "##sentiment_people_veryangry_you##"; }
   else if( v > 0 ) { ret = "##city_loathed_you##"; }
 
   return _(ret);

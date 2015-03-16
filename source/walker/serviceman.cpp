@@ -31,6 +31,7 @@
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
 #include "core/foreach.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -71,7 +72,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
-  _d->lastHousePos = TilePos( -1, -1 );
+  _d->lastHousePos = gfx::tilemap::invalidLocation();
 
   _init(service);
 }
@@ -397,7 +398,7 @@ void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, reachDistance )
   VARIANT_SAVE_ANY_D( stream, _d, lastHousePos )
@@ -517,7 +518,7 @@ TilePos ServiceWalker::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return base().isValid() ? base()->pos() : TilePos( -1, -1 );
+  case plOrigin: return base().isValid() ? base()->pos() : gfx::tilemap::invalidLocation();
   default: break;
   }
 

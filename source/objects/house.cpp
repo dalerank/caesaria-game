@@ -1021,8 +1021,13 @@ void House::_update( bool needChangeTexture )
       Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
       pic = Picture::getInvalid();
     }
-    _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
-    pic.addOffset( _d->randomOffset );
+
+    if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
+    {
+      _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
+      pic.addOffset( _d->randomOffset );
+    }
+
     setPicture( pic );
   }
 

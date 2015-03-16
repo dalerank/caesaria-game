@@ -19,6 +19,7 @@
 #define __CAESARIA_GAME_CLIMATE_H_INCLUDED__
 
 #include <string>
+#include "core/requirements.hpp"
 
 namespace game
 {
@@ -30,16 +31,16 @@ typedef enum { central=0, northen, desert, count } Type;
 
 inline Type fromString( const std::string& value )
 {
-  if( value == "desert" ) return desert;
-  if( value == "central" ) return central;
-  if( value == "northen" ) return northen;
+  if( value == CAESARIA_STR_A(desert) ) return desert;
+  if( value == CAESARIA_STR_EXT(central) ) return central;
+  if( value == CAESARIA_STR_EXT(northen) ) return northen;
 
   return central;
 }
 
-}
+}//end namespace climate
 
-}
+}//end namespace game
 
 typedef game::climate::Type ClimateType;
 

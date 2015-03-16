@@ -226,7 +226,7 @@ void PlayerArmy::_check4attack()
      foreach( it, cities )
      {
        float distance = location().distanceTo( (*it)->location() );
-       int month2lastAttack = math::clamp<int>( 12 - (*it)->lastAttack().monthsTo( currentDate ), 0, 12 );
+       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - (*it)->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
        citymap[ month2lastAttack * 100 + (int)distance ] = *it;
      }
 

@@ -19,6 +19,7 @@
 #include "core/scopedptr.hpp"
 #include "good/good.hpp"
 #include "core/variant.hpp"
+#include "core/metric.hpp"
 
 namespace city
 {
@@ -34,8 +35,8 @@ public:
   Options();
   ~Options();
 
-  unsigned int tradeLimit( Order state, good::Product type) const;
-  void setTradeLimit( Order state, good::Product type, unsigned int qty);
+  metric::Unit tradeLimit( Order state, good::Product type) const;
+  void setTradeLimit( Order state, good::Product type, metric::Unit qty);
   
   void setStackMode( good::Product type, bool stacking );
   bool isStacking( good::Product type );

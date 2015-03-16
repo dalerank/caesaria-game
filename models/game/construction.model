@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 109 ], delay : 2 }
+    animation : { rc : "security", start : 22, count : 10, offset : [ -1, -1 ], delay : 3 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 
@@ -749,7 +749,7 @@
     productRate : 4.8
     output : "clay"
     class : "rawmaterial"
-    animation : { rc : "commerce", start : 62, count : 10, offset : [ 14, 32 ], delay : 3 }
+    animation : { rc : "commerce", start : 62, count : 10, offset : [ -1, -1 ], delay : 3 }
     sound : [ "claypit", 1 ]
   },
   

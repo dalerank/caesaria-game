@@ -133,15 +133,15 @@ ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePath
   _d->isGZip = isGZip;
 
   if( file.isOpen() )
-	{
+  {
 		// load file entries
     if( _d->isGZip )
-			while (scanGZipHeader()) { }
-		else
-			while (scanZipHeader()) { }
+        while (scanGZipHeader()) { }
+    else
+        while (scanZipHeader()) { }
 
-		sort();
-	}
+    sort();
+  }
 }
 
 ZipArchiveReader::~ZipArchiveReader(){}
@@ -162,12 +162,12 @@ const Entries* ZipArchiveReader::entries() const {	return this; }
 //! but none
 bool ZipArchiveReader::scanGZipHeader()
 {
-	SZipFileEntry entry;
-	entry.Offset = 0;
-	memset(&entry.header, 0, sizeof(SZIPFileHeader));
+  SZipFileEntry entry;
+  entry.Offset = 0;
+  memset(&entry.header, 0, sizeof(SZIPFileHeader));
 
-	// read header
-	SGZIPMemberHeader header;
+  // read header
+  SGZIPMemberHeader header;
     if (File.read(&header, sizeof(SGZIPMemberHeader)) == sizeof(SGZIPMemberHeader))
 	{
 		// check header value
@@ -405,7 +405,7 @@ bool ZipArchiveReader::scanCentralDirectoryHeader()
 //! opens a file by file name
 NFile ZipArchiveReader::createAndOpenFile(const Path& filename)
 {
-	int index = findFile( filename, false );
+  int index = findFile( filename, false );
 
   if (index != -1)
   {

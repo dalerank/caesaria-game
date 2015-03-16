@@ -35,6 +35,8 @@ using namespace scene;
 namespace gamestate
 {
 
+static const int timeScale=10;
+
 void BaseState::_initialize(scene::Base* screen, ScreenType screenType) {
   this->_screen = screen;
   this->_screenType = screenType;
@@ -200,16 +202,16 @@ bool GameLoop::update(gfx::Engine* engine)
   {
     if( !_game->isPaused() )
     {
-      _timeX10 += _timeMultiplier / 10;
+      _timeX10 += _timeMultiplier / timeScale;
     }
     else if ( _manualTicksCounterX10 > 0 )
     {
-      unsigned int add = math::min( _timeMultiplier / 10, _manualTicksCounterX10 );
+      unsigned int add = math::min( _timeMultiplier / timeScale, _manualTicksCounterX10 );
       _timeX10 += add;
       _manualTicksCounterX10 -= add;
     }
 
-    while( _timeX10 > _saveTime * 10 + 1 )
+    while( _timeX10 > _saveTime * timeScale + 1 )
     {
       _saveTime++;
 

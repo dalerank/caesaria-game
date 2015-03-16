@@ -41,9 +41,6 @@ public:
     style = (lvl == WindowMessageStack::warning ? Decorator::redPanelSmall
                       : lvl == WindowMessageStack::info ? Decorator::brownPanelSmall : Decorator::greenPanelSmall );
 
-    if( style == WindowMessageStack::warning )
-     setColor( DefaultColors::red );
-
     setTextAlignment( align::center, align::center );
     new WidgetDeleter( this, 5000 );
   }

@@ -17,10 +17,10 @@
 
 #include "build_options.hpp"
 #include "objects/metadata.hpp"
-#include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
+#include "core/tilepos_array.hpp"
 
 using namespace gfx;
 
@@ -31,6 +31,7 @@ namespace development
 {
 
 static const char* disable_all = "disable_all";
+static const int defaultMemPointsNumber = 10;
 
 struct BuildingRule
 {
@@ -78,10 +79,9 @@ class Options::Impl
 {
 public:
   typedef std::map< object::Type, BuildingRule > BuildingRules;
-  typedef std::vector< TilePos > MemPoints;
 
   BuildingRules rules;
-  MemPoints memPoints;
+  TilePosArray memPoints;
 
   bool checkDesirability;
   unsigned int maximumForts;
@@ -91,7 +91,7 @@ Options::Options() : _d( new Impl )
 {
   _d->checkDesirability = true;
   _d->maximumForts = 999;
-  _d->memPoints.resize( 10 );
+  _d->memPoints.resize( defaultMemPointsNumber );
 }
 
 Options::~Options() {}
@@ -224,13 +224,9 @@ void Options::load(const VariantMap& options)
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
-  VariantList points = options.get("points").toList();
-  unsigned int index=0;
-  foreach( it, points )
-  {
-    setMemPoint( index, it->toTilePos() );
-    index++;
-  }
+  VariantList vl_points = options.get("points").toList();
+  _d->memPoints.fromVList( vl_points );
+  _d->memPoints.resize( defaultMemPointsNumber );
 
   _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
   _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
@@ -247,18 +243,12 @@ VariantMap Options::save() const
     quotes[ typeName ] = it->second.quotes;
   }
 
-  VariantList points;
-  foreach( it, _d->memPoints )
-  {
-    points.push_back( *it );
-  }
-
   VariantMap ret;
   ret[ "buildings" ] = blds;
   ret[ "quotes" ] = quotes;
   ret[ "maximumForts" ] = _d->maximumForts;
   ret[ "check_desirability" ] = _d->checkDesirability;
-  ret[ "points" ] = points;
+  ret[ "points" ] = _d->memPoints.toVList();
   return ret;
 }
 

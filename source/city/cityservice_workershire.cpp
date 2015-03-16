@@ -231,7 +231,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ lc_priorities ] = _d->priorities.toVariantList();
+  ret[ lc_priorities ] = _d->priorities.toVList();
 
   return ret;
 }

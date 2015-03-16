@@ -30,6 +30,8 @@ namespace world {
 
 namespace {
 const int maxSoldiers = 200;
+const Point defaultLocation = Point( 870, 545 );
+const int defaultPopulation = 45000;
 }
 
 const char* Rome::defaultName = "Rome";
@@ -50,7 +52,7 @@ Rome::Rome(EmpirePtr empire)
   //pic.setOffset( 0, 30 );
   setPicture( pic );
 
-  setLocation( Point( 870, 545 ) );
+  setLocation( defaultLocation );
   _d->strength = maxSoldiers;
 }
 
@@ -58,20 +60,16 @@ unsigned int Rome::tradeType() const { return 0; }
 city::Funds& Rome::funds() { return _d->funds; }
 
 std::string Rome::name() const { return Rome::defaultName; }
-unsigned int Rome::population() const { return 45000; }
+unsigned int Rome::population() const { return defaultPopulation; }
 bool Rome::isPaysTaxes() const { return true; }
-
-unsigned int Rome::age() const
-{
-  return 500;
-}
+unsigned int Rome::age() const { return 500; }
 
 void Rome::timeStep(const unsigned int time)
 {
   City::timeStep( time );
 }
 
-SmartPtr<Player> Rome::player() const { return 0; }
+SmartPtr<Player> Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const good::Store& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}
@@ -108,7 +106,7 @@ void Rome::addObject(ObjectPtr obj)
     {
       _d->lastAttack = game::Date::current();
     }
-    }
+  }
 }
 
 Nation Rome::nation() const { return world::rome; }

@@ -40,7 +40,7 @@ public:
     return *this;
   }
 
-  VariantList toVariantList() const
+  VariantList toVList() const
   {
     VariantList vl;
     foreach( i, *this ) { vl.push_back( Variant( *i ) ); }

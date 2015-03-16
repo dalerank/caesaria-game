@@ -31,8 +31,11 @@
 #include "events/showrequestwindow.hpp"
 #include "world/goodcaravan.hpp"
 #include "good/store.hpp"
+#include "core/metric.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+
+using namespace  metric;
 
 namespace  city
 {
@@ -68,7 +71,8 @@ void RqGood::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
-    good::Stock stock( _d->stock.type(), _d->stock.capacity() * 100 );
+    Unit stockCap = Unit::fromValue( _d->stock.capacity() );
+    good::Stock stock( _d->stock.type(), stockCap.toQty() );
     events::GameEventPtr e = events::RemoveGoods::create( stock.type(), stock.capacity() );
     e->dispatch();
     success( city );
@@ -83,8 +87,10 @@ bool RqGood::isReady( PlayerCityPtr city ) const
 {
   city::statistic::GoodsMap gm = city::statistic::getGoodsMap( city, false );
 
-  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), gm[ _d->stock.type() ] / 100 );
-  if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
+  Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
+  Unit needCap = Unit::fromValue( _d->stock.capacity() );
+  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), stockCap );
+  if( stockCap >= needCap )
   {
     return true;
   }
@@ -202,7 +208,7 @@ void RqGood::update()
 {
   Request::update();
 
-  if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > 12) )
+  if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear ) )
   {
     _d->alsoRemind = true;
 

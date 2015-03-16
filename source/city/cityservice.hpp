@@ -33,6 +33,7 @@ public:
 
   std::string name() const;
   void setName( const std::string& name  );
+  void attach();
 
   virtual bool isDeleted() const;
   
@@ -42,7 +43,6 @@ public:
   virtual void load(const VariantMap& stream);
 
   virtual ~Srvc();
-
 protected:
   Srvc( PlayerCityPtr city, const std::string& name );
   PlayerCityPtr _city() const;

@@ -41,6 +41,7 @@
 #include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -155,7 +156,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
   {
   case stFindWarehouseForSelling:
     {
-      destBuildingPos = TilePos( -1, -1 );  // no destination yet
+      destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -198,7 +199,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stFindWarehouseForBuying:
     {
-      destBuildingPos = TilePos( -1, -1 );  // no destination yet
+      destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -252,7 +253,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
             continue;
           }
           int needQty = buy.freeQty( *goodType );
-          int exportLimit = options.tradeLimit( trade::exporting, *goodType ) * 100;
+          int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
           int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
@@ -339,7 +340,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           continue;
         }
 
-        int importLimit = options.tradeLimit( trade::importing, *goodType ) * 100;
+        int importLimit = options.tradeLimit( trade::importing, *goodType ).toQty();
         if( importLimit == 0 )
         {
           importLimit = 9999;

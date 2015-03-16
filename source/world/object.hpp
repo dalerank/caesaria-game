@@ -29,6 +29,7 @@ namespace world
 class Object : public ReferenceCounted
 {
 public:
+  enum { idxPicture=0, idxAnimation=1 };
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;

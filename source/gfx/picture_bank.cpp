@@ -106,14 +106,14 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   // decode the picture name => to set the offset manually
   Point pic_info = PictureInfoBank::instance().getOffset( rcname );
 
-  if( pic_info == Point( -1, -1 ) )
+  if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::tileOffset ) )
   {
     // this is a tiled picture=> automatic offset correction
     int cw = gfx::tilemap::cellSize().width() * 2;
     int ch = gfx::tilemap::cellSize().width() / 2;
     offset.setY( pic.height()-ch*( (pic.width()+2)/cw ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
   }
-  else if( pic_info == Point( -2, -2 ) )
+  else if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::walkerOffset ) )
   {
      // this is a walker picture=> automatic offset correction
      offset = Point( -pic.width()/2, int(pic.height()*3./4.) );

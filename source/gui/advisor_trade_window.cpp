@@ -178,7 +178,7 @@ void Trade::Impl::updateGoodsInfo()
     }
 
     bool workState = getWorkState( *gtype );
-    int tradeQty = copt.tradeLimit( trade::exporting, *gtype );
+    int tradeQty = copt.tradeLimit( trade::exporting, *gtype ).ivalue();
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             *gtype, allgoods[ *gtype ], workState, tradeState, tradeQty );

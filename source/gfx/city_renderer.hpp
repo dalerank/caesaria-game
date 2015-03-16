@@ -56,6 +56,7 @@ public:
   SmartPtr<citylayer::Layer> currentLayer() const;
   SmartPtr<citylayer::Layer> getLayer(int type) const;
   void setLayer( int layertype );
+  void changeZoom( int delta );
   int  layerType() const;
 
   TilePos screen2tilepos(const Point &point ) const;

@@ -54,9 +54,11 @@ unsigned int getTaxPayersPercent( PlayerCityPtr city );
 unsigned int getHealth( PlayerCityPtr city );
 unsigned int blackHouses( PlayerCityPtr city );
 int months2lastAttack( PlayerCityPtr city );
+int taxValue( unsigned int population, int koeff);
 int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
+HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::Type checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
 GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
@@ -65,13 +67,16 @@ int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Type type );
+template< class T > SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which );
 template< class T > SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current );
 template< class T > SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current );
+template< class T > SmartPtr< T > finds( PlayerCityPtr r );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Group group );
 template<class T> bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove );
 template< class T > SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
                                           TilePos start, TilePos stop=TilePos(-1, -1) );
 HouseList findh( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
+FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
 gfx::TilesArray tiles( PlayerCityPtr r, const TilePos& start, const TilePos& stop=TilePos(-1,-1));
 
 template< class T >
@@ -154,6 +159,23 @@ SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
 }
 
 template< class T >
+SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which )
+{
+  OverlayList ret;
+  SmartList<T> ovs = r->overlays();
+
+  foreach( it, ovs )
+  {
+    if( which.count( (*it)->type ) > 0 )
+    {
+      ret << *it;
+    }
+  }
+
+  return ret;
+}
+
+template< class T >
 SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current )
 {
   if( r.isNull() || current.isNull() )
@@ -194,6 +216,13 @@ SmartPtr<T> prewo( PlayerCityPtr r, SmartPtr<T> current)
   }
 
   return SmartPtr<T>();
+}
+
+template<class T>
+SmartPtr<T> finds( PlayerCityPtr r)
+{
+  SrvcPtr ret = r->findService( T::defaultName() );
+  return ptr_cast<T>( ret );
 }
 
 template< class T >

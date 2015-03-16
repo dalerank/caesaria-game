@@ -35,6 +35,7 @@ public signals:
   Signal0<>& onEscapeClicked();
   Signal0<>& onEnterClicked();
   Signal0<>& onRequestMenu();
+  Signal1<int>& onChangeZoom();
 
 private:
   class Impl;

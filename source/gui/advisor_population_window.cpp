@@ -419,7 +419,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       _values.clear();
       _maxValue = 5;
       std::map< unsigned int, unsigned int> levelPopulations;
-      for( int k=0; k < HouseLevel::count; k++ )
+      for( int k=0; k < HouseLevel::maxLevel; k++ )
       {
         levelPopulations[ k ] = 0;
       }
@@ -442,7 +442,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       }
 
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
-      _maxXValue = HouseLevel::count;
+      _maxXValue = HouseLevel::maxLevel;
       emit onMaxYChange( _maxValue );
       emit onMaxXChange( _maxXValue );
     }

@@ -126,9 +126,9 @@ VariantMap RandomAnimals::save() const
 {
   VariantMap ret;
 
-  VARIANT_SAVE_ANY_D( ret, _d, count );
-  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals );
-  ret[ "animalType" ] = (int)_d->animalType;
+  VARIANT_SAVE_ANY_D( ret, _d, count )
+  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals )
+  VARIANT_SAVE_ENUM_D( ret, _d, animalType )
   return ret;
 }
 

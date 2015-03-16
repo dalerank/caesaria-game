@@ -27,6 +27,8 @@
 namespace world
 {
 
+enum { defaultEmperorFavor=50 };
+
 class Emperor
 {
 public:

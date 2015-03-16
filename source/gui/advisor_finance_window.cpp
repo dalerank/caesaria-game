@@ -67,6 +67,11 @@ public:
   int calculateTaxValue();
 };
 
+enum { rowDonation=2, rowDebt=3, rowImports=4, rowWages=5,
+       rowConstructions=6, rowCredit=7, rowSalary=8,
+       rowSundries=9, rowEmpireTax=10, rowExpensive=11,
+       rowProfit=12, rowBalance=13 };
+
 Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
 : Window( parent, Rect( 0, 0, 640, 420 ), "", id ), _d( new Impl )
 {
@@ -87,26 +92,26 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
   if( lbRegPayers ) lbRegPayers->setText( strRegPaeyrs );
 
   Point sp = startPoint;
-  _drawReportRow( sp, _("##taxes##"), city::Funds::taxIncome );
-  _drawReportRow( sp + offset, _("##trade##"), city::Funds::exportGoods );
-  _drawReportRow( sp + offset * 2, _("##donations##"), city::Funds::donation );
-  _drawReportRow( sp + offset * 3, _("##debet##"), city::Funds::debet );
+  _drawReportRow( sp, _("##taxes##"), Funds::taxIncome );
+  _drawReportRow( sp + offset, _("##trade##"), Funds::exportGoods );
+  _drawReportRow( sp + offset * rowDonation, _("##donations##"), Funds::donation );
+  _drawReportRow( sp + offset * rowDebt, _("##debet##"), Funds::debet );
   
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * 4, _("##import_fn##"), city::Funds::importGoods );
-  _drawReportRow( sp + offset * 5, _("##wages##"), city::Funds::workersWages );
-  _drawReportRow( sp + offset * 6, _("##buildings##"), city::Funds::buildConstruction );
-  _drawReportRow( sp + offset * 7, _("##percents##"), city::Funds::creditPercents );
-  _drawReportRow( sp + offset * 8, _("##pn_salary##"), city::Funds::playerSalary );
-  _drawReportRow( sp + offset * 9, _("##other##"), city::Funds::sundries );
-  _drawReportRow( sp + offset * 10, _("##empire_tax##"), city::Funds::empireTax );
-  _drawReportRow( sp + offset * 11, _("##credit##"), city::Funds::credit );
+  _drawReportRow( sp + offset * rowImports, _("##import_fn##"), Funds::importGoods );
+  _drawReportRow( sp + offset * rowWages, _("##wages##"), Funds::workersWages );
+  _drawReportRow( sp + offset * rowConstructions, _("##buildings##"), Funds::buildConstruction );
+  _drawReportRow( sp + offset * rowCredit, _("##percents##"), Funds::creditPercents );
+  _drawReportRow( sp + offset * rowSalary, _("##pn_salary##"), Funds::playerSalary );
+  _drawReportRow( sp + offset * rowSundries, _("##other##"), Funds::sundries );
+  _drawReportRow( sp + offset * rowEmpireTax, _("##empire_tax##"), Funds::empireTax );
+  _drawReportRow( sp + offset * rowExpensive, _("##credit##"), Funds::credit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * 12, _("##profit##"), city::Funds::cityProfit );
+  _drawReportRow( sp + offset * rowProfit, _("##profit##"), Funds::cityProfit );
   
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * 13, _("##balance##"), city::Funds::balance );
+  _drawReportRow( sp + offset * rowBalance, _("##balance##"), Funds::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
@@ -124,16 +129,16 @@ void Finance::draw(gfx::Engine& painter )
 
   Window::draw( painter );
 
-  Rect p( startPoint + absoluteRect().lefttop() + offset * 3 + Point( 200, 0 ), Size( 72, 1) );
+  Rect p( startPoint + absoluteRect().lefttop() + offset * rowDebt + Point( 200, 0 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 
-  p = Rect( startPoint + absoluteRect().lefttop() + offset * 3 + Point( 340, 0 ), Size( 72, 1) );
+  p = Rect( startPoint + absoluteRect().lefttop() + offset * rowDebt + Point( 340, 0 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 
-  p = Rect( startPoint + absoluteRect().lefttop() + offset * 11 + Point( 200, 10 ), Size( 72, 1) );
+  p = Rect( startPoint + absoluteRect().lefttop() + offset * rowExpensive + Point( 200, 10 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 
-  p =  Rect( startPoint + absoluteRect().lefttop() + offset * 11 + Point( 340, 10 ), Size( 72, 1) );
+  p =  Rect( startPoint + absoluteRect().lefttop() + offset * rowExpensive + Point( 340, 10 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 }
 
@@ -153,10 +158,10 @@ void Finance::_drawReportRow(const Point& pos, const std::string& title, int typ
   Label* lb = new Label( this, Rect( pos, size), title );
   lb->setFont( font );
 
-  lb = new Label( this, Rect( pos + Point( 215, 0), size), utils::format( 0xff, "%d", lyvalue ) );
+  lb = new Label( this, Rect( pos + Point( 215, 0), size), utils::i2str( lyvalue ) );
   lb->setFont( font );
 
-  lb = new Label( this, Rect( pos + Point( 355, 0), size), utils::format( 0xff, "%d", tyvalue ) );
+  lb = new Label( this, Rect( pos + Point( 355, 0), size), utils::i2str( tyvalue ) );
   lb->setFont( font );
 }
 

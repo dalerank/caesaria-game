@@ -61,13 +61,13 @@ Patrician::~Patrician()
 void Patrician::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destination" ] = _d->destination;
+  VARIANT_SAVE_ANY_D( stream, _d, destination )
 }
 
 void Patrician::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->destination = stream.get( "destination" ).toTilePos();
+  VARIANT_LOAD_ANY_D( _d, destination, stream )
 }
 
 void Patrician::_findNewWay( const TilePos& start )

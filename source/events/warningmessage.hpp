@@ -26,6 +26,7 @@ namespace events
 class WarningMessage : public GameEvent
 {
 public:
+  enum { positive=0, neitral=1, negtive=2 };
   static GameEventPtr create( const std::string& text, int level );
 
 protected:

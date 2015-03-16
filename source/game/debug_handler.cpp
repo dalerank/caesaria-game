@@ -98,6 +98,8 @@ enum {
   reload_aqueducts,
   crash_favor,
   add_scribe_messages,
+  send_venus_smallcurse,
+  send_mars_spirit,
   run_script
 };
 
@@ -139,7 +141,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "request", test_request )
 
   ADD_DEBUG_EVENT( "religion", send_mars_wrath )
+  ADD_DEBUG_EVENT( "religion", send_mars_spirit )
   ADD_DEBUG_EVENT( "religion", send_venus_wrath )
+  ADD_DEBUG_EVENT( "religion", send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( "money", add_1000_dn )
   ADD_DEBUG_EVENT( "money", add_player_money )
@@ -378,6 +382,14 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_venus_wrath:
     religion::rome::Pantheon::venus()->updateRelation( -101.f, game->city() );
+  break;
+
+  case send_venus_smallcurse:
+    religion::rome::Pantheon::venus()->updateRelation( -102.f, game->city() );
+  break;
+
+  case send_mars_spirit:
+    religion::rome::Pantheon::mars()->updateRelation( -103.f, game->city() );
   break;
 
   case all_sound_off:

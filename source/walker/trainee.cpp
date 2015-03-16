@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 #include "objects/building.hpp"
+#include "gfx/helper.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -215,8 +216,8 @@ void TraineeWalker::_reachedPathway()
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "originBldPos" ] = _d->base.isValid() ? _d->base->pos() : TilePos(-1, -1);
-  stream[ "destBldPos" ] = _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1);
+  stream[ "originBldPos" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  stream[ "destBldPos" ] = _d->destination.isValid() ? _d->destination->pos() : gfx::tilemap::invalidLocation();
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   stream[ "traineeType" ] = type();
@@ -240,8 +241,8 @@ TilePos TraineeWalker::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
-  case plDestination: return _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  case plDestination: return _d->destination.isValid() ? _d->destination->pos() : gfx::tilemap::invalidLocation();
   default: break;
   }
 

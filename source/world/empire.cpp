@@ -36,10 +36,21 @@
 #include "game/gamedate.hpp"
 #include "city/funds.hpp"
 #include "barbarian.hpp"
+#include "city/statistic.hpp"
 #include "events/changeemperor.hpp"
 
 namespace world
 {
+
+static const int defaultRomeSalary=30;
+static const int defaultInterestPercent=10;
+static const int defaultBarbarianOnMap=1;
+static const int minRomeSalary=10;
+static const int maxRomeSalary=50;
+static const int minimumCityTax=50;
+static const int minimumCityAge4tax=2;
+static const int defaultCityTaxKoeff=100;
+static const int cityTaxLimiter=4;
 
 class Empire::Impl
 {
@@ -69,12 +80,12 @@ public:
 Empire::Empire() : _d( new Impl )
 {
   _d->trading.init( this );
-  _d->workerSalary = 30;
+  _d->workerSalary = defaultRomeSalary;
   _d->enabled = true;
   _d->treasury = 0;
   _d->objUid = 0;
-  _d->rateInterest = 10;
-  _d->maxBarbariansGroups = 1;
+  _d->rateInterest = defaultInterestPercent;
+  _d->maxBarbariansGroups = defaultBarbarianOnMap;
   _d->emperor.init( *this );
 }
 
@@ -100,7 +111,7 @@ void Empire::_initializeObjects( vfs::Path filename )
   VariantMap objects = config::load( filename.toString() );
   if( objects.empty() )
   {
-    Logger::warning( "Empire: can't load objects model from %s", filename.toString().c_str() );
+    Logger::warning( "Empire: can't load objects model from " + filename.toString() );
     return;
   }
   _loadObjects( objects );
@@ -113,7 +124,7 @@ void Empire::_initializeCities( vfs::Path filename )
   _d->cities.clear();
   if( cities.empty() )
   {
-    Logger::warning( "Empire: can't load cities model from %s", filename.toString().c_str() );
+    Logger::warning( "Empire: can't load cities model from " + filename.toString() );
     return;
   }
 
@@ -174,7 +185,7 @@ CityPtr Empire::addCity( CityPtr city )
   if( ret.isValid() )
   {
     Logger::warning( "Empire: city %s already exist", city->name().c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "City already exist" );
+    //_CAESARIA_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
 
@@ -281,8 +292,7 @@ void Empire::setCitiesAvailable(bool value)
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
-void Empire::setWorkerSalary(unsigned int value){ _d->workerSalary = math::clamp<unsigned int>( value, 10, 50); }
-
+void Empire::setWorkerSalary(unsigned int value){ _d->workerSalary = math::clamp<unsigned int>( value, minRomeSalary, maxRomeSalary ); }
 bool Empire::isAvailable() const{  return _d->enabled; }
 void Empire::setAvailable(bool value) { _d->enabled = value; }
 
@@ -317,7 +327,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   CityPtr startCity = findCity( start );
   CityPtr stopCity = findCity( stop );
 
-  if( startCity != 0 && stopCity != 0 )
+  if( startCity.isValid() && stopCity.isValid() )
   {
     TraderoutePtr route = _d->trading.createRoute( start, stop );
     EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
@@ -500,7 +510,7 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 
 float EmpireHelper::governorSalaryKoeff(CityPtr city)
 {
-  PlayerPtr pl = city->player();
+  PlayerPtr pl = city->mayor();
 
   float result = 1.f;
   if( pl.isValid() )
@@ -551,7 +561,7 @@ void Empire::Impl::checkLoans()
     int loanValue = city->funds().treasury();
     if( loanValue < 0 )
     {
-      int loanPercent = std::max( 1, abs( loanValue / ( rateInterest * 12 ) ));
+      int loanPercent = std::max( 1, abs( loanValue / ( rateInterest * DateTime::monthsInYear ) ));
 
       if( loanPercent > 0 )
       {
@@ -576,7 +586,7 @@ void Empire::Impl::checkBarbarians( EmpirePtr empire )
 
   if( barbarians.size() < maxBarbariansGroups )
   {
-    BarbarianPtr brb = Barbarian::create( empire, Point( 1500, 100 ) );
+    BarbarianPtr brb = Barbarian::create( empire, Barbarian::startLocation );
     empire->addObject( ptr_cast<Object>( brb ) );
   }
 }
@@ -603,14 +613,14 @@ void Empire::Impl::takeTaxes()
 
     int empireTax = 0;
 
-    if( is_kind_of<Rome>( city ) || city->age() < 2 )
+    if( is_kind_of<Rome>( city ) || city->age() < minimumCityAge4tax )
     {
       continue;
     }
 
     if( is_kind_of<ComputerCity>( city ) )
     {
-      empireTax = (city->population() / 1000) * 100;
+      empireTax = city::statistic::taxValue( city->population(), defaultCityTaxKoeff );
       treasury += empireTax;
       continue;
     }
@@ -619,12 +629,12 @@ void Empire::Impl::takeTaxes()
 
     if( profit <= 0 )
     {
-      empireTax = (city->population() / 1000) * 100;
+      empireTax = city::statistic::taxValue( city->population(), defaultCityTaxKoeff );
     }
     else
     {
-      int minimumExpireTax = (city->population() / 1000) * 100 + 50;
-      empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
+      int minimumExpireTax = city::statistic::taxValue( city->population(), defaultCityTaxKoeff ) + minimumCityTax;
+      empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
     }
 
     city::Funds& funds = city->funds();

@@ -35,8 +35,8 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
 
 struct SrvcInfo
 {
@@ -54,6 +54,17 @@ static SrvcInfo services[] = {
                                {object::library, "##libraries##", "##peoples##", Service::library, 800, CitizenGroup::mature},
                                {object::unknown, "", "", Service::srvCount, 0, CitizenGroup::longliver }
                              };
+
+enum { maxDescriptionNumber = 10, badAccessValue=30, middleCoverage=75,
+       awesomeAccessValue=100, awesomeCoverage=100, fantasticCoverage=150 };
+
+const char* coverageDescriptions[ maxDescriptionNumber ] = {
+                                                             "##edu_poor##", "##edu_very_bad##",
+                                                             "##edu_bad##", "##edu_not_bad##",
+                                                             "##edu_simple##", "##edu_above_simple##",
+                                                             "##edu_good##", "##edu_very_good##",
+                                                             "##edu_pretty##", "##edu_awesome##"
+                                                           };
 
 namespace gui
 {
@@ -110,16 +121,14 @@ public:
     std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building) );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = utils::format( 0xff, "%d", _info.buildingWork );
+    std::string buildingWorkT = utils::i2str( _info.buildingWork );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, _(info.people) );
     rfont.draw( *texture, peoplesStrT, 255, 0 );
 
-    const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
-                                  "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
     const char* coverageStr = _info.coverage > 0
-                                  ? coverages[ math::clamp( _info.coverage / 10, 0, 9 ) ]
+                                  ? coverageDescriptions[ math::clamp( _info.coverage / maxDescriptionNumber, 0, maxDescriptionNumber-1 ) ]
                                   : "##non_cvrg##";
     rfont.draw( *texture, _( coverageStr ), 440, 0 );
   }
@@ -145,11 +154,11 @@ public:
 };
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 256 ), "", id ),
+: Base( parent, city, id ),
   __INIT_IMPL(Education)
 {
   setupUI( ":/gui/educationadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
+  setHeight( 256 );
   
   __D_IMPL(_d,Education)
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
@@ -178,7 +187,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
     sumStudents += (*house)->habitants().student_n();
   }
 
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+                                                  city->population(), _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
@@ -213,7 +223,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = city::statistic::findo<ServiceBuilding>( city, bType );
+  ServiceBuildingList servBuildings = statistic::findo<ServiceBuilding>( city, bType );
 
   ret.buildingCount = servBuildings.size();
   SrvcInfo info = findInfo( bType );
@@ -232,8 +242,8 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
     }
   }
 
-  HouseList houses = city::statistic::findo<House>( city, object::house );
-  int minAccessLevel = 100;
+  HouseList houses = statistic::findh( city );
+  int minAccessLevel = awesomeAccessValue;
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -241,13 +251,13 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
     if( habitantsCount > 0 )
     {
       ret.need += ( house->habitants().count( info.age ) * ( house->isEducationNeed( info.service ) ? 1 : 0 ) );
-      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, info.service ) == 100 ? 1 : 0);
+      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, info.service ) == awesomeAccessValue ? 1 : 0);
       minAccessLevel = std::min<int>( house->getServiceValue( info.service ), minAccessLevel );
     }
   }
 
   ret.coverage = ret.need == 0
-                    ? 100
+                    ? awesomeAccessValue
                     : math::percentage( ret.peoplesStuding, ret.need );
   return ret;
 }
@@ -267,25 +277,25 @@ std::string Education::Impl::getTrouble(PlayerCityPtr city)
   if( lbrInfo.nextLevel > 0 ) { advices << "##have_no_access_to_library##"; }
 
 
-  if( schInfo.minAccessLevel < 30 || clgInfo.minAccessLevel < 30 )
+  if( schInfo.minAccessLevel < badAccessValue || clgInfo.minAccessLevel < badAccessValue )
   {
     advices << "##edadv_need_better_access_school_or_colege##";
   }
 
-  if( schInfo.coverage < 75 && clgInfo.coverage < 75 && lbrInfo.coverage < 75 )
+  if( schInfo.coverage < middleCoverage && clgInfo.coverage < middleCoverage && lbrInfo.coverage < middleCoverage )
   {
     advices << "##need_more_access_to_lbr_school_colege##";
   }
 
-  if( schInfo.coverage < 75 ) { advices << "##need_more_school_colege##"; }
-  else if( schInfo.coverage >= 100 && schInfo.coverage < 150 ) { advices << "##school_access_perfectly##"; }
+  if( schInfo.coverage < middleCoverage ) { advices << "##need_more_school_colege##"; }
+  else if( schInfo.coverage >= awesomeCoverage && schInfo.coverage < fantasticCoverage ) { advices << "##school_access_perfectly##"; }
 
-  if( clgInfo.coverage >= 100 && clgInfo.coverage < 150 ) { advices << "##colege_access_perfectly##"; }
+  if( clgInfo.coverage >= awesomeCoverage && clgInfo.coverage < fantasticCoverage ) { advices << "##colege_access_perfectly##"; }
 
-  if( lbrInfo.coverage < 75 ) { advices << "##need_more_access_to_library##"; }
-  else if( lbrInfo.coverage > 100 && lbrInfo.coverage < 150 ) { advices << "##library_access_perfectrly##"; }
+  if( lbrInfo.coverage < middleCoverage ) { advices << "##need_more_access_to_library##"; }
+  else if( lbrInfo.coverage > awesomeCoverage && lbrInfo.coverage < fantasticCoverage ) { advices << "##library_access_perfectrly##"; }
 
-  if( lbrInfo.minAccessLevel < 30 ) { advices << "##some_houses_need_better_library_access##"; }
+  if( lbrInfo.minAccessLevel < badAccessValue ) { advices << "##some_houses_need_better_library_access##"; }
   if( lbrInfo.nextLevel > 0 && clgInfo.nextLevel > 0 )
   {
     advices << "##some_houses_need_library_or_colege_access##";

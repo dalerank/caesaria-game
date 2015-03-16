@@ -37,6 +37,7 @@
 #include "city/trade_options.hpp"
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
+#include "gfx/helper.hpp"
 #include "gfx/cart_animation.hpp"
 
 using namespace constants;
@@ -65,8 +66,8 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 {
   _setType( walker::supplier );
 
-  _d->storageBuildingPos = TilePos( -1, -1 );
-  _d->baseBuildingPos = TilePos( -1, -1 );
+  _d->storageBuildingPos = gfx::tilemap::invalidLocation();
+  _d->baseBuildingPos = gfx::tilemap::invalidLocation();
   _d->maxDistance = defaultDeliverDistance;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -224,13 +225,13 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type 
   }
   else
   {
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
   }
 }
 
 void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Product type, const int qty )
 {
-  _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
+  _d->storageBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
   if( _city()->tradeOptions().isStacking( type ) )
     return;
@@ -312,11 +313,11 @@ void CartSupplier::save( VariantMap& stream ) const
   Walker::save( stream );
 
   stream[ "stock" ] = _d->stock.save();
-  stream[ "storagePos" ] = _d->storageBuildingPos;
-  stream[ "basrPos" ] = _d->baseBuildingPos;
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "rcvReservationID" ] = (int)_d->rcvReservationID;
-  stream[ "reservationID" ] = (int)_d->reservationID;
+  VARIANT_SAVE_ANY_D( stream, _d, storageBuildingPos )
+  VARIANT_SAVE_ANY_D( stream, _d, baseBuildingPos )
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
+  VARIANT_SAVE_ENUM_D( stream, _d, rcvReservationID )
+  VARIANT_SAVE_ENUM_D( stream, _d, reservationID )
 }
 
 void CartSupplier::load( const VariantMap& stream )
@@ -324,11 +325,11 @@ void CartSupplier::load( const VariantMap& stream )
   Walker::load( stream );
 
   _d->stock.load( stream.get( "stock" ).toList() );
-  _d->storageBuildingPos = stream.get( "storagePos" ).toTilePos();
-  _d->baseBuildingPos = stream.get( "basrPos" ).toTilePos();
-  _d->maxDistance = stream.get( "maxDistance" );
-  _d->rcvReservationID = (int)stream.get( "rcvReservationID" );
-  _d->reservationID = (int)stream.get( "reservationID" );
+  VARIANT_LOAD_ANY_D( _d, storageBuildingPos, stream )
+  VARIANT_LOAD_ANY_D( _d, baseBuildingPos, stream )
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
+  VARIANT_LOAD_ENUM_D( _d, rcvReservationID, stream )
+  VARIANT_LOAD_ENUM_D( _d, reservationID, stream )
 }
 
 bool CartSupplier::die()

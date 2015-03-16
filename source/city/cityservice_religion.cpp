@@ -38,6 +38,12 @@ using namespace religion;
 
 namespace {
 CAESARIA_LITERALCONST(lastMessageDate)
+enum {
+       wrathfullRelation=10,
+       brokenGodPenalty=25,
+       negativeRelation=30,
+       minimumRelation4wrath=40,
+       admiredGodAward=50};
 }
 
 namespace city
@@ -141,7 +147,7 @@ void Religion::timeStep( const unsigned int time )
       //if we have award god with most temples number
       if( dl.size() == 1 )
       {
-        dl.front()->setEffectPoint( 50 );
+        dl.front()->setEffectPoint( admiredGodAward );
       }
 
       if( templesByGod.size() > 1 )
@@ -150,7 +156,7 @@ void Religion::timeStep( const unsigned int time )
         //if we have penalty god with less temples number, then set him -25 points
         if( ml.size() == 1 )
         {
-          ml.front()->setEffectPoint( -25 );
+          ml.front()->setEffectPoint( -brokenGodPenalty );
         }
       }
     }
@@ -183,7 +189,7 @@ void Religion::timeStep( const unsigned int time )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );
       }
-      else if( god->relation() < 40 )
+      else if( god->relation() < minimumRelation4wrath )
       {
         godsUnhappy[ god->relation() ].push_back( god );
       }
@@ -240,17 +246,17 @@ void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
   unsigned int faithValue = 0;
   if( city->population() > 0 )
   {
-    faithValue = math::clamp( 100 * myTemples.parishionerNumber / city->population(), 0u, 100u );
+    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->population() ), 0u, 100u );
   }
 
   Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
   divn->updateRelation( faithValue, city );
 
-  if( divn->relation() < 30 && lastMessageDate.monthsTo( game::Date::current() ) > 6 )
+  if( divn->relation() < negativeRelation && lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2 )
   {
     lastMessageDate = game::Date::current();
-    std::string text = divn->relation() < 10 ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
-    std::string title = divn->relation() < 10 ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
+    std::string text = divn->relation() < wrathfullRelation ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
+    std::string title = divn->relation() < wrathfullRelation ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
 
     events::GameEventPtr e = events::ShowInfobox::create( _(title), _(text),
                                                           events::ShowInfobox::send2scribe );

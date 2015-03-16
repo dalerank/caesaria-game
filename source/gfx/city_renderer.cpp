@@ -64,6 +64,8 @@ using namespace citylayer;
 namespace gfx
 {
 
+enum { minZoom=30, maxZoom=300 };
+
 class CityRenderer::Impl
 {
 public: 
@@ -253,9 +255,7 @@ void CityRenderer::handleEvent( NEvent& event )
       {
         int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
 
-        int lastZoom = _d->zoom;
-        _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10 * zoomInvert, 30, 300 );
-        _d->zoomChanged = (lastZoom != _d->zoom);
+        changeZoom( event.mouse.wheel * 10 * zoomInvert );
       }
     }
   }
@@ -312,6 +312,13 @@ void CityRenderer::setLayer(int layertype)
     layertype = citylayer::simple;
 
   _d->setLayer( layertype );
+}
+
+void CityRenderer::changeZoom(int delta)
+{
+  int lastZoom = _d->zoom;
+  _d->zoom = math::clamp<int>( _d->zoom + delta, minZoom, maxZoom );
+  _d->zoomChanged = (lastZoom != _d->zoom);
 }
 
 LayerPtr CityRenderer::getLayer(int type) const

@@ -78,17 +78,17 @@ void DesirabilityUpdater::destroy( PlayerCityPtr city ){ _d->update( city, false
 
 void DesirabilityUpdater::load(const VariantMap& stream)
 {
-  _d->endTime = stream.get( "endTime" ).toDateTime();
-  _d->value = stream.get( "value" );
-  _d->alsoInfluence = stream.get( "alsoInfluence", false );
+  VARIANT_LOAD_TIME_D( _d, endTime, stream )
+  VARIANT_LOAD_ANY_D( _d, value, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, alsoInfluence, false, stream )
 }
 
 VariantMap DesirabilityUpdater::save() const
 {
   VariantMap ret;
-  ret[ "endTime" ] = _d->endTime;
-  ret[ "value" ] = _d->value;
-  ret[ "alsoInfluence" ] = _d->alsoInfluence;
+  VARIANT_SAVE_ANY_D( ret, _d, endTime )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  VARIANT_SAVE_ANY_D( ret, _d, alsoInfluence )
 
   return ret;
 }

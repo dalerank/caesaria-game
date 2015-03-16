@@ -89,15 +89,15 @@ bool ContaminatedWater::isDeleted() const {  return _d->isDeleted; }
 void ContaminatedWater::load(const VariantMap& stream)
 {
   GameEvent::load( stream );
-  _d->value = stream.get( "value", 10 ).toInt();
-  _d->endDate = stream.get( "endDate", DateTime( -999, 0, 0 ) ).toDateTime();
+  VARIANT_LOAD_ANYDEF_D( _d, value, 10, stream )
+  VARIANT_LOAD_TIME_D( _d, endDate, stream )
 }
 
 VariantMap ContaminatedWater::save() const
 {
   VariantMap ret = GameEvent::save();
-  ret[ "value" ] = _d->value;
-  ret[ "endDate" ] = _d->endDate;
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  VARIANT_SAVE_ANY_D( ret, _d, endDate )
 
   return ret;
 }

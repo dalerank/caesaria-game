@@ -48,7 +48,7 @@ public:
                    overduePayment, overdueEmpireTax,
                    balance, caesarsHelp,
                    issueTypeCount };
-  enum { thisYear=0, lastYear=1, twoYearAgo=2 };
+  enum { thisYear=0, lastYear=1, twoYearAgo=2, defaultTaxPrcnt=7 };
 
   typedef std::map< city::Funds::IssueType, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;

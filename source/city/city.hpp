@@ -34,8 +34,8 @@ namespace city
 class Funds;
 class VictoryConditions;
 
-  namespace trade { class Options; }
-  namespace development { class Options; }
+namespace trade { class Options; }
+namespace development { class Options; }
 }
 
 struct BorderInfo
@@ -53,7 +53,7 @@ public:
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay } OptionType;
 
-  static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
+  static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
 
   virtual void timeStep(unsigned int time);  // performs one simulation step
@@ -80,7 +80,7 @@ public:
   virtual DateTime lastAttack() const;
   virtual world::Nation nation() const;
 
-  PlayerPtr player() const;
+  PlayerPtr mayor() const;
   
   void setCameraPos(const TilePos pos);
   TilePos cameraPos() const;

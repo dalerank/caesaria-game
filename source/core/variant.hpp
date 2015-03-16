@@ -53,8 +53,10 @@ class VariantMap;
 #define VARIANT_LOAD_ENUM_D(d,param,vm) d->param = (__typeof__(d->param))vm.get( #param ).toInt();
 
 #define VARIANT_LOAD_STR_D(d,param,vm) d->param = vm.get( #param ).toString();
+#define VARIANT_LOAD_STRDEF_D(d,param,def,vm) d->param = vm.get( #param, Variant(def) ).toString();
 #define VARIANT_LOAD_TIME_D(d,param,vm) d->param = vm.get( #param ).toDateTime();
 #define VARIANT_LOAD_VMAP( param, vm ) param = vm.get( #param ).toMap();
+#define VARIANT_LOAD_VMAP_D(d,param, vm ) _d->param = vm.get( #param ).toMap();
 
 template <typename T>
 inline Variant createVariant2FromValue(const T &);
@@ -308,7 +310,7 @@ public:
   }
 
   template<class T>
-  VariantList( std::vector<T> array )
+  VariantList( const std::vector<T>& array )
   {
     //typename std::vector<T>::iterator it = array.begin();
     foreach( it, array )

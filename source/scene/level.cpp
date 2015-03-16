@@ -88,10 +88,12 @@
 
 using namespace gui;
 using namespace constants;
+using namespace events;
 using namespace gfx;
 
 namespace scene
 {
+const int topMenuHeight = 23;
 
 class Level::Impl
 {
@@ -141,6 +143,7 @@ public:
   void makeFullScreenshot();
   void extendReign( int years );
   void saveScrollSpeed( int speed );
+  void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
@@ -165,7 +168,6 @@ void Level::initialize()
   _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
-  const int topMenuHeight = 23;
   Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
@@ -189,7 +191,7 @@ void Level::initialize()
   _d->extMenu->setPosition( Point( engine.virtualSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
-  Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
+  Minimap* mmap = new Minimap( _d->extMenu, Rect( Point( 8, 35), Size( 144, 110 ) ),
                                city,
                                *_d->renderer.camera() );
 
@@ -208,6 +210,7 @@ void Level::initialize()
   CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
   CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
   CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
+  CONNECT( androidBar, onChangeZoom(), &_d->renderer, gfx::CityRenderer::changeZoom );
 #endif
 
   //connect elements
@@ -250,9 +253,9 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
+  CONNECT( mmap, onZoomChange(), &_d->renderer, gfx::CityRenderer::changeZoom )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
-
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
@@ -276,13 +279,13 @@ std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
-  events::GameEventPtr e = events::SaveGame::create();
+  GameEventPtr e = SaveGame::create();
   e->dispatch();
 }
 
 void Level::Impl::setVideoOptions()
 {
-  events::GameEventPtr event = events::SetVideoSettings::create();
+  GameEventPtr event = SetVideoSettings::create();
   event->dispatch();
 }
 
@@ -308,7 +311,7 @@ void Level::Impl::showCityOptionsDialog()
 
 void Level::Impl::resolveWarningMessage(std::string text)
 {
-  events::GameEventPtr e = events::WarningMessage::create( text, 1 );
+  GameEventPtr e = WarningMessage::create( text, WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -325,7 +328,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  events::GameEventPtr e = events::SetSoundOptions::create();
+  GameEventPtr e = SetSoundOptions::create();
   e->dispatch();
 }
 
@@ -334,7 +337,7 @@ void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() )
 void Level::Impl::showTileHelp()
 {
   const Tile& tile = game->city()->tilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
-  events::GameEventPtr e = events::ShowTileInfo::create( tile.pos() );
+  GameEventPtr e = ShowTileInfo::create( tile.pos() );
   e->dispatch();
 }
 
@@ -428,7 +431,7 @@ void Level::Impl::handleDirectionChange(Direction direction)
 {
   direction::Helper dHelper;
 
-  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ), 1 );
+  GameEventPtr e = WarningMessage::create( _("##" + dHelper.findName( direction ) + "##"), 1 );
   e->dispatch();
 }
 
@@ -523,9 +526,9 @@ void Level::_resolveSwitchMap()
 
 void Level::Impl::showEmpireMapWindow()
 {
-  events::GameEventPtr e;
-  if( game->empire()->isAvailable() ) { e = events::ShowEmpireMap::create( true ); }
-  else {  e = events::WarningMessage::create( "##not_available##", 1 ); }
+  GameEventPtr e;
+  if( game->empire()->isAvailable() ) { e = ShowEmpireMap::create( true ); }
+  else {  e = WarningMessage::create( "##not_available##", 1 ); }
 
   if( e.isValid() ) e->dispatch();
 }
@@ -602,7 +605,7 @@ void Level::Impl::makeScreenShot()
   Logger::warning( "Level: create screenshot %s", filename.c_str() );
 
   Engine::instance().createScreenshot( filename );
-  events::GameEventPtr e = events::WarningMessage::create( "Screenshot save to " + filename, 1 );
+  GameEventPtr e = WarningMessage::create( "Screenshot save to " + filename, 1 );
   e->dispatch();
 }
 
@@ -672,7 +675,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success )
   {
-    events::GameEventPtr e = events::MissionWin::create();
+    GameEventPtr e = MissionWin::create();
     e->dispatch();
   }
 }
@@ -748,7 +751,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_EQUALS:
     case KEY_ADD:
     {
-      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+      GameEventPtr e = ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
       e->dispatch();
       handled = true;
@@ -757,7 +760,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
     case KEY_KEY_P:
     {
-      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
+      GameEventPtr e = Pause::create( Pause::toggle );
       e->dispatch();
       handled = true;
     }
@@ -766,7 +769,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      GameEventPtr e = Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
       e->dispatch();
       handled = true;
     }
@@ -849,7 +852,7 @@ void Level::Impl::showMissionTaretsWindow()
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
+  GameEventPtr e = ShowAdvisorWindow::create( true, advType );
   e->dispatch();
 }
 

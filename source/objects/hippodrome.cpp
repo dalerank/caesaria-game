@@ -20,6 +20,7 @@
 #include "constants.hpp"
 #include "gfx/picture.hpp"
 #include "city/statistic.hpp"
+#include "core/logger.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
@@ -323,7 +324,8 @@ void Hippodrome::_init( bool onBuild )
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
+    Logger::warning( "Hippodrome: Unknown direction" );
+    //_CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
   }
 }
 

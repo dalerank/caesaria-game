@@ -31,6 +31,7 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "animals.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -59,7 +60,7 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
 {
   setName( NameGenerator::rand( NameGenerator::male ) );
 
-  _d->patrolPosition = TilePos( -1, -1 );
+  _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
@@ -404,7 +405,7 @@ void RomeSoldier::_brokePathway(TilePos p)
 {
   Soldier::_brokePathway( p );
 
-  if( _d->patrolPosition.i() >= 0 )
+  if( gfx::tilemap::isValidLocation( _d->patrolPosition ) )
   {
     Pathway way = PathwayHelper::create( pos(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );

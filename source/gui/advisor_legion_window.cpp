@@ -90,7 +90,7 @@ public:
     {
       fontW.draw( *pic, _( _fort->legionName() ), 70, 4 );
 
-      std::string qtyStr = utils::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
+      std::string qtyStr = utils::i2str( _fort->soldiers().size() ) +  _("##soldiers##");
       fontB.draw( *pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;

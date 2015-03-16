@@ -48,7 +48,7 @@ public:
 VictoryConditions::VictoryConditions() : _d( new Impl )
 {
   _d->success = false;
-  _d->maxHouseLevel = 30;
+  _d->maxHouseLevel = HouseLevel::maxLevel;
   _d->population = 0;
   _d->culture = 0;
   _d->prosperity = 0;
@@ -84,7 +84,7 @@ bool VictoryConditions::mayContinue() const { return _d->may_continue; }
 void VictoryConditions::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::instance().getLevel( stream.get( "maxHouseLevel" ).toString() );
-  if( _d->maxHouseLevel == 0 )
+  if( _d->maxHouseLevel == HouseLevel::vacantLot )
     _d->maxHouseLevel = HouseLevel::greatPalace;
 
   VARIANT_LOAD_ANY_D( _d, success, stream )

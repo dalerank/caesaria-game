@@ -30,6 +30,7 @@
 #include "corpse.hpp"
 #include "core/foreach.hpp"
 #include "helper.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -114,8 +115,7 @@ void Recruter::_centerTile()
         bool priorityOver = _d->isMyPriorityOver( base(), *it );
         if( priorityOver )
         {
-          WorkingBuildingPtr wbld = *it;
-          int removedFromWb = wbld->removeWorkers( _d->needWorkers );
+          int removedFromWb = (*it)->removeWorkers( _d->needWorkers );
           hireWorkers( removedFromWb );
         }
       }
@@ -179,7 +179,7 @@ TilePos Recruter::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return base().isValid() ? base()->pos() : TilePos( -1, -1 );
+  case plOrigin: return base().isValid() ? base()->pos() : gfx::tilemap::invalidLocation();
   default: break;
   }
 
@@ -191,7 +191,7 @@ unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 void Recruter::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
-  stream[ lc_priority ] = _d->priority.toVariantList();
+  stream[ lc_priority ] = _d->priority.toVList();
   VARIANT_SAVE_ANY_D( stream, _d, needWorkers );
 }
 
