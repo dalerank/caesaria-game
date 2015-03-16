@@ -438,6 +438,13 @@ int taxValue(unsigned int population, int koeff)
   return population / 1000 * koeff;
 }
 
+HouseList getEvolveHouseReadyBy(PlayerCityPtr r, const object::Type checkType )
+{
+  object::TypeSet checkTypes;
+  checkTypes.insert( checkType );
+  return getEvolveHouseReadyBy( r, checkTypes );
+}
+
 }//end namespace statistic
 
 }//end namespace city

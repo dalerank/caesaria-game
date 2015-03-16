@@ -35,8 +35,8 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
 
 struct SrvcInfo
 {
@@ -56,7 +56,8 @@ static SrvcInfo services[] = {
                              };
 
 enum { maxDescriptionNumber = 10, badAccessValue=30, middleCoverage=75,
-      awesomeAccessValue=100, awesomeCoverage=100, fantasticCoverage=150 };
+       awesomeAccessValue=100, awesomeCoverage=100, fantasticCoverage=150 };
+
 const char* coverageDescriptions[ maxDescriptionNumber ] = {
                                                              "##edu_poor##", "##edu_very_bad##",
                                                              "##edu_bad##", "##edu_not_bad##",
@@ -120,7 +121,7 @@ public:
     std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building) );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = utils::format( 0xff, "%d", _info.buildingWork );
+    std::string buildingWorkT = utils::i2str( _info.buildingWork );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, _(info.people) );
@@ -153,11 +154,11 @@ public:
 };
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 256 ), "", id ),
+: Base( parent, city, id ),
   __INIT_IMPL(Education)
 {
   setupUI( ":/gui/educationadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
+  setHeight( 256 );
   
   __D_IMPL(_d,Education)
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
@@ -186,7 +187,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
     sumStudents += (*house)->habitants().student_n();
   }
 
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+                                                  city->population(), _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
@@ -221,7 +223,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = city::statistic::findo<ServiceBuilding>( city, bType );
+  ServiceBuildingList servBuildings = statistic::findo<ServiceBuilding>( city, bType );
 
   ret.buildingCount = servBuildings.size();
   SrvcInfo info = findInfo( bType );
@@ -240,7 +242,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
     }
   }
 
-  HouseList houses = city::statistic::findo<House>( city, object::house );
+  HouseList houses = statistic::findh( city );
   int minAccessLevel = awesomeAccessValue;
   foreach( it, houses )
   {

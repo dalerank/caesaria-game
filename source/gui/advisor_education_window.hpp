@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -29,7 +29,7 @@ namespace gui
 namespace advisorwnd
 {
 
-class Education : public Window
+class Education : public Base
 {
 public:
   Education( PlayerCityPtr city, Widget* parent, int id );

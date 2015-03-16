@@ -39,7 +39,7 @@
 #include "objects/hippodrome.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
+using namespace city;
 using namespace gfx;
 
 struct EntertInfo
@@ -62,6 +62,8 @@ enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
        maxFestivalDelay=32,
        badCoverage=50, normalCoverage=80, maxCoverage=100,
        maxServiceValue=100 };
+
+enum { ofNumberInCity=0, ofWorkInCity=165, ofHaveShow=245, ofHowmuchServed=305 };
 
 namespace gui
 {
@@ -114,10 +116,10 @@ public:
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    rfont.draw( *texture, utils::i2str( _info.buildingCount ) + _( info.building ), 0, 0 );
-    rfont.draw( *texture, utils::i2str( _info.buildingWork ), 165, 0 );
-    rfont.draw( *texture, utils::i2str( _info.buildingShow ), 245, 0 );
-    rfont.draw( *texture, utils::i2str( _info.peoplesServed ) + _(info.people), 305, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingCount ) + _( info.building ), ofNumberInCity, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
+    rfont.draw( *texture, utils::i2str( _info.peoplesServed ) + _(info.people), ofHowmuchServed, 0 );
   }
 
 private:
@@ -140,7 +142,7 @@ public:
   Label* lbInfoAboutLastFestival;
   TexturedButton* btnHelp;
   Label* lbMonthFromLastFestival;
-  city::FestivalPtr srvc;
+  FestivalPtr srvc;
   int monthFromLastFestival;
 
   InfrastructureInfo getInfo(const object::Type service );
@@ -150,10 +152,10 @@ public:
 
 
 Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
+: Base( parent, city, id ), _d( new Impl )
 {
   _d->city = city;
-  _d->srvc << city->findService( city::Festival::defaultName() );
+  _d->srvc = statistic::finds<Festival>( city );
 
   if( _d->srvc.isNull() )
   {
@@ -162,9 +164,6 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   }
 
   setupUI( ":/gui/entertainmentadv.gui" );
-
-  setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
-
   _d->monthFromLastFestival = _d->srvc->lastFestivalDate().monthsTo( game::Date::current() );
 
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
@@ -219,7 +218,7 @@ InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
   ret.buildingCount = 0;
   ret.partlyWork = 0;
 
-  EntertainmentBuildingList servBuildings = city::statistic::findo<EntertainmentBuilding>( city, service );
+  EntertainmentBuildingList servBuildings = statistic::findo<EntertainmentBuilding>( city, service );
   foreach( b, servBuildings )
   {
     if( (*b)->numberWorkers() > 0 )
@@ -263,7 +262,7 @@ void Entertainment::Impl::updateInfo()
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = city::statistic::findh( city );
+  HouseList houses = statistic::findh( city );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -331,10 +330,10 @@ void Entertainment::Impl::updateInfo()
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
-  HippodromeList hippodromes = city::statistic::findo<Hippodrome>( city, object::hippodrome );
+  HippodromeList hippodromes = statistic::findo<Hippodrome>( city, object::hippodrome );
   foreach( h, hippodromes )
   {
-    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
+    if( (*h)->evaluateTrainee( constants::walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
   }
 
   if( nextLevelMin > 0 )  { troubles << "##entertainment_need_for_upgrade##";  }

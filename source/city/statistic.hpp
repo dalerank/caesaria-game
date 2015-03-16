@@ -58,6 +58,7 @@ int taxValue( unsigned int population, int koeff);
 int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
+HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::Type checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
 GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
@@ -69,6 +70,7 @@ template< class T > SmartList< T > findo( PlayerCityPtr r, object::Type type );
 template< class T > SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which );
 template< class T > SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current );
 template< class T > SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current );
+template< class T > SmartPtr< T > finds( PlayerCityPtr r );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Group group );
 template<class T> bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove );
 template< class T > SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
@@ -214,6 +216,13 @@ SmartPtr<T> prewo( PlayerCityPtr r, SmartPtr<T> current)
   }
 
   return SmartPtr<T>();
+}
+
+template<class T>
+SmartPtr<T> finds( PlayerCityPtr r)
+{
+  SrvcPtr ret = r->findService( T::defaultName() );
+  return ptr_cast<T>( ret );
 }
 
 template< class T >

@@ -29,10 +29,10 @@ class PushButton;
 namespace advisorwnd
 {
 
-class AWindow : public Window
+class Parlor : public Window
 {
 public:
-  static AWindow* create(Widget* parent, int id, const Advisor type, PlayerCityPtr city  );
+  static Parlor* create(Widget* parent, int id, const Advisor type, PlayerCityPtr city  );
 
   // draw on screen
   virtual void draw( gfx::Engine& engine );
@@ -44,7 +44,7 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  AWindow( Widget* parent, int id );
+  Parlor( Widget* parent, int id );
   PushButton* addButton(Advisor adv, const int picId, std::string="" );
 };
 

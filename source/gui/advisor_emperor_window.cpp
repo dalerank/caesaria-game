@@ -239,14 +239,13 @@ void Emperor::_showHelp()
 }
 
 Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
+: Base( parent, city, id ), _d( new Impl )
 {
   _d->autoPause.activate();
   _d->city = city;
   _d->isRequestsUpdated = true;
 
   Widget::setupUI( ":/gui/emperoropts.gui" );
-  setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
 

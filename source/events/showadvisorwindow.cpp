@@ -22,9 +22,10 @@
 #include "core/variant_map.hpp"
 #include "objects/senate.hpp"
 #include "core/logger.hpp"
+#include "gui/widget_helper.hpp"
 #include "factory.hpp"
 
-using namespace constants;
+using namespace gui::advisorwnd;
 
 namespace events
 {
@@ -60,7 +61,8 @@ void ShowAdvisorWindow::load(const VariantMap &stream)
 
 bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::unknown )
+ShowAdvisorWindow::ShowAdvisorWindow()
+  : _show( false ), _advisor( advisor::unknown )
 {
 }
 
@@ -69,7 +71,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   bool advEnabled = game.city()->getOption( PlayerCity::adviserEnabled ) > 0;
   if( !advEnabled )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##not_available##", 1 );
+    GameEventPtr e = WarningMessage::create( "##not_available##", 1 );
     e->dispatch();
     return;
   }
@@ -77,30 +79,30 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   SenateList senates = city::statistic::findo<Senate>( game.city(), object::senate );
   if( senates.empty() )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##", 1 );
+    GameEventPtr e = WarningMessage::create( "##build_senate_for_advisors##", 1 );
     e->dispatch();
     return;
   }
 
-  List<gui::advisorwnd::AWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::advisorwnd::AWindow*>();
+  Parlor* parlor = gui::findChildA<Parlor*>( true, game.gui()->rootWidget() );
 
   if( _show )
   {
-    if( !wndList.empty() )
+    if( parlor )
     {
-      wndList.front()->bringToFront();
-      wndList.front()->showAdvisor( _advisor );
+      parlor->bringToFront();
+      parlor->showAdvisor( _advisor );
     }
     else
     {
-      gui::advisorwnd::AWindow::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
+      Parlor::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
     }
   }
   else
   {
-    if( !wndList.empty() )
+    if( parlor )
     {
-      wndList.front()->deleteLater();
+      parlor->deleteLater();
     }
   }
 }

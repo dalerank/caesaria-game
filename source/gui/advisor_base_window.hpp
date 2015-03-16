@@ -13,14 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
-#define __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_ADVISORBASEWINDOW_H_INCLUDED__
+#define __CAESARIA_ADVISORBASEWINDOW_H_INCLUDED__
 
-#include "advisor_base_window.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
+#include "window.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui
@@ -29,20 +27,24 @@ namespace gui
 namespace advisorwnd
 {
 
-class Chief : public Base
+static const int defaultWidth = 640;
+static const int defaultHeight = 484;
+
+class Base : public Window
 {
 public:
-  Chief( PlayerCityPtr city, Widget* parent, int id );
+  Base( Widget* parent, PlayerCityPtr city, int id=-1 )
+    : Window( parent, Rect( 0, 0, 1, 1 ), "", id )
+  {
+    _city = city;
+    setPosition( Point( (parent->width() - defaultWidth ), (parent->height() - defaultHeight) )/2 );
+  }
 
-  virtual void draw( gfx::Engine& painter );
-
-private:
-  void _showHelp();
-
-  __DECLARE_IMPL(Chief)
+protected:
+  PlayerCityPtr _city;
 };
 
-}//end namesapce advisorwnd
+}
 
 }//end namespace gui
-#endif //__CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_ADVISORBASEWINDOW_H_INCLUDED__
