@@ -74,7 +74,7 @@ void DesirabilityUpdater::timeStep( const unsigned int time )
 std::string DesirabilityUpdater::defaultName() { return "desirability_updater"; }
 bool DesirabilityUpdater::isDeleted() const {  return _d->isDeleted; }
 
-void DesirabilityUpdater::destroy( PlayerCityPtr city ){ _d->update( city, false ); }
+void DesirabilityUpdater::destroy(){ _d->update( _city(), false ); }
 
 void DesirabilityUpdater::load(const VariantMap& stream)
 {

@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ -1, -1 ], delay : 3 }
+    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 120 ], delay : 3 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 
