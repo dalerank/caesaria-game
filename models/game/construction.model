@@ -749,7 +749,7 @@
     productRate : 4.8
     output : "clay"
     class : "rawmaterial"
-    animation : { rc : "commerce", start : 62, count : 10, offset : [ -1, -1 ], delay : 3 }
+    animation : { rc : "commerce", start : 62, count : 10, offset : [ 0, 60 ], delay : 3 }
     sound : [ "claypit", 1 ]
   },
   
