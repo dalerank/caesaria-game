@@ -25,7 +25,7 @@
 extern "C"
 {
 #ifndef CAESARIA_PLATFORM_ANDROID
- int	usleep(useconds_t useconds);
+ int	usleep(suseconds_t useconds);
 #endif
  
 #ifdef NANO_SECOND_SLEEP
