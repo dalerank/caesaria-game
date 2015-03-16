@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "neptune.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
@@ -53,19 +53,27 @@ void Neptune::_doWrath(PlayerCityPtr city)
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
                                                             _("##wrath_of_neptune_description##"),
                                                             events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Neptune.smk");
+                                                            "god_neptune");
   event->dispatch();
 
   ShipList boats;
   boats << city->walkers();
 
-  int destroyBoats = math::random( boats.size() );
-  for( int i=0; i < destroyBoats; i++ )
+  if( boats.size() > 5 )
   {
-    ShipList::iterator it = boats.begin();
-    std::advance( it, math::random( boats.size() ) );
-    (*it)->deleteLater();
-    boats.erase( it );
+    int destroyBoats =  math::random( boats.size() );
+    for( int i=0; i < destroyBoats; i++ )
+    {
+      ShipPtr ship = boats.random();
+      ship->die();
+    }
+  }
+  else
+  {
+    foreach( ship, boats )
+    {
+      (*ship)->die();
+    }
   }
 }
 
@@ -88,17 +96,14 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 
 void Neptune::_doBlessing(PlayerCityPtr city)
 {
-  city::Helper helper( city );
-  FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
+  FishingBoatList boats = city::statistic::findw<FishingBoat>( city, walker::fishingBoat, TilePos(-1, -1));
 
   FishingBoatPtr boat = boats.random();
   foreach( it, boats )
   {
     if( (*it)->fishQty() < boat->fishQty() )
-      boat = *it;
+      (*it)->addFish( boat->fishMax() - boat->fishQty() );
   }
-
-  boat->addFish( boat->fishMax() - boat->fishQty() );
 }
 
 }//end namespace rome

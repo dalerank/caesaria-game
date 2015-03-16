@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_RIVER_H_INCLUDE__
 #define __CAESARIA_RIVER_H_INCLUDE__
 
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
-class River : public gfx::TileOverlay
+class River : public Overlay
 {
 public:
   River();
@@ -29,7 +29,7 @@ public:
   void updatePicture();
   RiverList neighbors() const;
 
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;

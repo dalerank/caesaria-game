@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "objects/house.hpp"
 #include "walker/soldier.hpp"
+#include "core/stacktrace.hpp"
 #include "warehouse.hpp"
 
 void ConstructionExtension::save(VariantMap &stream) const
@@ -61,7 +62,12 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   ConstructionExtensionPtr ret( updater );
   ret->drop();
 
-  factory->addExtension( ret );
+  if( factory.isValid() ) { factory->addExtension( ret );  }
+  else
+  {
+    crashhandler::print();
+    Logger::warning( "WARNING!!! Factory not initialized" );
+  }
 
   return ret;
 }
@@ -262,7 +268,7 @@ ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr cons
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;
-  buff->_options[ "param" ] = paramName.toInt();
+  buff->_options[ "param" ] = paramName;
   buff->_finishDate = game::Date::current();
   buff->_finishDate.appendWeek( week2finish );
 

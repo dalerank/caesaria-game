@@ -41,6 +41,7 @@ public:
   int needPeace() const;
   const DateTime& finishDate() const;
   std::string shortDesc() const;
+  std::string missionTitle() const;
   std::string nextMission() const;
   std::string newTitle() const;
   std::string winText() const;

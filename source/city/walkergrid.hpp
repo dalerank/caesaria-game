@@ -34,8 +34,9 @@ public:
   void resize(Size size );
   const Size& size() const;
   void remove( WalkerPtr a );
+  void sort();
 
-  const WalkerList& at(const TilePos &pos );
+  const WalkerList& at(const TilePos &pos);
 
 private:
   unsigned int _offset(const TilePos &pos);

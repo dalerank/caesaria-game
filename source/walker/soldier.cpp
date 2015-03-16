@@ -25,8 +25,6 @@ using namespace constants;
 using namespace gfx;
 
 CAESARIA_LITERALCONST(sldAction)
-CAESARIA_LITERALCONST(strikeForce)
-CAESARIA_LITERALCONST(resistance)
 CAESARIA_LITERALCONST(attackDistance)
 
 class Soldier::Impl
@@ -117,8 +115,8 @@ void Soldier::save(VariantMap& stream) const
   Walker::save( stream );
   __D_IMPL_CONST(d,Soldier);
   stream[ lc_sldAction ] = (int)d->action;
-  stream[ lc_strikeForce  ] = d->strikeForce;
-  stream[ lc_resistance ] = d->resistance;
+  VARIANT_SAVE_ANY_D( stream, d,strikeForce )
+  VARIANT_SAVE_ANY_D( stream, d, resistance )
   stream[ lc_attackDistance ] = (int)d->attackDistance;
   VARIANT_SAVE_ANY_D( stream, d, morale )
 }
@@ -128,8 +126,8 @@ void Soldier::load(const VariantMap& stream)
   Walker::load( stream );
   __D_IMPL(d,Soldier)
   d->action = (Soldier::SldrAction)stream.get( lc_sldAction ).toInt();
-  d->strikeForce = stream.get( lc_strikeForce );
-  d->resistance = stream.get( lc_resistance );
+  VARIANT_LOAD_ANY_D( d, strikeForce, stream )
+  VARIANT_LOAD_ANY_D( d, resistance, stream )
   d->attackDistance = stream.get( lc_attackDistance ).toUInt();
   VARIANT_LOAD_ANY_D( d, morale, stream )
 }

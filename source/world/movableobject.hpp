@@ -20,7 +20,7 @@
 
 #include "predefinitions.hpp"
 #include "object.hpp"
-#include "core/variant.hpp"
+#include "core/position_array.hpp"
 
 namespace world
 {
@@ -40,6 +40,7 @@ public:
 class MovableObject : public Object
 {
 public:
+  enum { defaultSpeed=1, defaultViewDistance=40 };
   virtual ~MovableObject();
 
   virtual void save( VariantMap& stream ) const;

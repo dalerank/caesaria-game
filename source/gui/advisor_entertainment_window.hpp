@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_ENTERTAINMENT_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_ENTERTAINMENT_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
@@ -28,7 +28,7 @@ namespace gui
 namespace advisorwnd
 {
 
-class Entertainment : public Window
+class Entertainment : public Base
 {
 public:
   Entertainment( PlayerCityPtr city, Widget* parent, int id );

@@ -20,20 +20,20 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "house.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::well, Well)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::well, Well)
 
 namespace {
 const unsigned int wellServiceRange = 2;
 }
 
-Well::Well() : ServiceBuilding( Service::well, objects::well, Size(1) )
+Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
 {
   setWorkers( 0 );
 }
@@ -71,11 +71,11 @@ void Well::deliverService()
   }
 }
 
-bool Well::isNeedRoadAccess() const {  return false; }
+bool Well::isNeedRoad() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
-bool Well::build( const CityAreaInfo& info )
+bool Well::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
@@ -95,7 +95,6 @@ TilesArray Well::coverageArea() const
   TilesArray ret;
 
   TilePos offset( wellServiceRange, wellServiceRange );
-  city::Helper helper( _city() );
-  ret = helper.getArea( pos() - offset, pos() + offset );
+  ret = city::statistic::tiles( _city(), pos() - offset, pos() + offset );
   return ret;
 }

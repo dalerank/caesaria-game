@@ -43,7 +43,7 @@ public:
 };
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const TileOverlay::Type type,
+                                             const object::Type type,
                                              Size size )
   : ServiceBuilding(service, type, size), _d( new Impl )
 {
@@ -92,8 +92,9 @@ void EntertainmentBuilding::deliverService()
   }
 }
 
-int EntertainmentBuilding::visitorsNumber() const{  return 0;}
-unsigned int EntertainmentBuilding::walkerDistance() const {  return 35; }
+int EntertainmentBuilding::currentVisitors() const{  return 0;}
+int EntertainmentBuilding::maxVisitors() const { return 0; }
+unsigned int EntertainmentBuilding::walkerDistance() const { return 35; }
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {

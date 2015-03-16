@@ -18,7 +18,7 @@
 #include "helper.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "animation_bank.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
@@ -26,7 +26,7 @@
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -39,6 +39,7 @@ static int y_tileBase = x_tileBase / 2;
 static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );
 static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
+static TilePos tileInvalidLocation( -1, -1 );
 
 void initTileBase(int width)
 {
@@ -63,6 +64,9 @@ Direction getDirection(const TilePos& b, const TilePos& e)
 
   return directions[ angle ];
 }
+
+const TilePos& invalidLocation() { return tileInvalidLocation; }
+bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
 
 }
 
@@ -175,7 +179,7 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
   return imgid;
 }
 
-int turnCoastTile(int imgid, constants::Direction newDirection )
+int turnCoastTile(int imgid, Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
   imgid -= 372;
@@ -269,8 +273,8 @@ void fixPlateauFlags(Tile& tile)
   {
     tile.setFlag( Tile::clearAll, true );
     Picture pic = imgid::toPicture( tile.originalImgId() );
-    int size = (pic.width() + 2) / 60;
-    bool flat = pic.height() <= 30 * size;
+    int size = (pic.width() + 2) / tilemap::x_tileBase;
+    bool flat = pic.height() <= tilemap::y_tileBase * size;
     tile.setFlag( Tile::tlRock, !flat );
   }
 }

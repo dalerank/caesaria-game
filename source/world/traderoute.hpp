@@ -25,6 +25,7 @@
 #include "core/position.hpp"
 #include "good/good.hpp"
 #include "gfx/picturesarray.hpp"
+#include "core/position_array.hpp"
 
 namespace world
 {

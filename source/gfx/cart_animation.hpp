@@ -31,8 +31,8 @@ public:
   CartAnimation();
   virtual ~CartAnimation();
 
-  void load(const good::Stock& stock, constants::Direction direction);
-  void load(int animIndex, constants::Direction direction );
+  void load(const good::Stock& stock, Direction direction);
+  void load(int animIndex, Direction direction );
   bool isBack() const;
 
 private:

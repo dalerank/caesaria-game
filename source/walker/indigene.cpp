@@ -17,7 +17,8 @@
 
 #include "indigene.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects/native.hpp"
 #include "walkers_factory.hpp"
 
@@ -63,10 +64,7 @@ void Indigene::send2city(BuildingPtr base)
     deleteLater();
   }
 
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void Indigene::_reachedPathway()
@@ -85,8 +83,7 @@ void Indigene::_updateState()
     _d->tryCount++;
 
     TilePos offset( 1, 1 );
-    city::Helper helper( _city() );
-    NativeFieldList fields = helper.find<NativeField>( objects::native_field, pos() - offset, pos() + offset );
+    NativeFieldList fields = city::statistic::findo<NativeField>( _city(), object::native_field, pos() - offset, pos() + offset );
     foreach( i, fields )
     {
       _d->wheatQty += (*i)->catchCrops();
@@ -119,8 +116,9 @@ void Indigene::_updateState()
   case Impl::go2center:
   {
     TilePos offset( 1, 1 );
-    city::Helper helper( _city() );
-    NativeCenterList centerList = helper.find<NativeCenter>( objects::native_center, pos() - offset, pos() + offset );
+    NativeCenterList centerList = city::statistic::findo<NativeCenter>( _city(),
+                                                                        object::native_center,
+                                                                        pos() - offset, pos() + offset );
     if( !centerList.empty() )
     {
       centerList.front()->store( _d->wheatQty );
@@ -159,10 +157,8 @@ void Indigene::_updateState()
 
   case Impl::back2base:
   {
-    city::Helper helper( _city() );
-
     TilePos offset( 1, 1 );
-    BuildingList huts = helper.find<Building>( objects::native_hut, pos() - offset, pos() + offset );
+    BuildingList huts = city::statistic::findo<Building>( _city(), object::native_hut, pos() - offset, pos() + offset );
 
     Pathway way;
     if( huts.empty() )
@@ -199,9 +195,8 @@ Indigene::Indigene(PlayerCityPtr city)
 
 Pathway Indigene::Impl::findWay2bestField(PlayerCityPtr city, TilePos pos)
 {
-  city::Helper helper( city );
   TilePos offset( 5, 5 );
-  NativeFieldList fields = helper.find<NativeField>( objects::native_field, pos - offset, pos + offset );
+  NativeFieldList fields = city::statistic::findo<NativeField>( city, object::native_field, pos - offset, pos + offset );
 
   Pathway way;
   if( !fields.empty() )

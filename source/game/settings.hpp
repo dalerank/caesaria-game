@@ -53,6 +53,8 @@ public:
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(c3music)
+  __GS_PROPERTY(c3video)
   __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
   __GS_PROPERTY(soundThemesModel)
@@ -91,7 +93,10 @@ public:
   __GS_PROPERTY(borderMoving)
   __GS_PROPERTY(mmb_moving)
   __GS_PROPERTY(lockInfobox)
-  __GS_PROPERTY(c3gameplay)
+  __GS_PROPERTY(soundAlias)
+  __GS_PROPERTY(videoAlias)
+  __GS_PROPERTY(playerName)
+  __GS_PROPERTY(lastGame)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -109,6 +114,7 @@ public:
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
+  void changeSystemLang( const std::string& newLang );
 private:
   Settings();
 
@@ -120,6 +126,7 @@ private:
 
 #define SETTINGS_RC_PATH(a) game::Settings::rcpath( game::Settings::a )
 #define SETTINGS_VALUE(a) game::Settings::get( game::Settings::a )
+#define KILLSWITCH(a) game::Settings::get( game::Settings::a ).toBool()
 #define SETTINGS_SET_VALUE(a, value) game::Settings::set( game::Settings::a, value )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

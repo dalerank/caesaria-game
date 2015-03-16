@@ -28,7 +28,7 @@ namespace city
 class SpiritOfMars : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city , int month=3);
+  static SrvcPtr create(PlayerCityPtr city, int month=3);
   virtual void timeStep( const unsigned int time);
 
   static std::string defaultName();

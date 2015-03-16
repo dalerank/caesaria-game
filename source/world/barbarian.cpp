@@ -30,8 +30,10 @@
 namespace world
 {
 
+const Point Barbarian::startLocation = Point( 1500, 0 );
+
 namespace {
-static const Point barbarianStartLocation( 1500, 0 );
+static const int defaultViewRange = 60;
 }
 
 class Barbarian::Impl
@@ -39,6 +41,7 @@ class Barbarian::Impl
 public:  
   typedef enum { findAny, go2object, hunting, goaway } Mode;
   Mode mode;
+  int minPop4attack;
   VariantMap options;
 };
 
@@ -77,7 +80,8 @@ void Barbarian::updateStrength(int value)
   setStrength( strength() + value );
 }
 
-int Barbarian::viewDistance() const { return 60; }
+int Barbarian::viewDistance() const { return defaultViewRange; }
+void Barbarian::setMinpop4attack(int value) { _d->minPop4attack = value; }
 
 bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
 {
@@ -122,10 +126,14 @@ void Barbarian::_check4attack()
      std::map< int, CityPtr > citymap;
 
      DateTime currentDate = game::Date::current();
+
      foreach( it, cities )
      {
+       if( (*it)->population() < (unsigned int)_d->minPop4attack )
+         continue;
+
        float distance = location().distanceTo( (*it)->location() );
-       int month2lastAttack = math::clamp<int>( 12 - (*it)->lastAttack().monthsTo( currentDate ), 0, 12 );
+       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - (*it)->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
        citymap[ month2lastAttack * 100 + (int)distance ] = *it;
      }
 
@@ -147,7 +155,7 @@ void Barbarian::_check4attack()
 
 void Barbarian::_goaway()
 {
-  bool validWay = _findWay( location(), barbarianStartLocation );
+  bool validWay = _findWay( location(), startLocation );
   if( !validWay )
   {
     Logger::warning( "Barbarian: cant find way for out" );
@@ -159,7 +167,7 @@ void Barbarian::_goaway()
 
 void Barbarian::_noWay()
 {
-  _attackAny();
+   _attackAny();
 }
 
 void Barbarian::_reachedWay()
@@ -215,6 +223,7 @@ Barbarian::Barbarian( EmpirePtr empire )
  : Army( empire ), _d( new Impl )
 {
   _d->mode = Impl::findAny;
+  _d->minPop4attack = 1000;
   setSpeed( 4.f );
 
   _animation().clear();

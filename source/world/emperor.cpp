@@ -32,6 +32,14 @@ namespace world
 
 namespace {
 static const unsigned int legionSoldiersCount = 16;
+static const int maxFavour = 100;
+static const int maxFavourUpdate = 5;
+static const int yearlyDecreaseFavour = 2;
+static const int taxBrokenFavourDecrease = 3;
+static const int taxBrokenFavourDecreaseMax = 8;
+static const int normalSalaryFavourUpdate = 1;
+static const int minimumFabvour4wrathGenerate = 20;
+static const int maxWrathPointValue = 20;
 }
 
 struct Relation
@@ -126,7 +134,7 @@ void Emperor::updateRelation(const std::string& cityname, int value)
 {
   __D_IMPL(d,Emperor)
   int current = d->relations[ cityname ].value;
-  d->relations[ cityname ].value = math::clamp<int>( current + value, 0, 100 );
+  d->relations[ cityname ].value = math::clamp<int>( current + value, 0, maxFavour );
 }
 
 void Emperor::sendGift(const std::string& cityname, unsigned int money)
@@ -139,8 +147,7 @@ void Emperor::sendGift(const std::string& cityname, unsigned int money)
   }
 
   int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( game::Date::current() ),
-                                            0, (int)DateTime::monthsInYear );  
-  const int maxFavourUpdate = 5;
+                                            0, (int)DateTime::monthsInYear );
 
   float timeKoeff = monthFromLastGift / (float)DateTime::monthsInYear;
   int affectMoney = relation.lastGiftValue / ( monthFromLastGift + 1 );
@@ -182,17 +189,17 @@ void Emperor::timeStep(unsigned int time)
       Relation& relation = d->relations[ cityp->name() ];
 
       relation.soldiersSent = 0;     //clear chasteners count
-      relation.value -= 2;
+      relation.value -= yearlyDecreaseFavour;
       int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
-      if( monthWithoutTax > 12 )
+      if( monthWithoutTax > DateTime::monthsInYear )
       {
-        int decrease = math::clamp( 3 + monthWithoutTax / DateTime::monthsInYear * 2, 0, 8 );
+        int decrease = math::clamp( taxBrokenFavourDecrease + monthWithoutTax / DateTime::monthsInYear * 2, 0, taxBrokenFavourDecreaseMax );
         relation.value -= decrease;
       }
 
       float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
       if( salaryKoeff > 1.f ) { relation.value -= (int)salaryKoeff * salaryKoeff; }
-      else if( salaryKoeff < 1.f ) { relation.value += 1; }
+      else if( salaryKoeff < 1.f ) { relation.value += normalSalaryFavourUpdate; }
 
       int brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
       if( brokenEmpireTax > 0 )
@@ -218,9 +225,9 @@ void Emperor::timeStep(unsigned int time)
 
       if( city.isValid() )
       {
-        if( relation.value < 20  )
+        if( relation.value < minimumFabvour4wrathGenerate  )
         {
-          relation.wrathPoint += math::clamp( 20 - relation.value, 0, 20 );
+          relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value, 0, maxWrathPointValue );
           if( relation.soldiersSent == 0 )
             troubleCities << city;
         }
@@ -321,7 +328,7 @@ void Emperor::resetRelations(const StringArray& cities)
     {
       Relation& r = d->relations[ (*it)->name() ];
 
-      r.value = 50;
+      r.value = maxFavour/2;
       r.lastGiftValue = 0;
       r.lastTaxDate = game::Date::current();
       r.lastGiftDate = game::Date::current();
@@ -342,7 +349,7 @@ void Emperor::checkCities()
     if( d->relations.count( (*it)->name() ) == 0 )
     {
       Relation& relation = d->relations[ (*it)->name() ];
-      relation.value = 50;
+      relation.value = maxFavour/2;
     }
   }
 }

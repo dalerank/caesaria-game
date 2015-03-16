@@ -21,7 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
 #include "walker/river_wave.hpp"

@@ -62,6 +62,8 @@ DictionaryWindow::DictionaryWindow( Widget* p )
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
+
+  setModal();
 }
 
 void DictionaryWindow::_handleUriChange(std::string value)
@@ -85,12 +87,12 @@ vfs::Path DictionaryWindow::_convUri2path(std::string uri)
   return fpath;
 }
 
-void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
+void DictionaryWindow::show(Widget* parent, object::Type type)
 {
   DictionaryWindow* wnd = new DictionaryWindow( parent );
   if( wnd->_d->lbText )
   {
-    wnd->load( MetaDataHolder::findTypename( type ) );
+    wnd->load( object::toString( type ) );
   }
 }
 

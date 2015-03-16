@@ -32,6 +32,9 @@ using namespace constants;
 namespace city
 {
 
+enum { minCh=1, middleCh=2, maxCh=5};
+static const int longTimeWithoutWar = 2;
+
 class Peace::Impl
 {
 public:
@@ -43,7 +46,7 @@ public:
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Priorities<int> unsignificantBuildings;
+  Priorities<object::Type> unsignificantBuildings;
 };
 
 city::SrvcPtr Peace::create( PlayerCityPtr city )
@@ -64,20 +67,20 @@ Peace::Peace( PlayerCityPtr city )
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
 
-  _d->unsignificantBuildings << objects::prefecture
-                         << objects::engineering_post
-                         << objects::well
-                         << objects::fortArea
-                         << objects::fort_javelin
-                         << objects::fort_legionaries
-                         << objects::fort_horse
-                         << objects::gatehouse
-                         << objects::fortification
-                         << objects::road
-                         << objects::plaza
-                         << objects::high_bridge
-                         << objects::low_bridge
-                         << objects::tower;
+  _d->unsignificantBuildings << object::prefecture
+                         << object::engineering_post
+                         << object::well
+                         << object::fortArea
+                         << object::fort_javelin
+                         << object::fort_legionaries
+                         << object::fort_horse
+                         << object::gatehouse
+                         << object::fortification
+                         << object::road
+                         << object::plaza
+                         << object::high_bridge
+                         << object::low_bridge
+                         << object::tower;
 }
 
 void Peace::timeStep(const unsigned int time )
@@ -88,7 +91,7 @@ void Peace::timeStep(const unsigned int time )
   city::MilitaryPtr ml;
   ml << _city()->findService( city::Military::defaultName() );
 
-  int change= _d->protestorOrMugglerSeen ? -1: 0;
+  int change= _d->protestorOrMugglerSeen ? -minCh: 0;
 
   if( ml.isValid() )
   {
@@ -99,12 +102,12 @@ void Peace::timeStep(const unsigned int time )
       change -= 1;
   }
 
-  change -= std::min( _d->rioterSeen ? -5 : 0, _d->value );
-  change -= std::min( _d->significantBuildingsDestroyed ? -1 : 0, _d->value );
+  change -= std::min( _d->rioterSeen ? -maxCh : 0, _d->value );
+  change -= std::min( _d->significantBuildingsDestroyed ? -minCh : 0, _d->value );
 
   if( change == 0 )
   {
-    change = _d->peaceYears > 2 ? 5 : 2;
+    change = _d->peaceYears > longTimeWithoutWar ? maxCh : middleCh;
   }
 
   if( _d->protestorOrMugglerSeen || _d->rioterSeen )
@@ -116,7 +119,7 @@ void Peace::timeStep(const unsigned int time )
     _d->peaceYears++;
   }
 
-  change = math::clamp<int>( change, -5, 5 );
+  change = math::clamp<int>( change, -maxCh, maxCh );
 
   _d->value = math::clamp<int>( _d->value + change, 0, 100  );
   _d->protestorOrMugglerSeen  = false;
@@ -141,7 +144,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   }
 }
 
-void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
+void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 {
   if( overlay.isNull() )
   {
@@ -177,13 +180,13 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
     case events::Disaster::fire:
       title = "##city_fire_title##";
       text = "##city_fire_text##";
-      video = ":/smk/city_fire.smk";
+      video = "city_fire";
     break;
 
     case events::Disaster::riots:
       title = "##destroyed_building_title##";
       text = "##rioter_rampaging_accross_city##";
-      video = ":/smk/riot.smk";
+      video = "riot";
     break;
     }
 

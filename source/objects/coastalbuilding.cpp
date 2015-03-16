@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "coastalbuilding.hpp"
 #include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
@@ -27,7 +27,7 @@
 #include "good/store.hpp"
 #include "constants.hpp"
 
-using namespace constants;
+using namespace direction;
 using namespace gfx;
 
 class CoastalFactory::Impl
@@ -46,12 +46,12 @@ public:
 };
 
 CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
-                               const TileOverlay::Type type, Size size) : Factory(consume, produce, type, size),
+                               const object::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
 }
 
-bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
+bool CoastalFactory::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -59,10 +59,10 @@ bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
 
   const_cast< CoastalFactory* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != noneDirection );
+  return (is_constructible && direction != direction::none );
 }
 
-bool CoastalFactory::build( const CityAreaInfo& info )
+bool CoastalFactory::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos ) );
 
@@ -75,12 +75,10 @@ bool CoastalFactory::build( const CityAreaInfo& info )
 
 void CoastalFactory::destroy()
 {
-  city::Helper helper( _city() );
-
-  TilesArray area = helper.getArea( this );
+  TilesArray tiles = area();
 
   int index=0;
-  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  foreach( tile, tiles ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }
@@ -171,5 +169,5 @@ Direction CoastalFactory::Impl::getDirection(PlayerCityPtr city, TilePos pos)
     return east;
   }
 
-  return noneDirection;
+  return direction::none;
 }

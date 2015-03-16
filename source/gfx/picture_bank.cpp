@@ -80,7 +80,7 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   std::string rcname = name.substr(0, dot_pos);
 
   // first: we deallocate the current picture, if any
-  unsigned int picId = utils::hash( rcname );
+  unsigned int picId = Hash( rcname );
   Picture* ptrPic = 0;
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
@@ -106,14 +106,14 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   // decode the picture name => to set the offset manually
   Point pic_info = PictureInfoBank::instance().getOffset( rcname );
 
-  if( pic_info == Point( -1, -1 ) )
+  if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::tileOffset ) )
   {
     // this is a tiled picture=> automatic offset correction
     int cw = gfx::tilemap::cellSize().width() * 2;
     int ch = gfx::tilemap::cellSize().width() / 2;
     offset.setY( pic.height()-ch*( (pic.width()+2)/cw ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
   }
-  else if( pic_info == Point( -2, -2 ) )
+  else if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::walkerOffset ) )
   {
      // this is a walker picture=> automatic offset correction
      offset = Point( -pic.width()/2, int(pic.height()*3./4.) );
@@ -172,7 +172,7 @@ void PictureBank::addAtlas( const std::string& filename )
     VariantMap items = options.get( framesSection ).toMap();
     foreach( i, items )
     {
-      unsigned int hash = utils::hash( i->first );
+      unsigned int hash = Hash( i->first );
       atlas.images.insert( hash );
     }
 
@@ -187,7 +187,7 @@ void PictureBank::loadAtlas(const std::string& filename)
 
 Picture& PictureBank::getPicture(const std::string &name)
 {
-  const unsigned int hash = utils::hash( name );
+  const unsigned int hash = Hash( name );
   //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
@@ -254,7 +254,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
-  unsigned int hash = utils::hash( name );
+  unsigned int hash = Hash( name );
   foreach( i, atlases )
   {
     bool found = i->find( hash );

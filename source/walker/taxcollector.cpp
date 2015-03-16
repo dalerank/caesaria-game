@@ -16,12 +16,12 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "taxcollector.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "city/funds.hpp"
 #include "objects/house.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
-#include "pathway/pathway.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
 #include "core/foreach.hpp"
@@ -49,17 +49,6 @@ void TaxCollector::_centerTile()
 {
   Walker::_centerTile();
 
-  int difficulty = SETTINGS_VALUE(difficulty);
-  float multiply = 1.0f;
-  switch (difficulty)
-  {
-    case 0: multiply = 3.0f; break;
-    case 1: multiply = 2.0f; break;
-    case 2: multiply = 1.5f; break;
-    case 3: multiply = 1.0f; break;
-    case 4: multiply = 0.75f; break;
-  }
-
   ReachedBuildings buildings = getReachedBuildings( pos() );
   foreach( it, buildings )
   {
@@ -67,7 +56,7 @@ void TaxCollector::_centerTile()
 
     if( house.isValid() )
     {
-      float tax = house->collectTaxes() * multiply;
+      float tax = house->collectTaxes();
       _d->money += tax;
       house->applyService( this );
 
@@ -81,9 +70,8 @@ std::string TaxCollector::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    city::Helper helper( _city() );
     TilePos offset( 2, 2 );
-    HouseList houses = helper.find<House>( objects::house, pos() - offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 

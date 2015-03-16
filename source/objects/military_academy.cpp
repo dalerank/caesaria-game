@@ -21,9 +21,9 @@
 
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY( objects::military_academy, MilitaryAcademy)
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::military_academy, MilitaryAcademy)
 
 MilitaryAcademy::MilitaryAcademy()
-  : WorkingBuilding( objects::military_academy, Size(3) )
+  : WorkingBuilding( object::military_academy, Size(3) )
 {
 }

@@ -16,6 +16,7 @@
 #include "throwing_weapon.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
@@ -29,6 +30,7 @@ class ThrowingWeapon::Impl
 public:
   Point offset;
   Point srcPos;
+  Point amappos;
   Point dstPos;
   PointF deltaMove;
   Picture pic;
@@ -51,9 +53,10 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _setWpos( _d->srcPos );
 
-  _city()->addWalker( this );
+  attach();
+
   const Tile& tile = _city()->tilemap().at( src );
-  TileOverlayPtr ov = tile.overlay();
+  OverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, xOffset ).y();
@@ -69,10 +72,11 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   turn( dst );
 }
 
-Point ThrowingWeapon::mappos() const
+const Point& ThrowingWeapon::mappos() const
 {
-  const Point& p = _wpos();
-  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+  const Point& p = wpos();
+  _d->amappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+  return _d->amappos;
 }
 
 void ThrowingWeapon::timeStep(const unsigned long time)

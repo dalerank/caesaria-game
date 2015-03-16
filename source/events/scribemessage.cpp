@@ -57,4 +57,9 @@ void ScribeMessage::_exec(Game& game, unsigned int)
 
 bool ScribeMessage::_mayExec(Game&, unsigned int) const { return true; }
 
+ScribeMessage::ScribeMessage()
+{
+
+}
+
 }//end namespace events

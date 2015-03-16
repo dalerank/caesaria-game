@@ -170,10 +170,7 @@ VariantMap Traderoute::save() const
   }
 
   ret[ "merchants" ] = merchants;
-
-  VariantList vl_points;
-  foreach( p, _d->points ) { vl_points.push_back( *p ); }
-  ret[ "points" ] = vl_points;
+  ret[ "points" ] = _d->points.toVList();
 
  /* VariantList vl_pictures;
   foreach( pic, _d->pictures )
@@ -188,11 +185,7 @@ VariantMap Traderoute::save() const
 
 void Traderoute::load(const VariantMap& stream)
 {
-  VariantList points = stream.get( "points" ).toList();
-  foreach( i, points )
-  {
-    _d->points.push_back( (*i).toPoint() );
-  }
+  _d->points.fromVList( stream.get( "points" ).toList() );
   _d->updateBoundingBox();
   _d->updatePictures();
 

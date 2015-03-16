@@ -18,7 +18,7 @@
 #include "fort.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
@@ -117,7 +117,7 @@ public:
   TilePos basePos;
 };
 
-FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
+FortArea::FortArea() : Building( object::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -154,7 +154,7 @@ FortPtr FortArea::base() const
   return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
-Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
+Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
   Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
@@ -226,6 +226,8 @@ TilesArray Fort::enterArea() const
   return tiles;
 }
 
+int Fort::flagIndex() const { return 0; }
+
 void Fort::destroy()
 {
   WorkingBuilding::destroy();
@@ -263,9 +265,7 @@ TilePos Fort::freeSlot() const
     }
   }
 
-  city::Helper helper( _city() );
   TilesArray tiles;
-
   TroopsFormation formation = (patrolPos == _d->area->pos() + TilePos( 0, 3 )
                                  ? frmParade
                                  : _d->formation);
@@ -276,7 +276,7 @@ TilePos Fort::freeSlot() const
   {
   case frmOpen:
     offset = TilePos( 3, 3 );
-    tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
+    tiles = city::statistic::tiles( _city(), patrolPos - offset, patrolPos + offset );
   break;
 
   case frmWestLine:
@@ -322,12 +322,12 @@ TilePos Fort::freeSlot() const
   break;
 
   case frmParade:
-    tiles = helper.getArea( patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
+    tiles = city::statistic::tiles( _city(), patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
   break;
 
   case frmSquad:
     offset = TilePos( 2, 2 );
-    tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
+    tiles = city::statistic::tiles( _city(), patrolPos - offset, patrolPos + offset );
   break;
   }
 
@@ -367,7 +367,7 @@ TilePos Fort::patrolLocation() const
   {
     Logger::warning( "!!!!WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
-    Stacktrace::print();
+    crashhandler::print();
   }
   else
   {
@@ -504,17 +504,17 @@ void Fort::_addFormation(Fort::TroopsFormation formation)
   _d->availableFormations.push_back( formation );
 }
 
-bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
+bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool isFreeFort = Building::canBuild( areaInfo );
-  CityAreaInfo fortArea = areaInfo;
+  city::AreaInfo fortArea = areaInfo;
   fortArea.pos += TilePos( 3, 0 );
   bool isFreeArea = _d->area->canBuild( fortArea );
 
   return (isFreeFort && isFreeArea);
 }
 
-bool Fort::build( const CityAreaInfo& info )
+bool Fort::build( const city::AreaInfo& info )
 {
   FortList forts;
   forts << info.city->overlays();
@@ -528,7 +528,7 @@ bool Fort::build( const CityAreaInfo& info )
 
   Building::build( info );
 
-  CityAreaInfo areaInfo = info;
+  city::AreaInfo areaInfo = info;
   areaInfo.pos += TilePos( 3, 0 );
   _d->area->build( areaInfo );
   _d->area->setBase( this );
@@ -554,4 +554,4 @@ bool Fort::build( const CityAreaInfo& info )
   return true;
 }
 
-bool Fort::isNeedRoadAccess() const {  return false; }
+bool Fort::isNeedRoad() const {  return false; }

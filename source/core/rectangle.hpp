@@ -34,72 +34,72 @@ class RectT
 {
 public:
 
-	//! Default constructor creating empty rectangle at (0,0)
-	RectT() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
+  //! Default constructor creating empty rectangle at (0,0)
+  RectT() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
 
-	//! Constructor with two corners
-	RectT(T x, T y, T x2, T y2)
-		: UpperLeftCorner(x,y), LowerRightCorner(x2,y2) {}
+  //! Constructor with two corners
+  RectT(T x, T y, T x2, T y2)
+          : UpperLeftCorner(x,y), LowerRightCorner(x2,y2) {}
 
-	//! Constructor with two corners
-	RectT(const Vector2<T>& upperLeft, const Vector2<T>& lowerRight)
-		: UpperLeftCorner(upperLeft), LowerRightCorner(lowerRight) {}
+  //! Constructor with two corners
+  RectT(const Vector2<T>& upperLeft, const Vector2<T>& lowerRight)
+          : UpperLeftCorner(upperLeft), LowerRightCorner(lowerRight) {}
 
-	//! move right by given numbers
-	RectT<T> operator+(const Vector2<T>& pos) const
-	{
-		RectT<T> ret(*this);
-		return ret+=pos;
-	}
+  //! move right by given numbers
+  RectT<T> operator+(const Vector2<T>& pos) const
+  {
+          RectT<T> ret(*this);
+          return ret+=pos;
+  }
 
-	//! move right by given numbers
-	RectT<T>& operator+=(const Vector2<T>& pos)
-	{
-		UpperLeftCorner += pos;
-		LowerRightCorner += pos;
-		return *this;
-	}
+  //! move right by given numbers
+  RectT<T>& operator+=(const Vector2<T>& pos)
+  {
+          UpperLeftCorner += pos;
+          LowerRightCorner += pos;
+          return *this;
+  }
 
-	//! move left by given numbers
-	RectT<T> operator-(const Vector2<T>& pos) const
-	{
-		RectT<T> ret(*this);
-		return ret-=pos;
-	}
+  //! move left by given numbers
+  RectT<T> operator-(const Vector2<T>& pos) const
+  {
+          RectT<T> ret(*this);
+          return ret-=pos;
+  }
 
-	//! move left by given numbers
-	RectT<T>& operator-=(const Vector2<T>& pos)
-	{
-		UpperLeftCorner -= pos;
-		LowerRightCorner -= pos;
-		return *this;
-	}
+  //! move left by given numbers
+  RectT<T>& operator-=(const Vector2<T>& pos)
+  {
+          UpperLeftCorner -= pos;
+          LowerRightCorner -= pos;
+          return *this;
+  }
 
-	//! equality operator
-	bool operator==(const RectT<T>& other) const
-	{
-		return (UpperLeftCorner == other.UpperLeftCorner &&
-			LowerRightCorner == other.LowerRightCorner);
-	}
+  //! equality operator
+  bool operator==(const RectT<T>& other) const
+  {
+          return (UpperLeftCorner == other.UpperLeftCorner &&
+                  LowerRightCorner == other.LowerRightCorner);
+  }
 
-	//! inequality operator
-	bool operator!=(const RectT<T>& other) const
-	{
-		return (UpperLeftCorner != other.UpperLeftCorner ||
-			LowerRightCorner != other.LowerRightCorner);
-	}
+  //! inequality operator
+  bool operator!=(const RectT<T>& other) const
+  {
+          return (UpperLeftCorner != other.UpperLeftCorner ||
+                  LowerRightCorner != other.LowerRightCorner);
+  }
 
-	//! compares size of rectangles
-	bool operator<(const RectT<T>& other) const
-	{
-		return getArea() < other.getArea();
-	}
+  //! compares size of rectangles
+  bool operator<(const RectT<T>& other) const
+  {
+          return getArea() < other.getArea();
+  }
 
-	//! Returns size of rectangle
-	int getArea() const
-	{
-		return width() * height();
-	}
+  //! Returns size of rectangle
+  int getArea() const
+  {
+          return width() * height();
+  }
 
   //! Adds a point to the rectangle
   /** Causes the rectangle to grow bigger if point is outside of

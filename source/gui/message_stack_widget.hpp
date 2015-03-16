@@ -26,6 +26,8 @@ class WindowMessageStack : public Widget
 {
 public:
   static const int defaultID;
+  typedef enum { positive=0, info, warning } MsgLevel;
+
   static WindowMessageStack* create( Widget* parent );
 
   // draw on screen
@@ -33,10 +35,9 @@ public:
   virtual void beforeDraw( gfx::Engine& painter);
   virtual bool onEvent(const NEvent& event);
 
-  void addMessage( std::string );
+  void addMessage( const std::string& text, MsgLevel lvl );
  
 private:
-  class LabelA;
   WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
 
   void _update();

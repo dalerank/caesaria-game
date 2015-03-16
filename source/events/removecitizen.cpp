@@ -27,6 +27,7 @@ using namespace gfx;
 
 namespace events
 {
+const int defaultReturnWorkersDistance = 40;
 
 GameEventPtr RemoveCitizens::create(TilePos center, const CitizenGroup& group)
 {
@@ -42,8 +43,7 @@ GameEventPtr RemoveCitizens::create(TilePos center, const CitizenGroup& group)
 void RemoveCitizens::_exec(Game& game, unsigned int time)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
     HouseList hList;
     hList << tilemap.getRectangle( curRange, _center ).overlays();

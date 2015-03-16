@@ -32,7 +32,7 @@ public:
 
 protected:
   void _showHelp();
-  int _ruinType;
+  object::Type _ruinType;
 };
 
 }

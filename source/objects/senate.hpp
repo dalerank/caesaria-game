@@ -36,11 +36,11 @@ public:
 
   virtual void deliverService();  
 
-  virtual bool canBuild( const CityAreaInfo& areaInfo )const;
+  virtual bool canBuild( const city::AreaInfo& areaInfo )const;
 
   virtual void applyService(ServiceWalkerPtr walker);
 
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
 
   virtual unsigned int walkerDistance() const;
 

@@ -19,7 +19,7 @@
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "city/funds.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -33,7 +33,7 @@
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 #include "events/postpone.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "sound/engine.hpp"
 #include "vfs/directory.hpp"
 #include "objects/fort.hpp"
@@ -48,6 +48,7 @@
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 #include "events/random_plague.hpp"
+#include "events/scribemessage.hpp"
 #include "world/emperor.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
@@ -55,7 +56,7 @@
 
 using namespace constants;
 using namespace gfx;
-using namespace gfx::layer;
+using namespace citylayer;
 
 enum {
   add_enemy_archers=0,
@@ -96,6 +97,9 @@ enum {
   random_plague,
   reload_aqueducts,
   crash_favor,
+  add_scribe_messages,
+  send_venus_smallcurse,
+  send_mars_spirit,
   run_script
 };
 
@@ -137,7 +141,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "request", test_request )
 
   ADD_DEBUG_EVENT( "religion", send_mars_wrath )
+  ADD_DEBUG_EVENT( "religion", send_mars_spirit )
   ADD_DEBUG_EVENT( "religion", send_venus_wrath )
+  ADD_DEBUG_EVENT( "religion", send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( "money", add_1000_dn )
   ADD_DEBUG_EVENT( "money", add_player_money )
@@ -158,6 +164,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "city", add_city_border )
   ADD_DEBUG_EVENT( "city", send_exporter )
   ADD_DEBUG_EVENT( "city", crash_favor )
+  ADD_DEBUG_EVENT( "city", add_scribe_messages )
   ADD_DEBUG_EVENT( "city", run_script )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
@@ -276,8 +283,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     city::Helper helper( game->city() );
-     EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, city::Helper::invalidPos );
+     EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game->city(), walker::any, TilePos(-1, -1) );
 
      foreach( it, enemies )
        (*it)->die();
@@ -290,6 +296,13 @@ void DebugHandler::Impl::handleEvent(int event)
   {
     bool enable = SETTINGS_VALUE( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
+  }
+  break;
+
+  case add_scribe_messages:
+  {
+    events::GameEventPtr e = events::ScribeMessage::create( "test_message", "this is test message from yout scribes" );
+    e->dispatch();
   }
   break;
 
@@ -369,6 +382,14 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_venus_wrath:
     religion::rome::Pantheon::venus()->updateRelation( -101.f, game->city() );
+  break;
+
+  case send_venus_smallcurse:
+    religion::rome::Pantheon::venus()->updateRelation( -102.f, game->city() );
+  break;
+
+  case send_mars_spirit:
+    religion::rome::Pantheon::mars()->updateRelation( -103.f, game->city() );
   break;
 
   case all_sound_off:

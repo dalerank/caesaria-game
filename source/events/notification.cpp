@@ -78,4 +78,4 @@ Notification::Notification() : _d( new Impl )
 
 }
 
-}
+}//end namespace events

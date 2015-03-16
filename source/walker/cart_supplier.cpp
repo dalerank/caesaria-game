@@ -37,6 +37,7 @@
 #include "city/trade_options.hpp"
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
+#include "gfx/helper.hpp"
 #include "gfx/cart_animation.hpp"
 
 using namespace constants;
@@ -65,8 +66,8 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 {
   _setType( walker::supplier );
 
-  _d->storageBuildingPos = TilePos( -1, -1 );
-  _d->baseBuildingPos = TilePos( -1, -1 );
+  _d->storageBuildingPos = gfx::tilemap::invalidLocation();
+  _d->baseBuildingPos = gfx::tilemap::invalidLocation();
   _d->maxDistance = defaultDeliverDistance;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -160,18 +161,18 @@ void CartSupplier::getPictures( Pictures& oPics)
    // depending on the walker direction, the cart is ahead or behind
    switch (direction())
    {
-   case constants::west:
-   case constants::northWest:
-   case constants::north:
-   case constants::northEast:
+   case direction::west:
+   case direction::northWest:
+   case direction::north:
+   case direction::northEast:
       oPics.push_back( _cart().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
-   case constants::east:
-   case constants::southEast:
-   case constants::south:
-   case constants::southWest:
+   case direction::east:
+   case direction::southEast:
+   case direction::south:
+   case direction::southWest:
       oPics.push_back( getMainPicture() );
       oPics.push_back( _cart().currentFrame() );
    break;
@@ -179,10 +180,15 @@ void CartSupplier::getPictures( Pictures& oPics)
    default:
    break;
    }
+
+   if( _d->anim.isBack() )
+   {
+     std::iter_swap( oPics.begin(), oPics.begin() + 1);
+   }
 }
 
 template< class T >
-TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
+TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type type,
                                  const good::Product what, const int needQty,
                                  Pathway &oPathWay, long& reservId )
 {
@@ -219,13 +225,13 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
   }
   else
   {
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
   }
 }
 
 void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Product type, const int qty )
 {
-  _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
+  _d->storageBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
   if( _city()->tradeOptions().isStacking( type ) )
     return;
@@ -239,13 +245,13 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, objects::granery,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, object::granery,
                                                              type, qty, pathWay, _d->reservationID );
 
   if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
-    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, objects::warehouse,
+    _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, object::warehouse,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 
@@ -270,11 +276,7 @@ void CartSupplier::send2city( BuildingPtr building, good::Product what, const in
   _d->baseBuildingPos = building->pos();
 
   computeWalkerDestination( building, what, qty );
-
-  if( !isDeleted()  )
-  {           
-    _city()->addWalker( WalkerPtr( this ) );
-  }
+  attach();
 }
 
 void CartSupplier::_reserveStorage()
@@ -311,11 +313,11 @@ void CartSupplier::save( VariantMap& stream ) const
   Walker::save( stream );
 
   stream[ "stock" ] = _d->stock.save();
-  stream[ "storagePos" ] = _d->storageBuildingPos;
-  stream[ "basrPos" ] = _d->baseBuildingPos;
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "rcvReservationID" ] = (int)_d->rcvReservationID;
-  stream[ "reservationID" ] = (int)_d->reservationID;
+  VARIANT_SAVE_ANY_D( stream, _d, storageBuildingPos )
+  VARIANT_SAVE_ANY_D( stream, _d, baseBuildingPos )
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
+  VARIANT_SAVE_ENUM_D( stream, _d, rcvReservationID )
+  VARIANT_SAVE_ENUM_D( stream, _d, reservationID )
 }
 
 void CartSupplier::load( const VariantMap& stream )
@@ -323,11 +325,11 @@ void CartSupplier::load( const VariantMap& stream )
   Walker::load( stream );
 
   _d->stock.load( stream.get( "stock" ).toList() );
-  _d->storageBuildingPos = stream.get( "storagePos" ).toTilePos();
-  _d->baseBuildingPos = stream.get( "basrPos" ).toTilePos();
-  _d->maxDistance = stream.get( "maxDistance" );
-  _d->rcvReservationID = (int)stream.get( "rcvReservationID" );
-  _d->reservationID = (int)stream.get( "reservationID" );
+  VARIANT_LOAD_ANY_D( _d, storageBuildingPos, stream )
+  VARIANT_LOAD_ANY_D( _d, baseBuildingPos, stream )
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
+  VARIANT_LOAD_ENUM_D( _d, rcvReservationID, stream )
+  VARIANT_LOAD_ENUM_D( _d, reservationID, stream )
 }
 
 bool CartSupplier::die()

@@ -32,7 +32,7 @@
 class Building : public Construction
 {
 public:
-  Building(const Type type, const Size& size=Size(1) );
+  Building(const object::Type type, const Size& size=Size(1) );
   virtual ~Building();
   virtual void initTerrain( gfx::Tile& terrain);
 
@@ -41,7 +41,7 @@ public:
 
   // evaluate the given service
   virtual float evaluateService( ServiceWalkerPtr walker);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 
   // handle service reservation
   void reserveService(const Service::Type service);

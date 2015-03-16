@@ -68,14 +68,14 @@ void Player::timeStep(const unsigned int time )
       return;
 
     audio::Engine& engine = audio::Engine::instance();
-    vfs::Path path = _d->playlist[ _d->lastIndex ];
+    std::string sample = _d->playlist[ _d->lastIndex ];
 
-    if( !engine.isPlaying( path ) )
+    if( !engine.isPlaying( sample ) )
     {
       _d->lastIndex = (_d->lastIndex+1) % _d->playlist.size();
-      path = _d->playlist[ _d->lastIndex ];
+      sample = _d->playlist[ _d->lastIndex ];
 
-      engine.play( path, 100, audio::themeSound );
+      engine.play( sample, 100, audio::themeSound );
     }
   }
 }
@@ -83,8 +83,8 @@ void Player::timeStep(const unsigned int time )
 Player::~Player()
 {
   audio::Engine& engine = audio::Engine::instance();
-  vfs::Path path = _d->playlist[ _d->lastIndex ];
-  engine.stop( path );
+  std::string sample = _d->playlist[ _d->lastIndex ];
+  engine.stop( sample );
 }
 
 }//end namespace audio

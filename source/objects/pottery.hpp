@@ -25,8 +25,8 @@ class Pottery : public Factory
 public:
   Pottery();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
   virtual void timeStep(const unsigned long time);
   virtual void deliverGood();
 protected:
