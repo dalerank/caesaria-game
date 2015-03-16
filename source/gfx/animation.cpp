@@ -96,10 +96,7 @@ void Animation::update( unsigned int time )
 
 const Picture& Animation::currentFrame() const
 {
-  __D_IMPL_CONST(d,Animation)
-  return ( d->index >= 0 && d->index < (int)_pictures.size())
-                  ? _pictures[d->index]
-                  : Picture::getInvalid();
+  return _pictures.atSafe( _dfunc()->index );
 }
 
 int Animation::index() const { return _dfunc()->index;}

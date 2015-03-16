@@ -27,7 +27,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -56,7 +56,7 @@ public:
   struct TurnInfo {
     Tile* tile;
     Picture pic;
-    TileOverlayPtr overlay;
+    OverlayPtr overlay;
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
@@ -72,6 +72,8 @@ public:
   Tile& at( const int i, const int j );
 
   bool isInside( const TilePos& pos );
+  inline bool isInside( const int i, const int j ) { return( i >= 0 && j>=0 && i < size && j < size); }
+
   void resize( const int s );
   void set( int i, int j, Tile* v );
   void saveMasterTiles( MasterTiles& mtiles );
@@ -81,7 +83,7 @@ public:
 Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
-  _d->direction = north;
+  _d->direction = direction::north;
   _d->virtWidth = tilemap::cellSize().width() * 2;
 }
 
@@ -108,18 +110,18 @@ Tile* Tilemap::at( const Point& pos, bool overborder)
   // x relative to the left most pixel of the tilemap
   int i = (pos.x() + 2 * pos.y()) / _d->virtWidth;
   int j = (pos.x() - 2 * pos.y()) / _d->virtWidth;
+  int s = size();
 
   if( overborder )
   {
-      i = math::clamp( i, 0, size() - 1 );
-      j = math::clamp( j, 0, size() - 1 );
+      i = math::clamp( i, 0, s - 1 );
+      j = math::clamp( j, 0, s - 1 );
   }
-  // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
-  if (i>=0 && j>=0 && i < size() && j < size())
+  if (i>=0 && j>=0 && i < s && j < s)
   {
     // valid coordinate
-    return &at( TilePos( i, j ) );
+    return &at( i, j );
   }
   else // the pixel is outside the tilemap => no tile here
   {
@@ -193,7 +195,7 @@ void Tilemap::addBorder()
   }
 }
 
-int Tilemap::size() const {  return _d->size; }
+int Tilemap::size() const { return _d->size; }
 
 TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
 {
@@ -539,7 +541,7 @@ Tile* Tilemap::Impl::ate(const int i, const int j)
 
 Tile& Tilemap::Impl::at(const int i, const int j)
 {
-  if( isInside( TilePos( i, j ) ) )
+  if( isInside( i, j ) )
   {
     return *(*this)[i][j];
   }

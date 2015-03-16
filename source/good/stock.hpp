@@ -27,7 +27,7 @@ class VariantList;
 namespace good
 {
 
-class Stock : Product
+class Stock
 {
 public:
   Stock();
@@ -59,6 +59,7 @@ public:
 protected:
   int _capacity;
   int _qty;
+  Product _type;
 };
 
 }//end namespace good

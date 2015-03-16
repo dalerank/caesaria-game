@@ -24,52 +24,51 @@ namespace vfs
 
 MemoryFile::MemoryFile()
 {
-    Buffer = 0;
-    Len = 0;
-    _pos = 0;
-    deleteMemoryWhenDropped = false;
+  _buffer = 0;
+  _length = 0;
+  _pos = 0;
+  _deleteMemoryWhenDropped = false;
 
 #ifdef _DEBUG
-        setDebugName("MemoryFile");
+  setDebugName("MemoryFile");
 #endif
-
 }
 
 NFile MemoryFile::create(void* memory, long len, const Path& fileName, bool d)
 {
-    MemoryFile* mf = new MemoryFile();
-    mf->Buffer = memory;
-    mf->Len  = len;
-    mf->_pos = 0;
-    mf->Filename = fileName;
-    mf->deleteMemoryWhenDropped = d;
+  MemoryFile* mf = new MemoryFile();
+  mf->_buffer = memory;
+  mf->_length  = len;
+  mf->_pos = 0;
+  mf->_filename = fileName;
+  mf->_deleteMemoryWhenDropped = d;
 
-    FSEntityPtr ret( mf );
-    ret->drop();
+  FSEntityPtr ret( mf );
+  ret->drop();
 
-    return NFile( ret );
+  return NFile( ret );
 }
 
 NFile MemoryFile::create( ByteArray data, const Path& fileName )
 {
-    MemoryFile* mf = new MemoryFile();
-    mf->Buffer = new char[ data.size() ];
-    memcpy( mf->Buffer, data.data(), data.size() );
-    mf->Len  = data.size();
-    mf->_pos = 0;
-    mf->Filename = fileName;
-    mf->deleteMemoryWhenDropped = true;
+  MemoryFile* mf = new MemoryFile();
+  mf->_buffer = new char[ data.size() ];
+  memcpy( mf->_buffer, data.data(), data.size() );
+  mf->_length  = data.size();
+  mf->_pos = 0;
+  mf->_filename = fileName;
+  mf->_deleteMemoryWhenDropped = true;
 
-    FSEntityPtr ret( mf );
-    ret->drop();
+  FSEntityPtr ret( mf );
+  ret->drop();
 
-    return NFile( ret );
+  return NFile( ret );
 }
 
 MemoryFile::~MemoryFile()
 {
-	if (deleteMemoryWhenDropped)
-        delete [] (char*)Buffer;
+  if (_deleteMemoryWhenDropped)
+  delete [] (char*)_buffer;
 }
 
 
@@ -77,9 +76,9 @@ MemoryFile::~MemoryFile()
 int MemoryFile::read(void* buffer, unsigned int sizeToRead)
 {
   int amount = static_cast<int>(sizeToRead);
-  if( _pos + amount > Len )
+  if( _pos + amount > _length )
   {
-    amount -= _pos + amount - Len;
+    amount -= _pos + amount - _length;
   }
 
   if( amount <= 0 )
@@ -87,7 +86,7 @@ int MemoryFile::read(void* buffer, unsigned int sizeToRead)
     return 0;
   }
 
-  char* p = (char*)Buffer;
+  char* p = (char*)_buffer;
   memcpy(buffer, p + _pos, amount);
 
   _pos += amount;
@@ -96,63 +95,63 @@ int MemoryFile::read(void* buffer, unsigned int sizeToRead)
 
 ByteArray MemoryFile::readLine()
 {
-    if (!isOpen())
+  if (!isOpen())
+  {
+    return ByteArray();
+  }
+
+  ByteArray ret;
+
+  bool endLineReaded = false;
+  unsigned int readOneLineCounter = 0;
+  while( !endLineReaded )
+  {
+    readOneLineCounter++;
+
+    int idx = _pos;
+    while( idx < 100 )
     {
-      return ByteArray();
+      if( ((char*)_buffer)[ idx ] == '\n'  )
+      {
+        ret.push_back( '\0' );
+        return ret;
+      }
+
+      ret.push_back( ((char*)_buffer)[ idx ] );
+      idx++;
     }
 
-    ByteArray ret;
+    int reallyReadingBytes = idx - _pos;
 
-    bool endLineReaded = false;
-    unsigned int readOneLineCounter = 0;
-    while( !endLineReaded )
+    if( reallyReadingBytes <= 0 )
+        return ByteArray();
+
+    if( readOneLineCounter > 1000 )
     {
-        readOneLineCounter++;
-
-        int idx = _pos;
-        while( idx < 100 )
-        {
-          if( ((char*)Buffer)[ idx ] == '\n'  )
-          {
-            ret.push_back( '\0' );
-            return ret;
-          }
-
-          ret.push_back( ((char*)Buffer)[ idx ] );
-          idx++;
-        }
-
-        int reallyReadingBytes = idx - _pos;
-
-        if( reallyReadingBytes <= 0 )
-            return ByteArray();
-
-        if( readOneLineCounter > 1000 )
-        {
-            Logger::warning( "Too many iteration for read one line" );
-            return ByteArray();
-        }
+        Logger::warning( "Too many iteration for read one line" );
+        return ByteArray();
     }
+  }
 
-    return ret;
+  return ret;
 }
 
 //! returns how much was written
 int MemoryFile::write(const void* buffer, unsigned int sizeToWrite)
 {
-	int amount = static_cast<int>(sizeToWrite);
-	if (_pos + amount > Len)
-		amount -= _pos + amount - Len;
+  int amount = static_cast<int>(sizeToWrite);
+  if (_pos + amount > _length)
+    amount -= _pos + amount - _length;
 
-	if (amount <= 0)
-		return 0;
+  if (amount <= 0)
+    return 0;
 
-	char* p = (char*)Buffer;
-	memcpy(p + _pos, buffer, amount);
+  char* p = (char*)_buffer;
+  memcpy(p + _pos, buffer, amount);
 
-	_pos += amount;
+  _pos += amount;
 
-	return amount;
+  return amount;
 }
 
 
@@ -162,30 +161,27 @@ int MemoryFile::write(const void* buffer, unsigned int sizeToWrite)
 //! otherwise from begin of file
 bool MemoryFile::seek(long finalPos, bool relativeMovement)
 {
-	if (relativeMovement)
-	{
-		if (_pos + finalPos > Len)
-			return false;
+  if (relativeMovement)
+  {
+    if (_pos + finalPos > _length)
+      return false;
 
-		_pos += finalPos;
-	}
-	else
-	{
-		if (finalPos > Len)
-			return false;
+    _pos += finalPos;
+  }
+  else
+  {
+    if (finalPos > _length)
+      return false;
 
-		_pos = finalPos;
-	}
+    _pos = finalPos;
+  }
 
-	return true;
+  return true;
 }
 
 
 //! returns size of file
-long MemoryFile::size() const
-{
-    return Len;
-}
+long MemoryFile::size() const { return _length; }
 
 bool MemoryFile::isOpen() const
 {
@@ -211,24 +207,11 @@ ByteArray MemoryFile::read(unsigned int sizeToRead)
 }
 
 //! returns where in the file we are.
-long MemoryFile::getPos() const
-{
-    return _pos;
-}
-
-void MemoryFile::flush()
-{
-}
-
-bool MemoryFile::isEof() const
-{
-		return _pos >= Len;
-}
+long MemoryFile::getPos() const {    return _pos; }
+void MemoryFile::flush() {}
+bool MemoryFile::isEof() const{		return _pos >= _length;}
 
 //! returns name of file
-const Path& MemoryFile::path() const
-{
-	return Filename;
-}
+const Path& MemoryFile::path() const{	return _filename; }
 
 } //end namespace io

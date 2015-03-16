@@ -22,7 +22,7 @@
 #include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
 #include "good/storage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
@@ -31,7 +31,7 @@
 using namespace gfx;
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::granery, Granary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::granery, Granary)
 
 namespace {
 CAESARIA_LITERALCONST(goodStore)
@@ -104,7 +104,7 @@ public:
   bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( constants::objects::granery, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
 {
   _d->store.granary = this;
 
@@ -206,8 +206,7 @@ bool Granary::isWalkable() const { return true; }
 
 void Granary::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlRoad, false );

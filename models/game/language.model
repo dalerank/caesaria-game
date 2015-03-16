@@ -1,14 +1,17 @@
 {
-  English    : { ext : "en", talks : "/audio/wavs_citizen_en.zip" }
-  Русский    : { ext : "ru", talks : "/audio/wavs_citizen_ru.zip" }
-  Українська : { ext : "ua", talks : "/audio/wavs_citizen_en.zip" }
-  Deutsch    : { ext : "de", talks : "/audio/wavs_citizen_de.zip" }
-  Svenska    : { ext : "sv", talks : "/audio/wavs_citizen_en.zip" }
-  Español    : { ext : "sp", talks : "/audio/wavs_citizen_sp.zip" }
-  Român      : { ext : "ro", talks : "/audio/wavs_citizen_en.zip" }
-  Français   : { ext : "fr", talks : "/audio/wavs_citizen_en.zip" }
-  Czech      : { ext : "cs", talks : "/audio/wavs_citizen_en.zip" }
-  Hungarian  : { ext : "hu", talks : "/audio/wavs_citizen_en.zip" }
-  Italian    : { ext : "it", talks : "/audio/wavs_citizen_en.zip" }
-  Polish     : { ext : "pl", talks : "/audio/wavs_citizen_en.zip" }
+  English    : { ext : "en", talks : ":/audio/wavs_citizen_en.zip" }
+  Русский    : { ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" }
+  Українська : { ext : "ua", talks : ":/audio/wavs_citizen_en.zip" }
+  Deutsch    : { ext : "de", talks : ":/audio/wavs_citizen_de.zip" }
+  Svenska    : { ext : "sv", talks : ":/audio/wavs_citizen_en.zip" }
+  Español    : { ext : "sp", talks : ":/audio/wavs_citizen_sp.zip" }
+  Român      : { ext : "ro", talks : ":/audio/wavs_citizen_en.zip" }
+  Français   : { ext : "fr", talks : ":/audio/wavs_citizen_en.zip" }
+  Czech      : { ext : "cs", talks : ":/audio/wavs_citizen_en.zip" }
+  Hungarian  : { ext : "hu", talks : ":/audio/wavs_citizen_en.zip" }
+  Italian    : { ext : "it", talks : ":/audio/wavs_citizen_it.zip" }
+  Polish     : { ext : "pl", talks : ":/audio/wavs_citizen_en.zip" }
+  Suomi      : { ext : "fn", talks : ":/audio/wavs_citizen_en.zip" }
+  Português  : { ext : "pr", talks : ":/audio/wavs_citizen_en.zip" }
+  Cрпски     : { ext : "sb", talks : ":/audio/wavs_citizen_en.zip" }
 }

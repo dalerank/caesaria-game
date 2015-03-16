@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
@@ -33,15 +33,16 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::colloseum, Colosseum)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::colloseum, Colosseum)
 
 class Colosseum::Impl
 {
 public:
-  DateTime lastDateGl, lastDateLion;
+  DateTime lastDateGl,
+           lastDateLion;
 };
 
-Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, objects::colloseum, Size(5) ), _d( new Impl )
+Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5) ), _d( new Impl )
 {
   setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
@@ -84,13 +85,12 @@ Service::Type Colosseum::serviceType() const
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 
-bool Colosseum::build( const CityAreaInfo& info )
+bool Colosseum::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  city::Helper helper( info.city );
-  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( objects::gladiatorSchool );
-  LionsNurseryList lionsNs = helper.find<LionsNursery>( objects::lionsNursery );
+  GladiatorSchoolList glSchools = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
+  LionsNurseryList lionsNs = city::statistic::findo<LionsNursery>( info.city, object::lionsNursery );
 
   _d->lastDateGl = game::Date::current();
   _d->lastDateLion = game::Date::current();
@@ -129,8 +129,7 @@ std::string Colosseum::troubleDesc() const
 
 bool Colosseum::isNeedGladiators() const
 {
-  city::Helper helper( _city() );
-  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  GladiatorSchoolList colloseums = city::statistic::findo<GladiatorSchool>( _city(), object::gladiatorSchool );
 
   return colloseums.empty();
 }
@@ -144,6 +143,7 @@ Service::Type Colosseum::_getServiceManType() const
 
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }
 bool Colosseum::isShowLionBattles() const{  return _getServiceManType() == Service::colloseum; }
+int Colosseum::maxVisitors() const{ return 1500; }
 DateTime Colosseum::lastAnimalBoutDate() const { return _d->lastDateLion; }
 DateTime Colosseum::lastGladiatorBoutDate() const { return _d->lastDateGl; }
 

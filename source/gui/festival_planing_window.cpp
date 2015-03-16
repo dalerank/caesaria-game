@@ -17,7 +17,6 @@
 
 #include "festival_planing_window.hpp"
 #include "label.hpp"
-#include "game/enums.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/decorator.hpp"
 #include "core/event.hpp"

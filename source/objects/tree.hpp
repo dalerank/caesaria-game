@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_TREE_H_INCLUDED__
 #define __CAESARIA_TREE_H_INCLUDED__
 
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
-class Tree : public gfx::TileOverlay
+class Tree : public Overlay
 {
 public:
   Tree();
@@ -28,7 +28,7 @@ public:
   virtual void timeStep( const unsigned long time );
   virtual bool isFlat() const;
   virtual void initTerrain(gfx::Tile &terrain);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual void destroy();

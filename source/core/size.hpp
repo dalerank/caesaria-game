@@ -23,29 +23,29 @@ class SizeF;
 class Size : Vector2<int>
 {
 public:
-    Size( const int w, const int h ) : Vector2<int>( w, h ) {}
-    Size() : Vector2<int>( 0, 0 ) {}
-    Size( const int s ) : Vector2<int>( s, s ) {}
+  Size( const int w, const int h ) : Vector2<int>( w, h ) {}
+  Size() : Vector2<int>( 0, 0 ) {}
+  Size( const int s ) : Vector2<int>( s, s ) {}
 
-    Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
+  Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
 
-    inline int width() const { return _x; }
-    inline int height() const { return _y; }
+  inline int width() const { return _x; }
+  inline int height() const { return _y; }
 
-    void setWidth( int w ) { _x = w; }
-    void setHeight( int h ) { _y = h; }
+  void setWidth( int w ) { _x = w; }
+  void setHeight( int h ) { _y = h; }
 
-    SizeF toSizeF() const;
+  SizeF toSizeF() const;
 
-    int area() const { return _x * _y; }
+  int area() const { return _x * _y; }
 
-    bool operator==(const Size& other) const{ return (_x == other._x) && ( _y == other._y ); }
-    bool operator!=(const Size& other) const{ return (_x != other._x ) || ( _y != other._y ); }
-    Size& operator+=(const Size& other) { _x += other._x; _y += other._y; return *this; }
-    Size operator-(const Size& other) const { return Size( _x - other._x, _y - other._y ); }
-    Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
-    Size operator/(float delim) const { return Size( int(_x/delim), int(_y/delim) ); }
-    Size operator*(float delim) const { return Size( int(_x*delim), int(_y*delim) ); }
+  bool operator==(const Size& other) const{ return (_x == other._x) && ( _y == other._y ); }
+  bool operator!=(const Size& other) const{ return (_x != other._x ) || ( _y != other._y ); }
+  Size& operator+=(const Size& other) { _x += other._x; _y += other._y; return *this; }
+  Size operator-(const Size& other) const { return Size( _x - other._x, _y - other._y ); }
+  //Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
+  Size operator/(float delim) const { return Size( int(_x/delim), int(_y/delim) ); }
+  Size operator*(float delim) const { return Size( int(_x*delim), int(_y*delim) ); }
 };
 
 class SizeF : Vector2<float>
@@ -73,7 +73,7 @@ public:
 
 inline SizeF Size::toSizeF() const
 {
- return SizeF( float(_x), float(_y) ); 
+  return SizeF( float(_x), float(_y) );
 }
 
 #endif//__CAESARIA_SIZE_H_INCLUDED__

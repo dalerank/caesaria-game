@@ -20,7 +20,7 @@
 
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/predefinitions.hpp"
 #include "core/priorities.hpp"
 #include "industry.hpp"

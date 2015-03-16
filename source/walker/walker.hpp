@@ -23,7 +23,6 @@
 
 #include "walker/action.hpp"
 #include "gfx/picturesarray.hpp"
-#include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "pathway/predefinitions.hpp"
@@ -43,7 +42,7 @@ class Walker : public Serializable, public ReferenceCounted
 public:
   typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
+  typedef enum { infiniteWait=-1, showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
   typedef enum { thCurrent, thAction, thCount } Thought;
   typedef enum { plOrigin, plDestination, pcCount } Place;
 
@@ -58,7 +57,7 @@ public:
   TilePos pos() const;
   void setPos( const TilePos& pos );
 
-  virtual Point mappos() const;
+  virtual const Point& mappos() const;
   Point tilesubpos() const;
 
   const gfx::Tile& tile() const;
@@ -80,7 +79,7 @@ public:
   void setFlag( Flag flag, bool value );
   bool getFlag( Flag flag ) const;
 
-  constants::Direction direction() const;
+  Direction direction() const;
   Walker::Action action() const;
 
   virtual double health() const;
@@ -116,9 +115,11 @@ public:
   virtual world::Nation nation() const;
 
   void attach();
+  Point wpos() const;
 
 protected:
   void _walk();
+  void _updateMappos();
   void _computeDirection();
   const gfx::Tile& _nextTile() const;
 
@@ -132,21 +133,21 @@ protected:
   virtual const gfx::Picture& getMainPicture();
   virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
+  virtual Point& _rndOffset();
   virtual void _updateThoughts();
 
   Pathway& _pathwayRef();
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  void _setDirection( constants::Direction direction );
+  void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
   void _setType( constants::walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
-  void _setWpos( Point pos );
-  Point _wpos() const;
+  void _setWpos(const Point &pos );
 
 private:
   class Impl;

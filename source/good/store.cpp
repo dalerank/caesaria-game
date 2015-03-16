@@ -183,11 +183,11 @@ void Store::retrieve(good::Stock &stock, int amount)
 
 void Store::storeAll( Store& goodStore)
 {
-  for ( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
+  foreach( goodType, good::all() )
   {
     // for all types of good (except G_NONE)
-    good::Stock stock( goodType, 9999, 0 );
-    goodStore.retrieve( stock, goodStore.qty( goodType ) );
+    good::Stock stock( *goodType, 9999, 0 );
+    goodStore.retrieve( stock, goodStore.qty( *goodType ) );
     if( !stock.empty() )
     {
       store(stock, stock.qty());
@@ -204,9 +204,9 @@ VariantMap Store::save() const
   stream[ "retrieveReservation" ] = _d->retrieveReservations.save();
 
   VariantList vm_orders;
-  for( good::Product i=good::none; i < good::goodCount; ++i )
+  foreach( i, good::all() )
   {
-    vm_orders.push_back( (int)getOrder( i ) );
+    vm_orders.push_back( (int)getOrder( *i ) );
   }
   stream[ "orders" ] = vm_orders;
 

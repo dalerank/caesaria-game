@@ -64,6 +64,10 @@ public:
   }
 };
 
+REGISTER_OBJECT_INFOBOX(road, new CitizenInfoboxParser<AboutLand>() )
+REGISTER_OBJECT_INFOBOX(plaza, new CitizenInfoboxParser<AboutLand>() )
+REGISTER_OBJECT_INFOBOX(unknown, new CitizenInfoboxParser<AboutLand>() )
+
 template< class T >
 class SpecificCitizenInfoboxCreator : public Creator
 {
@@ -80,12 +84,8 @@ PManager& PManager::instance()
   return inst;
 }
 
-void PManager::loadInfoboxes( Manager& manager)
+void PManager::loadInfoboxes()
 {
-  manager.addInfobox( objects::road,         CAESARIA_STR_EXT(Road),   new CitizenInfoboxParser<AboutLand>() );
-  manager.addInfobox( objects::plaza,        CAESARIA_STR_EXT(Plaza),  new CitizenInfoboxParser<AboutLand>() );
-  manager.addInfobox( objects::unknown,      CAESARIA_STR_EXT(unknown), new CitizenInfoboxParser<AboutLand>() );
-
   addCreator( walker::patrolPoint, new SpecificCitizenInfoboxCreator<AboutLegion>() );
 }
 

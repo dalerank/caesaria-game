@@ -57,7 +57,7 @@ void addEvents(PlayerCityPtr city)
 void resetFavour(PlayerCityPtr city)
 {
   world::Emperor& emperor = city->empire()->emperor();
-  emperor.updateRelation( city->name(), 50 );
+  emperor.updateRelation( city->name(), world::defaultEmperorFavor );
 }
 
 void initBuildOptions(PlayerCityPtr city)

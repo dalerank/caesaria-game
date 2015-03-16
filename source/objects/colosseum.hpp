@@ -26,12 +26,13 @@ public:
   Colosseum();
   virtual void deliverService();
   virtual Service::Type serviceType() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual std::string troubleDesc() const;
 
   bool isNeedGladiators() const;
   bool isShowGladiatorBattles() const;
   bool isShowLionBattles() const;
+  virtual int maxVisitors() const;
 
   DateTime lastAnimalBoutDate() const;
   DateTime lastGladiatorBoutDate() const;

@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(amphitheater,objects::amphitheater,AboutAmphitheater)
+REGISTER_OBJECT_BASEINFOBOX(amphitheater,AboutAmphitheater)
 
 AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
@@ -43,7 +43,7 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
 
   AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());
   setBase( ptr_cast<Construction>( amph ) );
-  setTitle( _( MetaDataHolder::findPrettyName( objects::amphitheater ) ) );
+  setTitle( _( MetaDataHolder::findPrettyName( object::amphitheater ) ) );
   _setWorkingVisible( true );
 
   _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );

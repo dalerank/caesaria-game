@@ -34,6 +34,10 @@ protected:
   void _doWrath( PlayerCityPtr city );
   void _doBlessing( PlayerCityPtr city );
   void _doSmallCurse( PlayerCityPtr city );
+
+private:
+  Venus();
+  int _wrathCounter;
 };
 
 }//end namespace rome

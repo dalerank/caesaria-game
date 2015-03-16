@@ -14,12 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
 #include "objects/construction.hpp"
 #include "gfx/tile.hpp"
-#include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
@@ -110,8 +109,8 @@ public:
 
   PlayerPtr player;
 
-  TileOverlayList newOverlays;
-  TileOverlayList overlays;
+  OverlayList newOverlays;
+  OverlayList overlays;
 
   WalkerList newWalkers;
   WalkerList walkers;
@@ -142,7 +141,7 @@ public:
   void payWages( PlayerCityPtr city );
   void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
-  void beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay );
+  void beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay );
   void updateWalkers(unsigned int time);
   void updateOverlays( PlayerCityPtr city, unsigned int time);
   void updateServices( PlayerCityPtr city, unsigned int time );
@@ -164,11 +163,11 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.boatExit = TilePos( 0, 0 );
   _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
-  _d->funds.setTaxRate( 7 );
+  _d->funds.setTaxRate( city::Funds::defaultTaxPrcnt );
   _d->age = 0;
   _d->walkerIdCount = 1;
   _d->climate = game::climate::central;
-  _d->sentiment = 60;
+  _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
   addService( city::Migration::create( this ) );
@@ -202,6 +201,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
   setOption( barbarianAttack, 1 );
+  setOption( c3gameplay, 0 );
 }
 
 void PlayerCity::_initAnimation()
@@ -210,8 +210,7 @@ void PlayerCity::_initAnimation()
 
   _animation().load( ResourceGroup::empirebits, 2, 6 );
   _animation().setLoop( true );
-  _animation().setOffset( Point( 18, -7 ));
-  _animation().setDelay( 2 );
+  _animation().setDelay( Animation::middle );
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -238,6 +237,7 @@ void PlayerCity::timeStep(unsigned int time)
   {
     _d->walkersGrid.append( *it );
   }
+  _d->walkersGrid.sort();
 
   _d->updateWalkers( time );
   _d->updateOverlays( this, time );
@@ -253,7 +253,7 @@ void PlayerCity::timeStep(unsigned int time)
       if( construction != NULL )
       {
         // overlay matches the filter
-        construction->computeAccessRoads();
+        construction->computeRoadside();
       }
     }   
   }
@@ -307,7 +307,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-TileOverlayList&  PlayerCity::overlays()         { return _d->overlays; }
+OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
@@ -321,8 +321,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 
 int PlayerCity::strength() const
 {
-  city::Helper helper( const_cast<PlayerCity*>( this ) );
-  FortList forts = helper.find<Fort>( objects::any );
+  FortList forts = city::statistic::findo<Fort>( const_cast<PlayerCity*>( this ), object::any );
 
   int ret = 0;
   foreach( i, forts )
@@ -346,13 +345,12 @@ world::Nation PlayerCity::nation() const { return world::rome; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
-  city::Helper hlp( city );
   float lastMonthTax = 0;
   
-  ForumList forums = hlp.find< Forum >( objects::forum );
+  ForumList forums = city::statistic::findo< Forum >( city, object::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = hlp.find< Senate >( objects::senate );
+  SenateList senates = city::statistic::findo< Senate >( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
@@ -364,7 +362,6 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 
   if( funds.haveMoneyForAction( wages ) )
   {
-    //funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
     HouseList houses;
     houses << city->overlays();
 
@@ -381,17 +378,14 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
   }
   else
   {
-
+	  // TODO affect citizen sentiment for no payment and request money to caesar.
   }
 }
 
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
   unsigned int pop = 0;
-
-  city::Helper helper( city );
-
-  HouseList houseList = helper.find<House>( objects::house );
+  HouseList houseList = city::statistic::findh( city );
 
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
@@ -399,10 +393,9 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   emit onPopulationChangedSignal( pop );
 }
 
-void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
+void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay)
 {
-  city::Helper helper( city );
-  helper.updateDesirability( overlay, city::Helper::offDesirability );
+  Desirability::update( city, overlay, Desirability::off );
 }
 
 void PlayerCity::Impl::updateWalkers( unsigned int time )
@@ -427,7 +420,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 {
-  TileOverlayList::iterator overlayIt = overlays.begin();
+  OverlayList::iterator overlayIt = overlays.begin();
   while( overlayIt != overlays.end() )
   {
     (*overlayIt)->timeStep( time );
@@ -513,6 +506,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
   stream[ "zoomInvert" ] = getOption( PlayerCity::zoomInvert );
   stream[ "fireKoeff"  ] = getOption( PlayerCity::fireKoeff );
+  stream[ "c3gameplay" ] = getOption( PlayerCity::c3gameplay );
   stream[ "barbarianAttack" ] = getOption( PlayerCity::barbarianAttack );
   stream[ "population" ] = _d->population;
 
@@ -551,7 +545,7 @@ void PlayerCity::save( VariantMap& stream) const
   foreach( overlay, _d->overlays )
   {
     VariantMap vm_overlay;
-    TileOverlay::Type otype = objects::unknown;
+    object::Type otype = object::unknown;
 
     try
     {
@@ -562,7 +556,7 @@ void PlayerCity::save( VariantMap& stream) const
     }
     catch(...)
     {
-      Logger::warning( "ERROR: Cant save overlay type " + MetaDataHolder::findTypename( otype ) );
+      Logger::warning( "ERROR: Cant save overlay type " + object::toString( otype ) );
     }
   }
   stream[ "overlays" ] = vm_overlays;
@@ -606,6 +600,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
   setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
   setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
+  setOption( c3gameplay, stream.get( "c3gameplay", 0 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -622,13 +617,13 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap overlayParams = item->second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    TileOverlay::Type overlayType = (TileOverlay::Type)config.get( 0 ).toInt();
+    object::Type overlayType = (object::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
-    TileOverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
+    OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && pos.i() >= 0 )
     {
-      CityAreaInfo info = { this, pos, TilesArray() };
+      city::AreaInfo info = { this, pos, TilesArray() };
       overlay->build( info );
       overlay->load( overlayParams );
       _d->overlays.push_back( overlay );
@@ -693,7 +688,7 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
+void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
@@ -731,8 +726,8 @@ Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOpti
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
-TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
-PlayerPtr PlayerCity::player() const { return _d->player; }
+OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
+PlayerPtr PlayerCity::mayor() const { return _d->player; }
 
 city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
@@ -859,7 +854,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "/smk/spy_army.smk" );
+      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
       e->dispatch();
     }
   }

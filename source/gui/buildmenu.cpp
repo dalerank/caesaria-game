@@ -94,6 +94,7 @@ BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
                       city::development::Branch branch )
     : Widget( parent, id, rectangle )
 {
+  _c3gameplay = false;
   _branch = branch;
 }
 
@@ -122,8 +123,8 @@ void BuildMenu::initialize()
 
   foreach( it, buildings )
   {
-    TileOverlay::Type bType = MetaDataHolder::findType( it->toString() );
-    if( bType != objects::unknown )
+    object::Type bType = object::toType( it->toString() );
+    if( bType != object::unknown )
     {
       addBuildButton( bType );
     }
@@ -163,19 +164,19 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 
   BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
-  button->setCost(-1);  // no display
+  button->setCost(-1);  // no display cost
 
   setHeight( height() + 30 );
 }
 
-void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
+void BuildMenu::addBuildButton(const object::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
   const MetaData& buildingData = MetaDataHolder::instance().getData( buildingType );
 
   int cost = buildingData.getOption( MetaDataOptions::cost );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
-  if( SETTINGS_VALUE( c3gameplay ).toBool() )
+  if( _c3gameplay )
   {
     mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
   }
@@ -183,7 +184,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName().c_str()),
+    BuildButton* button = new BuildButton( this, _(buildingData.prettyName()),
                                            Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );
@@ -194,7 +195,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   }
 }
 
-BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent )
+BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent, bool c3gameplay )
 {
   BuildMenu* ret = 0;
   switch (menuType)
@@ -215,6 +216,10 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::big_temple:     ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
+  if( ret )
+  {
+    ret->_c3gameplay = c3gameplay;
+  }
 
   return ret;
 }

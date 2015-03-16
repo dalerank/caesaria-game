@@ -20,7 +20,7 @@
 #include "gfx/tilemap_camera.hpp"
 #include "sound/engine.hpp"
 #include "core/utils.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/foreach.hpp"
 
 #include <set>
@@ -33,7 +33,7 @@ namespace city
 struct SoundEmitter
 {  
   Tile* tile;
-  TileOverlayPtr overlay;
+  OverlayPtr overlay;
   TilePos& camerapos;
 
   SoundEmitter( Tile* t, TilePos& cam ) : camerapos( cam )
@@ -58,7 +58,7 @@ struct SoundEmitter
     {
       if( tile->getFlag( Tile::tlWater ) )
       {
-        return "river_00001.ogg";
+        return "river_00001";
       }
       else if( tile->getFlag( Tile::tlTree ) )
       {
@@ -66,7 +66,7 @@ struct SoundEmitter
       }
       else
       {
-        return utils::format( 0xff, "emptyland_%05d.ogg", (tile->i() * tile->j()) % 3 + 1  );
+        return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
       }
     }
 
@@ -166,7 +166,7 @@ void AmbientSound::timeStep( const unsigned int time )
     {
       processedSounds.insert( sound );
 
-      ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( sound, audio::maxSndLevel / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }

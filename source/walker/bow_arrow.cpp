@@ -25,6 +25,10 @@ using namespace constants;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::bow_arrow, BowArrow)
 
+namespace {
+const int defaultAttackValue=-3;
+}
+
 BowArrowPtr BowArrow::create(PlayerCityPtr city)
 {
   BowArrowPtr ret( new BowArrow( city ) );
@@ -38,7 +42,7 @@ void BowArrow::_onTarget()
   const WalkerList& walkers = _city()->walkers( dstPos() );
   foreach( w, walkers )
   {
-    (*w)->updateHealth( -3 );
+    (*w)->updateHealth( defaultAttackValue );
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
 }

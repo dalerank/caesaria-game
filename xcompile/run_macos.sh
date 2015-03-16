@@ -1,7 +1,8 @@
 #!/usr/bin/env bash    
-SDLFR=/Volumes/SDL2/SDL2.framework
-SAVEDIR=./saves/
+SDLFR=~/Library/Frameworks/SDL2.framework
+SAVEDIR=saves
 LIBDIR=~/Library/Frameworks/
+
 
 # if the file doesn't exist, try to create folder
 if [ ! -d $SDLFR ]
@@ -17,7 +18,9 @@ fi
 
 if [ ! -d $SAVEDIR ]
 then
-  mkdir -p $SAVEDIR
+  rm -f $SAVEDIR
+  mkdir $SAVEDIR
 fi
 
-./caesaria.macos
+./caesaria.macos &
+exit 0

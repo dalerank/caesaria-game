@@ -71,8 +71,8 @@ public:
 
   void detachObject()   { obj = 0; }
   void attachObject(void * anObj) {    obj = (T*)anObj;   }
-  T* object()   {    return obj;  }
-  T* operator->() const   { return obj; }
+  inline T* object()   { return obj;  }
+  inline T* operator->() const   { return obj; }
   
   SmartPtr()   { obj = 0;  }
 
@@ -97,10 +97,10 @@ public:
     referenceObject(aPtr.obj);
   }
 
-  bool operator==(const SmartPtr<T> &aPtr) const   {    return (obj == aPtr.obj);  }
-  bool operator!=(const SmartPtr<T> &aPtr) const  {     return (obj != aPtr.obj);  }
-  bool operator<(const SmartPtr<T> &aPtr ) const  {    return (obj < aPtr.obj);  }
-  bool operator==(void *ptr) const  {    return ((void*)obj == ptr);  }
+  inline bool operator==(const SmartPtr<T> &aPtr) const   {    return (obj == aPtr.obj);  }
+  inline bool operator!=(const SmartPtr<T> &aPtr) const  {     return (obj != aPtr.obj);  }
+  inline bool operator<(const SmartPtr<T> &aPtr ) const  {    return (obj < aPtr.obj);  }
+  inline bool operator==(void *ptr) const  {    return ((void*)obj == ptr);  }
 
   template<class Src>
   SmartPtr& operator<<( SmartPtr<Src> ptr )
@@ -110,10 +110,10 @@ public:
     return *this;
   }
 
-  bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
-  T& operator[] (int index)  {    return (*obj)[index];  }
-  bool isNull() const  {    return obj == 0;  }
-  bool isValid() const   {    return obj != 0;  }
+  inline bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
+  inline T& operator[] (int index)  {    return (*obj)[index];  }
+  inline bool isNull() const  {    return obj == 0;  }
+  inline bool isValid() const   {    return obj != 0;  }
 };
 
 template<class A, class B>

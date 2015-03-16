@@ -48,7 +48,7 @@ using namespace gfx;
 using namespace constants;
 using namespace metric;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::warehouse, Warehouse)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
 namespace {
 CAESARIA_LITERALCONST(tiles)
@@ -116,7 +116,7 @@ public:
   WarehouseStore goodStore;
 };
 
-Warehouse::Warehouse() : WorkingBuilding( constants::objects::warehouse, Size( 3 )), _d( new Impl )
+Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new Impl )
 {
    // _name = _("Entrepot");
   setPicture( ResourceGroup::warehouse, 19 );
@@ -274,15 +274,15 @@ void Warehouse::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( good::Product gType=good::wheat; gType <= good::goodCount; ++gType )
+  foreach( gType, good::all() )
   {
-    good::Orders::Order order = _d->goodStore.getOrder( gType );
-    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( gType ), 0, Room::basicCapacity );
+    good::Orders::Order order = _d->goodStore.getOrder( *gType );
+    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( *gType ), 0, Room::basicCapacity );
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
       CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( BuildingPtr( this ), gType, goodFreeQty );
+      walker->send2city( BuildingPtr( this ), *gType, goodFreeQty );
 
       if( !walker->isDeleted() )
       {
@@ -299,21 +299,21 @@ void Warehouse::_resolveDevastationMode()
   if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
     const int maxCapacity = CartPusher::megaCart;
-    for( good::Product goodType=good::wheat; goodType <= good::goodCount; ++goodType )
+    foreach( goodType, good::all() )
     {
-      int goodQty = _d->goodStore.qty( goodType );
+      int goodQty = _d->goodStore.qty( *goodType );
       goodQty = math::clamp( goodQty, 0, maxCapacity);
 
       if( goodQty > 0 )
       {
-        good::Stock stock( goodType, goodQty, goodQty);
+        good::Stock stock( *goodType, goodQty, goodQty);
         CartPusherPtr cart = CartPusher::create( _city() );
         cart->stock().setCapacity( maxCapacity );
         cart->send2city( BuildingPtr( this ), stock );
 
         if( !cart->isDeleted() )
         {
-          good::Stock tmpStock( goodType, goodQty );;
+          good::Stock tmpStock( *goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
           addWalker( cart.object() );
         }

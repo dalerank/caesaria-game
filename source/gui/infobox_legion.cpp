@@ -25,7 +25,7 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 #include "walker/romesoldier.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "objects/fort.hpp"
@@ -115,8 +115,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      city::Helper helper( city );
-      BuildingList barracks = helper.find<Building>( objects::barracks );
+      BuildingList barracks = city::statistic::findo<Building>( city, object::barracks );
 
       std::string text = barracks.empty()
                           ? "##legion_haveho_soldiers_and_barracks##"
@@ -184,17 +183,7 @@ void AboutLegion::_update()
 
   if( _d->lbFlag )
   {
-    int flIndex = 0;
-    switch( _d->fort->type() )
-    {
-    case objects::fort_javelin: flIndex = 30; break;
-    case objects::fort_legionaries: flIndex = 21; break;
-    case objects::fort_horse: flIndex = 39; break;
-
-    default: break;
-    }
-
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, flIndex );
+    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, _d->fort->flagIndex() );
     pic.setOffset( 0, 0 );
     _d->lbFlag->setIcon( pic );
   }

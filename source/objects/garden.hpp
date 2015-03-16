@@ -27,8 +27,8 @@ public:
   virtual void initTerrain(gfx::Tile& terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool isNeedRoadAccess() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool isNeedRoad() const;
+  virtual bool build(const city::AreaInfo &info);
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
   virtual Desirability desirability() const;

@@ -49,7 +49,7 @@ public:
 
   TilesArray& remove(const TilePos &pos );
 
-  TileOverlayList overlays() const;
+  OverlayList overlays() const;
 
   Tile* random() const;
 };

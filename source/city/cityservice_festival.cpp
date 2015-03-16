@@ -37,13 +37,14 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(Festival,festival)
 
 namespace {
+  static const int prepareFestivalDealy = 2;
   typedef enum { ftNone=0, ftSmall, ftMiddle, ftBig, ftCount } FestType;
   int firstFestivalSentinment[ftCount] = { 7, 9, 12 };
   int secondFesivalSentiment[ftCount] = { 2, 3, 5 };
 
   const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
   const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
-  const char* festivalVideo[ftCount] = { "", ":/smk/festival1_feast.smk", ":/smk/festival3_Glad.smk", ":/smk/festival2_chariot.smk" };
+  const char* festivalVideo[ftCount] = { "", "festival1_feast", "festival3_glad", "festival2_chariot" };
 }
 
 class Festival::Impl
@@ -73,10 +74,10 @@ void Festival::assignFestival( RomeDivinityType name, int size )
 {
   _d->festivalType = size;
   _d->festivalDate = game::Date::current();
-  _d->festivalDate.appendMonth( 2 + size );
+  _d->festivalDate.appendMonth( prepareFestivalDealy + size );
   _d->divinity = name;
 
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
@@ -99,9 +100,9 @@ void Festival::timeStep(const unsigned int time )
   {
     int sentimentValue = 0;
 
-    if( _d->prevFestivalDate.monthsTo( currentDate ) >= 12 )
+    if( _d->prevFestivalDate.monthsTo( currentDate ) >= DateTime::monthsInYear )
     {
-      int* sentimentValues = (_d->lastFestivalDate.monthsTo( game::Date::current() ) < 12)
+      int* sentimentValues = (_d->lastFestivalDate.monthsTo( game::Date::current() ) < DateTime::monthsInYear )
                                   ? secondFesivalSentiment
                                   : firstFestivalSentinment;
 
@@ -114,9 +115,9 @@ void Festival::timeStep(const unsigned int time )
 
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
-    int id = math::clamp<int>( _d->festivalType, 0, 3 );
+    int id = math::clamp<int>( _d->festivalType, ftNone, ftBig );
     events::GameEventPtr e = events::ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
-                                                              _city()->player()->name(), festivalVideo[ id ] );
+                                                            _city()->mayor()->name(), festivalVideo[ id ] );
     e->dispatch();
 
     e = events::UpdateCitySentiment::create( sentimentValue );

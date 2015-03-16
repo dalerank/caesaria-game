@@ -63,6 +63,7 @@ public:
   int scrollSpeed() const;
 
   Tile* at( const Point& pos, bool overborder ) const;
+  virtual Point mpos( const Point& pos ) const;
   Tile* at( const TilePos& pos ) const;
   Tile* centerTile() const;
 
@@ -71,7 +72,7 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged();
-  virtual Signal1<constants::Direction>& onDirectionChanged();
+  virtual Signal1<Direction>& onDirectionChanged();
   
 private:
   void _setCenter(Point pos, bool checkBorder);

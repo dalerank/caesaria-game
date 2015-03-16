@@ -271,9 +271,10 @@ void Population::Impl::updateStates()
   {
     statistic::GoodsMap goods = statistic::getGoodsMap( city, true );
     int foodLevel = 0;
-    for( good::Product k=good::wheat; k <= good::vegetable; ++k )
+
+    foreach( k, good::foods() )
     {
-      foodLevel += (goods[ k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ *k ] > 0 ? 1 : 0);
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
@@ -293,11 +294,9 @@ void Population::Impl::updateStates()
 
   if( lbAdvice )
   {
-    city::Helper helper( city );
-
     int maxHabitants = 0;
     int currentHabitants = 0;
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( city );
     foreach( it, houses )
     {
       HousePtr house = *it;
@@ -415,13 +414,12 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_society:
     {
-      city::Helper helper( city );
-      HouseList houses = helper.find<House>( objects::house );
+      HouseList houses = city::statistic::findh( city );
 
       _values.clear();
       _maxValue = 5;
       std::map< unsigned int, unsigned int> levelPopulations;
-      for( int k=0; k < HouseLevel::count; k++ )
+      for( int k=0; k < HouseLevel::maxLevel; k++ )
       {
         levelPopulations[ k ] = 0;
       }
@@ -444,7 +442,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       }
 
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
-      _maxXValue = HouseLevel::count;
+      _maxXValue = HouseLevel::maxLevel;
       emit onMaxYChange( _maxValue );
       emit onMaxXChange( _maxXValue );
     }

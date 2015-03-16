@@ -17,7 +17,7 @@
 
 #include "cityservice_prosperity.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/variant_map.hpp"
 #include "core/position.hpp"
@@ -40,6 +40,12 @@ namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(ProsperityRating,prosperity)
+
+enum { taxBrokenPenalty=3,
+       normalWorklesPercent=5,
+       caesarHelpCityPenalty=10,
+       highWorklessPercent=15,
+       normalPlebsInCityPercent=30 };
 
 class ProsperityRating::Impl
 {
@@ -98,8 +104,7 @@ void ProsperityRating::timeStep(const unsigned int time )
       return;
     }
 
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -109,7 +114,7 @@ void ProsperityRating::timeStep(const unsigned int time )
       HousePtr house = *it;
       prosperityCap += house->spec().prosperity();
       patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
-      plebsCount += house->spec().level() < 5 ? house->habitants().count() : 0;
+      plebsCount += house->spec().level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
     }
 
     if( houses.size() > 0 )
@@ -132,14 +137,14 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
 
     _d->percentPlebs = math::percentage( plebsCount, _city()->population() );
-    _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
+    _d->prosperityExtend += (_d->percentPlebs < normalPlebsInCityPercent ? 1 : 0);
 
-    bool haveHippodrome = !helper.find<Hippodrome>( objects::hippodrome ).empty();
+    bool haveHippodrome = !city::statistic::findo<Hippodrome>( _city(), object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? 1 : 0);
 
     _d->worklessPercent = statistic::getWorklessPercent( _city() );
-    bool unemploymentLess5percent = _d->worklessPercent < 5;
-    bool unemploymentMore15percent = _d->worklessPercent > 15;
+    bool unemploymentLess5percent = _d->worklessPercent < normalWorklesPercent;
+    bool unemploymentMore15percent = _d->worklessPercent > highWorklessPercent;
 
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
     _d->prosperityExtend += (unemploymentMore15percent ? -1 : 0);
@@ -151,13 +156,13 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    
-    _d->prosperityExtend += (_city()->haveOverduePayment() ? -3 : 0);
-    _d->prosperityExtend += (_city()->isPaysTaxes() ? -3 : 0);
+    _d->prosperityExtend += (_city()->haveOverduePayment() ? -taxBrokenPenalty : 0);
+    _d->prosperityExtend += (_city()->isPaysTaxes() ? -taxBrokenPenalty : 0);
 
     unsigned int caesarsHelper = _city()->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
     caesarsHelper += _city()->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
     if( caesarsHelper > 0 )
-      _d->prosperityExtend += -10;
+      _d->prosperityExtend += -caesarHelpCityPenalty;
   }
 }
 

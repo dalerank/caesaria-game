@@ -93,6 +93,7 @@ enum Type
   docker,
   gladiatorRiot,
   merchantCamel,
+  house_plague,
   all = 0xff,
   any = all
 };

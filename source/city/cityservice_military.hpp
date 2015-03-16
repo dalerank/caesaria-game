@@ -31,6 +31,7 @@ class Military : public city::Srvc
 public:  
   struct Notification
   {
+    enum { ftype=0, fdate, fname, fmessage, flocation };
     typedef enum { unknown, barbarian=0x1, chastener, attack } Type;
 
     DateTime date;

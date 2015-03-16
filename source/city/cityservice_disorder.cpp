@@ -17,7 +17,7 @@
 
 #include "cityservice_disorder.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/constants.hpp"
 #include "city/funds.hpp"
 #include "core/foreach.hpp"
@@ -34,6 +34,17 @@ using namespace constants;
 
 namespace
 {
+const int maxCrimeValue = 100;
+
+const int crimeLevel4rioter = 90;
+const int crimeLevel4mugger = 70;
+const int crimeLevel4protestor = 50;
+
+const int crimedecOnRioterBirth = 20;
+
+const int minSentiment4protest = 60;
+const int minSentiment4mugger = 30;
+
 const int defaultCrimeLevel = 75;
 const int crimeDescLimiter = 10;
 }
@@ -88,8 +99,7 @@ void Disorder::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  Helper helper( _city() );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findh( _city() );
 
   WalkerList walkers = _city()->walkers( walker::protestor );
 
@@ -120,44 +130,44 @@ void Disorder::timeStep( const unsigned int time )
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
     int sentiment = _city()->sentiment();
-    int randomValue = math::random( 100 );
-    if (sentiment >= 60)
+    int randomValue = math::random( maxCrimeValue );
+    if (sentiment >= minSentiment4protest)
     {
       if ( randomValue >= sentiment + 20 )
       {
-        if ( hCrimeLevel > 50 )
+        if ( hCrimeLevel > crimeLevel4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
       }
     }
-    else if ( sentiment >= 30 )
+    else if ( sentiment >= minSentiment4mugger )
     {
       if ( randomValue >= sentiment + 40 )
       {
-        if ( hCrimeLevel >= 70 )
+        if ( hCrimeLevel >= crimeLevel4mugger )
         {
           _d->generateMugger( _city(), *it );
         }
-        else if ( hCrimeLevel > 50 )
+        else if ( hCrimeLevel > crimeLevel4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
       }
     }
-    else // sentiment < 30
+    else if( sentiment < minSentiment4mugger )
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel >= 90 )
+        if ( hCrimeLevel >= crimeLevel4rioter )
         {
           _d->generateRioter( _city(), *it );
         }
-        else if ( hCrimeLevel >= 70 )
+        else if ( hCrimeLevel >= crimeLevel4mugger )
         {
           _d->generateMugger( _city(), *it );
         }
-        else if ( hCrimeLevel > 50 )
+        else if ( hCrimeLevel > crimeLevel4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
@@ -216,16 +226,17 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
   house->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
 
   int taxesThisYear = city->funds().getIssueValue( city::Funds::taxIncome );
+  int maxMoneyStolen = city->population() / 10;
 
   if( taxesThisYear > 20 )
   {
     int moneyStolen = taxesThisYear / 4;
 
-    if( moneyStolen > 400 )
-      moneyStolen = math::random( 400 );
+    if( moneyStolen > maxMoneyStolen )
+      moneyStolen = math::random( maxMoneyStolen );
 
     events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                                          events::ShowInfobox::send2scribe, ":/smk/mugging.smk" );
+                                                          events::ShowInfobox::send2scribe, "mugging" );
     e->dispatch();
 
     city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );
@@ -237,7 +248,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
   events::GameEventPtr e = events::ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
-                                                        events::ShowInfobox::send2scribe, "/smk/spy_riot.smk" );
+                                                        events::ShowInfobox::send2scribe, "spy_riot" );
   e->dispatch();
   rioterInThisYear++;
 
@@ -249,7 +260,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 
   foreach( it, houses )
   {
-    (*it)->appendServiceValue( Service::crime, -20 );
+    (*it)->appendServiceValue( Service::crime, -crimedecOnRioterBirth );
   }
 }
 

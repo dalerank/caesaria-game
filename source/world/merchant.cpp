@@ -112,9 +112,9 @@ void Merchant::save(VariantMap& stream) const
 
   stream[ "sells"    ]= _d->sells.save();
   stream[ "buys"     ]= _d->buys.save();
-  stream[ "step"     ]= _d->step;
-  stream[ "begin"    ]= Variant( _d->baseCity );
-  stream[ "end"      ]= Variant( _d->destCity );
+  VARIANT_SAVE_ANY_D( stream, _d, step )
+  VARIANT_SAVE_STR_D( stream, _d, baseCity )
+  VARIANT_SAVE_STR_D( stream, _d, destCity )
 
   VariantList vl_steps;
 
@@ -128,9 +128,9 @@ void Merchant::load(const VariantMap& stream)
   Object::load( stream );
   _d->sells.load( stream.get( "sells" ).toMap() );
   _d->buys.load( stream.get( "buys" ).toMap() );
-  _d->step = stream.get( "step" ).toInt();
-  _d->baseCity = stream.get( "begin" ).toString();
-  _d->destCity = stream.get( "end" ).toString();
+  VARIANT_LOAD_ANY_D( _d, step, stream )
+  VARIANT_LOAD_STR_D( _d, baseCity, stream )
+  VARIANT_LOAD_STR_D( _d, destCity, stream )
 
   VariantList steps = stream.get( "steps" ).toList();
   foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }

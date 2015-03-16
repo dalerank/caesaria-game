@@ -136,6 +136,30 @@ void UserStats::unlockAchievement( Achievement &achievement )
   needStoreStats = true;
 }
 
+std::string language()
+{
+#ifdef CAESARIA_PLATFORM_WIN
+  return "";
+#else
+  std::string lang = SteamUtils()->GetSteamUILanguage();
+
+  if( lang == "english" ) lang = "en";
+  else if( lang == "russian" ) lang = "ru";
+  else if( lang == "czech" ) lang = "cz";
+  else if( lang == "finnish" ) lang = "fn";
+  else if( lang == "french" ) lang = "fr";
+  else if( lang == "german" ) lang = "de";
+  else if( lang == "italian" ) lang = "it";
+  else if( lang == "polish" ) lang = "pl";
+  else if( lang == "spanish" ) lang = "sp";
+  else if( lang == "swedish" ) lang = "sv";
+  else if( lang == "ukranian" ) lang = "ua";
+  else lang = "";
+
+  return lang;
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: see if we should unlock this achievement
 //-----------------------------------------------------------------------------
@@ -238,6 +262,7 @@ bool checkSteamRunning()
 bool connect()
 {
 #ifdef CAESARIA_PLATFORM_MACOSX
+  Logger::warning( "Reset game on mac" );
   SteamAPI_Shutdown();
 #endif
   // Initialize SteamAPI, if this fails we bail out since we depend on Steam for lots of stuff.
@@ -289,8 +314,9 @@ bool connect()
 }
 
 void close()
-{
+{  
   SteamAPI_Shutdown();
+  Logger::warning( "Game: try close steam" );
 }
 
 void update()

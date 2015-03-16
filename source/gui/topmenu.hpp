@@ -48,7 +48,7 @@ signals public:
   Signal0<>& onShowSoundOptions();
   Signal0<>& onShowGameSpeedOptions();
   Signal0<>& onShowCityOptions();
-  Signal1<constants::advisor::Type>& onRequestAdvisor();
+  Signal1<Advisor>& onRequestAdvisor();
 
 private:
   class Impl;

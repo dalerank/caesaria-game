@@ -18,7 +18,7 @@
 #include "health_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
+#include "statistic.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -57,8 +57,7 @@ void HealthUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "HealthUpdater: execute service" );
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = city::statistic::findh( _city() );
 
     foreach( it, houses )
     {
@@ -72,15 +71,15 @@ bool HealthUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void HealthUpdater::load(const VariantMap& stream)
 {
-  _d->endTime = stream.get( "endTime" ).toDateTime();
-  _d->value = stream.get( "value" );
+  VARIANT_LOAD_TIME_D( _d, endTime, stream )
+  VARIANT_LOAD_ANY_D( _d, value, stream )
 }
 
 VariantMap HealthUpdater::save() const
 {
   VariantMap ret;
-  ret[ "endTime" ] = _d->endTime;
-  ret[ "value" ] = _d->value;
+  VARIANT_SAVE_ANY_D( ret, _d, endTime )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
 
   return ret;
 }

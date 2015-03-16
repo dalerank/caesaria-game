@@ -135,7 +135,7 @@ VariantMap PostponeEvent::save() const
   VariantMap ret = _d->options;
   ret[ "type" ] = Variant( _type );
   ret[ "name" ] = Variant( _name );  
-  ret[ "date" ] = _d->date;
+  VARIANT_SAVE_ANY_D( ret, _d, date )
   VARIANT_SAVE_ANY_D( ret, _d, checkInterval)
   VARIANT_SAVE_ANY_D( ret, _d, population )
   return ret;

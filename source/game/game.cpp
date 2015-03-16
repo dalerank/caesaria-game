@@ -32,7 +32,6 @@
 #include "gui/environment.hpp"
 #include "settings.hpp"
 #include "vfs/filesystem.hpp"
-#include "enums.hpp"
 #include "gfx/animation_bank.hpp"
 #include "vfs/entries.hpp"
 #include "world/empire.hpp"
@@ -61,16 +60,19 @@
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
+#include "video_config.hpp"
 
 #include <list>
 
 using namespace gfx;
 using namespace scene;
+
+enum { minimumSpeed=10, defaultCellWidth=30, remakeCellWidth=60, maximuxSpeed=300 };
 
 class Game::Impl
 {
@@ -99,6 +101,7 @@ public:
   void initPictures();
   void initAddons();
   void initHotkeys();
+  void initMovie();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -110,6 +113,19 @@ public:
       currentScreen(0), engine(0), gui(0)
   {}
 };
+
+void Game::Impl::initMovie()
+{
+  movie::Config& config = movie::Config::instance();
+
+  config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
+  std::string c3videoFile = SETTINGS_VALUE( c3video ).toString();
+
+  if( !c3videoFile.empty() )
+  {
+    config.addFolder( c3videoFile );
+  }
+}
 
 void Game::Impl::initLocale( std::string localePath )
 {
@@ -152,9 +168,16 @@ void Game::Impl::initSound()
   ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
   ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
   ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
+  ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
+
+  std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
+  if( !c3musicFolder.empty() )
+  {
+    ae.addFolder( c3musicFolder );
+  }
 
   Logger::warning( "Game: load talks archive" );
-  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -288,7 +311,7 @@ Game::Game() : _d( new Impl )
 }
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, minimumSpeed, maximuxSpeed );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
 
 Game::~Game(){}
@@ -299,7 +322,9 @@ void Game::save(std::string filename) const
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
+
+  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), 1 );
   e->dispatch();
 }
 
@@ -365,13 +390,13 @@ bool Game::load(std::string filename)
   }
 
   Logger::warning( "Game: calculate road access for buildings" );
-  TileOverlayList& llo = _d->city->overlays();
+  OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );
     if( construction.isValid() )
     {
-      construction->computeAccessRoads();
+      construction->computeRoadside();
     }
   }
 
@@ -395,9 +420,9 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != 30 && cellWidth != 60 )
+  if( cellWidth != defaultCellWidth && cellWidth != remakeCellWidth )
   {
-    cellWidth = 30;
+    cellWidth = defaultCellWidth;
   }    
 
   tilemap::initTileBase( cellWidth );
@@ -409,6 +434,7 @@ void Game::initialize()
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
+  _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
   _d->initGuiEnvironment();
   _d->initSound();
@@ -474,9 +500,8 @@ bool Game::exec()
       delete _d->currentScreen;
       _d->currentScreen = 0;
     }
-
     return true;
-  }
+  }    
 
   Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
   addon::Manager& am = addon::Manager::instance();
@@ -509,8 +534,12 @@ bool Game::exec()
     }
     break;
 
+    case SCREEN_QUIT:
+      Logger::warning( "game: prepare for quit" );
+    break;
+
     default:
-      Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
+      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;
@@ -521,6 +550,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
 
   _d->player = Player::create();
+  _d->player->setName( SETTINGS_VALUE( playerName ).toString() );
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
@@ -541,12 +571,10 @@ void Game::clear()
   WalkerDebugQueue::print();
   WalkerDebugQueue::instance().clear();
 
-  gfx::OverlayDebugQueue::print();
-  gfx::OverlayDebugQueue::instance().clear();
+  OverlayDebugQueue::print();
+  OverlayDebugQueue::instance().clear();
 #endif
 }
 
-void Game::setNextScreen(ScreenType screen)
-{
-  _d->nextScreen = screen;
-}
+void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}
+

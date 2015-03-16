@@ -426,6 +426,7 @@
     employers : 5
     class : "food"
     image : [ "commerce", 1 ]
+    animation : { rc : "commerce", start : 2, count : 10, offset : [ 20, 54 ], delay : 4 }
     sound : [ "market", 1 ]
   }, 
 
@@ -493,8 +494,9 @@
   engineering_post : {
     cost : 30,
     desirability : { base : 0, 	range : 0,	step : 0 }
-    employers : 5
+    employers : 5   
     image : [ "transport", 56 ]
+    animation : { rc : "transport", start : 57, count : 10, offset : [ 10, 42 ], delay : 4 }
     class : "engineer"
   },
 

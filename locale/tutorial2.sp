@@ -10,7 +10,7 @@
   "##tax_tutorial##" : "Dinero. Construir y mantener la élite cuesta dinero. Roma te ha dado suficientes denarios para empezar - pero no será suficiente para cumplir tu cometido. Los impuestos son una importante fuente de ingresos. Eventualmente, tu ciudad crecerá más haya de las rutas de los recolectores de impuestos del Senado. Construye foros como base para los inspectores de impuestos adicionales en otras partes de tu ciudad."
   "##nice_house_pay_more##" : "Mejores casas pagan mas impuestos."
   "##tt_advisors##" : "Asesores."
-  "##tt2_caption##" : "Metas inmediatas: Construye un granero y llenalo de trigo"
+  "##tt2_short##" : "Metas inmediatas: Construye un granero y llenalo de trigo"
   "##tutorial_markets_text##" : "Tus prioridades deberían ser la seguridad, la vivienda, la comida y el agua, es este orden. Sin viviendas ni comida, los nuevos inmigrantes no vendrán a tu ciudad.\n Roma ahora desea que tu ciudad cultive comida. Construye una granja en tierra fertil - mira los manojos amarillos que indican esto. Conectala a las viviendas con caminos. Si la vivienda esta demasiado lejos, la granja no tendra acceso a empleados."
   "##tutorial_granary_text##" : "Construye un granero cerca de la granja, y asegurate, también, de que tiene acceso a empleados."
   "##tutorial_granary_text2##" : "Cuando el trigo está maduro, un carro lo llevará al granero. Gradualmente el granero se llenará. Cuantas menos ventanas vacias puedas ver, más lleno estará el granero."

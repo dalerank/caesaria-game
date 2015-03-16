@@ -34,23 +34,6 @@ namespace city
 namespace world
 {
 
-class CityParams : public std::map<int, int>
-{
-public:
-  typedef enum { culture=0, empireTaxPayed, overduePayment, ageYears, cityPopulation, maxForts, paramCount } ParamName;
-
-  int get( ParamName name ) const
-  {
-    const_iterator it = find( name );
-    return it != end() ? it->second : 0;
-  }
-
-  void set( ParamName name, int value )
-  {
-    (*this)[ name ] = value;
-  }
-};
-
 class City : public Object
 {
 public:
@@ -69,7 +52,7 @@ public:
   virtual bool isMovable() const { return false; }
   virtual DateTime lastAttack() const = 0;
   virtual int strength() const = 0;
-  virtual PlayerPtr player() const = 0;
+  virtual PlayerPtr mayor() const = 0;
   virtual unsigned int age() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
