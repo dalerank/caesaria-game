@@ -129,7 +129,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ archivesModel       ] = Variant( std::string( "/archives.model" ) );
   _d->options[ soundThemesModel    ] = Variant( std::string( "/sound_themes.model" ) );
   _d->options[ climateModel        ] = Variant( std::string( "/climate.model" ) );
-  _d->options[ language            ] = Variant( std::string( "en" ) );
+  _d->options[ language            ] = Variant( std::string( "" ) );
   _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
   _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
@@ -284,12 +284,18 @@ void Settings::checkC3present()
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
-  }
+    }
+}
+
+void Settings::changeSystemLang(const std::string& newLang)
+{
+  std::string lang = newLang.empty() ? "en" : newLang;
+  Settings::set( language, Variant( lang ) );
 }
 
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
 {
-  Variant vr = game::Settings::get( fpath.toString() );
+  Variant vr = Settings::get( fpath.toString() );
   if( vr.isNull() )
   {
     return dir/fpath;

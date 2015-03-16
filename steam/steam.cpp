@@ -136,6 +136,30 @@ void UserStats::unlockAchievement( Achievement &achievement )
   needStoreStats = true;
 }
 
+std::string language()
+{
+#ifdef CAESARIA_PLATFORM_WIN
+
+#else
+  std::string lang = SteamUtils()->GetSteamUILanguage();
+
+  if( lang == "english" ) lang = "en";
+  else if( lang == "russian" ) lang = "ru";
+  else if( lang == "czech" ) lang = "cz";
+  else if( lang == "finnish" ) lang = "fn";
+  else if( lang == "french" ) lang = "fr";
+  else if( lang == "german" ) lang = "de";
+  else if( lang == "italian" ) lang = "it";
+  else if( lang == "polish" ) lang = "pl";
+  else if( lang == "spanish" ) lang = "sp";
+  else if( lang == "swedish" ) lang = "sv";
+  else if( lang == "ukranian" ) lang = "ua";
+  else lang = "";
+
+  return lang;
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: see if we should unlock this achievement
 //-----------------------------------------------------------------------------

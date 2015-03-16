@@ -114,6 +114,7 @@ public:
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
+  void changeSystemLang( const std::string& newLang );
 private:
   Settings();
 

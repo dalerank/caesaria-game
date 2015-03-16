@@ -295,7 +295,7 @@
 "##wrath_of_neptune_failed_description##":"Vous m'avez offenser ! Je suis votre regard de loin jusqu'au jour où votre ville acceuillera des navires !"
 "##sentiment_people_annoyed_you##":"Le peuple s'ennuie de vous."
 "##city_has_runout_money_again##":"Vous avez demander des fonds à Rome. Rome vous accorde 5.000 deniers pour les 12 prochains mois. Servez-vous en pour financer des taxes et des exportations."
-"##damascus_win_text##":"Encore une fois, vous avez réussi à prouver que le mot "impossible" n'existe pas, grâce à vous, mes légions de Syrie vont pouvoir repartir."
+"##damascus_win_text##":"Encore une fois, vous avez réussi à prouver que le mot 'impossible' n'existe pas, grâce à vous, mes légions de Syrie vont pouvoir repartir."
 "##really_destroy_fort##":"Etes-vous sûr de vouloir détruire ce fort ?"
 "##tingis_win_text##":"Etes-vous un gouverneur, ou un général ? Votre bon travail a permis de libéré Tingis de mes légions dans l'Ouest et me permettent de continuer mes ambitions. Vous devenez une clé dans mon plan."
 "##enter_your_name##":"Veuillez entrer votre nom"
