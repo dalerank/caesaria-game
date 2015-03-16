@@ -33,7 +33,7 @@ namespace imgid
 namespace tile
 {
   int encode( const Tile& tt );
-  int turnCoastTile(int imgid , constants::Direction newDirection);
+  int turnCoastTile(int imgid , Direction newDirection);
   unsigned int hash( const TilePos& pos );
   Point tilepos2screen( const TilePos& pos );
   TilePos screen2tilepos( const Point& point, int mapsize );
@@ -45,11 +45,13 @@ namespace tile
 
 namespace tilemap
 {
-  constants::Direction getDirection( const TilePos& b, const TilePos& e );
+  Direction getDirection( const TilePos& b, const TilePos& e );
   void initTileBase( int width );
   const Point& cellCenter();
   const Size& cellPicSize();
   const Size& cellSize();
+  const TilePos& invalidLocation();
+  bool isValidLocation( const TilePos& pos );
 }
 
 }//end namespace gfx

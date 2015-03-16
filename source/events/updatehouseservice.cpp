@@ -83,8 +83,8 @@ void UpdateHouseService::load(const VariantMap& stream)
   VariantList vl = stream.get( lc_population ).toList();
   _d->minPopulation = vl.get( 0, 0 ).toInt();
   _d->maxPopulation = vl.get( 1, 999999 ).toInt();
-  _d->type = (Service::Type)stream.get( "type" ).toInt();
-  VARIANT_LOAD_ANY_D( _d, value, stream );
+  VARIANT_LOAD_ENUM_D( _d, type, stream )
+  VARIANT_LOAD_ANY_D( _d, value, stream )
 }
 
 VariantMap UpdateHouseService::save() const
@@ -94,8 +94,8 @@ VariantMap UpdateHouseService::save() const
   vl_pop << _d->minPopulation << _d->maxPopulation;
 
   ret[ lc_population ] = vl_pop;
-  ret[ "type" ] = (int)_d->type;
-  VARIANT_SAVE_ANY_D( ret, _d, value );
+  VARIANT_SAVE_ENUM_D( ret, _d, type )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
 
   return ret;
 }

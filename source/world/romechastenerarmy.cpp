@@ -28,6 +28,11 @@
 namespace world
 {
 
+namespace {
+const int relation4brokeAttack=35;
+const int defaultSoldiersCount=16;
+}
+
 class RomeChastenerArmy::Impl
 {
 public:
@@ -56,7 +61,7 @@ void RomeChastenerArmy::timeStep(const unsigned int time)
 
   if( !_d->messageSent && game::Date::isWeekChanged() && _d->checkFavor )
   {
-    if( empire()->emperor().relation( target() ) > 35 )
+    if( empire()->emperor().relation( target() ) > relation4brokeAttack )
     {
       Messenger::now( empire(), target(), "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
 
@@ -109,7 +114,7 @@ RomeChastenerArmy::RomeChastenerArmy(EmpirePtr empire)
 {
   _d->checkFavor = false;
   _d->messageSent = false;
-  _d->soldiersNumber = 16;
+  _d->soldiersNumber = defaultSoldiersCount;
 }
 
 }

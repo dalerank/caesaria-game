@@ -226,7 +226,7 @@ void PlayerArmy::_check4attack()
      foreach( it, cities )
      {
        float distance = location().distanceTo( (*it)->location() );
-       int month2lastAttack = math::clamp<int>( 12 - (*it)->lastAttack().monthsTo( currentDate ), 0, 12 );
+       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - (*it)->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
        citymap[ month2lastAttack * 100 + (int)distance ] = *it;
      }
 
@@ -264,7 +264,7 @@ void PlayerArmy::_reachedWay()
         int type = (*it).save[ "type" ];
         WalkerPtr walker = WalkerManager::instance().create( (constants::walker::Type)type, pCity );
         walker->load( (*it).save );
-        pCity->addWalker( walker );
+        walker->attach();
       }
 
       FortPtr fort = ptr_cast<Fort>( pCity->getOverlay( _d->fortPos ) );

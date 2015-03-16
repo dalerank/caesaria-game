@@ -31,9 +31,6 @@ using namespace constants;
 namespace events
 {
 
-namespace {
-}
-
 class FishPlaceEvent::Impl
 {
 public:

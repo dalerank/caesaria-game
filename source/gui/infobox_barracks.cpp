@@ -33,7 +33,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(barracks,objects::barracks,AboutBarracks)
+REGISTER_OBJECT_BASEINFOBOX(barracks,AboutBarracks)
 
 class AboutBarracks::Impl
 {

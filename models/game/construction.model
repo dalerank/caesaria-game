@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 109 ], delay : 2 }
+    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 120 ], delay : 3 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 
@@ -303,7 +303,7 @@
     image.ext : {
       s1 : { size: 1, rc : "prefecture", start : 1, count : 4 }
     }
-    animation : { rc : "prefecture_anim", start : 1, count : 1, offset : [ 51, 27 ], delay : 3 }
+    animation : { rc : "prefecture_anim", start : 1, count : 9, offset : [ 10, 60 ], delay : 3 }
     class : "security"
   },  
  
@@ -431,6 +431,7 @@
     class : "food"
     image : [ "commerce", 1 ]
     sound : [ "market", 1 ]
+    animation : { rc : "commerce", start : 2, count : 9, offset : [ 90, 45 ], delay : 4 }
   }, 
 
   granery : {
@@ -499,7 +500,7 @@
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 5
     class : "engineer"
-
+    animation : { rc : "engineeringa", start : 1, count : 9, offset : [ 20, 54 ], delay : 2 }
     image.ext : {
       type_1 : { size:1, rc : "engineering", start : 1, count : 4 }
     }
@@ -748,7 +749,7 @@
     productRate : 4.8
     output : "clay"
     class : "rawmaterial"
-    animation : { rc : "commerce", start : 62, count : 10, offset : [ 14, 32 ], delay : 3 }
+    animation : { rc : "commerce", start : 62, count : 10, offset : [ 0, 60 ], delay : 3 }
     sound : [ "claypit", 1 ]
   },
   

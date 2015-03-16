@@ -27,6 +27,7 @@ namespace world
 class GoodCaravan : public MovableObject
 {
 public:
+  enum { deafaultSpeed=3, defaultCapacity=10000 };
   static GoodCaravanPtr create( CityPtr city );
   void sendTo( ObjectPtr obj );
   void sendTo( CityPtr obj );

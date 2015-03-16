@@ -17,7 +17,7 @@
 
 #include "contaminated_water.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
@@ -49,19 +49,18 @@ GameEventPtr ContaminatedWater::create()
   return ret;
 }
 
-void _decreaseHousesHealth( objects::Type btype, PlayerCityPtr city, int value )
+void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
 {
-  city::Helper helper( city );
   TilePos offset( 2, 2 );
 
-  gfx::TileOverlayList buildings = city->overlays();
+  OverlayList buildings = city->overlays();
 
   foreach( itB, buildings )
   {
     if( (*itB)->type() != btype )
         continue;
 
-    HouseList houses = helper.find<House>( objects::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
+    HouseList houses = city::statistic::findo<House>( city, object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
 
     foreach( itHouse, houses )
     {
@@ -79,8 +78,8 @@ void ContaminatedWater::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute contaminated water service" );
     _d->isDeleted = _d->endDate < game::Date::current();
 
-    _decreaseHousesHealth( objects::well, game.city(), -_d->value );
-    _decreaseHousesHealth( objects::fountain, game.city(), -_d->value );
+    _decreaseHousesHealth( object::well, game.city(), -_d->value );
+    _decreaseHousesHealth( object::fountain, game.city(), -_d->value );
   }
 }
 
@@ -90,15 +89,15 @@ bool ContaminatedWater::isDeleted() const {  return _d->isDeleted; }
 void ContaminatedWater::load(const VariantMap& stream)
 {
   GameEvent::load( stream );
-  _d->value = stream.get( "value", 10 ).toInt();
-  _d->endDate = stream.get( "endDate", DateTime( -999, 0, 0 ) ).toDateTime();
+  VARIANT_LOAD_ANYDEF_D( _d, value, 10, stream )
+  VARIANT_LOAD_TIME_D( _d, endDate, stream )
 }
 
 VariantMap ContaminatedWater::save() const
 {
   VariantMap ret = GameEvent::save();
-  ret[ "value" ] = _d->value;
-  ret[ "endDate" ] = _d->endDate;
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  VARIANT_SAVE_ANY_D( ret, _d, endDate )
 
   return ret;
 }

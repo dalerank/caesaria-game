@@ -25,7 +25,7 @@ class ClayPit : public Factory
 public:
   ClayPit();
   
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
   virtual void timeStep( const unsigned long time );
 
 protected:

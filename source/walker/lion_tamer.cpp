@@ -63,7 +63,7 @@ void LionTamer::send2City(BuildingPtr base, bool roadOnly)
     lion->go();
     _d->delay = 12;
 
-    _city()->addWalker( ptr_cast<Walker>( lion ) );
+    attach();
   }
 }
 

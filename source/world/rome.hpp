@@ -39,7 +39,7 @@ public:
   virtual bool isPaysTaxes() const;
   virtual unsigned int age() const;
   virtual void timeStep(const unsigned int time);
-  virtual SmartPtr<Player> player() const;
+  virtual SmartPtr<Player> mayor() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
   virtual world::Nation nation() const;

@@ -40,7 +40,7 @@ class ShowInfobox::Impl
 public:
   std::string title, text, tip;
   bool send2scribe;
-  vfs::Path video;
+  std::string video;
   Point position;
   good::Product gtype;
 };
@@ -66,7 +66,7 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
   return ret;
 }
 
-GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, bool send2scribe, const vfs::Path &video)
+GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, bool send2scribe, const std::string& video)
 {
   ShowInfobox* ev = new ShowInfobox();
   ev->_d->title = title;
@@ -107,9 +107,9 @@ ShowInfobox::ShowInfobox() : _d( new Impl )
 
 void ShowInfobox::_exec( Game& game, unsigned int )
 {
-  if( _d->video.toString().empty() )
+  if( _d->video.empty() )
   {
-    gui::Widget* msgWnd = new gui::infobox::AboutEvent( game.gui()->rootWidget(), _d->title, _d->text,
+    gui::Widget* msgWnd = new gui::infobox::AboutEvent( game.gui()->rootWidget(), _(_d->title), _(_d->text),
                                                         game::Date::current(), _d->gtype, _d->tip );
     msgWnd->show();
   }
@@ -123,7 +123,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
 
   if( _d->send2scribe )
   {
-    GameEventPtr e = ScribeMessage::create( _d->title, _d->text, _d->gtype, _d->position );
+    GameEventPtr e = ScribeMessage::create( _(_d->title), _(_d->text), _d->gtype, _d->position );
     e->dispatch();
   }
 }

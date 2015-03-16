@@ -55,7 +55,7 @@ public:
   void loadCarts( vfs::Path model );
   void loadAnimation(vfs::Path model, vfs::Path basic);
 
-  static const Animation& getCart(int good, int capacity, constants::Direction direction, bool &isBack);
+  static const Animation& getCart(int good, int capacity, Direction direction, bool &isBack);
   static const Animation& simple( int type );
   static const MovementAnimation& find( int type );
 private:

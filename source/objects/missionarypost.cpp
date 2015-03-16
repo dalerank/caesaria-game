@@ -23,10 +23,10 @@
 
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY( objects::missionaryPost, MissionaryPost)
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::missionaryPost, MissionaryPost)
 
 MissionaryPost::MissionaryPost()
-  : ServiceBuilding( Service::missionary, objects::missionaryPost, Size(2) )
+  : ServiceBuilding( Service::missionary, object::missionaryPost, Size(2) )
 {
   setMaximumWorkers(20);
   setWorkers( 0 );

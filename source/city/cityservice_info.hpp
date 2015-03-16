@@ -29,6 +29,7 @@ namespace city
 class Info : public Srvc
 {
 public:
+  enum { lastMonth=1 };
   typedef enum { population=0, funds, tax, taxpayes,
                  monthWithFood, foodKoeff, godsMood,
                  needWorkers, maxWorkers, workless,
@@ -38,7 +39,7 @@ public:
                  romeWages, peace, milthreat,
                  houseNumber, slumNumber, shackNumber,
                  sentiment, foodStock, foodMontlyConsumption,
-                 favour, prosperity,
+                 favour, prosperity, blackHouses,
                  paramsCount } ParamName;
 
   class Parameters : public std::vector<int>

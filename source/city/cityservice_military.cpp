@@ -33,6 +33,8 @@ using namespace constants;
 namespace city
 {
 
+static const int notificationHistoryMonths = 3 * DateTime::monthsInYear;
+static const int enemySoldiertThreat = 10;
 REGISTER_SERVICE_IN_FACTORY(Military,military)
 
 class Military::Impl
@@ -67,7 +69,7 @@ void Military::timeStep(const unsigned int time )
     //clear old notificationse
     for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
-      if( (*it).date.monthsTo( curDate ) > 3 * DateTime::monthsInYear )
+      if( (*it).date.monthsTo( curDate ) > notificationHistoryMonths )
       {
         it = _d->notifications.erase( it );
       }
@@ -95,7 +97,7 @@ void Military::timeStep(const unsigned int time )
     EnemySoldierList enSoldiers;
     enSoldiers << _city()->walkers();
 
-    _d->threatValue = enSoldiers.size() * 10;
+    _d->threatValue = enSoldiers.size() * enemySoldiertThreat;
   }  
 }
 
@@ -221,11 +223,11 @@ VariantList Military::Notification::save() const
 
 void Military::Notification::load(const VariantList& stream)
 {
-  type = (Type)stream.get( 0 ).toInt();
-  date = stream.get( 1 ).toDateTime();
-  objectName = stream.get( 2 ).toString();
-  message = stream.get( 3 ).toString();
-  location = stream.get( 4 ).toPoint();
+  type = (Type)stream.get( ftype ).toInt();
+  date = stream.get( fdate ).toDateTime();
+  objectName = stream.get( fname ).toString();
+  message = stream.get( fmessage ).toString();
+  location = stream.get( flocation ).toPoint();
 }
 
 }//end namespace city

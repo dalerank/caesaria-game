@@ -529,7 +529,7 @@ void DictionaryText::Impl::breakText( const std::string& text, const Size& wdgSi
   scrollbar->setEnabled( maxValue > 0  );
 }
 
-void DictionaryText::Impl::setOffset( int value)
+void DictionaryText::Impl::setOffset(int value)
 {
   yoffset = value;
   needUpdatePicture = true;
@@ -614,7 +614,9 @@ bool DictionaryText::onEvent(const NEvent& event)
 
     case mouseWheel:
     {
-
+      _d->scrollbar->setValue( _d->scrollbar->value() +
+                               (int)event.mouse.wheel * _d->scrollbar->smallStep() * -1 );
+      _d->setOffset( _d->scrollbar->value() );
     }
     break;
 

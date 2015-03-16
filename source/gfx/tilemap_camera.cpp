@@ -24,11 +24,9 @@
 #include "core/logger.hpp"
 #include "gfx/helper.hpp"
 #include "core/foreach.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 #include <set>
-
-using namespace constants;
 
 namespace gfx
 {
@@ -210,6 +208,14 @@ Tile* TilemapCamera::at(const Point& pos, bool overborder) const
   float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
   Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
   return _d->tmap->at( virtPos - _d->offset, overborder );
+}
+
+Point TilemapCamera::mpos(const Point &pos) const
+{
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
+  Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
+  return virtPos - _d->offset;
 }
 
 Tile* TilemapCamera::centerTile() const

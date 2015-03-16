@@ -39,7 +39,7 @@ RiverWave::RiverWave(PlayerCityPtr city )
   _delay = math::random( 100 );
   _setType( walker::riverWave );
   _animation.load( ResourceGroup::sprites, 109, 5 );
-  _animation.setDelay( 4 );
+  _animation.setDelay( Animation::slow );
   _animation.setOffset( Point( 0, 0) );
   _animation.start( false );
 
@@ -51,7 +51,7 @@ RiverWave::RiverWave(PlayerCityPtr city )
 void RiverWave::send2City(const TilePos &location )
 {
   setPos( location );
-  _city()->addWalker( this );
+  attach();
 }
 
 void RiverWave::timeStep(const unsigned long time)

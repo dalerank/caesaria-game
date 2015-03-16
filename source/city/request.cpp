@@ -31,8 +31,11 @@
 #include "events/showrequestwindow.hpp"
 #include "world/goodcaravan.hpp"
 #include "good/store.hpp"
+#include "core/metric.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+
+using namespace  metric;
 
 namespace  city
 {
@@ -68,7 +71,8 @@ void RqGood::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
-    good::Stock stock( _d->stock.type(), _d->stock.capacity() * 100 );
+    Unit stockCap = Unit::fromValue( _d->stock.capacity() );
+    good::Stock stock( _d->stock.type(), stockCap.toQty() );
     events::GameEventPtr e = events::RemoveGoods::create( stock.type(), stock.capacity() );
     e->dispatch();
     success( city );
@@ -83,8 +87,10 @@ bool RqGood::isReady( PlayerCityPtr city ) const
 {
   city::statistic::GoodsMap gm = city::statistic::getGoodsMap( city, false );
 
-  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), gm[ _d->stock.type() ] / 100 );
-  if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
+  Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
+  Unit needCap = Unit::fromValue( _d->stock.capacity() );
+  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), stockCap.ivalue() );
+  if( stockCap >= needCap )
   {
     return true;
   }
@@ -102,6 +108,7 @@ VariantMap RqGood::save() const
   ret[ "reqtype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
+  VARIANT_SAVE_ANY_D( ret, _d, alsoRemind )
   VariantMap vm_win;
   vm_win[ "favour" ] = _d->winFavour;
   vm_win[ "money" ] = _d->winMoney;
@@ -123,6 +130,7 @@ void RqGood::load(const VariantMap& stream)
 
 
   Variant vm_goodt = stream.get( "good" );
+  VARIANT_LOAD_ANY_D( _d, alsoRemind, stream )
   if( vm_goodt.type() == Variant::Map )
   {
     VariantMap vm_good = vm_goodt.toMap();
@@ -200,11 +208,11 @@ void RqGood::update()
 {
   Request::update();
 
-  if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > 12) )
+  if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear ) )
   {
     _d->alsoRemind = true;
 
-    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, _("##imperial_reminder##"), "", _("##imperial_reminder_text##") );
+    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
     e->dispatch();
   }
 }

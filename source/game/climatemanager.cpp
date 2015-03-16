@@ -42,9 +42,9 @@ void initialize(ClimateType climate)
   VariantMap climateArchives = config::load( SETTINGS_RC_PATH( climateModel ) );
 
   std::string optName;
-  if( climate == game::climate::central ) { optName = "central"; }
-  else if( climate == game::climate::northen )  { optName = "north"; }
-  else if( climate == game::climate::desert ) { optName = "south"; }
+  if( climate == central ) { optName = CAESARIA_STR_A(central); }
+  else if( climate == northen )  { optName = "north"; }
+  else if( climate == desert ) { optName = "south"; }
 
   Path archivePath = climateArchives.get( optName ).toString();
   Directory dir = archivePath.directory();

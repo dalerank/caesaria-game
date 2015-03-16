@@ -19,24 +19,28 @@
 #define __CAESARIA_OBJECTPARAM_H_INCLUDED__
 
 #include "core/namedtype.hpp"
+#include "core/hash.hpp"
 
-DEFINE_NAMEDTYPE(Param)
+#define REGISTER_PARAM(name,id) static const Param name = Param(id);
+#define REGISTER_PARAM_H(name) static const Param name = Param( (int)Hash(#name) );
+
+DEFINE_NAMEDTYPE(Param,none)
 
 namespace pr
 {
-const Param fire( 0 );
-const Param damage( 1 );
-const Param inflammability(2);
-const Param collapsibility(3);
-const Param destroyable(4);
-const Param health(5);
-const Param happiness(6);
-const Param happinessBuff(7);
-const Param healthBuff(8);
-const Param settleLock(9);
-const Param lockTerrain(10);
-const Param food(11);
-const Param paramCount(12);
+REGISTER_PARAM(fire,0 )
+REGISTER_PARAM(damage,1)
+REGISTER_PARAM(inflammability,2)
+REGISTER_PARAM(collapsibility,3)
+REGISTER_PARAM(destroyable,4)
+REGISTER_PARAM(health,5)
+REGISTER_PARAM(happiness,6)
+REGISTER_PARAM(happinessBuff,7)
+REGISTER_PARAM(healthBuff,8)
+REGISTER_PARAM(settleLock,9)
+REGISTER_PARAM(lockTerrain,10)
+REGISTER_PARAM(food,11)
+REGISTER_PARAM(paramCount,12)
 }
 
 #endif //__CAESARIA_OBJECTPARAM_H_INCLUDED__

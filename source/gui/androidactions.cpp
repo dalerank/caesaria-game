@@ -34,6 +34,9 @@ public:
   TexturedButton* btnExit;
   TexturedButton* btnMenu;
   TexturedButton* btnEnter;
+
+public signals:
+  Signal1<int> onChangeZoom();
 };
 
 AndroidActionsBar::AndroidActionsBar( Widget* parent)

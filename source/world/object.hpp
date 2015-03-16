@@ -29,9 +29,11 @@ namespace world
 class Object : public ReferenceCounted
 {
 public:
+  enum { idxPicture=0, idxAnimation=1 };
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;
+  virtual bool isAvailable() const { return true; }
   virtual std::string type() const;
   virtual void timeStep(const unsigned int time);
   virtual EmpirePtr empire() const;

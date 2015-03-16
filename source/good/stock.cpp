@@ -35,7 +35,7 @@ Stock::Stock()
 }
 
 Stock::Stock(const Product& which, const int maxQty, const int currentQty)
-  : Product( which )
+  : _type( which )
 {
   _capacity = maxQty;
   _qty = currentQty;
@@ -43,7 +43,7 @@ Stock::Stock(const Product& which, const int maxQty, const int currentQty)
 
 Stock::~Stock() {}
 
-const Product& Stock::type() const { return *this; }
+const Product& Stock::type() const { return _type; }
 
 void Stock::append(good::Stock& stock, const int iAmount)
 {
@@ -97,11 +97,11 @@ void Stock::load( const VariantList& stream )
   if( stream.empty())
     return;
 
-  _type = stream.get( 0 ).toInt();
-  if( _type >= good::goodCount.toInt() )
+  _type = good::Product( stream.get( 0 ).toInt() );
+  if( _type >= good::any() )
   {
     Logger::warning( "GoodStock: wrong type of good %d", _type );
-    _type = good::none.toInt();
+    _type = good::none;
   }
 
   _capacity = (int)stream.get( 1 );
@@ -109,7 +109,7 @@ void Stock::load( const VariantList& stream )
 }
 
 bool Stock::empty() const {  return _qty == 0; }
-void Stock::setType( Product goodType ) { _type = goodType.toInt(); }
+void Stock::setType( Product goodType ) { _type = goodType; }
 void Stock::setCapacity( const int maxQty ){  _capacity = maxQty;}
 int Stock::freeQty() const{  return std::max( _capacity - _qty, 0 );}
 

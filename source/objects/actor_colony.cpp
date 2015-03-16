@@ -24,9 +24,9 @@
 
 using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::actorColony, ActorColony)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::actorColony, ActorColony)
 
-ActorColony::ActorColony() : TrainingBuilding( objects::actorColony, Size(3) )
+ActorColony::ActorColony() : TrainingBuilding( object::actorColony, Size(3) )
 {
   _fgPicturesRef().resize(1);
 }
@@ -41,10 +41,7 @@ void ActorColony::deliverTrainee()
   TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::actor );
   trainee->send2City( this );
 
-  if( !trainee->isDeleted() )
-  {
-    addWalker( trainee.object() );
-  }
+  addWalker( trainee.object() );
 }
 
 void ActorColony::timeStep(const unsigned long time)

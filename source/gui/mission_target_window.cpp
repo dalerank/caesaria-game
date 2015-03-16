@@ -106,7 +106,10 @@ void MissionTargets::setCity(PlayerCityPtr city)
   _d->city = city;
   const city::VictoryConditions& wint = _d->city->victoryConditions();
 
-  if( _d->lbTitle ) _d->lbTitle->setText( _d->city->player()->name()  );
+  std::string missionTitle = wint.missionTitle();
+  if(missionTitle.empty()) missionTitle = "##build_your_rome##";
+
+  if( _d->lbTitle ) _d->lbTitle->setText( _(missionTitle)  );
 
   std::string text;
 

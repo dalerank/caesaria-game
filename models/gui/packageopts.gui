@@ -43,15 +43,38 @@
     text.offset : [ 10, 0 ]
   }
 
-  btnChangeCellw#PushButton :
-  {
-    geometry : [ 12, 105, "pw-15", 129 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text.offset : [ 10, 0 ]
-    text : ""
+  lbCaesar3Music#Label : {
+    geometry : [ 12, 105, 100, 127 ]
+    font : "FONT_1"
+    text : "C3 snd: "
+    text.align : [ "upperLeft", "center" ]
   }
-	
+
+  edCaesar3Music#EditBox :
+  {
+    geometry : [ 92, 105, "pw-15", 127 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
+  lbCaesar3Video#Label : {
+    geometry : [ 12, 132, 100, 154 ]
+    font : "FONT_1"
+    text : "C3 smk: "
+    text.align : [ "upperLeft", "center" ]
+  }
+
+  edCaesar3Video#EditBox :
+  {
+    geometry : [ 92, 132, "pw-15", 154 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
 	lbApply#Label :
   {
     geometry : [ 180, "ph-35", "pw-40", "ph-15" ]

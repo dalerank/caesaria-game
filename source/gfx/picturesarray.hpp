@@ -33,6 +33,9 @@ public:
   Pictures& append( const Pictures& pics );
 
   void append( const gfx::Picture& pic, const Point& offset );
+  const Picture& atSafe( int index ) const { return index >=0 && index < (int)size()
+                                                              ? (*this)[index]
+                                                              : Picture::getInvalid(); }
 };
 
 } //end namespace gfx

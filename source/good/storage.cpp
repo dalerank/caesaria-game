@@ -49,10 +49,9 @@ public:
   void reset()
   {
     stocks.clear();
-    stocks.reserve(good::goodCount.toInt());
-    for( good::Product n = good::none; n < good::goodCount; ++n)
+    foreach( n, good::all() )
     {
-      stocks.push_back( SmStock::create( n ) );
+      stocks.push_back( SmStock::create( *n ) );
     }
   }
 };
@@ -77,26 +76,26 @@ int Storage::qty() const
   return qty;
 }
 
-good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[goodType.toInt()].object());}
-int Storage::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->qty();}
-int Storage::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType.toInt()]->capacity();}
+good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[goodType].object());}
+int Storage::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType]->qty();}
+int Storage::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType]->capacity();}
 
 void Storage::setCapacity(const good::Product& goodType, const int maxQty)
 {
-  if( goodType == good::goodCount )
+  if( goodType == good::any() )
   {
-    for( good::Product gtype=good::none; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      _gsd->stocks[gtype.toInt()]->setCapacity( maxQty );
+      _gsd->stocks[*gtype]->setCapacity( maxQty );
     }
   }
   else
   {
-    _gsd->stocks[goodType.toInt()]->setCapacity( maxQty );
+    _gsd->stocks[goodType]->setCapacity( maxQty );
   }
 }
 
-void Storage::setQty(const good::Product& goodType, const int currentQty){  _gsd->stocks[goodType.toInt()]->setQty( currentQty );}
+void Storage::setQty(const good::Product& goodType, const int currentQty){  _gsd->stocks[goodType]->setQty( currentQty );}
 
 int Storage::getMaxStore(const good::Product goodType)
 {
@@ -106,7 +105,7 @@ int Storage::getMaxStore(const good::Product goodType)
     int globalFreeRoom = capacity() - qty();
 
     // current free capacity
-    good::Stock& st = *_gsd->stocks[goodType.toInt()].object();
+    good::Stock& st = *_gsd->stocks[goodType].object();
     freeRoom = math::clamp( st.freeQty(), 0, globalFreeRoom );
 
     // remove all storage reservations
@@ -136,7 +135,7 @@ void Storage::applyStorageReservation(good::Stock &stock, const int reservationI
   }
 
   int amount = reservedStock.qty();
-  _gsd->stocks[ reservedStock.type().toInt() ]->push( amount );
+  _gsd->stocks[ reservedStock.type() ]->push( amount );
   stock.pop( amount );
 }
 
@@ -190,7 +189,7 @@ void Storage::load( const VariantMap& stream )
   {
     SmStock::Ptr stock = SmStock::create( good::none );
     stock->load( it->toList() );
-    _gsd->stocks[ stock->type().toInt() ] = stock;
+    _gsd->stocks[ stock->type() ] = stock;
   }
 }
 
@@ -200,9 +199,9 @@ void Storage::resize(const Store &other )
 {
   setCapacity( other.capacity() );
 
-  for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+  foreach( gtype, good::all() )
   {
-    setCapacity( gtype, other.capacity( gtype ) );
+    setCapacity( *gtype, other.capacity( *gtype ) );
   }
 }
 

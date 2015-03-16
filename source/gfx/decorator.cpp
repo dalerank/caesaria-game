@@ -296,6 +296,8 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   case lightgreyPanelBig: drawPanel( stack, rectangle, 634 ); break;
   case greyPanelSmall: drawPanel( stack, rectangle, 68 ); break;
   case brownPanelSmall: drawPanel( stack, rectangle, 65 ); break;
+  case greenPanelSmall: drawPanel( stack, rectangle, 62); break;
+  case redPanelSmall: drawPanel( stack, rectangle, 1165 ); break;
   case whiteBorder: drawBorder( stack, rectangle, 336, 468, 347, 358, 10, 12, 335, 467, 346, 478 );  break;
   case blackBorder: drawBorder( stack, rectangle, 480, 522, 486, 492, 5, 7, 479, 521, 485, 527 ); break;
   case brownBorder: drawBorder(stack, rectangle, 555 ); break;

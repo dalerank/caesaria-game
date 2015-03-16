@@ -31,6 +31,8 @@ class HouseSpecification
   friend class HouseSpecHelper;
 
 public:
+  enum { needTheater=1, needAmphitheater=2, needColosseum=3 };
+
   int level() const;
   int getMaxHabitantsByTile() const;
   int taxRate() const;
@@ -46,22 +48,24 @@ public:
   // returns True if patrician villa
   bool isPatrician() const;
 
-  bool checkHouse(HousePtr house, std::string* retMissing = 0, gfx::TileOverlay::Type* needBuilding = 0);
+  bool checkHouse(HousePtr house, std::string* retMissing = 0,
+                  object::Type* needBuilding = 0, TilePos *retPos=0) const;
   unsigned int getServiceConsumptionInterval() const;
   unsigned int foodConsumptionInterval() const;
   unsigned int getGoodConsumptionInterval() const;
 
-  int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement );
+  int findLowLevelHouseNearby(HousePtr house, TilePos &refPos) const;
+  int findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos &refPos) const;
 
   HouseSpecification next() const;
 
   int computeDesirabilityLevel(HousePtr house, std::string &oMissingRequirement) const;
   int computeEntertainmentLevel(HousePtr house) const;
-  int computeEducationLevel(HousePtr house, std::string &oMissingRequirement);
-  int computeHealthLevel(HousePtr house, std::string &oMissingRequirement);
+  int computeEducationLevel(HousePtr house, std::string &oMissingRequirement) const;
+  int computeHealthLevel(HousePtr house, std::string &oMissingRequirement) const;
   int computeReligionLevel(HousePtr house) const;
-  int computeWaterLevel(HousePtr house, std::string &oMissingRequirement);
-  int computeFoodLevel(HousePtr house);
+  int computeWaterLevel(HousePtr house, std::string &oMissingRequirement) const;
+  int computeFoodLevel(HousePtr house) const;
   int computeMonthlyGoodConsumption(HousePtr house, const good::Product goodType, bool real) const;
   int computeMonthlyFoodConsumption( HousePtr house ) const;
 

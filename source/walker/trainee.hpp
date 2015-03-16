@@ -19,7 +19,7 @@
 #define __CAESARIA_TRAINEEWALKER_H_INCLUDED__
 
 #include "human.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "walkers_factory_creator.hpp"
 
 class Propagator;
@@ -30,7 +30,7 @@ class TraineeWalker : public Human
 public:
   static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
 
-  void checkDestination(const gfx::TileOverlay::Type buildingType, Propagator& pathPropagator);
+  void checkDestination(const object::Type buildingType, Propagator& pathPropagator);
   virtual int value() const;
   virtual void send2City( BuildingPtr base, bool roadOnly=true );
   void setBase(Building &building);

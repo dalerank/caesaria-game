@@ -24,7 +24,7 @@
 #include "vfs/path.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 // contains some metaData for a building type
 class MetaDataOptions
@@ -42,7 +42,7 @@ class MetaData
 
   static MetaData invalid;
 public:
-  MetaData( const gfx::TileOverlay::Type type, const std::string& name );
+  MetaData( const object::Type type, const std::string& name );
   MetaData( const MetaData& a );
 
   ~MetaData();
@@ -51,8 +51,8 @@ public:
   std::string sound() const;
   std::string prettyName() const;
   std::string description() const;
-  gfx::TileOverlay::Type type() const;
-  gfx::TileOverlay::Group group() const;
+  object::Type type() const;
+  object::Group group() const;
   gfx::Picture picture( int size=0 ) const;
   Desirability desirability() const;
 
@@ -68,24 +68,24 @@ private:
 class MetaDataHolder
 {
 public:
-  typedef std::vector<gfx::TileOverlay::Type> OverlayTypes;
+  typedef std::vector<object::Type> OverlayTypes;
+
   static MetaDataHolder& instance();
 
   void addData(const MetaData& data);
-  static const MetaData& getData(const gfx::TileOverlay::Type buildingType);
-  bool hasData(const gfx::TileOverlay::Type buildingType) const;
+  static const MetaData& getData(const object::Type buildingType);
+  bool hasData(const object::Type buildingType) const;
   OverlayTypes availableTypes() const;
 
   // return factory that consume good
-  gfx::TileOverlay::Type getConsumerType(const good::Product inGoodType) const;
+  object::Type getConsumerType(const good::Product inGoodType) const;
 
-  static gfx::TileOverlay::Type findType( const std::string& name );
-  static std::string findTypename( gfx::TileOverlay::Type type );
-  static gfx::TileOverlay::Group findGroup( const std::string& name );
+  static object::Group findGroup( const std::string& name );
+  static std::string findGroupname( object::Group group );
 
-  static std::string findPrettyName( gfx::TileOverlay::Type type );
-  static std::string findDescription( gfx::TileOverlay::Type type );
-  static gfx::Picture randomPicture( gfx::TileOverlay::Type type, Size size );
+  static std::string findPrettyName( object::Type type );
+  static std::string findDescription( object::Type type );
+  static gfx::Picture randomPicture( object::Type type, Size size );
 
   void initialize(vfs::Path filename );
   ~MetaDataHolder();

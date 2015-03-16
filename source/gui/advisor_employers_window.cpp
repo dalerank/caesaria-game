@@ -24,9 +24,8 @@
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
-#include "game/enums.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "city/funds.hpp"
 #include "world/empire.hpp"
 #include "objects/constants.hpp"
@@ -54,6 +53,8 @@ namespace {
 static const Point employerButtonOffset = Point( 0, 25 );
 static const Size  employerButtonSize = Size( 560, 22 );
 static const int idBase = 0x100;
+enum { badAccess=50, simpleAccess=75, goodAccess=90 };
+enum { ofLockOffset=45, ofPriority=60, ofBranchName=130, ofNeedWorkers=375, ofHaveWorkers=480 };
 }
 
 class EmployerButton : public PushButton
@@ -70,10 +71,10 @@ public:
 
     int percentage = math::percentage( have, need );
     std::string tooltip;
-    if( percentage > 90 ) tooltip = "##empbutton_tooltip##";
-    else if( percentage > 75 ) tooltip = "##empbutton_simple_work##";
-    else if( percentage > 50 ) tooltip = "##empbutton_low_work##";
-    else tooltip = "##empbutton_tooltip##";
+    if( percentage > goodAccess ) tooltip = "##empbutton_tooltip##";
+    else if( percentage > simpleAccess ) tooltip = "##empbutton_simple_work##";
+    else if( percentage > badAccess ) tooltip = "##empbutton_low_work##";
+    else tooltip = "##empbutton_terrible_tooltip##";
 
     setTooltipText( _(tooltip) );
   }
@@ -96,20 +97,20 @@ protected:
     PictureRef& pic = _textPictureRef();
 
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( *pic, _title, 130, 2, true, false );
-    font.draw( *pic, utils::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
+    font.draw( *pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( *pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, utils::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
+    font.draw( *pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _priority > 0 )
     {
       font.setColor( DefaultColors::black );
-      font.draw( *pic, utils::i2str( _priority ), Point( 60, 3 ), true, false );
+      font.draw( *pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
     }
 
     pic->update();
@@ -121,7 +122,7 @@ protected:
 
     if( _priority > 0 )
     {
-      painter.draw( _lockPick, absoluteRect().lefttop() + Point( 45, 4), &absoluteClippingRectRef() );
+      painter.draw( _lockPick, absoluteRect().lefttop() + Point( ofLockOffset, 4), &absoluteClippingRectRef() );
     }
   }
 
@@ -142,7 +143,7 @@ private:
 class Employer::Impl
 {
 public:
-  typedef std::vector< TileOverlay::Type > BldTypes;
+  typedef std::vector< object::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalaries;
@@ -254,8 +255,8 @@ void Employer::Impl::updateSalaryLabel()
   int pay = city->funds().workerSalary();
   int romePay = city->empire()->workerSalary();
   std::string salaryString = utils::format( 0xff, "%s %d (%s %d)",
-                                                   _("##advemployer_panel_denaries##"), pay,
-                                                   _("##advemployer_panel_romepay##"), romePay );
+                                            _("##advemployer_panel_denaries##"), pay,
+                                            _("##advemployer_panel_romepay##"), romePay );
 
   if( lbSalaries )
   {
@@ -265,13 +266,12 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  std::vector<objects::Group> bldGroups = city::industry::toGroups( type );
+  object::Groups bldGroups = city::industry::toGroups( type );
 
   WorkingBuildingList buildings;
-  city::Helper helper( city );
   foreach( buildingsGroup, bldGroups )
   {
-    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( *buildingsGroup );
+    WorkingBuildingList sectorBuildings = city::statistic::findo<WorkingBuilding>( city, *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 
@@ -301,10 +301,9 @@ EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startP
 }
 
 Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
-  : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
+  : Base( parent, city, id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/employersadv.gui" );
-  setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
   _d->empButtons.resize( industry::count );

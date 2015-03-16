@@ -34,6 +34,7 @@ public:
   virtual Tile* at( const TilePos& p ) const = 0;
   virtual Tile* at( const Point& p, bool overborder ) const = 0;
   virtual Point offset() const = 0;
+  virtual Point mpos( const Point& p ) const = 0;
   virtual void move(PointF relative) = 0;
   virtual void moveRight(const int amount) = 0;
   virtual void moveLeft(const int amount) = 0;
@@ -55,7 +56,7 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
-  virtual Signal1<constants::Direction>& onDirectionChanged() = 0;
+  virtual Signal1<Direction>& onDirectionChanged() = 0;
 };
 
 } //end namespace gfx

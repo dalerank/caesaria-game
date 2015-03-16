@@ -18,7 +18,6 @@
 
 #include "window.hpp"
 #include "core/signals.hpp"
-#include "game/enums.hpp"
 #include "city/industry.hpp"
 
 namespace gui

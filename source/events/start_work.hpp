@@ -40,7 +40,7 @@ protected:
 private:
   StartWork();
 
-  std::vector< int > _bldTypes;
+  object::Types _bldTypes;
   bool _noTroubles;
   bool _isDeleted;
   VariantMap _options;

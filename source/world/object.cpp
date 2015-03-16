@@ -68,7 +68,7 @@ Picture Object::picture() const { return _d->pic; }
 const Pictures& Object::pictures() const
 {
   _d->animation.update( _d->time++ );
-  _d->pictures[ 1 ] = _d->animation.currentFrame();
+  _d->pictures[ idxAnimation ] = _d->animation.currentFrame();
 
   return _d->pictures;
 }
@@ -76,7 +76,7 @@ const Pictures& Object::pictures() const
 void Object::setPicture(Picture pic)
 {
   _d->pic = pic;
-  _d->pictures[ 0 ] = pic;
+  _d->pictures[ idxPicture ] = pic;
 }
 
 bool Object::isMovable() const { return false; }
@@ -85,7 +85,7 @@ void Object::save( VariantMap& stream ) const
 {
   VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
-  stream[ "name" ] = Variant( _d->name );
+  VARIANT_SAVE_STR_D( stream, _d, name )
   stream[ "animation" ] = _d->animation.save();
   stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "type" ] = Variant( type() );
@@ -94,17 +94,13 @@ void Object::save( VariantMap& stream ) const
 void Object::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANYDEF_D( _d, location, _d->location, stream )
+  VARIANT_LOAD_STRDEF_D( _d, name, _d->name, stream )
 
-  Variant name = stream.get( "name" );
-  if( name.isValid() )
-  {
-    _d->name = name.toString();
-  }
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
   _d->animation.load( stream.get( "animation" ).toMap() );
-  _d->isDeleted = stream.get( "isDeleted" );
+  VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
 }
 
 void Object::attach()

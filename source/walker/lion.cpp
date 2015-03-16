@@ -50,5 +50,5 @@ Lion::Lion(PlayerCityPtr city) : Animal( city )
 {
   _setType( walker::lion );
 
-  setName( _("##Lion##") );
+  setName( _("##lion##") );
 }

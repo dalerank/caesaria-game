@@ -63,7 +63,7 @@ void WaterGarbage::send2City(const TilePos &start )
     setPos( start );
     setPathway( path );
     go();
-    _city()->addWalker( this );
+    attach();
   }
 }
 

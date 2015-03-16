@@ -51,15 +51,15 @@ const unsigned int defaultHireDistance = 36;
 class WorkersHire::Impl
 {
 public:
-  typedef std::vector<TileOverlay::Type> BuildingsType;
-  typedef std::map<TileOverlay::Group, BuildingsType> GroupBuildings;
+  typedef std::vector<object::Type> BuildingsType;
+  typedef std::map<object::Group, BuildingsType> GroupBuildings;
 
   WalkerList hrInCity;
   unsigned int distance;
   DateTime lastMessageDate;
   HirePriorities priorities;
   GroupBuildings industryBuildings;
-  std::set<TileOverlay::Type> excludeTypes;
+  std::set<object::Type> excludeTypes;
 
 public:
   void fillIndustryMap();
@@ -81,7 +81,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
 {
   _d->lastMessageDate = game::Date::current();
-  _d->excludeTypes.insert( objects::fountain );
+  _d->excludeTypes.insert( object::fountain );
   _d->fillIndustryMap();
   _d->distance = defaultHireDistance;
 
@@ -131,7 +131,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
   if( haveRecruter( bld ) )
     return;
 
-  if( bld->getAccessRoads().size() > 0 )
+  if( bld->roadside().size() > 0 )
   {
     RecruterPtr hr = Recruter::create( city );
     hr->setPriority( priorities );
@@ -151,14 +151,13 @@ void WorkersHire::timeStep( const unsigned int time )
 
   _d->hrInCity = _city()->walkers( walker::recruter );
 
-  city::Helper helper( _city() );
-  WorkingBuildingList buildings = helper.find< WorkingBuilding >( objects::any );
+  WorkingBuildingList buildings = city::statistic::findo< WorkingBuilding >( _city(), object::any );
 
   if( !_d->priorities.empty() )
   {
     foreach( hireIt, _d->priorities )
     {
-      industry::BuildingGroups groups = industry::toGroups( *hireIt );
+      object::Groups groups = industry::toGroups( *hireIt );
 
       foreach( grIt, groups )
       {
@@ -232,7 +231,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ lc_priorities ] = _d->priorities.toVariantList();
+  ret[ lc_priorities ] = _d->priorities.toVList();
 
   return ret;
 }
