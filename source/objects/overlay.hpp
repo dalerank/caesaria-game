@@ -32,6 +32,10 @@
 #include "constants.hpp"
 
 class MetaData;
+namespace ovconfig
+{
+enum { idxType=0, idxTypename, idxLocation, ixdCount };
+}
 
 class Overlay : public Serializable, public ReferenceCounted
 {

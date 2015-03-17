@@ -30,6 +30,7 @@ using namespace gfx;
 
 namespace gui
 {
+typedef std::map<Ui::Flag, int> Flags;
 
 class Ui::Impl
 {
@@ -57,7 +58,9 @@ public:
   gfx::Engine* engine;
   Point cursorPos;
   WidgetFactory factory;
+  Flags flags;
 
+public:
   WidgetPtr createStandartTooltip( Widget* parent );
   void threatDeletionQueue();
 };
@@ -230,6 +233,11 @@ Widget* Ui::createWidget(const std::string& type, Widget* parent)
   return _d->factory.create( type, parent );
 }
 
+void Ui::setFlag(Ui::Flag name, int value)
+{
+  _d->flags[ name ] = value;
+}
+
 WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
 {
   Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
@@ -277,6 +285,7 @@ void Ui::_drawTooltip( unsigned int time )
       Rect geom = _d->toolTip.element->absoluteRect();
       geom.constrainTo( absoluteRect() );
       _d->toolTip.element->setGeometry( geom );
+      _d->toolTip.element->setVisible( _d->flags[ showTooltips ] > 0 );
     }
   }
 
@@ -301,7 +310,7 @@ void Ui::_updateHovered( const Point& mousePos )
   WidgetPtr lastHoveredNoSubelement = _d->hoveredNoSubelement;
   _d->lastHoveredMousePos = mousePos;
 
-	// Get the real Hovered
+  // Get the real Hovered
   _d->hovered = rootWidget()->getElementFromPoint( mousePos );
 
   if( _d->toolTip.element.isValid() && _d->hovered == _d->toolTip.element )

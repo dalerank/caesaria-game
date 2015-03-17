@@ -36,5 +36,5 @@ private:
   Damage( gfx::Camera& camera, PlayerCityPtr city );
 };
 
-}//end namespace citylayer
+}//end namespace city
 #endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__

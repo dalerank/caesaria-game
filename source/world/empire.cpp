@@ -330,6 +330,13 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   if( startCity.isValid() && stopCity.isValid() )
   {
     TraderoutePtr route = _d->trading.createRoute( start, stop );
+    if( !route.isValid() )
+    {
+      Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
+                       start.c_str(), stop.c_str() );
+      return route;
+    }
+
     EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
     EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
     bool land = (startType & EmpireMap::land) && (stopType & EmpireMap::land);

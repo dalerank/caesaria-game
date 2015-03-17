@@ -35,6 +35,7 @@ using namespace constants;
 namespace
 {
 const int maxCrimeValue = 100;
+const int minCityTax4mugger = 20;
 
 const int crimeLevel4rioter = 90;
 const int crimeLevel4mugger = 70;
@@ -228,7 +229,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
   int taxesThisYear = city->funds().getIssueValue( city::Funds::taxIncome );
   int maxMoneyStolen = city->population() / 10;
 
-  if( taxesThisYear > 20 )
+  if( taxesThisYear > minCityTax4mugger )
   {
     int moneyStolen = taxesThisYear / 4;
 

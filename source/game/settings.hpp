@@ -61,7 +61,6 @@ public:
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
-  __GS_PROPERTY(difficulty)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
   __GS_PROPERTY(emblemsModel)
@@ -97,6 +96,7 @@ public:
   __GS_PROPERTY(videoAlias)
   __GS_PROPERTY(playerName)
   __GS_PROPERTY(lastGame)
+  __GS_PROPERTY(tooltipEnabled)
 #undef __GS_PROPERTY
 
   static Settings& instance();

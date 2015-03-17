@@ -51,7 +51,7 @@ void Dispatcher::append(GameEventPtr event)
   else
   {
     Logger::warning( "EventsDispatcher: cant add event but is null" );
-    crashhandler::print();
+    crashhandler::printstack();
   }
 }
 

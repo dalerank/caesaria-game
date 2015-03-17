@@ -33,6 +33,7 @@
 #include "game/settings.hpp"
 #include "texturedbutton.hpp"
 #include "topmenu.hpp"
+#include "game/difficulty.hpp"
 
 using namespace citylayer;
 
@@ -55,6 +56,8 @@ public:
   TexturedButton* btnDecreaseFireRisk;
   PushButton* btnLockInfobox;
   PushButton* btnC3Gameplay;
+  PushButton* btnShowTooltips;
+  PushButton* btnDifficulty;
   PlayerCityPtr city;
 
   void update();
@@ -70,6 +73,9 @@ public:
   void decreaseFireRisk();
   void toggleBarbarianAttack();
   void toggleC3Gameplay();
+  void toggleDifficulty();
+  void toggleShowTooltips();
+  void toggleCityOption( PlayerCity::OptionType option );
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
@@ -95,6 +101,8 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnBarbarianMayAttack )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
+  GET_DWIDGET_FROM_UI( _d, btnShowTooltips )
+  GET_DWIDGET_FROM_UI( _d, btnDifficulty )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -107,6 +115,8 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnDecreaseFireRisk, onClicked(), _d.data(), Impl::decreaseFireRisk )
   CONNECT( _d->btnBarbarianMayAttack, onClicked(), _d.data(), Impl::toggleBarbarianAttack )
   CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3Gameplay )
+  CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleShowTooltips )
+  CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleDifficulty )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
@@ -117,12 +127,6 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
 
 CityOptionsWindow::~CityOptionsWindow() {}
 
-void CityOptionsWindow::Impl::toggleGods()
-{
-  bool value = city->getOption( PlayerCity::godEnabled ) > 0;
-  city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
-  update();
-}
 
 void CityOptionsWindow::Impl::toggleDebug()
 {
@@ -148,31 +152,10 @@ void CityOptionsWindow::Impl::decreaseFireRisk()
   update();
 }
 
-void CityOptionsWindow::Impl::toggleBarbarianAttack()
+void CityOptionsWindow::Impl::toggleCityOption(PlayerCity::OptionType option)
 {
-  bool value = city->getOption( PlayerCity::barbarianAttack ) > 0;
-  city->setOption( PlayerCity::barbarianAttack, value > 0 ? 0 : 1 );
-  update();
-}
-
-void CityOptionsWindow::Impl::toggleC3Gameplay()
-{
-  bool value = city->getOption( PlayerCity::c3gameplay );
-  city->setOption( PlayerCity::c3gameplay, value > 0 ? 0 : 1 );
-  update();
-}
-
-void CityOptionsWindow::Impl::toggleZoomEnabled()
-{
-  bool value = city->getOption( PlayerCity::zoomEnabled ) > 0;
-  city->setOption( PlayerCity::zoomEnabled, value > 0 ? 0 : 1 );
-  update();
-}
-
-void CityOptionsWindow::Impl::invertZoom()
-{
-  bool value = city->getOption( PlayerCity::zoomInvert ) > 0;
-  city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
+  int value = city->getOption( option );
+  city->setOption( option, value > 0 ? 0 : 1 );
   update();
 }
 
@@ -183,12 +166,31 @@ void CityOptionsWindow::Impl::toggleLockInfobox()
   update();
 }
 
-void CityOptionsWindow::Impl::toggleWarnings()
+void CityOptionsWindow::Impl::toggleDifficulty()
 {
-  bool value = city->getOption( PlayerCity::warningsEnabled ) > 0;
-  city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
+  int value = city->getOption( PlayerCity::difficulty );
+  value = (value+1)%game::difficulty::count;
+  city->setOption( PlayerCity::difficulty, value );
   update();
 }
+
+void CityOptionsWindow::Impl::toggleShowTooltips()
+{
+  bool value = SETTINGS_VALUE( tooltipEnabled );
+  SETTINGS_SET_VALUE( tooltipEnabled, !value );
+  if( btnShowTooltips )
+  {
+    btnShowTooltips->ui()->setFlag( Ui::showTooltips, !value );
+  }
+  update();
+}
+
+void CityOptionsWindow::Impl::toggleGods() { toggleCityOption( PlayerCity::godEnabled ); }
+void CityOptionsWindow::Impl::toggleBarbarianAttack() {  toggleCityOption( PlayerCity::barbarianAttack ); }
+void CityOptionsWindow::Impl::toggleC3Gameplay()  {  toggleCityOption( PlayerCity::c3gameplay ); }
+void CityOptionsWindow::Impl::toggleZoomEnabled() {  toggleCityOption( PlayerCity::zoomEnabled ); }
+void CityOptionsWindow::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInvert ); }
+void CityOptionsWindow::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
 
 void CityOptionsWindow::Impl::toggleLeftMiddleMouse()
 {
@@ -286,6 +288,21 @@ void CityOptionsWindow::Impl::update()
     btnBarbarianMayAttack->setText( value
                                     ? _("##city_c3rules_on##")
                                     : _("##city_c3rules_off##")  );
+  }
+
+  if( btnShowTooltips )
+  {
+    bool value = SETTINGS_VALUE( tooltipEnabled );
+    btnShowTooltips->setText( value
+                                    ? _("##city_tooltips_on##")
+                                    : _("##city_tooltips_off##")  );
+  }
+
+  if( btnDifficulty )
+  {
+    int value = city->getOption( PlayerCity::difficulty );
+    std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
+    btnDifficulty->setText( _(text) );
   }
 }
 

@@ -25,6 +25,7 @@
 #include "picture_bank.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "core/stacktrace.hpp"
 
 using namespace direction;
 
@@ -117,7 +118,7 @@ std::string toResource( const unsigned int imgId )
   return ret_str;
 }
 
-int fromResource( const std::string &pic_name )
+int fromResource( const std::string& pic_name )
 {
   // example: for land1a_00004, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
@@ -136,6 +137,7 @@ int fromResource( const std::string &pic_name )
   else
   {
     Logger::warning( "TileHelper: unknown image " + pic_name );
+    crashhandler::printstack();
   }
 
   return res_id;
@@ -251,9 +253,9 @@ void decode(Tile& tile, const int bitset)
   if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }
 }
 
-Tile& getInvalid()
+const Tile& getInvalid()
 {
-  static Tile invalidTile( TilePos( -1, -1) );
+  static Tile invalidTile( tilemap::invalidLocation() );
   return invalidTile;
 }
 
@@ -277,6 +279,18 @@ void fixPlateauFlags(Tile& tile)
     bool flat = pic.height() <= tilemap::y_tileBase * size;
     tile.setFlag( Tile::tlRock, !flat );
   }
+}
+
+Tile& getInvalidSafe()
+{
+  static Tile invalidTileSafe( tilemap::invalidLocation() );
+  if( tilemap::isValidLocation( invalidTileSafe.pos() ) )
+  {
+    invalidTileSafe = Tile( tilemap::invalidLocation() );
+    Logger::warning( "!!! WARNING function getInvalidSafe call" );
+  }
+
+  return invalidTileSafe;
 }
 
 }//end namespace util

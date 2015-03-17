@@ -177,7 +177,7 @@ TraderoutePtr Trading::findRoute( unsigned int index )
 TraderoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
 {
   TraderoutePtr route = findRoute( begin, end );
-  if( route.isNull() )
+  if( route.isValid() )
   {
     Logger::warning( "Trade route exist [%s to %s]", begin.c_str(), end.c_str() );
     return route;

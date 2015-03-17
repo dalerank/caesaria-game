@@ -161,6 +161,8 @@ void PictureInfoBank::setOffset(const std::string& preffix, const int index, con
 
 PictureInfoBank::~PictureInfoBank() {}
 
+enum { idxIndex=0, idxXOffset, idxYOffset };
+
 void PictureInfoBank::initialize(vfs::Path filename)
 {
   Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
@@ -182,7 +184,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
     else if( v.type() == Variant::List )
     {
       VariantList vl = v.toList();
-      _d->setOne( it->first, vl.get( 0 ).toInt(), vl.get( 1 ).toInt(), vl.get( 2 ).toInt() );
+      _d->setOne( it->first, vl.get( idxIndex ), vl.get( idxXOffset ), vl.get( idxYOffset ) );
     }
   }
 }
