@@ -68,7 +68,10 @@ void Propagator::setObsoleteOverlays(const Propagator::ObsoleteOverlays& ovs)
 
 void Propagator::init( ConstructionPtr origin)
 {
-   // init propagation on access roads
+  // init propagation on access roads
+  if( origin.isNull() )
+    return;
+
   _d->origin = &origin->tile();
   init( origin->roadside() );
 }

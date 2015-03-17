@@ -19,7 +19,7 @@
 #include "event.hpp"
 #include "scopedptr.hpp"
 
-struct SDL_Event;
+union SDL_Event;
 
 class EventConverter
 {

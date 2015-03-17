@@ -128,7 +128,7 @@ BuildingPtr ServiceWalker::base() const
 {
   if( _d->base.isNull() )
   {
-   Logger::warning( "ServiceBuilding is not initialized" );
+    Logger::warning( "ServiceBuilding is not initialized" );
   }
 
   return _d->base;
@@ -138,14 +138,14 @@ Service::Type ServiceWalker::serviceType() const {  return _d->service; }
 
 void ServiceWalker::_computeWalkerPath( int orders )
 {  
-  if( orders == 0 )
+  if( orders == noOrders )
   {
     orders = goLowerService;
   }
 
   Propagator pathPropagator( _city() );
   pathPropagator.init( ptr_cast<Construction>( _d->base ) );
-  pathPropagator.setAllDirections( false );
+  pathPropagator.setAllDirections( Propagator::nwseDirections );
   pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
   PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
@@ -309,6 +309,12 @@ void ServiceWalker::_updatePathway( const Pathway& pathway)
 
 void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
+  if( base.isNull() )
+  {
+    Logger::warning( "WARNING !!!: Try send from unexist base " );
+    return;
+  }
+
   ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( base );
 
   if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
@@ -384,7 +390,11 @@ void ServiceWalker::_brokePathway(TilePos p)
 
 void ServiceWalker::_noWay()
 {
-  TilesArray area = base()->enterArea();
+  TilesArray area;
+
+  if( base.isValid() )
+    area = base()->enterArea();
+
   if( area.contain( pos() ) )
   {
     deleteLater();

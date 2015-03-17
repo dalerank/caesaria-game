@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+﻿// This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -559,7 +559,9 @@ void Game::reset()
   WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
+  bool oldGameplay = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
   _d->city = PlayerCity::create( _d->empire, _d->player );
+  _d->city->setOption( PlayerCity::c3gameplay, oldGameplay );
 }
 
 void Game::clear()
