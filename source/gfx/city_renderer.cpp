@@ -41,7 +41,7 @@
 #include "layers/constants.hpp"
 #include "layers/layerreligion.hpp"
 #include "layers/build.hpp"
-#include "layers/layerdamage.hpp"
+#include "layers/damage.hpp"
 #include "layers/layerdesirability.hpp"
 #include "layers/layerentertainment.hpp"
 #include "layers/layertax.hpp"

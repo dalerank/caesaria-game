@@ -34,21 +34,21 @@ public:
                  blackBorderUp, noBackground, greyBorderLineBig,
                  flatBorderLine } BackgroundStyle;
 
-	PushButton( Widget* );
+  PushButton( Widget* );
 
-	//! constructor
-	PushButton( Widget* parent,
-                const Rect& rectangle,
-                const std::string& caption="",
-                int id=-1,
-                bool noclip=false,
-                const BackgroundStyle bgtyle=greyBorderLine);
+  //! constructor
+  PushButton( Widget* parent,
+              const Rect& rectangle,
+              const std::string& caption="",
+              int id=-1,
+              bool noclip=false,
+              const BackgroundStyle bgtyle=greyBorderLine);
 
-	//! destructor
-	virtual ~PushButton();
+  //! destructor
+  virtual ~PushButton();
 
-	//! called if an event happened.
-	virtual bool onEvent(const NEvent& event);
+  //! called if an event happened.
+  virtual bool onEvent(const NEvent& event);
 
   //! prepare render state
   virtual void beforeDraw( gfx::Engine& painter );
@@ -95,17 +95,16 @@ signals public:
   virtual Signal0<>& onClicked(); 
 
 protected:
-
   virtual void _resizeEvent();
 
   //! when left mouse button pressed down
-	virtual bool _leftMouseBtnPressed( const NEvent& event );
+  virtual bool _leftMouseBtnPressed( const NEvent& event );
 
   //! when left mouse button left up
-	virtual bool _btnMouseUp( const NEvent& event );
+  virtual bool _btnMouseUp( const NEvent& event );
 
   //! when some mouse button clicked
-	virtual void _btnClicked();
+  virtual void _btnClicked();
 
   virtual ElementState _state();
  
@@ -114,7 +113,6 @@ protected:
   virtual void _updateTextPic();
 
   gfx::PictureRef& _textPictureRef();
-
 private:
   __DECLARE_IMPL(PushButton)
 };

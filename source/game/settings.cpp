@@ -95,6 +95,7 @@ __REG_PROPERTY(soundAlias)
 __REG_PROPERTY(videoAlias)
 __REG_PROPERTY(playerName)
 __REG_PROPERTY(lastGame)
+__REG_PROPERTY(tooltipEnabled)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -160,6 +161,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ render              ] = "sdl";
   _d->options[ scrollSpeed         ] = 30;
   _d->options[ mmb_moving          ] = false;
+  _d->options[ tooltipEnabled      ] = true;
   _d->options[ talksArchive        ] = Variant( std::string( ":/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;

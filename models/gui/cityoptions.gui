@@ -1,5 +1,5 @@
 {  
-  geometry : [ 0, 0, 480, 320 ]
+  geometry : [ 0, 0, 480, 480 ]
   bgtype : "whiteFrame"
 
   lbTitle#Label :
@@ -11,9 +11,15 @@
   }
 
   btnGodEnabled#PushButton : {
-    geometry : [ 16, 50, 220, 70 ]
+    geometry : [ 16, 50, "pw/2", 70 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_god_mode##"
+  }
+
+  btnShowTooltips#PushButton : {
+    geometry : [ "pw/2", 270, "pw-16, 295 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_showtooltip_mode##"
   }
 
   btnWarningsEnabled#PushButton : {
@@ -80,6 +86,12 @@
     disabled : [ "paneling", 304 ]
   }
 
+  btnBarbarianMayAttack#PushButton : {
+    geometry : [ 16, 270, 220, 295 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_barbarian_mode##"
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ 440, 284, 464, 308 ]
@@ -87,11 +99,5 @@
     hovered : [ "paneling", 533 ]
     pressed : [ "paneling", 534 ]
     disabled : [ "paneling", 535 ]
-  }
-
-  btnBarbarianMayAttack#PushButton : {
-    geometry : [ 16, 270, 220, 295 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_barbarian_mode##"
   }
 }
