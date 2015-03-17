@@ -61,7 +61,6 @@ public:
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
-  __GS_PROPERTY(difficulty)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
   __GS_PROPERTY(emblemsModel)

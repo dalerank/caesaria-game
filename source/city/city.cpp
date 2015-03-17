@@ -87,6 +87,7 @@
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
 #include "gfx/helper.hpp"
+#include "game/difficulty.hpp"
 #include "cityservice_fire.hpp"
 
 #include <set>
@@ -203,6 +204,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( fireKoeff, 100 );
   setOption( barbarianAttack, 1 );
   setOption( c3gameplay, 0 );
+  setOption( difficulty, game::difficulty::usual );
 }
 
 void PlayerCity::_initAnimation()
@@ -501,14 +503,15 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = _d->climate;
-  stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
-  stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
-  stream[ "godEnabled" ] = getOption( PlayerCity::godEnabled );
-  stream[ "zoomEnabled"] = getOption( PlayerCity::zoomEnabled );
-  stream[ "zoomInvert" ] = getOption( PlayerCity::zoomInvert );
-  stream[ "fireKoeff"  ] = getOption( PlayerCity::fireKoeff );
-  stream[ "c3gameplay" ] = getOption( PlayerCity::c3gameplay );
-  stream[ "barbarianAttack" ] = getOption( PlayerCity::barbarianAttack );
+  stream[ "difficulty" ] = getOption( difficulty );
+  stream[ lc_adviserEnabled ] = getOption( adviserEnabled );
+  stream[ lc_fishPlaceEnabled ] = getOption( fishPlaceEnabled );
+  stream[ "godEnabled" ] = getOption( godEnabled );
+  stream[ "zoomEnabled"] = getOption( zoomEnabled );
+  stream[ "zoomInvert" ] = getOption( zoomInvert );
+  stream[ "fireKoeff"  ] = getOption( fireKoeff );
+  stream[ "c3gameplay" ] = getOption( c3gameplay );
+  stream[ "barbarianAttack" ] = getOption( barbarianAttack );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -602,6 +605,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
   setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
   setOption( c3gameplay, stream.get( "c3gameplay", 0 ) );
+  setOption( difficulty, stream.get( "difficulty", (int)game::difficulty::usual ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );

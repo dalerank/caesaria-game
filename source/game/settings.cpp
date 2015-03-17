@@ -58,7 +58,6 @@ __REG_PROPERTY(soundThemesModel)
 __REG_PROPERTY(soundVolume )
 __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
-__REG_PROPERTY(difficulty )
 __REG_PROPERTY(animationsModel )
 __REG_PROPERTY(walkerModel)
 __REG_PROPERTY(emblemsModel )
@@ -169,7 +168,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ ambientVolume       ] = 50;
   _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;
-  _d->options[ difficulty          ] = 3; // 0-4, Very Easy, Easy, Normal, Hard, Very Hard. Default: Hard
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );

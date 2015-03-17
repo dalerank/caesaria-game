@@ -17,7 +17,7 @@
   }
 
   btnShowTooltips#PushButton : {
-    geometry : [ "pw/2", 270, "pw-16, 295 ]
+    geometry : [ "pw/2", 50, "pw-16, 70 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_showtooltip_mode##"
   }
@@ -26,6 +26,12 @@
     geometry : [ 16, 75, 220, 95 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_warnings_mode##"
+  }
+
+  btnDifficulty#PushButton : {
+    geometry : [ "pw/2", 75, "pw-16, 95 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_barbarian_mode##"
   }
 
   btnZoomEnabled#PushButton : {
@@ -53,12 +59,6 @@
   }
 
   btnLockInfobox#PushButton : {
-    geometry : [ 16, 210, 220, 235 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_lockinfo_mode##"
-  }
-
-  btnBarbarianMayAttack#PushButton : {
     geometry : [ 16, 210, 220, 235 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_lockinfo_mode##"
