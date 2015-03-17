@@ -56,7 +56,7 @@ namespace {
 class ServiceWalker::Impl
 {
 public:
-  BuildingPtr base;
+  TilePos basePos;
   TilePos lastHousePos;
   Service::Type service;
   Propagator::ObsoleteOverlays obsoleteOvs;
@@ -124,16 +124,7 @@ void ServiceWalker::_init(const Service::Type service)
   setName( NameGenerator::rand( nameType ));
 }
 
-BuildingPtr ServiceWalker::base() const
-{
-  if( _d->base.isNull() )
-  {
-    Logger::warning( "ServiceBuilding is not initialized" );
-  }
-
-  return _d->base;
-}
-
+const TilePos &ServiceWalker::baseLocation() const { return _d->basePos; }
 Service::Type ServiceWalker::serviceType() const {  return _d->service; }
 
 void ServiceWalker::_computeWalkerPath( int orders )
@@ -143,8 +134,10 @@ void ServiceWalker::_computeWalkerPath( int orders )
     orders = goLowerService;
   }
 
+  ConstructionPtr ctr = ptr_cast<Construction>( _city()->getOverlay( _d->basePos ) );
   Propagator pathPropagator( _city() );
-  pathPropagator.init( ptr_cast<Construction>( _d->base ) );
+
+  pathPropagator.init( ctr );
   pathPropagator.setAllDirections( Propagator::nwseDirections );
   pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
@@ -342,7 +335,7 @@ void ServiceWalker::_centerTile()
 
   foreach( b, reachedBuildings ) { (*b)->applyService( this ); }
 
-  ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( _d->base );
+  ServiceBuildingPtr servBuilding = ptr_cast<ServiceBuilding>( _city()->getOverlay( baseLocation() ) );
   if( servBuilding.isValid() )
   {
     servBuilding->buildingsServed( reachedBuildings, this );
@@ -374,9 +367,10 @@ void ServiceWalker::_reachedPathway()
 void ServiceWalker::_brokePathway(TilePos p)
 {
   Walker::_brokePathway( p );
-  if( base().isValid() )
+  ConstructionPtr ctr = ptr_cast<Construction>( _city()->getOverlay( baseLocation() ) );
+  if( ctr.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos(), ctr, PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       _updatePathway( way );
@@ -392,8 +386,9 @@ void ServiceWalker::_noWay()
 {
   TilesArray area;
 
+  ConstructionPtr base = ptr_cast<Construction>( _city()->getOverlay( baseLocation() ));
   if( base.isValid() )
-    area = base()->enterArea();
+    area = base->enterArea();
 
   if( area.contain( pos() ) )
   {
@@ -408,7 +403,7 @@ void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  VARIANT_SAVE_ANY_D( stream, _d, basePos )
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, reachDistance )
   VARIANT_SAVE_ANY_D( stream, _d, lastHousePos )
@@ -424,17 +419,16 @@ void ServiceWalker::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, reachDistance, stream )
   VARIANT_LOAD_ANY_D( _d, lastHousePos, stream )
 
-  TilePos basePos = stream.get( "base" ).toTilePos();
-  OverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();
+  VARIANT_LOAD_ANY_D( _d, basePos, stream )
+  OverlayPtr overlay = _city()->getOverlay( _d->basePos );
 
-  _d->base = ptr_cast<Building>( overlay );
-  if( _d->base.isNull() )
+  if( overlay.isNull() )
   {
-    Logger::warning( "Not found base building[%d,%d] for service walker", basePos.i(), basePos.j() );
+    Logger::warning( "Not found base building[%d,%d] for service walker", _d->basePos.i(), _d->basePos.j() );
   }
   else
   {
-    WorkingBuildingPtr wrk = ptr_cast<WorkingBuilding>( _d->base );
+    WorkingBuildingPtr wrk = ptr_cast<WorkingBuilding>( overlay );
     if( wrk.isValid() )
     {
       wrk->addWalker( this );
@@ -528,7 +522,7 @@ TilePos ServiceWalker::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return base().isValid() ? base()->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return _d->basePos;
   default: break;
   }
 
@@ -544,5 +538,5 @@ ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type s
 }
 
 ServiceWalker::~ServiceWalker() {}
-void ServiceWalker::setBase( BuildingPtr base ) { _d->base = base; }
+void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = base.isValid() ? base->pos() : gfx::tilemap::invalidLocation(); }
 WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::create( city, serviceType ).object();  }

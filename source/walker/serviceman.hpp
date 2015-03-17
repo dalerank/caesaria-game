@@ -35,7 +35,7 @@ public:
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
   Service::Type serviceType() const;
-  BuildingPtr base() const;
+  const TilePos& baseLocation() const;
 
   void setBase( BuildingPtr base );
 
