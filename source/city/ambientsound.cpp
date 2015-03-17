@@ -30,6 +30,8 @@ using namespace gfx;
 namespace city
 {
 
+enum { maxSndDst=3 };
+
 struct SoundEmitter
 {  
   Tile* tile;
@@ -44,8 +46,8 @@ struct SoundEmitter
 
   bool operator < ( const SoundEmitter& a ) const
   {
-    return ( tile->pos().distanceFrom( camerapos )
-             < a.tile->pos().distanceFrom( camerapos ));
+    return ( tile->pos().getDistanceFromSQ( camerapos )
+             < a.tile->pos().getDistanceFromSQ( camerapos ));
   }
 
   std::string getSound() const
@@ -129,7 +131,7 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  TilePos offset( 3, 3 );
+  TilePos offset( maxSndDst, maxSndDst );
   TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
@@ -138,7 +140,7 @@ void AmbientSound::timeStep( const unsigned int time )
   for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->pos();
-    if( abs( distance.i() ) > 3 || abs( distance.j() ) > 3
+    if( abs( distance.i() ) > maxSndDst || abs( distance.j() ) > maxSndDst
         || !(*i).isValid() )
     {
       //ae.stop( (*i).getSound() );
@@ -166,7 +168,7 @@ void AmbientSound::timeStep( const unsigned int time )
     {
       processedSounds.insert( sound );
 
-      ae.play( sound, audio::maxSndLevel / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( sound, audio::maxSndLevel / (maxSndDst *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }

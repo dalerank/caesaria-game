@@ -120,15 +120,15 @@ void Amphitheater::deliverService()
 void Amphitheater::save(VariantMap& stream) const
 {
   EntertainmentBuilding::save( stream );
-  stream[ "lastGdate" ] = _d->lastDateGl;
-  stream[ "lastSdate" ] = _d->lastDateShow;
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateGl )
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateShow )
 }
 
 void Amphitheater::load(const VariantMap& stream)
 {
   EntertainmentBuilding::load( stream );
-  _d->lastDateGl = stream.get( "lastGdate" ).toDateTime();
-  _d->lastDateShow = stream.get( "lastSdate" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastDateGl, stream )
+  VARIANT_LOAD_TIME_D( _d, lastDateShow, stream )
 }
 
 DateTime Amphitheater::lastShowDate() const { return _d->lastDateShow; }

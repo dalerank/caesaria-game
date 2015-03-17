@@ -86,6 +86,7 @@
 #include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
+#include "gfx/helper.hpp"
 #include "cityservice_fire.hpp"
 
 #include <set>
@@ -617,11 +618,11 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap overlayParams = item->second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    object::Type overlayType = (object::Type)config.get( 0 ).toInt();
-    TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
+    object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
+    TilePos pos = config.get( ovconfig::idxLocation, gfx::tilemap::invalidLocation() );
 
     OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
-    if( overlay.isValid() && pos.i() >= 0 )
+    if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
     {
       city::AreaInfo info = { this, pos, TilesArray() };
       overlay->build( info );
@@ -639,7 +640,7 @@ void PlayerCity::load( const VariantMap& stream )
   foreach( item, walkers )
   {
     VariantMap walkerInfo = item->second.toMap();
-    int walkerType = (int)walkerInfo.get( "type", 0 );
+    int walkerType = (int)walkerInfo.get( "type", constants::walker::unknown );
 
     WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
     if( walker.isValid() )

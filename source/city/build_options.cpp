@@ -31,7 +31,8 @@ namespace development
 {
 
 static const char* disable_all = "disable_all";
-static const int defaultMemPointsNumber = 10;
+enum { defaultMemPointsNumber = 10, maxLimit=999 };
+
 
 struct BuildingRule
 {
@@ -90,7 +91,7 @@ public:
 Options::Options() : _d( new Impl )
 {
   _d->checkDesirability = true;
-  _d->maximumForts = 999;
+  _d->maximumForts = maxLimit;
   _d->memPoints.resize( defaultMemPointsNumber );
 }
 
@@ -185,7 +186,7 @@ bool Options::isGroupAvailable(const Branch type) const
 unsigned int Options::getBuildingsQuote(const object::Type type) const
 {
   Impl::BuildingRules::const_iterator it = _d->rules.find( type );
-  return it != _d->rules.end() ? it->second.quotes : 999;
+  return it != _d->rules.end() ? it->second.quotes : maxLimit;
 }
 
 TilePos Options::memPoint(unsigned int index) const
