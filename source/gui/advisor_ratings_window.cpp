@@ -41,6 +41,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
 #include "city/cityservice_info.hpp"
+#include "city/statistic.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -50,6 +51,13 @@ namespace gui
 
 namespace advisorwnd
 {
+
+namespace {
+enum { highWorklessValue=15, muchPlebsPercent=30, peaceAverage=50, cityAmazinProsperity=90, peaceLongTime=90 };
+
+const char* const cultureCoverageDesc[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
+}
+
 
 class RatingButton : public PushButton
 {
@@ -71,7 +79,7 @@ public:
     PictureRef& pic = _textPictureRef();
     if( pic )
     {
-      digitFont.draw( *pic, utils::format( 0xff, "%d", _value ), width() / 2 - 10, 17, true, false );
+      digitFont.draw( *pic, utils::i2str( _value ), width() / 2 - 10, 17, true, false );
 
       Font targetFont = Font::create( FONT_1 );
       targetFont.draw( *pic, utils::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
@@ -138,8 +146,7 @@ void Ratings::Impl::updateColumn( const Point& center, const int value )
 
 void Ratings::Impl::checkCultureRating()
 {
-  city::CultureRatingPtr culture;
-  culture << city->findService( city::CultureRating::defaultName() );
+  CultureRatingPtr culture = statistic::finds<CultureRating>( city );
 
   if( culture.isValid() )
   {
@@ -151,13 +158,12 @@ void Ratings::Impl::checkCultureRating()
 
     StringArray troubles;
 
-    const char* covTypename[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
     for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
     {
       int coverage = culture->coverage( CultureRating::Coverage(k) );
       if( coverage < 100 )
       {
-        std::string troubleDesc = utils::format( 0xff, "##have_less_%s_in_city_%d##", covTypename[ k ], coverage / 50 );
+        std::string troubleDesc = utils::format( 0xff, "##have_less_%s_in_city_%d##", cultureCoverageDesc[ k ], coverage / 50 );
         troubles.push_back( troubleDesc );
       }
     }
@@ -174,8 +180,8 @@ void Ratings::Impl::checkProsperityRating()
   if( prosperity != 0 )
   {
     StringArray troubles;
-    unsigned int prValue = prosperity->value();
-    if( prValue == 0 )
+    unsigned int currentProsperity = prosperity->value();
+    if( currentProsperity == 0 )
     {
       lbRatingInfo->setText( _("##cant_calc_prosperity##") );
       return;
@@ -191,15 +197,15 @@ void Ratings::Impl::checkProsperityRating()
 
     if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
     if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles << "##high_workless_number##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > highWorklessValue ) { troubles << "##high_workless_number##"; }
     if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles << "##much_plebs##"; }
+    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > muchPlebsPercent ) { troubles << "##much_plebs##"; }
     if( prosperity->getMark( city::ProsperityRating::cmChange ) == 0 )
     {
       troubles << "##no_prosperity_change##";
       troubles << "##how_to_grow_prosperity##";
     }
-    if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
+    if( currentProsperity > cityAmazinProsperity ) { troubles << "##amazing_prosperity_this_city##"; }
     if( current[ Info::payDiff ] > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
@@ -221,8 +227,7 @@ void Ratings::Impl::checkProsperityRating()
 void Ratings::Impl::checkPeaceRating()
 {
   StringArray advices;
-  city::MilitaryPtr ml;
-  ml << city->findService( city::Military::defaultName() );
+  city::MilitaryPtr ml = statistic::finds<Military>( city );
 
   if( ml.isValid() )
   {
@@ -243,11 +248,11 @@ void Ratings::Impl::checkPeaceRating()
         advices << "##province_has_peace_a_short_time##";
       }
 
-      if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
+      if( peace > peaceLongTime ) { advices << "##your_province_quiet_and_secure##"; }
       else if( peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
       else if( peace > 70 ) { advices << "##its_very_peacefull_province##"; }
       else if( peace > 60 ) { advices << "##this_province_feels_peaceful##"; }
-      else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
+      else if( peace > peaceAverage ) { advices << "##this_lawab_province_become_very_peacefull##"; }
     }
   }
 
