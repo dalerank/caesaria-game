@@ -42,7 +42,7 @@
 #include "layers/layerreligion.hpp"
 #include "layers/build.hpp"
 #include "layers/damage.hpp"
-#include "layers/layerdesirability.hpp"
+#include "layers/desirability.hpp"
 #include "layers/layerentertainment.hpp"
 #include "layers/layertax.hpp"
 #include "layers/crime.hpp"
