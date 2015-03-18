@@ -281,7 +281,7 @@ void Options::setOrder( good::Product type, Order order )
 
 void Options::load( const VariantMap& stream )
 {
-  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
+  foreach( it, stream )
   {
     good::Product gtype = good::Helper::getType( it->first );
 

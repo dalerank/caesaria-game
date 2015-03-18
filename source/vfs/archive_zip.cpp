@@ -695,7 +695,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     default:
     {
-      Logger::warning( "file %s has unsupported compression method", item( index ).fullpath.toString().c_str() );
+      Logger::warning( "file %s has unsupported compression method", item( index ).fullpath.toCString() );
       return NFile();
     }
   }

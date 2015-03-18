@@ -332,6 +332,12 @@ private:
   bool isIgnored(std::string name);
 };
 
+class SteamHelper
+{
+public:
+  static void checkDepsAndStart();
+};
+
 } // namespace
 
 #endif //__CAESARIA_UPDATER_H_INLCUDE__

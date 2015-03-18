@@ -209,7 +209,7 @@ void Updater::GetVersionInfoFromServer()
 
   if (versionInfo == NULL)
   {
-        Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toString().c_str() );
+        Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
         return;
   }
 
@@ -282,7 +282,7 @@ void Updater::DetermineLocalVersion()
 
       if (f->second.localChangesAllowed)
       {
-        Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toString().c_str() );
+        Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toCString() );
         continue;
       }
 
@@ -712,10 +712,9 @@ void Updater::PrepareUpdateBatchFile()
   // Append the current set of command line arguments to the new instance
   std::string arguments;
 
-  for (std::vector<std::string>::const_iterator i = _options.GetRawCmdLineArgs().begin();
-         i != _options.GetRawCmdLineArgs().end(); ++i)
+  foreach( i,_options.GetRawCmdLineArgs() )
   {
-        arguments += " " + *i;
+    arguments += " " + *i;
   }
 
 #ifdef CAESARIA_PLATFORM_WIN
@@ -878,7 +877,7 @@ void Updater::RestartUpdater()
 
     // Spawn a new process
 
-    // Create a tdmlauncher process, setting the working directory to the target directory
+    // Create a caesaria updater process, setting the working directory to the target directory
     STARTUPINFOA siStartupInfo;
     PROCESS_INFORMATION piProcessInfo;
 
@@ -892,7 +891,7 @@ void Updater::RestartUpdater()
     Logger::warning( "Starting batch file " + _updateBatchFile.toString() + " in " + parentPath.toString() );
 
     BOOL success = CreateProcessA( NULL, (LPSTR) _updateBatchFile.toString().c_str(), NULL, NULL,  false, 0, NULL,
-                                                                                                                         parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
+                                   parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
 
     if (!success)
     {
@@ -954,7 +953,73 @@ void Updater::postUpdateCleanup()
 
 void Updater::cancelDownloads()
 {
-  _downloadManager->ClearDownloads();
+  _downloadManager->clearDownloads();
+}
+
+void SteamHelper::checkDepsAndStart()
+{
+#ifdef CAESARIA_PLATFORM_MACOSX
+  vfs::Directory sdl2path( "~/Library/Frameworks/SDL2.framework" );
+
+  if( !sdl2path.exist() )
+  {
+    vfs::Path tmp = TEMP_FILE_PREFIX + "install_frameworks.sh";
+    Logger::warning( "Preparing updater for install frameworks " + tmp.toString() );
+
+    std::ofstream batch(temporaryUpdater.toString().c_str());
+
+    // grayman - accomodate spaces in pathnames
+    tmp = targetdir.getFilePath( tempUpdater );
+
+    batch << "#!/usr/bin/env bash" << std::endl;
+    batch << "SDLFR=~/Library/Frameworks/SDL2.framework" << std::endl;
+    batch << "SAVEDIR=saves" << std::endl;
+    batch << "LIBDIR=~/Library/Frameworks/" << std::endl;
+    batch << "# if the file doesn't exist, try to create folder" << std::endl;
+    batch << "if [ ! -d $SDLFR ]" << std::endl;
+    batch << "then" << std::endl;
+    batch << "hdiutil mount SDL2_mixer-2.0.0.dmg" << std::endl;
+    batch << "hdiutil mount SDL2-2.0.3.dmg" << std::endl;
+    batch << "mkdir -p $LIBDIR" << std::endl;
+    batch << "cp -r /Volumes/SDL2/SDL2.framework $LIBDIR" << std::endl;
+    batch << "cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework $LIBDIR" << std::endl;
+    batch << "hdiutil unmount /Volumes/SDL2" << std::endl;
+    batch << "hdiutil unmount /Volumes/SDL2_mixer" << std::endl;
+    batch << "fi" << std::endl;
+    batch << "if [ ! -d $SAVEDIR ]" << std::endl;
+    batch << "then" << std::endl;
+    batch << "rm -f $SAVEDIR" << std::endl;
+    batch << "mkdir $SAVEDIR" << std::endl;
+    batch << "fi" << std::endl;
+
+    batch.close();
+
+   // Mark the shell script as executable in *nix
+   _markFileAsExecutable(tmp);
+  }
+
+  system( "./caesaria.macos &" );
+  exit(EXIT_SUCCESS);
+#elif defined(CAESARIA_PLATFORM_WIN)
+  STARTUPINFOA siStartupInfo;
+  PROCESS_INFORMATION piProcessInfo;
+
+  memset(&siStartupInfo, 0, sizeof(siStartupInfo));
+  memset(&piProcessInfo, 0, sizeof(piProcessInfo));
+
+  siStartupInfo.cb = sizeof(siStartupInfo);
+
+  vfs::Directory parentPath = vfs::Directory::getApplicationDir();
+
+  Logger::warning( "Starting game in " + parentPath.toString() );
+
+  BOOL success = CreateProcessA( NULL, "caesaria.exe", NULL, NULL,  false, 0, NULL,
+                                 parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
+
+#elif defined(CAESARIA_PLATFORM_LINUX)
+  system( "./caesaria.linux &" );
+  exit(EXIT_SUCCESS);
+#endif
 }
 
 } // namespace

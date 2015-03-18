@@ -190,7 +190,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
 
   if( !Height )
   {
-    Logger::warning( "LOAD PNG: Internal PNG create row pointers failure %s", file.path().toString().c_str() );
+    Logger::warning( "LOAD PNG: Internal PNG create row pointers failure %s", file.path().toCString() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }

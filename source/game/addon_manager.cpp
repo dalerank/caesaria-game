@@ -79,7 +79,7 @@ bool Addon::open(vfs::Path path)
 # ifdef CAESARIA_PLATFORM_WIN
   _d->library = ::LoadLibraryA(path.toString().c_str());
 # else
-  _d->library = ::dlopen(path.toString().c_str(), RTLD_LAZY);
+  _d->library = ::dlopen(path.toCString(), RTLD_LAZY);
 # endif
 
   if( _d->library != 0 )

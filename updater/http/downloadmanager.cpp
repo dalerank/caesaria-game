@@ -43,7 +43,7 @@ DownloadPtr DownloadManager::GetDownload(int id)
 	return (found != _downloads.end()) ? found->second : DownloadPtr();
 }
 
-void DownloadManager::ClearDownloads()
+void DownloadManager::clearDownloads()
 {
 	_downloads.clear();
 }

@@ -179,7 +179,7 @@ void IniFile::ForeachSection(SectionVisitor& visitor) const
 
 void IniFile::ExportToFile(vfs::Path file, const std::string& headerComments) const
 {
-	std::ofstream stream(file.toString().c_str());
+  std::ofstream stream(file.toCString());
 
 	if (!headerComments.empty())
 	{
