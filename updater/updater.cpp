@@ -1017,7 +1017,7 @@ void SteamHelper::checkDepsAndStart()
   Logger::warning( "Starting game in " + parentPath.toString() );
 
   BOOL success = CreateProcessA( NULL, "caesaria.exe", NULL, NULL,  false, 0, NULL,
-                                 parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
+                                 parentPath.toCString(), &siStartupInfo, &piProcessInfo);
 
 #elif defined(CAESARIA_PLATFORM_LINUX)
   system( "./caesaria.linux &" );

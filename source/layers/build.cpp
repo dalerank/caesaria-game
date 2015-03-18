@@ -303,7 +303,7 @@ void Build::_buildAll()
 
     events::GameEventPtr event = events::WarningMessage::create( errorStr.empty()
                                                                       ? "##need_build_on_cleared_area##"
-                                                                      : errorStr, 1 );
+                                                                      : errorStr, events::WarningMessage::neitral );
     event->dispatch();
   }
 }
