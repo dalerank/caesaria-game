@@ -20,6 +20,7 @@
 #include "http/httprequest.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "vfs/filesystem.hpp"
 #include "util.hpp"
 
 #if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
@@ -80,7 +81,7 @@ void Updater::setBinaryAsExecutable()
     if( path2exe.exist() )
     {
       // set the executable bit on binary
-      _markFileAsExecutable( path2exe );
+      markFileAsExecutable( path2exe );
     }
   }
 }
@@ -90,13 +91,13 @@ void Updater::removeDownload(std::string itemname)
 	_downloadQueue.removeItem( itemname );
 }
 
-void Updater::_markFileAsExecutable(vfs::Path path )
+void Updater::markFileAsExecutable(vfs::Path path)
 {
 #if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 	Logger::warning( "Marking file as executable: " + path.toString() );
 
 	struct stat mask;
-	stat(path.toString().c_str(), &mask);
+  stat(path.toCString(), &mask);
 
 	mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
 
@@ -747,7 +748,7 @@ void Updater::PrepareUpdateBatchFile()
 
 #ifdef CAESARIA_PLATFORM_UNIX
   // Mark the shell script as executable in *nix
-  _markFileAsExecutable(_updateBatchFile);
+  markFileAsExecutable(_updateBatchFile);
 #endif
 }
 
@@ -959,17 +960,18 @@ void Updater::cancelDownloads()
 void SteamHelper::checkDepsAndStart()
 {
 #ifdef CAESARIA_PLATFORM_MACOSX
-  vfs::Directory sdl2path( "~/Library/Frameworks/SDL2.framework" );
+  vfs::Path sdl2relpath = "Library/Frameworks/SDL2.framework";
+  vfs::Path sdl2abspath = vfs::Directory::getUserDir()/sdl2relpath;
 
-  if( !sdl2path.exist() )
+  if( !sdl2abspath.exist() )
   {
-    vfs::Path tmp = TEMP_FILE_PREFIX + "install_frameworks.sh";
+    vfs::Path tmp = "__install_frameworks.sh";
     Logger::warning( "Preparing updater for install frameworks " + tmp.toString() );
 
-    std::ofstream batch(temporaryUpdater.toString().c_str());
+    std::ofstream batch(tmp.toCString());
 
     // grayman - accomodate spaces in pathnames
-    tmp = targetdir.getFilePath( tempUpdater );
+    tmp = vfs::Directory::getApplicationDir()/tmp;
 
     batch << "#!/usr/bin/env bash" << std::endl;
     batch << "SDLFR=~/Library/Frameworks/SDL2.framework" << std::endl;
@@ -994,8 +996,9 @@ void SteamHelper::checkDepsAndStart()
 
     batch.close();
 
-   // Mark the shell script as executable in *nix
-   _markFileAsExecutable(tmp);
+    // Mark the shell script as executable in *nix
+    Updater::markFileAsExecutable(tmp.toCString());
+    system( "./__install_frameworks.sh" );
   }
 
   system( "./caesaria.macos &" );
