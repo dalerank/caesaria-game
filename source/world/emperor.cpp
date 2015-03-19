@@ -201,12 +201,12 @@ void Emperor::timeStep(unsigned int time)
       if( salaryKoeff > 1.f ) { relation.value -= (int)salaryKoeff * salaryKoeff; }
       else if( salaryKoeff < 1.f ) { relation.value += normalSalaryFavourUpdate; }
 
-      int brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+      int brokenEmpireTax = cityp->funds().getIssueValue( FundIssue::overdueEmpireTax, city::Funds::lastYear );
       if( brokenEmpireTax > 0 )
       {
         relation.value -= 1;
 
-        brokenEmpireTax = cityp->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+        brokenEmpireTax = cityp->funds().getIssueValue( FundIssue::overdueEmpireTax, city::Funds::twoYearAgo );
         if( brokenEmpireTax > 0 )
           relation.value -= 2;
       }

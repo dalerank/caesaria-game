@@ -51,6 +51,7 @@ public:
   PushButton* btnInvertZoom;
   PushButton* btnMmbMoving;
   PushButton* btnBarbarianMayAttack;
+  PushButton* btnLegionMayAttack;
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
@@ -75,6 +76,7 @@ public:
   void toggleC3Gameplay();
   void toggleDifficulty();
   void toggleShowTooltips();
+  void toggleLegionAttack();
   void toggleCityOption( PlayerCity::OptionType option );
 };
 
@@ -100,6 +102,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnBarbarianMayAttack )
+  GET_DWIDGET_FROM_UI( _d, btnLegionMayAttack )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
   GET_DWIDGET_FROM_UI( _d, btnShowTooltips )
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
@@ -114,9 +117,10 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnIncreaseFireRisk, onClicked(), _d.data(), Impl::increaseFireRisk )
   CONNECT( _d->btnDecreaseFireRisk, onClicked(), _d.data(), Impl::decreaseFireRisk )
   CONNECT( _d->btnBarbarianMayAttack, onClicked(), _d.data(), Impl::toggleBarbarianAttack )
+  CONNECT( _d->btnLegionMayAttack, onClicked(), _d.data(), Impl::toggleLegionAttack )
   CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3Gameplay )
   CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleShowTooltips )
-  CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleDifficulty )
+  CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
@@ -185,6 +189,7 @@ void CityOptionsWindow::Impl::toggleShowTooltips()
   update();
 }
 
+void CityOptionsWindow::Impl::toggleLegionAttack() { toggleCityOption( PlayerCity::legionAttack ); }
 void CityOptionsWindow::Impl::toggleGods() { toggleCityOption( PlayerCity::godEnabled ); }
 void CityOptionsWindow::Impl::toggleBarbarianAttack() {  toggleCityOption( PlayerCity::barbarianAttack ); }
 void CityOptionsWindow::Impl::toggleC3Gameplay()  {  toggleCityOption( PlayerCity::c3gameplay ); }

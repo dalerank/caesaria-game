@@ -94,6 +94,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace {
 CAESARIA_LITERALCONST(tilemap)
@@ -163,7 +164,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.roadExit = TilePos( 0, 0 );
   _d->borderInfo.boatEntry = TilePos( 0, 0 );
   _d->borderInfo.boatExit = TilePos( 0, 0 );
-  _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
+  _d->funds.resolveIssue( FundIssue( FundIssue::donation, 1000 ) );
   _d->population = 0;
   _d->funds.setTaxRate( city::Funds::defaultTaxPrcnt );
   _d->age = 0;
@@ -202,7 +203,8 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
-  setOption( barbarianAttack, 1 );
+  setOption( barbarianAttack, 0 );
+  setOption( legionAttack, 0 );
   setOption( c3gameplay, 0 );
   setOption( difficulty, game::difficulty::usual );
 }
@@ -270,7 +272,7 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   if( funds.treasury() > 0 )
   {
     int playerSalary = player->salary();
-    funds.resolveIssue( FundIssue( city::Funds::playerSalary, -playerSalary ) );
+    funds.resolveIssue( FundIssue( FundIssue::playerSalary, -playerSalary ) );
     player->appendMoney( playerSalary );
   }
 
@@ -314,8 +316,8 @@ OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const { return _d->funds.getIssueValue( city::Funds::empireTax, city::Funds::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const { return _d->funds.getIssueValue( city::Funds::overduePayment, city::Funds::thisYear ) > 0; }
+bool PlayerCity::isPaysTaxes() const { return _d->funds.getIssueValue( FundIssue::empireTax, city::Funds::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const { return _d->funds.getIssueValue( FundIssue::overduePayment, city::Funds::thisYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
@@ -356,7 +358,7 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   SenateList senates = city::statistic::findo< Senate >( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
-  funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
+  funds.resolveIssue( FundIssue( FundIssue::taxIncome, lastMonthTax ) );
 }
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
@@ -377,7 +379,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
       (*it)->appendMoney( house_wages );
       wages += house_wages;
     }
-    funds.resolveIssue( FundIssue( city::Funds::workersWages, ceil( -wages ) ) );
+    funds.resolveIssue( FundIssue( FundIssue::workersWages, ceil( -wages ) ) );
   }
   else
   {
@@ -512,6 +514,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "fireKoeff"  ] = getOption( fireKoeff );
   stream[ "c3gameplay" ] = getOption( c3gameplay );
   stream[ "barbarianAttack" ] = getOption( barbarianAttack );
+  stream[ "legionAttack" ] = getOption( legionAttack );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -604,6 +607,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
   setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
   setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
+  setOption( legionAttack, stream.get( "legionAttack", 1 ) );
   setOption( c3gameplay, stream.get( "c3gameplay", 0 ) );
   setOption( difficulty, stream.get( "difficulty", (int)game::difficulty::usual ) );
 
@@ -831,6 +835,15 @@ void PlayerCity::addObject( world::ObjectPtr object )
   else if( is_kind_of<world::RomeChastenerArmy>( object ) )
   {
     world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
+    if( !getOption( legionAttack ) )
+    {
+      army->killSoldiers( 100 );
+
+      GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_disabled_by_player##"), true );
+      e->dispatch();
+      return;
+    }
+
     for( unsigned int k=0; k < army->soldiersNumber(); k++ )
     {
       ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
@@ -844,7 +857,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       }
     }
 
-    events::GameEventPtr e = events::ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
+    GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
     e->dispatch();
   }
   else if( is_kind_of<world::Barbarian>( object ) )

@@ -87,7 +87,13 @@
   }
 
   btnBarbarianMayAttack#PushButton : {
-    geometry : [ 16, 270, 220, 295 ]
+    geometry : [ 16, 270, "pw/2", 295 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_barbarian_mode##"
+  }
+
+  btnLegionMayAttack#PushButton : {
+    geometry : [ "pw/2", 270, "pw-16", 295 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_barbarian_mode##"
   }
