@@ -22,15 +22,15 @@
 #include "core/utils.hpp"
 #include "objects/overlay.hpp"
 #include "core/foreach.hpp"
+#include "config.hpp"
 
 #include <set>
 
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
-
-enum { maxSndDst=3 };
 
 struct SoundEmitter
 {  
@@ -131,7 +131,7 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  TilePos offset( maxSndDst, maxSndDst );
+  TilePos offset( ambiendsnd::maxDistance, ambiendsnd::maxDistance );
   TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
@@ -140,7 +140,7 @@ void AmbientSound::timeStep( const unsigned int time )
   for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->pos();
-    if( abs( distance.i() ) > maxSndDst || abs( distance.j() ) > maxSndDst
+    if( abs( distance.i() ) > ambiendsnd::maxDistance || abs( distance.j() ) > ambiendsnd::maxDistance
         || !(*i).isValid() )
     {
       //ae.stop( (*i).getSound() );
@@ -157,18 +157,18 @@ void AmbientSound::timeStep( const unsigned int time )
   for( Impl::Emitters::reverse_iterator i=_d->emitters.rbegin();
        i != _d->emitters.rend(); ++i )
   {
-    std::string sound = i->getSound();
+    std::string rcName = i->getSound();
 
-    if( sound.empty() )
+    if( rcName.empty() )
       continue;
 
-    std::set< std::string >::const_iterator tIt = processedSounds.find( sound );
+    std::set< std::string >::const_iterator tIt = processedSounds.find( rcName );
 
     if( tIt == processedSounds.end() )
     {
-      processedSounds.insert( sound );
+      processedSounds.insert( rcName );
 
-      ae.play( sound, audio::maxSndLevel / (maxSndDst *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( rcName, sound::maxLevel / (ambiendsnd::maxDistance *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }
