@@ -209,8 +209,8 @@ void Ratings::Impl::checkProsperityRating()
     if( current[ Info::payDiff ] > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
-    unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
-    caesarsHelper += city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
+    unsigned int caesarsHelper = city->funds().getIssueValue( FundIssue::caesarsHelp, Funds::thisYear );
+    caesarsHelper += city->funds().getIssueValue( FundIssue::caesarsHelp, city::Funds::lastYear );
     if( caesarsHelper > 0 )
     {
       troubles << "##emperor_send_money_to_you_nearest_time##";
@@ -283,10 +283,10 @@ void Ratings::Impl::checkFavourRating()
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
   float salaryKoeff = player->salary() / (float)rank.salary;
 
-  int brokenEmpireTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+  int brokenEmpireTax = city->funds().getIssueValue( FundIssue::overdueEmpireTax, Funds::lastYear );
   if( brokenEmpireTax > 0 )
   {
-    int twoYearsAgoBrokenTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+    int twoYearsAgoBrokenTax = city->funds().getIssueValue( FundIssue::overdueEmpireTax, Funds::twoYearAgo );
 
     if( twoYearsAgoBrokenTax > 0 ) { problems << "##broke_empiretax_with2years_warning##"; }
     else { problems << "##broke_empiretax_warning##"; }

@@ -71,7 +71,7 @@ Info::Info( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->lastDate = game::Date::current();
-  _d->lastYearHistory.resize( 12 );
+  _d->lastYearHistory.resize( DateTime::monthsInYear );
   _d->maxParams.resize( paramsCount );
 }
 
@@ -120,15 +120,13 @@ void Info::timeStep(const unsigned int time )
     last[ blackHouses ] = statistic::blackHouses( _city() );
     last[ peace       ] = 0;
 
-    PeacePtr peaceSrvc;
-    peaceSrvc << _city()->findService( Peace::defaultName() );
+    PeacePtr peaceSrvc = statistic::finds<Peace>( _city() );
     if( peaceSrvc.isValid() )
     {
       last[ peace ] = peaceSrvc->value();
     }
 
-    MilitaryPtr mil;
-    mil << _city()->findService( Military::defaultName() );
+    MilitaryPtr mil = statistic::finds<Military>( _city() );
     if( mil.isValid() )
     {
       last[ Info::milthreat ] = mil->threatValue();
@@ -151,8 +149,7 @@ void Info::timeStep(const unsigned int time )
       }
     }
 
-    SentimentPtr st;
-    st << _city()->findService( Sentiment::defaultName() );
+    SentimentPtr st = statistic::finds<Sentiment>( _city() );
 
     last[ sentiment ] = st->value();
 

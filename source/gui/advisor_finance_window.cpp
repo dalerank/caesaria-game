@@ -92,26 +92,26 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
   if( lbRegPayers ) lbRegPayers->setText( strRegPaeyrs );
 
   Point sp = startPoint;
-  _drawReportRow( sp, _("##taxes##"), Funds::taxIncome );
-  _drawReportRow( sp + offset, _("##trade##"), Funds::exportGoods );
-  _drawReportRow( sp + offset * rowDonation, _("##donations##"), Funds::donation );
-  _drawReportRow( sp + offset * rowDebt, _("##debet##"), Funds::debet );
+  _drawReportRow( sp, _("##taxes##"), FundIssue::taxIncome );
+  _drawReportRow( sp + offset, _("##trade##"), FundIssue::exportGoods );
+  _drawReportRow( sp + offset * rowDonation, _("##donations##"), FundIssue::donation );
+  _drawReportRow( sp + offset * rowDebt, _("##debet##"), FundIssue::debet );
   
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowImports, _("##import_fn##"), Funds::importGoods );
-  _drawReportRow( sp + offset * rowWages, _("##wages##"), Funds::workersWages );
-  _drawReportRow( sp + offset * rowConstructions, _("##buildings##"), Funds::buildConstruction );
-  _drawReportRow( sp + offset * rowCredit, _("##percents##"), Funds::creditPercents );
-  _drawReportRow( sp + offset * rowSalary, _("##pn_salary##"), Funds::playerSalary );
-  _drawReportRow( sp + offset * rowSundries, _("##other##"), Funds::sundries );
-  _drawReportRow( sp + offset * rowEmpireTax, _("##empire_tax##"), Funds::empireTax );
-  _drawReportRow( sp + offset * rowExpensive, _("##credit##"), Funds::credit );
+  _drawReportRow( sp + offset * rowImports, _("##import_fn##"), FundIssue::importGoods );
+  _drawReportRow( sp + offset * rowWages, _("##wages##"), FundIssue::workersWages );
+  _drawReportRow( sp + offset * rowConstructions, _("##buildings##"), FundIssue::buildConstruction );
+  _drawReportRow( sp + offset * rowCredit, _("##percents##"), FundIssue::creditPercents );
+  _drawReportRow( sp + offset * rowSalary, _("##pn_salary##"), FundIssue::playerSalary );
+  _drawReportRow( sp + offset * rowSundries, _("##other##"), FundIssue::sundries );
+  _drawReportRow( sp + offset * rowEmpireTax, _("##empire_tax##"), FundIssue::empireTax );
+  _drawReportRow( sp + offset * rowExpensive, _("##credit##"), FundIssue::credit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowProfit, _("##profit##"), Funds::cityProfit );
+  _drawReportRow( sp + offset * rowProfit, _("##profit##"), FundIssue::cityProfit );
   
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowBalance, _("##balance##"), Funds::balance );
+  _drawReportRow( sp + offset * rowBalance, _("##balance##"), FundIssue::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
@@ -151,8 +151,8 @@ void Finance::_drawReportRow(const Point& pos, const std::string& title, int typ
 {
   Font font = Font::create( FONT_1 );
 
-  int lyvalue = _d->city->funds().getIssueValue( (city::Funds::IssueType)type, city::Funds::lastYear );
-  int tyvalue = _d->city->funds().getIssueValue( (city::Funds::IssueType)type, city::Funds::thisYear );
+  int lyvalue = _d->city->funds().getIssueValue( (FundIssue::Type)type, Funds::lastYear );
+  int tyvalue = _d->city->funds().getIssueValue( (FundIssue::Type)type, Funds::thisYear );
 
   Size size( 100, 20 );
   Label* lb = new Label( this, Rect( pos, size), title );

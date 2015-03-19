@@ -224,7 +224,7 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case add_1000_dn:
-    game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
+    game->city()->funds().resolveIssue(FundIssue(FundIssue::donation, 1000));
   break;
 
   case add_wolves:

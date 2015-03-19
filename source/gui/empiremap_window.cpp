@@ -334,7 +334,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
+      events::GameEventPtr e = events::FundIssueEvent::create( FundIssue::sundries, -(int)cost );
       e->dispatch();
 
       DockList docks = city::statistic::findo<Dock>( city, object::dock );

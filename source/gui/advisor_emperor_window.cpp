@@ -53,6 +53,7 @@
 #include "gui/widget_helper.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -293,7 +294,7 @@ void Emperor::draw(gfx::Engine& painter )
 void Emperor::Impl::sendMoney( int money )
 {
   city->mayor()->appendMoney( -money );
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, money );
+  GameEventPtr e = FundIssueEvent::create( FundIssue::donation, money );
   e->dispatch();
 }
 

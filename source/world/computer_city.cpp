@@ -300,7 +300,7 @@ void ComputerCity::timeStep( unsigned int time )
     //debug muleta
     if( _d->funds.treasury() < 1000 )
     {
-      _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
+      _d->funds.resolveIssue( FundIssue( FundIssue::donation, 1000 ) );
     }
   }
 

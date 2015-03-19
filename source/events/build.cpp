@@ -92,7 +92,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     if( construction.isValid() )
     {
       const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
-      game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
+      game.city()->funds().resolveIssue( FundIssue( FundIssue::buildConstruction,
                                                     -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
       if( construction->group() != object::group::disaster )

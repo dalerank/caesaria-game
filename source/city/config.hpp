@@ -33,7 +33,40 @@ enum { defaultNumber=10 };
 
 namespace crime
 {
-enum { level4protestor = 50, level4mugger = 70, level4rioter = 90, maxValue=100 };
+enum { rioterCost=20, level4protestor = 50, level4mugger = 70, level4rioter = 90, maxValue=100 };
+}
+
+namespace festival
+{
+enum { prepareMonthsDelay=2 };
+typedef enum { none=0, small, middle, big, count } Type;
+}
+
+namespace health
+{
+enum { levelNumber = 12, bad = 40, terrible = 20 };
+}
+
+namespace prosperity
+{
+enum { penalty=-1,
+       award=1,
+       cityHaveProfitAward=2,
+       taxBrokenPenalty=3,
+       normalWorklesPercent=5,
+       caesarHelpCityPenalty=10,
+       highWorklessPercent=15,
+       normalPlebsInCityPercent=30 };
+}
+
+namespace desirability
+{
+enum { normalInfluence=4, senateInfluence=10 };
+}
+
+namespace employements
+{
+enum { hireDistance = 36 };
 }
 
 }//end namespace city

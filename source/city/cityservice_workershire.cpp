@@ -32,10 +32,12 @@
 #include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
 #include "core/variant_map.hpp"
+#include "config.hpp"
 
 using namespace constants;
 using namespace std;
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
@@ -45,7 +47,6 @@ REGISTER_SERVICE_IN_FACTORY(WorkersHire,workers_hire)
 namespace {
 CAESARIA_LITERALCONST(priorities)
 CAESARIA_LITERALCONST(employers)
-const unsigned int defaultHireDistance = 36;
 }
 
 class WorkersHire::Impl
@@ -59,7 +60,7 @@ public:
   DateTime lastMessageDate;
   HirePriorities priorities;
   GroupBuildings industryBuildings;
-  std::set<object::Type> excludeTypes;
+  object::TypeSet excludeTypes;
 
 public:
   void fillIndustryMap();
@@ -83,7 +84,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   _d->lastMessageDate = game::Date::current();
   _d->excludeTypes.insert( object::fountain );
   _d->fillIndustryMap();
-  _d->distance = defaultHireDistance;
+  _d->distance = employements::hireDistance;
 
   load( config::load( ":workershire.model" ) );
 }
@@ -239,7 +240,7 @@ VariantMap WorkersHire::save() const
 void WorkersHire::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANY_D( _d, distance, stream );
-  if( _d->distance == 0 ) _d->distance = defaultHireDistance;
+  if( _d->distance == 0 ) _d->distance = employements::hireDistance;
 
   VariantList priorVl = stream.get( lc_priorities ).toList();
 

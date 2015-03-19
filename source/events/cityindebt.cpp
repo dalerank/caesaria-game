@@ -130,7 +130,7 @@ void CityIndebt::_exec(Game& game, unsigned int)
 
     _d->state++;
 
-    GameEventPtr e = FundIssueEvent::create( city::Funds::caesarsHelp, money );
+    GameEventPtr e = FundIssueEvent::create( FundIssue::caesarsHelp, money );
     e->dispatch();
     _d->lastMessageSent = game::Date::current();
   }

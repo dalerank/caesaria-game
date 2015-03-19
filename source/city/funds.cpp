@@ -48,7 +48,7 @@ public:
 
 signals public:
   Signal1<int> onChangeSignal;
-  Signal1<IssueType> onNewIssueSignal;
+  Signal1<FundIssue::Type> onNewIssueSignal;
 };
 
 Funds::Funds() : _d( new Impl )
@@ -66,25 +66,25 @@ void Funds::resolveIssue( FundIssue issue )
   bool needUpdateTreasury = true;
   switch( issue.type )
   {
-  case unknown:
+  case FundIssue::unknown:
     Logger::warning( "Funds: wrong issue type %d", issue.type );
     return;
   break;
 
-  case overduePayment:
-  case overdueEmpireTax:
+  case FundIssue::overduePayment:
+  case FundIssue::overdueEmpireTax:
     needUpdateTreasury = false;
   break;
 
   default:
   {
     IssuesValue& step = _d->history.front();
-    if( step.find( (IssueType)issue.type ) == step.end() )
+    if( step.find( (FundIssue::Type)issue.type ) == step.end() )
     {
-      step[ (IssueType)issue.type ] = 0;
+      step[ (FundIssue::Type)issue.type ] = 0;
     }
 
-    step[ (IssueType)issue.type ] += abs( issue.money );
+    step[ (FundIssue::Type)issue.type ] += abs( issue.money );
 
     _updateCreditDebt(step, issue);
 
@@ -96,7 +96,7 @@ void Funds::resolveIssue( FundIssue issue )
   break;
   }
 
-  emit _d->onNewIssueSignal( (IssueType)issue.type );
+  emit _d->onNewIssueSignal( (FundIssue::Type)issue.type );
 
   if( saveMoney != _d->money )
   {
@@ -105,22 +105,22 @@ void Funds::resolveIssue( FundIssue issue )
 }
 
 void Funds::_updateCreditDebt(IssuesValue& step, FundIssue issue){
-    if(issue.type == Funds::taxIncome || issue.type == Funds::exportGoods || issue.type == Funds::donation){
-    	 step[ Funds::debet ] += issue.money;
-    } else if (issue.type == Funds::importGoods || issue.type == Funds::workersWages || issue.type == Funds::buildConstruction
-    		|| issue.type == Funds::creditPercents || issue.type == Funds::playerSalary || issue.type == Funds::sundries
-			|| issue.type == Funds::empireTax) {
-    	 step[ Funds::credit ] += issue.money;
+    if(issue.type == FundIssue::taxIncome || issue.type == FundIssue::exportGoods || issue.type == FundIssue::donation){
+         step[ FundIssue::debet ] += issue.money;
+    } else if (issue.type == FundIssue::importGoods || issue.type == FundIssue::workersWages || issue.type == FundIssue::buildConstruction
+                || issue.type == FundIssue::creditPercents || issue.type == FundIssue::playerSalary || issue.type == FundIssue::sundries
+                        || issue.type == FundIssue::empireTax) {
+         step[ FundIssue::credit ] += issue.money;
     }
 
-    step[ Funds::cityProfit ] = step[ Funds::debet ] + step[ Funds::credit ];
+    step[ FundIssue::cityProfit ] = step[ FundIssue::debet ] + step[ FundIssue::credit ];
 }
 
 int Funds::treasury() const { return _d->money; }
 
 int Funds::profit() const
 {
-  int balanceLastYear = getIssueValue( city::Funds::balance, lastYear );
+  int balanceLastYear = getIssueValue( FundIssue::balance, lastYear );
   return _d->money - balanceLastYear;
 }
 
@@ -137,8 +137,8 @@ void Funds::updateHistory( const DateTime& date )
   }
 
   IssuesValue& step = _d->history.front();
-  step[ Funds::balance ] = _d->money;
-  step[ Funds::cityProfit ] = profit();
+  step[ FundIssue::balance ] = _d->money;
+  step[ FundIssue::cityProfit ] = profit();
 
   _d->lastYearUpdate = date.year();
   _d->history.insert( _d->history.begin(), IssuesValue() );
@@ -149,7 +149,7 @@ void Funds::updateHistory( const DateTime& date )
   }
 }
 
-int Funds::getIssueValue( IssueType type, int age ) const
+int Funds::getIssueValue(FundIssue::Type type, int age ) const
 {
   if( (unsigned int)age >= _d->history.size() )
     return 0;
@@ -208,7 +208,7 @@ void Funds::load( const VariantMap& stream )
     VariantList::const_iterator stepIt=historyStep.begin(); 
     while( stepIt != historyStep.end() )
     {
-      IssueType type = (IssueType)stepIt->toInt(); ++stepIt;
+      FundIssue::Type type = (FundIssue::Type)stepIt->toInt(); ++stepIt;
       int value = stepIt->toInt(); ++stepIt;
       
       last[ type ] = value;
@@ -218,6 +218,6 @@ void Funds::load( const VariantMap& stream )
 
 Funds::~Funds(){}
 Signal1<int>& Funds::onChange(){  return _d->onChangeSignal; }
-Signal1<Funds::IssueType>&Funds::onNewIssue(){ return _d->onNewIssueSignal; }
+Signal1<FundIssue::Type>&Funds::onNewIssue(){ return _d->onNewIssueSignal; }
 
 }//end namespace city

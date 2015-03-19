@@ -32,13 +32,12 @@
 #include "config.hpp"
 
 using namespace constants;
+using namespace events;
 using namespace config;
 
 namespace
 {
 const int minCityTax4mugger = 20;
-
-const int crimedecOnRioterBirth = 20;
 
 const int minSentiment4protest = 60;
 const int minSentiment4mugger = 30;
@@ -129,7 +128,7 @@ void Disorder::timeStep( const unsigned int time )
 
     int sentiment = _city()->sentiment();
     int randomValue = math::random( crime::maxValue );
-    if (sentiment >= minSentiment4protest)
+    if (sentiment >= minSentiment4protest )
     {
       if ( randomValue >= sentiment + 20 )
       {
@@ -223,7 +222,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 {
   house->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
 
-  int taxesThisYear = city->funds().getIssueValue( city::Funds::taxIncome );
+  int taxesThisYear = city->funds().getIssueValue( FundIssue::taxIncome );
   int maxMoneyStolen = city->population() / 10;
 
   if( taxesThisYear > minCityTax4mugger )
@@ -233,11 +232,11 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
     if( moneyStolen > maxMoneyStolen )
       moneyStolen = math::random( maxMoneyStolen );
 
-    events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                                          events::ShowInfobox::send2scribe, "mugging" );
+    GameEventPtr e = ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
+                                          ShowInfobox::send2scribe, "mugging" );
     e->dispatch();
 
-    city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );
+    city->funds().resolveIssue( FundIssue( FundIssue::moneyStolen, -moneyStolen ) );
   }
 
   currentCrimeLevel++;
@@ -245,8 +244,8 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
-  events::GameEventPtr e = events::ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
-                                                        events::ShowInfobox::send2scribe, "spy_riot" );
+  GameEventPtr e = ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
+                                        ShowInfobox::send2scribe, "spy_riot" );
   e->dispatch();
   rioterInThisYear++;
 
@@ -258,7 +257,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 
   foreach( it, houses )
   {
-    (*it)->appendServiceValue( Service::crime, -crimedecOnRioterBirth );
+    (*it)->appendServiceValue( Service::crime, -crime::rioterCost );
   }
 }
 
