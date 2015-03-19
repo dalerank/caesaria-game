@@ -206,10 +206,9 @@ void Trade::Impl::showGoodOrderManageWindow(good::Product type )
   gmode |= (statistic::canImport( city, type ) ? GoodOrderManageWindow::gmImport : 0);
   gmode |= (statistic::canProduce( city, type ) ? GoodOrderManageWindow::gmProduce : 0);
 
-  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( p, Rect( 0, 0, p->width() - 10, p->height() - 10 ),
+  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( p, Rect( 0, 0, p->width() - 80, p->height() - 100 ),
                                                           city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
-  //wnd->setCenter( p->center() );
-  wnd->move( Point( 50, 50 ) );
+  wnd->setCenter( p->center() );
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
 
