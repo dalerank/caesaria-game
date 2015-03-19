@@ -72,7 +72,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
   _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-  _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
   _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
 
   // animations

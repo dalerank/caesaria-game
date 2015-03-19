@@ -613,6 +613,14 @@ void Widget::setupUI( const VariantMap& options )
     setGeometry( r );
   }
 
+  tmp = options.get( "size" );
+  if( tmp.isValid() )
+  {
+    Size s = tmp.toSize();
+    if( s.width() > 0 ) { setWidth( s.width()); }
+    if( s.height() > 0 ) { setHeight( s.height() ); }
+  }
+
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
   for( VariantMap::const_iterator it=options.begin(); it != options.end(); ++it )
@@ -765,13 +773,12 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
 
     if ( recursive )
     {
-        // update all children
-        ChildIterator it = _d->children.begin();
-        for (; it != _d->children.end(); ++it)
-        {
-            (*it)->_recalculateAbsolutePosition(recursive);
-        }
+      // update all children
+      foreach( it, _d->children )
+      {
+          (*it)->_recalculateAbsolutePosition(recursive);
       }
+    }
 }
 
 void Widget::animate( unsigned int timeMs )

@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 120 ], delay : 3 }
+    animation : { rc : "bathanim", start : 1, count : 29, offset : [ 0, 120 ], delay : 3 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 
@@ -558,6 +558,7 @@
     employers : 0
     class : "water"
     fullOffset : [ 0, 0 ]
+    animation : { rc : "resvanim", start : 1, count : 29, offset : [ 0, 211 ], delay : 4 }
     sound : [ "reservoir", 1 ]
   }, 
 
