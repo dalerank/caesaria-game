@@ -25,12 +25,21 @@
 #include "predefinitions.hpp"
 
 struct FundIssue
-{
-  int type;
+{ 
+  enum Type { unknown=0, taxIncome=1,
+              exportGoods, donation,
+              importGoods, workersWages,
+              buildConstruction, creditPercents,
+              playerSalary, sundries, moneyStolen,
+              empireTax, debet, credit, cityProfit,
+              overduePayment, overdueEmpireTax,
+              balance, caesarsHelp,
+              issueTypeCount };
+  Type type;
   int money;
 
-  FundIssue() : type( 0 ), money( 0 ) {}
-  FundIssue( int t, int m ) : type( t ), money( m ) {}
+  FundIssue() : type( unknown ), money( 0 ) {}
+  FundIssue( Type t, int m ) : type( t ), money( m ) {}
 };
 
 namespace city
@@ -39,18 +48,9 @@ namespace city
 class Funds
 {
 public:
-  enum IssueType { unknown=0, taxIncome=1, 
-                   exportGoods, donation, 
-                   importGoods, workersWages, 
-                   buildConstruction, creditPercents, 
-                   playerSalary, sundries, moneyStolen,
-                   empireTax, debet, credit, cityProfit,
-                   overduePayment, overdueEmpireTax,
-                   balance, caesarsHelp,
-                   issueTypeCount };
   enum { thisYear=0, lastYear=1, twoYearAgo=2, defaultTaxPrcnt=7 };
 
-  typedef std::map< city::Funds::IssueType, int > IssuesValue;
+  typedef std::map< FundIssue::Type, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
 
   Funds();
@@ -60,7 +60,7 @@ public:
 
   void updateHistory( const DateTime& date );
 
-  int getIssueValue( IssueType type, int age=thisYear ) const;
+  int getIssueValue( FundIssue::Type type, int age=thisYear ) const;
 
   int taxRate() const;
   void setTaxRate( const unsigned int value );
@@ -78,7 +78,7 @@ public:
 
 signals public:
   Signal1<int>& onChange();
-  Signal1<IssueType>& onNewIssue();
+  Signal1<FundIssue::Type>& onNewIssue();
 
 private:
   class Impl;

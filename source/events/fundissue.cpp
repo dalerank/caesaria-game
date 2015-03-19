@@ -43,7 +43,7 @@ GameEventPtr FundIssueEvent::import(good::Product good, int qty, float buff)
   ev->_gtype = good;
   ev->_qty = qty;
   ev->_buff = buff;
-  ev->_type = city::Funds::importGoods;
+  ev->_type = FundIssue::importGoods;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
@@ -55,7 +55,7 @@ GameEventPtr FundIssueEvent::exportg(good::Product good, int qty, float buff)
   ev->_gtype = good;
   ev->_qty = qty;
   ev->_buff = buff;
-  ev->_type = city::Funds::exportGoods;
+  ev->_type = FundIssue::exportGoods;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
@@ -68,18 +68,18 @@ FundIssueEvent::FundIssueEvent() : _type( 0 ), _value( 0 ), _buff( 1.f ), _gtype
 
 void FundIssueEvent::_exec(Game& game, unsigned int )
 {
-  if( _type == city::Funds::importGoods )
+  if( _type == FundIssue::importGoods )
   {
     int price = good::Helper::importPrice( game.city(), _gtype, _qty );
     _value = -price * ( 1+_buff );
   }
-  else if( _type == city::Funds::exportGoods )
+  else if( _type == FundIssue::exportGoods )
   {
     int price = good::Helper::exportPrice( game.city(), _gtype, _qty );
     _value = price * ( 1+_buff );
   }
 
-  game.city()->funds().resolveIssue( FundIssue( _type, _value ) );
+  game.city()->funds().resolveIssue( FundIssue( (FundIssue::Type)_type, _value ) );
 }
 
 } //end namespace events

@@ -28,8 +28,11 @@
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
 #include "cityservice_factory.hpp"
+#include "config.hpp"
 
 using namespace religion;
+using namespace config;
+using namespace events;
 
 namespace city
 {
@@ -37,14 +40,12 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(Festival,festival)
 
 namespace {
-  static const int prepareFestivalDealy = 2;
-  typedef enum { ftNone=0, ftSmall, ftMiddle, ftBig, ftCount } FestType;
-  int firstFestivalSentinment[ftCount] = { 7, 9, 12 };
-  int secondFesivalSentiment[ftCount] = { 2, 3, 5 };
+  int firstFestivalSentinment[ festival::count] = { 7, 9, 12 };
+  int secondFesivalSentiment[ festival::count] = { 2, 3, 5 };
 
-  const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
-  const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
-  const char* festivalVideo[ftCount] = { "", "festival1_feast", "festival3_glad", "festival2_chariot" };
+  const char* festivalTitles[ festival::count] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
+  const char* festivalDesc[ festival::count] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
+  const char* festivalVideo[ festival::count] = { "", "festival1_feast", "festival3_glad", "festival2_chariot" };
 }
 
 class Festival::Impl
@@ -55,7 +56,7 @@ public:
   DateTime festivalDate;
 
   RomeDivinityType divinity;  
-  int festivalType;
+  festival::Type festivalType;
 };
 
 SrvcPtr Festival::create( PlayerCityPtr city )
@@ -72,12 +73,12 @@ DateTime Festival::nextFestivalDate() const { return _d->festivalDate; }
 
 void Festival::assignFestival( RomeDivinityType name, int size )
 {
-  _d->festivalType = size;
+  _d->festivalType = (festival::Type)size;
   _d->festivalDate = game::Date::current();
-  _d->festivalDate.appendMonth( prepareFestivalDealy + size );
+  _d->festivalDate.appendMonth( festival::prepareMonthsDelay + size );
   _d->divinity = name;
 
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  GameEventPtr e = FundIssueEvent::create( FundIssue::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
@@ -115,15 +116,15 @@ void Festival::timeStep(const unsigned int time )
 
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
-    int id = math::clamp<int>( _d->festivalType, ftNone, ftBig );
-    events::GameEventPtr e = events::ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
-                                                            _city()->mayor()->name(), festivalVideo[ id ] );
+    int id = math::clamp<int>( _d->festivalType, festival::none, festival::big );
+    GameEventPtr e = ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
+                                            _city()->mayor()->name(), festivalVideo[ id ] );
     e->dispatch();
 
-    e = events::UpdateCitySentiment::create( sentimentValue );
+    e = UpdateCitySentiment::create( sentimentValue );
     e->dispatch();
 
-    e = events::UpdateHouseService::create( Service::crime, -firstFestivalSentinment[ _d->festivalType ] );
+    e = UpdateHouseService::create( Service::crime, -firstFestivalSentinment[ _d->festivalType ] );
     e->dispatch();
   }
 }
@@ -135,7 +136,7 @@ VariantMap Festival::save() const
   VARIANT_SAVE_ANY_D( ret, _d, prevFestivalDate )
   VARIANT_SAVE_ANY_D( ret, _d, festivalDate )
   VARIANT_SAVE_ENUM_D( ret, _d, divinity )
-  VARIANT_SAVE_ANY_D( ret, _d, festivalType )
+  VARIANT_SAVE_ENUM_D( ret, _d, festivalType )
 
   return ret;
 }
@@ -146,7 +147,7 @@ void Festival::load( const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, prevFestivalDate, stream )
   VARIANT_LOAD_TIME_D( _d, festivalDate, stream )
   VARIANT_LOAD_ENUM_D( _d, divinity, stream )
-  VARIANT_LOAD_ANY_D( _d, festivalType, stream )
+  VARIANT_LOAD_ENUM_D( _d, festivalType, stream )
 }
 
 }//end namespace city

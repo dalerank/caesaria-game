@@ -50,7 +50,7 @@ public:
 
 	void ProcessDownloads();
 
-	void ClearDownloads();
+	void clearDownloads();
 
 	int AddDownload(const DownloadPtr& download);
 	void RemoveDownload(int id);

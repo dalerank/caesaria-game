@@ -126,7 +126,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
 
     maxMoney /= forums.size();
 
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::moneyStolen, -maxMoney );
+    events::GameEventPtr e = events::FundIssueEvent::create( FundIssue::moneyStolen, -maxMoney );
     e->dispatch();
   }
 }

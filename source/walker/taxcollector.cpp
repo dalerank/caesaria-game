@@ -90,6 +90,11 @@ std::string TaxCollector::thoughts(Thought th) const
   return ServiceWalker::thoughts(th);
 }
 
+BuildingPtr TaxCollector::base() const
+{
+  return ptr_cast<Building>( _city()->getOverlay( baseLocation() ) );
+}
+
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
 {
   TaxCollectorPtr tc( new TaxCollector( city ) );

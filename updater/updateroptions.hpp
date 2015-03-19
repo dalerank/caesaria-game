@@ -75,19 +75,19 @@ private:
 	void SetupDescription()
 	{
 		// Get options from command line
-        _desc[ "--proxy"     ] = "Use a proxy to connect to the internet, example --proxy http://proxy:port";
+    _desc[ "--proxy"     ] = "Use a proxy to connect to the internet, example --proxy http://proxy:port";
 		_desc[ "--proxyuser" ] = "Use a proxy to connect to the internet, example --proxyuser user";
 		_desc[ "--proxypass" ] = "Use a proxy to connect to the internet, example --proxypass pass";
 		_desc[ "--targetdir" ] = "The folder which should be updated.--targetdir c:\\games\\caesaria";
 		_desc[ "--help" ] = "Display this help page";
 		_desc[ "--keep-mirrors" ] = "Don't download updated mirrors list from the server, use local one.";
 		_desc[ "--noselfupdate" ] = "Don't update updater";
-        _desc[ "--verbose"   ] = "Show more debug info";
-        _desc[ "--dry-run"   ] = "Don't do any updates, just perform checks.";
-        _desc[ "--no-exec"   ] = "Don't download executable files";
-        _desc[ "--release"   ] = "Create stable_info.txt for this configuration";
+    _desc[ "--verbose"   ] = "Show more debug info";
+    _desc[ "--dry-run"   ] = "Don't do any updates, just perform checks.";
+    _desc[ "--no-exec"   ] = "Don't download executable files";
+    _desc[ "--release[update]"   ] = "Create stable_info.txt for this configuration";
 		_desc[ "--directory" ] = "Use only in release/update mode, path to working directory";
-        _desc[ "--version"   ] = "Use only in releases/udate mode, current version";
+    _desc[ "--version"   ] = "Use only in releases/udate mode, current version";
 	}
 };
 

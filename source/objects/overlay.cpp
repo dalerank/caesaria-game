@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -119,7 +120,7 @@ Tile& Overlay::tile() const
   if( !_d->masterTile )
   {
     Logger::warning( "master tile must be exists" );
-    static Tile invalid( TilePos( -1, -1 ));
+    static Tile invalid( gfx::tilemap::invalidLocation() );
     return invalid;
   }
   return *_d->masterTile;
@@ -151,17 +152,17 @@ void Overlay::save( VariantMap& stream ) const
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.name() );
   stream[ "pictureOffset" ] = _d->picture.offset();
-  VARIANT_SAVE_ANY_D( stream, _d, size )
   stream[ "height" ] = tile().height();
+  VARIANT_SAVE_ANY_D( stream, _d, size )
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
-  stream[ "name" ] = Variant( _d->name );
+  VARIANT_SAVE_STR_D( stream, _d, name )
 }
 
 void Overlay::load( const VariantMap& stream )
 {
-  _d->name = stream.get( "name" ).toString();
+  VARIANT_LOAD_STR_D( _d, name, stream )
   VARIANT_LOAD_ANY_D( _d, size, stream )
-  //_d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
+
   std::string pictureName = stream.get( "picture" ).toString();
   _d->picture = Picture::load( pictureName );
   if( !_d->picture.isValid() )
@@ -170,7 +171,7 @@ void Overlay::load( const VariantMap& stream )
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   VARIANT_LOAD_ANYDEF_D( _d, isDeleted, false, stream )
-  tile().setHeight( stream.get( "height" ).toInt() );
+  tile().setHeight( stream.get( "height" ) );
 }
 
 void Overlay::initialize(const MetaData& mdata)
@@ -190,7 +191,7 @@ TilePos Overlay::pos() const
   if( !_d->masterTile )
   {
     Logger::warning(  "master tile can't be null" );
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
   }
   return _d->masterTile->pos();
 }

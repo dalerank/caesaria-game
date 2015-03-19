@@ -230,6 +230,7 @@ Path::Path() : _d( new Impl )
 }
 
 const std::string& Path::toString() const { return _d->path; }
+const char *Path::toCString() const { return _d->path.c_str(); }
 
 std::string Path::removeExtension() const
 {

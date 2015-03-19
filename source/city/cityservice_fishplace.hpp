@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Fishery)
+
 class Fishery : public Srvc
 {
 public:
@@ -44,8 +46,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Fishery> FisheryPtr;
 
 }//end namespace city
 

@@ -13,39 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef CAESARIA_TILEPOS_ARRAY_HPP
-#define CAESARIA_TILEPOS_ARRAY_HPP
+#ifndef __CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#define __CAESARIA_LAYERDAMAGE_H_INCLUDED__
 
-#include <vector>
-#include "position.hpp"
-#include "variant.hpp"
+#include "layerinfo.hpp"
 
-class TilePosArray : public std::vector< TilePos >
+namespace citylayer
+{
+
+class Damage : public Info
 {
 public:
-  TilePosArray& operator<<(const TilePos& pos )
-  {
-    push_back( pos );
-    return *this;
-  }
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void handleEvent(NEvent& event);
 
-  VariantList toVList() const
-  {
-    VariantList ret;
-    foreach( it, *this ) { ret << *it; }
-    return ret;
-  }
+  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
-  void fromVList( const VariantList& vlist )
-  {
-    clear();
-    foreach( it, vlist )
-      push_back( it->toTilePos() );
-  }
+private:
+  Damage( gfx::Camera& camera, PlayerCityPtr city );
 };
 
-typedef TilePosArray Locations;
-
-#endif//CAESARIA_TILEPOS_ARRAY_HPP
+}//end namespace city
+#endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__

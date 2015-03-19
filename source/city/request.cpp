@@ -35,9 +35,10 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
-using namespace  metric;
+using namespace metric;
+using namespace events;
 
-namespace  city
+namespace city
 {
 
 namespace request
@@ -167,20 +168,20 @@ void RqGood::success( PlayerCityPtr city )
   Request::success( city );
   if( _d->winMoney > 0 )
   {
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, _d->winMoney );
+    GameEventPtr e = FundIssueEvent::create( FundIssue::donation, _d->winMoney );
     e->dispatch();
   }
 
   if( _d->winFavour > 0 )
   {
-    events::GameEventPtr e = events::UpdateFavour::create( city->name(), _d->winFavour );
+    GameEventPtr e = UpdateFavour::create( city->name(), _d->winFavour );
     e->dispatch();
   }
 }
 
 void RqGood::fail( PlayerCityPtr city )
 {
-  events::GameEventPtr e = events::UpdateFavour::create( city->name(), _d->failFavour );
+  GameEventPtr e = UpdateFavour::create( city->name(), _d->failFavour );
   e->dispatch();
 
   if( _d->failAppendMonth > 0 )

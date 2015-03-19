@@ -25,6 +25,7 @@
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
 #include "cityservice_factory.hpp"
+#include "core/tilepos_array.hpp"
 
 using namespace constants;
 
@@ -36,8 +37,6 @@ REGISTER_SERVICE_IN_FACTORY(Fishery,fishery)
 class Fishery::Impl
 {
 public:
-  typedef std::vector<TilePos> Locations;
-
   unsigned int maxFishPlace;
   int failedCounter;
 

@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(ProsperityRating)
+
 class ProsperityRating : public Srvc
 {
 public:
@@ -48,8 +50,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<ProsperityRating> ProsperityRatingPtr;
 
 }//end namespace city
 

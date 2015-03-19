@@ -13,39 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef CAESARIA_TILEPOS_ARRAY_HPP
-#define CAESARIA_TILEPOS_ARRAY_HPP
+#ifndef __CAESARIA_RELIGION_CONFIG_H_INCLUDED__
+#define __CAESARIA_RELIGION_CONFIG_H_INCLUDED__
 
-#include <vector>
-#include "position.hpp"
-#include "variant.hpp"
-
-class TilePosArray : public std::vector< TilePos >
+namespace religion
 {
-public:
-  TilePosArray& operator<<(const TilePos& pos )
-  {
-    push_back( pos );
-    return *this;
-  }
 
-  VariantList toVList() const
-  {
-    VariantList ret;
-    foreach( it, *this ) { ret << *it; }
-    return ret;
-  }
-
-  void fromVList( const VariantList& vlist )
-  {
-    clear();
-    foreach( it, vlist )
-      push_back( it->toTilePos() );
-  }
+namespace relation
+{
+enum {
+  wrathfull=10,
+  negative=30,
+  minimum4wrath=40,
 };
 
-typedef TilePosArray Locations;
+}
 
-#endif//CAESARIA_TILEPOS_ARRAY_HPP
+namespace penalty
+{
+enum { brokenGod=25 };
+}
+
+namespace award
+{
+enum { admiredGod=50 };
+}
+
+}//end namespace config
+
+#endif //__CAESARIA_CITY_CONFIG_H_INCLUDED__

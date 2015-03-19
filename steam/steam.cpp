@@ -261,10 +261,6 @@ bool checkSteamRunning()
 
 bool connect()
 {
-#ifdef CAESARIA_PLATFORM_MACOSX
-  Logger::warning( "Reset game on mac" );
-  SteamAPI_Shutdown();
-#endif
   // Initialize SteamAPI, if this fails we bail out since we depend on Steam for lots of stuff.
   // You don't necessarily have to though if you write your code to check whether all the Steam
   // interfaces are NULL before using them and provide alternate paths when they are unavailable.

@@ -37,6 +37,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace citylayer
 {
@@ -322,7 +323,7 @@ void Destroy::handleEvent(NEvent& event)
     {
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
-      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_d->money4destroy );
+      GameEventPtr e = FundIssueEvent::create( FundIssue::buildConstruction, -_d->money4destroy );
       e->dispatch();      
     }
     break;

@@ -27,6 +27,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Festival)
+
 class Festival : public Srvc
 {
 public:
@@ -35,7 +37,7 @@ public:
 
   DateTime lastFestivalDate() const;
   DateTime nextFestivalDate() const;
-  void assignFestival( religion::RomeDivinityType name, int size);
+  void assignFestival(religion::RomeDivinityType name, int size);
 
   virtual void timeStep( const unsigned int time );
 
@@ -48,8 +50,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Festival> FestivalPtr;
 
 }//end namespace city
 

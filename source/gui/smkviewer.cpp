@@ -109,7 +109,7 @@ void SmkViewer::setFilename(const vfs::Path& path)
     smk_info_video( _d->smkfile, &_d->smkfileWidth, &_d->smkfileHeight, NULL );
     smk_info_audio( _d->smkfile, &_d->a_trackmask, _d->a_channels, _d->a_depth, _d->a_rate);
 
-    Logger::warning( "Opened file %s\nWidth: %d\nHeight: %d\nFrames: %d\nFPS: %lf\n", path.toString().c_str(),
+    Logger::warning( "Opened file %s\nWidth: %d\nHeight: %d\nFrames: %d\nFPS: %lf\n", path.toCString(),
                      _d->smkfileWidth, _d->smkfileHeight, _d->frameCount, 1000000.0 / _d->usecsInFrame );
 
     smk_enable_video( _d->smkfile, 1 );

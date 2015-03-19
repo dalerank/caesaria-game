@@ -15,37 +15,30 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef CAESARIA_TILEPOS_ARRAY_HPP
-#define CAESARIA_TILEPOS_ARRAY_HPP
+#ifndef _CAESARIA_DIFFICULTY_H_INCLUDE_
+#define _CAESARIA_DIFFICULTY_H_INCLUDE_
 
-#include <vector>
-#include "position.hpp"
-#include "variant.hpp"
+#include "vfs/directory.hpp"
 
-class TilePosArray : public std::vector< TilePos >
+namespace game
 {
-public:
-  TilePosArray& operator<<(const TilePos& pos )
-  {
-    push_back( pos );
-    return *this;
-  }
 
-  VariantList toVList() const
-  {
-    VariantList ret;
-    foreach( it, *this ) { ret << *it; }
-    return ret;
-  }
+namespace difficulty
+{
+enum Type{ fun=0, easy, simple, usual, nicety, hard, impossible, count };
+const char* const name[count] = {
+                            CAESARIA_STR_EXT(fun),
+                            CAESARIA_STR_EXT(easy),
+                            CAESARIA_STR_EXT(usual),
+                            CAESARIA_STR_EXT(nicety),
+                            CAESARIA_STR_EXT(hard),
+                            CAESARIA_STR_EXT(impossible)
+                          };
+}
 
-  void fromVList( const VariantList& vlist )
-  {
-    clear();
-    foreach( it, vlist )
-      push_back( it->toTilePos() );
-  }
-};
+typedef difficulty::Type Difficulty;
 
-typedef TilePosArray Locations;
+} //end namespace movie
 
-#endif//CAESARIA_TILEPOS_ARRAY_HPP
+#endif //_CAESARIA_DIFFICULTY_H_INCLUDE_
+

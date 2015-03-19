@@ -104,7 +104,7 @@ void Animation::setIndex(int index){  _dfunc()->index = math::clamp<int>( index,
 
 Animation::Animation() : __INIT_IMPL(Animation)
 {
-  setDelay( 0 );
+  setDelay( nodelay );
   start( true );
 }
 

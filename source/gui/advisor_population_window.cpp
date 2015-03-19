@@ -43,6 +43,9 @@ namespace gui
 namespace advisorwnd
 {
 
+enum { deltaNormalMigration=10, maxValues4boldLine=20, maxValues4middleLine=40, maxValues4thickLine=100,
+       boldLineIndex=75, middleLineIndex=76, thickLineIndex=77, verryThickLineIndex=78 };
+
 class CityChartLegend : public Label
 {
 public:
@@ -126,16 +129,15 @@ public:
 };
 
 Population::Population(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ),
+: Base( parent, city, id ),
   __INIT_IMPL(Population)
 {
   setupUI( ":/gui/populationadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   __D_IMPL(_d,Population)
   _d->city = city;
-
   _d->chartCurrent = 0;
+
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
@@ -229,10 +231,8 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
-  InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
+  InfoPtr info = statistic::finds<Info>( city );
   int currentPop = city->population();
-
 
   if( lbMigrationValue )
   {
@@ -241,7 +241,7 @@ void Population::Impl::updateStates()
     int migrationValue = currentPop - lastMonth[ Info::population ];
 
     std::string migrationText = "##unknown_migration_reason##";
-    if( abs( migrationValue ) < 10 )
+    if( abs( migrationValue ) < deltaNormalMigration )
     {
       migrationText = "##balance_between_migration##";
     }
@@ -255,8 +255,7 @@ void Population::Impl::updateStates()
     }
     else
     {
-      city::MigrationPtr migration;
-      migration << city->findService( city::Migration::defaultName() );
+      MigrationPtr migration = statistic::finds<Migration>( city );
 
       if( migration.isValid() )
       {
@@ -285,7 +284,8 @@ void Population::Impl::updateStates()
     Info::Parameters params = info->yearParams( 1 );
     std::string text = "##yearmigration_unknown##";
     int lastPop = params[ Info::population ];
-    if( abs( lastPop - currentPop ) < 10 ) text = "##overall_city_population_static##";
+
+    if( abs( lastPop - currentPop ) < deltaNormalMigration ) text = "##overall_city_population_static##";
     else if( lastPop < currentPop ) text = "##overall_people_are_coming_city##";
     else text = "##overall_people_are_leaving_city##";
 
@@ -301,9 +301,7 @@ void Population::Impl::updateStates()
     {
       HousePtr house = *it;
 
-      int houseLevel = house->spec().level();
-
-      if( houseLevel < HouseLevel::mansion )
+      if( house->spec().level() < HouseLevel::mansion )
       {
         currentHabitants += house->habitants().count();
         maxHabitants += house->maxHabitants();
@@ -363,6 +361,8 @@ CityChart::DrawMode CityChart::fit(CityChart::DrawMode mode)
   return (DrawMode)mode;
 }
 
+static int __calcMaxLegentYValue( int value ) { return (value * 1.5 / 100 ) * 100; }
+
 void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 {
   _values.clear();
@@ -375,14 +375,14 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
       _maxValue = 100;
       for( int age=CitizenGroup::newborn; age <= CitizenGroup::longliver; age++ )
-        {
-          _values.push_back( population[ age ] );
-          _maxValue = std::max<int>( _maxValue, population[ age ] );
-        }
+      {
+        _values.push_back( population[ age ] );
+        _maxValue = std::max<int>( _maxValue, population[ age ] );
+      }
 
       _minXValue = 0;
       _maxXValue = _values.size();
-      _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
+      _maxValue = __calcMaxLegentYValue( _maxValue );
 
       emit onMaxYChange( _maxValue );
       emit onMaxXChange( _maxXValue );
@@ -405,7 +405,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         _maxValue = std::max<unsigned int>( _maxValue, p[ Info::population ] );
       }
 
-      _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
+      _maxValue = __calcMaxLegentYValue( _maxValue );
       _maxXValue = _values.size();
       emit onMaxYChange( _maxValue );
       emit onMaxXChange( _maxXValue );
@@ -441,7 +441,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         }
       }
 
-      _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
+      _maxValue = __calcMaxLegentYValue( _maxValue );
       _maxXValue = HouseLevel::maxLevel;
       emit onMaxYChange( _maxValue );
       emit onMaxXChange( _maxXValue );
@@ -453,14 +453,14 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   if( _isSmall )
   {
-    _picIndex = 78;
+    _picIndex = verryThickLineIndex;
   }
   else
   {
-    if( _values.size() <= 20 ) { _picIndex = 75; }
-    else if( _values.size() <= 40 ) { _picIndex = 76; }
-    else if( _values.size() <= 100 ) { _picIndex = 77; }
-    else { _picIndex = 78; }
+    if( _values.size() <= maxValues4boldLine ) { _picIndex = boldLineIndex; }
+    else if( _values.size() <= maxValues4middleLine ) { _picIndex = middleLineIndex; }
+    else if( _values.size() <= maxValues4thickLine ) { _picIndex = thickLineIndex; }
+    else { _picIndex = verryThickLineIndex; }
   }
 
   _resizeEvent();

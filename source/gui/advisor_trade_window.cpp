@@ -201,14 +201,14 @@ bool Trade::Impl::getWorkState(good::Product gtype )
 
 void Trade::Impl::showGoodOrderManageWindow(good::Product type )
 {
-  Widget* parent = gbInfo->parent();
   int gmode = GoodOrderManageWindow::gmUnknown;
+  Widget* p = gbInfo->parent();
   gmode |= (statistic::canImport( city, type ) ? GoodOrderManageWindow::gmImport : 0);
   gmode |= (statistic::canProduce( city, type ) ? GoodOrderManageWindow::gmProduce : 0);
 
-  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->height() -60 ), 
+  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( p, Rect( 0, 0, p->width() - 80, p->height() - 100 ),
                                                           city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
-
+  wnd->setCenter( p->center() );
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
 
@@ -221,10 +221,9 @@ void Trade::Impl::showGoodsPriceWindow()
 }
 
 Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 432 ), "", id ), _d( new Impl )
+: Base( parent, city, id ), _d( new Impl )
 {
   setupUI( ":/gui/tradeadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
   _d->allgoods = statistic::getGoodsMap( city, false );

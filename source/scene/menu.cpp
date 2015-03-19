@@ -95,7 +95,7 @@ public:
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
   void openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640" ); }
-  void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
+  void openHomePage() { OSystem::openUrl( "www.caesaria.net" ); }
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();

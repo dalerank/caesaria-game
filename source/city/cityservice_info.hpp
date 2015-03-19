@@ -26,6 +26,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Info)
+
 class Info : public Srvc
 {
 public:
@@ -105,8 +107,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Info> InfoPtr;
 
 }//end namespace city
 

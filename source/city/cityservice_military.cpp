@@ -26,6 +26,7 @@
 #include "objects/fort.hpp"
 #include "core/variant_map.hpp"
 #include "core/flagholder.hpp"
+#include "statistic.hpp"
 #include "cityservice_factory.hpp"
 
 using namespace constants;
@@ -46,7 +47,7 @@ public:
   bool updateMilitaryThreat;
 };
 
-city::SrvcPtr Military::create( PlayerCityPtr city )
+SrvcPtr Military::create( PlayerCityPtr city )
 {
   SrvcPtr ret( new Military( city ) );
   ret->drop();
@@ -69,10 +70,7 @@ void Military::timeStep(const unsigned int time )
     //clear old notificationse
     for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
-      if( (*it).date.monthsTo( curDate ) > notificationHistoryMonths )
-      {
-        it = _d->notifications.erase( it );
-      }
+      if( (*it).date.monthsTo( curDate ) > notificationHistoryMonths ) { it = _d->notifications.erase( it ); }
       else { ++it; }
     }
   }
@@ -187,8 +185,7 @@ int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( 
 
 world::PlayerArmyList Military::expeditions() const
 {
-  FortList forts;
-  forts << _city()->overlays();
+  FortList forts = statistic::findo<Fort>( _city(), object::group::military );
 
   world::PlayerArmyList ret;
   foreach( it, forts )

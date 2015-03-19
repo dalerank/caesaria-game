@@ -38,7 +38,8 @@ namespace tile
   Point tilepos2screen( const TilePos& pos );
   TilePos screen2tilepos( const Point& point, int mapsize );
   void decode( Tile& tile, const int bitset);
-  Tile& getInvalid();
+  const Tile& getInvalid();
+  Tile& getInvalidSafe();
   void clear( Tile& tile );
   void fixPlateauFlags( Tile& tile );
 }//end namespace tile

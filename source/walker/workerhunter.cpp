@@ -68,7 +68,7 @@ Recruter::Recruter(PlayerCityPtr city )
 
 void Recruter::hireWorkers( const int workers )
 {
-  WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
+  WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( _city()->getOverlay( baseLocation() ) );
   if( wbase.isValid() ) 
   {
     unsigned int reallyHire = wbase->addWorkers( workers );
@@ -98,6 +98,13 @@ int Recruter::needWorkers() const { return _d->needWorkers; }
 void Recruter::_centerTile()
 {
   Walker::_centerTile();
+  BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( baseLocation() ));
+
+  if( base.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Recruter haveno base" );
+    return;
+  }
 
   if( _d->needWorkers )
   {
@@ -112,7 +119,7 @@ void Recruter::_centerTile()
 
       foreach( it, blds )
       {
-        bool priorityOver = _d->isMyPriorityOver( base(), *it );
+        bool priorityOver = _d->isMyPriorityOver( base, *it );
         if( priorityOver )
         {
           int removedFromWb = (*it)->removeWorkers( _d->needWorkers );
@@ -179,7 +186,7 @@ TilePos Recruter::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return base().isValid() ? base()->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return baseLocation();
   default: break;
   }
 

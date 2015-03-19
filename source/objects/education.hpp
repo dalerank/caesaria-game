@@ -25,7 +25,7 @@ class School : public ServiceBuilding
 public:
   School();
 
-  int getVisitorsNumber() const;
+  int currentVisitors() const;
 
   virtual void deliverService();
 
@@ -44,7 +44,7 @@ class Library : public ServiceBuilding
 public:
    Library();
 
-   int getVisitorsNumber() const;
+   int currentVisitors() const;
 };
 
 class Academy : public ServiceBuilding
@@ -52,7 +52,7 @@ class Academy : public ServiceBuilding
 public:
    Academy();
 
-   int getVisitorsNumber() const;
+   int currentVisitors() const;
    virtual void deliverService();
    virtual std::string sound() const;
    virtual unsigned int walkerDistance() const;

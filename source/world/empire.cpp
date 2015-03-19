@@ -330,6 +330,13 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   if( startCity.isValid() && stopCity.isValid() )
   {
     TraderoutePtr route = _d->trading.createRoute( start, stop );
+    if( !route.isValid() )
+    {
+      Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
+                       start.c_str(), stop.c_str() );
+      return route;
+    }
+
     EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
     EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
     bool land = (startType & EmpireMap::land) && (stopType & EmpireMap::land);
@@ -567,12 +574,12 @@ void Empire::Impl::checkLoans()
       {
         if( city->funds().haveMoneyForAction( loanPercent ) )
         {
-          city->funds().resolveIssue( FundIssue( city::Funds::credit, -loanPercent ) );
+          city->funds().resolveIssue( FundIssue( FundIssue::credit, -loanPercent ) );
           treasury += loanPercent;
         }
         else
         {
-          city->funds().resolveIssue( FundIssue( city::Funds::overduePayment, loanPercent ) );
+          city->funds().resolveIssue( FundIssue( FundIssue::overduePayment, loanPercent ) );
         }
       }
     }
@@ -625,7 +632,7 @@ void Empire::Impl::takeTaxes()
       continue;
     }
 
-    int profit = city->funds().getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
+    int profit = city->funds().getIssueValue( FundIssue::cityProfit, city::Funds::lastYear );
 
     if( profit <= 0 )
     {
@@ -640,14 +647,14 @@ void Empire::Impl::takeTaxes()
     city::Funds& funds = city->funds();
     if( funds.treasury() > empireTax )
     {
-      funds.resolveIssue( FundIssue( city::Funds::empireTax, -empireTax ) );
+      funds.resolveIssue( FundIssue( FundIssue::empireTax, -empireTax ) );
 
       treasury += empireTax;
       emperor.cityTax( city->name(), empireTax );
     }
     else
     {
-      city->funds().resolveIssue( FundIssue( city::Funds::overdueEmpireTax, empireTax ) );
+      city->funds().resolveIssue( FundIssue( FundIssue::overdueEmpireTax, empireTax ) );
     }
   }
 }

@@ -63,12 +63,12 @@ bool Util::caesariaIsRunning()
 				// executable is no longer needed to run TDM, so we'll check for TheDarkMod.exe
 				// instead.
 
-				if (processName == "TheDarkMod.exe")
+        if (processName == "caesaria.exe")
 				{
 					// At this point, we know we need to quit. There's no longer a need
 					// to check for "gamex86.dll".
 
-/*					HMODULE hModules[1024];
+/*				HMODULE hModules[1024];
 					DWORD cbNeeded;
 
 					if (EnumProcessModules(hProcess, hModules, sizeof(hModules), &cbNeeded))

@@ -44,4 +44,5 @@
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 17, 24 ] }
   rome_city_emp : { rc : "empire_bits", start : 1, stop : 1, offset : [ 0, 30 ] }
   foreing_city_emp : { rc : "empire_bits", start : 1, stop : 1, offset : [ 0, 30 ] }
+  theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ 34, 37 ] }
 }

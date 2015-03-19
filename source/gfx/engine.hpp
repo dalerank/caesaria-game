@@ -45,8 +45,8 @@ public:
   virtual bool haveEvent( NEvent& event ) = 0;
 
   void setScreenSize( Size size );
-  Size virtualSize() const;
-  Size screenSize() const;
+  const Size& virtualSize() const;
+  const Size& screenSize() const;
 
   bool isFullscreen() const;
   void setFullscreen(bool enabled );

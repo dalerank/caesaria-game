@@ -192,7 +192,7 @@ void FileNative::openFile()
   const char* modeStr[] = { "rb", "wb", "ab" };
   if( (unsigned int)_mode > Entity::fmAppend )
   {
-    Logger::warning( "Unsupported file open mode for %s", _name.toString().c_str() );
+    Logger::warning( "Unsupported file open mode for %s", _name.toCString() );
     _mode = Entity::fmRead;
   }
 
@@ -207,7 +207,7 @@ void FileNative::openFile()
   }
   else
   {
-    Logger::warning( "FileNative: Can't open file %s", _name.toString().c_str() );
+    Logger::warning( "FileNative: Can't open file %s", _name.toCString() );
   }
 }
 

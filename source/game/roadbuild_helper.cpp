@@ -57,12 +57,23 @@ RoadPropagator& RoadPropagator::instance()
   return inst;
 }
 
+bool __checkWalkables( const TilesArray& tiles )
+{
+  foreach( it, tiles )
+  {
+    if( !(*it)->isWalkable( true ) ||
+        is_kind_of<Building>( (*it)->overlay() ) )
+      return false;
+  }
+
+  return true;
+}
+
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
                                       bool roadAssignment, bool returnRect )
 {  
   Logger::warning( "RoadPropagator::getPath from (%d, %d) to (%d, %d)",
                     startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
-
   TilesArray ret;
   if( startPos == stopPos )
   {
@@ -85,7 +96,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
                 : TilePos( startPos.i(), stopPos.j() );
 
     if( yMoveFirst )
-    {
+    {      
       ret.append( tileMap.getRectangle( startPos, midlPos ) );
       ret.append( tileMap.getRectangle( midlPos, stopPos ) );
     }
@@ -95,14 +106,8 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
       ret.append( tileMap.getRectangle( midlPos, startPos ) );
     }
 
-    foreach( it, ret )
-    {
-      if( !(*it)->isWalkable( true ) )
-      {
-        ret.clear();
-        break;
-      }
-    }
+    if( !__checkWalkables( ret ) )
+      ret.clear();
   }
 
   if( ret.empty() )

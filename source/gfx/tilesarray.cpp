@@ -15,6 +15,7 @@
 
 #include "tilesarray.hpp"
 #include "objects/overlay.hpp"
+#include "gfx/helper.hpp"
 
 namespace gfx
 {
@@ -38,9 +39,9 @@ TilesArray::TilesArray(const TilesArray& a)
 TilePos TilesArray::leftUpCorner() const
 {
   if( empty() )
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
 
-  TilePos ret( 9999, 0 );
+  TilePos ret( INT_MAX, 0 );
   foreach( it, *this )
   {
     const TilePos& cpos = (*it)->epos();
@@ -54,9 +55,9 @@ TilePos TilesArray::leftUpCorner() const
 TilePos TilesArray::rightDownCorner() const
 {
   if( empty() )
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
 
-  TilePos ret( 0, 9999 );
+  TilePos ret( 0, INT_MAX );
   foreach( it, *this )
   {
     const TilePos& cpos = (*it)->epos();

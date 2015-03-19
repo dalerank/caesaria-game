@@ -23,6 +23,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Peace)
+
 class Peace : public city::Srvc
 {
 public:
@@ -46,8 +48,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Peace> PeacePtr;
 
 }//end namespace city
 

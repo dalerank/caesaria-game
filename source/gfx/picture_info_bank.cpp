@@ -72,7 +72,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
   _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-  _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
   _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
 
   // animations
@@ -161,6 +160,8 @@ void PictureInfoBank::setOffset(const std::string& preffix, const int index, con
 
 PictureInfoBank::~PictureInfoBank() {}
 
+enum { idxIndex=0, idxXOffset, idxYOffset };
+
 void PictureInfoBank::initialize(vfs::Path filename)
 {
   Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
@@ -182,7 +183,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
     else if( v.type() == Variant::List )
     {
       VariantList vl = v.toList();
-      _d->setOne( it->first, vl.get( 0 ).toInt(), vl.get( 1 ).toInt(), vl.get( 2 ).toInt() );
+      _d->setOne( it->first, vl.get( idxIndex ), vl.get( idxXOffset ), vl.get( idxYOffset ) );
     }
   }
 }

@@ -57,6 +57,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -207,14 +208,14 @@ Parlor* Parlor::create(Widget* parent, int id, const Advisor type, PlayerCityPtr
 
 void Parlor::Impl::sendMoney2City(int money)
 {
- events::GameEventPtr event = events::FundIssueEvent::create( city::Funds::donation, money );
+ GameEventPtr event = FundIssueEvent::create( FundIssue::donation, money );
  event->dispatch();
 }
 
 void Parlor::Impl::showEmpireMapWindow()
 {
   advisorPanel->parent()->deleteLater();
-  events::GameEventPtr event = events::ShowEmpireMap::create( true );
+  GameEventPtr event = ShowEmpireMap::create( true );
   event->dispatch();
 }
 

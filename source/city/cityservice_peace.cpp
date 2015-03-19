@@ -49,16 +49,16 @@ public:
   Priorities<object::Type> unsignificantBuildings;
 };
 
-city::SrvcPtr Peace::create( PlayerCityPtr city )
+SrvcPtr Peace::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Peace( city ) );
+  SrvcPtr ret( new Peace( city ) );
   ret->drop();
 
   return ret;
 }
 
 Peace::Peace( PlayerCityPtr city )
-  : city::Srvc( city, defaultName() ), _d( new Impl )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->peaceYears = 0;
   _d->protestorOrMugglerSeen = false;
@@ -95,10 +95,10 @@ void Peace::timeStep(const unsigned int time )
 
   if( ml.isValid() )
   {
-    if( ml->haveNotification( city::Military::Notification::chastener ) )
+    if( ml->haveNotification( Military::Notification::chastener ) )
       change -= 1;
 
-    if( ml->haveNotification( city::Military::Notification::barbarian ) )
+    if( ml->haveNotification( Military::Notification::barbarian ) )
       change -= 1;
   }
 

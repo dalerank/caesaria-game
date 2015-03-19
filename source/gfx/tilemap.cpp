@@ -32,8 +32,6 @@ using namespace direction;
 namespace gfx
 {
 
-static Tile invalidTile( TilePos( -1, -1 ) );
-
 class TileRow : public TilesArray
 {
 public:
@@ -547,7 +545,7 @@ Tile& Tilemap::Impl::at(const int i, const int j)
   }
 
   //Logger::warning( "Need inside point current=[%d, %d]", i, j );
-  return invalidTile;
+  return gfx::tile::getInvalidSafe();
 }
 
 bool Tilemap::Impl::isInside(const TilePos& pos)

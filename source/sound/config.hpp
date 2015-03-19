@@ -13,28 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERDAMAGE_H_INCLUDED__
-#define __CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#ifndef __CAESARIA_SOUND_CONFIG_H_INCLUDED__
+#define __CAESARIA_SOUND_CONFIG_H_INCLUDED__
 
-#include "layerinfo.hpp"
-
-namespace citylayer
+namespace config
 {
 
-class Damage : public Info
+namespace sound
 {
-public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void handleEvent(NEvent& event);
+enum { maxLevel = 256 };
+}
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+}//end namespace city
 
-private:
-  Damage( gfx::Camera& camera, PlayerCityPtr city );
-};
-
-}//end namespace citylayer
-#endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#endif //__CAESARIA_SOUND_CONFIG_H_INCLUDED__
