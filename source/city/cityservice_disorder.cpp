@@ -29,17 +29,14 @@
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_factory.hpp"
+#include "config.hpp"
 
 using namespace constants;
+using namespace config;
 
 namespace
 {
-const int maxCrimeValue = 100;
 const int minCityTax4mugger = 20;
-
-const int crimeLevel4rioter = 90;
-const int crimeLevel4mugger = 70;
-const int crimeLevel4protestor = 50;
 
 const int crimedecOnRioterBirth = 20;
 
@@ -131,12 +128,12 @@ void Disorder::timeStep( const unsigned int time )
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
     int sentiment = _city()->sentiment();
-    int randomValue = math::random( maxCrimeValue );
+    int randomValue = math::random( crime::maxValue );
     if (sentiment >= minSentiment4protest)
     {
       if ( randomValue >= sentiment + 20 )
       {
-        if ( hCrimeLevel > crimeLevel4protestor )
+        if ( hCrimeLevel > crime::level4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
@@ -146,11 +143,11 @@ void Disorder::timeStep( const unsigned int time )
     {
       if ( randomValue >= sentiment + 40 )
       {
-        if ( hCrimeLevel >= crimeLevel4mugger )
+        if ( hCrimeLevel >= crime::level4mugger )
         {
           _d->generateMugger( _city(), *it );
         }
-        else if ( hCrimeLevel > crimeLevel4protestor )
+        else if ( hCrimeLevel > crime::level4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
@@ -160,15 +157,15 @@ void Disorder::timeStep( const unsigned int time )
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel >= crimeLevel4rioter )
+        if ( hCrimeLevel >= crime::level4rioter )
         {
           _d->generateRioter( _city(), *it );
         }
-        else if ( hCrimeLevel >= crimeLevel4mugger )
+        else if ( hCrimeLevel >= crime::level4mugger )
         {
           _d->generateMugger( _city(), *it );
         }
-        else if ( hCrimeLevel > crimeLevel4protestor )
+        else if ( hCrimeLevel > crime::level4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }

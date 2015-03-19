@@ -31,6 +31,11 @@ namespace animals
 enum { defaultNumber=10 };
 }
 
+namespace crime
+{
+enum { level4protestor = 50, level4mugger = 70, level4rioter = 90, maxValue=100 };
+}
+
 }//end namespace city
 
 #endif //__CAESARIA_CITY_CONFIG_H_INCLUDED__
