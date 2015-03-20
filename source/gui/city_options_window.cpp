@@ -309,6 +309,14 @@ void CityOptionsWindow::Impl::update()
     std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
     btnDifficulty->setText( _(text) );
   }
+
+  if( btnLegionMayAttack )
+  {
+    int value = city->getOption( PlayerCity::legionAttack );
+    btnLegionMayAttack->setText( value
+                                    ? _("##city_chastener_on##")
+                                    : _("##city_chastener_off##")  );
+  }
 }
 
 }//end namespace gui
