@@ -52,8 +52,7 @@ CAESARIA_LITERALCONST(employers)
 class WorkersHire::Impl
 {
 public:
-  typedef std::vector<object::Type> BuildingsType;
-  typedef std::map<object::Group, BuildingsType> GroupBuildings;
+  typedef std::map<object::Group, object::Types> GroupBuildings;
 
   WalkerList hrInCity;
   unsigned int distance;
@@ -86,7 +85,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   _d->fillIndustryMap();
   _d->distance = employements::hireDistance;
 
-  load( config::load( ":workershire.model" ) );
+  load( config::load( ":/workershire.model" ) );
 }
 
 void WorkersHire::Impl::fillIndustryMap()

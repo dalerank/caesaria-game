@@ -24,6 +24,8 @@
 #include "core/signals.hpp"
 #include "vfs/path.hpp"
 
+class Gift;
+
 namespace world
 {
 
@@ -38,7 +40,7 @@ public:
   int relation( const std::string& cityname );
   void updateRelation( const std::string& cityname, int value );
 
-  void sendGift( const std::string& cityname, unsigned int money );
+  void sendGift( const Gift& money );
   DateTime lastGiftDate( const std::string& cityname );
   void timeStep( unsigned int time );
 

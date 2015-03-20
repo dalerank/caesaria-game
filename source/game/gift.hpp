@@ -15,32 +15,29 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
-#define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+#ifndef _CAESARIA_GIFT_H_INCLUDE_
+#define _CAESARIA_GIFT_H_INCLUDE_
 
-#include "event.hpp"
+#include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
+#include "core/variant_map.hpp"
 
-namespace events
-{
-
-PREDEFINE_CLASS_SMARTPOINTER(Notify)
-
-class Notify : public GameEvent
+class Gift
 {
 public:
-  static GameEventPtr attack(const std::string& cityname, const std::string& message, world::ObjectPtr object );
+  const std::string& name() const;
+  const std::string& sender() const;
+  int value() const;
 
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
+  void load(const VariantMap& stream);
+  VariantMap save() const;
 
+  Gift( const std::string& sender, const std::string& name, int money, int data=-1 );
+  ~Gift();
 private:
-  Notify();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}
-
-#endif //_CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+#endif //_CAESARIA_GIFT_H_INCLUDE_

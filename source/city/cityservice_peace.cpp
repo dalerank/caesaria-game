@@ -25,9 +25,12 @@
 #include "events/showinfobox.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "statistic.hpp"
+#include "core/stacktrace.hpp"
 #include <set>
 
 using namespace constants;
+using namespace events;
 
 namespace city
 {
@@ -35,13 +38,21 @@ namespace city
 enum { minCh=1, middleCh=2, maxCh=5};
 static const int longTimeWithoutWar = 2;
 
+struct ThreatSeen
+{
+  bool protestor;
+  bool muggler;
+  bool rioter;
+  bool criminal;
+
+  inline void clear() { protestor = muggler = rioter = criminal = false; }
+};
+
 class Peace::Impl
 {
 public:
+  ThreatSeen threats;
   unsigned int peaceYears;
-  bool protestorOrMugglerSeen;
-  bool rioterSeen;
-  bool someCriminalSeen;
   int value;
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
@@ -61,26 +72,24 @@ Peace::Peace( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->peaceYears = 0;
-  _d->protestorOrMugglerSeen = false;
-  _d->someCriminalSeen = false;
-  _d->rioterSeen = false;
+  _d->threats.clear();
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
 
   _d->unsignificantBuildings << object::prefecture
-                         << object::engineering_post
-                         << object::well
-                         << object::fortArea
-                         << object::fort_javelin
-                         << object::fort_legionaries
-                         << object::fort_horse
-                         << object::gatehouse
-                         << object::fortification
-                         << object::road
-                         << object::plaza
-                         << object::high_bridge
-                         << object::low_bridge
-                         << object::tower;
+                             << object::engineering_post
+                             << object::well
+                             << object::fortArea
+                             << object::fort_javelin
+                             << object::fort_legionaries
+                             << object::fort_horse
+                             << object::gatehouse
+                             << object::fortification
+                             << object::road
+                             << object::plaza
+                             << object::high_bridge
+                             << object::low_bridge
+                             << object::tower;
 }
 
 void Peace::timeStep(const unsigned int time )
@@ -88,21 +97,23 @@ void Peace::timeStep(const unsigned int time )
   if( !game::Date::isYearChanged() )
     return;
 
-  city::MilitaryPtr ml;
-  ml << _city()->findService( city::Military::defaultName() );
-
-  int change= _d->protestorOrMugglerSeen ? -minCh: 0;
-
-  if( ml.isValid() )
+  MilitaryPtr ml = statistic::finds<Military>( _city() );
+  if( ml.isNull() )
   {
-    if( ml->haveNotification( Military::Notification::chastener ) )
-      change -= 1;
-
-    if( ml->haveNotification( Military::Notification::barbarian ) )
-      change -= 1;
+    Logger::warning( "!!! WARNING: not found military service" );
+    crashhandler::printstack();
+    return;
   }
 
-  change -= std::min( _d->rioterSeen ? -maxCh : 0, _d->value );
+  int change = (_d->threats.protestor || _d->threats.muggler) ? -minCh: 0;
+
+  if( ml->haveNotification( Notification::chastener ) )
+    change -= 1;
+
+  if( ml->haveNotification( Notification::barbarian ) )
+    change -= 1;
+
+  change -= std::min( _d->threats.rioter ? -maxCh : 0, _d->value );
   change -= std::min( _d->significantBuildingsDestroyed ? -minCh : 0, _d->value );
 
   if( change == 0 )
@@ -110,7 +121,7 @@ void Peace::timeStep(const unsigned int time )
     change = _d->peaceYears > longTimeWithoutWar ? maxCh : middleCh;
   }
 
-  if( _d->protestorOrMugglerSeen || _d->rioterSeen )
+  if( _d->threats.protestor || _d->threats.muggler || _d->threats.rioter )
   {
     _d->peaceYears = 0;
   }
@@ -122,8 +133,7 @@ void Peace::timeStep(const unsigned int time )
   change = math::clamp<int>( change, -maxCh, maxCh );
 
   _d->value = math::clamp<int>( _d->value + change, 0, 100  );
-  _d->protestorOrMugglerSeen  = false;
-  _d->rioterSeen = false;
+  _d->threats.clear();
   _d->significantBuildingsDestroyed = false;
 }
 
@@ -131,7 +141,7 @@ void Peace::addCriminal( WalkerPtr wlk )
 {
   if( is_kind_of<Rioter>( wlk ) )
   {
-    _d->rioterSeen = true;
+    _d->threats.rioter = true;
   }
   /*else if( is_kind_of<Protestor>( wlk ) )
   {
@@ -140,7 +150,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   else
   {
     Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
-    _d->someCriminalSeen = true;
+    _d->threats.criminal = true;
   }
 }
 
@@ -172,18 +182,18 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 
     switch( why )
     {
-    case events::Disaster::collapse:
+    case Disaster::collapse:
       title = "##collapsed_building_title##";
       text = "##collapsed_building_text##";
     break;
 
-    case events::Disaster::fire:
+    case Disaster::fire:
       title = "##city_fire_title##";
       text = "##city_fire_text##";
       video = "city_fire";
     break;
 
-    case events::Disaster::riots:
+    case Disaster::riots:
       title = "##destroyed_building_title##";
       text = "##rioter_rampaging_accross_city##";
       video = "riot";
@@ -192,7 +202,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 
     if( !title.empty() )
     {
-      events::GameEventPtr e = events::ShowInfobox::create( title, text, false, video );
+      GameEventPtr e = ShowInfobox::create( title, text, false, video );
       e->dispatch();
     }
   }
@@ -203,7 +213,7 @@ std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
 
 std::string Peace::reason() const
 {
-  if( _d->rioterSeen ) { return "##last_riots_bad_for_peace_rating##"; }
+  if( _d->threats.rioter ) { return "##last_riots_bad_for_peace_rating##"; }
 
   return "";
 }

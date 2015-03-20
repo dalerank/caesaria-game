@@ -41,10 +41,10 @@ REGISTER_SERVICE_IN_FACTORY(Military,military)
 class Military::Impl
 {
 public:
-  Military::NotificationArray notifications;
+  Notifications notifications;
   DateTime lastEnemyAttack;
   float threatValue;
-  bool updateMilitaryThreat;
+  bool needUpdateMilitaryThreat;
 };
 
 SrvcPtr Military::create( PlayerCityPtr city )
@@ -58,7 +58,7 @@ SrvcPtr Military::create( PlayerCityPtr city )
 Military::Military( PlayerCityPtr city )
   : city::Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->updateMilitaryThreat = true;
+  _d->needUpdateMilitaryThreat = true;
   _d->threatValue = 0;
 }
 
@@ -68,9 +68,9 @@ void Military::timeStep(const unsigned int time )
   {
     DateTime curDate = game::Date::current();
     //clear old notificationse
-    for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
+    for( Notifications::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
-      if( (*it).date.monthsTo( curDate ) > notificationHistoryMonths ) { it = _d->notifications.erase( it ); }
+      if( it->date.monthsTo( curDate ) > notificationHistoryMonths ) { it = _d->notifications.erase( it ); }
       else { ++it; }
     }
   }
@@ -79,7 +79,7 @@ void Military::timeStep(const unsigned int time )
   {
     world::EmpirePtr empire = _city()->empire();
 
-    for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
+    for( Notifications::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
       world::ObjectPtr object = empire->findObject( it->objectName );
 
@@ -88,14 +88,14 @@ void Military::timeStep(const unsigned int time )
     }
   }
 
-  if( _d->updateMilitaryThreat || game::Date::isMonthChanged() )
+  if( _d->needUpdateMilitaryThreat || game::Date::isMonthChanged() )
   {
-    _d->updateMilitaryThreat = false;
+    _d->needUpdateMilitaryThreat = false;
 
-    EnemySoldierList enSoldiers;
-    enSoldiers << _city()->walkers();
+    EnemySoldierList enemiesInCity;
+    enemiesInCity << _city()->walkers();
 
-    _d->threatValue = enSoldiers.size() * enemySoldiertThreat;
+    _d->threatValue = enemiesInCity.size() * enemySoldiertThreat;
   }  
 }
 
@@ -110,17 +110,17 @@ void Military::addNotification(const std::string& text, const std::string& name,
   _d->notifications.push_back( n );
 }
 
-Military::Notification Military::priorityNotification() const
+Notification Military::priorityNotification() const
 {
   return Notification();
 }
 
-const Military::NotificationArray& Military::notifications() const
+const Notifications& Military::notifications() const
 {
   return _d->notifications;
 }
 
-bool Military::haveNotification(Military::Notification::Type type) const
+bool Military::haveNotification( Notification::Type type) const
 {
   foreach( it, _d->notifications )
   {
@@ -147,7 +147,7 @@ VariantMap Military::save() const
   int index = 0;
   foreach( it, _d->notifications )
   {
-    notifications[ utils::format( 0xff, "note_%03d", index ) ] = (*it).save();
+    notifications[ utils::format( 0xff, "note_%03d", index ) ] = it->save();
   }
 
   VARIANT_SAVE_ANY( ret, notifications );
@@ -163,19 +163,14 @@ void Military::load(const VariantMap& stream)
   VARIANT_LOAD_VMAP( notifications, stream );
 
   foreach( it, notifications )
-  {    
-    Notification n;
-    n.load( it->second.toList() );
-
-    _d->notifications.push_back( n );
-  }
+    _d->notifications.push_back( Notification::fromVList(it->second.toList()) );
 }
 
 const DateTime& Military::lastAttack() const { return _d->lastEnemyAttack; }
 
 void Military::updateThreat(int value)
 {
-  _d->updateMilitaryThreat = true;
+  _d->needUpdateMilitaryThreat = true;
 
   if( value > 0 )
     _d->lastEnemyAttack = game::Date::current();
@@ -209,22 +204,5 @@ world::ObjectList Military::enemies() const
 
 unsigned int Military::threatValue() const{ return _d->threatValue; }
 std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
-
-VariantList Military::Notification::save() const
-{
-  VariantList ret;
-  ret << type << date << Variant( objectName ) << Variant( message ) << location;
-
-  return ret;
-}
-
-void Military::Notification::load(const VariantList& stream)
-{
-  type = (Type)stream.get( ftype ).toInt();
-  date = stream.get( fdate ).toDateTime();
-  objectName = stream.get( fname ).toString();
-  message = stream.get( fmessage ).toString();
-  location = stream.get( flocation ).toPoint();
-}
 
 }//end namespace city

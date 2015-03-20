@@ -38,7 +38,13 @@ namespace statistic
 {
 typedef std::map< good::Product, int > GoodsMap;
 
-void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
+struct WorkersInfo
+{
+  int current;
+  int need;
+};
+
+WorkersInfo getWorkersNumber( PlayerCityPtr city );
 CitizenGroup getPopulation( PlayerCityPtr city );
 unsigned int getWorkersNeed( PlayerCityPtr city );
 unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
@@ -221,6 +227,9 @@ SmartPtr<T> prewo( PlayerCityPtr r, SmartPtr<T> current)
 template<class T>
 SmartPtr<T> finds( PlayerCityPtr r)
 {
+  if( r.isNull() )
+    return 0;
+
   SrvcPtr ret = r->findService( T::defaultName() );
   return ptr_cast<T>( ret );
 }

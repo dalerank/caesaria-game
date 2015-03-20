@@ -58,6 +58,7 @@ struct SubRating
   const Points& intervals;
   int coverage;
   int value;
+  int visitors;
 
   SubRating( const Points& v) : intervals(v), coverage(0), value(0) {}
 
@@ -82,11 +83,6 @@ class CultureRating::Impl
 public:
   DateTime lastDate;
   int culture;
-  int theaterVisitors;
-  int parishionersCount;
-  int libraryVisitors;
-  int schoolVisitors;
-  int academyVisitors;
   coverage::SubRating religion;
   coverage::SubRating theaters;
   coverage::SubRating libraries;
@@ -127,32 +123,32 @@ void CultureRating::timeStep(const unsigned int time )
   if( _d->lastDate.monthsTo( game::Date::current() ) > 0 )
   {
     _d->lastDate = game::Date::current();
-    _d->parishionersCount = 0;
-    _d->theaterVisitors = 0;
-    _d->libraryVisitors = 0;
-    _d->schoolVisitors = 0;
-    _d->academyVisitors = 0;
+    _d->religion.visitors = 0;
+    _d->theaters.visitors = 0;
+    _d->libraries.visitors = 0;
+    _d->schools.visitors = 0;
+    _d->academies.visitors = 0;
     int cityPopulation = _city()->population();
 
     TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
-    foreach( temple, temples ) { _d->parishionersCount += (*temple)->parishionerNumber(); }
+    foreach( temple, temples ) { _d->religion.visitors += (*temple)->parishionerNumber(); }
     _d->religion.update( _d->parishionersCount / (float)cityPopulation );
 
     TheaterList theaters = city::statistic::findo<Theater>( _city(), object::theater );
-    foreach( theater, theaters ) { _d->theaterVisitors += (*theater)->currentVisitors(); }
+    foreach( theater, theaters ) { _d->theaters.visitors += (*theater)->currentVisitors(); }
     _d->theaters.update( _d->theaterVisitors / (float)cityPopulation );
 
     LibraryList libraries = city::statistic::findo<Library>( _city(), object::library );
-    foreach( library, libraries ) { _d->libraryVisitors += (*library)->currentVisitors(); }
+    foreach( library, libraries ) { _d->libraries.visitors += (*library)->currentVisitors(); }
     _d->libraries.update( _d->libraryVisitors / (float)cityPopulation );
 
     SchoolList schools = city::statistic::findo<School>( _city(), object::school );
-    foreach( school, schools ) { _d->schoolVisitors += (*school)->currentVisitors(); }
+    foreach( school, schools ) { _d->schools.visitors += (*school)->currentVisitors(); }
 
     _d->schools.update( _d->schoolVisitors / (float)cityPopulation );
 
     AcademyList colleges = city::statistic::findo<Academy>( _city(), object::academy );
-    foreach( college, colleges ) { _d->academyVisitors += (*college)->currentVisitors(); }
+    foreach( college, colleges ) { _d->>academies.visitors += (*college)->currentVisitors(); }
     _d->academies.update( _d->academyVisitors / (float)cityPopulation );
 
     _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +

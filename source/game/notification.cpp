@@ -13,34 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
-#define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+#include "notification.hpp"
+#include "gamedate.hpp"
 
-#include "event.hpp"
-
-namespace events
+VariantList Notification::save() const
 {
+  VariantList ret;
+  ret << type << date << Variant( objectName ) << Variant( message ) << location;
 
-PREDEFINE_CLASS_SMARTPOINTER(Notify)
-
-class Notify : public GameEvent
-{
-public:
-  static GameEventPtr attack(const std::string& cityname, const std::string& message, world::ObjectPtr object );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  Notify();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
-};
-
+  return ret;
 }
 
-#endif //_CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+void Notification::load(const VariantList& stream)
+{
+  type = (Type)stream.get( ftype ).toInt();
+  date = stream.get( fdate ).toDateTime();
+  objectName = stream.get( fname ).toString();
+  message = stream.get( fmessage ).toString();
+  location = stream.get( flocation ).toPoint();
+}
+

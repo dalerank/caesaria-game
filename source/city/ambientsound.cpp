@@ -50,7 +50,7 @@ struct SoundEmitter
              < a.tile->pos().getDistanceFromSQ( camerapos ));
   }
 
-  std::string getSound() const
+  std::string sound() const
   {
     if( overlay.isValid() )
     {
@@ -75,7 +75,7 @@ struct SoundEmitter
     return "";
   }
 
-  float getDistance( TilePos p ) const
+  float distance( TilePos p ) const
   {
     return tile->pos().distanceFrom( p );
   }
@@ -157,7 +157,7 @@ void AmbientSound::timeStep( const unsigned int time )
   for( Impl::Emitters::reverse_iterator i=_d->emitters.rbegin();
        i != _d->emitters.rend(); ++i )
   {
-    std::string rcName = i->getSound();
+    std::string rcName = i->sound();
 
     if( rcName.empty() )
       continue;
@@ -168,7 +168,7 @@ void AmbientSound::timeStep( const unsigned int time )
     {
       processedSounds.insert( rcName );
 
-      ae.play( rcName, sound::maxLevel / (ambiendsnd::maxDistance *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( rcName, sound::maxLevel / (ambiendsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }

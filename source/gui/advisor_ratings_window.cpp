@@ -195,12 +195,12 @@ void Ratings::Impl::checkProsperityRating()
 
     if( current[ city::Info::prosperity ] > lastYear[ city::Info::prosperity ] ) { troubles <<  "##your_prosperity_raising##"; }
 
-    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > highWorklessValue ) { troubles << "##high_workless_number##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > muchPlebsPercent ) { troubles << "##much_plebs##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmChange ) == 0 )
+    if( prosperity->getMark( city::ProsperityRating::housesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
+    if( prosperity->getMark( city::ProsperityRating::haveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
+    if( prosperity->getMark( city::ProsperityRating::worklessPercent ) > highWorklessValue ) { troubles << "##high_workless_number##"; }
+    if( prosperity->getMark( city::ProsperityRating::workersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
+    if( prosperity->getMark( city::ProsperityRating::plebsPercent ) > muchPlebsPercent ) { troubles << "##much_plebs##"; }
+    if( prosperity->getMark( city::ProsperityRating::changeValue ) == 0 )
     {
       troubles << "##no_prosperity_change##";
       troubles << "##how_to_grow_prosperity##";

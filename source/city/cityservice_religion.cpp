@@ -177,7 +177,7 @@ void Religion::timeStep( const unsigned int time )
       if( god->wrathPoints() > 0 )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );
-      }
+      }      
       else if( god->relation() < relation::minimum4wrath )
       {
         godsUnhappy[ god->relation() ].push_back( god );
@@ -186,25 +186,10 @@ void Religion::timeStep( const unsigned int time )
 
     //find wrath god
     DivinityList someGods = divinities;
-    if( !godsWrath.empty() )
-    {
-      someGods = godsWrath.rbegin()->second;
-    }
-    else if( !godsUnhappy.empty() )
-    {
-      someGods = godsUnhappy.rbegin()->second;
-    }
+    if( !godsWrath.empty() ) { someGods = godsWrath.rbegin()->second; }
+    else if( !godsUnhappy.empty() ) { someGods = godsUnhappy.rbegin()->second; }
 
-    DivinityPtr randomGod;
-    if( !someGods.empty() )
-    {
-      DivinityList::const_iterator it = someGods.begin();
-      if( someGods.size() > 1 )
-      {
-        std::advance( it, math::random( someGods.size() ) );
-      }
-      randomGod = *it;
-    }
+    DivinityPtr randomGod = someGods.random();
 
     if( randomGod.isValid() )
     {

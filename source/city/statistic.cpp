@@ -62,18 +62,22 @@ static const float minBalanceKoeff=.5f;
 static const int   maxLaborDistance=8;
 }
 
-void getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& maxWorkers )
+WorkersInfo getWorkersNumber(PlayerCityPtr city )
 {
+  WorkersInfo ret;
+
   WorkingBuildingList buildings;
   buildings << city->overlays();
 
-  workersNumber = 0;
-  maxWorkers = 0;
+  ret.workersNumber = 0;
+  ret.maxWorkers = 0;
   foreach( bld, buildings )
   {
-    workersNumber += (*bld)->numberWorkers();
-    maxWorkers += (*bld)->maximumWorkers();
+    ret.workersNumber += (*bld)->numberWorkers();
+    ret.maxWorkers += (*bld)->maximumWorkers();
   }
+
+  return ret;
 }
 
 float getBalanceKoeff(PlayerCityPtr city)
@@ -147,9 +151,8 @@ CitizenGroup getPopulation(PlayerCityPtr city)
 
 unsigned int getWorkersNeed(PlayerCityPtr city)
 {
-  int have, need;
-  getWorkersNumber( city, have, need );
-  return need < have ? 0 : need - have;
+  WorkersInfo wInfo = getWorkersNumber( city );
+  return wInfo.need < wInfo.current ? 0 : wInfo.need - wInfo.current;
 }
 
 unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
@@ -167,19 +170,16 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
 
 unsigned int getMonthlyWorkersWages(PlayerCityPtr city)
 {
-  int workersNumber, maxWorkers;
-  getWorkersNumber( city, workersNumber, maxWorkers );
+  WorkersInfo wInfo = getWorkersNumber( city );
 
-  if( workersNumber == 0 )
+  if( wInfo.current == 0 )
     return 0;
 
   //wages all worker in year
   //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * getMonthlyOneWorkerWages( city );
+  int wages = wInfo.current * getMonthlyOneWorkerWages( city );
 
-  wages = std::max<int>( wages, 1 );
-
-  return wages;
+  return std::max<int>( wages, 1 );
 }
 
 float getMonthlyOneWorkerWages(PlayerCityPtr city)
