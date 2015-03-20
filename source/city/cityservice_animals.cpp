@@ -65,7 +65,7 @@ void Animals::timeStep(const unsigned int time)
     _d->maxAnimal[ currentTerrainAnimal ] = config::animals::defaultNumber;
   }
 
-  TilesArray border = _city()->tilemap().borderTiles();
+  TilesArray border = _city()->tilemap().border();
   border = border.walkables( true );
 
   foreach( winfo, _d->maxAnimal )

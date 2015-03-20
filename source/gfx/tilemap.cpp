@@ -58,7 +58,8 @@ public:
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
-  TilesArray border;
+  TilesArray svkBorder;
+  TilesArray mapBorder;
 
   int size;  
   Direction direction;
@@ -88,6 +89,7 @@ Tilemap::Tilemap() : _d( new Impl )
 void Tilemap::resize( const unsigned int size )
 {
   _d->resize( size );
+  _d->mapBorder = getRectangle( TilePos( 0, 0), TilePos( size-1, size-1 ) );
 }
 
 bool Tilemap::isInside(const TilePos& pos ) const
@@ -154,14 +156,12 @@ TilesArray Tilemap::allTiles() const
   return ret;
 }
 
-const TilesArray& Tilemap::borderTiles() const
-{
-  return _d->border;
-}
+const TilesArray& Tilemap::border() const { return _d->mapBorder; }
+const TilesArray& Tilemap::svkBorderTiles() const { return _d->svkBorder; }
 
-void Tilemap::addBorder()
+void Tilemap::addSvkBorder()
 {
-  if( !_d->border.empty() )
+  if( !_d->svkBorder.empty() )
     return;
 
   Rect r;
@@ -185,8 +185,8 @@ void Tilemap::addBorder()
 
         if( r.isPointInside( t.mappos() ) )
         {
-          _d->border.push_back( new Tile( tpos[idx] ) );
-          _d->border.back()->setPicture( pics[idx] );
+          _d->svkBorder.push_back( new Tile( tpos[idx] ) );
+          _d->svkBorder.back()->setPicture( pics[idx] );
         }
       }
     }

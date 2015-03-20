@@ -328,7 +328,7 @@ void TilemapCamera::Impl::cacheFlatTiles()
     }
   }
 
-  const TilesArray& tl = tmap->borderTiles();
+  const TilesArray& tl = tmap->svkBorderTiles();
   Rect viewRect( Point( -tilemap::cellPicSize().width(), -tilemap::cellPicSize().height() ),
                  virtualSize + tilemap::cellPicSize() * 2 );
   foreach( i, tl )
