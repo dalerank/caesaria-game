@@ -526,11 +526,8 @@ void Level::_resolveSwitchMap()
 
 void Level::Impl::showEmpireMapWindow()
 {
-  GameEventPtr e;
-  if( game->empire()->isAvailable() ) { e = ShowEmpireMap::create( true ); }
-  else {  e = WarningMessage::create( "##not_available##", 1 ); }
-
-  if( e.isValid() ) e->dispatch();
+  GameEventPtr e = ShowEmpireMap::create( true );
+  e->dispatch();
 }
 
 void Level::draw()
