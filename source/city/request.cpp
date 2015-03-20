@@ -21,7 +21,7 @@
 #include "statistic.hpp"
 #include "events/removegoods.hpp"
 #include "events/fundissue.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "events/showinfobox.hpp"
@@ -168,7 +168,7 @@ void RqGood::success( PlayerCityPtr city )
   Request::success( city );
   if( _d->winMoney > 0 )
   {
-    GameEventPtr e = FundIssueEvent::create( FundIssue::donation, _d->winMoney );
+    GameEventPtr e = Payment::create( econ::Issue::donation, _d->winMoney );
     e->dispatch();
   }
 

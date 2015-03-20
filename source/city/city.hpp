@@ -31,9 +31,7 @@
 
 namespace city
 {
-class Funds;
 class VictoryConditions;
-
 namespace trade { class Options; }
 namespace development { class Options; }
 }
@@ -88,7 +86,7 @@ public:
   ClimateType climate() const;
   void setClimate(const ClimateType);
 
-  city::Funds& funds();
+  econ::Treasury& treasury();
 
   unsigned int population() const;
   virtual int strength() const;

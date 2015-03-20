@@ -19,7 +19,7 @@
 #include "objects/construction.hpp"
 #include "city/statistic.hpp"
 #include "objects/constants.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
@@ -174,9 +174,9 @@ std::string Disorder::reason() const
   StringArray troubles;
   troubles << crimeDesc[ crimeLevel ];
 
-  if( _d->maxCrimeLevel > defaultCrimeLevel )   {    troubles << "##advchief_high_crime_in_district##";  }
-  else if( _d->maxCrimeLevel > defaultCrimeLevel / 2 )  {    troubles << "##advchief_which_crime_in_district##";  }
-  else if( _d->maxCrimeLevel > defaultCrimeLevel / 5 )  {    troubles << "##advchief_low_crime##";  }
+  if( _d->maxCrimeLevel > crime::defaultValue )           {    troubles << "##advchief_high_crime_in_district##";  }
+  else if( _d->maxCrimeLevel > crime::defaultValue / 2 )  {    troubles << "##advchief_which_crime_in_district##";  }
+  else if( _d->maxCrimeLevel > crime::defaultValue / 5 )  {    troubles << "##advchief_low_crime##";  }
 
   return troubles.random();
 }
@@ -201,9 +201,9 @@ void Disorder::load(const VariantMap &stream)
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 {
-  house->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
+  house->appendServiceValue( Service::crime, -crime::defaultValue / 2 );
 
-  int taxesThisYear = city->funds().getIssueValue( FundIssue::taxIncome );
+  int taxesThisYear = city->treasury().getIssueValue( econ::Issue::taxIncome );
   int maxMoneyStolen = city->population() / 10;
 
   if( taxesThisYear > minCityTax4mugger )
@@ -217,7 +217,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
                                           ShowInfobox::send2scribe, "mugging" );
     e->dispatch();
 
-    city->funds().resolveIssue( FundIssue( FundIssue::moneyStolen, -moneyStolen ) );
+    city->treasury().resolveIssue( econ::Issue( econ::Issue::moneyStolen, -moneyStolen ) );
   }
 
   currentCrimeLevel++;

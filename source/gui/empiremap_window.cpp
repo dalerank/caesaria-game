@@ -31,7 +31,7 @@
 #include "dialogbox.hpp"
 #include "good/store.hpp"
 #include "world/trading.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "good/helper.hpp"
 #include "game/settings.hpp"
 #include "events/showinfobox.hpp"
@@ -334,7 +334,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-      events::GameEventPtr e = events::FundIssueEvent::create( FundIssue::sundries, -(int)cost );
+      events::GameEventPtr e = events::Payment::create( econ::Issue::sundries, -(int)cost );
       e->dispatch();
 
       DockList docks = city::statistic::findo<Dock>( city, object::dock );

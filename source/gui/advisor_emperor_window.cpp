@@ -41,7 +41,7 @@
 #include "dialogbox.hpp"
 #include "events/fundissue.hpp"
 #include "change_salary_window.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
 #include "city_donation_window.hpp"
@@ -295,7 +295,7 @@ void Emperor::draw(gfx::Engine& painter )
 void Emperor::Impl::sendMoney( int money )
 {
   city->mayor()->appendMoney( -money );
-  GameEventPtr e = FundIssueEvent::create( FundIssue::donation, money );
+  GameEventPtr e = Payment::create( econ::Issue::donation, money );
   e->dispatch();
 }
 

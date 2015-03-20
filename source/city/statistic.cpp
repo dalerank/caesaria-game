@@ -24,7 +24,7 @@
 #include "objects/granary.hpp"
 #include "objects/house_spec.hpp"
 #include "good/store.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
@@ -69,12 +69,12 @@ WorkersInfo getWorkersNumber(PlayerCityPtr city )
   WorkingBuildingList buildings;
   buildings << city->overlays();
 
-  ret.workersNumber = 0;
-  ret.maxWorkers = 0;
+  ret.current = 0;
+  ret.need = 0;
   foreach( bld, buildings )
   {
-    ret.workersNumber += (*bld)->numberWorkers();
-    ret.maxWorkers += (*bld)->maximumWorkers();
+    ret.current += (*bld)->numberWorkers();
+    ret.need += (*bld)->maximumWorkers();
   }
 
   return ret;
@@ -184,7 +184,7 @@ unsigned int getMonthlyWorkersWages(PlayerCityPtr city)
 
 float getMonthlyOneWorkerWages(PlayerCityPtr city)
 {
-  return city->funds().workerSalary() / (10.f * DateTime::monthsInYear);
+  return city->treasury().workerSalary() / (10.f * DateTime::monthsInYear);
 }
 
 unsigned int getWorklessNumber(PlayerCityPtr city)
@@ -258,7 +258,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
   HouseList houses = findh( city  );
 
   float taxValue = 0.f;
-  float taxRate = city->funds().taxRate();
+  float taxRate = city->treasury().taxRate();
   foreach( house, houses )
   {
     int maxhb = (*house)->maxHabitants();
@@ -308,7 +308,7 @@ int months2lastAttack(PlayerCityPtr city)
 
 int getWagesDiff(PlayerCityPtr city)
 {
-  return city->funds().workerSalary() - city->empire()->workerSalary();
+  return city->treasury().workerSalary() - city->empire()->workerSalary();
 }
 
 unsigned int getFestivalCost(PlayerCityPtr city, FestivalType type)

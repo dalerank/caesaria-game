@@ -30,7 +30,7 @@ public:
 
   virtual ~ComputerCity();
 
-  virtual city::Funds& funds();
+  virtual econ::Treasury& treasury();
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;

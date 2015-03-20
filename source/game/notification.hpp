@@ -38,6 +38,7 @@ struct Base
 
   VariantList save() const;
   void load(const VariantList &stream);
+
 };
 
 class Array : public std::vector< Base >
@@ -49,5 +50,10 @@ public:
 
 typedef notification::Base Notification;
 typedef notification::Array Notifications;
+
+namespace notification
+{
+Notification create(const VariantList &stream);
+}
 
 #endif //_CAESARIA_NOTIFICATION_H_INCLUDE_

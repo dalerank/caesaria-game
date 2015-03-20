@@ -42,7 +42,7 @@
 #include "gfx/city_renderer.hpp"
 #include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/settings.hpp"
@@ -181,7 +181,7 @@ void Level::initialize()
 
   _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( _d->game->city()->population() );
-  _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
+  _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 
   _d->menu = Menu::create( ui.rootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.virtualSize().width() - _d->rightPanel->width(),

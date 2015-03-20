@@ -33,7 +33,7 @@ public:
   virtual bool isAvailable() const { return true; }
 
   virtual unsigned int tradeType() const;
-  virtual city::Funds& funds();
+  virtual econ::Treasury& treasury();
   virtual std::string name() const;
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;

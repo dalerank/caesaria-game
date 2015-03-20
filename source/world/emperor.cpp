@@ -17,7 +17,7 @@
 
 #include "emperor.hpp"
 #include "core/foreach.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
 #include "romechastenerarmy.hpp"
@@ -152,12 +152,12 @@ void Emperor::sendGift(const Gift& gift)
 
   float timeKoeff = monthFromLastGift / (float)DateTime::monthsInYear;
   int affectMoney = relation.lastGiftValue / ( monthFromLastGift + 1 );
-  float moneyKoeff = math::max<float>( money - affectMoney, 0.f ) / gift.value();
+  float moneyKoeff = math::max<float>( gift.value() - affectMoney, 0.f ) / gift.value();
   int favourUpdate = maxFavourUpdate * timeKoeff * moneyKoeff;
   relation.lastGiftDate = game::Date::current();
   relation.lastGiftValue = gift.value();
 
-  updateRelation( cityname, favourUpdate );
+  updateRelation( gift.sender(), favourUpdate );
 }
 
 DateTime Emperor::lastGiftDate(const std::string& cityname)
@@ -202,12 +202,12 @@ void Emperor::timeStep(unsigned int time)
       if( salaryKoeff > 1.f ) { relation.value -= (int)salaryKoeff * salaryKoeff; }
       else if( salaryKoeff < 1.f ) { relation.value += normalSalaryFavourUpdate; }
 
-      int brokenEmpireTax = cityp->funds().getIssueValue( FundIssue::overdueEmpireTax, city::Funds::lastYear );
+      int brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
       if( brokenEmpireTax > 0 )
       {
         relation.value -= 1;
 
-        brokenEmpireTax = cityp->funds().getIssueValue( FundIssue::overdueEmpireTax, city::Funds::twoYearAgo );
+        brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearAgo );
         if( brokenEmpireTax > 0 )
           relation.value -= 2;
       }

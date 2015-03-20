@@ -18,7 +18,7 @@
 #include "rome.hpp"
 #include "empire.hpp"
 #include "good/storage.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "barbarian.hpp"
@@ -39,7 +39,7 @@ const char* Rome::defaultName = "Rome";
 class Rome::Impl
 {
 public:
-  city::Funds funds;
+  econ::Treasury funds;
   good::Storage gstore;
   DateTime lastAttack;
   int strength;
@@ -57,7 +57,7 @@ Rome::Rome(EmpirePtr empire)
 }
 
 unsigned int Rome::tradeType() const { return 0; }
-city::Funds& Rome::funds() { return _d->funds; }
+econ::Treasury& Rome::treasury() { return _d->funds; }
 
 std::string Rome::name() const { return Rome::defaultName; }
 unsigned int Rome::population() const { return defaultPopulation; }

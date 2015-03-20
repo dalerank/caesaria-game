@@ -22,7 +22,7 @@
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
 #include "core/utils.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"

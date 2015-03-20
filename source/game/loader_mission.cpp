@@ -27,7 +27,7 @@
 #include "city/victoryconditions.hpp"
 #include "city/build_options.hpp"
 #include "objects/metadata.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "city/city.hpp"
 #include "settings.hpp"
@@ -113,7 +113,7 @@ bool Mission::load( const std::string& filename, Game& game )
     }
 
     city->mayor()->setRank( vm.get( "player.rank", 0 ) );
-    city->funds().resolveIssue( FundIssue( FundIssue::donation, vm[ "funds" ].toInt() ) );
+    city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm[ "funds" ].toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
     city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, 1 ) );

@@ -27,7 +27,7 @@
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
-#include "funds.hpp"
+#include "game/funds.hpp"
 #include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
@@ -91,7 +91,7 @@ void Info::timeStep(const unsigned int time )
     Parameters& last = _d->lastYearHistory.back();
     last.date = _d->lastDate;
     last[ population  ] = _city()->population();
-    last[ funds       ] = _city()->funds().treasury();
+    last[ funds       ] = _city()->treasury().money();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
     last[ foodStock   ] = statistic::getFoodStock( _city() );
     last[ foodMontlyConsumption ] = statistic::getFoodMonthlyConsumption( _city() );
@@ -105,12 +105,12 @@ void Info::timeStep(const unsigned int time )
 
     statistic::WorkersInfo wInfo = statistic::getWorkersNumber( _city() );
 
-    last[ needWorkers ] = wInfo.maximum - wInfo.current;
-    last[ maxWorkers  ] = wInfo.maximum;
+    last[ needWorkers ] = wInfo.need - wInfo.current;
+    last[ maxWorkers  ] = wInfo.need;
     last[ workless    ] = statistic::getWorklessPercent( _city() );
-    last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
-    last[ tax         ] = _city()->funds().taxRate();
-    last[ cityWages   ] = _city()->funds().workerSalary();
+    last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
+    last[ tax         ] = _city()->treasury().taxRate();
+    last[ cityWages   ] = _city()->treasury().workerSalary();
     last[ romeWages   ] = _city()->empire()->workerSalary();
     last[ crimeLevel  ] = statistic::getCrimeLevel( _city() );
     last[ favour      ] = _city()->favour();

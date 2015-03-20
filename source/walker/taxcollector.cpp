@@ -17,7 +17,7 @@
 
 #include "taxcollector.hpp"
 #include "city/statistic.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/house.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"

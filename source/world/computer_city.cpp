@@ -23,7 +23,7 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/resourcegroup.hpp"
 #include "empiremap.hpp"
 #include "game/player.hpp"
@@ -58,7 +58,7 @@ public:
   DateTime lastTimeMerchantSend;
   DateTime lastAttack;
   unsigned int merchantsNumber;
-  city::Funds funds;
+  econ::Treasury funds;
 };
 
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
@@ -82,7 +82,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
 
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 
-city::Funds& ComputerCity::funds() { return _d->funds; }
+econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 unsigned int ComputerCity::population() const { return 0; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
@@ -298,9 +298,9 @@ void ComputerCity::timeStep( unsigned int time )
     _d->age++;
 
     //debug muleta
-    if( _d->funds.treasury() < 1000 )
+    if( _d->funds.money() < 1000 )
     {
-      _d->funds.resolveIssue( FundIssue( FundIssue::donation, 1000 ) );
+      _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
     }
   }
 

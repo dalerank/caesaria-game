@@ -26,10 +26,7 @@
 #include "nation.hpp"
 #include "game/predefinitions.hpp"
 
-namespace city
-{
-  class Funds;
-}
+namespace econ { class Treasury; }
 
 namespace world
 {
@@ -44,7 +41,7 @@ public:
   virtual void setAvailable( bool value ) {}
 
   virtual unsigned int tradeType() const = 0;
-  virtual city::Funds& funds() = 0;
+  virtual econ::Treasury& treasury() = 0;
   virtual unsigned int population() const = 0;
   virtual bool isPaysTaxes() const = 0;
   virtual Nation nation() const = 0;

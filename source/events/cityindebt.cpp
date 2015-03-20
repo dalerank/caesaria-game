@@ -26,7 +26,7 @@
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
@@ -91,7 +91,7 @@ bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 {
   if( game::Date::isWeekChanged() )
   {
-    if( game.city()->funds().treasury() < -4900 )
+    if( game.city()->treasury().money() < -4900 )
     {
       return true;
     }
@@ -130,7 +130,7 @@ void CityIndebt::_exec(Game& game, unsigned int)
 
     _d->state++;
 
-    GameEventPtr e = FundIssueEvent::create( FundIssue::caesarsHelp, money );
+    GameEventPtr e = Payment::create( econ::Issue::caesarsHelp, money );
     e->dispatch();
     _d->lastMessageSent = game::Date::current();
   }

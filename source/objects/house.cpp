@@ -37,7 +37,7 @@
 #include "events/fireworkers.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
@@ -271,7 +271,7 @@ void House::_updateTax()
     case game::difficulty::impossible: multiply = 0.25f; break;
   }
 
-  float cityTax = _city()->funds().taxRate() / 100.f;
+  float cityTax = _city()->treasury().taxRate() / 100.f;
   cityTax = (multiply * _d->habitants.count( CitizenGroup::mature ) / _d->spec.taxRate()) * cityTax;
 
   _d->money -= cityTax;

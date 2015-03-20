@@ -20,7 +20,7 @@
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
@@ -224,7 +224,7 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case add_1000_dn:
-    game->city()->funds().resolveIssue(FundIssue(FundIssue::donation, 1000));
+    game->city()->treasury().resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   break;
 
   case add_wolves:

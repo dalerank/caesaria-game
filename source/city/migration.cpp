@@ -26,7 +26,7 @@
 #include "objects/road.hpp"
 #include "objects/house.hpp"
 #include "gfx/tile.hpp"
-#include "funds.hpp"
+#include "game/funds.hpp"
 #include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
@@ -133,7 +133,7 @@ void Migration::timeStep( const unsigned int time )
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
-  const int diffSalary = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
+  const int diffSalary = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
   int diffSalaryInfluence = diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city

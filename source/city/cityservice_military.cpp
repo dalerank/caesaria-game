@@ -163,7 +163,7 @@ void Military::load(const VariantMap& stream)
   VARIANT_LOAD_VMAP( notifications, stream );
 
   foreach( it, notifications )
-    _d->notifications.push_back( Notification::fromVList(it->second.toList()) );
+    _d->notifications.push_back( notification::create(it->second.toList()) );
 }
 
 const DateTime& Military::lastAttack() const { return _d->lastEnemyAttack; }

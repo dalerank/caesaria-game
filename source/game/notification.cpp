@@ -18,7 +18,10 @@
 #include "notification.hpp"
 #include "gamedate.hpp"
 
-VariantList Notification::save() const
+namespace notification
+{
+
+VariantList Base::save() const
 {
   VariantList ret;
   ret << type << date << Variant( objectName ) << Variant( message ) << location;
@@ -26,7 +29,7 @@ VariantList Notification::save() const
   return ret;
 }
 
-void Notification::load(const VariantList& stream)
+void Base::load(const VariantList& stream)
 {
   type = (Type)stream.get( ftype ).toInt();
   date = stream.get( fdate ).toDateTime();
@@ -34,4 +37,13 @@ void Notification::load(const VariantList& stream)
   message = stream.get( fmessage ).toString();
   location = stream.get( flocation ).toPoint();
 }
+
+Notification create(const VariantList &stream)
+{
+  Notification ret;
+  ret.load( stream );
+  return ret;
+}
+
+}//end namespace notification
 

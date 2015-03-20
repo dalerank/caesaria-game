@@ -222,9 +222,10 @@ VariantMap Peace::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, peaceYears )
-  VARIANT_SAVE_ANY_D( ret, _d, someCriminalSeen )
-  VARIANT_SAVE_ANY_D( ret, _d, protestorOrMugglerSeen)
-  VARIANT_SAVE_ANY_D( ret, _d, rioterSeen )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.criminal )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.protestor )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.muggler )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.rioter )
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_ANY_D( ret, _d, significantBuildingsDestroyed )
 
@@ -234,9 +235,10 @@ VariantMap Peace::save() const
 void Peace::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANY_D( _d, peaceYears, stream )
-  VARIANT_LOAD_ANY_D( _d, someCriminalSeen, stream )
-  VARIANT_LOAD_ANY_D( _d, protestorOrMugglerSeen, stream )
-  VARIANT_LOAD_ANY_D( _d, rioterSeen, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.criminal, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.protestor, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.muggler, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.rioter, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
   VARIANT_LOAD_ANY_D( _d, significantBuildingsDestroyed, stream )
 }

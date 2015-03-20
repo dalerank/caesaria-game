@@ -27,7 +27,7 @@
 #include "world/empire.hpp"
 #include "core/utils.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
@@ -267,7 +267,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
               currentBuys += good::Helper::exportPrice( city, *goodType, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( *goodType, mayBuy, tradeKoeff );
+              events::GameEventPtr e = events::Payment::exportg( *goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }
@@ -363,7 +363,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
             currentSell += good::Helper::importPrice( city, *goodType, maySells );
 
-            events::GameEventPtr e = events::FundIssueEvent::import( *goodType, maySells );
+            events::GameEventPtr e = events::Payment::import( *goodType, maySells );
             e->dispatch();
           }
         }

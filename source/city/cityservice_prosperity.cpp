@@ -27,7 +27,7 @@
 #include "gfx/tile.hpp"
 #include "objects/entertainment.hpp"
 #include "game/gamedate.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "objects/hippodrome.hpp"
 #include "objects/constants.hpp"
@@ -88,8 +88,8 @@ void ProsperityRating::timeStep(const unsigned int time )
 
   if( game::Date::current().year() > _d->lastDate.year() )
   {          
-    _d->lastYearBalance = _city()->funds().getIssueValue( FundIssue::balance, city::Funds::lastYear );
-    _d->workersSalary = _city()->funds().workerSalary();
+    _d->lastYearBalance = _city()->treasury().getIssueValue( econ::Issue::balance, econ::Treasury::lastYear );
+    _d->workersSalary = _city()->treasury().workerSalary();
 
     _d->lastDate = game::Date::current();
 
@@ -124,7 +124,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
     _d->houseCapTrand = _d->prosperity - saveValue;
 
-    int currentFunds = _city()->funds().treasury();
+    int currentFunds = _city()->treasury().money();
     _d->makeProfit = _d->lastYearBalance < currentFunds;
     _d->lastYearBalance = currentFunds;
     _d->prosperityExtend = (_d->makeProfit ? prosperity::cityHaveProfitAward : prosperity::penalty );
@@ -146,15 +146,15 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->prosperityExtend += (unemploymentMore15percent ? prosperity::penalty : 0);
     _d->prosperityExtend += (patricianCount > 0 ? prosperity::award : 0);
 
-    _d->workersSalary = _city()->funds().workerSalary() - _city()->empire()->workerSalary();
+    _d->workersSalary = _city()->treasury().workerSalary() - _city()->empire()->workerSalary();
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? prosperity::penalty : 0);
    
     _d->prosperityExtend += (_city()->haveOverduePayment() ? -prosperity::taxBrokenPenalty : 0);
     _d->prosperityExtend += (_city()->isPaysTaxes() ? -prosperity::taxBrokenPenalty : 0);
 
-    unsigned int caesarsHelper = _city()->funds().getIssueValue( FundIssue::caesarsHelp, Funds::thisYear );
-    caesarsHelper += _city()->funds().getIssueValue( FundIssue::caesarsHelp, Funds::lastYear );
+    unsigned int caesarsHelper = _city()->treasury().getIssueValue( econ::Issue::caesarsHelp, econ::Treasury::thisYear );
+    caesarsHelper += _city()->treasury().getIssueValue( econ::Issue::caesarsHelp, econ::Treasury::lastYear );
     if( caesarsHelper > 0 )
       _d->prosperityExtend += -prosperity::caesarHelpCityPenalty;
   }
@@ -166,12 +166,12 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {
   switch( type )
   {
-  case cmHousesCap: return _d->houseCapTrand;
-  case cmHaveProfit: return _d->makeProfit;
-  case cmWorkless: return _d->worklessPercent;
-  case cmWorkersSalary: return _d->workersSalary;
-  case cmChange: return value() - _d->lastYearProsperity;
-  case cmPercentPlebs: return _d->percentPlebs;
+  case housesCap: return _d->houseCapTrand;
+  case haveProfit: return _d->makeProfit;
+  case worklessPercent: return _d->worklessPercent;
+  case workersSalary: return _d->workersSalary;
+  case changeValue: return value() - _d->lastYearProsperity;
+  case plebsPercent: return _d->percentPlebs;
   }
 
   return 0;

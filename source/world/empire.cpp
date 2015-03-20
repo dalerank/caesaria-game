@@ -34,7 +34,7 @@
 #include "objects_factory.hpp"
 #include "game/settings.hpp"
 #include "game/gamedate.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "barbarian.hpp"
 #include "city/statistic.hpp"
 #include "events/changeemperor.hpp"
@@ -565,21 +565,21 @@ void Empire::Impl::checkLoans()
   {
     CityPtr city = *it;
 
-    int loanValue = city->funds().treasury();
+    int loanValue = city->treasury().money();
     if( loanValue < 0 )
     {
       int loanPercent = std::max( 1, abs( loanValue / ( rateInterest * DateTime::monthsInYear ) ));
 
       if( loanPercent > 0 )
       {
-        if( city->funds().haveMoneyForAction( loanPercent ) )
+        if( city->treasury().haveMoneyForAction( loanPercent ) )
         {
-          city->funds().resolveIssue( FundIssue( FundIssue::credit, -loanPercent ) );
+          city->treasury().resolveIssue( econ::Issue( econ::Issue::credit, -loanPercent ) );
           treasury += loanPercent;
         }
         else
         {
-          city->funds().resolveIssue( FundIssue( FundIssue::overduePayment, loanPercent ) );
+          city->treasury().resolveIssue( econ::Issue( econ::Issue::overduePayment, loanPercent ) );
         }
       }
     }
@@ -632,7 +632,7 @@ void Empire::Impl::takeTaxes()
       continue;
     }
 
-    int profit = city->funds().getIssueValue( FundIssue::cityProfit, city::Funds::lastYear );
+    int profit = city->treasury().getIssueValue( econ::Issue::cityProfit, econ::Treasury::lastYear );
 
     if( profit <= 0 )
     {
@@ -644,17 +644,17 @@ void Empire::Impl::takeTaxes()
       empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
     }
 
-    city::Funds& funds = city->funds();
-    if( funds.treasury() > empireTax )
+    econ::Treasury& funds = city->treasury();
+    if( funds.money() > empireTax )
     {
-      funds.resolveIssue( FundIssue( FundIssue::empireTax, -empireTax ) );
+      funds.resolveIssue( econ::Issue( econ::Issue::empireTax, -empireTax ) );
 
       treasury += empireTax;
       emperor.cityTax( city->name(), empireTax );
     }
     else
     {
-      city->funds().resolveIssue( FundIssue( FundIssue::overdueEmpireTax, empireTax ) );
+      city->treasury().resolveIssue( econ::Issue( econ::Issue::overdueEmpireTax, empireTax ) );
     }
   }
 }

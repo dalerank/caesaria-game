@@ -33,7 +33,7 @@
 #include "gui/dialogbox.hpp"
 #include "gfx/renderermode.hpp"
 #include "events/warningmessage.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
 #include "gfx/city_renderer.hpp"
@@ -274,7 +274,7 @@ void Build::_buildAll()
     return;
   }
 
-  if( !_city()->funds().haveMoneyForAction( 1 ) )
+  if( !_city()->treasury().haveMoneyForAction( 1 ) )
   {
     events::GameEventPtr e = events::WarningMessage::create( "##out_of_credit##", 2 );
     e->dispatch();
