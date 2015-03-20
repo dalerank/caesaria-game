@@ -290,7 +290,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case add_city_border:   {    game->city()->tilemap().addBorder();  }  break;
+  case add_city_border:   {    game->city()->tilemap().addSvkBorder();  }  break;
 
   case toggle_experimental_options:
   {
