@@ -51,12 +51,10 @@ namespace {
 class Festival::Impl
 {
 public:
+  festival::Info info;
+
   DateTime prevFestivalDate;
   DateTime lastFestivalDate;
-  DateTime festivalDate;
-
-  RomeDivinityType divinity;  
-  festival::Type festivalType;
 };
 
 SrvcPtr Festival::create( PlayerCityPtr city )
@@ -73,12 +71,12 @@ DateTime Festival::nextFestivalDate() const { return _d->festivalDate; }
 
 void Festival::assignFestival( RomeDivinityType name, int size )
 {
-  _d->festivalType = (festival::Type)size;
-  _d->festivalDate = game::Date::current();
-  _d->festivalDate.appendMonth( festival::prepareMonthsDelay + size );
-  _d->divinity = name;
+  _d->info.size = (festival::Type)size;
+  _d->info.date= game::Date::current();
+  _d->info.date.appendMonth( festival::prepareMonthsDelay + size );
+  _d->info.divinity = name;
 
-  GameEventPtr e = FundIssueEvent::create( FundIssue::sundries, -city::statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  GameEventPtr e = FundIssueEvent::create( FundIssue::sundries, -statistic::getFestivalCost( _city(), (FestivalType)size ) );
   e->dispatch();
 }
 
@@ -86,7 +84,7 @@ Festival::Festival(PlayerCityPtr city)
 : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->lastFestivalDate = game::Date::current();
-  _d->festivalDate = DateTime( -550, 0, 0 );
+  _d->info.date = DateTime( -550, 0, 0 );
   _d->prevFestivalDate = DateTime( -550, 0, 0 );
 }
 
@@ -96,8 +94,8 @@ void Festival::timeStep(const unsigned int time )
     return;
 
   const DateTime currentDate = game::Date::current();
-  if( _d->festivalDate.year() == currentDate.year()
-      && _d->festivalDate.month() == currentDate.month() )
+  if( _d->info.date.year() == currentDate.year()
+      && _d->info.date.month() == currentDate.month() )
   {
     int sentimentValue = 0;
 
@@ -107,16 +105,16 @@ void Festival::timeStep(const unsigned int time )
                                   ? secondFesivalSentiment
                                   : firstFestivalSentinment;
 
-      sentimentValue = sentimentValues[ _d->festivalType ];
+      sentimentValue = sentimentValues[ _d->info.size ];
     }
 
     _d->prevFestivalDate = _d->lastFestivalDate;
     _d->lastFestivalDate = currentDate;
-    _d->festivalDate = DateTime( -550, 1, 1 );
+    _d->info.date = DateTime( -550, 1, 1 );
 
-    rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
+    rome::Pantheon::doFestival( _d->divinity, _d->info.size );
 
-    int id = math::clamp<int>( _d->festivalType, festival::none, festival::big );
+    int id = math::clamp<int>( _d->info.size, festival::none, festival::big );
     GameEventPtr e = ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
                                             _city()->mayor()->name(), festivalVideo[ id ] );
     e->dispatch();
@@ -124,7 +122,7 @@ void Festival::timeStep(const unsigned int time )
     e = UpdateCitySentiment::create( sentimentValue );
     e->dispatch();
 
-    e = UpdateHouseService::create( Service::crime, -firstFestivalSentinment[ _d->festivalType ] );
+    e = UpdateHouseService::create( Service::crime, -firstFestivalSentinment[ _d->info.size ] );
     e->dispatch();
   }
 }

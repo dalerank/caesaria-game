@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "config.hpp"
 
 namespace city
 {
@@ -30,8 +31,8 @@ PREDEFINE_CLASS_SMARTPOINTER(ProsperityRating)
 class ProsperityRating : public Srvc
 {
 public:
-  typedef enum { cmHousesCap, cmHaveProfit, cmWorkless,
-                 cmWorkersSalary, cmChange, cmPercentPlebs } Mark;
+  typedef enum { housesCap, haveProfit, worklessPercent,
+                 workersSalary, changeValue, plebsPercent } Mark;
   static SrvcPtr create(PlayerCityPtr city);
 
   virtual void timeStep( const unsigned int time );

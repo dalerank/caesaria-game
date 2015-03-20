@@ -15,32 +15,39 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
-#define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+#ifndef _CAESARIA_NOTIFICATION_H_INCLUDE_
+#define _CAESARIA_NOTIFICATION_H_INCLUDE_
 
-#include "event.hpp"
+#include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
+#include "core/variant_map.hpp"
 
-namespace events
+namespace notification
 {
 
-PREDEFINE_CLASS_SMARTPOINTER(Notify)
-
-class Notify : public GameEvent
+struct Base
 {
-public:
-  static GameEventPtr attack(const std::string& cityname, const std::string& message, world::ObjectPtr object );
+  enum { ftype=0, fdate, fname, fmessage, flocation };
+  typedef enum { unknown, barbarian=0x1, chastener, attack } Type;
 
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
+  DateTime date;
+  Type type;
+  std::string message;
+  std::string objectName;
+  Point location;
 
-private:
-  Notify();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  VariantList save() const;
+  void load(const VariantList &stream);
 };
 
-}
+class Array : public std::vector< Base >
+{
+public:
+};
 
-#endif //_CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
+}//end namespace
+
+typedef notification::Base Notification;
+typedef notification::Array Notifications;
+
+#endif //_CAESARIA_NOTIFICATION_H_INCLUDE_

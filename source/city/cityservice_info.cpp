@@ -103,11 +103,10 @@ void Info::timeStep(const unsigned int time )
                             ? foodProducing / (yearlyFoodConsumption+1)
                             : -(yearlyFoodConsumption / (foodProducing+1) );
 
-    int currentWorkers, rmaxWorkers;
-    statistic::getWorkersNumber( _city(), currentWorkers, rmaxWorkers );
+    statistic::WorkersInfo wInfo = statistic::getWorkersNumber( _city() );
 
-    last[ needWorkers ] = rmaxWorkers - currentWorkers;
-    last[ maxWorkers  ] = rmaxWorkers;
+    last[ needWorkers ] = wInfo.maximum - wInfo.current;
+    last[ maxWorkers  ] = wInfo.maximum;
     last[ workless    ] = statistic::getWorklessPercent( _city() );
     last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
     last[ tax         ] = _city()->funds().taxRate();

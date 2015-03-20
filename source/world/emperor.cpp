@@ -25,6 +25,7 @@
 #include "core/saveadapter.hpp"
 #include "core/utils.hpp"
 #include "empire.hpp"
+#include "game/gift.hpp"
 #include "core/variant_map.hpp"
 
 namespace world
@@ -137,10 +138,10 @@ void Emperor::updateRelation(const std::string& cityname, int value)
   d->relations[ cityname ].value = math::clamp<int>( current + value, 0, maxFavour );
 }
 
-void Emperor::sendGift(const std::string& cityname, unsigned int money)
+void Emperor::sendGift(const Gift& gift)
 {
   Relation relation;
-  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
+  Impl::Relations::iterator it = _dfunc()->relations.find( gift.sender() );
   if( it != _dfunc()->relations.end() )
   {
     relation = it->second;
@@ -151,15 +152,15 @@ void Emperor::sendGift(const std::string& cityname, unsigned int money)
 
   float timeKoeff = monthFromLastGift / (float)DateTime::monthsInYear;
   int affectMoney = relation.lastGiftValue / ( monthFromLastGift + 1 );
-  float moneyKoeff = math::max<float>( money - affectMoney, 0.f ) / money;
+  float moneyKoeff = math::max<float>( money - affectMoney, 0.f ) / gift.value();
   int favourUpdate = maxFavourUpdate * timeKoeff * moneyKoeff;
   relation.lastGiftDate = game::Date::current();
-  relation.lastGiftValue = money;
+  relation.lastGiftValue = gift.value();
 
   updateRelation( cityname, favourUpdate );
 }
 
-DateTime Emperor::lastGiftDate(const std::string &cityname)
+DateTime Emperor::lastGiftDate(const std::string& cityname)
 {
   Relation relation;
   Impl::Relations::iterator it = _dfunc()->relations.find( cityname );

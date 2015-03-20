@@ -51,6 +51,7 @@
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
 #include "gui/widget_helper.hpp"
+#include "game/gift.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -309,7 +310,7 @@ void Emperor::Impl::sendGift(int money)
   }
 
   city->mayor()->appendMoney( -money );
-  city->empire()->emperor().sendGift( city->name(), money );
+  city->empire()->emperor().sendGift( Gift( city->name(), "gift", money ) );
 }
 
 void Emperor::Impl::changeSalary( int money )

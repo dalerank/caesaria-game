@@ -24,6 +24,21 @@
 #include "religion/romedivinity.hpp"
 #include "core/variant.hpp"
 
+namespace config
+{
+
+namespace festival
+{
+  struct Info
+  {
+    DateTime date;
+    religion::RomeDivinityType divinity;
+    int size;
+  };
+}
+
+}
+
 namespace city
 {
 

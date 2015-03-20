@@ -144,7 +144,7 @@ void Barbarian::_check4attack()
        {
          _d->mode = Impl::go2object;
 
-         events::GameEventPtr e = events::Notification::attack( it->second->name(), "##barbaria_attack_empire_city##", this );
+         events::GameEventPtr e = events::Notify::attack( it->second->name(), "##barbaria_attack_empire_city##", this );
          e->dispatch();
 
          break;

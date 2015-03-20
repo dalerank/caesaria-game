@@ -99,7 +99,7 @@ void RomeChastenerArmy::attack(ObjectPtr obj)
   {
     empire()->emperor().addSoldiers( target(), _d->soldiersNumber );
 
-    events::GameEventPtr e = events::Notification::attack( obj->name(), "##rome_attack_empire_city##", this );
+    events::GameEventPtr e = events::Notify::attack( obj->name(), "##rome_attack_empire_city##", this );
     e->dispatch();
   }
   else
