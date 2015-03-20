@@ -249,4 +249,9 @@
 "##city_warnings_off##":"Ostrzeżenia: Wył"
 "##city_zoom_on##":"Powiększenie: Wł."
 "##city_zoom_off##":"Powiększenie: Wył."
+"##gmenu_file_save##":"Zapisz grę"
+"##savedlg_continue##":"Zapisz"
+"##save_city##":"Zapisz grę"
+"##save_map##":"Zapisz mapę"
+"##save_game_here##":"Zapisz grę do wybranego pliku"
 }
