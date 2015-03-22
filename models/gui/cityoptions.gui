@@ -17,7 +17,7 @@
   }
 
   btnShowTooltips#PushButton : {
-    geometry : [ "pw/2", 50, "pw-16, 70 ]
+    geometry : [ "pw/2", 50, "pw-16", 70 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_showtooltip_mode##"
   }
@@ -29,7 +29,7 @@
   }
 
   btnDifficulty#PushButton : {
-    geometry : [ "pw/2", 75, "pw-16, 95 ]
+    geometry : [ "pw/2", 75, "pw-16", 95 ]
     bgtype : "smallGrayBorderLine"
     text : "##city_barbarian_mode##"
   }
@@ -100,7 +100,7 @@
 
   btnClose#TexturedButton :
   {
-    geometry : [ 440, 284, 464, 308 ]
+    geometry : [ "pw-34", "ph-34", "pw-10", "ph-10" ]
     normal : [ "paneling", 532 ]
     hovered : [ "paneling", 533 ]
     pressed : [ "paneling", 534 ]

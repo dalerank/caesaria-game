@@ -424,6 +424,9 @@ void Build::_drawBuildTiles( Engine& engine)
     if( ptr_construction.isValid() && ptr_construction->canBuild( areaInfo ) )
     {
       engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+
+      drawPass( engine, **it, offset, Renderer::ground );
+      drawPass( engine, **it, offset, Renderer::groundAnimation );
     }
 
     drawPass( engine, *postTile, offset, Renderer::ground );
