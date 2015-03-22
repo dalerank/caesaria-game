@@ -108,7 +108,7 @@ class PlayerCity::Impl
 public:
   typedef std::map<PlayerCity::OptionType, int> Options;
   int population;
-  econ::Treasury funds;  // amount of money
+  econ::Treasury treasury;  // amount of money
 
   PlayerPtr player;
 
@@ -164,9 +164,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.roadExit = TilePos( 0, 0 );
   _d->borderInfo.boatEntry = TilePos( 0, 0 );
   _d->borderInfo.boatExit = TilePos( 0, 0 );
-  _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
+  _d->treasury.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->population = 0;
-  _d->funds.setTaxRate( econ::Treasury::defaultTaxPrcnt );
+  _d->treasury.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->age = 0;
   _d->walkerIdCount = 1;
   _d->climate = game::climate::central;
@@ -269,14 +269,14 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   collectTaxes( city );
   payWages( city );
 
-  if( funds.money() > 0 )
+  if( treasury.money() > 0 )
   {
     int playerSalary = player->salary();
-    funds.resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
+    treasury.resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
     player->appendMoney( playerSalary );
   }
 
-  funds.updateHistory( game::Date::current() );
+  treasury.updateHistory( game::Date::current() );
 }
 
 WalkerList PlayerCity::walkers( walker::Type rtype )
@@ -316,12 +316,12 @@ OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const { return _d->funds.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const { return _d->funds.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+bool PlayerCity::isPaysTaxes() const { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
-econ::Treasury& PlayerCity::treasury()  {  return _d->funds;   }
+econ::Treasury& PlayerCity::treasury()  {  return _d->treasury;   }
 unsigned int PlayerCity::population() const { return _d->population; }
 
 int PlayerCity::strength() const
@@ -358,14 +358,14 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   SenateList senates = city::statistic::findo< Senate >( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
-  funds.resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
+  treasury.resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
 }
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
   int wages = city::statistic::getMonthlyWorkersWages( city );
 
-  if( funds.haveMoneyForAction( wages ) )
+  if( treasury.haveMoneyForAction( wages ) )
   {
     HouseList houses;
     houses << city->overlays();
@@ -379,7 +379,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
       (*it)->appendMoney( house_wages );
       wages += house_wages;
     }
-    funds.resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
+    treasury.resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
   }
   else
   {
@@ -470,7 +470,7 @@ void PlayerCity::Impl::resolveNewIssue(econ::Issue::Type type)
   {
   case econ::Issue::overdueEmpireTax:
     {
-      int lastYearBrokenTribute = funds.getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
+      int lastYearBrokenTribute = treasury.getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
       std::string text = lastYearBrokenTribute > 0
                                 ? "##for_second_year_broke_tribute##"
                                 : "##current_year_notpay_tribute_warning##";
@@ -517,7 +517,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
-  stream[ "funds" ] = _d->funds.save();
+  stream[ "funds" ] = _d->treasury.save();
 
   Logger::warning( "City: save trade/build/win options" );
   stream[ "tradeOptions" ] = _d->tradeOptions.save();
@@ -611,7 +611,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( difficulty, stream.get( "difficulty", (int)game::difficulty::usual ) );
 
   Logger::warning( "City: parse funds" );
-  _d->funds.load( stream.get( "funds" ).toMap() );
+  _d->treasury.load( stream.get( "funds" ).toMap() );
 
   Logger::warning( "City: parse trade/build/win params" );
   _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
@@ -745,7 +745,7 @@ const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOption
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
-Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
+Signal1<int>& PlayerCity::onFundsChanged() {  return _d->treasury.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }

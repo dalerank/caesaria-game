@@ -136,7 +136,7 @@
     employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
-    animation : { rc : "entertainment", start : 82, count : 9, offset : [ 68, -6 ], delay : 2 }
+    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 130, 30 ], delay : 2 }
     sound : [ "artistpit", 1  ]
   },
 
