@@ -43,6 +43,7 @@
 #include "climatemanager.hpp"
 
 using namespace religion;
+using namespace events;
 
 namespace game
 {
@@ -90,7 +91,7 @@ bool Mission::load( const std::string& filename, Game& game )
 
     if( mapToLoad == lc_random )
     {
-      TerrainGenerator targar;
+      terrain::Generator targar;
       VariantMap rndvm = vm[ lc_random ].toMap();
       int n2size = rndvm.get( "size", 5 );
       float smooth = rndvm.get( "smooth", 2.6 );
@@ -124,7 +125,7 @@ bool Mission::load( const std::string& filename, Game& game )
     VariantMap vm_events = vm[ "events" ].toMap();
     foreach( it, vm_events )
     {
-      events::GameEventPtr e = events::PostponeEvent::create( it->first, it->second.toMap() );
+      GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
       e->dispatch();
     }
 
@@ -148,7 +149,7 @@ bool Mission::load( const std::string& filename, Game& game )
     VariantMap fishpointsVm = vm[ "fishpoints" ].toMap();
     foreach( it, fishpointsVm )
     {
-      events::GameEventPtr e = events::FishPlaceEvent::create( it->second.toTilePos(), events::FishPlaceEvent::add );
+      GameEventPtr e = FishPlaceEvent::create( it->second.toTilePos(), FishPlaceEvent::add );
       e->dispatch();
     }
 

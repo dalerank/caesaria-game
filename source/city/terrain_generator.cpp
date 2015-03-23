@@ -32,6 +32,9 @@
 
 using namespace gfx;
 
+namespace terrain
+{
+
 MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrainSquare)
 {
   n_ = n;
@@ -88,21 +91,21 @@ std::vector<int> MidpointDisplacement::map()
 
   for (int i = 0; i < width_; i += 2 * step) {
     for (int j = 0; j < height_; j+= 2 * step) {
-      map[ CoordinatesToVectorIndex(i, j) ] = random_.Float(0, 2 * h); //???
+      map[ CoordinatesToVectorIndex(i, j) ] = random_.toFloat(0, 2 * h); //???
     }
   }
 
   for (int i = 0; i < width_; i++) {
-    map[ CoordinatesToVectorIndex(i, 0) ] = random_.Float(-3, -2);
-    map[ CoordinatesToVectorIndex(i, height_ - 1) ] = random_.Float(-2, -1);
+    map[ CoordinatesToVectorIndex(i, 0) ] = random_.toFloat(-3, -2);
+    map[ CoordinatesToVectorIndex(i, height_ - 1) ] = random_.toFloat(-2, -1);
   }
 
   for (int i = 0; i < height_; i++) {
-    map[ CoordinatesToVectorIndex(0, i) ] = random_.Float(-3, -2);
-    map[ CoordinatesToVectorIndex(width_ - 1, i) ] = random_.Float(-3, -2);
+    map[ CoordinatesToVectorIndex(0, i) ] = random_.toFloat(-3, -2);
+    map[ CoordinatesToVectorIndex(width_ - 1, i) ] = random_.toFloat(-3, -2);
   }
 
-  map[ CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2) ] = (2 * h) + random_.Float(1, 5);
+  map[ CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2) ] = (2 * h) + random_.toFloat(1, 5);
   /*map.at(CoordinatesToVectorIndex(0, 0)) = -3;
 map.at(CoordinatesToVectorIndex((width_ - 1), 0)) = -3;
 map.at(CoordinatesToVectorIndex(0, (height_ - 1))) = -3;
@@ -120,7 +123,7 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
             + map[ CoordinatesToVectorIndex(x - step, y + step) ]
             + map[ CoordinatesToVectorIndex(x + step, y - step) ]
             + map[ CoordinatesToVectorIndex(x + step, y + step) ];
-        map[ CoordinatesToVectorIndex(x, y) ] = sum / 4 + random_.Float(-h, h); //???
+        map[ CoordinatesToVectorIndex(x, y) ] = sum / 4 + random_.toFloat(-h, h); //???
       }
     }
 
@@ -146,7 +149,7 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
           count++;
         }
         if(count > 0) {
-          map[ CoordinatesToVectorIndex(x, y) ] = sum / count + random_.Float(-h, h); //???
+          map[ CoordinatesToVectorIndex(x, y) ] = sum / count + random_.toFloat(-h, h); //???
         } else {
           map[ CoordinatesToVectorIndex(x, y) ] = 0;
         }
@@ -429,6 +432,27 @@ public:
     ret = (  tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlGrass ) || tile->getFlag( Tile::tlTree ) );
   }
 
+  void needBuildRoad( const Tile* tile, bool& ret )
+  {
+    ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
+
+    if( !ret )
+    {
+      if( tile->getFlag( Tile::tlRock ) && tile->i() < 10 && tile->j() < 10 )
+      {
+        ret = true;
+      }
+    }
+  }
+
+  Pathway findWay( Tilemap& oTilemap, TilePos startPos, TilePos endPos )
+  {
+    Pathfinder& pathfinder = Pathfinder::instance();
+    pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::needBuildRoad ) );
+
+    return pathfinder.getPath( startPos, endPos, Pathfinder::customCondition | Pathfinder::fourDirection );
+  }
+
   Pathway findWay(Tilemap& oTilemap, int startSide, int endSide )
   {
     Pathfinder& pathfinder = Pathfinder::instance();
@@ -569,7 +593,7 @@ static void __createRoad(Game& game )
   TerrainGeneratorHelper tgHelper;
 
   Pathway way;
-  for( int side=0; side < 2; side++ )
+ /* for( int side=0; side < 2; side++ )
   {
     way = tgHelper.findWay( oTilemap, side, side + 2 );
 
@@ -585,11 +609,26 @@ static void __createRoad(Game& game )
 
     if( way.isValid() )
       break;
-  }
+  }*/
 
   BorderInfo borderInfo = oCity->borderInfo();
-  int lastIndex = oTilemap.size()-1;
-  TilesArray borderTiles = oTilemap.getRectangle( TilePos(0,0), TilePos(lastIndex,lastIndex) );
+  TilesArray borderTiles = oTilemap.border();
+
+  if( way.isValid() )
+  {
+    TilesArray terrain = borderTiles.terrains();
+
+    for( int tryCount=0; tryCount < 10; tryCount++ )
+    {
+      borderInfo.roadEntry = terrain.random()->pos();
+      borderInfo.roadExit = terrain.random()->pos();
+
+      way = tgHelper.findWay( oTilemap, borderInfo.roadEntry, borderInfo.roadExit );
+      if( way.isValid() )
+        break;
+    }
+  }
+
   if( way.isValid() )
   {
     TilesArray wayTiles = way.allTiles();
@@ -609,13 +648,13 @@ static void __createRoad(Game& game )
 
     borderInfo.roadEntry = way.startPos();
     borderInfo.roadExit = way.stopPos();
-  }
+  }  
   else
   {
     TilesArray terrain = borderTiles.terrains();
 
     borderInfo.roadEntry = terrain.random()->pos();
-    borderInfo.roadExit = terrain.random()->pos();
+    borderInfo.roadExit = terrain.random()->pos();       
   }
 
   TilesArray water = borderTiles.waters();
@@ -643,7 +682,7 @@ void __createMeadows( Game& game )
   }
 }
 
-void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrainSq)
+void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 {
   MidpointDisplacement diamond_square = MidpointDisplacement(n2size, 8, 8, smooth, terrainSq);
   std::vector<int> map = diamond_square.map();
@@ -825,3 +864,5 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __createRivers( game );
   __createRoad( game );
 }
+
+}//end namespace terrain
