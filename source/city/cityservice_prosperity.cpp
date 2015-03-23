@@ -140,7 +140,7 @@ void ProsperityRating::timeStep(const unsigned int time )
 
     _d->worklessPercent = statistic::getWorklessPercent( _city() );
     bool unemploymentLess5percent = _d->worklessPercent < prosperity::normalWorklesPercent;
-    bool unemploymentMore15percent = _d->worklessPercent > prosperity::highWorklessPercent;
+    bool unemploymentMore15percent = _d->worklessPercent > workless::high;
 
     _d->prosperityExtend += (unemploymentLess5percent ? prosperity::award : 0);
     _d->prosperityExtend += (unemploymentMore15percent ? prosperity::penalty : 0);

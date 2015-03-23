@@ -53,7 +53,7 @@ namespace advisorwnd
 {
 
 namespace {
-enum { highWorklessValue=15, muchPlebsPercent=30, peaceAverage=50, cityAmazinProsperity=90, peaceLongTime=90 };
+enum { muchPlebsPercent=30, peaceAverage=50, cityAmazinProsperity=90, peaceLongTime=90 };
 
 const char* const cultureCoverageDesc[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
 }
@@ -187,20 +187,19 @@ void Ratings::Impl::checkProsperityRating()
       return;
     }
 
-    city::InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
+    InfoPtr info = statistic::finds<Info>( city );
 
     city::Info::Parameters current = info->lastParams();
     city::Info::Parameters lastYear = info->yearParams( 0 );
 
     if( current[ city::Info::prosperity ] > lastYear[ city::Info::prosperity ] ) { troubles <<  "##your_prosperity_raising##"; }
 
-    if( prosperity->getMark( city::ProsperityRating::housesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
-    if( prosperity->getMark( city::ProsperityRating::haveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
-    if( prosperity->getMark( city::ProsperityRating::worklessPercent ) > highWorklessValue ) { troubles << "##high_workless_number##"; }
-    if( prosperity->getMark( city::ProsperityRating::workersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
-    if( prosperity->getMark( city::ProsperityRating::plebsPercent ) > muchPlebsPercent ) { troubles << "##much_plebs##"; }
-    if( prosperity->getMark( city::ProsperityRating::changeValue ) == 0 )
+    if( prosperity->getMark( ProsperityRating::housesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
+    if( prosperity->getMark( ProsperityRating::haveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
+    if( prosperity->getMark( ProsperityRating::worklessPercent ) > config::workless::high ) { troubles << "##high_workless_number##"; }
+    if( prosperity->getMark( ProsperityRating::workersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
+    if( prosperity->getMark( ProsperityRating::plebsPercent ) > muchPlebsPercent ) { troubles << "##much_plebs##"; }
+    if( prosperity->getMark( ProsperityRating::changeValue ) == 0 )
     {
       troubles << "##no_prosperity_change##";
       troubles << "##how_to_grow_prosperity##";
@@ -269,14 +268,11 @@ void Ratings::Impl::checkPeaceRating()
 void Ratings::Impl::checkFavourRating()
 {
   StringArray problems;
-  city::request::DispatcherPtr rd;
-  rd << city->findService( city::request::Dispatcher::defaultName() );
+  request::DispatcherPtr rd = statistic::finds<request::Dispatcher>( city );
+  InfoPtr info = statistic::finds<Info>( city );
 
-  city::InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
-
-  city::Info::Parameters current = info->lastParams();
-  city::Info::Parameters lastYear = info->yearParams( 0 );
+  Info::Parameters current = info->lastParams();
+  Info::Parameters lastYear = info->yearParams( 0 );
 
   PlayerPtr player = city->mayor();
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
@@ -297,11 +293,11 @@ void Ratings::Impl::checkFavourRating()
   else if( salaryKoeff > 1.5f ) { problems << "##try_reduce_your_salary##"; }
   else if( salaryKoeff > 1.f ) { problems << "##your_salary_frowned_senate##"; }
 
-  if( current[ city::Info::favour ] == lastYear[ city::Info::favour ] )   {    problems << "##your_favour_unchanged_from_last_year##";  }
-  else if( current[ city::Info::favour ] > lastYear[ city::Info::favour ] ) { problems << "##your_favour_increased_from_last_year##"; }
+  if( current[ Info::favour ] == lastYear[ Info::favour ] )   {    problems << "##your_favour_unchanged_from_last_year##";  }
+  else if( current[ Info::favour ] > lastYear[ Info::favour ] ) { problems << "##your_favour_increased_from_last_year##"; }
 
-  if( current[ city::Info::favour ] < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
-  else if( current[ city::Info::favour ] > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
+  if( current[ Info::favour ] < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current[ Info::favour ] > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
 
   if( rd.isValid() )
   {

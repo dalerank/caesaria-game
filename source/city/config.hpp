@@ -21,7 +21,7 @@
 namespace config
 {
 
-namespace ambiendsnd
+namespace ambientsnd
 {
 enum { maxDistance=3 };
 }
@@ -47,6 +47,11 @@ namespace health
 enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100 };
 }
 
+namespace workless
+{
+enum { high=15 };
+}
+
 namespace prosperity
 {
 enum { penalty=-1,
@@ -55,7 +60,6 @@ enum { penalty=-1,
        taxBrokenPenalty=3,
        normalWorklesPercent=5,
        caesarHelpCityPenalty=10,
-       highWorklessPercent=15,
        normalPlebsInCityPercent=30 };
 }
 
@@ -67,6 +71,11 @@ enum { normalInfluence=4, senateInfluence=10 };
 namespace employements
 {
 enum { hireDistance = 36 };
+}
+
+namespace migration
+{
+enum { uncomfortableWageDiff=5, normalTax=7, uncomfortableTax=10, highTax=15, insaneTax=20 };
 }
 
 }//end namespace city

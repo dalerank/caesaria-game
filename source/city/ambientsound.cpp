@@ -130,7 +130,7 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  TilePos offset( ambiendsnd::maxDistance, ambiendsnd::maxDistance );
+  TilePos offset( ambientsnd::maxDistance, ambientsnd::maxDistance );
   TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
@@ -139,7 +139,7 @@ void AmbientSound::timeStep( const unsigned int time )
   for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->pos();
-    if( abs( distance.i() ) > ambiendsnd::maxDistance || abs( distance.j() ) > ambiendsnd::maxDistance
+    if( abs( distance.i() ) > ambientsnd::maxDistance || abs( distance.j() ) > ambientsnd::maxDistance
         || !(*i).isValid() )
     {
       //ae.stop( (*i).getSound() );
@@ -167,7 +167,7 @@ void AmbientSound::timeStep( const unsigned int time )
     {
       processedSounds.insert( resourceName );
 
-      ae.play( resourceName, sound::maxLevel / (ambiendsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( resourceName, sound::maxLevel / (ambientsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }

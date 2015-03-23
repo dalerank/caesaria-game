@@ -38,9 +38,11 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
+#include "config.hpp"
 
 using namespace constants;
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
@@ -48,11 +50,7 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(Migration,migration)
 
 namespace {
-const int possibleTaxLevel = 7;
 const int maxIndesirability = 100;
-const int simpleTaxLevel = 10;
-const int strongTaxLevel = 15;
-const int insaneTaxLevel = 20;
 const int noWorklessAward = 10;
 const int shacksPenalty = 10;
 const int warBlockedMigration = 50;
@@ -150,9 +148,9 @@ void Migration::timeStep( const unsigned int time )
                           ? -noWorklessAward
                           : (curWorklessValue * (curWorklessValue < worklessCitizenAway ? 1 : 2));
 
-  int taxLevelInfluence = ( params[ Info::tax ] > possibleTaxLevel
+  int taxLevelInfluence = ( params[ Info::tax ] > migration::normalTax
                             ? params[ Info::tax ] * 2
-                            : (possibleTaxLevel-params[ Info::tax ]) );
+                            : (migration::normalTax-params[ Info::tax ]) );
 
   const int& monthWithourWar = _city()->age() > 1
                                   ? params[ Info::monthWtWar ]
@@ -282,9 +280,9 @@ std::string Migration::reason() const
 
     if( params[ Info::crimeLevel ] > 25 ) { troubles << "##migration_lack_crime##"; }
 
-    if( params[ Info::tax ] > strongTaxLevel )    { troubles << "##migration_broke_tax##";  }
-    else if( params[ Info::tax ] > simpleTaxLevel ) { troubles <<  "##migration_middle_lack_tax##"; }
-    else if( params[ Info::tax ] > possibleTaxLevel ) { troubles << "##migration_lack_tax##"; }
+    if( params[ Info::tax ] > migration::highTax )                   { troubles << "##migration_broke_tax##";  }
+    else if( params[ Info::tax ] > migration::uncomfortableTax ) { troubles <<  "##migration_middle_lack_tax##"; }
+    else if( params[ Info::tax ] > migration::normalTax )        { troubles << "##migration_lack_tax##"; }
 
     if( params[ Info::sentiment ] < 50 ) { troubles << "##poor_city_mood_lack_migration##";}
 
@@ -302,13 +300,13 @@ std::string Migration::leaveCityReason() const
   if( lastMonthMigration() < 0 )
   {
     Info::Parameters lastParams = _d->lastMonthParams( _city() );
-    if( lastParams[ Info::tax ] > insaneTaxLevel )
+    if( lastParams[ Info::tax ] > migration::insaneTax )
       return "##people_leave_city_insane_tax##";
 
-    if( lastParams[ Info::payDiff ] > 5 )
+    if( lastParams[ Info::payDiff ] > migration::uncomfortableWageDiff )
       return "##people_leave_city_low_wage##";
 
-    if( lastParams[ Info::workless ] > 15 )
+    if( lastParams[ Info::workless ] > workless::high )
       return "##migration_people_away##";
 
     return "##people_leave_city_some##";
