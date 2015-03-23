@@ -24,6 +24,7 @@
 #include "events/disaster.hpp"
 #include "events/showinfobox.hpp"
 #include "core/logger.hpp"
+#include "walker/mugger.hpp"
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "core/stacktrace.hpp"
@@ -41,11 +42,11 @@ static const int longTimeWithoutWar = 2;
 struct ThreatSeen
 {
   bool protestor;
-  bool muggler;
+  bool mugger;
   bool rioter;
   bool criminal;
 
-  inline void clear() { protestor = muggler = rioter = criminal = false; }
+  inline void clear() { protestor = mugger = rioter = criminal = false; }
 };
 
 class Peace::Impl
@@ -105,7 +106,7 @@ void Peace::timeStep(const unsigned int time )
     return;
   }
 
-  int change = (_d->threats.protestor || _d->threats.muggler) ? -minCh: 0;
+  int change = (_d->threats.protestor || _d->threats.mugger) ? -minCh: 0;
 
   if( ml->haveNotification( Notification::chastener ) )
     change -= 1;
@@ -121,7 +122,7 @@ void Peace::timeStep(const unsigned int time )
     change = _d->peaceYears > longTimeWithoutWar ? maxCh : middleCh;
   }
 
-  if( _d->threats.protestor || _d->threats.muggler || _d->threats.rioter )
+  if( _d->threats.protestor || _d->threats.mugger || _d->threats.rioter )
   {
     _d->peaceYears = 0;
   }
@@ -139,14 +140,9 @@ void Peace::timeStep(const unsigned int time )
 
 void Peace::addCriminal( WalkerPtr wlk )
 {
-  if( is_kind_of<Rioter>( wlk ) )
-  {
-    _d->threats.rioter = true;
-  }
-  /*else if( is_kind_of<Protestor>( wlk ) )
-  {
-    _d->protestorOrMugglerSeen = true;
-  }*/
+  if( is_kind_of<Rioter>( wlk ) )   {    _d->threats.rioter = true;  }
+  //else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
+  else if( is_kind_of<Mugger>( wlk ) ) { _d->threats.mugger = true; }
   else
   {
     Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
@@ -224,7 +220,7 @@ VariantMap Peace::save() const
   VARIANT_SAVE_ANY_D( ret, _d, peaceYears )
   VARIANT_SAVE_ANY_D( ret, _d, threats.criminal )
   VARIANT_SAVE_ANY_D( ret, _d, threats.protestor )
-  VARIANT_SAVE_ANY_D( ret, _d, threats.muggler )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.mugger )
   VARIANT_SAVE_ANY_D( ret, _d, threats.rioter )
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_ANY_D( ret, _d, significantBuildingsDestroyed )
@@ -237,7 +233,7 @@ void Peace::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, peaceYears, stream )
   VARIANT_LOAD_ANY_D( _d, threats.criminal, stream )
   VARIANT_LOAD_ANY_D( _d, threats.protestor, stream )
-  VARIANT_LOAD_ANY_D( _d, threats.muggler, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.mugger, stream )
   VARIANT_LOAD_ANY_D( _d, threats.rioter, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
   VARIANT_LOAD_ANY_D( _d, significantBuildingsDestroyed, stream )
