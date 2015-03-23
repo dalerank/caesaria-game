@@ -36,9 +36,9 @@ struct SoundEmitter
 {  
   Tile* tile;
   OverlayPtr overlay;
-  TilePos& camerapos;
+  TilePos& cameraPos;
 
-  SoundEmitter( Tile* t, TilePos& cam ) : camerapos( cam )
+  SoundEmitter( Tile* t, TilePos& cam ) : cameraPos( cam )
   {
     tile = t;
     overlay = t->overlay();
@@ -46,8 +46,8 @@ struct SoundEmitter
 
   bool operator < ( const SoundEmitter& a ) const
   {
-    return ( tile->pos().getDistanceFromSQ( camerapos )
-             < a.tile->pos().getDistanceFromSQ( camerapos ));
+    return ( tile->pos().getDistanceFromSQ( cameraPos )
+             < a.tile->pos().getDistanceFromSQ( cameraPos ));
   }
 
   std::string sound() const
@@ -86,14 +86,13 @@ struct SoundEmitter
   }
 };
 
+typedef std::set< SoundEmitter > Emitters;
+
 class AmbientSound::Impl
 {
 public:
   Camera* camera;
   TilePos cameraPos;
-
-  typedef std::set< SoundEmitter > Emitters;
-
   Emitters emitters;
 };
 
@@ -137,7 +136,7 @@ void AmbientSound::timeStep( const unsigned int time )
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 
   //remove so far emitters
-  for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
+  for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->pos();
     if( abs( distance.i() ) > ambiendsnd::maxDistance || abs( distance.j() ) > ambiendsnd::maxDistance
@@ -154,21 +153,21 @@ void AmbientSound::timeStep( const unsigned int time )
 
   //create emitters map
   std::set< std::string > processedSounds;
-  for( Impl::Emitters::reverse_iterator i=_d->emitters.rbegin();
+  for( Emitters::reverse_iterator i=_d->emitters.rbegin();
        i != _d->emitters.rend(); ++i )
   {
-    std::string rcName = i->sound();
+    std::string resourceName = i->sound();
 
-    if( rcName.empty() )
+    if( resourceName.empty() )
       continue;
 
-    std::set< std::string >::const_iterator tIt = processedSounds.find( rcName );
+    std::set< std::string >::const_iterator tIt = processedSounds.find( resourceName );
 
     if( tIt == processedSounds.end() )
     {
-      processedSounds.insert( rcName );
+      processedSounds.insert( resourceName );
 
-      ae.play( rcName, sound::maxLevel / (ambiendsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( resourceName, sound::maxLevel / (ambiendsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambientSound  );
     }
   }
 }

@@ -32,6 +32,7 @@
 namespace city
 {
 class VictoryConditions;
+class ActivePoints;
 namespace trade { class Options; }
 namespace development { class Options; }
 }
@@ -67,7 +68,6 @@ public:
 
   const city::SrvcList& services() const;
 
-  OverlayList& overlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -101,9 +101,12 @@ public:
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
 
-  // add construction
+  // add overlay
   void addOverlay( OverlayPtr overlay);
   OverlayPtr getOverlay( const TilePos& pos ) const;
+  OverlayList& overlays();
+
+  city::ActivePoints& activePoints();
 
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );

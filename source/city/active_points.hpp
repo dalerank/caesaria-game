@@ -15,34 +15,26 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+#ifndef __CAESARIA_SAVED_POINTS_H_INCLUDED__
+#define __CAESARIA_SAVED_POINTS_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "city/city.hpp"
+#include "core/tilepos_array.hpp"
 
-namespace gui
+namespace city
+{  
+
+class ActivePoints : TilePosArray
 {
-
-namespace dialog
-{
-
-class CityOptions : public Window
-{
+  static const int maxPoins = 10;
 public:
-  CityOptions( Widget* parent, PlayerCityPtr city );
+  ActivePoints();
 
-  virtual ~CityOptions();
+  TilePos get(unsigned int index ) const;
+  void set(unsigned int index, const TilePos& pos );
 
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  VariantList save() const;
+  void load( VariantList& stream );
 };
 
-} //end namespace dialog
-
-} //end namespace gui
-
-#endif //_CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+}//end namespace city
+#endif //__CAESARIA_SAVED_POINTS_H_INCLUDED__

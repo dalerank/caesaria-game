@@ -15,34 +15,36 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+#include "active_points.hpp"
+#include "gfx/helper.hpp"
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "city/city.hpp"
+using namespace gfx;
 
-namespace gui
+namespace city
 {
 
-namespace dialog
+ActivePoints::ActivePoints()
 {
+  resize( maxPoins );
+}
 
-class CityOptions : public Window
+TilePos ActivePoints::get( unsigned int index) const
 {
-public:
-  CityOptions( Widget* parent, PlayerCityPtr city );
+  return index < maxPoins ? (*this)[index] : tilemap::invalidLocation();
+}
 
-  virtual ~CityOptions();
+void ActivePoints::set( unsigned int index, const TilePos& pos)
+{
+  if( index < maxPoins )
+    (*this)[index] = pos;
+}
 
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
+VariantList ActivePoints::save() const {  return toVList(); }
 
-} //end namespace dialog
+void ActivePoints::load(VariantList &stream)
+{
+  fromVList( stream );
+  resize( maxPoins );
+}
 
-} //end namespace gui
-
-#endif //_CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+}//end namespace city

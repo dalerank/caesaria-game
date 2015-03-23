@@ -88,6 +88,7 @@
 #include "events/showinfobox.hpp"
 #include "gfx/helper.hpp"
 #include "game/difficulty.hpp"
+#include "active_points.hpp"
 #include "cityservice_fire.hpp"
 
 #include <set>
@@ -103,10 +104,11 @@ CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
 
+typedef std::map<PlayerCity::OptionType, int> Options;
+
 class PlayerCity::Impl
 {
 public:
-  typedef std::map<PlayerCity::OptionType, int> Options;
   int population;
   econ::Treasury treasury;  // amount of money
 
@@ -118,6 +120,7 @@ public:
   WalkerList newWalkers;
   WalkerList walkers;
 
+  city::ActivePoints activePoints;
   Picture empMapPicture;
 
   //walkers fast access map !!!
@@ -306,6 +309,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   int size = tilemap().size();
   TilePos start( 0, 0 );
   TilePos stop( size-1, size-1 );
+
   _d->borderInfo.roadEntry = info.roadEntry.fit( start, stop );
   _d->borderInfo.roadExit = info.roadExit.fit( start, stop );
   _d->borderInfo.boatEntry = info.boatEntry.fit( start, stop );
@@ -313,8 +317,8 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
 }
 
 OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
+city::ActivePoints& PlayerCity::activePoints() { return _d->activePoints; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
-
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
@@ -576,6 +580,7 @@ void PlayerCity::save( VariantMap& stream) const
 
   stream[ "services" ] = vm_services;
   VARIANT_SAVE_ANY_D( stream, _d, age )
+  stream[ "points" ] = _d->activePoints.save();
 
   Logger::warning( "City: finalize save map" );
 }
@@ -647,7 +652,7 @@ void PlayerCity::load( const VariantMap& stream )
   foreach( item, walkers )
   {
     VariantMap walkerInfo = item->second.toMap();
-    int walkerType = (int)walkerInfo.get( "type", constants::walker::unknown );
+    int walkerType = (int)walkerInfo.get( "type", walker::unknown );
 
     WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
     if( walker.isValid() )
@@ -692,6 +697,8 @@ void PlayerCity::load( const VariantMap& stream )
 
   setOption( PlayerCity::forceBuild, 0 );
   VARIANT_LOAD_ANY_D( _d, age, stream )
+  VariantList vl_points = stream.get("points").toList();
+  _d->activePoints.load( vl_points );
 
   _initAnimation();
 }
