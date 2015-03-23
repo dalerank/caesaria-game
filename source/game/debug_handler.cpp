@@ -32,6 +32,7 @@
 #include "world/barbarian.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "walker/romesoldier.hpp"
 #include "events/postpone.hpp"
 #include "layers/layer.hpp"
 #include "sound/engine.hpp"
@@ -429,7 +430,14 @@ void DebugHandler::Impl::handleEvent(int event)
 
     foreach( it, forts )
     {
-      (*it)->setTraineeValue( walker::soldier, 100 );
+      int howMuchAdd = 16 - (*it)->walkers().size();
+      TilesArray tiles = (*it)->enterArea();
+      for( int i=0; i < howMuchAdd; i++ )
+      {
+        RomeSoldierPtr soldier = RomeSoldier::create( game->city(), walker::legionary );
+        soldier->send2city( *it, tiles.front()->pos() );
+        (*it)->addWalker( soldier.object() );
+      }
     }
   }
   break;

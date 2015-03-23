@@ -346,7 +346,7 @@ TilePos Fort::freeSlot() const
     }
   }
 
-  return TilePos( -1, -1 );
+  return _d->area->pos() + TilePos( 0, 3 );;
 }
 
 void Fort::changePatrolArea()

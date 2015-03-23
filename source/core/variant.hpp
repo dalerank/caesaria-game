@@ -34,6 +34,7 @@
 class Variant;
 class VariantList;
 class VariantMap;
+class NColor;
 
 #define VARIANT_INIT_ANY( type, param, vm) type param = vm.get( #param );
 #define VARIANT_INIT_STR( param, vm) std::string param = vm.get( #param ).toString();
@@ -182,9 +183,8 @@ class Variant
     Variant( double d);
     Variant( float f);
 
-    explicit Variant( const char* string );
     Variant( const ByteArray& bytearray );
-    explicit Variant( const std::string& string);
+    Variant( const std::string& string);
     Variant( const StringArray& stringlist );
     Variant( char rchar);
     Variant( const DateTime& datetime);
@@ -196,11 +196,9 @@ class Variant
     Variant( const SizeF& size);
     Variant( const Point& pt);
     Variant( const PointF& pt);
-    //Variant( const Line& line);
-    //Variant( const LineF& line);
     Variant( const Rect& rect);
     Variant( const RectF& rect);
-    //Variant( const Color& color);
+    Variant( const NColor& color);
 
     Variant& operator=( const Variant& other);
 

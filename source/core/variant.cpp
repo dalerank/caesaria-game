@@ -1141,12 +1141,6 @@ Variant::Variant(const std::string& val)
 Variant::Variant(char val)
 { _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
 
-Variant::Variant(const char* string)
-{
-  const std::string rstring( string );
-  _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, rstring);
-}
-
 Variant::Variant(const DateTime &val)
 { _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
 
@@ -1165,14 +1159,10 @@ Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoin
 Variant::Variant(const PointF &pt) { _d.is_null = false; _d.type = Variant::NPointF; v_construct<PointF>(&_d, pt); }
 Variant::Variant(const TilePos &pt) { _d.is_null = false; _d.type = Variant::NTilePos; v_construct<TilePos>(&_d, pt); }
 Variant::Variant(const RectF &r) { _d.is_null = false; _d.type = Variant::NRectF; v_construct<RectF>(&_d, r); }
-// Variant::Variant(const core::LineF &l) { _d.is_null = false; _d.type = Variant::LineF; v_construct<core::LineF>(&_d, l); }
-// Variant::Variant(const core::Line &l) { _d.is_null = false; _d.type = Variant::Line; v_construct<core::Line>(&_d, l); }
 Variant::Variant(const Rect &r) { _d.is_null = false; _d.type = Variant::NRectI; v_construct<Rect>(&_d, r); }
 Variant::Variant(const Size &s) { _d.is_null = false; _d.type = Variant::NSize; v_construct<Size>(&_d, s); }
 Variant::Variant(const SizeF &s) { _d.is_null = false; _d.type = Variant::NSizeF; v_construct<SizeF>(&_d, s); }
-
-//Variant::Variant(const Url &u) { _d.is_null = false; _d.type = Url; v_construct<Url>(&_d, u); }
-//Variant::Variant(const Color& color) { create( Variant::Color, &color); }
+Variant::Variant(const NColor& color) {  _d.is_null = false; _d.type = Variant::Color; v_construct<NColor>(&_d, color); }
 
 Variant::Type Variant::type() const
 {
