@@ -90,6 +90,7 @@
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
 #include "cityservice_fire.hpp"
+#include "scribes.hpp"
 
 #include <set>
 
@@ -121,6 +122,7 @@ public:
   WalkerList walkers;
 
   city::ActivePoints activePoints;
+  city::Scribes scribes;
   Picture empMapPicture;
 
   //walkers fast access map !!!
@@ -318,6 +320,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
 
 OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
 city::ActivePoints& PlayerCity::activePoints() { return _d->activePoints; }
+city::Scribes &PlayerCity::scribes() { return _d->scribes; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
@@ -522,6 +525,7 @@ void PlayerCity::save( VariantMap& stream) const
 
   Logger::warning( "City: save finance information" );
   stream[ "funds" ] = _d->treasury.save();
+  stream[ "scribes" ] = _d->scribes.save();
 
   Logger::warning( "City: save trade/build/win options" );
   stream[ "tradeOptions" ] = _d->tradeOptions.save();
@@ -617,6 +621,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   Logger::warning( "City: parse funds" );
   _d->treasury.load( stream.get( "funds" ).toMap() );
+  _d->scribes.load( stream.get( "scribes" ).toMap() );
 
   Logger::warning( "City: parse trade/build/win params" );
   _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
@@ -767,7 +772,7 @@ int PlayerCity::prosperity() const
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
 {
-  Impl::Options::const_iterator it = _d->options.find( opt );
+  Options::const_iterator it = _d->options.find( opt );
   return (it != _d->options.end() ? it->second : 0 );
 }
 

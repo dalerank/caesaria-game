@@ -54,8 +54,6 @@ public:
   DateTime lastDate;
   Info::History lastYearHistory;
   Info::History allHistory;
-  Info::Messages messages;
-
   Info::MaxParameters maxParams;
 };
 
@@ -80,9 +78,10 @@ void Info::timeStep(const unsigned int time )
   if( !game::Date::isMonthChanged() )
     return;
 
-  if( game::Date::current().month() != _d->lastDate.month() )
-  {
-    bool yearChanged = game::Date::current().year() != _d->lastDate.year();
+  bool isMonthChanged = game::Date::current().month() != _d->lastDate.month();
+  if( isMonthChanged )
+  {    
+    bool isYearChanged = game::Date::current().year() != _d->lastDate.year();
     _d->lastDate = game::Date::current();
 
     _d->lastYearHistory.erase( _d->lastYearHistory.begin() );
@@ -157,7 +156,7 @@ void Info::timeStep(const unsigned int time )
       _d->maxParams[ k ].value = std::max<int>( last[ k ], _d->maxParams[ k ].value );
     }
 
-    if( yearChanged )
+    if( isYearChanged )
     {
       _d->allHistory.push_back( last );
     }
@@ -188,14 +187,9 @@ Info::Parameters Info::yearParams(unsigned int year) const
   return _d->allHistory[ year ];
 }
 
-const Info::MaxParameters &Info::maxParams() const
-{
-  return _d->maxParams;
-}
-
-const Info::History& Info ::history() const { return _d->allHistory; }
-
-std::string Info::defaultName(){  return CAESARIA_STR_EXT(Info); }
+const Info::MaxParameters& Info::maxParams() const { return _d->maxParams; }
+const Info::History& Info::history() const { return _d->allHistory; }
+std::string Info::defaultName() {  return CAESARIA_STR_EXT(Info); }
 
 VariantMap Info::save() const
 {
@@ -219,15 +213,6 @@ VariantMap Info::save() const
     allVm[ stepName ] = (*i).save();
   }
   ret[ lc_allHistory ] = allVm;
-
-  step=0;
-  VariantMap messagesVm;
-  foreach( i, _d->messages )
-  {
-    stepName = utils::format( 0xff, "%04d", step++ );
-    messagesVm[ stepName ] = (*i).save();
-  }
-  ret[ lc_messages ] = messagesVm;
 
   VariantMap maxParamVm;
   for( int k=0; k < paramsCount; k++ )
@@ -258,13 +243,6 @@ void Info::load(const VariantMap& stream)
     _d->allHistory.back().load( i->second.toList() );
   }
 
-  VariantMap messages = stream.get( lc_messages ).toMap();
-  foreach( i, messages )
-  {
-    _d->messages.push_back( ScribeMessage() );
-    _d->messages.back().load( i->second.toMap() );
-  }
-
   VariantMap maxParamVm = stream.get( lc_maxparam ).toMap();
   _d->maxParams.resize( paramsCount );
   foreach( i, maxParamVm )
@@ -277,49 +255,6 @@ void Info::load(const VariantMap& stream)
   }
 
   _d->lastYearHistory.resize( DateTime::monthsInYear );
-}
-
-const Info::Messages& Info::messages() const { return _d->messages; }
-
-const Info::ScribeMessage& Info::getMessage(int index) const
-{
-  static ScribeMessage invalidMessage;
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    return *it;
-
-  return invalidMessage;
-}
-
-void Info::changeMessage(int index, ScribeMessage& message)
-{
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    *it = message;
-}
-
-void Info::removeMessage(int index)
-{
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    _d->messages.erase( it );
-}
-
-void Info::addMessage(const Info::ScribeMessage& message)
-{
-  _d->messages.push_front( message );
-}
-
-namespace {
-CAESARIA_LITERALCONST(text)
-CAESARIA_LITERALCONST(title)
-CAESARIA_LITERALCONST(gtype)
-CAESARIA_LITERALCONST(position)
-CAESARIA_LITERALCONST(opened)
-CAESARIA_LITERALCONST(ext)
 }
 
 Info::Parameters::Parameters()
@@ -349,33 +284,6 @@ void Info::Parameters::load(const VariantList& stream)
     (*this)[ k ] = *it;
     k++;
   }
-}
-
-VariantMap Info::ScribeMessage::save() const
-{
-  VariantMap ret;
-  ret[ lc_text ] = Variant( text );
-  ret[ lc_title ] = Variant( title );
-  ret[ lc_gtype ] = Variant( good::Helper::getTypeName( gtype ) );
-  ret[ lc_position ] = position;
-  VARIANT_SAVE_ANY( ret, type )
-  VARIANT_SAVE_ANY( ret, date )
-  ret[ lc_opened ] = opened;
-  ret[ lc_ext ] = ext;
-
-  return ret;
-}
-
-void Info::ScribeMessage::load(const VariantMap& stream)
-{
-  text = stream.get( lc_text ).toString();
-  title = stream.get( lc_title ).toString();
-  gtype = good::Helper::getType( stream.get( lc_gtype ).toString() );
-  position = stream.get( lc_position ).toPoint();
-  VARIANT_LOAD_ANY( type, stream )
-  VARIANT_LOAD_TIME( date, stream )
-  opened = stream.get( lc_opened );
-  ext = stream.get( lc_ext );
 }
 
 }//end namespace city

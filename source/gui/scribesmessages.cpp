@@ -23,7 +23,7 @@
 #include "game/datetimehelper.hpp"
 #include "core/utils.hpp"
 #include "widgetescapecloser.hpp"
-#include "city/cityservice_info.hpp"
+#include "city/scribes.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
 #include "core/event.hpp"
@@ -42,6 +42,9 @@ using namespace constants;
 using namespace gfx;
 
 namespace gui
+{
+
+namespace dialog
 {
 
 namespace {
@@ -134,7 +137,7 @@ protected:
   }
 };
 
-class ScribesMessagestWindow::Impl
+class ScribesMessages::Impl
 {
 public:
   GameAutoPause locker;
@@ -145,9 +148,9 @@ public:
   TexturedButton* btnHelp;
 };
 
-ScribesMessagestWindow::~ScribesMessagestWindow() {}
+ScribesMessages::~ScribesMessages() {}
 
-ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
+ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
   : Window( p, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
   _d->city = city;
@@ -165,16 +168,16 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
 
   _fillMessages();
 
-  CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessagestWindow::_showMessage );
-  CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessagestWindow::_removeMessage );
-  CONNECT( _d->btnExit, onClicked(), this, ScribesMessagestWindow::deleteLater );
-  CONNECT( _d->btnHelp, onClicked(), this, ScribesMessagestWindow::_showHelp );
+  CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessages::_showMessage );
+  CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessages::_removeMessage );
+  CONNECT( _d->btnExit, onClicked(), this, ScribesMessages::deleteLater );
+  CONNECT( _d->btnHelp, onClicked(), this, ScribesMessages::_showHelp );
 
   if( _d->lbxMessages ) _d->lbxMessages->setFocus();
   setModal();
 }
 
-void ScribesMessagestWindow::draw(gfx::Engine& painter )
+void ScribesMessages::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -182,29 +185,23 @@ void ScribesMessagestWindow::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-void ScribesMessagestWindow::_fillMessages()
+void ScribesMessages::_fillMessages()
 {
   _d->lbxMessages->clear();
 
-  city::InfoPtr srvc;
-  srvc << _d->city->findService( city::Info::defaultName() );
-
   bool haveMessages = false;
-  if( srvc.isValid() )
+  const city::Scribes::Messages& messages = _d->city->scribes().messages();
+  haveMessages = !messages.empty();
+  foreach( it, messages )
   {
-    const city::Info::Messages& messages = srvc->messages();
-    haveMessages = !messages.empty();
-    foreach( it, messages )
-    {
-      const city::Info::ScribeMessage& mt = *it;
-      ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
-      VariantMap options;
-      options[ lc_opened ] = mt.opened;
-      options[ lc_date   ] = mt.date;
-      options[ lc_ext    ] = mt.ext;
+    const city::Scribes::Message& mt = *it;
+    ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
+    VariantMap options;
+    options[ lc_opened ] = mt.opened;
+    options[ lc_date   ] = mt.date;
+    options[ lc_ext    ] = mt.ext;
 
-      item.setData( options );      
-    }
+    item.setData( options );
   }
 
   if( _d->lbInfo && !haveMessages )
@@ -222,39 +219,28 @@ void ScribesMessagestWindow::_fillMessages()
   }
 }
 
-void ScribesMessagestWindow::_showHelp()
+void ScribesMessages::_showHelp()
 {
   DictionaryWindow::show( this, "scribes_messages" );
 }
 
-void ScribesMessagestWindow::_showMessage(int index)
+void ScribesMessages::_showMessage(int index)
 {
-  city::InfoPtr srvc;
-  srvc << _d->city->findService( city::Info::defaultName() );
-
-  if( srvc.isValid() )
-  {
-    city::Info::ScribeMessage mt = srvc->getMessage( index );
-    mt.opened = true;
-    srvc->changeMessage( index, mt );
-    Widget* mbox = new infobox::AboutEvent( parent(), mt.title, mt.text, mt.date, mt.gtype );
-    mbox->show();
-  }
+  city::Scribes::Message mt = _d->city->scribes().getMessage( index );
+  _d->city->scribes().readMessage( index );
+  Widget* mbox = new infobox::AboutEvent( parent(), mt.title, mt.text, mt.date, mt.gtype );
+  mbox->show();
 
   _fillMessages();
 }
 
-void ScribesMessagestWindow::_removeMessage(int index)
+void ScribesMessages::_removeMessage(int index)
 {
-  city::InfoPtr srvc;
-  srvc << _d->city->findService( city::Info::defaultName() );
-
-  if( srvc.isValid() )
-  {
-    srvc->removeMessage( index );
-  }
+  _d->city->scribes().removeMessage( index );
 
   _fillMessages();
 }
+
+}//end namespace dialog
 
 }//end namespace gui

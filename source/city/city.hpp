@@ -32,6 +32,7 @@
 namespace city
 {
 class VictoryConditions;
+class Scribes;
 class ActivePoints;
 namespace trade { class Options; }
 namespace development { class Options; }
@@ -107,6 +108,7 @@ public:
   OverlayList& overlays();
 
   city::ActivePoints& activePoints();
+  city::Scribes& scribes();
 
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );

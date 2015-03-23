@@ -59,26 +59,10 @@ public:
   {
     DateTime date;
     int value;
-  };
+  };  
 
-  struct ScribeMessage
-  {
-    std::string text;
-    std::string title;
-    good::Product gtype;
-    Point position;
-    int type;
-    DateTime date;
-    bool opened;
-    Variant ext;
-
-    VariantMap save() const;
-    void load( const VariantMap& stream );
-  };
-
-  typedef std::list<ScribeMessage> Messages;
-  typedef std::vector< Info::Parameters > History;
-  typedef std::vector< Info::MaxParameterValue > MaxParameters;
+  typedef std::vector< Parameters > History;
+  typedef std::vector< MaxParameterValue > MaxParameters;
 
   static SrvcPtr create( PlayerCityPtr city );
 
@@ -94,12 +78,6 @@ public:
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
-
-  const Messages& messages() const;
-  const ScribeMessage& getMessage( int index ) const;
-  void changeMessage( int index, ScribeMessage& message );
-  void removeMessage( int index );
-  void addMessage( const ScribeMessage& message );
 
 private:
   Info(PlayerCityPtr city);

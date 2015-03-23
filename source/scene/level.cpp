@@ -345,12 +345,12 @@ void Level::Impl::showTileHelp()
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  unsigned int id = Hash( CAESARIA_STR_A(dialog::ScribesMessages) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
   {
-    wnd = new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+    wnd = new dialog::ScribesMessages( game->gui()->rootWidget(), game->city() );
   }
   else
   {
