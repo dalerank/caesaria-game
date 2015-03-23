@@ -112,7 +112,7 @@ void TilemapCamera::setViewport(Size newSize)
   Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
 }
 
-void TilemapCamera::setCenter(TilePos pos)
+void TilemapCamera::setCenter(TilePos pos, bool checkCorner)
 {
   Tile tt( pos );
   Tile lctile( _d->tmap->p2tp( Point( _d->screeSize.width() / 2, _d->screeSize.height() / 2 )) );
@@ -121,7 +121,7 @@ void TilemapCamera::setCenter(TilePos pos)
     pos = lctile.pos();
   }
 
-  _setCenter( Point( pos.i() + pos.j(), _d->tmap->size() - 1 + pos.j() - pos.i() ), false );
+  _setCenter( Point( pos.i() + pos.j(), _d->tmap->size() - 1 + pos.j() - pos.i() ), checkCorner );
 
   emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
@@ -167,8 +167,7 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
     Point tile0x = _d->tmap->at( 0, mapsize-1 ).mappos();
     Point tilex0 = _d->tmap->at( mapsize-1, 0 ).mappos();
     Point tilexx = _d->tmap->at( mapsize-1, mapsize-1 ).mappos();
-    //if( checkBorder )
-    //MovableOrders mo = _d->mayMove( _d->)
+    if( checkBorder )
     {
       if( futureOffset.x() + tile00.x() > 0
         || (futureOffset.y() + tile0x.y() > 0)

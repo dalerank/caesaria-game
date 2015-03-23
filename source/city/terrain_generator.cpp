@@ -422,6 +422,7 @@ static void __finalizeMap(Game& game, int pass )
 class TerrainGeneratorHelper
 {
 public:
+  int mapSize;
   void canBuildRoad( const Tile* tile, bool& ret )
   {
     ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
@@ -436,9 +437,17 @@ public:
   {
     ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
 
-    if( !ret )
+    if( tile->getFlag( Tile::tlWater ) )
     {
-      if( tile->getFlag( Tile::tlRock ) && tile->i() < 10 && tile->j() < 10 )
+      ret = false;
+      return;
+    }
+
+    if( !ret )
+    {        
+      const int border = 10;
+      if( tile->getFlag( Tile::tlRock )
+          && (tile->i() < border || tile->j() < border || (mapSize - tile->i() < border) || (mapSize - tile->j() < border)) )
       {
         ret = true;
       }
@@ -447,6 +456,7 @@ public:
 
   Pathway findWay( Tilemap& oTilemap, TilePos startPos, TilePos endPos )
   {
+    mapSize = oTilemap.size();
     Pathfinder& pathfinder = Pathfinder::instance();
     pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::needBuildRoad ) );
 
@@ -593,7 +603,7 @@ static void __createRoad(Game& game )
   TerrainGeneratorHelper tgHelper;
 
   Pathway way;
- /* for( int side=0; side < 2; side++ )
+  for( int side=0; side < 2; side++ )
   {
     way = tgHelper.findWay( oTilemap, side, side + 2 );
 
@@ -609,23 +619,36 @@ static void __createRoad(Game& game )
 
     if( way.isValid() )
       break;
-  }*/
+  }
 
   BorderInfo borderInfo = oCity->borderInfo();
   TilesArray borderTiles = oTilemap.border();
 
-  if( way.isValid() )
+  if( !way.isValid() )
   {
-    TilesArray terrain = borderTiles.terrains();
+    TilesArray eterrain = borderTiles.terrains();
+    TilesArray sterrain;
+    for( int k=eterrain.size()/2; k < eterrain.size(); k++ )
+      sterrain.push_back( eterrain[ k ] );
+
+    eterrain.resize( eterrain.size() / 2 );
 
     for( int tryCount=0; tryCount < 10; tryCount++ )
     {
-      borderInfo.roadEntry = terrain.random()->pos();
-      borderInfo.roadExit = terrain.random()->pos();
+      borderInfo.roadEntry = sterrain.random()->pos();
+      borderInfo.roadExit = eterrain.random()->pos();
 
       way = tgHelper.findWay( oTilemap, borderInfo.roadEntry, borderInfo.roadExit );
       if( way.isValid() )
         break;
+
+      TilesArray around = oTilemap.getArea( 3, borderInfo.roadEntry );
+      foreach( it, around )
+        sterrain.remove( (*it)->pos() );
+
+      around = oTilemap.getArea( 3, borderInfo.roadExit );
+      foreach( it, around )
+        eterrain.remove( (*it)->pos() );
     }
   }
 
