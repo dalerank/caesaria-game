@@ -25,26 +25,26 @@ namespace city
 
 ActivePoints::ActivePoints()
 {
-  resize( maxPoins );
+  resize( maxPoints );
 }
 
 TilePos ActivePoints::get( unsigned int index) const
 {
-  return index < maxPoins ? (*this)[index] : tilemap::invalidLocation();
+  return index < maxPoints ? (*this)[index] : tilemap::invalidLocation();
 }
 
 void ActivePoints::set( unsigned int index, const TilePos& pos)
 {
-  if( index < maxPoins )
+  if( index < maxPoints )
     (*this)[index] = pos;
 }
 
 VariantList ActivePoints::save() const {  return toVList(); }
 
-void ActivePoints::load(VariantList &stream)
+void ActivePoints::load( const VariantList &stream)
 {
   fromVList( stream );
-  resize( maxPoins );
+  resize( maxPoints );
 }
 
 }//end namespace city

@@ -66,7 +66,7 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   }
 
   // compute the quantity of each goodType in the warehouse, taking in account all reservations
-  StockMap maxStore;
+  good::ProductMap maxStore;
 
   // init the map
   foreach( i, good::all() )
@@ -241,7 +241,7 @@ VariantMap WarehouseStore::save() const
   VariantList vl;
   foreach( k, good::all() )
   {
-    StockMap::const_iterator it = _capacities.find( *k );
+    good::ProductMap::const_iterator it = _capacities.find( *k );
     vl << (it != _capacities.end() ? it->second : 0);
   }
   ret[ "capacities" ] = vl;
@@ -267,6 +267,18 @@ void WarehouseStore::load(const VariantMap &stream)
 int WarehouseStore::capacity() const
 {
   return Warehouse::Room::basicCapacity * _warehouse->rooms().size();
+}
+
+good::ProductMap WarehouseStore::details() const
+{
+  good::ProductMap ret;
+
+  foreach( room, _warehouse->rooms() )
+  {
+    ret[ room->type() ] += room->qty();
+  }
+
+  return ret;
 }
 
 void WarehouseStore::setCapacity(const int) {}

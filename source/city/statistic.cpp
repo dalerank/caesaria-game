@@ -66,8 +66,7 @@ WorkersInfo getWorkersNumber(PlayerCityPtr city )
 {
   WorkersInfo ret;
 
-  WorkingBuildingList buildings;
-  buildings << city->overlays();
+  WorkingBuildingList buildings = findo<WorkingBuilding>( city );
 
   ret.current = 0;
   ret.need = 0;
@@ -141,7 +140,7 @@ bool canProduce(PlayerCityPtr city, good::Product type)
 
 CitizenGroup getPopulation(PlayerCityPtr city)
 {
-  HouseList houses = city::statistic::findh( city );
+  HouseList houses = findh( city );
 
   CitizenGroup ret;
   foreach( it, houses ) { ret += (*it)->habitants(); }
@@ -161,9 +160,7 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
 
   int workersNumber = 0;
   foreach( h, houses )
-  {
     workersNumber += (*h)->habitants().mature_n();
-  }
 
   return workersNumber;
 }
@@ -204,9 +201,7 @@ unsigned int getWorklessPercent(PlayerCityPtr city)
 
 unsigned int getCrimeLevel( PlayerCityPtr city )
 {
-  DisorderPtr ds;
-  ds << city->findService( Disorder::defaultName() );
-
+  DisorderPtr ds = finds<Disorder>( city );
   return ds.isValid() ? ds->value() : 0;
 }
 
@@ -238,7 +233,8 @@ unsigned int getFoodMonthlyConsumption(PlayerCityPtr city)
   int foodComsumption = 0;
   HouseList houses = findh( city );
 
-  foreach( h, houses ) { foodComsumption += (*h)->spec().computeMonthlyFoodConsumption( *h ); }
+  foreach( h, houses )
+    foodComsumption += (*h)->spec().computeMonthlyFoodConsumption( *h );
 
   return foodComsumption;
 }
@@ -248,7 +244,8 @@ unsigned int getFoodProducing(PlayerCityPtr city)
   int foodProducing = 0;
   FarmList farms = findo<Farm>( city, object::group::food );
 
-  foreach( f, farms ) { foodProducing += (*f)->produceQty(); }
+  foreach( f, farms )
+    foodProducing += (*f)->produceQty();
 
   return foodProducing;
 }
@@ -259,6 +256,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
 
   float taxValue = 0.f;
   float taxRate = city->treasury().taxRate();
+
   foreach( house, houses )
   {
     int maxhb = (*house)->maxHabitants();
@@ -294,15 +292,13 @@ unsigned int getTaxPayersPercent(PlayerCityPtr city)
 
 unsigned int getHealth(PlayerCityPtr city)
 {
-  HealthCarePtr hc;
-  hc << city->findService( HealthCare::defaultName() );
+  HealthCarePtr hc = finds<HealthCare>( city );
   return hc.isValid() ? hc->value() : 0;
 }
 
 int months2lastAttack(PlayerCityPtr city)
 {
-  MilitaryPtr ml;
-  ml << city->findService( Military::defaultName() );
+  MilitaryPtr ml = finds<Military>( city );
   return ml.isValid() ? ml->monthFromLastAttack() : 0;
 }
 
@@ -342,32 +338,26 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& check
   return ret;
 }
 
-GoodsMap getGoodsMap(PlayerCityPtr city, bool includeGranary)
+good::ProductMap getProductMap(PlayerCityPtr city, bool includeGranary)
 {
-  GoodsMap cityGoodsAvailable;
+  good::ProductMap cityGoodsAvailable;
 
-  WarehouseList warehouses;
-  warehouses << city->overlays();
+  WarehouseList warehouses = findo<Warehouse>( city, object::any );
 
   foreach( wh, warehouses )
   {
-    foreach( goodType, good::all() )
-    {
-      cityGoodsAvailable[ *goodType ] += (*wh)->store().qty( *goodType );
-    }
+    good::ProductMap whStore = (*wh)->store().details();
+    cityGoodsAvailable += whStore;
   }
 
   if( includeGranary )
   {
-    GranaryList granaries;
-    granaries << city->overlays();
+    GranaryList granaries = findo<Granary>( city, object::any );
 
     foreach( gg, granaries )
     {
-      for( good::Product goodType=good::wheat; goodType <= good::vegetable; ++goodType )
-      {
-        cityGoodsAvailable[ goodType ] += (*gg)->store().qty( goodType );
-      }
+      good::ProductMap grStore = (*gg)->store().details();
+      cityGoodsAvailable += grStore;
     }
   }
 

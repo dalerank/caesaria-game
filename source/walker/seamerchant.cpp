@@ -165,7 +165,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() && emptyDock )
     {
       trade::Options& options = city->tradeOptions();
-      statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
+      good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
       //request goods
       foreach( goodType, good::all() )
       {

@@ -24,21 +24,19 @@
 #include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
+#include "city/statistic.hpp"
 #include "core/priorities.hpp"
 
 using namespace constants;
+using namespace city;
 
 namespace events
 {
 
-namespace {
-CAESARIA_LITERALCONST(population)
-}
-
 class UpdateHouseService::Impl
 {
 public:
-  int minPopulation, maxPopulation;
+  Ranged::Range popRange;
 
   bool isDeleted;
   Service::Type type;
@@ -60,18 +58,15 @@ GameEventPtr UpdateHouseService::create( Service::Type type, int value )
 void UpdateHouseService::_exec( Game& game, unsigned int time )
 {
   int population = game.city()->population();
-  if( population > _d->minPopulation && population < _d->maxPopulation )
+  if( _d->popRange.contain( population ) )
   {
     Logger::warning( "Execute update house service event" + ServiceHelper::getName( _d->type ) );
     _d->isDeleted = true;
 
-    HouseList houses;
-    houses << game.city()->overlays();
+    HouseList houses = statistic::findh( game.city() );
 
     foreach( it, houses  )
-    {
       (*it)->appendServiceValue( _d->type, _d->value );
-    }
   }
 }
 
@@ -80,9 +75,7 @@ bool UpdateHouseService::isDeleted() const {  return _d->isDeleted; }
 
 void UpdateHouseService::load(const VariantMap& stream)
 {
-  VariantList vl = stream.get( lc_population ).toList();
-  _d->minPopulation = vl.get( 0, 0 ).toInt();
-  _d->maxPopulation = vl.get( 1, 999999 ).toInt();
+  _d->popRange.load( stream.get( literals::population ).toList() );
   VARIANT_LOAD_ENUM_D( _d, type, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
 }
@@ -90,10 +83,8 @@ void UpdateHouseService::load(const VariantMap& stream)
 VariantMap UpdateHouseService::save() const
 {
   VariantMap ret;
-  VariantList vl_pop;
-  vl_pop << _d->minPopulation << _d->maxPopulation;
 
-  ret[ lc_population ] = vl_pop;
+  ret[ literals::population ] = _d->popRange.save();
   VARIANT_SAVE_ENUM_D( ret, _d, type )
   VARIANT_SAVE_ANY_D( ret, _d, value )
 
@@ -103,7 +94,7 @@ VariantMap UpdateHouseService::save() const
 UpdateHouseService::UpdateHouseService() : _d( new Impl )
 {
   _d->isDeleted = false;
-  _d->maxPopulation = _d->minPopulation = 0;
+  _d->popRange.max = _d->popRange.min = 0;
 }
 
 }//end namespace events

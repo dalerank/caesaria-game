@@ -36,7 +36,6 @@ namespace city
 
 namespace statistic
 {
-typedef std::map< good::Product, int > GoodsMap;
 
 struct WorkersInfo
 {
@@ -66,7 +65,7 @@ unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::Type checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
-GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
+good::ProductMap getProductMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
 int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );

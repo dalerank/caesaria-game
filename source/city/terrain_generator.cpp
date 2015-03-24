@@ -888,4 +888,16 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
   __createRoad( game );
 }
 
+void Generator::create(Game &game, const Generator::Params &params)
+{
+  create( game, params.n2size, params.smooth, params.terrainSq );
+}
+
+void Generator::Params::load(const VariantMap& vm)
+{
+  n2size = vm.get( "size", 5 );
+  smooth = vm.get( "smooth", 2.6 );
+  terrainSq = vm.get( "terrain", 4 );
+}
+
 }//end namespace terrain

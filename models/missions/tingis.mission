@@ -21,12 +21,12 @@
     favour : 80
     finishDate : "-1.01.01"
     next : ":/missions/mission8.briefing"
-    title : "##win_procurator_aedile##"
+    title : "##praetor##"
     win.text : "##tingis_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##tingis_7_title##"
-    overview :  [ "##tingis_7_overview##" ]
+    caption : "##tingis_title##"
+    overview :  [ "##tingis_overview##" ]
   }
 	
   empire : {

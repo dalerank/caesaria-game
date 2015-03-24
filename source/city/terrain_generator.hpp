@@ -20,6 +20,7 @@
 
 #include <vector>
 #include "vfs/path.hpp"
+#include "core/variant_map.hpp"
 #include "terrain_generator_random.hpp"
 
 class Game;
@@ -61,9 +62,19 @@ private:
 class Generator
 {
 public:
+  struct Params
+  {
+    int n2size;
+    int smooth;
+    int terrainSq;
+
+    void load( const VariantMap& vm );
+  };
+
   void setSaveFile( vfs::Path filename );  
   void create( Game& game, vfs::Path filename );
   void create( Game& game, int n2size, float smooth, float terrainSq );
+  void create( Game& game, const Params& params );
 };
 
 }//end namespace terrain

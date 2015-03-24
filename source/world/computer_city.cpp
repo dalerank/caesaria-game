@@ -30,6 +30,7 @@
 #include "world/barbarian.hpp"
 #include "core/metric.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
 
 using namespace gfx;
 using namespace metric;
@@ -49,7 +50,7 @@ public:
   int population;
   world::Nation nation;
   int strength;
-  unsigned int age;
+  city::States states;
   unsigned int tradeDelay;
   good::Storage sellStore;
   good::Storage buyStore;
@@ -74,7 +75,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
-  _d->age = 0;
+  _d->states.age = 0;
   _d->romecity = false;
 
   _initTextures();
@@ -140,7 +141,7 @@ void ComputerCity::save( VariantMap& options ) const
 
   VARIANT_SAVE_ANY_D( options, _d, lastTimeMerchantSend )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeUpdate )
-  VARIANT_SAVE_ANY_D( options, _d, age )
+  VARIANT_SAVE_ANY_D( options, _d, states.age )
   VARIANT_SAVE_ANY_D( options, _d, available )
   VARIANT_SAVE_ANY_D( options, _d, merchantsNumber )
   VARIANT_SAVE_ANY_D( options, _d, distantCity )
@@ -161,7 +162,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D( _d, merchantsNumber, options )
   VARIANT_LOAD_ANY_D( _d, distantCity, options )
   VARIANT_LOAD_ANY_D( _d, available, options )
-  VARIANT_LOAD_ANY_D( _d, age, options )
+  VARIANT_LOAD_ANY_D( _d, states.age, options )
   VARIANT_LOAD_ANY_D( _d, tradeDelay, options )
   VARIANT_LOAD_TIME_D(_d, lastAttack, options )
   VARIANT_LOAD_ANY_D( _d, strength, options )
@@ -205,7 +206,7 @@ void ComputerCity::load( const VariantMap& options )
 const good::Store& ComputerCity::importingGoods() const { return _d->buyStore; }
 const good::Store& ComputerCity::exportingGoods() const{ return _d->realSells; }
 Nation ComputerCity::nation() const { return _d->nation; }
-unsigned int ComputerCity::age() const { return _d->age; }
+const city::States& ComputerCity::states() const { return _d->states; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
 
 void ComputerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
@@ -295,7 +296,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( game::Date::isYearChanged() )
   {
-    _d->age++;
+    _d->states.age++;
 
     //debug muleta
     if( _d->funds.money() < 1000 )

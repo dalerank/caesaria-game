@@ -27,6 +27,7 @@
 #include "game/predefinitions.hpp"
 
 namespace econ { class Treasury; }
+namespace city { struct States; }
 
 namespace world
 {
@@ -50,12 +51,12 @@ public:
   virtual DateTime lastAttack() const = 0;
   virtual int strength() const = 0;
   virtual PlayerPtr mayor() const = 0;
-  virtual unsigned int age() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost ) = 0;
   virtual const good::Store& importingGoods() const = 0;
   virtual const good::Store& exportingGoods() const = 0;
+  virtual const city::States& states() const = 0;
 };
 
 }//end namespace world

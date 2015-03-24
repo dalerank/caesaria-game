@@ -111,14 +111,14 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
     if( gtype != good::none )
     {
       VariantMap cartInfo = it->second.toMap();      
-      Variant smallInfo = cartInfo.get( lc_small );
-      if( smallInfo.isValid() ) loadStage( gtype, it->first + lc_small, smallInfo.toMap(), stgCarts );
+      Variant smallInfo = cartInfo.get( literals::small );
+      if( smallInfo.isValid() ) loadStage( gtype, it->first + literals::small, smallInfo.toMap(), stgCarts );
 
-      Variant bigInfo = cartInfo.get( lc_big );
-      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it->first + lc_big, bigInfo.toMap(), stgCarts );
+      Variant bigInfo = cartInfo.get( literals::big );
+      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it->first + literals::big, bigInfo.toMap(), stgCarts );
 
-      Variant megaInfo = cartInfo.get( lc_mega );
-      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it->first + lc_mega, megaInfo.toMap(), stgCarts );
+      Variant megaInfo = cartInfo.get( literals::mega );
+      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it->first + literals::mega, megaInfo.toMap(), stgCarts );
     }
   }
 

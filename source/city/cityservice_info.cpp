@@ -57,6 +57,58 @@ public:
   Info::MaxParameters maxParams;
 };
 
+VariantMap Info::History::save() const
+{
+  VariantMap currentVm;
+
+  int step=0;
+  std::string stepName;
+  foreach( i, *this )
+  {
+    stepName = utils::format( 0xff, "%04d", step++ );
+    currentVm[ stepName ] = i->save();
+  }
+
+  return currentVm;
+}
+
+void Info::History::load(const VariantMap &vm)
+{
+  foreach( i, vm )
+  {
+    push_back( Parameters() );
+    back().load( i->second.toList() );
+  }
+}
+
+VariantMap Info::MaxParameters::save() const
+{
+  VariantMap maxParamVm;
+  for( int k=0; k < paramsCount; k++ )
+  {
+    VariantList paramVm;
+    paramVm << (*this)[ k ].date;
+    paramVm << (*this)[ k ].value;
+
+    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
+  }
+
+  return maxParamVm;
+}
+
+void Info::MaxParameters::load(const VariantMap &vm)
+{
+  resize( paramsCount );
+  foreach( i, vm )
+  {
+    int index = utils::toInt( i->first );
+    DateTime date = i->second.toList().get( 0 ).toDateTime();
+    int value = i->second.toList().get( 1 ).toInt();
+    (*this)[ index ].date = date;
+    (*this)[ index ].value = value;
+  }
+}
+
 SrvcPtr Info::create( PlayerCityPtr city )
 {
   SrvcPtr ret( new Info( city ) );
@@ -195,64 +247,18 @@ VariantMap Info::save() const
 {
   VariantMap ret;
 
-  int step=0;
-  std::string stepName;
-  VariantMap currentVm;
-  foreach( i, _d->lastYearHistory )
-  {
-    stepName = utils::format( 0xff, "%02d", step++ );
-    currentVm[ stepName ] = (*i).save();
-  }
-  ret[ lc_lastHistory ] = currentVm;
-
-  step=0;
-  VariantMap allVm;
-  foreach( i, _d->allHistory )
-  {
-    stepName = utils::format( 0xff, "%04d", step++ );
-    allVm[ stepName ] = (*i).save();
-  }
-  ret[ lc_allHistory ] = allVm;
-
-  VariantMap maxParamVm;
-  for( int k=0; k < paramsCount; k++ )
-  {
-    VariantList paramVm;
-    paramVm << _d->maxParams[ k ].date;
-    paramVm << _d->maxParams[ k ].value;
-    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
-  }
-  ret[ lc_maxparam ] = maxParamVm;
+  ret[ literals::lastHistory ] = _d->lastYearHistory.save();
+  ret[ literals::allHistory ] = _d->allHistory.save();
+  ret[ literals::maxparam ] = _d->maxParams.save();
 
   return ret;
 }
 
 void Info::load(const VariantMap& stream)
 {
-  VariantMap currentHistory = stream.get( lc_lastHistory ).toMap();
-  foreach( i, currentHistory )
-  {
-    _d->lastYearHistory.push_back( Parameters() );
-    _d->lastYearHistory.back().load( i->second.toList() );
-  }
-
-  VariantMap allHistory = stream.get( lc_allHistory ).toMap();
-  foreach( i, allHistory )
-  {
-    _d->allHistory.push_back( Parameters() );
-    _d->allHistory.back().load( i->second.toList() );
-  }
-
-  VariantMap maxParamVm = stream.get( lc_maxparam ).toMap();
-  _d->maxParams.resize( paramsCount );
-  foreach( i, maxParamVm )
-  {
-    int index = utils::toInt( i->first );
-    DateTime date = i->second.toList().get( 0 ).toDateTime();
-    int value = i->second.toList().get( 1 ).toInt();
-    _d->maxParams[ index ].date = date;
-    _d->maxParams[ index ].value = value;
-  }
+  _d->lastYearHistory.load( stream.get( literals::lastHistory ).toMap());
+  _d->allHistory.load( stream.get( literals::allHistory ).toMap() );
+  _d->maxParams.load( stream.get( literals::maxparam ).toMap() );
 
   _d->lastYearHistory.resize( DateTime::monthsInYear );
 }

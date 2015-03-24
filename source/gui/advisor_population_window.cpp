@@ -268,7 +268,7 @@ void Population::Impl::updateStates()
 
   if( lbFoodValue )
   {
-    statistic::GoodsMap goods = statistic::getGoodsMap( city, true );
+    good::ProductMap goods = statistic::getProductMap( city, true );
     int foodLevel = 0;
 
     foreach( k, good::foods() )

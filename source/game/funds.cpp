@@ -186,7 +186,7 @@ VariantMap Treasury::save() const
     history.push_back( stepHistory );
   }
 
-  ret[ lc_history ] = history;
+  ret[ literals::history ] = history;
 
   return ret;
 }
@@ -198,7 +198,7 @@ void Treasury::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, workerSalary, defaultSalary, stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
 
-  VariantList history = stream.get( lc_history ).toList();
+  VariantList history = stream.get( literals::history ).toList();
   _d->history.clear();
   foreach( it, history )
   {

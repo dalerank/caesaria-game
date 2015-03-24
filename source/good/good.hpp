@@ -21,6 +21,7 @@
 
 #include "core/namedtype.hpp"
 #include <list>
+#include <map>
 
 namespace good
 {
@@ -49,6 +50,7 @@ REGISTER_PRODUCT(denaries,17 )
 REGISTER_PRODUCT(prettyWine,18 )
 
 typedef std::list<Product> Products;
+typedef std::map<Product,int> ProductMap;
 
 const Product& any();
 const Products& foods();

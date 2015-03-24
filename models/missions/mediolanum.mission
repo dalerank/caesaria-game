@@ -21,7 +21,7 @@
     favour : 30
     finishDate : "-100.01.01"
     next : ":/missions/mission6.briefing"
-    title : "##win_procurator_title##"
+    title : "##procurator##"
     win.text : "##mediolanum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"

@@ -37,7 +37,7 @@ public:
   virtual std::string name() const;
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
-  virtual unsigned int age() const;
+  virtual const city::States& states() const;
   virtual void timeStep(const unsigned int time);
   virtual SmartPtr<Player> mayor() const;
   virtual bool haveOverduePayment() const;

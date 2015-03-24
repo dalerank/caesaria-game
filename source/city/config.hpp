@@ -18,12 +18,14 @@
 #ifndef __CAESARIA_CITY_CONFIG_H_INCLUDED__
 #define __CAESARIA_CITY_CONFIG_H_INCLUDED__
 
+#include "predefinitions.hpp"
+
 namespace config
 {
 
 namespace ambientsnd
 {
-enum { maxDistance=3 };
+enum { maxDistance=3, updateInterval=20 };
 }
 
 namespace animals
@@ -70,13 +72,24 @@ enum { normalInfluence=4, senateInfluence=10 };
 
 namespace employements
 {
-enum { hireDistance = 36 };
+enum { needMoreWorkers=20, hireDistance = 36 };
 }
 
 namespace migration
 {
 enum { uncomfortableWageDiff=5, normalTax=7, uncomfortableTax=10, highTax=15, insaneTax=20 };
 }
+
+namespace sentiment
+{
+enum { veryAngry=5, angry=10, veryUpset=15, upset=22,
+       annoyed=30, indifferent=40, nonPleased=50,
+       pleased=60, veryPleased=70, extrimelyPleased=80,
+       loveYou=90, idolizeyou=95 };
+}
+
+CAESARIA_LITERALCONST(adviserEnabled)
+CAESARIA_LITERALCONST(fishPlaceEnabled)
 
 }//end namespace city
 

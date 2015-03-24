@@ -25,6 +25,7 @@
 #include "goodcaravan.hpp"
 #include "core/gettext.hpp"
 #include "game/player.hpp"
+#include "city/states.hpp"
 
 namespace world {
 
@@ -42,6 +43,7 @@ public:
   econ::Treasury funds;
   good::Storage gstore;
   DateTime lastAttack;
+  city::States states;
   int strength;
 };
 
@@ -54,6 +56,7 @@ Rome::Rome(EmpirePtr empire)
 
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;
+  _d->states.age = 500;
 }
 
 unsigned int Rome::tradeType() const { return 0; }
@@ -62,7 +65,7 @@ econ::Treasury& Rome::treasury() { return _d->funds; }
 std::string Rome::name() const { return Rome::defaultName; }
 unsigned int Rome::population() const { return defaultPopulation; }
 bool Rome::isPaysTaxes() const { return true; }
-unsigned int Rome::age() const { return 500; }
+const city::States& Rome::states() const { return _d->states; }
 
 void Rome::timeStep(const unsigned int time)
 {

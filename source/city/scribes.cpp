@@ -60,42 +60,24 @@ const Scribes::Messages& Scribes::messages() const { return _d->messages; }
 VariantMap Scribes::save() const
 {
   VariantMap ret;
-
-  int step=0;
-  std::string stepName;
-  foreach( i, _d->messages )
-  {
-    stepName = utils::format( 0xff, "%04d", step++ );
-    ret[ stepName ] = (*i).save();
-  }
-
+  ret[ "messages" ] = _d->messages.save();
   return ret;
 }
 
 void Scribes::load(const VariantMap& stream)
 {
-  foreach( i, stream )
-  {
-    _d->messages.push_back( Message() );
-    _d->messages.back().load( i->second.toMap() );
-  }
+  _d->messages.load( stream.get( "messages" ).toMap() );
 }
 
-const Scribes::Message& Scribes::getMessage(int index) const
+const Scribes::Message& Scribes::getMessage(unsigned int index) const
 {
-  static Message invalidMessage;
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    return *it;
-
-  return invalidMessage;
+  return _d->messages.at( index );
 }
 
-const Scribes::Message& Scribes::readMessage(int index)
+const Scribes::Message& Scribes::readMessage(unsigned int index)
 {
-  const Message& m = getMessage( index );
-  const_cast<Message&>( m ).opened = true;
+  Message& m = _d->messages.at( index );
+  m.opened = true;
   return m;
 }
 
@@ -121,7 +103,6 @@ void Scribes::addMessage(const Message& message)
 }
 
 namespace {
-CAESARIA_LITERALCONST(title)
 CAESARIA_LITERALCONST(gtype)
 CAESARIA_LITERALCONST(ext)
 }
@@ -130,13 +111,13 @@ VariantMap Scribes::Message::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY( ret, text )
-  ret[ lc_title ] = Variant( title );
-  ret[ lc_gtype ] = Variant( good::Helper::getTypeName( gtype ) );
+  VARIANT_SAVE_ANY( ret, title )
+  ret[ literals::gtype ] = good::Helper::getTypeName( gtype );
   VARIANT_SAVE_ANY( ret, position )
   VARIANT_SAVE_ANY( ret, type )
   VARIANT_SAVE_ANY( ret, date )
   VARIANT_SAVE_ANY( ret, opened )
-  ret[ lc_ext ] = ext;
+  ret[ literals::ext ] = ext;
 
   return ret;
 }
@@ -144,12 +125,47 @@ VariantMap Scribes::Message::save() const
 void Scribes::Message::load(const VariantMap& stream)
 {
   VARIANT_LOAD_STR( text, stream )
-  title = stream.get( lc_title ).toString();
-  gtype = good::Helper::getType( stream.get( lc_gtype ).toString() );
+  VARIANT_LOAD_STR( title, stream )
+  gtype = good::Helper::getType( stream.get( literals::gtype ).toString() );
   VARIANT_LOAD_ANY( position, stream )
   VARIANT_LOAD_ANY( type, stream )
   VARIANT_LOAD_TIME( date, stream )
   VARIANT_LOAD_ANY( opened, stream )
-  ext = stream.get( lc_ext );
+      ext = stream.get( literals::ext );
 }
+
+VariantMap Scribes::Messages::save() const
+{
+  VariantMap ret;
+  int step=0;
+  std::string stepName;
+  foreach( i, *this )
+  {
+    stepName = utils::format( 0xff, "%04d", step++ );
+    ret[ stepName ] = i->save();
+  }
+
+  return ret;
+}
+
+void Scribes::Messages::load(const VariantMap &vm)
+{
+  foreach( i, vm )
+  {
+    push_back( Message() );
+    back().load( i->second.toMap() );
+    }
+}
+
+Scribes::Message& Scribes::Messages::at(unsigned int index)
+{
+  static Message invalidMessage;
+  Messages::iterator it = begin();
+  std::advance( it, index );
+  if( it != end() )
+    return *it;
+
+  return invalidMessage;
+}
+
 }//end namespace city

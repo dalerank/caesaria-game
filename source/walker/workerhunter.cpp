@@ -39,7 +39,7 @@ REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)
 
 namespace {
 CAESARIA_LITERALCONST(priority)
-static const int noPriority = 999;
+enum { maxReachDistance=2, noPriority = 999 };
 }
 
 class Recruter::Impl
@@ -61,7 +61,7 @@ Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter ), _d( new Impl )
 {    
   _d->needWorkers = 0;
-  _d->reachDistance = 2;
+  _d->reachDistance = maxReachDistance;
   _d->once_shot = false;
   _setType( walker::recruter );
 }
@@ -198,7 +198,7 @@ unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 void Recruter::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
-  stream[ lc_priority ] = _d->priority.toVList();
+  stream[ literals::priority ] = _d->priority.toVList();
   VARIANT_SAVE_ANY_D( stream, _d, needWorkers );
 }
 
@@ -206,7 +206,7 @@ void Recruter::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
   VARIANT_LOAD_ANY_D( _d, needWorkers, stream );
-  _d->priority << stream.get( lc_priority ).toList();
+  _d->priority << stream.get( literals::priority ).toList();
 }
 
 bool Recruter::die()

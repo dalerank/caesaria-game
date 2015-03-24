@@ -49,7 +49,7 @@ void RomeDivinity::load(const VariantMap& vm)
   if( vm.empty() )
     return;
 
-  _name = vm.get( lc_name ).toString();
+  _name = vm.get( literals::name ).toString();
   _service = ServiceHelper::getType( vm.get( "service" ).toString() );
   _pic = Picture::load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
@@ -107,7 +107,7 @@ void RomeDivinity::assignFestival(int type)
 VariantMap RomeDivinity::save() const
 {
   VariantMap ret;
-  ret[ lc_name ] = Variant( _name );
+  ret[ literals::name ] = Variant( _name );
   ret[ "service" ] = Variant( ServiceHelper::getName( _service ) );
   ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation;

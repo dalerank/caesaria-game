@@ -25,15 +25,13 @@
 class WarehouseStore : public good::Store
 {
 public:
-  typedef std::map< good::Product, int > StockMap;
-
   WarehouseStore();
 
   void init(Warehouse &_warehouse);
-
   virtual int qty(const good::Product &goodType) const;
   virtual int qty() const;
   virtual int capacity() const;
+  virtual good::ProductMap details() const;
   virtual void setCapacity( const int maxcap);
   virtual void setCapacity(const good::Product& goodType, const int maxQty);
   virtual int capacity(const good::Product& goodType ) const;
@@ -51,7 +49,7 @@ public:
 
 private:
   Warehouse* _warehouse;
-  StockMap _capacities;
+  good::ProductMap _capacities;
 };
 
 #endif //_CAESARIA_WAREHOUSESTORE_HPP_INCLUDE_
