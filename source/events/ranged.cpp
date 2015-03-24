@@ -13,38 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-201 Dalerank, dalerankn8@gmail.com
-
-#ifndef _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "ranged.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
 namespace events
 {
 
-class RandomPlague : public Ranged
-{
-public:
-  static GameEventPtr create();
-  virtual bool isDeleted() const;
-
-  virtual void load(const VariantMap &stream);
-  virtual VariantMap save() const;
-
-protected:
-  virtual void _exec(Game &game, unsigned int time);
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  RandomPlague();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
-};
-
-}//namespace events
-
-#endif //_CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
+}//end namespace events

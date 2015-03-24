@@ -121,7 +121,6 @@ void Scribes::addMessage(const Message& message)
 }
 
 namespace {
-CAESARIA_LITERALCONST(title)
 CAESARIA_LITERALCONST(gtype)
 CAESARIA_LITERALCONST(ext)
 }
@@ -130,13 +129,13 @@ VariantMap Scribes::Message::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY( ret, text )
-  ret[ lc_title ] = Variant( title );
-  ret[ lc_gtype ] = Variant( good::Helper::getTypeName( gtype ) );
+  VARIANT_SAVE_ANY( ret, title )
+  ret[ literals::gtype ] = good::Helper::getTypeName( gtype );
   VARIANT_SAVE_ANY( ret, position )
   VARIANT_SAVE_ANY( ret, type )
   VARIANT_SAVE_ANY( ret, date )
   VARIANT_SAVE_ANY( ret, opened )
-  ret[ lc_ext ] = ext;
+  ret[ literals::ext ] = ext;
 
   return ret;
 }
@@ -144,12 +143,12 @@ VariantMap Scribes::Message::save() const
 void Scribes::Message::load(const VariantMap& stream)
 {
   VARIANT_LOAD_STR( text, stream )
-  title = stream.get( lc_title ).toString();
-  gtype = good::Helper::getType( stream.get( lc_gtype ).toString() );
+  VARIANT_LOAD_STR( title, stream )
+  gtype = good::Helper::getType( stream.get( literals::gtype ).toString() );
   VARIANT_LOAD_ANY( position, stream )
   VARIANT_LOAD_ANY( type, stream )
   VARIANT_LOAD_TIME( date, stream )
   VARIANT_LOAD_ANY( opened, stream )
-  ext = stream.get( lc_ext );
+  ext = stream.get( literals::ext );
 }
 }//end namespace city

@@ -13,36 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+#ifndef __CAESARIA_OBJECTS_CONFIG_H_INCLUDED__
+#define __CAESARIA_OBJECTS_CONFIG_H_INCLUDED__
 
-#include "ranged.hpp"
-
-namespace events
+namespace config
 {
 
-class RandomDamage : public Ranged
+namespace fgpic
 {
-public:
-  static GameEventPtr create();
-  virtual bool isDeleted() const;
+enum { idxMainPic = 0 };
+}
 
-  virtual void load(const VariantMap& stream);
-  virtual VariantMap save() const;
+namespace servicebld
+{
+enum { defaultWorkers=5, defaultRange=30 };
+}
 
-protected:
-  virtual void _exec(Game &game, unsigned int time);
-  virtual bool _mayExec(Game &game, unsigned int time) const;
+}//end namespace city
 
-private:
-  RandomDamage();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
-};
-
-}//end namespace events
-
-#endif //_CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+#endif //__CAESARIA_OBJECTS_CONFIG_H_INCLUDED__

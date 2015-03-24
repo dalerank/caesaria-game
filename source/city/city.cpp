@@ -97,12 +97,11 @@
 using namespace constants;
 using namespace gfx;
 using namespace events;
+using namespace config;
 
-namespace {
+namespace config {
 CAESARIA_LITERALCONST(tilemap)
 CAESARIA_LITERALCONST(walkerIdCount)
-CAESARIA_LITERALCONST(adviserEnabled)
-CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
 
 typedef std::map<PlayerCity::OptionType, int> Options;
@@ -513,8 +512,8 @@ void PlayerCity::save( VariantMap& stream) const
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
-  stream[ lc_tilemap    ] = vm_tilemap;
-  stream[ lc_walkerIdCount   ] = (unsigned int)_d->walkerIdCount;
+  stream[ literals::tilemap    ] = vm_tilemap;
+  stream[ literals::walkerIdCount   ] = (unsigned int)_d->walkerIdCount;
 
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
@@ -524,8 +523,8 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = _d->climate;
   stream[ "difficulty" ] = getOption( difficulty );
-  stream[ lc_adviserEnabled ] = getOption( adviserEnabled );
-  stream[ lc_fishPlaceEnabled ] = getOption( fishPlaceEnabled );
+  stream[ literals::adviserEnabled ] = getOption( adviserEnabled );
+  stream[ literals::fishPlaceEnabled ] = getOption( fishPlaceEnabled );
   stream[ "godEnabled" ] = getOption( godEnabled );
   stream[ "zoomEnabled"] = getOption( zoomEnabled );
   stream[ "zoomInvert" ] = getOption( zoomInvert );
@@ -605,9 +604,9 @@ void PlayerCity::load( const VariantMap& stream )
 {  
   Logger::warning( "City: start parse savemap" );
   City::load( stream );
-  _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
+  _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
-  _d->walkerIdCount = (Walker::UniqueId)stream.get( lc_walkerIdCount ).toUInt();
+  _d->walkerIdCount = (Walker::UniqueId)stream.get( literals::walkerIdCount ).toUInt();
   setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
@@ -620,8 +619,8 @@ void PlayerCity::load( const VariantMap& stream )
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
   Logger::warning( "City: parse options" );
-  setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
-  setOption( fishPlaceEnabled, stream.get( lc_fishPlaceEnabled, 1 ) );
+  setOption( adviserEnabled, stream.get( literals::adviserEnabled, 1 ) );
+  setOption( fishPlaceEnabled, stream.get( literals::fishPlaceEnabled, 1 ) );
   setOption( godEnabled, stream.get( "godEnabled", 1 ) );
   setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );

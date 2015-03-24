@@ -35,11 +35,11 @@ using namespace gfx;
 namespace events
 {
 
-namespace {
 CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(items)
 CAESARIA_LITERALCONST(target)
-}
+CAESARIA_LITERALCONST(count)
+CAESARIA_LITERALCONST(random)
 
 REGISTER_EVENT_IN_FACTORY(EnemyAttack, "enemy_attack" )
 
@@ -85,8 +85,8 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
   {
     VariantMap soldiers = i->second.toMap();
 
-    std::string soldierType = soldiers.get( lc_type ).toString();
-    int soldierNumber = soldiers.get( "count" );
+    std::string soldierType = soldiers.get( literals::type ).toString();
+    int soldierNumber = soldiers.get( literals::count );
 
     Variant vCityPop = soldiers.get( "city.pop" );
     if( vCityPop.isValid() )
@@ -97,7 +97,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     TilePos location( -1, -1 );
     Variant vLocation = soldiers.get( "location" );
 
-    if( vLocation.toString() == "random" )
+    if( vLocation.toString() == literals::random )
     {
       Tilemap& tmap = game.city()->tilemap();
       int lastIndex = tmap.size();
@@ -138,12 +138,12 @@ bool EnemyAttack::isDeleted() const { return _dfunc()->isDeleted; }
 void EnemyAttack::load(const VariantMap& stream)
 {
   __D_IMPL(_d,EnemyAttack)
-  _d->items = stream.get( lc_items ).toMap();
+  _d->items = stream.get( literals::items ).toMap();
 
-  std::string targetStr = stream.get( lc_target ).toString();
+  std::string targetStr = stream.get( literals::target ).toString();
 
   AttackPriorityHelper helper;
-  if( targetStr == "random" )
+  if( targetStr == literals::random )
   {
     _d->attackPriority = (EnemySoldier::AttackPriority)math::random( EnemySoldier::attackCount );
   }
@@ -159,7 +159,7 @@ VariantMap EnemyAttack::save() const
 
   __D_IMPL_CONST(_d,EnemyAttack);
 
-  ret[ lc_items ] = _d->items;
+  ret[ literals::items ] = _d->items;
 
   return ret;
 }

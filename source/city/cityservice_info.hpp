@@ -61,8 +61,19 @@ public:
     int value;
   };  
 
-  typedef std::vector< Parameters > History;
-  typedef std::vector< MaxParameterValue > MaxParameters;
+  class History : public std::vector<Parameters>
+  {
+  public:
+    VariantMap save() const;
+    void load( const VariantMap& vm );
+  };
+
+  class MaxParameters : public std::vector< MaxParameterValue >
+  {
+  public:
+    VariantMap save() const;
+    void load( const VariantMap& vm );
+  };
 
   static SrvcPtr create( PlayerCityPtr city );
 

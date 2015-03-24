@@ -47,12 +47,10 @@ namespace gui
 namespace dialog
 {
 
-namespace {
 CAESARIA_LITERALCONST(opened)
 CAESARIA_LITERALCONST(critical)
 CAESARIA_LITERALCONST(ext)
 CAESARIA_LITERALCONST(date)
-}
 
 class ScribesListBox : public ListBox
 {
@@ -85,8 +83,8 @@ protected:
   virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect)
   {
     VariantMap options = item.data().toMap();
-    bool opened = options.get( lc_opened, false );
-    bool critical = options.get( lc_critical, false );
+    bool opened = options.get( literals::opened, false );
+    bool critical = options.get( literals::critical, false );
     int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
     painter.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
   }
@@ -94,7 +92,7 @@ protected:
   virtual void _updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
   {
     VariantMap options = item.data().toMap();
-    DateTime time = options[ lc_date ].toDateTime();
+    DateTime time = options[ literals::date ].toDateTime();
 
     item.resetPicture( frameRect.size() );
 
@@ -122,7 +120,7 @@ protected:
           ListBoxItem& itemUnderMouse = item( index );
 
           VariantMap options = itemUnderMouse.data().toMap();
-          bool opened = options.get( lc_opened, false );
+          bool opened = options.get( literals::opened, false );
 
           //std::string text = opened ? "" : _("##scribemessages_unread##");
           //setTooltipText( text );
@@ -197,9 +195,9 @@ void ScribesMessages::_fillMessages()
     const city::Scribes::Message& mt = *it;
     ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
     VariantMap options;
-    options[ lc_opened ] = mt.opened;
-    options[ lc_date   ] = mt.date;
-    options[ lc_ext    ] = mt.ext;
+    options[ literals::opened ] = mt.opened;
+    options[ literals::date   ] = mt.date;
+    options[ literals::ext    ] = mt.ext;
 
     item.setData( options );
   }

@@ -40,6 +40,7 @@
 #include "core/locale.hpp"
 #include "city/terrain_generator.hpp"
 #include "events/fishplace.hpp"
+#include "city/config.hpp"
 #include "climatemanager.hpp"
 
 using namespace religion;
@@ -51,10 +52,11 @@ namespace game
 namespace loader
 {
 
-CAESARIA_LITERALCONST(climate)
-CAESARIA_LITERALCONST(adviserEnabled)
-CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
+
+CAESARIA_LITERALCONST(climate)
+CAESARIA_LITERALCONST(version)
+CAESARIA_LITERALCONST(map)
 CAESARIA_LITERALCONST(random)
 
 class Mission::Impl
@@ -73,10 +75,10 @@ bool Mission::load( const std::string& filename, Game& game )
   VariantMap vm = config::load( filename );
   _d->restartFile = filename;
   
-  if( currentVesion == vm[ "version" ].toInt() )
+  if( currentVesion == vm[ literals::version ].toInt() )
   {
-    std::string mapToLoad = vm[ "map" ].toString();
-    Variant vClimate = vm.get( lc_climate );
+    std::string mapToLoad = vm[ literals::map ].toString();
+    Variant vClimate = vm.get( literals::climate );
 
     if( vClimate.isValid() )
     {
@@ -89,14 +91,13 @@ bool Mission::load( const std::string& filename, Game& game )
       game::climate::initialize( type );
     }
 
-    if( mapToLoad == lc_random )
+    if( mapToLoad == literals::random )
     {
       terrain::Generator targar;
-      VariantMap rndvm = vm[ lc_random ].toMap();
-      int n2size = rndvm.get( "size", 5 );
-      float smooth = rndvm.get( "smooth", 2.6 );
-      float terrain = rndvm.get( "terrain", 4 );
-      targar.create( game, n2size, smooth, terrain );
+      terrain::Generator::Params params;
+      params.load( vm[ literals::random ].toMap() );
+      targar.create( game, params );
+
       game.city()->setCameraPos( game.city()->borderInfo().roadEntry );
     }
     else
@@ -117,8 +118,8 @@ bool Mission::load( const std::string& filename, Game& game )
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm[ "funds" ].toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( lc_fishPlaceEnabled, 1 ) );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( config::literals::adviserEnabled, 1 ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( config::literals::fishPlaceEnabled, 1 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 

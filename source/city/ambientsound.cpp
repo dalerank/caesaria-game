@@ -114,7 +114,7 @@ AmbientSound::AmbientSound( PlayerCityPtr city, gfx::Camera* camera )
 
 void AmbientSound::timeStep( const unsigned int time )
 {
-  if( time % 20 != 1 )
+  if( time % ambientsnd::updateInterval != 1 )
     return;
 
   if( !_d->camera )

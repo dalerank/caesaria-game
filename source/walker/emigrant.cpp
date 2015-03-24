@@ -501,14 +501,14 @@ TilePos Emigrant::places(Walker::Place type) const
 void Emigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ lc_peoples ] = _d->peoples.save();
+  stream[ literals::peoples ] = _d->peoples.save();
   VARIANT_SAVE_ANY_D( stream, _d, stamina )
 }
 
 void Emigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->peoples.load( stream.get( lc_peoples ).toList() );
+  _d->peoples.load( stream.get( literals::peoples ).toList() );
   VARIANT_LOAD_ANY_D( _d, stamina, stream )
 }
 
