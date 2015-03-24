@@ -42,7 +42,7 @@ public:
   virtual SmartPtr<Player> mayor() const;
   virtual void timeStep( unsigned int time );
   virtual DateTime lastAttack() const;
-
+  virtual std::string about(AboutType type);
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );
 

@@ -57,6 +57,23 @@ public:
   void updateStrength();
 };
 
+std::string PlayerArmy::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case empireMap:
+     ret =  mode() == PlayerArmy::go2home
+                  ? "##playerarmy_gone_to_home##"
+                  : "##playerarmy_gone_to_location##";
+  break;
+
+  default:        ret = "##ourcity_unknown_about##";  break;
+  }
+
+  return ret;
+}
+
 PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
 {
   PlayerArmyPtr ret( new PlayerArmy( empire ) );

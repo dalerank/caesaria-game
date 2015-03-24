@@ -81,6 +81,11 @@ void Object::setPicture(Picture pic)
 
 bool Object::isMovable() const { return false; }
 
+std::string Object::about(Object::AboutType)
+{
+  return "";
+}
+
 void Object::save( VariantMap& stream ) const
 {
   VARIANT_SAVE_ANY_D( stream, _d, location )

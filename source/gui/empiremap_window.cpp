@@ -622,33 +622,7 @@ void EmpireMapWindow::_changePosition()
   std::string text;
   if( obj.isValid() )
   {
-    if( is_kind_of<PlayerCity>( obj ) )
-    {
-      text = "##empiremap_our_city##";
-    }
-    else if( is_kind_of<world::ComputerCity>( obj ) )
-    {
-      world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
-      if( cCity->isDistantCity() )
-        text = "##empmap_distant_romecity_tip##";
-      else
-        text = cCity->name();
-    }    
-    else if( is_kind_of<world::City>( obj ) )
-    {
-      text = obj->name();
-    }
-    else if( is_kind_of<world::Barbarian>( obj ) )
-    {
-      text = "##enemy_army_threating_a_city##";
-    }    
-    else if( is_kind_of<world::PlayerArmy>( obj ) )
-    {
-      world::PlayerArmyPtr pa = ptr_cast<world::PlayerArmy>( obj );
-      text = pa->mode() == world::PlayerArmy::go2home
-                ? "##playerarmy_gone_to_home##"
-                : "##playerarmy_gone_to_location##";
-    }
+    text = obj->about( world::Object::empireMap );
   }
   else
   {

@@ -30,6 +30,7 @@ class Object : public ReferenceCounted
 {
 public:
   enum { idxPicture=0, idxAnimation=1 };
+  typedef enum { empireMap=0 } AboutType;
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;
@@ -46,6 +47,7 @@ public:
   virtual const gfx::Pictures& pictures() const;
   virtual void setPicture( gfx::Picture pic );
   virtual bool isMovable() const;
+  virtual std::string about( AboutType type );
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );

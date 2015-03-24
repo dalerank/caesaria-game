@@ -223,6 +223,18 @@ void PlayerCity::_initAnimation()
   _animation().setDelay( Animation::middle );
 }
 
+std::string PlayerCity::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case empireMap: ret = "##empiremap_our_city##";      break;
+  default:        ret = "##ourcity_unknown_about##";  break;
+  }
+
+  return ret;
+}
+
 void PlayerCity::timeStep(unsigned int time)
 {
   if( game::Date::isYearChanged() )

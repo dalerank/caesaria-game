@@ -371,6 +371,26 @@ void ComputerCity::timeStep( unsigned int time )
 }
 
 DateTime ComputerCity::lastAttack() const { return _d->lastAttack; }
+
+std::string ComputerCity::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case empireMap:
+    {
+      if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
+      else ret = name();
+    }
+  break;
+
+  default:
+      ret = "##compcity_unknown_about##";
+  }
+
+  return ret;
+}
+
 unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
 int ComputerCity::strength() const { return _d->strength; }
 

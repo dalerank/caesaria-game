@@ -56,6 +56,18 @@ BarbarianPtr Barbarian::create(EmpirePtr empire, Point location)
   return ret;
 }
 
+std::string Barbarian::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case empireMap: ret = "##enemy_army_threating_a_city##";      break;
+  default:        ret = "##enemy_army_unknown_about##";  break;
+  }
+
+  return ret;
+}
+
 std::string Barbarian::type() const { return CAESARIA_STR_EXT(Barbarian); }
 
 void Barbarian::timeStep(unsigned int time)
