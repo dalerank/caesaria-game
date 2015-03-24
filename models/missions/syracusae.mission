@@ -17,7 +17,7 @@
     favour : 20
     finishDate : "-100.01.01"
     next : ":/missions/mission5.briefing"
-    title : "##win_engineer_title##"
+    title : ""##quaestor##""
     win.text : "##win_syracusae_text##"
     may_continue : false
     maxHouseLevel : "big_villa"

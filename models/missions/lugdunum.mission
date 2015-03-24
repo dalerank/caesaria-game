@@ -21,7 +21,7 @@
     favour : 30
     finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
-    title : "##win_procurator_title##"
+    title : "##aedile##"
     win.text : "##lugdunum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"

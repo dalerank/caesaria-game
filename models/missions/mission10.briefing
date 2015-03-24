@@ -5,13 +5,13 @@
 	
   items : {
     londinium : {
-      title : "##londinium2_peace_province##"
+      title : "##londinium_title##"
       location : [ 570, 280 ]
       mission : ":/missions/londinium.mission"
     }
 
     sarmizegetusa : {
-      title : "##sarmizegetusa_dangerous_province##"
+      title : "##sarmizegetusa_title##"
       mission : ":/missions/sarmizegetusa.mission"
       location : [ 20, 320 ]
     }
