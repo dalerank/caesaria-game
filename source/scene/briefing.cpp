@@ -95,7 +95,7 @@ public:
   void resolveSelecMission( std::string mission, std::string title )
   {
     btnContinue->setEnabled( true );
-    cityCaption->setText( title );
+    cityCaption->setText( _(title) );
     fileMap = mission;
   }
 };

@@ -462,9 +462,11 @@ const ObjectList& Empire::objects() const{  return _d->objects; }
 ObjectList Empire::findObjects( Point location, int deviance ) const
 {
   ObjectList ret;
+  int sqrDeviance = pow( deviance, 2 ); //not need calculate sqrt
+
   foreach( i, _d->objects )
   {
-    if( (*i)->isAvailable() && (*i)->location().distanceTo( location ) < deviance )
+    if( (*i)->isAvailable() && location.getDistanceFromSQ( (*i)->location() ) < sqrDeviance )
     {        
       ret << *i;
     }
@@ -472,7 +474,7 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
 
   foreach( i, _d->cities )
   {
-    if( (*i)->location().distanceTo( location ) < deviance )
+    if( (*i)->isAvailable() && location.getDistanceFromSQ( (*i)->location() ) < sqrDeviance )
     {
       ret << ptr_cast<Object>( *i );
     }

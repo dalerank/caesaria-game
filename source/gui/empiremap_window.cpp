@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "empiremap_window.hpp"
 #include "gfx/picturesarray.hpp"
@@ -153,10 +153,13 @@ void EmpireMapWindow::Impl::updateCityInfo()
 void EmpireMapWindow::Impl::drawCities(Engine& painter)
 {
   world::CityList cities = city->empire()->cities();
+  Point location;
+  Picture pic;
   foreach( it, cities )
   {
-    Point location = (*it)->location();
-    painter.draw( (*it)->pictures(), offset + location );
+    location = (*it)->location();
+    pic = (*it)->picture();
+    painter.draw( (*it)->pictures(), offset + location - Point( pic.width() / 2, pic.height() / 2 ) );
 #ifdef DEBUG
     drawCell( painter, offset + location - Point( 10, 10 ), 20, DefaultColors::red );
 #endif
@@ -618,18 +621,22 @@ void EmpireMapWindow::_changePosition()
 
   std::string text;
   if( obj.isValid() )
-  {        
-    if( is_kind_of<world::ComputerCity>( obj ) )
+  {
+    if( is_kind_of<PlayerCity>( obj ) )
+    {
+      text = "##empiremap_our_city##";
+    }
+    else if( is_kind_of<world::ComputerCity>( obj ) )
     {
       world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
       if( cCity->isDistantCity() )
         text = "##empmap_distant_romecity_tip##";
       else
-        text = "##click_on_city_for_info##";
+        text = cCity->name();
     }    
     else if( is_kind_of<world::City>( obj ) )
     {
-      text = "##click_on_city_for_info##";
+      text = obj->name();
     }
     else if( is_kind_of<world::Barbarian>( obj ) )
     {
@@ -665,10 +672,10 @@ void EmpireMapWindow::_changePosition()
 
   if( !text.empty() )
   {
-    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), text, true, Label::bgSimpleWhite );
+    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _(text), true, Label::bgSimpleWhite );
     elm->setSubElement(true);
     elm->setTextAlignment( align::upperLeft, align::upperLeft );
-    elm->setTextOffset( Point( 5, 5 ) );
+    elm->setTextOffset( Point( 5, 5 ) );    
 
     Size tlpSize( elm->textWidth() + 20, elm->textHeight() + 2 );
     if( tlpSize.width() > width() * 0.75 )
@@ -681,6 +688,9 @@ void EmpireMapWindow::_changePosition()
     Rect rect( _d->lastPosition, tlpSize );
 
     rect -= Point( tlpSize.width() + 20, -20 );
+    Rect pRect = parent()->absoluteRect();
+    rect.constrainTo( pRect );
+
     elm->setGeometry( rect );
 
     _d->tooltipLabel = elm;
