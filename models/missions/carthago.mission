@@ -26,8 +26,8 @@
     win.text : "##carthago_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##carthage_6_title##"
-    overview :  [ "##carthago_6_overview##" ]
+    caption : "##carthago_preview_title##"
+    overview :  [ "##carthago_overview##" ]
   }
 	
   empire : {

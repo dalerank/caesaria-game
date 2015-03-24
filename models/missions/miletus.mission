@@ -25,8 +25,8 @@
     win.text : "##miletus_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##miletus_5_title##"
-    overview :  [ "##miletus_5_overview##",
+    caption : "##miletus_preview_title##"
+    overview :  [ "##miletus_overview##",
                   "@img=pictures_00017",
                   "##miletus_5_overview_2##" ]
   }
