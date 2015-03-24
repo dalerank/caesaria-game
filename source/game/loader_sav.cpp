@@ -306,7 +306,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     f.seekg(1312, std::ios::cur);
     char climate;
     f.read(&climate, 1);
-    oCity->setClimate((ClimateType)climate);
+    oCity->setOption( PlayerCity::climateType, climate);
     
     // here goes the WORK!
 

@@ -148,7 +148,7 @@ public:
   PushButton* btnPrices; 
   GroupBox* gbInfo;
   PlayerCityPtr city;
-  statistic::GoodsMap allgoods;
+  good::ProductMap allgoods;
 
   bool getWorkState( good::Product gtype );
   void updateGoodsInfo();
@@ -226,7 +226,7 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/tradeadv.gui" );
 
   _d->city = city;
-  _d->allgoods = statistic::getGoodsMap( city, false );
+  _d->allgoods = statistic::getProductMap( city, false );
 
   GET_DWIDGET_FROM_UI( _d, btnEmpireMap  )
   GET_DWIDGET_FROM_UI( _d, btnPrices )

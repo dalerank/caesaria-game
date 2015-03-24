@@ -32,7 +32,6 @@ namespace development
 static const char* disable_all = "disable_all";
 enum { maxLimit=999 };
 
-
 struct BuildingRule
 {
   object::Type type;
@@ -50,7 +49,7 @@ public:
   }
 
   typedef std::set<object::Type> Types;
-  typedef std::map<Branch, Types> Config;
+  typedef std::map<Branch,Types> Config;
   Config config;
 
   BranchHelper() : EnumsHelper<Branch>( unknown )

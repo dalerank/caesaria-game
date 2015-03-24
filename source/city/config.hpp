@@ -80,6 +80,14 @@ namespace migration
 enum { uncomfortableWageDiff=5, normalTax=7, uncomfortableTax=10, highTax=15, insaneTax=20 };
 }
 
+namespace sentiment
+{
+enum { veryAngry=5, angry=10, veryUpset=15, upset=22,
+       annoyed=30, indifferent=40, nonPleased=50,
+       pleased=60, veryPleased=70, extrimelyPleased=80,
+       loveYou=90, idolizeyou=95 };
+}
+
 CAESARIA_LITERALCONST(adviserEnabled)
 CAESARIA_LITERALCONST(fishPlaceEnabled)
 

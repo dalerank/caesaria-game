@@ -39,6 +39,7 @@
 #include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
 #include "config.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -152,7 +153,7 @@ void Migration::timeStep( const unsigned int time )
                             ? params[ Info::tax ] * 2
                             : (migration::normalTax-params[ Info::tax ]) );
 
-  const int& monthWithourWar = _city()->age() > 1
+  const int& monthWithourWar = _city()->states().age > 1
                                   ? params[ Info::monthWtWar ]
                                   : DateTime::monthsInYear;
 

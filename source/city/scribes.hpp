@@ -46,11 +46,17 @@ public:
     void load( const VariantMap& stream );
   };
 
-  typedef std::list<Message> Messages;
+  class Messages : public std::list<Message>
+  {
+  public:
+    VariantMap save() const;
+    void load( const VariantMap& vm );
+    Message& at( unsigned int index );
+  };
 
   const Messages& messages() const;
-  const Message& getMessage( int index ) const;
-  const Message &readMessage( int index );
+  const Message& getMessage( unsigned int index ) const;
+  const Message& readMessage( unsigned int index );
   void changeMessage( int index, Message& message );
   void removeMessage( int index );
   void addMessage( const Message& message );

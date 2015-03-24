@@ -37,7 +37,11 @@
 #include "game/funds.hpp"
 #include "barbarian.hpp"
 #include "city/statistic.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 #include "events/changeemperor.hpp"
+
+using namespace config;
 
 namespace world
 {
@@ -48,7 +52,6 @@ static const int defaultBarbarianOnMap=1;
 static const int minRomeSalary=10;
 static const int maxRomeSalary=50;
 static const int minimumCityTax=50;
-static const int minimumCityAge4tax=2;
 static const int defaultCityTaxKoeff=100;
 static const int cityTaxLimiter=4;
 
@@ -622,7 +625,7 @@ void Empire::Impl::takeTaxes()
 
     int empireTax = 0;
 
-    if( is_kind_of<Rome>( city ) || city->age() < minimumCityAge4tax )
+    if( is_kind_of<Rome>( city ) || city->states().age < econ::cityAge4tax )
     {
       continue;
     }

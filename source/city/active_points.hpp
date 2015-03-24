@@ -25,7 +25,7 @@ namespace city
 
 class ActivePoints : TilePosArray
 {
-  static const int maxPoins = 10;
+  enum { maxPoints = 10 };
 public:
   ActivePoints();
 
@@ -33,7 +33,7 @@ public:
   void set(unsigned int index, const TilePos& pos );
 
   VariantList save() const;
-  void load( VariantList& stream );
+  void load(const VariantList& stream );
 };
 
 }//end namespace city

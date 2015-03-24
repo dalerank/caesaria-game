@@ -277,10 +277,9 @@ void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
   f.seekg(kClimate, std::ios::beg);
   f.read((char*)&i, 1);
 
-  ClimateType climate = (ClimateType) i;
-  ioCity->setClimate(climate);
+  ioCity->setOption( PlayerCity::climateType, i);
 
-  Logger::warning( "C3MapLoader: climate type is %d", climate );
+  Logger::warning( "C3MapLoader: climate type is %d", i );
 }
 
 void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)

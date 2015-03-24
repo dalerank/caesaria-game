@@ -77,6 +77,18 @@ int Storage::qty() const
 }
 
 good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[goodType].object());}
+
+ProductMap Storage::details() const
+{
+  ProductMap ret;
+  foreach( goodIt, _gsd->stocks )
+  {
+    ret[ (*goodIt)->type() ] += (*goodIt)->qty();
+  }
+
+  return ret;
+}
+
 int Storage::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType]->qty();}
 int Storage::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType]->capacity();}
 

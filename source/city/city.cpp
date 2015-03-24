@@ -91,6 +91,8 @@
 #include "active_points.hpp"
 #include "cityservice_fire.hpp"
 #include "scribes.hpp"
+#include "statistic.hpp"
+#include "states.hpp"
 
 #include <set>
 
@@ -101,24 +103,53 @@ using namespace config;
 
 namespace config {
 CAESARIA_LITERALCONST(tilemap)
-CAESARIA_LITERALCONST(walkerIdCount)
 }
 
 typedef std::map<PlayerCity::OptionType, int> Options;
+
+template< class T >
+class FlowList : public SmartList<T>
+{
+public:
+  SmartList<T> appended;
+
+  void merge()
+  {
+    if( appended.empty() )
+      return;
+
+    *this << appended;
+    appended.clear();
+  }
+
+  void append( SmartPtr<T> overlay ) { appended << overlay; }
+};
+
+class Walkers : public FlowList<Walker>
+{
+public:
+  Walker::UniqueId idCount;
+
+  void append( WalkerPtr w )
+  {
+    ++idCount;
+    w->setUniqueId( idCount );
+  }
+};
+
+typedef FlowList<Overlay> Overlays;
 
 class PlayerCity::Impl
 {
 public:
   int population;
+
   econ::Treasury treasury;  // amount of money
 
   PlayerPtr player;
 
-  OverlayList newOverlays;
-  OverlayList overlays;
-
-  WalkerList newWalkers;
-  WalkerList walkers;
+  Overlays overlays;
+  Walkers walkers;
 
   city::ActivePoints activePoints;
   city::Scribes scribes;
@@ -137,9 +168,7 @@ public:
   city::trade::Options tradeOptions;
   city::VictoryConditions targets;
   Options options;
-  ClimateType climate;   
-  Walker::UniqueId walkerIdCount;
-  unsigned int age;
+  city::States states;
   int sentiment;
 
 public:
@@ -171,9 +200,8 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->treasury.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->population = 0;
   _d->treasury.setTaxRate( econ::Treasury::defaultTaxPrcnt );
-  _d->age = 0;
-  _d->walkerIdCount = 1;
-  _d->climate = game::climate::central;
+  _d->states.age = 0;
+  _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
@@ -209,6 +237,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( fireKoeff, 100 );
   setOption( barbarianAttack, 0 );
   setOption( legionAttack, 0 );
+  setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
   setOption( difficulty, game::difficulty::usual );
 }
@@ -238,7 +267,7 @@ void PlayerCity::timeStep(unsigned int time)
 {
   if( game::Date::isYearChanged() )
   {
-    _d->age++;
+    _d->states.age++;
     _d->targets.decreaseReignYear();
   }
 
@@ -337,8 +366,6 @@ Picture PlayerCity::picture() const { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
-ClimateType       PlayerCity::climate() const    { return _d->climate;    }
-void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
 econ::Treasury& PlayerCity::treasury()  {  return _d->treasury;   }
 unsigned int PlayerCity::population() const { return _d->population; }
 
@@ -385,8 +412,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 
   if( treasury.haveMoneyForAction( wages ) )
   {
-    HouseList houses;
-    houses << city->overlays();
+    HouseList houses = city::statistic::findh( city );
 
     float salary = city::statistic::getMonthlyOneWorkerWages( city );
     float wages = 0;
@@ -437,8 +463,7 @@ void PlayerCity::Impl::updateWalkers( unsigned int time )
     else { ++walkerIt; }
   }
 
-  walkers << newWalkers;
-  newWalkers.clear();
+  walkers.merge();
 }
 
 void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
@@ -461,8 +486,7 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
     }
   }
 
-  overlays << newOverlays;
-  newOverlays.clear();
+  overlays.merge();
 }
 
 void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
@@ -513,7 +537,7 @@ void PlayerCity::save( VariantMap& stream) const
   _d->tilemap.save( vm_tilemap );
 
   stream[ literals::tilemap    ] = vm_tilemap;
-  stream[ literals::walkerIdCount   ] = (unsigned int)_d->walkerIdCount;
+  VARIANT_SAVE_ENUM_D( stream, _d, walkers.idCount )
 
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
@@ -521,7 +545,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "cameraStart"] = _d->cameraStart;
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
-  stream[ "climate"    ] = _d->climate;
+  stream[ "climate"    ] = getOption( climateType );
   stream[ "difficulty" ] = getOption( difficulty );
   stream[ literals::adviserEnabled ] = getOption( adviserEnabled );
   stream[ literals::fishPlaceEnabled ] = getOption( fishPlaceEnabled );
@@ -594,7 +618,7 @@ void PlayerCity::save( VariantMap& stream) const
   }
 
   stream[ "services" ] = vm_services;
-  VARIANT_SAVE_ANY_D( stream, _d, age )
+  VARIANT_SAVE_ANY_D( stream, _d, states.age )
   stream[ "points" ] = _d->activePoints.save();
 
   Logger::warning( "City: finalize save map" );
@@ -606,7 +630,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
-  _d->walkerIdCount = (Walker::UniqueId)stream.get( literals::walkerIdCount ).toUInt();
+  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
   setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
@@ -614,11 +638,11 @@ void PlayerCity::load( const VariantMap& stream )
   _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
-  _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
   Logger::warning( "City: parse options" );
+  setOption( climateType, stream.get( "climate", game::climate::central ) );
   setOption( adviserEnabled, stream.get( literals::adviserEnabled, 1 ) );
   setOption( fishPlaceEnabled, stream.get( literals::fishPlaceEnabled, 1 ) );
   setOption( godEnabled, stream.get( "godEnabled", 1 ) );
@@ -712,21 +736,19 @@ void PlayerCity::load( const VariantMap& stream )
   }
 
   setOption( PlayerCity::forceBuild, 0 );
-  VARIANT_LOAD_ANY_D( _d, age, stream )
-  VariantList vl_points = stream.get("points").toList();
-  _d->activePoints.load( vl_points );
+  VARIANT_LOAD_ANY_D( _d, states.age, stream )
+  _d->activePoints.load( stream.get("points").toList() );
 
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->newOverlays.push_back( overlay ); }
+void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.append( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
-  walker->setUniqueId( ++_d->walkerIdCount );
-  _d->newWalkers.push_back( walker );
+  _d->walkers.append( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }
@@ -750,7 +772,7 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
   emit _d->onChangeBuildingOptionsSignal();
 }
 
-unsigned int PlayerCity::age() const { return _d->age; }
+const city::States &PlayerCity::states() const { return _d->states; }
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
@@ -765,6 +787,7 @@ void PlayerCity::delayTrade(unsigned int month){  }
 
 const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
 const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+ClimateType PlayerCity::climate() const{ return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -772,7 +795,7 @@ Signal1<int>& PlayerCity::onFundsChanged() {  return _d->treasury.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
-void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value){  _d->options[ opt ] = value; }
 
 int PlayerCity::prosperity() const
 {

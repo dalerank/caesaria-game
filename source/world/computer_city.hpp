@@ -50,7 +50,7 @@ public:
   virtual const good::Store& exportingGoods() const;
 
   virtual world::Nation nation() const;
-  virtual unsigned int age() const;
+  virtual const city::States& states() const;
 
   virtual void delayTrade(unsigned int month);
   virtual void empirePricesChanged(good::Product gtype, int bCost, int sCost);

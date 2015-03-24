@@ -44,14 +44,80 @@ namespace city
 namespace request
 {
 
+struct Award
+{
+  int favour;
+  int money;
+
+  VariantMap save() const
+  {
+    VariantMap vm_win;
+    VARIANT_SAVE_ANY( vm_win, favour )
+    VARIANT_SAVE_ANY( vm_win, money )
+
+    return vm_win;
+  }
+
+  void load( const VariantMap& vm )
+  {
+    VARIANT_LOAD_ANY( favour, vm )
+    VARIANT_LOAD_ANY( money, vm )
+  }
+
+  void apply( PlayerCityPtr city ) const
+  {
+    if( money > 0 )
+    {
+      GameEventPtr e = Payment::create( econ::Issue::donation, money );
+      e->dispatch();
+    }
+
+    if( favour > 0 )
+    {
+      GameEventPtr e = UpdateFavour::create( city->name(), favour );
+      e->dispatch();
+    }
+  }
+};
+
+struct Penalty
+{
+  int favour;
+  int money;
+  int appendMonth;
+
+  VariantMap save() const
+  {
+    VariantMap vm_fail;
+    VARIANT_SAVE_ANY( vm_fail, favour )
+    VARIANT_SAVE_ANY( vm_fail, money )
+    VARIANT_SAVE_ANY( vm_fail, appendMonth )
+
+    return vm_fail;
+  }
+
+  void load( const VariantMap& vm )
+  {
+    VARIANT_LOAD_ANY( favour, vm )
+    VARIANT_LOAD_ANY( money, vm )
+    VARIANT_LOAD_ANY( appendMonth, vm )
+  }
+
+  void apply( PlayerCityPtr city ) const
+  {
+    GameEventPtr e = UpdateFavour::create( city->name(), -favour );
+    e->dispatch();
+  }
+};
+
 class RqGood::Impl
 {
 public:
   unsigned int months2comply;
   good::Stock stock;
   bool alsoRemind;
-  int winFavour, winMoney;
-  int failFavour, failMoney, failAppendMonth;
+  Award complyRequest;
+  Penalty failedRequest;
   std::string description;
 };
 
@@ -86,7 +152,7 @@ void RqGood::exec( PlayerCityPtr city )
 
 bool RqGood::isReady( PlayerCityPtr city ) const
 {
-  city::statistic::GoodsMap gm = city::statistic::getGoodsMap( city, false );
+  good::ProductMap gm = statistic::getProductMap( city, false );
 
   Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
   Unit needCap = Unit::fromValue( _d->stock.capacity() );
@@ -110,16 +176,9 @@ VariantMap RqGood::save() const
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
   VARIANT_SAVE_ANY_D( ret, _d, alsoRemind )
-  VariantMap vm_win;
-  vm_win[ "favour" ] = _d->winFavour;
-  vm_win[ "money" ] = _d->winMoney;
-  ret[ "success" ] = vm_win;
 
-  VariantMap vm_fail;
-  vm_fail[ "favour" ] = _d->failFavour;
-  vm_fail[ "money" ] = _d->failMoney;
-  vm_fail[ "appendMonth" ] = _d->failAppendMonth;
-  ret[ "fail" ] = vm_fail;
+  ret[ "success" ] = _d->complyRequest.save();
+  ret[ "fail" ] = _d->failedRequest.save();
 
   return ret;
 }
@@ -128,7 +187,6 @@ void RqGood::load(const VariantMap& stream)
 {
   Request::load( stream );
   _d->months2comply = (int)stream.get( "month" );
-
 
   Variant vm_goodt = stream.get( "good" );
   VARIANT_LOAD_ANY_D( _d, alsoRemind, stream )
@@ -146,14 +204,8 @@ void RqGood::load(const VariantMap& stream)
     _d->stock.load( vm_goodt.toList() );
   }
 
-  VariantMap vm_win = stream.get( "success" ).toMap();
-  _d->winFavour = vm_win.get( "favour" );
-  _d->winMoney = vm_win.get( "money" );
-
-  VariantMap vm_fail = stream.get( "fail" ).toMap();
-  _d->failFavour = vm_fail.get( "favour" );
-  _d->failMoney = vm_fail.get( "money" );
-  _d->failAppendMonth = vm_fail.get( "appendMonth" );
+  _d->complyRequest.load( stream.get( "success" ).toMap() );
+  _d->failedRequest.load( stream.get( "fail" ).toMap() );
 
   Variant v_finish = stream.get( "finish" );
   if( v_finish.isNull() )
@@ -166,41 +218,30 @@ void RqGood::load(const VariantMap& stream)
 void RqGood::success( PlayerCityPtr city )
 {
   Request::success( city );
-  if( _d->winMoney > 0 )
-  {
-    GameEventPtr e = Payment::create( econ::Issue::donation, _d->winMoney );
-    e->dispatch();
-  }
-
-  if( _d->winFavour > 0 )
-  {
-    GameEventPtr e = UpdateFavour::create( city->name(), _d->winFavour );
-    e->dispatch();
-  }
+  _d->complyRequest.apply( city );
 }
 
 void RqGood::fail( PlayerCityPtr city )
 {
-  GameEventPtr e = UpdateFavour::create( city->name(), _d->failFavour );
-  e->dispatch();
+  _d->failedRequest.apply( city );
 
-  if( _d->failAppendMonth > 0 )
+  if( _d->failedRequest.appendMonth > 0 )
   {
     _startDate = _finishDate;
 
     //std::string text = utils::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    e = events::ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
+    GameEventPtr e = ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
     e->dispatch();
 
-    _finishDate.appendMonth( _d->failAppendMonth );
-    _d->failAppendMonth = 0;
+    _finishDate.appendMonth( _d->failedRequest.appendMonth );
+    _d->failedRequest.appendMonth = 0;
     setAnnounced( false );
   }
   else
   {
     Request::fail( city );
 
-    e = events::ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
+    GameEventPtr e = ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
     e->dispatch();
   }
 }
@@ -213,7 +254,7 @@ void RqGood::update()
   {
     _d->alsoRemind = true;
 
-    events::GameEventPtr e = events::ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
+    GameEventPtr e = ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
     e->dispatch();
   }
 }

@@ -187,9 +187,9 @@ void ScribesMessages::_fillMessages()
 {
   _d->lbxMessages->clear();
 
-  bool haveMessages = false;
   const city::Scribes::Messages& messages = _d->city->scribes().messages();
-  haveMessages = !messages.empty();
+  bool haveMessages = !messages.empty();
+
   foreach( it, messages )
   {
     const city::Scribes::Message& mt = *it;

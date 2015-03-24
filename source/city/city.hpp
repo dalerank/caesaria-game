@@ -51,7 +51,7 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
-                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack } OptionType;
+                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
@@ -84,9 +84,6 @@ public:
   void setCameraPos(const TilePos pos);
   TilePos cameraPos() const;
      
-  ClimateType climate() const;
-  void setClimate(const ClimateType);
-
   econ::Treasury& treasury();
 
   unsigned int population() const;
@@ -113,7 +110,7 @@ public:
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );
 
-  virtual unsigned int age() const;
+  virtual const city::States& states() const;
 
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
@@ -126,6 +123,7 @@ public:
   virtual std::string about(Object::AboutType type);
   virtual const good::Store& importingGoods() const;
   virtual const good::Store& exportingGoods() const;
+  virtual ClimateType climate() const;
   virtual unsigned int tradeType() const;
 
   void setOption( OptionType opt, int value );

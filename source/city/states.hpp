@@ -13,38 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "active_points.hpp"
-#include "gfx/helper.hpp"
-
-using namespace gfx;
+#ifndef __CAESARIA_CITY_STATES_H_INCLUDED__
+#define __CAESARIA_CITY_STATES_H_INCLUDED__
 
 namespace city
 {
 
-ActivePoints::ActivePoints()
+struct States
 {
-  resize( maxPoints );
-}
+  unsigned int age;
 
-TilePos ActivePoints::get( unsigned int index) const
-{
-  return index < maxPoints ? (*this)[index] : tilemap::invalidLocation();
-}
-
-void ActivePoints::set( unsigned int index, const TilePos& pos)
-{
-  if( index < maxPoints )
-    (*this)[index] = pos;
-}
-
-VariantList ActivePoints::save() const {  return toVList(); }
-
-void ActivePoints::load( const VariantList &stream)
-{
-  fromVList( stream );
-  resize( maxPoints );
-}
+  States() : age(0)
+  {}
+};
 
 }//end namespace city
+
+#endif //__CAESARIA_CITY_STATES_H_INCLUDED__

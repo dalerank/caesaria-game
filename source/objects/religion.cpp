@@ -156,7 +156,7 @@ bool BigTemple::build( const city::AreaInfo& info )
     return true;
   }
 
-  city::statistic::GoodsMap goods = city::statistic::getGoodsMap( info.city, false );
+  good::ProductMap goods = city::statistic::getProductMap( info.city, false );
   if( goods[ good::marble ] >= 2 )
   {
     Temple::build( info );

@@ -241,7 +241,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       if( warehouse.isValid() )
       {
         float tradeKoeff = warehouse->tradeBuff( Warehouse::sellGoodsBuff );
-        statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
+        good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
 
         trade::Options& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
@@ -252,6 +252,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           {
             continue;
           }
+
           int needQty = buy.freeQty( *goodType );
           int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
           int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
@@ -330,9 +331,10 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
     if( warehouse.isValid() )
     {
-      statistic::GoodsMap storedGoods = statistic::getGoodsMap( city, false );
+      good::ProductMap storedGoods = statistic::getProductMap( city, false );
       trade::Options& options = city->tradeOptions();
       //try sell goods
+
       foreach( goodType, good::all() )
       {
         if (!options.isImporting(*goodType))
