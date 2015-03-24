@@ -5,13 +5,13 @@
 	
   items : {
     tarraco : {
-      title : "##tarraco_peaceful_province##"
+      title : "##tarraco_title##"
       location : [ 120, 210 ]
       mission : ":/missions/tarraco.mission"
     }
 
     syracusae : {
-      title : "##syracusae_somewhat_dangerous_province##"
+      title : "##syracusae_title##"
       mission : ":/missions/syracusae.mission"
       location : [ 330, 280 ]
     }
