@@ -216,7 +216,7 @@
     emperor_request1#city_request : {
       date : "-267.02.01"
       reqtype : "good_request"
-      video : "urgent_message2
+      video : "urgent_message2"
       month : 24
       good : { oil : 5 }
       success : { favour : 10 }

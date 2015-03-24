@@ -20,7 +20,7 @@
     favour : 80
     finishDate : "200.01.01"
     next : ":/missions/mission11.briefing"
-    title : "##win_engineer_title##"
+    title : "##new_ruler##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##sarmizegetusa_title##"
