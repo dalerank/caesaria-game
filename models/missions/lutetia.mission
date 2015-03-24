@@ -25,8 +25,8 @@
     win.text : "##lutetia_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##mediolanum_5_title##"
-    overview :  [ "##mediolanum_5_overview##" ]
+    caption : "##lutetia_title##"
+    overview :  [ "##lutetia_overview##" ]
   }
 	
   empire : {
