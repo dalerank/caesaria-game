@@ -385,7 +385,7 @@ int PlayerCity::strength() const
   return ret;
 }
 
-DateTime PlayerCity::lastAttack() const
+DateTime PlayerCity::lastAttack()
 {
   city::MilitaryPtr mil = city::statistic::finds<city::Military>( this );
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );

@@ -25,8 +25,6 @@
 namespace events
 {
 
-CAESARIA_LITERALCONST(population)
-
 class Ranged : public GameEvent
 {
 public:
