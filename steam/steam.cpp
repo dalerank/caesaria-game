@@ -213,8 +213,8 @@ void UserStats::storeStatsIfNecessary()
     // already set any achievements in UnlockAchievement
 
     // set stats
-    xclient.stats->SetStat( lc_stat_num_games, totalGamesPlayed );
-    xclient.stats->SetStat( lc_stat_num_wins, totalNumWins );
+    xclient.stats->SetStat( literals::stat_num_games, totalGamesPlayed );
+    xclient.stats->SetStat( literals::stat_num_wins, totalNumWins );
     xclient.stats->SetStat( "NumLosses", totalNumLosses );
     // Update average feet / second stat
     //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
@@ -594,8 +594,8 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
         }
 
       // load stats
-      steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
-      steamUserStats->GetStat( lc_stat_num_wins, &totalNumWins );
+      steamUserStats->GetStat( literals::stat_num_games, &totalGamesPlayed );
+      steamUserStats->GetStat( literals::stat_num_wins, &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
     }
     else

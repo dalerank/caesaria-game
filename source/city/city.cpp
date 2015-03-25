@@ -140,6 +140,7 @@ public:
   {
     ++idCount;
     w->setUniqueId( idCount );
+    FlowList::append( w );
   }
 };
 
