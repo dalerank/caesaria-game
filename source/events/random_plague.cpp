@@ -76,14 +76,13 @@ bool RandomPlague::isDeleted() const {  return _d->isDeleted; }
 
 void RandomPlague::load(const VariantMap& stream)
 {
-  _d->popRange.load( stream.get( literals::population ).toList() );
+  Ranged::load( stream );
   VARIANT_LOAD_ANYDEF_D( _d, strong, 10, stream )
 }
 
 VariantMap RandomPlague::save() const
 {
-  VariantMap ret;
-  ret[ literals::population ] = _d->popRange.save();
+  VariantMap ret = Ranged::save();
   VARIANT_SAVE_ANY_D( ret, _d, strong )
   return ret;
 }

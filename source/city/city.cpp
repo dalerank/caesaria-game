@@ -246,6 +246,8 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
   setOption( difficulty, game::difficulty::usual );
+
+  _d->states.nation = world::nation::rome;
 }
 
 void PlayerCity::_initAnimation()
@@ -385,13 +387,12 @@ int PlayerCity::strength() const
   return ret;
 }
 
-DateTime PlayerCity::lastAttack()
+DateTime PlayerCity::lastAttack() const
 {
-  city::MilitaryPtr mil = city::statistic::finds<city::Military>( this );
+  city::MilitaryPtr mil;
+  mil << findService( city::Military::defaultName() );
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
-
-world::Nation PlayerCity::nation() const { return world::rome; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
@@ -777,7 +778,8 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value){  _d->options[
 
 int PlayerCity::prosperity() const
 {
-  city::ProsperityRatingPtr csPrsp = city::statistic::finds<city::ProsperityRating>( this );
+  city::ProsperityRatingPtr csPrsp;
+  csPrsp << findService( city::ProsperityRating::defaultName() );
   return csPrsp.isValid() ? csPrsp->value() : 0;
 }
 
@@ -819,13 +821,15 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  city::CultureRatingPtr csClt = city::statistic::finds<city::CultureRating>( this );
+  city::CultureRatingPtr csClt;
+  csClt << findService( city::CultureRating::defaultName() );
   return csClt.isValid() ? csClt->value() : 0;
 }
 
 int PlayerCity::peace() const
 {
-  city::PeacePtr p = city::statistic::finds<city::Peace>( this );
+  city::PeacePtr p;
+  p << findService( city::Peace::defaultName() );
   return p.isValid() ? p->value() : 0;
 }
 

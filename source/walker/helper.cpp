@@ -39,7 +39,7 @@ public:
 class HationEnums : public EnumsHelper<world::Nation>
 {
 public:
-  HationEnums() : EnumsHelper<world::Nation>( world::unknownNation )
+  HationEnums() : EnumsHelper<world::Nation>( world::nation::unknown )
   {
 
   }
@@ -73,8 +73,8 @@ public:
 
   Impl()
   {
-#define __REG_WNATION(a) appendNation( world::a, CAESARIA_STR_A(a));
-    __REG_WNATION( unknownNation )
+#define __REG_WNATION(a) appendNation( world::nation::a, CAESARIA_STR_A(a));
+    __REG_WNATION( unknown )
     __REG_WNATION( rome )
     __REG_WNATION( etruscan )
     __REG_WNATION( barbarian )
@@ -424,12 +424,12 @@ void WalkerRelations::load(const VariantMap& stream)
     __fillRelations<world::Nation>( it->first, item, "friend",
                                    &WalkerHelper::getNation,
                                    "NationRelations: unknown friend %s for type %s",
-                                   &WalkerRelations::addFriend, world::unknownNation );
+                                   &WalkerRelations::addFriend, world::nation::unknown );
 
     __fillRelations<world::Nation>( it->first, item, "enemy",
                                    &WalkerHelper::getNation,
                                    "NationRelations: unknown enemy %s for type %s",
-                                   &WalkerRelations::addEnemy, world::unknownNation );
+                                   &WalkerRelations::addEnemy, world::nation::unknown );
   }
 }
 

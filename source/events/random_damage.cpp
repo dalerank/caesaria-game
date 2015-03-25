@@ -101,15 +101,14 @@ bool RandomDamage::isDeleted() const {  return _d->isDeleted; }
 
 void RandomDamage::load(const VariantMap& stream)
 {
-  _d->popRange.load( stream.get( literals::population ).toList() );
+  Ranged::load( stream );
   VARIANT_LOAD_ANY_D( _d, strong, stream );
   VARIANT_LOAD_ENUM_D( _d, priority, stream );
 }
 
 VariantMap RandomDamage::save() const
 {
-  VariantMap ret;
-  ret[ literals::population ] = _d->popRange.save();
+  VariantMap ret = Ranged::save();
   VARIANT_SAVE_ANY_D(ret, _d, strong );
   VARIANT_SAVE_ENUM_D(ret, _d, priority );
 

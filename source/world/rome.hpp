@@ -42,7 +42,6 @@ public:
   virtual SmartPtr<Player> mayor() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
-  virtual world::Nation nation() const;
   virtual DateTime lastAttack() const;
   virtual int strength() const;
   virtual void delayTrade( unsigned int month );

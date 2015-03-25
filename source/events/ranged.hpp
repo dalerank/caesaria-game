@@ -48,6 +48,11 @@ public:
     }
   };
 
+  VariantMap save() const;
+  void load( const VariantMap& stream );
+
+private:
+  Range _popRange;
 };
 
 }//namespace events

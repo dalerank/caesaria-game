@@ -57,6 +57,7 @@ Rome::Rome(EmpirePtr empire)
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;
   _d->states.age = 500;
+  _d->states.nation = nation::rome;
 }
 
 unsigned int Rome::tradeType() const { return 0; }
@@ -112,7 +113,6 @@ void Rome::addObject(ObjectPtr obj)
   }
 }
 
-Nation Rome::nation() const { return world::rome; }
 DateTime Rome::lastAttack() const { return _d->lastAttack; }
 int Rome::strength() const { return _d->strength; }
 

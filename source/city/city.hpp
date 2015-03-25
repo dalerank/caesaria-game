@@ -76,8 +76,7 @@ public:
   virtual gfx::Picture picture() const;
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
-  virtual DateTime lastAttack();
-  virtual world::Nation nation() const;
+  virtual DateTime lastAttack() const;
 
   PlayerPtr mayor() const;
   

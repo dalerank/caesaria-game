@@ -48,7 +48,6 @@ public:
   bool distantCity, romecity;
   bool available;
   int population;
-  world::Nation nation;
   int strength;
   city::States states;
   unsigned int tradeDelay;
@@ -71,7 +70,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->merchantsNumber = 0;
   _d->available = true;
   _d->population = 0;
-  _d->nation = world::unknownNation;
+  _d->states.nation = world::nation::unknown;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
@@ -205,7 +204,6 @@ void ComputerCity::load( const VariantMap& options )
 
 const good::Store& ComputerCity::importingGoods() const { return _d->buyStore; }
 const good::Store& ComputerCity::exportingGoods() const{ return _d->realSells; }
-Nation ComputerCity::nation() const { return _d->nation; }
 const city::States& ComputerCity::states() const { return _d->states; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
 

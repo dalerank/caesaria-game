@@ -18,12 +18,15 @@
 #ifndef __CAESARIA_CITY_STATES_H_INCLUDED__
 #define __CAESARIA_CITY_STATES_H_INCLUDED__
 
+#include "world/nation.hpp"
+
 namespace city
 {
 
 struct States
 {
   unsigned int age;
+  world::Nation nation;
 
   States() : age(0)
   {}

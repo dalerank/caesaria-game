@@ -16,8 +16,24 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "ranged.hpp"
+#include "core/variant_map.hpp"
 
 namespace events
 {
+
+CAESARIA_LITERALCONST(population)
+
+VariantMap Ranged::save() const
+{
+  VariantMap ret;
+  ret[ literals::population ] = _popRange.save();
+
+  return ret;
+}
+
+void events::Ranged::load(const VariantMap &stream)
+{
+  _popRange.load( stream.get( literals::population ).toList() );
+}
 
 }//end namespace events
