@@ -50,7 +50,6 @@ REGISTER_PRODUCT(denaries,17 )
 REGISTER_PRODUCT(prettyWine,18 )
 
 typedef std::list<Product> Products;
-typedef std::map<Product,int> ProductMap;
 
 const Product& any();
 const Products& foods();
@@ -58,6 +57,7 @@ const Products& materials();
 const Products& all();
 
 class Stock;
+class ProductMap;
 class Store;
 }//end namespace good
     

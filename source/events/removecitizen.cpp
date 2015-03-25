@@ -17,7 +17,7 @@
 
 #include "removecitizen.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/tile.hpp"
@@ -48,12 +48,11 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
     HouseList hList;
     hList << tilemap.getRectangle( curRange, _center ).overlays();
 
-    foreach( it, hList )
+    foreach( itHouse, hList )
     {
-      HousePtr house = *it;
-      if( house.isValid() )
+      if( (*itHouse).isValid() )
       {
-        house->remHabitants( _group );
+        (*itHouse)->remHabitants( _group );
         if( _group.empty() )
           break;
       }

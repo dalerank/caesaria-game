@@ -28,6 +28,7 @@
 #include "gui/environment.hpp"
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"
+#include "city/cityservice_festival.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/barbarian.hpp"
 #include "core/saveadapter.hpp"
@@ -101,7 +102,10 @@ enum {
   add_scribe_messages,
   send_venus_smallcurse,
   send_mars_spirit,
-  run_script
+  run_script,
+  show_fest,
+  add_favor,
+  remove_favor
 };
 
 class DebugHandler::Impl
@@ -167,6 +171,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "city", crash_favor )
   ADD_DEBUG_EVENT( "city", add_scribe_messages )
   ADD_DEBUG_EVENT( "city", run_script )
+  ADD_DEBUG_EVENT( "city", show_fest )
+  ADD_DEBUG_EVENT( "city", add_favor )
+  ADD_DEBUG_EVENT( "city", remove_favor )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
   ADD_DEBUG_EVENT( "options", reload_aqueducts )
@@ -249,6 +256,22 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
+
+  case add_favor:
+  case remove_favor:
+  {
+    std::string cityName = game->city()->name();
+    game->empire()->emperor().updateRelation( cityName, event == add_favor ? +10 : -10 );
+  }
+  break;
+
+  case show_fest:
+  {
+    city::FestivalPtr fest = city::statistic::finds<city::Festival>( game->city() );
+    if( fest.isValid() )
+      fest->now();
+  }
+  break;
 
   case win_mission:
   case fail_mission:

@@ -27,6 +27,8 @@
 namespace econ
 {
 
+enum { maxDebt=-4900 };
+
 struct Issue
 { 
   enum Type { unknown=0, taxIncome=1,

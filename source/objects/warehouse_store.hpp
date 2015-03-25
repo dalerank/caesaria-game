@@ -21,6 +21,7 @@
 
 #include "warehouse.hpp"
 #include "good/store.hpp"
+#include "good/productmap.hpp"
 
 class WarehouseStore : public good::Store
 {

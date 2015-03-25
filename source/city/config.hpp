@@ -49,6 +49,7 @@ namespace health
 enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100 };
 }
 
+
 namespace workless
 {
 enum { high=15 };

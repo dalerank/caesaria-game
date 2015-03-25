@@ -238,13 +238,7 @@ void WarehouseStore::retrieve(good::Stock& stock, const int amount)
 VariantMap WarehouseStore::save() const
 {
   VariantMap ret = Store::save();
-  VariantList vl;
-  foreach( k, good::all() )
-  {
-    good::ProductMap::const_iterator it = _capacities.find( *k );
-    vl << (it != _capacities.end() ? it->second : 0);
-  }
-  ret[ "capacities" ] = vl;
+  ret[ "capacities" ] = _capacities.save();
 
   return ret;
 }
@@ -252,16 +246,8 @@ VariantMap WarehouseStore::save() const
 void WarehouseStore::load(const VariantMap &stream)
 {
   Store::load( stream );
-  VariantList vl = stream.get( "capacities" ).toList();
-
-  int index = 0;
   int maxCapacity = capacity();
-  foreach( it, vl )
-  {
-    int value = it->toInt();
-    _capacities[ (good::Product)index ] = (value == 0 ? maxCapacity : value);
-    index++;
-  }
+  _capacities.load( stream.get( "capacities" ).toList() );
 }
 
 int WarehouseStore::capacity() const

@@ -93,7 +93,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     {
       const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
       game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction,
-                                                    -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
+                                                         -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
       if( construction->group() != object::group::disaster )
       {

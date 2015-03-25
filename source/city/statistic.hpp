@@ -21,7 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
 #include "objects/overlay.hpp"
-#include "good/good.hpp"
+#include "good/productmap.hpp"
 #include "predefinitions.hpp"
 #include "festivaltype.hpp"
 #include "objects/constants.hpp"
@@ -281,6 +281,23 @@ SmartList< T > findo( PlayerCityPtr r, object::Group group )
     if( b.isValid() && (b->group() == group || group == object::group::any ) )
     {
       ret.push_back( b );
+    }
+  }
+
+  return ret;
+}
+
+template< class T >
+SmartList< T > findoex( PlayerCityPtr r, std::set<object::Type> which )
+{
+  OverlayList ret;
+  SmartList<T> ovs = r->overlays();
+
+  foreach( it, ovs )
+  {
+    if( which.count( (*it)->type ) == 0 )
+    {
+      ret << *it;
     }
   }
 

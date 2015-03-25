@@ -13,39 +13,41 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "updatecitysentiment.hpp"
-#include "game/game.hpp"
-#include "city/statistic.hpp"
-#include "city/sentiment.hpp"
+#include "productmap.hpp"
+#include "core/foreach.hpp"
+#include "core/position.hpp"
 
-namespace events
+namespace good
 {
 
-GameEventPtr UpdateCitySentiment::create( int value )
+ProductMap& ProductMap::operator+=(const ProductMap& other)
 {
-  UpdateCitySentiment* e = new UpdateCitySentiment();
-  e->_value = value;
+  foreach( it, other )
+    (*this)[ it->first ] += it->second;
 
-  GameEventPtr ret( e );
-  ret->drop();
+  return *this;
+}
+
+VariantList ProductMap::save() const
+{
+  VariantList ret;
+  foreach( it, *this )
+    ret << Point( it->first, it->second );
 
   return ret;
 }
 
-bool UpdateCitySentiment::_mayExec(Game&, unsigned int) const {  return true; }
-
-void UpdateCitySentiment::_exec(Game& game, unsigned int)
+void ProductMap::load(const VariantList &stream)
 {
-  PlayerCityPtr city = game.city();
-
-  city::SentimentPtr srvc = city::statistic::finds<city::Sentiment>( city );
-
-  if( srvc.isValid() )
+  foreach( it, stream )
   {
-    srvc->addBuff( _value, false, 12 );
+    Point t = *it;
+    (*this)[ (Product)t.x() ] = t.y();
   }
 }
 
-}
+}//end namespace good
+    

@@ -65,6 +65,8 @@ SrvcPtr Festival::create( PlayerCityPtr city )
 }
 
 std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
+
+void Festival::now() { _d->nextfest.date = game::Date::current(); }
 DateTime Festival::lastFestivalDate() const { return _d->lastfest.date; }
 DateTime Festival::nextFestivalDate() const { return _d->nextfest.date; }
 

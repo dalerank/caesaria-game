@@ -66,7 +66,7 @@ WorkersInfo getWorkersNumber(PlayerCityPtr city )
 {
   WorkersInfo ret;
 
-  WorkingBuildingList buildings = findo<WorkingBuilding>( city );
+  WorkingBuildingList buildings = findo<WorkingBuilding>( city, object::any );
 
   ret.current = 0;
   ret.need = 0;
