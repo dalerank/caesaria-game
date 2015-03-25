@@ -72,7 +72,14 @@ void WalkerGrid::remove( WalkerPtr a)
         return;
       }
     }
-  }
+    }
+}
+
+void WalkerGrid::update(const WalkerList &walkers)
+{
+  clear();
+  foreach( it, walkers )
+    append( *it );
 }
 
 bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)

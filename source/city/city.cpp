@@ -105,7 +105,13 @@ namespace config {
 CAESARIA_LITERALCONST(tilemap)
 }
 
-typedef std::map<PlayerCity::OptionType, int> Options;
+class Options : public std::map<PlayerCity::OptionType, int>
+{
+public:
+  VariantList save() const;
+  void load(const VariantList &stream );
+  void resetIfNot( PlayerCity::OptionType name, int value );
+};
 
 template< class T >
 class FlowList : public SmartList<T>
@@ -282,11 +288,7 @@ void PlayerCity::timeStep(unsigned int time)
   }
 
   //update walkers access map
-  _d->walkersGrid.clear();
-  foreach( it, _d->walkers )
-  {
-    _d->walkersGrid.append( *it );
-  }
+  _d->walkersGrid.update( _d->walkers );
   _d->walkersGrid.sort();
 
   _d->updateWalkers( time );
@@ -385,9 +387,7 @@ int PlayerCity::strength() const
 
 DateTime PlayerCity::lastAttack() const
 {
-  city::MilitaryPtr mil;
-  mil << findService( city::Military::defaultName() );
-
+  city::MilitaryPtr mil = city::statistic::finds<city::Military>( this );
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
 
@@ -427,7 +427,7 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
   }
   else
   {
-	  // TODO affect citizen sentiment for no payment and request money to caesar.
+    // TODO affect citizen sentiment for no payment and request money to caesar.
   }
 }
 
@@ -436,7 +436,8 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   unsigned int pop = 0;
   HouseList houseList = city::statistic::findh( city );
 
-  foreach( house, houseList) { pop += (*house)->habitants().count(); }
+  foreach( house, houseList)
+    pop += (*house)->habitants().count();
   
   population = pop;
   emit onPopulationChangedSignal( pop );
@@ -545,17 +546,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "cameraStart"] = _d->cameraStart;
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
-  stream[ "climate"    ] = getOption( climateType );
-  stream[ "difficulty" ] = getOption( difficulty );
-  stream[ CAESARIA_STR_A(adviserEnabled) ] = getOption( adviserEnabled );
-  stream[ CAESARIA_STR_A(fishPlaceEnabled) ] = getOption( fishPlaceEnabled );
-  stream[ CAESARIA_STR_A(godEnabled) ] = getOption( godEnabled );
-  stream[ "zoomEnabled"] = getOption( zoomEnabled );
-  stream[ "zoomInvert" ] = getOption( zoomInvert );
-  stream[ "fireKoeff"  ] = getOption( fireKoeff );
-  stream[ "c3gameplay" ] = getOption( c3gameplay );
-  stream[ "barbarianAttack" ] = getOption( barbarianAttack );
-  stream[ "legionAttack" ] = getOption( legionAttack );
+  stream[ "options"    ] = _d->options.save();
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -642,17 +633,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
   Logger::warning( "City: parse options" );
-  setOption( climateType, stream.get( "climate", game::climate::central ) );
-  setOption( adviserEnabled, stream.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
-  setOption( fishPlaceEnabled, stream.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
-  setOption( godEnabled, stream.get( CAESARIA_STR_A(godEnabled), 1 ) );
-  setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
-  setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
-  setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );
-  setOption( barbarianAttack, stream.get( "barbarianAttack", 1 ) );
-  setOption( legionAttack, stream.get( "legionAttack", 1 ) );
-  setOption( c3gameplay, stream.get( "c3gameplay", 0 ) );
-  setOption( difficulty, stream.get( "difficulty", (int)game::difficulty::usual ) );
+  _d->options.load( stream.get( "options" ).toList() );
 
   Logger::warning( "City: parse funds" );
   _d->treasury.load( stream.get( "funds" ).toMap() );
@@ -781,15 +762,12 @@ const city::VictoryConditions& PlayerCity::victoryConditions() const {   return 
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::mayor() const { return _d->player; }
-
 city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
-
 const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
 const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 ClimateType PlayerCity::climate() const{ return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
-
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->treasury.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
@@ -799,8 +777,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value){  _d->options[
 
 int PlayerCity::prosperity() const
 {
-  city::ProsperityRatingPtr csPrsp;
-  csPrsp << findService( city::ProsperityRating::defaultName() );
+  city::ProsperityRatingPtr csPrsp = city::statistic::finds<city::ProsperityRating>( this );
   return csPrsp.isValid() ? csPrsp->value() : 0;
 }
 
@@ -842,15 +819,13 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  city::CultureRatingPtr csClt;
-  csClt << findService( city::CultureRating::defaultName() );
+  city::CultureRatingPtr csClt = city::statistic::finds<city::CultureRating>( this );
   return csClt.isValid() ? csClt->value() : 0;
 }
 
 int PlayerCity::peace() const
 {
-  city::PeacePtr p;
-  p << findService( city::Peace::defaultName() );
+  city::PeacePtr p = city::statistic::finds<city::Peace>( this );
   return p.isValid() ? p->value() : 0;
 }
 
@@ -933,4 +908,40 @@ void PlayerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
 {
   _d->tradeOptions.setBuyPrice( gtype, bCost );
   _d->tradeOptions.setSellPrice( gtype, sCost );
+}
+
+VariantList Options::save() const
+{
+  VariantList ret;
+  foreach( it, *this )
+    ret << Point( it->first, it->second );
+
+  return ret;
+}
+
+void Options::load(const VariantList& stream)
+{
+  foreach( it, stream )
+  {
+    Point tmp = *it;
+    (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
+  }
+
+  resetIfNot( PlayerCity::climateType, game::climate::central );
+  resetIfNot( PlayerCity::adviserEnabled, 1 );
+  resetIfNot( PlayerCity::fishPlaceEnabled, 1 );
+  resetIfNot( PlayerCity::godEnabled, 1 );
+  resetIfNot( PlayerCity::zoomEnabled, 1 );
+  resetIfNot( PlayerCity::zoomInvert, 1 );
+  resetIfNot( PlayerCity::fireKoeff, 100 );
+  resetIfNot( PlayerCity::barbarianAttack, 1 );
+  resetIfNot( PlayerCity::legionAttack, 1 );
+  resetIfNot( PlayerCity::c3gameplay, 0 );
+  resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
+}
+
+void Options::resetIfNot(PlayerCity::OptionType name, int value)
+{
+  if( !count( name ) )
+    (*this)[ name ] = value;
 }
