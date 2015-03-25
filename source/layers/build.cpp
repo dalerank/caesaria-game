@@ -184,7 +184,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         d->buildTiles.push_back( tile );
       }
     }
-    }
+  }
 }
 
 void Build::_checkBuildArea()
@@ -197,6 +197,11 @@ void Build::_checkBuildArea()
     Tile* tile = _camera()->at( _lastCursorPos(), true );
     _d->startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
   }
+}
+
+bool compare_tile(const Tile* one, const Tile* two)
+{
+  return one->pos().z() > two->pos().z();
 }
 
 void Build::_updatePreviewTiles( bool force )
@@ -269,6 +274,8 @@ void Build::_updatePreviewTiles( bool force )
 
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->epos() ); }
   }  
+
+  std::sort( d->buildTiles.begin(), d->buildTiles.end(), compare_tile );
 
   d->textPic->fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
