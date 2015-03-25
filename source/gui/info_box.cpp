@@ -38,6 +38,8 @@ namespace gui
 namespace infobox
 {
 
+const Rect Simple::defaultRect = Rect( 0, 0, 510, 300 );
+
 class Simple::Impl
 {
 public:

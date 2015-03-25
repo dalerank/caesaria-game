@@ -13,26 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "datetimehelper.hpp"
-#include "core/utils.hpp"
-#include "core/gettext.hpp"
+#ifndef __CAESARIA_GAME_CONFIG_H_INCLUDED__
+#define __CAESARIA_GAME_CONFIG_H_INCLUDED__
 
-namespace util
+namespace config
 {
 
-std::string date2str(const DateTime& time, bool drawDays)
+namespace gamespeed
 {
-  std::string month = utils::format( 0xff, "##month_%d_short##", time.month() );
-  std::string age = utils::format( 0xff, "##age_%s##", time.year() > 0 ? "ad" : "bc" );
-  std::string text;
-  if( drawDays)
-    text = utils::format( 0xff, "%d %s %d %s", time.day(), _( month ), abs( time.year() ), _( age ) );
-  else
-    text = utils::format( 0xff, "%s %d %s", _( month ), abs( time.year() ), _( age ) );
+enum { minimum=10, scale=10, defaultMutltiplier=70, maximux=300 };
+}//end namespace gamespeed
 
-  return text;
-}
+}//end namespace game
 
-}//end namespace util
+#endif //__CAESARIA_GAME_CONFIG_H_INCLUDED__

@@ -44,7 +44,7 @@ public:
   int lastYearUpdate;
   int maxDebt;
 
-  IssuesHistory history;
+  Treasury::IssuesHistory history;
 
 signals public:
   Signal1<int> onChangeSignal;
@@ -56,7 +56,7 @@ Treasury::Treasury() : _d( new Impl )
   _d->money = 0;
   _d->workerSalary = defaultSalary;
   _d->lastYearUpdate = 0;
-  _d->maxDebt = -5000;
+  _d->maxDebt = econ::maxDebt - 100;
   _d->history.push_back( IssuesValue() );
 }
 

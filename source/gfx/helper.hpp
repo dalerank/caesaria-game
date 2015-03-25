@@ -31,7 +31,7 @@ namespace imgid
 }
 
 namespace tile
-{
+{  
   int encode( const Tile& tt );
   int turnCoastTile(int imgid , Direction newDirection);
   unsigned int hash( const TilePos& pos );
@@ -46,6 +46,8 @@ namespace tile
 
 namespace tilemap
 {
+  enum { c3bldSize=5, c3CellWidth=30, caCellWidth=60, c3mapSize=162, c3mapSizeSq=c3mapSize*c3mapSize };
+
   Direction getDirection( const TilePos& b, const TilePos& e );
   void initTileBase( int width );
   const Point& cellCenter();

@@ -167,9 +167,9 @@ StaticInfoboxCreator::StaticInfoboxCreator(const std::string &caption, const std
 Simple *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
-  Simple* infoBox = new Simple( parent, Rect( 0, 0, 510, 300 ) );
-  infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2,
-                               size.height() - infoBox->height()) );
+  Simple* infoBox = new Simple( parent, Simple::defaultRect );
+  infoBox->setPosition( Point( ( size.width() - infoBox->width()) / 2,
+                                 size.height() - infoBox->height()) );
   OverlayPtr overlay = city->getOverlay( pos );
 
   std::string caption = overlay.isValid()

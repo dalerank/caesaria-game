@@ -89,9 +89,6 @@ enum { veryAngry=5, angry=10, veryUpset=15, upset=22,
        loveYou=90, idolizeyou=95 };
 }
 
-CAESARIA_LITERALCONST(adviserEnabled)
-CAESARIA_LITERALCONST(fishPlaceEnabled)
-
 }//end namespace city
 
 #endif //__CAESARIA_CITY_CONFIG_H_INCLUDED__

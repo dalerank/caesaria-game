@@ -135,11 +135,7 @@ VariantMap Animation::save() const
   VARIANT_SAVE_ANY_D( ret, d, delay )
   VARIANT_SAVE_ANY_D( ret, d, loop )
 
-  VariantList pics;
-  foreach( i, _pictures)
-    pics << Variant( (*i).name() );
-
-  ret[ "pictures" ] = pics;
+  ret[ "pictures" ] = _pictures.names();
 
   return ret;
 }
@@ -163,7 +159,7 @@ void Animation::load(const VariantMap &stream)
 
   VariantList vl_pics = stream.get( "pictures" ).toList();
   foreach( i, vl_pics )
-    _pictures.push_back( Picture::load( (*i).toString() ) );
+    _pictures.push_back( Picture::load( i->toString() ) );
 }
 
 void Animation::clear() { _pictures.clear();}

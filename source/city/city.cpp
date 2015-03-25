@@ -547,9 +547,9 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = getOption( climateType );
   stream[ "difficulty" ] = getOption( difficulty );
-  stream[ literals::adviserEnabled ] = getOption( adviserEnabled );
-  stream[ literals::fishPlaceEnabled ] = getOption( fishPlaceEnabled );
-  stream[ "godEnabled" ] = getOption( godEnabled );
+  stream[ CAESARIA_STR_A(adviserEnabled) ] = getOption( adviserEnabled );
+  stream[ CAESARIA_STR_A(fishPlaceEnabled) ] = getOption( fishPlaceEnabled );
+  stream[ CAESARIA_STR_A(godEnabled) ] = getOption( godEnabled );
   stream[ "zoomEnabled"] = getOption( zoomEnabled );
   stream[ "zoomInvert" ] = getOption( zoomInvert );
   stream[ "fireKoeff"  ] = getOption( fireKoeff );
@@ -643,9 +643,9 @@ void PlayerCity::load( const VariantMap& stream )
 
   Logger::warning( "City: parse options" );
   setOption( climateType, stream.get( "climate", game::climate::central ) );
-  setOption( adviserEnabled, stream.get( literals::adviserEnabled, 1 ) );
-  setOption( fishPlaceEnabled, stream.get( literals::fishPlaceEnabled, 1 ) );
-  setOption( godEnabled, stream.get( "godEnabled", 1 ) );
+  setOption( adviserEnabled, stream.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
+  setOption( fishPlaceEnabled, stream.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
+  setOption( godEnabled, stream.get( CAESARIA_STR_A(godEnabled), 1 ) );
   setOption( zoomEnabled, stream.get( "zoomEnabled", 1 ) );
   setOption( zoomInvert, stream.get( "zoomInvert", 1 ) );
   setOption( fireKoeff, stream.get( "fireKoeff", 100 ) );

@@ -118,8 +118,8 @@ bool Mission::load( const std::string& filename, Game& game )
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm[ "funds" ].toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( config::literals::adviserEnabled, 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( config::literals::fishPlaceEnabled, 1 ) );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 

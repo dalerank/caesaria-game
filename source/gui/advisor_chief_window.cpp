@@ -502,7 +502,7 @@ void Chief::Impl::drawEntertainment()
   FestivalPtr srvc = statistic::finds<Festival>( city );
   if( srvc.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( game::Date::current() );
+    int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";

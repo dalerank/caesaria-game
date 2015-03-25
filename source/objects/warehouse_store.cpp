@@ -247,7 +247,11 @@ void WarehouseStore::load(const VariantMap &stream)
 {
   Store::load( stream );
   int maxCapacity = capacity();
+
   _capacities.load( stream.get( "capacities" ).toList() );
+  foreach( it, _capacities )
+    if( it->second == 0 )
+      it->second = maxCapacity;
 }
 
 int WarehouseStore::capacity() const
