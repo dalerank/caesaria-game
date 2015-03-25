@@ -5,14 +5,14 @@
 
   items : {
     lutetia : {
-      title : "##lutetia_dangerous_province##"
+      title : "##lutetia_title##"
       location : [ 570, 280 ]
       mission : ":/missions/lutetia.mission"
     }
 
     valencia : {
-      title : "##valencia_peacefully_province##"
-      mission : ":/missions/valencia.mission"
+      title : "##valencia_title##"
+      mission : ":/missions/valentia.mission"
       location : [ 20, 320 ]
     }
   }

@@ -5,13 +5,13 @@
 	
   items : {
     lindum : {
-      title : "##lindum_extremely_dangerous_province##"
+      title : "##lindum_title##"
       location : [ 570, 280 ]
       mission : ":/missions/lindum.mission"
     }
 
     massilia : {
-      title : "##massilia_peace_province##"
+      title : "##massilia_title##"
       mission : ":/missions/massilia.mission"
       location : [ 20, 320 ]
     }

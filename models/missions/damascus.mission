@@ -20,7 +20,7 @@
     favour : 40
     finishDate : "150.01.01"
     next : ":/missions/mission10.briefing"
-    title : "##win_engineer_title##"
+    title : "##сaesar##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##damascus_title##"

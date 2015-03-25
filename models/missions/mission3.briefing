@@ -5,13 +5,13 @@
 	
   items : {
     capua : {
-      title : "Capua: a peaceful province"
+      title : "##capua_title##"
       location : [ 300, 170 ]
       mission : ":/missions/capua.mission"
     }
 
     tarentum : {
-      title : "##tarentum_slightly_dangerous_province##"
+      title : "##tarentum_title##"
       mission : ":/missions/tarentum.mission"
       location : [ 350, 230 ]
     }

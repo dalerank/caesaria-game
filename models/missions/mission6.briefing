@@ -5,13 +5,13 @@
 	
   items : {
     lugdunum : {
-      title : "Lugdunum: largely peaceful province"
+      title : "##lugdunum_title##"
       location : [ 190, 140 ]
       mission : ":/missions/lugdunum.mission"
     }
 
     carthago : {
-      title : "Carthago: a dangerous province"
+      title : "##carthago_title##"
       mission : ":/missions/carthago.mission"
       location : [ 240, 310 ]
     }
