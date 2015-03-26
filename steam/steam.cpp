@@ -181,6 +181,8 @@ void UserStats::evaluateAchievement( Achievement& achievement )
             UnlockAchievement( achievement );
     }
   break;*/
+  default:
+   break;
   }
 }
 

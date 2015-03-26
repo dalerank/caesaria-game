@@ -27,15 +27,19 @@
 #include "empire.hpp"
 #include "game/gift.hpp"
 #include "core/variant_map.hpp"
+#include "config.hpp"
+
+using namespace config;
 
 namespace world
 {
 
 namespace {
 static const unsigned int legionSoldiersCount = 16;
-static const int maxFavour = 100;
 static const int maxFavourUpdate = 5;
 static const int yearlyDecreaseFavour = 2;
+static const int brokenTaxPenalty = 1;
+static const int brokenMoreTaxPenalty = 2;
 static const int taxBrokenFavourDecrease = 3;
 static const int taxBrokenFavourDecreaseMax = 8;
 static const int normalSalaryFavourUpdate = 1;
@@ -104,11 +108,42 @@ struct Relation
   }
 };
 
+class Relations : public std::map< std::string, Relation >
+{
+public:
+  VariantMap save() const
+  {
+    VariantMap ret;
+    foreach( it, *this )
+      ret[ it->first ] = it->second.save();
+
+    return ret;
+  }
+
+  Relation get( const std::string& name ) const
+  {
+    Relations::const_iterator it = find( name );
+    if( it != end() )
+      return it->second;
+
+    return Relation();
+  }
+
+  void load( const VariantMap& stream )
+  {
+    foreach( it, stream )
+    {
+      Relation r;
+      r.load( it->second.toMap() );
+
+      (*this)[ it->first ] = r;
+    }
+  }
+};
+
 class Emperor::Impl
 {
 public:
-  typedef std::map< std::string, Relation > Relations;
-
   Relations relations;
   Empire* empire;
   std::string name;
@@ -127,7 +162,7 @@ Emperor::~Emperor(){}
 int Emperor::relation(const std::string& cityname)
 {
   __D_IMPL(d,Emperor)
-  Impl::Relations::iterator i = d->relations.find( cityname );
+  Relations::iterator i = d->relations.find( cityname );
   return ( i == d->relations.end() ? 0 : i->second.value );
 }
 
@@ -135,17 +170,12 @@ void Emperor::updateRelation(const std::string& cityname, int value)
 {
   __D_IMPL(d,Emperor)
   int current = d->relations[ cityname ].value;
-  d->relations[ cityname ].value = math::clamp<int>( current + value, 0, maxFavour );
+  d->relations[ cityname ].value = math::clamp<int>( current + value, 0, emperor::maxFavor );
 }
 
 void Emperor::sendGift(const Gift& gift)
 {
-  Relation relation;
-  Impl::Relations::iterator it = _dfunc()->relations.find( gift.sender() );
-  if( it != _dfunc()->relations.end() )
-  {
-    relation = it->second;
-  }
+  Relation relation = _dfunc()->relations.get( gift.sender() );
 
   int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( game::Date::current() ),
                                             0, (int)DateTime::monthsInYear );
@@ -160,17 +190,13 @@ void Emperor::sendGift(const Gift& gift)
   updateRelation( gift.sender(), favourUpdate );
 }
 
-DateTime Emperor::lastGiftDate(const std::string& cityname)
+DateTime Emperor::lastGiftDate(const std::string& cityname) const
 {
-  Relation relation;
-  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
-  if( it != _dfunc()->relations.end() )
-  {
-    relation = it->second;
+  Relations::const_iterator it = _dfunc()->relations.find( cityname );
+  if( it == _dfunc()->relations.end() )
     return DateTime( -350, 1, 1 );
-  }
-
-  return relation.lastGiftDate;
+  else
+    return it->second.lastGiftDate;
 }
 
 void Emperor::timeStep(unsigned int time)
@@ -205,11 +231,11 @@ void Emperor::timeStep(unsigned int time)
       int brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
       if( brokenEmpireTax > 0 )
       {
-        relation.value -= 1;
+        relation.value -= brokenTaxPenalty;
 
         brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearAgo );
         if( brokenEmpireTax > 0 )
-          relation.value -= 2;
+          relation.value -= brokenMoreTaxPenalty;
       }
     }
   }
@@ -318,18 +344,14 @@ void Emperor::resetRelations(const StringArray& cities)
     else
     {
       foreach( it, cities )
-      {
-        CityPtr pCity = d->empire->findCity( *it );
-        if( pCity.isValid() )
-          empCities << pCity;
-      }
+        empCities.addIfValid( d->empire->findCity( *it ) );
     }
 
     foreach( it, empCities )
     {
       Relation& r = d->relations[ (*it)->name() ];
 
-      r.value = maxFavour/2;
+      r.value = emperor::defaultFavor;
       r.lastGiftValue = 0;
       r.lastTaxDate = game::Date::current();
       r.lastGiftDate = game::Date::current();
@@ -350,7 +372,7 @@ void Emperor::checkCities()
     if( d->relations.count( (*it)->name() ) == 0 )
     {
       Relation& relation = d->relations[ (*it)->name() ];
-      relation.value = maxFavour/2;
+      relation.value = emperor::defaultFavor;
     }
   }
 }
@@ -359,15 +381,7 @@ VariantMap Emperor::save() const
 {
   __D_IMPL_CONST(d,Emperor)
   VariantMap ret;
-
-  Impl::Relations r = d->relations;
-  VariantMap vm_relations;
-  foreach( it, r )
-  {
-    vm_relations[ it->first ] = it->second.save();
-  }
-
-  ret[ "relations" ] = vm_relations;
+  ret[ "relations" ] = d->relations.save();
   VARIANT_SAVE_STR_D( ret, d, name )
   return ret;
 }
@@ -375,16 +389,7 @@ VariantMap Emperor::save() const
 void Emperor::load(const VariantMap& stream)
 {
   __D_IMPL(d,Emperor)
-  VariantMap vm_relations = stream.get( "relations" ).toMap();
-
-  Impl::Relations& relations = d->relations;
-  foreach( it, vm_relations )
-  {
-    Relation r;
-    r.load( it->second.toMap() );
-    relations[ it->first ] = r;
-  }
-
+  d->relations.load( stream.get( "relations" ).toMap() );
   VARIANT_LOAD_STR_D( d, name, stream )
 }
 

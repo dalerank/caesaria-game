@@ -25,13 +25,13 @@
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant_map.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
 namespace world
 {
 
-static const int defaultVisibleRange=20;
 static const int maxLoss = 100;
 
 class Army::Impl
@@ -78,7 +78,7 @@ void Army::_reachedWay()
   }
   else
   {
-    ObjectList objs = empire()->findObjects( location(), defaultVisibleRange );
+    ObjectList objs = empire()->findObjects( location(), config::army::viewRange );
     objs.remove( this );
 
     if( !objs.empty() )

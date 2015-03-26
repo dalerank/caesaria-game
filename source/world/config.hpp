@@ -21,6 +21,26 @@
 namespace config
 {
 
+namespace army
+{
+enum { viewRange=20 };
+}
+
+namespace barbarian
+{
+enum { attackRange=20, viewRange=60 };
+}
+
+namespace trade
+{
+enum { maxMerchantsInRoute = 2, minMonthsMerchantSend = 2 };
+}
+
+namespace emperor
+{
+enum { defaultFavor=50, maxFavor=100 };
+}
+
 } // end namespace config
 
 namespace econ

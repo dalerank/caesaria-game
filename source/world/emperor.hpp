@@ -29,8 +29,6 @@ class Gift;
 namespace world
 {
 
-enum { defaultEmperorFavor=50 };
-
 class Emperor
 {
 public:
@@ -41,7 +39,7 @@ public:
   void updateRelation( const std::string& cityname, int value );
 
   void sendGift( const Gift& money );
-  DateTime lastGiftDate( const std::string& cityname );
+  DateTime lastGiftDate( const std::string& cityname ) const;
   void timeStep( unsigned int time );
 
   void remSoldiers(const std::string& cityname, int value);

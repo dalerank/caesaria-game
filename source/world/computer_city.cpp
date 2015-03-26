@@ -31,15 +31,13 @@
 #include "core/metric.hpp"
 #include "core/variant_map.hpp"
 #include "city/states.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 using namespace metric;
 
 namespace world
 {
-
-const int maxMerchantsInRoute = 2;
-const int minMonthsMerchantSend = 2;
 
 class ComputerCity::Impl
 {
@@ -306,7 +304,7 @@ void ComputerCity::timeStep( unsigned int time )
   //one year before step need
   if( _d->lastTimeUpdate.monthsTo( game::Date::current() ) > DateTime::monthsInYear-1 )
   {
-    _d->merchantsNumber = math::clamp<int>( _d->merchantsNumber-1, 0, maxMerchantsInRoute );
+    _d->merchantsNumber = math::clamp<int>( _d->merchantsNumber-1, 0, config::trade::maxMerchantsInRoute );
     _d->lastTimeUpdate = game::Date::current();
 
     foreach( gtype, good::all() )
@@ -317,7 +315,7 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 
-  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > minMonthsMerchantSend )
+  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
   {
     TraderouteList routes = empire()->tradeRoutes( name() );
 
@@ -337,6 +335,7 @@ void ComputerCity::timeStep( unsigned int time )
     good::Storage sellGoods, buyGoods;
     sellGoods.setCapacity( Merchant::defaultCapacity );
     buyGoods.setCapacity( Merchant::defaultCapacity );
+
     foreach( gtype, good::all() )
     {
       buyGoods.setCapacity( *gtype, _d->buyStore.capacity( *gtype ) );
@@ -401,11 +400,9 @@ void ComputerCity::_initTextures()
   else if( _d->romecity ) { index = PicID::romeCity; }
 
   Picture pic = Picture::load( ResourceGroup::empirebits, index );
-  //pic.addOffset( 0, 30 );
   setPicture( pic );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
-  //_animation().addOffset( Point( 17, 24 ) );
   _animation().setDelay( 2 );
 }
 
