@@ -118,33 +118,33 @@ double WidgetCalc::_term(const std::string& str, unsigned *idx)
   double div;
 
   while (str[*idx] == '*' || str[*idx] == '/')
+  {
+    switch (str[*idx])
     {
-      switch (str[*idx])
+    case '*':
+      ++*idx;
+
+      result *= _factor(str, idx);
+
+      break;
+    case '/':
+      ++*idx;
+
+      div = _factor(str, idx);
+
+      if (div != 0.0)
         {
-        case '*':
-          ++*idx;
-
-          result *= _factor(str, idx);
-
-          break;
-        case '/':
-          ++*idx;
-
-          div = _factor(str, idx);
-
-          if (div != 0.0)
-            {
-              result /= div;
-            }
-          else
-            {
-              printf("Division by zero!\n");
-              exit(-1);
-            }
-
-          break;
+          result /= div;
         }
+      else
+      {
+        Logger::warning( "!!! WARNING: Division by zero!");
+        return 0;
+      }
+
+      break;
     }
+  }
 
   return result;
 }
@@ -168,10 +168,10 @@ double WidgetCalc::_factor(const std::string& str, unsigned *idx)
     result = _expr(str, idx);
 
     if (str[*idx] != ')')
-      {
-        printf("Brackets unbalanced!\n");
-        exit(-2);
-      }
+    {
+      Logger::warning( "!!! WARNING: Brackets unbalanced!");
+      return 0;
+    }
 
     ++*idx;
   }
