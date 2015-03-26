@@ -25,6 +25,7 @@
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
+#include "city/states.hpp"
 #include "factory.hpp"
 
 using namespace constants;
@@ -53,7 +54,7 @@ GameEventPtr RandomPlague::create()
 
 void RandomPlague::_exec( Game& game, unsigned int time)
 {
-  int population = game.city()->population();
+  int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
     Logger::warning( "Execute random plague event" );

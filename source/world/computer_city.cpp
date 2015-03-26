@@ -45,7 +45,6 @@ public:
   unsigned int tradeType;
   bool distantCity, romecity;
   bool available;
-  int population;
   int strength;
   city::States states;
   unsigned int tradeDelay;
@@ -67,7 +66,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->distantCity = false;
   _d->merchantsNumber = 0;
   _d->available = true;
-  _d->population = 0;
+  _d->states.population = 0;
   _d->states.nation = world::nation::unknown;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
@@ -81,7 +80,6 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 
 econ::Treasury& ComputerCity::treasury() { return _d->funds; }
-unsigned int ComputerCity::population() const { return 0; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
@@ -145,7 +143,7 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, romecity )
   VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
   VARIANT_SAVE_ANY_D( options, _d, lastAttack )
-  VARIANT_SAVE_ANY_D( options, _d, population )
+  VARIANT_SAVE_ANY_D( options, _d, states.population )
   VARIANT_SAVE_ANY_D( options, _d, strength )
 }
 
@@ -163,7 +161,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D( _d, tradeDelay, options )
   VARIANT_LOAD_TIME_D(_d, lastAttack, options )
   VARIANT_LOAD_ANY_D( _d, strength, options )
-  VARIANT_LOAD_ANYDEF_D(_d, population, _d->population, options )
+  VARIANT_LOAD_ANYDEF_D(_d, states.population, _d->states.population, options )
 
   foreach( gtype, good::all() )
   {
@@ -287,7 +285,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( game::Date::isWeekChanged() )
   {
-    _d->strength = math::clamp<int>( _d->strength+1, 0, _d->population / 100 );
+    _d->strength = math::clamp<int>( _d->strength+1, 0, _d->states.population / 100 );
   }
 
   if( game::Date::isYearChanged() )

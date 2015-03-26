@@ -27,6 +27,7 @@
 #include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
 #include "walker/helper.hpp"
+#include "city/states.hpp"
 #include "factory.hpp"
 
 using namespace constants;
@@ -91,7 +92,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     Variant vCityPop = soldiers.get( "city.pop" );
     if( vCityPop.isValid() )
     {
-      soldierNumber = game.city()->population() * vCityPop.toFloat();
+      soldierNumber = game.city()->states().population * vCityPop.toFloat();
     }
 
     TilePos location( -1, -1 );

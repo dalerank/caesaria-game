@@ -26,6 +26,7 @@
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "events/notification.hpp"
+#include "city/states.hpp"
 #include "config.hpp"
 
 namespace world
@@ -139,7 +140,7 @@ void Barbarian::_check4attack()
 
      foreach( it, cities )
      {
-       if( (*it)->population() < (unsigned int)_d->minPop4attack )
+       if( (*it)->states().population < (unsigned int)_d->minPop4attack )
          continue;
 
        float distance = location().distanceTo( (*it)->location() );

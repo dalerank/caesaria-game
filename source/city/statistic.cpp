@@ -35,6 +35,7 @@
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 #include <map>
 
 using namespace constants;
@@ -87,7 +88,7 @@ float getBalanceKoeff(PlayerCityPtr city)
     return normalBalanceKoeff;
   }
 
-  float result = atan( city->population() / popBalanceKoeff );
+  float result = atan( city->states().population / popBalanceKoeff );
   return math::clamp(result, minBalanceKoeff, maxBalanceKoeff);
 }
 
@@ -209,7 +210,7 @@ unsigned int blackHouses( PlayerCityPtr city )
 {
   unsigned int ret = 0;
   HouseList houses = findh( city );
-  if( city->population() > pop4blackHouseCalc )
+  if( city->states().population > pop4blackHouseCalc )
   {
     foreach( h, houses )
       ret += ((*h)->tile().param( gfx::Tile::pDesirability ) > minBlackHouseDesirability ? 0 : 1);
@@ -309,11 +310,12 @@ int getWagesDiff(PlayerCityPtr city)
 
 unsigned int getFestivalCost(PlayerCityPtr city, FestivalType type)
 {
+  unsigned int pop = city->states().population;
   switch( type )
   {
-  case smallFest: return int( city->population() / smallFestivalCostLimiter ) + smallFestivalMinCost;
-  case middleFest: return int( city->population() / middleFestivalCostLimiter ) + middleFestivalMinCost;
-  case greatFest: return int( city->population() / greatFestivalCostLimiter ) + greatFestivalMinCost;
+  case smallFest: return int( pop / smallFestivalCostLimiter ) + smallFestivalMinCost;
+  case middleFest: return int( pop / middleFestivalCostLimiter ) + middleFestivalMinCost;
+  case greatFest: return int( pop / greatFestivalCostLimiter ) + greatFestivalMinCost;
   }
 
   return 0;

@@ -32,6 +32,7 @@
 #include "dictionary.hpp"
 #include "widget_helper.hpp"
 #include "core/utils.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -232,7 +233,7 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 void Population::Impl::updateStates()
 {
   InfoPtr info = statistic::finds<Info>( city );
-  int currentPop = city->population();
+  int currentPop = city->states().population;
 
   if( lbMigrationValue )
   {

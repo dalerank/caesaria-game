@@ -27,6 +27,7 @@
 #include "core/priorities.hpp"
 #include "city/statistic.hpp"
 #include "factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace city;
@@ -55,7 +56,7 @@ GameEventPtr RandomDamage::create()
 
 void RandomDamage::_exec( Game& game, unsigned int time )
 {
-  int population = game.city()->population();
+  int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
     Logger::warning( "Execute random collapse event" );

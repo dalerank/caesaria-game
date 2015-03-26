@@ -31,6 +31,7 @@
 #include "city/migration.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
+#include "city/states.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
@@ -327,7 +328,7 @@ void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
 void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
-  bool bigcity = _city()->population() > populationOverVillage;
+  bool bigcity = _city()->states().population > populationOverVillage;
   unsigned int houseLockId = tile::hash( _d->housePosLock );
 
   while( itHouse != hlist.end() )

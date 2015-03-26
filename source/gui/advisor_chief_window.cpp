@@ -49,6 +49,7 @@
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -210,7 +211,7 @@ void Chief::Impl::drawEmploymentState()
   std::string text;
   NColor color = DefaultColors::black;
 
-  if( city->population() == 0 )
+  if( city->states().population == 0 )
   {
     text = _("##no_people_in_city##");
     color =  DefaultColors::brown;

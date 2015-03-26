@@ -25,6 +25,7 @@
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
+#include "city/states.hpp"
 #include "core/priorities.hpp"
 
 using namespace constants;
@@ -57,7 +58,7 @@ GameEventPtr UpdateHouseService::create( Service::Type type, int value )
 
 void UpdateHouseService::_exec( Game& game, unsigned int time )
 {
-  int population = game.city()->population();
+  int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
     Logger::warning( "Execute update house service event" + ServiceHelper::getName( _d->type ) );

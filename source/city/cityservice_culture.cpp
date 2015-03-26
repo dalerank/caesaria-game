@@ -31,6 +31,7 @@
 #include "objects/constants.hpp"
 #include "objects/theater.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 
@@ -128,7 +129,7 @@ void CultureRating::timeStep(const unsigned int time )
     _d->libraries.visitors = 0;
     _d->schools.visitors = 0;
     _d->academies.visitors = 0;
-    int cityPopulation = _city()->population();
+    int cityPopulation = _city()->states().population;
 
     TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
     foreach( temple, temples ) { _d->religion.visitors += (*temple)->parishionerNumber(); }

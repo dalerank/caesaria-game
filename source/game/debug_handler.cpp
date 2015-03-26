@@ -55,6 +55,7 @@
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
+#include "religion/config.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -228,7 +229,7 @@ void DebugHandler::Impl::handleEvent(int event)
   switch( event )
   {
   case send_mars_wrath:
-    religion::rome::Pantheon::mars()->updateRelation( -101.f, game->city() );
+    religion::rome::Pantheon::mars()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
   case add_1000_dn:
@@ -405,15 +406,15 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case send_venus_wrath:
-    religion::rome::Pantheon::venus()->updateRelation( -101.f, game->city() );
+    religion::rome::Pantheon::venus()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
   case send_venus_smallcurse:
-    religion::rome::Pantheon::venus()->updateRelation( -102.f, game->city() );
+    religion::rome::Pantheon::venus()->updateRelation( religion::debug::doSmallCurse, game->city() );
   break;
 
   case send_mars_spirit:
-    religion::rome::Pantheon::mars()->updateRelation( -103.f, game->city() );
+    religion::rome::Pantheon::mars()->updateRelation( religion::debug::doBlessing, game->city() );
   break;
 
   case all_sound_off:

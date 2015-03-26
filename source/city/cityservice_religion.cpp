@@ -32,6 +32,7 @@
 #include "core/safetycast.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -247,9 +248,9 @@ void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
 
   CoverageInfo& myTemples = templesCoverity[ divn->internalName() ];
   unsigned int faithValue = 0;
-  if( city->population() > 0 )
+  if( city->states().population > 0 )
   {
-    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->population() ), 0u, 100u );
+    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->states().population ), 0u, 100u );
   }
 
   Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );

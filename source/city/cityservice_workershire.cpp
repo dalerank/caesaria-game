@@ -32,6 +32,7 @@
 #include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
 #include "config.hpp"
 
 using namespace constants;
@@ -147,7 +148,7 @@ void WorkersHire::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  if( _city()->population() == 0 )
+  if( _city()->states().population == 0 )
     return;
 
   _d->hrInCity = _city()->walkers( walker::recruter );

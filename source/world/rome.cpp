@@ -58,13 +58,13 @@ Rome::Rome(EmpirePtr empire)
   _d->strength = maxSoldiers;
   _d->states.age = 500;
   _d->states.nation = nation::rome;
+  _d->states.population = defaultPopulation;
 }
 
 unsigned int Rome::tradeType() const { return 0; }
 econ::Treasury& Rome::treasury() { return _d->funds; }
 
 std::string Rome::name() const { return Rome::defaultName; }
-unsigned int Rome::population() const { return defaultPopulation; }
 bool Rome::isPaysTaxes() const { return true; }
 const city::States& Rome::states() const { return _d->states; }
 

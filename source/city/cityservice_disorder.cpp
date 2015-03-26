@@ -29,6 +29,7 @@
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
 #include "config.hpp"
 
 using namespace constants;
@@ -204,7 +205,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
   house->appendServiceValue( Service::crime, -crime::defaultValue / 2 );
 
   int taxesThisYear = city->treasury().getIssueValue( econ::Issue::taxIncome );
-  int maxMoneyStolen = city->population() / 10;
+  int maxMoneyStolen = city->states().population / 10;
 
   if( taxesThisYear > minCityTax4mugger )
   {

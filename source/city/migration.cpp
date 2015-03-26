@@ -168,7 +168,7 @@ void Migration::timeStep( const unsigned int time )
 
   if( _d->worklessMinInfluence > 0 )
   {
-    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city()->population(), 150 ) / _d->worklessMinInfluence;
+    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city()->states().population, 150 ) / _d->worklessMinInfluence;
   }
   else
   {
@@ -374,7 +374,7 @@ bool Migration::Impl::isPoorHousing(int shacks, int houses)
 
 float Migration::Impl::getMigrationKoeff( PlayerCityPtr city )
 {
-  return ( std::min<float>( city->population(), 300 ) / 300.f );
+  return ( std::min<float>( city->states().population, 300 ) / 300.f );
 }
 
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCityPtr city )

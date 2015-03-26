@@ -43,7 +43,6 @@ public:
 
   virtual unsigned int tradeType() const = 0;
   virtual econ::Treasury& treasury() = 0;
-  virtual unsigned int population() const = 0;
   virtual bool isPaysTaxes() const = 0;
   virtual bool haveOverduePayment() const = 0;
   virtual bool isMovable() const { return false; }

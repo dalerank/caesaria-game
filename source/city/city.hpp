@@ -85,7 +85,6 @@ public:
      
   econ::Treasury& treasury();
 
-  unsigned int population() const;
   virtual int strength() const;
   int prosperity() const;
   int culture() const;

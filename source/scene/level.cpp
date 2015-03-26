@@ -87,6 +87,7 @@
 #include "core/tilerect.hpp"
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
+#include "city/states.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -182,7 +183,7 @@ void Level::initialize()
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->city()->population() );
+  _d->topMenu->setPopulation( _d->game->city()->states().population );
   _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 
   _d->menu = Menu::create( ui.rootWidget(), -1, city );
@@ -620,7 +621,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    bool failedByDestroy = mil->threatValue() > 0 && params[ Info::population ].value > 0 && !pcity->population();
+    bool failedByDestroy = mil->threatValue() > 0 && params[ Info::population ].value > 0 && !pcity->states().population;
     bool failedByTime = ( !vc.isSuccess() && game::Date::current() > vc.finishDate() );
 
     if( failedByDestroy || failedByTime || forceFailed )
@@ -654,7 +655,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   int prosperity = city->prosperity();
   int favour = city->favour();
   int peace = city->peace();
-  int population = city->population();
+  int population = city->states().population;
   bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
 
   if( success || force )

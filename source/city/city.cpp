@@ -93,6 +93,7 @@
 #include "scribes.hpp"
 #include "statistic.hpp"
 #include "states.hpp"
+#include "city/states.hpp"
 
 #include <set>
 
@@ -149,8 +150,6 @@ typedef FlowList<Overlay> Overlays;
 class PlayerCity::Impl
 {
 public:
-  int population;
-
   econ::Treasury treasury;  // amount of money
 
   PlayerPtr player;
@@ -205,7 +204,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.boatEntry = TilePos( 0, 0 );
   _d->borderInfo.boatExit = TilePos( 0, 0 );
   _d->treasury.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
-  _d->population = 0;
+  _d->states.population = 0;
   _d->treasury.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
   _d->walkers.idCount = 1;
@@ -372,7 +371,6 @@ bool PlayerCity::isPaysTaxes() const { return _d->treasury.getIssueValue( econ::
 bool PlayerCity::haveOverduePayment() const { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 econ::Treasury& PlayerCity::treasury()  {  return _d->treasury;   }
-unsigned int PlayerCity::population() const { return _d->population; }
 
 int PlayerCity::strength() const
 {
@@ -441,7 +439,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   foreach( house, houseList)
     pop += (*house)->habitants().count();
   
-  population = pop;
+  states.population = pop;
   emit onPopulationChangedSignal( pop );
 }
 
@@ -549,7 +547,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "options"    ] = _d->options.save();
-  stream[ "population" ] = _d->population;
+  VARIANT_SAVE_ANY_D( stream, _d, states.population )
 
   Logger::warning( "City: save finance information" );
   stream[ "funds" ] = _d->treasury.save();
@@ -631,7 +629,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
-  _d->population = (int)stream.get( "population", 0 );
+  VARIANT_LOAD_ANY_D( _d, states.population, stream )
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
   Logger::warning( "City: parse options" );

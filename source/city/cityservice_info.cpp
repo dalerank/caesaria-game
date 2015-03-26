@@ -35,6 +35,7 @@
 #include "statistic.hpp"
 #include "cityservice_military.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 
@@ -140,7 +141,7 @@ void Info::timeStep(const unsigned int time )
 
     Parameters& last = _d->lastYearHistory.back();
     last.date = _d->lastDate;
-    last[ population  ] = _city()->population();
+    last[ population  ] = _city()->states().population;
     last[ funds       ] = _city()->treasury().money();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
     last[ foodStock   ] = statistic::getFoodStock( _city() );

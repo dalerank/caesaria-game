@@ -33,6 +33,7 @@
 #include "objects/constants.hpp"
 #include "cityservice_factory.hpp"
 #include "cityservice_info.hpp"
+#include "city/states.hpp"
 #include "config.hpp"
 
 using namespace  constants;
@@ -93,7 +94,7 @@ void ProsperityRating::timeStep(const unsigned int time )
 
     _d->lastDate = game::Date::current();
 
-    if( _city()->population() == 0 )
+    if( _city()->states().population == 0 )
     {
       _d->prosperity = 0;
       _d->prosperityExtend = 0;
@@ -129,10 +130,10 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->lastYearBalance = currentFunds;
     _d->prosperityExtend = (_d->makeProfit ? prosperity::cityHaveProfitAward : prosperity::penalty );
 
-    bool more10PercentIsPatrician = math::percentage( patricianCount, _city()->population()) > 10;
+    bool more10PercentIsPatrician = math::percentage( patricianCount, _city()->states().population ) > 10;
     _d->prosperityExtend += (more10PercentIsPatrician ? prosperity::award : 0);
 
-    _d->percentPlebs = math::percentage( plebsCount, _city()->population() );
+    _d->percentPlebs = math::percentage( plebsCount, _city()->states().population );
     _d->prosperityExtend += (_d->percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
     bool haveHippodrome = !statistic::findo<Hippodrome>( _city(), object::hippodrome ).empty();
