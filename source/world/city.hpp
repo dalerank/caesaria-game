@@ -32,6 +32,8 @@ namespace city { struct States; }
 namespace world
 {
 
+class PriceInfo;
+
 class City : public Object
 {
 public:
@@ -51,7 +53,7 @@ public:
   virtual PlayerPtr mayor() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
-  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost ) = 0;
+  virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices ) = 0;
   virtual const good::Store& importingGoods() const = 0;
   virtual const good::Store& exportingGoods() const = 0;
   virtual const city::States& states() const = 0;

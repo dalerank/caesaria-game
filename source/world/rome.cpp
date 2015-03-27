@@ -77,7 +77,7 @@ SmartPtr<Player> Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const good::Store& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}
-void Rome::empirePricesChanged(good::Product gtype, int bCost, int sCost){}
+void Rome::empirePricesChanged(good::Product, const PriceInfo&){}
 const good::Store& Rome::importingGoods() const{ return _d->gstore; }
 
 void Rome::addObject(ObjectPtr obj)

@@ -44,7 +44,7 @@ public:
   virtual DateTime lastAttack() const;
   virtual int strength() const;
   virtual void delayTrade( unsigned int month );
-  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost );
+  virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices );
   virtual const good::Store& importingGoods() const;
   virtual const good::Store& exportingGoods() const;
 

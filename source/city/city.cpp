@@ -890,10 +890,10 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
 }
 
-void PlayerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
+void PlayerCity::empirePricesChanged(good::Product gtype, const world::PriceInfo &prices)
 {
-  _d->tradeOptions.setBuyPrice( gtype, bCost );
-  _d->tradeOptions.setSellPrice( gtype, sCost );
+  _d->tradeOptions.setBuyPrice( gtype, prices.buy );
+  _d->tradeOptions.setSellPrice( gtype, prices.sell );
 }
 
 VariantList Options::save() const

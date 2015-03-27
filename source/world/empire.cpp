@@ -293,25 +293,26 @@ void Empire::setWorkerSalary(unsigned int value){ _d->workerSalary = math::clamp
 bool Empire::isAvailable() const{  return _d->enabled; }
 void Empire::setAvailable(bool value) { _d->enabled = value; }
 
-void Empire::setPrice(good::Product gtype, int buy, int sell)
+void Empire::setPrice(good::Product gtype, const PriceInfo& prices )
 {
-  _d->trading.setPrice( gtype, buy, sell );
+  _d->trading.setPrice( gtype, prices.buy, prices.sell );
   foreach( it, _d->cities)
   {
-    (*it)->empirePricesChanged( gtype, buy, sell );
+    (*it)->empirePricesChanged( gtype, prices );
   }
 }
 
-void Empire::changePrice(good::Product gtype, int buy, int sell)
+void Empire::changePrice(good::Product gtype, const PriceInfo& delta )
 {
-  int b, s;
-  _d->trading.getPrice( gtype, b, s );
-  setPrice( gtype, b + buy, s + sell );
+  world::PriceInfo prices = _d->trading.getPrice( gtype );
+  prices.buy += delta.buy;
+  prices.sell += delta.sell;
+  setPrice( gtype, prices );
 }
 
-void Empire::getPrice(good::Product gtype, int& buy, int& sell) const
+PriceInfo Empire::getPrice(good::Product gtype) const
 {
-  _d->trading.getPrice( gtype, buy, sell );
+  return _d->trading.getPrice( gtype );
 }
 
 void Empire::clear()
@@ -446,9 +447,8 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 
   foreach( k, good::all() )
   {
-    int buy, sell;
-    getPrice( *k, buy, sell );
-    city->empirePricesChanged( *k, buy, sell );
+    world::PriceInfo prices = getPrice( *k );
+    city->empirePricesChanged( *k, prices );
   }
 
   return ret;

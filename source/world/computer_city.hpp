@@ -47,7 +47,7 @@ public:
   virtual const good::Store& exportingGoods() const;
   virtual const city::States& states() const;
   virtual void delayTrade(unsigned int month);
-  virtual void empirePricesChanged(good::Product gtype, int bCost, int sCost);
+  virtual void empirePricesChanged(good::Product gtype, const PriceInfo& prices);
   virtual unsigned int tradeType() const;
   virtual int strength() const;
   virtual void addObject(ObjectPtr object);

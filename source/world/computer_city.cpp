@@ -209,10 +209,7 @@ const good::Store& ComputerCity::importingGoods() const { return _d->buyStore; }
 const good::Store& ComputerCity::exportingGoods() const{ return _d->realSells; }
 const city::States& ComputerCity::states() const { return _d->states; }
 void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
-
-void ComputerCity::empirePricesChanged(good::Product gtype, int bCost, int sCost)
-{
-}
+void ComputerCity::empirePricesChanged(good::Product, const PriceInfo &){}
 
 CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 {
