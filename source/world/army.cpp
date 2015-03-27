@@ -49,17 +49,13 @@ Army::Army( EmpirePtr empire )
 {
   __D_IMPL(d,Army)
 
-  _animation().load( ResourceGroup::empirebits, 37, 16 );
-  _animation().setLoop( Animation::loopAnimation );
-  Size size = _animation().frame( 0 ).size();
-  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
+  _animation().load( "world_army" );
   d->strength = 0;
 }
 
 ArmyPtr Army::create(EmpirePtr empire)
 {
   ArmyPtr ret( new Army( empire ) );
-
   ret->drop();
 
   return ret;

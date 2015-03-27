@@ -20,6 +20,7 @@
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "animation_bank.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -125,6 +126,11 @@ void Animation::load( const std::string &prefix, const int start, const int numb
     const Picture& pic = Picture::load(prefix, start + revMul*i*step);
     _pictures.push_back( pic );
   }
+}
+
+void Animation::load(const std::string& alias)
+{
+  *this = AnimationBank::instance().simple( alias );
 }
 
 VariantMap Animation::save() const

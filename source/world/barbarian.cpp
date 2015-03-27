@@ -238,10 +238,7 @@ Barbarian::Barbarian( EmpirePtr empire )
   setSpeed( 4.f );
 
   _animation().clear();
-  _animation().load( ResourceGroup::empirebits, 53, 16 );
-  Size size = _animation().frame( 0 ).size();
-  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
-  _animation().setLoop( gfx::Animation::loopAnimation );
+  _animation().load( "world_barbarian" );
 }
 
 

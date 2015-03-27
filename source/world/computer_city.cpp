@@ -36,6 +36,55 @@
 using namespace gfx;
 using namespace metric;
 
+class CcStorage : public good::Storage
+{
+public:
+  VariantMap save() const
+  {
+    VariantMap ret;
+    VariantMap capacityVm;
+    VariantMap valuesVm;
+    foreach( gtype, good::all() )
+    {
+      std::string tname = good::Helper::getTypeName( *gtype );
+      int maxCap = capacity( *gtype );
+      if( maxCap > 0 )
+      {
+        capacityVm[ tname ] = Unit::fromQty( maxCap ).ivalue();
+      }
+
+      int value = qty( *gtype );
+      if( value > 0 )
+      {
+        valuesVm[ tname ] = Unit::fromQty( value ).ivalue();
+      }
+    }
+
+    ret[ "capacities" ] = capacityVm;
+    ret[ "values" ] = valuesVm;
+
+    return ret;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    VariantMap capacitiesVm = stream.get( "capacities" ).toMap();
+    VariantMap valuesVm = stream.get( "values" ).toMap();
+
+    foreach( it, capacitiesVm )
+    {
+      good::Product gtype = good::Helper::getType( it->first );
+      setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
+    }
+
+    foreach( it, valuesVm )
+    {
+      good::Product gtype = good::Helper::getType( it->first );
+      setQty( gtype, Unit::fromValue( it->second ).toQty() );
+    }
+  }
+};
+
 namespace world
 {
 
@@ -48,12 +97,15 @@ public:
   int strength;
   city::States states;
   unsigned int tradeDelay;
-  good::Storage sellStore;
-  good::Storage buyStore;
+
+  CcStorage sellStore;
   good::Storage realSells;
+  CcStorage buyStore;
+
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   DateTime lastAttack;
+
   unsigned int merchantsNumber;
   econ::Treasury funds;
 };
@@ -93,44 +145,10 @@ void ComputerCity::save( VariantMap& options ) const
 {
   City::save( options );
 
-  VariantMap vm_sells;
-  VariantMap vm_sold;
-  VariantMap vm_buys;
-  VariantMap vm_bought;
-
-  foreach( gtype, good::all() )
-  {
-    std::string tname = good::Helper::getTypeName( *gtype );
-    int maxSellStock = _d->sellStore.capacity( *gtype );
-    if( maxSellStock > 0 )
-    {
-      vm_sells[ tname ] = Unit::fromQty( maxSellStock ).ivalue();
-    }
-
-    int sold = _d->sellStore.qty( *gtype );
-    if( sold > 0 )
-    {
-      vm_sold[ tname ] = Unit::fromQty( sold ).ivalue();
-    }
-
-    int maxBuyStock = _d->buyStore.capacity( *gtype );
-    if( maxBuyStock > 0 )
-    {
-      vm_buys[ tname ] = Unit::fromQty( maxBuyStock ).ivalue();
-    }
-
-    int bought = _d->buyStore.qty( *gtype );
-    if( bought > 0 )
-    {
-      vm_bought[ tname ] = Unit::fromQty( bought ).ivalue();
-    }
-  }
-
-  options[ "sells" ] = vm_sells;
-  options[ "buys" ] = vm_buys;
-  options[ "sold" ] = vm_sold;
-  options[ "bought" ] = vm_bought;
+  options[ "out" ] = _d->sellStore.save();
+  options[ "in" ] = _d->buyStore.save();
   options[ "realSells" ] = _d->realSells.save();
+
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
@@ -151,17 +169,17 @@ void ComputerCity::load( const VariantMap& options )
 {
   City::load( options );
 
-  VARIANT_LOAD_TIME_D( _d, lastTimeUpdate, options )
-  VARIANT_LOAD_TIME_D( _d, lastTimeMerchantSend, options )
-  VARIANT_LOAD_ANY_D( _d, available, options )
-  VARIANT_LOAD_ANY_D( _d, merchantsNumber, options )
-  VARIANT_LOAD_ANY_D( _d, distantCity, options )
-  VARIANT_LOAD_ANY_D( _d, available, options )
-  VARIANT_LOAD_ANY_D( _d, states.age, options )
-  VARIANT_LOAD_ANY_D( _d, tradeDelay, options )
-  VARIANT_LOAD_TIME_D(_d, lastAttack, options )
-  VARIANT_LOAD_ANY_D( _d, strength, options )
-  VARIANT_LOAD_ANYDEF_D(_d, states.population, _d->states.population, options )
+  VARIANT_LOAD_TIME_D  ( _d, lastTimeUpdate,        options )
+  VARIANT_LOAD_TIME_D  ( _d, lastTimeMerchantSend,  options )
+  VARIANT_LOAD_ANY_D   ( _d, available,             options )
+  VARIANT_LOAD_ANY_D   ( _d, merchantsNumber,       options )
+  VARIANT_LOAD_ANY_D   ( _d, distantCity,           options )
+  VARIANT_LOAD_ANY_D   ( _d, available,             options )
+  VARIANT_LOAD_ANY_D   ( _d, states.age,            options )
+  VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
+  VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )
+  VARIANT_LOAD_ANY_D   ( _d, strength,              options )
+  VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
   foreach( gtype, good::all() )
   {
@@ -172,19 +190,8 @@ void ComputerCity::load( const VariantMap& options )
 
   changeTradeOptions( options );
 
-  VariantMap sold_vm = options.get( "sold" ).toMap();
-  for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); ++it )
-  {
-    good::Product gtype = good::Helper::getType( it->first );
-    _d->sellStore.setQty( gtype, Unit::fromValue( it->second ).toQty() );
-  }
-
-  VariantMap bought_vm = options.get( "bought" ).toMap();
-  for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); ++it )
-  {
-    good::Product gtype = good::Helper::getType( it->first );
-    _d->buyStore.setQty( gtype, Unit::fromValue( it->second ).toQty() );
-  }
+  _d->sellStore.load( options.get( "out" ).toMap() );
+  _d->buyStore.load( options.get( "in" ).toMap() );
 
   _d->tradeType = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
                   + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
