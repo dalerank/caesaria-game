@@ -43,7 +43,7 @@ public:
 
   void update( unsigned int time );
   PointsArray points( bool reverse=false ) const;
-  bool containPoint( Point pos, int devianceDistance=10 );
+  bool containPoint(const Point &pos, int devianceDistance=10 );
   void setPoints(const PointsArray& points , bool seaRoute);
   const gfx::Pictures& pictures() const;
 

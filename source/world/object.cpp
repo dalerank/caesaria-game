@@ -91,8 +91,8 @@ void Object::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
   VARIANT_SAVE_STR_D( stream, _d, name )
-  stream[ "animation" ] = _d->animation.save();
-  stream[ "isDeleted" ] = _d->isDeleted;
+  VARIANT_SAVE_CLASS_D( stream, _d, animation )
+  VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "type" ] = Variant( type() );
 }
 
@@ -104,7 +104,7 @@ void Object::load(const VariantMap& stream)
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
-  _d->animation.load( stream.get( "animation" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
 }
 

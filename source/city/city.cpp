@@ -94,6 +94,7 @@
 #include "statistic.hpp"
 #include "states.hpp"
 #include "city/states.hpp"
+#include "core/flowlist.hpp"
 
 #include <set>
 
@@ -112,24 +113,6 @@ public:
   VariantList save() const;
   void load(const VariantList &stream );
   void resetIfNot( PlayerCity::OptionType name, int value );
-};
-
-template< class T >
-class FlowList : public SmartList<T>
-{
-public:
-  SmartList<T> appended;
-
-  void merge()
-  {
-    if( appended.empty() )
-      return;
-
-    *this << appended;
-    appended.clear();
-  }
-
-  void append( SmartPtr<T> overlay ) { appended << overlay; }
 };
 
 class Walkers : public FlowList<Walker>

@@ -28,6 +28,7 @@ struct States
   unsigned int age;
   world::Nation nation;
   unsigned int population;
+  bool romeCity;
 
   States() : age(0)
   {}

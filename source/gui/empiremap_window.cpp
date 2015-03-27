@@ -51,6 +51,7 @@
 #include "world/playerarmy.hpp"
 #include "dictionary.hpp"
 #include "core/metric.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -125,7 +126,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       if( ccity.isNull() )
         return;
 
-      if( ccity->isDistantCity() || ccity->isRomeCity() )
+      if( ccity->isDistantCity() || ccity->states().romeCity )
       {
 
       }

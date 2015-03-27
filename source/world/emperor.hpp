@@ -35,7 +35,7 @@ public:
   Emperor();
   virtual ~Emperor();
 
-  int relation( const std::string& cityname );
+  int relation( const std::string& cityname ) const;
   void updateRelation( const std::string& cityname, int value );
 
   void sendGift( const Gift& money );

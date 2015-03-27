@@ -59,6 +59,13 @@ class NColor;
 #define VARIANT_LOAD_VMAP( param, vm ) param = vm.get( #param ).toMap();
 #define VARIANT_LOAD_VMAP_D(d,param, vm ) _d->param = vm.get( #param ).toMap();
 
+#define VARIANT_SAVE_CLASS(vm, param) vm[ #param ] = param.save();
+#define VARIANT_LOAD_CLASS(param, vm ) param.load( vm.get( #param ).toMap() );
+
+#define VARIANT_SAVE_CLASS_D(vm, d, param) vm[ #param ] = d->param.save();
+#define VARIANT_LOAD_CLASS_D(d, param, vm) d->param.load( vm.get( #param ).toMap() );
+
+
 template <typename T>
 inline Variant createVariant2FromValue(const T &);
 

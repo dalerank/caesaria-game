@@ -28,8 +28,10 @@ public:
 };
 
 const std::string& Gift::name() const { return _d->name; }
-const std::string &Gift::sender() const { return _d->sender; }
+const std::string& Gift::sender() const { return _d->sender; }
+const DateTime &Gift::date() const { return _d->time; }
 int Gift::value() const {  return _d->value; }
+//void Gift::setValue(int value) { _d->value = value; }
 
 void Gift::load(const VariantMap& stream)
 {
@@ -47,7 +49,17 @@ VariantMap Gift::save() const
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_ANY_D( ret, _d, time )
 
-  return ret;
+      return ret;
+}
+
+Gift& Gift::operator=(const Gift &a)
+{
+  _d->sender = a._d->sender;
+  _d->time = a._d->time;
+  _d->name = a._d->name;
+  _d->value = a._d->value;
+
+  return *this;
 }
 
 Gift::Gift(const std::string& sender, const std::string& name, int money, int data )
@@ -59,5 +71,11 @@ Gift::Gift(const std::string& sender, const std::string& name, int money, int da
   _d->value = money;
 }
 
+Gift::Gift() : _d(new Impl) {}
+
+Gift::Gift(const Gift& a)
+{
+  *this = a;
+}
 Gift::~Gift() {}
 

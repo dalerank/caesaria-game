@@ -46,7 +46,6 @@ using namespace config;
 namespace world
 {
 
-static const int defaultRomeSalary=30;
 static const int defaultInterestPercent=10;
 static const int defaultBarbarianOnMap=1;
 static const int minRomeSalary=10;
@@ -83,7 +82,7 @@ public:
 Empire::Empire() : _d( new Impl )
 {
   _d->trading.init( this );
-  _d->workerSalary = defaultRomeSalary;
+  _d->workerSalary = econ::defaultSalary;
   _d->enabled = true;
   _d->treasury = 0;
   _d->objUid = 0;
@@ -104,9 +103,7 @@ CityList Empire::cities() const
   return ret;
 }
 
-Empire::~Empire()
-{
-}
+Empire::~Empire() {}
 
 void Empire::_initializeObjects( vfs::Path filename )
 {
@@ -207,12 +204,10 @@ EmpirePtr Empire::create()
 
 CityPtr Empire::findCity( const std::string& name ) const
 {
-  foreach( city, _d->cities )
+  foreach( it, _d->cities )
   {
-    if( (*city)->name() == name )
-    {
-      return *city;
-    }
+    if( (*it)->name() == name )
+      return *it;
   }
 
   return CityPtr();
@@ -221,15 +216,15 @@ CityPtr Empire::findCity( const std::string& name ) const
 void Empire::save( VariantMap& stream ) const
 {
   VariantMap vm_cities;
-  foreach( city, _d->cities )
+  foreach( it, _d->cities )
   {
     //not need save city player
-    if( (*city)->name() == _d->playerCityName )
+    if( (*it)->name() == _d->playerCityName )
       continue;
 
     VariantMap vm_city;
-    (*city)->save( vm_city );
-    vm_cities[ (*city)->name() ] = vm_city;
+    (*it)->save( vm_city );
+    vm_cities[ (*it)->name() ] = vm_city;
   }
 
   VariantMap vm_objects;
@@ -242,8 +237,8 @@ void Empire::save( VariantMap& stream ) const
 
   stream[ "cities"  ] = vm_cities;
   stream[ "objects" ] = vm_objects;
-  stream[ "trade"   ] = _d->trading.save();
-  stream[ "emperor" ] = _d->emperor.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, trading )
+  VARIANT_SAVE_CLASS_D( stream, _d, emperor )
   VARIANT_SAVE_ANY_D( stream, _d, enabled )
   VARIANT_SAVE_ANY_D( stream, _d, objUid )
   VARIANT_SAVE_ANY_D( stream, _d, maxBarbariansGroups )
@@ -270,8 +265,7 @@ void Empire::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, maxBarbariansGroups, _d->maxBarbariansGroups, stream )
   VARIANT_LOAD_ANYDEF_D( _d, workerSalary, _d->workerSalary, stream )
   VARIANT_LOAD_ANYDEF_D( _d, rateInterest, _d->rateInterest, stream )
-
-  _d->trading.load( stream.get( "trade").toMap() );
+  VARIANT_LOAD_CLASS_D( _d, trading, stream )
 
   VariantMap cities = stream.get( "cities" ).toMap();
   foreach( item, cities )
@@ -285,8 +279,8 @@ void Empire::load( const VariantMap& stream )
 
   VariantMap objects = stream.get( "objects" ).toMap();
   _loadObjects( objects );
-  _d->emperor.load( stream.get( "emperor" ).toMap() ); //path from keeeeper
-  _d->emperor.checkCities();
+
+  VARIANT_LOAD_CLASS_D( _d, emperor, stream ) //patch from keeeeper
 }
 
 void Empire::setCitiesAvailable(bool value)

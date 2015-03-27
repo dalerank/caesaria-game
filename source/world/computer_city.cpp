@@ -124,7 +124,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
   _d->states.age = 0;
-  _d->romecity = false;
+  _d->states.romeCity = false;
 
   _initTextures();
 }
@@ -135,7 +135,6 @@ econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
-bool ComputerCity::isRomeCity() const{  return _d->romecity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
 
@@ -158,7 +157,7 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, available )
   VARIANT_SAVE_ANY_D( options, _d, merchantsNumber )
   VARIANT_SAVE_ANY_D( options, _d, distantCity )
-  VARIANT_SAVE_ANY_D( options, _d, romecity )
+  VARIANT_SAVE_ANY_D( options, _d, states.romeCity )
   VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
   VARIANT_SAVE_ANY_D( options, _d, lastAttack )
   VARIANT_SAVE_ANY_D( options, _d, states.population )
@@ -175,6 +174,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D   ( _d, merchantsNumber,       options )
   VARIANT_LOAD_ANY_D   ( _d, distantCity,           options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
+  VARIANT_LOAD_ANY_D   ( _d, states.romeCity,       options )
   VARIANT_LOAD_ANY_D   ( _d, states.age,            options )
   VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
   VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )

@@ -23,13 +23,13 @@
 #include "core/logger.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
+#include "config.hpp"
 #include "city.hpp"
 
 namespace world
 {
 
 namespace {
-const int relation4brokeAttack=35;
 const int defaultSoldiersCount=16;
 }
 
@@ -61,7 +61,7 @@ void RomeChastenerArmy::timeStep(const unsigned int time)
 
   if( !_d->messageSent && game::Date::isWeekChanged() && _d->checkFavor )
   {
-    if( empire()->emperor().relation( target() ) > relation4brokeAttack )
+    if( empire()->emperor().relation( target() ) > config::chastener::brokeAttack )
     {
       Messenger::now( empire(), target(), "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
 

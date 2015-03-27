@@ -31,6 +31,11 @@ namespace barbarian
 enum { attackRange=20, viewRange=60 };
 }
 
+namespace chastener
+{
+enum { brokeAttack=35 };
+}
+
 namespace trade
 {
 enum { maxMerchantsInRoute = 2, minMonthsMerchantSend = 2 };
@@ -38,14 +43,14 @@ enum { maxMerchantsInRoute = 2, minMonthsMerchantSend = 2 };
 
 namespace emperor
 {
-enum { defaultFavor=50, maxFavor=100 };
+enum { yearlyFavorDecrease=2, maxFavourUpdate=5, defaultFavor=50, maxFavor=100 };
 }
 
 } // end namespace config
 
 namespace econ
 {
-enum { cityAge4tax=2 };
+enum { cityAge4tax=2, defaultSalary=30 };
 }
 
 #endif //__CAESARIA_WORLD_CONFIG_INCLUDE_H__

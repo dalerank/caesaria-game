@@ -35,7 +35,6 @@ public:
   virtual bool haveOverduePayment() const;
 
   bool isDistantCity() const;
-  bool isRomeCity() const;
   virtual bool isAvailable() const;
   virtual void setAvailable(bool value);
   virtual SmartPtr<Player> mayor() const;
