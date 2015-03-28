@@ -215,7 +215,7 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
           }
           animation.setOffset( p );
         }
-        else if( offset.type() == Variant::NPoint )
+        else
           animation.setOffset( offset.toPoint() );
       }
     }
@@ -367,7 +367,7 @@ const Animation& AnimationBank::simple(unsigned int type)
 
 const Animation& AnimationBank::simple(const std::string& name)
 {
-
+  return simple( Hash( name ) );
 }
 
 }//end namespace gfx

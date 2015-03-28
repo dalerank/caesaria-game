@@ -61,11 +61,7 @@ public:
   MovableOrders mayMove( PointF point );
   void resetDrawn();
 
-  Point getOffset( const PointF& center )
-  {
-    return Point( virtualSize.width() / 2  - tileMapSize.width()  * (center.x() + 1) + 1,
-                  virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
-  } 
+  Point getOffset( const PointF& center );
 
   void cacheFlatTiles();
 
@@ -83,7 +79,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
-  _d->borderSize = Size( 90 );
+  _d->borderSize = Size( gfx::tilemap::cellSize().width() * 4 );
   _d->tiles.reserve( 2000 );
 }
 
@@ -305,6 +301,12 @@ void TilemapCamera::Impl::resetDrawn()
   foreach( i, flatTiles ) { (*i)->resetWasDrawn(); }
 }
 
+Point TilemapCamera::Impl::getOffset(const PointF &center)
+{
+  return Point( virtualSize.width() / 2  - tileMapSize.width()  * (center.x() + 1) + 1,
+                virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
+}
+
 void TilemapCamera::Impl::cacheFlatTiles()
 {
   Tile* tile;
@@ -314,11 +316,11 @@ void TilemapCamera::Impl::cacheFlatTiles()
 
   resetDrawn();
   foreach( it, tiles )
-  {
-    int z = (*it)->epos().z();
-    tile = (*it)->masterTile();
-    if( !tile )
-      tile = *it;
+    {
+      int z = (*it)->epos().z();
+      tile = (*it)->masterTile();
+      if( !tile )
+        tile = *it;
 
     if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
     {

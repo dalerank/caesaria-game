@@ -25,8 +25,8 @@
     win.text : "##tarsus_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##tarsus_7_title##"
-    overview :  [ "##tarsus_7_overview##" ]
+    caption : "##tarsus_preview_title##"
+    overview :  [ "##tarsus_overview##" ]
   }
 	
   empire : {

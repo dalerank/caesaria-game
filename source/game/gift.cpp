@@ -73,7 +73,7 @@ Gift::Gift(const std::string& sender, const std::string& name, int money, int da
 
 Gift::Gift() : _d(new Impl) {}
 
-Gift::Gift(const Gift& a)
+Gift::Gift(const Gift& a) : _d( new Impl )
 {
   *this = a;
 }
