@@ -142,13 +142,12 @@ metric::Unit Options::tradeLimit( Order state, good::Product type) const
 
   switch( state )
   {
-  case importing: ret = metric::Unit::fromValue( it->second.importLimit );
-  case exporting: ret = metric::Unit::fromValue( it->second.exportLimit );
+  case importing: ret = metric::Unit::fromValue( it->second.importLimit ); break;
+  case exporting: ret = metric::Unit::fromValue( it->second.exportLimit ); break;
   default: break;
   }
 
-  return ret;\
-
+  return ret;
 }
 
 Order Options::getOrder( good::Product type ) const
