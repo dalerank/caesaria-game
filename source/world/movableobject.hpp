@@ -28,7 +28,7 @@ namespace world
 class Route : public PointsArray
 {
 public:
-  size_type step;
+  unsigned int step;
 
   void reset()
   {

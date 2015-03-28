@@ -32,7 +32,7 @@ namespace city { struct States; }
 namespace world
 {
 
-class PriceInfo;
+struct PriceInfo;
 
 class City : public Object
 {
