@@ -120,7 +120,7 @@ bool canImport(PlayerCityPtr city, good::Product type)
   foreach( it, routes )
   {
     world::CityPtr partner = (*it)->partner( city->name() );
-    const good::Store& goods = partner->exportingGoods();
+    const good::Store& goods = partner->sells();
     if( goods.capacity( type ) > 0 )
     {
       haveImportWay = true;

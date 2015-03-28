@@ -167,7 +167,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       DirectRoute route;
 
       //try found any available warehouse for selling our goods
-      const good::Store& buyOrders = city->importingGoods();
+      const good::Store& buyOrders = city->buys();
 
       if( buyOrders.capacity() > 0 )
       {
@@ -176,7 +176,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( !route.first.isValid() )
       {
-        Logger::warning( "Walker_LandMerchant: can't found path to nearby warehouse. BaseCity=" + baseCityName );
+        Logger::warning( "!!! WARNING: LandMerchant can't found path to nearby warehouse. BaseCity=" + baseCityName );
         route = PathwayHelper::shortWay( city, position, object::warehouse, PathwayHelper::roadOnly );
       }
 
@@ -327,7 +327,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
     WarehousePtr warehouse;
     warehouse << city->getOverlay( destBuildingPos );
 
-    const good::Store& cityOrders = city->importingGoods();
+    const good::Store& cityOrders = city->buys();
 
     if( warehouse.isValid() )
     {

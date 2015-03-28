@@ -747,8 +747,8 @@ OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilem
 PlayerPtr PlayerCity::mayor() const { return _d->player; }
 city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
-const good::Store& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
-const good::Store& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const good::Store& PlayerCity::sells() const {   return _d->tradeOptions.sells(); }
+const good::Store& PlayerCity::buys() const {   return _d->tradeOptions.buys(); }
 ClimateType PlayerCity::climate() const{ return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }

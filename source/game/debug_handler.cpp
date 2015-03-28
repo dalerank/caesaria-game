@@ -52,6 +52,7 @@
 #include "events/random_plague.hpp"
 #include "events/scribemessage.hpp"
 #include "world/emperor.hpp"
+#include "objects/warehouse.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
@@ -106,6 +107,20 @@ enum {
   run_script,
   show_fest,
   add_favor,
+  add_wheat_to_warehouse,
+  add_fish_to_warehouse,
+  add_olives_to_warehouse,
+  add_fruit_to_warehouse,
+  add_grape_to_warehouse,
+  add_vegetable_to_warehouse,
+  add_clay_to_warehouse,
+  add_timber_to_warehouse,
+  add_iron_to_warehouse,
+  add_marble_to_warehouse,
+  add_pottery_to_warehouse,
+  add_furniture_to_warehouse,
+  add_weapons_to_warehouse,
+  add_wine_to_warehouse,
   remove_favor
 };
 
@@ -116,6 +131,7 @@ public:
 
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
+  void addGoods2Wh( good::Product type );
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
 
@@ -153,6 +169,21 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( "money", add_1000_dn )
   ADD_DEBUG_EVENT( "money", add_player_money )
+
+  ADD_DEBUG_EVENT( "goods", add_wheat_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_fish_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_olives_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_fruit_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_grape_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_vegetable_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_clay_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_timber_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_iron_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_marble_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_pottery_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_furniture_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
 
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
@@ -209,6 +240,17 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
   }
 
   return enemy;
+}
+
+void DebugHandler::Impl::addGoods2Wh(good::Product type)
+{
+  WarehouseList whList = city::statistic::findo<Warehouse>( game->city(), object::warehouse );
+  foreach( wh, whList)
+  {
+    WarehousePtr warehouse = *wh;
+    good::Stock stock(type, 500, 500 );
+    warehouse->store().store( stock, 500 );
+  }
 }
 
 void DebugHandler::Impl::runScript(std::string filename)
@@ -273,6 +315,21 @@ void DebugHandler::Impl::handleEvent(int event)
       fest->now();
   }
   break;
+
+  case add_wheat_to_warehouse: addGoods2Wh( good::wheat ); break;
+  case add_fish_to_warehouse:  addGoods2Wh( good::fish  ); break;
+  case add_olives_to_warehouse: addGoods2Wh( good::olive); break;
+  case add_fruit_to_warehouse: addGoods2Wh( good::fruit ); break;
+  case add_grape_to_warehouse: addGoods2Wh( good::grape ); break;
+  case add_vegetable_to_warehouse:addGoods2Wh( good::vegetable); break;
+  case add_clay_to_warehouse:  addGoods2Wh( good::clay  ); break;
+  case add_timber_to_warehouse:addGoods2Wh( good::timber); break;
+  case add_iron_to_warehouse:  addGoods2Wh( good::iron  ); break;
+  case add_marble_to_warehouse:addGoods2Wh( good::marble); break;
+  case add_pottery_to_warehouse:addGoods2Wh( good::pottery); break;
+  case add_furniture_to_warehouse:addGoods2Wh( good::furniture); break;
+  case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
+  case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
 
   case win_mission:
   case fail_mission:

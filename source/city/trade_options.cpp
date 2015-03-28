@@ -189,8 +189,16 @@ void Options::setTradeLimit(Order o, good::Product type, metric::Unit qty)
 {
   switch( o )
   {
-  case exporting: _d->goods[ type ].exportLimit = qty.ivalue(); break;
-  case importing: _d->goods[ type ].importLimit = qty.ivalue(); break;
+  case exporting:
+    _d->goods[ type ].exportLimit = qty.ivalue();
+    _d->sells.setCapacity( type, qty.ivalue() );
+  break;
+
+  case importing:
+    _d->goods[ type ].importLimit = qty.ivalue();
+    _d->buys.setCapacity( type, qty.ivalue() );
+  break;
+
   default: break;
   }
 
@@ -308,8 +316,8 @@ VariantMap Options::save() const
   return ret;
 }
 
-const good::Store& Options::importingGoods() {  return _d->buys; }
-const good::Store& Options::exportingGoods() { return _d->sells; }
+const good::Store& Options::buys() {  return _d->buys; }
+const good::Store& Options::sells() { return _d->sells; }
 
 }//end namespace trade
 

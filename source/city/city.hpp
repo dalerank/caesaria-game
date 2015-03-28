@@ -119,8 +119,8 @@ public:
   virtual void addObject( world::ObjectPtr object );
   virtual void empirePricesChanged( good::Product gtype, const world::PriceInfo& prices );
   virtual std::string about(Object::AboutType type);
-  virtual const good::Store& importingGoods() const;
-  virtual const good::Store& exportingGoods() const;
+  virtual const good::Store& sells() const;
+  virtual const good::Store& buys() const;
   virtual ClimateType climate() const;
   virtual unsigned int tradeType() const;
 

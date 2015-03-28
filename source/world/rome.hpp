@@ -45,8 +45,8 @@ public:
   virtual int strength() const;
   virtual void delayTrade( unsigned int month );
   virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices );
-  virtual const good::Store& importingGoods() const;
-  virtual const good::Store& exportingGoods() const;
+  virtual const good::Store& sells() const;
+  virtual const good::Store& buys() const;
 
 private:
   class Impl;

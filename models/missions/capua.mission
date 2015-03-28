@@ -47,7 +47,7 @@
       }
 
       "Leptis Magna" : {
-        location : [ 820, 920 ]
+        location : [ 860, 920 ]
 
         sea : true
         land : true

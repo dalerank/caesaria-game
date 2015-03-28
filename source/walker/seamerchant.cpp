@@ -275,7 +275,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() )
     {
       trade::Options& options = city->tradeOptions();
-      const good::Store& importing = options.importingGoods();
+      const good::Store& importing = options.buys();
       //try sell goods
       foreach( goodType, good::all() )
       {

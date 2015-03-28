@@ -54,8 +54,8 @@ public:
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices ) = 0;
-  virtual const good::Store& importingGoods() const = 0;
-  virtual const good::Store& exportingGoods() const = 0;
+  virtual const good::Store& sells() const = 0;
+  virtual const good::Store& buys() const = 0;
   virtual const city::States& states() const = 0;
 };
 
