@@ -18,7 +18,6 @@
 #ifndef __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 #define __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 
-#include "build_options.hpp"
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
@@ -64,8 +63,6 @@ public:
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
   unsigned int getBuildingsQuote( const object::Type type ) const;
-  TilePos memPoint( unsigned int index ) const;
-  void setMemPoint( unsigned int index, TilePos point );
 
   bool isBuildingAvailble( const object::Type type ) const;
 

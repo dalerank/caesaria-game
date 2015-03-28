@@ -97,7 +97,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->isDeleted = false;
   _d->centerReached = false;
   _d->waitInterval = 0;
-  _d->nation = world::unknownNation;
+  _d->nation = world::nation::unknown;
 
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );

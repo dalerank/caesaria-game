@@ -246,7 +246,7 @@ void Dock::requestGoods(good::Stock& stock)
 
 int Dock::importingGoods( good::Stock& stock)
 {
-  const good::Store& cityOrders = _city()->importingGoods();
+  const good::Store& cityOrders = _city()->buys();
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );
@@ -258,7 +258,7 @@ int Dock::importingGoods( good::Stock& stock)
   {
     _d->importGoods.store( stock, traderMaySell );
 
-    events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), traderMaySell );
+    events::GameEventPtr e = events::Payment::import( stock.type(), traderMaySell );
     e->dispatch();
 
     cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
@@ -280,7 +280,7 @@ int Dock::exportingGoods( good::Stock& stock, int qty )
   int cost = 0;
   if( qty > 0 )
   {
-    events::GameEventPtr e = events::FundIssueEvent::exportg( stock.type(), qty );
+    events::GameEventPtr e = events::Payment::exportg( stock.type(), qty );
     e->dispatch();
 
     cost = good::Helper::exportPrice( _city(), stock.type(), qty );

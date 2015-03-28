@@ -35,7 +35,7 @@ namespace gfx
 namespace tilemap
 {
 
-static int x_tileBase = 60;
+static int x_tileBase = caCellWidth;
 static int y_tileBase = x_tileBase / 2;
 static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );

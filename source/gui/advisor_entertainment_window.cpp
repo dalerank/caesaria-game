@@ -142,7 +142,6 @@ public:
   Label* lbInfoAboutLastFestival;
   TexturedButton* btnHelp;
   Label* lbMonthFromLastFestival;
-  FestivalPtr srvc;
   int monthFromLastFestival;
 
   InfrastructureInfo getInfo(const object::Type service );
@@ -155,16 +154,10 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ), _d( new Impl )
 {
   _d->city = city;
-  _d->srvc = statistic::finds<Festival>( city );
-
-  if( _d->srvc.isNull() )
-  {
-    Logger::warning( "WARNING!!!: city have no entertainment service" );
-    return;
-  }
+  FestivalPtr fest = statistic::finds<Festival>( city );
 
   setupUI( ":/gui/entertainmentadv.gui" );
-  _d->monthFromLastFestival = _d->srvc->lastFestivalDate().monthsTo( game::Date::current() );
+  _d->monthFromLastFestival = fest->lastFestival().monthsTo( game::Date::current() );
 
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
@@ -236,9 +229,10 @@ InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
 
 void Entertainment::_assignFestival( int divinityType, int festSize)
 {
-  if( _d->srvc.isValid() )
+  FestivalPtr fest = statistic::finds<Festival>( _d->city );
+  if( fest.isValid() )
   {
-    _d->srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
+    fest->assign( (religion::RomeDivinityType)divinityType, festSize );
     _d->updateFestivalInfo();
   }
 }
@@ -359,13 +353,14 @@ void Entertainment::Impl::updateFestivalInfo()
   if( !lbInfoAboutLastFestival )
     return;
 
-  if( srvc.isValid() )
+  FestivalPtr fest = statistic::finds<Festival>( city );
+  if( fest.isValid() )
   {    
     std::string text = utils::i2str( monthFromLastFestival ) +  _("##month_from_last_festival##");
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
-    bool prepare2Festival = srvc->nextFestivalDate() >= game::Date::current();
+    bool prepare2Festival = fest->nextFestival() >= game::Date::current();
     btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
     btnNewFestival->setEnabled( !prepare2Festival );
 

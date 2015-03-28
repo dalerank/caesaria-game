@@ -37,14 +37,15 @@
 #include "walkers_factory.hpp"
 #include "core/logger.hpp"
 #include "city/trade_options.hpp"
+#include "config.hpp"
 
 using namespace constants;
 using namespace gfx;
+using namespace config;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
-const int defaultDeliverDistance = 40;
 CAESARIA_LITERALCONST(stock)
 CAESARIA_LITERALCONST(producerPos)
 CAESARIA_LITERALCONST(consumerPos)
@@ -73,7 +74,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->cantUnloadGoods = false;
-  _d->maxDistance = defaultDeliverDistance;
+  _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -414,11 +415,11 @@ void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   
-  stream[ lc_stock ] = _d->stock.save();
-  stream[ lc_producerPos ] = _d->producerBuilding.isValid()
+  stream[ literals::stock ] = _d->stock.save();
+  stream[ literals::producerPos ] = _d->producerBuilding.isValid()
                                 ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
 
-  stream[ lc_consumerPos ] = _d->consumerBuilding.isValid()
+  stream[ literals::consumerPos ] = _d->consumerBuilding.isValid()
                                 ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
@@ -430,9 +431,9 @@ void CartPusher::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->stock.load( stream.get( lc_stock ).toList() );
+  _d->stock.load( stream.get( literals::stock ).toList() );
 
-  TilePos prPos( stream.get( lc_producerPos ).toTilePos() );
+  TilePos prPos( stream.get( literals::producerPos ).toTilePos() );
   _d->producerBuilding = ptr_cast<Building>( _city()->getOverlay( prPos ));
 
   if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
@@ -445,7 +446,7 @@ void CartPusher::load( const VariantMap& stream )
     Logger::warning( "WARNING: cartPusher producer building is NULL uid=[%d]", uniqueId() );
   }
 
-  TilePos cnsmPos( stream.get( lc_consumerPos ).toTilePos() );
+  TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );
   _d->consumerBuilding = ptr_cast<Building>( _city()->getOverlay( cnsmPos ) );
 
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )

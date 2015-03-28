@@ -110,30 +110,25 @@ void Merchant::save(VariantMap& stream) const
 {
   Object::save( stream );
 
-  stream[ "sells"    ]= _d->sells.save();
-  stream[ "buys"     ]= _d->buys.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, sells )
+  VARIANT_SAVE_CLASS_D( stream, _d, buys )
   VARIANT_SAVE_ANY_D( stream, _d, step )
   VARIANT_SAVE_STR_D( stream, _d, baseCity )
   VARIANT_SAVE_STR_D( stream, _d, destCity )
 
-  VariantList vl_steps;
-
-  foreach( p, _d->steps ) { vl_steps.push_back( *p ); }
-
-  stream[ "steps"    ]= vl_steps;
+  stream[ "steps" ] = _d->steps.toVList();
 }
 
 void Merchant::load(const VariantMap& stream)
 {
   Object::load( stream );
-  _d->sells.load( stream.get( "sells" ).toMap() );
-  _d->buys.load( stream.get( "buys" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, sells, stream )
+  VARIANT_LOAD_CLASS_D( _d, buys, stream )
   VARIANT_LOAD_ANY_D( _d, step, stream )
   VARIANT_LOAD_STR_D( _d, baseCity, stream )
   VARIANT_LOAD_STR_D( _d, destCity, stream )
 
-  VariantList steps = stream.get( "steps" ).toList();
-  foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }
+  _d->steps.fromVList( stream.get( "steps" ).toList() );
 }
 
 std::string Merchant::baseCity() const{  return _d->baseCity;}

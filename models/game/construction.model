@@ -136,7 +136,7 @@
     employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
-    animation : { rc : "entertainment", start : 82, count : 9, offset : [ 68, -6 ], delay : 2 }
+    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 130, 30 ], delay : 2 }
     sound : [ "artistpit", 1  ]
   },
 
@@ -809,6 +809,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 5 ], delay : 3 }
   }
 }

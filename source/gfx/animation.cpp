@@ -20,6 +20,7 @@
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "animation_bank.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -127,6 +128,11 @@ void Animation::load( const std::string &prefix, const int start, const int numb
   }
 }
 
+void Animation::load(const std::string& alias)
+{
+  *this = AnimationBank::instance().simple( alias );
+}
+
 VariantMap Animation::save() const
 {
   __D_IMPL_CONST(d,Animation)
@@ -135,11 +141,7 @@ VariantMap Animation::save() const
   VARIANT_SAVE_ANY_D( ret, d, delay )
   VARIANT_SAVE_ANY_D( ret, d, loop )
 
-  VariantList pics;
-  foreach( i, _pictures)
-    pics << Variant( (*i).name() );
-
-  ret[ "pictures" ] = pics;
+  ret[ "pictures" ] = _pictures.names();
 
   return ret;
 }
@@ -163,7 +165,7 @@ void Animation::load(const VariantMap &stream)
 
   VariantList vl_pics = stream.get( "pictures" ).toList();
   foreach( i, vl_pics )
-    _pictures.push_back( Picture::load( (*i).toString() ) );
+    _pictures.push_back( Picture::load( i->toString() ) );
 }
 
 void Animation::clear() { _pictures.clear();}

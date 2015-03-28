@@ -33,15 +33,17 @@
 #include "gui/dialogbox.hpp"
 #include "gfx/renderermode.hpp"
 #include "events/warningmessage.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
 #include "gfx/city_renderer.hpp"
+#include "gfx/helper.hpp"
 #include "layerdestroy.hpp"
 
 using namespace constants;
 using namespace gui;
 using namespace gfx;
+using namespace events;
 
 namespace citylayer
 {
@@ -54,8 +56,10 @@ public:
   TilePos lastTilePos;
   TilePos startTilePos;
   bool kbShift, kbCtrl;
+  bool lmbPressed;
   bool borderBuilding;
   bool roadAssignment;
+  bool needUpdateTiles;
   bool drawTileBasicPicture;
   int drawLayerIndex;
   int frameCount;
@@ -183,6 +187,23 @@ void Build::_checkPreviewBuild(TilePos pos)
   }
 }
 
+void Build::_checkBuildArea()
+{
+  __D_IMPL(_d,Build);
+  if( !_d->lmbPressed || _startCursorPos().x() < 0 )
+  {
+    _setStartCursorPos( _lastCursorPos() );
+
+    Tile* tile = _camera()->at( _lastCursorPos(), true );
+    _d->startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
+  }
+}
+
+bool compare_tile(const Tile* one, const Tile* two)
+{
+  return one->pos().z() > two->pos().z();
+}
+
 void Build::_updatePreviewTiles( bool force )
 {
   __D_IMPL(d,Build);
@@ -254,6 +275,8 @@ void Build::_updatePreviewTiles( bool force )
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->epos() ); }
   }  
 
+  std::sort( d->buildTiles.begin(), d->buildTiles.end(), compare_tile );
+
   d->textPic->fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
   d->textFont.draw( *d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
@@ -274,9 +297,9 @@ void Build::_buildAll()
     return;
   }
 
-  if( !_city()->funds().haveMoneyForAction( 1 ) )
+  if( !_city()->treasury().haveMoneyForAction( 1 ) )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##out_of_credit##", 2 );
+    GameEventPtr e = WarningMessage::create( "##out_of_credit##", 2 );
     e->dispatch();
     return;
   }
@@ -289,7 +312,7 @@ void Build::_buildAll()
     areaInfo.pos = tile->epos();
     if( cnstr->canBuild( areaInfo ) && tile->isMasterTile())
     {
-      events::GameEventPtr event = events::BuildAny::create( tile->epos(), cnstr->type() );
+      GameEventPtr event = BuildAny::create( tile->epos(), cnstr->type() );
       event->dispatch();
       buildOk = true;
     }
@@ -301,9 +324,9 @@ void Build::_buildAll()
   {
     std::string errorStr = cnstr->errorDesc();
 
-    events::GameEventPtr event = events::WarningMessage::create( errorStr.empty()
-                                                                      ? "##need_build_on_cleared_area##"
-                                                                      : errorStr, events::WarningMessage::neitral );
+    GameEventPtr event = WarningMessage::create( errorStr.empty()
+                                                   ? "##need_build_on_cleared_area##"
+                                                   : errorStr, WarningMessage::neitral );
     event->dispatch();
   }
 }
@@ -319,26 +342,18 @@ void Build::_exitBuildMode()
 void Build::handleEvent(NEvent& event)
 {
   __D_IMPL(_d,Build);
-  _d->kbShift = false;
-  _d->kbCtrl = false;
   if( event.EventType == sEventMouse )
   {
     _d->kbShift = event.mouse.shift;
     _d->kbCtrl = event.mouse.control;
+    _d->lmbPressed = event.mouse.isLeftPressed();
 
     switch( event.mouse.type  )
     {
     case mouseMoved:
     {
       _setLastCursorPos( event.mouse.pos() );
-      if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
-      {
-        _setStartCursorPos( _lastCursorPos() );
-
-        Tile* tile = _camera()->at( _lastCursorPos(), true );
-        _d->startTilePos = tile ? tile->epos() : TilePos( -1, -1 );
-      }
-
+      _checkBuildArea();
       _updatePreviewTiles( false );
     }
     break;
@@ -371,6 +386,8 @@ void Build::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool handled = _moveCamera( event );
+    _d->kbShift = event.keyboard.shift;
+    _d->kbCtrl = event.keyboard.control;
 
     if( !handled )
     {
@@ -390,7 +407,7 @@ void Build::handleEvent(NEvent& event)
     }
     else
     {
-      _updatePreviewTiles( false );
+      _d->needUpdateTiles = true;
     }
   }
 }
@@ -424,6 +441,9 @@ void Build::_drawBuildTiles( Engine& engine)
     if( ptr_construction.isValid() && ptr_construction->canBuild( areaInfo ) )
     {
       engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+
+      drawPass( engine, **it, offset, Renderer::ground );
+      drawPass( engine, **it, offset, Renderer::groundAnimation );
     }
 
     drawPass( engine, *postTile, offset, Renderer::ground );
@@ -516,8 +536,10 @@ void Build::init(Point cursor)
   __D_IMPL(_d,Build);
   Layer::init( cursor );
 
-  _d->lastTilePos = TilePos(-1, -1);
-  _d->startTilePos = TilePos(-1, -1);
+  _d->lastTilePos = tilemap::invalidLocation();
+  _d->startTilePos = tilemap::invalidLocation();
+  _d->kbShift = false;
+  _d->kbCtrl = false;
 
   changeLayer( _d->renderer->currentLayer()->type() );
 
@@ -536,6 +558,13 @@ void Build::beforeRender(Engine& engine)
 void Build::afterRender(Engine& engine)
 {
   __D_IMPL(_d,Build);
+  if( _d->needUpdateTiles )
+  {
+    _setLastCursorPos( engine.cursorPos() );
+    _checkBuildArea();
+    _updatePreviewTiles( false );
+  }
+
   if( _d->lastLayer.isValid() )
     _d->lastLayer->afterRender( engine );
   else
@@ -596,6 +625,7 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   __D_IMPL(d,Build);
   d->renderer = &renderer;
   d->frameCount = 0;
+  d->needUpdateTiles = false;
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = TilePos( -1, -1 );
   d->textFont = Font::create( FONT_5 );

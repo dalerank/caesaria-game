@@ -20,8 +20,7 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
-#include "core/tilepos_array.hpp"
-
+#include "gfx/helper.hpp"
 using namespace gfx;
 
 namespace city
@@ -31,8 +30,7 @@ namespace development
 {
 
 static const char* disable_all = "disable_all";
-enum { defaultMemPointsNumber = 10, maxLimit=999 };
-
+enum { maxLimit=999 };
 
 struct BuildingRule
 {
@@ -51,7 +49,7 @@ public:
   }
 
   typedef std::set<object::Type> Types;
-  typedef std::map<Branch, Types> Config;
+  typedef std::map<Branch,Types> Config;
   Config config;
 
   BranchHelper() : EnumsHelper<Branch>( unknown )
@@ -76,13 +74,12 @@ public:
   }  
 };
 
+typedef std::map< object::Type, BuildingRule > BuildingRules;
+
 class Options::Impl
 {
 public:
-  typedef std::map< object::Type, BuildingRule > BuildingRules;
-
   BuildingRules rules;
-  TilePosArray memPoints;
 
   bool checkDesirability;
   unsigned int maximumForts;
@@ -92,7 +89,6 @@ Options::Options() : _d( new Impl )
 {
   _d->checkDesirability = true;
   _d->maximumForts = maxLimit;
-  _d->memPoints.resize( defaultMemPointsNumber );
 }
 
 Options::~Options() {}
@@ -185,20 +181,8 @@ bool Options::isGroupAvailable(const Branch type) const
 
 unsigned int Options::getBuildingsQuote(const object::Type type) const
 {
-  Impl::BuildingRules::const_iterator it = _d->rules.find( type );
+  BuildingRules::const_iterator it = _d->rules.find( type );
   return it != _d->rules.end() ? it->second.quotes : maxLimit;
-}
-
-TilePos Options::memPoint(unsigned int index) const
-{
-  index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
-  return _d->memPoints[ index ];
-}
-
-void Options::setMemPoint(unsigned int index, TilePos point)
-{
-  index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
-  _d->memPoints[ index ] = point;
 }
 
 void Options::clear() {  _d->rules.clear(); }
@@ -225,10 +209,6 @@ void Options::load(const VariantMap& options)
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
-  VariantList vl_points = options.get("points").toList();
-  _d->memPoints.fromVList( vl_points );
-  _d->memPoints.resize( defaultMemPointsNumber );
-
   _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
   _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
 }
@@ -249,7 +229,6 @@ VariantMap Options::save() const
   ret[ "quotes" ] = quotes;
   ret[ "maximumForts" ] = _d->maximumForts;
   ret[ "check_desirability" ] = _d->checkDesirability;
-  ret[ "points" ] = _d->memPoints.toVList();
   return ret;
 }
 
@@ -258,14 +237,13 @@ Options& Options::operator=(const development::Options& a)
   _d->rules = a._d->rules;
   _d->checkDesirability = a._d->checkDesirability;
   _d->maximumForts = a._d->maximumForts;
-  _d->memPoints = a._d->memPoints;
 
   return *this;
 }
 
 bool Options::isBuildingAvailble(const object::Type type ) const
 {
-  Impl::BuildingRules::iterator it = _d->rules.find( type );
+  BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
 }
 

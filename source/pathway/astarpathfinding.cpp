@@ -228,6 +228,12 @@ void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = 
 
 bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
+  for( TilesArray::iterator aaIt=arrivedArea.begin(); aaIt != arrivedArea.end(); )
+  {
+    if( *aaIt == NULL ) { aaIt = arrivedArea.erase( aaIt ); }
+    else { aaIt++; }
+  }
+
   if( arrivedArea.empty() )
   {
     Logger::warning( "AStarPathfinder: no arrived area" );

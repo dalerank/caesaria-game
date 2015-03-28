@@ -27,6 +27,7 @@
 
 using namespace constants;
 using namespace config;
+using namespace events;
 
 namespace city
 {
@@ -94,9 +95,9 @@ void HealthCare::timeStep(const unsigned int time )
 
     if( _d->avgMinHealth < health::bad )
     {
-      events::GameEventPtr e = events::WarningMessage::create( _d->avgMinHealth < health::terrible
-                                                                ? "##advchief_health_terrible##"
-                                                                : "##advchief_health_bad##", 2 );
+      GameEventPtr e = WarningMessage::create( _d->avgMinHealth < health::terrible
+                                               ? "##advchief_health_terrible##"
+                                               : "##advchief_health_bad##", 2 );
       e->dispatch();
     }
   }
@@ -108,7 +109,7 @@ std::string HealthCare::reason() const
 {
   StringArray reasons;  
 
-  int lvl = math::clamp<int>( _d->value / (100/health::levelNumber), 0, health::levelNumber-1 );
+  int lvl = math::clamp<int>( _d->value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
   BuildingList clinics = city::statistic::findo<Building>( _city(), object::clinic );
@@ -128,8 +129,8 @@ std::string HealthCare::reason() const
       object::TypeSet availableTypes;
       availableTypes.insert( avTypes[ i ] );
 
-      HouseList houses = statistic::getEvolveHouseReadyBy( _city(), availableTypes );
-      if( houses.size() > 0 )
+      HouseList housesWantEvolve = statistic::getEvolveHouseReadyBy( _city(), availableTypes );
+      if( housesWantEvolve.size() > 0 )
       {
         reasons << avReasons[i];
       }

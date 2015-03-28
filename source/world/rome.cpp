@@ -18,13 +18,14 @@
 #include "rome.hpp"
 #include "empire.hpp"
 #include "good/storage.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "barbarian.hpp"
 #include "goodcaravan.hpp"
 #include "core/gettext.hpp"
 #include "game/player.hpp"
+#include "city/states.hpp"
 
 namespace world {
 
@@ -39,9 +40,10 @@ const char* Rome::defaultName = "Rome";
 class Rome::Impl
 {
 public:
-  city::Funds funds;
+  econ::Treasury funds;
   good::Storage gstore;
   DateTime lastAttack;
+  city::States states;
   int strength;
 };
 
@@ -54,15 +56,17 @@ Rome::Rome(EmpirePtr empire)
 
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;
+  _d->states.age = 500;
+  _d->states.nation = nation::rome;
+  _d->states.population = defaultPopulation;
 }
 
 unsigned int Rome::tradeType() const { return 0; }
-city::Funds& Rome::funds() { return _d->funds; }
+econ::Treasury& Rome::treasury() { return _d->funds; }
 
 std::string Rome::name() const { return Rome::defaultName; }
-unsigned int Rome::population() const { return defaultPopulation; }
 bool Rome::isPaysTaxes() const { return true; }
-unsigned int Rome::age() const { return 500; }
+const city::States& Rome::states() const { return _d->states; }
 
 void Rome::timeStep(const unsigned int time)
 {
@@ -71,10 +75,10 @@ void Rome::timeStep(const unsigned int time)
 
 SmartPtr<Player> Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
-const good::Store& Rome::exportingGoods() const{ return _d->gstore; }
+const good::Store& Rome::buys() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}
-void Rome::empirePricesChanged(good::Product gtype, int bCost, int sCost){}
-const good::Store& Rome::importingGoods() const{ return _d->gstore; }
+void Rome::empirePricesChanged(good::Product, const PriceInfo&){}
+const good::Store& Rome::sells() const{ return _d->gstore; }
 
 void Rome::addObject(ObjectPtr obj)
 {
@@ -109,7 +113,6 @@ void Rome::addObject(ObjectPtr obj)
   }
 }
 
-Nation Rome::nation() const { return world::rome; }
 DateTime Rome::lastAttack() const { return _d->lastAttack; }
 int Rome::strength() const { return _d->strength; }
 

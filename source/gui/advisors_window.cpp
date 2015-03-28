@@ -41,7 +41,7 @@
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
 #include "core/foreach.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
 #include "image.hpp"
@@ -208,7 +208,7 @@ Parlor* Parlor::create(Widget* parent, int id, const Advisor type, PlayerCityPtr
 
 void Parlor::Impl::sendMoney2City(int money)
 {
- GameEventPtr event = FundIssueEvent::create( FundIssue::donation, money );
+ GameEventPtr event = Payment::create( econ::Issue::donation, money );
  event->dispatch();
 }
 

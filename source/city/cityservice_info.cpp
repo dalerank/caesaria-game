@@ -27,7 +27,7 @@
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
-#include "funds.hpp"
+#include "game/funds.hpp"
 #include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
@@ -35,6 +35,7 @@
 #include "statistic.hpp"
 #include "cityservice_military.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 
@@ -45,7 +46,6 @@ REGISTER_SERVICE_IN_FACTORY(Info,info)
 
 CAESARIA_LITERALCONST(lastHistory)
 CAESARIA_LITERALCONST(allHistory)
-CAESARIA_LITERALCONST(messages)
 CAESARIA_LITERALCONST(maxparam)
 
 class Info::Impl
@@ -54,10 +54,60 @@ public:
   DateTime lastDate;
   Info::History lastYearHistory;
   Info::History allHistory;
-  Info::Messages messages;
-
   Info::MaxParameters maxParams;
 };
+
+VariantMap Info::History::save() const
+{
+  VariantMap currentVm;
+
+  int step=0;
+  std::string stepName;
+  foreach( i, *this )
+  {
+    stepName = utils::format( 0xff, "%04d", step++ );
+    currentVm[ stepName ] = i->save();
+  }
+
+  return currentVm;
+}
+
+void Info::History::load(const VariantMap &vm)
+{
+  foreach( i, vm )
+  {
+    push_back( Parameters() );
+    back().load( i->second.toList() );
+  }
+}
+
+VariantMap Info::MaxParameters::save() const
+{
+  VariantMap maxParamVm;
+  for( int k=0; k < paramsCount; k++ )
+  {
+    VariantList paramVm;
+    paramVm << (*this)[ k ].date;
+    paramVm << (*this)[ k ].value;
+
+    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
+  }
+
+  return maxParamVm;
+}
+
+void Info::MaxParameters::load(const VariantMap &vm)
+{
+  resize( paramsCount );
+  foreach( i, vm )
+  {
+    int index = utils::toInt( i->first );
+    DateTime date = i->second.toList().get( 0 ).toDateTime();
+    int value = i->second.toList().get( 1 ).toInt();
+    (*this)[ index ].date = date;
+    (*this)[ index ].value = value;
+  }
+}
 
 SrvcPtr Info::create( PlayerCityPtr city )
 {
@@ -80,9 +130,10 @@ void Info::timeStep(const unsigned int time )
   if( !game::Date::isMonthChanged() )
     return;
 
-  if( game::Date::current().month() != _d->lastDate.month() )
-  {
-    bool yearChanged = game::Date::current().year() != _d->lastDate.year();
+  bool isMonthChanged = game::Date::current().month() != _d->lastDate.month();
+  if( isMonthChanged )
+  {    
+    bool isYearChanged = game::Date::current().year() != _d->lastDate.year();
     _d->lastDate = game::Date::current();
 
     _d->lastYearHistory.erase( _d->lastYearHistory.begin() );
@@ -90,8 +141,8 @@ void Info::timeStep(const unsigned int time )
 
     Parameters& last = _d->lastYearHistory.back();
     last.date = _d->lastDate;
-    last[ population  ] = _city()->population();
-    last[ funds       ] = _city()->funds().treasury();
+    last[ population  ] = _city()->states().population;
+    last[ funds       ] = _city()->treasury().money();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
     last[ foodStock   ] = statistic::getFoodStock( _city() );
     last[ foodMontlyConsumption ] = statistic::getFoodMonthlyConsumption( _city() );
@@ -103,15 +154,14 @@ void Info::timeStep(const unsigned int time )
                             ? foodProducing / (yearlyFoodConsumption+1)
                             : -(yearlyFoodConsumption / (foodProducing+1) );
 
-    int currentWorkers, rmaxWorkers;
-    statistic::getWorkersNumber( _city(), currentWorkers, rmaxWorkers );
+    statistic::WorkersInfo wInfo = statistic::getWorkersNumber( _city() );
 
-    last[ needWorkers ] = rmaxWorkers - currentWorkers;
-    last[ maxWorkers  ] = rmaxWorkers;
+    last[ needWorkers ] = wInfo.need - wInfo.current;
+    last[ maxWorkers  ] = wInfo.need;
     last[ workless    ] = statistic::getWorklessPercent( _city() );
-    last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
-    last[ tax         ] = _city()->funds().taxRate();
-    last[ cityWages   ] = _city()->funds().workerSalary();
+    last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
+    last[ tax         ] = _city()->treasury().taxRate();
+    last[ cityWages   ] = _city()->treasury().workerSalary();
     last[ romeWages   ] = _city()->empire()->workerSalary();
     last[ crimeLevel  ] = statistic::getCrimeLevel( _city() );
     last[ favour      ] = _city()->favour();
@@ -158,7 +208,7 @@ void Info::timeStep(const unsigned int time )
       _d->maxParams[ k ].value = std::max<int>( last[ k ], _d->maxParams[ k ].value );
     }
 
-    if( yearChanged )
+    if( isYearChanged )
     {
       _d->allHistory.push_back( last );
     }
@@ -189,138 +239,28 @@ Info::Parameters Info::yearParams(unsigned int year) const
   return _d->allHistory[ year ];
 }
 
-const Info::MaxParameters &Info::maxParams() const
-{
-  return _d->maxParams;
-}
-
-const Info::History& Info ::history() const { return _d->allHistory; }
-
-std::string Info::defaultName(){  return CAESARIA_STR_EXT(Info); }
+const Info::MaxParameters& Info::maxParams() const { return _d->maxParams; }
+const Info::History& Info::history() const { return _d->allHistory; }
+std::string Info::defaultName() {  return CAESARIA_STR_EXT(Info); }
 
 VariantMap Info::save() const
 {
   VariantMap ret;
 
-  int step=0;
-  std::string stepName;
-  VariantMap currentVm;
-  foreach( i, _d->lastYearHistory )
-  {
-    stepName = utils::format( 0xff, "%02d", step++ );
-    currentVm[ stepName ] = (*i).save();
-  }
-  ret[ lc_lastHistory ] = currentVm;
-
-  step=0;
-  VariantMap allVm;
-  foreach( i, _d->allHistory )
-  {
-    stepName = utils::format( 0xff, "%04d", step++ );
-    allVm[ stepName ] = (*i).save();
-  }
-  ret[ lc_allHistory ] = allVm;
-
-  step=0;
-  VariantMap messagesVm;
-  foreach( i, _d->messages )
-  {
-    stepName = utils::format( 0xff, "%04d", step++ );
-    messagesVm[ stepName ] = (*i).save();
-  }
-  ret[ lc_messages ] = messagesVm;
-
-  VariantMap maxParamVm;
-  for( int k=0; k < paramsCount; k++ )
-  {
-    VariantList paramVm;
-    paramVm << _d->maxParams[ k ].date;
-    paramVm << _d->maxParams[ k ].value;
-    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
-  }
-  ret[ lc_maxparam ] = maxParamVm;
+  ret[ literals::lastHistory ] = _d->lastYearHistory.save();
+  ret[ literals::allHistory ] = _d->allHistory.save();
+  ret[ literals::maxparam ] = _d->maxParams.save();
 
   return ret;
 }
 
 void Info::load(const VariantMap& stream)
 {
-  VariantMap currentHistory = stream.get( lc_lastHistory ).toMap();
-  foreach( i, currentHistory )
-  {
-    _d->lastYearHistory.push_back( Parameters() );
-    _d->lastYearHistory.back().load( i->second.toList() );
-  }
-
-  VariantMap allHistory = stream.get( lc_allHistory ).toMap();
-  foreach( i, allHistory )
-  {
-    _d->allHistory.push_back( Parameters() );
-    _d->allHistory.back().load( i->second.toList() );
-  }
-
-  VariantMap messages = stream.get( lc_messages ).toMap();
-  foreach( i, messages )
-  {
-    _d->messages.push_back( ScribeMessage() );
-    _d->messages.back().load( i->second.toMap() );
-  }
-
-  VariantMap maxParamVm = stream.get( lc_maxparam ).toMap();
-  _d->maxParams.resize( paramsCount );
-  foreach( i, maxParamVm )
-  {
-    int index = utils::toInt( i->first );
-    DateTime date = i->second.toList().get( 0 ).toDateTime();
-    int value = i->second.toList().get( 1 ).toInt();
-    _d->maxParams[ index ].date = date;
-    _d->maxParams[ index ].value = value;
-  }
+  _d->lastYearHistory.load( stream.get( literals::lastHistory ).toMap());
+  _d->allHistory.load( stream.get( literals::allHistory ).toMap() );
+  _d->maxParams.load( stream.get( literals::maxparam ).toMap() );
 
   _d->lastYearHistory.resize( DateTime::monthsInYear );
-}
-
-const Info::Messages& Info::messages() const { return _d->messages; }
-
-const Info::ScribeMessage& Info::getMessage(int index) const
-{
-  static ScribeMessage invalidMessage;
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    return *it;
-
-  return invalidMessage;
-}
-
-void Info::changeMessage(int index, ScribeMessage& message)
-{
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    *it = message;
-}
-
-void Info::removeMessage(int index)
-{
-  Messages::iterator it = _d->messages.begin();
-  std::advance( it, index );
-  if( it != _d->messages.end() )
-    _d->messages.erase( it );
-}
-
-void Info::addMessage(const Info::ScribeMessage& message)
-{
-  _d->messages.push_front( message );
-}
-
-namespace {
-CAESARIA_LITERALCONST(text)
-CAESARIA_LITERALCONST(title)
-CAESARIA_LITERALCONST(gtype)
-CAESARIA_LITERALCONST(position)
-CAESARIA_LITERALCONST(opened)
-CAESARIA_LITERALCONST(ext)
 }
 
 Info::Parameters::Parameters()
@@ -350,33 +290,6 @@ void Info::Parameters::load(const VariantList& stream)
     (*this)[ k ] = *it;
     k++;
   }
-}
-
-VariantMap Info::ScribeMessage::save() const
-{
-  VariantMap ret;
-  ret[ lc_text ] = Variant( text );
-  ret[ lc_title ] = Variant( title );
-  ret[ lc_gtype ] = Variant( good::Helper::getTypeName( gtype ) );
-  ret[ lc_position ] = position;
-  VARIANT_SAVE_ANY( ret, type )
-  VARIANT_SAVE_ANY( ret, date )
-  ret[ lc_opened ] = opened;
-  ret[ lc_ext ] = ext;
-
-  return ret;
-}
-
-void Info::ScribeMessage::load(const VariantMap& stream)
-{
-  text = stream.get( lc_text ).toString();
-  title = stream.get( lc_title ).toString();
-  gtype = good::Helper::getType( stream.get( lc_gtype ).toString() );
-  position = stream.get( lc_position ).toPoint();
-  VARIANT_LOAD_ANY( type, stream )
-  VARIANT_LOAD_TIME( date, stream )
-  opened = stream.get( lc_opened );
-  ext = stream.get( lc_ext );
 }
 
 }//end namespace city

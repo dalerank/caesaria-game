@@ -66,13 +66,13 @@
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
 #include "video_config.hpp"
+#include "config.hpp"
 
 #include <list>
 
 using namespace gfx;
 using namespace scene;
-
-enum { minimumSpeed=10, defaultCellWidth=30, remakeCellWidth=60, maximuxSpeed=300 };
+using namespace events;
 
 class Game::Impl
 {
@@ -297,7 +297,7 @@ void Game::setPaused(bool value)
 
 void Game::step(unsigned int count)
 {
-  _d->manualTicksCounterX10 += count * 10;
+  _d->manualTicksCounterX10 += count * config::gamespeed::scale;
 }
 
 Game::Game() : _d( new Impl )
@@ -307,11 +307,13 @@ Game::Game() : _d( new Impl )
   _d->manualTicksCounterX10 = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
-  _d->timeMultiplier = 70;
+  _d->timeMultiplier = config::gamespeed::defaultMutltiplier;
 }
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, minimumSpeed, maximuxSpeed );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent,
+                                                                                            config::gamespeed::minimum,
+                                                                                            config::gamespeed::maximux );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
 
 Game::~Game(){}
@@ -324,7 +326,7 @@ void Game::save(std::string filename) const
 
   SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
 
-  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), 1 );
+  GameEventPtr e = WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -420,9 +422,9 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != defaultCellWidth && cellWidth != remakeCellWidth )
+  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
   {
-    cellWidth = defaultCellWidth;
+    cellWidth = tilemap::c3CellWidth;
   }    
 
   tilemap::initTileBase( cellWidth );

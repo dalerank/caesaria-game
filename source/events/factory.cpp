@@ -20,17 +20,17 @@
 namespace events
 {
 
+typedef std::map< std::string, GameEventCreatorPtr > Creators;
 class EFactory::Impl
 {
 public:
-  typedef std::map< std::string, GameEventCreatorPtr > Creators;
   Creators creators;
 };
 
 GameEventPtr EFactory::create( const std::string& name )
 {
   EFactory& inst = instance();
-  Impl::Creators::iterator it = inst._d->creators.find( name );
+  Creators::iterator it = inst._d->creators.find( name );
   if( it != inst._d->creators.end() )
   {
     return it->second->create();
@@ -51,7 +51,7 @@ void EFactory::addCreator( const std::string& name, GameEventCreatorPtr creator 
   if( creator.isNull() )
     return;
 
-  Impl::Creators::iterator it = _d->creators.find( name );
+  Creators::iterator it = _d->creators.find( name );
 
   if( it != _d->creators.end() )
   {

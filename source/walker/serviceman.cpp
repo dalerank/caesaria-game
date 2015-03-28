@@ -32,22 +32,23 @@
 #include "corpse.hpp"
 #include "core/foreach.hpp"
 #include "gfx/helper.hpp"
+#include "city/states.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::priest, Service::religionCeres, priest )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::doctor, Service::doctor, doctor )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::priest,   Service::religionCeres, priest )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::doctor,   Service::doctor, doctor )
 REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::bathlady, Service::baths, bathlady )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::actor, Service::theater, actor )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::gladiator, Service::amphitheater, gladiator )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::barber, Service::barber, barber )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::surgeon, Service::hospital, surgeon )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::scholar, Service::school, scholar )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::librarian, Service::library, library )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::teacher, Service::academy, teacher )
-REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::missioner, Service::missionary, missioner )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::actor,    Service::theater, actor )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::gladiator,Service::amphitheater, gladiator )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::barber,   Service::barber, barber )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::surgeon,  Service::hospital, surgeon )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::scholar,  Service::school, scholar )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::librarian,Service::library, library )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::teacher,  Service::academy, teacher )
+REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::missioner,Service::missionary, missioner )
 
 namespace {
   const unsigned int defaultServiceDistance = 5;
@@ -68,7 +69,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   : Human( city ), _d( new Impl )
 {
   _setType( walker::serviceman );
-  _setNation( city->nation() );
+  _setNation( city->states().nation );
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;

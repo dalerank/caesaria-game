@@ -21,19 +21,26 @@
 namespace religion
 {
 
+namespace debug
+{
+enum { doBlessing=-103, doSmallCurse=-102, doWrath=-101 };
+}
+
 namespace relation
 {
 enum {
   wrathfull=10,
+  badmood=20,
   negative=30,
   minimum4wrath=40,
+  defaultMood=50
 };
 
 }
 
 namespace penalty
 {
-enum { brokenGod=25 };
+enum { brokenGod=25, maximum=50 };
 }
 
 namespace award

@@ -66,10 +66,10 @@ class ResourceMenu
 {
 public:
   enum {
+    maximizeBtn = 101,
     okBtnPicId = 239,
     cancelBtnPicId = 243
   };
-  static const int maximizeBtn = 101;
   static const int houseBtnPicId = 123;
   static const int helpInfBtnPicId = 528;
   static const int exitInfBtnPicId = 532;

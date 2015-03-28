@@ -239,7 +239,7 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
     return;
   }
 
-  if( mil->haveNotification( city::Military::Notification::barbarian ) )
+  if( mil->haveNotification( Notification::barbarian ) )
   {
     lbAlarm->setText( _("##barbarian_are_closing_city##") );
     return;

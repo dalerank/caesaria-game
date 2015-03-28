@@ -24,24 +24,22 @@
 #include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "city/statistic.hpp"
+#include "city/states.hpp"
 #include "factory.hpp"
 
 using namespace constants;
+using namespace city;
 
 namespace events
 {
-
-namespace {
-CAESARIA_LITERALCONST(population)
-CAESARIA_LITERALCONST(strong)
-}
 
 REGISTER_EVENT_IN_FACTORY(RandomFire, "random_fire")
 
 class RandomFire::Impl
 {
 public:
-  int minPopulation, maxPopulation;
+  Ranged::Range popRange;
   bool isDeleted;
   int strong;
 };
@@ -56,8 +54,8 @@ GameEventPtr RandomFire::create()
 
 void RandomFire::_exec( Game& game, unsigned int time)
 {
-  int population = game.city()->population();
-  if( population > _d->minPopulation && population < _d->maxPopulation )
+  int population = game.city()->states().population;
+  if( _d->popRange.contain( population ) )
   {
     Logger::warning( "Execute random fire event" );
     _d->isDeleted = true;
@@ -67,8 +65,7 @@ void RandomFire::_exec( Game& game, unsigned int time)
             << object::group::road
             << object::group::disaster;
 
-    ConstructionList ctrs;
-    ctrs << game.city()->overlays();
+    ConstructionList ctrs = statistic::findo<Construction>( game.city(), object::any );
 
     for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
     {
@@ -91,28 +88,22 @@ bool RandomFire::isDeleted() const {  return _d->isDeleted; }
 
 void RandomFire::load(const VariantMap& stream)
 {
-  VariantList vl = stream.get( lc_population ).toList();
-  _d->minPopulation = vl.get( 0, 0 ).toInt();
-  _d->maxPopulation = vl.get( 1, 999999 ).toInt();
-  _d->strong = stream.get( lc_strong, 10 );
+  Ranged::load( stream );
+  VARIANT_LOAD_ANYDEF_D( _d, strong, 10, stream )
 }
 
 VariantMap RandomFire::save() const
 {
-  VariantMap ret;
-  VariantList vl_pop;
-  vl_pop << _d->minPopulation << _d->maxPopulation;
-
-  ret[ lc_population ] = vl_pop;
-  ret[ lc_strong     ] = _d->strong;
+  VariantMap ret = Ranged::save();
+  VARIANT_SAVE_ANY_D( ret, _d, strong )
   return ret;
 }
 
 RandomFire::RandomFire() : _d( new Impl )
 {
   _d->isDeleted = false;
-  _d->minPopulation = 0;
-  _d->maxPopulation = 999999;
+  _d->popRange.min = 0;
+  _d->popRange.max = 999999;
   _d->strong = 10;
 }
 

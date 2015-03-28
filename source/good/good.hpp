@@ -21,6 +21,7 @@
 
 #include "core/namedtype.hpp"
 #include <list>
+#include <map>
 
 namespace good
 {
@@ -56,6 +57,7 @@ const Products& materials();
 const Products& all();
 
 class Stock;
+class ProductMap;
 class Store;
 }//end namespace good
     

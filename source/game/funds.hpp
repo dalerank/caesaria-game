@@ -24,7 +24,12 @@
 #include "good/good.hpp"
 #include "predefinitions.hpp"
 
-struct FundIssue
+namespace econ
+{
+
+enum { maxDebt=-4900 };
+
+struct Issue
 { 
   enum Type { unknown=0, taxIncome=1,
               exportGoods, donation,
@@ -38,29 +43,26 @@ struct FundIssue
   Type type;
   int money;
 
-  FundIssue() : type( unknown ), money( 0 ) {}
-  FundIssue( Type t, int m ) : type( t ), money( m ) {}
+  Issue() : type( unknown ), money( 0 ) {}
+  Issue( Type t, int m ) : type( t ), money( m ) {}
 };
 
-namespace city
-{
-
-class Funds
+class Treasury
 {
 public:
   enum { thisYear=0, lastYear=1, twoYearAgo=2, defaultTaxPrcnt=7 };
 
-  typedef std::map< FundIssue::Type, int > IssuesValue;
+  typedef std::map< Issue::Type, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
 
-  Funds();
-  ~Funds();
+  Treasury();
+  ~Treasury();
 
-  void resolveIssue( FundIssue issue );
+  void resolveIssue( Issue issue );
 
   void updateHistory( const DateTime& date );
 
-  int getIssueValue( FundIssue::Type type, int age=thisYear ) const;
+  int getIssueValue( Issue::Type type, int age=thisYear ) const;
 
   int taxRate() const;
   void setTaxRate( const unsigned int value );
@@ -68,7 +70,7 @@ public:
   int workerSalary() const;
   void setWorkerSalary( const unsigned int value );
 
-  int treasury() const;
+  int money() const;
   int profit() const;
 
   bool haveMoneyForAction( unsigned int money );
@@ -78,14 +80,14 @@ public:
 
 signals public:
   Signal1<int>& onChange();
-  Signal1<FundIssue::Type>& onNewIssue();
+  Signal1<Issue::Type>& onNewIssue();
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
-  void _updateCreditDebt(IssuesValue& step, FundIssue issue);
+  void _updateCreditDebt(IssuesValue& step, Issue issue);
 };
 
-}//end namespace city
+}//end namespace funds
 
 #endif //__CAESARIA_CITYFUNDS_H_INCLUDED__

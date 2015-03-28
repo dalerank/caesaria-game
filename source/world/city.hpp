@@ -26,13 +26,13 @@
 #include "nation.hpp"
 #include "game/predefinitions.hpp"
 
-namespace city
-{
-  class Funds;
-}
+namespace econ { class Treasury; }
+namespace city { struct States; }
 
 namespace world
 {
+
+class PriceInfo;
 
 class City : public Object
 {
@@ -44,21 +44,19 @@ public:
   virtual void setAvailable( bool value ) {}
 
   virtual unsigned int tradeType() const = 0;
-  virtual city::Funds& funds() = 0;
-  virtual unsigned int population() const = 0;
+  virtual econ::Treasury& treasury() = 0;
   virtual bool isPaysTaxes() const = 0;
-  virtual Nation nation() const = 0;
   virtual bool haveOverduePayment() const = 0;
   virtual bool isMovable() const { return false; }
   virtual DateTime lastAttack() const = 0;
   virtual int strength() const = 0;
   virtual PlayerPtr mayor() const = 0;
-  virtual unsigned int age() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
-  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost ) = 0;
-  virtual const good::Store& importingGoods() const = 0;
-  virtual const good::Store& exportingGoods() const = 0;
+  virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices ) = 0;
+  virtual const good::Store& sells() const = 0;
+  virtual const good::Store& buys() const = 0;
+  virtual const city::States& states() const = 0;
 };
 
 }//end namespace world

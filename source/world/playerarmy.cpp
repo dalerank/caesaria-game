@@ -29,6 +29,7 @@
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
 #include "walker/walkers_factory.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
@@ -56,6 +57,23 @@ public:
 public:
   void updateStrength();
 };
+
+std::string PlayerArmy::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case empireMap:
+     ret =  mode() == PlayerArmy::go2home
+                  ? "##playerarmy_gone_to_home##"
+                  : "##playerarmy_gone_to_location##";
+  break;
+
+  default:        ret = "##ourcity_unknown_about##";  break;
+  }
+
+  return ret;
+}
 
 PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
 {
@@ -158,11 +176,12 @@ void PlayerArmy::killSoldiers(int percent)
   if( percent >= 100 )
   {
     _d->soldiersInfo.clear();
+    Logger::warning( "PlayerArmy killed" );
     deleteLater();
   }
 
   int curStrength = strength();
-  int finishStrength = curStrength * percent / 100;
+  int finishStrength = math::percentage( curStrength, percent );
   while( !_d->soldiersInfo.empty() && curStrength > finishStrength )
   {
     _d->soldiersInfo.erase( _d->soldiersInfo.begin() );
@@ -201,7 +220,7 @@ void PlayerArmy::_check4attack()
 
   foreach( it, distanceMap )
   {
-    if( it->first < 20 )
+    if( it->first < config::army::viewRange )
     {
       _attackObject( ptr_cast<Object>( it->second ) );
       break;
@@ -281,7 +300,7 @@ void PlayerArmy::_reachedWay()
 
 void PlayerArmy::_attackAny()
 {
-  ObjectList objs = empire()->findObjects( location(), 20 );
+  ObjectList objs = empire()->findObjects( location(), config::army::viewRange );
   objs.remove( this );
 
   bool successAttack = false;
@@ -324,9 +343,7 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   setPicture( pic );
 
   _animation().clear();
-  _animation().load( ResourceGroup::empirebits, 72, 6 );
-  _animation().setLoop( gfx::Animation::loopAnimation );
-  _animation().setOffset( Point( 5, -10 ) );
+  _animation().load( "world_playerarmy" );
 }
 
 void PlayerArmy::Impl::updateStrength()

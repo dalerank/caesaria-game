@@ -40,7 +40,10 @@ using namespace citylayer;
 namespace gui
 {
 
-class CityOptionsWindow::Impl
+namespace dialog
+{
+
+class CityOptions::Impl
 {
 public:
   GameAutoPause locker;
@@ -80,7 +83,7 @@ public:
   void toggleCityOption( PlayerCity::OptionType option );
 };
 
-CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
+CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
@@ -123,16 +126,16 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
-  CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
+  CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
   if( btnClose ) btnClose->setFocus();
 
   _d->update();
 }
 
-CityOptionsWindow::~CityOptionsWindow() {}
+CityOptions::~CityOptions() {}
 
 
-void CityOptionsWindow::Impl::toggleDebug()
+void CityOptions::Impl::toggleDebug()
 {
   Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
   if( menu )
@@ -142,35 +145,35 @@ void CityOptionsWindow::Impl::toggleDebug()
   update();
 }
 
-void CityOptionsWindow::Impl::increaseFireRisk()
+void CityOptions::Impl::increaseFireRisk()
 {
   int value = city->getOption( PlayerCity::fireKoeff );
   city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value + 10, 0, 9999 ) );
   update();
 }
 
-void CityOptionsWindow::Impl::decreaseFireRisk()
+void CityOptions::Impl::decreaseFireRisk()
 {
   int value = city->getOption( PlayerCity::fireKoeff );
   city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value - 10, 0, 9999) );
   update();
 }
 
-void CityOptionsWindow::Impl::toggleCityOption(PlayerCity::OptionType option)
+void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
 {
   int value = city->getOption( option );
   city->setOption( option, value > 0 ? 0 : 1 );
   update();
 }
 
-void CityOptionsWindow::Impl::toggleLockInfobox()
+void CityOptions::Impl::toggleLockInfobox()
 {
   bool value = SETTINGS_VALUE( lockInfobox );
   SETTINGS_SET_VALUE( lockInfobox, !value );
   update();
 }
 
-void CityOptionsWindow::Impl::toggleDifficulty()
+void CityOptions::Impl::toggleDifficulty()
 {
   int value = city->getOption( PlayerCity::difficulty );
   value = (value+1)%game::difficulty::count;
@@ -178,7 +181,7 @@ void CityOptionsWindow::Impl::toggleDifficulty()
   update();
 }
 
-void CityOptionsWindow::Impl::toggleShowTooltips()
+void CityOptions::Impl::toggleShowTooltips()
 {
   bool value = SETTINGS_VALUE( tooltipEnabled );
   SETTINGS_SET_VALUE( tooltipEnabled, !value );
@@ -189,22 +192,22 @@ void CityOptionsWindow::Impl::toggleShowTooltips()
   update();
 }
 
-void CityOptionsWindow::Impl::toggleLegionAttack() { toggleCityOption( PlayerCity::legionAttack ); }
-void CityOptionsWindow::Impl::toggleGods() { toggleCityOption( PlayerCity::godEnabled ); }
-void CityOptionsWindow::Impl::toggleBarbarianAttack() {  toggleCityOption( PlayerCity::barbarianAttack ); }
-void CityOptionsWindow::Impl::toggleC3Gameplay()  {  toggleCityOption( PlayerCity::c3gameplay ); }
-void CityOptionsWindow::Impl::toggleZoomEnabled() {  toggleCityOption( PlayerCity::zoomEnabled ); }
-void CityOptionsWindow::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInvert ); }
-void CityOptionsWindow::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
+void CityOptions::Impl::toggleLegionAttack() { toggleCityOption( PlayerCity::legionAttack ); }
+void CityOptions::Impl::toggleGods() { toggleCityOption( PlayerCity::godEnabled ); }
+void CityOptions::Impl::toggleBarbarianAttack() {  toggleCityOption( PlayerCity::barbarianAttack ); }
+void CityOptions::Impl::toggleC3Gameplay()  {  toggleCityOption( PlayerCity::c3gameplay ); }
+void CityOptions::Impl::toggleZoomEnabled() {  toggleCityOption( PlayerCity::zoomEnabled ); }
+void CityOptions::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInvert ); }
+void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
 
-void CityOptionsWindow::Impl::toggleLeftMiddleMouse()
+void CityOptions::Impl::toggleLeftMiddleMouse()
 {
   bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
   DrawOptions::instance().setFlag( DrawOptions::mmbMoving, !value );
   update();
 }
 
-Widget* CityOptionsWindow::Impl::findDebugMenu( Ui* ui )
+Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 {
   const Widgets& children = ui->rootWidget()->children();
   foreach( it, children )
@@ -219,7 +222,7 @@ Widget* CityOptionsWindow::Impl::findDebugMenu( Ui* ui )
   return 0;
 }
 
-void CityOptionsWindow::Impl::update()
+void CityOptions::Impl::update()
 {
   if( btnGodEnabled )
   {
@@ -309,6 +312,16 @@ void CityOptionsWindow::Impl::update()
     std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
     btnDifficulty->setText( _(text) );
   }
+
+  if( btnLegionMayAttack )
+  {
+    int value = city->getOption( PlayerCity::legionAttack );
+    btnLegionMayAttack->setText( value
+                                    ? _("##city_chastener_on##")
+                                    : _("##city_chastener_off##")  );
+  }
 }
+
+}//end namespace dialog
 
 }//end namespace gui

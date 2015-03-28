@@ -17,7 +17,7 @@
 
 #include "random_animals.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "city/cityservice_animals.hpp"
 #include "objects/house.hpp"
@@ -93,8 +93,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    city::AnimalsPtr srvc;
-    srvc << game.city()->findService( city::Animals::defaultName() );
+    city::AnimalsPtr srvc = city::statistic::finds<city::Animals>( game.city() );
 
     if( srvc.isValid() )
     {

@@ -1,0 +1,13 @@
+{
+  "##tutorial_fire##" : "Vuur in de stad"
+  "##tutorial_first_collapse##" : "Gebouw beschadigd"
+  "##build_some_houses##" : "Onmiddellijke Doel: Bouw een aantal huizen"  
+  "##tutorial_text##" : "Laat uw governorial trainning beginnen!\n Om te beginnen moet je bases van het bouwen van de Romeinse nederzettingen kennen te bestuderen. Maak huisvesting zones, en je zult zien hoe mensen je stad zullen bewonen."
+  "##tutorial_prefecture_info##" : "Voor bescherming tegen brand, bouw een prefectuur over huisvesting. De prefectuur stuurt de burger te zoeken in het district van de werknemers. Bij het passeren van enige behuizing, heeft de prefectuur toegang tot arbeid. Daarna kan het de prefecten op patrouille sturen."
+  "##tutorial_prefect_detect_fire##" : "Wanneer de prefect brand ontdekt, begint het te blussen door middel van water uit de dichtstbijzijnde waterput."
+  "##tutorial_ruins_info##" : "Gebruik de rechter muisknop op de as om te zien waar de brand was. Tijdens de gebruikelijke patrouille controleert de prefect de gebouwen op brandveiligheid, dit verminderd risico�s. \n Prefecten kunnen gebouwen binnen twee hokjes van de weg ondersteunen. \n\n message \n Als je de fanfare hoort, is een bericht gearriveerd. U kunt het bericht lezen door op de knop met het boekrol te klikken."
+  "##tutorial_engineer_info##" : "Ondanks dat het constructie niveau in Rome erg hoog was, vielen de gebouwen in het keizerrijk vaak om. Bouw daarom een technische post om dit te voorkomen. Het werkt ook, evenals de prefecten, doormiddel van het automatisch op patrouille sturen van ingenieurs om eventuele schade te herstellen."
+  "##tutorial_engineer_senate##" : "Nu kunt u ook het senaat bouwen. Dit kan maar eenmaal in de stad. Het senaat heeft arbeid nodig om naar de stad te sturen voor het verzamelen van de belastingen, deze belastingen gelden op alle huizen die gepasseerd worden."
+  "##tutorial_religion##" : "Probeer om een identiek aantal tempels te bouwen van elke god. Ze zijn allemaal jaloers and kunnen boos worden als zij het gevoel krijgen dat ze niet genoeg aandacht krijgen. Ze kunnen ook boos worden als je stad te groot is en er meer tempels worden verwacht dus handel met zorg. Ga naar uw adviseur van geloof om te leren wat de mening van de goden is over u. Bliksem betekend dat god uw stad wil straffen. Hoe meer bliksem, hoe bozer de god of godin is."
+  "##tutorial_collapse_building##" : "Op de treden van het senaat zitten de werklozen. Hoe meer mensen er zitten, hoe hoger het werklozen aantal. U kunt merken hoe voetpaden over het senaat verhard worden. Nadat inwoners automatisch de weg verbeteren, ook doen zij de verharding."
+}

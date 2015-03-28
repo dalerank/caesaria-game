@@ -26,15 +26,13 @@
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "events/notification.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 
 namespace world
 {
 
 const Point Barbarian::startLocation = Point( 1500, 0 );
-
-namespace {
-static const int defaultViewRange = 60;
-}
 
 class Barbarian::Impl
 {
@@ -52,6 +50,18 @@ BarbarianPtr Barbarian::create(EmpirePtr empire, Point location)
   ret->setStrength( 10 + math::random( 50 ) );
   ret->_check4attack();  
   ret->drop();
+
+  return ret;
+}
+
+std::string Barbarian::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case empireMap: ret = "##enemy_army_threating_a_city##";      break;
+  default:        ret = "##enemy_army_unknown_about##";  break;
+  }
 
   return ret;
 }
@@ -80,7 +90,7 @@ void Barbarian::updateStrength(int value)
   setStrength( strength() + value );
 }
 
-int Barbarian::viewDistance() const { return defaultViewRange; }
+int Barbarian::viewDistance() const { return config::barbarian::viewRange; }
 void Barbarian::setMinpop4attack(int value) { _d->minPop4attack = value; }
 
 bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
@@ -92,6 +102,7 @@ void Barbarian::_check4attack()
 {
   MovableObjectList mobjects;
   mobjects << empire()->objects();
+
   mobjects.remove( this );
 
   std::map< int, MovableObjectPtr > distanceMap;
@@ -104,7 +115,7 @@ void Barbarian::_check4attack()
 
   foreach( it, distanceMap )
   {
-    if( it->first < 20 )
+    if( it->first < config::barbarian::attackRange )
     {
       _attackObject( ptr_cast<Object>( it->second ) );
       break;
@@ -129,7 +140,7 @@ void Barbarian::_check4attack()
 
      foreach( it, cities )
      {
-       if( (*it)->population() < (unsigned int)_d->minPop4attack )
+       if( (*it)->states().population < (unsigned int)_d->minPop4attack )
          continue;
 
        float distance = location().distanceTo( (*it)->location() );
@@ -144,7 +155,7 @@ void Barbarian::_check4attack()
        {
          _d->mode = Impl::go2object;
 
-         events::GameEventPtr e = events::Notification::attack( it->second->name(), "##barbaria_attack_empire_city##", this );
+         events::GameEventPtr e = events::Notify::attack( it->second->name(), "##barbaria_attack_empire_city##", this );
          e->dispatch();
 
          break;
@@ -184,7 +195,7 @@ void Barbarian::_reachedWay()
 
 void Barbarian::_attackAny()
 {
-  ObjectList objs = empire()->findObjects( location(), 20 );
+  ObjectList objs = empire()->findObjects( location(), config::barbarian::attackRange );
   objs.remove( this );
 
   bool successAttack = false;
@@ -227,10 +238,7 @@ Barbarian::Barbarian( EmpirePtr empire )
   setSpeed( 4.f );
 
   _animation().clear();
-  _animation().load( ResourceGroup::empirebits, 53, 16 );
-  Size size = _animation().frame( 0 ).size();
-  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
-  _animation().setLoop( gfx::Animation::loopAnimation );
+  _animation().load( "world_barbarian" );
 }
 
 

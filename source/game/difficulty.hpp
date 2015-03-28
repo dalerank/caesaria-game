@@ -29,6 +29,7 @@ enum Type{ fun=0, easy, simple, usual, nicety, hard, impossible, count };
 const char* const name[count] = {
                             CAESARIA_STR_EXT(fun),
                             CAESARIA_STR_EXT(easy),
+                            CAESARIA_STR_EXT(simple),
                             CAESARIA_STR_EXT(usual),
                             CAESARIA_STR_EXT(nicety),
                             CAESARIA_STR_EXT(hard),

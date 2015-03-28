@@ -27,7 +27,7 @@
 #include "world/empire.hpp"
 #include "core/utils.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
@@ -167,7 +167,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       DirectRoute route;
 
       //try found any available warehouse for selling our goods
-      const good::Store& buyOrders = city->importingGoods();
+      const good::Store& buyOrders = city->buys();
 
       if( buyOrders.capacity() > 0 )
       {
@@ -176,7 +176,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( !route.first.isValid() )
       {
-        Logger::warning( "Walker_LandMerchant: can't found path to nearby warehouse. BaseCity=" + baseCityName );
+        Logger::warning( "!!! WARNING: LandMerchant can't found path to nearby warehouse. BaseCity=" + baseCityName );
         route = PathwayHelper::shortWay( city, position, object::warehouse, PathwayHelper::roadOnly );
       }
 
@@ -241,7 +241,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       if( warehouse.isValid() )
       {
         float tradeKoeff = warehouse->tradeBuff( Warehouse::sellGoodsBuff );
-        statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
+        good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
 
         trade::Options& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
@@ -252,6 +252,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           {
             continue;
           }
+
           int needQty = buy.freeQty( *goodType );
           int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
           int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
@@ -267,7 +268,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
               currentBuys += good::Helper::exportPrice( city, *goodType, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( *goodType, mayBuy, tradeKoeff );
+              events::GameEventPtr e = events::Payment::exportg( *goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }
@@ -326,13 +327,14 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
     WarehousePtr warehouse;
     warehouse << city->getOverlay( destBuildingPos );
 
-    const good::Store& cityOrders = city->importingGoods();
+    const good::Store& cityOrders = city->buys();
 
     if( warehouse.isValid() )
     {
-      statistic::GoodsMap storedGoods = statistic::getGoodsMap( city, false );
+      good::ProductMap storedGoods = statistic::getProductMap( city, false );
       trade::Options& options = city->tradeOptions();
       //try sell goods
+
       foreach( goodType, good::all() )
       {
         if (!options.isImporting(*goodType))
@@ -363,7 +365,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
             currentSell += good::Helper::importPrice( city, *goodType, maySells );
 
-            events::GameEventPtr e = events::FundIssueEvent::import( *goodType, maySells );
+            events::GameEventPtr e = events::Payment::import( *goodType, maySells );
             e->dispatch();
           }
         }

@@ -31,6 +31,7 @@
 #include "city/migration.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
+#include "city/states.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
@@ -327,7 +328,7 @@ void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
 void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
-  bool bigcity = _city()->population() > populationOverVillage;
+  bool bigcity = _city()->states().population > populationOverVillage;
   unsigned int houseLockId = tile::hash( _d->housePosLock );
 
   while( itHouse != hlist.end() )
@@ -501,14 +502,14 @@ TilePos Emigrant::places(Walker::Place type) const
 void Emigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ lc_peoples ] = _d->peoples.save();
+  stream[ literals::peoples ] = _d->peoples.save();
   VARIANT_SAVE_ANY_D( stream, _d, stamina )
 }
 
 void Emigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->peoples.load( stream.get( lc_peoples ).toList() );
+  _d->peoples.load( stream.get( literals::peoples ).toList() );
   VARIANT_LOAD_ANY_D( _d, stamina, stream )
 }
 

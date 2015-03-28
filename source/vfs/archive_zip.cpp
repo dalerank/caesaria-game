@@ -168,7 +168,7 @@ bool ZipArchiveReader::scanGZipHeader()
 
   // read header
   SGZIPMemberHeader header;
-    if (File.read(&header, sizeof(SGZIPMemberHeader)) == sizeof(SGZIPMemberHeader))
+  if (File.read(&header, sizeof(SGZIPMemberHeader)) == sizeof(SGZIPMemberHeader))
 	{
 		// check header value
 		if (header.sig != 0x8b1f)

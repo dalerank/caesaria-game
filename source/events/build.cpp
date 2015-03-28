@@ -19,7 +19,7 @@
 #include "objects/objects_factory.hpp"
 #include "game/game.hpp"
 #include "city/helper.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "playsound.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/statistic.hpp"
@@ -92,8 +92,8 @@ void BuildAny::_exec( Game& game, unsigned int )
     if( construction.isValid() )
     {
       const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
-      game.city()->funds().resolveIssue( FundIssue( FundIssue::buildConstruction,
-                                                    -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
+      game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction,
+                                                         -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 
       if( construction->group() != object::group::disaster )
       {

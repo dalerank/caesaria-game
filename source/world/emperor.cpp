@@ -17,7 +17,7 @@
 
 #include "emperor.hpp"
 #include "core/foreach.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
 #include "romechastenerarmy.hpp"
@@ -25,16 +25,21 @@
 #include "core/saveadapter.hpp"
 #include "core/utils.hpp"
 #include "empire.hpp"
+#include "game/gift.hpp"
 #include "core/variant_map.hpp"
+#include "config.hpp"
+#include "game/gift.hpp"
+#include "relations.hpp"
+
+using namespace config;
 
 namespace world
 {
 
 namespace {
 static const unsigned int legionSoldiersCount = 16;
-static const int maxFavour = 100;
-static const int maxFavourUpdate = 5;
-static const int yearlyDecreaseFavour = 2;
+static const int brokenTaxPenalty = 1;
+static const int brokenMoreTaxPenalty = 2;
 static const int taxBrokenFavourDecrease = 3;
 static const int taxBrokenFavourDecreaseMax = 8;
 static const int normalSalaryFavourUpdate = 1;
@@ -42,72 +47,9 @@ static const int minimumFabvour4wrathGenerate = 20;
 static const int maxWrathPointValue = 20;
 }
 
-struct Relation
-{
-  int value;
-  unsigned int soldiersSent;
-  unsigned int lastSoldiersSent;
-  DateTime lastGiftDate;
-  DateTime lastTaxDate;
-  unsigned int wrathPoint;
-  unsigned int tryCount;
-  int chastenerFailed;
-  int lastGiftValue;
-  bool debtMessageSent;
-
-  Relation()
-    : value( 0 ),
-      soldiersSent( 0 ), lastSoldiersSent( 0 ),
-      lastGiftDate( DateTime( -351, 1, 1 ) ),
-      wrathPoint(0), tryCount( 0 ),
-      lastGiftValue( 0 ), debtMessageSent(false)
-  {
-
-  }
-
-  void removeSoldier()
-  {
-    if( soldiersSent > 0)
-      --soldiersSent;
-  }
-
-  VariantMap save() const
-  {
-    VariantMap ret;
-    VARIANT_SAVE_ANY(ret, lastGiftDate )
-    VARIANT_SAVE_ANY(ret, lastTaxDate )
-    VARIANT_SAVE_ANY(ret, value)
-    VARIANT_SAVE_ANY(ret, lastGiftValue )
-    VARIANT_SAVE_ANY(ret, soldiersSent )
-    VARIANT_SAVE_ANY(ret, lastSoldiersSent)
-    VARIANT_SAVE_ANY(ret, debtMessageSent )
-    VARIANT_SAVE_ANY(ret, chastenerFailed )
-    VARIANT_SAVE_ANY(ret, wrathPoint)
-    VARIANT_SAVE_ANY(ret, tryCount)
-
-    return ret;
-  }
-
-  void load( const VariantMap& stream )
-  {
-    VARIANT_LOAD_TIME(lastGiftDate, stream )
-    VARIANT_LOAD_TIME(lastTaxDate, stream )
-    VARIANT_LOAD_ANY(value, stream)
-    VARIANT_LOAD_ANY(lastGiftValue, stream);
-    VARIANT_LOAD_ANY(lastSoldiersSent, stream);
-    VARIANT_LOAD_ANY(soldiersSent, stream)
-    VARIANT_LOAD_ANY(debtMessageSent, stream)
-    VARIANT_LOAD_ANY(chastenerFailed, stream)
-    VARIANT_LOAD_ANY(wrathPoint, stream)
-    VARIANT_LOAD_ANY(tryCount, stream)
-  }
-};
-
 class Emperor::Impl
 {
 public:
-  typedef std::map< std::string, Relation > Relations;
-
   Relations relations;
   Empire* empire;
   std::string name;
@@ -123,53 +65,32 @@ Emperor::Emperor() : __INIT_IMPL(Emperor)
 
 Emperor::~Emperor(){}
 
-int Emperor::relation(const std::string& cityname)
+int Emperor::relation(const std::string& cityname) const
 {
-  __D_IMPL(d,Emperor)
-  Impl::Relations::iterator i = d->relations.find( cityname );
-  return ( i == d->relations.end() ? 0 : i->second.value );
+  Relations::const_iterator i = _dfunc()->relations.find( cityname );
+  return ( i == _dfunc()->relations.end() ? 0 : i->second.value() );
 }
 
 void Emperor::updateRelation(const std::string& cityname, int value)
 {
-  __D_IMPL(d,Emperor)
-  int current = d->relations[ cityname ].value;
-  d->relations[ cityname ].value = math::clamp<int>( current + value, 0, maxFavour );
+  Relation& relation = _dfunc()->relations[ cityname ];
+  relation.change( value );
 }
 
-void Emperor::sendGift(const std::string& cityname, unsigned int money)
+void Emperor::sendGift(const Gift& gift)
 {
-  Relation relation;
-  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
-  if( it != _dfunc()->relations.end() )
-  {
-    relation = it->second;
-  }
+  Relation& relation = _dfunc()->relations[ gift.sender() ];
 
-  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.monthsTo( game::Date::current() ),
-                                            0, (int)DateTime::monthsInYear );
-
-  float timeKoeff = monthFromLastGift / (float)DateTime::monthsInYear;
-  int affectMoney = relation.lastGiftValue / ( monthFromLastGift + 1 );
-  float moneyKoeff = math::max<float>( money - affectMoney, 0.f ) / money;
-  int favourUpdate = maxFavourUpdate * timeKoeff * moneyKoeff;
-  relation.lastGiftDate = game::Date::current();
-  relation.lastGiftValue = money;
-
-  updateRelation( cityname, favourUpdate );
+  relation.update( gift );
 }
 
-DateTime Emperor::lastGiftDate(const std::string &cityname)
+DateTime Emperor::lastGiftDate(const std::string& cityname) const
 {
-  Relation relation;
-  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
-  if( it != _dfunc()->relations.end() )
-  {
-    relation = it->second;
+  Relations::const_iterator it = _dfunc()->relations.find( cityname );
+  if( it == _dfunc()->relations.end() )
     return DateTime( -350, 1, 1 );
-  }
-
-  return relation.lastGiftDate;
+  else
+    return it->second.lastGift.date();
 }
 
 void Emperor::timeStep(unsigned int time)
@@ -189,26 +110,29 @@ void Emperor::timeStep(unsigned int time)
       Relation& relation = d->relations[ cityp->name() ];
 
       relation.soldiersSent = 0;     //clear chasteners count
-      relation.value -= yearlyDecreaseFavour;
+      relation.change( -config::emperor::yearlyFavorDecrease );
       int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
       if( monthWithoutTax > DateTime::monthsInYear )
       {
         int decrease = math::clamp( taxBrokenFavourDecrease + monthWithoutTax / DateTime::monthsInYear * 2, 0, taxBrokenFavourDecreaseMax );
-        relation.value -= decrease;
+        relation.change( -decrease );
       }
 
       float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
-      if( salaryKoeff > 1.f ) { relation.value -= (int)salaryKoeff * salaryKoeff; }
-      else if( salaryKoeff < 1.f ) { relation.value += normalSalaryFavourUpdate; }
+      if( salaryKoeff > 1.f ) { salaryKoeff = -(int)salaryKoeff * salaryKoeff; }
+      else if( salaryKoeff < 1.f ) { salaryKoeff = normalSalaryFavourUpdate; }
+      else { salaryKoeff = 0; }
 
-      int brokenEmpireTax = cityp->funds().getIssueValue( FundIssue::overdueEmpireTax, city::Funds::lastYear );
+      relation.change( salaryKoeff );
+
+      int brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
       if( brokenEmpireTax > 0 )
       {
-        relation.value -= 1;
+        relation.change( -brokenTaxPenalty );
 
-        brokenEmpireTax = cityp->funds().getIssueValue( FundIssue::overdueEmpireTax, city::Funds::twoYearAgo );
+        brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearAgo );
         if( brokenEmpireTax > 0 )
-          relation.value -= 2;
+          relation.change( -brokenMoreTaxPenalty );
       }
     }
   }
@@ -225,9 +149,9 @@ void Emperor::timeStep(unsigned int time)
 
       if( city.isValid() )
       {
-        if( relation.value < minimumFabvour4wrathGenerate  )
+        if( relation.value() < minimumFabvour4wrathGenerate  )
         {
-          relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value, 0, maxWrathPointValue );
+          relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
           if( relation.soldiersSent == 0 )
             troubleCities << city;
         }
@@ -248,8 +172,8 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
   {
     Relation& relation = relations[ (*it)->name() ];
     float rule2destroy = utils::eventProbability( math::clamp( relation.wrathPoint / 100.f, 0.f, 1.f ),
-                                                 math::clamp<int>( relation.tryCount, 0, DateTime::monthsInYear ),
-                                                 DateTime::monthsInYear );
+                                                  math::clamp<int>( relation.tryCount, 0, DateTime::monthsInYear ),
+                                                  DateTime::monthsInYear );
 
     relation.tryCount++;
 
@@ -317,21 +241,13 @@ void Emperor::resetRelations(const StringArray& cities)
     else
     {
       foreach( it, cities )
-      {
-        CityPtr pCity = d->empire->findCity( *it );
-        if( pCity.isValid() )
-          empCities << pCity;
-      }
+        empCities.addIfValid( d->empire->findCity( *it ) );
     }
 
     foreach( it, empCities )
     {
       Relation& r = d->relations[ (*it)->name() ];
-
-      r.value = maxFavour/2;
-      r.lastGiftValue = 0;
-      r.lastTaxDate = game::Date::current();
-      r.lastGiftDate = game::Date::current();
+      r.reset();
     }
   }
 
@@ -349,7 +265,7 @@ void Emperor::checkCities()
     if( d->relations.count( (*it)->name() ) == 0 )
     {
       Relation& relation = d->relations[ (*it)->name() ];
-      relation.value = maxFavour/2;
+      relation.reset();
     }
   }
 }
@@ -358,32 +274,17 @@ VariantMap Emperor::save() const
 {
   __D_IMPL_CONST(d,Emperor)
   VariantMap ret;
-
-  Impl::Relations r = d->relations;
-  VariantMap vm_relations;
-  foreach( it, r )
-  {
-    vm_relations[ it->first ] = it->second.save();
-  }
-
-  ret[ "relations" ] = vm_relations;
-  VARIANT_SAVE_STR_D( ret, d, name )
+  VARIANT_SAVE_CLASS_D( ret, d, relations )
+  VARIANT_SAVE_STR_D  ( ret, d, name )
   return ret;
 }
 
 void Emperor::load(const VariantMap& stream)
 {
   __D_IMPL(d,Emperor)
-  VariantMap vm_relations = stream.get( "relations" ).toMap();
+  checkCities();
 
-  Impl::Relations& relations = d->relations;
-  foreach( it, vm_relations )
-  {
-    Relation r;
-    r.load( it->second.toMap() );
-    relations[ it->first ] = r;
-  }
-
+  VARIANT_LOAD_CLASS_D( d, relations, stream )
   VARIANT_LOAD_STR_D( d, name, stream )
 }
 
@@ -398,6 +299,13 @@ struct EmperorInfo
   std::string name;
   DateTime beginReign;
   VariantMap options;
+
+  void load( const VariantMap& stream )
+  {
+    beginReign = stream.get( "date" ).toDateTime();
+    name = stream.get( "name" ).toString();
+    options = stream;
+  }
 };
 
 class EmperorLine::Impl
@@ -443,11 +351,8 @@ void EmperorLine::load(vfs::Path filename)
   VariantMap opts = config::load( filename );
   foreach( it, opts )
   {
-    VariantMap opts = it->second.toMap();
     EmperorInfo info;
-    info.beginReign = opts.get( "date" ).toDateTime();
-    info.name = opts.get( "name" ).toString();
-    info.options = opts;
+    info.load( it->second.toMap() );
 
     _d->changes[ info.beginReign ] = info;
   }

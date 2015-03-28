@@ -27,6 +27,7 @@
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -135,6 +136,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
+  WidgetEscapeCloser::insertTo( this );
 
   _d->icon = good::Helper::picture( type );
 

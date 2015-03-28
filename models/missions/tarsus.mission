@@ -21,12 +21,12 @@
     favour : 80
     finishDate : "-1.01.01"
     next : ":/missions/mission8.briefing"
-    title : "##win_procurator_aedile##"
+    title : "##praetor##"
     win.text : "##tarsus_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##tarsus_7_title##"
-    overview :  [ "##tarsus_7_overview##" ]
+    caption : "##tarsus_preview_title##"
+    overview :  [ "##tarsus_overview##" ]
   }
 	
   empire : {

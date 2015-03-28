@@ -46,6 +46,22 @@ void Pictures::append(const Picture &pic, const Point &offset)
   this->back().setOffset( offset );
 }
 
+const Picture& Pictures::atSafe(unsigned int index) const
+{
+  return index < size()
+              ? (*this)[index]
+                : Picture::getInvalid();
+}
+
+StringArray Pictures::names() const
+{
+  StringArray ret;
+  foreach( it, *this )
+    ret << it->name();
+
+  return ret;
+}
+
 
 }//end namespace gfx
 

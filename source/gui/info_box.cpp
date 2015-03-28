@@ -38,6 +38,8 @@ namespace gui
 namespace infobox
 {
 
+const Rect Simple::defaultRect = Rect( 0, 0, 510, 300 );
+
 class Simple::Impl
 {
 public:
@@ -96,12 +98,14 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
     lastPos.setY( _d->lbBlackFrame->top() - 10 );
   }
 
-  if( _d->lbText && blackArea.width() == 0 )
+  if( _d->lbText )
   {
     Rect r = _d->lbText->relativeRect();
-    r.LowerRightCorner = _d->btnExit->righttop();
+    if( blackArea.width() == 0 ) { r.LowerRightCorner = _d->btnExit->righttop(); }
+    else { r.LowerRightCorner = blackArea.righttop(); }
+
     _d->lbText->setGeometry( r );
-  }
+  }  
 
   _afterCreate();
   setModal();

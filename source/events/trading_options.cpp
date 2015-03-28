@@ -71,10 +71,11 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
     {
       VariantMap goodInfo = it->second.toMap();
       bool relative = goodInfo.get( "relative", false );
-      int buy = goodInfo.get( "buy" );
-      int sell = goodInfo.get( "sell" );
-      if( relative ) { game.empire()->changePrice( gtype, buy, sell ); }
-      else { game.empire()->setPrice( gtype, buy, sell ); }
+      world::PriceInfo prices;
+      prices.buy = goodInfo.get( "buy" );
+      prices.sell = goodInfo.get( "sell" );
+      if( relative ) { game.empire()->changePrice( gtype, prices ); }
+      else { game.empire()->setPrice( gtype, prices ); }
     }
   }
 }

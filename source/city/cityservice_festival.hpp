@@ -24,6 +24,21 @@
 #include "religion/romedivinity.hpp"
 #include "core/variant.hpp"
 
+namespace config
+{
+
+namespace festival
+{
+  struct Info
+  {
+    DateTime date;
+    religion::RomeDivinityType divinity;
+    int size;
+  };
+}
+
+}
+
 namespace city
 {
 
@@ -35,14 +50,15 @@ public:
   static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 
-  DateTime lastFestivalDate() const;
-  DateTime nextFestivalDate() const;
-  void assignFestival(religion::RomeDivinityType name, int size);
+  DateTime lastFestival() const;
+  DateTime nextFestival() const;
+  void assign(religion::RomeDivinityType name, int size);
+  void now();
 
   virtual void timeStep( const unsigned int time );
 
   virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
+  virtual void load(const VariantMap& stream );  
 
 private:
   Festival( PlayerCityPtr city );
