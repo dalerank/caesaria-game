@@ -20,9 +20,13 @@
 
 #include <vector>
 #include "vfs/path.hpp"
+#include "core/variant_map.hpp"
 #include "terrain_generator_random.hpp"
 
 class Game;
+
+namespace terrain
+{
 
 class MidpointDisplacement
 {
@@ -35,6 +39,7 @@ class MidpointDisplacement
 
   typedef enum { unknown=0, deepWater=1, water=2, coast=3, grass=4, trees=5, shallowMountain=6, highMountain=7 } TerrainType;
 private:
+
   int CoordinatesToVectorIndex(int x, int y);
   std::pair<int, int> VectorIndexToCoordinates(int i);
   float grass_threshold_;
@@ -54,12 +59,24 @@ private:
   Random random_;
 };
 
-class TerrainGenerator
+class Generator
 {
 public:
+  struct Params
+  {
+    int n2size;
+    int smooth;
+    int terrainSq;
+
+    void load( const VariantMap& vm );
+  };
+
   void setSaveFile( vfs::Path filename );  
   void create( Game& game, vfs::Path filename );
   void create( Game& game, int n2size, float smooth, float terrainSq );
+  void create( Game& game, const Params& params );
 };
+
+}//end namespace terrain
 
 #endif //_CAESARIA_TERRAIN_GENERATOR_INCLUDE_H_

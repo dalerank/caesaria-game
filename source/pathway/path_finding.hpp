@@ -30,6 +30,7 @@
 class Propagator
 {
 public:
+  enum { nwseDirections=0, allDirections=1 };
   typedef std::set<object::Type> ObsoleteOverlays;
 
   Propagator( PlayerCityPtr city );

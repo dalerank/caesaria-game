@@ -28,7 +28,7 @@
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
@@ -49,6 +49,7 @@
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -205,20 +206,19 @@ void Chief::Impl::drawReportRow( AdviceType type, std::string text, NColor color
 
 void Chief::Impl::drawEmploymentState()
 {
-  int currentWorkers, maxWorkers;
-  statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
+  statistic::WorkersInfo wInfo = statistic::getWorkersNumber( city );
   int workless = statistic::getWorklessPercent( city );
   std::string text;
   NColor color = DefaultColors::black;
 
-  if( city->population() == 0 )
+  if( city->states().population == 0 )
   {
     text = _("##no_people_in_city##");
     color =  DefaultColors::brown;
   }
   else
   {
-    int needWorkersNumber = maxWorkers - currentWorkers;
+    int needWorkersNumber = wInfo.need - wInfo.current;
     if( needWorkersNumber > 10 )
     {
       text = utils::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
@@ -238,7 +238,7 @@ void Chief::Impl::drawEmploymentState()
 void Chief::Impl::drawProfitState()
 {
   std::string text;
-  int profit = city->funds().profit();
+  int profit = city->treasury().profit();
   std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
   text = _(prefix) + std::string(" ") + utils::i2str( profit );
   NColor textColor = profit > 0 ? DefaultColors::black : DefaultColors::brown;
@@ -357,7 +357,7 @@ void Chief::Impl::drawMilitary()
 
     if( !isBesieged )
     {
-      city::Military::Notification n = mil->priorityNotification();          
+      Notification n = mil->priorityNotification();
       reasons << n.message;
     }    
   }
@@ -503,7 +503,7 @@ void Chief::Impl::drawEntertainment()
   FestivalPtr srvc = statistic::finds<Festival>( city );
   if( srvc.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( game::Date::current() );
+    int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";

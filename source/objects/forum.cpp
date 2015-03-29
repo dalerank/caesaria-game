@@ -22,7 +22,7 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "walker/constants.hpp"
 #include "senate.hpp"
 #include "core/logger.hpp"
@@ -115,7 +115,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
   if( !senates.empty() )
     senate = senates.front();
 
-  int maxMoney = city->funds().treasury();
+  int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
     ForumList forums;
@@ -126,7 +126,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
 
     maxMoney /= forums.size();
 
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::moneyStolen, -maxMoney );
+    events::GameEventPtr e = events::Payment::create( econ::Issue::moneyStolen, -maxMoney );
     e->dispatch();
   }
 }

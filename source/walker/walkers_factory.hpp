@@ -34,6 +34,12 @@ public:
 
   WalkerPtr create( constants::walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
 
+  template< class T>
+  SmartPtr<T> create( constants::walker::Type walkerType, PlayerCityPtr city )
+  {
+    return ptr_cast<T>( create(walkerType, city) );
+  }
+
   ~WalkerManager();
 private:
   WalkerManager();

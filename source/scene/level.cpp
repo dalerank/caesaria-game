@@ -42,7 +42,7 @@
 #include "gfx/city_renderer.hpp"
 #include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/settings.hpp"
@@ -85,21 +85,24 @@
 #include "events/missionwin.hpp"
 #include "events/savegame.hpp"
 #include "core/tilerect.hpp"
+#include "city/active_points.hpp"
+#include "city/statistic.hpp"
+#include "city/states.hpp"
 
 using namespace gui;
 using namespace constants;
 using namespace events;
 using namespace gfx;
+using namespace city;
 
 namespace scene
 {
+typedef std::vector< EventHandlerPtr > EventHandlers;
 const int topMenuHeight = 23;
 
 class Level::Impl
 {
 public:
-  typedef std::vector< EventHandlerPtr > EventHandlers;
-
   EventHandlers eventHandlers;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
@@ -180,8 +183,8 @@ void Level::initialize()
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->city()->population() );
-  _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
+  _d->topMenu->setPopulation( _d->game->city()->states().population );
+  _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 
   _d->menu = Menu::create( ui.rootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.virtualSize().width() - _d->rightPanel->width(),
@@ -200,7 +203,7 @@ void Level::initialize()
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
-  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
+  _d->game->city()->addService( AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
   //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID
@@ -291,10 +294,10 @@ void Level::Impl::setVideoOptions()
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
-  dialog::GameSpeedOptions* dialog = new dialog::GameSpeedOptions( game->gui()->rootWidget(),
-                                                                   game->timeMultiplier(),
-                                                                   SETTINGS_VALUE( scrollSpeed ),
-                                                                   SETTINGS_VALUE( autosaveInterval ) );
+  dialog::SpeedOptions* dialog = new dialog::SpeedOptions( game->gui()->rootWidget(),
+                                                           game->timeMultiplier(),
+                                                           SETTINGS_VALUE( scrollSpeed ),
+                                                           SETTINGS_VALUE( autosaveInterval ) );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
@@ -304,8 +307,8 @@ void Level::Impl::showGameSpeedOptionsDialog()
 
 void Level::Impl::showCityOptionsDialog()
 {
-  CityOptionsWindow* wnd = new CityOptionsWindow( game->gui()->rootWidget(),
-                                                  game->city() );
+  dialog::CityOptions* wnd = new dialog::CityOptions( game->gui()->rootWidget(),
+                                                      game->city() );
   wnd->show();
 }
 
@@ -343,12 +346,12 @@ void Level::Impl::showTileHelp()
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  unsigned int id = Hash( CAESARIA_STR_A(dialog::ScribesMessages) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
   {
-    wnd = new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+    wnd = new dialog::ScribesMessages( game->gui()->rootWidget(), game->city() );
   }
   else
   {
@@ -420,7 +423,7 @@ void Level::Impl::makeFullScreenshot()
 
 void Level::Impl::extendReign(int years)
 {
-  city::VictoryConditions vc;
+  VictoryConditions vc;
   vc = game->city()->victoryConditions();
   vc.addReignYears( years );
 
@@ -526,11 +529,8 @@ void Level::_resolveSwitchMap()
 
 void Level::Impl::showEmpireMapWindow()
 {
-  GameEventPtr e;
-  if( game->empire()->isAvailable() ) { e = ShowEmpireMap::create( true ); }
-  else {  e = WarningMessage::create( "##not_available##", 1 ); }
-
-  if( e.isValid() ) e->dispatch();
+  GameEventPtr e = ShowEmpireMap::create( true );
+  e->dispatch();
 }
 
 void Level::draw()
@@ -578,7 +578,7 @@ void Level::handleEvent( NEvent& event )
     return;
   }
 
-  for( Impl::EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
+  for( EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
     (*it)->handleEvent( event );
     if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }
@@ -594,18 +594,18 @@ void Level::handleEvent( NEvent& event )
 
   if( !eventResolved )
   {
-     _d->renderer.handleEvent( event );
-     _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
+    _d->renderer.handleEvent( event );
+    _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
   }
 }
 
 void Level::Impl::makeScreenShot()
 {
   std::string filename = getScreenshotName();
-  Logger::warning( "Level: create screenshot %s", filename.c_str() );
+  Logger::warning( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
-  GameEventPtr e = WarningMessage::create( "Screenshot save to " + filename, 1 );
+  GameEventPtr e = WarningMessage::create( "Screenshot save to " + filename, WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -614,17 +614,14 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  city::MilitaryPtr mil;
-  city::InfoPtr info;
-
-  info << pcity->findService( city::Info::defaultName() );
-  mil << pcity->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::finds<city::Military>( pcity );
+  InfoPtr info = statistic::finds<city::Info>( pcity );
 
   if( mil.isValid() && info.isValid()  )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
+    bool failedByDestroy = mil->threatValue() > 0 && params[ Info::population ].value > 0 && !pcity->states().population;
     bool failedByTime = ( !vc.isSuccess() && game::Date::current() > vc.finishDate() );
 
     if( failedByDestroy || failedByTime || forceFailed )
@@ -652,13 +649,13 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 void Level::Impl::checkWinMission( Level* lvl, bool force )
 {
   PlayerCityPtr city = game->city();
-  const city::VictoryConditions& wt = city->victoryConditions();
+  const VictoryConditions& wt = city->victoryConditions();
 
   int culture = city->culture();
   int prosperity = city->prosperity();
   int favour = city->favour();
   int peace = city->peace();
-  int population = city->population();
+  int population = city->states().population;
   bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
 
   if( success || force )
@@ -730,7 +727,7 @@ bool Level::_tryExecHotkey(NEvent &event)
           TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
           const BorderInfo& binfo = _d->game->city()->borderInfo();
           center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
-          _d->renderer.camera()->setCenter( center );
+          _d->renderer.camera()->setCenter( center, false );
       }
       break;
 
@@ -791,17 +788,17 @@ bool Level::_tryExecHotkey(NEvent &event)
       if( event.keyboard.control )
       {
         unsigned int index = event.keyboard.key - KEY_KEY_1;
-        city::development::Options bopts;
+        development::Options bopts;
         bopts = _d->game->city()->buildOptions();
         if( event.keyboard.shift )
         {
           TilePos camPos = _d->renderer.camera()->center();
-          bopts.setMemPoint( index, camPos );
+          _d->game->city()->activePoints().set( index, camPos );
           _d->game->city()->setBuildOptions( bopts );
         }
         else
         {
-          TilePos camPos = bopts.memPoint( index );
+          TilePos camPos = _d->game->city()->activePoints().get( index );
           _d->renderer.camera()->setCenter( camPos );
         }
 
@@ -858,11 +855,11 @@ void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 
 void Level::_showLoadDialog()
 {
-  gui::Widget* parent = _d->game->gui()->rootWidget();
+  Widget* parent = _d->game->gui()->rootWidget();
 
   vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  LoadFileDialog* wnd = new LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
   wnd->setTitle( _("##mainmenu_loadgame##") );

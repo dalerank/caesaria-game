@@ -322,7 +322,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
 
 void FontCollection::addFont(const int key, const std::string& name, vfs::Path pathFont, const int size, const NColor& color )
 {
-  TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
+  TTF_Font* ttf = TTF_OpenFont(pathFont.toCString(), size);
   if( ttf == NULL )
   {
     std::string errorStr( TTF_GetError() );

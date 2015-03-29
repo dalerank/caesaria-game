@@ -32,7 +32,7 @@ namespace gui
 namespace dialog
 {
 
-class GameSpeedOptions::Impl
+class SpeedOptions::Impl
 {
 public:
   GameAutoPause locker;
@@ -44,7 +44,7 @@ public signals:
   Signal1<int> onAutosaveIntervalShangeSignal;
 };
 
-GameSpeedOptions::GameSpeedOptions( Widget* parent,
+SpeedOptions::SpeedOptions( Widget* parent,
                                     int gameSpeed,
                                     int scrollSpeed,
                                     int autosaveInterval)
@@ -62,9 +62,9 @@ GameSpeedOptions::GameSpeedOptions( Widget* parent,
   _update();
 }
 
-GameSpeedOptions::~GameSpeedOptions( void ) {}
+SpeedOptions::~SpeedOptions( void ) {}
 
-bool GameSpeedOptions::onEvent(const NEvent& event)
+bool SpeedOptions::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && guiButtonClicked == event.gui.type )
   {
@@ -93,11 +93,11 @@ bool GameSpeedOptions::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>& GameSpeedOptions::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
-Signal1<int>& GameSpeedOptions::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
-Signal1<int>& GameSpeedOptions::onAutosaveIntervalChange(){ return _d->onAutosaveIntervalShangeSignal; }
+Signal1<int>& SpeedOptions::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
+Signal1<int>& SpeedOptions::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
+Signal1<int>& SpeedOptions::onAutosaveIntervalChange(){ return _d->onAutosaveIntervalShangeSignal; }
 
-void GameSpeedOptions::_update()
+void SpeedOptions::_update()
 {
   INIT_WIDGET_FROM_UI( Label*, lbGameSpeedPercent )
   INIT_WIDGET_FROM_UI( Label*, lbScrollSpeedPercent )

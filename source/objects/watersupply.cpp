@@ -67,6 +67,7 @@ void Reservoir::_waterStateChanged()
 void Reservoir::destroy()
 {
   _dropWater();
+  broke();
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -87,6 +88,15 @@ void Reservoir::initialize(const MetaData& mdata)
   WaterSource::initialize( mdata );
 
   _d->fullOffset = mdata.getOption( "fullOffset" );
+}
+
+void Reservoir::broke()
+{
+  int saveWater = water();
+  _d->water = 100;
+  WaterSource::broke();
+
+  _d->water = saveWater;
 }
 
 Reservoir::Reservoir()
@@ -145,6 +155,7 @@ void Reservoir::timeStep(const unsigned long time)
   {
     _fgPicture( 0 ) = Picture::getInvalid();
     _dropWater();
+    broke();
     return;
   }
 
@@ -243,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
     
       if( ws.isValid() )
       {
@@ -259,6 +270,25 @@ bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::water() const{ return _d->water; }
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
+
+void WaterSource::broke()
+{
+  Tilemap& tilemap = _city()->tilemap();
+  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+
+  int saveWater = water();
+  _d->water = 0;
+  foreach( it, tiles )
+  {
+    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+
+    if( ws.isValid() )
+    {
+      if( ws->water() > 0 && ws->water() < saveWater )
+          ws->broke();
+    }
+  }
+}
 
 void WaterSource::save(VariantMap &stream) const
 {

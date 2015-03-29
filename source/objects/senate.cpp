@@ -19,7 +19,7 @@
 #include "senate.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "walker/taxcollector.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
@@ -153,7 +153,7 @@ float Senate::collectTaxes()
   return save;
 }
 
-unsigned int Senate::funds() const {  return _city()->funds().treasury(); }
+unsigned int Senate::funds() const {  return _city()->treasury().money(); }
 std::string Senate::errorDesc() const {  return _d->errorStr; }
 
 int Senate::status(Senate::Status status) const

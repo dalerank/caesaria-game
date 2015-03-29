@@ -24,6 +24,7 @@
 #include "core/referencecounted.hpp"
 #include "core/serializer.hpp"
 #include "good/good.hpp"
+#include "price_info.hpp"
 
 namespace world
 {
@@ -70,9 +71,9 @@ public:
   bool isAvailable() const;
   void setAvailable( bool value );
 
-  void setPrice( good::Product gtype, int buy, int sell );
-  void changePrice( good::Product gtype, int buy, int sell );
-  void getPrice( good::Product gtype, int& buy, int& sell ) const;
+  void setPrice(good::Product gtype, const PriceInfo &prices );
+  void changePrice(good::Product gtype, const PriceInfo &delta);
+  PriceInfo getPrice( good::Product gtype ) const;
 
   void clear();
 private:

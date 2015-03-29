@@ -53,6 +53,7 @@ bool River::build( const city::AreaInfo& info )
 
 void River::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlWater, true );
 }
 
@@ -130,8 +131,8 @@ Picture River::computePicture()
   return Picture::load( ResourceGroup::land1a, index);
 }
 
-bool River::isWalkable() const{  return false;}
-bool River::isFlat() const {  return true;}
+bool River::isWalkable() const{ return false;}
+bool River::isFlat() const { return true;}
 void River::destroy() {}
 bool River::isDestructible() const { return false;}
 Renderer::PassQueue River::passQueue() const {  return riftPassQueue; }

@@ -55,17 +55,17 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
   else
   {
     std::string text = _("##amphitheater_haveno_gladiator_bouts##");
-    if( amph->isShowGladiatorBouts() )
+    if( amph->isShow( Amphitheater::gladiatorBouts ) )
     {
-      DateTime lastGlBoutDate = amph->lastBoutsDate();
+      DateTime lastGlBoutDate = amph->lastShow( Amphitheater::gladiatorBouts );
       text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
     text = _("##amphitheater_haveno_shows##");
-    if( amph->isActorsShow() )
+    if( amph->isShow( Amphitheater::theatrical ) )
     {
-      DateTime lastShowDate = amph->lastShowDate();
+      DateTime lastShowDate = amph->lastShow( Amphitheater::theatrical );
       text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
     }
 

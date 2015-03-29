@@ -802,6 +802,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 65, 42 ], delay : 3 }
   }
 }

@@ -1,6 +1,6 @@
 {
   buttons : "off"
-  geometry : [ 0, 0, 640, 420 ]
+  size : [ 640, 420 ]
   static : true
   
   lbIcon#Label : {

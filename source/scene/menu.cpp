@@ -205,7 +205,7 @@ void StartMenu::Impl::showLanguageOptions()
 
   Label* frame = new Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
   ListBox* lbx = new ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), "Apply" );
+  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), _("##apply##") );
 
   WidgetEscapeCloser::insertTo( frame );
   frame->setCenter( parent->center() );
@@ -219,7 +219,7 @@ void StartMenu::Impl::showLanguageOptions()
   foreach( it, languages )
   {
     lbx->addItem( it->first );
-    std::string ext = it->second.toMap().get( lc_ext ).toString();
+    std::string ext = it->second.toMap().get( literals::ext ).toString();
     if( ext == currentLang )
       currentIndex = std::distance( languages.begin(), it );
   }
@@ -246,8 +246,8 @@ void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
     if( item.text() == it->first )
     {
       VariantMap vm = it->second.toMap();
-      lang = vm[ lc_ext ].toString();
-      talksArchive = vm[ lc_talks ].toString();
+      lang = vm[ literals::ext ].toString();
+      talksArchive = vm[ literals::talks ].toString();
       break;
     }
   }
@@ -324,7 +324,7 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko, Manuel Alvarez",
+                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev",
                          " ",
                          _("##thanks_to##"),
                          " ",

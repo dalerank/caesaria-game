@@ -28,9 +28,11 @@ class Qty
 {
 public:
   Qty() { _value = 0; }
+  Qty( const Qty& other ) { *this = other; }
   explicit Qty( unsigned int value ) : _value( value ) {}
 
-  operator unsigned int() const { return _value; }
+  inline operator unsigned int() const { return _value; }
+  inline Qty& operator=( const Qty& other ) {_value = other._value; return *this; }
   Unit toUnits() const;
 
 private:
@@ -42,13 +44,15 @@ class Unit
 public:
   Unit() { _value = 0; }
   Unit( const Qty& qty ) { _value = (unsigned int)qty / unit2QtyLimiter; }
+  Unit( const Unit& unit ) { *this = unit; }
   static Unit fromQty( unsigned int value ) { return Unit( value / unit2QtyLimiter ); }
   static Unit fromValue( unsigned int value ) { return Unit( value ); }
   unsigned int toQty() { return _value * unit2QtyLimiter; }
   float value() const { return _value; }
-  float ivalue() const { return (int)_value; }
+  int ivalue() const { return (int)_value; }
   bool operator>( float v ) const { return _value > v; }
-  bool operator>=( const Unit& v ) const { return _value >= v._value; }
+  Unit& operator=( const Unit& other ) { _value=other._value; return *this; }
+  inline bool operator>=( const Unit& v ) const { return _value >= v._value; }
 
 private:
   explicit Unit( unsigned int value) : _value( value ) {}

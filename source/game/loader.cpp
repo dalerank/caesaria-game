@@ -62,10 +62,7 @@ public:
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
   void finalize( Game& game );  
-  bool maySetSign( const Tile& tile )
-  {
-    return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
-  }
+  bool maySetSign( const Tile& tile );
 
 public signals:
   Signal1<std::string> onUpdateSignal;
@@ -151,6 +148,11 @@ void Loader::Impl::finalize( Game& game )
   initEntryExitTile( border.roadExit,  game.city() );
 
   initTilesAnimation( tileMap );
+}
+
+bool Loader::Impl::maySetSign(const Tile &tile)
+{
+  return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
 }
 
 void Loader::Impl::initLoaders()

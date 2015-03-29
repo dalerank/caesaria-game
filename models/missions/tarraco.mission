@@ -17,7 +17,7 @@
     favour : 70
     finishDate : "-170.01.01"
     next : ":/missions/mission5.briefing"
-    title : "##win_engineer_title##"
+    title : "##quaestor##"
     win.text : "##tarraco_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"

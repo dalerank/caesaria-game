@@ -24,11 +24,10 @@
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
 #include "constants.hpp"
+#include "config.hpp"
 
 namespace audio
 {
-
-static const int maxSndLevel = 256;
 
 class Engine
 {

@@ -32,39 +32,63 @@
 #include "core/safetycast.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace religion;
-
-namespace {
-CAESARIA_LITERALCONST(lastMessageDate)
-enum {
-       wrathfullRelation=10,
-       brokenGodPenalty=25,
-       negativeRelation=30,
-       minimumRelation4wrath=40,
-       admiredGodAward=50};
-}
+using namespace events;
 
 namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(Religion,religion)
 
+struct CoverageInfo
+{
+  int smallTempleNum;
+  int bigTempleNum;
+  int parishionerNumber;
+
+  CoverageInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ), parishionerNumber( 0 ) {}
+};
+
+class TemplesCoverity : public std::map< std::string, CoverageInfo >
+{
+public:
+  void update( TemplePtr temple )
+  {
+    if( temple->divinity().isValid() )
+    {
+      CoverageInfo& info = (*this)[ temple->divinity()->internalName() ];
+
+      if( is_kind_of<BigTemple>( temple ) ) { info.bigTempleNum++; }
+      else { info.smallTempleNum++; }
+
+      info.parishionerNumber += temple->parishionerNumber();
+    }
+  }
+
+  void clear( const DivinityList& divns )
+  {
+    std::map< std::string, CoverageInfo >::clear();
+    foreach( it, divns )
+    {
+      CoverageInfo& cvInfo = (*this)[ (*it)->internalName() ];
+      cvInfo.smallTempleNum = 0;
+    }
+  }
+
+  void setOraclesParishioner( int parishioners )
+  {
+    foreach( it, *this )
+      it->second.parishionerNumber += parishioners;
+  }
+};
+
 class Religion::Impl
 {
 public:
-  struct CoverageInfo
-  {
-    int smallTempleNum;
-    int bigTempleNum;
-    int parishionerNumber;
-
-    CoverageInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ), parishionerNumber( 0 ) {}
-  };
-
-  typedef std::map< DivinityPtr, CoverageInfo > TemplesMap;
-  TemplesMap templesCoverity;
+  TemplesCoverity templesCoverity;
   DateTime lastMessageDate;
 
   void updateRelation(PlayerCityPtr city, DivinityPtr divn );
@@ -96,67 +120,56 @@ void Religion::timeStep( const unsigned int time )
     DivinityList divinities = rome::Pantheon::instance().all();
 
     //clear temples info
-    _d->templesCoverity.clear();
+    _d->templesCoverity.clear( divinities );
 
     //update temples info
-    TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
-    foreach( it, temples)
-    {
-      if( (*it)->divinity().isValid() )
-      {
-        Impl::CoverageInfo& info = _d->templesCoverity[ (*it)->divinity() ];
+    TempleList temples = statistic::findo<Temple>( _city(), object::group::religion );
+    foreach( it, temples )
+      _d->templesCoverity.update( *it );
 
-        if( is_kind_of<BigTemple>( *it ) ) { info.bigTempleNum++; }
-        else { info.smallTempleNum++; }
-
-        info.parishionerNumber += (*it)->parishionerNumber();
-      }
-    }
-
-    TempleOracleList oracles;
-    oracles << temples;
+    TempleOracleList oracles = statistic::findo<TempleOracle>( _city(), object::oracle );
 
     //add parishioners to all divinities by oracles
-    foreach( itDivn, divinities )
-    {
-      Impl::CoverageInfo& info = _d->templesCoverity[ *itDivn ];
+    int oraclesParishionerNumber = 0;
+    foreach( itOracle, oracles )
+      oraclesParishionerNumber += (*itOracle)->parishionerNumber();
 
-      foreach( itOracle, oracles )
-      {
-        info.parishionerNumber += (*itOracle)->parishionerNumber();
-      }
-    }
+    _d->templesCoverity.setOraclesParishioner( oraclesParishionerNumber );
 
     foreach( it, divinities )
     {
       (*it)->setEffectPoint( 0 );
     }
 
-    std::map< int, DivinityList > templesByGod;
+    std::map< int, StringArray > templesByGod;
 
     foreach( it, _d->templesCoverity )
     {
-      const Impl::CoverageInfo& info = it->second;
+      const CoverageInfo& info = it->second;
       int maxTemples = info.bigTempleNum + info.smallTempleNum;
       templesByGod[ maxTemples ].push_back( it->first );
     }
 
     if( !templesByGod.empty() )
     {
-      const DivinityList& dl = templesByGod.rbegin()->second;
+      const StringArray& awardedGods = templesByGod.rbegin()->second;
       //if we have award god with most temples number
-      if( dl.size() == 1 )
+      if( awardedGods.size() == 1 )
       {
-        dl.front()->setEffectPoint( admiredGodAward );
+        DivinityPtr god = rome::Pantheon::get( awardedGods.front() );
+        if( god.isValid() )
+          god->setEffectPoint( award::admiredGod );
       }
 
       if( templesByGod.size() > 1 )
       {
-        const DivinityList& ml = templesByGod.begin()->second;
+        const StringArray& unhappyGods = templesByGod.begin()->second;
         //if we have penalty god with less temples number, then set him -25 points
-        if( ml.size() == 1 )
+        if( unhappyGods.size() == 1 )
         {
-          ml.front()->setEffectPoint( -brokenGodPenalty );
+          DivinityPtr god = rome::Pantheon::get( unhappyGods.front() );
+          if( god.isValid() )
+            god->setEffectPoint( -penalty::brokenGod );
         }
       }
     }
@@ -188,8 +201,8 @@ void Religion::timeStep( const unsigned int time )
       if( god->wrathPoints() > 0 )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );
-      }
-      else if( god->relation() < minimumRelation4wrath )
+      }      
+      else if( god->relation() < relation::minimum4wrath )
       {
         godsUnhappy[ god->relation() ].push_back( god );
       }
@@ -197,25 +210,10 @@ void Religion::timeStep( const unsigned int time )
 
     //find wrath god
     DivinityList someGods = divinities;
-    if( !godsWrath.empty() )
-    {
-      someGods = godsWrath.rbegin()->second;
-    }
-    else if( !godsUnhappy.empty() )
-    {
-      someGods = godsUnhappy.rbegin()->second;
-    }
+    if( !godsWrath.empty() ) { someGods = godsWrath.rbegin()->second; }
+    else if( !godsUnhappy.empty() ) { someGods = godsUnhappy.rbegin()->second; }
 
-    DivinityPtr randomGod;
-    if( !someGods.empty() )
-    {
-      DivinityList::const_iterator it = someGods.begin();
-      if( someGods.size() > 1 )
-      {
-        std::advance( it, math::random( someGods.size() ) );
-      }
-      randomGod = *it;
-    }
+    DivinityPtr randomGod = someGods.random();
 
     if( randomGod.isValid() )
     {
@@ -228,7 +226,7 @@ VariantMap Religion::save() const
 {
   VariantMap ret = Srvc::save();
 
-  ret[ lc_lastMessageDate ] = _d->lastMessageDate;
+  VARIANT_SAVE_ANY_D( ret, _d, lastMessageDate)
 
   return ret;
 }
@@ -237,29 +235,37 @@ void Religion::load(const VariantMap& stream)
 {
   Srvc::load( stream );
 
-  _d->lastMessageDate = stream.get( lc_lastMessageDate, game::Date::current() ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastMessageDate, stream )
 }
 
 void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
 {
-  Impl::CoverageInfo& myTemples = templesCoverity[ divn ];
-  unsigned int faithValue = 0;
-  if( city->population() > 0 )
+  if( divn.isValid() )
   {
-    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->population() ), 0u, 100u );
+    Logger::warning( "!!! WARNING: Cant update relation for null god" );
+    return;
+  }
+
+  CoverageInfo& myTemples = templesCoverity[ divn->internalName() ];
+  unsigned int faithValue = 0;
+  if( city->states().population > 0 )
+  {
+    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->states().population ), 0u, 100u );
   }
 
   Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
   divn->updateRelation( faithValue, city );
 
-  if( divn->relation() < negativeRelation && lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2 )
+  bool unhappy = divn->relation() < relation::negative;
+  bool maySendNotification = lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2;
+
+  if( unhappy && maySendNotification )
   {
     lastMessageDate = game::Date::current();
-    std::string text = divn->relation() < wrathfullRelation ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
-    std::string title = divn->relation() < wrathfullRelation ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
+    std::string text = divn->relation() < relation::wrathfull ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
+    std::string title = divn->relation() < relation::wrathfull ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
 
-    events::GameEventPtr e = events::ShowInfobox::create( _(title), _(text),
-                                                          events::ShowInfobox::send2scribe );
+    GameEventPtr e = ShowInfobox::create( _(title), _(text), ShowInfobox::send2scribe );
     e->dispatch();
   }
 }

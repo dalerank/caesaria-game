@@ -72,7 +72,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
   _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-  _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
   _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
 
   // animations
@@ -84,7 +83,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange(ResourceGroup::commerce, 100, 107, Point( 0, 45 ) );  // oil
   _d->setRange(ResourceGroup::commerce, 109, 116, Point( 42, 36 ) );  // weapons
   _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture
-  _d->setRange(ResourceGroup::commerce, 133, 139, Point( 65, 42 ) );  // pottery
   _d->setRange(ResourceGroup::commerce, 159, 167, Point( 62, 42 ) );  // market rich
 
   _d->setOne( ResourceGroup::land3a, 43, Point( 0, 116 ) );
@@ -161,6 +159,8 @@ void PictureInfoBank::setOffset(const std::string& preffix, const int index, con
 
 PictureInfoBank::~PictureInfoBank() {}
 
+enum { idxIndex=0, idxXOffset, idxYOffset };
+
 void PictureInfoBank::initialize(vfs::Path filename)
 {
   Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
@@ -182,7 +182,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
     else if( v.type() == Variant::List )
     {
       VariantList vl = v.toList();
-      _d->setOne( it->first, vl.get( 0 ).toInt(), vl.get( 1 ).toInt(), vl.get( 2 ).toInt() );
+      _d->setOne( it->first, vl.get( idxIndex ), vl.get( idxXOffset ), vl.get( idxYOffset ) );
     }
   }
 }

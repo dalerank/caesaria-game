@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
 #include "factory.hpp"
+#include "city/states.hpp"
 
 namespace events
 {
@@ -119,7 +120,7 @@ bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
     bool popCondition = true;
     if( _d->population > 0 )
     {
-      popCondition = game.city()->population() > _d->population;
+      popCondition = game.city()->states().population > _d->population;
     }
 
     _d->mayDelete = dateCondition && popCondition;

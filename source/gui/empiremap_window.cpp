@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "empiremap_window.hpp"
 #include "gfx/picturesarray.hpp"
@@ -31,7 +31,7 @@
 #include "dialogbox.hpp"
 #include "good/store.hpp"
 #include "world/trading.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "good/helper.hpp"
 #include "game/settings.hpp"
 #include "events/showinfobox.hpp"
@@ -51,6 +51,7 @@
 #include "world/playerarmy.hpp"
 #include "dictionary.hpp"
 #include "core/metric.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -125,7 +126,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       if( ccity.isNull() )
         return;
 
-      if( ccity->isDistantCity() || ccity->isRomeCity() )
+      if( ccity->isDistantCity() || ccity->states().romeCity )
       {
 
       }
@@ -153,10 +154,13 @@ void EmpireMapWindow::Impl::updateCityInfo()
 void EmpireMapWindow::Impl::drawCities(Engine& painter)
 {
   world::CityList cities = city->empire()->cities();
+  Point location;
+  Picture pic;
   foreach( it, cities )
   {
-    Point location = (*it)->location();
-    painter.draw( (*it)->pictures(), offset + location );
+    location = (*it)->location();
+    pic = (*it)->picture();
+    painter.draw( (*it)->pictures(), offset + location - Point( pic.width() / 2, pic.height() / 2 ) );
 #ifdef DEBUG
     drawCell( painter, offset + location - Point( 10, 10 ), 20, DefaultColors::red );
 #endif
@@ -334,7 +338,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
+      events::GameEventPtr e = events::Payment::create( econ::Issue::sundries, -(int)cost );
       e->dispatch();
 
       DockList docks = city::statistic::findo<Dock>( city, object::dock );
@@ -381,7 +385,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 90 );
   new Label( gbox, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
-  const good::Store& sellgoods = currentCity->importingGoods();
+  const good::Store& sellgoods = currentCity->sells();
   int k=0;
   foreach( product, good::all() )
   {
@@ -397,7 +401,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point buyPoint = startDraw + Point( 200, 0 );
   new Label( gbox, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
-  const good::Store& buygoods = currentCity->exportingGoods();
+  const good::Store& buygoods = currentCity->buys();
   k=0;
   foreach( i, good::all() )
   {
@@ -425,7 +429,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 80 );
   new Label( gbox, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
-  const good::Store& sellgoods = currentCity->importingGoods();
+  const good::Store& sellgoods = currentCity->sells();
   int k=0;
   foreach( i, good::all() )
   {
@@ -445,7 +449,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point buyPoint = startDraw + Point( 0, 30 );
   new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
-  const good::Store& buygoods = currentCity->exportingGoods();
+  const good::Store& buygoods = currentCity->buys();
   k=0;
   foreach( i, good::all() )
   {
@@ -618,30 +622,8 @@ void EmpireMapWindow::_changePosition()
 
   std::string text;
   if( obj.isValid() )
-  {        
-    if( is_kind_of<world::ComputerCity>( obj ) )
-    {
-      world::ComputerCityPtr cCity = ptr_cast<world::ComputerCity>( obj );
-      if( cCity->isDistantCity() )
-        text = "##empmap_distant_romecity_tip##";
-      else
-        text = "##click_on_city_for_info##";
-    }    
-    else if( is_kind_of<world::City>( obj ) )
-    {
-      text = "##click_on_city_for_info##";
-    }
-    else if( is_kind_of<world::Barbarian>( obj ) )
-    {
-      text = "##enemy_army_threating_a_city##";
-    }    
-    else if( is_kind_of<world::PlayerArmy>( obj ) )
-    {
-      world::PlayerArmyPtr pa = ptr_cast<world::PlayerArmy>( obj );
-      text = pa->mode() == world::PlayerArmy::go2home
-                ? "##playerarmy_gone_to_home##"
-                : "##playerarmy_gone_to_location##";
-    }
+  {
+    text = obj->about( world::Object::empireMap );
   }
   else
   {
@@ -665,10 +647,10 @@ void EmpireMapWindow::_changePosition()
 
   if( !text.empty() )
   {
-    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), text, true, Label::bgSimpleWhite );
+    Label* elm = new Label( this, Rect( 0, 0, 2, 2 ), _(text), true, Label::bgSimpleWhite );
     elm->setSubElement(true);
     elm->setTextAlignment( align::upperLeft, align::upperLeft );
-    elm->setTextOffset( Point( 5, 5 ) );
+    elm->setTextOffset( Point( 5, 5 ) );    
 
     Size tlpSize( elm->textWidth() + 20, elm->textHeight() + 2 );
     if( tlpSize.width() > width() * 0.75 )
@@ -681,6 +663,9 @@ void EmpireMapWindow::_changePosition()
     Rect rect( _d->lastPosition, tlpSize );
 
     rect -= Point( tlpSize.width() + 20, -20 );
+    Rect pRect = parent()->absoluteRect();
+    rect.constrainTo( pRect );
+
     elm->setGeometry( rect );
 
     _d->tooltipLabel = elm;

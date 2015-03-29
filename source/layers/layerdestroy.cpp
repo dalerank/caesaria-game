@@ -29,7 +29,7 @@
 #include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "core/font.hpp"
 #include "build.hpp"
 #include "objects/tree.hpp"
@@ -37,6 +37,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace citylayer
 {
@@ -322,7 +323,7 @@ void Destroy::handleEvent(NEvent& event)
     {
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
-      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_d->money4destroy );
+      GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
       e->dispatch();      
     }
     break;

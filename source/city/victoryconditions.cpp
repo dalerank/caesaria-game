@@ -104,7 +104,7 @@ void VictoryConditions::load( const VariantMap& stream )
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
   _d->winText = stream.get( "win.text" ).toString();
-  VARIANT_LOAD_STR_D( _d, caption, stream)
+  VARIANT_LOAD_STR_D( _d, caption, stream )
   VARIANT_LOAD_STR_D( _d, next, stream )
   VARIANT_LOAD_STR_D( _d, title, stream )
 }

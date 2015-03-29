@@ -18,12 +18,12 @@
 #ifndef _CAESARIA_UPDATEHOUSESERVICE_EVENT_H_INCLUDE_
 #define _CAESARIA_UPDATEHOUSESERVICE_EVENT_H_INCLUDE_
 
-#include "event.hpp"
+#include "ranged.hpp"
 
 namespace events
 {
 
-class UpdateHouseService : public GameEvent
+class UpdateHouseService : public Ranged
 {
 public:
   static GameEventPtr create( Service::Type type=Service::srvCount, int value=0 );

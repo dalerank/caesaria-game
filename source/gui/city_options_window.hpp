@@ -26,17 +26,22 @@
 namespace gui
 {
 
-class CityOptionsWindow : public Window
+namespace dialog
+{
+
+class CityOptions : public Window
 {
 public:
-  CityOptionsWindow( Widget* parent, PlayerCityPtr city );
+  CityOptions( Widget* parent, PlayerCityPtr city );
 
-  virtual ~CityOptionsWindow();
+  virtual ~CityOptions();
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+} //end namespace dialog
 
 } //end namespace gui
 

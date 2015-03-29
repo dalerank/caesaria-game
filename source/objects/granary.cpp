@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -190,14 +191,14 @@ void Granary::save( VariantMap& stream) const
    WorkingBuilding::save( stream );
 
    stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_GRANARY) ) );
-   stream[ lc_goodStore ] = _d->store.save();
+   stream[ literals::goodStore ] = _d->store.save();
 }
 
 void Granary::load( const VariantMap& stream)
 {
   WorkingBuilding::load(stream);
 
-  _d->store.load( stream.get( lc_goodStore ).toMap() );
+  _d->store.load( stream.get( literals::goodStore ).toMap() );
 
   computePictures();
 }

@@ -24,6 +24,7 @@
 #include "world/emperor.hpp"
 #include "city/build_options.hpp"
 #include "events/postpone.hpp"
+#include "world/config.hpp"
 
 using namespace events;
 
@@ -57,7 +58,7 @@ void addEvents(PlayerCityPtr city)
 void resetFavour(PlayerCityPtr city)
 {
   world::Emperor& emperor = city->empire()->emperor();
-  emperor.updateRelation( city->name(), world::defaultEmperorFavor );
+  emperor.updateRelation( city->name(), config::emperor::defaultFavor );
 }
 
 void initBuildOptions(PlayerCityPtr city)

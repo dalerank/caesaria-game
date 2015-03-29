@@ -102,7 +102,7 @@ ChastenerElephantPtr ChastenerElephant::create( PlayerCityPtr city)
   return ret;
 }
 
-int ChastenerElephant::agressive() const { return -2; }
+int ChastenerElephant::agressive() const { return 4; }
 
 bool ChastenerElephant::die()
 {

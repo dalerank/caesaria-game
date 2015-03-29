@@ -292,7 +292,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   if( archive.isValid() )
   {
     const std::string arcType = archive->getTypeName();
-    Logger::warning( "FileSystem: check archive:type-%s as opened %s", arcType.c_str(), filename.toString().c_str() );
+    Logger::warning( "FileSystem: check archive:type-%s as opened %s", arcType.c_str(), filename.toCString() );
     _d->openArchives.push_back( archive );
     if( password.size() )
     {
@@ -403,7 +403,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
     }
     else
     {
-      Logger::warning( "Could not create archive for %s", file.path().toString().c_str() );
+      Logger::warning( "Could not create archive for %s", file.path().toCString() );
     }
   }
 
@@ -702,7 +702,7 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
   #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
     if( sens == Path::nativeCase || sens == Path::equaleCase )
     {
-      return ( access( filename.toString().c_str(), 0 ) != -1);
+      return ( access( filename.toCString(), 0 ) != -1);
     }
   #endif //CAESARIA_PLATFORM_UNIX
 
@@ -717,7 +717,7 @@ DateTime FileSystem::getFileUpdateTime(const Path& filename) const
 #ifndef CAESARIA_PLATFORM_WIN
   struct tm *foo;
   struct stat attrib;
-  stat( filename.toString().c_str(), &attrib);
+  stat( filename.toCString(), &attrib);
   foo = gmtime((const time_t*)&(attrib.st_mtime));
 
   return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,

@@ -26,11 +26,11 @@
 
 namespace events
 {
+typedef SmartList<GameEvent> Events;
 
 class Dispatcher::Impl
 {
 public:
-  typedef SmartList< GameEvent > Events;
 
   Events events;
   Events newEvents;
@@ -51,13 +51,13 @@ void Dispatcher::append(GameEventPtr event)
   else
   {
     Logger::warning( "EventsDispatcher: cant add event but is null" );
-    crashhandler::print();
+    crashhandler::printstack();
   }
 }
 
 void Dispatcher::update(Game& game, unsigned int time )
 {
-  for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
+  for( Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
 

@@ -49,6 +49,9 @@ namespace advisorwnd
 namespace {
   Point legionButtonOffset = Point( 4, 4 );
   Size legionButtonSize = Size( 565, 42 );
+
+  enum { gotoLegionX=360, return2fortX=450, send2empireX=530 };
+  Size btnSize(32, 32);
 }
 
 class LegionButton : public PushButton
@@ -60,14 +63,14 @@ public:
     _fort = fort;
     _resizeEvent();
 
-    PushButton* gotoLegion    = new PushButton( this, Rect( 360, 5, 360 + 32, 6 + 32 ), "", -1, false, PushButton::blackBorderUp );
+    PushButton* gotoLegion    = new PushButton( this, Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     gotoLegion->setIcon( ResourceGroup::panelBackground, 563 );
     gotoLegion->setIconOffset( Point( 4, 4 ) );
-    PushButton* return2fort   = new PushButton( this, Rect( 450, 5, 450 + 32, 6 +32 ), "", -1, false, PushButton::blackBorderUp );
+    PushButton* return2fort   = new PushButton( this, Rect( Point( return2fortX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     return2fort->setIcon(  ResourceGroup::panelBackground, 564 );
     return2fort->setIconOffset( Point( 4, 4 ) );
     return2fort->setTooltipText( _("##return_2_fort##") );
-    PushButton* empireService = new PushButton( this, Rect( 530, 5, 530 + 32, 6 + 32), "", -1, false, PushButton::blackBorderUp );
+    PushButton* empireService = new PushButton( this, Rect( Point( send2empireX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     empireService->setIcon( ResourceGroup::panelBackground, 566 );
     empireService->setIconOffset( Point( 4, 4 ) );
     empireService->setTooltipText( "##empire_service_tip##");
@@ -236,7 +239,7 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
     return;
   }
 
-  if( mil->haveNotification( city::Military::Notification::barbarian ) )
+  if( mil->haveNotification( Notification::barbarian ) )
   {
     lbAlarm->setText( _("##barbarian_are_closing_city##") );
     return;

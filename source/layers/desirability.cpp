@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layerdesirability.hpp"
+#include "desirability.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/camera.hpp"
 #include "core/gettext.hpp"

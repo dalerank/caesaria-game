@@ -3,6 +3,7 @@
   "##reservoir_build_fountain##" : "Build a fountain reasonably close to a reservoir. It will fill up with water if the reservoir is blue, provided you have enough water services workers."
   "##reservoir_build_second##" : "To build a second reservoir, select another reservoir from the Water Structures button. Then move the mouse pointer over the first reservoir you've built until you can see a green square around it. Hold the mouse button down and 'drag' the cursor to the desired location. You'll see a second reservoir, connected to the original one by an aqueduct."
   "##reservoir_citizens_like_fountain##" : "Your citizens much prefer to have a fountain for their water than a well. Fountains deliver cleaner water, and cover a wider area than wells. There are lots of overlay reports to help you manage your city. The game continues running while overlays are displayed. When using an overlay, press the spacebar to temporarily see the  whole city. Leave your pointer over an object on the map, and some text will appear to explain what it means for that overlay."
+  "##reservoir_title##" : "Creating a water supply"
   "##can_build_gardens##" : "Now you can build even more buildings. Bath-houses need to be in range of a reservoir and have access to labor."
   "##gardens_get_desirable##" : "Gardens make an area more desirable."
   "##gardens_title##" : "Gardens"

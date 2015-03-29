@@ -32,6 +32,7 @@
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "city/states.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 
@@ -188,7 +189,7 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   }
 
   std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
-                                                  city->population(), _("##people##"),
+                                                  city->states().population, _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 

@@ -26,6 +26,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Info)
+
 class Info : public Srvc
 {
 public:
@@ -57,26 +59,21 @@ public:
   {
     DateTime date;
     int value;
-  };
+  };  
 
-  struct ScribeMessage
+  class History : public std::vector<Parameters>
   {
-    std::string text;
-    std::string title;
-    good::Product gtype;
-    Point position;
-    int type;
-    DateTime date;
-    bool opened;
-    Variant ext;
-
+  public:
     VariantMap save() const;
-    void load( const VariantMap& stream );
+    void load( const VariantMap& vm );
   };
 
-  typedef std::list<ScribeMessage> Messages;
-  typedef std::vector< Info::Parameters > History;
-  typedef std::vector< Info::MaxParameterValue > MaxParameters;
+  class MaxParameters : public std::vector< MaxParameterValue >
+  {
+  public:
+    VariantMap save() const;
+    void load( const VariantMap& vm );
+  };
 
   static SrvcPtr create( PlayerCityPtr city );
 
@@ -93,20 +90,12 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-  const Messages& messages() const;
-  const ScribeMessage& getMessage( int index ) const;
-  void changeMessage( int index, ScribeMessage& message );
-  void removeMessage( int index );
-  void addMessage( const ScribeMessage& message );
-
 private:
   Info(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Info> InfoPtr;
 
 }//end namespace city
 
