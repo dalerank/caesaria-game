@@ -165,9 +165,9 @@ void Game::Impl::initSound()
 
   ae.init();
   Logger::warning( "Game: load volumes" );
-  ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
-  ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
-  ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
+  ae.setVolume( audio::ambient, SETTINGS_VALUE( ambientVolume ) );
+  ae.setVolume( audio::theme, SETTINGS_VALUE( musicVolume ) );
+  ae.setVolume( audio::game, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
   std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
@@ -197,6 +197,8 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
                  "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
+      SETTINGS_SET_VALUE( c3gfx, std::string( "" ) );
+      game::Settings::save();
     }
 
     loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );

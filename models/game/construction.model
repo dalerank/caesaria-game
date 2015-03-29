@@ -70,7 +70,7 @@
     class : "entertainment"    
     animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 3 }
     image : [ "entertainment", 1 ]
-    sound : [ "ampitheatre", 1 ]
+    sound : [ "", 1 ]
   },
 
   theater : {
@@ -128,6 +128,7 @@
     class : "entertainment"
     image : [ "entertainment", 62 ]
     animation : { rc : "entertainment", start : 63, count : 18, offset : [ 78, 21 ], delay : 2 }
+    sound : [ "lionpit", 1 ]
   },
   
   actorColony : {
@@ -594,6 +595,7 @@
     cost : 1000,
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 20
+    sound : [ "military_acad", 1 ]
     class : "military"
   },
   
@@ -672,6 +674,7 @@
     output : "fruit"
     productRate : 9.6
     class : "food"
+    sound : [ "fig_farm", 1 ]
   },
   
   olive_farm : 

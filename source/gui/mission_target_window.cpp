@@ -30,6 +30,7 @@
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "city/victoryconditions.hpp"
+#include "sound/engine.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
@@ -58,6 +59,7 @@ public:
   Label* lbShortDesc;
 
   ListBox* lbxHelp;
+  int saveVolume[audio::count];
 };
 
 MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int id )
@@ -65,12 +67,11 @@ MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int i
   MissionTargets* ret = new MissionTargets( parent, id, Rect( 0, 0, 610, 430 ) );
   ret->setCenter( parent->center() );
   ret->setCity( city );
+  ret->show();
   ret->setModal();
 
   return ret;
 }
-
-MissionTargets::~MissionTargets() {}
 
 MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   : Window( parent, rectangle, "", id ), _d( new Impl )
@@ -91,6 +92,9 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   GET_DWIDGET_FROM_UI( _d, lbPeace  )
   GET_DWIDGET_FROM_UI( _d, lbShortDesc )
   GET_DWIDGET_FROM_UI( _d, lbxHelp )
+
+  _d->saveVolume[audio::ambient] = 0;
+  _d->saveVolume[audio::theme] = 0;
 }
 
 void MissionTargets::draw( gfx::Engine& painter )
@@ -99,6 +103,27 @@ void MissionTargets::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+void MissionTargets::show()
+{
+  Window::show();
+}
+
+MissionTargets::~MissionTargets()
+{
+  const city::VictoryConditions& wint = _d->city->victoryConditions();
+  audio::Engine& ae = audio::Engine::instance();
+
+  if( _d->saveVolume[audio::ambient] != 0 )
+    ae.setVolume( audio::ambient, _d->saveVolume[ audio::ambient ] );
+  if( _d->saveVolume[audio::theme] != 0 )
+    ae.setVolume( audio::theme, _d->saveVolume[ audio::theme ] );
+
+  if( !wint.beginSpeech().empty() )
+  {
+    ae.stop( wint.beginSpeech() );
+  }
 }
 
 void MissionTargets::setCity(PlayerCityPtr city)
@@ -172,6 +197,16 @@ void MissionTargets::setCity(PlayerCityPtr city)
   {
     _d->lbShortDesc->setText( _(wint.shortDesc()) );
     _d->lbShortDesc->setVisible( !wint.shortDesc().empty() );
+  }
+
+  if( !wint.beginSpeech().empty() )
+  {
+    audio::Engine& ae = audio::Engine::instance();
+    _d->saveVolume[ audio::ambient ] = ae.volume( audio::ambient );
+    _d->saveVolume[ audio::theme ] = ae.volume( audio::theme );
+    ae.setVolume( audio::ambient, 5 );
+    ae.setVolume( audio::theme, 5 );
+    ae.play( wint.beginSpeech(), 100, audio::speech );
   }
 }
 

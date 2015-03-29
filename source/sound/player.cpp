@@ -75,7 +75,7 @@ void Player::timeStep(const unsigned int time )
       _d->lastIndex = (_d->lastIndex+1) % _d->playlist.size();
       sample = _d->playlist[ _d->lastIndex ];
 
-      engine.play( sample, 100, audio::themeSound );
+      engine.play( sample, 100, audio::theme );
     }
   }
 }

@@ -475,9 +475,9 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case all_sound_off:
-    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
-    audio::Engine::instance().setVolume( audio::themeSound, 0 );
-    audio::Engine::instance().setVolume( audio::gameSound, 0 );
+    audio::Engine::instance().setVolume( audio::ambient, 0 );
+    audio::Engine::instance().setVolume( audio::theme, 0 );
+    audio::Engine::instance().setVolume( audio::game, 0 );
   break;
 
   case run_script:

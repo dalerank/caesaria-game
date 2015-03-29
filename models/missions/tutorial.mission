@@ -23,6 +23,8 @@
     finishDate : "-300.01.01"
     maxHouseLevel : "hut"
     caption : "##new_village##"
+    sound.overview : "tutorial_speech"
+    sound.win      : "tutorial_win_speech"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002",
                   "##tutorial_text_roads##",

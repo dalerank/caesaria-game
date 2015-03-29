@@ -156,7 +156,7 @@ void StartMenu::Impl::fitScreenResolution()
 
 void StartMenu::Impl::playMenuSoundTheme()
 {
-  audio::Engine::instance().play( "rome6", 50, audio::themeSound );
+  audio::Engine::instance().play( "rome6", 50, audio::theme );
 }
 
 void StartMenu::Impl::continuePlay()
@@ -282,7 +282,7 @@ void StartMenu::Impl::handleNewGame()
 
 void StartMenu::Impl::showCredits()
 {
-  audio::Engine::instance().play( "combat_long", 50, audio::themeSound );
+  audio::Engine::instance().play( "combat_long", 50, audio::theme );
   Widget* parent = game->gui()->rootWidget();
 
   Size size = engine->screenSize();
