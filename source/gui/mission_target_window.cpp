@@ -47,6 +47,8 @@ namespace dialog
 class MissionTargets::Impl
 {
 public:
+  audio::Muter muter;
+  audio::SampleDeleter speechDel;
   GameAutoPause locker;
   PlayerCityPtr city;
   Label* lbTitle;
@@ -59,7 +61,6 @@ public:
   Label* lbShortDesc;
 
   ListBox* lbxHelp;
-  int saveVolume[audio::count];
 };
 
 MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int id )
@@ -92,9 +93,6 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   GET_DWIDGET_FROM_UI( _d, lbPeace  )
   GET_DWIDGET_FROM_UI( _d, lbShortDesc )
   GET_DWIDGET_FROM_UI( _d, lbxHelp )
-
-  _d->saveVolume[audio::ambient] = 0;
-  _d->saveVolume[audio::theme] = 0;
 }
 
 void MissionTargets::draw( gfx::Engine& painter )
@@ -112,18 +110,6 @@ void MissionTargets::show()
 
 MissionTargets::~MissionTargets()
 {
-  const city::VictoryConditions& wint = _d->city->victoryConditions();
-  audio::Engine& ae = audio::Engine::instance();
-
-  if( _d->saveVolume[audio::ambient] != 0 )
-    ae.setVolume( audio::ambient, _d->saveVolume[ audio::ambient ] );
-  if( _d->saveVolume[audio::theme] != 0 )
-    ae.setVolume( audio::theme, _d->saveVolume[ audio::theme ] );
-
-  if( !wint.beginSpeech().empty() )
-  {
-    ae.stop( wint.beginSpeech() );
-  }
 }
 
 void MissionTargets::setCity(PlayerCityPtr city)
@@ -201,12 +187,9 @@ void MissionTargets::setCity(PlayerCityPtr city)
 
   if( !wint.beginSpeech().empty() )
   {
-    audio::Engine& ae = audio::Engine::instance();
-    _d->saveVolume[ audio::ambient ] = ae.volume( audio::ambient );
-    _d->saveVolume[ audio::theme ] = ae.volume( audio::theme );
-    ae.setVolume( audio::ambient, 5 );
-    ae.setVolume( audio::theme, 5 );
-    ae.play( wint.beginSpeech(), 100, audio::speech );
+    _d->muter.activate(5);
+    _d->speechDel.assign( wint.beginSpeech() );
+    audio::Engine::instance().play( wint.beginSpeech(), 100, audio::speech );
   }
 }
 

@@ -63,6 +63,26 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+class Muter
+{
+public:
+  void activate( int value );
+  ~Muter();
+
+private:
+  std::map< SoundType, int > _states;
+};
+
+class SampleDeleter
+{
+public:
+  ~SampleDeleter();
+  void assign( const std::string& sampleName );
+
+private:
+  std::string _sample;
+};
+
 class Helper
 {
 public:
