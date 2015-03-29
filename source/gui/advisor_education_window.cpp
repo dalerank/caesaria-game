@@ -24,8 +24,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
-#include "game/enums.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
@@ -33,11 +32,40 @@
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "city/states.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
+
+struct SrvcInfo
+{
+  object::Type type;
+  std::string building;
+  std::string people;
+  Service::Type service;
+  int maxStudy;
+  CitizenGroup::Age age;
+};
+
+static SrvcInfo services[] = {
+                               {object::school, "##schools##", "##children##", Service::school, 75, CitizenGroup::scholar},
+                               {object::academy, "##colleges##", "##students##", Service::academy, 100, CitizenGroup::student},
+                               {object::library, "##libraries##", "##peoples##", Service::library, 800, CitizenGroup::mature},
+                               {object::unknown, "", "", Service::srvCount, 0, CitizenGroup::longliver }
+                             };
+
+enum { maxDescriptionNumber = 10, badAccessValue=30, middleCoverage=75,
+       awesomeAccessValue=100, awesomeCoverage=100, fantasticCoverage=150 };
+
+const char* coverageDescriptions[ maxDescriptionNumber ] = {
+                                                             "##edu_poor##", "##edu_very_bad##",
+                                                             "##edu_bad##", "##edu_not_bad##",
+                                                             "##edu_simple##", "##edu_above_simple##",
+                                                             "##edu_good##", "##edu_very_good##",
+                                                             "##edu_pretty##", "##edu_awesome##"
+                                                           };
 
 namespace gui
 {
@@ -58,10 +86,23 @@ namespace {
   };
 }
 
+static SrvcInfo findInfo( const object::Type service )
+{
+  for( int index=0; services[index].type != object::unknown; index++ )
+  {
+    if( service == services[index].type )
+        return services[index];
+  }
+
+  SrvcInfo ret;
+  ret.service = Service::srvCount;
+  return ret;
+}
+
 class EducationInfoLabel : public Label
 {
 public:
-  EducationInfoLabel( Widget* parent, const Rect& rect, const TileOverlay::Type service,
+  EducationInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
                       const InfrastructureInfo& info )
     : Label( parent, rect ), _service( service ), _info( info )
   {
@@ -74,36 +115,27 @@ public:
   {
     Label::_updateTexture( painter );
 
-    std::string buildingStr, peoplesStr;
-    switch( _service )
-    {
-    case objects::school: buildingStr = _("##schools##"); peoplesStr = _("##children##"); break;
-    case objects::academy: buildingStr = _("##colleges##"); peoplesStr = _("##students##"); break;
-    case objects::library: buildingStr = _("##libraries##"); peoplesStr = _("##peoples##"); break;
-    default: break;
-    }
+    SrvcInfo info = findInfo( _service );
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
+    std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building) );
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
-    std::string buildingWorkT = utils::format( 0xff, "%d", _info.buildingWork );
+    std::string buildingWorkT = utils::i2str( _info.buildingWork );
     rfont.draw( *texture, buildingWorkT, 165, 0 );
 
-    std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
+    std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, _(info.people) );
     rfont.draw( *texture, peoplesStrT, 255, 0 );
 
-    const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
-                                  "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
     const char* coverageStr = _info.coverage > 0
-                                  ? coverages[ math::clamp( _info.coverage / 10, 0, 9 ) ]
+                                  ? coverageDescriptions[ math::clamp( _info.coverage / maxDescriptionNumber, 0, maxDescriptionNumber-1 ) ]
                                   : "##non_cvrg##";
     rfont.draw( *texture, _( coverageStr ), 440, 0 );
   }
 
 private:
-  TileOverlay::Type _service;
+  object::Type _service;
   InfrastructureInfo _info;
 };
 
@@ -118,16 +150,16 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
   std::string getTrouble( PlayerCityPtr city );
 };
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 256 ), "", id ),
+: Base( parent, city, id ),
   __INIT_IMPL(Education)
 {
   setupUI( ":/gui/educationadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
+  setHeight( 256 );
   
   __D_IMPL(_d,Education)
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
@@ -137,27 +169,27 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( city, objects::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), objects::school, info );
+  info = _d->getInfo( city, object::school );
+  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
 
-  info = _d->getInfo( city, objects::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), objects::academy, info );
+  info = _d->getInfo( city, object::academy );
+  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
 
-  info = _d->getInfo( city, objects::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), objects::library, info );
+  info = _d->getInfo( city, object::library );
+  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
 
-  city::Helper helper( city );
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findh( city );
   foreach( house, houses )
   {
     sumScholars += (*house)->habitants().scholar_n();
     sumStudents += (*house)->habitants().student_n();
   }
 
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##people##"),
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+                                                  city->states().population, _("##people##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
@@ -181,13 +213,9 @@ void Education::_showHelp()
   DictionaryWindow::show( this, "education_advisor" );
 }
 
-InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
+InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
-  city::Helper helper( city );
-
   InfrastructureInfo ret;
-
-  Service::Type service;
 
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
@@ -196,21 +224,13 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( bType );
+  ServiceBuildingList servBuildings = statistic::findo<ServiceBuilding>( city, bType );
 
   ret.buildingCount = servBuildings.size();
-  int maxStuding = 0;
-  CitizenGroup::Age age;
-  switch( bType )
+  SrvcInfo info = findInfo( bType );
+  if( info.service == Service::srvCount )
   {
-  case objects::school:  service = Service::school;  maxStuding = 75;  age = CitizenGroup::scholar; break;
-  case objects::academy: service = Service::academy; maxStuding = 100; age = CitizenGroup::student; break;
-  case objects::library: service = Service::library; maxStuding = 800; age = CitizenGroup::mature;  break;
-  default:
-    age=CitizenGroup::newborn;
-    service=Service::srvCount;
     Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
-  break;
   }
 
   foreach( it, servBuildings )
@@ -219,25 +239,27 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
     if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += maxStuding * serv->numberWorkers() / serv->maximumWorkers();
+      ret.peoplesStuding += info.maxStudy * serv->numberWorkers() / serv->maximumWorkers();
     }
   }
 
-  HouseList houses = helper.find<House>( objects::house );
-  int minAccessLevel = 100;
+  HouseList houses = statistic::findh( city );
+  int minAccessLevel = awesomeAccessValue;
   foreach( it, houses )
   {
     HousePtr house = *it;
     int habitantsCount = house->habitants().count();
     if( habitantsCount > 0 )
     {
-      ret.need += ( house->habitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
-      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
-      minAccessLevel = std::min<int>( house->getServiceValue( service ), minAccessLevel );
+      ret.need += ( house->habitants().count( info.age ) * ( house->isEducationNeed( info.service ) ? 1 : 0 ) );
+      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, info.service ) == awesomeAccessValue ? 1 : 0);
+      minAccessLevel = std::min<int>( house->getServiceValue( info.service ), minAccessLevel );
     }
   }
 
-  ret.coverage = math::percentage( ret.peoplesStuding, ret.need );
+  ret.coverage = ret.need == 0
+                    ? awesomeAccessValue
+                    : math::percentage( ret.peoplesStuding, ret.need );
   return ret;
 }
 
@@ -256,25 +278,25 @@ std::string Education::Impl::getTrouble(PlayerCityPtr city)
   if( lbrInfo.nextLevel > 0 ) { advices << "##have_no_access_to_library##"; }
 
 
-  if( schInfo.minAccessLevel < 30 || clgInfo.minAccessLevel < 30 )
+  if( schInfo.minAccessLevel < badAccessValue || clgInfo.minAccessLevel < badAccessValue )
   {
     advices << "##edadv_need_better_access_school_or_colege##";
   }
 
-  if( schInfo.coverage < 75 && clgInfo.coverage < 75 && lbrInfo.coverage < 75 )
+  if( schInfo.coverage < middleCoverage && clgInfo.coverage < middleCoverage && lbrInfo.coverage < middleCoverage )
   {
     advices << "##need_more_access_to_lbr_school_colege##";
   }
 
-  if( schInfo.coverage < 75 ) { advices << "##need_more_school_colege##"; }
-  else if( schInfo.coverage >= 100 && schInfo.coverage < 150 ) { advices << "##school_access_perfectly##"; }
+  if( schInfo.coverage < middleCoverage ) { advices << "##need_more_school_colege##"; }
+  else if( schInfo.coverage >= awesomeCoverage && schInfo.coverage < fantasticCoverage ) { advices << "##school_access_perfectly##"; }
 
-  if( clgInfo.coverage >= 100 && clgInfo.coverage < 150 ) { advices << "##colege_access_perfectly##"; }
+  if( clgInfo.coverage >= awesomeCoverage && clgInfo.coverage < fantasticCoverage ) { advices << "##colege_access_perfectly##"; }
 
-  if( lbrInfo.coverage < 75 ) { advices << "##need_more_access_to_library##"; }
-  else if( lbrInfo.coverage > 100 && lbrInfo.coverage < 150 ) { advices << "##library_access_perfectrly##"; }
+  if( lbrInfo.coverage < middleCoverage ) { advices << "##need_more_access_to_library##"; }
+  else if( lbrInfo.coverage > awesomeCoverage && lbrInfo.coverage < fantasticCoverage ) { advices << "##library_access_perfectrly##"; }
 
-  if( lbrInfo.minAccessLevel < 30 ) { advices << "##some_houses_need_better_library_access##"; }
+  if( lbrInfo.minAccessLevel < badAccessValue ) { advices << "##some_houses_need_better_library_access##"; }
   if( lbrInfo.nextLevel > 0 && clgInfo.nextLevel > 0 )
   {
     advices << "##some_houses_need_library_or_colege_access##";

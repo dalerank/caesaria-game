@@ -86,10 +86,8 @@ public:
   std::string restartFile;
 
   void loadCity(std::fstream& f, PlayerCityPtr oCity );
-
   void initClimate(std::fstream &f, PlayerCityPtr ioCity);
   void initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity);
-
   void initEntryExit(std::fstream &f, PlayerCityPtr ioCity);
 };
 
@@ -169,12 +167,12 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   oCity->resize(map_size);
 
   // need to rewrite better
-  ScopedPtr<short> pGraphicGrid( new short[26244] );
-  ScopedPtr<unsigned char> pEdgeGrid( new unsigned char[26244] );
-  ScopedPtr<short> pTerrainGrid( new short[26244] );
-  ScopedPtr<unsigned char> pRndmTerGrid( new unsigned char[26244] );
-  ScopedPtr<unsigned char> pRandomGrid( new unsigned char[26244] );
-  ScopedPtr<unsigned char> pElevationGrid( new unsigned char[26244] );
+  ScopedArrayPtr<short> pGraphicGrid( new short[tilemap::c3mapSizeSq] );
+  ScopedArrayPtr<unsigned char> pEdgeGrid( new unsigned char[tilemap::c3mapSizeSq] );
+  ScopedArrayPtr<short> pTerrainGrid( new short[tilemap::c3mapSizeSq] );
+  ScopedArrayPtr<unsigned char> pRndmTerGrid( new unsigned char[tilemap::c3mapSizeSq] );
+  ScopedArrayPtr<unsigned char> pRandomGrid( new unsigned char[tilemap::c3mapSizeSq] );
+  ScopedArrayPtr<unsigned char> pElevationGrid( new unsigned char[tilemap::c3mapSizeSq] );
 
   if( pGraphicGrid.isNull() || pEdgeGrid.isNull() || pTerrainGrid.isNull() ||
       pRndmTerGrid.isNull() || pRandomGrid.isNull() || pElevationGrid.isNull() )
@@ -185,22 +183,22 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   // here also make copy of original arrays in memory
 
   f.seekg(kGraphicGrid, std::ios::beg);
-  f.read((char*)pGraphicGrid.data(), 52488);
+  f.read((char*)pGraphicGrid.data(), tilemap::c3mapSizeSq*2);
   f.seekg(kEdgeGrid, std::ios::beg);
-  f.read((char*)pEdgeGrid.data(), 26244);
+  f.read((char*)pEdgeGrid.data(), tilemap::c3mapSizeSq);
   f.seekg(kTerrainGrid, std::ios::beg);
-  f.read((char*)pTerrainGrid.data(), 52488);
+  f.read((char*)pTerrainGrid.data(), tilemap::c3mapSizeSq*2);
   f.seekg(kRndmTerGrid, std::ios::beg);
-  f.read((char*)pRndmTerGrid.data(), 26244);
+  f.read((char*)pRndmTerGrid.data(), tilemap::c3mapSizeSq);
   f.seekg(kRandomGrid, std::ios::beg);
-  f.read((char*)pRandomGrid.data(), 26244);
+  f.read((char*)pRandomGrid.data(), tilemap::c3mapSizeSq);
   f.seekg(kElevationGrid, std::ios::beg);
-  f.read((char*)pElevationGrid.data(), 26244);
+  f.read((char*)pElevationGrid.data(), tilemap::c3mapSizeSq);
 
   std::map< int, std::map< int, unsigned char > > edgeData;
 
   // loads the graphics map
-  int border_size = (162 - map_size) / 2;
+  int border_size = (gfx::tilemap::c3mapSize - map_size) / 2;
 
   for (int itA = 0; itA < map_size; ++itA)
   {
@@ -209,7 +207,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       int i = itB;
       int j = map_size - itA - 1;
 
-      int index = 162 * (border_size + itA) + border_size + itB;
+      int index = gfx::tilemap::c3mapSize * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( imgid::toResource( pGraphicGrid.data()[index] ) );
@@ -236,7 +234,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 	  try
 	  {
 	    // find size, 5 is maximal size for building
-	    for (dj = 0; dj < 5; ++dj)
+	    for (dj = 0; dj < gfx::tilemap::c3bldSize; ++dj)
 	    {
 						int edd = edgeData[ i ][ j - dj ];
 	      // find bottom left corner
@@ -277,10 +275,9 @@ void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
   f.seekg(kClimate, std::ios::beg);
   f.read((char*)&i, 1);
 
-  ClimateType climate = (ClimateType) i;
-  ioCity->setClimate(climate);
+  ioCity->setOption( PlayerCity::climateType, i);
 
-  Logger::warning( "C3MapLoader: climate type is %d", climate );
+  Logger::warning( "C3MapLoader: climate type is %d", i );
 }
 
 void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)

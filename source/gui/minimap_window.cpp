@@ -19,7 +19,7 @@
 #include "gfx/tilemap.hpp"
 #include "game/minimap_colours.hpp"
 #include "gfx/tile.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
@@ -29,6 +29,9 @@
 #include "gfx/camera.hpp"
 #include "walker/walker.hpp"
 #include "core/tilerect.hpp"
+#include "texturedbutton.hpp"
+#include "gfx/helper.hpp"
+#include "city/states.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -48,13 +51,17 @@ public:
 
   int lastTimeUpdate;
   Point center;
+  TexturedButton* btnZoomIn;
+  TexturedButton* btnZoomOut;
 
+public:
   void getTerrainColours(const Tile& tile, int &c1, int &c2);
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
 public signals:
   Signal1<TilePos> onCenterChangeSignal;
+  Signal1<int> onZoomChangeSignal;
 };
 
 Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera)
@@ -64,7 +71,9 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
-  _d->colors = new minimap::Colors( (ClimateType)city->climate() );
+  _d->colors = new minimap::Colors( city->climate() );
+  _d->btnZoomIn = new TexturedButton( this, righttop() - Point( 28, -2), Size( 24 ), -1, 605 );
+  _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26), Size( 24 ), -1, 601 );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -73,19 +82,19 @@ void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
-  int rndData = tile.originalImgId();
-  int num3 = rndData & 0x3;
-  int num7 = rndData & 0x7;
-
-  TileOverlay::Type ovType = objects::unknown;
-  if( tile.overlay().isValid() )
-    ovType = tile.overlay()->type();
-
-  if( tile.i() < 0 || tile.j() < 0 )
+  if( !gfx::tilemap::isValidLocation( tile.pos() ) )
   {
     c1 = c2 = 0xff000000;
     return;
   }
+
+  object::Type ovType = object::unknown;
+  if( tile.rov().isValid() )
+    ovType = tile.rov()->type();
+
+  int rndData = tile.originalImgId();
+  int num3 = rndData & 0x3;
+  int num7 = rndData & 0x7;
 
   if (tile.getFlag( Tile::tlTree ))
   {
@@ -122,7 +131,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
     c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
   }
-  else if( ovType == objects::aqueduct  )
+  else if( ovType == object::aqueduct  )
   {
     c1 = colors->colour(minimap::Colors::MAP_AQUA, 0);
     c2 = colors->colour(minimap::Colors::MAP_AQUA, 1);
@@ -148,68 +157,59 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 {
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
 
   if (overlay == NULL)
     return;
 
-  TileOverlay::Type type = overlay->type();
+  object::Type type = overlay->type();
 
-  switch(type)
+  if(type == object::house)
   {
-    case objects::house:
+    switch (overlay->size().width())
     {
-      switch (overlay->size().width())
-      {
-        case 1:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-            c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
-          }
-        break;
-
-        default:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
-            c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-          }
+      case 1:
+        {
+          c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
+          c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
         }
-        break;
-      }
-      break;
-
-      case objects::reservoir:
-      {
-        c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
-        c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
-      }
-      break;
-
-      case objects::fort_javelin:
-      case objects::fort_legionaries:
-      case objects::fort_horse:
-      {
-        c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
-        c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
-      }
       break;
 
       default:
         {
-          switch (overlay->size().width())
-          {
-          case 1:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
-            c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
-            break;
-          }
-          default:
-          {
-            c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
-            c2 = colors->colour(minimap::Colors::MAP_BUILDING, 2);
-          }
+          c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
+          c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
         }
+      break;
+    }
+  }
+  else if(type == object::reservoir)
+  {
+     c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
+     c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
+  }
+  else if(type == object::fort_javelin ||
+          type == object::fort_legionaries ||
+          type == object::fort_horse )
+  {
+    c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+    c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+  }
+  else
+  {
+    switch (overlay->size().width())
+    {
+      case 1:
+      {
+        c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
+        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
+        break;
+      }
+      default:
+      {
+        c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
+        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 2);
+      }
     }
   }
 
@@ -234,12 +234,15 @@ void Minimap::Impl::updateImage()
   TilePos startPos = tpos - offset;
   TilePos stopPos = tpos + offset;
 
-  int w = minimap->width()-1;
-  int h = minimap->height();
+  int mmapWithMinus1 = minimap->width()-1;
+  int mmapWidth = minimap->width();
+  int mmapHeight = minimap->height();
   unsigned int* pixels = minimap->lock();
 
   if( pixels != 0)
   {
+    int c1, c2;
+    Point pnt;
     minimap->fill( 0xff000000, Rect() );
     for( int i = startPos.i(); i < stopPos.i(); i++)
     {
@@ -247,15 +250,14 @@ void Minimap::Impl::updateImage()
       {
         const Tile& tile = tilemap.at(i, j);
 
-        Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
-        int c1, c2;
+        pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
         getTerrainColours( tile, c1, c2);
 
-        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= w || pnt.y() >= h )
+        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= mmapWithMinus1 || pnt.y() >= mmapHeight )
           continue;
 
         unsigned int* bufp32;
-        bufp32 = pixels + pnt.y() * minimap->width() + pnt.x();
+        bufp32 = pixels + pnt.y() * mmapWidth + pnt.x();
         *bufp32 = c1;
         *(bufp32+1) = c2;
       }
@@ -264,18 +266,17 @@ void Minimap::Impl::updateImage()
 
     const WalkerList& walkers = city->walkers();
     TileRect trect( startPos, stopPos );
-    //TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
-    //TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
-    foreach( w, walkers)
+
+    foreach( i, walkers)
     {
-      TilePos pos = (*w)->pos();
+      const TilePos& pos = (*i)->pos();
       if( trect.contain( pos ) )
       {
         NColor cl;
-        if ((*w)->agressive() != 0)
+        if ((*i)->agressive() != 0)
         {
 
-          if ((*w)->agressive() > 0)
+          if ((*i)->agressive() > 0)
           {
             cl = DefaultColors::red;
           }
@@ -365,11 +366,22 @@ bool Minimap::onEvent(const NEvent& event)
     tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
     emit _d->onCenterChangeSignal( tpos );
+    return true;
+  }
+  else if( sEventGui == event.EventType
+           && guiButtonClicked == event.gui.type )
+  {
+    if( event.gui.caller == _d->btnZoomIn )
+      emit _d->onZoomChangeSignal( -10 );
+    else if( event.gui.caller == _d->btnZoomOut )
+      emit _d->onZoomChangeSignal( +10 );
+    return true;
   }
 
   return Widget::onEvent( event );
 }
 
 Signal1<TilePos>& Minimap::onCenterChange(){  return _d->onCenterChangeSignal; }
+Signal1<int>& Minimap::onZoomChange(){  return _d->onZoomChangeSignal; }
 
 }//end namespace gui

@@ -33,36 +33,38 @@
 #include "gfx/sdl_engine.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
-#include "layersimple.hpp"
-#include "layerwater.hpp"
-#include "layerfire.hpp"
-#include "layerfood.hpp"
-#include "layerhealth.hpp"
-#include "layerconstants.hpp"
-#include "layerreligion.hpp"
-#include "layerbuild.hpp"
-#include "layerdamage.hpp"
-#include "layerdesirability.hpp"
-#include "layerentertainment.hpp"
-#include "layertax.hpp"
-#include "layercrime.hpp"
+#include "layers/layersimple.hpp"
+#include "layers/layerwater.hpp"
+#include "layers/layerfire.hpp"
+#include "layers/layerfood.hpp"
+#include "layers/layerhealth.hpp"
+#include "layers/constants.hpp"
+#include "layers/layerreligion.hpp"
+#include "layers/build.hpp"
+#include "layers/damage.hpp"
+#include "layers/desirability.hpp"
+#include "layers/layerentertainment.hpp"
+#include "layers/layertax.hpp"
+#include "layers/crime.hpp"
+#include "layers/layerdestroy.hpp"
+#include "layers/layertroubles.hpp"
+#include "layers/layerindigene.hpp"
+#include "layers/layereducation.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
-#include "layerdestroy.hpp"
 #include "tilemap_camera.hpp"
-#include "layereducation.hpp"
 #include "city/city.hpp"
-#include "layertroubles.hpp"
-#include "layerindigene.hpp"
 #include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
 using namespace constants;
-using namespace gfx::layer;
+using namespace citylayer;
 
 namespace gfx
 {
+
+enum { zoomStep=10, minZoom=30, defaultZoom=100, maxZoom=300 };
 
 class CityRenderer::Impl
 {
@@ -107,7 +109,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->guienv = guienv;
   _d->camera.init( *_d->tilemap, engine->virtualSize() );
   _d->engine = engine;
-  _d->zoom = 100;
+  _d->zoom = defaultZoom;
   _d->zoomChanged = false;
 
   _d->engine->initViewport( 0, _d->engine->screenSize() );
@@ -123,7 +125,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Health::create( _d->camera, city, citylayer::baths ));
   addLayer( Religion::create( _d->camera, city ) );
   addLayer( Damage::create( _d->camera, city ) );
-  addLayer( layer::Desirability::create( _d->camera, city ) );
+  addLayer( citylayer::Desirability::create( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::amphitheater ) );
@@ -139,7 +141,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Education::create( _d->camera, city, citylayer::academy ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
-  addLayer( layer::Indigene::create( _d->camera, city ) );
+  addLayer( citylayer::Indigene::create( _d->camera, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();
   dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
@@ -205,7 +207,7 @@ void CityRenderer::render()
   if( _d->zoomChanged )
   {
     _d->zoomChanged = false;
-    Size s = _d->engine->screenSize() * _d->zoom / 100;
+    Size s = _d->engine->screenSize() * _d->zoom / defaultZoom;
     _d->engine->initViewport( 0, s );
     _d->camera.setViewport( s );
   }
@@ -253,9 +255,7 @@ void CityRenderer::handleEvent( NEvent& event )
       {
         int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
 
-        int lastZoom = _d->zoom;
-        _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10 * zoomInvert, 30, 300 );
-        _d->zoomChanged = (lastZoom != _d->zoom);
+        changeZoom( event.mouse.wheel * zoomStep * zoomInvert );
       }
     }
   }
@@ -314,6 +314,13 @@ void CityRenderer::setLayer(int layertype)
   _d->setLayer( layertype );
 }
 
+void CityRenderer::changeZoom(int delta)
+{
+  int lastZoom = _d->zoom;
+  _d->zoom = math::clamp<int>( _d->zoom + delta, minZoom, maxZoom );
+  _d->zoomChanged = (lastZoom != _d->zoom);
+}
+
 LayerPtr CityRenderer::getLayer(int type) const
 {
   foreach( it, _d->layers)
@@ -325,12 +332,13 @@ LayerPtr CityRenderer::getLayer(int type) const
   return LayerPtr();
 }
 
+TilePos CityRenderer::screen2tilepos(const Point& point ) const{  return _d->camera.at( point, true )->pos();}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
-void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
+void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
-Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
+Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
 
 }//end namespace gfx

@@ -32,6 +32,7 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
+#include "layers/constants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"
@@ -41,7 +42,7 @@
 #include "gfx/city_renderer.hpp"
 #include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/settings.hpp"
@@ -67,7 +68,6 @@
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
-#include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
 #include "events/postpone.hpp"
@@ -77,7 +77,7 @@
 #include "core/timer.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
@@ -85,19 +85,24 @@
 #include "events/missionwin.hpp"
 #include "events/savegame.hpp"
 #include "core/tilerect.hpp"
+#include "city/active_points.hpp"
+#include "city/statistic.hpp"
+#include "city/states.hpp"
 
 using namespace gui;
 using namespace constants;
+using namespace events;
 using namespace gfx;
+using namespace city;
 
 namespace scene
 {
+typedef std::vector< EventHandlerPtr > EventHandlers;
+const int topMenuHeight = 23;
 
 class Level::Impl
 {
 public:
-  typedef std::vector< EventHandlerPtr > EventHandlers;
-
   EventHandlers eventHandlers;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
@@ -141,6 +146,7 @@ public:
   void makeFullScreenshot();
   void extendReign( int years );
   void saveScrollSpeed( int speed );
+  void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
 
   std::string getScreenshotName();
@@ -165,7 +171,6 @@ void Level::initialize()
   _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
-  const int topMenuHeight = 23;
   Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
@@ -178,8 +183,8 @@ void Level::initialize()
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->city()->population() );
-  _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
+  _d->topMenu->setPopulation( _d->game->city()->states().population );
+  _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 
   _d->menu = Menu::create( ui.rootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.virtualSize().width() - _d->rightPanel->width(),
@@ -189,7 +194,7 @@ void Level::initialize()
   _d->extMenu->setPosition( Point( engine.virtualSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
-  Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
+  Minimap* mmap = new Minimap( _d->extMenu, Rect( Point( 8, 35), Size( 144, 110 ) ),
                                city,
                                *_d->renderer.camera() );
 
@@ -198,7 +203,7 @@ void Level::initialize()
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
-  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
+  _d->game->city()->addService( AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
   //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID
@@ -208,6 +213,7 @@ void Level::initialize()
   CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
   CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
   CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
+  CONNECT( androidBar, onChangeZoom(), &_d->renderer, gfx::CityRenderer::changeZoom );
 #endif
 
   //connect elements
@@ -250,9 +256,9 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
+  CONNECT( mmap, onZoomChange(), &_d->renderer, gfx::CityRenderer::changeZoom )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
-
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
@@ -276,22 +282,22 @@ std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
-  events::GameEventPtr e = events::SaveGame::create();
+  GameEventPtr e = SaveGame::create();
   e->dispatch();
 }
 
 void Level::Impl::setVideoOptions()
 {
-  events::GameEventPtr event = events::SetVideoSettings::create();
+  GameEventPtr event = SetVideoSettings::create();
   event->dispatch();
 }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
-  dialog::GameSpeedOptions* dialog = new dialog::GameSpeedOptions( game->gui()->rootWidget(),
-                                                                   game->timeMultiplier(),
-                                                                   SETTINGS_VALUE( scrollSpeed ),
-                                                                   SETTINGS_VALUE( autosaveInterval ) );
+  dialog::SpeedOptions* dialog = new dialog::SpeedOptions( game->gui()->rootWidget(),
+                                                           game->timeMultiplier(),
+                                                           SETTINGS_VALUE( scrollSpeed ),
+                                                           SETTINGS_VALUE( autosaveInterval ) );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
@@ -301,14 +307,14 @@ void Level::Impl::showGameSpeedOptionsDialog()
 
 void Level::Impl::showCityOptionsDialog()
 {
-  CityOptionsWindow* wnd = new CityOptionsWindow( game->gui()->rootWidget(),
-                                                  game->city() );
+  dialog::CityOptions* wnd = new dialog::CityOptions( game->gui()->rootWidget(),
+                                                      game->city() );
   wnd->show();
 }
 
-void Level::Impl::resolveWarningMessage(std::string text )
+void Level::Impl::resolveWarningMessage(std::string text)
 {
-  events::GameEventPtr e = events::WarningMessage::create( text );
+  GameEventPtr e = WarningMessage::create( text, WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -325,7 +331,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  events::GameEventPtr e = events::SetSoundOptions::create();
+  GameEventPtr e = SetSoundOptions::create();
   e->dispatch();
 }
 
@@ -334,18 +340,18 @@ void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() )
 void Level::Impl::showTileHelp()
 {
   const Tile& tile = game->city()->tilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
-  events::GameEventPtr e = events::ShowTileInfo::create( tile.pos() );
+  GameEventPtr e = ShowTileInfo::create( tile.pos() );
   e->dispatch();
 }
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = utils::hash( CAESARIA_STR_A(ScribesMessagestWindow) );
+  unsigned int id = Hash( CAESARIA_STR_A(dialog::ScribesMessages) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
   {
-    wnd = new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+    wnd = new dialog::ScribesMessages( game->gui()->rootWidget(), game->city() );
   }
   else
   {
@@ -417,7 +423,7 @@ void Level::Impl::makeFullScreenshot()
 
 void Level::Impl::extendReign(int years)
 {
-  city::VictoryConditions vc;
+  VictoryConditions vc;
   vc = game->city()->victoryConditions();
   vc.addReignYears( years );
 
@@ -426,9 +432,9 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  DirectionHelper dHelper;
+  direction::Helper dHelper;
 
-  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ) );
+  GameEventPtr e = WarningMessage::create( _("##" + dHelper.findName( direction ) + "##"), 1 );
   e->dispatch();
 }
 
@@ -523,11 +529,8 @@ void Level::_resolveSwitchMap()
 
 void Level::Impl::showEmpireMapWindow()
 {
-  events::GameEventPtr e;
-  if( game->empire()->isAvailable() ) { e = events::ShowEmpireMap::create( true ); }
-  else {  e = events::WarningMessage::create( "##not_available##" ); }
-
-  if( e.isValid() ) e->dispatch();
+  GameEventPtr e = ShowEmpireMap::create( true );
+  e->dispatch();
 }
 
 void Level::draw()
@@ -575,7 +578,7 @@ void Level::handleEvent( NEvent& event )
     return;
   }
 
-  for( Impl::EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
+  for( EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
     (*it)->handleEvent( event );
     if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }
@@ -591,18 +594,18 @@ void Level::handleEvent( NEvent& event )
 
   if( !eventResolved )
   {
-     _d->renderer.handleEvent( event );
-     _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
+    _d->renderer.handleEvent( event );
+    _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
   }
 }
 
 void Level::Impl::makeScreenShot()
 {
   std::string filename = getScreenshotName();
-  Logger::warning( "Level: create screenshot %s", filename.c_str() );
+  Logger::warning( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
-  events::GameEventPtr e = events::WarningMessage::create( "Screenshot save to " + filename );
+  GameEventPtr e = WarningMessage::create( "Screenshot save to " + filename, WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -611,17 +614,14 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  city::MilitaryPtr mil;
-  city::InfoPtr info;
-
-  info << pcity->findService( city::Info::defaultName() );
-  mil << pcity->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::finds<city::Military>( pcity );
+  InfoPtr info = statistic::finds<city::Info>( pcity );
 
   if( mil.isValid() && info.isValid()  )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
+    bool failedByDestroy = mil->threatValue() > 0 && params[ Info::population ].value > 0 && !pcity->states().population;
     bool failedByTime = ( !vc.isSuccess() && game::Date::current() > vc.finishDate() );
 
     if( failedByDestroy || failedByTime || forceFailed )
@@ -649,13 +649,13 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 void Level::Impl::checkWinMission( Level* lvl, bool force )
 {
   PlayerCityPtr city = game->city();
-  const city::VictoryConditions& wt = city->victoryConditions();
+  const VictoryConditions& wt = city->victoryConditions();
 
   int culture = city->culture();
   int prosperity = city->prosperity();
   int favour = city->favour();
   int peace = city->peace();
-  int population = city->population();
+  int population = city->states().population;
   bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
 
   if( success || force )
@@ -672,14 +672,14 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success )
   {
-    events::GameEventPtr e = events::MissionWin::create();
+    GameEventPtr e = MissionWin::create();
     e->dispatch();
   }
 }
 
 int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
-void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
+void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
@@ -727,7 +727,7 @@ bool Level::_tryExecHotkey(NEvent &event)
           TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
           const BorderInfo& binfo = _d->game->city()->borderInfo();
           center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
-          _d->renderer.camera()->setCenter( center );
+          _d->renderer.camera()->setCenter( center, false );
       }
       break;
 
@@ -748,7 +748,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_EQUALS:
     case KEY_ADD:
     {
-      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+      GameEventPtr e = ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
       e->dispatch();
       handled = true;
@@ -757,7 +757,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
     case KEY_KEY_P:
     {
-      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
+      GameEventPtr e = Pause::create( Pause::toggle );
       e->dispatch();
       handled = true;
     }
@@ -766,7 +766,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      GameEventPtr e = Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
       e->dispatch();
       handled = true;
     }
@@ -788,17 +788,17 @@ bool Level::_tryExecHotkey(NEvent &event)
       if( event.keyboard.control )
       {
         unsigned int index = event.keyboard.key - KEY_KEY_1;
-        city::development::Options bopts;
+        development::Options bopts;
         bopts = _d->game->city()->buildOptions();
         if( event.keyboard.shift )
         {
           TilePos camPos = _d->renderer.camera()->center();
-          bopts.setMemPoint( index, camPos );
+          _d->game->city()->activePoints().set( index, camPos );
           _d->game->city()->setBuildOptions( bopts );
         }
         else
         {
-          TilePos camPos = bopts.memPoint( index );
+          TilePos camPos = _d->game->city()->activePoints().get( index );
           _d->renderer.camera()->setCenter( camPos );
         }
 
@@ -837,7 +837,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTaretsWindow()
 {
-  int id = utils::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {
@@ -849,17 +849,17 @@ void Level::Impl::showMissionTaretsWindow()
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
+  GameEventPtr e = ShowAdvisorWindow::create( true, advType );
   e->dispatch();
 }
 
 void Level::_showLoadDialog()
 {
-  gui::Widget* parent = _d->game->gui()->rootWidget();
+  Widget* parent = _d->game->gui()->rootWidget();
 
   vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  LoadFileDialog* wnd = new LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
   wnd->setTitle( _("##mainmenu_loadgame##") );

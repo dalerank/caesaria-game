@@ -20,9 +20,11 @@
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "objects/construction.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
@@ -59,26 +61,25 @@ Patrician::~Patrician()
 void Patrician::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destination" ] = _d->destination;
+  VARIANT_SAVE_ANY_D( stream, _d, destination )
 }
 
 void Patrician::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->destination = stream.get( "destination" ).toTilePos();
+  VARIANT_LOAD_ANY_D( _d, destination, stream )
 }
 
 void Patrician::_findNewWay( const TilePos& start )
 {
-  city::Helper helper( _city() );
-  std::vector< objects::Type > bTypes;
-  bTypes.push_back( objects::senate );
+  object::TypeSet bTypes;
+  bTypes << object::senate;
 
   ConstructionList buildings;
 
   foreach( it, bTypes )
   {
-    buildings << helper.find<Construction>( *it );
+    buildings << city::statistic::findo<Construction>( _city(), *it );
   }
 
   Pathway pathway;
@@ -142,9 +143,5 @@ bool Patrician::die()
 void Patrician::send2City(TilePos start )
 {
   _findNewWay( start );
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }

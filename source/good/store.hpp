@@ -72,6 +72,7 @@ public:
   virtual void setCapacity(const good::Product& goodType, const int maxQty) = 0;
 
   virtual int capacity() const = 0;
+  virtual ProductMap details() const = 0;
   virtual int capacity(const good::Product& goodType ) const = 0;
 
   virtual int freeQty( const good::Product& goodType ) const;

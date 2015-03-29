@@ -25,8 +25,7 @@
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "festival_planing_window.hpp"
@@ -40,8 +39,31 @@
 #include "objects/hippodrome.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
+using namespace city;
 using namespace gfx;
+
+struct EntertInfo
+{
+  object::Type type;
+  std::string building;
+  std::string people;
+};
+
+static EntertInfo infos[] = {
+                              { object::theater, "##theaters##", "##peoples##" },
+                              { object::amphitheater, "##amphitheatres##" "##peoples##" },
+                              { object::colloseum, "##colloseum##", "##peoples##" },
+                              { object::hippodrome, "##hippodromes##",  "-" },
+                              { object::unknown, "", "" }
+                            };
+
+enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
+       rowOffset=20,
+       maxFestivalDelay=32,
+       badCoverage=50, normalCoverage=80, maxCoverage=100,
+       maxServiceValue=100 };
+
+enum { ofNumberInCity=0, ofWorkInCity=165, ofHaveShow=245, ofHowmuchServed=305 };
 
 namespace gui
 {
@@ -58,11 +80,22 @@ struct InfrastructureInfo
   int peoplesServed;
 };
 
+static EntertInfo findInfo( const object::Type service )
+{
+  for( int index=0; infos[index].type != object::unknown; index++ )
+  {
+    if( service == infos[index].type )
+        return infos[index];
+  }
+
+  return EntertInfo();
+}
+
 class EntertainmentInfoLabel : public Label
 {
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
-                          const TileOverlay::Type service, InfrastructureInfo info  )
+                          const object::Type service, InfrastructureInfo info  )
     : Label( parent, rect ),
       _service( service ),
       _info( info )
@@ -79,27 +112,18 @@ public:
   {
     Label::_updateTexture( painter );
 
-    std::string buildingStr, peoplesStr;
-    switch( _service )
-    {
-    case objects::theater: buildingStr = _("##theaters##"); peoplesStr = _("##peoples##"); break;
-    case objects::amphitheater: buildingStr = _("##amphitheatres##"); peoplesStr = _("##peoples##"); break;
-    case objects::colloseum: buildingStr = _("##colloseum##"); peoplesStr = _("##peoples##"); break;
-    case objects::hippodrome: buildingStr = _("##hippodromes##"); peoplesStr = "-"; break;
-    default:
-    break;
-    }
+    EntertInfo info = findInfo( _service );
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
-    rfont.draw( *texture, utils::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
-    rfont.draw( *texture, utils::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
-    rfont.draw( *texture, utils::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingCount ) + _( info.building ), ofNumberInCity, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
+    rfont.draw( *texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
+    rfont.draw( *texture, utils::i2str( _info.peoplesServed ) + _(info.people), ofHowmuchServed, 0 );
   }
 
 private:
-  TileOverlay::Type _service;
+  object::Type _service;
   InfrastructureInfo _info;
 };
 
@@ -118,32 +142,22 @@ public:
   Label* lbInfoAboutLastFestival;
   TexturedButton* btnHelp;
   Label* lbMonthFromLastFestival;
-  city::FestivalPtr srvc;
   int monthFromLastFestival;
 
-  InfrastructureInfo getInfo(const TileOverlay::Type service );
+  InfrastructureInfo getInfo(const object::Type service );
   void updateInfo();
   void updateFestivalInfo();
 };
 
 
 Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
+: Base( parent, city, id ), _d( new Impl )
 {
   _d->city = city;
-  _d->srvc << city->findService( city::Festival::defaultName() );
-
-  if( _d->srvc.isNull() )
-  {
-    Logger::warning( "WARNING!!!: city have no entertainment service" );
-    return;
-  }
+  FestivalPtr fest = statistic::finds<Festival>( city );
 
   setupUI( ":/gui/entertainmentadv.gui" );
-
-  setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
-
-  _d->monthFromLastFestival = _d->srvc->lastFestivalDate().monthsTo( game::Date::current() );
+  _d->monthFromLastFestival = fest->lastFestival().monthsTo( game::Date::current() );
 
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
@@ -155,17 +169,17 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
   InfrastructureInfo info;
-  info = _d->getInfo( objects::theater );
-  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), objects::theater, info );
+  info = _d->getInfo( object::theater );
+  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::theater, info );
 
-  info = _d->getInfo( objects::amphitheater );
-  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), objects::amphitheater,
+  info = _d->getInfo( object::amphitheater );
+  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxAmph), labelSize), object::amphitheater,
                                                         info );
-  info = _d->getInfo( objects::colloseum );
-  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), objects::colloseum, info );
+  info = _d->getInfo( object::colloseum );
+  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxColosseum), labelSize), object::colloseum, info );
 
-  info = _d->getInfo( objects::hippodrome );
-  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 60), labelSize), objects::hippodrome, info );
+  info = _d->getInfo( object::hippodrome );
+  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxHippodrome), labelSize), object::hippodrome, info );
 
   CONNECT( _d->btnNewFestival, onClicked(), this, Entertainment::_showFestivalWindow );
 
@@ -187,10 +201,8 @@ void Entertainment::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
-InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service)
+InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
 {
-  city::Helper helper( city );
-
   InfrastructureInfo ret;
 
   ret.buildingWork = 0;
@@ -199,28 +211,17 @@ InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service
   ret.buildingCount = 0;
   ret.partlyWork = 0;
 
-  ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
+  EntertainmentBuildingList servBuildings = statistic::findo<EntertainmentBuilding>( city, service );
   foreach( b, servBuildings )
   {
-    ServiceBuildingPtr building = *b;
-    if( building->numberWorkers() > 0 )
+    if( (*b)->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-
-      int maxServing = 0;
-      switch( service )
-      {
-      case objects::theater: maxServing = 500; break;
-      case objects::amphitheater: maxServing = 800; break;
-      case objects::colloseum: maxServing = 1500; break;
-      default:
-      break;
-      }
-
-      ret.peoplesServed += maxServing * building->numberWorkers() / building->maximumWorkers();
+      ret.peoplesServed += (*b)->maxVisitors() * (*b)->numberWorkers() / (*b)->maximumWorkers();
     }
+
     ret.buildingCount++;
-    ret.partlyWork += (building->numberWorkers() != building->maximumWorkers() ? 1 : 0);
+    ret.partlyWork += ((*b)->numberWorkers() != (*b)->maximumWorkers() ? 1 : 0);
   }
 
   return ret;
@@ -228,9 +229,10 @@ InfrastructureInfo Entertainment::Impl::getInfo( const TileOverlay::Type service
 
 void Entertainment::_assignFestival( int divinityType, int festSize)
 {
-  if( _d->srvc.isValid() )
+  FestivalPtr fest = statistic::finds<Festival>( _d->city );
+  if( fest.isValid() )
   {
-    _d->srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
+    fest->assign( (religion::RomeDivinityType)divinityType, festSize );
     _d->updateFestivalInfo();
   }
 }
@@ -246,16 +248,15 @@ void Entertainment::Impl::updateInfo()
   const InfrastructureInfo& clsInfo = lbColisseumInfo->getInfo();
   //const InfrastructureInfo& hpdInfo = lbHippodromeInfo->getInfo();
 
-  city::Helper helper( city );
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
-  int minTheaterSrvc = 100;
+  int minTheaterSrvc = maxServiceValue;
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
   int nextLevelMin = 0;
   int nextLevelAmph = 0;
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = statistic::findh( city );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -271,7 +272,7 @@ void Entertainment::Impl::updateInfo()
       {
         theatersNeed += habitants;
         theatersServed += house->hasServiceAccess( Service::theater );
-        minTheaterSrvc = std::min<int>( house->getServiceValue( Service::theater), minTheaterSrvc );
+        minTheaterSrvc = std::min<int>( house->getServiceValue( Service::theater ), minTheaterSrvc );
       }
     }
 
@@ -299,9 +300,9 @@ void Entertainment::Impl::updateInfo()
     {
       switch( lspec.minEntertainmentLevel() )
       {
-      case 1: nextLevelMin++; break;
-      case 2: nextLevelAmph++; break;
-      case 3: nextLevelColloseum++; break;
+      case HouseSpecification::needTheater: nextLevelMin++; break;
+      case HouseSpecification::needAmphitheater: nextLevelAmph++; break;
+      case HouseSpecification::needColosseum: nextLevelColloseum++; break;
       }
     }
   }
@@ -313,9 +314,9 @@ void Entertainment::Impl::updateInfo()
 
   if( hpdNeed > hpdServed ) { troubles << "##citizens_here_are_bored_for_chariot_races##"; }
 
-  if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles << "##citizens_like_chariot_races##"; }
-  else if( entertCoverage > 50 && entertCoverage <= 80 ) { troubles << "##entertainment_50_80##"; }
-  else if( allNeed > 0 && entertCoverage <= 50 )         { troubles << "##entertainment_less_50##"; }
+  if( entertCoverage > normalCoverage && entertCoverage <= maxCoverage )     { troubles << "##citizens_like_chariot_races##"; }
+  else if( entertCoverage > badCoverage && entertCoverage <= normalCoverage ) { troubles << "##entertainment_50_80##"; }
+  else if( allNeed > 0 && entertCoverage <= badCoverage )         { troubles << "##entertainment_less_50##"; }
 
   if( minTheaterSrvc < 30 )   { troubles << "##some_houses_inadequate_entertainment##"; }
   if( thInfo.partlyWork > 0 ) { troubles << "##some_theaters_need_actors##"; }
@@ -323,10 +324,10 @@ void Entertainment::Impl::updateInfo()
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
-  HippodromeList hippodromes = helper.find<Hippodrome>( objects::hippodrome );
+  HippodromeList hippodromes = statistic::findo<Hippodrome>( city, object::hippodrome );
   foreach( h, hippodromes )
   {
-    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
+    if( (*h)->evaluateTrainee( constants::walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
   }
 
   if( nextLevelMin > 0 )  { troubles << "##entertainment_need_for_upgrade##";  }
@@ -349,27 +350,32 @@ void Entertainment::Impl::updateInfo()
 
 void Entertainment::Impl::updateFestivalInfo()
 {
-  if( srvc.isValid() )
+  if( !lbInfoAboutLastFestival )
+    return;
+
+  FestivalPtr fest = statistic::finds<Festival>( city );
+  if( fest.isValid() )
   {    
-    std::string text = utils::format( 0xff, "%d %s", monthFromLastFestival, _("##month_from_last_festival##") );
+    std::string text = utils::i2str( monthFromLastFestival ) +  _("##month_from_last_festival##");
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
-    bool prepare2Festival = srvc->nextFestivalDate() >= game::Date::current();
+    bool prepare2Festival = fest->nextFestival() >= game::Date::current();
     btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
     btnNewFestival->setEnabled( !prepare2Festival );
 
-    int strIndex[32] = { 0, 4, 4, 4,
-                         4, 4, 4, 8,
-                         8, 8, 8, 12,
-                         12, 12, 12, 12,
-                         12, 16, 16, 16,
-                         16, 16, 16, 24,
-                         24, 24, 24, 24,
-                         24, 24, 31, 31 };
+    int strIndex[maxFestivalDelay] = { 0, 4, 4, 4,
+                                       4, 4, 4, 8,
+                                       8, 8, 8, 12,
+                                       12, 12, 12, 12,
+                                       12, 16, 16, 16,
+                                       16, 16, 16, 24,
+                                       24, 24, 24, 24,
+                                       24, 24, 31, 31 };
 
-    text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ math::clamp( monthFromLastFestival, 0, 32) ] );
-    if( lbInfoAboutLastFestival ) { lbInfoAboutLastFestival->setText( _( text ) ); }
+    int currentThinkIndex = math::clamp<int>( monthFromLastFestival, 0, maxFestivalDelay);
+    text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ currentThinkIndex ] );
+    lbInfoAboutLastFestival->setText( _( text ) );
   }
 }
 

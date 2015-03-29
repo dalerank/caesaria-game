@@ -17,9 +17,9 @@
 
 #include "cityservice_disorder.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/constants.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
@@ -29,13 +29,24 @@
 #include "walker/mugger.hpp"
 #include "events/showinfobox.hpp"
 #include "cityservice_factory.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 
 using namespace constants;
+using namespace events;
+using namespace config;
 
 namespace
 {
-const int defaultCrimeLevel = 75;
-const int crimeDescLimiter = 10;
+const int minCityTax4mugger = 20;
+
+const int minSentiment4protest = 60;
+const int minSentiment4mugger = 30;
+
+std::string crimeDesc[ crime::maxLevel ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
+                                              "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
+                                              "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
+                                              "##advchief_veryhigh_crime##" };
 }
 
 namespace city
@@ -72,7 +83,7 @@ std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
 Disorder::Disorder( PlayerCityPtr city )
   : Srvc( city, Disorder::defaultName() ), _d( new Impl )
 {
-  _d->minCrimeLevel = defaultCrimeLevel;
+  _d->minCrimeLevel = crime::defaultValue;
   _d->currentCrimeLevel = 0;
   _d->maxCrimeLevel = 0;
 }
@@ -88,8 +99,7 @@ void Disorder::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  Helper helper( _city() );
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::findh( _city() );
 
   WalkerList walkers = _city()->walkers( walker::protestor );
 
@@ -120,47 +130,38 @@ void Disorder::timeStep( const unsigned int time )
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
     int sentiment = _city()->sentiment();
-    int randomValue = math::random( 100 );
-    if (sentiment >= 60)
+    int randomValue = math::random( crime::maxValue );
+    if (sentiment >= minSentiment4protest )
     {
       if ( randomValue >= sentiment + 20 )
       {
-        if ( hCrimeLevel > 50 )
+        if ( hCrimeLevel > crime::level4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
       }
     }
-    else if ( sentiment >= 30 )
+    else if ( sentiment >= minSentiment4mugger )
     {
       if ( randomValue >= sentiment + 40 )
       {
-        if ( hCrimeLevel >= 70 )
+        if ( hCrimeLevel >= crime::level4mugger )
         {
           _d->generateMugger( _city(), *it );
         }
-        else if ( hCrimeLevel > 50 )
+        else if ( hCrimeLevel > crime::level4protestor )
         {
           _d->generateProtestor( _city(), *it );
         }
       }
     }
-    else // sentiment < 30
+    else if( sentiment < minSentiment4mugger )
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel >= 90 )
-        {
-          _d->generateRioter( _city(), *it );
-        }
-        else if ( hCrimeLevel >= 70 )
-        {
-          _d->generateMugger( _city(), *it );
-        }
-        else if ( hCrimeLevel > 50 )
-        {
-          _d->generateProtestor( _city(), *it );
-        }
+        if ( hCrimeLevel >= crime::level4rioter ) { _d->generateRioter( _city(), *it ); }
+        else if ( hCrimeLevel >= crime::level4mugger ) { _d->generateMugger( _city(), *it ); }
+        else if ( hCrimeLevel > crime::level4protestor ) { _d->generateProtestor( _city(), *it ); }
       }
     }
   }
@@ -168,27 +169,15 @@ void Disorder::timeStep( const unsigned int time )
 
 std::string Disorder::reason() const
 {
-  int crimeLevel = math::clamp<int>( _d->currentCrimeLevel / crimeDescLimiter, 0, crimeDescLimiter-1 );
-  std::string crimeDesc[ crimeDescLimiter ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
-                                                "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
-                                                "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
-                                                "##advchief_veryhigh_crime##" };
+  int limiter = crime::maxValue / crime::maxLevel;
+  int crimeLevel = math::clamp<int>( _d->currentCrimeLevel / limiter, 0, crime::maxLevel-1 );
 
   StringArray troubles;
   troubles << crimeDesc[ crimeLevel ];
 
-  if( _d->maxCrimeLevel > defaultCrimeLevel )
-  {
-    troubles << "##advchief_high_crime_in_district##";
-  }
-  else if( _d->maxCrimeLevel > defaultCrimeLevel / 2 )
-  {
-    troubles << "##advchief_which_crime_in_district##";
-  }
-  else if( _d->maxCrimeLevel > defaultCrimeLevel / 5 )
-  {
-    troubles << "##advchief_low_crime##";
-  }
+  if( _d->maxCrimeLevel > crime::defaultValue )           {    troubles << "##advchief_high_crime_in_district##";  }
+  else if( _d->maxCrimeLevel > crime::defaultValue / 2 )  {    troubles << "##advchief_which_crime_in_district##";  }
+  else if( _d->maxCrimeLevel > crime::defaultValue / 5 )  {    troubles << "##advchief_low_crime##";  }
 
   return troubles.random();
 }
@@ -213,22 +202,23 @@ void Disorder::load(const VariantMap &stream)
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 {
-  house->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
+  house->appendServiceValue( Service::crime, -crime::defaultValue / 2 );
 
-  int taxesThisYear = city->funds().getIssueValue( city::Funds::taxIncome );
+  int taxesThisYear = city->treasury().getIssueValue( econ::Issue::taxIncome );
+  int maxMoneyStolen = city->states().population / 10;
 
-  if( taxesThisYear > 20 )
+  if( taxesThisYear > minCityTax4mugger )
   {
     int moneyStolen = taxesThisYear / 4;
 
-    if( moneyStolen > 400 )
-      moneyStolen = math::random( 400 );
+    if( moneyStolen > maxMoneyStolen )
+      moneyStolen = math::random( maxMoneyStolen );
 
-    events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                                          events::ShowInfobox::send2scribe, ":/smk/mugging.smk" );
+    GameEventPtr e = ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
+                                          ShowInfobox::send2scribe, "mugging" );
     e->dispatch();
 
-    city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );
+    city->treasury().resolveIssue( econ::Issue( econ::Issue::moneyStolen, -moneyStolen ) );
   }
 
   currentCrimeLevel++;
@@ -236,20 +226,19 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
-  events::GameEventPtr e = events::ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
-                                                        events::ShowInfobox::send2scribe, "/smk/spy_riot.smk" );
+  GameEventPtr e = ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
+                                        ShowInfobox::send2scribe, "spy_riot" );
   e->dispatch();
   rioterInThisYear++;
 
   RioterPtr protestor = Rioter::create( city );
   protestor->send2City( ptr_cast<Building>( house ) );
 
-  HouseList houses;
-  houses << city->overlays();
+  HouseList houses = statistic::findh( city );
 
   foreach( it, houses )
   {
-    (*it)->appendServiceValue( Service::crime, -20 );
+    (*it)->appendServiceValue( Service::crime, -crime::rioterCost );
   }
 }
 

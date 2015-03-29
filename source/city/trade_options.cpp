@@ -84,25 +84,25 @@ public:
 
   void updateLists()
   {
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      const GoodInfo& info = goods[ gtype ];
+      const GoodInfo& info = goods[ *gtype ];
 
       switch( info.order )
       {
       case trade::importing:
-        buys.setCapacity( gtype, 9999 );
-        sells.setCapacity( gtype, 0 );
+        buys.setCapacity( *gtype , 9999 );
+        sells.setCapacity( *gtype , 0 );
       break;
 
       case trade::exporting:
-        buys.setCapacity( gtype, 0 );
-        sells.setCapacity( gtype, 9999 );
+        buys.setCapacity( *gtype , 0 );
+        sells.setCapacity( *gtype , 9999 );
       break;
 
       case trade::noTrade:
-        buys.setCapacity( gtype, 0 );
-        buys.setCapacity( gtype, 0 );
+        buys.setCapacity( *gtype , 0 );
+        buys.setCapacity( *gtype , 0 );
       break;
 
       default: break;
@@ -114,14 +114,14 @@ public:
   {
     buys.setCapacity( 9999 );
     sells.setCapacity( 9999 );
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      goods[ gtype ].stacking = false;
-      goods[ gtype ].order = trade::noTrade;
-      goods[ gtype ].vendor = true;
-      goods[ gtype ].exportLimit = 0;
-      goods[ gtype ].sellPrice = 0;
-      goods[ gtype ].buyPrice = 0;
+      goods[ *gtype  ].stacking = false;
+      goods[ *gtype  ].order = trade::noTrade;
+      goods[ *gtype  ].vendor = true;
+      goods[ *gtype  ].exportLimit = 0;
+      goods[ *gtype  ].sellPrice = 0;
+      goods[ *gtype  ].buyPrice = 0;
     }
 
     goods[ good::fish ].order = trade::disabled;
@@ -133,18 +133,21 @@ Options::Options() : _d( new Impl )
 {  
 }
 
-unsigned int Options::tradeLimit( Order state, good::Product type) const
+metric::Unit Options::tradeLimit( Order state, good::Product type) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
+  metric::Unit ret;
   if( it == _d->goods.end() )
-    return 0;
+    return ret;
 
   switch( state )
   {
-  case importing: return it->second.importLimit;
-  case exporting: return it->second.exportLimit;
-  default: return 0;
+  case importing: ret = metric::Unit::fromValue( it->second.importLimit ); break;
+  case exporting: ret = metric::Unit::fromValue( it->second.exportLimit ); break;
+  default: break;
   }
+
+  return ret;
 }
 
 Order Options::getOrder( good::Product type ) const
@@ -166,6 +169,7 @@ Order Options::switchOrder( good::Product type )
     default: break;
     }
   }
+  else
   {
     switch( getOrder( type ) )
     {
@@ -181,12 +185,20 @@ Order Options::switchOrder( good::Product type )
   return getOrder( type );
 }
 
-void Options::setTradeLimit( Order o, good::Product type, unsigned int qty)
+void Options::setTradeLimit(Order o, good::Product type, metric::Unit qty)
 {
   switch( o )
   {
-  case exporting: _d->goods[ type ].exportLimit = qty; break;
-  case importing: _d->goods[ type ].importLimit = qty; break;
+  case exporting:
+    _d->goods[ type ].exportLimit = qty.ivalue();
+    _d->sells.setCapacity( type, qty.ivalue() );
+  break;
+
+  case importing:
+    _d->goods[ type ].importLimit = qty.ivalue();
+    _d->buys.setCapacity( type, qty.ivalue() );
+  break;
+
   default: break;
   }
 
@@ -276,7 +288,7 @@ void Options::setOrder( good::Product type, Order order )
 
 void Options::load( const VariantMap& stream )
 {
-  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
+  foreach( it, stream )
   {
     good::Product gtype = good::Helper::getType( it->first );
 
@@ -304,8 +316,8 @@ VariantMap Options::save() const
   return ret;
 }
 
-const good::Store& Options::importingGoods() {  return _d->buys; }
-const good::Store& Options::exportingGoods() { return _d->sells; }
+const good::Store& Options::buys() {  return _d->buys; }
+const good::Store& Options::sells() { return _d->sells; }
 
 }//end namespace trade
 

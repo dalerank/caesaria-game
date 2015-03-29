@@ -44,7 +44,7 @@ public:
 MovableObject::MovableObject( EmpirePtr empire )
   : Object( empire ), __INIT_IMPL(MovableObject)
 {
-  setSpeed( 1.f );
+  setSpeed( defaultSpeed );
 }
 
 MovableObject::~MovableObject(){}
@@ -83,7 +83,7 @@ void MovableObject::timeStep(const unsigned int time)
   }
 }
 
-int MovableObject::viewDistance() const { return 40; }
+int MovableObject::viewDistance() const { return defaultViewDistance; }
 const Route& MovableObject::way() const { return _dfunc()->way; }
 
 void MovableObject::_reachedWay()
@@ -103,11 +103,8 @@ void MovableObject::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, d, start )
   VARIANT_SAVE_ANY_D( stream, d, stop )
 
-  VariantList pointsVl;
-  foreach( i, d->way ) { pointsVl.push_back( *i ); }
-
-  stream[ "points" ] = pointsVl;
-  stream[ "step"   ] = (int)d->way.step;
+  stream[ "points" ] =  d->way.toVList();
+  VARIANT_SAVE_ANY_D( stream, d, way.step )
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -119,9 +116,8 @@ void MovableObject::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( d, start, stream )
   VARIANT_LOAD_ANY_D( d, stop, stream )
 
-  d->way.step = (int)stream.get( "step" );
-  VariantList points = stream.get( "points" ).toList();
-  foreach( i, points ) { d->way.push_back( (*i).toPoint() ); }
+  VARIANT_LOAD_ANY_D( d, way.step, stream )
+  d->way.fromVList(  stream.get( "points" ).toList() );
 }
 
 bool MovableObject::_findWay( Point p1, Point p2 )
@@ -151,10 +147,7 @@ public:
   std::string message;
 };
 
-Messenger::~Messenger()
-{
-
-}
+Messenger::~Messenger() {}
 
 void Messenger::now( EmpirePtr empire,
                      const std::string& cityname,

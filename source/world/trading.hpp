@@ -26,6 +26,7 @@
 #include "core/position.hpp"
 #include "traderoute.hpp"
 #include "good/good.hpp"
+#include "price_info.hpp"
 
 namespace world
 {
@@ -49,7 +50,7 @@ public:
   TraderoutePtr createRoute( const std::string& begin, const std::string& end );
 
   void setPrice( good::Product gtype, int bCost, int sCost );
-  void getPrice( good::Product gtype, int& bCost, int& sCost );
+  PriceInfo getPrice( good::Product gtype );
 
   void sendMerchant( const std::string& begin, const std::string& end, 
                      good::Store& sell, good::Store& buy );

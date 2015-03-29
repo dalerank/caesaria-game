@@ -5,8 +5,8 @@
   }
 
   damage : {
-    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "engineerPost", "waymark" ]
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "engineering_post", "waymark" ]
   }
 
   desirability : {
@@ -26,7 +26,7 @@
   }
 
   fire : {
-    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "prefecture", "waymark" ]
   }
 

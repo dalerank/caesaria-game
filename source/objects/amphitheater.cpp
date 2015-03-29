@@ -19,7 +19,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
@@ -34,7 +34,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::amphitheater, Amphitheater)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::amphitheater, Amphitheater)
 
 class Amphitheater::Impl
 {
@@ -43,7 +43,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, objects::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
 {
   _fgPicturesRef().resize(2);
 
@@ -74,18 +74,17 @@ std::string Amphitheater::workersStateDesc() const
   return EntertainmentBuilding::workersStateDesc();
 }
 
-bool Amphitheater::build( const CityAreaInfo& info)
+bool Amphitheater::build( const city::AreaInfo& info)
 {
   EntertainmentBuilding::build( info );
 
-  city::Helper helper( info.city );
-  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
+  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  GladiatorSchoolList gladiators = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );
@@ -121,29 +120,48 @@ void Amphitheater::deliverService()
 void Amphitheater::save(VariantMap& stream) const
 {
   EntertainmentBuilding::save( stream );
-  stream[ "lastGdate" ] = _d->lastDateGl;
-  stream[ "lastSdate" ] = _d->lastDateShow;
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateGl )
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateShow )
 }
 
 void Amphitheater::load(const VariantMap& stream)
 {
   EntertainmentBuilding::load( stream );
-  _d->lastDateGl = stream.get( "lastGdate" ).toDateTime();
-  _d->lastDateShow = stream.get( "lastSdate" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastDateGl, stream )
+  VARIANT_LOAD_TIME_D( _d, lastDateShow, stream )
 }
 
-DateTime Amphitheater::lastShowDate() const { return _d->lastDateShow; }
-DateTime Amphitheater::lastBoutsDate() const{ return _d->lastDateGl; }
+int Amphitheater::maxVisitors() const { return 800; }
+
+bool Amphitheater::isShow(Amphitheater::PlayType type) const
+{
+  switch( type )
+  {
+  case theatrical: return _getServiceManType() == Service::theater;
+  case gladiatorBouts: return _getServiceManType() == Service::amphitheater;
+  }
+
+  return false;
+}
+
+DateTime Amphitheater::lastShow(Amphitheater::PlayType type) const
+{
+  switch( type )
+  {
+  case theatrical: return _d->lastDateShow;
+  case gladiatorBouts: return  _d->lastDateGl;
+  }
+
+  return DateTime( -350, 1, 1 );
+}
 
 Service::Type Amphitheater::_getServiceManType() const
 {
   ServiceWalkerList servicemen;
   servicemen << walkers();
+
   return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
 }
-
-bool Amphitheater::isShowGladiatorBouts() const { return _getServiceManType() == Service::amphitheater; }
-bool Amphitheater::isActorsShow() const { return _getServiceManType() == Service::theater; }
 
 bool Amphitheater::isNeed(walker::Type type)
 {

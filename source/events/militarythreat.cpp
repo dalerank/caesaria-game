@@ -18,7 +18,7 @@
 #include "militarythreat.hpp"
 #include "game/game.hpp"
 #include "city/cityservice_military.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 
 namespace events
 {
@@ -47,8 +47,7 @@ MilitaryThreat::MilitaryThreat( int value ) : _d( new Impl )
 
 void MilitaryThreat::_exec(Game& game, unsigned int)
 {
-  city::MilitaryPtr ml;
-  ml << game.city()->findService( city::Military::defaultName() );
+  city::MilitaryPtr ml = city::statistic::finds<city::Military>( game.city() );
 
   if( ml.isValid() )
   {

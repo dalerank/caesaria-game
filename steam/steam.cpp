@@ -136,6 +136,30 @@ void UserStats::unlockAchievement( Achievement &achievement )
   needStoreStats = true;
 }
 
+std::string language()
+{
+#ifdef CAESARIA_PLATFORM_WIN
+  return "";
+#else
+  std::string lang = SteamUtils()->GetSteamUILanguage();
+
+  if( lang == "english" ) lang = "en";
+  else if( lang == "russian" ) lang = "ru";
+  else if( lang == "czech" ) lang = "cz";
+  else if( lang == "finnish" ) lang = "fn";
+  else if( lang == "french" ) lang = "fr";
+  else if( lang == "german" ) lang = "de";
+  else if( lang == "italian" ) lang = "it";
+  else if( lang == "polish" ) lang = "pl";
+  else if( lang == "spanish" ) lang = "sp";
+  else if( lang == "swedish" ) lang = "sv";
+  else if( lang == "ukranian" ) lang = "ua";
+  else lang = "";
+
+  return lang;
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: see if we should unlock this achievement
 //-----------------------------------------------------------------------------
@@ -157,6 +181,8 @@ void UserStats::evaluateAchievement( Achievement& achievement )
             UnlockAchievement( achievement );
     }
   break;*/
+  default:
+   break;
   }
 }
 
@@ -168,8 +194,8 @@ void UserStats::storeStatsIfNecessary()
     // already set any achievements in UnlockAchievement
 
     // set stats
-    sth_SetStat( lc_stat_num_games, totalGamesPlayed );
-    sth_SetStat( lc_stat_num_wins, totalNumWins );
+    sth_SetStat( literals::stat_num_games, totalGamesPlayed );
+    sth_SetStat( literals::stat_num_wins, totalNumWins );
     sth_SetStat( "NumLosses", totalNumLosses );
     // Update average feet / second stat
     //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
@@ -189,8 +215,8 @@ void UserStats::storeStatsIfNecessary()
     // already set any achievements in UnlockAchievement
 
     // set stats
-    xclient.stats->SetStat( lc_stat_num_games, totalGamesPlayed );
-    xclient.stats->SetStat( lc_stat_num_wins, totalNumWins );
+    xclient.stats->SetStat( literals::stat_num_games, totalGamesPlayed );
+    xclient.stats->SetStat( literals::stat_num_wins, totalNumWins );
     xclient.stats->SetStat( "NumLosses", totalNumLosses );
     // Update average feet / second stat
     //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
@@ -237,9 +263,6 @@ bool checkSteamRunning()
 
 bool connect()
 {
-#ifdef CAESARIA_PLATFORM_MACOSX
-  SteamAPI_Shutdown();
-#endif
   // Initialize SteamAPI, if this fails we bail out since we depend on Steam for lots of stuff.
   // You don't necessarily have to though if you write your code to check whether all the Steam
   // interfaces are NULL before using them and provide alternate paths when they are unavailable.
@@ -289,8 +312,9 @@ bool connect()
 }
 
 void close()
-{
+{  
   SteamAPI_Shutdown();
+  Logger::warning( "Game: try close steam" );
 }
 
 void update()
@@ -539,8 +563,8 @@ void UserStats::receivedUserStats()
     }
 
     // load stats
-    totalGamesPlayed = sth_getStat( lc_stat_num_games );
-    totalNumWins = sth_getStat( lc_stat_num_wins );
+    totalGamesPlayed = sth_getStat( literals::stat_num_games );
+    totalNumWins = sth_getStat( literals::stat_num_wins );
   }
 }
 #else
@@ -572,8 +596,8 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
         }
 
       // load stats
-      steamUserStats->GetStat( lc_stat_num_games, &totalGamesPlayed );
-      steamUserStats->GetStat( lc_stat_num_wins, &totalNumWins );
+      steamUserStats->GetStat( literals::stat_num_games, &totalGamesPlayed );
+      steamUserStats->GetStat( literals::stat_num_wins, &totalNumWins );
       steamUserStats->GetStat( "NumLosses", &totalNumLosses );
     }
     else

@@ -30,6 +30,8 @@ namespace world
 class Merchant : public Object
 {
 public:
+  enum { defaultCapacity=2000 };
+
   static MerchantPtr create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
                              good::Store& sell, good::Store& buy );
   virtual ~Merchant();

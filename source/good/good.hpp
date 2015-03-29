@@ -21,38 +21,44 @@
 
 #include "core/namedtype.hpp"
 #include <list>
+#include <map>
 
 namespace good
 {
 
-DEFINE_NAMEDTYPE(Product)
+#define REGISTER_PRODUCT(name,index) static const Product name = Product(index);
 
-const Product none( 0 );
-const Product wheat( 1 );
-const Product fish( 2 );
-const Product meat( 3 );
-const Product fruit( 4 );
-const Product vegetable( 5 );
-const Product olive( 6 );
-const Product oil( 7 );
-const Product grape( 8 );
-const Product wine( 9 );
-const Product timber( 10 );
-const Product furniture( 11 );
-const Product clay( 12 );
-const Product pottery( 13 );
-const Product iron( 14 );
-const Product weapon( 15 );
-const Product marble( 16 );
-const Product denaries( 17 );
-const Product prettyWine( 18 );
-const Product goodCount( 19 );
+DEFINE_NAMEDTYPE(Product,none)
 
-class Stock;
-class Store;
+REGISTER_PRODUCT(wheat,1)
+REGISTER_PRODUCT(fish,2)
+REGISTER_PRODUCT(meat,3)
+REGISTER_PRODUCT(fruit,4 )
+REGISTER_PRODUCT(vegetable,5 )
+REGISTER_PRODUCT(olive,6 )
+REGISTER_PRODUCT(oil,7 )
+REGISTER_PRODUCT(grape,8 )
+REGISTER_PRODUCT(wine,9 )
+REGISTER_PRODUCT(timber,10 )
+REGISTER_PRODUCT(furniture,11 )
+REGISTER_PRODUCT(clay,12 )
+REGISTER_PRODUCT(pottery,13 )
+REGISTER_PRODUCT(iron,14 )
+REGISTER_PRODUCT(weapon,15 )
+REGISTER_PRODUCT(marble,16 )
+REGISTER_PRODUCT(denaries,17 )
+REGISTER_PRODUCT(prettyWine,18 )
 
 typedef std::list<Product> Products;
 
+const Product& any();
+const Products& foods();
+const Products& materials();
+const Products& all();
+
+class Stock;
+class ProductMap;
+class Store;
 }//end namespace good
     
 #endif //_CAESARIA_GOOD_H_INCLUDE_

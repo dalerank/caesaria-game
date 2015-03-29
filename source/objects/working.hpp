@@ -24,7 +24,7 @@
 class WorkingBuilding : public Building
 {
 public:
-  WorkingBuilding(const TileOverlay::Type type, const Size& size);
+  WorkingBuilding(const object::Type type, const Size& size);
   virtual ~WorkingBuilding();
 
   void setMaximumWorkers(const unsigned int maximumWorkers);
@@ -55,6 +55,7 @@ public:
 
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
+  bool haveWalkers() const;
 
   virtual std::string errorDesc() const;
   virtual std::string workersProblemDesc() const;

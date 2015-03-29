@@ -33,6 +33,7 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -45,7 +46,7 @@ static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::ove
 class Building::Impl
 {
 public:
-  typedef std::map< constants::walker::Type, int> TraineeMap;
+  typedef std::map<constants::walker::Type,int> TraineeMap;
   typedef std::set<walker::Type> WalkerTypeSet;
   typedef std::set<Service::Type> ServiceSet;
 
@@ -57,7 +58,7 @@ public:
   float cachedPopkoef;
 };
 
-Building::Building(const TileOverlay::Type type, const Size& size )
+Building::Building(const object::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
   setState( pr::inflammability, 1 );
@@ -120,7 +121,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-bool Building::build( const CityAreaInfo& info )
+bool Building::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 

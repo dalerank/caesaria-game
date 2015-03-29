@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "human.hpp"
+#include "city/states.hpp"
 #include "city/city.hpp"
 
 using namespace constants;
@@ -24,7 +25,8 @@ Human::Human(PlayerCityPtr city)
   : Walker( city )
 {
   setFlag( Walker::vividly, true );
-  _setNation( city->nation() );
+  _setNation( city->states().nation );
+  _rndOffset() = Point( math::random( 15), math::random( 15 ) ) - Point( 7, 7 );
 }
 
 Human::~Human()

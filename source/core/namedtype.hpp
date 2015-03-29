@@ -18,20 +18,10 @@
 #ifndef __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 #define __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 
-#define DEFINE_NAMEDTYPE(name) \
-class name \
-{ \
-public:   \
-  explicit name( int which=0) { _type = which; } \
-  int toInt() const { return _type; } \
-  bool operator==( const name& a ) const { return _type == a._type; } \
-  bool operator!=( const name& a ) const { return _type != a._type; } \
-  bool operator<( const name& a ) const { return _type < a._type; } \
-  bool operator>( const name& a ) const { return _type > a._type; } \
-  bool operator<=( const name& a ) const { return _type <= a._type; } \
-  name& operator++() { ++_type; return *this; } \
-protected: \
-  int _type; \
-};
+#define DEFINE_NAMEDTYPE(type,start) \
+  enum type { start=0 }; \
+  inline type& operator++(type& a) { a = type(a+1); return a; }
+
+#define REGISTER_NAMEDTYPE(type,name,id) static const type name(id);
 
 #endif //__CAESARIA_NAMEDTYPE_INCLUDE_HPP__

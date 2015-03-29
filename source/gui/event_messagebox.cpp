@@ -33,6 +33,8 @@ AboutEvent::AboutEvent(Widget* parent, const std::string& title,
 {
   setTitle( title );
   setAutoPosition( false );
+  setModal();
+  setWindowFlag( fdraggable, false );
 
   setCenter( parent->center() );
 

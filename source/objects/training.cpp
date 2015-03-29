@@ -33,10 +33,10 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::gladiatorSchool, GladiatorSchool)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::lionsNursery, LionsNursery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::gladiatorSchool, GladiatorSchool)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::lionsNursery, LionsNursery)
 
-TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
+TrainingBuilding::TrainingBuilding(const object::Type type, const Size& size )
   : WorkingBuilding( type, size )
 {
    _trainingDelay = DateTime::daysInWeek;
@@ -68,7 +68,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 }
 
 
-GladiatorSchool::GladiatorSchool() : TrainingBuilding( objects::gladiatorSchool, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size(3))
 {
   _fgPicturesRef().resize(1);
 }
@@ -85,7 +85,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
   TrainingBuilding::timeStep( time );
 }
 
-LionsNursery::LionsNursery() : TrainingBuilding( objects::lionsNursery, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size(3) )
 {
    _fgPicturesRef().resize(1);
 }
@@ -101,8 +101,5 @@ void LionsNursery::deliverTrainee()
   LionTamerPtr tamer = LionTamer::create( _city() );
   tamer->send2City( this, true );
 
-  if( !tamer->isDeleted() )
-  {
-    addWalker( tamer.object() );
-  }
+  addWalker( tamer.object() );
 }

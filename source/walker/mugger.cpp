@@ -19,7 +19,7 @@
 #include "objects/house.hpp"
 #include "pathway/path_finding.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
@@ -89,10 +89,9 @@ void Mugger::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    city::Helper helper( _city() );
     TilePos offset(10, 10);
 
-    HouseList houses = helper.find<House>( objects::house, pos() - offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
     std::map< int, HouseList > houseEpxens;
     foreach( it, houses )
     {
@@ -151,8 +150,7 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      city::Helper helper( _city() );
-      HouseList houses = helper.find<House>( objects::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       foreach( it, houses )
       {
@@ -192,11 +190,7 @@ void Mugger::send2City( HousePtr house )
 
   setPos( tiles.random()->pos() );
   _d->state = Impl::searchHouse;
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ));
-  }
+  attach();
 }
 
 bool Mugger::die()
@@ -216,14 +210,14 @@ void Mugger::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
-  stream[ "state" ] = (int)_d->state;
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
 }
 
 void Mugger::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  _d->state = (Impl::State)stream.get( "state" ).toInt();
+  VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 
 int Mugger::agressive() const { return 1; }

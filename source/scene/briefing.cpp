@@ -26,6 +26,7 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 
 using namespace gfx;
@@ -94,7 +95,7 @@ public:
   void resolveSelecMission( std::string mission, std::string title )
   {
     btnContinue->setEnabled( true );
-    cityCaption->setText( title );
+    cityCaption->setText( _(title) );
     fileMap = mission;
   }
 };
@@ -137,6 +138,11 @@ void Briefing::initialize()
 
     std::string mapToLoad = vm[ "image" ].toString();
     pic = Picture::load( mapToLoad );
+    if( !pic.isValid() )
+    {
+      pic = Picture::load( "europe01", 2 );
+    }
+
     Point startImgPos( 192, 144 );
     const unsigned int textYOffset = 400;
     new gui::Image( mapback, startImgPos, pic );
@@ -157,6 +163,7 @@ void Briefing::initialize()
     _d->missionTitle->setFont( Font::create( FONT_5 ));
     _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + textYOffset, 630 ) );
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
+    _d->cityCaption->setText( _("##briefing_select_next_mission##") );
 
     _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
     _d->btnContinue->setEnabled( false );

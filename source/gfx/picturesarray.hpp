@@ -20,6 +20,7 @@
 #define __CAESARIA_PICTURES_ARRAY_H_INCLUDED__
 
 #include "picture.hpp"
+#include "core/stringarray.hpp"
 
 namespace gfx
 {
@@ -33,6 +34,9 @@ public:
   Pictures& append( const Pictures& pics );
 
   void append( const gfx::Picture& pic, const Point& offset );
+  const Picture& atSafe(unsigned int index ) const;
+
+  StringArray names() const;
 };
 
 } //end namespace gfx

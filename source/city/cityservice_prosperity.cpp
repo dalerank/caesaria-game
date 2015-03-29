@@ -17,7 +17,7 @@
 
 #include "cityservice_prosperity.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/variant_map.hpp"
 #include "core/position.hpp"
@@ -27,14 +27,17 @@
 #include "gfx/tile.hpp"
 #include "objects/entertainment.hpp"
 #include "game/gamedate.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "objects/hippodrome.hpp"
 #include "objects/constants.hpp"
 #include "cityservice_factory.hpp"
 #include "cityservice_info.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 
 using namespace  constants;
+using namespace config;
 
 namespace city
 {
@@ -86,20 +89,19 @@ void ProsperityRating::timeStep(const unsigned int time )
 
   if( game::Date::current().year() > _d->lastDate.year() )
   {          
-    _d->lastYearBalance = _city()->funds().getIssueValue( city::Funds::balance, city::Funds::lastYear );
-    _d->workersSalary = _city()->funds().workerSalary();
+    _d->lastYearBalance = _city()->treasury().getIssueValue( econ::Issue::balance, econ::Treasury::lastYear );
+    _d->workersSalary = _city()->treasury().workerSalary();
 
     _d->lastDate = game::Date::current();
 
-    if( _city()->population() == 0 )
+    if( _city()->states().population == 0 )
     {
       _d->prosperity = 0;
       _d->prosperityExtend = 0;
       return;
     }
 
-    Helper helper( _city() );
-    HouseList houses = helper.find<House>( objects::house );
+    HouseList houses = statistic::findh( _city() );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -109,7 +111,7 @@ void ProsperityRating::timeStep(const unsigned int time )
       HousePtr house = *it;
       prosperityCap += house->spec().prosperity();
       patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
-      plebsCount += house->spec().level() < 5 ? house->habitants().count() : 0;
+      plebsCount += house->spec().level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
     }
 
     if( houses.size() > 0 )
@@ -123,41 +125,39 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
     _d->houseCapTrand = _d->prosperity - saveValue;
 
-    int currentFunds = _city()->funds().treasury();
+    int currentFunds = _city()->treasury().money();
     _d->makeProfit = _d->lastYearBalance < currentFunds;
     _d->lastYearBalance = currentFunds;
-    _d->prosperityExtend = (_d->makeProfit ? 2 : -1);
+    _d->prosperityExtend = (_d->makeProfit ? prosperity::cityHaveProfitAward : prosperity::penalty );
 
-    bool more10PercentIsPatrician = (patricianCount / (float)_city()->population()) > 0.1;
-    _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
+    bool more10PercentIsPatrician = math::percentage( patricianCount, _city()->states().population ) > 10;
+    _d->prosperityExtend += (more10PercentIsPatrician ? prosperity::award : 0);
 
-    _d->percentPlebs = math::percentage( plebsCount, _city()->population() );
-    _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
+    _d->percentPlebs = math::percentage( plebsCount, _city()->states().population );
+    _d->prosperityExtend += (_d->percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
-    bool haveHippodrome = !helper.find<Hippodrome>( objects::hippodrome ).empty();
-    _d->prosperityExtend += (haveHippodrome ? 1 : 0);
+    bool haveHippodrome = !statistic::findo<Hippodrome>( _city(), object::hippodrome ).empty();
+    _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
     _d->worklessPercent = statistic::getWorklessPercent( _city() );
-    bool unemploymentLess5percent = _d->worklessPercent < 5;
-    bool unemploymentMore15percent = _d->worklessPercent > 15;
+    bool unemploymentLess5percent = _d->worklessPercent < prosperity::normalWorklesPercent;
+    bool unemploymentMore15percent = _d->worklessPercent > workless::high;
 
-    _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
-    _d->prosperityExtend += (unemploymentMore15percent ? -1 : 0);
+    _d->prosperityExtend += (unemploymentLess5percent ? prosperity::award : 0);
+    _d->prosperityExtend += (unemploymentMore15percent ? prosperity::penalty : 0);
+    _d->prosperityExtend += (patricianCount > 0 ? prosperity::award : 0);
 
-    bool havePatrician = patricianCount > 0;
-    _d->prosperityExtend += (havePatrician ? 1 : 0);
-
-    _d->workersSalary = _city()->funds().workerSalary() - _city()->empire()->workerSalary();
+    _d->workersSalary = _city()->treasury().workerSalary() - _city()->empire()->workerSalary();
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
-    _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
+    _d->prosperityExtend += (_d->workersSalary < 0 ? prosperity::penalty : 0);
    
-    _d->prosperityExtend += (_city()->haveOverduePayment() ? -3 : 0);
-    _d->prosperityExtend += (_city()->isPaysTaxes() ? -3 : 0);
+    _d->prosperityExtend += (_city()->haveOverduePayment() ? -prosperity::taxBrokenPenalty : 0);
+    _d->prosperityExtend += (_city()->isPaysTaxes() ? -prosperity::taxBrokenPenalty : 0);
 
-    unsigned int caesarsHelper = _city()->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
-    caesarsHelper += _city()->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
+    unsigned int caesarsHelper = _city()->treasury().getIssueValue( econ::Issue::caesarsHelp, econ::Treasury::thisYear );
+    caesarsHelper += _city()->treasury().getIssueValue( econ::Issue::caesarsHelp, econ::Treasury::lastYear );
     if( caesarsHelper > 0 )
-      _d->prosperityExtend += -10;
+      _d->prosperityExtend += -prosperity::caesarHelpCityPenalty;
   }
 }
 
@@ -167,12 +167,12 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {
   switch( type )
   {
-  case cmHousesCap: return _d->houseCapTrand;
-  case cmHaveProfit: return _d->makeProfit;
-  case cmWorkless: return _d->worklessPercent;
-  case cmWorkersSalary: return _d->workersSalary;
-  case cmChange: return value() - _d->lastYearProsperity;
-  case cmPercentPlebs: return _d->percentPlebs;
+  case housesCap: return _d->houseCapTrand;
+  case haveProfit: return _d->makeProfit;
+  case worklessPercent: return _d->worklessPercent;
+  case workersSalary: return _d->workersSalary;
+  case changeValue: return value() - _d->lastYearProsperity;
+  case plebsPercent: return _d->percentPlebs;
   }
 
   return 0;

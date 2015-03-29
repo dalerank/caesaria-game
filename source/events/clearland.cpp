@@ -55,14 +55,14 @@ void ClearTile::_exec( Game& game, unsigned int )
     Size size( 1 );
     TilePos rPos = _pos;
 
-    TileOverlayPtr overlay = cursorTile.overlay();
+    OverlayPtr overlay = cursorTile.overlay();
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
     ConstructionPtr constr = ptr_cast<Construction>(overlay);
     if( constr.isValid() && !constr->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ) );
+      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ), WarningMessage::neitral );
       e->dispatch();
 
       const MetaData& md = MetaDataHolder::getData( constr->type() );

@@ -47,7 +47,9 @@ enum {
 	ISOMETRIC_TILE_BYTES = 1800,
 	ISOMETRIC_LARGE_TILE_WIDTH = 78,
 	ISOMETRIC_LARGE_TILE_HEIGHT = 40,
-	ISOMETRIC_LARGE_TILE_BYTES = 3200
+	ISOMETRIC_LARGE_TILE_BYTES = 3200,
+	FILENAME_LENGHT=64,
+	COMMENT_LENGHT=50
 };
 
 
@@ -131,8 +133,8 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
     file.seek( sgHeagerSize + sgRecordSize * bn );
     file.read(&sbr,sizeof(sbr));
     // Terminate strings
-    sbr.filename[64] = 0;
-    sbr.comment[50] = 0;
+    sbr.filename[FILENAME_LENGHT] = 0;
+    sbr.comment[COMMENT_LENGHT] = 0;
 
     strcpy( sbr.filename, utils::localeLower( sbr.filename ).c_str() );
     std::string bmp_name_full = sbr.filename;
@@ -173,7 +175,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
       if( !p555.exist() )
       {
-          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str());
+          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toCString() );
           continue; // skip to next bitmap
       }
 
@@ -244,11 +246,11 @@ std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& d
   filename = utils::localeLower( filename );
 
   Entries::Items files = directory.getEntries().items();
-  for( unsigned int i = 0; i < files.size(); i++)
+  foreach( i, files )
   {
-    if( files[i].name.canonical() == filename )
+    if( i->name.canonical() == filename )
     {
-      return files[i].fullpath.toString();
+      return i->fullpath.toString();
     }
   }
 
@@ -309,7 +311,8 @@ void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& r
 	height_offset = img.height() - height;
 	y_offset = height_offset;
 
-	if (size == 0) {
+	if (size == 0)
+	{
 		/* Derive the tile size from the height (more regular than width) */
 		/* Note that this causes a problem with 4x4 regular vs 3x3 large: */
 		/* 4 * 30 = 120; 3 * 40 = 120 -- give precedence to regular */
@@ -341,7 +344,7 @@ void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& r
 	else
 	{
 		Logger::warning( "Unknown tile size: %d (height %d, width %d, size %d)",
-											2 * height / size, height, width, size );
+				 2 * height / size, height, width, size );
 		return;
 	}
 

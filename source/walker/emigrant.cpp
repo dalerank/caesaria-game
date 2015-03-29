@@ -22,7 +22,7 @@
 #include "objects/house.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
@@ -31,6 +31,7 @@
 #include "city/migration.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
+#include "city/states.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
@@ -42,6 +43,9 @@ REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)
 
 namespace  {
 CAESARIA_LITERALCONST(peoples)
+const int maxFailedWayCount = 10;
+const int populationOverVillage=300;
+const int minDesirability4settle=-10;
 }
 
 class Emigrant::Impl
@@ -73,7 +77,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
   _d->failedWayCount = 0;
   _d->leaveCity = false;
   _d->cartBackward = true;
-  _d->housePosLock = TilePos( -1, -1 );
+  _d->housePosLock = gfx::tilemap::invalidLocation();
 }
 
 void Emigrant::_lockHouse( HousePtr house )
@@ -83,7 +87,7 @@ void Emigrant::_lockHouse( HousePtr house )
     HousePtr oldHouse = ptr_cast<House>( _city()->tilemap().at( _d->housePosLock ).overlay() );
     if( oldHouse.isValid() )
     {
-      _d->housePosLock = TilePos( -1, -1 );
+      _d->housePosLock = gfx::tilemap::invalidLocation();
       oldHouse->setState( pr::settleLock, 0 );
     }
   }
@@ -97,18 +101,16 @@ void Emigrant::_lockHouse( HousePtr house )
 
 HousePtr Emigrant::_findBlankHouse()
 {
-  city::Helper hlp( _city() );
-
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = hlp.find<House>( objects::house, pos() - offset, pos() + offset );
+  HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
   if( houses.empty() )
   {
-    houses = hlp.find<House>( objects::house );
+    houses = city::statistic::findh( _city() );
     _checkHouses( houses );
   }
 
@@ -142,7 +144,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
     }
   }
 
-  if( !pathway.isValid() || _d->failedWayCount > 10 )
+  if( !pathway.isValid() || _d->failedWayCount > maxFailedWayCount )
   {    
     pathway = PathwayHelper::create( startPoint,
                                      _city()->borderInfo().roadExit,
@@ -216,12 +218,10 @@ void Emigrant::_append2house( HousePtr house )
 
 bool Emigrant::_checkNearestHouse()
 {
-  city::Helper helper( _city() );
-
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = helper.find<House>( objects::house, pos()-offset, pos() + offset );
+    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
     foreach( it, houses )
@@ -280,7 +280,7 @@ void Emigrant::_noWay()
   if( !someway.isValid() )
   {
     _d->failedWayCount++;
-    if( _d->failedWayCount > 10 )
+    if( _d->failedWayCount > maxFailedWayCount )
     {
       die();
     }
@@ -290,7 +290,7 @@ void Emigrant::_noWay()
     _d->failedWayCount = 0;
     setPathway( someway );
     go();
-    }
+  }
 }
 
 bool Emigrant::_isCartBackward() const { return _d->cartBackward; }
@@ -328,18 +328,18 @@ void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
 void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
-  bool bigcity = _city()->population() > 300;
+  bool bigcity = _city()->states().population > populationOverVillage;
   unsigned int houseLockId = tile::hash( _d->housePosLock );
 
   while( itHouse != hlist.end() )
   {
     HousePtr house = *itHouse;
-    bool haveRoad = !house->getAccessRoads().empty();
+    bool haveRoad = !house->roadside().empty();
     bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
     bool normalDesirability = true;
     if( bigcity )
     {
-      normalDesirability = (house->tile().param( Tile::pDesirability ) > -10);
+      normalDesirability = (house->tile().param( Tile::pDesirability ) > minDesirability4settle);
     }
 
     unsigned int settleLockId = house->state( pr::settleLock );
@@ -502,14 +502,14 @@ TilePos Emigrant::places(Walker::Place type) const
 void Emigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ lc_peoples ] = _d->peoples.save();
+  stream[ literals::peoples ] = _d->peoples.save();
   VARIANT_SAVE_ANY_D( stream, _d, stamina )
 }
 
 void Emigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->peoples.load( stream.get( lc_peoples ).toList() );
+  _d->peoples.load( stream.get( literals::peoples ).toList() );
   VARIANT_LOAD_ANY_D( _d, stamina, stream )
 }
 

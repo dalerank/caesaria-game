@@ -27,7 +27,7 @@
 #include "world/empire.hpp"
 #include "core/utils.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
@@ -41,6 +41,7 @@
 #include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -93,7 +94,7 @@ Merchant::~Merchant(){}
 
 DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerCityPtr city)
 {
-  DirectPRoutes routes = pathPropagator.getRoutes( objects::warehouse );
+  DirectPRoutes routes = pathPropagator.getRoutes( object::warehouse );
 
   std::map< int, DirectRoute > warehouseRating;
 
@@ -106,14 +107,14 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::Storage& basket
     // for every warehouse within range
     WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
     int rating = 0;
-    for( good::Product gtype=good::wheat; gtype<good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      if (!options.isExporting(gtype))
+      if (!options.isExporting(*gtype))
       {
         continue;
       }
-      int qty = warehouse->store().getMaxRetrieve( gtype );
-      int need = basket.freeQty( gtype );
+      int qty = warehouse->store().getMaxRetrieve( *gtype );
+      int need = basket.freeQty( *gtype );
       rating = need > 0 ? ( qty ) : 0;
     }
 
@@ -129,7 +130,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::Storage& basket
 
 DirectRoute getWarehouse4Sells( Propagator &pathPropagator, good::Storage& basket )
 {
-  DirectPRoutes pathWayList = pathPropagator.getRoutes( objects::warehouse );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( object::warehouse );
 
   // select the warehouse with the max quantity of requested goods
   DirectPRoutes::iterator pathWayIt = pathWayList.begin();
@@ -155,7 +156,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
   {
   case stFindWarehouseForSelling:
     {
-      destBuildingPos = TilePos( -1, -1 );  // no destination yet
+      destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -166,7 +167,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       DirectRoute route;
 
       //try found any available warehouse for selling our goods
-      const good::Store& buyOrders = city->importingGoods();
+      const good::Store& buyOrders = city->buys();
 
       if( buyOrders.capacity() > 0 )
       {
@@ -175,8 +176,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( !route.first.isValid() )
       {
-        Logger::warning( "Walker_LandMerchant: can't found path to nearby warehouse. BaseCity=" + baseCityName );
-        route = PathwayHelper::shortWay( city, position, objects::warehouse, PathwayHelper::roadOnly );
+        Logger::warning( "!!! WARNING: LandMerchant can't found path to nearby warehouse. BaseCity=" + baseCityName );
+        route = PathwayHelper::shortWay( city, position, object::warehouse, PathwayHelper::roadOnly );
       }
 
       if( route.first.isValid()  )
@@ -198,7 +199,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stFindWarehouseForBuying:
     {
-      destBuildingPos = TilePos( -1, -1 );  // no destination yet
+      destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -240,33 +241,34 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       if( warehouse.isValid() )
       {
         float tradeKoeff = warehouse->tradeBuff( Warehouse::sellGoodsBuff );
-        statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
+        good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
 
         trade::Options& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
         //try buy goods
-        for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
+        foreach( goodType, good::all() )
         {
-          if (!options.isExporting(goodType))
+          if (!options.isExporting(*goodType))
           {
             continue;
           }
-          int needQty = buy.freeQty( goodType );
-          int exportLimit = options.tradeLimit( trade::exporting, goodType ) * 100;
-          int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, 9999 );
+
+          int needQty = buy.freeQty( *goodType );
+          int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
+          int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
           {
-            int mayBuy = std::min( needQty, whStore.getMaxRetrieve( goodType ) );
+            int mayBuy = std::min( needQty, whStore.getMaxRetrieve( *goodType ) );
             mayBuy = std::min( mayBuy, maySell );
             if( mayBuy > 0 )
             {
-              good::Stock& stock = buy.getStock( goodType );
+              good::Stock& stock = buy.getStock( *goodType );
               whStore.retrieve( stock, mayBuy );
 
-              currentBuys += good::Helper::exportPrice( city, goodType, mayBuy );
+              currentBuys += good::Helper::exportPrice( city, *goodType, mayBuy );
 
-              events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy, tradeKoeff );
+              events::GameEventPtr e = events::Payment::exportg( *goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }
@@ -325,44 +327,45 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
     WarehousePtr warehouse;
     warehouse << city->getOverlay( destBuildingPos );
 
-    const good::Store& cityOrders = city->importingGoods();
+    const good::Store& cityOrders = city->buys();
 
     if( warehouse.isValid() )
     {
-      statistic::GoodsMap storedGoods = statistic::getGoodsMap( city, false );
+      good::ProductMap storedGoods = statistic::getProductMap( city, false );
       trade::Options& options = city->tradeOptions();
       //try sell goods
-      for (good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType)
+
+      foreach( goodType, good::all() )
       {
-        if (!options.isImporting(goodType))
+        if (!options.isImporting(*goodType))
         {
           continue;
         }
 
-        int importLimit = options.tradeLimit( trade::importing, goodType ) * 100;
+        int importLimit = options.tradeLimit( trade::importing, *goodType ).toQty();
         if( importLimit == 0 )
         {
           importLimit = 9999;
         }
         else
         {
-          importLimit = math::clamp<int>( importLimit - storedGoods[ goodType ], 0, 9999 );
+          importLimit = math::clamp<int>( importLimit - storedGoods[ *goodType ], 0, 9999 );
         }
 
-        int qty4sell = sell.qty( goodType );
-        if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
+        int qty4sell = sell.qty( *goodType );
+        if( qty4sell > 0 && cityOrders.capacity( *goodType ) > 0 )
         {
-          int maySells = std::min( qty4sell, warehouse->store().getMaxStore( goodType ) );
+          int maySells = std::min( qty4sell, warehouse->store().getMaxStore( *goodType ) );
           maySells = std::min( qty4sell, importLimit );
 
           if( maySells != 0 )
           {
-            good::Stock& stock = sell.getStock( goodType );
+            good::Stock& stock = sell.getStock( *goodType );
             warehouse->store().store( stock, maySells );
 
-            currentSell += good::Helper::importPrice( city, goodType, maySells );
+            currentSell += good::Helper::importPrice( city, *goodType, maySells );
 
-            events::GameEventPtr e = events::FundIssueEvent::import( goodType, maySells );
+            events::GameEventPtr e = events::Payment::import( *goodType, maySells );
             e->dispatch();
           }
         }

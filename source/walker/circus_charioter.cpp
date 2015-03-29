@@ -50,26 +50,26 @@ void CircusCharioter::_addToCircus(HippodromePtr circus)
 
   switch( circus->direction() )
   {
-  case north:
+  case direction::north:
     path.init( tmap.at( start + TilePos( 2, 2 ) ) );
-    path.setNextDirection( tmap, northWest );
-    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, north );
-    path.setNextDirection( tmap, northEast );
-    path.setNextDirection( tmap, southEast );
+    path.setNextDirection( tmap, direction::northWest );
+    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, direction::north );
+    path.setNextDirection( tmap, direction::northEast );
+    path.setNextDirection( tmap, direction::southEast );
 
-    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, south );
-    path.setNextDirection( tmap, southWest );
+    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, direction::south );
+    path.setNextDirection( tmap, direction::southWest );
   break;
 
-  case west:
+  case direction::west:
     path.init( tmap.at( start + TilePos( 2, 2 ) ) );
-    path.setNextDirection( tmap, northEast );
-    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, east );
-    path.setNextDirection( tmap, southEast );
-    path.setNextDirection( tmap, southWest );
+    path.setNextDirection( tmap, direction::northEast );
+    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, direction::east );
+    path.setNextDirection( tmap, direction::southEast );
+    path.setNextDirection( tmap, direction::southWest );
 
-    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, west );
-    path.setNextDirection( tmap, northWest );
+    for( int i=0; i<8; i++ ) path.setNextDirection( tmap, direction::west );
+    path.setNextDirection( tmap, direction::northWest );
   break;
 
   default:
@@ -116,22 +116,22 @@ void CircusCharioter::getPictures(Pictures& oPics)
   // depending on the walker direction, the cart is ahead or behind
   switch (direction())
   {
-  case constants::west:
-  case constants::northWest:
-  case constants::north:
-  case constants::northEast:
+  case direction::west:
+  case direction::northWest:
+  case direction::north:
+  case direction::northEast:
     oPics.push_back( _d->cart( direction() ).currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
 
-  case constants::east:
-  case constants::southEast:
+  case direction::east:
+  case direction::southEast:
     oPics.push_back( _d->cart( direction()  ).currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
 
-  case constants::south:
-  case constants::southWest:
+  case direction::south:
+  case direction::southWest:
     oPics.push_back( getMainPicture() );
     oPics.push_back( _d->cart( direction() ).currentFrame() );
   break;

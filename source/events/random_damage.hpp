@@ -18,12 +18,12 @@
 #ifndef _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
 #define _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
 
-#include "event.hpp"
+#include "ranged.hpp"
 
 namespace events
 {
 
-class RandomDamage : public GameEvent
+class RandomDamage : public Ranged
 {
 public:
   static GameEventPtr create();

@@ -17,7 +17,7 @@
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -74,11 +74,11 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
     switch( type )
     {
     case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
-    case roadOnly: way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+    case roadOnly: way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
 
     case roadFirst:
     {
-      way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+      way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
 
       if( !way.isValid() )
       {
@@ -108,11 +108,10 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
   return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, PathwayHelper::WayType type)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
-  city::Helper helper( city );
-  ConstructionList constructions = helper.find<Construction>( buildingType );
+  ConstructionList constructions = city::statistic::findo<Construction>( city, buildingType );
 
   foreach( it, constructions )
   {

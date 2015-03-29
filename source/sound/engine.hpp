@@ -24,6 +24,7 @@
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
 #include "constants.hpp"
+#include "config.hpp"
 
 namespace audio
 {
@@ -33,7 +34,10 @@ class Engine
 public:
   static Engine& instance();
 
-  void setVolume( SoundType type , int value);
+  void setVolume( SoundType type, int value);
+  void loadAlias(const vfs::Path& filename );
+  void addFolder( vfs::Directory dir );
+
   int volume( SoundType type ) const;
 
   int maxVolumeValue() const;
@@ -43,16 +47,16 @@ public:
   void init();
   void exit();
 
-  int play( vfs::Path filename, int volume, SoundType type );
-  int play( std::string rc, int index, int volume, SoundType type );
+  int play( std::string sampleName, int volume, SoundType type );
+  int play( const std::string& rc, int index, int volume, SoundType type );
 
-  bool isPlaying( vfs::Path filename ) const;
+  bool isPlaying(const std::string& sampleName ) const;
 
-  void stop( vfs::Path filename );
+  void stop(const std::string& sampleName ) const;
   void stop( int channel );
 private:
   Engine();
-  bool _loadSound( vfs::Path filename );
+  bool _loadSound( const std::string& filename );
   void _updateSamplesVolume();
 
   class Impl;

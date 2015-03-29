@@ -37,7 +37,7 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)
 
 class WaterSource::Impl
 {
@@ -67,6 +67,7 @@ void Reservoir::_waterStateChanged()
 void Reservoir::destroy()
 {
   _dropWater();
+  broke();
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -89,8 +90,17 @@ void Reservoir::initialize(const MetaData& mdata)
   _d->fullOffset = mdata.getOption( "fullOffset" );
 }
 
+void Reservoir::broke()
+{
+  int saveWater = water();
+  _d->water = 100;
+  WaterSource::broke();
+
+  _d->water = saveWater;
+}
+
 Reservoir::Reservoir()
-    : WaterSource( objects::reservoir, Size( 3 ) )
+    : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
   setPicture( ResourceGroup::utilitya, 34 );
@@ -108,7 +118,7 @@ Reservoir::Reservoir()
 
 Reservoir::~Reservoir(){}
 
-bool Reservoir::build( const CityAreaInfo& info )
+bool Reservoir::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 
@@ -145,6 +155,7 @@ void Reservoir::timeStep(const unsigned long time)
   {
     _fgPicture( 0 ) = Picture::getInvalid();
     _dropWater();
+    broke();
     return;
   }
 
@@ -173,7 +184,7 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
-bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
+bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
@@ -188,9 +199,9 @@ bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
   return ret;
 }
 
-bool Reservoir::isNeedRoadAccess() const{  return false; }
+bool Reservoir::isNeedRoad() const{  return false; }
 
-WaterSource::WaterSource(const Type type, const Size& size )
+WaterSource::WaterSource(const object::Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
@@ -243,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
     
       if( ws.isValid() )
       {
@@ -259,6 +270,25 @@ bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::water() const{ return _d->water; }
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
+
+void WaterSource::broke()
+{
+  Tilemap& tilemap = _city()->tilemap();
+  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+
+  int saveWater = water();
+  _d->water = 0;
+  foreach( it, tiles )
+  {
+    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+
+    if( ws.isValid() )
+    {
+      if( ws->water() > 0 && ws->water() < saveWater )
+          ws->broke();
+    }
+  }
+}
 
 void WaterSource::save(VariantMap &stream) const
 {
@@ -276,14 +306,14 @@ void WaterSource::load(const VariantMap &stream)
 }
 
 
-TilePos Reservoir::entry(constants::Direction direction)
+TilePos Reservoir::entry(Direction direction)
 {
   switch( direction )
   {
-  case north: return pos() + TilePos( 1, 2 );
-  case east: return pos() + TilePos( 2, 1 );
-  case south: return pos() + TilePos( 1, 0 );
-  case west: return pos() + TilePos( 0, 1 );
+  case direction::north: return pos() + TilePos( 1, 2 );
+  case direction::east: return pos() + TilePos( 2, 1 );
+  case direction::south: return pos() + TilePos( 1, 0 );
+  case direction::west: return pos() + TilePos( 0, 1 );
   default: return TilePos( -1, -1 );
   }
 }

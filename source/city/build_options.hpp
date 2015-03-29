@@ -18,12 +18,10 @@
 #ifndef __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 #define __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 
-#include "build_options.hpp"
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
-#include "game/enums.hpp"
 #include "core/variant.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 namespace city
 {  
@@ -61,14 +59,12 @@ public:
   Options();
   virtual ~Options();
 
-  void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
+  void setBuildingAvailble( const object::Type type, bool mayBuild );
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
-  unsigned int getBuildingsQuote( const gfx::TileOverlay::Type type ) const;
-  TilePos memPoint( unsigned int index ) const;
-  void setMemPoint( unsigned int index, TilePos point );
+  unsigned int getBuildingsQuote( const object::Type type ) const;
 
-  bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
+  bool isBuildingAvailble( const object::Type type ) const;
 
   void clear();
 
@@ -77,8 +73,8 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
+  void setBuildingAvailble(const object::Type start, const object::Type stop, bool mayBuild);
+  bool isBuildingsAvailble(const object::Type start, const object::Type stop) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

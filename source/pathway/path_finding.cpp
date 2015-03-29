@@ -24,7 +24,7 @@
 #include "objects/road.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 #include "objects/building.hpp"
 
@@ -58,7 +58,7 @@ Propagator::Propagator(PlayerCityPtr city) : _d( new Impl )
 
 void Propagator::setAllLands(const bool value) {   _d->allLands = value;}
 void Propagator::setAllDirections(const bool value){  _d->allDirections = value;}
-void Propagator::setObsoleteOverlay( TileOverlay::Type type){ _d->obsoleteOvs.insert( type ); }
+void Propagator::setObsoleteOverlay( object::Type type){ _d->obsoleteOvs.insert( type ); }
 void Propagator::init(TilePos origin){  init( _d->tilemap->at( origin ) );}
 
 void Propagator::setObsoleteOverlays(const Propagator::ObsoleteOverlays& ovs)
@@ -68,9 +68,12 @@ void Propagator::setObsoleteOverlays(const Propagator::ObsoleteOverlays& ovs)
 
 void Propagator::init( ConstructionPtr origin)
 {
-   // init propagation on access roads
+  // init propagation on access roads
+  if( origin.isNull() )
+    return;
+
   _d->origin = &origin->tile();
-  init( origin->getAccessRoads() );
+  init( origin->roadside() );
 }
 
 void Propagator::init( Tile& origin )
@@ -175,12 +178,11 @@ void Propagator::propagate(const unsigned int maxDistance)
    }
 }
 
-DirectPRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
+DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
 {
   DirectPRoutes ret;
   // init the building list
-  city::Helper helper( _d->city );
-  ConstructionList constructionList = helper.find<Construction>( buildingType );
+  ConstructionList constructionList = city::statistic::findo<Construction>( _d->city, buildingType );
 
   // for each destination building
   foreach( it, constructionList )
@@ -188,7 +190,7 @@ DirectPRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
     ConstructionPtr destination = *it;
     std::set<PathwayPtr> destPath;  // paths to the current building, ordered by distance
 
-    TilesArray destTiles = destination->getAccessRoads();
+    TilesArray destTiles = destination->roadside();
     foreach( tile, destTiles )
     {
       // searches path to that given tile
@@ -334,7 +336,7 @@ DirectRoute Propagator::getShortestRoute(const DirectPRoutes& routes )
   return ret;
 }
 
-DirectRoute Propagator::getShortestRoute(const TileOverlay::Type buildingType )
+DirectRoute Propagator::getShortestRoute(const object::Type buildingType )
 {
   DirectPRoutes routes = getRoutes( buildingType );
 

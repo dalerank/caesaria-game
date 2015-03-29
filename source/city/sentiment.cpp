@@ -21,51 +21,74 @@
 #include "objects/house.hpp"
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
+#include "config.hpp"
 
 using namespace constants;
+using namespace config;
 
 namespace city
 {
 
 struct BuffInfo
 {
-int value;
-int finishValue;
-bool relative;
-DateTime finishDate;
+  int value;
+  int finishValue;
+  bool relative;
+  DateTime finishDate;
 
-BuffInfo()
+  BuffInfo()
+  {
+    value = 0;
+    finishValue = 0;
+    relative = false;
+  }
+
+  VariantMap save() const
+  {
+    VariantMap ret;
+    VARIANT_SAVE_ANY( ret, value )
+    VARIANT_SAVE_ANY( ret, relative )
+    VARIANT_SAVE_ANY( ret, finishDate )
+    VARIANT_SAVE_ANY( ret, finishValue )
+
+    return ret;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    VARIANT_LOAD_ANY( value, stream )
+    VARIANT_LOAD_ANY( relative, stream )
+    VARIANT_LOAD_TIME( finishDate, stream )
+    VARIANT_LOAD_ANY( finishValue, stream )
+  }
+};
+
+class Buffs : public std::vector<BuffInfo>
 {
-  value = 0;
-  finishValue = 0;
-  relative = false;
-}
+public:
+  VariantList save() const
+  {
+    VariantList vlBuffs;
+    foreach( it, *this )
+      vlBuffs.push_back( it->save() );
 
-VariantMap save()
-{
-  VariantMap ret;
-  VARIANT_SAVE_ANY( ret, value )
-  VARIANT_SAVE_ANY( ret, relative )
-  VARIANT_SAVE_ANY( ret, finishDate )
-  VARIANT_SAVE_ANY( ret, finishValue )
+    return vlBuffs;
+  }
 
-  return ret;
-}
-
-void load( const VariantMap& stream )
-{
-  VARIANT_LOAD_ANY( value, stream )
-  VARIANT_LOAD_ANY( relative, stream )
-  VARIANT_LOAD_TIME( finishDate, stream )
-  VARIANT_LOAD_ANY( finishValue, stream )
-}
+  void load( const VariantList& vl )
+  {
+    foreach( it, vl )
+    {
+      BuffInfo buff;
+      buff.load( it->toMap() );
+      push_back( buff );
+    }
+  }
 };
 
 class Sentiment::Impl
 {
 public:  
-  typedef std::vector<BuffInfo> Buffs;
-
   int value;
   int finishValue;
   int affect;
@@ -85,8 +108,8 @@ std::string Sentiment ::defaultName() { return CAESARIA_STR_EXT(Sentiment);}
 Sentiment::Sentiment( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->value = 50;
-  _d->finishValue = 50;
+  _d->value = defaultValue;
+  _d->finishValue = defaultValue;
   _d->affect = 0;
   _d->buffValue = 0;
 }
@@ -102,7 +125,7 @@ void Sentiment::timeStep(const unsigned int time )
   {
     _d->buffValue = 0;
     DateTime current = game::Date::current();
-    for( Impl::Buffs::iterator it=_d->buffs.begin(); it != _d->buffs.end(); )
+    for( Buffs::iterator it=_d->buffs.begin(); it != _d->buffs.end(); )
     {
       BuffInfo& buff = *it;
       if( buff.finishDate > current )
@@ -139,7 +162,7 @@ void Sentiment::timeStep(const unsigned int time )
     if( houseNumber > 0 )
       _d->finishValue /= houseNumber;
     else
-      _d->finishValue = 50;
+      _d->finishValue = defaultValue;
   }
 }
 
@@ -150,18 +173,18 @@ std::string Sentiment::reason() const
 {
   std::string ret = "##unknown_sentiment_reason##";
   int v = value();
-  if( v > 95 ) { ret = "##sentiment_people_idolize_you##"; }
-  else if( v > 90 ) { ret = "##sentiment_people_love_you##"; }
-  else if( v > 80 ) { ret = "##sentiment_people_extr_pleased_you##"; }
-  else if( v > 70 ) { ret = "##sentiment_people_verypleased_you##"; }
-  else if( v > 60 ) { ret = "##sentiment_people_pleased_you##"; }
-  else if( v > 40 ) { ret = "##sentiment_people_indiffirent_you##"; }
-  else if( v > 30 ) { ret = "##sentiment_people_annoyed_you##"; }
-  else if( v > 22 ) { ret = "##sentiment_people_upset_you##"; }
-  else if( v > 15 ) { ret = "##sentiment_people_veryupset_you##"; }
-  else if( v > 10 ) { ret = "##sentiment_people_angry_you##"; }
-  else if( v > 5 ) { ret = "##sentiment_people_veryangry_you##"; }
-  else if( v > 0 ) { ret = "##city_loathed_you##"; }
+  if( v > sentiment::idolizeyou )            { ret = "##sentiment_people_idolize_you##"; }
+  else if( v > sentiment::loveYou )          { ret = "##sentiment_people_love_you##"; }
+  else if( v > sentiment::extrimelyPleased ) { ret = "##sentiment_people_extr_pleased_you##"; }
+  else if( v > sentiment::veryPleased)       { ret = "##sentiment_people_verypleased_you##"; }
+  else if( v > sentiment::pleased )          { ret = "##sentiment_people_pleased_you##"; }
+  else if( v > sentiment::indifferent )      { ret = "##sentiment_people_indiffirent_you##"; }
+  else if( v > sentiment::annoyed )          { ret = "##sentiment_people_annoyed_you##"; }
+  else if( v > sentiment::upset )            { ret = "##sentiment_people_upset_you##"; }
+  else if( v > sentiment::veryUpset )        { ret = "##sentiment_people_veryupset_you##"; }
+  else if( v > sentiment::angry )            { ret = "##sentiment_people_angry_you##"; }
+  else if( v > sentiment::veryAngry )        { ret = "##sentiment_people_veryangry_you##"; }
+  else if( v > 0 )                           { ret = "##city_loathed_you##"; }
 
   return _(ret);
 }
@@ -169,33 +192,20 @@ std::string Sentiment::reason() const
 VariantMap Sentiment::save() const
 {
   VariantMap ret = Srvc::save();
-  VARIANT_SAVE_ANY_D( ret, _d, value );
-  VARIANT_SAVE_ANY_D( ret, _d, finishValue );
-  VARIANT_SAVE_ANY_D( ret, _d, affect );
-
-  VariantList vlBuffs;
-  foreach( it, _d->buffs )
-  {
-    vlBuffs.push_back( (*it).save() );
-  }
-
-  ret[ "buffs" ] = vlBuffs;
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  VARIANT_SAVE_ANY_D( ret, _d, finishValue )
+  VARIANT_SAVE_ANY_D( ret, _d, affect )
+  ret[ "buffs" ] = _d->buffs.save();
   return ret;
 }
 
 void Sentiment::load(const VariantMap& stream)
 {
   Srvc::load( stream );
-  VARIANT_LOAD_ANY_D( _d, value, stream );
-  VARIANT_LOAD_ANY_D( _d, finishValue, stream );
+  VARIANT_LOAD_ANY_D( _d, value, stream )
+  VARIANT_LOAD_ANY_D( _d, finishValue, stream )
   VARIANT_LOAD_ANY_D( _d, affect, stream );
-
-  VariantList vlBuffs = stream.get( "buffs" ).toList();
-  foreach( it, vlBuffs )
-  {
-    BuffInfo buff;
-    buff.load( (*it).toMap() );
-  }
+  _d->buffs.load( stream.get( "buffs" ).toList() );
 }
 
 void Sentiment::addBuff(int value, bool relative, int month2finish)

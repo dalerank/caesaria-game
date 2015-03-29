@@ -27,6 +27,7 @@
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -135,6 +136,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
+  WidgetEscapeCloser::insertTo( this );
 
   _d->icon = good::Helper::picture( type );
 
@@ -191,7 +193,7 @@ void GoodOrderManageWindow::updateTradeState()
 {
   trade::Options& ctrade = _d->city->tradeOptions();
   trade::Order order = ctrade.getOrder( _d->type );
-  int qty = ctrade.tradeLimit( order, _d->type );
+  int qty = ctrade.tradeLimit( order, _d->type ).ivalue();
   _d->btnTradeState->setTradeState( order, qty );
 }
 
@@ -219,7 +221,7 @@ bool GoodOrderManageWindow::isIndustryEnabled()
   city::Helper helper( _d->city );
   //if any factory work in city, that industry work too
   bool anyFactoryWork = false;
-  FactoryList factories = helper.getProducers<Factory>( _d->type );
+  FactoryList factories = helper.findProducers<Factory>( _d->type );
   foreach( factory, factories )
   {
     anyFactoryWork |= (*factory)->isActive();
@@ -232,7 +234,7 @@ void GoodOrderManageWindow::updateIndustryState()
 {
   city::Helper helper( _d->city );
   int workFactoryCount=0, idleFactoryCount=0;
-  FactoryList factories = helper.getProducers<Factory>( _d->type );
+  FactoryList factories = helper.findProducers<Factory>( _d->type );
   foreach( factory, factories )
   {
     ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
@@ -264,7 +266,7 @@ void GoodOrderManageWindow::toggleIndustryEnable()
 
   bool industryEnabled = isIndustryEnabled();
   //up or down all factory for this industry
-  FactoryList factories = helper.getProducers<Factory>( _d->type );
+  FactoryList factories = helper.findProducers<Factory>( _d->type );
   foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
 
   updateIndustryState();
@@ -296,7 +298,7 @@ void GoodOrderManageWindow::updateStackingState()
   _d->btnStackingState->setText( text );
 }
 
-Signal0<> &GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }
+Signal0<>& GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }
 
 void GoodOrderManageWindow::_changeTradeLimit(int value)
 {
@@ -306,9 +308,9 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   if( state == trade::importing ||
       state == trade::exporting )
   {
-    unsigned int limit = ctrade.tradeLimit( state, _d->type );
+    unsigned int limit = ctrade.tradeLimit( state, _d->type ).ivalue();
     limit = math::clamp<int>( limit+value, 0, 999 );
-    ctrade.setTradeLimit( state, _d->type, limit );
+    ctrade.setTradeLimit( state, _d->type, metric::Unit::fromValue( limit ) );
   }
   updateTradeState();
 }

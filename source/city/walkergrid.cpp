@@ -72,6 +72,31 @@ void WalkerGrid::remove( WalkerPtr a)
         return;
       }
     }
+    }
+}
+
+void WalkerGrid::update(const WalkerList &walkers)
+{
+  clear();
+  foreach( it, walkers )
+    append( *it );
+}
+
+bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
+{
+  const int a = /*one->mappos().x() -*/ one->mappos().y();
+  const int b = /*two->mappos().x() -*/ two->mappos().y();
+  return a < b;
+}
+
+void WalkerGrid::sort()
+{
+  foreach( cell, _grid )
+  {
+    if( cell->size() > 1 )
+    {
+      std::sort( cell->begin(), cell->end(), compare_zvalue );
+    }
   }
 }
 

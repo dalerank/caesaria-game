@@ -16,13 +16,13 @@
 #include "seamerchant.hpp"
 #include "good/storage.hpp"
 #include "pathway/pathway_helper.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
 #include "core/utils.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
@@ -33,6 +33,7 @@
 #include "objects/dock.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "gfx/helper.hpp"
 
 using namespace constants;
 using namespace city;
@@ -97,14 +98,13 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
   case stFindDock:
   {    
-    destBuildingPos = TilePos( -1, -1 );  // no destination yet    
+    destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
     Pathway pathway;
     // get the list of buildings within reach   
     if( tryDockCount < maxTryDockCount )
     {
-      city::Helper helper( city );
-      DockList docks = helper.find<Dock>( objects::dock );
+      DockList docks = city::statistic::findo<Dock>( city, object::dock );
 
       if( !docks.empty() )
       {
@@ -147,7 +147,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stWaitFreeDock:
   {
-    waitInterval = game::Date::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( DateTime::daysInWeek );
     nextState = stFindDock;
   }
   break;
@@ -165,21 +165,21 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() && emptyDock )
     {
       trade::Options& options = city->tradeOptions();
-      statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
+      good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
       //request goods
-      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
+      foreach( goodType, good::all() )
       {
-        int needQty = buy.freeQty( goodType );
-        if (!options.isExporting(goodType))
+        int needQty = buy.freeQty( *goodType );
+        if (!options.isExporting(*goodType))
         {
           continue;
         }
-        int exportLimit = options.tradeLimit( trade::exporting, goodType ) * 100;
-        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, needQty );
+        int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
         {
-          good::Stock stock( goodType, maySell, maySell );
+          good::Stock stock( *goodType, maySell, maySell );
           myDock->requestGoods( stock );
           anyBuy = true;
         }
@@ -204,25 +204,25 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       trade::Options& options = city->tradeOptions();
       //try buy goods
-      for( good::Product goodType = good::wheat; goodType<good::goodCount; ++goodType )
+      foreach( goodType, good::all() )
       {
-        if (!options.isExporting(goodType))
+        if (!options.isExporting(*goodType))
         {
           continue;
         }
 
-        int needQty = buy.freeQty( goodType );
+        int needQty = buy.freeQty( *goodType );
 
         if( needQty > 0 )
         {
-          good::Stock& stock = buy.getStock( goodType );
+          good::Stock& stock = buy.getStock( *goodType );
           currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
       }
 
       nextState = stWaitGoods;
-      waitInterval = anyBuy ? game::Date::days2ticks( 7 ) : 0;
+      waitInterval = anyBuy ? game::Date::days2ticks( DateTime::daysInWeek ) : 0;
 
       if( 0 == buy.freeQty() ) //all done
       {
@@ -263,7 +263,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stGoOutFromCity:
   {
     // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-    waitInterval = game::Date::days2ticks( 7 );
+    waitInterval = game::Date::days2ticks( DateTime::daysInWeek );
     goAwayFromCity( city, wlk );
     nextState = stBackToBaseCity;
   }
@@ -275,18 +275,18 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() )
     {
       trade::Options& options = city->tradeOptions();
-      const good::Store& importing = options.importingGoods();
+      const good::Store& importing = options.buys();
       //try sell goods
-      for( good::Product goodType= good::wheat; goodType<good::goodCount; ++goodType)
+      foreach( goodType, good::all() )
       {
-        if (!options.isImporting(goodType))
+        if (!options.isImporting(*goodType))
         {
           continue;
         }
 
-        if( sell.qty(goodType) > 0 && importing.capacity(goodType) > 0)
+        if( sell.qty(*goodType) > 0 && importing.capacity(*goodType) > 0)
         {
-          currentSell += myDock->importingGoods( sell.getStock(goodType) );
+          currentSell += myDock->importingGoods( sell.getStock(*goodType) );
           anySell = true;
         }
       }
@@ -294,7 +294,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     nextState = stBuyGoods;
     resolveState( city, wlk );
-    waitInterval = anySell ? game::Date::days2ticks( 7 ) : 0;
+    waitInterval = anySell ? game::Date::days2ticks( DateTime::daysInWeek ) : 0;
   }
   break;
 
@@ -388,8 +388,7 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
-  city::Helper helper( city );
-  DockList docks = helper.find<Dock>( objects::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  DockList docks = city::statistic::findo<Dock>( city, object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
     if( (*dock)->landingTile().pos() == walker->pos() )
@@ -406,11 +405,7 @@ void SeaMerchant::send2city()
   _d->nextState = Impl::stFindDock;
   setPos( _city()->borderInfo().boatEntry );
   _d->resolveState( _city(), this );
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void SeaMerchant::save( VariantMap& stream ) const

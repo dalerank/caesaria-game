@@ -17,7 +17,6 @@
 
 #include "festival_planing_window.hpp"
 #include "label.hpp"
-#include "game/enums.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/decorator.hpp"
 #include "core/event.hpp"
@@ -25,7 +24,7 @@
 #include "core/foreach.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "gfx/engine.hpp"
 #include "core/utils.hpp"
 #include "religion/pantheon.hpp"

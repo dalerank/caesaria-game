@@ -142,7 +142,7 @@ int NFile::write( const ByteArray& bArray )
 
 bool NFile::isOpen() const
 {
-	return _entity.isValid() ? _entity->isOpen() : false;
+  return _entity.isValid() ? _entity->isOpen() : false;
 }
 
 void NFile::flush()
@@ -198,7 +198,7 @@ bool NFile::rename(Path oldpath, Path newpath)
 
   if( result != 0 )
   {
-    Logger::warning( "Error[%d] on renamed file %s to %s", result, oldpath.toString().c_str(), newpath.toString().c_str() );
+    Logger::warning( "Error[%d] on renamed file %s to %s", result, oldpath.toCString(), newpath.toCString() );
   }
   return (result == 0);
 #endif

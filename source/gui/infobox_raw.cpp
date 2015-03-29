@@ -37,16 +37,16 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(vinard,objects::vinard,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(wheat_farm,objects::wheat_farm,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(vegetable_farm,objects::vegetable_farm,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(olive_farm,objects::olive_farm,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(fig_farm,objects::fig_farm,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(meat_farm,objects::meat_farm,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(clay_pit,objects::clay_pit,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(lumber_mill,objects::lumber_mill,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(quarry,objects::quarry,AboutRawMaterial)
-REGISTER_INFOBOX_IN_FACTORY(iron_mine,objects::iron_mine,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vinard,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(wheat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vegetable_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(olive_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(fig_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(meat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(clay_pit,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(lumber_mill,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
 
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
@@ -59,12 +59,9 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   setBase( ptr_cast<Construction>( rawmb ) );
   _setWorkingVisible( true );
 
-  Label* lbDamage;
-  Label* lbProgress;
-  Label* lbProductivity;
-  GET_WIDGET_FROM_UI( lbProductivity )
-  GET_WIDGET_FROM_UI( lbProgress )
-  GET_WIDGET_FROM_UI( lbDamage )
+  INIT_WIDGET_FROM_UI( Label*, lbProductivity )
+  INIT_WIDGET_FROM_UI( Label*, lbProgress )
+  INIT_WIDGET_FROM_UI( Label*, lbDamage )
 
   if( rawmb->produceGoodType() != good::none )
   {

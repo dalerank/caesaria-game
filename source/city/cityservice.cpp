@@ -33,11 +33,9 @@ public:
 std::string Srvc::name() const { return _d->name; }
 
 void Srvc::setName(const std::string& name) { _d->name = name; }
-
+void Srvc::attach(){ _d->city->addService( this ); }
 bool Srvc::isDeleted() const { return false; }
-
 void Srvc::destroy() {}
-
 VariantMap Srvc::save() const { return VariantMap(); }
 
 void Srvc::load(const VariantMap& stream) {}

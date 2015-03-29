@@ -25,18 +25,18 @@
 class WaterSource : public Construction
 {
 public:
-  WaterSource( const TileOverlay::Type type, const Size& size );
+  WaterSource( const object::Type type, const Size& size );
   ~WaterSource();
   
   virtual void addWater( const WaterSource& source );
   virtual bool haveWater() const;  
   virtual void timeStep(const unsigned long time);
-  int water() const;
-
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
-
   virtual std::string errorDesc() const;
+  virtual void broke();
+
+  int water() const;
 
 protected:
   void _setError( const std::string& error );
@@ -55,17 +55,18 @@ public:
   Reservoir();
   ~Reservoir();
 
-  virtual bool build(const CityAreaInfo &info);
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool build(const city::AreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual bool isNeedRoad() const;
   virtual void initTerrain(gfx::Tile& terrain);
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
   virtual std::string troubleDesc() const;
   virtual void addWater( const WaterSource& source );
   virtual void initialize(const MetaData &mdata);
+  virtual void broke();
 
-  TilePos entry( constants::Direction direction );
+  TilePos entry( Direction direction );
 
 private:
   bool _isWaterSource;

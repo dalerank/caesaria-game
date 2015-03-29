@@ -49,6 +49,8 @@ __REG_PROPERTY(fastsavePostfix)
 __REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
+__REG_PROPERTY(c3music)
+__REG_PROPERTY(c3video)
 __REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
@@ -56,7 +58,6 @@ __REG_PROPERTY(soundThemesModel)
 __REG_PROPERTY(soundVolume )
 __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
-__REG_PROPERTY(difficulty )
 __REG_PROPERTY(animationsModel )
 __REG_PROPERTY(walkerModel)
 __REG_PROPERTY(emblemsModel )
@@ -89,7 +90,11 @@ __REG_PROPERTY(scrollSpeed)
 __REG_PROPERTY(borderMoving)
 __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
-__REG_PROPERTY(c3gameplay)
+__REG_PROPERTY(soundAlias)
+__REG_PROPERTY(videoAlias)
+__REG_PROPERTY(playerName)
+__REG_PROPERTY(lastGame)
+__REG_PROPERTY(tooltipEnabled)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -124,7 +129,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ archivesModel       ] = Variant( std::string( "/archives.model" ) );
   _d->options[ soundThemesModel    ] = Variant( std::string( "/sound_themes.model" ) );
   _d->options[ climateModel        ] = Variant( std::string( "/climate.model" ) );
-  _d->options[ language            ] = Variant( std::string( "en" ) );
+  _d->options[ language            ] = Variant( std::string( "" ) );
   _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
   _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
@@ -147,21 +152,22 @@ Settings::Settings() : _d( new Impl )
   _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
   _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
   _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
+  _d->options[ soundAlias          ] = Variant( std::string( "sounds.model" ) );
+  _d->options[ videoAlias          ] = Variant( std::string( "videos.model" ) );
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
-  _d->options[ c3gameplay          ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ scrollSpeed         ] = 30;
   _d->options[ mmb_moving          ] = false;
-  _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
+  _d->options[ tooltipEnabled      ] = true;
+  _d->options[ talksArchive        ] = Variant( std::string( ":/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;
-  _d->options[ difficulty          ] = 3; // 0-4, Very Easy, Easy, Normal, Hard, Very Hard. Default: Hard
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
@@ -272,16 +278,24 @@ void Settings::checkC3present()
     _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
     _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
     _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
+    _d->options[ soundAlias          ] = Variant( std::string( "/sounds.c3" ) );
+    _d->options[ videoAlias          ] = Variant( std::string( "/videos.c3" ) );
     _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.c3" ) );
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
-  }
+    }
+}
+
+void Settings::changeSystemLang(const std::string& newLang)
+{
+  std::string lang = newLang.empty() ? "en" : newLang;
+  Settings::set( language, Variant( lang ) );
 }
 
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
 {
-  Variant vr = game::Settings::get( fpath.toString() );
+  Variant vr = Settings::get( fpath.toString() );
   if( vr.isNull() )
   {
     return dir/fpath;

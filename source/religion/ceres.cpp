@@ -21,6 +21,7 @@
 #include "objects/farm.hpp"
 #include "events/showinfobox.hpp"
 #include "objects/extension.hpp"
+#include "city/statistic.hpp"
 #include "core/gettext.hpp"
 
 using namespace constants;
@@ -51,15 +52,14 @@ void Ceres::_doWrath( PlayerCityPtr city )
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
                                                             _("##wrath_of_ceres_description##"),
                                                             events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Ceres.smk");
+                                                            "god_ceres");
   event->dispatch();
 
-  FarmList farms;
-  farms << city->overlays();
+  FarmList farms = city::statistic::findfarms( city );
 
   foreach( farm, farms )
   {
-    (*farm)->updateProgress( -(*farm)->progress() );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -8, DateTime::weekInMonth * DateTime::monthsInYear );
   }
 }
 
@@ -72,14 +72,10 @@ void Ceres::_doBlessing(PlayerCityPtr city)
   FarmList farms;
   farms << city->overlays();
 
-  foreach( farm, farms )
-  {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, game::Date::days2ticks( 60 ) );
-  }
-
-  foreach(farm, farms)
+  foreach(farm, farms )
   {
     (*farm)->updateProgress( 100.f -  (*farm)->progress() );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, game::Date::days2ticks( 60 ) );
   }
 }
 
@@ -89,12 +85,11 @@ void Ceres::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_ceres_description##") );
   event->dispatch();
 
-  FarmList farms;
-  farms << city->overlays();
+  FarmList farms = city::statistic::findfarms( city );
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -2, DateTime::weekInMonth * DateTime::monthsInYear );
+    (*farm)->updateProgress( -(*farm)->progress() );
   }
 }
 

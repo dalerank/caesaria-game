@@ -25,6 +25,7 @@ class MarketLady : public ServiceWalker
 {
 public:
   static ServiceWalkerPtr create( PlayerCityPtr city  );
+  MarketPtr market() const;
 
 protected:
   virtual void _updateThoughts();

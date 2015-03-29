@@ -25,11 +25,14 @@
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant_map.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
 namespace world
 {
+
+static const int maxLoss = 100;
 
 class Army::Impl
 {
@@ -46,17 +49,13 @@ Army::Army( EmpirePtr empire )
 {
   __D_IMPL(d,Army)
 
-  _animation().load( ResourceGroup::empirebits, 37, 16 );
-  _animation().setLoop( Animation::loopAnimation );
-  Size size = _animation().frame( 0 ).size();
-  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
+  _animation().load( "world_army" );
   d->strength = 0;
 }
 
 ArmyPtr Army::create(EmpirePtr empire)
 {
   ArmyPtr ret( new Army( empire ) );
-
   ret->drop();
 
   return ret;
@@ -75,7 +74,7 @@ void Army::_reachedWay()
   }
   else
   {
-    ObjectList objs = empire()->findObjects( location(), 20 );
+    ObjectList objs = empire()->findObjects( location(), config::army::viewRange );
     objs.remove( this );
 
     if( !objs.empty() )
@@ -184,18 +183,18 @@ void Army::battle(unsigned int attackers, unsigned int defenders, int& attackers
 
   if( delimArmy2self < 25 )
   {
-    attackersLoss = 100;
+    attackersLoss = maxLoss;
     deffLoss = math::random( 10 );
   }
   else if( delimArmy2self <= 100 )
   {
-    int minAtLoss = 100 - delimArmy2self;
-    int randomAtLoss = math::random(100+delimArmy2self);
-    attackersLoss = math::clamp<int>( randomAtLoss, minAtLoss, 100 );
+    int minAtLoss = maxLoss - delimArmy2self;
+    int randomAtLoss = math::random(maxLoss+delimArmy2self);
+    attackersLoss = math::clamp<int>( randomAtLoss, minAtLoss, maxLoss );
 
     int minSelfLoss = math::random( attackersLoss );
     int randomSelfLoss = math::random( attackersLoss + delimArmy2self );
-    deffLoss = math::clamp<int>( randomSelfLoss, minSelfLoss, 100 );
+    deffLoss = math::clamp<int>( randomSelfLoss, minSelfLoss, maxLoss );
   }
   else if( delimArmy2self < 400 )
   {
@@ -208,14 +207,14 @@ void Army::battle(unsigned int attackers, unsigned int defenders, int& attackers
      else if (pctAdvantage < 300) { minb = 20; }
      else { minb = 15; }
 
-     attackersLoss = math::clamp<int>( math::random( 100 ), 0, minb );
-     deffLoss = math::clamp<int>( math::random( 100 ), 100 - minb, 100 );
+     attackersLoss = math::clamp<int>( math::random( maxLoss ), 0, minb );
+     deffLoss = math::clamp<int>( math::random( maxLoss ), maxLoss - minb, maxLoss );
   }
   else
   {
     attackersLoss = math::random( 10 );
-    deffLoss = 100;
-    }
+    deffLoss = maxLoss;
+  }
 }
 
 bool Army::_isAgressiveArmy(ArmyPtr) const

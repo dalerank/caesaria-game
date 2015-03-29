@@ -29,9 +29,8 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::market, Market)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::market, Market)
 
 class Market::Impl
 {
@@ -41,9 +40,9 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    for( good::Product i = good::none; i < good::goodCount; ++i)
+    foreach( i, good::all() )
     {
-      anyGoodStored |= ( store.qty( i ) >= 100 );
+      anyGoodStored |= ( store.qty( *i ) >= 100 );
     }
 
     return anyGoodStored;
@@ -64,14 +63,11 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, constants::objects::market, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
   _d( new Impl )
 {
   _fgPicturesRef().resize(1);  // animation
   _d->initStore();
-
-  _animationRef().load( ResourceGroup::commerce, 2, 10 );
-  _animationRef().setDelay( 4 );
 }
 
 void Market::deliverService()
@@ -102,18 +98,18 @@ good::Products Market::mostNeededGoods()
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+  foreach( goodType, good::all() )
   {
     // for all types of good
-    good::Stock &stock = _d->store.getStock(goodType);
+    good::Stock &stock = _d->store.getStock(*goodType);
     int demand = stock.capacity() - stock.qty();
     if (demand > 200)
     {
-      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), goodType));
+      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), *goodType));
     }
   }
 
-  for( std::multimap<float, good::Product>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  foreach( itMap, mapGoods )
   {
     good::Product goodType = itMap->second;
     res.push_back(goodType);

@@ -30,15 +30,11 @@
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "config.hpp"
 
 using namespace gfx;
-
-namespace {
-static const unsigned int defaultMaxWorkersNumber = 5;
-static const unsigned int defaultMaxServiceRange = 30;
-CAESARIA_LITERALCONST(delay)
-CAESARIA_LITERALCONST(range)
-}
+using namespace constants;
+using namespace config;
 
 class ServiceBuilding::Impl
 {
@@ -46,23 +42,23 @@ public:
   int serviceDelay;
   Service::Type service;
   int serviceRange;
-  DateTime dateLastSend;
+  DateTime lastSend;
 };
 
 ServiceBuilding::ServiceBuilding(const Service::Type service,
-                                 const Type type, const Size& size)
+                                 const object::Type type, const Size& size)
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->service = service;
-   setMaximumWorkers(defaultMaxWorkersNumber);
+   setMaximumWorkers( servicebld::defaultWorkers );
    setWorkers(0);
    setServiceDelay( DateTime::daysInWeek );
-   _d->serviceRange = defaultMaxServiceRange;
+   _d->serviceRange = servicebld::defaultRange;
 }
 
 void ServiceBuilding::setServiceDelay( const int delay ){  _d->serviceDelay = delay;}
-DateTime ServiceBuilding::lastSendService() const { return _d->dateLastSend; }
-void ServiceBuilding::_setLastSendService(DateTime time) { _d->dateLastSend = time; }
+DateTime ServiceBuilding::lastSendService() const { return _d->lastSend; }
+void ServiceBuilding::_setLastSendService(DateTime time) { _d->lastSend = time; }
 
 int ServiceBuilding::time2NextService() const
 {
@@ -82,10 +78,10 @@ void ServiceBuilding::timeStep(const unsigned long time)
   if( game::Date::isDayChanged() )
   {
     int serviceDelay = time2NextService();
-    if( _d->dateLastSend.daysTo( game::Date::current() ) > serviceDelay )
+    if( _d->lastSend.daysTo( game::Date::current() ) > serviceDelay )
     {
        deliverService();
-       _d->dateLastSend = game::Date::current();
+       _d->lastSend = game::Date::current();
     }
   }
  }
@@ -116,17 +112,17 @@ int ServiceBuilding::serviceRange() const { return _d->serviceRange;}
 void ServiceBuilding::save( VariantMap& stream ) const 
 {
   WorkingBuilding::save( stream );
-  stream[ "dateLastSend" ] = _d->dateLastSend;
-  stream[ lc_delay ] = _d->serviceDelay;
-  stream[ lc_range ] = _d->serviceRange;
+  VARIANT_SAVE_ANY_D( stream, _d, lastSend )
+  VARIANT_SAVE_ANY_D( stream, _d, serviceDelay )
+  VARIANT_SAVE_ANY_D( stream, _d, serviceRange )
 }
 
 void ServiceBuilding::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
-  _d->dateLastSend = (int)stream.get( "dateLastSend", 0 );
-  _d->serviceDelay = (int)stream.get( lc_delay, 80 );
-  _d->serviceRange = (int)stream.get( lc_range, defaultMaxServiceRange );
+  VARIANT_LOAD_TIME_D( _d, lastSend, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, serviceDelay, 80, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, serviceRange, servicebld::defaultRange, stream )
 }
 
 void ServiceBuilding::buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr) {}
@@ -136,7 +132,7 @@ unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; 
 
 std::string ServiceBuilding::workersStateDesc() const
 {
-  std::string srvcType = MetaDataHolder::findTypename( type() );
+  std::string srvcType = object::toString( type() );
   std::string state = "unknown";
 
   if( walkers().size() > 0 )
@@ -145,7 +141,7 @@ std::string ServiceBuilding::workersStateDesc() const
   }
   else if( numberWorkers() > 0  )
   {
-    state = _d->dateLastSend.daysTo( game::Date::current() ) < 2
+    state = _d->lastSend.daysTo( game::Date::current() ) < 2
               ? "ready_for_work"
               : "prepare_for_work";
   }

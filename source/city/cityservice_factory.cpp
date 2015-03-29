@@ -23,10 +23,11 @@
 namespace city
 {
 
+typedef std::vector< ServiceCreatorPtr > Creators;
+
 class ServiceFactory::Impl
 {
 public:
-  typedef std::vector< ServiceCreatorPtr > Creators;
   Creators creators;
 };
 

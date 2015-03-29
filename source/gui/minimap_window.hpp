@@ -46,6 +46,7 @@ public:
 
 public signals:
   Signal1<TilePos>& onCenterChange();
+  Signal1<int>& onZoomChange();
 
 private:
   class Impl;

@@ -43,7 +43,7 @@ public:
   float laborAccessKoeff;
 };
 
-WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
+WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;
@@ -93,7 +93,7 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
-  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  if( isNeedRoad() && roadside().empty() )
   {
     trouble = "##working_building_need_road##";
   }
@@ -133,6 +133,7 @@ void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
+bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
 
@@ -219,7 +220,7 @@ void WorkingBuilding::_disaster()
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() )
+  if( walker.isValid() && !walker->isDeleted() )
   {
     _d->walkerList.push_back( walker );
   }
@@ -273,7 +274,7 @@ static const char* productivityDescription[] =
 
 std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, const std::string& prefix )
 {
-  std::string factoryType = MetaDataHolder::findTypename( w->type() );
+  std::string factoryType = object::toString( w->type() );
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
   workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
@@ -281,12 +282,12 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
   if( prefix.empty() )
   {
     return utils::format( 0xff, "##%s_%s##",
-                                 factoryType.c_str(), productivityDescription[ workKoeff ] );
+                          factoryType.c_str(), productivityDescription[ workKoeff ] );
   }
   else
   {
     return utils::format( 0xff, "##%s_%s_%s##",
-                                 factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
   }
 }
 

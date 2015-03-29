@@ -19,7 +19,6 @@
 #define __CAESARIA_CITYSERVICE_FIRE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 #include <set>
@@ -27,11 +26,13 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Fire)
+
 class Fire : public city::Srvc
 {
 public:
   typedef std::set<TilePos> Locations;
-  static city::SrvcPtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
 
   virtual void timeStep( const unsigned int time );
@@ -48,7 +49,6 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-typedef SmartPtr<Fire> FirePtr;
 
 }//end namespace city
 

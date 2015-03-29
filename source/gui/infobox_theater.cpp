@@ -34,7 +34,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_INFOBOX_IN_FACTORY(theater,objects::theater,AboutTheater)
+REGISTER_OBJECT_BASEINFOBOX(theater,AboutTheater)
 
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
@@ -42,7 +42,7 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   setupUI( ":/gui/infoboxtheater.gui" );
 
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
-  setTitle( _( theater->name() ) );
+  setTitle( _( MetaDataHolder::findPrettyName( theater->type() ) ) );
 
   _lbTextRef()->setTextAlignment( align::upperLeft, align::center);
   _updateWorkersLabel( Point( 40, 150), 542, theater->maximumWorkers(), theater->numberWorkers() );

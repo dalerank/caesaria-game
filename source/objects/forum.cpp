@@ -22,16 +22,16 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "walker/constants.hpp"
 #include "senate.hpp"
 #include "core/logger.hpp"
 #include "events/fundissue.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::forum, Forum)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::forum, Forum)
 
 class Forum::Impl
 {
@@ -41,7 +41,7 @@ public:
   void removeMoney( PlayerCityPtr city );
 };
 
-Forum::Forum() : ServiceBuilding(Service::forum, objects::forum, Size(2)), _d( new Impl )
+Forum::Forum() : ServiceBuilding(Service::forum, object::forum, Size(2)), _d( new Impl )
 {
   _d->taxValue = 0;
   setPicture( ResourceGroup::govt, 10 );
@@ -54,10 +54,7 @@ void Forum::deliverService()
     TaxCollectorPtr walker = TaxCollector::create( _city() );
     walker->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 }
 
@@ -113,13 +110,12 @@ float Forum::collectTaxes()
 
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
-  city::Helper helper( city );
   SenatePtr senate;
-  SenateList senates = helper.find<Senate>( objects::senate );
+  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
   if( !senates.empty() )
     senate = senates.front();
 
-  int maxMoney = city->funds().treasury();
+  int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
     ForumList forums;
@@ -130,7 +126,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
 
     maxMoney /= forums.size();
 
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::moneyStolen, -maxMoney );
+    events::GameEventPtr e = events::Payment::create( econ::Issue::moneyStolen, -maxMoney );
     e->dispatch();
   }
 }

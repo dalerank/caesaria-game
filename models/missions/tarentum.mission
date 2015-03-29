@@ -17,7 +17,7 @@
     favour : 40
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
-    title : "##win_engineer_title##"
+    title : "##architect##"
     win.text : "##tarentum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -30,7 +30,7 @@
   empire :
   {
     enabled : true
-    maxBarbariansGroups : 1
+    maxBarbariansGroups : 0
 
     cities :
     {
@@ -121,7 +121,7 @@
       date : "-350.01.01"
       type : "city_indebt"
       emperorMoney : [ 8000, 5000, 0 ]
-      video : [ ":/smk/Emp_2nd_chance.bik", ":/smk/Emp_displeased.smk", ":/smk/Emp_angry.smk" ]
+      video : [ "emp_2nd_chance", "emp_displeased", "emp_angry" ]
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
@@ -275,7 +275,7 @@
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -302,7 +302,7 @@
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -329,7 +329,7 @@
 		barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		}
 	  }
     }
@@ -356,7 +356,7 @@
 		barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		}
 	  }
     }
@@ -390,7 +390,7 @@
         {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
    }
@@ -424,7 +424,7 @@
         {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }

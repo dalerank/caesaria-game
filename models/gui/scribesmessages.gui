@@ -1,4 +1,6 @@
 {  
+  static : true
+
 	lbBackground#Label : 
   {
     geometryf : [ 0.0, 0.0, 1, 1 ]
@@ -22,13 +24,13 @@
     }
 
     lbDate#Label : {
-      geometry : [ 36, 45, 76, 60 ]
+      geometry : [ 80, 45, "pw/2", 60 ]
       text : "##scrw_date##"
       font : "FONT_1"
     }
 
     lbSubj#Label : {
-      geometry : [ 120, 45, 180, 60 ]
+      geometry : [ "pw/2", 45, "pw-10", 60 ]
       text : "##scrw_subject##"
       font : "FONT_1"
     }

@@ -19,187 +19,205 @@
 #ifndef _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 #define _CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
 
-namespace constants
+#include "predefinitions.hpp"
+#include "core/enumerator.hpp"
+#include "core/utils.hpp"
+#include <set>
+
+namespace object
 {
 
-namespace objects
-{
+DEFINE_NAMEDTYPE(Type,unknown)
+DEFINE_NAMEDTYPE(Group,unknownGroup)
+std::string toString( const Type& t);
+Type toType( const std::string& name);
+std::string toString( const Group& g );
 
-enum Group
+namespace group
 {
-  unknownGroup=0,
-  industryGroup,
-  obtainGroup,
-  foodGroup,
-  disasterGroup,
-  religionGroup,
-  militaryGroup,
-  nativeGroup,
-  waterGroup,
-  administrationGroup,
-  bridgeGroup,
-  engineeringGroup,
-  tradeGroup,
-  towerGroup,
-  gateGroup,
-  securityGroup,
-  educationGroup,
-  healthGroup,
-  sightGroup,
-  gardenGroup,
-  roadGroup,
-  entertainmentGroup,
-  houseGroup,
-  wallGroup,
-  countGroup,
-  anyGroup=countGroup
-};
+#define REGISTER_GROUP(name,index) static const Group name = Group(index);
 
-enum Type
-{
-//unknown building
-  unknown=0,
-  any=0,
-  road,
-  plaza,
-  garden,
+REGISTER_GROUP(any,0)
+REGISTER_GROUP(unknown,0)
+REGISTER_GROUP(industry,1)
+REGISTER_GROUP(obtain,2)
+REGISTER_GROUP(food,3)
+REGISTER_GROUP(disaster,4)
+REGISTER_GROUP(religion,5)
+REGISTER_GROUP(military,6)
+REGISTER_GROUP(native,7)
+REGISTER_GROUP(water,8)
+REGISTER_GROUP(administration,9)
+REGISTER_GROUP(bridge,10)
+REGISTER_GROUP(engineering,11)
+REGISTER_GROUP(trade,12)
+REGISTER_GROUP(tower,13)
+REGISTER_GROUP(gate,14)
+REGISTER_GROUP(security,15)
+REGISTER_GROUP(education,16)
+REGISTER_GROUP(health,17)
+REGISTER_GROUP(sight,18)
+REGISTER_GROUP(garden,19)
+REGISTER_GROUP(road,20)
+REGISTER_GROUP(entertainment,21)
+REGISTER_GROUP(house,22)
+REGISTER_GROUP(wall,23)
+}
+
+typedef std::set<Group> GroupSet;
+typedef std::vector<Group> Groups;
+typedef std::set<Type> TypeSet;
+typedef std::vector<Type> Types;
+
+//stuff
+#define REGISTER_ID_OBJECT_TYPE(type,a) static const Type type = Type(a);
+REGISTER_ID_OBJECT_TYPE(any,0)
+REGISTER_ID_OBJECT_TYPE(road,1)
+REGISTER_ID_OBJECT_TYPE(plaza,2)
+REGISTER_ID_OBJECT_TYPE(garden,3)
 
 // entertainment
-  amphitheater,
-  theater,
-  hippodrome,
-  colloseum,
-  actorColony,
-  gladiatorSchool,
-  lionsNursery,//10
-  chariotSchool,
+REGISTER_ID_OBJECT_TYPE(amphitheater,4)
+REGISTER_ID_OBJECT_TYPE(theater,5)
+REGISTER_ID_OBJECT_TYPE(hippodrome,6)
+REGISTER_ID_OBJECT_TYPE(colloseum,7)
+REGISTER_ID_OBJECT_TYPE(actorColony,8)
+REGISTER_ID_OBJECT_TYPE(gladiatorSchool,9)
+REGISTER_ID_OBJECT_TYPE(lionsNursery,10)
+REGISTER_ID_OBJECT_TYPE(chariotSchool,11)
 
-  //watersupply
-  reservoir,
-  aqueduct,
-  fountain,
-  well,
+//watersupply
+REGISTER_ID_OBJECT_TYPE(reservoir,12)
+REGISTER_ID_OBJECT_TYPE(aqueduct,13)
+REGISTER_ID_OBJECT_TYPE(fountain,14)
+REGISTER_ID_OBJECT_TYPE(well,15)
 
 // house
-  house,
+REGISTER_ID_OBJECT_TYPE(house,16)
 
 // administration
-  senate,
-  forum,
-  governorHouse,
-  governorVilla,//20
-  governorPalace,
+REGISTER_ID_OBJECT_TYPE(senate,17)
+REGISTER_ID_OBJECT_TYPE(forum,18)
+REGISTER_ID_OBJECT_TYPE(governorHouse,19)
+REGISTER_ID_OBJECT_TYPE(governorVilla,20)
+REGISTER_ID_OBJECT_TYPE(governorPalace,21)
 
 // security
-  prefecture,
-  wall,
-  fortification,
-  tower,
-  gatehouse,
-  fort_legionaries,
-  fort_javelin,
-  fort_horse,
-  military_academy,//30
-  barracks,
-  fortArea,
+REGISTER_ID_OBJECT_TYPE(prefecture,22)
+REGISTER_ID_OBJECT_TYPE(wall,23)
+REGISTER_ID_OBJECT_TYPE(fortification,24)
+REGISTER_ID_OBJECT_TYPE(tower,25)
+REGISTER_ID_OBJECT_TYPE(gatehouse,26)
+REGISTER_ID_OBJECT_TYPE(fort_legionaries,27)
+REGISTER_ID_OBJECT_TYPE(fort_javelin,28)
+REGISTER_ID_OBJECT_TYPE(fort_horse,29)
+REGISTER_ID_OBJECT_TYPE(military_academy,30)
+REGISTER_ID_OBJECT_TYPE(barracks,31)
+REGISTER_ID_OBJECT_TYPE(fortArea,32)
 
 // commerce
-  market,
-  granery,
-  warehouse,
+REGISTER_ID_OBJECT_TYPE(market,33)
+REGISTER_ID_OBJECT_TYPE(granery,34)
+REGISTER_ID_OBJECT_TYPE(warehouse,35)
 
 // farms
-  wheat_farm,
-  fig_farm,
-  vegetable_farm,
-  olive_farm,
-  vinard,//40
-  meat_farm,
+REGISTER_ID_OBJECT_TYPE(wheat_farm,36)
+REGISTER_ID_OBJECT_TYPE(fig_farm,37)
+REGISTER_ID_OBJECT_TYPE(vegetable_farm,38)
+REGISTER_ID_OBJECT_TYPE(olive_farm,39)
+REGISTER_ID_OBJECT_TYPE(vinard,40)
+REGISTER_ID_OBJECT_TYPE(meat_farm,41)
 
 // raw materials
-  quarry,
-  iron_mine,
-  lumber_mill,
-  clay_pit,
+REGISTER_ID_OBJECT_TYPE(quarry,42)
+REGISTER_ID_OBJECT_TYPE(iron_mine,43)
+REGISTER_ID_OBJECT_TYPE(lumber_mill,44)
+REGISTER_ID_OBJECT_TYPE(clay_pit,45)
 
 // factories
-  wine_workshop,
-  oil_workshop,
-  weapons_workshop,
-  furniture_workshop,
-  pottery_workshop,//50
+REGISTER_ID_OBJECT_TYPE(wine_workshop,46)
+REGISTER_ID_OBJECT_TYPE(oil_workshop,47)
+REGISTER_ID_OBJECT_TYPE(weapons_workshop,48)
+REGISTER_ID_OBJECT_TYPE(furniture_workshop,49)
+REGISTER_ID_OBJECT_TYPE(pottery_workshop,50)
 
 // utility
-  engineering_post,
-  statue_small,
-  statue_middle,
-  statue_big,
-  low_bridge,
-  high_bridge,
-  shipyard,
-  dock,
-  wharf,
+REGISTER_ID_OBJECT_TYPE(engineering_post,51)
+REGISTER_ID_OBJECT_TYPE(statue_small,52)
+REGISTER_ID_OBJECT_TYPE(statue_middle,53)
+REGISTER_ID_OBJECT_TYPE(statue_big,54)
+REGISTER_ID_OBJECT_TYPE(low_bridge,55)
+REGISTER_ID_OBJECT_TYPE(high_bridge,56)
+REGISTER_ID_OBJECT_TYPE(shipyard,57)
+REGISTER_ID_OBJECT_TYPE(dock,58)
+REGISTER_ID_OBJECT_TYPE(wharf,59)
 
 // health
-  clinic,//60
-  hospital,
-  baths,
-  barber,
+REGISTER_ID_OBJECT_TYPE(clinic,60)
+REGISTER_ID_OBJECT_TYPE(hospital,61)
+REGISTER_ID_OBJECT_TYPE(baths,62)
+REGISTER_ID_OBJECT_TYPE(barber,63)
 
 // education
-  school,
-  academy,
-  library,
-  missionaryPost,
+REGISTER_ID_OBJECT_TYPE(school,64)
+REGISTER_ID_OBJECT_TYPE(academy,65)
+REGISTER_ID_OBJECT_TYPE(library,66)
+REGISTER_ID_OBJECT_TYPE(missionaryPost,67)
 
 // religion: small temples
-  small_ceres_temple,
-  small_mars_temple,
-  small_neptune_temple,//70
-  small_mercury_temple,
-  small_venus_temple,
+REGISTER_ID_OBJECT_TYPE(small_ceres_temple,68)
+REGISTER_ID_OBJECT_TYPE(small_mars_temple,69)
+REGISTER_ID_OBJECT_TYPE(small_neptune_temple,70)
+REGISTER_ID_OBJECT_TYPE(small_mercury_temple,71)
+REGISTER_ID_OBJECT_TYPE(small_venus_temple,72)
 
 // religion: big temples
-  big_ceres_temple,
-  big_mars_temple,
-  big_neptune_temple,
-  big_mercury_temple,
-  big_venus_temple,
+REGISTER_ID_OBJECT_TYPE(big_ceres_temple,73)
+REGISTER_ID_OBJECT_TYPE(big_mars_temple,74)
+REGISTER_ID_OBJECT_TYPE(big_neptune_temple,75)
+REGISTER_ID_OBJECT_TYPE(big_mercury_temple,76)
+REGISTER_ID_OBJECT_TYPE(big_venus_temple,77)
 
 // religion: others
-  oracle,
+REGISTER_ID_OBJECT_TYPE(oracle,78)
 
 // building of natives
-  native_hut,
-  native_center,//80
-  native_field,
+REGISTER_ID_OBJECT_TYPE(native_hut,79)
+REGISTER_ID_OBJECT_TYPE(native_center,80)
+REGISTER_ID_OBJECT_TYPE(native_field,81)
 
 //other
-  triumphal_arch,
-  burning_ruins,
-  burned_ruins,
-  collapsed_ruins,
-  plague_ruins,
+REGISTER_ID_OBJECT_TYPE(triumphal_arch,82)
+REGISTER_ID_OBJECT_TYPE(burning_ruins,83)
+REGISTER_ID_OBJECT_TYPE(burned_ruins,84)
+REGISTER_ID_OBJECT_TYPE(collapsed_ruins,85)
+REGISTER_ID_OBJECT_TYPE(plague_ruins,86)
+REGISTER_ID_OBJECT_TYPE(reserved_2,87)
+REGISTER_ID_OBJECT_TYPE(reserved_3,88)
+REGISTER_ID_OBJECT_TYPE(elevation,89)
+REGISTER_ID_OBJECT_TYPE(rift,90)
+REGISTER_ID_OBJECT_TYPE(river,91)
+REGISTER_ID_OBJECT_TYPE(tree,92)
+REGISTER_ID_OBJECT_TYPE(waymark,93)
+REGISTER_ID_OBJECT_TYPE(terrain,94)
+REGISTER_ID_OBJECT_TYPE(water,95)
+REGISTER_ID_OBJECT_TYPE(meadow,96)
+REGISTER_ID_OBJECT_TYPE(roadBlock,97)
+REGISTER_ID_OBJECT_TYPE(farmtile,98)
 
-  reserved_2,
-  reserved_3,
-  elevation,
-  rift,//90
-  river,
-  tree,
-  waymark,
-  terrain,
-  water,
-  meadow,
-  roadBlock,
-  farmtile,
 
-  typeCount,
-  userType=1000
-}; //end Type
+class Helper : public EnumsHelper<Type>
+{
+public:
+  static Helper& instance();
+private:
+  Helper();
+};
 
-} //end namespace building
+Type findType( const std::string& name );
 
-} //end namespace constants
+} //end namespace object
+
+#define REGISTER_CUSTOM_OBJECT_TYPE(type)
 
 #endif  //_CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_

@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -29,17 +29,17 @@ namespace gui
 namespace advisorwnd
 {
 
-class AdvisorChief : public Window
+class Chief : public Base
 {
 public:
-  AdvisorChief( PlayerCityPtr city, Widget* parent, int id );
+  Chief( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
 
 private:
   void _showHelp();
 
-  __DECLARE_IMPL(AdvisorChief)
+  __DECLARE_IMPL(Chief)
 };
 
 }//end namesapce advisorwnd

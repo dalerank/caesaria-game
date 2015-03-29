@@ -41,7 +41,6 @@ public:
 
   // size of the view in pixel
   void setViewport(Size newSize);
-  void setCenter(TilePos pos);
 
   void move(PointF relative);
   void moveRight(const int amount);
@@ -52,6 +51,7 @@ public:
   Point offset() const;
 
   // return tile coordinates (i, j), in order of depth
+  virtual void setCenter(TilePos pos, bool checkCorner);
   virtual const TilesArray& tiles() const;
   virtual const TilesArray& flatTiles() const;
 
@@ -63,6 +63,7 @@ public:
   int scrollSpeed() const;
 
   Tile* at( const Point& pos, bool overborder ) const;
+  virtual Point mpos( const Point& pos ) const;
   Tile* at( const TilePos& pos ) const;
   Tile* centerTile() const;
 
@@ -71,7 +72,7 @@ public:
 
 public signals:
   virtual Signal1<Point>& onPositionChanged();
-  virtual Signal1<constants::Direction>& onDirectionChanged();
+  virtual Signal1<Direction>& onDirectionChanged();
   
 private:
   void _setCenter(Point pos, bool checkBorder);

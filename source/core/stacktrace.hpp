@@ -20,10 +20,11 @@
 
 #include "platform.hpp"
 
-class Stacktrace
+namespace crashhandler
 {
-public:
-  static void print(unsigned int starting_frame = 0, unsigned int max_frames = 63);
-};
+void install();
+void remove();
+void printstack(unsigned int starting_frame = 0, unsigned int max_frames = 63);
+}
 
 #endif //__CAESARIA_STACKTRACE_H_INCLUDED__

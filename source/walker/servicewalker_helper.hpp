@@ -30,7 +30,7 @@ public:
 
   }
 
-  ServiceWalker::ReachedBuildings getReachedBuildings( const TilePos& pos, const gfx::TileOverlay::Type type )
+  ServiceWalker::ReachedBuildings getReachedBuildings( const TilePos& pos, const object::Type type )
   {
     ServiceWalker::ReachedBuildings res = _walker.getReachedBuildings( pos );
 

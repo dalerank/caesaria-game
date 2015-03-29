@@ -36,12 +36,12 @@
 using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_javelin, FortJaveline)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_horse, FortMounted)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_legionaries, FortLegionary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_javelin, FortJaveline)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_horse, FortMounted)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_legionaries, FortLegionary)
 
 FortLegionary::FortLegionary()
-  : Fort( objects::fort_legionaries, 16 )
+  : Fort( object::fort_legionaries, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 21 );
@@ -51,6 +51,8 @@ FortLegionary::FortLegionary()
   _addFormation( frmSquad );
   _addFormation( frmOpen );
 }
+
+int FortLegionary::flagIndex() const { return 21; }
 
 void FortLegionary::_readyNewSoldier()
 {
@@ -65,7 +67,7 @@ void FortLegionary::_readyNewSoldier()
 }
 
 FortMounted::FortMounted()
-  : Fort( constants::objects::fort_horse, 15 )
+  : Fort( object::fort_horse, 15 )
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 39 );
@@ -77,10 +79,12 @@ FortMounted::FortMounted()
   _addFormation( frmOpen );
 }
 
-bool FortMounted::build( const CityAreaInfo& info )
+bool FortMounted::build( const city::AreaInfo& info )
 {
   return Fort::build( info );
 }
+
+int FortMounted::flagIndex() const { return 39; }
 
 void FortMounted::_readyNewSoldier()
 {
@@ -95,7 +99,7 @@ void FortMounted::_readyNewSoldier()
 }
 
 FortJaveline::FortJaveline()
-  : Fort( objects::fort_javelin, 14 )
+  : Fort( object::fort_javelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 30 );
@@ -104,6 +108,8 @@ FortJaveline::FortJaveline()
   _addFormation( frmWestDblLine );
   _addFormation( frmOpen );
 }
+
+int FortJaveline::flagIndex() const { return 30;  }
 
 void FortJaveline::_readyNewSoldier()
 {

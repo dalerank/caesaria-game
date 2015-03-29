@@ -55,7 +55,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   {
     Logger::warning( "String::vformat: String truncated when processing " + str );
     if( outputStacktraceLog )
-      Stacktrace::print();
+      crashhandler::printstack(0,63);
   }
  
   str = buffer_ptr;
@@ -64,6 +64,66 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
     delete[] buffer_ptr;
 
   return length;
+}
+
+std::wstring utf8toWString(const char* src, int size)
+{
+  std::wstring dest;
+
+  dest.clear();
+  wchar_t w = 0;
+  int bytes = 0;
+  wchar_t err = L'�';
+
+  for(size_t i = 0; i < size; i++)
+  {
+    unsigned char c = (unsigned char)src[i];
+    if (c <= 0x7f)
+    {//first byte
+      if (bytes)
+      {
+        dest.push_back(err);
+        bytes = 0;
+      }
+      dest.push_back((wchar_t)c);
+    }
+    else if (c <= 0xbf)
+    {//second/third/etc byte
+      if (bytes)
+      {
+        w = ((w << 6)|(c & 0x3f));
+        bytes--;
+        if (bytes == 0)
+          dest.push_back(w);
+      }
+      else
+        dest.push_back(err);
+    }
+    else if (c <= 0xdf)
+    {//2byte sequence start
+      bytes = 1;
+      w = c & 0x1f;
+    }
+    else if (c <= 0xef)
+    {//3byte sequence start
+      bytes = 2;
+      w = c & 0x0f;
+    }
+    else if (c <= 0xf7)
+    {//3byte sequence start
+      bytes = 3;
+      w = c & 0x07;
+    }
+    else
+    {
+      dest.push_back(err);
+      bytes = 0;
+    }
+  }
+  if( bytes )
+    dest.push_back(err);
+
+  return dest;
 }
 
 void useStackTrace(bool enabled) {  outputStacktraceLog = enabled;}
@@ -250,19 +310,6 @@ int compare( const std::string& a, const std::string& b, equaleMode mode )
   }
 }
 
-unsigned int hash( const std::string& text )
-{
-  unsigned int nHash = 0;
-  const char* key = text.c_str();
-  if( key )
-  {
-    while(*key)
-      nHash = (nHash<<5) + nHash + *key++;
-  }
-
-  return nHash;
-}
-
 unsigned int hash( unsigned int max_size, const char* fmt, ... )
 {
   va_list argument_list;
@@ -273,7 +320,7 @@ unsigned int hash( unsigned int max_size, const char* fmt, ... )
 
   va_end(argument_list);
 
-  return hash( fmtStr );
+  return Hash( fmtStr );
 }
 
 StringArray split( std::string str, std::string spl )
@@ -342,14 +389,18 @@ unsigned int toUint(const std::string& in)
 
 float eventProbability(float probability, int k, int n)
 {
-  probability = math::clamp<float>( probability, 0, 1);
+  int limit = math::random( n ) * (1 - probability);
+  return k > limit ? 1 : 0;
+
+  /*probability = math::clamp<float>( probability, 0, 1);
+  k = math::clamp( k, 0, n );
   float q = 1 - probability;
 
-  float npq = sqrt( n * probability * q );
-  float rw = (k - n * probability)/npq;
-  float res = 1 / npq * ( math::RECIPROCAL_SQRT_2PI * exp( -rw/2 ) );
+  float npq = n * probability * q;
+  float t = (k - n*probability)/sqrt(npq);
+  float res = (1 / sqrt( 2* math::PI * npq )) * exp( -pow(t,2)/2 ) ;
 
-  return res;
+  return res;*/
 }
 
 }//end namespace utils

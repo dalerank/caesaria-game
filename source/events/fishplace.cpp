@@ -25,14 +25,12 @@
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_fishplace.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 
 namespace events
 {
-
-namespace {
-}
 
 class FishPlaceEvent::Impl
 {
@@ -55,8 +53,8 @@ GameEventPtr FishPlaceEvent::create( TilePos pos, Mode mode )
 
 void FishPlaceEvent::_exec( Game& game, unsigned int time)
 {
-  city::FisheryPtr fishery;
-  fishery << game.city()->findService( city::Fishery::defaultName() );
+  city::FisheryPtr fishery = city::statistic::finds<city::Fishery>( game.city() );
+
   if( fishery.isValid() )
   {
     switch( _d->mode )

@@ -5,13 +5,13 @@
 	
   items : {
     damascus : {
-      title : "##damascus_somewhat_dangerous_province##"
+      title : "##damascus_title##"
       location : [ 570, 280 ]
       mission : ":/missions/damascus.mission"
     }
 
     caesarea : {
-      title : "##massilia_peace_province##"
+      title : "##caesarea_title##"
       mission : ":/missions/caesarea.mission"
       location : [ 20, 320 ]
     }

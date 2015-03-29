@@ -48,7 +48,7 @@ public:
 VictoryConditions::VictoryConditions() : _d( new Impl )
 {
   _d->success = false;
-  _d->maxHouseLevel = 30;
+  _d->maxHouseLevel = HouseLevel::maxLevel;
   _d->population = 0;
   _d->culture = 0;
   _d->prosperity = 0;
@@ -84,7 +84,7 @@ bool VictoryConditions::mayContinue() const { return _d->may_continue; }
 void VictoryConditions::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::instance().getLevel( stream.get( "maxHouseLevel" ).toString() );
-  if( _d->maxHouseLevel == 0 )
+  if( _d->maxHouseLevel == HouseLevel::vacantLot )
     _d->maxHouseLevel = HouseLevel::greatPalace;
 
   VARIANT_LOAD_ANY_D( _d, success, stream )
@@ -104,7 +104,7 @@ void VictoryConditions::load( const VariantMap& stream )
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
   _d->winText = stream.get( "win.text" ).toString();
-  VARIANT_LOAD_STR_D( _d, caption, stream)
+  VARIANT_LOAD_STR_D( _d, caption, stream )
   VARIANT_LOAD_STR_D( _d, next, stream )
   VARIANT_LOAD_STR_D( _d, title, stream )
 }
@@ -112,7 +112,7 @@ void VictoryConditions::load( const VariantMap& stream )
 VariantMap VictoryConditions::save() const
 {
   VariantMap ret;
-  ret[ "maxHouselevel" ] = Variant( HouseSpecHelper::instance().getSpec( _d->maxHouseLevel ).levelName() );
+  ret[ "maxHouseLevel" ] = Variant( HouseSpecHelper::instance().getSpec( _d->maxHouseLevel ).internalName() );
   VARIANT_SAVE_ANY_D( ret, _d, success )
   VARIANT_SAVE_ANY_D( ret, _d, culture )
   VARIANT_SAVE_ANY_D( ret, _d, population )
@@ -158,6 +158,7 @@ int VictoryConditions::needFavour() const{  return _d->favour;}
 int VictoryConditions::needPeace() const{  return _d->peace;}
 const DateTime &VictoryConditions::finishDate() const { return _d->finishDate; }
 std::string VictoryConditions::shortDesc() const {  return _d->shortDesc;}
+std::string VictoryConditions::missionTitle() const { return _d->caption; }
 std::string VictoryConditions::nextMission() const { return _d->next; }
 std::string VictoryConditions::newTitle() const { return _d->title; }
 std::string VictoryConditions::winText() const{ return _d->winText; }

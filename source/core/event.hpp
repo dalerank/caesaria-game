@@ -377,7 +377,6 @@ struct NEvent
     //! Currently only valid if the event was EMIE_MOUSE_MOVED
     unsigned int buttonStates;
 
-    const Point pos() { return Point( x, y ); }
     const Point pos() const { return Point( x, y ); }
     bool isLeftPressed() const { return 0 != ( buttonStates & mbsmLeft ); }     //! Is the left button pressed down?
     bool isRightPressed() const { return 0 != ( buttonStates & mbsmRight ); }   //! Is the right button pressed down?

@@ -25,11 +25,29 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/flowlist.hpp"
 
 using namespace gfx;
 
 namespace world
 {
+
+class Merchants : public FlowList<Merchant>
+{
+public:
+  VariantMap save() const
+  {
+    VariantMap ret;
+    foreach( m, *this )
+    {
+      VariantMap saveRoute;
+      (*m)->save( saveRoute );
+      ret[ "->" + (*m)->destinationCity() ] = saveRoute;
+    }
+
+    return ret;
+  }
+};
 
 class Traderoute::Impl
 {
@@ -45,8 +63,7 @@ public:
   bool seaRoute;
   gfx::Pictures pictures;
 
-  MerchantList newMerchants;
-  MerchantList merchants;
+  Merchants merchants;
 
   void resolveMerchantArrived( MerchantPtr merchant );
   void updateBoundingBox();
@@ -71,11 +88,7 @@ void Traderoute::update( unsigned int time )
     else  { (*it)->timeStep( time ); ++it;  }
   }
 
-  if( !_d->newMerchants.empty() )
-  {
-    _d->merchants << _d->newMerchants;
-    _d->newMerchants.clear();
-  }
+  _d->merchants.merge();
 }
 
 PointsArray Traderoute::points( bool reverse ) const
@@ -89,7 +102,7 @@ PointsArray Traderoute::points( bool reverse ) const
   return _d->points;
 }
 
-bool Traderoute::containPoint(Point pos, int devianceDistance)
+bool Traderoute::containPoint( const Point& pos, int devianceDistance)
 {
   if( !_d->boundingBox.isPointInside( pos ) )
     return false;
@@ -111,7 +124,6 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
   _d->seaRoute = seaRoute;
 
   _d->updatePictures();
-
   _d->updateBoundingBox();
 }
 
@@ -127,7 +139,7 @@ MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell,
   }
 
   MerchantPtr merchant = Merchant::create( _d->empire, this, begin, sell, buy );
-  _d->newMerchants.push_back( merchant );
+  _d->merchants.append( merchant );
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
   return merchant;
@@ -161,26 +173,11 @@ MerchantList Traderoute::merchants() const
 VariantMap Traderoute::save() const
 {  
   VariantMap ret;
-  VariantMap merchants;
-  foreach( m, _d->merchants )
-  {
-    VariantMap saveRoute;
-    (*m)->save( saveRoute );
-    merchants[ "->" + (*m)->destinationCity() ] = saveRoute;
-  }
 
-  ret[ "merchants" ] = merchants;
 
-  VariantList vl_points;
-  foreach( p, _d->points ) { vl_points.push_back( *p ); }
-  ret[ "points" ] = vl_points;
+  VARIANT_SAVE_CLASS_D( ret, _d,  merchants)
+  ret[ "points" ] = _d->points.toVList();
 
- /* VariantList vl_pictures;
-  foreach( pic, _d->pictures )
-  {
-    vl_pictures.push_back( Variant( pic->name() ) );
-  }
-  ret[ "pictures" ] = vl_pictures; */
   VARIANT_SAVE_ANY_D( ret, _d, seaRoute )
 
   return ret;
@@ -188,19 +185,9 @@ VariantMap Traderoute::save() const
 
 void Traderoute::load(const VariantMap& stream)
 {
-  VariantList points = stream.get( "points" ).toList();
-  foreach( i, points )
-  {
-    _d->points.push_back( (*i).toPoint() );
-  }
+  _d->points.fromVList( stream.get( "points" ).toList() );
   _d->updateBoundingBox();
   _d->updatePictures();
-
- /* VariantList pictures = stream.get( "pictures" ).toList();
-  foreach( i, pictures )
-  {
-    _d->pictures.push_back( Picture::load( (*i).toString() ) );
-  } */
 
   VariantMap merchants = stream.get( "merchants" ).toMap();
   foreach( it, merchants )
