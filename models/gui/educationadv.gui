@@ -1,5 +1,5 @@
 {
-  geometry : [ 0, 0, 640, 256 ]
+  size : [ 640, 256 ]
   bgtype : "whiteFrame"
   static : true
   

@@ -34,6 +34,7 @@
 #include "dictionary.hpp"
 #include "city/cityservice_health.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 #include "widget_helper.hpp"
 
 using namespace constants;
@@ -212,13 +213,13 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
 
   StringArray outText;
 
-  if( c->population() < minPopullation4healthCalc )
+  if( c->states().population < minPopullation4healthCalc )
   {
     outText << "##healthadv_not_need_health_service_now##";
   }
   else
   {
-    if( c->population() < smallCityPopulation )
+    if( c->states().population < smallCityPopulation )
     {
       if( hc.isValid() && hc->value() > smallCityNormalhealthValue )
       {

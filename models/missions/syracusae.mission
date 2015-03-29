@@ -17,7 +17,7 @@
     favour : 20
     finishDate : "-100.01.01"
     next : ":/missions/mission5.briefing"
-    title : "##win_engineer_title##"
+    title : ""##quaestor##""
     win.text : "##win_syracusae_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -181,14 +181,18 @@
       }
     }
 
-    oil_price_rising#trading_options : {
+    oil_price_rising#trading_options :
+    {
       date : "-267.04.01"
-      goods : {
+      goods :
+      {
         oil : { relative : true, buy : 40, sell : 30 }
       }
 
-      exec : {
-        message#messagebox : {
+      exec :
+      {
+        message#messagebox :
+        {
           good : "oil"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
@@ -216,21 +220,25 @@
     emperor_request1#city_request : {
       date : "-267.02.01"
       reqtype : "good_request"
-      video : "urgent_message2
+      video : "urgent_message2"
       month : 24
       good : { oil : 5 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 12 }
     }    
     
-    oil_price_rising#trading_options : {
+    oil_price_rising#trading_options :
+    {
       date : "-267.04.01"
-      goods : {
+      goods :
+      {
         oil : { relative : true, buy : 40, sell : 30 }
       }
 
-      exec : {
-        message#messagebox : {
+      exec :
+      {
+        message#messagebox :
+         {
           good : "oil"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"

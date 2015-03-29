@@ -22,7 +22,7 @@
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
 #include "core/utils.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/trade_options.hpp"
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
@@ -165,7 +165,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() && emptyDock )
     {
       trade::Options& options = city->tradeOptions();
-      statistic::GoodsMap cityGoodsAvailable = statistic::getGoodsMap( city, false );
+      good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
       //request goods
       foreach( goodType, good::all() )
       {
@@ -275,7 +275,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() )
     {
       trade::Options& options = city->tradeOptions();
-      const good::Store& importing = options.importingGoods();
+      const good::Store& importing = options.buys();
       //try sell goods
       foreach( goodType, good::all() )
       {

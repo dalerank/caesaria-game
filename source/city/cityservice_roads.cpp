@@ -26,16 +26,16 @@
 #include "objects/road.hpp"
 #include "objects/constants.hpp"
 #include "cityservice_factory.hpp"
+#include "config.hpp"
 
 using namespace constants;
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(Roads,roads)
-
-enum { normalInfluence=4, senateInfluence=10 };
 
 class Roads::Impl
 {
@@ -43,7 +43,9 @@ public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
   typedef std::vector< UpdateInfo > Updates;
   typedef std::pair<object::Type, int> UpdateBuilding;
+  typedef std::vector< UpdateBuilding > BuildingInfo;
 
+  BuildingInfo btypes;
   int defaultIncreasePaved;
   int defaultDecreasePaved;
 
@@ -67,6 +69,13 @@ Roads::Roads( PlayerCityPtr city )
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
   _d->lastTimeUpdate = game::Date::current();
+
+  _d->btypes.push_back( Impl::UpdateBuilding(object::senate, desirability::senateInfluence) );
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_ceres_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_mars_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_mercury_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, desirability::normalInfluence));
 }
 
 void Roads::timeStep( const unsigned int time )
@@ -74,20 +83,12 @@ void Roads::timeStep( const unsigned int time )
   if( _d->lastTimeUpdate.month() == game::Date::current().month() )
     return;
 
-  _d->lastTimeUpdate = game::Date::current();
-
-  std::vector< Impl::UpdateBuilding > btypes;
-  btypes.push_back( Impl::UpdateBuilding(object::senate, senateInfluence) );
-  btypes.push_back( Impl::UpdateBuilding(object::small_ceres_temple, normalInfluence));
-  btypes.push_back( Impl::UpdateBuilding(object::small_mars_temple, normalInfluence));
-  btypes.push_back( Impl::UpdateBuilding(object::small_mercury_temple, normalInfluence));
-  btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, normalInfluence));
-  btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, normalInfluence));
+  _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  foreach( it, btypes )
+  foreach( it, _d->btypes )
   {
-    BuildingList tmp = city::statistic::findo<Building>( _city(), it->first );
+    BuildingList tmp = statistic::findo<Building>( _city(), it->first );
 
     foreach( b, tmp )
     {
@@ -112,7 +113,7 @@ void Roads::timeStep( const unsigned int time )
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = city::statistic::findo<Road>( _city(), object::road );
+    RoadList roads = statistic::findo<Road>( _city(), object::road );
     foreach( road, roads )
     {
       (*road)->appendPaved( _d->defaultDecreasePaved );

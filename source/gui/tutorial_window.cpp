@@ -59,8 +59,8 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   Logger::warningIf( vm.empty(), "Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();
-  std::string title = vm.get( "title" ).toString();
-  std::string sound = vm.get( "sound" ).toString();
+  std::string title = vm.get( "title" );
+  std::string sound = vm.get( "sound" );
 
   if( lbTitle ) lbTitle->setText( _( title ) );
   if( !sound.empty() )
@@ -75,7 +75,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     std::string text = *it;
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
-      Picture pic = Picture::load( text.substr( imgSeparator.length() ) );
+      const Picture& pic = Picture::load( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbxHelp->addItem( pic );
       item.setTextAlignment( align::center, align::upperLeft );
       int lineCount = pic.height() / lbxHelp->itemHeight();

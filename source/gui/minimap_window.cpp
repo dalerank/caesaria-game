@@ -31,6 +31,7 @@
 #include "core/tilerect.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/helper.hpp"
+#include "city/states.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -70,7 +71,7 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
-  _d->colors = new minimap::Colors( (ClimateType)city->climate() );
+  _d->colors = new minimap::Colors( city->climate() );
   _d->btnZoomIn = new TexturedButton( this, righttop() - Point( 28, -2), Size( 24 ), -1, 605 );
   _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26), Size( 24 ), -1, 601 );
   setTooltipText( _("##minimap_tooltip##") );

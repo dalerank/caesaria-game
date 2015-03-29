@@ -35,6 +35,7 @@
 #include "walker/workerhunter.hpp"
 #include "events/returnworkers.hpp"
 #include "objects_factory.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;

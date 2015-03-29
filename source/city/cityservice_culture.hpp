@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(CultureRating)
+
 class CultureRating : public Srvc
 {
 public:
@@ -44,8 +46,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<CultureRating> CultureRatingPtr;
 
 }//end namespace city
 

@@ -46,6 +46,7 @@ public:
 private:
   void _updatePreviewTiles(bool force);
   void _checkPreviewBuild(TilePos pos);
+  void _checkBuildArea();
   void _discardPreview();
   void _buildAll();
   void _finishBuild();

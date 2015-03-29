@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Religion)
+
 class Religion : public Srvc
 {
 public:

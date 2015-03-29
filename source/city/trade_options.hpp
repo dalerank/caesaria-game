@@ -60,8 +60,8 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
-  const good::Store& importingGoods();
-  const good::Store& exportingGoods();
+  const good::Store& buys();
+  const good::Store& sells();
 
 public:
   class Impl;

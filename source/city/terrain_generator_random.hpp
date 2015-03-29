@@ -22,6 +22,9 @@
 #include <cstdlib>
 #include <cmath>
 
+namespace terrain
+{
+
 class Random {
  public:
   Random();
@@ -29,10 +32,13 @@ class Random {
   Random(double seed);
   Random(float seed);
   ~Random() {}
-  int Integer(int minimum, int maximum);
-  double Double(double minimum, double maximum);
-  float Float(float minimum, float maximum);
+
+  int toInt(int minimum, int maximum);
+  double toDouble(double minimum, double maximum);
+  float toFloat(float minimum, float maximum);
 };
+
+}//end namespace terrain
 
 
 #endif //_CAESARIA_TERRAIN_GENERATOR_RANDOM_INCLUDE_H_

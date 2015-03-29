@@ -41,8 +41,8 @@
 #include "layers/constants.hpp"
 #include "layers/layerreligion.hpp"
 #include "layers/build.hpp"
-#include "layers/layerdamage.hpp"
-#include "layers/layerdesirability.hpp"
+#include "layers/damage.hpp"
+#include "layers/desirability.hpp"
 #include "layers/layerentertainment.hpp"
 #include "layers/layertax.hpp"
 #include "layers/crime.hpp"
@@ -64,7 +64,7 @@ using namespace citylayer;
 namespace gfx
 {
 
-enum { minZoom=30, maxZoom=300 };
+enum { zoomStep=10, minZoom=30, defaultZoom=100, maxZoom=300 };
 
 class CityRenderer::Impl
 {
@@ -109,7 +109,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->guienv = guienv;
   _d->camera.init( *_d->tilemap, engine->virtualSize() );
   _d->engine = engine;
-  _d->zoom = 100;
+  _d->zoom = defaultZoom;
   _d->zoomChanged = false;
 
   _d->engine->initViewport( 0, _d->engine->screenSize() );
@@ -207,7 +207,7 @@ void CityRenderer::render()
   if( _d->zoomChanged )
   {
     _d->zoomChanged = false;
-    Size s = _d->engine->screenSize() * _d->zoom / 100;
+    Size s = _d->engine->screenSize() * _d->zoom / defaultZoom;
     _d->engine->initViewport( 0, s );
     _d->camera.setViewport( s );
   }
@@ -255,7 +255,7 @@ void CityRenderer::handleEvent( NEvent& event )
       {
         int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
 
-        changeZoom( event.mouse.wheel * 10 * zoomInvert );
+        changeZoom( event.mouse.wheel * zoomStep * zoomInvert );
       }
     }
   }

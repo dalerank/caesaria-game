@@ -41,7 +41,7 @@
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
 #include "core/foreach.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
 #include "image.hpp"
@@ -57,6 +57,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -207,14 +208,14 @@ Parlor* Parlor::create(Widget* parent, int id, const Advisor type, PlayerCityPtr
 
 void Parlor::Impl::sendMoney2City(int money)
 {
- events::GameEventPtr event = events::FundIssueEvent::create( city::Funds::donation, money );
+ GameEventPtr event = Payment::create( econ::Issue::donation, money );
  event->dispatch();
 }
 
 void Parlor::Impl::showEmpireMapWindow()
 {
   advisorPanel->parent()->deleteLater();
-  events::GameEventPtr event = events::ShowEmpireMap::create( true );
+  GameEventPtr event = ShowEmpireMap::create( true );
   event->dispatch();
 }
 

@@ -22,40 +22,26 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
+#include "game/notification.hpp"
 
 namespace city
 {
 
-class Military : public city::Srvc
+PREDEFINE_CLASS_SMARTPOINTER(Military)
+
+class Military : public Srvc
 {
 public:  
-  struct Notification
-  {
-    enum { ftype=0, fdate, fname, fmessage, flocation };
-    typedef enum { unknown, barbarian=0x1, chastener, attack } Type;
-
-    DateTime date;
-    Type type;
-    std::string message;
-    std::string objectName;
-    Point location;
-
-    VariantList save() const;
-    void load(const VariantList &stream);
-  };
-
-  typedef std::vector< Notification > NotificationArray;
-
-  static city::SrvcPtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
 
   virtual void timeStep( const unsigned int time );
 
   void addNotification( const std::string& text, const std::string& name, Notification::Type type );
 
   Notification priorityNotification() const;
-  const NotificationArray& notifications() const;
+  const Notifications& notifications() const;
 
-  bool haveNotification(Notification::Type type) const;
+  bool haveNotification( Notification::Type type) const;
   bool isUnderAttack() const;
 
   virtual VariantMap save() const;
@@ -78,8 +64,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Military> MilitaryPtr;
 
 }//end namespace city
 

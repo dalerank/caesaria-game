@@ -30,6 +30,8 @@
 #include "objects/warehouse.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -49,7 +51,7 @@ void RomeDivinity::load(const VariantMap& vm)
   if( vm.empty() )
     return;
 
-  _name = vm.get( lc_name ).toString();
+  _name = vm.get( literals::name ).toString();
   _service = ServiceHelper::getType( vm.get( "service" ).toString() );
   _pic = Picture::load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
@@ -107,7 +109,7 @@ void RomeDivinity::assignFestival(int type)
 VariantMap RomeDivinity::save() const
 {
   VariantMap ret;
-  ret[ lc_name ] = Variant( _name );
+  ret[ literals::name ] = Variant( _name );
   ret[ "service" ] = Variant( ServiceHelper::getName( _service ) );
   ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation;
@@ -130,36 +132,36 @@ DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
-  if( income == -101.f )
+  if( income == debug::doWrath )
   {
     _doWrath( city );
     return;
   }
-  else if( income == -102.f )
+  else if( income == debug::doSmallCurse )
   {
     _doSmallCurse( city );
     return;
   }
-  else if( income == -103.f )
+  else if( income == debug::doBlessing )
   {
     _doBlessing( city );
     return;
   }
 
-  unsigned int minMood = 50 - math::clamp( city->population() / 10, 0u, 50u );
+  unsigned int minMood = relation::defaultMood - math::clamp( city->states().population / 10, 0u, 50u );
   int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( game::Date::current() ) );
   _needRelation = math::clamp<int>( income + festivalFactor + _effectPoints, minMood, 100 );
 
   _relation += math::signnum( _needRelation - _relation );
 
-  if( _relation <= 50 )
+  if( _relation <= relation::defaultMood )
   {
     _blessingDone = false;
     int wrathDelta = 0;
-    if( _relation > 0 && _relation < 10 ) { wrathDelta = 5; }
-    else if( _relation >= 10 && _relation < 20 ) { wrathDelta = 2; }
-    else if( _relation >= 20 && _relation < 40 ) { wrathDelta = 1; }
-    _wrathPoints = math::clamp<int>( _wrathPoints + wrathDelta, 0, 50 );
+    if( _relation > 0 && _relation < relation::wrathfull ) { wrathDelta = 5; }
+    else if( _relation >= relation::wrathfull && _relation < relation::badmood ) { wrathDelta = 2; }
+    else if( _relation >= relation::badmood && _relation < relation::minimum4wrath ) { wrathDelta = 1; }
+    _wrathPoints = math::clamp<int>( _wrathPoints + wrathDelta, 0, penalty::maximum );
   }
 
   if( _relation >= 50 )
@@ -203,8 +205,8 @@ void RomeDivinity::checkAction( PlayerCityPtr city )
 
 RomeDivinity::RomeDivinity()
 {
-  _relation = 50;
-  _needRelation = 50;
+  _relation = relation::defaultMood;
+  _needRelation = relation::defaultMood;
   _blessingDone = 0;
   _smallCurseDone = 0;
 }

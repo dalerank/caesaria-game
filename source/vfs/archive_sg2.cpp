@@ -175,7 +175,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
       if( !p555.exist() )
       {
-          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str());
+          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toCString() );
           continue; // skip to next bitmap
       }
 

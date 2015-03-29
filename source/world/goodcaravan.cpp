@@ -86,7 +86,7 @@ void GoodCaravan::save(VariantMap& stream) const
 {
   MovableObject::save( stream );
 
-  stream[ "store" ] = _d->store.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, store )
   stream[ "base"  ] = Variant( _d->base.isValid() ? _d->base->name() : "" );
   VARIANT_SAVE_STR_D( stream, _d, destination )
 }
@@ -96,8 +96,10 @@ void GoodCaravan::load(const VariantMap& stream)
   MovableObject::load( stream );
 
   _d->options = stream;
-  _d->store.load( stream.get( "store").toMap() );
   _d->base = empire()->findCity( stream.get( "base" ).toString() );
+  Logger::warningIf( _d->base == 0, "!!! WARNING: GoodCaravan::load base not exists" );
+
+  VARIANT_LOAD_CLASS_D( _d, store, stream )
   VARIANT_LOAD_STR_D( _d, destination, stream )
 }
 

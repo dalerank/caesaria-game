@@ -29,13 +29,13 @@
 class ServiceWalker : public Human
 {
 public:
-  typedef enum { goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;
+  typedef enum { noOrders=0, goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;
   typedef std::set<BuildingPtr> ReachedBuildings;
 
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
   Service::Type serviceType() const;
-  BuildingPtr base() const;
+  const TilePos& baseLocation() const;
 
   void setBase( BuildingPtr base );
 

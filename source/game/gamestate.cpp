@@ -29,13 +29,12 @@
 #include "world/empire.hpp"
 #include "freeplay_finalizer.hpp"
 #include "steam.hpp"
+#include "config.hpp"
 
 using namespace scene;
 
 namespace gamestate
 {
-
-static const int timeScale=10;
 
 void BaseState::_initialize(scene::Base* screen, ScreenType screenType) {
   this->_screen = screen;
@@ -98,7 +97,6 @@ MissionSelect::~MissionSelect()
     _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
   }
 }
-
 
 ShowMainMenu::ShowMainMenu(Game* game, gfx::Engine* engine):
   BaseState(game),
@@ -202,16 +200,16 @@ bool GameLoop::update(gfx::Engine* engine)
   {
     if( !_game->isPaused() )
     {
-      _timeX10 += _timeMultiplier / timeScale;
+      _timeX10 += _timeMultiplier / config::gamespeed::scale;
     }
     else if ( _manualTicksCounterX10 > 0 )
     {
-      unsigned int add = math::min( _timeMultiplier / timeScale, _manualTicksCounterX10 );
+      unsigned int add = math::min( _timeMultiplier / config::gamespeed::scale, _manualTicksCounterX10 );
       _timeX10 += add;
       _manualTicksCounterX10 -= add;
     }
 
-    while( _timeX10 > _saveTime * timeScale + 1 )
+    while( _timeX10 > _saveTime * config::gamespeed::scale + 1 )
     {
       _saveTime++;
 

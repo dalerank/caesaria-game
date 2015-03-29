@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Disorder)
+
 class Disorder : public Srvc
 {
 public:
@@ -42,8 +44,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Disorder> DisorderPtr;
 
 }//end namespace city
 

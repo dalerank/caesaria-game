@@ -39,7 +39,9 @@ namespace infobox
 // base class for info boxes
 class Simple : public Window
 {
-public:
+public:  
+  static const Rect defaultRect;
+
   Simple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
   virtual ~Simple();
 

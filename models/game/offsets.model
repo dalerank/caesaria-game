@@ -21,6 +21,11 @@
   roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
   citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  marketlady : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  prefectdw  : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  prefectff : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  priest : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  marketkid : { start : 1, stop : 200, offset : [ -2, -2 ] }
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
@@ -33,12 +38,9 @@
   reservoir_full : { rc : "utilitya", start : 35, stop : 42, offset : [ -1, -1 ] }
   granary_ofs : { rc : "commerce", start : 140, stop : 152, offset : [ -1, -1 ] }
   market_poor_anim : { rc : "commerce", start : 2, stop : 10, offset : [ 62, 60 ] }
-  our_city_emp : { rc : "empire_bits", start : 1, stop : 1, offset : [ 0, 20 ] }
-  our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 14, 28 ] }
-  distant_city_emp : { rc : "empire_bits", start : 15, stop : 15, offset : [ 0, 20 ] }
-  distant_city_flag : { rc : "empire_bits", start : 16, stop : 21, offset : [ 18, 28 ] }
-  foreing_city_emp : { rc : "empire_bits", start : 8, stop : 8, offset : [ 0, 20 ] }
-  foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 18, 28 ] }
-  rome_emp : { rc : "roma", start : 1, stop : 1, offset : [ 0, 35 ] }
+  our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 14, 8 ] }
+  distant_city_flag : { rc : "empire_bits", start : 16, stop : 21, offset : [ 18, 8 ] }
+  foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 18, 8 ] }
   illhouse_anim : { rc : "illhouse", start : 1, stop : 42, offset : [ -2, -2 ] }
+  theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ -1, -1 ] }
 }

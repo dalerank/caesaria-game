@@ -18,14 +18,14 @@
 #ifndef _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
 #define _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
 
-#include "event.hpp"
+#include "ranged.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 namespace events
 {
 
-class RandomFire : public GameEvent
+class RandomFire : public Ranged
 {
 public:
   static GameEventPtr create();

@@ -27,7 +27,7 @@ class Barbarian : public Army
 {
 public:
   static const Point startLocation;
-  static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1,-1) );
+  static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1, -1) );
   virtual std::string type() const;
 
   virtual void timeStep( unsigned int time );
@@ -36,6 +36,7 @@ public:
   virtual void load(const VariantMap &stream);
   virtual void updateStrength( int value );
   virtual int viewDistance() const;
+  virtual std::string about(Object::AboutType type);
   void setMinpop4attack( int value );
 
 protected:

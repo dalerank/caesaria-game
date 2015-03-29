@@ -30,10 +30,10 @@ class TraineeWalker : public Human
 public:
   static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
 
-  void checkDestination(const object::Type buildingType, Propagator& pathPropagator);
   virtual int value() const;
   virtual void send2City( BuildingPtr base, bool roadOnly=true );
-  void setBase(Building &building);
+  void setBase(BuildingPtr building);
+  BuildingPtr receiver() const;
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
@@ -45,6 +45,7 @@ protected:
   TraineeWalker( PlayerCityPtr city, constants::walker::Type traineeType);
   void _computeWalkerPath( bool roadOnly );
 
+  void _checkDestination(const object::Type buildingType, Propagator& pathPropagator);
   virtual void _reachedPathway();
   void _init(constants::walker::Type traineeType);
   void _cancelPath();

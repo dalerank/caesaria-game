@@ -28,7 +28,7 @@
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/training.hpp"
 #include "gui/film_widget.hpp"
 #include "world/empire.hpp"

@@ -458,7 +458,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip##") );
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
-  _d->disasterButton->setTooltipText( "##show_spots_of_city_troubles_tip##");
+  _d->disasterButton->setTooltipText( _("##show_spots_of_city_troubles_tip##") );
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
   _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );

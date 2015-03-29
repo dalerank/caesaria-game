@@ -33,6 +33,7 @@ public:
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
   virtual std::string thoughts(Thought th) const;
+  BuildingPtr base() const;
 
 protected:
   virtual void _centerTile();

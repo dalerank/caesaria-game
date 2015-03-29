@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(HealthCare)
+
 class HealthCare : public city::Srvc
 {
 public:
@@ -41,8 +43,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<HealthCare> HealthCarePtr;
 
 }//end namespace city
 
