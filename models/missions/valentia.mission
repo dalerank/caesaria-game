@@ -20,7 +20,7 @@
     favour : 60
     finishDate : "150.01.01"
     next : ":/missions/mission9.briefing"
-    title : "##win_praetor_title##"
+    title : "##consul##"
     win.text : "##valencia_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"

@@ -136,7 +136,7 @@
     employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
-    animation : { rc : "entertainment", start : 82, count : 9, offset : [ 68, -6 ], delay : 2 }
+    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 135, 70 ], delay : 2 }
     sound : [ "artistpit", 1  ]
   },
 
@@ -254,7 +254,7 @@
     employers : 10
     class : "health"
     image : [ "security", 32 ]
-    animation : { rc : "security", start : 22, count : 10, offset : [ 0, 120 ], delay : 3 }
+    animation : { rc : "bathanim", start : 1, count : 29, offset : [ 0, 120 ], delay : 3 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
   }, 
@@ -558,6 +558,7 @@
     employers : 0
     class : "water"
     fullOffset : [ 0, 0 ]
+    animation : { rc : "resvanim", start : 1, count : 29, offset : [ 0, 211 ], delay : 4 }
     sound : [ "reservoir", 1 ]
   }, 
 
@@ -808,6 +809,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 5 ], delay : 3 }
   }
 }

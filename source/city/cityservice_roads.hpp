@@ -25,6 +25,8 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Roads)
+
 class Roads : public Srvc
 {
 public:

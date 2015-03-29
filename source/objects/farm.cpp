@@ -38,6 +38,7 @@
 #include "gfx/helper.hpp"
 #include "events/clearland.hpp"
 #include "objects_factory.hpp"
+#include "city/states.hpp"
 
 using namespace gfx;
 

@@ -37,14 +37,14 @@
 #include "events/fireworkers.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
 #include "city/victoryconditions.hpp"
 #include "house_plague.hpp"
 #include "objects_factory.hpp"
-#include "game/settings.hpp"
+#include "game/difficulty.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -258,19 +258,21 @@ void House::_checkPatricianDeals()
 
 void House::_updateTax()
 {
-	  int difficulty = SETTINGS_VALUE(difficulty);
-	  float multiply = 1.0f;
-	  switch (difficulty)
-	  {
-		case 0: multiply = 3.0f; break;
-		case 1: multiply = 2.0f; break;
-		case 2: multiply = 1.5f; break;
-		case 3: multiply = 1.0f; break;
-		case 4: multiply = 0.75f; break;
-	  }
+  int difficulty = _city()->getOption( PlayerCity::difficulty );
+  float multiply = 1.0f;
+  switch (difficulty)
+  {
+    case game::difficulty::fun: multiply = 3.0f; break;
+    case game::difficulty::easy: multiply = 2.0f; break;
+    case game::difficulty::simple: multiply = 1.5f; break;
+    case game::difficulty::usual: multiply = 1.0f; break;
+    case game::difficulty::nicety: multiply = 0.75f; break;
+    case game::difficulty::hard: multiply = 0.5f; break;
+    case game::difficulty::impossible: multiply = 0.25f; break;
+  }
 
-	float cityTax = _city()->funds().taxRate() / 100.f;
-	cityTax = (multiply * _d->habitants.count( CitizenGroup::mature ) / _d->spec.taxRate()) * cityTax;
+  float cityTax = _city()->treasury().taxRate() / 100.f;
+  cityTax = (multiply * _d->habitants.count( CitizenGroup::mature ) / _d->spec.taxRate()) * cityTax;
 
   _d->money -= cityTax;
   _d->tax += cityTax;
@@ -824,7 +826,7 @@ void House::_levelDown()
 
 void House::buyMarket( ServiceWalkerPtr walker )
 {
-  MarketPtr market = ptr_cast<Market>( walker->base() );
+  MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
   if( market.isNull() )
     return;
 
@@ -947,7 +949,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::market:
   {
-    MarketPtr market = ptr_cast<Market>( walker->base() );
+    MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
     good::Store& marketStore = market->goodStore();
     good::Store& houseStore = goodStore();
     foreach( goodType, good::all() )

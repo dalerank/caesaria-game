@@ -21,6 +21,7 @@
 #include "game/predefinitions.hpp"
 #include "game/service.hpp"
 #include "core/variant.hpp"
+#include "config.hpp"
 
 namespace religion
 {

@@ -17,7 +17,7 @@
 
 #include "taxcollector.hpp"
 #include "city/statistic.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/house.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
@@ -88,6 +88,11 @@ std::string TaxCollector::thoughts(Thought th) const
   }
 
   return ServiceWalker::thoughts(th);
+}
+
+BuildingPtr TaxCollector::base() const
+{
+  return ptr_cast<Building>( _city()->getOverlay( baseLocation() ) );
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )

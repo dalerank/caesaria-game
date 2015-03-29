@@ -46,4 +46,6 @@ public:
   }
 };
 
+typedef TilePosArray Locations;
+
 #endif//CAESARIA_TILEPOS_ARRAY_HPP

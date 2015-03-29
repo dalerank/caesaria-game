@@ -24,13 +24,10 @@
 using namespace constants;
 using namespace gfx;
 
-CAESARIA_LITERALCONST(sldAction)
-CAESARIA_LITERALCONST(attackDistance)
-
 class Soldier::Impl
 {
 public:
-  Soldier::SldrAction action;
+  Soldier::SldrAction sldAction;
   float strikeForce;
   float resistance;
   TilePos possibleAttackPos;
@@ -114,10 +111,10 @@ void Soldier::save(VariantMap& stream) const
 {
   Walker::save( stream );
   __D_IMPL_CONST(d,Soldier);
-  stream[ lc_sldAction ] = (int)d->action;
-  VARIANT_SAVE_ANY_D( stream, d,strikeForce )
+  VARIANT_SAVE_ENUM_D(stream, d, sldAction )
+  VARIANT_SAVE_ANY_D( stream, d, strikeForce )
   VARIANT_SAVE_ANY_D( stream, d, resistance )
-  stream[ lc_attackDistance ] = (int)d->attackDistance;
+  VARIANT_SAVE_ANY_D( stream, d, attackDistance )
   VARIANT_SAVE_ANY_D( stream, d, morale )
 }
 
@@ -125,17 +122,17 @@ void Soldier::load(const VariantMap& stream)
 {
   Walker::load( stream );
   __D_IMPL(d,Soldier)
-  d->action = (Soldier::SldrAction)stream.get( lc_sldAction ).toInt();
-  VARIANT_LOAD_ANY_D( d, strikeForce, stream )
-  VARIANT_LOAD_ANY_D( d, resistance, stream )
-  d->attackDistance = stream.get( lc_attackDistance ).toUInt();
-  VARIANT_LOAD_ANY_D( d, morale, stream )
+  VARIANT_LOAD_ENUM_D(d, sldAction,         stream )
+  VARIANT_LOAD_ANY_D( d, strikeForce,    stream )
+  VARIANT_LOAD_ANY_D( d, resistance,     stream )
+  VARIANT_LOAD_ANY_D( d, attackDistance, stream )
+  VARIANT_LOAD_ANY_D( d, morale,         stream )
 }
 
 unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 
-Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->action; }
-void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->action = action; }
+Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->sldAction; }
+void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->sldAction = action; }
 void Soldier::setAttackDistance(unsigned int distance) { _dfunc()->attackDistance = distance; }
 void Soldier::addFriend(walker::Type friendType){  _dfunc()->friends.insert( friendType );}
 
@@ -146,7 +143,7 @@ bool Soldier::isFriendTo(WalkerPtr wlk) const
   {
     isFriend = WalkerRelations::isNeutral( type(), wlk->type() );
 
-    if( nation() != world::unknownNation )
+    if( nation() != world::nation::unknown )
     {
       isFriend = WalkerRelations::isNeutral( nation(), wlk->nation() );
     }

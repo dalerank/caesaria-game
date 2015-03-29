@@ -26,7 +26,7 @@
 #include "gfx/engine.hpp"
 #include "core/foreach.hpp"
 #include "city/statistic.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "objects/constants.hpp"
 #include "objects/working.hpp"
@@ -205,8 +205,8 @@ void Employer::Impl::updateYearlyWages()
 
 void Employer::Impl::changeSalary(int relative)
 {
-  int currentSalary = city->funds().workerSalary();
-  city->funds().setWorkerSalary( currentSalary+relative );
+  int currentSalary = city->treasury().workerSalary();
+  city->treasury().setWorkerSalary( currentSalary+relative );
   updateSalaryLabel();
   updateYearlyWages();
 }
@@ -252,7 +252,7 @@ void Employer::Impl::update()
 
 void Employer::Impl::updateSalaryLabel()
 {
-  int pay = city->funds().workerSalary();
+  int pay = city->treasury().workerSalary();
   int romePay = city->empire()->workerSalary();
   std::string salaryString = utils::format( 0xff, "%s %d (%s %d)",
                                             _("##advemployer_panel_denaries##"), pay,

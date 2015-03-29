@@ -31,9 +31,9 @@
 
 namespace city
 {
-class Funds;
 class VictoryConditions;
-
+class Scribes;
+class ActivePoints;
 namespace trade { class Options; }
 namespace development { class Options; }
 }
@@ -51,7 +51,7 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
-                 fireKoeff, barbarianAttack, c3gameplay } OptionType;
+                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
@@ -69,7 +69,6 @@ public:
 
   const city::SrvcList& services() const;
 
-  OverlayList& overlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -78,19 +77,14 @@ public:
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
   virtual DateTime lastAttack() const;
-  virtual world::Nation nation() const;
 
   PlayerPtr mayor() const;
   
   void setCameraPos(const TilePos pos);
   TilePos cameraPos() const;
      
-  ClimateType climate() const;
-  void setClimate(const ClimateType);
+  econ::Treasury& treasury();
 
-  city::Funds& funds();
-
-  unsigned int population() const;
   virtual int strength() const;
   int prosperity() const;
   int culture() const;
@@ -103,14 +97,18 @@ public:
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
 
-  // add construction
+  // add overlay
   void addOverlay( OverlayPtr overlay);
   OverlayPtr getOverlay( const TilePos& pos ) const;
+  OverlayList& overlays();
+
+  city::ActivePoints& activePoints();
+  city::Scribes& scribes();
 
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );
 
-  virtual unsigned int age() const;
+  virtual const city::States& states() const;
 
   const city::VictoryConditions& victoryConditions() const;
   void setVictoryConditions( const city::VictoryConditions& targets );
@@ -119,10 +117,11 @@ public:
 
   virtual void delayTrade(unsigned int month);
   virtual void addObject( world::ObjectPtr object );
-  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost);
-
-  virtual const good::Store& importingGoods() const;
-  virtual const good::Store& exportingGoods() const;
+  virtual void empirePricesChanged( good::Product gtype, const world::PriceInfo& prices );
+  virtual std::string about(Object::AboutType type);
+  virtual const good::Store& sells() const;
+  virtual const good::Store& buys() const;
+  virtual ClimateType climate() const;
   virtual unsigned int tradeType() const;
 
   void setOption( OptionType opt, int value );

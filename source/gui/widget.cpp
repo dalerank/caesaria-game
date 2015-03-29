@@ -29,6 +29,7 @@
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
+#include "rect_calc.hpp"
 
 namespace gui
 {
@@ -520,41 +521,14 @@ void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 static int __convStr2RelPos( Widget* w, std::string s )
 {
   s = utils::trim( s );
-  std::string dd = s.substr( 0, 2 );
-  int lenght = 0;
-  if( dd == "pw" ) { lenght = w->parent()->width(); }
-  else if( dd == "ph" ) { lenght = w->parent()->height(); }
-  else dd = "";
 
-  if( !dd.empty() )
-  {
-    std::string opStr = s.substr( 2, 1 );
-    char operation = opStr.empty() ? 0 : opStr[ 0 ];
-    int value = utils::toFloat( s.substr( 3 ) );
-    switch( operation )
-    {
-    case '-':
-    case '+':
-      return lenght + (operation == '-' ? -1 : 1) * value;
-    break;
-
-    case '/': return lenght/value; break;
-    case '*': return lenght*value; break;
-    }
-
-    Logger::warning( "Widget::__convStr2RelPos unknown operation " + s );
-    return 20;
-  }
-  else
-  {
-    return utils::toInt( s );
-  }
+  WidgetCalc wcalc( *w );
+  return wcalc.eval( s );
 }
 
 void Widget::setupUI( const VariantMap& options )
 {
   __D_IMPL(_d,Widget)
-  //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
   _d->internalName = options.get( "name" ).toString();
   align::Helper ahelper;
   VariantList textAlign = options.get( "textAlign" ).toList();
@@ -611,6 +585,14 @@ void Widget::setupUI( const VariantMap& options )
     }
 
     setGeometry( r );
+  }
+
+  tmp = options.get( "size" );
+  if( tmp.isValid() )
+  {
+    Size s = tmp.toSize();
+    if( s.width() > 0 ) { setWidth( s.width()); }
+    if( s.height() > 0 ) { setHeight( s.height() ); }
   }
 
   setNotClipped( options.get( "noclipped", false ).toBool() );
@@ -765,13 +747,12 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
 
     if ( recursive )
     {
-        // update all children
-        ChildIterator it = _d->children.begin();
-        for (; it != _d->children.end(); ++it)
-        {
-            (*it)->_recalculateAbsolutePosition(recursive);
-        }
+      // update all children
+      foreach( it, _d->children )
+      {
+          (*it)->_recalculateAbsolutePosition(recursive);
       }
+    }
 }
 
 void Widget::animate( unsigned int timeMs )

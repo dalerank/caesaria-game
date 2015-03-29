@@ -46,6 +46,14 @@ public:
     return *this;
   }
 
+  SmartList& addIfValid( SmartPtr< T > a )
+  {
+    if( a.isValid() )
+      this->push_back( a );
+
+    return *this;
+  }
+
   SmartPtr<T> random() const
   {
     if( this->empty() )

@@ -43,31 +43,36 @@ void initialize(ClimateType climate)
 
   std::string optName;
   if( climate == central ) { optName = CAESARIA_STR_A(central); }
-  else if( climate == northen )  { optName = "north"; }
-  else if( climate == desert ) { optName = "south"; }
+  else if( climate == northen )  { optName = "north" || optName == CAESARIA_STR_A(northen); }
+  else if( climate == desert ) { optName = "south" || optName == CAESARIA_STR_A(desert); }
 
-  Path archivePath = climateArchives.get( optName ).toString();
-  Directory dir = archivePath.directory();
+  StringArray archives = climateArchives.get( optName ).toStringArray();
 
-  archivePath = dir.find( archivePath.baseName(), Path::ignoreCase );
-
-  ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
-
-  if( archive.isNull() )
+  foreach( it, archives )
   {
-    Logger::warning( "ClimateManager: can't load file " + archivePath.toString() );
-    return;
-  }
+    Path archivePath = *it;
+    Directory dir = archivePath.directory();
 
-  ResourceLoader rc;
-  NFile atlasInfo = archive->createAndOpenFile( "info" );
-  if( atlasInfo.isOpen() )
-  {
-    rc.loadAtlases( atlasInfo, false );
-  }
-  else
-  {
-    rc.loadFiles( archive );
+    archivePath = dir.find( archivePath.baseName(), Path::ignoreCase );
+
+    ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
+
+    if( archive.isNull() )
+    {
+      Logger::warning( "ClimateManager: can't load file " + archivePath.toString() );
+      continue;
+    }
+
+    ResourceLoader rc;
+    NFile atlasInfo = archive->createAndOpenFile( "info" );
+    if( atlasInfo.isOpen() )
+    {
+      rc.loadAtlases( atlasInfo, false );
+    }
+    else
+    {
+      rc.loadFiles( archive );
+    }
   }
 }
 

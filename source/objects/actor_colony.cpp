@@ -33,10 +33,8 @@ ActorColony::ActorColony() : TrainingBuilding( object::actorColony, Size(3) )
 
 void ActorColony::deliverTrainee()
 {
-  if( !walkers().empty() )
-  {
+  if( haveWalkers() )
     return;
-  }
 
   TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::actor );
   trainee->send2City( this );

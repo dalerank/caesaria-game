@@ -40,7 +40,7 @@ int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
 #endif
-{  
+{
   crashhandler::install();
 
   vfs::Directory workdir;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
   {
     Logger::warning( "Critical error: " + e.getDescription() );
 
-    crashhandler::print();
+    crashhandler::printstack();
   }
 
 #ifdef CAESARIA_USE_STEAM

@@ -41,12 +41,14 @@
 #include "warehouse_store.hpp"
 #include "objects_factory.hpp"
 #include "core/metric.hpp"
+#include "config.hpp"
 
 #include <list>
 
 using namespace gfx;
 using namespace constants;
 using namespace metric;
+using namespace config;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
@@ -129,7 +131,7 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _setClearAnimationOnStop( false );
 
-  _fgPicturesRef()[ 0 ] = Picture::load(ResourceGroup::warehouse, 1);
+  _fgPicturesRef()[ fgpic::idxMainPic ] = Picture::load(ResourceGroup::warehouse, 1);
   _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
   _fgPicturesRef()[ 2 ] = _animationRef().currentFrame();
   _fgPicturesRef()[ 3 ] = _d->animFlag.currentFrame();
@@ -193,21 +195,21 @@ void Warehouse::save( VariantMap& stream ) const
   WorkingBuilding::save( stream );
 
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
-  stream[ lc_goodStore ] = _d->goodStore.save();
+  stream[ literals::goodStore ] = _d->goodStore.save();
 
   VariantList vm_tiles;
   foreach( room, _d->rooms ) { vm_tiles.push_back( room->save() ); }
 
-  stream[ lc_tiles ] = vm_tiles;
+  stream[ literals::tiles ] = vm_tiles;
 }
 
 void Warehouse::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
 
-  _d->goodStore.load( stream.get( lc_goodStore ).toMap() );
+  _d->goodStore.load( stream.get( literals::goodStore ).toMap() );
   
-  VariantList vm_tiles = stream.get( lc_tiles ).toList();
+  VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
   foreach( it, vm_tiles )
   {

@@ -53,7 +53,7 @@ ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)
   return ret;
 }
 
-int Chastener::agressive() const { return -2; }
+int Chastener::agressive() const { return 3; }
 
 bool Chastener::die()
 {

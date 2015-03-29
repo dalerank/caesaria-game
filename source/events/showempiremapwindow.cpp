@@ -17,10 +17,12 @@
 #include "gui/empiremap_window.hpp"
 #include "game/game.hpp"
 #include "gui/environment.hpp"
+#include "warningmessage.hpp"
 #include "world/empire.hpp"
 #include "city/city.hpp"
 
 using namespace constants;
+using namespace gui;
 
 namespace events
 {
@@ -46,8 +48,16 @@ ShowEmpireMap::ShowEmpireMap() : _show( false )
 }
 
 void ShowEmpireMap::_exec(Game& game, unsigned int)
-{
-  List<gui::EmpireMapWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::EmpireMapWindow*>();
+{ 
+  if( !game.empire()->isAvailable() )
+  {
+    GameEventPtr e = WarningMessage::create( "##not_available##", 1 );
+    e->dispatch();
+
+    return;
+  }
+
+  List<EmpireMapWindow*> wndList = game.gui()->rootWidget()->findChildren<EmpireMapWindow*>();
 
   if( _show )
   {
@@ -57,7 +67,7 @@ void ShowEmpireMap::_exec(Game& game, unsigned int)
     }
     else
     {
-      gui::EmpireMapWindow::create( game.city(), game.gui()->rootWidget(), -1 );
+      EmpireMapWindow::create( game.city(), game.gui()->rootWidget(), -1 );
     }
   }
   else

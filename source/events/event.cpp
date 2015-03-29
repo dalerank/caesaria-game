@@ -36,10 +36,8 @@ using namespace gfx;
 namespace events
 {
 
-namespace {
 CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(name)
-}
 
 bool GameEvent::tryExec(Game& game, unsigned int time)
 {
@@ -58,15 +56,15 @@ void events::GameEvent::dispatch() { Dispatcher::instance().append( this );}
 VariantMap GameEvent::save() const
 {
   VariantMap ret;
-  ret[ lc_type ] = Variant( _type );
-  ret[ lc_name ] = Variant( _name );
+  ret[ literals::type ] = _type;
+  ret[ literals::name ] = _name;
   return ret;
 }
 
 void GameEvent::load(const VariantMap& stream)
 {
-  _type = stream.get( lc_type, Variant( _type ) ).toString();
-  _name = stream.get( lc_name, Variant( _name ) ).toString();
+  _type = stream.get( literals::type, Variant( _type ) ).toString();
+  _name = stream.get( literals::name, Variant( _name ) ).toString();
 }
 
 } //end namespace events

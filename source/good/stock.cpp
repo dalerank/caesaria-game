@@ -92,20 +92,22 @@ VariantList Stock::save() const
   return stream;
 }
 
+enum { idxType=0, idxCapacity, idxQty };
+
 void Stock::load( const VariantList& stream )
 {
   if( stream.empty())
     return;
 
-  _type = good::Product( stream.get( 0 ).toInt() );
+  _type = good::Product( stream.get( idxType ).toInt() );
   if( _type >= good::any() )
   {
     Logger::warning( "GoodStock: wrong type of good %d", _type );
     _type = good::none;
   }
 
-  _capacity = (int)stream.get( 1 );
-  _qty = math::clamp( (int)stream.get( 2 ), 0, _capacity );
+  _capacity = (int)stream.get( idxCapacity );
+  _qty = math::clamp( (int)stream.get( idxQty ), 0, _capacity );
 }
 
 bool Stock::empty() const {  return _qty == 0; }

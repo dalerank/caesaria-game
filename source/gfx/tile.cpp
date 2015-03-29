@@ -191,7 +191,7 @@ void Tile::setFlag(Tile::Type type, bool value)
   case wasDrawn: _wasDrawn = value; break;
   case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
-    }
+  }
 }
 
 OverlayPtr Tile::overlay() const  { return _overlay;}

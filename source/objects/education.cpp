@@ -44,7 +44,7 @@ School::School() : ServiceBuilding(Service::school, object::school, Size(2)), _d
   _d->maxMonthVisitors = 75;
 }
 
-int School::getVisitorsNumber() const { return _d->currentPeopleServed; }
+int School::currentVisitors() const { return _d->currentPeopleServed; }
 
 
 void School::deliverService()
@@ -101,14 +101,14 @@ Library::Library() : ServiceBuilding(Service::library, object::library, Size(2))
   setPicture( ResourceGroup::commerce, 84 );
 }
 
-int Library::getVisitorsNumber() const {  return 800; }
+int Library::currentVisitors() const {  return 800; }
 
 Academy::Academy() : ServiceBuilding(Service::academy, object::academy, Size(3))
 {
   setPicture( ResourceGroup::commerce, 85 );
 }
 
-int Academy::getVisitorsNumber() const {  return 100; }
+int Academy::currentVisitors() const {  return 100; }
 
 void Academy::deliverService()
 {

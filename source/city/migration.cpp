@@ -26,7 +26,7 @@
 #include "objects/road.hpp"
 #include "objects/house.hpp"
 #include "gfx/tile.hpp"
-#include "funds.hpp"
+#include "game/funds.hpp"
 #include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
@@ -38,9 +38,12 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
+#include "config.hpp"
+#include "city/states.hpp"
 
 using namespace constants;
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
@@ -48,11 +51,7 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(Migration,migration)
 
 namespace {
-const int possibleTaxLevel = 7;
 const int maxIndesirability = 100;
-const int simpleTaxLevel = 10;
-const int strongTaxLevel = 15;
-const int insaneTaxLevel = 20;
 const int noWorklessAward = 10;
 const int shacksPenalty = 10;
 const int warBlockedMigration = 50;
@@ -133,7 +132,7 @@ void Migration::timeStep( const unsigned int time )
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
-  const int diffSalary = _city()->empire()->workerSalary() - _city()->funds().workerSalary();
+  const int diffSalary = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
   int diffSalaryInfluence = diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city
@@ -150,11 +149,11 @@ void Migration::timeStep( const unsigned int time )
                           ? -noWorklessAward
                           : (curWorklessValue * (curWorklessValue < worklessCitizenAway ? 1 : 2));
 
-  int taxLevelInfluence = ( params[ Info::tax ] > possibleTaxLevel
+  int taxLevelInfluence = ( params[ Info::tax ] > migration::normalTax
                             ? params[ Info::tax ] * 2
-                            : (possibleTaxLevel-params[ Info::tax ]) );
+                            : (migration::normalTax-params[ Info::tax ]) );
 
-  const int& monthWithourWar = _city()->age() > 1
+  const int& monthWithourWar = _city()->states().age > 1
                                   ? params[ Info::monthWtWar ]
                                   : DateTime::monthsInYear;
 
@@ -169,7 +168,7 @@ void Migration::timeStep( const unsigned int time )
 
   if( _d->worklessMinInfluence > 0 )
   {
-    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city()->population(), 150 ) / _d->worklessMinInfluence;
+    _d->emigrantsIndesirability += worklessInfluence * std::min<int>( _city()->states().population, 150 ) / _d->worklessMinInfluence;
   }
   else
   {
@@ -282,9 +281,9 @@ std::string Migration::reason() const
 
     if( params[ Info::crimeLevel ] > 25 ) { troubles << "##migration_lack_crime##"; }
 
-    if( params[ Info::tax ] > strongTaxLevel )    { troubles << "##migration_broke_tax##";  }
-    else if( params[ Info::tax ] > simpleTaxLevel ) { troubles <<  "##migration_middle_lack_tax##"; }
-    else if( params[ Info::tax ] > possibleTaxLevel ) { troubles << "##migration_lack_tax##"; }
+    if( params[ Info::tax ] > migration::highTax )                   { troubles << "##migration_broke_tax##";  }
+    else if( params[ Info::tax ] > migration::uncomfortableTax ) { troubles <<  "##migration_middle_lack_tax##"; }
+    else if( params[ Info::tax ] > migration::normalTax )        { troubles << "##migration_lack_tax##"; }
 
     if( params[ Info::sentiment ] < 50 ) { troubles << "##poor_city_mood_lack_migration##";}
 
@@ -302,13 +301,13 @@ std::string Migration::leaveCityReason() const
   if( lastMonthMigration() < 0 )
   {
     Info::Parameters lastParams = _d->lastMonthParams( _city() );
-    if( lastParams[ Info::tax ] > insaneTaxLevel )
+    if( lastParams[ Info::tax ] > migration::insaneTax )
       return "##people_leave_city_insane_tax##";
 
-    if( lastParams[ Info::payDiff ] > 5 )
+    if( lastParams[ Info::payDiff ] > migration::uncomfortableWageDiff )
       return "##people_leave_city_low_wage##";
 
-    if( lastParams[ Info::workless ] > 15 )
+    if( lastParams[ Info::workless ] > workless::high )
       return "##migration_people_away##";
 
     return "##people_leave_city_some##";
@@ -375,7 +374,7 @@ bool Migration::Impl::isPoorHousing(int shacks, int houses)
 
 float Migration::Impl::getMigrationKoeff( PlayerCityPtr city )
 {
-  return ( std::min<float>( city->population(), 300 ) / 300.f );
+  return ( std::min<float>( city->states().population, 300 ) / 300.f );
 }
 
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCityPtr city )

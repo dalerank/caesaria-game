@@ -21,7 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
 #include "objects/overlay.hpp"
-#include "good/good.hpp"
+#include "good/productmap.hpp"
 #include "predefinitions.hpp"
 #include "festivaltype.hpp"
 #include "objects/constants.hpp"
@@ -36,9 +36,14 @@ namespace city
 
 namespace statistic
 {
-typedef std::map< good::Product, int > GoodsMap;
 
-void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
+struct WorkersInfo
+{
+  int current;
+  int need;
+};
+
+WorkersInfo getWorkersNumber( PlayerCityPtr city );
 CitizenGroup getPopulation( PlayerCityPtr city );
 unsigned int getWorkersNeed( PlayerCityPtr city );
 unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
@@ -60,7 +65,7 @@ unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::Type checkTypes);
 unsigned int getCrimeLevel( PlayerCityPtr city );
-GoodsMap getGoodsMap(PlayerCityPtr city , bool includeGranary);
+good::ProductMap getProductMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
 int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
@@ -221,6 +226,9 @@ SmartPtr<T> prewo( PlayerCityPtr r, SmartPtr<T> current)
 template<class T>
 SmartPtr<T> finds( PlayerCityPtr r)
 {
+  if( r.isNull() )
+    return 0;
+
   SrvcPtr ret = r->findService( T::defaultName() );
   return ptr_cast<T>( ret );
 }
@@ -273,6 +281,23 @@ SmartList< T > findo( PlayerCityPtr r, object::Group group )
     if( b.isValid() && (b->group() == group || group == object::group::any ) )
     {
       ret.push_back( b );
+    }
+  }
+
+  return ret;
+}
+
+template< class T >
+SmartList< T > findoex( PlayerCityPtr r, std::set<object::Type> which )
+{
+  OverlayList ret;
+  SmartList<T> ovs = r->overlays();
+
+  foreach( it, ovs )
+  {
+    if( which.count( (*it)->type ) == 0 )
+    {
+      ret << *it;
     }
   }
 

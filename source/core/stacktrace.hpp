@@ -24,7 +24,7 @@ namespace crashhandler
 {
 void install();
 void remove();
-void print(unsigned int starting_frame = 0, unsigned int max_frames = 63);
+void printstack(unsigned int starting_frame = 0, unsigned int max_frames = 63);
 }
 
 #endif //__CAESARIA_STACKTRACE_H_INCLUDED__

@@ -75,8 +75,10 @@ public:
   void load( const std::string &prefix,
              const int start, const int number,
              bool reverse = false, const int step = 1);
-  VariantMap save() const;
+  void load( const std::string& alias );
   void load( const VariantMap& stream );
+
+  VariantMap save() const;
 
   bool isValid() const;
   void addFrame( const Picture& pic );

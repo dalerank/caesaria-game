@@ -15,26 +15,34 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERDAMAGE_H_INCLUDED__
-#define __CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#ifndef _CAESARIA_GIFT_H_INCLUDE_
+#define _CAESARIA_GIFT_H_INCLUDE_
 
-#include "layerinfo.hpp"
+#include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
+#include "core/variant_map.hpp"
 
-namespace citylayer
-{
-
-class Damage : public Info
+class Gift
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void handleEvent(NEvent& event);
+  const std::string& name() const;
+  const std::string& sender() const;
+  const DateTime& date() const;
+  int value() const;
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  void load(const VariantMap& stream);
+  VariantMap save() const;
 
+  Gift& operator=(const Gift& a);
+
+  Gift();
+  Gift( const Gift& a );
+  Gift( const std::string& sender, const std::string& name, int money, int data=-1 );
+  ~Gift();
 private:
-  Damage( gfx::Camera& camera, PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-}//end namespace citylayer
-#endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#endif //_CAESARIA_GIFT_H_INCLUDE_
