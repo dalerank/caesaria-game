@@ -155,11 +155,18 @@ Path Path::removeEndSlash() const
 
 char Path::lastChar() const { return _d->path.empty() ? 0 : *_d->path.rbegin(); }
 char Path::firstChar() const { return _d->path.empty() ? 0 : *_d->path.begin(); }
+bool Path::empty() const { return _d->path.empty(); }
 
 bool Path::exist(SensType sens) const
 {
+  if( empty() )
+  {
+    return false;
+  }
+
   return FileSystem::instance().existFile( *this, sens );
 }
+
 
 bool Path::isFolder() const
 {

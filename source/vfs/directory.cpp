@@ -120,7 +120,7 @@ Path Directory::find(const Path& fileName, SensType sens) const
 {
   if( fileName.toString().empty() )
   {
-    Logger::warning( "Directory: cannot try find zero lenght name" );
+    Logger::warning( "!!! WARNING: Directory: cannot try find zero lenght name" );
     return "";
   }
 

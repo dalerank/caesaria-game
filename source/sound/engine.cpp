@@ -115,9 +115,10 @@ int Engine::maxVolumeValue() const {  return 100; }
 Engine::Engine() : _d( new Impl )
 {
   _d->useSound = false;
-  _d->volumes[ gameSound ] = maxVolumeValue();
-  _d->volumes[ themeSound ] = maxVolumeValue() / 2;
-  _d->volumes[ ambientSound ] = maxVolumeValue() / 4;
+  _d->volumes[ game ] = maxVolumeValue();
+  _d->volumes[ theme ] = maxVolumeValue() / 2;
+  _d->volumes[ ambient ] = maxVolumeValue() / 4;
+  _d->volumes[ speech ] = maxVolumeValue() / 2;
 
   _d->extensions << ".ogg" << ".wav";
   addFolder( vfs::Directory() );
@@ -189,30 +190,36 @@ void Engine::exit() {  Mix_CloseAudio(); }
 
 vfs::Path Engine::Impl::findFullPath( const std::string& sampleName )
 {
-  vfs::Path sPath( sampleName );
-  vfs::Path realPath;
+  const vfs::Path sPath( sampleName );
+  vfs::Path rPath;
 
-  if( realPath.extension().empty() )
+  if( sPath.extension().empty() )
   {
-    foreach( dirIt, folders )
+    vfs::Path fPath;
+    foreach( it, extensions )
     {
-      foreach( it, extensions )
-      {
-        realPath = ((*dirIt)/sPath) + *it;
+      fPath = sPath.toString() + *it;
+      if( fPath.exist() )
+        return fPath;
 
-        if( realPath.exist() )
-          return realPath;
+      foreach( dirIt, folders )
+      {
+        rPath = dirIt->find( fPath, vfs::Path::ignoreCase );
+        if( !rPath.empty() )
+          return rPath;
       }
     }
   }
   else
   {
+    if( sPath.exist() )
+      return sPath;
+
     foreach( dirIt, folders )
     {
-      realPath = (*dirIt)/sPath;
-
-      if( realPath.exist() )
-        return realPath;
+      rPath = dirIt->find( sPath, vfs::Path::ignoreCase );
+      if( !rPath.empty() )
+        return rPath;
     }
   }
 
@@ -224,7 +231,9 @@ bool Engine::_loadSound(const std::string& sampleName)
   if(!_d->useSound)
     return false;
 
-  unsigned int sampleHash = Hash( sampleName );
+  std::string sampleCanonical = utils::localeLower( sampleName );
+
+  unsigned int sampleHash = Hash( sampleCanonical );
   if( _d->samples.size()<Impl::maxSamplesNumner )
   {
     Impl::Samples::iterator i = _d->samples.find( sampleHash );
@@ -234,7 +243,7 @@ bool Engine::_loadSound(const std::string& sampleName)
       return true;
     }
 
-    vfs::Path realPath = _d->findFullPath( sampleName );
+    vfs::Path realPath = _d->findFullPath( sampleCanonical );
 
     if( realPath.toString().empty() )
       return false;
@@ -273,7 +282,7 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
   _d->clearFinishedChannels();
   _d->resetIfalias( sampleName );
 
-  if( type == themeSound )
+  if( type == theme )
   {
     stop( _d->currentTheme );
     _d->currentTheme = sampleName;
@@ -304,7 +313,7 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
 
     float result = math::clamp( volValue, 0, maxVolumeValue() ) / 100.f;
     float typeVolume = volume( type ) / 100.f;
-    float gameVolume = volume( audio::gameSound ) / 100.f;
+    float gameVolume = volume( audio::game ) / 100.f;
 
     result = ( result * typeVolume * gameVolume ) * (2 * MIX_MAX_VOLUME);
     Mix_Volume( i->second.channel, (int)result);
@@ -382,7 +391,7 @@ void Engine::_updateSamplesVolume()
     {
       float result = math::clamp<int>( sample.volume, 0, maxVolumeValue() ) / 100.f;
       float typeVolume = volume( sample.typeSound ) / 100.f;
-      float gameVolume = volume( audio::gameSound ) / 100.f;
+      float gameVolume = volume( audio::game ) / 100.f;
 
       result = ( result * typeVolume * gameVolume ) * ( 2 * MIX_MAX_VOLUME );
       Mix_Volume( sample.channel, (int)result );
@@ -414,6 +423,34 @@ void  Engine::Impl::resetIfalias(std::string& sampleName)
   Aliases::iterator it = aliases.find( Hash( sampleName ) );
   if( it != aliases.end() )
     sampleName = it->second;
+}
+
+void Muter::activate(int value)
+{
+  Engine& ae = Engine::instance();
+  _states[ ambient ] = ae.volume( ambient );
+  _states[ theme ] = ae.volume( theme );
+
+  ae.setVolume( audio::ambient, value );
+  ae.setVolume( audio::theme, value );
+}
+
+Muter::~Muter()
+{
+  Engine& ae = Engine::instance();
+  foreach( it, _states )
+    ae.setVolume( it->first, it->second );
+}
+
+SampleDeleter::~SampleDeleter()
+{
+  if( !_sample.empty() )
+    Engine::instance().stop( _sample );
+}
+
+void SampleDeleter::assign(const std::string& sampleName)
+{
+  _sample = sampleName;
 }
 
 }//end namespace audio

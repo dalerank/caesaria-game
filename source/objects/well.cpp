@@ -75,6 +75,11 @@ bool Well::isNeedRoad() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
+std::string Well::sound() const
+{
+  return ServiceBuilding::sound();
+}
+
 bool Well::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );

@@ -30,6 +30,7 @@ public:
   virtual void burn();
   virtual bool build(const city::AreaInfo &info);
   virtual bool isDestructible() const;
+  virtual std::string sound() const;
   gfx::TilesArray coverageArea() const;
 };
 

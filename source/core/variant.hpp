@@ -186,7 +186,7 @@ class Variant
   Variant( unsigned int ui);
   Variant( long long ll);
   Variant( unsigned long long ull);
-  Variant( bool b);
+  explicit Variant( bool b);
   Variant( double d);
   Variant( float f);
 
