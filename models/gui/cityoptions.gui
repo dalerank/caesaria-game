@@ -66,7 +66,7 @@
 
   lbFireRisk#Label :
   {
-    geometry : [ 16, 240, 220, 265 ]
+    geometry : [ 16, 240, 180, 265 ]
     font : "FONT_2"
   }
 
