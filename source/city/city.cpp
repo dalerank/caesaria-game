@@ -740,27 +740,27 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
   emit _d->onChangeBuildingOptionsSignal();
 }
 
-const city::States &PlayerCity::states() const { return _d->states; }
-Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
+const city::States &PlayerCity::states() const              { return _d->states; }
+Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
-Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
+Signal0<>&PlayerCity::onChangeBuildingOptions()             { return _d->onChangeBuildingOptionsSignal; }
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
-PlayerPtr PlayerCity::mayor() const { return _d->player; }
-city::trade::Options& PlayerCity::tradeOptions() { return _d->tradeOptions; }
-void PlayerCity::delayTrade(unsigned int month){  }
-const good::Store& PlayerCity::sells() const {   return _d->tradeOptions.sells(); }
-const good::Store& PlayerCity::buys() const {   return _d->tradeOptions.buys(); }
-ClimateType PlayerCity::climate() const{ return (ClimateType)getOption( PlayerCity::climateType ); }
-unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
-Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
-Signal1<int>& PlayerCity::onFundsChanged() {  return _d->treasury.onChange(); }
-void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
-TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
-void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
-void PlayerCity::setOption(PlayerCity::OptionType opt, int value){  _d->options[ opt ] = value; }
+PlayerPtr PlayerCity::mayor() const                         { return _d->player; }
+city::trade::Options& PlayerCity::tradeOptions()            { return _d->tradeOptions; }
+void PlayerCity::delayTrade(unsigned int month)             {  }
+const good::Store& PlayerCity::sells() const                { return _d->tradeOptions.sells(); }
+const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
+ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
+unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
+Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->onPopulationChangedSignal; }
+Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->treasury.onChange(); }
+void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
+TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
+void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 
 int PlayerCity::prosperity() const
 {
@@ -778,12 +778,9 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 void PlayerCity::clean()
 {
   foreach( it, _d->services )
-  {
     (*it)->destroy();
-  }
 
   _d->services.clear();
-
   _d->walkers.clear();
   _d->overlays.clear();
   _d->tilemap.resize( 0 );
@@ -881,14 +878,14 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      events::GameEventPtr e = events::ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
+      GameEventPtr e = ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
       e->dispatch();
     }
   }
   else if( is_kind_of<world::Messenger>( object ) )
   {
     world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
-    events::GameEventPtr e = events::ShowInfobox::create( msm->title(), msm->message() );
+    GameEventPtr e = ShowInfobox::create( msm->title(), msm->message() );
     e->dispatch();
   }
 }

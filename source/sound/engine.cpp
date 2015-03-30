@@ -37,6 +37,8 @@
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
 
+using namespace vfs;
+
 static void _resolveChannelFinished( int channel )
 {
   audio::Engine::instance().stop( channel );
@@ -53,6 +55,24 @@ struct Sample
   int volume;
   bool finished;
   Mix_Chunk* chunk;
+
+  void setVolume( int game, int type )
+  {
+    if( channel >= 0 )
+    {
+      float result = math::clamp<int>( volume, 0, 100 ) / 100.f;
+
+      result = ( result * (type/100.f) * (game/100.f) ) * ( 2 * MIX_MAX_VOLUME );
+
+      Mix_Volume( channel, (int)result );
+    }
+  }
+
+  void destroy()
+  {
+    if( channel >= 0 )
+      Mix_FreeChunk( chunk );
+  }
 };
 
 class Engine::Impl
@@ -64,7 +84,7 @@ public:
   typedef std::map< unsigned int, Sample > Samples;
   typedef std::map< audio::SoundType, int > Volumes;
   typedef std::map< unsigned int, std::string > Aliases;
-  typedef std::list< vfs::Directory > Folders;
+  typedef std::list< Directory > Folders;
   typedef std::map< unsigned int, ByteArray > SoundCache;
 
   Samples samples;
@@ -102,7 +122,7 @@ void Engine::loadAlias(const vfs::Path& filename)
   }
 }
 
-void Engine::addFolder(vfs::Directory dir) {  _d->folders.push_back( dir ); }
+void Engine::addFolder(Directory dir) {  _d->folders.push_back( dir ); }
 
 int Engine::volume(audio::SoundType type) const
 {
@@ -110,7 +130,7 @@ int Engine::volume(audio::SoundType type) const
   return it != _d->volumes.end() ? it->second : 0;
 }
 
-int Engine::maxVolumeValue() const {  return 100; }
+int Engine::maxVolumeValue() const { return 100; }
 
 Engine::Engine() : _d( new Impl )
 {
@@ -121,7 +141,7 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ speech ] = maxVolumeValue() / 2;
 
   _d->extensions << ".ogg" << ".wav";
-  addFolder( vfs::Directory() );
+  addFolder( Directory() );
 }
 
 Engine::~Engine() {}
@@ -188,14 +208,14 @@ void Engine::init()
 
 void Engine::exit() {  Mix_CloseAudio(); }
 
-vfs::Path Engine::Impl::findFullPath( const std::string& sampleName )
+Path Engine::Impl::findFullPath( const std::string& sampleName )
 {
-  const vfs::Path sPath( sampleName );
-  vfs::Path rPath;
+  const Path sPath( sampleName );
+  Path rPath;
 
   if( sPath.extension().empty() )
   {
-    vfs::Path fPath;
+    Path fPath;
     foreach( it, extensions )
     {
       fPath = sPath.toString() + *it;
@@ -204,7 +224,7 @@ vfs::Path Engine::Impl::findFullPath( const std::string& sampleName )
 
       foreach( dirIt, folders )
       {
-        rPath = dirIt->find( fPath, vfs::Path::ignoreCase );
+        rPath = dirIt->find( fPath, Path::ignoreCase );
         if( !rPath.empty() )
           return rPath;
       }
@@ -217,13 +237,13 @@ vfs::Path Engine::Impl::findFullPath( const std::string& sampleName )
 
     foreach( dirIt, folders )
     {
-      rPath = dirIt->find( sPath, vfs::Path::ignoreCase );
+      rPath = dirIt->find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
         return rPath;
     }
   }
 
-  return vfs::Path();
+  return Path();
 }
 
 bool Engine::_loadSound(const std::string& sampleName)
@@ -251,7 +271,7 @@ bool Engine::_loadSound(const std::string& sampleName)
     Sample sample;
 
     /* load the sample */
-    vfs::NFile soundFile = vfs::NFile::open( realPath );
+    NFile soundFile = NFile::open( realPath );
     ByteArray data = soundFile.readAll();
 
     if( data.empty() )
@@ -320,7 +340,6 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
     return i->second.channel;
   }
 
-
   return -1;
 }
 
@@ -384,36 +403,31 @@ void Engine::_updateSamplesVolume()
   if( !_d->useSound )
     return;
 
+  int gameLvl = volume( audio::game );
+
   foreach( it, _d->samples )
   {
-    const Sample& sample = it->second;
-    if( sample.channel >= 0 )
-    {
-      float result = math::clamp<int>( sample.volume, 0, maxVolumeValue() ) / 100.f;
-      float typeVolume = volume( sample.typeSound ) / 100.f;
-      float gameVolume = volume( audio::game ) / 100.f;
-
-      result = ( result * typeVolume * gameVolume ) * ( 2 * MIX_MAX_VOLUME );
-      Mix_Volume( sample.channel, (int)result );
-    }
+    Sample& sample = it->second;
+    int typeVlm = volume( sample.typeSound );
+    sample.setVolume( gameLvl, typeVlm );
   }
 }
 
 void Helper::initTalksArchive(const vfs::Path& filename)
 { 
-  static vfs::Path saveFilename;
+  static Path saveFilename;
 
-  vfs::FileSystem::instance().unmountArchive( saveFilename );
+  FileSystem::instance().unmountArchive( saveFilename );
 
   saveFilename = filename;
-  vfs::FileSystem::instance().mountArchive( saveFilename );
+  FileSystem::instance().mountArchive( saveFilename );
 }
 
 void Engine::Impl::clearFinishedChannels()
 {
   for( Samples::iterator it=samples.begin(); it != samples.end();  )
   {
-    if( it->second.finished ) { Mix_FreeChunk( it->second.chunk ); samples.erase( it++ ); }
+    if( it->second.finished ) { sample.destroy(); samples.erase( it++ ); }
     else { ++it; }
   }
 }

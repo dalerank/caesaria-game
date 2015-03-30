@@ -54,14 +54,24 @@ namespace city
 
 REGISTER_SERVICE_IN_FACTORY(Disorder,disorder)
 
+struct CrimeLevel
+{
+  int minimum;
+  int current;
+  int maximum;
+};
+
+struct RiotersInfo
+{
+  int thisYear;
+  int lastYear;
+};
+
 class Disorder::Impl
 {
 public:
-  int minCrimeLevel;
-  int currentCrimeLevel;
-  int maxCrimeLevel;
-  int rioterInThisYear;
-  int rioterInLastYear;
+  CrimeLevel crimeLvl;
+  RiotersInfo riotersInfo;
   DateTime lastMessageDate;
 
 public:
@@ -83,17 +93,17 @@ std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
 Disorder::Disorder( PlayerCityPtr city )
   : Srvc( city, Disorder::defaultName() ), _d( new Impl )
 {
-  _d->minCrimeLevel = crime::defaultValue;
-  _d->currentCrimeLevel = 0;
-  _d->maxCrimeLevel = 0;
+  _d->crimeLvl.minimum = crime::defaultValue;
+  _d->crimeLvl.current = 0;
+  _d->crimeLvl.maximum = 0;
 }
 
 void Disorder::timeStep( const unsigned int time )
 {
   if( game::Date::isYearChanged() )
   {
-    _d->rioterInLastYear = _d->rioterInThisYear;
-    _d->rioterInThisYear = 0;
+    _d->riotersInfo.lastYear = _d->riotersInfo.thisYear;
+    _d->riotersInfo.thisYear = 0;
   }
 
   if( !game::Date::isWeekChanged() )
@@ -104,23 +114,23 @@ void Disorder::timeStep( const unsigned int time )
   WalkerList walkers = _city()->walkers( walker::protestor );
 
   HouseList criminalizedHouse;
-  _d->currentCrimeLevel = 0;
-  _d->maxCrimeLevel = 0;
+  _d->crimeLvl.current = 0;
+  _d->crimeLvl.maximum = 0;
 
   foreach( house, houses )
   {
-    int crimeLvl = (*house)->getServiceValue( Service::crime )+1;
-    if( crimeLvl >= _d->minCrimeLevel )
+    int currentValue = (*house)->getServiceValue( Service::crime )+1;
+    if( currentValue >= _d->crimeLvl.minimum )
     {
       criminalizedHouse.push_back( *house );
     }
 
-    _d->currentCrimeLevel += crimeLvl;
-    _d->maxCrimeLevel = std::max<int>( _d->maxCrimeLevel, crimeLvl );
+    _d->crimeLvl.current += currentValue;
+    _d->crimeLvl.maximum = std::max<int>( _d->crimeLvl.maximum, currentValue );
   }
 
   if( houses.size() > 0 )
-    _d->currentCrimeLevel /= houses.size();
+   _d->crimeLvl.current /= houses.size();
 
   if( criminalizedHouse.size() > walkers.size() )
   {
@@ -170,34 +180,34 @@ void Disorder::timeStep( const unsigned int time )
 std::string Disorder::reason() const
 {
   int limiter = crime::maxValue / crime::maxLevel;
-  int crimeLevel = math::clamp<int>( _d->currentCrimeLevel / limiter, 0, crime::maxLevel-1 );
+  int currentValue = math::clamp<int>( _d->crimeLvl.current / limiter, 0, crime::maxLevel-1 );
 
   StringArray troubles;
-  troubles << crimeDesc[ crimeLevel ];
+  troubles << crimeDesc[ currentValue ];
 
-  if( _d->maxCrimeLevel > crime::defaultValue )           {    troubles << "##advchief_high_crime_in_district##";  }
-  else if( _d->maxCrimeLevel > crime::defaultValue / 2 )  {    troubles << "##advchief_which_crime_in_district##";  }
-  else if( _d->maxCrimeLevel > crime::defaultValue / 5 )  {    troubles << "##advchief_low_crime##";  }
+  if( _d->crimeLvl.maximum > crime::defaultValue )           { troubles << "##advchief_high_crime_in_district##";  }
+  else if( _d->crimeLvl.maximum > crime::defaultValue / 2 )  { troubles << "##advchief_which_crime_in_district##";  }
+  else if( _d->crimeLvl.maximum > crime::defaultValue / 5 )  { troubles << "##advchief_low_crime##";  }
 
   return troubles.random();
 }
 
-unsigned int Disorder::value() const { return _d->currentCrimeLevel; }
+unsigned int Disorder::value() const { return _d->crimeLvl.current; }
 
 VariantMap Disorder::save() const
 {
   VariantMap ret;
-  VARIANT_SAVE_ANY_D( ret, _d, rioterInLastYear )
-  VARIANT_SAVE_ANY_D( ret, _d, rioterInThisYear )
+  VARIANT_SAVE_ANY_D( ret, _d, riotersInfo.lastYear )
+  VARIANT_SAVE_ANY_D( ret, _d, riotersInfo.thisYear )
   VARIANT_SAVE_ANY_D( ret, _d, lastMessageDate )
   return ret;
 }
 
 void Disorder::load(const VariantMap &stream)
 {
-  VARIANT_LOAD_ANY_D( _d, rioterInLastYear, stream )
-  VARIANT_LOAD_ANY_D( _d, rioterInThisYear, stream )
-  VARIANT_LOAD_TIME_D( _d, lastMessageDate, stream )
+  VARIANT_LOAD_ANY_D ( _d, riotersInfo.lastYear, stream )
+  VARIANT_LOAD_ANY_D ( _d, riotersInfo.thisYear, stream )
+  VARIANT_LOAD_TIME_D( _d, lastMessageDate,      stream )
 }
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
@@ -221,7 +231,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
     city->treasury().resolveIssue( econ::Issue( econ::Issue::moneyStolen, -moneyStolen ) );
   }
 
-  currentCrimeLevel++;
+  crimeLvl.current++;
 }
 
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
@@ -229,7 +239,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   GameEventPtr e = ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
                                         ShowInfobox::send2scribe, "spy_riot" );
   e->dispatch();
-  rioterInThisYear++;
+  riotersInfo.thisYear++;
 
   RioterPtr protestor = Rioter::create( city );
   protestor->send2City( ptr_cast<Building>( house ) );
