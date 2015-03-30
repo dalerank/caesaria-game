@@ -118,6 +118,10 @@ public:
 class Walkers : public FlowList<Walker>
 {
 public:
+  //walkers fast access map !!!
+  city::WalkersGrid grid;
+  //*********************** !!!
+
   Walker::UniqueId idCount;
 
   void append( WalkerPtr w )
@@ -126,9 +130,69 @@ public:
     w->setUniqueId( idCount );
     FlowList::append( w );
   }
+
+  void clear()
+  {
+    FlowList::clear();
+    grid.clear();
+  }
+
+  inline const WalkerList& at( const TilePos& pos ) { return grid.at( pos ); }
+
+  void update( PlayerCityPtr, unsigned int time )
+  {
+    WalkerList::iterator it = begin();
+    while( it != end() )
+    {
+      WalkerPtr walker = *it;
+      walker->timeStep( time );
+      if( walker->isDeleted() )
+      {
+        // remove the walker from the walkers list
+        //grid.remove( *it );
+        it = erase(it);
+      }
+      else { ++it; }
+    }
+
+    merge();
+
+    grid.update( *this );
+    grid.sort();
+  }
 };
 
-typedef FlowList<Overlay> Overlays;
+class Overlays : public FlowList<Overlay>
+{
+public:
+  void update( PlayerCityPtr city, unsigned int time )
+  {
+    iterator overlayIt = begin();
+    while( overlayIt != end() )
+    {
+      (*overlayIt)->timeStep( time );
+
+      if( (*overlayIt)->isDeleted() )
+      {
+        onDestroyOverlay( city, *overlayIt );
+        // remove the overlay from the overlay list
+        (*overlayIt)->destroy();
+        overlayIt = erase(overlayIt);
+      }
+      else
+      {
+        ++overlayIt;
+      }
+    }
+
+    merge();
+  }
+
+  void onDestroyOverlay( PlayerCityPtr city, OverlayPtr overlay )
+  {
+    Desirability::update( city, overlay, Desirability::off );
+  }
+};
 
 class PlayerCity::Impl
 {
@@ -143,10 +207,6 @@ public:
   city::ActivePoints activePoints;
   city::Scribes scribes;
   Picture empMapPicture;
-
-  //walkers fast access map !!!
-  city::WalkerGrid walkersGrid;
-  //*********************** !!!
 
   city::SrvcList services;
   BorderInfo borderInfo;
@@ -166,9 +226,6 @@ public:
   void payWages( PlayerCityPtr city );
   void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
-  void beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay );
-  void updateWalkers(unsigned int time);
-  void updateOverlays( PlayerCityPtr city, unsigned int time);
   void updateServices( PlayerCityPtr city, unsigned int time );
   void resolveNewIssue( econ::Issue::Type type );
 
@@ -236,10 +293,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 void PlayerCity::_initAnimation()
 {
   _animation().clear();
-
-  _animation().load( ResourceGroup::empirebits, 2, 6 );
-  _animation().setLoop( true );
-  _animation().setDelay( Animation::middle );
+  _animation().load( "ourcity_anim" );
 }
 
 std::string PlayerCity::about(Object::AboutType type)
@@ -273,11 +327,8 @@ void PlayerCity::timeStep(unsigned int time)
   }
 
   //update walkers access map
-  _d->walkersGrid.update( _d->walkers );
-  _d->walkersGrid.sort();
-
-  _d->updateWalkers( time );
-  _d->updateOverlays( this, time );
+  _d->walkers.update( this, time );
+  _d->overlays.update( this, time );
   _d->updateServices( this, time );
 
   if( getOption( updateRoads ) > 0 )
@@ -330,7 +381,7 @@ WalkerList PlayerCity::walkers( walker::Type rtype )
   return res;
 }
 
-const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkersGrid.at( pos ); }
+const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(const BorderInfo& info)
@@ -345,15 +396,15 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-OverlayList&  PlayerCity::overlays()         { return _d->overlays; }
-city::ActivePoints& PlayerCity::activePoints() { return _d->activePoints; }
-city::Scribes &PlayerCity::scribes() { return _d->scribes; }
-const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
-Picture PlayerCity::picture() const { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
-Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()  {  return _d->treasury;   }
+OverlayList&  PlayerCity::overlays()              { return _d->overlays; }
+city::ActivePoints& PlayerCity::activePoints()    { return _d->activePoints; }
+city::Scribes &PlayerCity::scribes()              { return _d->scribes; }
+const BorderInfo& PlayerCity::borderInfo() const  { return _d->borderInfo; }
+Picture PlayerCity::picture() const               { return _d->empMapPicture; }
+bool PlayerCity::isPaysTaxes() const              { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const       { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+Tilemap&          PlayerCity::tilemap()           { return _d->tilemap; }
+econ::Treasury& PlayerCity::treasury()            { return _d->treasury;   }
 
 int PlayerCity::strength() const
 {
@@ -380,10 +431,10 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
   float lastMonthTax = 0;
   
-  ForumList forums = city::statistic::findo< Forum >( city, object::forum );
+  ForumList forums = city::statistic::findo<Forum>( city, object::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = city::statistic::findo< Senate >( city, object::senate );
+  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   treasury.resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
@@ -424,53 +475,6 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   
   states.population = pop;
   emit onPopulationChangedSignal( pop );
-}
-
-void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, OverlayPtr overlay)
-{
-  Desirability::update( city, overlay, Desirability::off );
-}
-
-void PlayerCity::Impl::updateWalkers( unsigned int time )
-{
-  WalkerList::iterator walkerIt = walkers.begin();
-  while( walkerIt != walkers.end() )
-  {
-    WalkerPtr walker = *walkerIt;
-    walker->timeStep( time );
-    if( walker->isDeleted() )
-    {
-      // remove the walker from the walkers list
-      walkersGrid.remove( *walkerIt );
-      walkerIt = walkers.erase(walkerIt);
-    }
-    else { ++walkerIt; }
-  }
-
-  walkers.merge();
-}
-
-void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
-{
-  OverlayList::iterator overlayIt = overlays.begin();
-  while( overlayIt != overlays.end() )
-  {
-    (*overlayIt)->timeStep( time );
-
-    if( (*overlayIt)->isDeleted() )
-    {
-      beforeOverlayDestroyed( city, *overlayIt );
-      // remove the overlay from the overlay list
-      (*overlayIt)->destroy();
-      overlayIt = overlays.erase(overlayIt);
-    }
-    else
-    {
-      ++overlayIt;
-    }
-  }
-
-  overlays.merge();
 }
 
 void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
@@ -603,7 +607,7 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: start parse savemap" );
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
-  _d->walkersGrid.resize( Size( _d->tilemap.size() ) );
+  _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
   VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
   setOption( PlayerCity::forceBuild, 1 );
 
@@ -781,7 +785,6 @@ void PlayerCity::clean()
   _d->services.clear();
 
   _d->walkers.clear();
-  _d->walkersGrid.clear();
   _d->overlays.clear();
   _d->tilemap.resize( 0 );
 }
@@ -789,7 +792,7 @@ void PlayerCity::clean()
 void PlayerCity::resize( unsigned int size)
 {
   _d->tilemap.resize( size );
-  _d->walkersGrid.resize( Size( size ) );
+  _d->walkers.grid.resize( Size( size ) );
 }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )

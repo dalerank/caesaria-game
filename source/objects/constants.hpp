@@ -66,8 +66,8 @@ REGISTER_GROUP(wall,23)
 
 typedef std::set<Group> GroupSet;
 typedef std::vector<Group> Groups;
-typedef std::set<Type> TypeSet;
 typedef std::vector<Type> Types;
+typedef std::set<Type> TypeSet;
 
 //stuff
 #define REGISTER_ID_OBJECT_TYPE(type,a) static const Type type = Type(a);

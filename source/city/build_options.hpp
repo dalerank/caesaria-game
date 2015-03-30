@@ -53,6 +53,14 @@ Branch toBranch( const std::string& name );
 std::string toString( Branch branch );
 void loadBranchOptions( const std::string& filename );
 
+class Range : public object::TypeSet
+{
+public:
+  static Range fromBranch( const Branch branch);
+  static Range fromSequence( const object::Type start, const object::Type stop );
+  Range& operator<<( const object::Type type );
+};
+
 class Options : public ReferenceCounted
 {
 public:
@@ -67,14 +75,13 @@ public:
   bool isBuildingAvailble( const object::Type type ) const;
 
   void clear();
-
   void load( const VariantMap& options );
   VariantMap save() const;
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const object::Type start, const object::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const object::Type start, const object::Type stop) const;
+  void setBuildingAvailble(const Range& range, bool mayBuild);
+  bool isBuildingsAvailble(const Range& range) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

@@ -1,0 +1,21 @@
+{
+  Migration : { enabled : true }
+  WorkersHire : { enabled : true }
+  ProsperityRating : { enabled : true }
+  Shoreline : { enabled : true }
+  Info : { enabled : true }
+  CultureRating : { enabled : true }
+  Animals : { enabled : true }
+  Religion : { enabled : true }
+  Festival : { enabled : true }
+  Roads : { enabled : true }
+  Fishery : { enabled : true }
+  Disorder : { enabled : true }
+  requests : { enabled : true }
+  Military : { enabled : true }
+  audio_player : { enabled : true }
+  HealthCare : { enabled : true }
+  Peace : { enabled : true }
+  Sentiment : { enabled : true }
+  Fire : { enabled : true }
+}
