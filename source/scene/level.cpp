@@ -441,9 +441,11 @@ void Level::Impl::handleDirectionChange(Direction direction)
 std::string Level::Impl::getScreenshotName()
 {
   DateTime time = DateTime::getCurrenTime();
-  return utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
-                               time.year(), time.month(), time.day(),
-                               time.hour(), time.minutes(), time.seconds() );
+  vfs::Path filename = utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
+                                      time.year(), time.month(), time.day(),
+                                      time.hour(), time.minutes(), time.seconds() );
+  vfs::Directory screenDir = SETTINGS_VALUE( screenshotDir ).toString();
+  return (screenDir/filename).toString();
 }
 
 void Level::_resolveLoadGame( std::string filename )
@@ -628,7 +630,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
     {
       game->pause();
       Window* wnd = new Window( game->gui()->rootWidget(),
-                                          Rect( 0, 0, 400, 220 ), "" );
+                                Rect( 0, 0, 400, 220 ), "" );
       Label* lb = new Label( wnd, Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
       lb->setTextAlignment( align::center, align::center );
       lb->setFont( Font::create( FONT_6 ) );

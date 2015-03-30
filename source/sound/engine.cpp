@@ -75,13 +75,18 @@ struct Sample
   }
 };
 
+class Samples : public std::map< unsigned int, Sample >
+{
+public:
+
+};
+
 class Engine::Impl
 {
 public:
   static const int maxSamplesNumner = 64;
   bool useSound;
 
-  typedef std::map< unsigned int, Sample > Samples;
   typedef std::map< audio::SoundType, int > Volumes;
   typedef std::map< unsigned int, std::string > Aliases;
   typedef std::list< Directory > Folders;
@@ -98,6 +103,7 @@ public:
 public:
   void clearFinishedChannels();
   void resetIfalias( std::string& sampleName );
+
   vfs::Path findFullPath(const std::string& sampleName );
 };
 
@@ -246,17 +252,17 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   return Path();
 }
 
-bool Engine::_loadSound(const std::string& sampleName)
+unsigned int Engine::_loadSound(const std::string& sampleName)
 {
   if(!_d->useSound)
-    return false;
+    return 0;
 
   std::string sampleCanonical = utils::localeLower( sampleName );
 
   unsigned int sampleHash = Hash( sampleCanonical );
   if( _d->samples.size()<Impl::maxSamplesNumner )
   {
-    Impl::Samples::iterator i = _d->samples.find( sampleHash );
+    Samples::iterator i = _d->samples.find( sampleHash );
 
     if( i != _d->samples.end() )
     {
@@ -291,7 +297,7 @@ bool Engine::_loadSound(const std::string& sampleName)
     _d->samples[ sampleHash ] = sample;
   }
 
-  return true;
+  return sampleHash;
 }
 
 int Engine::play( std::string sampleName, int volValue, SoundType type )
@@ -308,11 +314,11 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
     _d->currentTheme = sampleName;
   }
 
-  bool isLoading = _loadSound( sampleName );
+  unsigned int sampleHash = _loadSound( sampleName );
 
-  if( isLoading )
+  if( sampleHash != 0 )
   {
-    Impl::Samples::iterator i = _d->samples.find( Hash( sampleName ) );
+    Samples::iterator i = _d->samples.find( sampleHash );
 
     if( i == _d->samples.end() )
     {
@@ -331,12 +337,10 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
     i->second.volume = volValue;
     i->second.finished = false;
 
-    float result = math::clamp( volValue, 0, maxVolumeValue() ) / 100.f;
-    float typeVolume = volume( type ) / 100.f;
-    float gameVolume = volume( audio::game ) / 100.f;
+    int typeVolume = volume( type );
+    int gameVolume = volume( audio::game );
+    i->second.setVolume( gameVolume, typeVolume );
 
-    result = ( result * typeVolume * gameVolume ) * (2 * MIX_MAX_VOLUME);
-    Mix_Volume( i->second.channel, (int)result);
     return i->second.channel;
   }
 
@@ -356,7 +360,7 @@ bool Engine::isPlaying(const std::string& sampleName) const
 
   std::string rname = sampleName;
   _d->resetIfalias( rname );
-  Impl::Samples::iterator i = _d->samples.find( Hash( rname ) );
+  Samples::iterator i = _d->samples.find( Hash( rname ) );
 
   if( i == _d->samples.end() )
   {
@@ -371,9 +375,10 @@ void Engine::stop(const std::string& sampleName) const
   if( !_d->useSound )
     return;
 
-  std::string rname = sampleName;
+  std::string rname = utils::localeLower( sampleName );
   _d->resetIfalias( rname );
-  Impl::Samples::iterator i = _d->samples.find( Hash( rname ) );
+
+  Samples::iterator i = _d->samples.find( Hash( rname ) );
 
   if( i == _d->samples.end() )
   {
@@ -427,7 +432,7 @@ void Engine::Impl::clearFinishedChannels()
 {
   for( Samples::iterator it=samples.begin(); it != samples.end();  )
   {
-    if( it->second.finished ) { sample.destroy(); samples.erase( it++ ); }
+    if( it->second.finished ) { it->second.destroy(); samples.erase( it++ ); }
     else { ++it; }
   }
 }

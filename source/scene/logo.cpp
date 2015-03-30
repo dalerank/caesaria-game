@@ -139,7 +139,7 @@ void SplashScreen::exitScene(bool showDevText)
          << "therefore this game still has a lot of bugs and some features are not complete!"
          << "This version is not tested, as well, be aware of that"
          << "You can support the development of this game at"
-         << " www.bitbucket.org/dalerank/caesaria"
+         << "www.caesaria.net"
          << "If you encounter bugs or crashes please send us a report";
 
     int offset = 0;

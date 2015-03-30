@@ -97,6 +97,7 @@ public:
   __GS_PROPERTY(playerName)
   __GS_PROPERTY(lastGame)
   __GS_PROPERTY(tooltipEnabled)
+  __GS_PROPERTY(screenshotDir)
 #undef __GS_PROPERTY
 
   static Settings& instance();

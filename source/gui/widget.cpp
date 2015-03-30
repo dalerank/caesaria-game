@@ -34,6 +34,8 @@
 namespace gui
 {
 
+CAESARIA_LITERALCONST(vars)
+
 void Widget::beforeDraw(gfx::Engine& painter )
 {
   __D_IMPL(d,Widget)
@@ -460,7 +462,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
     {
         // ignore invisible elements and their children
         if ( ( (*it)->visible() || includeInvisible ) &&
-            (group == true || (*it)->hasTabgroup() == false) )
+             (group == true || (*it)->hasTabgroup() == false) )
         {
             // only check tab stops and those with the same group status
             if ((*it)->isTabStop() && ((*it)->hasTabgroup() == group))
@@ -470,45 +472,44 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                 // is this what we're looking for?
                 if (currentOrder == wanted)
                 {
-                    closest = *it;
-                    return true;
+                  closest = *it;
+                  return true;
                 }
 
                 // is it closer than the current closest?
                 if (closest)
                 {
-                    closestOrder = closest->tabOrder();
-                    if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
-                        ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
-                    {
-                        closest = *it;
-                    }
+                  closestOrder = closest->tabOrder();
+                  if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
+                      ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
+                  {
+                    closest = *it;
+                  }
+                }
+                else if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
+                {
+                  closest = *it;
+                }
+
+                // is it before the current first?
+                if (first)
+                {
+                  closestOrder = first->tabOrder();
+
+                  if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
+                  {
+                      first = *it;
+                  }
                 }
                 else
-                    if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
-                    {
-                        closest = *it;
-                    }
-
-                    // is it before the current first?
-                    if (first)
-                    {
-                        closestOrder = first->tabOrder();
-
-                        if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
-                        {
-                            first = *it;
-                        }
-                    }
-                    else
-                    {
-                        first = *it;
-                    }
+                {
+                  first = *it;
+                }
             }
             // search within children
             if ((*it)->next(startOrder, reverse, group, first, closest))
             {
-                return true;
+              return true;
             }
         }
         ++it;
@@ -518,11 +519,11 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
 
 void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
-static int __convStr2RelPos( Widget* w, std::string s )
+static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
 {
   s = utils::trim( s );
 
-  WidgetCalc wcalc( *w );
+  WidgetCalc wcalc( *w, vars );
   return wcalc.eval( s );
 }
 
@@ -555,20 +556,16 @@ void Widget::setupUI( const VariantMap& options )
   _d->tabOrder = options.get( "tabOrder", -1 ).toInt();
   setMaxSize( options.get( "maximumSize", Size( 0 ) ).toSize() );
   setMinSize( options.get( "minimumSize", Size( 1 ) ).toSize() );
-
-  /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
-                ahelper.findType( ui.get( "rightAlign" ).toString() ),
-                ahelper.findType( ui.get( "topAlign" ).toString() ),
-                ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
+  VariantMap vars = options.get( literals::vars ).toMap();
 
   VariantList aRectList = options.get( "geometry" ).toList();
   if( !aRectList.empty() )
   {
     Rect cRect(
-       __convStr2RelPos( this, aRectList.get( 0 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 1 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 2 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 3 ).toString() ) );
+       __convStr2RelPos( this, vars, aRectList.get( 0 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 1 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 2 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 3 ).toString() ) );
 
     setGeometry( cRect );
   }
@@ -597,12 +594,14 @@ void Widget::setupUI( const VariantMap& options )
 
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( VariantMap::const_iterator it=options.begin(); it != options.end(); ++it )
+  foreach( it, options )
   {
     if( it->second.type() != Variant::Map )
       continue;
 
     VariantMap tmp = it->second.toMap();
+    tmp[ literals::vars ] = vars;
+
     std::string widgetName = it->first;
     std::string widgetType;
     std::string::size_type delimPos = widgetName.find( '#' );

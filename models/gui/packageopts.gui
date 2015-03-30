@@ -3,6 +3,7 @@
   buttons : "off"
   static : true
   bgtype : "whiteFrame"
+  vars : { x1 : 12, x2 : 100 }
 
   lbTitle#Label : {
     geometry : [ 10, 10, "pw-10", 50 ]
@@ -12,7 +13,7 @@
   }
 	
   lbResourcesPath#Label : {
-    geometry : [ 12, 50, 100, 72 ]
+    geometry : [ "x1", 50, "x2", 72 ]
     font : "FONT_1"
 		text : "Resources: "
     text.align : [ "upperLeft", "center" ]
@@ -20,7 +21,7 @@
 
 	edResourcesPath#EditBox :
   {
-    geometry : [ 92, 50, "pw-15", 72 ]
+    geometry : [ "x2", 50, "pw-15", 72 ]
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_1"
     text : ""
@@ -28,7 +29,7 @@
   }
 
   lbCaesar3Path#Label : {
-    geometry : [ 12, 76, 100, 98 ]
+    geometry : [ "x1", 76, "x2", 98 ]
     font : "FONT_1"
     text : "C3 gfx: "
     text.align : [ "upperLeft", "center" ]
@@ -36,7 +37,7 @@
 
   edCaesar3Path#EditBox :
   {
-    geometry : [ 92, 76, "pw-15", 98 ]
+    geometry : [ "x2", 76, "pw-15", 98 ]
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_1"
     text : ""
@@ -44,7 +45,7 @@
   }
 
   lbCaesar3Music#Label : {
-    geometry : [ 12, 105, 100, 127 ]
+    geometry : [ "x1", 105, "x2", 127 ]
     font : "FONT_1"
     text : "C3 snd: "
     text.align : [ "upperLeft", "center" ]
@@ -52,7 +53,23 @@
 
   edCaesar3Music#EditBox :
   {
-    geometry : [ 92, 105, "pw-15", 127 ]
+    geometry : [ "x2", 105, "pw-15", 127 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
+  lbCaesar3Music#Label : {
+    geometry : [ "x1", 105, "x2", 127 ]
+    font : "FONT_1"
+    text : "C3 snd: "
+    text.align : [ "upperLeft", "center" ]
+  }
+
+  edCaesar3Music#EditBox :
+  {
+    geometry : [ "x2", 105, "pw-15", 127 ]
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_1"
     text : ""
@@ -60,7 +77,7 @@
   }
 
   lbCaesar3Video#Label : {
-    geometry : [ 12, 132, 100, 154 ]
+    geometry : [ "x1", 132, "x2", 154 ]
     font : "FONT_1"
     text : "C3 smk: "
     text.align : [ "upperLeft", "center" ]
@@ -68,7 +85,23 @@
 
   edCaesar3Video#EditBox :
   {
-    geometry : [ 92, 132, "pw-15", 154 ]
+    geometry : [ "x2", 132, "pw-15", 154 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_1"
+    text : ""
+    text.offset : [ 10, 0 ]
+  }
+
+  lbScreenshots#Label : {
+    geometry : [ "x1", 156, "x2", 178 ]
+    font : "FONT_1"
+    text : "Screenshots: "
+    text.align : [ "upperLeft", "center" ]
+  }
+
+  edScreenshots#EditBox :
+  {
+    geometry : [ "x2", 156, "pw-15", 178 ]
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_1"
     text : ""
@@ -98,5 +131,4 @@
     text : "##press_escape_to_exit##"
     font : "FONT_1"
   }
-
 }

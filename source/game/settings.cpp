@@ -95,6 +95,7 @@ __REG_PROPERTY(videoAlias)
 __REG_PROPERTY(playerName)
 __REG_PROPERTY(lastGame)
 __REG_PROPERTY(tooltipEnabled)
+__REG_PROPERTY(screenshotDir)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -154,6 +155,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
   _d->options[ videoAlias          ] = std::string( "videos.model" );
+  _d->options[ screenshotDir       ] = vfs::Directory::getUserDir().toString();
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
