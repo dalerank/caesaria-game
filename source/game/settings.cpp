@@ -96,6 +96,7 @@ __REG_PROPERTY(playerName)
 __REG_PROPERTY(lastGame)
 __REG_PROPERTY(tooltipEnabled)
 __REG_PROPERTY(screenshotDir)
+__REG_PROPERTY(showTabletMenu)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -180,6 +181,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
+  _d->options[ showTabletMenu      ] = false;
 
 #ifdef CAESARIA_USE_STEAM
   _d->options[ oldgfx              ] = 0;
@@ -187,6 +189,7 @@ Settings::Settings() : _d( new Impl )
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
+  _d->options[ showTabletMenu      ] = true;
 #endif
 }
 

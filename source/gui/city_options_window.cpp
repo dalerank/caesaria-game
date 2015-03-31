@@ -55,6 +55,7 @@ public:
   PushButton* btnMmbMoving;
   PushButton* btnBarbarianMayAttack;
   PushButton* btnLegionMayAttack;
+  PushButton* btnAnroidBarEnabled;
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
@@ -80,6 +81,7 @@ public:
   void toggleDifficulty();
   void toggleShowTooltips();
   void toggleLegionAttack();
+  void toggleAndroidBarEnabled();
   void toggleCityOption( PlayerCity::OptionType option );
 };
 
@@ -109,6 +111,7 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
   GET_DWIDGET_FROM_UI( _d, btnShowTooltips )
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
+  GET_DWIDGET_FROM_UI( _d, btnAnroidBarEnabled )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -124,6 +127,7 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3Gameplay )
   CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleShowTooltips )
   CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
+  CONNECT( _d->btnAnroidBarEnabled, onClicked(), _d.data(), Impl::toggleAndroidBarEnabled )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -178,6 +182,18 @@ void CityOptions::Impl::toggleDifficulty()
   int value = city->getOption( PlayerCity::difficulty );
   value = (value+1)%game::difficulty::count;
   city->setOption( PlayerCity::difficulty, value );
+  update();
+}
+
+void CityOptions::Impl::toggleAndroidBarEnabled()
+{
+  bool value = SETTINGS_VALUE( showTabletMenu );
+  SETTINGS_SET_VALUE( showTabletMenu, !value );
+
+  Widget* widget = btnAnroidBarEnabled->ui()->findWidget( Hash( "AndroidActionsBar" ) );
+  if( widget )
+    widget->setVisible( !value );
+
   update();
 }
 
@@ -319,6 +335,14 @@ void CityOptions::Impl::update()
     btnLegionMayAttack->setText( value
                                     ? _("##city_chastener_on##")
                                     : _("##city_chastener_off##")  );
+  }
+
+  if( btnAnroidBarEnabled )
+  {
+    bool value = SETTINGS_VALUE( showTabletMenu );
+    btnAnroidBarEnabled->setText( value
+                                    ? _("##city_androidbar_on##")
+                                    : _("##city_androidbar_off##")  );
   }
 }
 

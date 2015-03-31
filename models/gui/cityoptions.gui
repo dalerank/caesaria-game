@@ -98,6 +98,12 @@
     text : "##city_barbarian_mode##"
   }
 
+  btnAnroidBarEnabled#PushButton : {
+    geometry : [ 16, 297, "pw/2", 319 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##city_androidbar_mode##"
+  }
+
   btnClose#TexturedButton :
   {
     geometry : [ "pw-34", "ph-34", "pw-10", "ph-10" ]

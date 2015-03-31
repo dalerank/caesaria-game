@@ -98,6 +98,7 @@ public:
   __GS_PROPERTY(lastGame)
   __GS_PROPERTY(tooltipEnabled)
   __GS_PROPERTY(screenshotDir)
+  __GS_PROPERTY(showTabletMenu)
 #undef __GS_PROPERTY
 
   static Settings& instance();

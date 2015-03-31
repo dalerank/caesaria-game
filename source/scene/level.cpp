@@ -88,6 +88,7 @@
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
 #include "city/states.hpp"
+#include "gui/ingame_menu.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -205,60 +206,63 @@ void Level::initialize()
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
   _d->game->city()->addService( AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
-  //specific android actions bar
-#ifdef CAESARIA_PLATFORM_ANDROID
-  AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
 
-  CONNECT( androidBar, onRequestTileHelp(), _d.data(), Impl::showTileHelp );
-  CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
-  CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
-  CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
-  CONNECT( androidBar, onChangeZoom(), &_d->renderer, gfx::CityRenderer::changeZoom );
-#endif
+  //specific tablet actions bar
+  {
+    AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
+
+    CONNECT( androidBar, onRequestTileHelp(), _d.data(),     Impl::showTileHelp            );
+    CONNECT( androidBar, onEscapeClicked(),   this,          Level::_resolveEscapeButton   );
+    CONNECT( androidBar, onEnterClicked(),    this,          Level::_resolveEnterButton    );
+    CONNECT( androidBar, onRequestMenu(),     this,          Level::_showIngameMenu        );
+    CONNECT( androidBar, onChangeZoom(),      &_d->renderer, gfx::CityRenderer::changeZoom );
+
+    androidBar->setVisible( SETTINGS_VALUE(showTabletMenu) );
+  }
 
   //connect elements
-  CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, Level::_requestExitGame );
-  CONNECT( _d->topMenu, onLoad(), this, Level::_showLoadDialog );
-  CONNECT( _d->topMenu, onEnd(), this, Level::_exitToMainMenu );
-  CONNECT( _d->topMenu, onRestart(), this, Level::_restartMission );
-  CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
-  CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
-  CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
-  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
-  CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
+  CONNECT( _d->topMenu, onSave(),                 _d.data(),         Impl::showSaveDialog );
+  CONNECT( _d->topMenu, onExit(),                 this,              Level::_requestExitGame );
+  CONNECT( _d->topMenu, onLoad(),                 this,              Level::_showLoadDialog );
+  CONNECT( _d->topMenu, onEnd(),                  this,              Level::_exitToMainMenu );
+  CONNECT( _d->topMenu, onRestart(),              this,              Level::_restartMission );
+  CONNECT( _d->topMenu, onRequestAdvisor(),       _d.data(),         Impl::showAdvisorsWindow );
+  CONNECT( _d->topMenu, onShowVideoOptions(),     _d.data(),         Impl::setVideoOptions );
+  CONNECT( _d->topMenu, onShowSoundOptions(),     _d.data(),         Impl::showSoundOptionsWindow );
+  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(),         Impl::showGameSpeedOptionsDialog );
+  CONNECT( _d->topMenu, onShowCityOptions(),      _d.data(),         Impl::showCityOptionsDialog );
 
-  CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
-  CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-  CONNECT( city, onWarningMessage(), _d.data(), Impl::resolveWarningMessage );
+  CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation );
+  CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds );
+  CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage );
 
-  CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
-  CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
-  CONNECT( _d->menu, onHide(), _d->extMenu, ExtentMenu::maximize );
+  CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction );
+  CONNECT( _d->menu, onRemoveTool(),              _d.data(),         Impl::resolveRemoveTool );
+  CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize );
 
-  CONNECT( _d->extMenu, onHide(), _d->menu, Menu::maximize );
-  CONNECT( _d->extMenu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
-  CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
-  CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );
-  CONNECT( _d->extMenu, onRotateLeft(), &_d->renderer, CityRenderer::rotateLeft );
-  CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectLayer );
-  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow )
-  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow )
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow )
-  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow )
-  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next )
+  CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize );
+  CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction );
+  CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool );
+  CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight );
+  CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft );
+  CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer );
+  CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTaretsWindow )
+  CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
+  CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
 
-  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add )
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter )
-  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled )
+  CONNECT( city, onDisasterEvent(),               &_d->alarmsHolder, AlarmEventHolder::add )
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(),    _d->renderer.camera(), Camera::setCenter )
+  CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d->extMenu,       ExtentMenu::setAlarmEnabled )
 
-  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter )
-  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
-  CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
-  CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
-  CONNECT( mmap, onZoomChange(), &_d->renderer, gfx::CityRenderer::changeZoom )
-  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
-  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap,         Minimap::setCenter )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
+  CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(),   Impl::handleDirectionChange )
+  CONNECT( mmap, onCenterChange(), _d->renderer.camera(),            Camera::setCenter )
+  CONNECT( mmap, onZoomChange(), &_d->renderer,                      gfx::CityRenderer::changeZoom )
+  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
+  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
@@ -487,26 +491,15 @@ void Level::_resolveEnterButton()
 
 void Level::_showIngameMenu()
 {
-  gui::Widget* p = _d->game->gui()->rootWidget();
-  gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
-
-  menu->setCenter( p->center() );
-  menu->setupUI( ":/gui/ingamemenu_android.gui" );
-  WidgetEscapeCloser::insertTo( menu );
-
-  PushButton* btnContinue = findChildA<PushButton*>( "btnContinue", true, menu );
-  PushButton* btnSave = findChildA<PushButton*>( "btnSave", true, menu );
-  PushButton* btnLoad = findChildA<PushButton*>( "btnLoad", true, menu );
-  PushButton* btnRestart = findChildA<PushButton*>( "btnRestart", true, menu );
-  PushButton* btnMainMenu = findChildA<PushButton*>( "btnMainMenu", true, menu );
-  PushButton* btnExit = findChildA<PushButton*>( "btnExit", true, menu );
-
-  CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
-  CONNECT( btnExit, onClicked(), this, Level::_requestExitGame );
-  CONNECT( btnLoad, onClicked(), this, Level::_showLoadDialog );
-  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog  );
-  CONNECT( btnRestart, onClicked(), this, Level::_restartMission );
-  CONNECT( btnMainMenu, onClicked(), this, Level::_exitToMainMenu );
+  IngameMenu* menu = IngameMenu::create( _d->game->gui() );
+  if( menu )
+  {
+    CONNECT( menu, onExit(), this, Level::_requestExitGame );
+    CONNECT( menu, onLoad(), this, Level::_showLoadDialog );
+    CONNECT( menu, onSave(), _d.data(), Impl::showSaveDialog  );
+    CONNECT( menu, onRestart(), this, Level::_restartMission );
+    CONNECT( menu, onMenu(), this, Level::_exitToMainMenu );
+  }
 }
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )

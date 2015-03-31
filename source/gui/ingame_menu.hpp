@@ -13,36 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
-#define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#ifndef __CAESARIA_INGAME_MENU_H_INCLUDE__
+#define __CAESARIA_INGAME_MENU_H_INCLUDE__
 
 #include "window.hpp"
-#include "core/signals.hpp"
 
 namespace gui
 {
 
-class AndroidActionsBar : public Window
+class IngameMenu : public Window
 {
 public:
-  virtual void beforeDraw( gfx::Engine& painter);
-  virtual bool onEvent(const NEvent &event);
-  AndroidActionsBar( Widget* parent );
+  IngameMenu( Widget* parent );
 
 public signals:
-  Signal0<>& onRequestTileHelp();
-  Signal0<>& onEscapeClicked();
-  Signal0<>& onEnterClicked();
-  Signal0<>& onRequestMenu();
-  Signal1<int>& onChangeZoom();
+  Signal0<>& onExit();
+  Signal0<>& onLoad();
+  Signal0<>& onSave();
+  Signal0<>& onRestart();
+  Signal0<>& onMenu();
 
 private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}//end namesapce gui
+} //end namepsace gui
 
-#endif //_CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#endif //__CAESARIA_INGAME_MENU_H_INCLUDE__

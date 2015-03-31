@@ -546,7 +546,7 @@ void Widget::setupUI( const VariantMap& options )
   }
 
   Variant tmp;
-  setID( (int)options.get( "id", -1 ) );
+  setID( (int)options.get( "id", _d->id ) );
   setText( _( options.get( "text" ).toString() ) );
   setTooltipText( options.get( "tooltip" ).toString() );
   setVisible( options.get( "visible", true ).toBool() );
