@@ -40,7 +40,8 @@ public signals:
 };
 
 IngameMenu::IngameMenu(Widget *parent)
-  : Window( parent, Rect( 0, 0, 500, 450 ), "", Hash( CAESARIA_STR_A(IngameMenu) ) )
+  : Window( parent, Rect( 0, 0, 500, 450 ), "", Hash( CAESARIA_STR_A(IngameMenu) ) ),
+    _d( new Impl )
 {
   setupUI( ":/gui/ingamemenu_android.gui" );
   setCenter( parent->center() );

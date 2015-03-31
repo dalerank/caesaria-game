@@ -95,6 +95,8 @@
 #include "states.hpp"
 #include "city/states.hpp"
 #include "core/flowlist.hpp"
+#include "economy.hpp"
+#include "city_impl.hpp"
 
 #include <set>
 
@@ -107,215 +109,29 @@ namespace config {
 CAESARIA_LITERALCONST(tilemap)
 }
 
-class Options : public std::map<PlayerCity::OptionType, int>
-{
-public:
-  VariantList save() const;
-  void load(const VariantList &stream );
-  void resetIfNot( PlayerCity::OptionType name, int value );
-};
-
-class Walkers : public FlowList<Walker>
-{
-public:
-  //walkers fast access map !!!
-  city::WalkersGrid grid;
-  //*********************** !!!
-
-  Walker::UniqueId idCount;
-
-  void append( WalkerPtr w )
-  {
-    ++idCount;
-    w->setUniqueId( idCount );
-    FlowList::append( w );
-  }
-
-  void clear()
-  {
-    FlowList::clear();
-    grid.clear();
-  }
-
-  inline const WalkerList& at( const TilePos& pos ) { return grid.at( pos ); }
-
-  void update( PlayerCityPtr, unsigned int time )
-  {
-    WalkerList::iterator it = begin();
-    while( it != end() )
-    {
-      WalkerPtr walker = *it;
-      walker->timeStep( time );
-      if( walker->isDeleted() )
-      {
-        // remove the walker from the walkers list
-        //grid.remove( *it );
-        it = erase(it);
-      }
-      else { ++it; }
-    }
-
-    merge();
-
-    grid.update( *this );
-    grid.sort();
-  }
-};
-
-class Overlays : public FlowList<Overlay>
-{
-public:
-  void update( PlayerCityPtr city, unsigned int time )
-  {
-    iterator overlayIt = begin();
-    while( overlayIt != end() )
-    {
-      (*overlayIt)->timeStep( time );
-
-      if( (*overlayIt)->isDeleted() )
-      {
-        onDestroyOverlay( city, *overlayIt );
-        // remove the overlay from the overlay list
-        (*overlayIt)->destroy();
-        overlayIt = erase(overlayIt);
-      }
-      else
-      {
-        ++overlayIt;
-      }
-    }
-
-    merge();
-  }
-
-  void onDestroyOverlay( PlayerCityPtr city, OverlayPtr overlay )
-  {
-    Desirability::update( city, overlay, Desirability::off );
-  }
-};
-
-class Services : public city::SrvcList
-{
-public:
-  void update( PlayerCityPtr city, unsigned int time)
-  {
-    iterator serviceIt = begin();
-    city::Timers::instance().update( time );
-    while( serviceIt != end() )
-    {
-      (*serviceIt)->timeStep( time );
-
-      if( (*serviceIt)->isDeleted() )
-      {
-        (*serviceIt)->destroy();
-        serviceIt = erase(serviceIt);
-      }
-      else { ++serviceIt; }
-    }
-  }
-};
-
-class Economy : public econ::Treasury
-{
-public:
-  void payWages(PlayerCityPtr city)
-  {
-    int wages = city::statistic::getMonthlyWorkersWages( city );
-
-    if( haveMoneyForAction( wages ) )
-    {
-      HouseList houses = city::statistic::findh( city );
-
-      float salary = city::statistic::getMonthlyOneWorkerWages( city );
-      float wages = 0;
-      foreach( it, houses )
-      {
-        int workers = (*it)->hired();
-        float house_wages = salary * workers;
-        (*it)->appendMoney( house_wages );
-        wages += house_wages;
-      }
-      resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
-    }
-    else
-    {
-      // TODO affect citizen sentiment for no payment and request money to caesar.
-    }
-  }
-
-  void collectTaxes(PlayerCityPtr city )
-  {
-    float lastMonthTax = 0;
-
-    ForumList forums = city::statistic::findo<Forum>( city, object::forum );
-    foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
-
-    SenateList senates = city::statistic::findo<Senate>( city, object::senate );
-    foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
-
-    resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
-  }
-
-  void payMayorSalary( PlayerCityPtr city )
-  {
-    if( money() > 0 )
-    {
-      int playerSalary = city->mayor()->salary();
-      resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
-      city->mayor()->appendMoney( playerSalary );
-    }
-  }
-
-  void resolveIssue( econ::Issue issue )
-  {
-    checkIssue( issue.type );
-    Treasury::resolveIssue( issue );
-  }
-
-  void checkIssue(econ::Issue::Type type)
-  {
-    switch( type )
-    {
-    case econ::Issue::overdueEmpireTax:
-      {
-        int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
-        std::string text = lastYearBrokenTribute > 0
-                                  ? "##for_second_year_broke_tribute##"
-                                  : "##current_year_notpay_tribute_warning##";
-        GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
-        e->dispatch();
-      }
-    break;
-
-    default:
-    break;
-
-    }
-  }
-};
-
 class PlayerCity::Impl
 {
 public:
-  Economy economy;  // amount of money
-  PlayerPtr player;
-  Overlays overlays;
-  Walkers walkers;
-
+  city::Economy economy;  // amount of money
+  city::Overlays overlays;
+  city::Services services;
   city::ActivePoints activePoints;
   city::Scribes scribes;
+  city::development::Options buildOptions;
+  city::trade::Options tradeOptions;
+  city::VictoryConditions targets;
+  city::States states;
+  city::Walkers walkers;
+  city::Options options;
+
+  PlayerPtr player;
+
   Picture empMapPicture;
 
-  Services services;
   BorderInfo borderInfo;
   Tilemap tilemap;
   TilePos cameraStart;
 
-  city::development::Options buildOptions;
-  city::trade::Options tradeOptions;
-  city::VictoryConditions targets;
-  Options options;
-  city::States states;
   int sentiment;
 
 public:
@@ -331,7 +147,7 @@ signals public:
 };
 
 PlayerCity::PlayerCity(world::EmpirePtr empire)
-  : City( empire ), _d( new Impl )
+  :  City( empire ), _d( new Impl )
 {
   _d->borderInfo.roadEntry = TilePos( 0, 0 );
   _d->borderInfo.roadExit = TilePos( 0, 0 );
@@ -424,6 +240,7 @@ void PlayerCity::timeStep(unsigned int time)
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
   _d->services.update( this, time );
+  city::Timers::instance().update( time );
 
   if( getOption( updateRoads ) > 0 )
   {
@@ -710,7 +527,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't find service " + item->first );
+      Logger::warning( "!!! WARNING: Can't find service " + item->first );
     }
   }
 
@@ -782,7 +599,7 @@ int PlayerCity::prosperity() const
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
 {
-  Options::const_iterator it = _d->options.find( opt );
+  city::Options::const_iterator it = _d->options.find( opt );
   return (it != _d->options.end() ? it->second : 0 );
 }
 
@@ -905,40 +722,4 @@ void PlayerCity::empirePricesChanged(good::Product gtype, const world::PriceInfo
 {
   _d->tradeOptions.setBuyPrice( gtype, prices.buy );
   _d->tradeOptions.setSellPrice( gtype, prices.sell );
-}
-
-VariantList Options::save() const
-{
-  VariantList ret;
-  foreach( it, *this )
-    ret << Point( it->first, it->second );
-
-  return ret;
-}
-
-void Options::load(const VariantList& stream)
-{
-  foreach( it, stream )
-  {
-    Point tmp = *it;
-    (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
-  }
-
-  resetIfNot( PlayerCity::climateType, game::climate::central );
-  resetIfNot( PlayerCity::adviserEnabled, 1 );
-  resetIfNot( PlayerCity::fishPlaceEnabled, 1 );
-  resetIfNot( PlayerCity::godEnabled, 1 );
-  resetIfNot( PlayerCity::zoomEnabled, 1 );
-  resetIfNot( PlayerCity::zoomInvert, 1 );
-  resetIfNot( PlayerCity::fireKoeff, 100 );
-  resetIfNot( PlayerCity::barbarianAttack, 1 );
-  resetIfNot( PlayerCity::legionAttack, 1 );
-  resetIfNot( PlayerCity::c3gameplay, 0 );
-  resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
-}
-
-void Options::resetIfNot(PlayerCity::OptionType name, int value)
-{
-  if( !count( name ) )
-    (*this)[ name ] = value;
 }
