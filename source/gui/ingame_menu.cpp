@@ -19,6 +19,8 @@
 #include "core/hash.hpp"
 #include "widgetescapecloser.hpp"
 #include "widget_helper.hpp"
+#include "environment.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -51,9 +53,15 @@ IngameMenu::IngameMenu(Widget *parent)
   GET_DWIDGET_FROM_UI( _d, btnMainMenu )
   GET_DWIDGET_FROM_UI( _d, btnExit )
 
-  CONNECT( btnContinue, onClicked(), this, IngameMenu::deleteLater );
+  CONNECT( _d->btnContinue, onClicked(), this, IngameMenu::deleteLater );
 
   setModal();
+}
+
+IngameMenu* IngameMenu::create(Ui* ui)
+{
+  IngameMenu* menu = new IngameMenu( ui->rootWidget() );
+  return menu;
 }
 
 Signal0<>& IngameMenu::onExit() { return _d->btnExit ? _d->btnExit->onClicked() : _d->invalidSignal; }

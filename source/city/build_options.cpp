@@ -291,6 +291,8 @@ Range Range::fromBranch(const Branch branch)
       ret << *it;
   }
   break;
+
+  default: break;
   }
 
   return ret;

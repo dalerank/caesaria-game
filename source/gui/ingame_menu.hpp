@@ -26,7 +26,7 @@ namespace gui
 class IngameMenu : public Window
 {
 public:
-  IngameMenu( Widget* parent );
+  static IngameMenu* create( Ui* ui );
 
 public signals:
   Signal0<>& onExit();
@@ -36,6 +36,8 @@ public signals:
   Signal0<>& onMenu();
 
 private:
+  IngameMenu( Widget* parent );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };
