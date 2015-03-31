@@ -194,13 +194,111 @@ public:
   }
 };
 
+class Services : public city::SrvcList
+{
+public:
+  void update( PlayerCityPtr city, unsigned int time)
+  {
+    iterator serviceIt = begin();
+    city::Timers::instance().update( time );
+    while( serviceIt != end() )
+    {
+      (*serviceIt)->timeStep( time );
+
+      if( (*serviceIt)->isDeleted() )
+      {
+        (*serviceIt)->destroy();
+        serviceIt = erase(serviceIt);
+      }
+      else { ++serviceIt; }
+    }
+  }
+};
+
+class Economy : public econ::Treasury
+{
+public:
+  void payWages(PlayerCityPtr city)
+  {
+    int wages = city::statistic::getMonthlyWorkersWages( city );
+
+    if( haveMoneyForAction( wages ) )
+    {
+      HouseList houses = city::statistic::findh( city );
+
+      float salary = city::statistic::getMonthlyOneWorkerWages( city );
+      float wages = 0;
+      foreach( it, houses )
+      {
+        int workers = (*it)->hired();
+        float house_wages = salary * workers;
+        (*it)->appendMoney( house_wages );
+        wages += house_wages;
+      }
+      resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
+    }
+    else
+    {
+      // TODO affect citizen sentiment for no payment and request money to caesar.
+    }
+  }
+
+  void collectTaxes(PlayerCityPtr city )
+  {
+    float lastMonthTax = 0;
+
+    ForumList forums = city::statistic::findo<Forum>( city, object::forum );
+    foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
+
+    SenateList senates = city::statistic::findo<Senate>( city, object::senate );
+    foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
+
+    resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
+  }
+
+  void payMayorSalary( PlayerCityPtr city )
+  {
+    if( money() > 0 )
+    {
+      int playerSalary = city->mayor()->salary();
+      resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
+      city->mayor()->appendMoney( playerSalary );
+    }
+  }
+
+  void resolveIssue( econ::Issue issue )
+  {
+    checkIssue( issue.type );
+    Treasury::resolveIssue( issue );
+  }
+
+  void checkIssue(econ::Issue::Type type)
+  {
+    switch( type )
+    {
+    case econ::Issue::overdueEmpireTax:
+      {
+        int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
+        std::string text = lastYearBrokenTribute > 0
+                                  ? "##for_second_year_broke_tribute##"
+                                  : "##current_year_notpay_tribute_warning##";
+        GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
+        e->dispatch();
+      }
+    break;
+
+    default:
+    break;
+
+    }
+  }
+};
+
 class PlayerCity::Impl
 {
 public:
-  econ::Treasury treasury;  // amount of money
-
+  Economy economy;  // amount of money
   PlayerPtr player;
-
   Overlays overlays;
   Walkers walkers;
 
@@ -208,7 +306,7 @@ public:
   city::Scribes scribes;
   Picture empMapPicture;
 
-  city::SrvcList services;
+  Services services;
   BorderInfo borderInfo;
   Tilemap tilemap;
   TilePos cameraStart;
@@ -222,12 +320,8 @@ public:
 
 public:
   // collect taxes from all houses
-  void collectTaxes( PlayerCityPtr city);
-  void payWages( PlayerCityPtr city );
   void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
-  void updateServices( PlayerCityPtr city, unsigned int time );
-  void resolveNewIssue( econ::Issue::Type type );
 
 signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -243,9 +337,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.roadExit = TilePos( 0, 0 );
   _d->borderInfo.boatEntry = TilePos( 0, 0 );
   _d->borderInfo.boatExit = TilePos( 0, 0 );
-  _d->treasury.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
+  _d->economy.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
-  _d->treasury.setTaxRate( econ::Treasury::defaultTaxPrcnt );
+  _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
@@ -329,7 +423,7 @@ void PlayerCity::timeStep(unsigned int time)
   //update walkers access map
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
-  _d->updateServices( this, time );
+  _d->services.update( this, time );
 
   if( getOption( updateRoads ) > 0 )
   {
@@ -349,17 +443,10 @@ void PlayerCity::timeStep(unsigned int time)
 
 void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
-  collectTaxes( city );
-  payWages( city );
-
-  if( treasury.money() > 0 )
-  {
-    int playerSalary = player->salary();
-    treasury.resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
-    player->appendMoney( playerSalary );
-  }
-
-  treasury.updateHistory( game::Date::current() );
+  economy.collectTaxes( city );
+  economy.payWages( city );
+  economy.payMayorSalary( city );
+  economy.updateHistory( game::Date::current() );
 }
 
 WalkerList PlayerCity::walkers( walker::Type rtype )
@@ -401,10 +488,10 @@ city::ActivePoints& PlayerCity::activePoints()    { return _d->activePoints; }
 city::Scribes &PlayerCity::scribes()              { return _d->scribes; }
 const BorderInfo& PlayerCity::borderInfo() const  { return _d->borderInfo; }
 Picture PlayerCity::picture() const               { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const              { return _d->treasury.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const       { return _d->treasury.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+bool PlayerCity::isPaysTaxes() const              { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const       { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()           { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()            { return _d->treasury;   }
+econ::Treasury& PlayerCity::treasury()            { return _d->economy;   }
 
 int PlayerCity::strength() const
 {
@@ -427,44 +514,6 @@ DateTime PlayerCity::lastAttack() const
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
 
-void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
-{
-  float lastMonthTax = 0;
-  
-  ForumList forums = city::statistic::findo<Forum>( city, object::forum );
-  foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
-
-  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
-  foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
-
-  treasury.resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
-}
-
-void PlayerCity::Impl::payWages(PlayerCityPtr city)
-{
-  int wages = city::statistic::getMonthlyWorkersWages( city );
-
-  if( treasury.haveMoneyForAction( wages ) )
-  {
-    HouseList houses = city::statistic::findh( city );
-
-    float salary = city::statistic::getMonthlyOneWorkerWages( city );
-    float wages = 0;
-    foreach( it, houses )
-    {
-      int workers = (*it)->hired();
-      float house_wages = salary * workers;
-      (*it)->appendMoney( house_wages );
-      wages += house_wages;
-    }
-    treasury.resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
-  }
-  else
-  {
-    // TODO affect citizen sentiment for no payment and request money to caesar.
-  }
-}
-
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
   unsigned int pop = 0;
@@ -475,44 +524,6 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   
   states.population = pop;
   emit onPopulationChangedSignal( pop );
-}
-
-void PlayerCity::Impl::updateServices( PlayerCityPtr city, unsigned int time)
-{
-  city::SrvcList::iterator serviceIt = services.begin();
-  city::Timers::instance().update( time );
-  while( serviceIt != services.end() )
-  {
-    (*serviceIt)->timeStep( time );
-
-    if( (*serviceIt)->isDeleted() )
-    {
-      (*serviceIt)->destroy();
-      serviceIt = services.erase(serviceIt);
-    }
-    else { ++serviceIt; }
-  }
-}
-
-void PlayerCity::Impl::resolveNewIssue(econ::Issue::Type type)
-{
-  switch( type )
-  {
-  case econ::Issue::overdueEmpireTax:
-    {
-      int lastYearBrokenTribute = treasury.getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
-      std::string text = lastYearBrokenTribute > 0
-                                ? "##for_second_year_broke_tribute##"
-                                : "##current_year_notpay_tribute_warning##";
-      GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
-      e->dispatch();
-    }
-  break;
-
-  default:
-  break;
-
-  }
 }
 
 void PlayerCity::save( VariantMap& stream) const
@@ -537,7 +548,7 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
 
   Logger::warning( "City: save finance information" );
-  stream[ "funds" ] = _d->treasury.save();
+  stream[ "funds" ] = _d->economy.save();
   stream[ "scribes" ] = _d->scribes.save();
 
   Logger::warning( "City: save trade/build/win options" );
@@ -623,7 +634,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->options.load( stream.get( "options" ).toList() );
 
   Logger::warning( "City: parse funds" );
-  _d->treasury.load( stream.get( "funds" ).toMap() );
+  _d->economy.load( stream.get( "funds" ).toMap() );
   _d->scribes.load( stream.get( "scribes" ).toMap() );
 
   Logger::warning( "City: parse trade/build/win params" );
@@ -756,7 +767,7 @@ const good::Store& PlayerCity::buys() const                 { return _d->tradeOp
 ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->onPopulationChangedSignal; }
-Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->treasury.onChange(); }
+Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }

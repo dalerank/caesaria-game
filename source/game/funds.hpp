@@ -56,20 +56,15 @@ public:
   typedef std::vector< IssuesValue > IssuesHistory;
 
   Treasury();
-  ~Treasury();
-
-  void resolveIssue( Issue issue );
+  virtual ~Treasury();
+  virtual void resolveIssue( Issue issue );
 
   void updateHistory( const DateTime& date );
-
   int getIssueValue( Issue::Type type, int age=thisYear ) const;
-
   int taxRate() const;
   void setTaxRate( const unsigned int value );
-
   int workerSalary() const;
   void setWorkerSalary( const unsigned int value );
-
   int money() const;
   int profit() const;
 

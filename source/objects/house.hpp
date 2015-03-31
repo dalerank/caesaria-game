@@ -106,7 +106,6 @@ private:
   bool _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
   void _tryDegrage_12_to_2_lvl( const char desirability );
   void _tryDegrade_20_to_12_lvl(int size, const char desirability);
-  void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);
   void _checkEvolve();
   void _checkPatricianDeals();
