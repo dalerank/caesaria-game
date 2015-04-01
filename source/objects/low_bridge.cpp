@@ -26,120 +26,25 @@
 #include "constants.hpp"
 #include "walker/walker.hpp"
 #include "objects_factory.hpp"
+#include "metadata.hpp"
 
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::low_bridge, LowBridge)
 
+PREDEFINE_CLASS_SMARTLIST(LowBridgeSubTile,List)
+
 namespace {
   Point spanswOffset = Point( 10, -25 );
 }
 
-class LowBridgeSubTile : public Construction
-{
-public:
-  enum { liftingWest=67, spanWest=68, descentWest=69, liftingNorth=70, spanNorth=71, descentNorth=72 };
-  LowBridgeSubTile( const TilePos& pos, int index )
-    : Construction( object::low_bridge, Size( 1 ) )
-  {
-    _info = 0;
-    _imgId = 0;
-    _pos = pos;
-    _index = index;
-    _parent = 0;
-    _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( tile::tilepos2screen( _pos ) );
-  }
 
-  virtual ~LowBridgeSubTile() {}
 
-  std::string errorDesc() const { return _parent ? _parent->errorDesc() : "";  }
-  bool isWalkable() const { return true;  }
-  bool isNeedRoad() const { return false; }
-
-  bool build( const city::AreaInfo& info )
-  {
-    Construction::build( info );
-    _fgPicturesRef().clear();
-    _pos = info.pos;
-    _picture = Picture::load( ResourceGroup::transport, _index );
-    _picture.addOffset( Point( 10, -12 ) );
-    _fgPicturesRef().push_back( _picture );
-
-    return true;
-  }
-
-  virtual void setState( Param name, double value)
-  {
-    if( _parent && name == pr::destroyable && value )
-    {
-      _parent->hide();
-    }
-  }
-
-  void hide()
-  {
-    _picture = Picture::getInvalid();
-    _fgPicturesRef().clear();
-  }
-
-  void initTerrain( Tile& terrain )
-  {
-    terrain.setFlag( Tile::tlRoad, true );
-  }
-
-  bool canDestroy() const
-  {
-    return _parent ? _parent->canDestroy() : true;
-  }
-
-  void destroy()
-  {
-    if( _parent )
-    {
-      _parent->deleteLater();
-      _parent = 0;
-    }
-  }
-
-  void save(VariantMap &stream) const
-  {
-    if( pos() == _parent->pos() )
-    {
-      return _parent->save( stream );
-    }
-  }
-
-  Point offset( const Tile& , const Point& subpos ) const
-  {
-    switch( _index )
-    {
-    case liftingWest: return Point( -subpos.x(), subpos.x()*2 );
-    case spanWest:    return Point( 0, -30 );
-    case descentWest: return Point( subpos.x(), 12 - subpos.x() );
-    case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
-    case spanNorth:    return spanswOffset;
-    case liftingNorth: return Point( subpos.y()*0.6, -30-subpos.y() );
-
-    default: return Point( 0, 0 );
-    }
-  }
-
-  TilePos _pos;
-  int _index;
-  int _info;
-  int _imgId;
-  Picture _picture;
-  LowBridge* _parent;
-};
-
-typedef SmartPtr< LowBridgeSubTile > LowBridgeSubTilePtr;
-typedef std::vector< LowBridgeSubTilePtr > LowBridgeSubTiles;
 
 class LowBridge::Impl
 {
 public:
-  LowBridgeSubTiles subtiles;
+  LowBridgeSubTileList subtiles;
   Direction direction;
   std::string error;
 
@@ -177,7 +82,8 @@ bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
   return (_d->direction != direction::none);
 }
 
-LowBridge::LowBridge() : Construction( object::low_bridge, Size(1) ), _d( new Impl )
+LowBridge::LowBridge()
+  : Construction( object::low_bridge, Size(1) ), _d( new Impl )
 {
   Picture pic;
   setPicture( pic );
@@ -273,7 +179,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
   break;
   }
 
-  for( LowBridgeSubTiles::iterator it=_d->subtiles.begin(); it != _d->subtiles.end(); ++it )
+  foreach( it,_d->subtiles )
   {
     _fgPicturesRef().push_back( (*it)->_picture );
   }
@@ -513,3 +419,94 @@ void LowBridge::hide()
   }
 }
 
+
+
+LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)
+  : Construction( object::low_bridge, Size( 1 ) )
+{
+  _info = 0;
+  _imgId = 0;
+  _pos = pos;
+  _index = index;
+  _parent = 0;
+  _picture = Picture::load( ResourceGroup::transport, index );
+  _picture.addOffset( tile::tilepos2screen( _pos ) );
+}
+
+LowBridgeSubTile::~LowBridgeSubTile() {}
+
+std::string LowBridgeSubTile::errorDesc() const { return _parent ? _parent->errorDesc() : "";  }
+
+bool LowBridgeSubTile::isWalkable() const { return true;  }
+
+bool LowBridgeSubTile::isNeedRoad() const { return false; }
+
+bool LowBridgeSubTile::build(const city::AreaInfo &info)
+{
+  Construction::build( info );
+  _fgPicturesRef().clear();
+  _pos = info.pos;
+  _picture = Picture::load( ResourceGroup::transport, _index );
+  const MetaData& md = MetaDataHolder::getData( type() );
+  Point sbOffset = md.getOption( "subtileOffset" );
+  _picture.addOffset( sbOffset );
+  _fgPicturesRef().push_back( _picture );
+
+  return true;
+}
+
+void LowBridgeSubTile::setState(Param name, double value)
+{
+  if( _parent && name == pr::destroyable && value )
+    {
+      _parent->hide();
+    }
+}
+
+void LowBridgeSubTile::hide()
+{
+  _picture = Picture::getInvalid();
+  _fgPicturesRef().clear();
+}
+
+void LowBridgeSubTile::initTerrain(Tile &terrain)
+{
+  terrain.setFlag( Tile::tlRoad, true );
+}
+
+bool LowBridgeSubTile::canDestroy() const
+{
+  return _parent ? _parent->canDestroy() : true;
+}
+
+void LowBridgeSubTile::destroy()
+{
+  if( _parent )
+    {
+      _parent->deleteLater();
+      _parent = 0;
+    }
+}
+
+void LowBridgeSubTile::save(VariantMap &stream) const
+{
+  if( pos() == _parent->pos() )
+  {
+    return _parent->save( stream );
+  }
+}
+
+Point LowBridgeSubTile::offset(const Tile &, const Point &subpos) const
+{
+  switch( _index )
+    {
+    case liftingWest: return Point( -subpos.x(), subpos.x()*2 );
+    case spanWest:    return Point( 0, -30 );
+    case descentWest: return Point( subpos.x(), 12 - subpos.x() );
+    case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
+    case spanNorth:    return spanswOffset;
+    case liftingNorth: return Point( subpos.y()*0.6, -30-subpos.y() );
+
+    default: return Point( 0, 0 );
+    }
+}

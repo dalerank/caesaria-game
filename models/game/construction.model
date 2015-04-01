@@ -513,6 +513,7 @@
     employers : 0
     class : "bridge"
     requestDestroy : true
+    subtileOffset : [ 0, 0 ]
   }, 
   
   high_bridge : {
