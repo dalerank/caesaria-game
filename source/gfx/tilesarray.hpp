@@ -40,6 +40,7 @@ public:
   TilesArray& operator=(const TilesArray& a);
 
   TilesArray& append( const TilesArray& a );
+  TilesArray& append( Tile* a );
 
   TilesArray walkables( bool alllands=false ) const;
 

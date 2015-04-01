@@ -42,6 +42,9 @@ public:
   virtual unsigned int produceQty() const;
 
 protected:
+  OverlayPtr _buildFarmTile( const city::AreaInfo& info, const TilePos& ppos );
+  void _buildFarmTiles(const city::AreaInfo& info, const TilePos& pos );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

@@ -116,6 +116,8 @@ public:
   int lastProgress;
 };
 
+
+
 Farm::Farm(const good::Product outGood, const object::Type type )
   : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
 {
@@ -236,21 +238,7 @@ bool Farm::build( const city::AreaInfo& info )
   {
     upInfo.pos += TilePos(0,1);
 
-    TilePosArray locations;
-    foreach( it, _d->sublocs )
-    {
-      city::AreaInfo tInfo = info;
-      tInfo.pos += *it;
-      OverlayPtr farmtile( new FarmTile( produceGoodType(), upInfo.pos ) );
-      farmtile->drop();
-
-      farmtile->build( tInfo );
-      info.city->addOverlay( farmtile );
-      locations << farmtile->pos();
-      _d->subtiles.push_back( &farmtile->tile() );
-    }
-
-    _d->sublocs = locations;
+    _buildFarmTiles( info, upInfo.pos );
   }
 
   _fgPicturesRef().resize( 0 );
@@ -274,7 +262,19 @@ void Farm::load( const VariantMap& stream )
   _d->sublocs.fromVList( stream.get( "locations").toList() );
 
   foreach( it, _d->sublocs )
-    _d->subtiles.push_back( &_city()->tilemap().at( *it ) );
+  {
+    OverlayPtr overlay = _city()->getOverlay( *it );
+    if( is_kind_of<FarmTile>( overlay ) )
+    {
+      _d->subtiles.push_back( &overlay->tile() );
+    }
+    else
+    {
+      Logger::warning( "!!! WARNING: Fart lost tile at [%d,%d]. Rebuild", it->i(), it->j() );
+      city::AreaInfo ainfo = { _city(), *it, TilesArray() };
+      _buildFarmTile( ainfo, pos() );
+    }
+  }
 
   computePictures();
 }
@@ -330,4 +330,29 @@ FarmFruit::FarmFruit() : Farm(good::fruit, object::fig_farm)
 
 FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 {
+}
+
+OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
+{
+  OverlayPtr farmtile( new FarmTile( produceGoodType(), ppos ) );
+  farmtile->drop();
+
+  farmtile->build( info );
+  info.city->addOverlay( farmtile );
+  return farmtile;
+}
+
+void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
+{
+  TilePosArray locations;
+  foreach( it, _d->sublocs )
+  {
+    city::AreaInfo tInfo = info;
+    tInfo.pos += *it;
+    OverlayPtr farmtile = _buildFarmTile( tInfo, ppos );
+    locations.append( farmtile->pos() );
+    _d->subtiles.append( &farmtile->tile() );
+  }
+
+  _d->sublocs = locations;
 }

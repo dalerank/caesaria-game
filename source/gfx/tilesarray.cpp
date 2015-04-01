@@ -85,6 +85,12 @@ TilesArray&TilesArray::append(const TilesArray& a)
   return *this;
 }
 
+TilesArray &TilesArray::append(Tile *a)
+{
+  push_back( a );
+  return *this;
+}
+
 TilesArray TilesArray::walkables(bool alllands) const
 {
   TilesArray ret;

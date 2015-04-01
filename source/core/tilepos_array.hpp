@@ -31,6 +31,12 @@ public:
     return *this;
   }
 
+  TilePosArray& append( const TilePos& pos )
+  {
+    push_back( pos );
+    return *this;
+  }
+
   VariantList toVList() const
   {
     VariantList ret;
