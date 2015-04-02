@@ -13,35 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MENU_H_INCLUDE_
-#define __CAESARIA_MENU_H_INCLUDE_
+#ifndef __CAESARIA_BRIDGE_H_INCLUDED__
+#define __CAESARIA_BRIDGE_H_INCLUDED__
 
-#include "widget.hpp"
+#include "construction.hpp"
+#include "gfx/tilearea.hpp"
 
-#include "gfx/picture.hpp"
-
-namespace gui
-{
-
-class PushButton;
-
-// this is the menu with newGame/loadGame/quit choice
-class StartMenu : public Widget
+class Bridge : public Construction
 {
 public:
-  StartMenu( Widget* parent );
-  virtual ~StartMenu();
+  class Area : public gfx::TileArea
+  {
+  public:
+    Area( const gfx::Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown )
+      : gfx::TileArea( tmap, leftup, rightdown )
+    {
+    }
 
-  virtual void draw(gfx::Engine &painter);
-  PushButton* addButton( const std::string& caption, int id );
-  void clear();
-private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+    void cropCorners()
+    {
+      pop_back();
+      pop_front();
+    }
+  };
+
+  Bridge( const object::Type type );
 };
 
-}//end namespace gui
-#endif //__CAESARIA_MENU_H_INCLUDE_
+#endif //__CAESARIA_ACADEMY_H_INCLUDED__

@@ -1,0 +1,14 @@
+{
+  forbiden : {
+    terrains : { start : 372, stop : 445 }
+  }
+
+  low_bridge :
+  {
+    northWest :
+    {
+      coastA : [ 384, 385, 386, 387 ]
+      coastB : [ 376, 377, 378, 379 ]
+    }
+  }
+}

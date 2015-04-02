@@ -3,109 +3,127 @@
   buttons : "off"
   static : true
   bgtype : "whiteFrame"
-  vars : { x1 : 12, x2 : 100 }
+  vars : { x1 : 12, x2 : 100, vh : 22 }
 
-  lbTitle#Label : {
-    geometry : [ 10, 10, "pw-10", 50 ]
+  lbTitle#Label :
+  {
+    max.width : 40
     font : "FONT_5"
-		text : "##package_options##"
+    text : "##package_options##"
     text.align : [ "center", "center" ]
   }
-	
-  lbResourcesPath#Label : {
-    geometry : [ "x1", 50, "x2", 72 ]
-    font : "FONT_1"
-		text : "Resources: "
-    text.align : [ "upperLeft", "center" ]
-  }
 
-	edResourcesPath#EditBox :
+  vertical#VLayout :
   {
-    geometry : [ "x2", 50, "pw-15", 72 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_1"
-    text : ""
-    text.offset : [ 10, 0 ]
-  }
+    title#HLayout :
+    {
+      leftup : [ 10, 10 ]
+      lbResourcesPath#Label :
+      {
+        font : "FONT_1"
+        text : "Resources: "
+        text.align : [ "upperLeft", "center" ]
+      }
 
-  lbCaesar3Path#Label : {
-    geometry : [ "x1", 76, "x2", 98 ]
-    font : "FONT_1"
-    text : "C3 gfx: "
-    text.align : [ "upperLeft", "center" ]
-  }
+      edResourcesPath#EditBox :
+      {
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_1"
+        text : ""
+        text.offset : [ 10, 0 ]
+      }
+    }
 
-  edCaesar3Path#EditBox :
-  {
-    geometry : [ "x2", 76, "pw-15", 98 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_1"
-    text : ""
-    text.offset : [ 10, 0 ]
-  }
+    resources#HLayout :
+    {
+      lbCaesar3Path#Label :
+      {
+        font : "FONT_1"
+        text : "C3 gfx: "
+        text.align : [ "upperLeft", "center" ]
+      }
 
-  lbCaesar3Music#Label : {
-    geometry : [ "x1", 105, "x2", 127 ]
-    font : "FONT_1"
-    text : "C3 snd: "
-    text.align : [ "upperLeft", "center" ]
-  }
+      edCaesar3Path#EditBox :
+      {
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_1"
+        text : ""
+        text.offset : [ 10, 0 ]
+      }
+    }
 
-  edCaesar3Music#EditBox :
-  {
-    geometry : [ "x2", 105, "pw-15", 127 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_1"
-    text : ""
-    text.offset : [ 10, 0 ]
-  }
+    c3path#HLayout :
+    {
+      lbCaesar3Music#Label :
+      {
+        font : "FONT_1"
+        text : "C3 snd: "
+        text.align : [ "upperLeft", "center" ]
+      }
 
-  lbCaesar3Music#Label : {
-    geometry : [ "x1", 105, "x2", 127 ]
-    font : "FONT_1"
-    text : "C3 snd: "
-    text.align : [ "upperLeft", "center" ]
-  }
+      edCaesar3Music#EditBox :
+      {
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_1"
+        text : ""
+        text.offset : [ 10, 0 ]
+      }
+    }
 
-  edCaesar3Music#EditBox :
-  {
-    geometry : [ "x2", 105, "pw-15", 127 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_1"
-    text : ""
-    text.offset : [ 10, 0 ]
-  }
+    c3music#HLayout :
+    {
+      lbCaesar3Music#Label :
+      {
+        font : "FONT_1"
+        text : "C3 snd: "
+        text.align : [ "upperLeft", "center" ]
+      }
 
-  lbCaesar3Video#Label : {
-    geometry : [ "x1", 132, "x2", 154 ]
-    font : "FONT_1"
-    text : "C3 smk: "
-    text.align : [ "upperLeft", "center" ]
-  }
+      edCaesar3Music#EditBox :
+      {
+        geometry : [ "x2", 105, "pw-15", "105+vh" ]
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_1"
+        text : ""
+        text.offset : [ 10, 0 ]
+      }
+    }
 
-  edCaesar3Video#EditBox :
-  {
-    geometry : [ "x2", 132, "pw-15", 154 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_1"
-    text : ""
-    text.offset : [ 10, 0 ]
-  }
+    c3video#HLayout :
+    {
+      lbCaesar3Video#Label :
+      {
+        font : "FONT_1"
+        text : "C3 smk: "
+        text.align : [ "upperLeft", "center" ]
+      }
 
-  lbScreenshots#Label : {
-    geometry : [ "x1", 156, "x2", 178 ]
-    font : "FONT_1"
-    text : "Screenshots: "
-    text.align : [ "upperLeft", "center" ]
-  }
+      edCaesar3Video#EditBox :
+      {
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_1"
+        text : ""
+        text.offset : [ 10, 0 ]
+      }
+    }
 
-  edScreenshots#EditBox :
-  {
-    geometry : [ "x2", 156, "pw-15", 178 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_1"
-    text : ""
-    text.offset : [ 10, 0 ]
+    screenshots#HLayout :
+    {
+      lbScreenshots#Label :
+      {
+        font : "FONT_1"
+        text : "Screenshots: "
+        text.align : [ "upperLeft", "center" ]
+      }
+
+      edScreenshots#EditBox :
+      {
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_1"
+        text : ""
+        text.offset : [ 10, 0 ]
+      }
+    }
   }
 
 	lbApply#Label :

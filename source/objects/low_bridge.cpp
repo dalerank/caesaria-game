@@ -29,6 +29,7 @@
 #include "metadata.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::low_bridge, LowBridge)
 
@@ -37,9 +38,6 @@ PREDEFINE_CLASS_SMARTLIST(LowBridgeSubTile,List)
 namespace {
   Point spanswOffset = Point( 10, -25 );
 }
-
-
-
 
 class LowBridge::Impl
 {
@@ -62,7 +60,7 @@ bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
   //bool is_constructible = Construction::canBuild( pos );
 
   TilePos endPos, startPos;
-  _d->direction= direction::none;
+  _d->direction = direction::none;
 
   OverlayPtr bridge = areaInfo.city->getOverlay( areaInfo.pos );
   if( bridge.isNull() )
@@ -83,7 +81,7 @@ bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
 }
 
 LowBridge::LowBridge()
-  : Construction( object::low_bridge, Size(1) ), _d( new Impl )
+  : Bridge( object::low_bridge ), _d( new Impl )
 {
   Picture pic;
   setPicture( pic );
@@ -101,77 +99,73 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
   {
   case direction::northWest:
     {
-      TilesArray tiles = tilemap.getArea( endPos, startPos );
+      Bridge::Area area( tilemap, endPos, startPos );
 
-      if (tiles.size() < 3) break;
+      if (area.size() < 3)
+        break;
 
-      tiles.pop_back();
-      tiles.erase( tiles.begin() );
+      area.cropCorners();
 
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
-      foreach( it, tiles )
+      _d->addSpan( area.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
+      foreach( it, area )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
       }
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
+      _d->addSpan( area.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
 
   case direction::northEast:
     {
-      TilesArray tiles = tilemap.getArea( startPos, endPos );
+      Bridge::Area area( tilemap, startPos, endPos );
 
-      if (tiles.size() < 3) break;
+      if (area.size() < 3)
+        break;
 
-      tiles.pop_back();
-      tiles.erase( tiles.begin() );
+      area.cropCorners();
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
-      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      _d->addSpan( area.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
+      for( TilesArray::reverse_iterator it=area.rbegin(); it != area.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
       }
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
+      _d->addSpan( area.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
     }
     break;
 
   case direction::southEast:
     {
-      TilesArray tiles = tilemap.getArea( startPos, endPos );
+      Bridge::Area area( tilemap, startPos, endPos );
 
-      if( tiles.size() < 3 )
+      if( area.size() < 3 )
           break;
 
-      tiles.pop_back();
-      tiles.erase( tiles.begin() );
+      area.cropCorners();
 
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
-      foreach( it, tiles )
+      _d->addSpan( area.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
+      foreach( it, area )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
-        //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
+      _d->addSpan( area.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
 
   case direction::southWest:
     {
-      TilesArray tiles = tilemap.getArea( endPos, startPos );
+      Bridge::Area area( tilemap, endPos, startPos );
 
-      if( tiles.size() < 3 )
+      if( area.size() < 3 )
         break;
 
-      tiles.pop_back();
-      tiles.erase( tiles.begin() );
+      area.cropCorners();
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
-      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      _d->addSpan( area.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
+      for( TilesArray::reverse_iterator it=area.rbegin(); it != area.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
-        //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
+      _d->addSpan( area.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
     }
   break;
 
@@ -179,7 +173,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
   break;
   }
 
-  foreach( it,_d->subtiles )
+  foreach( it, _d->subtiles )
   {
     _fgPicturesRef().push_back( (*it)->_picture );
   }
@@ -221,7 +215,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
     TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
-    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
+    foreach( it, tiles )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
@@ -240,7 +234,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
     TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 0, 10) );
-    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
+    foreach( it, tiles )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
@@ -258,7 +252,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   }
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
+    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10 ), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
@@ -287,7 +281,6 @@ bool LowBridge::build( const city::AreaInfo& info )
   _d->direction=direction::none;
   setSize( Size(0) );
   Construction::build( info );
-
 
   _d->subtiles.clear();
   _fgPicturesRef().clear();
@@ -326,9 +319,9 @@ bool LowBridge::build( const city::AreaInfo& info )
     default: break;
     }
 
-    TilesArray tiles = tilemap.getArea( startPos, endPos );
+    Bridge::Area area( tilemap, startPos, endPos );
     int index=0;
-    foreach( t, tiles )
+    foreach( t, area )
     {
       LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
       TilePos buildPos = info.pos + subtile->_pos * signSum;
@@ -338,7 +331,7 @@ bool LowBridge::build( const city::AreaInfo& info )
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 
-      events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
+      GameEventPtr event = BuildAny::create( buildPos, subtile.object() );
       event->dispatch();
       index++;
     }
@@ -373,10 +366,8 @@ void LowBridge::destroy()
   foreach( it, _d->subtiles )
   {
     (*it)->_parent = 0;
-    events::GameEventPtr event = events::ClearTile::create( (*it)->_pos );
+    GameEventPtr event = ClearTile::create( (*it)->_pos );
     event->dispatch();
-
-    //std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
     Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
     tile::decode( mapTile, (*it)->_info );
@@ -391,7 +382,7 @@ void LowBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  foreach( subtile,  _d->subtiles )
+  foreach( subtile, _d->subtiles )
   {
     vl_tinfo.push_back( (*subtile)->_imgId );
   }
@@ -419,10 +410,8 @@ void LowBridge::hide()
   }
 }
 
-
-
 LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)
-  : Construction( object::low_bridge, Size( 1 ) )
+  : Bridge( object::low_bridge )
 {
   _info = 0;
   _imgId = 0;
@@ -458,9 +447,9 @@ bool LowBridgeSubTile::build(const city::AreaInfo &info)
 void LowBridgeSubTile::setState(Param name, double value)
 {
   if( _parent && name == pr::destroyable && value )
-    {
-      _parent->hide();
-    }
+  {
+    _parent->hide();
+  }
 }
 
 void LowBridgeSubTile::hide()
@@ -482,10 +471,10 @@ bool LowBridgeSubTile::canDestroy() const
 void LowBridgeSubTile::destroy()
 {
   if( _parent )
-    {
-      _parent->deleteLater();
-      _parent = 0;
-    }
+  {
+    _parent->deleteLater();
+    _parent = 0;
+  }
 }
 
 void LowBridgeSubTile::save(VariantMap &stream) const
@@ -499,14 +488,14 @@ void LowBridgeSubTile::save(VariantMap &stream) const
 Point LowBridgeSubTile::offset(const Tile &, const Point &subpos) const
 {
   switch( _index )
-    {
-    case liftingWest: return Point( -subpos.x(), subpos.x()*2 );
-    case spanWest:    return Point( 0, -30 );
-    case descentWest: return Point( subpos.x(), 12 - subpos.x() );
-    case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
-    case spanNorth:    return spanswOffset;
-    case liftingNorth: return Point( subpos.y()*0.6, -30-subpos.y() );
+  {
+  case liftingWest: return Point( -subpos.x(), subpos.x()*2 );
+  case spanWest:    return Point( 0, -30 );
+  case descentWest: return Point( subpos.x(), 12 - subpos.x() );
+  case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
+  case spanNorth:    return spanswOffset;
+  case liftingNorth: return Point( subpos.y()*0.6, -30-subpos.y() );
 
-    default: return Point( 0, 0 );
-    }
+  default: return Point( 0, 0 );
+  }
 }

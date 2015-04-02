@@ -16,13 +16,13 @@
 #ifndef __CAESARIA_LOW_BRIDGE_H_INCLUDED__
 #define __CAESARIA_LOW_BRIDGE_H_INCLUDED__
 
-#include "objects/construction.hpp"
+#include "bridge.hpp"
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
 
 class LowBridge;
 
-class LowBridgeSubTile : public Construction
+class LowBridgeSubTile : public Bridge
 {
   friend class LowBridge;
 public:
@@ -60,7 +60,7 @@ private:
   LowBridge* _parent;
 };
 
-class LowBridge : public Construction
+class LowBridge : public Bridge
 {
 public:
   LowBridge();

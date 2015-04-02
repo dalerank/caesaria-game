@@ -27,11 +27,21 @@ namespace gfx
 class TilesArray : public std::vector<Tile*>
 {
 public:
-  bool contain( TilePos tilePos ) const;
+  struct Corners
+  {
+    TilePos leftup;
+    TilePos leftdown;
+    TilePos rightdown;
+    TilePos rightup;
+  };
+
+  bool contain( const TilePos& tilePos ) const;
 
   TilesArray() {}
 
   TilesArray( const TilesArray& a );
+
+  Corners corners() const;
 
   TilePos leftUpCorner() const;
 
@@ -51,6 +61,8 @@ public:
   TilesArray& remove(const TilePos &pos );
 
   OverlayList overlays() const;
+
+  void pop_front();
 
   Tile* random() const;
 };
