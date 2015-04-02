@@ -50,6 +50,7 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
   virtual bool build( const city::AreaInfo& info );
+  virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
   virtual double state( Param param) const;
 
@@ -102,6 +103,7 @@ private:
   void _levelDown();
   void _disaster();
   void _update(bool needChangeTexture);
+  void _updateGround();
   bool _tryEvolve_1_to_12_lvl(int level, int growSize, const char desirability );
   bool _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
   void _tryDegrage_12_to_2_lvl( const char desirability );

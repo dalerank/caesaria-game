@@ -628,7 +628,7 @@ static void __createRoad(Game& game )
   {
     TilesArray eterrain = borderTiles.terrains();
     TilesArray sterrain;
-    for( int k=eterrain.size()/2; k < eterrain.size(); k++ )
+    for( unsigned int k=eterrain.size()/2; k < eterrain.size(); k++ )
       sterrain.push_back( eterrain[ k ] );
 
     eterrain.resize( eterrain.size() / 2 );

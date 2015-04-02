@@ -43,4 +43,5 @@
   foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 18, 8 ] }
   illhouse_anim : { rc : "illhouse", start : 1, stop : 42, offset : [ -2, -2 ] }
   theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ -1, -1 ] }
+  house_ground : { rc : "housng1g", start : 1, stop : 2, offset : [ -1, -1 ] }
 }

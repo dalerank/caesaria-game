@@ -132,6 +132,7 @@ public:
   bool isFlat;
   int currentYear;
   int changeCondition;
+  Pictures ground;
 
 public:
   void initGoodStore( int size );
@@ -1023,6 +1024,17 @@ bool House::build( const city::AreaInfo& info )
   return ret;
 }
 
+const Pictures& House::pictures(Renderer::Pass pass) const
+{
+  switch( pass )
+  {
+  case Renderer::overlayGround: return _d->ground;
+  default: break;
+  }
+
+  return Building::pictures( pass );
+}
+
 double House::state(Param param) const
 {
   if( param == pr::food ) { return _d->getFoodLevel(); }
@@ -1047,6 +1059,8 @@ void House::_update( bool needChangeTexture )
       pic.addOffset( _d->randomOffset );
     }
 
+    _updateGround();
+
     setPicture( pic );
   }
 
@@ -1058,6 +1072,12 @@ void House::_update( bool needChangeTexture )
 
   _d->habitants.maximum = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->initGoodStore( size().area() );
+}
+
+void House::_updateGround()
+{
+  _d->ground.clear();
+  _d->ground << Picture::load( "housng1g", size().width() );
 }
 
 int House::roadsideDistance() const { return 2; }
@@ -1216,6 +1236,7 @@ void House::load( const VariantMap& stream )
   {
     _update( true );
   }
+  _updateGround();
 }
 
 void House::_disaster()
