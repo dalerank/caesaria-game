@@ -7,7 +7,7 @@
 
   lbTitle#Label :
   {
-    max.width : 40
+    geometry : [ 10, 10, "pw-10", "10+32" ]
     font : "FONT_5"
     text : "##package_options##"
     text.align : [ "center", "center" ]
@@ -15,14 +15,19 @@
 
   vertical#VLayout :
   {
+    geometry : [ 15, 45, "pw-15", "ph-40" ]
+
     title#HLayout :
     {
-      leftup : [ 10, 10 ]
+      id : 100
+      maximumSize : [ 0, 24 ]
       lbResourcesPath#Label :
       {
+        maximumSize : [ 100, 0 ]
         font : "FONT_1"
         text : "Resources: "
         text.align : [ "upperLeft", "center" ]
+        id : 101
       }
 
       edResourcesPath#EditBox :
@@ -31,16 +36,21 @@
         font : "FONT_1"
         text : ""
         text.offset : [ 10, 0 ]
+        id : 102
       }
     }
 
     resources#HLayout :
     {
+      id : 200
+      maximumSize : [ 0, 24 ]
       lbCaesar3Path#Label :
       {
+        maximumSize : [ 100, 0 ]
         font : "FONT_1"
         text : "C3 gfx: "
         text.align : [ "upperLeft", "center" ]
+        id : 201
       }
 
       edCaesar3Path#EditBox :
@@ -49,16 +59,21 @@
         font : "FONT_1"
         text : ""
         text.offset : [ 10, 0 ]
+        id : 202
       }
     }
 
     c3path#HLayout :
     {
+      id : 300
+      maximumSize : [ 0, 24 ]
       lbCaesar3Music#Label :
       {
+        maximumSize : [ 100, 0 ]
         font : "FONT_1"
         text : "C3 snd: "
         text.align : [ "upperLeft", "center" ]
+        id : 301
       }
 
       edCaesar3Music#EditBox :
@@ -67,16 +82,21 @@
         font : "FONT_1"
         text : ""
         text.offset : [ 10, 0 ]
+        id :302
       }
     }
 
     c3music#HLayout :
     {
+      id : 400
+      maximumSize : [ 0, 24 ]
       lbCaesar3Music#Label :
       {
+        maximumSize : [ 100, 0 ]
         font : "FONT_1"
         text : "C3 snd: "
         text.align : [ "upperLeft", "center" ]
+        id : 401
       }
 
       edCaesar3Music#EditBox :
@@ -86,16 +106,21 @@
         font : "FONT_1"
         text : ""
         text.offset : [ 10, 0 ]
+        id : 402
       }
     }
 
     c3video#HLayout :
     {
+      id : 500
+      maximumSize : [ 0, 24 ]
       lbCaesar3Video#Label :
       {
+        maximumSize : [ 100, 0 ]
         font : "FONT_1"
         text : "C3 smk: "
         text.align : [ "upperLeft", "center" ]
+        id : 501
       }
 
       edCaesar3Video#EditBox :
@@ -104,16 +129,21 @@
         font : "FONT_1"
         text : ""
         text.offset : [ 10, 0 ]
+        id : 502
       }
     }
 
     screenshots#HLayout :
     {
+      id : 600
+      maximumSize : [ 0, 24 ]
       lbScreenshots#Label :
       {
+        maximumSize : [ 100, 0 ]
         font : "FONT_1"
         text : "Screenshots: "
         text.align : [ "upperLeft", "center" ]
+        id : 601
       }
 
       edScreenshots#EditBox :
@@ -122,6 +152,7 @@
         font : "FONT_1"
         text : ""
         text.offset : [ 10, 0 ]
+        id : 602
       }
     }
   }

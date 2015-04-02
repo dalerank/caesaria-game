@@ -16,69 +16,130 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "stretch_layout.hpp"
+#include "core/variant_map.hpp"
 
 namespace gui
 {
 
-void Layout::updateLayout( Widget* parent, bool vertical, bool drawBorder, s32 margin )
+bool compare_tag(Widget* one, Widget* two)
 {
-    if( parent->getChildren().size() == 0 )
-        return;
-
-    u32 side = (( vertical ? parent->getHeight() : parent->getWidth() ) ) / parent->getChildren().size();
-    Widget::Widgets pChildrens( parent->getChildren() );
-
-    u32 lastPos = drawBorder ? 10 : 0;
-    while( pChildrens.size() > 0 )
-    {
-        Widget* elm = *pChildrens.begin();
-        core::RectI rectangle( core::Point( vertical ? 0 : lastPos, vertical ? lastPos : 0 ), 
-                               core::NSizeU( vertical ? parent->getWidth() : side, 
-                                                   vertical ? side : parent->getHeight() ) );
-
-        rectangle.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
-        rectangle.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
-        elm->setGeometry( rectangle );
-
-        lastPos += ( vertical ? elm->getHeight() : elm->getWidth() ) + margin / 2;
-
-		Widget::ChildIterator delIt = pChildrens.begin();
-        pChildrens.erase( delIt );
-        if( pChildrens.size() )
-        {
-            Widget::Widgets fixSizeElms( pChildrens );
-
-            u32 elmsWithothMaxsizeNumber = 0;
-            u32 afterSide = vertical ? parent->getHeight() : parent->getWidth();
-            while( fixSizeElms.size() > 0 )
-            {
-                Widget* adapter = *(fixSizeElms.begin());
-                afterSide -= ( vertical ? adapter->getMaxSize().Height : adapter->getMaxSize().Width );
-                elmsWithothMaxsizeNumber += (( vertical ? adapter->getMaxSize().Height : adapter->getMaxSize().Width ) == 0 ? 1 : 0);
-
-                delIt = fixSizeElms.begin();
-                fixSizeElms.erase( delIt );
-            }
-
-            side = elmsWithothMaxsizeNumber > 0 ? (( afterSide - lastPos ) / elmsWithothMaxsizeNumber) : 9999;
-        }
-    }
+  return one->ID() < two->ID();
 }
+
+typedef std::vector< Widget* > WidgetsArray;
 
 void Layout::updateLayout()
 {
-    if( isNeedUpdate_() )
-	    StretchLayoutImpl::updateLayout( this, ElementStyle::invalid(), vertical_, _drawBorder, _margin );
+  if( !_needUpdate )
+     return;
 
-    resetUpdate_();
+  _needUpdate = false;
+  if( children().size() == 0 )
+      return;
+
+  unsigned int side = (( _vertical ? height() : width() ) ) / children().size();
+
+  if( _side > 0 )
+    side = math::min(side, _side);
+
+  WidgetsArray ch;
+  foreach( it, children() )
+    ch.push_back( *it );
+
+  std::sort( ch.begin(), ch.end(), compare_tag );
+
+  unsigned int lastPos = _offset;
+  while( ch.size() > 0 )
+  {
+    Widget* elm = ch.front();
+    Rect rectangle( Point( _vertical ? 0 : lastPos, _vertical ? lastPos : 0 ),
+                           Size( _vertical ? width() : side,
+                                 _vertical ? side : height() ) );
+    elm->setGeometry( rectangle );
+
+    lastPos += ( _vertical ? elm->height() : elm->width() );
+
+    WidgetsArray::iterator delIt = ch.begin();
+    ch.erase( delIt );
+    if( ch.size() )
+    {
+      WidgetsArray fixSizeElms( ch );
+
+      unsigned int elmsWithothMaxsizeNumber = 0;
+      unsigned int afterSide = _vertical ? height() : width();
+      while( fixSizeElms.size() > 0 )
+      {
+        Widget* adapter = *(fixSizeElms.begin());
+        afterSide -= ( _vertical ? adapter->maxSize().height() : adapter->maxSize().width() );
+        elmsWithothMaxsizeNumber += (( _vertical ? adapter->maxSize().height() : adapter->maxSize().width() ) == 0 ? 1 : 0);
+
+        delIt = fixSizeElms.begin();
+        fixSizeElms.erase( delIt );
+      }
+
+      side = elmsWithothMaxsizeNumber > 0 ? (( afterSide - lastPos ) / elmsWithothMaxsizeNumber) : 9999;
+    }
+  }
+}
+
+void Layout::beforeDraw( gfx::Engine& painter )
+{
+  if( !visible() )
+    return;
+
+  if( children().size() != _lastElementNumber )
+  {
+    _lastElementNumber = children().size();
+    _needUpdate = true;
+  }
+
+  updateLayout();
+  Widget::beforeDraw( painter );
+}
+
+void Layout::setupUI(const VariantMap &stream)
+{
+  _side = stream.get( "side" );
+  _offset = stream.get( "offset" );
+
+  Widget::setupUI( stream );
+}
+
+void Layout::_resizeEvent()
+{
+  _needUpdate = true;
+
+  Widget::_resizeEvent();
+}
+
+Layout::Layout(Widget *parent)
+  : Widget( parent, -1, Rect() )
+{
+
 }
 
 Layout::Layout( Widget* parent, const Rect& rectangle, bool vertical, int id )
-: Widget( parent, rectangle, id ), vertical_( vertical ? maxColumnInVertMode : maxColumnInHorizMode )
+: Widget( parent, id, rectangle ), _vertical( vertical )
 {
+   _lastElementNumber = 0;
+   _needUpdate = false;
 }
 
 Layout::~Layout()
+{
+
+}
+
+HLayout::HLayout(Widget *parent) : Layout( parent, Rect(), false ) {}
+
+HLayout::HLayout(Widget *parent, const Rect &rect, int id) : Layout( parent, rect, false, id )
+{
+
+}
+
+VLayout::VLayout(Widget *parent) : Layout( parent, Rect(), true ) {}
+
+VLayout::VLayout(Widget *parent, const Rect &rect, int id) : Layout( parent, rect, true, id )
 {
 
 }

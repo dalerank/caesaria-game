@@ -28,16 +28,39 @@ class Layout : public Widget
 public:
   enum { vertical=true, horizontal=false };
 
+  Layout( Widget* parent );
   Layout( Widget* parent,
           const Rect& rectangle,
           bool vertical, int id=-1 );
 
   ~Layout();
 
-  void updateLayout();
+  virtual void updateLayout();
+  virtual void beforeDraw(gfx::Engine &painter);
+  virtual void setupUI( const VariantMap& stream );
 
 protected:
-  bool vertical_;
+  virtual void _resizeEvent();
+
+  bool _vertical;
+  bool _needUpdate;
+  unsigned int _offset;
+  unsigned int _side;
+  unsigned int _lastElementNumber;
+};
+
+class HLayout : public Layout
+{
+public:
+  HLayout( Widget* parent );
+  HLayout( Widget* parent, const Rect& rect, int id );
+};
+
+class VLayout : public Layout
+{
+public:
+  VLayout( Widget* parent );
+  VLayout( Widget* parent, const Rect& rect, int id );
 };
 
 }// end namespace gui
