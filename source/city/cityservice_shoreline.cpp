@@ -49,7 +49,7 @@ public:
 void Shoreline::Impl::checkMap( PlayerCityPtr city )
 {
   int mapSize = city->tilemap().size();
-  TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
+  const TilesArray& tiles = city->tilemap().allTiles();
 
   foreach( tile, tiles )
   {

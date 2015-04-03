@@ -374,7 +374,7 @@ void House::_updateCrime()
   {
     TilePos offset( 4, 4 );
     TilePos sizeOffset( size().width(), size().height() );
-    TilesArray tiles = _city()->tilemap().getArea( pos() - offset, pos() + sizeOffset + offset );
+    TilesArea tiles( _city()->tilemap(), pos() - offset, pos() + sizeOffset + offset );
     int averageDes = 0;
     foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
     averageDes /= (tiles.size() + 1);
@@ -470,7 +470,8 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
   if( size().width() == 1 )
   {
     Tilemap& tmap = _city()->tilemap();
-    TilesArray area = tmap.getArea( tile().pos(), Size(2) );
+    TilesArea area( tmap, pos(), 2 );
+
     bool mayGrow = true;
 
     foreach( it, area )

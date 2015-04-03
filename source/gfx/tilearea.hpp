@@ -25,10 +25,13 @@ namespace gfx
 
 class Tilemap;
 
-class TileArea : public TilesArray
+class TilesArea : public TilesArray
 {
 public:
-  TileArea( const Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown );
+  TilesArea();
+  TilesArea( const Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown );
+  TilesArea( const Tilemap& tmap, const TilePos& center, int distance );
+  TilesArea( const Tilemap& tmap, const TilePos& leftup, const Size& size );
 };
 
 } //end namespace gfx

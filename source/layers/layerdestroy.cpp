@@ -31,6 +31,7 @@
 #include "events/fundissue.hpp"
 #include "game/funds.hpp"
 #include "core/font.hpp"
+#include "gfx/tilearea.hpp"
 #include "build.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
@@ -107,7 +108,7 @@ void Destroy::render( Engine& engine )
     OverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
-      TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
+      TilesArray overlayArea = overlay->area();
       foreach( ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( tile::hash((*ovelayTile)->epos()));

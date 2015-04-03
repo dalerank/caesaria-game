@@ -28,7 +28,7 @@
 #include "game/citizen_group.hpp"
 #include "game/service.hpp"
 #include "walker/walker.hpp"
-#include "gfx/tilesarray.hpp"
+#include "gfx/tilearea.hpp"
 #include "city.hpp"
 
 namespace city
@@ -82,7 +82,6 @@ template< class T > SmartList< T > findw( PlayerCityPtr r, constants::walker::Ty
                                           TilePos start, TilePos stop=TilePos(-1, -1) );
 HouseList findh( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
 FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
-gfx::TilesArray tiles( PlayerCityPtr r, const TilePos& start, const TilePos& stop=TilePos(-1,-1));
 
 template< class T >
 SmartList< T > findo( PlayerCityPtr r, object::Type type )
@@ -141,7 +140,7 @@ SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
   }
   else
   {
-    gfx::TilesArray area = tiles( r, start, stop );
+    gfx::TilesArea area( r->tilemap(), start, stop );
     foreach( tile, area)
     {
       const WalkerList& wlkOnTile = r->walkers( (*tile)->pos() );
@@ -238,7 +237,7 @@ SmartList< T > findo( PlayerCityPtr r, const object::Type type, TilePos start, T
 {
   SmartList< T > ret;
 
-  gfx::TilesArray area = tiles( r, start, stop );
+  gfx::TilesArea area( r->tilemap(), start, stop );
   foreach( tile, area )
   {
     SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
@@ -256,7 +255,7 @@ SmartList< T > find( PlayerCityPtr r, object::Group group, const TilePos& start,
 {
   SmartList< T > ret;
 
-  gfx::TilesArray area = tiles( r, start, stop );
+  gfx::TilesArea area( r->tilemap(), start, stop );
 
   foreach( tile, area )
   {

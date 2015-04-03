@@ -24,11 +24,11 @@
 class Bridge : public Construction
 {
 public:
-  class Area : public gfx::TileArea
+  class Area : public gfx::TilesArea
   {
   public:
     Area( const gfx::Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown )
-      : gfx::TileArea( tmap, leftup, rightdown )
+      : gfx::TilesArea( tmap, leftup, rightdown )
     {
     }
 

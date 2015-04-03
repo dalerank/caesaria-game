@@ -47,6 +47,7 @@
 using namespace constants;
 using namespace gfx;
 using namespace city;
+using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::merchant, Merchant)
 
@@ -255,12 +256,12 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
           int needQty = buy.freeQty( *goodType );
           int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
-          int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
+          int citySellQty = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, 9999 );
           
-          if( needQty > 0 && maySell > 0)
+          if( needQty > 0 && citySellQty > 0)
           {
             int mayBuy = std::min( needQty, whStore.getMaxRetrieve( *goodType ) );
-            mayBuy = std::min( mayBuy, maySell );
+            mayBuy = std::min( mayBuy, citySellQty );
             if( mayBuy > 0 )
             {
               good::Stock& stock = buy.getStock( *goodType );
@@ -268,7 +269,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
               currentBuys += good::Helper::exportPrice( city, *goodType, mayBuy );
 
-              events::GameEventPtr e = events::Payment::exportg( *goodType, mayBuy, tradeKoeff );
+              GameEventPtr e = Payment::exportg( *goodType, mayBuy, tradeKoeff );
               e->dispatch();
             }
           }
@@ -365,7 +366,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
             currentSell += good::Helper::importPrice( city, *goodType, maySells );
 
-            events::GameEventPtr e = events::Payment::import( *goodType, maySells );
+            GameEventPtr e = Payment::import( *goodType, maySells );
             e->dispatch();
           }
         }

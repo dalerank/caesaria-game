@@ -270,73 +270,70 @@ TilePos Fort::freeSlot() const
     }
   }
 
-  TilesArray tiles;
+  TilesArea area;
   TroopsFormation formation = (patrolPos == _d->area->pos() + TilePos( 0, 3 )
                                  ? frmParade
                                  : _d->formation);
 
-  TilePos offset;
   Tilemap& tmap = _city()->tilemap();
   switch( formation )
   {
   case frmOpen:
-    offset = TilePos( 3, 3 );
-    tiles = city::statistic::tiles( _city(), patrolPos - offset, patrolPos + offset );
+    area = TilesArea( _city()->tilemap(), patrolPos, 3 );
   break;
 
   case frmWestLine:
-    tiles.push_back( &tile() );
+    area.push_back( &tile() );
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
+      area.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
+      area.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
     }
   break;
 
   case frmWestDblLine:
-    tiles.push_back( &tile() );
-    tiles.push_back( &tmap.at( patrolPos + TilePos( 0, 1 ) ) );
+    area.push_back( &tile() );
+    area.push_back( &tmap.at( patrolPos + TilePos( 0, 1 ) ) );
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos - TilePos( -1, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 1, range ) ) );
+      area.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
+      area.push_back( &tmap.at( patrolPos - TilePos( -1, range ) ) );
+      area.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
+      area.push_back( &tmap.at( patrolPos + TilePos( 1, range ) ) );
     }
   break;
 
   case frmNorthLine:
-    tiles.push_back( &tile() );
+    area.push_back( &tile() );
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range, 0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range, 0 ) ) );
+      area.push_back( &tmap.at( patrolPos - TilePos( range, 0 ) ) );
+      area.push_back( &tmap.at( patrolPos + TilePos( range, 0 ) ) );
     }
   break;
 
   case frmNorthDblLine:
-    tiles.push_back( &tile() );
-    tiles.push_back( &tmap.at( patrolPos - TilePos( 1, 0 ) ) );
+    area.push_back( &tile() );
+    area.push_back( &tmap.at( patrolPos - TilePos( 1, 0 ) ) );
     for( int range=1; range < 10; range++ )
     {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range,0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range,1 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range,0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range,-1 ) ) );
+      area.push_back( &tmap.at( patrolPos - TilePos( range,0 ) ) );
+      area.push_back( &tmap.at( patrolPos - TilePos( range,1 ) ) );
+      area.push_back( &tmap.at( patrolPos + TilePos( range,0 ) ) );
+      area.push_back( &tmap.at( patrolPos + TilePos( range,-1 ) ) );
     }
   break;
 
   case frmParade:
-    tiles = city::statistic::tiles( _city(), patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
+    area = TilesArea( _city()->tilemap(), patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
   break;
 
   case frmSquad:
-    offset = TilePos( 2, 2 );
-    tiles = city::statistic::tiles( _city(), patrolPos - offset, patrolPos + offset );
+    area = TilesArea( _city()->tilemap(), patrolPos, 2);
   break;
   }
 
-  tiles = tiles.walkables( true );
+  TilesArray tiles = area.walkables( true );
   if( !tiles.empty() )
   {
     foreach( it, tiles )

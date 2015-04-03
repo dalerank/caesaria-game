@@ -33,6 +33,7 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tilearea.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -54,7 +55,7 @@ void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( tmap, pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
 }
@@ -162,8 +163,7 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    Tilemap& tmap = _city()->tilemap();
-    TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArea reachedTiles( _city()->tilemap(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles )
     {

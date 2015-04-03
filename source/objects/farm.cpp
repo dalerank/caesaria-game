@@ -145,7 +145,7 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
   bool is_constructible = Construction::canBuild( areaInfo );
   bool on_meadow = false;
 
-  TilesArray area = areaInfo.city->tilemap().getArea( areaInfo.pos, size() );
+  TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
   foreach( tile, area )
   {
     on_meadow |= (*tile)->getFlag( Tile::tlMeadow );

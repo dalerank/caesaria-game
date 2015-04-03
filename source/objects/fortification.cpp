@@ -100,7 +100,7 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
       FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );

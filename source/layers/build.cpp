@@ -36,6 +36,7 @@
 #include "game/funds.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
+#include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
 #include "layerdestroy.hpp"
@@ -110,7 +111,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   bool walkersOnTile = false;
   if( bldCommand->isCheckWalkers() )
   {
-    TilesArray tiles = _city()->tilemap().getArea( pos, pos + TilePos( size.width()-1, size.height()-1 )  );
+    TilesArray tiles = overlay->area();
     foreach( t, tiles )
     {
       const WalkerList& walkers = _city()->walkers( (*t)->pos() );
