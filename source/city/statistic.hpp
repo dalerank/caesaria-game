@@ -163,6 +163,31 @@ SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
 }
 
 template< class T >
+SmartPtr<T> findw( PlayerCityPtr r, constants::walker::Type type, Walker::UniqueId id )
+{
+  const WalkerList& all = r->walkers();
+
+  if( type != constants::walker::any )
+  {
+    foreach( it, all )
+    {
+      if((*it)->type() == type && (*it)->uniqueId() != id )
+        return ptr_cast<T>( *it );
+    }
+  }
+  else
+  {
+    foreach( it, all )
+    {
+      if( (*it)->uniqueId() != id )
+        return ptr_cast<T>( *it );
+    }
+  }
+
+  return SmartPtr<T>();
+}
+
+template< class T >
 SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which )
 {
   OverlayList ret;

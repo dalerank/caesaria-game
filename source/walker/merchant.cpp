@@ -281,10 +281,6 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
         wlk->setThinks( "##landmerchant_say_about_store_goods##" );
         waitInterval = game::Date::days2ticks( 7 );
-        foreach( it, camels )
-        {
-          (*it)->wait();
-        }
       }
 
       nextState = stGoOutFromCity;
@@ -371,10 +367,11 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           }
         }
       }
-    }
+    }    
 
     nextState = stFindWarehouseForBuying;
     waitInterval = 60;
+
     resolveState( city, wlk, position );
   }
   break;
@@ -418,8 +415,8 @@ void Merchant::send2city()
 
     for( int i=0; i < 2; i++ )
     {
-      _d->camels << MerchantCamel::create( _city(), this, 15 * (i+1) );
-      _d->camels.back()->attach();
+      MerchantCamelPtr camel = MerchantCamel::create( _city(), this, 15 * (i+1) );
+      camel->attach();
     }
   }
 }
@@ -434,15 +431,13 @@ void Merchant::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, currentSell )
   VARIANT_SAVE_ANY_D( stream, _d, currentBuys )
   VARIANT_SAVE_ENUM_D( stream, _d, nextState )
-
-  stream[ "sell" ] = _d->sell.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, sell )
+  VARIANT_SAVE_CLASS_D( stream, _d, buy )
 }
 
 void Merchant::load( const VariantMap& stream)
 {
   Walker::load( stream );
-  _d->sell.load( stream.get( "sell" ).toMap() );
-
   VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream )
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_STR_D( _d, baseCityName, stream )
@@ -450,11 +445,24 @@ void Merchant::load( const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, currentSell, stream )
   VARIANT_LOAD_ANY_D( _d, currentBuys, stream )
   VARIANT_LOAD_ENUM_D( _d, nextState, stream );
+  VARIANT_LOAD_CLASS_D( _d, sell, stream )
+  VARIANT_LOAD_CLASS_D( _d, buy, stream )
 
   if( _d->nextState == Impl::stUnknown )
   {
     _d->nextState = Impl::stBackToBaseCity;
     _d->resolveState( _city(), this, pos() );
+  }
+}
+
+void Merchant::setPathway(const Pathway& pathway)
+{
+  Human::setPathway( pathway );
+
+  foreach( it, _d->camels )
+  {
+    Pathway newPath = PathwayHelper::create( (*it)->pos(), pathway.stopPos(), PathwayHelper::roadFirst );
+    (*it)->setPathway( newPath );
   }
 }
 
@@ -526,6 +534,19 @@ TilePos Merchant::places(Walker::Place type) const
   }
 
   return Human::places( type );
+}
+
+void Merchant::addCamel(MerchantCamelPtr camel)
+{
+  _d->camels.push_back( camel );
+}
+
+void Merchant::_centerTile()
+{
+  Human::_centerTile();
+
+  foreach( it, _d->camels )
+    (*it)->updateHeadLocation( pos() );
 }
 
 WalkerPtr Merchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
