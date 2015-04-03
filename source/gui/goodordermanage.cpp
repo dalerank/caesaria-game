@@ -325,6 +325,7 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
     ctrade.setTradeLimit( state, _d->type, metric::Unit::fromValue( limit ) );
   }
   updateTradeState();
+  emit _d->onOrderChangedSignal();
 }
 
 }
