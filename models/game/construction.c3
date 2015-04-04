@@ -523,6 +523,13 @@
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
+
+    ratings : {
+      culture  :   { rc : "govt", index: 5, offset : [ 140, -30 ] }
+      prosperity : { rc : "govt", index: 6, offset : [ 170, -25 ] }
+      peace :      { rc : "govt", index: 7, offset : [ 200, -15 ] }
+      favour :     { rc : "govt", index: 8, offset : [ 230, -10 ] }
+    }
   }, 
    
   forum : {

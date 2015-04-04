@@ -137,7 +137,7 @@
     employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
-    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 135, 70 ], delay : 2 }
+    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 135, 50 ], delay : 2 }
     sound : [ "artistpit", 1  ]
   },
 
@@ -530,6 +530,13 @@
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
+
+    ratings : {
+      culture  :   { rc : "govt", index: 5, offset : [ 358, -50 ] }
+      prosperity : { rc : "govt", index: 6, offset : [ 385, -37 ] }
+      peace :      { rc : "govt", index: 7, offset : [ 410, -23 ] }
+      favour :     { rc : "govt", index: 8, offset : [ 435, -10 ] }
+    }
   }, 
    
   forum : {
