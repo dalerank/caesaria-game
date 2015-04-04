@@ -796,6 +796,7 @@
     output : "weapon"
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
+    animation : { rc : "commerce", start : 109, count : 8, offset : [ 60, 127 ], delay : 4 }
   },
   
   furniture_workshop :
@@ -820,6 +821,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 5 ], delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 137 ], delay : 3 }
   }
 }
