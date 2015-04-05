@@ -1250,7 +1250,7 @@
 "##visit_financial_advisor##":"Посетить финансового советника"
 "##message_from_centurion##":"Послание от центуриона легиона..."
 "##dispatch_gift##":"Послать подарок"
-"##dispatch_git_title##":"Послать подарок Императору"
+"##dispatch_gift_title##":"Послать подарок Императору"
 "##send_lavish_gift##":"Послать роскошный подарок"
 "##send_modest_gift##":"Послать скромный подарок"
 "##send_generous_gift##":"Послать щедрый подарок"

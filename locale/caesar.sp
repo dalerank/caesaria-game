@@ -1225,7 +1225,7 @@
 "##visit_financial_advisor##":"Visita al asesor de finanzas"
 "##message_from_centurion##":"Del centurión de la legión ..."
 "##dispatch_gift##":"Mandar un regalo."
-"##dispatch_git_title##":"Enviar regalo al emperador"
+"##dispatch_gift_title##":"Enviar regalo al emperador"
 "##send_lavish_gift##":"Mandar regalo lujoso"
 "##send_modest_gift##":"Mandar regalo modesto"
 "##send_generous_gift##":"Mandar regalo generoso"
