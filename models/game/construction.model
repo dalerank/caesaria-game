@@ -672,6 +672,7 @@
     class : "food"
     output : "vegetable"
     sound : [ "vegetablefarm", 1 ]
+    image : [ "vegfarm", 1 ]
   },
  
   fig_farm : 
@@ -683,6 +684,7 @@
     productRate : 9.6
     class : "food"
     sound : [ "fig_farm", 1 ]
+    image : [ "fruitfarm", 1 ]
   },
   
   olive_farm : 

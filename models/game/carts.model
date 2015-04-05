@@ -33,11 +33,11 @@
   }
 
   oil : {
-    small : { back : false, rc : "cartoil", start : 1, frames : 7, step : 8, delay : 2 }
+    small : { back : true, rc : "cartoil", start : 1, frames : 7, step : 8, delay : 2 }
   }
 
   furniture : {
-    small : { back : false, rc : "cartfurniture", start : 1, frames : 7, step : 8, delay : 2 }
+    small : { back : true, rc : "cartfurniture", start : 1, frames : 7, step : 8, delay : 2 }
   }
 
   marble : {
@@ -65,7 +65,7 @@
   }
 
   weapon : {
-    small : { back : false, rc : "cartweapon", start : 1, frames : 7, step : 8, delay : 2 }
+    small : { back : true, rc : "cartweapon", start : 1, frames : 7, step : 8, delay : 2 }
   }
 
   circusCart : {
