@@ -66,6 +66,10 @@ public:
 
 protected:
   virtual void _updateBuffs();
+  virtual void initialize(const MetaData &mdata);
+
+private:
+  int _buffValue;
 };
 
 class TempleNeptune : public SmallTemple

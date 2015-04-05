@@ -81,6 +81,7 @@ Temple::~Temple(){}
 
 TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), object::small_ceres_temple, 45 )
 {
+  _buffValue = 3;
 }
 
 void TempleCeres::_updateBuffs()
@@ -96,10 +97,17 @@ void TempleCeres::_updateBuffs()
                                                    pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
     foreach( it, farms )
     {
-      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), 0.1, 4, CAESARIA_STR_A(TempleCeres) );
+      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue, 4, CAESARIA_STR_A(TempleCeres) );
     }
   }
 }
+
+void TempleCeres::initialize(const MetaData &mdata)
+{
+  Temple::initialize( mdata );
+  _buffValue = mdata.getOption( "buffValue", _buffValue );
+}
+
 
 BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), object::big_ceres_temple, 46 )
 {
