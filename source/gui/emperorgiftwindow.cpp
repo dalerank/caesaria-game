@@ -26,7 +26,9 @@
 #include "widget_helper.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
+#include "widgetescapecloser.hpp"
 #include "core/utils.hpp"
+#include "game/gift.hpp"
 
 namespace gui
 {
@@ -37,11 +39,10 @@ namespace dialog
 class EmperorGift::Impl
 {
 public:
-  typedef enum { modest, generous, lavish } GiftType;
   int wantSend, maxMoney;
 
   void fillGifts( ListBox* lbx );
-  unsigned int getGiftCost( GiftType type, unsigned int money );
+  unsigned int getGiftCost(Gift::Type type, unsigned int money );
 
 public slots:
   void sendGift() { emit sendGiftSignal( wantSend ); }
@@ -64,6 +65,7 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   INIT_WIDGET_FROM_UI( ListBox*, lbxGifts )
   INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
   INIT_WIDGET_FROM_UI( PushButton*, btnSend )
+  INIT_WIDGET_FROM_UI( Label*, lbPlayerMoney )
 
   CONNECT( lbxGifts, onItemSelected(), _dfunc().data(), Impl::selectGift );
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendGift );
@@ -75,15 +77,37 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   if( lbLastGiftDate )
   {
     int monthsLastGift = lastgift.monthsTo( game::Date::current() );
-    std::string text = utils::format( 0xff, "%s  %d  %s",
+    std::string text = monthsLastGift > 100
+                              ? _( "##too_old_sent_gift##")
+                              : utils::format( 0xff, "%s  %d  %s",
                                              _("##time_since_last_gift##"),
                                              monthsLastGift,
                                              _("##mo##") );
     lbLastGiftDate->setText( text );
   }
+
+  if( lbPlayerMoney )
+  {
+    std::string text = utils::format( 0xff, "%s %d Dn", _( "##you_have_money##"), money );
+    lbPlayerMoney->setText( text );
+  }
+
+  WidgetEscapeCloser::insertTo( this );
+  setModal();
 }
 
 EmperorGift::~EmperorGift() {}
+
+bool EmperorGift::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
+  {
+    deleteLater();
+    return true;
+  }
+
+  return Window::onEvent( event );
+}
 
 Signal1<int>& EmperorGift::onSendGift() { return _dfunc()->sendGiftSignal; }
 
@@ -98,22 +122,30 @@ void EmperorGift::Impl::fillGifts(ListBox* lbx)
   lbx->setTextAlignment( align::center, align::center );
   for( int k=0; k < 3; k++ )
   {
-    int tag = getGiftCost( (GiftType)k, maxMoney );
-    std::string priceStr = utils::format( 0xff, " : %d", tag );
-    ListBoxItem& item = lbx->addItem( _( gifts.random() ) + priceStr );
+    int tag = getGiftCost( (Gift::Type)k, maxMoney );
+    std::string giftName = gifts.random();
+
+    if( giftName.empty() )
+      return;
+
+    gifts.remove( giftName );
+
+    std::string giftDescription = utils::format( 0xff, "%s : %d", _( giftName ), tag );
+
+    ListBoxItem& item = lbx->addItem( giftDescription );
     item.setTag( tag );
     item.setTextColor( ListBoxItem::simple, tag < maxMoney ? DefaultColors::black : DefaultColors::grey );
     item.setEnabled( tag < maxMoney );
   }
 }
 
-unsigned int EmperorGift::Impl::getGiftCost(EmperorGift::Impl::GiftType type, unsigned int money)
+unsigned int EmperorGift::Impl::getGiftCost( Gift::Type type, unsigned int money)
 {
   switch( type )
   {
-  case modest: return money / 8 + 20;
-  case generous: return money / 4 + 50;
-  case lavish: return money / 2 + 100;
+  case Gift::modest: return money / 8 + 20;
+  case Gift::generous: return money / 4 + 50;
+  case Gift::lavish: return money / 2 + 100;
   }
 
   return 100;

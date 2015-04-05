@@ -33,6 +33,8 @@ public:
   EmperorGift( Widget* parent, int money, const DateTime& lastgift );
   virtual ~EmperorGift();
 
+  virtual bool onEvent(const NEvent &event);
+
 public signals:
   Signal1<int>& onSendGift();
 
