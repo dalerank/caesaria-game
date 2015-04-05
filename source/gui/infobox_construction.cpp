@@ -70,9 +70,9 @@ void AboutConstruction::_setWorkingVisible(bool show)
 {
   if( !_btnToggleWorking && _lbBlackFrameRef() )
   {
-     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), Rect( 0, 0, 100, 25 ), "", -1, false, PushButton::blackBorderUp  );
+      Rect btnRect( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ), Size( 100, 25 ) );
+     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), btnRect, "", -1, false, PushButton::blackBorderUp  );
      _btnToggleWorking->setFont( Font::create( FONT_1 ) );
-     _btnToggleWorking->setPosition( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ) );
      _updateWorkingText();
 
      CONNECT( _btnToggleWorking, onClicked(), this, AboutConstruction::_resolveToggleWorking );

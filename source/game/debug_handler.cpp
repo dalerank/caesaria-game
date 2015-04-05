@@ -121,6 +121,7 @@ enum {
   add_furniture_to_warehouse,
   add_weapons_to_warehouse,
   add_wine_to_warehouse,
+  add_oil_to_warehouse,
   remove_favor
 };
 
@@ -184,6 +185,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "goods", add_furniture_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_oil_to_warehouse )
 
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
@@ -330,6 +332,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_furniture_to_warehouse:addGoods2Wh( good::furniture); break;
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
+  case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
 
   case win_mission:
   case fail_mission:

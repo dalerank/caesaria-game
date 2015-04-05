@@ -116,8 +116,8 @@ public:
   int lastProgress;
 };
 
-Farm::Farm(const good::Product outGood, const object::Type type )
-  : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
+Farm::Farm(const good::Product outGood, const object::Type farmType )
+  : Factory( good::none, outGood, farmType, Size(3) ), _d( new Impl )
 {
   outStockRef().setCapacity( 100 );
 
@@ -125,17 +125,19 @@ Farm::Farm(const good::Product outGood, const object::Type type )
   _d->sublocs << TilePos( 0, 0) << TilePos( 1, 0)
               << TilePos( 2, 0) << TilePos( 2, 1) << TilePos( 2, 2);
 
-  _fgPicturesRef().resize( _d->sublocs.size() );
+  Picture mainPic = _getMainPicture();
+  mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
+  _fgPicturesRef().push_back( mainPic );  // farm building
 
-  for(unsigned int n = 0; n<_d->sublocs.size(); ++n)
+  foreach( it, _d->sublocs )
   {
-    _fgPicture(n) = FarmTile::computePicture( outGood, 0 );
-    _fgPicture(n).addOffset( tile::tilepos2screen( _d->sublocs[n] ) );
+    Picture tPic = FarmTile::computePicture( outGood, 0 );
+    tPic.addOffset( tile::tilepos2screen( *it ) );
+    _fgPicturesRef().push_back( tPic );
   }
-  _fgPicturesRef().push_back( Picture::load( ResourceGroup::commerce, 12) );  // farm building
-  _fgPicturesRef().back().addOffset( tile::tilepos2screen( TilePos( 0, 1)) );
+  setPicture( Picture::getInvalid() );
 
-  init();
+  //init();
 }
 
 bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
@@ -143,7 +145,7 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
   bool is_constructible = Construction::canBuild( areaInfo );
   bool on_meadow = false;
 
-  TilesArray area = areaInfo.city->tilemap().getArea( areaInfo.pos, size() );
+  TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
   foreach( tile, area )
   {
     on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
@@ -236,27 +238,13 @@ bool Farm::build( const city::AreaInfo& info )
   {
     upInfo.pos += TilePos(0,1);
 
-    TilePosArray locations;
-    foreach( it, _d->sublocs )
-    {
-      city::AreaInfo tInfo = info;
-      tInfo.pos += *it;
-      OverlayPtr farmtile( new FarmTile( produceGoodType(), upInfo.pos ) );
-      farmtile->drop();
-
-      farmtile->build( tInfo );
-      info.city->addOverlay( farmtile );
-      locations << farmtile->pos();
-      _d->subtiles.push_back( &farmtile->tile() );
-    }
-
-    _d->sublocs = locations;
+    _buildFarmTiles( info, upInfo.pos );
   }
 
   _fgPicturesRef().resize( 0 );
   Factory::build( upInfo );
 
-  setPicture( ResourceGroup::commerce, 12 );
+  setPicture( _getMainPicture() );
   computePictures();
 
   return true;
@@ -274,7 +262,19 @@ void Farm::load( const VariantMap& stream )
   _d->sublocs.fromVList( stream.get( "locations").toList() );
 
   foreach( it, _d->sublocs )
-    _d->subtiles.push_back( &_city()->tilemap().at( *it ) );
+  {
+    OverlayPtr overlay = _city()->getOverlay( *it );
+    if( is_kind_of<FarmTile>( overlay ) )
+    {
+      _d->subtiles.push_back( &overlay->tile() );
+    }
+    else
+    {
+      Logger::warning( "!!! WARNING: Fart lost tile at [%d,%d]. Rebuild", it->i(), it->j() );
+      city::AreaInfo ainfo = { _city(), *it, TilesArray() };
+      _buildFarmTile( ainfo, pos() );
+    }
+  }
 
   computePictures();
 }
@@ -282,6 +282,23 @@ void Farm::load( const VariantMap& stream )
 unsigned int Farm::produceQty() const
 {
   return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
+}
+
+void Farm::initialize(const MetaData& mdata)
+{
+  Factory::initialize( mdata );
+  //picture will be setting on build
+  setPicture( Picture::getInvalid() );
+}
+
+Picture Farm::_getMainPicture()
+{
+  const MetaData& md = MetaDataHolder::getData( type() );
+  Picture ret = md.picture();
+  if( !ret.isValid() )
+    ret = Picture::load(ResourceGroup::commerce, 12);
+
+  return ret;
 }
 
 Farm::~Farm() {}
@@ -330,4 +347,29 @@ FarmFruit::FarmFruit() : Farm(good::fruit, object::fig_farm)
 
 FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 {
+}
+
+OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
+{
+  OverlayPtr farmtile( new FarmTile( produceGoodType(), ppos ) );
+  farmtile->drop();
+
+  farmtile->build( info );
+  info.city->addOverlay( farmtile );
+  return farmtile;
+}
+
+void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
+{
+  TilePosArray locations;
+  foreach( it, _d->sublocs )
+  {
+    city::AreaInfo tInfo = info;
+    tInfo.pos += *it;
+    OverlayPtr farmtile = _buildFarmTile( tInfo, ppos );
+    locations.append( farmtile->pos() );
+    _d->subtiles.append( &farmtile->tile() );
+  }
+
+  _d->sublocs = locations;
 }

@@ -314,7 +314,7 @@ void Tilemap::save( VariantMap& stream ) const
   std::vector<short> desInfo;
   std::vector<short> idInfo;
 
-  TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  const TilesArray& tiles = allTiles();
   foreach( it, tiles )
   {
     Tile* tile = *it;    
@@ -365,7 +365,7 @@ void Tilemap::load( const VariantMap& stream )
     return;
   }
 
-  TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  TilesArray tiles = allTiles();
   int index = 0;
   foreach( it, tiles )
   {

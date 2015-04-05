@@ -23,6 +23,11 @@
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "objects_factory.hpp"
+#include "gfx/tilearea.hpp"
+#include "game/gamedate.hpp"
+#include "objects/farm.hpp"
+#include "objects/extension.hpp"
+#include "gfx/tilearea.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -43,6 +48,7 @@ class Temple::Impl
 {
 public:
   DivinityPtr divinity;
+  DateTime lastBuff;
 };
 
 Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& size )
@@ -55,6 +61,9 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
   _fgPicturesRef().resize( 1 );
 }
 
+void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
+DateTime Temple::_lastBuff() const { return _td->lastBuff; }
+
 DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
 void Temple::deliverService()
@@ -62,6 +71,7 @@ void Temple::deliverService()
   if( walkers().empty() && numberWorkers() > 0 )
   {
     ServiceBuilding::deliverService();
+    _updateBuffs();
   }
 }
 
@@ -71,7 +81,33 @@ Temple::~Temple(){}
 
 TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), object::small_ceres_temple, 45 )
 {
+  _buffValue = 3;
 }
+
+void TempleCeres::_updateBuffs()
+{
+  if( !_city()->getOption( PlayerCity::godEnabled ) ||
+      _city()->getOption( PlayerCity::c3gameplay ) )
+    return;
+
+  if( _lastBuff().month() != game::Date::current().month() )
+  {
+    TilePos offset( 5, 5 );
+    FarmList farms = city::statistic::findo<Farm>( _city(), object::any,
+                                                   pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+    foreach( it, farms )
+    {
+      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue, 4, CAESARIA_STR_A(TempleCeres) );
+    }
+  }
+}
+
+void TempleCeres::initialize(const MetaData &mdata)
+{
+  Temple::initialize( mdata );
+  _buffValue = mdata.getOption( "buffValue", _buffValue );
+}
+
 
 BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), object::big_ceres_temple, 46 )
 {

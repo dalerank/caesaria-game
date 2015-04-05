@@ -60,9 +60,9 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace citizen
 
-}
+}//end namespace infobox
 
-}
+}//end namespace gui
 #endif //_CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_

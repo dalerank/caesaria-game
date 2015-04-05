@@ -30,6 +30,7 @@
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
 #include "core/foreach.hpp"
+#include "gfx/tilearea.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -113,7 +114,7 @@ void Disaster::_exec( Game& game, unsigned int )
       peaceSrvc->buildingDestroyed( overlay, _type );
     }
 
-    TilesArray clearedTiles = tmap.getArea( rPos, size );
+    TilesArea clearedTiles( tmap, rPos, size );
     foreach( tile, clearedTiles )
     {
       bool needBuildRuins = !( _type == Disaster::rift && (*tile)->pos() == _pos );      
@@ -144,7 +145,7 @@ void Disaster::_exec( Game& game, unsigned int )
       {
         ov = TileOverlayFactory::instance().create( object::rift );
 
-        TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
+        //TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 
         /*foreach( it, tiles )
         {

@@ -193,7 +193,7 @@ TilePos Overlay::pos() const
     Logger::warning(  "master tile can't be null" );
     return gfx::tilemap::invalidLocation();
   }
-  return _d->masterTile->pos();
+  return _d->masterTile->epos();
 }
 
 std::string Overlay::sound() const

@@ -493,8 +493,9 @@ void ListBox::_resizeEvent()
   _d->totalItemHeight = 0;
   _d->recalculateItemHeight( _d->font, height() );
 
-  Decorator::draw( _d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), Decorator::blackFrame );
-  Decorator::draw( _d->background, Rect( width() - _d->scrollBar->width(), 0, width(), height() ), Decorator::whiteArea  );
+  int scrollbarWidth = _d->scrollBar->visible() ? _d->scrollBar->width() : 0;
+  Decorator::draw( _d->background, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
+  Decorator::draw( _d->background, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea  );
 }
 
 ElementState ListBox::_getCurrentItemState( unsigned int index, bool hl )
@@ -888,6 +889,7 @@ void ListBox::setupUI(const VariantMap& ui)
   std::string fontname = ui.get( "itemfont" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
 
+
   fontname = ui.get( "items.font" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
 
@@ -897,6 +899,9 @@ void ListBox::setupUI(const VariantMap& ui)
 
   _d->margin.rleft() = ui.get( "margin.left", _d->margin.left() );
   _d->margin.rtop() = ui.get( "margin.top", _d->margin.top() );
+
+  bool scrollBarVisible = ui.get( "scrollbar.visible", true );
+  _d->scrollBar->setVisible( scrollBarVisible );
 
   VariantList items = ui.get( "items" ).toList();
   foreach( i, items )
@@ -919,8 +924,6 @@ void ListBox::setupUI(const VariantMap& ui)
       item.setTextAlignment( alignHelper.findType( vm.get( "align").toString() ),
                              align::center );
     }
-
-
   }
 }
 

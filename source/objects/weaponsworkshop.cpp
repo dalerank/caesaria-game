@@ -34,7 +34,7 @@ WeaponsWorkshop::WeaponsWorkshop()
 {
   setPicture( ResourceGroup::commerce, 108);
 
-  _animationRef().load( ResourceGroup::commerce, 109, 6);
+  //_animationRef().load( ResourceGroup::commerce, 109, 6);
   _fgPicturesRef().resize(2);
 }
 

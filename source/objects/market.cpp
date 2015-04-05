@@ -35,14 +35,14 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::market, Market)
 class Market::Impl
 {
 public:
-  good::Storage store;
+  good::Storage goodStore;
 
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
     foreach( i, good::all() )
     {
-      anyGoodStored |= ( store.qty( *i ) >= 100 );
+      anyGoodStored |= ( goodStore.qty( *i ) >= 100 );
     }
 
     return anyGoodStored;
@@ -50,16 +50,16 @@ public:
 
   void initStore()
   {
-    store.setCapacity(5000);
-    store.setCapacity(good::wheat, 800);
-    store.setCapacity(good::fish, 600);
-    store.setCapacity(good::fruit, 600);
-    store.setCapacity(good::meat, 600);
-    store.setCapacity(good::vegetable, 600);
-    store.setCapacity(good::pottery, 250);
-    store.setCapacity(good::furniture, 250);
-    store.setCapacity(good::oil, 250);
-    store.setCapacity(good::wine, 250);
+    goodStore.setCapacity(5000);
+    goodStore.setCapacity(good::wheat, 800);
+    goodStore.setCapacity(good::fish, 600);
+    goodStore.setCapacity(good::fruit, 600);
+    goodStore.setCapacity(good::meat, 600);
+    goodStore.setCapacity(good::vegetable, 600);
+    goodStore.setCapacity(good::pottery, 250);
+    goodStore.setCapacity(good::furniture, 250);
+    goodStore.setCapacity(good::oil, 250);
+    goodStore.setCapacity(good::wine, 250);
   }
 };
 
@@ -90,7 +90,7 @@ void Market::deliverService()
 }
 
 unsigned int Market::walkerDistance() const {  return 26; }
-good::Store &Market::goodStore(){  return _d->store; }
+good::Store& Market::goodStore(){ return _d->goodStore; }
 
 good::Products Market::mostNeededGoods()
 {
@@ -101,7 +101,7 @@ good::Products Market::mostNeededGoods()
   foreach( goodType, good::all() )
   {
     // for all types of good
-    good::Stock &stock = _d->store.getStock(*goodType);
+    good::Stock &stock = _d->goodStore.getStock(*goodType);
     int demand = stock.capacity() - stock.qty();
     if (demand > 200)
     {
@@ -122,7 +122,7 @@ good::Products Market::mostNeededGoods()
 int Market::getGoodDemand(const good::Product &goodType)
 {
   int res = 0;
-  good::Stock &stock = _d->store.getStock(goodType);
+  good::Stock &stock = _d->goodStore.getStock(goodType);
   res = stock.capacity() - stock.qty();
   res = (res/100)*100;  // round at the lowest century
   return res;
@@ -131,14 +131,14 @@ int Market::getGoodDemand(const good::Product &goodType)
 void Market::save( VariantMap& stream) const 
 {
   ServiceBuilding::save( stream );
-  stream[ "goodStore" ] = _d->store.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
 }
 
 void Market::load( const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
 
-  _d->store.load( stream.get( "goodStore" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
 
   _d->initStore();
 }
@@ -149,7 +149,7 @@ void Market::timeStep(const unsigned long time)
   {
     ServiceWalkerList servicemen;
     servicemen << walkers();
-    if( servicemen.size() > 0 && _d->store.qty() == 0 )
+    if( servicemen.size() > 0 && _d->goodStore.qty() == 0 )
     {
       servicemen.front()->return2Base();
     }

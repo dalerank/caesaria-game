@@ -130,7 +130,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   std::string text;
   if( well.isValid() )
   {
-    TilesArray coverageArea = well->coverageArea();
+    TilesArea coverageArea = well->coverageArea();
 
     bool haveHouseInArea = false;
     foreach( tile, coverageArea )
@@ -160,7 +160,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
       }
       else
       {
-        TilesArray tiles = well->coverageArea();
+        TilesArea tiles = well->coverageArea();
         bool haveLowHealthHouse = false;
         foreach( it, tiles )
         {

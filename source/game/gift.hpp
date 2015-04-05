@@ -25,6 +25,8 @@
 class Gift
 {
 public:
+  typedef enum { modest, generous, lavish } Type;
+
   const std::string& name() const;
   const std::string& sender() const;
   const DateTime& date() const;

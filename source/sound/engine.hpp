@@ -56,7 +56,7 @@ public:
   void stop( int channel );
 private:
   Engine();
-  bool _loadSound( const std::string& filename );
+  unsigned int _loadSound( const std::string& filename );
   void _updateSamplesVolume();
 
   class Impl;

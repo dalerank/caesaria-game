@@ -36,11 +36,13 @@
   awesomeFountain : { rc : "utilitya", start : 19, stop : 25, offset : [ 12, 24 ] }
   patricianFountain : { rc : "utilitya", start : 27, stop : 33, offset : [ 14, 26 ] }
   reservoir_full : { rc : "utilitya", start : 35, stop : 42, offset : [ -1, -1 ] }
-  granary_ofs : { rc : "commerce", start : 140, stop : 152, offset : [ -1, -1 ] }
+  fruitfarm_ofs : { rc : "fruitfarm", start : 1, stop : 1, offset : [ -1, -1 ] }
+  vegfarm_ofs : { rc : "vegfarm", start : 1, stop : 1, offset : [ -1, -1 ] }
   market_poor_anim : { rc : "commerce", start : 2, stop : 10, offset : [ 62, 60 ] }
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 14, 8 ] }
   distant_city_flag : { rc : "empire_bits", start : 16, stop : 21, offset : [ 18, 8 ] }
   foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 18, 8 ] }
   illhouse_anim : { rc : "illhouse", start : 1, stop : 42, offset : [ -2, -2 ] }
   theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ -1, -1 ] }
+  house_ground : { rc : "housng1g", start : 1, stop : 2, offset : [ -1, -1 ] }
 }

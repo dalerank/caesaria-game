@@ -51,7 +51,8 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
-                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType } OptionType;
+                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
+                 collapseKoeff } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
@@ -68,7 +69,6 @@ public:
   city::SrvcPtr findService( const std::string& name ) const;
 
   const city::SrvcList& services() const;
-
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;

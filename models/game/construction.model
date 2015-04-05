@@ -137,7 +137,7 @@
     employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
-    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 135, 70 ], delay : 2 }
+    animation : { rc : "actorschoola", start : 1, count : 28, offset : [ 135, 50 ], delay : 2 }
     sound : [ "artistpit", 1  ]
   },
 
@@ -513,6 +513,7 @@
     employers : 0
     class : "bridge"
     requestDestroy : true
+    subtileOffset : [ 0, 0 ]
   }, 
   
   high_bridge : {
@@ -529,6 +530,13 @@
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
+
+    ratings : {
+      culture  :   { rc : "govt", index: 5, offset : [ 358, -50 ] }
+      prosperity : { rc : "govt", index: 6, offset : [ 385, -37 ] }
+      peace :      { rc : "govt", index: 7, offset : [ 410, -23 ] }
+      favour :     { rc : "govt", index: 8, offset : [ 435, -10 ] }
+    }
   }, 
    
   forum : {
@@ -664,6 +672,7 @@
     class : "food"
     output : "vegetable"
     sound : [ "vegetablefarm", 1 ]
+    image : [ "vegfarm", 1 ]
   },
  
   fig_farm : 
@@ -675,6 +684,7 @@
     productRate : 9.6
     class : "food"
     sound : [ "fig_farm", 1 ]
+    image : [ "fruitfarm", 1 ]
   },
   
   olive_farm : 
@@ -788,6 +798,7 @@
     output : "weapon"
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
+    animation : { rc : "commerce", start : 109, count : 8, offset : [ 60, 127 ], delay : 4 }
   },
   
   furniture_workshop :
@@ -812,6 +823,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 5 ], delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 137 ], delay : 3 }
   }
 }
