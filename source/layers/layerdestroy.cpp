@@ -92,8 +92,6 @@ void Destroy::render( Engine& engine )
 
   _camera()->startFrame();
 
-  Tilemap& tmap = _city()->tilemap();
-
   std::set<int> hashDestroyArea;
   TilesArray destroyArea = _getSelectedArea( _d->startTilePos );
 

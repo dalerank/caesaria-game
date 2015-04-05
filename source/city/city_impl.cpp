@@ -129,6 +129,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::zoomEnabled, 1 );
   resetIfNot( PlayerCity::zoomInvert, 1 );
   resetIfNot( PlayerCity::fireKoeff, 100 );
+  resetIfNot( PlayerCity::collapseKoeff, 100 );
   resetIfNot( PlayerCity::barbarianAttack, 1 );
   resetIfNot( PlayerCity::legionAttack, 1 );
   resetIfNot( PlayerCity::c3gameplay, 0 );

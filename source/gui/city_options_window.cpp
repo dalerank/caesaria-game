@@ -59,6 +59,11 @@ public:
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
+
+  Label* lbCollapseRisk;
+  TexturedButton* btnIncreaseCollapseRisk;
+  TexturedButton* btnDecreaseCollapseRisk;
+
   PushButton* btnLockInfobox;
   PushButton* btnC3Gameplay;
   PushButton* btnShowTooltips;
@@ -76,6 +81,8 @@ public:
   Widget* findDebugMenu(Ui *ui);
   void increaseFireRisk();
   void decreaseFireRisk();
+  void increaseCollapseRisk();
+  void decreaseCollapseRisk();
   void toggleBarbarianAttack();
   void toggleC3Gameplay();
   void toggleDifficulty();
@@ -83,6 +90,7 @@ public:
   void toggleLegionAttack();
   void toggleAndroidBarEnabled();
   void toggleCityOption( PlayerCity::OptionType option );
+  void changeCityOption(PlayerCity::OptionType option, int delta);
 };
 
 CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
@@ -106,6 +114,9 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, lbFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
+  GET_DWIDGET_FROM_UI( _d, btnIncreaseCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, lbCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, btnDecreaseCollapseRisk )
   GET_DWIDGET_FROM_UI( _d, btnBarbarianMayAttack )
   GET_DWIDGET_FROM_UI( _d, btnLegionMayAttack )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
@@ -128,6 +139,8 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleShowTooltips )
   CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
   CONNECT( _d->btnAnroidBarEnabled, onClicked(), _d.data(), Impl::toggleAndroidBarEnabled )
+  CONNECT( _d->btnIncreaseCollapseRisk, onClicked(), _d.data(), Impl::increaseCollapseRisk )
+  CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -149,19 +162,17 @@ void CityOptions::Impl::toggleDebug()
   update();
 }
 
-void CityOptions::Impl::increaseFireRisk()
+void CityOptions::Impl::changeCityOption( PlayerCity::OptionType option, int delta )
 {
-  int value = city->getOption( PlayerCity::fireKoeff );
-  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value + 10, 0, 9999 ) );
+  int value = city->getOption( option );
+  city->setOption( option, math::clamp<int>( value + delta, 0, 9999 ) );
   update();
 }
 
-void CityOptions::Impl::decreaseFireRisk()
-{
-  int value = city->getOption( PlayerCity::fireKoeff );
-  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value - 10, 0, 9999) );
-  update();
-}
+void CityOptions::Impl::increaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, +10 ); }
+void CityOptions::Impl::decreaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, -10 ); }
+void CityOptions::Impl::increaseCollapseRisk() { changeCityOption( PlayerCity::collapseKoeff, +10 ); }
+void CityOptions::Impl::decreaseCollapseRisk() { changeCityOption( PlayerCity::collapseKoeff, -10 ); }
 
 void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
 {
@@ -296,6 +307,12 @@ void CityOptions::Impl::update()
   {
     int value = city->getOption( PlayerCity::fireKoeff );
     lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
+  }
+
+  if( lbCollapseRisk )
+  {
+    int value = city->getOption( PlayerCity::collapseKoeff );
+    lbCollapseRisk->setText( utils::format( 0xff, "%s %d %%", "Collapse risk", value ) );
   }
 
   if( btnBarbarianMayAttack )
