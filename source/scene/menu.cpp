@@ -320,7 +320,7 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##music##"),
                          " ",
-                         "Aliaksandr BeatCheat (www.beatcheat.net)",
+                         "Aliaksandr BeatCheat (www.beatcheat.net), Peter Willington",
                          " ",
                          _("##localization##"),
                          " ",
