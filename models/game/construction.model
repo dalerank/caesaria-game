@@ -696,6 +696,7 @@
     output : "olive"
     productRate : 9.6
     sound : [ "olivesfarm", 1 ]
+    image : [ "olivefarm", 1 ]
   },
 
   vinard :
@@ -706,7 +707,7 @@
     class : "food"
     output : "grape"
     productRate : 4.8
-    sound : [ "grapefarm", 1 ]
+    sound : [ "grapefarm", 1 ]    
   },
 
   meat_farm : 
