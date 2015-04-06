@@ -57,8 +57,6 @@ public:
 
 bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
 {
-  //bool is_constructible = Construction::canBuild( pos );
-
   TilePos endPos, startPos;
   _d->direction = direction::none;
 
@@ -186,26 +184,22 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   Tilemap& tilemap = city->tilemap();
   Tile& tile = tilemap.at( curPos );
 
-  /*if( tile.getFlag( Tile::tlRoad ) )
-  {
-    direction = constants::noneDirection;
-    return;
-  }*/
-
   int imdId = tile.originalImgId();
-  if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
+  BridgeConfig& config = BridgeConfig::find( type() );
+
+  if( config.isNorthA( imdId ) )
   {
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
-      if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
+      if( config.isNorthB( imdId ) )
       {
         stop = (*it)->pos();
         direction = abs(stop.i() - start.i()) > 1 ? direction::northWest : direction::none;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      else if ( config.isForbiden( imdId ) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
       {
         direction = direction::none;
         break;
@@ -387,7 +381,6 @@ void LowBridge::save(VariantMap& stream) const
     vl_tinfo.push_back( (*subtile)->_imgId );
   }
   stream[ "terraininfo" ] = vl_tinfo;
-  //stream[ "direction" ] = (int)_d->direction;
 }
 
 void LowBridge::load(const VariantMap& stream)

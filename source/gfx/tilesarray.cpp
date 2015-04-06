@@ -175,6 +175,15 @@ TilesArray& TilesArray::remove( const TilePos& pos)
   return *this;
 }
 
+TilePosArray TilesArray::locations() const
+{
+  TilePosArray ret;
+  foreach( it, *this )
+    ret << (*it)->pos();
+
+  return ret;
+}
+
 OverlayList TilesArray::overlays() const
 {
   OverlayList ret;

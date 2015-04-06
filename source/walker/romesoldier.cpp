@@ -324,7 +324,7 @@ void RomeSoldier::_back2base()
   FortPtr b = base();
   if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), b->freeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->freeSlot( this ), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
