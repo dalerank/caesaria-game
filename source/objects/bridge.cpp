@@ -34,13 +34,13 @@ public:
   {
     foreach( it, stream )
     {
-      switch( it->type() ) )
+      switch( it->type() )
       {
       case Variant::String:
         {
           StringArray items = utils::split( it->toString(), "->" );
-          int start = items.atSafe( 0 );
-          int stop = items.atSafe( 1 );
+          int start = utils::toInt( items.atSafe( 0 ) );
+          int stop = utils::toInt( items.atSafe( 1 ) );
           addRange( start, stop );
         }
       break;
@@ -49,8 +49,14 @@ public:
       case Variant::UInt:
         insert( it->toInt() );
       break;
+
+      default:
+        Logger::warning( "!!! WARNING: Cant parse IdxSet from type %s", it->type() );
+      break;
       }
     }
+
+    return *this;
   }
 
   void addRange( int start, int stop )
