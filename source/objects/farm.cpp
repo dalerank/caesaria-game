@@ -59,7 +59,8 @@ public:
   virtual void initTerrain(gfx::Tile&) {}
   virtual bool isFlat() const { return false; }
   virtual bool build(const city::AreaInfo &info);
-
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
   static Picture computePicture( const good::Product outGood, const int percent);
 
 private:
@@ -108,11 +109,22 @@ bool FarmTile::build(const city::AreaInfo &info)
   return Construction::build( info );
 }
 
+void FarmTile::save(VariantMap &stream) const
+{
+  Construction::save( stream );
+  VARIANT_SAVE_ANY( stream, _farmpos )
+}
+
+void FarmTile::load(const VariantMap &stream)
+{
+  Construction::load( stream );
+  VARIANT_LOAD_ANY( _farmpos, stream )
+}
+
 class Farm::Impl
 {
 public:
   TilePosArray sublocs;
-  TilesArray subtiles;
   int lastProgress;
 };
 
@@ -159,9 +171,9 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 
 void Farm::destroy()
 {
-  foreach( it, _d->subtiles )
+  foreach( it, _d->sublocs )
   {
-    OverlayPtr ov = (*it)->overlay();
+    OverlayPtr ov = _city()->getOverlay( *it );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
       events::GameEventPtr e = events::ClearTile::create( ov->pos() );
@@ -176,9 +188,9 @@ void Farm::computeRoadside()
 {
   Factory::computeRoadside();
 
-  foreach( it, _d->subtiles )
+  foreach( it, _d->sublocs )
   {
-    ConstructionPtr ov = ptr_cast<Construction>( (*it)->overlay() );
+    ConstructionPtr ov = ptr_cast<Construction>( _city()->getOverlay( *it ) );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
       _roadside().append( ov->roadside() );
@@ -197,7 +209,7 @@ void Farm::computePictures()
   int amount = progress();
   int percentTile;
 
-  for(unsigned int n = 0; n<_d->subtiles.size(); ++n)
+  for(unsigned int n = 0; n<_d->sublocs.size(); ++n)
   {
     if (amount >= 20)   // 20 = 100 / nbSubTiles
     {
@@ -212,7 +224,7 @@ void Farm::computePictures()
       amount = 0;  // for next subTiles
     }
 
-    SmartPtr<FarmTile> ft = ptr_cast<FarmTile>( _d->subtiles[n]->overlay() );
+    SmartPtr<FarmTile> ft = ptr_cast<FarmTile>( _city()->getOverlay( _d->sublocs[n] ) );
     if( ft.isValid() )
       ft->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
   }
@@ -261,16 +273,11 @@ void Farm::load( const VariantMap& stream )
   Factory::load( stream );
   _d->sublocs.fromVList( stream.get( "locations").toList() );
 
-  foreach( it, _d->sublocs )
+  if( _d->sublocs.empty() )
   {
-    OverlayPtr overlay = _city()->getOverlay( *it );
-    if( is_kind_of<FarmTile>( overlay ) )
+    Logger::warning( "!!! WARNING: Farm [%d,%d] lost tiles Rebuild", pos().i(), pos().j() );
+    foreach( it, _d->sublocs )
     {
-      _d->subtiles.push_back( &overlay->tile() );
-    }
-    else
-    {
-      Logger::warning( "!!! WARNING: Fart lost tile at [%d,%d]. Rebuild", it->i(), it->j() );
       city::AreaInfo ainfo = { _city(), *it, TilesArray() };
       _buildFarmTile( ainfo, pos() );
     }
@@ -361,15 +368,10 @@ OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 
 void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
 {
-  TilePosArray locations;
   foreach( it, _d->sublocs )
   {
     city::AreaInfo tInfo = info;
     tInfo.pos += *it;
-    OverlayPtr farmtile = _buildFarmTile( tInfo, ppos );
-    locations.append( farmtile->pos() );
-    _d->subtiles.append( &farmtile->tile() );
+    _buildFarmTile( tInfo, ppos );
   }
-
-  _d->sublocs = locations;
 }

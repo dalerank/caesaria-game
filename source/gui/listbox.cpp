@@ -117,6 +117,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
   }
 
   int scrollbarWidth = _d->scrollBar->visible() ? _d->scrollBar->width() : 0;
+  _d->background.clear();
   Decorator::draw( _d->background, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
   Decorator::draw( _d->background, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea  );
 }
