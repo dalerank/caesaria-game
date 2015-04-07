@@ -124,7 +124,7 @@ void FarmTile::load(const VariantMap &stream)
 class Farm::Impl
 {
 public:
-  TilePosArray sublocs;
+  Locations sublocs;
   int lastProgress;
 };
 
@@ -230,6 +230,11 @@ void Farm::computePictures()
   }
 }
 
+void Farm::assignTile(const TilePos &pos)
+{
+  _d->sublocs.addIfNot( pos );
+}
+
 void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
@@ -273,14 +278,17 @@ void Farm::load( const VariantMap& stream )
   Factory::load( stream );
   _d->sublocs.fromVList( stream.get( "locations").toList() );
 
+  //el muleta for broken farmtiles
+  if( !_d->sublocs.empty() && _d->sublocs[ 0 ] == TilePos(0,0) )
+    _d->sublocs.clear();
+
   if( _d->sublocs.empty() )
   {
-    Logger::warning( "!!! WARNING: Farm [%d,%d] lost tiles Rebuild", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Farm [%d,%d] lost tiles. Will add default locations", pos().i(), pos().j() );
+    _d->sublocs << TilePos(0, 0) << TilePos( 1, 0 )
+                << TilePos(2, 0) << TilePos( 2, 1 ) << TilePos( 2, 2);
     foreach( it, _d->sublocs )
-    {
-      city::AreaInfo ainfo = { _city(), *it, TilesArray() };
-      _buildFarmTile( ainfo, pos() );
-    }
+      *it += pos() - TilePos( 0, 1 );
   }
 
   computePictures();
@@ -373,5 +381,6 @@ void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
     city::AreaInfo tInfo = info;
     tInfo.pos += *it;
     _buildFarmTile( tInfo, ppos );
+    *it = tInfo.pos;
   }
 }

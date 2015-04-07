@@ -108,6 +108,7 @@ using namespace config;
 
 namespace config {
 CAESARIA_LITERALCONST(tilemap)
+static const int minimumOldFormat = 58;
 }
 
 class PlayerCity::Impl
@@ -424,6 +425,7 @@ void PlayerCity::save( VariantMap& stream) const
     vm_services[ (*service)->name() ] = (*service)->save();
   }
 
+  stream[ "saveFormat" ] = CAESARIA_BUILD_NUMBER;
   stream[ "services" ] = vm_services;
   VARIANT_SAVE_ANY_D( stream, _d, states.age )
   VARIANT_SAVE_CLASS_D( stream, _d, activePoints )
@@ -434,6 +436,14 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {  
   Logger::warning( "City: start parse savemap" );
+  int saveFormat = stream.get( "saveFormat", minimumOldFormat );
+  bool needLoadOld = saveFormat < CAESARIA_BUILD_NUMBER;
+
+  if( needLoadOld )
+  {
+    Logger::warning( "!!! WARNING: Try load from format %d", saveFormat );
+  }
+
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
@@ -462,6 +472,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   Logger::warning( "City: load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
+
   foreach( item, overlays )
   {
     VariantMap overlayParams = item->second.toMap();
@@ -475,7 +486,11 @@ void PlayerCity::load( const VariantMap& stream )
     {
       city::AreaInfo info = { this, pos, TilesArray() };
       overlay->build( info );
-      overlay->load( overlayParams );
+      overlay->load( overlayParams );      
+      //support old formats
+      if( needLoadOld )
+        overlay->debugLoadOld( saveFormat, overlayParams );
+
       _d->overlays.push_back( overlay );
     }
     else

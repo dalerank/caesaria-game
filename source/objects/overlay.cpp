@@ -185,6 +185,7 @@ void Overlay::initialize(const MetaData& mdata)
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
+void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
 
 TilePos Overlay::pos() const
 {
