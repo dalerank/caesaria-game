@@ -156,7 +156,12 @@ void CultureRating::timeStep(const unsigned int time )
 
     _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +
                     _d->libraries.value + _d->schools.value + _d->academies.value ) / 2;
-  }
+    }
+}
+
+VariantMap city::CultureRating::save() const
+{
+  VariantMap ret = Srvc::save();
 }
 
 int CultureRating::value() const {  return _d->culture; }

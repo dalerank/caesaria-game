@@ -358,19 +358,19 @@ void PlayerCity::save( VariantMap& stream) const
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
   stream[ "roadExit"   ] = _d->borderInfo.roadExit;
-  stream[ "cameraStart"] = _d->cameraStart;
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
-  stream[ "options"    ] = _d->options.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, options )
+  VARIANT_SAVE_ANY_D( stream, _d, cameraStart )
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
 
   Logger::warning( "City: save finance information" );
   stream[ "funds" ] = _d->economy.save();
-  stream[ "scribes" ] = _d->scribes.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, scribes )
 
   Logger::warning( "City: save trade/build/win options" );
-  stream[ "tradeOptions" ] = _d->tradeOptions.save();
-  stream[ "buildOptions" ] = _d->buildOptions.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, tradeOptions )
+  VARIANT_SAVE_CLASS_D( stream, _d, buildOptions )
   stream[ "winTargets"   ] = _d->targets.save();
 
   Logger::warning( "City: save walkers information" );
@@ -425,7 +425,7 @@ void PlayerCity::save( VariantMap& stream) const
 
   stream[ "services" ] = vm_services;
   VARIANT_SAVE_ANY_D( stream, _d, states.age )
-  stream[ "points" ] = _d->activePoints.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, activePoints )
 
   Logger::warning( "City: finalize save map" );
 }
@@ -444,19 +444,19 @@ void PlayerCity::load( const VariantMap& stream )
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
   VARIANT_LOAD_ANY_D( _d, states.population, stream )
-  _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
+  VARIANT_LOAD_ANY_D( _d, cameraStart, stream )
 
   Logger::warning( "City: parse options" );
-  _d->options.load( stream.get( "options" ).toList() );
+  VARIANT_LOAD_CLASS_D_LIST( _d, options, stream )
   setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse funds" );
   _d->economy.load( stream.get( "funds" ).toMap() );
-  _d->scribes.load( stream.get( "scribes" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, scribes, stream )
 
   Logger::warning( "City: parse trade/build/win params" );
-  _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
-  _d->buildOptions.load( stream.get( "buildOptions" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, tradeOptions, stream )
+  VARIANT_LOAD_CLASS_D( _d, buildOptions, stream )
   _d->targets.load( stream.get( "winTargets").toMap() );
 
   Logger::warning( "City: load overlays" );
@@ -533,7 +533,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   setOption( PlayerCity::forceBuild, 0 );
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
-  _d->activePoints.load( stream.get("points").toList() );
+  VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
 
   _initAnimation();
 }
