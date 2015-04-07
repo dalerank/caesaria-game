@@ -67,6 +67,7 @@ public:
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual void debugLoadOld(int saveFormat, const VariantMap &stream);
 
   virtual void collapse();
   virtual void burn();

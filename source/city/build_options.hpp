@@ -21,7 +21,7 @@
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
-#include "objects/overlay.hpp"
+#include "objects/constants.hpp"
 
 namespace city
 {  

@@ -57,6 +57,7 @@ using namespace constants;
 using namespace gfx;
 using namespace metric;
 using namespace events;
+using namespace gui::dialog;
 
 namespace gui
 {
@@ -481,9 +482,9 @@ void EmpireMapWindow::Impl::resetInfoPanel()
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = DialogBox::confirmation( gbox->ui()->rootWidget(),
-                                               _("##emp_open_trade_route##"),
-                                               _("##emp_pay_open_this_route_question##") );
+  Dialog* dialog = Confirmation( gbox->ui(),
+                                 _("##emp_open_trade_route##"),
+                                 _("##emp_pay_open_this_route_question##") );
 
   CONNECT( dialog, onOk(), this, Impl::createTradeRoute );
 }
@@ -595,8 +596,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
       {
         // gui window should not be dragged outside its parent
         bool mouseOutsideLeftup = (_d->offset.x() > 0 || _d->offset.y() > 0 );
-        bool mouseXlessRight = _d->offset.x() + _d->empireMap.width() < (int)width();
-        bool mouseYLessBottom = _d->offset.y() + _d->empireMap.height() < (int)height()-_d->bottonMargin;
+        bool mouseXlessRight = (_d->offset.x() + _d->empireMap.width()) < (int)width();
+        bool mouseYLessBottom = (_d->offset.y() + _d->empireMap.height()) < ((int)height()- (int)_d->bottonMargin);
 
         if( mouseOutsideLeftup || mouseXlessRight || mouseYLessBottom )
         {

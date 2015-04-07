@@ -24,6 +24,7 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "loader.hpp"
+#include "game/player.hpp"
 #include "city/victoryconditions.hpp"
 #include "city/build_options.hpp"
 #include "objects/metadata.hpp"

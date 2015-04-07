@@ -18,6 +18,7 @@
 
 #include "economy.hpp"
 #include "city.hpp"
+#include "game/player.hpp"
 #include "statistic.hpp"
 #include "objects/house.hpp"
 #include "objects/forum.hpp"
@@ -77,11 +78,11 @@ void Economy::collectTaxes(PlayerCityPtr city)
 void Economy::payMayorSalary(PlayerCityPtr city)
 {
   if( money() > 0 )
-    {
-      int playerSalary = city->mayor()->salary();
-      resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
-      city->mayor()->appendMoney( playerSalary );
-    }
+  {
+    int playerSalary = city->mayor()->salary();
+    resolveIssue( econ::Issue( econ::Issue::playerSalary, -playerSalary ) );
+    city->mayor()->appendMoney( playerSalary );
+  }
 }
 
 void Economy::resolveIssue(econ::Issue issue)

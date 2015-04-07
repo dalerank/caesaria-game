@@ -21,6 +21,8 @@
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
 #include "gfx/helper.hpp"
+#include "objects/overlay.hpp"
+
 using namespace gfx;
 
 namespace city
@@ -121,13 +123,13 @@ class Options::Impl
 public:
   BuildingRules rules;
 
-  bool checkDesirability;
+  bool check_desirability;
   unsigned int maximumForts;
 };
 
 Options::Options() : _d( new Impl )
 {
-  _d->checkDesirability = true;
+  _d->check_desirability = true;
   _d->maximumForts = maxLimit;
 }
 
@@ -153,7 +155,7 @@ bool Options::isBuildingsAvailble(const Range& range) const
   return mayBuild;
 }
 
-bool Options::isCheckDesirability() const {  return _d->checkDesirability; }
+bool Options::isCheckDesirability() const {  return _d->check_desirability; }
 unsigned int Options::maximumForts() const { return _d->maximumForts; }
 
 void Options::setGroupAvailable( const development::Branch type, Variant vmb )
@@ -203,8 +205,8 @@ void Options::load(const VariantMap& options)
 
   _d->rules.loadRules( options.get( "buildings" ).toMap() );
   _d->rules.loadQuotes( options.get( "quotes" ).toMap() );
-  _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
-  _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
+  VARIANT_LOAD_ANYDEF_D( _d, check_desirability, _d->check_desirability, options )
+  VARIANT_LOAD_ANYDEF_D( _d, maximumForts, _d->maximumForts, options )
 }
 
 VariantMap Options::save() const
@@ -212,15 +214,15 @@ VariantMap Options::save() const
   VariantMap ret;
   ret[ "buildings" ] = _d->rules.saveRules();
   ret[ "quotes" ] = _d->rules.saveQuotes();
-  ret[ "maximumForts" ] = _d->maximumForts;
-  ret[ "check_desirability" ] = _d->checkDesirability;
+  VARIANT_SAVE_ANY_D( ret, _d, maximumForts )
+  VARIANT_SAVE_ANY_D( ret, _d, check_desirability )
   return ret;
 }
 
 Options& Options::operator=(const development::Options& a)
 {
   _d->rules = a._d->rules;
-  _d->checkDesirability = a._d->checkDesirability;
+  _d->check_desirability = a._d->check_desirability;
   _d->maximumForts = a._d->maximumForts;
 
   return *this;

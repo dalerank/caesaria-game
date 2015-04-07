@@ -29,6 +29,7 @@
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
+#include "game/infoboxmanager.hpp"
 #include "layers/layer.hpp"
 #include "game/settings.hpp"
 #include "texturedbutton.hpp"
@@ -183,8 +184,9 @@ void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
 
 void CityOptions::Impl::toggleLockInfobox()
 {
-  bool value = SETTINGS_VALUE( lockInfobox );
+  bool value = SETTINGS_VALUE( lockInfobox );  
   SETTINGS_SET_VALUE( lockInfobox, !value );
+  infobox::Manager::instance().setBoxLock( !value );
   update();
 }
 

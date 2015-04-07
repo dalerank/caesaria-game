@@ -31,6 +31,7 @@
 #include "vfs/directory.hpp"
 #include "gameautopause.hpp"
 #include "core/gettext.hpp"
+#include "environment.hpp"
 #include "widgetescapecloser.hpp"
 
 using namespace gfx;
@@ -38,7 +39,10 @@ using namespace gfx;
 namespace gui
 {
 
-class SaveDialog::Impl
+namespace dialog
+{
+
+class SaveGame::Impl
 {
 public:
   GameAutoPause locker;
@@ -70,7 +74,7 @@ public:
   void findFiles();
 };
 
-void SaveDialog::Impl::findFiles()
+void SaveGame::Impl::findFiles()
 {
   vfs::Entries flist = directory.getEntries();
   StringArray names;
@@ -79,13 +83,13 @@ void SaveDialog::Impl::findFiles()
   if( lbxSaves ) lbxSaves->addItems( names );
 }
 
-SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
-: Window( parent, Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
+SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
+: Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
   _d->locker.activate();
   Widget::setupUI( ":/gui/savefile.gui" );
 
-  setCenter( parent->center() );
+  setCenter( parent()->center() );
 
   WidgetEscapeCloser::insertTo( this );
   
@@ -99,14 +103,14 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
 
   CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
   CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
-  CONNECT( _d->btnOk, onClicked(), this, SaveDialog::deleteLater );
-  CONNECT( _d->btnCancel, onClicked(), this, SaveDialog::deleteLater );
+  CONNECT( _d->btnOk, onClicked(), this, SaveGame::deleteLater );
+  CONNECT( _d->btnCancel, onClicked(), this, SaveGame::deleteLater );
 
   _d->findFiles();
   setModal();
 }
 
-void SaveDialog::draw(gfx::Engine& painter )
+void SaveGame::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -114,6 +118,8 @@ void SaveDialog::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-Signal1<std::string>& SaveDialog::onFileSelected() {  return _d->onFileSelectedSignal; }
+Signal1<std::string>& SaveGame::onFileSelected() {  return _d->onFileSelectedSignal; }
+
+}//end namespace dialog
 
 }//end namespace gui

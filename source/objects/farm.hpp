@@ -29,6 +29,7 @@ public:
   void init();
 
   void computePictures();
+  void assignTile( const TilePos& pos );
 
   virtual void timeStep(const unsigned long time);
   virtual bool build(const city::AreaInfo &info);

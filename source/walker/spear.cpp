@@ -46,9 +46,7 @@ void Spear::_onTarget()
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
 
-  ConstructionPtr c;
-  c << _city()->getOverlay( dstPos() );
-
+  ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( dstPos() ));
   if( c.isValid() )
   {
     c->updateState( pr::damage, 5 );

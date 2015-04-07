@@ -20,7 +20,6 @@
 
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
-#include "city/city.hpp"
 
 namespace city
 {

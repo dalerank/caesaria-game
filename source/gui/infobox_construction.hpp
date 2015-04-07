@@ -26,7 +26,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutConstruction : public Simple
+class AboutConstruction : public Infobox
 {
 public:
   AboutConstruction(Widget* parent, Rect rect, Rect blackArea);

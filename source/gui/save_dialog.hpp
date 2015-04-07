@@ -26,10 +26,13 @@
 namespace gui
 {
 
-class SaveDialog : public Window
+namespace dialog
+{
+
+class SaveGame : public Window
 {
 public:
-  SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id );
+  SaveGame( Ui* ui, vfs::Directory dir, std::string fileExt, int id );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -40,6 +43,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_SAVE_DIALOG_H_INCLUDED__

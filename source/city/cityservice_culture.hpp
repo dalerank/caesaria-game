@@ -34,6 +34,8 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
 
   virtual void timeStep( const unsigned int time );
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
   int value() const;
 
   int coverage( Coverage type ) const;

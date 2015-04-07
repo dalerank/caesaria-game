@@ -156,7 +156,24 @@ void CultureRating::timeStep(const unsigned int time )
 
     _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +
                     _d->libraries.value + _d->schools.value + _d->academies.value ) / 2;
-  }
+    }
+}
+
+VariantMap CultureRating::save() const
+{
+  VariantMap ret = Srvc::save();
+  VARIANT_SAVE_ANY_D( ret, _d, lastDate )
+  VARIANT_SAVE_ANY_D( ret, _d, culture  )
+
+  return ret;
+}
+
+void CultureRating::load(const VariantMap &stream)
+{
+  Srvc::load( stream );
+
+  VARIANT_LOAD_TIME_D( _d, lastDate, stream )
+  VARIANT_LOAD_ANY_D ( _d, culture,  stream )
 }
 
 int CultureRating::value() const {  return _d->culture; }

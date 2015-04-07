@@ -1058,9 +1058,8 @@ void House::_update( bool needChangeTexture )
     {
       _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
       pic.addOffset( _d->randomOffset );
+      _updateGround();
     }
-
-    _updateGround();
 
     setPicture( pic );
   }
@@ -1198,8 +1197,16 @@ void House::save( VariantMap& stream ) const
   stream[ "services" ] = vl_services;
 } 
 
-void House::load( const VariantMap& stream )
+void House::debugLoadOld( int saveFormat, const VariantMap& stream )
 {
+  if( saveFormat == 58 )
+  {
+    _d->habitants.maximum = stream.get( "maxHabitants" );
+  }
+}
+
+void House::load( const VariantMap& stream )
+{  
   Building::load( stream );
 
   VARIANT_LOAD_ANY_D( _d, houseLevel, stream )

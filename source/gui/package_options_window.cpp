@@ -86,7 +86,7 @@ void PackageOptions::_close()
 {
   if( _d->needRestart )
   {
-    DialogBox* dlg = DialogBox::information( ui()->rootWidget(), "Note", "Please restart game to apply change" );
+    Dialog* dlg = Information( ui(), "Note", "Please restart game to apply change" );
     dlg->show();
   }
 

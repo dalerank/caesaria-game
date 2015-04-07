@@ -19,11 +19,8 @@
 #ifndef __CAESARIA_PLAYERCITY_H_INCLUDED__
 #define __CAESARIA_PLAYERCITY_H_INCLUDED__
 
-#include "core/serializer.hpp"
 #include "core/signals.hpp"
-#include "gfx/tile.hpp"
 #include "core/position.hpp"
-#include "game/player.hpp"
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"

@@ -37,14 +37,14 @@ typedef SmartPtr< Manager > InfoBoxManagerPtr;
 class InfoboxCreator
 {
 public:
-  virtual gui::infobox::Simple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
+  virtual gui::infobox::Infobox* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
 template< class T >
 class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
-  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     return new T( parent, city, city->tilemap().at( pos ) );
   }
@@ -58,7 +58,7 @@ public:
 
   virtual ~StaticInfoboxCreator() {}
 
-  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
 
   std::string title, text;
 };
@@ -72,7 +72,7 @@ public:
 
   virtual ~ServiceInfoboxCreator() {}
 
-  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
 
   std::string title, text;
   bool isDrawWorkers;
@@ -88,6 +88,8 @@ public:
 
   void addInfobox(const object::Type& type, InfoboxCreator* ctor );
   bool canCreate( const object::Type type ) const;
+
+  void setBoxLock( bool lock );
 private:
   Manager();
   virtual ~Manager();
