@@ -26,6 +26,8 @@
 namespace gui
 {
 
+class ListBoxItem;
+
 namespace dialog
 {
 
@@ -40,6 +42,11 @@ signals public:
   Signal1<std::string>& onFileSelected();
 
 private:
+  void _resolveListboxChange(const ListBoxItem &item);
+  void _resolveOkClick();
+  void _resolveDblListboxChange(const ListBoxItem &item);
+  void _save();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
