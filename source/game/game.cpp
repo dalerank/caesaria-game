@@ -63,6 +63,7 @@
 #include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
+#include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
 #include "video_config.hpp"
@@ -245,6 +246,8 @@ void Game::Impl::initGuiEnvironment()
 {
   Logger::warning( "Game: initialize gui" );
   gui = new gui::Ui( *engine );
+
+  gui::infobox::Manager::instance().setBoxLock( SETTINGS_VALUE( lockInfobox ) );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)

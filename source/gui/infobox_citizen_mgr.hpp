@@ -37,7 +37,7 @@ namespace citizen
 class Creator : public ReferenceCounted
 {
 public:
-  virtual gui::infobox::Simple* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
+  virtual gui::infobox::Infobox* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
 };
 
 typedef SmartPtr<Creator> CreatorPtr;
@@ -52,7 +52,7 @@ public:
   void addCreator( constants::walker::Type type, CreatorPtr c );
   void loadInfoboxes();
 
-  gui::infobox::Simple* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
+  gui::infobox::Infobox* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
 private:
   PManager();
 

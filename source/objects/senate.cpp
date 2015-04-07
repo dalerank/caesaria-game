@@ -165,6 +165,21 @@ void Senate::initialize(const MetaData& mdata)
   _d->setStatusConfig( favour,     ratings.get( CAESARIA_STR_A(favour    ) ).toMap() );
 }
 
+void Senate::save(VariantMap& stream) const
+{
+  ServiceBuilding::save( stream );
+
+  VARIANT_SAVE_ANY_D( stream, _d, taxValue )
+  VARIANT_SAVE_ANY_D( stream, _d, errorStr )
+}
+
+void Senate::load(const VariantMap& stream)
+{
+  ServiceBuilding::load( stream );
+  VARIANT_LOAD_ANY_D( _d, taxValue, stream )
+  VARIANT_LOAD_STR_D( _d, errorStr, stream )
+}
+
 void Senate::_updateUnemployers()
 {
   Point offsets[] = { Point( 80, -15), Point( 90, -20), Point( 110, -30 ), Point( 120, -10 ) };

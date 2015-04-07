@@ -102,7 +102,7 @@ bool VideoOptions::onEvent(const NEvent& event)
     default:
       if( _d->haveChanges )
       {
-        DialogBox::information( ui()->rootWidget(), "", _("##need_restart_for_apply_changes##"));
+        dialog::Information( ui(), "", _("##need_restart_for_apply_changes##"));
       }
       deleteLater();
     break;

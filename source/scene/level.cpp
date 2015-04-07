@@ -277,8 +277,7 @@ void Level::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
-  DialogBox::information( ui.rootWidget(), "Please note",
-                          "Black object are not done yet and will be added as soon as finished." );
+  dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
 #endif
 }
 
@@ -687,7 +686,7 @@ void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, 
 
 void Level::_requestExitGame()
 {
-  DialogBox* dlg = DialogBox::confirmation( _d->game->gui()->rootWidget(), "", _("##exit_without_saving_question##") );
+  dialog::Dialog* dlg = dialog::Confirmation( _d->game->gui(), "", _("##exit_without_saving_question##") );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
 }
 

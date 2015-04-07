@@ -162,6 +162,18 @@ void CultureRating::timeStep(const unsigned int time )
 VariantMap city::CultureRating::save() const
 {
   VariantMap ret = Srvc::save();
+  VARIANT_SAVE_ANY_D( ret, _d, lastDate )
+  VARIANT_SAVE_ANY_D( ret, _d, culture  )
+
+  return ret;
+}
+
+void city::CultureRating::load(const VariantMap &stream)
+{
+  Srvc::load( stream );
+
+  VARIANT_LOAD_TIME_D( _d, lastDate, stream )
+  VARIANT_LOAD_ANY_D ( _d, culture,  stream )
 }
 
 int CultureRating::value() const {  return _d->culture; }

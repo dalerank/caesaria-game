@@ -46,9 +46,9 @@ void ShowSaveDialog::_exec(Game& game, unsigned int)
 
   if( !saveDir.exist() )
   {
-    DialogBox* dialog = DialogBox::information( game.gui()->rootWidget(),
-                                                _("##warning##"),
-                                                _("##save_directory_not_exist##") );
+    Dialog* dialog = Information( game.gui(),
+                                  _("##warning##"),
+                                  _("##save_directory_not_exist##") );
     dialog->show();
     return;
   }
@@ -68,9 +68,9 @@ void ShowSaveDialog::_checkSave(std::string savename)
   vfs::Path file( _savename );
   if( file.exist() )
   {
-    DialogBox* dialog = DialogBox::confirmation( _game->gui()->rootWidget(),
-                                                 _("##warning##"),
-                                                 _("##save_already_exist##") );
+    Dialog* dialog = Confirmation( _game->gui(),
+                                   _("##warning##"),
+                                   _("##save_already_exist##") );
 
     CONNECT( dialog, onOk(), this, ShowSaveDialog::_doSave )
   }

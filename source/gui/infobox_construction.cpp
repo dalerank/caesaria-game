@@ -32,7 +32,7 @@ namespace infobox
 {
 
 AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea )
-  : Simple( parent, rect, blackArea )
+  : Infobox( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
   _btnToggleWorking = 0;
@@ -61,7 +61,7 @@ bool AboutConstruction::onEvent(const NEvent& event)
   default: break;
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }

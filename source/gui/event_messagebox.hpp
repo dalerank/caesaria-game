@@ -24,7 +24,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutEvent : public Simple
+class AboutEvent : public Infobox
 {
 public:
   AboutEvent(Widget* parent, const std::string& title, const std::string& message,
