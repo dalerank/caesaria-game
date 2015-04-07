@@ -286,7 +286,7 @@ std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
-  GameEventPtr e = SaveGame::create();
+  GameEventPtr e = ShowSaveDialog::create();
   e->dispatch();
 }
 
