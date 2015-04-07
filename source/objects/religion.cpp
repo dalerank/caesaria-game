@@ -153,7 +153,7 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
   _fgPicturesRef().resize(1);
 }
 
-unsigned int TempleOracle::parishionerNumber() const {  return 500; }
+unsigned int TempleOracle::parishionerNumber() const { return 500; }
 
 bool TempleOracle::build( const city::AreaInfo& info )
 {
@@ -174,7 +174,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
   setMaximumWorkers( 2 );
 }
 
-unsigned int SmallTemple::parishionerNumber() const {  return 750; }
+unsigned int SmallTemple::parishionerNumber() const {  return 150 /*750*/; }
 
 BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
@@ -182,7 +182,7 @@ BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   setMaximumWorkers( 8 );
 }
 
-unsigned int BigTemple::parishionerNumber() const {  return 1500; }
+unsigned int BigTemple::parishionerNumber() const {  return 300 /*1500*/; }
 
 bool BigTemple::build( const city::AreaInfo& info )
 {  

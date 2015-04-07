@@ -1,14 +1,10 @@
 {
-  forbiden : {
-    terrains : { start : 372, stop : 445 }
-  }
-
   low_bridge :
   {
-    northWest :
-    {
-      coastA : [ 384, 385, 386, 387 ]
-      coastB : [ 376, 377, 378, 379 ]
-    }
+    forbiden : [ "372->445", 0 ]
+    northA   : [ "384->387", 0 ]
+    northB   : [ "376->379", 0 ]
+    westA    : [ "372->375", 0 ]
+    westB    : [ "380->383", 0 ]
   }
 }

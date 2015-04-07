@@ -46,14 +46,14 @@ public:
 
   int value() const;
   void update( const Gift& gift );
-  void change( int delta );
+  void change( float delta );
   void reset();
   void removeSoldier();
 
   VariantMap save() const;
   void load( const VariantMap& stream );
 private:
-  int _value;
+  float _value;
 };
 
 class Relations : public std::map< std::string, Relation >

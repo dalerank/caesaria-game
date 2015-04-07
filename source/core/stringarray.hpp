@@ -42,6 +42,11 @@ public:
     return false;
   }
 
+  std::string atSafe( unsigned int index ) const
+  {
+    return (index < size()) ? at( index ) : "";
+  }
+
   bool remove( const std::string& str )
   {
     foreach( it, *this )

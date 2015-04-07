@@ -17,6 +17,7 @@
 #define _CAESARIA_TILESARRAY_INCLUDE_H_
 
 #include "tile.hpp"
+#include "core/tilepos_array.hpp"
 
 #include <vector>
 #include <cstring>
@@ -59,6 +60,7 @@ public:
   TilesArray waters() const;
 
   TilesArray& remove(const TilePos &pos );
+  TilePosArray locations() const;
 
   OverlayList overlays() const;
 

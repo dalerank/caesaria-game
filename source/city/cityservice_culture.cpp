@@ -67,11 +67,13 @@ struct SubRating
   {
     value = 0;
     coverageValue = std::min( coverageValue, 1.0 );
+    coverage = coverageValue * 100;
     for( int i=0; i < coverage::levelNumber; i++ )
     {
       if( coverageValue >= intervals[ i ].coverage )
       {
         value = intervals[ i ].points * coverageValue;
+        break;
       }
     }
   }

@@ -41,7 +41,7 @@
   }
 
   marble : {
-    small : { back : true, rc : "cartarble", start : 1, frames : 7, step : 8, delay : 2 }
+    small : { back : true, rc : "cartmarble", start : 1, frames : 7, step : 8, delay : 2 }
   }
 
   fish : {
@@ -49,7 +49,7 @@
   }
 
   fruit : {
-    small : { back : true, rc : "cartfruit  ", start : 1, frames : 7, step : 8, delay : 2 }
+    small : { back : true, rc : "cartfruit", start : 1, frames : 7, step : 8, delay : 2 }
   }
 
   meat : {

@@ -49,7 +49,7 @@ public:
 
   virtual void destroy();
 
-  virtual TilePos freeSlot() const;
+  virtual TilePos freeSlot( WalkerPtr who ) const;
   virtual void changePatrolArea();
   virtual TilePos patrolLocation() const;
 

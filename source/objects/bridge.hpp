@@ -42,4 +42,26 @@ public:
   Bridge( const object::Type type );
 };
 
+class BridgeConfig
+{
+public:
+  BridgeConfig();
+  ~BridgeConfig();
+
+  static BridgeConfig& find( object::Type type );
+
+  BridgeConfig( const BridgeConfig& other );
+  bool isForbiden( int imgid ) const;
+  bool isNorthA( int imgid ) const;
+  bool isNorthB( int imgid ) const;
+  bool isWestA( int imgid ) const;
+  bool isWestB( int imgid ) const;
+
+private:
+  void load( const VariantMap& stream );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
 #endif //__CAESARIA_ACADEMY_H_INCLUDED__

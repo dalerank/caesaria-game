@@ -437,7 +437,6 @@ void PlayerCity::load( const VariantMap& stream )
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
   VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
-  setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
@@ -449,6 +448,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   Logger::warning( "City: parse options" );
   _d->options.load( stream.get( "options" ).toList() );
+  setOption( PlayerCity::forceBuild, 1 );
 
   Logger::warning( "City: parse funds" );
   _d->economy.load( stream.get( "funds" ).toMap() );
