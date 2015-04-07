@@ -56,7 +56,7 @@ signals public:
 	Signal1<int> indexSelected;
   Signal1<std::string> textSelected;
 	Signal1<int> indexSelectedAgain;
-  Signal1<std::string> onItemSelectedAgainSignal;
+  Signal1<const ListBoxItem&> onItemSelectedAgainSignal;
   Signal1<const ListBoxItem&> onItemSelectedSignal;
 };
 

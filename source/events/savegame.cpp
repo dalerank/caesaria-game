@@ -40,7 +40,6 @@ GameEventPtr ShowSaveDialog::create()
 
 void ShowSaveDialog::_exec(Game& game, unsigned int)
 {
-  _game = &game;
   vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
@@ -54,38 +53,11 @@ void ShowSaveDialog::_exec(Game& game, unsigned int)
   }
 
   SaveGame* dialog = new SaveGame( game.gui(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), this, ShowSaveDialog::_checkSave )
+  CONNECT( dialog, onFileSelected(), &game, Game::save )
 }
 
-bool ShowSaveDialog::_mayExec(Game&, unsigned int) const{  return true; }
+bool ShowSaveDialog::_mayExec(Game&, unsigned int) const{ return true; }
 
-void ShowSaveDialog::_checkSave(std::string savename)
-{
-  if( !_game )
-    return;
-
-  _savename = savename;
-  vfs::Path file( _savename );
-  if( file.exist() )
-  {
-    Dialog* dialog = Confirmation( _game->gui(),
-                                   _("##warning##"),
-                                   _("##save_already_exist##") );
-
-    CONNECT( dialog, onOk(), this, ShowSaveDialog::_doSave )
-  }
-  else
-  {
-    _doSave();
-  }
-}
-
-void ShowSaveDialog::_doSave()
-{
-  if( _game )
-    _game->save( _savename );
-}
-
-ShowSaveDialog::ShowSaveDialog() : _game(0) {}
+ShowSaveDialog::ShowSaveDialog() {}
 
 }

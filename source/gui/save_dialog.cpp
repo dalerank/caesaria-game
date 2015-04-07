@@ -33,6 +33,7 @@
 #include "core/gettext.hpp"
 #include "environment.hpp"
 #include "widgetescapecloser.hpp"
+#include "dialogbox.hpp"
 
 using namespace gfx;
 
@@ -52,26 +53,13 @@ public:
   ListBox* lbxSaves;
   vfs::Directory directory;
   std::string extension;
+  vfs::Path realFilename;
+
+public:
+  void findFiles();
 
 signals public:
   Signal1<std::string> onFileSelectedSignal;
-
-public:
-  void resolveButtonOkClick()
-  {
-    vfs::Path filename( edFilename->text() );
-    if( filename.extension().empty() )
-      filename = filename + extension;
-
-    emit onFileSelectedSignal( (directory/filename).toString() );
-  }
-
-  void resolveListboxChange( std::string text )
-  {
-    edFilename->setText( text );
-  }
-
-  void findFiles();
 };
 
 void SaveGame::Impl::findFiles()
@@ -101,13 +89,53 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
   _d->directory = dir;
   _d->extension = fileExt;
 
-  CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
-  CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
-  CONNECT( _d->btnOk, onClicked(), this, SaveGame::deleteLater );
-  CONNECT( _d->btnCancel, onClicked(), this, SaveGame::deleteLater );
+  CONNECT( _d->lbxSaves,  onItemSelectedAgain(), this, SaveGame::_resolveDblListboxChange )
+  CONNECT( _d->lbxSaves,  onItemSelected(),      this, SaveGame::_resolveListboxChange )
+  CONNECT( _d->btnOk,     onClicked(),           this, SaveGame::_resolveOkClick )
+  CONNECT( _d->btnOk,     onClicked(),           this, SaveGame::deleteLater )
+  CONNECT( _d->btnCancel, onClicked(),           this, SaveGame::deleteLater )
 
   _d->findFiles();
   setModal();
+}
+
+void SaveGame::_resolveOkClick()
+{
+  _d->realFilename = vfs::Path( _d->edFilename->text() );
+  if( _d->realFilename.extension().empty() )
+    _d->realFilename = _d->realFilename + _d->extension;
+
+  _d->realFilename = _d->directory/_d->realFilename;
+
+  if( _d->realFilename.exist() )
+  {
+    Dialog* dialog = Confirmation( ui(),
+                                   _("##warning##"),
+                                   _("##save_already_exist##") );
+
+    CONNECT( dialog, onOk(), this, SaveGame::_save )
+  }
+  else
+  {
+    _save();
+  }
+}
+
+void SaveGame::_resolveListboxChange( const ListBoxItem& item )
+{
+  _d->edFilename->setText( vfs::Path( item.text() ).baseName( false ).toString() );
+}
+
+void SaveGame::_resolveDblListboxChange( const ListBoxItem& item )
+{
+  _d->edFilename->setText( vfs::Path( item.text() ).baseName( false ).toString() );
+  _resolveOkClick();
+}
+
+void SaveGame::_save()
+{
+  emit _d->onFileSelectedSignal( _d->realFilename.toString() );
+  deleteLater();
 }
 
 void SaveGame::draw(gfx::Engine& painter )

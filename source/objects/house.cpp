@@ -1058,8 +1058,9 @@ void House::_update( bool needChangeTexture )
     {
       _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
       pic.addOffset( _d->randomOffset );
-      _updateGround();
     }
+
+    _updateGround();
 
     setPicture( pic );
   }
@@ -1076,8 +1077,11 @@ void House::_update( bool needChangeTexture )
 
 void House::_updateGround()
 {
-  _d->ground.clear();
-  _d->ground << Picture::load( "housng1g", size().width() );
+  if( !_city()->getOption( PlayerCity::c3gameplay ) )
+  {
+    _d->ground.clear();
+    _d->ground << Picture::load( "housng1g", size().width() );
+  }
 }
 
 int House::roadsideDistance() const { return 2; }
@@ -1244,6 +1248,7 @@ void House::load( const VariantMap& stream )
   {
     _update( true );
   }
+
   _updateGround();
 }
 

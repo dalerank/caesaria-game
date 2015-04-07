@@ -161,7 +161,7 @@ void ProsperityRating::timeStep(const unsigned int time )
   }
 }
 
-int ProsperityRating::value() const {  return _d->prosperity + _d->prosperityExtend; }
+int ProsperityRating::value() const {  return math::clamp<int>( _d->prosperity + _d->prosperityExtend, 0, 100 ); }
 
 int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {

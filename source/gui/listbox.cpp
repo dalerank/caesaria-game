@@ -250,7 +250,7 @@ void ListBox::_indexChanged( unsigned int eventType )
     emit _d->indexSelectedAgain( _d->selectedItemIndex );
     if( _d->selectedItemIndex >= 0 )
     {
-      emit _d->onItemSelectedAgainSignal( _d->items[ _d->selectedItemIndex ].text() );
+      emit _d->onItemSelectedAgainSignal( _d->items[ _d->selectedItemIndex ] );
     }
   }
   break;
@@ -898,7 +898,7 @@ void ListBox::addItems(const StringArray& strings)
 Font ListBox::font() const{  return _d->font;}
 void ListBox::setDrawBackground(bool draw){    setFlag( drawBackground, draw );} //! Sets whether to draw the background
 int ListBox::selected() {    return _d->selectedItemIndex; }
-Signal1<std::string>& ListBox::onItemSelectedAgain(){  return _d->onItemSelectedAgainSignal;}
+Signal1<const ListBoxItem&>& ListBox::onItemSelectedAgain(){  return _d->onItemSelectedAgainSignal;}
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->onItemSelectedSignal;}
 void ListBox::setItemFont( Font font ){ _d->font = font; }
 void ListBox::setItemTextOffset( Point p ) { _d->itemTextOffset = p; }
