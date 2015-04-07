@@ -21,6 +21,8 @@
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
 #include "gfx/helper.hpp"
+#include "objects/overlay.hpp"
+
 using namespace gfx;
 
 namespace city

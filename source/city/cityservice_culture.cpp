@@ -159,7 +159,7 @@ void CultureRating::timeStep(const unsigned int time )
     }
 }
 
-VariantMap city::CultureRating::save() const
+VariantMap CultureRating::save() const
 {
   VariantMap ret = Srvc::save();
   VARIANT_SAVE_ANY_D( ret, _d, lastDate )
@@ -168,7 +168,7 @@ VariantMap city::CultureRating::save() const
   return ret;
 }
 
-void city::CultureRating::load(const VariantMap &stream)
+void CultureRating::load(const VariantMap &stream)
 {
   Srvc::load( stream );
 

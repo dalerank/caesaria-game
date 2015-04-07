@@ -210,6 +210,7 @@ Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
 gfx::Pictures& Overlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
+const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
 Picture& Overlay::_pictureRef(){  return _d->picture;}
 object::Group Overlay::group() const{  return _d->overlayClass;}
 void Overlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}

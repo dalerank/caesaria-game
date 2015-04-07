@@ -90,6 +90,7 @@
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
 #include "cityservice_fire.hpp"
+#include "game/player.hpp"
 #include "scribes.hpp"
 #include "statistic.hpp"
 #include "states.hpp"

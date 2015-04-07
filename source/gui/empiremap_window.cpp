@@ -596,8 +596,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
       {
         // gui window should not be dragged outside its parent
         bool mouseOutsideLeftup = (_d->offset.x() > 0 || _d->offset.y() > 0 );
-        bool mouseXlessRight = _d->offset.x() + _d->empireMap.width() < (int)width();
-        bool mouseYLessBottom = _d->offset.y() + _d->empireMap.height() < (int)height()-_d->bottonMargin;
+        bool mouseXlessRight = (_d->offset.x() + _d->empireMap.width()) < (int)width();
+        bool mouseYLessBottom = (_d->offset.y() + _d->empireMap.height()) < ((int)height()- (int)_d->bottonMargin);
 
         if( mouseOutsideLeftup || mouseXlessRight || mouseYLessBottom )
         {

@@ -37,6 +37,11 @@ public:
     return *this;
   }
 
+  TilePos atSafe( unsigned int index )
+  {
+    return index < size() ? at( index ) : TilePos();
+  }
+
   VariantList toVList() const
   {
     VariantList ret;

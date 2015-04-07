@@ -29,6 +29,11 @@ public:
     return ret;
   }
 
+  Point atSafe( unsigned int index ) const
+  {
+    return index < size() ? at( index ) : Point();
+  }
+
   PointsArray& fromVList( const VariantList& vl )
   {
     foreach( i, vl ) { push_back( *i ); }

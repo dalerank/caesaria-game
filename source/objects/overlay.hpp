@@ -96,6 +96,7 @@ protected:
   PlayerCityPtr _city() const;
   gfx::Pictures& _fgPicturesRef();
   gfx::Picture&_fgPicture(unsigned int index);
+  const gfx::Picture &_fgPicture(unsigned int index) const;
   gfx::Picture& _pictureRef();
 
 private:

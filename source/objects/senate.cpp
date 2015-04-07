@@ -27,6 +27,7 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "core/position_array.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -74,8 +75,6 @@ Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), 
   _d->setStatusConfig( prosperity, Picture::load( ResourceGroup::govt, 6 ), Point( 170, -25 ) );
   _d->setStatusConfig( peace,      Picture::load( ResourceGroup::govt, 7 ), Point( 200, -15 ) );
   _d->setStatusConfig( favour,     Picture::load( ResourceGroup::govt, 8 ), Point( 230, -10 ) );
-
-  _updateRatings();
 }
 
 bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
@@ -171,6 +170,12 @@ void Senate::save(VariantMap& stream) const
 
   VARIANT_SAVE_ANY_D( stream, _d, taxValue )
   VARIANT_SAVE_ANY_D( stream, _d, errorStr )
+
+  PointsArray lastPos;
+  for( int i=culture; i <= favour; i++ )
+    lastPos.push_back( _fgPicture( i ).offset() );
+
+  stream[ "lastPos" ] = lastPos.toVList();
 }
 
 void Senate::load(const VariantMap& stream)
@@ -178,6 +183,11 @@ void Senate::load(const VariantMap& stream)
   ServiceBuilding::load( stream );
   VARIANT_LOAD_ANY_D( _d, taxValue, stream )
   VARIANT_LOAD_STR_D( _d, errorStr, stream )
+
+  PointsArray lastPos;
+  lastPos.fromVList( stream.get( "lastPos" ).toList() );
+  for( int i=culture; i <= favour; i++ )
+    _fgPicture( i ).setOffset( lastPos.atSafe( i ) );
 }
 
 void Senate::_updateUnemployers()
@@ -217,11 +227,11 @@ int Senate::status(Senate::Status status) const
   {
     switch(status)
     {
-    case workless: return statistic::getWorklessPercent( _city() );
-    case culture: return _city()->culture();
+    case workless:   return statistic::getWorklessPercent( _city() );
+    case culture:    return _city()->culture();
     case prosperity: return _city()->prosperity();
-    case peace: return _city()->peace();
-    case favour: return _city()->favour();
+    case peace:      return _city()->peace();
+    case favour:     return _city()->favour();
     }
   }
 
