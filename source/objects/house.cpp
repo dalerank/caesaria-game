@@ -1077,7 +1077,7 @@ void House::_update( bool needChangeTexture )
 
 void House::_updateGround()
 {
-  if( !_city()->getOption( PlayerCity::c3gameplay ) )
+  if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
   {
     _d->ground.clear();
     _d->ground << Picture::load( "housng1g", size().width() );
