@@ -34,12 +34,6 @@ public:
   PictureInfoMap data;   // key=image name (Govt_00005)
 };
 
-PictureInfoBank& PictureInfoBank::instance()
-{
-  static PictureInfoBank inst;
-  return inst;
-}
-
 PictureInfoBank::PictureInfoBank() : _d( new Impl )
 {
   // tiles

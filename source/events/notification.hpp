@@ -19,6 +19,8 @@
 #define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/scopedptr.hpp"
+#include "world/object.hpp"
 
 namespace events
 {

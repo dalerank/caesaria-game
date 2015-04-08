@@ -20,12 +20,8 @@
 
 #include "city/predefinitions.hpp"
 #include "objects/constants.hpp"
-#include <string>
 
-namespace gfx
-{
-  class Tile;
-}
+namespace gfx { class Tile; }
 
 class LoaderHelper
 {

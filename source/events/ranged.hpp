@@ -19,8 +19,8 @@
 #define _CAESARIA_RANGET_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "core/variant.hpp"
 
 namespace events
 {

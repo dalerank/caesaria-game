@@ -35,10 +35,10 @@ public:
   CitizenGroup& include( CitizenGroup& b );
   void exclude( CitizenGroup& group );
 
-  unsigned int &operator [] ( unsigned int age);
+  unsigned int& operator [] ( unsigned int age);
   CitizenGroup& operator += ( const CitizenGroup& b );
-  CitizenGroup operator  -  ( const CitizenGroup& b ) const;
-  CitizenGroup operator  +  ( const CitizenGroup& b ) const;
+  CitizenGroup  operator  -  ( const CitizenGroup& b ) const;
+  CitizenGroup  operator  +  ( const CitizenGroup& b ) const;
 
   bool empty() const;
   void clear();

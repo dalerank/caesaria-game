@@ -22,6 +22,7 @@
 #include "city/city.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/tilesarray.hpp"
+#include "gfx/camera.hpp"
 #include "gfx/picturesarray.hpp"
 
 namespace gfx
