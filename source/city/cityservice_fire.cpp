@@ -28,7 +28,7 @@ namespace city
 class Fire::Impl
 {
 public:
-  Fire::Locations locations;
+  UqLocations locations;
 };
 
 SrvcPtr Fire::create( PlayerCityPtr city )
@@ -52,6 +52,6 @@ void Fire::timeStep( const unsigned int time )
 
 void Fire::addLocation(const TilePos& location) { _d->locations.insert( location ); }
 void Fire::rmLocation(const TilePos& location) { _d->locations.erase( location ); }
-const Fire::Locations&Fire::locations() const { return _d->locations;  }
+const UqLocations &Fire::locations() const { return _d->locations;  }
 
 }//end namespace city

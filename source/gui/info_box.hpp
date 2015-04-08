@@ -37,13 +37,13 @@ namespace infobox
 {
 
 // base class for info boxes
-class Simple : public Window
+class Infobox : public Window
 {
 public:  
   static const Rect defaultRect;
 
-  Simple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
-  virtual ~Simple();
+  Infobox( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
+  virtual ~Infobox();
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
 
@@ -75,7 +75,7 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class InfoboxBuilding : public Simple
+class InfoboxBuilding : public Infobox
 {
 public:
   InfoboxBuilding( Widget* parent, const gfx::Tile& tile );

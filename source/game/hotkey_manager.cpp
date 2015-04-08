@@ -55,12 +55,6 @@ public signals:
   Signal1<const VariantMap&> onHotkeySignal;
 };
 
-HotkeyManager& HotkeyManager::instance()
-{
-  static HotkeyManager inst;
-  return inst;
-}
-
 void HotkeyManager::execute( int keyCode )
 {
   HotkeyScripts::iterator it = _d->scripts.find( (KeyCode)keyCode );
@@ -96,6 +90,11 @@ void HotkeyManager::load(vfs::Path file)
 }
 
 HotkeyManager::HotkeyManager() : _d(new Impl) {}
+
+HotkeyManager::~HotkeyManager()
+{
+
+}
 
 } //end namespace game
 

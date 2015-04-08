@@ -185,6 +185,7 @@ void Overlay::initialize(const MetaData& mdata)
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
+void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
 
 TilePos Overlay::pos() const
 {
@@ -193,7 +194,7 @@ TilePos Overlay::pos() const
     Logger::warning(  "master tile can't be null" );
     return gfx::tilemap::invalidLocation();
   }
-  return _d->masterTile->pos();
+  return _d->masterTile->epos();
 }
 
 std::string Overlay::sound() const
@@ -210,6 +211,7 @@ Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
 gfx::Pictures& Overlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
+const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
 Picture& Overlay::_pictureRef(){  return _d->picture;}
 object::Group Overlay::group() const{  return _d->overlayClass;}
 void Overlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}

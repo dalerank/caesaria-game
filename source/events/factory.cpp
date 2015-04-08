@@ -17,6 +17,8 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
+#include <map>
+
 namespace events
 {
 

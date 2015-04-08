@@ -64,7 +64,7 @@ class NColor;
 
 #define VARIANT_SAVE_CLASS_D(vm, d, param) vm[ #param ] = d->param.save();
 #define VARIANT_LOAD_CLASS_D(d, param, vm) d->param.load( vm.get( #param ).toMap() );
-
+#define VARIANT_LOAD_CLASS_D_LIST(d, param, vm) d->param.load( vm.get( #param ).toList() );
 
 template <typename T>
 inline Variant createVariant2FromValue(const T &);
@@ -186,7 +186,7 @@ class Variant
   Variant( unsigned int ui);
   Variant( long long ll);
   Variant( unsigned long long ull);
-  Variant( bool b);
+  explicit Variant( bool b);
   Variant( double d);
   Variant( float f);
 

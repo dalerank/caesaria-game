@@ -41,9 +41,9 @@ void SetSoundOptions::_exec(Game& game, unsigned int)
 {
   audio::Engine& e = audio::Engine::instance();
   dialog::SoundOptions* dialog = new dialog::SoundOptions( game.gui()->rootWidget(),
-                                                           e.volume( audio::gameSound ),
-                                                           e.volume( audio::ambientSound ),
-                                                           e.volume( audio::themeSound ) );
+                                                           e.volume( audio::game ),
+                                                           e.volume( audio::ambient ),
+                                                           e.volume( audio::theme ) );
 
   CONNECT( dialog, onSoundChange(), &e, audio::Engine::setVolume );
   CONNECT( dialog, onClose(), this, SetSoundOptions::_saveSoundSettings );
@@ -54,9 +54,9 @@ bool SetSoundOptions::_mayExec(Game&, unsigned int) const { return true; }
 void SetSoundOptions::_saveSoundSettings()
 {
   audio::Engine& se = audio::Engine::instance();
-  SETTINGS_SET_VALUE( soundVolume, se.volume( audio::gameSound ) );
-  SETTINGS_SET_VALUE( ambientVolume, se.volume( audio::ambientSound ) );
-  SETTINGS_SET_VALUE( musicVolume, se.volume( audio::themeSound ) );
+  SETTINGS_SET_VALUE( soundVolume, se.volume( audio::game ) );
+  SETTINGS_SET_VALUE( ambientVolume, se.volume( audio::ambient ) );
+  SETTINGS_SET_VALUE( musicVolume, se.volume( audio::theme ) );
   game::Settings::save();
 }
 

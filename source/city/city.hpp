@@ -19,11 +19,8 @@
 #ifndef __CAESARIA_PLAYERCITY_H_INCLUDED__
 #define __CAESARIA_PLAYERCITY_H_INCLUDED__
 
-#include "core/serializer.hpp"
 #include "core/signals.hpp"
-#include "gfx/tile.hpp"
 #include "core/position.hpp"
-#include "game/player.hpp"
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"
@@ -51,7 +48,8 @@ class PlayerCity : public world::City
 public:  
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
-                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType } OptionType;
+                 fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
+                 collapseKoeff } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
@@ -68,7 +66,6 @@ public:
   city::SrvcPtr findService( const std::string& name ) const;
 
   const city::SrvcList& services() const;
-
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;

@@ -18,9 +18,9 @@
 
 #include "cityservice.hpp"
 #include "game/predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
-namespace  city {
+namespace  city
+{
 
 class Shoreline : public city::Srvc
 {

@@ -188,7 +188,7 @@ void Factory::timeStep(const unsigned long time)
         _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
       }
 
-      if( math::random( (int)_d->lowWorkerWeeksNumber ) > _d->maxUnworkingWeeks )
+      if( math::random( (int)_d->lowWorkerWeeksNumber ) > (int)_d->maxUnworkingWeeks )
       {
         _reachUnworkingTreshold();
       }

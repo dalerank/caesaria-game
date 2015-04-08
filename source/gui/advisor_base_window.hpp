@@ -20,6 +20,8 @@
 
 #include "window.hpp"
 #include "game/predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/signals.hpp"
 
 namespace gui
 {

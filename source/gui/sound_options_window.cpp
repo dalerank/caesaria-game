@@ -89,9 +89,9 @@ bool SoundOptions::onEvent(const NEvent& event)
 
     case 1002:
     {
-      emit _d->onSoundChangeSignal( audio::gameSound, _d->save.game );
-      emit _d->onSoundChangeSignal( audio::ambientSound, _d->save.ambient );
-      emit _d->onSoundChangeSignal( audio::themeSound, _d->save.theme );
+      emit _d->onSoundChangeSignal( audio::game, _d->save.game );
+      emit _d->onSoundChangeSignal( audio::ambient, _d->save.ambient );
+      emit _d->onSoundChangeSignal( audio::theme, _d->save.theme );
       emit _d->onCloseSignal();
       deleteLater();
     }
@@ -122,9 +122,9 @@ void SoundOptions::_update()
   if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.ambient ) ); }
   if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.theme ) ); }
 
-  emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
-  emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );
-  emit _d->onSoundChangeSignal( audio::themeSound,_d->current.theme );
+  emit _d->onSoundChangeSignal( audio::game,_d->current.game );
+  emit _d->onSoundChangeSignal( audio::ambient, _d->current.ambient );
+  emit _d->onSoundChangeSignal( audio::theme,_d->current.theme );
 }
 
 }//end namespace dialog

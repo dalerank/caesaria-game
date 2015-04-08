@@ -18,6 +18,7 @@
 #include "ambientsound.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap_camera.hpp"
+#include "gfx/tilearea.hpp"
 #include "sound/engine.hpp"
 #include "core/utils.hpp"
 #include "objects/overlay.hpp"
@@ -130,10 +131,9 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  TilePos offset( ambientsnd::maxDistance, ambientsnd::maxDistance );
-  TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
+  TilesArea emmitersArea( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
 
-  foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
+  foreach( tile, emmitersArea ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 
   //remove so far emitters
   for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
@@ -167,7 +167,7 @@ void AmbientSound::timeStep( const unsigned int time )
     {
       processedSounds.insert( resourceName );
 
-      ae.play( resourceName, sound::maxLevel / (ambientsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( resourceName, sound::maxLevel / (ambientsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambient  );
     }
   }
 }

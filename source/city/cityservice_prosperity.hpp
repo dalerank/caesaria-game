@@ -19,7 +19,6 @@
 #define __CAESARIA_CITYSERVICE_PROSPERITY_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 #include "config.hpp"
 

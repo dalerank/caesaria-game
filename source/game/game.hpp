@@ -22,11 +22,10 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
-#include "scene/base.hpp"
-#include "gfx/engine.hpp"
 #include "scene/constants.hpp"
 
-class Scene;
+namespace scene{ class Base; }
+namespace gfx{   class Engine; }
 
 class Game
 {
@@ -44,13 +43,13 @@ public:
   void reset();
   void clear();
 
-  PlayerPtr player() const;
-  PlayerCityPtr city() const;
+  PlayerPtr        player() const;
+  PlayerCityPtr    city() const;
   world::EmpirePtr empire() const;
-  gui::Ui* gui() const;
-  gfx::Engine* engine() const;
-  scene::Base* scene() const;
-  DateTime date() const;
+  gui::Ui*         gui() const;
+  gfx::Engine*     engine() const;
+  scene::Base*     scene() const;
+  const DateTime&  date() const;
 
   void setPaused( bool value );
   bool isPaused() const;

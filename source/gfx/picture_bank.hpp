@@ -19,19 +19,17 @@
 #define __CAESARIA_PICTURE_BANK_H_INCLUDED__
 
 #include "picture.hpp"
-#include "good/good.hpp"
 #include "core/scopedptr.hpp"
-#include "core/variant.hpp"
+#include "core/singleton.hpp"
 
 // loads pictures from files
 namespace gfx
 {
 
-class PictureBank
+class PictureBank : public StaticSingleton<PictureBank>
 {
+  friend class StaticSingleton;
 public:
-  static PictureBank& instance();
-
   void reset();
 
   // set the current picture

@@ -17,6 +17,7 @@
 #define _CAESARIA_SHOWADVISORWINDOW_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "game/advisor.hpp"
 
 namespace events
 {

@@ -27,7 +27,6 @@
 #include "walker/walker.hpp"
 #include "gfx/tilemap.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
-#include "game/settings.hpp"
 #include "gui/infobox_working.hpp"
 #include <map>
 
@@ -80,6 +79,7 @@ class Manager::Impl
 {
 public:
   bool showDebugInfo;
+  bool boxLocked;
 
   typedef std::map< object::Type, InfoboxCreator* > InfoboxCreators;
   std::map< std::string, object::Type > name2typeMap;
@@ -90,17 +90,12 @@ public:
 Manager::Manager() : _d( new Impl )
 {
   _d->showDebugInfo = true;
+  _d->boxLocked = true;
 
   citizen::PManager::instance().loadInfoboxes();
 }
 
 Manager::~Manager() {}
-
-Manager& Manager::instance()
-{
-  static Manager inst;
-  return inst;
-}
 
 void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 {
@@ -117,14 +112,12 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
-  Simple* infoBox = findConstructor != _d->constructors.end()
+  Infobox* infoBox = findConstructor != _d->constructors.end()
                                   ? findConstructor->second->create( city, gui->rootWidget(), pos )
                                   : 0;
   
   if( infoBox && infoBox->isAutoPosition() )
   {
-    bool lockWindow = SETTINGS_VALUE( lockInfobox );
-
     Size rSize = gui->rootWidget()->size();
     int y = ( gui->cursorPos().y() < rSize.height() / 2 )
                 ? rSize.height() - infoBox->height() - 5
@@ -133,7 +126,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
     infoBox->setPosition( pos );
     infoBox->setFocus();
-    infoBox->setWindowFlag( Window::fdraggable, !lockWindow);
+    infoBox->setWindowFlag( Window::fdraggable, !_d->boxLocked );
   }
 }
 
@@ -157,24 +150,26 @@ void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
 
 bool Manager::canCreate(const object::Type type) const
 {
-  return _d->constructors.find( type ) != _d->constructors.end();   
+  return _d->constructors.find( type ) != _d->constructors.end();
 }
+
+void infobox::Manager::setBoxLock(bool lock) { _d->boxLocked = lock; }
 
 StaticInfoboxCreator::StaticInfoboxCreator(const std::string &caption, const std::string &desc):
   title( caption ), text( desc )
 {}
 
-Simple *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
+Infobox *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
-  Simple* infoBox = new Simple( parent, Simple::defaultRect );
+  Infobox* infoBox = new Infobox( parent, Infobox::defaultRect );
   infoBox->setPosition( Point( ( size.width() - infoBox->width()) / 2,
                                  size.height() - infoBox->height()) );
   OverlayPtr overlay = city->getOverlay( pos );
 
   std::string caption = overlay.isValid()
-      ? MetaDataHolder::findPrettyName( overlay->type() )
-      : title;
+                                  ? MetaDataHolder::findPrettyName( overlay->type() )
+                                  : title;
 
   infoBox->setTitle( _( caption ) );
   infoBox->setText( _( text ) );
@@ -186,7 +181,7 @@ ServiceInfoboxCreator::ServiceInfoboxCreator(const std::string &caption, const s
 {
 }
 
-Simple* ServiceInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
+Infobox* ServiceInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
   WorkingBuildingPtr building = ptr_cast<WorkingBuilding>( city->getOverlay( pos ) );

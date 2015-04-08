@@ -24,12 +24,6 @@ namespace {
   unsigned int tickInDay = 25;
 }
 
-Date& Date::instance()
-{
-  static Date inst;
-  return inst;
-}
-
 unsigned int Date::days2ticks(unsigned int days)
 {
   return days * tickInDay;

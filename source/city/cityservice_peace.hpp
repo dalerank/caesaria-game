@@ -17,7 +17,6 @@
 #define __CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city

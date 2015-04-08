@@ -23,6 +23,7 @@
 #include "core/gettext.hpp"
 #include "gfx/helper.hpp"
 #include "requestdestroy.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
 using namespace constants;

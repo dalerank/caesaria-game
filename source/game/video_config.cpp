@@ -38,13 +38,7 @@ public:
   void resetIfalias( std::string& sampleName );
 };
 
-Config& Config::instance()
-{
-  static Config _instance;
-  return _instance;
-}
-
-void Config::loadAlias(const vfs::Path& filename)
+void Config::loadAlias(vfs::Path filename)
 {
   VariantMap alias = config::load( filename );
   foreach( it, alias )

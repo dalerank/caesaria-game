@@ -881,7 +881,7 @@
 "##visit_labor_advisor##":"Main-d'oeuvre"
 "##visit_financial_advisor##":"Finance"
 "##dispatch_gift##":"Envoyer un cadeau"
-"##dispatch_git_title##":"Envoyer un cadeau à l'Empereur"
+"##dispatch_gift_title##":"Envoyer un cadeau à l'Empereur"
 "##engineer_low_entertainment##":"Rien de tel après une dure journée de travail que de se détendre en allant voir un spéctacle ou un beau combat. Mais ce n'est pas dans cette cité que je pourrais faire çà."
 "##barber_need_colloseum##":"Après une journée passée à couper les cheveux, tout ce que je demande est un combat de lions. Aucune chance d'assister à ça ici !"
 "##barber_good_life##":"Quelle cité merveilleuse. C'est un plaisir d'y travailler."

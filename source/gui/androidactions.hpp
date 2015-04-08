@@ -28,6 +28,7 @@ class AndroidActionsBar : public Window
 {
 public:
   virtual void beforeDraw( gfx::Engine& painter);
+  virtual bool onEvent(const NEvent &event);
   AndroidActionsBar( Widget* parent );
 
 public signals:
