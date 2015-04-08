@@ -79,7 +79,7 @@ void Treasury::resolveIssue( econ::Issue issue )
   default:
   {
     IssuesValue& step = _d->history.front();
-    if( step.find( (econ::Issue::Type)issue.type ) == step.end() )
+    if( step.count( (econ::Issue::Type)issue.type ) == 0 )
     {
       step[ (econ::Issue::Type)issue.type ] = 0;
     }

@@ -18,6 +18,7 @@
 #include "cityservice_festival.hpp"
 #include "game/gamedate.hpp"
 #include "city.hpp"
+#include "game/player.hpp"
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"

@@ -35,6 +35,7 @@
 #include "world/playerarmy.hpp"
 #include "dialogbox.hpp"
 #include "dictionary.hpp"
+#include "city/statistic.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
@@ -210,7 +211,7 @@ void Legion::_handleServiceEmpire(FortPtr fort)
 
   if( !maySendExpedition )
   {
-    DialogBox::information( this, "", _(reasonFailed) );
+    dialog::Information( ui(), "", _(reasonFailed) );
     return;
   }
 
@@ -227,8 +228,7 @@ void Legion::_showHelp()
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  city::MilitaryPtr mil = city::statistic::finds<city::Military>( city );
 
   WalkerList chasteners = city->walkers( walker::romeChastenerSoldier );
   WalkerList elephants = city->walkers( walker::romeChastenerElephant );

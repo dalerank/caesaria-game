@@ -1036,47 +1036,19 @@ Variant::Variant(int typeOrUserType, const void *copy, unsigned int flags)
     }
 }
 
-Variant::Variant(int val)
-{ _d.is_null = false; _d.type = Int; _d.data.i = val; }
-
-Variant::Variant(unsigned int val)
-{ _d.is_null = false; _d.type = UInt; _d.data.u = val; }
-
-Variant::Variant(long long val)
-{ _d.is_null = false; _d.type = LongLong; _d.data.ll = val; }
-
-Variant::Variant(unsigned long long val)
-{ _d.is_null = false; _d.type = ULongLong; _d.data.ull = val; }
-
-Variant::Variant(bool val)
-{ _d.is_null = false; _d.type = Bool; _d.data.b = val; }
-
-Variant::Variant(double val)
-{ _d.is_null = false; _d.type = Double; _d.data.d = val; }
-
-Variant::Variant(const ByteArray& val)
-{ _d.is_null = false; _d.type = NByteArray; v_construct<ByteArray>(&_d, val); }
-
-Variant::Variant(const std::string& val)
-{ _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, val);  }
-
-Variant::Variant(char val)
-{ _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
-
-Variant::Variant(const DateTime &val)
-{ _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
-
-Variant::Variant(const StringArray &strArr)
-{ _d.is_null = false; _d.type = Variant::NStringArray; v_construct<StringArray>(&_d, strArr); }
-
-Variant::Variant(const VariantList& rlist)
-{ _d.is_null = false; _d.type = Variant::List; v_construct<VariantList>(&_d, rlist); }
-
-Variant::Variant(const VariantMap& rmap)
-{ _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
-// Variant::Variant(const Hash<String, Variant> &hash)
-// { _d.is_null = false; _d.type = Hash; v_construct<Variant2Hash>(&_d, hash); }
-
+Variant::Variant(int val){ _d.is_null = false; _d.type = Int; _d.data.i = val; }
+Variant::Variant(unsigned int val){ _d.is_null = false; _d.type = UInt; _d.data.u = val; }
+Variant::Variant(long long val){ _d.is_null = false; _d.type = LongLong; _d.data.ll = val; }
+Variant::Variant(unsigned long long val){ _d.is_null = false; _d.type = ULongLong; _d.data.ull = val; }
+Variant::Variant(bool val){ _d.is_null = false; _d.type = Bool; _d.data.b = val; }
+Variant::Variant(double val){ _d.is_null = false; _d.type = Double; _d.data.d = val; }
+Variant::Variant(const ByteArray& val) { _d.is_null = false; _d.type = NByteArray; v_construct<ByteArray>(&_d, val); }
+Variant::Variant(const std::string& val){ _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, val);  }
+Variant::Variant(char val) { _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
+Variant::Variant(const DateTime &val) { _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
+Variant::Variant(const StringArray &strArr) { _d.is_null = false; _d.type = Variant::NStringArray; v_construct<StringArray>(&_d, strArr); }
+Variant::Variant(const VariantList& rlist) { _d.is_null = false; _d.type = Variant::List; v_construct<VariantList>(&_d, rlist); }
+Variant::Variant(const VariantMap& rmap) { _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
 Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoint; v_construct<Point>(&_d, pt); }
 Variant::Variant(const PointF &pt) { _d.is_null = false; _d.type = Variant::NPointF; v_construct<PointF>(&_d, pt); }
 Variant::Variant(const TilePos &pt) { _d.is_null = false; _d.type = Variant::NTilePos; v_construct<TilePos>(&_d, pt); }

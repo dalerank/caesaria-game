@@ -19,8 +19,6 @@
 #define __CAESARIA_CITYSERVICE_FACTORY_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "city/city.hpp"
 
 namespace city
 {

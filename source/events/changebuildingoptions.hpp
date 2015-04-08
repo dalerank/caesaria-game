@@ -27,7 +27,7 @@ class ChangeBuildingOptions : public GameEvent
 public:
   static GameEventPtr create();
 
-  virtual void load(const VariantMap &);
+  virtual void load(const VariantMap& );
   virtual VariantMap save() const;
 
 protected:

@@ -63,7 +63,7 @@ public:
 };
 
 AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
   Widget::setupUI( ":/gui/legionopts.gui" );
 
@@ -267,7 +267,7 @@ bool AboutLegion::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 void AboutLegion::_addFormationButton(int index, int id, int picId)

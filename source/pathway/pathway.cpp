@@ -186,27 +186,12 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
 
 void Pathway::setNextTile( const Tile& tile )
 {
-  /*int dI = tile.i() - _d->destination.i();
-  int dJ = tile.j() - _d->destination.j();
-
-  Direction direction;
-
-  if (dI==0 && dJ==0) {  direction = direction::none; }
-  else if (dI==0 && dJ==1) { direction = direction::north; }
-  else if (dI==1 && dJ==1) { direction = direction::northEast; }
-  else if (dI==1 && dJ==0) { direction = direction::east; }
-  else if (dI==1 && dJ==-1){ direction = direction::southEast; }
-  else if (dI==0 && dJ==-1){ direction = direction::south; }
-  else if (dI==-1 && dJ==-1){ direction = direction::southWest;}
-  else if (dI==-1 && dJ==0) {direction = direction::west;}
-  else if (dI==-1 && dJ==1){ direction = direction::northWest; }
-  else
-  {
-    Logger::warning( "WARNING!!! Pathway::setNextTile() destination[%d, %d] out of map", dI, dJ );
-    direction = direction::none;
-  }*/
-
   _d->tiles.push_back( const_cast<Tile*>( &tile ) );
+}
+
+void Pathway::append(const Pathway &other)
+{
+  _d->tiles.append( other._d->tiles );
 }
 
 bool Pathway::contains(const Tile& tile)

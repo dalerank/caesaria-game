@@ -114,7 +114,7 @@ public:
 };
 
 AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
   _d->walkers = city->walkers( pos );

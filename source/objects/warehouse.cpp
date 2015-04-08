@@ -67,7 +67,10 @@ Warehouse::Room::Room(const TilePos &pos)
 void Warehouse::Room::computePicture()
 {
   int picIdx = 0;
-  good::Product gtype = empty() ? good::none : type();
+  if( empty() && type() != good::none  )
+    setType( good::none );
+
+  good::Product gtype = type();
 
   if( gtype == good::none ) picIdx = 19;
   else if( gtype == good::wheat ) picIdx = 20;

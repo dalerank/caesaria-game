@@ -280,7 +280,7 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
+  TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
@@ -362,7 +362,7 @@ const Picture& Plaza::picture() const
 
 void Plaza::updatePicture()
 {
-  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )

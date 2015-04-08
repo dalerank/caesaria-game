@@ -242,7 +242,7 @@ void EditBox::setupUI(const VariantMap& ui)
 {
 	Widget::setupUI( ui );
 
-	setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
 
 	_d->textOffset = ui.get( "textOffset" ).toPoint();
 

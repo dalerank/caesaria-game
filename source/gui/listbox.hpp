@@ -151,7 +151,7 @@ public:
   virtual void setupUI(const VariantMap &ui);
 
 signals public:
-  Signal1<std::string>& onItemSelectedAgain();
+  Signal1<const ListBoxItem&>& onItemSelectedAgain();
   Signal1<const ListBoxItem&>& onItemSelected();
 
 protected:
@@ -165,7 +165,7 @@ protected:
 private:
   void _selectNew(int ypos);
   void _recalculateScrollPos();
-
+  void _recalculateItemHeight( const Font& defaulFont, int height );
   void _indexChanged( unsigned int eventType );
   ElementState _getCurrentItemState( unsigned int index, bool hl );
   Font _getCurrentItemFont( const ListBoxItem& item, bool selected );

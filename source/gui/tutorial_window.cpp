@@ -29,6 +29,7 @@
 #include "label.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -56,16 +57,25 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     return;
 
   VariantMap vm = config::load( tutorial );
-  Logger::warningIf( vm.empty(), "Cannot load tutorial description from " + tutorial.toString() );
+  Logger::warningIf( vm.empty(), "!!! WARNING: Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();
   std::string title = vm.get( "title" );
   std::string sound = vm.get( "sound" );
+  std::string speech = vm.get( "speech" );
 
   if( lbTitle ) lbTitle->setText( _( title ) );
   if( !sound.empty() )
   {
-    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
+    GameEventPtr e = PlaySound::create( sound, 100 );
+    e->dispatch();
+  }
+
+  if( !speech.empty() )
+  {
+    _muter.activate( 5 );
+    _speechDel.assign( speech );
+    GameEventPtr e = PlaySound::create( speech, 100, audio::speech );
     e->dispatch();
   }
 
@@ -92,6 +102,6 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   setModal();
 }
 
-TutorialWindow::~TutorialWindow() {}
+TutorialWindow::~TutorialWindow(){}
 
 }//end namespace gui

@@ -372,6 +372,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );     
+      drawPass( engine, tile, offset, Renderer::overlayGround );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }

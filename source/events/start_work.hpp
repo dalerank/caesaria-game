@@ -20,6 +20,7 @@
 
 #include "event.hpp"
 #include "core/variant_map.hpp"
+#include "objects/constants.hpp"
 
 namespace events
 {

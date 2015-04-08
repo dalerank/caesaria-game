@@ -22,12 +22,15 @@
 namespace gui
 {
 
-WidgetCalc::WidgetCalc(Widget& widget) : _widget( widget )
+WidgetCalc::WidgetCalc(Widget& widget, const VariantMap& vars) : _widget( widget )
 {
   _alias[ "w" ] = widget.width();
   _alias[ "h" ] = widget.height();
   _alias[ "pw" ] = widget.parent()->width();
   _alias[ "ph" ] = widget.parent()->height();
+
+  foreach( it, vars )
+    _alias[ it->first ] = it->second.toInt();
 }
 
 double WidgetCalc::eval(const std::string& str)
@@ -56,7 +59,7 @@ double WidgetCalc::_number(const std::string &str, unsigned *idx)
       name += str[*idx];
       ++*idx;
     }
-    while( isalpha( str[*idx] ) );
+    while( isalnum( str[*idx] ) );
 
     std::map< std::string, int >::iterator it = _alias.find( name );
     if( it == _alias.end() )

@@ -24,6 +24,7 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "loader.hpp"
+#include "game/player.hpp"
 #include "city/victoryconditions.hpp"
 #include "city/build_options.hpp"
 #include "objects/metadata.hpp"
@@ -150,7 +151,7 @@ bool Mission::load( const std::string& filename, Game& game )
     VariantMap fishpointsVm = vm[ "fishpoints" ].toMap();
     foreach( it, fishpointsVm )
     {
-      GameEventPtr e = FishPlaceEvent::create( it->second.toTilePos(), FishPlaceEvent::add );
+      GameEventPtr e = ChangeFishery::create( it->second.toTilePos(), ChangeFishery::add );
       e->dispatch();
     }
 

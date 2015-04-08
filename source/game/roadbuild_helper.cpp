@@ -26,6 +26,7 @@
 #include "objects/aqueduct.hpp"
 #include "core/logger.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace gfx;
 
@@ -44,17 +45,6 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
       ret = aq->canAddRoad( PlayerCityPtr(), tile->pos() );
     }
   }
-}
-
-RoadPropagator::RoadPropagator()
-{
-
-}
-
-RoadPropagator& RoadPropagator::instance()
-{
-  static RoadPropagator inst;
-  return inst;
 }
 
 bool __checkWalkables( const TilesArray& tiles )

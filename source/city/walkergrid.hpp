@@ -25,7 +25,7 @@
 namespace city
 {
 
-class WalkerGrid
+class WalkersGrid
 {
 public:
   void clear();

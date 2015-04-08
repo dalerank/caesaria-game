@@ -31,6 +31,15 @@ inline std::set<T>& operator<<(std::set<T>& which, const T& value)
 }
 
 template<class T>
+inline std::set<T>& operator<<(std::set<T>& which, const VariantList& values)
+{
+  foreach( it, values )
+    which.insert( *it );
+
+  return which;
+}
+
+template<class T>
 class Priorities : public std::vector< T >
 {
 public:

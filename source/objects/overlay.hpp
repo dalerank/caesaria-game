@@ -89,6 +89,8 @@ public:
 
   virtual void initialize( const MetaData& mdata );
 
+  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
+
 protected:
   void setType(const object::Type type);
   gfx::Animation& _animationRef();
@@ -96,6 +98,7 @@ protected:
   PlayerCityPtr _city() const;
   gfx::Pictures& _fgPicturesRef();
   gfx::Picture&_fgPicture(unsigned int index);
+  const gfx::Picture &_fgPicture(unsigned int index) const;
   gfx::Picture& _pictureRef();
 
 private:

@@ -63,6 +63,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace gui::dialog;
 
 namespace gui
 {
@@ -73,7 +74,7 @@ namespace infobox
 class InfoboxHouseCreator : public InfoboxCreator
 {
 public:
-  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house.isValid() && house->habitants().count() > 0 )
@@ -90,7 +91,7 @@ public:
 REGISTER_OBJECT_INFOBOX( house, new InfoboxHouseCreator() )
 
 AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
@@ -283,7 +284,7 @@ bool AboutHouse::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 void AboutHouse::_showHelp() { DictionaryWindow::show( this, "house" ); }
@@ -301,9 +302,9 @@ void AboutHouse::_showHbtInfo()
                                                   _house->habitants().mature_n(),
                                                   _house->habitants().aged_n() );
 
-  DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, DialogBox::btnOk );
+  Dialog* dialog = new Dialog( ui(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialog::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );
-  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
+  CONNECT( dialog, onOk(), dialog, Dialog::deleteLater )
 }
 
 void AboutHouse::_showSrvcInfo()
@@ -311,9 +312,9 @@ void AboutHouse::_showSrvcInfo()
   std::string srvcState = utils::format( 0xff, "Health=%d",
                                                (int)_house->state( pr::health ));
 
-  DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Services", srvcState, DialogBox::btnOk );
+  Dialog* dialog = new Dialog( ui(), Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );
-  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
+  CONNECT( dialog, onOk(), dialog, Dialog::deleteLater )
 }
 
 }

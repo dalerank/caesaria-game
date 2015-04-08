@@ -19,6 +19,7 @@
 #include "objects/overlay.hpp"
 #include "city.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/tilearea.hpp"
 
 using namespace gfx;
 
@@ -30,7 +31,7 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
   int mul = ( onBuild ? 1 : -1);
 
   //change desirability in selfarea
-  TilesArray area = tilemap.getArea( overlay->pos(), overlay->size() );
+  TilesArea area( tilemap, overlay->pos(), overlay->size() );
   foreach( tile, area )
   {
     (*tile)->changeParam( Tile::pDesirability, mul * dsrbl.base );

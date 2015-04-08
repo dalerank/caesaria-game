@@ -91,7 +91,7 @@ bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );
 
-  TilesArray area = info.city->tilemap().getArea( info.pos, size() );
+  TilesArea area(  info.city->tilemap(), info.pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
 
@@ -214,8 +214,7 @@ int Dock::queueSize() const
 
 const Tile& Dock::queueTile() const
 {
-  TilePos offset( 3, 3 );
-  TilesArray tiles = city::statistic::tiles( _city(), pos() - offset, pos() + offset );
+  TilesArea tiles( _city()->tilemap(), pos(), 3 );
 
   foreach( it, tiles )
   {

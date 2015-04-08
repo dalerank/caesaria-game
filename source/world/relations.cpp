@@ -20,6 +20,7 @@
 #include "game/gift.hpp"
 #include "config.hpp"
 #include "game/gamedate.hpp"
+#include "core/logger.hpp"
 
 using namespace config;
 
@@ -38,21 +39,29 @@ int Relation::value() const { return math::clamp<int>( _value, 0, emperor::maxFa
 
 void Relation::update(const Gift &gift)
 {
+  int value = gift.value();
+  if( value <= 0 )
+  {
+    Logger::warning( "!!! WARNING: Relation update with 0 value from " + gift.sender() );
+    value = 1;
+  }
+
   int monthFromLastGift = math::clamp<int>( lastGift.date().monthsTo( game::Date::current() ),
                                             0, (int)DateTime::monthsInYear );
 
   float timeKoeff = monthFromLastGift / (float)DateTime::monthsInYear;
-  int affectMoney = lastGift.value() / ( monthFromLastGift + 1 );
-  float moneyKoeff = math::max<float>( gift.value() - affectMoney, 0.f ) / gift.value();
-  int favourUpdate = emperor::maxFavourUpdate * timeKoeff * moneyKoeff;
+  float affectMoney = (float)lastGift.value() / ( monthFromLastGift + 1 );
+  float moneyKoeff = math::max<float>( value - affectMoney, 0.f ) / value;
+  float favourUpdate = emperor::maxFavourUpdate * timeKoeff * moneyKoeff;
+  favourUpdate = math::clamp<float>( favourUpdate, 0.f, emperor::maxFavourUpdate);
 
-  Gift maxValueGift( "", "", math::max<int>( gift.value(), lastGift.value() ) );
+  Gift maxValueGift( "", "", math::max<int>( value, lastGift.value() ) );
   lastGift = maxValueGift;
 
   change( favourUpdate );
 }
 
-void Relation::change(int delta)
+void Relation::change(float delta)
 {
   _value += delta;
 }

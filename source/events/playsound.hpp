@@ -17,6 +17,7 @@
 #define _CAESARIA_EVENT_PLAYSOUND_H_INCLUDE_
 
 #include "event.hpp"
+#include "sound/constants.hpp"
 
 namespace events
 {
@@ -24,8 +25,8 @@ namespace events
 class PlaySound : public GameEvent
 {
 public:
-  static GameEventPtr create(std::string rc, int index, int volume );
-  static GameEventPtr create(std::string filename, int volume, bool theme=false );
+  static GameEventPtr create(std::string rc, int index, int volume, audio::SoundType type=audio::ambient  );
+  static GameEventPtr create(std::string filename, int volume, audio::SoundType type=audio::ambient );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -36,7 +37,7 @@ private:
 
   std::string _sound;
   int _volume;
-  bool _theme;
+  audio::SoundType _type;
 };
 
 }

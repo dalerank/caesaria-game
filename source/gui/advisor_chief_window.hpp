@@ -19,9 +19,6 @@
 #define __CAESARIA_ADVISOR_CHIEF_WINDOW_H_INCLUDED__
 
 #include "advisor_base_window.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
-#include "game/predefinitions.hpp"
 
 namespace gui
 {

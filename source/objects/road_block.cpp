@@ -22,6 +22,7 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/tilearea.hpp"
 #include "core/utils.hpp"
 #include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
@@ -51,7 +52,7 @@ bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
+  TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );

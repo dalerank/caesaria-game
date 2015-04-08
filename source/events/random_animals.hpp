@@ -19,8 +19,8 @@
 #define _CAESARIA_RANDOMANIMALS_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "walker/constants.hpp"
 
 namespace events
 {

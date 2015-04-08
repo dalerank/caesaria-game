@@ -30,19 +30,19 @@ DEFINE_NAMEDTYPE(Type,none)
 
 Type fromString( const std::string& name );
 
-REGISTER_ADVISOR(employers,0)
-REGISTER_ADVISOR(military,1)
-REGISTER_ADVISOR(empire,2)
-REGISTER_ADVISOR(ratings,3)
-REGISTER_ADVISOR(trading,4)
-REGISTER_ADVISOR(population,5)
-REGISTER_ADVISOR(health,6)
-REGISTER_ADVISOR(education,7)
-REGISTER_ADVISOR(entertainment,8)
-REGISTER_ADVISOR(religion,9)
-REGISTER_ADVISOR(finance,10)
-REGISTER_ADVISOR(main,11)
-REGISTER_ADVISOR(unknown,12)
+REGISTER_ADVISOR(employers,     0)
+REGISTER_ADVISOR(military,      1)
+REGISTER_ADVISOR(empire,        2)
+REGISTER_ADVISOR(ratings,       3)
+REGISTER_ADVISOR(trading,       4)
+REGISTER_ADVISOR(population,    5)
+REGISTER_ADVISOR(health,        6)
+REGISTER_ADVISOR(education,     7)
+REGISTER_ADVISOR(entertainment, 8)
+REGISTER_ADVISOR(religion,      9)
+REGISTER_ADVISOR(finance,       10)
+REGISTER_ADVISOR(main,          11)
+REGISTER_ADVISOR(unknown,       12)
 
 
 } //end namespace advisor

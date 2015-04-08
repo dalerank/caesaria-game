@@ -39,7 +39,7 @@ void Console::SaveCommands_()																	//
 
   foreach( it, console_history_ )							//
   {
-    commands[ *it ] = "";
+    commands[ *it ] = Variant( "" );
   }
 
   config::save( commands, path );
