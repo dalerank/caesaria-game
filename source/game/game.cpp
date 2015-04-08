@@ -291,7 +291,7 @@ gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
 
-DateTime Game::date() const { return game::Date::current(); }
+const DateTime& Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }

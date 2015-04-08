@@ -97,12 +97,6 @@ Manager::Manager() : _d( new Impl )
 
 Manager::~Manager() {}
 
-Manager& Manager::instance()
-{
-  static Manager inst;
-  return inst;
-}
-
 void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 {
   Tile& tile = city->tilemap().at( pos );

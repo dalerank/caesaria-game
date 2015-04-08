@@ -28,7 +28,7 @@
 #include "core/utils.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
-#include "objects/constants.hpp"
+#include "objects/construction.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -38,6 +38,7 @@
 #include "core/foreach.hpp"
 #include "events/militarythreat.hpp"
 #include "walkers_factory.hpp"
+#include "objects/metadata.hpp"
 
 using namespace constants;
 using namespace gfx;

@@ -143,12 +143,6 @@ void PictureBank::Impl::destroyUnusableTextures()
   }
 }
 
-PictureBank& PictureBank::instance()
-{
-  static PictureBank inst; 
-  return inst;
-}
-
 void PictureBank::reset()
 {
 

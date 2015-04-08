@@ -17,6 +17,7 @@
 #define _CAESARIA_REMOVEGOODS_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "good/good.hpp"
 
 namespace events
 {

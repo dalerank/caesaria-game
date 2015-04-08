@@ -29,7 +29,7 @@ class ChangeEmpireOptions : public GameEvent
 public:
   static GameEventPtr create();
 
-  virtual void load(const VariantMap &);
+  virtual void load(const VariantMap& );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

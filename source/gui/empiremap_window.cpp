@@ -604,7 +604,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
           break;
         }
 
-        _d->offset += (event.mouse.pos() - _d->drag.last );
+        _d->offset += (event.mouse.pos() - _d->drag.start );
         _d->drag.start = event.mouse.pos();
 
         _d->offset.setX( math::clamp<int>( _d->offset.x(), -_d->empireMap.width() + width(), 0 ) );

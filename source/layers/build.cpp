@@ -40,6 +40,7 @@
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
 #include "layerdestroy.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace constants;
 using namespace gui;

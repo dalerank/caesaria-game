@@ -25,6 +25,7 @@
   prefectdw  : { start : 1, stop : 200, offset : [ -2, -2 ] }
   prefectff : { start : 1, stop : 200, offset : [ -2, -2 ] }
   priest : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  sheep : { start : 1, stop : 120, offset : [ -2, -2 ] }
   marketkid : { start : 1, stop : 200, offset : [ -2, -2 ] }
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }

@@ -193,6 +193,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
+  setOption( collapseKoeff, 100 );
   setOption( barbarianAttack, 0 );
   setOption( legionAttack, 0 );
   setOption( climateType, game::climate::central );

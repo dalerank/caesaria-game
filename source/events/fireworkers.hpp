@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_FIREWORKERS_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/position.hpp"
 
 namespace events
 {
@@ -26,7 +27,7 @@ namespace events
 class FireWorkers : public GameEvent
 {
 public:
-  static GameEventPtr create(TilePos center, unsigned int workers);
+  static GameEventPtr create( TilePos center, unsigned int workers);
 
 protected:
   virtual void _exec( Game& game, unsigned int );

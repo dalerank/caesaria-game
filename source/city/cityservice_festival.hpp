@@ -19,10 +19,7 @@
 #define __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
 #include "religion/romedivinity.hpp"
-#include "core/variant.hpp"
 
 namespace config
 {

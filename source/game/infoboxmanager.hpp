@@ -23,6 +23,7 @@
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/singleton.hpp"
 #include "gui/info_box.hpp"
 
 namespace gui
@@ -78,11 +79,10 @@ public:
   bool isDrawWorkers;
 };
 
-class Manager : public ReferenceCounted
+class Manager : public StaticSingleton<Manager>
 {
+  friend class StaticSingleton;
 public:
-  static Manager& instance();
-
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
