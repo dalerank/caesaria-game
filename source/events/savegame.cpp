@@ -25,37 +25,39 @@
 #include "gui/save_dialog.hpp"
 
 using namespace gui;
+using namespace dialog;
 
 namespace events
 {
 
-GameEventPtr SaveGame::create()
+GameEventPtr ShowSaveDialog::create()
 {
-  GameEventPtr ret( new SaveGame() );
+  GameEventPtr ret( new ShowSaveDialog() );
   ret->drop();
 
   return ret;
 }
 
-void SaveGame::_exec(Game& game, unsigned int)
+void ShowSaveDialog::_exec(Game& game, unsigned int)
 {
   vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
   if( !saveDir.exist() )
   {
-    DialogBox* dialog = DialogBox::information( game.gui()->rootWidget(),
-                                                _("##warning##"),
-                                                _("##save_directory_not_exist##") );
+    Dialog* dialog = Information( game.gui(),
+                                  _("##warning##"),
+                                  _("##save_directory_not_exist##") );
     dialog->show();
     return;
   }
 
-  SaveDialog* dialog = new SaveDialog( game.gui()->rootWidget(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), &game, Game::save );
+  SaveGame* dialog = new SaveGame( game.gui(), saveDir, defaultExt, -1 );
+  CONNECT( dialog, onFileSelected(), &game, Game::save )
 }
 
-bool SaveGame::_mayExec(Game&, unsigned int) const{  return true; }
-SaveGame::SaveGame() {}
+bool ShowSaveDialog::_mayExec(Game&, unsigned int) const{ return true; }
+
+ShowSaveDialog::ShowSaveDialog() {}
 
 }

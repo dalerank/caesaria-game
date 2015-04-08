@@ -121,7 +121,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlOverlay ) ) )
   {
     Tilemap& tilemap = _city()->tilemap();
-    TilesArray area = tilemap.getArea( tile.pos(), areaSize );
+    TilesArray area = tilemap.getArea( tile.epos(), areaSize );
 
     foreach( it, area )
     {

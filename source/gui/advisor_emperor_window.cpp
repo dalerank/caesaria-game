@@ -121,7 +121,7 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = DialogBox::confirmation( ui()->rootWidget(),  "", "##dispatch_emperor_request_question##" );
+    dialog::Dialog* dialog = dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##" );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
   }
 
@@ -158,7 +158,7 @@ void Emperor::_showChangeSalaryWindow()
 {
   if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
-    DialogBox::information( this, "", _("##disabled_draw_salary_for_free_reign##") );
+    dialog::Information( ui(), "", _("##disabled_draw_salary_for_free_reign##") );
     return;
   }
 
@@ -303,9 +303,9 @@ void Emperor::Impl::sendGift(int money)
 {
   if( money > city->mayor()->money() )
   {
-    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
-                            _("##nomoney_for_gift_title##"),
-                            _("##nomoney_for_gift_text##") );
+    dialog::Information( lbEmperorFavour->ui(),
+                         _("##nomoney_for_gift_title##"),
+                         _("##nomoney_for_gift_text##") );
     return;
   }
 
@@ -321,9 +321,9 @@ void Emperor::Impl::changeSalary( int money )
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
-                            _("##changesalary_warning##"),
-                            _("##changesalary_greater_salary##") );
+    dialog::Information( lbEmperorFavour->ui(),
+                         _("##changesalary_warning##"),
+                         _("##changesalary_greater_salary##") );
   }
 }
 

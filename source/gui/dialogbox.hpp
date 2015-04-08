@@ -25,26 +25,22 @@
 namespace  gui
 {
 
-class DialogBox : public Window
+namespace dialog
+{
+
+class Dialog : public Window
 {
 public:
   enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8,
          btnOkCancel=btnOk|btnCancel,
          btnNever=0x10 };
 
-  DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
+  Dialog( Ui* ui, const Rect& rectangle, const std::string& title,
              const std::string& text, int buttons );
 
   bool onEvent(const NEvent& event);
 
   void draw( gfx::Engine& painter );
-
-  static DialogBox* information( Widget* parent,
-                                 const std::string& title,
-                                 const std::string& text );
-  static DialogBox* confirmation( Widget* parent,
-                                  const std::string& title,
-                                  const std::string& text );
 
 signals public:  
   Signal1<int>& onResult();
@@ -56,6 +52,15 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+Dialog* Information(  Ui* ui,
+                      const std::string& title,
+                      const std::string& text );
+Dialog* Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text );
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //_CAESARIA_GUI_DIALOGBOX_INCLUDE_H_

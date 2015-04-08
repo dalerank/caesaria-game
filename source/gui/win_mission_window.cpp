@@ -64,7 +64,7 @@ WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string
 
   if( !winText.empty() )
   {
-    DialogBox::information( ui()->rootWidget(), "",  _(winText) );
+    Information( ui(), "",  _(winText) );
   }
 
   if( btnContinue2years ) btnContinue2years->setVisible( mayContinue );

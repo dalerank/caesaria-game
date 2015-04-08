@@ -666,7 +666,7 @@ void DictionaryText::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
   setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
 
   Variant vTextOffset = ui.get( "text.offset" );

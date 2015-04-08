@@ -20,7 +20,8 @@
 #include "core/safetycast.hpp"
 #include "core/requirements.hpp"
   
-template<class T> class SmartPtr
+template<class T>
+class SmartPtr
 {
 protected:
   //bool managed;
@@ -110,8 +111,15 @@ public:
     return *this;
   }
 
+  template<class Dst>
+  SmartPtr<Dst> as()
+  {
+    SmartPtr<Dst> ret( safety_cast<Dst*>( obj ) );
+    return ret;
+  }
+
   inline bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
-  inline T& operator[] (int index)  {    return (*obj)[index];  }
+  inline T& operator[] (int index)  {    return (*obj)[index];  }  
   inline bool isNull() const  {    return obj == 0;  }
   inline bool isValid() const   {    return obj != 0;  }
 };

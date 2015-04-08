@@ -27,6 +27,7 @@
 #include "core/direction.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
+#include "gfx/tilearea.hpp"
 #include <fstream>
 #include <cfloat>
 
@@ -533,7 +534,7 @@ static void __createRivers(Game& game )
   Pathfinder& pathfinder = Pathfinder::instance();
   pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRiver ) );
 
-  TilesArray terrainTiles = oTilemap.getArea( TilePos(0,0), Size( oTilemap.size() ) );
+  TilesArray terrainTiles = oTilemap.allTiles();
   for( TilesArray::iterator it=terrainTiles.begin(); it != terrainTiles.end(); )
   {
     Tile* tile = *it;
@@ -628,7 +629,7 @@ static void __createRoad(Game& game )
   {
     TilesArray eterrain = borderTiles.terrains();
     TilesArray sterrain;
-    for( int k=eterrain.size()/2; k < eterrain.size(); k++ )
+    for( unsigned int k=eterrain.size()/2; k < eterrain.size(); k++ )
       sterrain.push_back( eterrain[ k ] );
 
     eterrain.resize( eterrain.size() / 2 );

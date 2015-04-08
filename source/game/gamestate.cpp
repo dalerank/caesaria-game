@@ -192,8 +192,6 @@ bool GameLoop::update(gfx::Engine* engine)
     return false;
   }
 
-  game::Date& cdate = game::Date::instance();
-
   _screen->update( *engine );
 
   if( _game->city()->tilemap().direction() == direction::north )
@@ -209,6 +207,7 @@ bool GameLoop::update(gfx::Engine* engine)
       _manualTicksCounterX10 -= add;
     }
 
+    game::Date& cdate = game::Date::instance();
     while( _timeX10 > _saveTime * config::gamespeed::scale + 1 )
     {
       _saveTime++;

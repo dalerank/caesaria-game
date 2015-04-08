@@ -41,6 +41,7 @@ public:
                   none = 0, //non pass active
                   ground=12,
                   groundAnimation,
+                  overlayGround=30,
                   overlay=32,//solid overlays
                   overlayAnimation,
                   overWalker,

@@ -61,7 +61,7 @@ SrvcPtr Roads::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Roads::defaultName(){  return "roads";}
+std::string Roads::defaultName(){  return CAESARIA_STR_A(Roads);}
 
 Roads::Roads( PlayerCityPtr city )
   : Srvc( city, Roads::defaultName() ), _d( new Impl )

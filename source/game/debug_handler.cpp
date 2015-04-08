@@ -21,6 +21,7 @@
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
+#include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
@@ -121,6 +122,7 @@ enum {
   add_furniture_to_warehouse,
   add_weapons_to_warehouse,
   add_wine_to_warehouse,
+  add_oil_to_warehouse,
   remove_favor
 };
 
@@ -184,6 +186,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "goods", add_furniture_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_oil_to_warehouse )
 
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
@@ -330,6 +333,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_furniture_to_warehouse:addGoods2Wh( good::furniture); break;
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
+  case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
 
   case win_mission:
   case fail_mission:
@@ -475,9 +479,9 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case all_sound_off:
-    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
-    audio::Engine::instance().setVolume( audio::themeSound, 0 );
-    audio::Engine::instance().setVolume( audio::gameSound, 0 );
+    audio::Engine::instance().setVolume( audio::ambient, 0 );
+    audio::Engine::instance().setVolume( audio::theme, 0 );
+    audio::Engine::instance().setVolume( audio::game, 0 );
   break;
 
   case run_script:

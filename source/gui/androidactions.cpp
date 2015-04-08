@@ -21,6 +21,7 @@
 #include "texturedbutton.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
+#include "core/hash.hpp"
 
 using namespace gfx;
 
@@ -34,26 +35,31 @@ public:
   TexturedButton* btnExit;
   TexturedButton* btnMenu;
   TexturedButton* btnEnter;
+  TexturedButton* btnZoomIn;
+  TexturedButton* btnZoomOut;
 
-public signals:
-  Signal1<int> onChangeZoom();
+public signals:  
+  Signal1<int> onChangeZoomSignal;
 };
 
 AndroidActionsBar::AndroidActionsBar( Widget* parent)
-  : Window( parent, Rect( 0, 0, 150, 480 ), "", -1, bgNone ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(CAESARIA_STR_A(AndroidActionsBar)), bgNone ), _d( new Impl )
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 
-  GET_DWIDGET_FROM_UI( _d, btnMenu )
+  GET_DWIDGET_FROM_UI( _d, btnMenu     )
   GET_DWIDGET_FROM_UI( _d, btnShowHelp )
-  GET_DWIDGET_FROM_UI( _d, btnEnter )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
+  GET_DWIDGET_FROM_UI( _d, btnEnter    )
+  GET_DWIDGET_FROM_UI( _d, btnExit     )
+  GET_DWIDGET_FROM_UI( _d, btnZoomIn   )
+  GET_DWIDGET_FROM_UI( _d, btnZoomOut  )
 }
 
 Signal0<>& AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
-Signal0<>& AndroidActionsBar::onEscapeClicked() { return _d->btnExit->onClicked(); }
-Signal0<>& AndroidActionsBar::onEnterClicked() { return _d->btnEnter->onClicked(); }
-Signal0<>& AndroidActionsBar::onRequestMenu() { return _d->btnMenu->onClicked(); }
+Signal0<>& AndroidActionsBar::onEscapeClicked()   { return _d->btnExit->onClicked(); }
+Signal0<>& AndroidActionsBar::onEnterClicked()    { return _d->btnEnter->onClicked(); }
+Signal0<>& AndroidActionsBar::onRequestMenu()     { return _d->btnMenu->onClicked(); }
+Signal1<int>& AndroidActionsBar::onChangeZoom()     { return _d->onChangeZoomSignal; }
 
 void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
 {
@@ -63,6 +69,20 @@ void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
   }
 
   Window::beforeDraw( painter );
+}
+
+bool AndroidActionsBar::onEvent(const NEvent &event)
+{
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  {
+    if( event.gui.caller == _d->btnZoomIn || event.gui.caller == _d->btnZoomOut )
+    {
+      emit _d->onChangeZoomSignal( event.gui.caller == _d->btnZoomIn ? -10 : 10 );
+      return true;
+    }
+  }
+
+  return Window::onEvent( event );
 }
 
 }//end namespace gui

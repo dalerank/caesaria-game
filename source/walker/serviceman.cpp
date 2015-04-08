@@ -33,6 +33,7 @@
 #include "core/foreach.hpp"
 #include "gfx/helper.hpp"
 #include "city/states.hpp"
+#include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
 
 using namespace constants;
@@ -225,8 +226,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
 {
   ReachedBuildings res;
 
-  TilePos offset( reachDistance(), reachDistance() );
-  TilesArray reachedTiles = _city()->tilemap().getArea( pos - offset, pos + offset );
+  TilesArea reachedTiles( _city()->tilemap(), pos, reachDistance() );
   foreach( it, reachedTiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );

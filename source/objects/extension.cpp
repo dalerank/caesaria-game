@@ -72,6 +72,34 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   return ret;
 }
 
+ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, float value, int week2finish, const std::string& name)
+{
+  if( !factory.isValid() )
+  {
+    Logger::warning( "WARNING!!! Factory not initialized" );
+    crashhandler::printstack();
+    return ConstructionExtensionPtr();
+  }
+
+  if( name.empty() )
+  {
+    Logger::warning( "WARNING!!! Cant assigned named extension without name" );
+    return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionList exts = factory->extensions();
+  foreach( it, exts )
+  {
+    if( (*it)->name() == name )
+      return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionPtr ret = assignTo( factory, value, week2finish );
+  ret->setName( name );
+
+  return ret;
+}
+
 void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time)
 {
   if( game::Date::isWeekChanged() )

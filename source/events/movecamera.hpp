@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_MOVECAMERA_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/position.hpp"
 
 namespace events
 {

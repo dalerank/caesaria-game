@@ -404,11 +404,6 @@ HouseList findh(PlayerCityPtr city, std::set<int> levels )
   return ret;
 }
 
-gfx::TilesArray tiles( PlayerCityPtr r, const TilePos &start, const TilePos &stop)
-{
-  return r->tilemap().getArea( start, stop );
-}
-
 FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which)
 {
   FarmList ret;

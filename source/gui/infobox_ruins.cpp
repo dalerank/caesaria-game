@@ -42,7 +42,7 @@ REGISTER_OBJECT_BASEINFOBOX(burned_ruins,AboutRuins)
 REGISTER_OBJECT_BASEINFOBOX(plague_ruins,AboutRuins)
 
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 350 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 350 ) )
 {
   RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
   if( ruin.isNull() )

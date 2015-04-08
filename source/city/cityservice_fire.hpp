@@ -20,8 +20,7 @@
 
 #include "cityservice.hpp"
 #include "game/predefinitions.hpp"
-
-#include <set>
+#include "core/tilepos_array.hpp"
 
 namespace city
 {
@@ -31,7 +30,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Fire)
 class Fire : public city::Srvc
 {
 public:
-  typedef std::set<TilePos> Locations;
   static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
 
@@ -40,7 +38,7 @@ public:
   void addLocation( const TilePos& location );
   void rmLocation( const TilePos& location );
 
-  const Locations& locations() const;
+  const UqLocations& locations() const;
 
 private:
   Fire( PlayerCityPtr city );

@@ -31,7 +31,7 @@ class BuildMenu : public Widget
 public:
   static const int subMenuCreateIdHigh = 0x1000;
 
-  BuildMenu(Widget* parent, const Rect& rectangle, int id,
+  BuildMenu( Widget* parent, const Rect& rectangle, int id,
              city::development::Branch branch);
   virtual ~BuildMenu();
 

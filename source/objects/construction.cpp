@@ -26,6 +26,7 @@
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "extension.hpp"
+#include "gfx/tilearea.hpp"
 #include "core/json.hpp"
 
 using namespace gfx;
@@ -70,13 +71,13 @@ bool Construction::canBuild(const city::AreaInfo& areaInfo) const
   bool is_constructible = true;
 
   //return area for available tiles
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() );
+  TilesArea area( tilemap, areaInfo.pos, size() );
 
   //on over map size
   if( (int)area.size() != size().area() )
     return false;
 
-  foreach( tile, area ) {is_constructible &= (*tile)->getFlag( Tile::isConstructible );}
+  foreach( tile, area ) { is_constructible &= (*tile)->getFlag( Tile::isConstructible ); }
 
   return is_constructible;
 }
@@ -273,8 +274,8 @@ TilesArray Construction::enterArea() const
 {
   int s = size().width();
   TilesArray near = _city()->tilemap().getRectangle( pos() - TilePos(1, 1),
-                                                                  pos() + TilePos(s, s),
-                                                                  !Tilemap::checkCorners );  
+                                                     pos() + TilePos(s, s),
+                                                     !Tilemap::checkCorners );
 
   return near.walkables( true );
 }

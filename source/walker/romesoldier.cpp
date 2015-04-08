@@ -241,16 +241,13 @@ RomeSoldier::~RomeSoldier(){}
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _city()->tilemap();
   WalkerList walkers;
-
-  TilePos offset( range, range );
-  TilesArray tiles = tmap.getArea( pos() - offset, pos() + offset );
+  TilesArea area( _city()->tilemap(), pos(), range );
 
   FortPtr fort = base();
   bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
 
-  foreach( tile, tiles )
+  foreach( tile, area )
   {
     WalkerList tileWalkers = _city()->walkers( (*tile)->pos() );
 
@@ -327,7 +324,7 @@ void RomeSoldier::_back2base()
   FortPtr b = base();
   if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), b->freeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->freeSlot( this ), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {

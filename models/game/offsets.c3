@@ -21,6 +21,7 @@
   roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
   citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  low_bridge_sw : { rc : "transport", start : 72, stop : 72, offset : [ 0, 44 ] }
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }

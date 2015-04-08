@@ -36,7 +36,7 @@
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
+//using namespace constants;
 using namespace gfx;
 using namespace city;
 

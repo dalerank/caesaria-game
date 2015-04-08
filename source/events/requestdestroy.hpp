@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_REQUESTDESTROY_H_INCLUDE_
 
 #include "event.hpp"
+#include "objects/predefinitions.hpp"
 
 namespace events
 {

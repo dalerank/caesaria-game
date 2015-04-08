@@ -22,6 +22,7 @@
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
+#include "environment.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -29,12 +30,15 @@ using namespace gfx;
 namespace gui
 {
 
+namespace dialog
+{
+
 namespace {
   int okBtnPicId = 239;
   int cancelBtnPicId = 243;
 }
 
-class DialogBox::Impl
+class Dialog::Impl
 {
 signals public:
   Signal1<int> onResultSignal;
@@ -43,9 +47,9 @@ signals public:
   Signal0<> onNeverSignal;
 };
 
-DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
+Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
                       const std::string& text, int buttons )
-                      : Window( parent, rectangle, "" ), _d( new Impl )
+                      : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
   Font font = Font::create( FONT_3 );
 
@@ -71,7 +75,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
     size += Size( 0, 30 ); //borders
 
     setGeometry( Rect( Point( 0, 0 ), size ) );
-    setCenter( parent->center() );
+    setCenter( parent()->center() );
   }
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + titleHeight), title );
@@ -106,12 +110,12 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   setModal();
 }
 
-Signal1<int>& DialogBox::onResult()
+Signal1<int>& Dialog::onResult()
 {
   return _d->onResultSignal;
 }
 
-bool DialogBox::onEvent( const NEvent& event )
+bool Dialog::onEvent( const NEvent& event )
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -131,11 +135,11 @@ bool DialogBox::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-Signal0<>& DialogBox::onOk() {  return _d->onOkSignal;}
-Signal0<>& DialogBox::onCancel(){  return _d->onCancelSignal;}
-Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
+Signal0<>& Dialog::onOk() {  return _d->onOkSignal;}
+Signal0<>& Dialog::onCancel(){  return _d->onCancelSignal;}
+Signal0<>& Dialog::onNever() { return _d->onNeverSignal; }
 
-void DialogBox::draw(gfx::Engine& painter )
+void Dialog::draw(gfx::Engine& painter )
 {
   if( !visible() )
   {
@@ -145,23 +149,25 @@ void DialogBox::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-DialogBox* DialogBox::information(Widget *parent, const std::string &title, const std::string &text)
+Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 {
-  DialogBox* ret = new DialogBox( parent, Rect(), title, text, btnOk );
+  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOk );
   ret->setModal();
-  CONNECT( ret, onOk(), ret, DialogBox::deleteLater );
+  CONNECT( ret, onOk(), ret, Dialog::deleteLater );
 
   return ret;
 }
 
-DialogBox *DialogBox::confirmation(Widget *parent, const std::string &title, const std::string &text)
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text)
 {
-  DialogBox* ret = new DialogBox( parent, Rect(), title, text, btnOkCancel );
+  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel );
   ret->setModal();
-  CONNECT( ret, onOk(), ret, DialogBox::deleteLater );
-  CONNECT( ret, onCancel(), ret, DialogBox::deleteLater );
+  CONNECT( ret, onOk(), ret, Dialog::deleteLater );
+  CONNECT( ret, onCancel(), ret, Dialog::deleteLater );
 
   return ret;
 }
+
+}//end namespace dialog
 
 }//end namespace gui

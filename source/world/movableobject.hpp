@@ -30,11 +30,7 @@ class Route : public PointsArray
 public:
   unsigned int step;
 
-  void reset()
-  {
-    clear();
-    step = 0;
-  }
+  void reset();
 };
 
 class MovableObject : public Object

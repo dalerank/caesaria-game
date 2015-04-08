@@ -43,6 +43,14 @@ namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 }
 
+struct CityKoeffs
+{
+  float fireRisk;
+  float collapseRisk;
+
+  CityKoeffs() : fireRisk( 1.f), collapseRisk( 1.f ) {}
+};
+
 class Building::Impl
 {
 public:
@@ -55,7 +63,7 @@ public:
   ServiceSet reservedServices;  // a serviceWalker is on the way
 
   int stateDecreaseInterval;
-  float cachedPopkoef;
+  CityKoeffs cityKoeffs;
 };
 
 Building::Building(const object::Type type, const Size& size )
@@ -63,7 +71,6 @@ Building::Building(const object::Type type, const Size& size )
 {
   setState( pr::inflammability, 1 );
   setState( pr::collapsibility, 1 );
-  _d->cachedPopkoef = 1;
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
@@ -80,8 +87,8 @@ void Building::timeStep(const unsigned long time)
 
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    updateState( pr::damage, _d->cachedPopkoef * state( pr::collapsibility ) );
-    updateState( pr::fire, _d->cachedPopkoef * state( pr::inflammability ) );
+    updateState( pr::fire,   _d->cityKoeffs.fireRisk     * state( pr::collapsibility ) );
+    updateState( pr::damage, _d->cityKoeffs.collapseRisk * state( pr::inflammability ) );
   }
 
   Construction::timeStep(time);
@@ -199,6 +206,7 @@ Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
 
 void Building::_updateBalanceKoeffs()
 {
-  _d->cachedPopkoef = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
-  _d->cachedPopkoef *= _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+  float balance = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
+  _d->cityKoeffs.fireRisk = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+  _d->cityKoeffs.collapseRisk = balance * _city()->getOption( PlayerCity::collapseKoeff ) / 100.f;
 }

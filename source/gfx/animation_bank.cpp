@@ -134,15 +134,8 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
   loadGroup( animCircusCart, circusInfo, stgCarts );
 }
 
-AnimationBank& AnimationBank::instance()
-{
-  static AnimationBank inst;
-  return inst;
-}
-
 AnimationBank::AnimationBank() : _d( new Impl )
 {
-
 }
 
 void AnimationBank::loadCarts(vfs::Path model)
@@ -292,6 +285,11 @@ const AnimationBank::MovementAnimation& AnimationBank::find( unsigned int type )
   }
 
   return it->second.actions;
+}
+
+AnimationBank::~AnimationBank()
+{
+
 }
 
 void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)

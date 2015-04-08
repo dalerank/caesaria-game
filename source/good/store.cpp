@@ -201,9 +201,9 @@ VariantMap Store::save() const
 {
   VariantMap stream;
 
-  stream[ "storeReservations" ] = _d->storeReservations.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, storeReservations )
   VARIANT_SAVE_ANY_D( stream, _d, devastation )
-  stream[ "retrieveReservation" ] = _d->retrieveReservations.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, retrieveReservations )
 
   VariantList vm_orders;
   foreach( i, good::all() )
@@ -217,9 +217,15 @@ VariantMap Store::save() const
 
 void Store::load( const VariantMap& stream )
 {
+  if( stream.empty() )
+  {
+    Logger::warning( "!!! WARNING: cant load store config from empty stream" );
+    return;
+  }
+
   VARIANT_LOAD_ANY_D( _d, devastation, stream )
-  _d->storeReservations.load( stream.get( "storeReservations" ).toMap() );
-  _d->retrieveReservations.load( stream.get( "retrieveReservation" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, storeReservations, stream )
+  VARIANT_LOAD_CLASS_D( _d, retrieveReservations, stream )
 
   VariantList vm_orders = stream.get( "orders" ).toList();
   int index = 0;

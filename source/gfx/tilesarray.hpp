@@ -17,6 +17,7 @@
 #define _CAESARIA_TILESARRAY_INCLUDE_H_
 
 #include "tile.hpp"
+#include "core/tilepos_array.hpp"
 
 #include <vector>
 #include <cstring>
@@ -27,11 +28,21 @@ namespace gfx
 class TilesArray : public std::vector<Tile*>
 {
 public:
-  bool contain( TilePos tilePos ) const;
+  struct Corners
+  {
+    TilePos leftup;
+    TilePos leftdown;
+    TilePos rightdown;
+    TilePos rightup;
+  };
+
+  bool contain( const TilePos& tilePos ) const;
 
   TilesArray() {}
 
   TilesArray( const TilesArray& a );
+
+  Corners corners() const;
 
   TilePos leftUpCorner() const;
 
@@ -40,6 +51,7 @@ public:
   TilesArray& operator=(const TilesArray& a);
 
   TilesArray& append( const TilesArray& a );
+  TilesArray& append( Tile* a );
 
   TilesArray walkables( bool alllands=false ) const;
 
@@ -48,8 +60,11 @@ public:
   TilesArray waters() const;
 
   TilesArray& remove(const TilePos &pos );
+  TilePosArray locations() const;
 
   OverlayList overlays() const;
+
+  void pop_front();
 
   Tile* random() const;
 };

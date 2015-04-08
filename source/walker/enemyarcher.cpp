@@ -21,6 +21,7 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"

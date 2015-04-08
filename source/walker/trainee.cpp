@@ -99,7 +99,7 @@ BuildingPtr TraineeWalker::receiver() const
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
-  if( gfx::tilemap::isValidLocation( _d->baseLocation ) )
+  if( !gfx::tilemap::isValidLocation( _d->baseLocation ) )
   {
     Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible" );
     deleteLater();
@@ -150,12 +150,20 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     return;
   }
 
+  std::set<BuildingPtr> checkedBuilding;
+
   foreach( itile, startArea )
   {
     TilePos startPos = (*itile)->pos();
+
     foreach( it, buildings )
     {
       BuildingPtr bld = *it;
+
+      if( checkedBuilding.count( *it) > 0 )
+        continue;
+
+      checkedBuilding.insert( bld );
 
       float curNeed = bld->evaluateTrainee( type() );
       if( _d->maxNeed < curNeed )
@@ -222,7 +230,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
   _d->baseLocation = base->pos();
   _computeWalkerPath( roadOnly );
 
-  if( !isDeleted() && !gfx::tilemap::isValidLocation( _d->destLocation ) )
+  if( !isDeleted() && gfx::tilemap::isValidLocation( _d->destLocation ) )
   {
     BuildingPtr dest = receiver();
     dest->reserveTrainee( type() );
