@@ -87,8 +87,8 @@ void Building::timeStep(const unsigned long time)
 
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    updateState( pr::damage, _d->cityKoeffs.fireRisk     * state( pr::collapsibility ) );
-    updateState( pr::fire,   _d->cityKoeffs.collapseRisk * state( pr::inflammability ) );
+    updateState( pr::fire,   _d->cityKoeffs.fireRisk     * state( pr::collapsibility ) );
+    updateState( pr::damage, _d->cityKoeffs.collapseRisk * state( pr::inflammability ) );
   }
 
   Construction::timeStep(time);

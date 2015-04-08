@@ -1205,7 +1205,8 @@ void House::debugLoadOld( int saveFormat, const VariantMap& stream )
 {
   if( saveFormat == 58 )
   {
-    _d->habitants.maximum = stream.get( "maxHabitants" );
+    if( _d->habitants.maximum == 0 )
+      _d->habitants.maximum = stream.get( "maxHabitants" );
   }
 }
 

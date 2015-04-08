@@ -92,7 +92,6 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
   CONNECT( _d->lbxSaves,  onItemSelectedAgain(), this, SaveGame::_resolveDblListboxChange )
   CONNECT( _d->lbxSaves,  onItemSelected(),      this, SaveGame::_resolveListboxChange )
   CONNECT( _d->btnOk,     onClicked(),           this, SaveGame::_resolveOkClick )
-  CONNECT( _d->btnOk,     onClicked(),           this, SaveGame::deleteLater )
   CONNECT( _d->btnCancel, onClicked(),           this, SaveGame::deleteLater )
 
   _d->findFiles();
