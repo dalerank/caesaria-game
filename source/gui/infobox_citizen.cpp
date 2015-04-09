@@ -37,8 +37,6 @@
 #include "gfx/helper.hpp"
 #include "events/movecamera.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 

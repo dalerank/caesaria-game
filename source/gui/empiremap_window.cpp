@@ -53,7 +53,6 @@
 #include "core/metric.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace metric;
 using namespace events;

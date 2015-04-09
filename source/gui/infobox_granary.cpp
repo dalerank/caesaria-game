@@ -30,7 +30,6 @@
 #include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui

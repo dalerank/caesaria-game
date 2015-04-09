@@ -36,7 +36,6 @@
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 

@@ -61,7 +61,6 @@
 #include "game/infoboxmanager.hpp"
 #include "infobox_land.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace gui::dialog;
 

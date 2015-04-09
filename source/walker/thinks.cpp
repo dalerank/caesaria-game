@@ -24,7 +24,6 @@
 #include "helper.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace city;
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)

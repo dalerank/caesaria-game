@@ -30,7 +30,6 @@
 #include "gui/infobox_working.hpp"
 #include <map>
 
-using namespace constants;
 using namespace gui;
 using namespace gfx;
 

@@ -36,7 +36,6 @@
 #include "walkers_factory.hpp"
 #include "city/trade_options.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketBuyer, MarketBuyer)

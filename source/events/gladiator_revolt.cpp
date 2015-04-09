@@ -36,8 +36,6 @@
 #include "fundissue.hpp"
 #include "factory.hpp"
 
-using namespace constants;
-
 namespace events
 {
 

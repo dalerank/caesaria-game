@@ -23,8 +23,6 @@
 #include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 

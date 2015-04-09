@@ -25,7 +25,6 @@
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class Locust::Impl

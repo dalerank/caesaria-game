@@ -39,7 +39,6 @@
 #include "city/trade_options.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace config;
 

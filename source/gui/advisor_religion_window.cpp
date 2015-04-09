@@ -37,7 +37,6 @@
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
 
-using namespace constants;
 using namespace religion;
 using namespace gfx;
 

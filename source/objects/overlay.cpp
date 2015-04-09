@@ -24,7 +24,6 @@
 #include "core/logger.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);

@@ -55,7 +55,6 @@
 #include "widget_helper.hpp"
 #include "world/empire.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 

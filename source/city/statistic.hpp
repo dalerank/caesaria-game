@@ -27,6 +27,7 @@
 #include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
 #include "game/service.hpp"
+#include "gfx/helper.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilearea.hpp"
 #include "city.hpp"
@@ -78,7 +79,7 @@ template< class T > SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current 
 template< class T > SmartPtr< T > finds( PlayerCityPtr r );
 template< class T > SmartList< T > findo( PlayerCityPtr r, object::Group group );
 template<class T> bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove );
-template< class T > SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
+template< class T > SmartList< T > findw( PlayerCityPtr r, walker::Type type,
                                           TilePos start, TilePos stop=TilePos(-1, -1) );
 HouseList findh( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
 FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
@@ -120,20 +121,19 @@ bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove 
 }
 
 template< class T >
-SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
+SmartList< T > findw( PlayerCityPtr r, walker::Type type,
                       TilePos start, TilePos stop )
 {
   WalkerList walkersInArea;
 
-  TilePos invalidPos( -1, -1 );
   TilePos stopPos = stop;
 
-  if( start == invalidPos )
+  if( start == gfx::tilemap::invalidLocation() )
   {
     const WalkerList& all = r->walkers();
     walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
   }
-  else if( stopPos == invalidPos )
+  else if( stopPos == gfx::tilemap::invalidLocation() )
   {
     const WalkerList& wlkOnTile = r->walkers( start );
     walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
@@ -151,7 +151,7 @@ SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
   SmartList< T > result;
   foreach( w, walkersInArea )
   {
-    if( (*w)->type() == type || type == constants::walker::any )
+    if( (*w)->type() == type || type == walker::any )
     {
       SmartPtr< T > ptr = ptr_cast<T>( *w );
       if( ptr.isValid() )
@@ -163,11 +163,11 @@ SmartList< T > findw( PlayerCityPtr r, constants::walker::Type type,
 }
 
 template< class T >
-SmartPtr<T> findw( PlayerCityPtr r, constants::walker::Type type, Walker::UniqueId id )
+SmartPtr<T> findw( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
 {
   const WalkerList& all = r->walkers();
 
-  if( type != constants::walker::any )
+  if( type != walker::any )
   {
     foreach( it, all )
     {

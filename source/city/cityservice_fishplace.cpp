@@ -27,8 +27,6 @@
 #include "cityservice_factory.hpp"
 #include "core/tilepos_array.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

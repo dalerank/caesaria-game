@@ -29,8 +29,6 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 
-using namespace constants;
-
 class Patrician::Impl
 {
 public:

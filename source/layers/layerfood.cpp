@@ -28,7 +28,6 @@
 #include "good/store.hpp"
 #include "walker/cart_pusher.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

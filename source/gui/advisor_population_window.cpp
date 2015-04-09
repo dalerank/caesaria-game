@@ -34,7 +34,6 @@
 #include "core/utils.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

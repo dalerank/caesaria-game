@@ -29,7 +29,6 @@
 #include "objects/watersupply.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui

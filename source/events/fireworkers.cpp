@@ -25,7 +25,6 @@
 #include "core/foreach.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace events
 {

@@ -33,8 +33,6 @@
 #include "core/utils.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 

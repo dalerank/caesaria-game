@@ -23,7 +23,6 @@
 #include "core/gettext.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace config;
 
 namespace city

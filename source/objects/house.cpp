@@ -46,7 +46,6 @@
 #include "objects_factory.hpp"
 #include "game/difficulty.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 using namespace city;

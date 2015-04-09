@@ -42,7 +42,6 @@
 #include "layerdestroy.hpp"
 #include "gfx/tilemap.hpp"
 
-using namespace constants;
 using namespace gui;
 using namespace gfx;
 using namespace events;

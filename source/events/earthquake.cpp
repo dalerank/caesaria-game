@@ -28,7 +28,6 @@
 #include "gfx/helper.hpp"
 #include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events

@@ -44,7 +44,6 @@
 #include "city/statistic.hpp"
 #include "dictionary.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

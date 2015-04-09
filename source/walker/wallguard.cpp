@@ -35,7 +35,6 @@
 #include "walker/helper.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class WallGuard::Impl

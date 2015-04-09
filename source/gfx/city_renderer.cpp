@@ -58,7 +58,6 @@
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
-using namespace constants;
 using namespace citylayer;
 
 namespace gfx

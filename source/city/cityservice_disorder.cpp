@@ -32,7 +32,6 @@
 #include "city/states.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace events;
 using namespace config;
 

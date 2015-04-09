@@ -36,7 +36,6 @@
 #include "gfx/tilearea.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)

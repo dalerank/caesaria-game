@@ -28,7 +28,6 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/ruins.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui

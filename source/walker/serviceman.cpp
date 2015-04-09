@@ -36,7 +36,6 @@
 #include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::priest,   Service::religionCeres, priest )

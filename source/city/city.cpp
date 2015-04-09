@@ -101,7 +101,6 @@
 
 #include <set>
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 using namespace config;

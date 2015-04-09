@@ -38,8 +38,6 @@
 #include "city/states.hpp"
 #include <map>
 
-using namespace constants;
-
 namespace city
 {
 

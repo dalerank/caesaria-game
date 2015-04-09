@@ -30,7 +30,6 @@
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)

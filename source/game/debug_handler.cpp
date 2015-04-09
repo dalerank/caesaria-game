@@ -59,7 +59,6 @@
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace citylayer;
 

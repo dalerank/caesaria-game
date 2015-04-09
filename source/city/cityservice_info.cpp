@@ -37,8 +37,6 @@
 #include "cityservice_factory.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

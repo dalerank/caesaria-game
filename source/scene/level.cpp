@@ -91,7 +91,6 @@
 #include "gui/ingame_menu.hpp"
 
 using namespace gui;
-using namespace constants;
 using namespace events;
 using namespace gfx;
 using namespace city;

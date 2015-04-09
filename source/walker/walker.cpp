@@ -37,7 +37,6 @@
 #include "core/foreach.hpp"
 #include "corpse.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace {

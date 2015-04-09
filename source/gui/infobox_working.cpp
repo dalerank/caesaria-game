@@ -22,8 +22,6 @@
 #include "environment.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 

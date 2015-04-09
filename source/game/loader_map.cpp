@@ -29,7 +29,6 @@
 #include "world/emperor.hpp"
 #include "loaderhelper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 #include <fstream>

@@ -25,7 +25,6 @@
 #include "walker/ship.hpp"
 #include "walker/fishing_boat.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion

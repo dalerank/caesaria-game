@@ -327,7 +327,7 @@ void Entertainment::Impl::updateInfo()
   HippodromeList hippodromes = statistic::findo<Hippodrome>( city, object::hippodrome );
   foreach( h, hippodromes )
   {
-    if( (*h)->evaluateTrainee( constants::walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
+    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
   }
 
   if( nextLevelMin > 0 )  { troubles << "##entertainment_need_for_upgrade##";  }

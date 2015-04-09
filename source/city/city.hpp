@@ -56,7 +56,7 @@ public:
 
   virtual void timeStep(unsigned int time);  // performs one simulation step
 
-  WalkerList walkers(constants::walker::Type type );
+  WalkerList walkers(walker::Type type );
   const WalkerList& walkers(const TilePos& pos);
   const WalkerList& walkers() const;
 

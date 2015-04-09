@@ -32,7 +32,6 @@
 #include "core/foreach.hpp"
 #include "gfx/tilearea.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
