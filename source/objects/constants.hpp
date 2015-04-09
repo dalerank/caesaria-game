@@ -27,39 +27,39 @@
 namespace object
 {
 
-DEFINE_NAMEDTYPE(Group,unknownGroup)
-std::string toString( const Group& g );
-
 namespace group
 {
-#define REGISTER_GROUP(name,index) static const Group name = Group(index);
-
-REGISTER_GROUP(any,0)
-REGISTER_GROUP(unknown,0)
-REGISTER_GROUP(industry,1)
-REGISTER_GROUP(obtain,2)
-REGISTER_GROUP(food,3)
-REGISTER_GROUP(disaster,4)
-REGISTER_GROUP(religion,5)
-REGISTER_GROUP(military,6)
-REGISTER_GROUP(native,7)
-REGISTER_GROUP(water,8)
-REGISTER_GROUP(administration,9)
-REGISTER_GROUP(bridge,10)
-REGISTER_GROUP(engineering,11)
-REGISTER_GROUP(trade,12)
-REGISTER_GROUP(tower,13)
-REGISTER_GROUP(gate,14)
-REGISTER_GROUP(security,15)
-REGISTER_GROUP(education,16)
-REGISTER_GROUP(health,17)
-REGISTER_GROUP(sight,18)
-REGISTER_GROUP(garden,19)
-REGISTER_GROUP(road,20)
-REGISTER_GROUP(entertainment,21)
-REGISTER_GROUP(house,22)
-REGISTER_GROUP(wall,23)
+BEGIN_NAMEDTYPE(ID,unknownGroup)
+APPEND_NAMEDTYPE_ID(any,            0)
+APPEND_NAMEDTYPE_ID(unknown,        0)
+APPEND_NAMEDTYPE_ID(industry,       1)
+APPEND_NAMEDTYPE_ID(obtain,         2)
+APPEND_NAMEDTYPE_ID(food,           3)
+APPEND_NAMEDTYPE_ID(disaster,       4)
+APPEND_NAMEDTYPE_ID(religion,       5)
+APPEND_NAMEDTYPE_ID(military,       6)
+APPEND_NAMEDTYPE_ID(native,         7)
+APPEND_NAMEDTYPE_ID(water,          8)
+APPEND_NAMEDTYPE_ID(administration, 9)
+APPEND_NAMEDTYPE_ID(bridge,         10)
+APPEND_NAMEDTYPE_ID(engineering,    11)
+APPEND_NAMEDTYPE_ID(trade,          12)
+APPEND_NAMEDTYPE_ID(tower,          13)
+APPEND_NAMEDTYPE_ID(gate,           14)
+APPEND_NAMEDTYPE_ID(security,       15)
+APPEND_NAMEDTYPE_ID(education,      16)
+APPEND_NAMEDTYPE_ID(health,         17)
+APPEND_NAMEDTYPE_ID(sight,          18)
+APPEND_NAMEDTYPE_ID(garden,         19)
+APPEND_NAMEDTYPE_ID(road,           20)
+APPEND_NAMEDTYPE_ID(entertainment,  21)
+APPEND_NAMEDTYPE_ID(house,          22)
+APPEND_NAMEDTYPE_ID(wall,           23)
+END_NAMEDTYPE(ID)
 }
+
+typedef group::ID Group;
+std::string toString( const Group& g );
 
 BEGIN_NAMEDTYPE(Type,unknown)
 //stuff
@@ -219,6 +219,6 @@ Type findType( const std::string& name );
 
 } //end namespace object
 
-#define REGISTER_CUSTOM_OBJECT_TYPE(type)
+#define REGISTER_CUSTOM_OBJECT_TYPE(name) static const object::Type name = object::Type(Hash(name));
 
 #endif  //_CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_
