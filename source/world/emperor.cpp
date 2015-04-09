@@ -27,6 +27,7 @@
 #include "empire.hpp"
 #include "game/gift.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
 #include "config.hpp"
 #include "game/gift.hpp"
 #include "relations.hpp"
@@ -111,6 +112,7 @@ void Emperor::timeStep(unsigned int time)
 
       relation.soldiersSent = 0;     //clear chasteners count
       relation.change( -config::emperor::yearlyFavorDecrease );
+
       int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
       if( monthWithoutTax > DateTime::monthsInYear )
       {

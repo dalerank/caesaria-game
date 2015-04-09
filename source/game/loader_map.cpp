@@ -108,7 +108,6 @@ bool C3Map::load(const std::string& filename, Game& game)
   game.city()->setOption( PlayerCity::adviserEnabled, 1 );  
 
   game.empire()->setCitiesAvailable( true );
-  game.empire()->emperor().checkCities();
 
   f.close();
 

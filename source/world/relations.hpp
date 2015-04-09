@@ -65,7 +65,6 @@ public:
   const Relation& get( const std::string& name ) const;
 };
 
-
 }
 
 #endif //__CAESARIA_WORLD_RELATIONS_H_INCLUDED__
