@@ -27,6 +27,7 @@
 #include "city/helper.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
+#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -46,13 +47,9 @@ Prefecture::Prefecture()
   : ServiceBuilding(Service::prefect, object::prefecture, Size(1)),
     _d( new Impl )
 {
-  _d->fireDetect = TilePos( -1, -1 );
-  //setPicture( ResourceGroup::security, 1 );
+  _d->fireDetect = gfx::tilemap::invalidLocation();
+
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-  
-  //_animationRef().load( ResourceGroup::security, 2, 10);
-  //_animationRef().setDelay( 4 );
-  //_animationRef().setOffset( Point( 20, 36 ) );
   _fgPicturesRef().resize(1);
 }
 
@@ -82,7 +79,8 @@ void Prefecture::deliverService()
       ConstructionPtr ruin = ptr_cast<Construction>( _city()->getOverlay( _d->fireDetect ) );
       Pathway pathway = PathwayHelper::create( startPos, ruin, PathwayHelper::allTerrain );
 
-      if( pathway.isValid() )
+      bool fireInOutWorkArea = pathway.length() <= walkerDistance();
+      if( pathway.isValid() && fireInOutWorkArea )
       {
         pathway.setNextTile( ruin->tile() );
         prefect->setPos( pathway.startPos() );
@@ -95,7 +93,7 @@ void Prefecture::deliverService()
         fireDetect = false;
       }
 
-      _d->fireDetect = TilePos( -1, -1 );
+      _d->fireDetect = gfx::tilemap::invalidLocation();
     }
     
     prefect->send2City( this, Prefect::patrol, fireDetect ? 1000 : 0 );
@@ -115,7 +113,7 @@ TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& po
   city::FirePtr fire;
   fire << city->findService( city::Fire::defaultName() );
 
-  fireDetect = TilePos( -1, -1 );
+  fireDetect = gfx::tilemap::invalidLocation();
   if( city.isValid() )
   {
     int minDistance = 9999;

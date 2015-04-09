@@ -25,6 +25,7 @@
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
+#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace constants;
@@ -105,7 +106,7 @@ void HippodromeSection::destroy()
   {
     events::GameEventPtr e = events::ClearTile::create( _basepos );
     e->dispatch();
-    _basepos = TilePos( -1, -1 );
+    _basepos = gfx::tilemap::invalidLocation();
   }
 }
 

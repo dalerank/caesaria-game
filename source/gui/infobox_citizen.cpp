@@ -34,6 +34,7 @@
 #include "walker/seamerchant.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "gfx/helper.hpp"
 #include "events/movecamera.hpp"
 
 using namespace constants;
@@ -292,7 +293,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
 void AboutPeople::Impl::moveCamera2base()
 {
-  if( baseBuildingPos != TilePos( -1, -1 ) )
+  if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
     events::GameEventPtr e = events::MoveCamera::create( baseBuildingPos );
     e->dispatch();
@@ -301,7 +302,7 @@ void AboutPeople::Impl::moveCamera2base()
 
 void AboutPeople::Impl::moveCamera2dst()
 {
-  if( destinationPos != TilePos( -1, -1 ) )
+  if( destinationPos != gfx::tilemap::invalidLocation() )
   {
     events::GameEventPtr e = events::MoveCamera::create( destinationPos );
     e->dispatch();

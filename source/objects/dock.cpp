@@ -229,7 +229,7 @@ const Tile& Dock::queueTile() const
     }
   }
 
-  return _city()->tilemap().at( TilePos( -1, -1 ) );
+  return gfx::tile::getInvalid();
 }
 
 void Dock::requestGoods(good::Stock& stock)

@@ -25,6 +25,7 @@
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
 #include "events/disaster.hpp"
+#include "gfx/helper.hpp"
 #include "factory.hpp"
 
 using namespace constants;
@@ -133,7 +134,7 @@ void EarthQuake::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, end, stream )
   VARIANT_LOAD_ANYDEF_D( _d, current, TilePos( -1, -1), stream )
 
-  if( _d->current == TilePos( -1, -1 ) )
+  if( _d->current == gfx::tilemap::invalidLocation() )
   {
     _d->current = _d->start;
   }
@@ -153,7 +154,7 @@ VariantMap EarthQuake::save() const
 
 EarthQuake::EarthQuake() : _d( new Impl )
 {
-  _d->current = TilePos( -1, -1 );
+  _d->current = gfx::tilemap::invalidLocation();
   _d->lastTimeUpdate = 0;
 }
 

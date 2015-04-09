@@ -629,7 +629,7 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->frameCount = 0;
   d->needUpdateTiles = false;
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
-  d->startTilePos = TilePos( -1, -1 );
+  d->startTilePos = gfx::tilemap::invalidLocation();
   d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
   _addWalkerType( walker::all );
