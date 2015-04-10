@@ -20,11 +20,14 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 #include "core/variant_map.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(GroupBox)
 
 class GroupBox::Impl
 {

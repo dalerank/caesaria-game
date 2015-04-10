@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
+#include "widget_factory.hpp"
 
 #define DEFAULT_SCROLLBAR_SIZE 39
 
@@ -35,10 +36,12 @@ using namespace gfx;
 namespace gui
 {
 
+REGISTER_CLASS_IN_WIDGETFACTORY(ListBox)
+
 //! constructor
 ListBox::ListBox( Widget* parent,const Rect& rectangle,
-			            int id, bool clip,
-									bool drawBack, bool mos)
+		  int id, bool clip,
+		  bool drawBack, bool mos)
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
@@ -48,27 +51,27 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->itemHeightOverride = 0;
   _d->totalItemHeight = 0;
   _d->font = Font();
-	_d->itemsIconWidth = 0;
-	_d->scrollBar = 0;
+  _d->itemsIconWidth = 0;
+  _d->scrollBar = 0;
   _d->itemDefaultColorText = 0xff000000;
   _d->itemDefaultColorTextHighlight = 0xffe0e0e0;
-	_d->selectTime = 0;
-	_d->selectedItemIndex = -1;
-	_d->lastKeyTime = 0;
-	_d->selecting = false;
+  _d->selectTime = 0;
+  _d->selectedItemIndex = -1;
+  _d->lastKeyTime = 0;
+  _d->selecting = false;
   _d->needItemsRepackTextures = true;
 
 #ifdef _DEBUG
   setDebugName( "ListBox");
 #endif
 
-	setFlag( selectOnMove, false );
-	setFlag( moveOverSelect, mos );
-	setFlag( autoscroll, true );
-	setFlag( hightlightNotinfocused, true );
-	setFlag( drawBackground, drawBack );
+  setFlag( selectOnMove, false );
+  setFlag( moveOverSelect, mos );
+  setFlag( autoscroll, true );
+  setFlag( hightlightNotinfocused, true );
+  setFlag( drawBackground, drawBack );
 
-	const int s = DEFAULT_SCROLLBAR_SIZE;
+  const int s = DEFAULT_SCROLLBAR_SIZE;
 
   _d->scrollBar = new ScrollBar( this, Rect( width() - s, 0, width(), height()), false );
   _d->scrollBar->setNotClipped( false );
@@ -81,7 +84,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
   setNotClipped(!clip);
 
-	// this element can be tabbed to
+  // this element can be tabbed to
   setTabStop(true);
   setTabOrder(-1);
 
@@ -109,6 +112,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
   {
     _d->totalItemHeight = newLength;
     _d->scrollBar->setMaxValue( std::max<int>( 0, _d->totalItemHeight - h ) );
+
     int minItemHeight = _d->itemHeight > 0 ? _d->itemHeight : 1;
     _d->scrollBar->setSmallStep ( minItemHeight );
     _d->scrollBar->setLargeStep ( 2*minItemHeight );

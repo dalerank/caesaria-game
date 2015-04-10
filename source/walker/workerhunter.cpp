@@ -72,6 +72,11 @@ void Recruter::hireWorkers( const int workers )
     unsigned int reallyHire = wbase->addWorkers( workers );
     _d->needWorkers -= reallyHire;
   }
+  else
+  {
+    Logger::warning( "!!! WARNING: Recruter base[%d,%d] is null. Stop working.", baseLocation().i(), baseLocation().j() );
+    return2Base();
+  }
 }
 
 void Recruter::setPriority(const city::HirePriorities& priority)

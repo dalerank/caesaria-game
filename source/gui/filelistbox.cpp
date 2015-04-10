@@ -19,9 +19,12 @@
 #include "vfs/filesystem.hpp"
 #include "core/utils.hpp"
 #include "listboxitem.hpp"
+#include "widget_factory.hpp"
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(FileListBox)
 
 const Flag showTime = Flag(count+1);
 const Flag showExtension = Flag(count+2);

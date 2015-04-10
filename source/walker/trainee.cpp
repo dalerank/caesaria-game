@@ -78,6 +78,8 @@ void TraineeWalker::_init(walker::Type traineeType)
 void TraineeWalker::_cancelPath()
 {
   BuildingPtr destination = receiver();
+  Logger::warningIf( destination.isNull(), "!!! WARNING: Trainee _cancelPath destination is null" );
+
   if( destination.isValid() )
   {
     destination->cancelTrainee( type() );
@@ -100,7 +102,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
   if( !gfx::tilemap::isValidLocation( _d->baseLocation ) )
   {
-    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible" );
+    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -108,7 +110,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( _d->baseLocation ) );
   if( !base.isValid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker base is null" );
+    Logger::warning( "!!! WARNING: trainee walker base is null at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -134,8 +136,8 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   foreach( it, buildings )
   {
     BuildingPtr bld = *it;
-    float curNeed = bld->evaluateTrainee( type() );
-    if( curNeed > 0 )
+    float howMuchNeedMyService = bld->evaluateTrainee( type() );
+    if( howMuchNeedMyService > 0 )
     {
       isNeedTrainee = true;
       break;
@@ -159,7 +161,8 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     {
       BuildingPtr bld = *it;
 
-      if( checkedBuilding.count( *it) > 0 )
+      bool buildingAlsoServicing = checkedBuilding.count( *it ) > 0;
+      if( buildingAlsoServicing )
         continue;
 
       checkedBuilding.insert( bld );

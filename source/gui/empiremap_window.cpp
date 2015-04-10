@@ -51,6 +51,7 @@
 #include "world/playerarmy.hpp"
 #include "dictionary.hpp"
 #include "core/metric.hpp"
+#include "game/resourcegroup.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;

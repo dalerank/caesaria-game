@@ -61,7 +61,8 @@ void RomeChastenerArmy::timeStep(const unsigned int time)
 
   if( !_d->messageSent && game::Date::isWeekChanged() && _d->checkFavor )
   {
-    if( empire()->emperor().relation( target() ) > config::chastener::brokeAttack )
+    bool emperorWantAttackCity = empire()->emperor().relation( target() ) > config::chastener::brokeAttack;
+    if( emperorWantAttackCity )
     {
       Messenger::now( empire(), target(), "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
 

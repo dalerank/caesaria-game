@@ -29,6 +29,7 @@
 #include "core/utils.hpp"
 #include "religion/pantheon.hpp"
 #include "core/logger.hpp"
+#include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "widget_helper.hpp"
 

@@ -20,10 +20,7 @@
 
 #include "widget.hpp"
 
-namespace gfx
-{
-  class Engine;
-}
+namespace gfx { class Engine; }
 
 namespace gui
 {
