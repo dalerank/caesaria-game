@@ -121,12 +121,11 @@ void Trading::load(const VariantMap& stream)
   VariantMap routes = stream.get( "routes" ).toMap();
   foreach( it, routes )
   {
-    std::string routeName = it->first;
-    std::string::size_type delimPos = routeName.find( "<->" );
-    if( delimPos != std::string::npos )
+    StringArray cityNames = utils::split( it->first,"<->" );
+    if( !cityNames.empty() )
     {
-      std::string beginCity = routeName.substr( 0, delimPos );
-      std::string endCity = routeName.substr( delimPos+3 );
+      std::string beginCity = cityNames.valueOrEmpty( 0 );
+      std::string endCity = cityNames.valueOrEmpty( 1 );
       TraderoutePtr route = createRoute( beginCity, endCity );
       if( route.isValid() )
       {
@@ -137,6 +136,10 @@ void Trading::load(const VariantMap& stream)
         Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
                          beginCity.c_str(), endCity.c_str() );
       }
+    }
+    else
+    {
+      Logger::warning( "WARNING!!! Trading::load cant create route from " + it->first );
     }
   } 
 
@@ -163,7 +166,8 @@ void Trading::sendMerchant(const std::string& begin, const std::string& end,
 
 TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& end )
 {
-  unsigned int routeId = Hash( begin ) + Hash( end );
+  unsigned int routeId = Traderoute::getId( begin, end );
+
   TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
@@ -176,7 +180,8 @@ TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& e
 
 TraderoutePtr Trading::findRoute( unsigned int index )
 {
-  if( index >= _d->routes.size() )
+  bool invalidIndex = index >= _d->routes.size();
+  if( invalidIndex )
     return TraderoutePtr();
 
   TradeRoutes::iterator it = _d->routes.begin();
@@ -193,9 +198,8 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
     return route;
   }
 
-  unsigned int routeId = Hash( begin ) + Hash( end );
-
   route = TraderoutePtr( new Traderoute( _d->empire, begin, end ) );
+  unsigned int routeId = Traderoute::getId( begin, end );
   _d->routes[ routeId ] = route;
   route->drop();
 

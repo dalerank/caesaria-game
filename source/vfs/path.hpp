@@ -62,6 +62,7 @@ public:
   const char* toCString() const;
 
   std::string extension() const;
+  bool haveExtension() const;
   std::string removeExtension() const;
   Path changeExtension( const std::string& newExtension ) const;
   bool isMyExtension( const std::string& ext, bool checkCase=true ) const;

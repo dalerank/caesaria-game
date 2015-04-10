@@ -48,7 +48,8 @@ void GoodCaravan::sendTo(ObjectPtr obj)
 {
   _d->destination = "";
 
-  if( _d->base.isValid() && obj.isValid() )
+  bool baseAndDestinationCorrect = _d->base.isValid() && obj.isValid();
+  if( baseAndDestinationCorrect )
   {
     _d->destination = obj->name();
     _findWay( _d->base->location(), obj->location() );

@@ -97,7 +97,8 @@ void WallGuard::timeStep(const unsigned long time)
     EnemySoldierList enemies;
     enemies << _findEnemiesInRange( attackDistance() );
 
-    if( !enemies.empty() )
+    bool haveEnemiesInRande = !enemies.empty();
+    if( haveEnemiesInRande )
     {
       if( _animationRef().atEnd() )
       {
@@ -244,7 +245,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
     foreach( tile, tiles )
     {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
+      FortificationPtr f = (*tile)->overlay().as<Fortification>();
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );

@@ -64,15 +64,24 @@ public:
     {
       good::Product gtype = good::Helper::getType( it->first );
       Variant value = it->second;
-      if( value.type() == Variant::Int || value.type() == Variant::UInt)
+      switch( value.type() )
       {
-        setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
-      }
-      else if( value.type() == Variant::List )
-      {
-        Point p = value.toPoint();
-        setCapacity( gtype, Unit::fromValue( p.y() ).toQty() );
-        setQty( gtype, Unit::fromValue( p.x() ).toQty() );
+        case Variant::Int:
+        case Variant::UInt:
+        {
+          setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
+        }
+        break;
+
+        case Variant::List:
+        {
+          Point p = value.toPoint();
+          setCapacity( gtype, Unit::fromValue( p.y() ).toQty() );
+          setQty( gtype, Unit::fromValue( p.x() ).toQty() );
+        }
+        break;
+
+        default: break;
       }
     }
   }
