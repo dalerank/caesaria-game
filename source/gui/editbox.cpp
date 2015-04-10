@@ -26,11 +26,14 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(EditBox)
 
 class EditBox::Impl
 {

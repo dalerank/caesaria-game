@@ -21,6 +21,7 @@
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "widget_factory.hpp"
 
 #include <stdio.h>
 
@@ -29,6 +30,8 @@ using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(SmkViewer)
 
 class SmkViewer::Impl
 {
