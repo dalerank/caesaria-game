@@ -122,7 +122,8 @@ void ServiceWalker::_init(const Service::Type service)
   break;
   }
 
-  setName( NameGenerator::rand( nameType ));
+  if( name().empty() )
+    setName( NameGenerator::rand( nameType ));
 }
 
 const TilePos &ServiceWalker::baseLocation() const { return _d->basePos; }

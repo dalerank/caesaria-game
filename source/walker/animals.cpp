@@ -128,7 +128,7 @@ void Herbivorous::_reachedPathway()
   _findNewWay( pos() );
 }
 
-void Herbivorous::_brokePathway(TilePos p){  _findNewWay( pos() );}
+void Herbivorous::_brokePathway(TilePos p) {  _findNewWay( pos() );}
 
 void Herbivorous::_noWay()
 {
