@@ -143,13 +143,20 @@ std::string i2str(int value)
 
 std::string format( unsigned int max_size, const char* fmt, ...)
 {
-  va_list argument_list;
-  va_start(argument_list, fmt);
-
   std::string ret;
-  vformat( ret, max_size, fmt, argument_list);
+  try
+  {
+    va_list argument_list;
+    va_start(argument_list, fmt);
 
-  va_end(argument_list);
+    vformat( ret, max_size, fmt, argument_list);
+
+    va_end(argument_list);
+  }
+  catch(...)
+  {
+    ret = "error_on_format_text";
+  }
 
   return ret;
 }

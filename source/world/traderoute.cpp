@@ -211,7 +211,7 @@ void Traderoute::load(const VariantMap& stream)
 
 unsigned int Traderoute::getId(const std::string& begin, const std::string& end)
 {
-  return Hash( begin + end );
+  return Hash( begin ) + Hash( end );
 }
 
 Signal1<MerchantPtr>& Traderoute::onMerchantArrived()

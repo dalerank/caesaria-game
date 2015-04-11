@@ -1,5 +1,5 @@
 {
-  geometry : [ 0, 0, 640, 432 ]
+  size : [ 640, 432 ]
   bgtype : "whiteFrame"
   static : true
   
@@ -16,6 +16,38 @@
     text.align : [ "upperLeft", "upperLeft" ]
     text.offset : [ 5, 5 ]
     text : "##click_on_rating_for_info##"
+  }
+
+  btnCulture#RatingButton :
+  {
+    size : [ 108, 65 ]
+    position : [ 80,  290 ]
+    text : "##wndrt_culture##"
+    tooltip : "##wndrt_culture_tooltip##"
+  }
+
+  btnProsperity#RatingButton :
+  {
+    size : [108, 65]
+    position : [200, 290]
+    text : "##wndrt_prosperity##"
+    tooltip : "##wndrt_prosperity_tooltip##"
+  }
+
+  btnPeace#RatingButton :
+  {
+    size : [ 108, 65 ]
+    position : [ 320, 290 ]
+    text : "##wndrt_peace##"
+    tooltip : "##wndrt_peace_tooltip##"
+  }
+
+  btnFavour#RatingButton :
+  {
+    size : [ 108, 65 ]
+    position : [ 440, 290 ]
+    text : "##wndrt_favour##"
+    tooltip : "##wndrt_favour_tooltip##"
   }
 
   imgBg#Image : {

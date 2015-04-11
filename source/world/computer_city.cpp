@@ -94,7 +94,7 @@ class ComputerCity::Impl
 {
 public:
   unsigned int tradeType;
-  bool distantCity, romecity;
+  bool distantCity;
   bool available;
   int strength;
   city::States states;
@@ -402,7 +402,7 @@ void ComputerCity::_initTextures()
   int index = PicID::otherCity;
 
   if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->romecity ) { index = PicID::romeCity; }
+  else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
   Picture pic = Picture::load( ResourceGroup::empirebits, index );
   setPicture( pic );

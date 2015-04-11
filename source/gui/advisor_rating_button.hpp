@@ -15,36 +15,38 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_BYTEARRAY_H_INCLUDED__
-#define __CAESARIA_BYTEARRAY_H_INCLUDED__
+#ifndef __CAESARIA_ADVISOR_RATING_BUTTON_H_INCLUDED__
+#define __CAESARIA_ADVISOR_RATING_BUTTON_H_INCLUDED__
 
-#include <vector>
-#include <string>
-#include <cstring>
+#include "pushbutton.hpp"
 
-class ByteArray : public std::vector<char>
+namespace gui
+{
+
+namespace advisorwnd
+{
+
+class RatingButton : public PushButton
 {
 public:
-  ByteArray();
+  RatingButton( Widget* parent );
+  RatingButton( Widget* parent, Point pos,
+                std::string title, std::string tooltip );
 
-  explicit ByteArray( unsigned int cap );
+  void setValue( const int value );
+  void setTarget( const int value );
 
-  ByteArray& operator=( const std::string& str );
+  virtual void setupUI(const VariantMap &ui);
 
-  ByteArray copy( unsigned int start, int length=-1) const;
+protected:
+  virtual void _updateTextPic();
 
-  const char* data() const;
-
-  char* data();
-
-  std::string toString() const;
-
-  unsigned long crc32(unsigned long crc);
-
-  static ByteArray fromBase64(const std::string &encoded_string);
-  std::string base64() const;
-
-  static unsigned long CRC32(unsigned long crc, const char* data, size_t length);
+private:
+  int _value;
+  int _target;
 };
 
-#endif //__CAESARIA_BYTEARRAY_H_INCLUDED__
+}
+
+}//end namespace gui
+#endif //__CAESARIA_ADVISOR_RATING_BUTTON_H_INCLUDED__

@@ -192,7 +192,7 @@ TraderoutePtr Trading::findRoute( unsigned int index )
 TraderoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
 {
   TraderoutePtr route = findRoute( begin, end );
-  if( route.isValid() )
+  if( !route.isValid() )
   {
     Logger::warning( "!!!WARNING: Want create route, but it exist [%s to %s]", begin.c_str(), end.c_str() );
     return route;
