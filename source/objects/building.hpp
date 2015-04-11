@@ -57,6 +57,7 @@ public:
 
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
   virtual void setTraineeValue( walker::Type type, int value ); // trainee arrives
+  virtual void initialize(const MetaData &mdata);
 
   virtual gfx::Renderer::PassQueue passQueue() const;
 
