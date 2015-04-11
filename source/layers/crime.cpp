@@ -27,7 +27,6 @@
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

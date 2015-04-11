@@ -21,7 +21,6 @@
 #include "helper.hpp"
 #include "core/variant_map.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class Soldier::Impl

@@ -112,10 +112,16 @@ public:
   }
 
   template<class Dst>
-  SmartPtr<Dst> as()
+  SmartPtr<Dst> as() const
   {
     SmartPtr<Dst> ret( safety_cast<Dst*>( obj ) );
     return ret;
+  }
+
+  template<class Dst>
+  bool is()
+  {
+    return safety_cast<Dst*>( obj ) != 0;
   }
 
   inline bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }

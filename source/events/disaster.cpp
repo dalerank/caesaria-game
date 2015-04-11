@@ -32,7 +32,6 @@
 #include "core/foreach.hpp"
 #include "gfx/tilearea.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -60,7 +59,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
   if( overlay.isValid() )
   {
     overlay->deleteLater();
-    HousePtr house = ptr_cast< House >( overlay );
+    HousePtr house = overlay.as<House>();
     if( house.isValid() )
     {
       event->_d->infoType = houseOffset + house->spec().level();
@@ -127,16 +126,16 @@ void Disaster::_exec( Game& game, unsigned int )
     {
       bool needBuildRuins = !( _d->type == Disaster::rift && (*tile)->pos() == _d->pos );
 
-      OverlayPtr ov;
+      OverlayPtr currentTileOverlay;
       if( needBuildRuins )
       {
         object::Type dstr2constr[] = { object::burning_ruins, object::collapsed_ruins,
                                        object::plague_ruins, object::collapsed_ruins,
                                        object::collapsed_ruins };
 
-        ov = TileOverlayFactory::instance().create( dstr2constr[_d->type] );
+        currentTileOverlay = TileOverlayFactory::instance().create( dstr2constr[_d->type] );
 
-        RuinsPtr ruins = ov.as<Ruins>();
+        RuinsPtr ruins = currentTileOverlay.as<Ruins>();
         if( ruins.isValid() )
         {
           std::string typev = _d->infoType > houseOffset
@@ -148,7 +147,7 @@ void Disaster::_exec( Game& game, unsigned int )
       }
       else
       {
-        ov = TileOverlayFactory::instance().create( object::rift );
+        currentTileOverlay = TileOverlayFactory::instance().create( object::rift );
 
         //TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 
@@ -162,7 +161,7 @@ void Disaster::_exec( Game& game, unsigned int )
         }*/
       }
 
-      Dispatcher::instance().append( BuildAny::create( (*tile)->pos(), ov ) );
+      Dispatcher::instance().append( BuildAny::create( (*tile)->pos(), currentTileOverlay ) );
     }
 
     std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",

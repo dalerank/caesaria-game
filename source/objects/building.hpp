@@ -50,13 +50,14 @@ public:
   virtual void applyService( ServiceWalkerPtr walker);
 
   // evaluate the need for the given trainee
-  virtual float evaluateTrainee( constants::walker::Type traineeType);  // returns >0 if trainee is needed
-  void reserveTrainee( constants::walker::Type traineeType ); // trainee will come
-  void cancelTrainee( constants::walker::Type traineeType );  // trainee will not come
-  int traineeValue( constants::walker::Type traineeType ) const;
+  virtual float evaluateTrainee( walker::Type traineeType);  // returns >0 if trainee is needed
+  void reserveTrainee( walker::Type traineeType ); // trainee will come
+  void cancelTrainee( walker::Type traineeType );  // trainee will not come
+  int traineeValue( walker::Type traineeType ) const;
 
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
-  virtual void setTraineeValue( constants::walker::Type type, int value ); // trainee arrives
+  virtual void setTraineeValue( walker::Type type, int value ); // trainee arrives
+  virtual void initialize(const MetaData &mdata);
 
   virtual gfx::Renderer::PassQueue passQueue() const;
 

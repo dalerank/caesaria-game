@@ -26,7 +26,6 @@
 #include "walker/walkers_factory.hpp"
 #include "house.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::house_plague,HousePlague)

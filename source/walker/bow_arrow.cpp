@@ -21,8 +21,6 @@
 #include "core/foreach.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::bow_arrow, BowArrow)
 
 namespace {

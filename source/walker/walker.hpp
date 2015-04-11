@@ -50,7 +50,7 @@ public:
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
-  virtual constants::walker::Type type() const;
+  virtual walker::Type type() const;
 
   // position and movement
 
@@ -143,7 +143,7 @@ protected:
   void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
-  void _setType( constants::walker::Type type );
+  void _setType( walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);

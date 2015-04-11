@@ -25,7 +25,6 @@
 #include "cityservice_factory.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace config;
 using namespace events;
 

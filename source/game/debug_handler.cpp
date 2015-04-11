@@ -59,7 +59,6 @@
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace citylayer;
 
@@ -235,8 +234,7 @@ DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
-  WalkerPtr wlk = WalkerManager::instance().create( type, game->city() );
-  EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+  EnemySoldierPtr enemy = WalkerManager::instance().create<EnemySoldier>( type, game->city() );
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
@@ -251,8 +249,8 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
   foreach( wh, whList)
   {
     WarehousePtr warehouse = *wh;
-    good::Stock stock(type, 500, 500 );
-    warehouse->store().store( stock, 500 );
+    good::Stock stock(type, 400, 400 );
+    warehouse->store().store( stock, 400 );
   }
 }
 

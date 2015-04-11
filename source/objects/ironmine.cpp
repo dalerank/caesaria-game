@@ -27,7 +27,6 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::iron_mine, IronMine)
 

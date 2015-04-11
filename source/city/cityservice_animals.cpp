@@ -28,7 +28,6 @@
 #include "cityservice_factory.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city
@@ -89,7 +88,7 @@ void Animals::timeStep(const unsigned int time)
   }
 }
 
-void Animals::setAnimalsNumber( constants::walker::Type animal_type, unsigned int number)
+void Animals::setAnimalsNumber( walker::Type animal_type, unsigned int number)
 {
   _d->maxAnimal[ animal_type ] = number;
 }

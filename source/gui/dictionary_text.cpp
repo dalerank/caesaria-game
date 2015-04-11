@@ -24,12 +24,15 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "widget_factory.hpp"
 
 using namespace std;
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(DictionaryText)
 
 static const int DEFAULT_SCROLLBAR_SIZE = 39;
 

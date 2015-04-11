@@ -35,8 +35,6 @@
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::fishingBoat, FishingBoat)
 
 class FishingBoat::Impl

@@ -26,8 +26,6 @@
 #include "pathway/pathway_helper.hpp"
 #include "core/logger.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::merchantCamel, MerchantCamel)
 
 class MerchantCamel::Impl

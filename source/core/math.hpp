@@ -108,7 +108,7 @@ template <class T>
 inline const T& min( const T& a, const T& b) { return a < b ? a : b; }
 
 template< class T >
-inline T clamp(const T& value, const T& low, const T& high)
+inline T clamp(const T value, const T low, const T high)
 {
   const T& mx = math::max<T>( value, low);
   return math::min<T>( mx, high);

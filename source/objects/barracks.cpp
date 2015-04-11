@@ -25,8 +25,6 @@
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::barracks, Barracks)
 
 class Barracks::Impl

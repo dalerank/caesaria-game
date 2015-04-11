@@ -19,8 +19,6 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::military_academy, MilitaryAcademy)
 
 MilitaryAcademy::MilitaryAcademy()

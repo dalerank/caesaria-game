@@ -38,7 +38,6 @@
 #include "objects_factory.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 

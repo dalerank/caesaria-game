@@ -21,8 +21,6 @@
 #include "core/variant_map.hpp"
 #include "game/game.hpp"
 
-using namespace constants;
-
 namespace events
 {
 

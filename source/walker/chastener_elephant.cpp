@@ -32,7 +32,6 @@
 #include "core/priorities.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::romeChastenerElephant, ChastenerElephant)

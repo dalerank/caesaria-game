@@ -28,8 +28,6 @@
 #include "game/gamedate.hpp"
 #include "factory.hpp"
 
-using namespace constants;
-
 namespace events
 {
 

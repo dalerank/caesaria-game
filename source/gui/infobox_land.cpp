@@ -26,7 +26,6 @@
 #include "dictionary.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -151,7 +150,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
+  ConstructionPtr cnst = tile.overlay().as<Construction>();
   if( cnst.isValid() )
   {
       setText( cnst->roadside().size() == 0

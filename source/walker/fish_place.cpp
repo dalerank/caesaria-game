@@ -28,7 +28,6 @@
 #include "walkers_factory.hpp"
 #include "objects/construction.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::fishPlace, FishPlace)

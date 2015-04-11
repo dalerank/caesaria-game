@@ -51,7 +51,6 @@
 #include "core/logger.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -435,9 +434,7 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds;
-  ds << city->findService( Disorder::defaultName() );
-
+  DisorderPtr ds = statistic::finds<Disorder>( city );
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -452,8 +449,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  city::HealthCarePtr cityHealth;
-  cityHealth << city->findService( city::HealthCare::defaultName() );
+  HealthCarePtr cityHealth = statistic::finds<HealthCare>( city );
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();

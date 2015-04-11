@@ -24,7 +24,7 @@
 class EnemyArcher : public EnemySoldier
 {
 public:
-  static EnemyArcherPtr create( PlayerCityPtr city, constants::walker::Type type );
+  static EnemyArcherPtr create( PlayerCityPtr city, walker::Type type );
 
   void send2city( TilePos pos );
 
@@ -38,7 +38,7 @@ protected:
   virtual void _waitFinished();
 
 private:
-  EnemyArcher(PlayerCityPtr city, constants::walker::Type type);
+  EnemyArcher(PlayerCityPtr city, walker::Type type);
 };
 
 #endif //_CAESARIA_ENEMYARCHER_INCLUDE_H_

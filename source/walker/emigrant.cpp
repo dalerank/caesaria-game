@@ -36,7 +36,6 @@
 #include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)

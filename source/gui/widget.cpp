@@ -628,6 +628,10 @@ void Widget::setupUI( const VariantMap& options )
       }
     }
   }
+
+  Variant positionV = options.get( "position" );
+  if( positionV.isValid() )
+    move( positionV.toPoint() );
 }
 
 void Widget::setupUI(const vfs::Path& filename)

@@ -21,7 +21,6 @@
 #include "core/logger.hpp"
 #include <map>
 
-using namespace constants;
 using namespace gfx;
 
 class TileOverlayFactory::Impl

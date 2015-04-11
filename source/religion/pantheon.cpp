@@ -29,8 +29,6 @@
 #include "core/variant_map.hpp"
 #include "mars.hpp"
 
-using namespace constants;
-
 namespace religion
 {
 

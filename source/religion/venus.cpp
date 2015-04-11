@@ -23,7 +23,6 @@
 #include "city/sentiment.hpp"
 #include "city/wrath_of_venus.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion

@@ -26,8 +26,6 @@
 #include "objects/well.hpp"
 #include "factory.hpp"
 
-using namespace constants;
-
 namespace events
 {
 

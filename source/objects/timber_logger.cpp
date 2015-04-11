@@ -24,7 +24,6 @@
 #include "core/gettext.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::lumber_mill, TimberLogger)

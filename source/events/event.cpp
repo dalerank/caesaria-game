@@ -30,7 +30,6 @@
 #include "gfx/helper.hpp"
 #include "requestdestroy.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events

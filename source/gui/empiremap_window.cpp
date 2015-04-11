@@ -51,9 +51,9 @@
 #include "world/playerarmy.hpp"
 #include "dictionary.hpp"
 #include "core/metric.hpp"
+#include "game/resourcegroup.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace metric;
 using namespace events;
@@ -224,7 +224,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   {
     if( (*obj)->isMovable() )
     {
-      world::MovableObjectPtr mobj = ptr_cast<world::MovableObject>( *obj );
+      world::MovableObjectPtr mobj = obj->as<world::MovableObject>();
       if( !mobj.isValid() )
       {
         Logger::warning( "Object %s not movable", (*obj)->name().c_str() );

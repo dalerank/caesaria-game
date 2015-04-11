@@ -28,8 +28,6 @@
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
 
-using namespace constants;
-
 namespace {
 static const int idleDecreaseLevel = 10;
 static const int workDecreaseLevel = 25;

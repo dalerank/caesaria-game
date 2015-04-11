@@ -30,7 +30,6 @@
 #include "core/position_array.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

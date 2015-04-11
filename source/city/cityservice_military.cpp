@@ -29,8 +29,6 @@
 #include "statistic.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

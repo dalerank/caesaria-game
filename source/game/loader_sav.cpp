@@ -36,7 +36,6 @@
 #include <map>
 
 using namespace gfx;
-using namespace constants;
 
 namespace game
 {

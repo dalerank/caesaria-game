@@ -39,8 +39,8 @@ public:
       case Variant::String:
         {
           StringArray items = utils::split( it->toString(), "->" );
-          int start = utils::toInt( items.atSafe( 0 ) );
-          int stop = utils::toInt( items.atSafe( 1 ) );
+          int start = utils::toInt( items.valueOrEmpty( 0 ) );
+          int stop = utils::toInt( items.valueOrEmpty( 1 ) );
           addRange( start, stop );
         }
       break;

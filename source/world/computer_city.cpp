@@ -64,15 +64,24 @@ public:
     {
       good::Product gtype = good::Helper::getType( it->first );
       Variant value = it->second;
-      if( value.type() == Variant::Int || value.type() == Variant::UInt)
+      switch( value.type() )
       {
-        setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
-      }
-      else if( value.type() == Variant::List )
-      {
-        Point p = value.toPoint();
-        setCapacity( gtype, Unit::fromValue( p.y() ).toQty() );
-        setQty( gtype, Unit::fromValue( p.x() ).toQty() );
+        case Variant::Int:
+        case Variant::UInt:
+        {
+          setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
+        }
+        break;
+
+        case Variant::List:
+        {
+          Point p = value.toPoint();
+          setCapacity( gtype, Unit::fromValue( p.y() ).toQty() );
+          setQty( gtype, Unit::fromValue( p.x() ).toQty() );
+        }
+        break;
+
+        default: break;
       }
     }
   }
@@ -85,7 +94,7 @@ class ComputerCity::Impl
 {
 public:
   unsigned int tradeType;
-  bool distantCity, romecity;
+  bool distantCity;
   bool available;
   int strength;
   city::States states;
@@ -393,7 +402,7 @@ void ComputerCity::_initTextures()
   int index = PicID::otherCity;
 
   if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->romecity ) { index = PicID::romeCity; }
+  else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
   Picture pic = Picture::load( ResourceGroup::empirebits, index );
   setPicture( pic );

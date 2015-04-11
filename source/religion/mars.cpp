@@ -27,7 +27,6 @@
 #include "objects/extension.hpp"
 #include "city/spirit_of_mars.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion

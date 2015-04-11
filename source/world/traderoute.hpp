@@ -56,6 +56,8 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
+  static unsigned int getId( const std::string& begin, const std::string& end );
+
 signals public:
   Signal1<MerchantPtr>& onMerchantArrived();
 

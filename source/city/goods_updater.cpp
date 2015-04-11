@@ -30,8 +30,6 @@
 #include "objects/house_level.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

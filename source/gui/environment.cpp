@@ -57,7 +57,6 @@ public:
 
   gfx::Engine* engine;
   Point cursorPos;
-  WidgetFactory factory;
   Flags flags;
 
 public:
@@ -230,7 +229,7 @@ void Ui::deleteLater( Widget* ptrElement )
 
 Widget* Ui::createWidget(const std::string& type, Widget* parent)
 {
-  return _d->factory.create( type, parent );
+  return WidgetFactory::instance().create( type, parent );
 }
 
 void Ui::setFlag(Ui::Flag name, int value)

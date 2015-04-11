@@ -36,7 +36,6 @@
 #include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::priest,   Service::religionCeres, priest )
@@ -123,7 +122,8 @@ void ServiceWalker::_init(const Service::Type service)
   break;
   }
 
-  setName( NameGenerator::rand( nameType ));
+  if( name().empty() )
+    setName( NameGenerator::rand( nameType ));
 }
 
 const TilePos &ServiceWalker::baseLocation() const { return _d->basePos; }

@@ -36,7 +36,6 @@
 #include "walkers_factory.hpp"
 #include "city/trade_options.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketBuyer, MarketBuyer)
@@ -129,10 +128,10 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   foreach(goodType, marketGoods )
   {
     if( !_city()->tradeOptions().isStacking(*goodType) )
-      priorityGoods.push_back(*goodType);
+      priorityGoods.insert(*goodType);
   }
 
-  _d->destBuildingPos =gfx::tilemap::invalidLocation();  // no destination yet
+  _d->destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
   if( priorityGoods.size() > 0 )
   {

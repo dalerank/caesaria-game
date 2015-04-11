@@ -28,7 +28,6 @@
 #include "gfx/tilemap.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city
