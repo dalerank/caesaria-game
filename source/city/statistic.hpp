@@ -95,11 +95,7 @@ SmartList< T > findo( PlayerCityPtr r, object::Type type )
   foreach( item, buildings )
   {
     if( (*item).isValid() && ((*item)->type() == type || type == object::any ) )
-    {
-      SmartPtr< T > b = ptr_cast<T>( *item );
-      if( b.isValid() )
-        ret.push_back( b );
-    }
+      ret.addIfValid( item->as<T>() );
   }
 
   return ret;
@@ -152,11 +148,7 @@ SmartList< T > findw( PlayerCityPtr r, walker::Type type,
   foreach( w, walkersInArea )
   {
     if( (*w)->type() == type || type == walker::any )
-    {
-      SmartPtr< T > ptr = ptr_cast<T>( *w );
-      if( ptr.isValid() )
-        result.push_back( ptr );
-    }
+      result.addIfValid( w->as<T>() );
   }
 
   return result;
@@ -284,7 +276,7 @@ SmartList< T > find( PlayerCityPtr r, object::Group group, const TilePos& start,
 
   foreach( tile, area )
   {
-    SmartPtr<T> obj = ptr_cast< T >((*tile)->overlay());
+    SmartPtr<T> obj = (*tile)->overlay().as<T>();
     if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
     {
       ret.push_back( obj );
@@ -295,13 +287,13 @@ SmartList< T > find( PlayerCityPtr r, object::Group group, const TilePos& start,
 }
 
 template< class T >
-SmartList< T > findo( PlayerCityPtr r, object::Group group )
+SmartList<T> findo( PlayerCityPtr r, object::Group group )
 {
-  SmartList< T > ret;
+  SmartList<T> ret;
   OverlayList& buildings = r->overlays();
   foreach( item, buildings )
   {
-    SmartPtr< T > b = ptr_cast< T >(*item);
+    SmartPtr<T> b = item->as<T>();
     if( b.isValid() && (b->group() == group || group == object::group::any ) )
     {
       ret.push_back( b );

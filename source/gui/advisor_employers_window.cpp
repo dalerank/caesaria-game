@@ -142,7 +142,6 @@ private:
 class Employer::Impl
 {
 public:
-  typedef std::vector< object::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalaries;
@@ -212,8 +211,7 @@ void Employer::Impl::changeSalary(int relative)
 
 void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
-  city::WorkersHirePtr wh;
-  wh << city->findService( city::WorkersHire::defaultName() );
+  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
 
   int priority = wh->getPriority( industry );
   dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
@@ -222,8 +220,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
-  city::WorkersHirePtr wh;
-  wh << city->findService( city::WorkersHire::defaultName() );
+  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
 
   if( wh.isValid() )
   {
@@ -236,8 +233,7 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  city::WorkersHirePtr wh;
-  wh << city->findService( city::WorkersHire::defaultName() );
+  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
 
   if( wh.isNull() )
     return;
@@ -265,12 +261,12 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  object::Groups bldGroups = city::industry::toGroups( type );
+  object::Groups bldGroups = industry::toGroups( type );
 
   WorkingBuildingList buildings;
   foreach( buildingsGroup, bldGroups )
   {
-    WorkingBuildingList sectorBuildings = city::statistic::findo<WorkingBuilding>( city, *buildingsGroup );
+    WorkingBuildingList sectorBuildings = statistic::findo<WorkingBuilding>( city, *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

@@ -32,12 +32,14 @@ using namespace gfx;
 namespace world
 {
 
+namespace {
 static const int maxLoss = 100;
+}
 
 class Army::Impl
 {
 public:
-  CityPtr base;
+  std::string base;
   std::string destination;
   int strength;
 
@@ -98,8 +100,8 @@ void Army::save(VariantMap& stream) const
   MovableObject::save( stream );
 
   __D_IMPL_CONST(d,Army)
-  stream[ "base"  ] = Variant( d->base.isValid() ? d->base->name() : "" );
-  VARIANT_SAVE_STR_D( stream, d, destination )
+  VARIANT_SAVE_STR_D ( stream, d, base  )
+  VARIANT_SAVE_STR_D ( stream, d, destination )
   VARIANT_SAVE_ENUM_D( stream, d, strength )
 }
 
@@ -108,36 +110,37 @@ void Army::load(const VariantMap& stream)
   MovableObject::load( stream );
 
   __D_IMPL(d,Army)
-  d->base = empire()->findCity( d->options[ "base" ].toString() );  
   d->options = stream;
 
+  VARIANT_LOAD_STR_D( d, base, stream )
   VARIANT_LOAD_STR_D( d, destination, stream )
   VARIANT_LOAD_ANY_D( d, strength, stream )
 }
 
 std::string Army::type() const { return CAESARIA_STR_EXT(Army); }
 
-void Army::setBase(CityPtr base){  _dfunc()->base = base;  }
+void Army::setBase(CityPtr base){  _dfunc()->base = base.isValid() ? base->name() : "";  }
 
 void Army::attack(ObjectPtr obj)
 {
   __D_IMPL(d,Army)
-  if( d->base.isValid() && obj.isValid() )
+  CityPtr baseCity = empire()->findCity( d->base );
+  if( baseCity.isValid() && obj.isValid() )
   {
     d->destination = obj->name();
-    _findWay( d->base->location(), obj->location() );
+    _findWay( baseCity->location(), obj->location() );
 
     if( _way().empty() )
     {
-      Logger::warning( "Army: cannot find way from %s to %s", d->base->name().c_str(), obj->name().c_str() );
+      Logger::warning( "Army: cannot find way from %s to %s", d->base.c_str(), obj->name().c_str() );
     }
 
     attach();
   }
   else
   {
-    Logger::warningIf( d->base.isNull(), "Army: base is null" );
-    Logger::warningIf( obj.isNull(), "Army: object for attack is null" );
+    Logger::warning( "Army: base is " + ( d->base.empty() ? "null" : d->base ) );
+    Logger::warning( "Army: object for attack is " + ( obj.isNull() ? "null" : obj->name() ) );
   }
 }
 

@@ -224,7 +224,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   {
     if( (*obj)->isMovable() )
     {
-      world::MovableObjectPtr mobj = ptr_cast<world::MovableObject>( *obj );
+      world::MovableObjectPtr mobj = obj->as<world::MovableObject>();
       if( !mobj.isValid() )
       {
         Logger::warning( "Object %s not movable", (*obj)->name().c_str() );

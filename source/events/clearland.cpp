@@ -59,7 +59,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    ConstructionPtr constr = ptr_cast<Construction>(overlay);
+    ConstructionPtr constr = overlay.as<Construction>();
     if( constr.isValid() && !constr->canDestroy() )
     {
       GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ), WarningMessage::neitral );

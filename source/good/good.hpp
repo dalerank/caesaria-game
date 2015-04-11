@@ -20,37 +20,46 @@
 #define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "core/namedtype.hpp"
-#include <list>
+#include <set>
 #include <map>
 
 namespace good
 {
 
 BEGIN_NAMEDTYPE(Product,none)
-APPEND_NAMEDTYPE_ID(wheat,1)
-APPEND_NAMEDTYPE_ID(fish,2)
-APPEND_NAMEDTYPE_ID(meat,3)
-APPEND_NAMEDTYPE_ID(fruit,4 )
-APPEND_NAMEDTYPE_ID(vegetable,5 )
-APPEND_NAMEDTYPE_ID(olive,6 )
-APPEND_NAMEDTYPE_ID(oil,7 )
-APPEND_NAMEDTYPE_ID(grape,8 )
-APPEND_NAMEDTYPE_ID(wine,9 )
-APPEND_NAMEDTYPE_ID(timber,10 )
-APPEND_NAMEDTYPE_ID(furniture,11 )
-APPEND_NAMEDTYPE_ID(clay,12 )
-APPEND_NAMEDTYPE_ID(pottery,13 )
-APPEND_NAMEDTYPE_ID(iron,14 )
-APPEND_NAMEDTYPE_ID(weapon,15 )
-APPEND_NAMEDTYPE_ID(marble,16 )
-APPEND_NAMEDTYPE_ID(denaries,17 )
-APPEND_NAMEDTYPE_ID(prettyWine,18 )
+APPEND_NAMEDTYPE_ID(wheat,      1 )
+APPEND_NAMEDTYPE_ID(fish,       2 )
+APPEND_NAMEDTYPE_ID(meat,       3 )
+APPEND_NAMEDTYPE_ID(fruit,      4 )
+APPEND_NAMEDTYPE_ID(vegetable,  5 )
+APPEND_NAMEDTYPE_ID(olive,      6 )
+APPEND_NAMEDTYPE_ID(oil,        7 )
+APPEND_NAMEDTYPE_ID(grape,      8 )
+APPEND_NAMEDTYPE_ID(wine,       9 )
+APPEND_NAMEDTYPE_ID(timber,     10)
+APPEND_NAMEDTYPE_ID(furniture,  11)
+APPEND_NAMEDTYPE_ID(clay,       12)
+APPEND_NAMEDTYPE_ID(pottery,    13)
+APPEND_NAMEDTYPE_ID(iron,       14)
+APPEND_NAMEDTYPE_ID(weapon,     15)
+APPEND_NAMEDTYPE_ID(marble,     16)
+APPEND_NAMEDTYPE_ID(denaries,   17)
+APPEND_NAMEDTYPE_ID(prettyWine, 18)
 END_NAMEDTYPE(Product)
 
-typedef std::list<Product> Products;
+class Products : public std::set<Product>
+{
+public:
+  inline Products& operator<<(const Product& a)
+  {
+    insert( a );
+    return *this;
+  }
+};
 
 const Product& any();
 const Products& foods();
+inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
 

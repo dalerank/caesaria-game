@@ -50,10 +50,9 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  FountainPtr fountain;
-  fountain << tile.overlay();
+  FountainPtr fountain = tile.overlay().as<Fountain>();
 
-  setBase( ptr_cast<Construction>( fountain ) );
+  setBase( fountain );
 
   std::string text;
   if( fountain.isValid() )
@@ -94,8 +93,8 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
-  setBase( ptr_cast<Construction>( reservoir ) );
+  ReservoirPtr reservoir = tile.overlay().as<Reservoir>();
+  setBase( reservoir );
 
   std::string text;
   if( reservoir.isValid() )
@@ -123,8 +122,8 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  WellPtr well = ptr_cast<Well>( tile.overlay() );
-  setBase( ptr_cast<Construction>( well ) );
+  WellPtr well = tile.overlay().as<Well>();
+  setBase( well );
 
   std::string text;
   if( well.isValid() )

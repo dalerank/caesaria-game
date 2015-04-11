@@ -141,13 +141,13 @@ void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuildi
 
 BuildingPtr CartPusher::producerBuilding()
 {
-   Logger::warningIf( _d->producerBuilding.isNull(), "ProducerBuilding is not initialized");
+   Logger::warningIf( _d->producerBuilding.isNull(), "!!! WARNING: ProducerBuilding is not initialized");
    return _d->producerBuilding;
 }
 
 BuildingPtr CartPusher::consumerBuilding()
 {
-   Logger::warningIf( _d->consumerBuilding.isNull(), "ConsumerBuilding is not initialized");
+   Logger::warningIf( _d->consumerBuilding.isNull(), "!!! WARNING: ConsumerBuilding is not initialized");
    
    return _d->consumerBuilding;
 }
@@ -238,25 +238,25 @@ void CartPusher::_computeWalkerDestination()
       destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a factory
       destBuilding = _d->getWalkerDestination_factory(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a granary
       destBuilding = _d->getWalkerDestination_granary(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a warehouse
       destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
-   if( destBuilding != NULL)
+   if(destBuilding != NULL)
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
@@ -294,7 +294,7 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
-    SmartPtr<T> building = ptr_cast<T>( pathWayIt->first );
+    SmartPtr<T> building = pathWayIt->first.as<T>();
 
     if( stock.qty() > building->store().getMaxStore( stock.type() ) )
     {
@@ -315,13 +315,13 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
     {
       shortestPath = pathIt->second;
       maxLength = pathIt->second->length();
-      res = ptr_cast<Building>( pathIt->first );
+      res = pathIt->first.as<Building>();
     }
   }
 
   if( res.isValid() )
   {
-    SmartPtr<T> ptr = ptr_cast<T>( res );
+    SmartPtr<T> ptr = res.as<T>();
     reservationID = ptr->store().reserveStorage( stock, game::Date::current() );
     if (reservationID != 0)
     {

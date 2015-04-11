@@ -183,7 +183,7 @@ ServiceInfoboxCreator::ServiceInfoboxCreator(const std::string &caption, const s
 Infobox* ServiceInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
-  WorkingBuildingPtr building = ptr_cast<WorkingBuilding>( city->getOverlay( pos ) );
+  WorkingBuildingPtr building = city->getOverlay( pos ).as<WorkingBuilding>();
   if( building.isValid() )
   {
     AboutWorkingBuilding* infoBox = new AboutWorkingBuilding( parent, building );

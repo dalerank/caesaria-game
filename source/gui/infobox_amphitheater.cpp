@@ -40,8 +40,8 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
 {
   setupUI( ":/gui/infoboxapmhitheater.gui" );
 
-  AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());
-  setBase( ptr_cast<Construction>( amph ) );
+  AmphitheaterPtr amph = tile.overlay().as<Amphitheater>();
+  setBase( amph );
   setTitle( _( MetaDataHolder::findPrettyName( object::amphitheater ) ) );
   _setWorkingVisible( true );
 

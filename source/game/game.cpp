@@ -146,7 +146,7 @@ void Game::Impl::initVideo()
 
   //std::string render = GameSettings::get( GameSettings::render ).toString();
 
-  engine = new gfx::SdlEngine();
+  engine = new gfx::GlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
@@ -403,7 +403,7 @@ bool Game::load(std::string filename)
   OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
-    ConstructionPtr construction = ptr_cast<Construction>( *overlay );
+    ConstructionPtr construction = overlay->as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();

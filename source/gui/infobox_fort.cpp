@@ -58,11 +58,11 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
 
-  if( is_kind_of<Fort>( tile.overlay() ) ) { _d->fort = ptr_cast<Fort>( tile.overlay() ); }
-  else if( is_kind_of<FortArea>( tile.overlay() ) )
+  OverlayPtr overlay = tile.overlay();
+  if( overlay.is<Fort>() ) { _d->fort = overlay.as<Fort>(); }
+  else if( overlay.is<FortArea>() )
   {
-    FortAreaPtr area = ptr_cast<FortArea>( tile.overlay() );
-    _d->fort = area->base();
+    _d->fort = overlay.as<FortArea>()->base();
   }
   else
   {
