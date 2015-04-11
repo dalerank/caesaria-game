@@ -187,11 +187,8 @@ TilePosArray TilesArray::locations() const
 OverlayList TilesArray::overlays() const
 {
   OverlayList ret;
-  foreach( i, *this)
-  {
-    if( (*i)->overlay().isValid() )
-      ret << (*i)->overlay();
-  }
+  foreach( i, *this )
+    ret.addIfValid( (*i)->overlay() );
 
   return ret;
 }

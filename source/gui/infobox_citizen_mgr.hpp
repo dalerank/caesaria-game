@@ -49,7 +49,7 @@ public:
 
   virtual ~PManager();
 
-  void addCreator( constants::walker::Type type, CreatorPtr c );
+  void addCreator( walker::Type type, CreatorPtr c );
   void loadInfoboxes();
 
   gui::infobox::Infobox* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);

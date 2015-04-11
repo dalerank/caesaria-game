@@ -55,7 +55,6 @@
 #include "widget_helper.hpp"
 #include "world/empire.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 
@@ -83,7 +82,7 @@ PushButton* Parlor::addButton( Advisor adv, const int picId, std::string tooltip
 {
   Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
-  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * adv, Size( 40 ),
+  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * (adv-1), Size( 40 ),
                                         adv, picId, picId, picId + 13 );
   btn->setIsPushButton( true );
   btn->setTooltipText( tooltip );

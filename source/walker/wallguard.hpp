@@ -25,7 +25,7 @@
 class WallGuard : public RomeSoldier
 {
 public:
-  static WallGuardPtr create( PlayerCityPtr city, constants::walker::Type type );
+  static WallGuardPtr create( PlayerCityPtr city, walker::Type type );
 
   void send2city(TowerPtr tower, Pathway pathway);
   void setBase( TowerPtr tower );
@@ -55,7 +55,7 @@ protected:
 
   Pathway _attackEnemyInRange(unsigned int range);
 
-  WallGuard(PlayerCityPtr city, constants::walker::Type type);
+  WallGuard(PlayerCityPtr city, walker::Type type);
 
   virtual ~WallGuard();
 

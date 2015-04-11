@@ -28,8 +28,6 @@
 #include "cityservice_factory.hpp"
 #include "events/dispatcher.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

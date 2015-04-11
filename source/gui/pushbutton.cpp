@@ -25,11 +25,14 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "gfx/picturesarray.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(PushButton)
 
 class BackgroundStyleHelper : public EnumsHelper<PushButton::BackgroundStyle>
 {

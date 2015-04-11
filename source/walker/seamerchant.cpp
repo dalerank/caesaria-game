@@ -35,7 +35,6 @@
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace city;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::seaMerchant, SeaMerchant)

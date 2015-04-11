@@ -38,7 +38,6 @@
 #include "gui/label.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui

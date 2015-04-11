@@ -21,7 +21,6 @@
 #include "world/empire.hpp"
 #include "city/city.hpp"
 
-using namespace constants;
 using namespace gui;
 
 namespace events

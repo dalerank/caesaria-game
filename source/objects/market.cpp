@@ -94,7 +94,7 @@ good::Store& Market::goodStore(){ return _d->goodStore; }
 
 good::Products Market::mostNeededGoods()
 {
-  std::list<good::Product> res;
+  good::Products res;
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
@@ -109,10 +109,9 @@ good::Products Market::mostNeededGoods()
     }
   }
 
-  foreach( itMap, mapGoods )
+  foreach( it, mapGoods )
   {
-    good::Product goodType = itMap->second;
-    res.push_back(goodType);
+    res.insert(it->second);
   }
 
   return res;

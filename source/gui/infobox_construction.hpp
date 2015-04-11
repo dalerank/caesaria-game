@@ -35,7 +35,12 @@ public:
   virtual bool onEvent(const NEvent &event);
 
   virtual ConstructionPtr base() const;
-  virtual void setBase( ConstructionPtr base );
+
+  template<class T>
+  void setBase( SmartPtr<T> a )
+  {
+    _construction = ptr_cast<Construction>( a );
+  }
 
 protected:
   void _setWorkingVisible( bool show );

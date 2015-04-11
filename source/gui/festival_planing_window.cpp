@@ -29,6 +29,7 @@
 #include "core/utils.hpp"
 #include "religion/pantheon.hpp"
 #include "core/logger.hpp"
+#include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "widget_helper.hpp"
 
@@ -90,8 +91,8 @@ public:
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
     std::string text = utils::format( 0xff, "##hold_%s_festival##", divinity.isValid()
-                                                                              ? divinity->debugName().c_str()
-                                                                              : "unknown" );
+                                                                    ? divinity->debugName().c_str()
+                                                                    : "unknown" );
     lbTitle->setText( _(text) );
   }
 };

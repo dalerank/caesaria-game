@@ -20,7 +20,6 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorHouse, GovernorsHouse)
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorVilla, GovernorsVilla)
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorPalace, GovernorsPalace)

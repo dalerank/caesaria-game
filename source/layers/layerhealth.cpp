@@ -25,7 +25,6 @@
 #include "core/gettext.hpp"
 #include "core/event.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

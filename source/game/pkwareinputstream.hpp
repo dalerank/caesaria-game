@@ -20,6 +20,8 @@
 #define pkwareinputstream_h
 
 #include <string>
+#include "core/bytearray.hpp"
+#include "core/scopedptr.hpp"
 //#include <istream>
 
 /**
@@ -120,11 +122,11 @@ class PKWareInputStream {
 		// Class variables (comments is where they're initialised)
 		std::istream *input; // ctor
 		int dictSize; // readHeader
-		char *buffer; // fillBuffer
+    ByteArray buffer; // fillBuffer
 		int bufOffset; // fillBuffer
 		int bufBit; // init
 		int dictionary_bits; // readHeader
-		PKDictionary *dictionary; // readHeader
+    ScopedPtr<PKDictionary> dictionary; // readHeader
 		
 		// For the reading of bytes:
 		int read_offset; // init

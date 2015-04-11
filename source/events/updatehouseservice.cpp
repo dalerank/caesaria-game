@@ -28,7 +28,6 @@
 #include "city/states.hpp"
 #include "core/priorities.hpp"
 
-using namespace constants;
 using namespace city;
 
 namespace events

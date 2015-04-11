@@ -26,7 +26,6 @@
 #include "core/gettext.hpp"
 #include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

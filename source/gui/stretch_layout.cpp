@@ -17,9 +17,13 @@
 
 #include "stretch_layout.hpp"
 #include "core/variant_map.hpp"
+#include "widget_factory.hpp"
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(HLayout)
+REGISTER_CLASS_IN_WIDGETFACTORY(VLayout)
 
 bool compare_tag(Widget* one, Widget* two)
 {

@@ -30,7 +30,6 @@
 #include "objects/factory.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

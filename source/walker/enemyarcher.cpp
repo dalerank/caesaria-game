@@ -39,8 +39,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanArcher, walker::etruscanArcher, EnemyArcher, etruscanArcher )
 
 EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
@@ -119,7 +117,7 @@ void EnemyArcher::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, constants::walker::Type type )
+EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, walker::Type type )
 {
   EnemyArcherPtr ret( new EnemyArcher( city, type ) );
   ret->initialize( WalkerHelper::getOptions( type ) );

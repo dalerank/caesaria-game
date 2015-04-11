@@ -21,7 +21,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeSpearman, walker::romeSpearman, RomeArcher, archer )
 
 RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )

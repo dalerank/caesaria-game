@@ -27,7 +27,9 @@
 #include "empire.hpp"
 #include "game/gift.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
 #include "config.hpp"
+#include "core/logger.hpp"
 #include "game/gift.hpp"
 #include "relations.hpp"
 
@@ -111,6 +113,7 @@ void Emperor::timeStep(unsigned int time)
 
       relation.soldiersSent = 0;     //clear chasteners count
       relation.change( -config::emperor::yearlyFavorDecrease );
+
       int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
       if( monthWithoutTax > DateTime::monthsInYear )
       {
@@ -130,7 +133,7 @@ void Emperor::timeStep(unsigned int time)
       {
         relation.change( -brokenTaxPenalty );
 
-        brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearAgo );
+        brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearsAgo );
         if( brokenEmpireTax > 0 )
           relation.change( -brokenMoreTaxPenalty );
       }
@@ -147,18 +150,22 @@ void Emperor::timeStep(unsigned int time)
       CityPtr city = d->empire->findCity( it->first );
       Relation& relation = d->relations[ it->first ];
 
-      if( city.isValid() )
+      if( !city.isValid() )
       {
-        if( relation.value() < minimumFabvour4wrathGenerate  )
-        {
-          relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
-          if( relation.soldiersSent == 0 )
-            troubleCities << city;
-        }
-        else
-        {
-          relation.wrathPoint = 0;
-        }
+        Logger::warning( "!!! WARNING: city not availaible " + it->first );
+        continue;
+      }
+
+      bool emperorAngry = relation.value() < minimumFabvour4wrathGenerate;
+      if( emperorAngry  )
+      {
+        relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
+        if( relation.soldiersSent == 0 )
+          troubleCities << city;
+      }
+      else
+      {
+        relation.wrathPoint = 0;
       }
     }
 
@@ -176,8 +183,9 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
                                                   DateTime::monthsInYear );
 
     relation.tryCount++;
+    bool needSendLegion4destroyCity = (rule2destroy > 0.9);
 
-    if( rule2destroy < 0.9 )
+    if( !needSendLegion4destroyCity )
       continue;
 
     relation.wrathPoint = 0;

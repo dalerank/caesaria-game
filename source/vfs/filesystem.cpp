@@ -496,30 +496,27 @@ const Path& FileSystem::workingDirectory()
   }
   else
   {
-          #if defined(CAESARIA_PLATFORM_WIN)
-                  char tmp[_MAX_PATH];
-                  _getcwd(tmp, _MAX_PATH);
-          _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
-          #elif defined(CAESARIA_PLATFORM_UNIX)
-                  // getting the CWD is rather complex as we do not know the size
-                  // so try it until the call was successful
-                  // Note that neither the first nor the second parameter may be 0 according to POSIX
-                  unsigned int pathSize=256;
-      ScopedPtr< char > tmpPath( new char[pathSize] );
+#if defined(CAESARIA_PLATFORM_WIN)
+    char tmp[_MAX_PATH];
+    _getcwd(tmp, _MAX_PATH);
+    _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
+#elif defined(CAESARIA_PLATFORM_UNIX)
+    // getting the CWD is rather complex as we do not know the size
+    // so try it until the call was successful
+    // Note that neither the first nor the second parameter may be 0 according to POSIX
+    unsigned int pathSize=256;
+    ByteArray tmpPath( pathSize );
 
-      while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
-                  {
-                          pathSize *= 2;
-                          tmpPath.reset( new char[pathSize] );
-                  }
+    while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
+    {
+      pathSize *= 2;
+      tmpPath.resize( pathSize );
+    }
 
-      if( tmpPath )
-                  {
-                                                          _d->workingDirectory[fsNative] = Path( tmpPath.data() );
-                  }
-          #endif //CAESARIA_PLATFORM_UNIX
+    _d->workingDirectory[fsNative] = Path( tmpPath.data() );
+#endif //CAESARIA_PLATFORM_UNIX
 
-          //_d->workingDirectory[type].validate();
+    //_d->workingDirectory[type].validate();
   }
 
   return _d->workingDirectory[type];

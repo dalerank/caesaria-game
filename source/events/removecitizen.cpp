@@ -45,8 +45,7 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
   Tilemap& tilemap = game.city()->tilemap();
   for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    HouseList hList;
-    hList << tilemap.getRectangle( curRange, _center ).overlays();
+    HouseList hList = tilemap.getRectangle( curRange, _center ).overlays().select<House>();
 
     foreach( itHouse, hList )
     {

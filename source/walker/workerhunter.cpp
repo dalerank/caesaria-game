@@ -33,8 +33,6 @@
 #include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)
 
 namespace {
@@ -73,6 +71,11 @@ void Recruter::hireWorkers( const int workers )
   {
     unsigned int reallyHire = wbase->addWorkers( workers );
     _d->needWorkers -= reallyHire;
+  }
+  else
+  {
+    Logger::warning( "!!! WARNING: Recruter base[%d,%d] is null. Stop working.", baseLocation().i(), baseLocation().j() );
+    return2Base();
   }
 }
 

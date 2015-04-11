@@ -58,7 +58,6 @@
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
-using namespace constants;
 using namespace citylayer;
 
 namespace gfx
@@ -273,7 +272,7 @@ void CityRenderer::setMode( Renderer::ModePtr command )
 {
   _d->changeCommand = command;
 
-  LayerModePtr ovCmd = ptr_cast<LayerMode>( _d->changeCommand );
+  LayerModePtr ovCmd = _d->changeCommand.as<LayerMode>();
   if( ovCmd.isValid() )
   {
     _d->setLayer( ovCmd->getType() );

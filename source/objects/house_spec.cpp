@@ -37,7 +37,6 @@
 #include <list>
 
 using namespace gfx;
-using namespace constants;
 
 class HouseSpecification::Impl
 {

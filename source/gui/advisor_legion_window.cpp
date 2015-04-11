@@ -39,7 +39,6 @@
 #include "environment.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace gui
 {

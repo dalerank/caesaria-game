@@ -24,7 +24,6 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui

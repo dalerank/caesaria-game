@@ -281,7 +281,7 @@ void PlayerArmy::_reachedWay()
       foreach( it, _d->soldiersInfo )
       {
         int type = (*it).save[ "type" ];
-        WalkerPtr walker = WalkerManager::instance().create( (constants::walker::Type)type, pCity );
+        WalkerPtr walker = WalkerManager::instance().create( (walker::Type)type, pCity );
         walker->load( (*it).save );
         walker->attach();
       }

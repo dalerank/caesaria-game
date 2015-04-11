@@ -49,7 +49,7 @@
           disabled : [ "paneling", 305 ]
         }
 
-        btnDecreaseCollaseRisk#TexturedButton : {
+        btnDecreaseCollapseRisk#TexturedButton : {
           maximumSize : [ 24, 24 ]
           normal : [ "paneling", 601 ]
           hovered : [ "paneling", 602 ]

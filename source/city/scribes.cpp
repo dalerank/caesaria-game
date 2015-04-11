@@ -36,8 +36,6 @@
 #include "cityservice_military.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 

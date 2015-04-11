@@ -36,21 +36,24 @@ namespace updater
  */
 class Util
 {
+  static const std::size_t KbBts = 1024;
+  static const std::size_t MbBts = 1024 * 1024;
+  static const std::size_t GbBts = 1024 * 1024 * 1024;
 public:
 	// Formats the given number in bytes/kB/MB/GB
   static std::string getHumanReadableBytes(std::size_t size)
   {
-    if (size > 1024*1024*1024)
+    if (size > GbBts)
     {
-      return utils::format( 0xff, "%0.2f GB", size / (1024*1024*1024.f) );
+      return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
     }
-    else if (size > 1024*1024)
+    else if (size > MbBts)
     {
-      return  utils::format( 0xff, "%0.1f MB", size / (1024*1024.f) );
+      return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
     }
-    else if (size > 1024)
+    else if (size > KbBts)
     {
-      return  utils::format( 0xff, "%0.0f kB", size / 1024.f );
+      return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
     }
     else
     {

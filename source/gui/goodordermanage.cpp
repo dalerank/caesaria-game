@@ -30,7 +30,6 @@
 #include "core/event.hpp"
 #include "widgetescapecloser.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

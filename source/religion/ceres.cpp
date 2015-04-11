@@ -24,7 +24,6 @@
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion

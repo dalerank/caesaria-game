@@ -33,7 +33,6 @@
 #include "config.hpp"
 
 using namespace gfx;
-using namespace constants;
 using namespace config;
 
 class ServiceBuilding::Impl

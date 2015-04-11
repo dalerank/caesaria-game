@@ -34,7 +34,6 @@
 #include "cityservice_factory.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace religion;
 using namespace events;
 

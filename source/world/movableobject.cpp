@@ -159,7 +159,7 @@ void Messenger::now( EmpirePtr empire,
   ObjectPtr obj( m );
   obj->drop();
 
-  CityPtr pcity = empire->findCity(cityname );
+  CityPtr pcity = empire->findCity( cityname );
   if( pcity.isValid() )
     pcity->addObject( obj );
 }

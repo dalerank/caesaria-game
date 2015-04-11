@@ -24,7 +24,6 @@
 #include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::spear, Spear)

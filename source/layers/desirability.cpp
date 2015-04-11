@@ -26,7 +26,6 @@
 #include "core/utils.hpp"
 #include "constants.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

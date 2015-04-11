@@ -20,6 +20,7 @@
 #include "core/timer.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "gfx/helper.hpp"
 #include <vector>
 
 class AlarmEvent
@@ -89,7 +90,7 @@ void AlarmEventHolder::next()
 TilePos AlarmEventHolder::getCurrentPos() const
 {
   if( _d->currentIndex >= _d->alarms.size() )
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
 
   return _d->alarms[ _d->currentIndex ].position;
 }

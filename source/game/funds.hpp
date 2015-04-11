@@ -50,7 +50,8 @@ struct Issue
 class Treasury
 {
 public:
-  enum { thisYear=0, lastYear=1, twoYearAgo=2, defaultTaxPrcnt=7 };
+  enum { thisYear=0, lastYear=1, twoYearsAgo=2, defaultTaxPrcnt=7 };
+  enum { debtDisabled=0, debtEnabled=1  };
 
   typedef std::map< Issue::Type, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
@@ -68,7 +69,7 @@ public:
   int money() const;
   int profit() const;
 
-  bool haveMoneyForAction( unsigned int money );
+  bool haveMoneyForAction(unsigned int money , bool useDebt=debtEnabled);
 
   VariantMap save() const;
   void load( const VariantMap& stream );

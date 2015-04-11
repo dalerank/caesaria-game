@@ -29,7 +29,6 @@
 #include "objects/building.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 class Propagator::Impl
 {

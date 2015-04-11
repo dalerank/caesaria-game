@@ -25,8 +25,6 @@
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::school, School)
 
 class School::Impl

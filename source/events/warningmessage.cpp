@@ -22,7 +22,6 @@
 #include "gui/environment.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events

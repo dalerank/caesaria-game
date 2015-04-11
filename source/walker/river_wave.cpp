@@ -22,7 +22,6 @@
 #include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 RiverWavePtr RiverWave::create(PlayerCityPtr city)

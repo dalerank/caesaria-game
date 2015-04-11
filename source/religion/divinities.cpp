@@ -33,7 +33,6 @@
 #include "city/states.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
