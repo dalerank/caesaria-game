@@ -27,8 +27,6 @@
 #include "infobox_land.hpp"
 #include <vector>
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -91,7 +89,7 @@ void PManager::loadInfoboxes()
 
 PManager::~PManager() {}
 
-void PManager::addCreator( constants::walker::Type type, CreatorPtr c)
+void PManager::addCreator( walker::Type type, CreatorPtr c)
 {
   Impl::Creators::iterator it = _d->creators.find( type );
   if( it != _d->creators.end() )

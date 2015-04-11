@@ -46,7 +46,6 @@
 #include <list>
 
 using namespace gfx;
-using namespace constants;
 using namespace metric;
 using namespace config;
 

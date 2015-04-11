@@ -24,7 +24,6 @@
 #include "label.hpp"
 #include "core/event.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

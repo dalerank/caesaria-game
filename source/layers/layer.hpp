@@ -50,7 +50,7 @@ private:
 class Layer : public ReferenceCounted
 {
 public:
-  typedef std::set<constants::walker::Type> WalkerTypes;
+  typedef std::set<walker::Type> WalkerTypes;
 
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
@@ -91,7 +91,7 @@ protected:
   gfx::Tile* _currentTile() const;
   bool _isMovingButtonPressed( NEvent& event ) const;
   void _setTooltipText( const std::string& text );
-  void _addWalkerType( constants::walker::Type wtype );
+  void _addWalkerType( walker::Type wtype );
   void _fillVisibleObjects( int ltype );
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );

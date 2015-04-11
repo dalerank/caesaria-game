@@ -35,7 +35,6 @@
 #include "game/gamedate.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -54,7 +53,7 @@ struct CityKoeffs
 class Building::Impl
 {
 public:
-  typedef std::map<constants::walker::Type,int> TraineeMap;
+  typedef std::map<walker::Type,int> TraineeMap;
   typedef std::set<walker::Type> WalkerTypeSet;
   typedef std::set<Service::Type> ServiceSet;
 
@@ -87,8 +86,8 @@ void Building::timeStep(const unsigned long time)
 
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    updateState( pr::fire,   _d->cityKoeffs.fireRisk     * state( pr::collapsibility ) );
-    updateState( pr::damage, _d->cityKoeffs.collapseRisk * state( pr::inflammability ) );
+    updateState( pr::fire,   _d->cityKoeffs.fireRisk     * state( pr::inflammability ) );
+    updateState( pr::damage, _d->cityKoeffs.collapseRisk * state( pr::collapsibility ) );
   }
 
   Construction::timeStep(time);
@@ -194,6 +193,17 @@ void Building::updateTrainee(  TraineeWalkerPtr walker )
 void Building::setTraineeValue(walker::Type type, int value)
 {
   _d->traineeMap[ type ] = value;
+}
+
+void Building::initialize(const MetaData &mdata)
+{
+  Construction::initialize( mdata );
+
+  Variant inflammabilityV = mdata.getOption( "inflammability" );
+  if( inflammabilityV.isValid() ) setState( pr::inflammability, inflammabilityV.toDouble() );
+
+  Variant collapsibilityV = mdata.getOption( "collapsibility" );
+  if( collapsibilityV.isValid() ) setState( pr::collapsibility, collapsibilityV.toDouble() );
 }
 
 int Building::traineeValue(walker::Type traineeType) const

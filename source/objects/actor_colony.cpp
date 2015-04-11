@@ -22,8 +22,6 @@
 #include "city/city.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::actorColony, ActorColony)
 
 ActorColony::ActorColony() : TrainingBuilding( object::actorColony, Size(3) )

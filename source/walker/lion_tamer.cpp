@@ -22,8 +22,6 @@
 #include "walkers_factory.hpp"
 #include "objects/building.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::lionTamer, LionTamer)
 
 class LionTamer::Impl

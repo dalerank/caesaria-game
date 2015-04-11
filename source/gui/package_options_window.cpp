@@ -27,8 +27,6 @@
 #include "dialogbox.hpp"
 #include "environment.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 

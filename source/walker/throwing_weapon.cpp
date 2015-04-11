@@ -22,7 +22,6 @@
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class ThrowingWeapon::Impl

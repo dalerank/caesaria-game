@@ -31,8 +31,6 @@
 #include "widget_helper.hpp"
 #include "smkviewer.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 

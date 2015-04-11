@@ -29,7 +29,7 @@ class RandomAnimals : public GameEvent
 {
 public:
   static GameEventPtr create();
-  static GameEventPtr create(constants::walker::Type type, unsigned int wolvesNumber );
+  static GameEventPtr create(walker::Type type, unsigned int wolvesNumber );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

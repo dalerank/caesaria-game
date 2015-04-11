@@ -22,7 +22,6 @@
 #include "good/helper.hpp"
 #include "city/trade_options.hpp"
 
-using namespace constants;
 using namespace econ;
 
 namespace events

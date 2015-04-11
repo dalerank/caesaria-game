@@ -21,12 +21,15 @@
 #include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
+#include "widget_factory.hpp"
 
 using namespace std;
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(Image)
 
 class Image::Impl
 {

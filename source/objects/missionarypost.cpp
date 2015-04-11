@@ -21,8 +21,6 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::missionaryPost, MissionaryPost)
 
 MissionaryPost::MissionaryPost()

@@ -24,7 +24,6 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class TypeEnums : public EnumsHelper<walker::Type>

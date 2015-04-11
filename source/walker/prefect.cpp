@@ -40,7 +40,6 @@
 #include "gfx/helper.hpp"
 #include "events/fireworkers.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::prefect, Prefect)

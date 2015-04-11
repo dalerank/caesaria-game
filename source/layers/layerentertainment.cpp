@@ -28,7 +28,6 @@
 #include "core/gettext.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

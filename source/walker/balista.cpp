@@ -24,8 +24,6 @@
 #include "game/gamedate.hpp"
 #include "spear.hpp"
 
-using namespace constants;
-
 namespace {
   const int attackDistance = 16;
 }

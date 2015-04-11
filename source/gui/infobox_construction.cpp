@@ -23,8 +23,6 @@
 #include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -92,7 +90,7 @@ void AboutConstruction::_setWorkingActive(bool working)
 
 void AboutConstruction::_updateWorkingText()
 {
-  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
+  WorkingBuildingPtr working = base().as<WorkingBuilding>();
   _setWorkingActive( working.isValid() ? working->isActive() : false );
 }
 
@@ -107,7 +105,6 @@ void AboutConstruction::_resolveToggleWorking()
 }
 
 ConstructionPtr AboutConstruction::base() const { return _construction; }
-void AboutConstruction::setBase(ConstructionPtr construction) { _construction = construction; }
 
 void AboutConstruction::_switch(int flag)
 {

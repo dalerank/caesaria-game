@@ -44,7 +44,6 @@
 #include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 using namespace events;

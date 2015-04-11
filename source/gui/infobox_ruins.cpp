@@ -28,7 +28,6 @@
 #include "game/infoboxmanager.hpp"
 #include "objects/ruins.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -44,7 +43,7 @@ REGISTER_OBJECT_BASEINFOBOX(plague_ruins,AboutRuins)
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Infobox( parent, Rect( 0, 0, 510, 350 ) )
 {
-  RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
+  RuinsPtr ruin = tile.overlay().as<Ruins>();
   if( ruin.isNull() )
   {
     Logger::warning( "AbourRuins: tile overlay at [%d,%d] not ruin", tile.i(), tile.j() );

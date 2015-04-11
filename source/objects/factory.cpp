@@ -39,7 +39,6 @@
 #include "core/logger.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)

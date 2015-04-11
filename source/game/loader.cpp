@@ -40,7 +40,6 @@
 #include <vector>
 
 using namespace gfx;
-using namespace constants;
 
 namespace game
 {

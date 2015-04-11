@@ -37,7 +37,6 @@
 #include "core/foreach.hpp"
 #include "corpse.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace {
@@ -282,7 +281,9 @@ void Walker::_centerTile()
     // compute the direction to reach the destination
     _computeDirection();
     const Tile& tile = _nextTile();
-    if( tile.i() < 0 || !tile.isWalkable( true ) )
+    bool nextTileBlocked = !gfx::tilemap::isValidLocation( tile.epos() ) || !tile.isWalkable( true );
+
+    if( nextTileBlocked  )
     {
       _brokePathway( tile.pos() );
     }

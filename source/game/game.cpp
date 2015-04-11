@@ -69,6 +69,7 @@
 #include "addon_manager.hpp"
 #include "video_config.hpp"
 #include "config.hpp"
+#include "world/emperor.hpp"
 
 #include <list>
 
@@ -396,12 +397,13 @@ bool Game::load(std::string filename)
     Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
     return false;
   }
+  _d->empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
   OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
-    ConstructionPtr construction = ptr_cast<Construction>( *overlay );
+    ConstructionPtr construction = overlay->as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();

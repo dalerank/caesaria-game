@@ -76,7 +76,8 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
   ret->_d->steps = route->points( !startCity );
   ret->_d->step = 0;  
 
-  if( ret->_d->steps.empty() )
+  bool noWayForMe = ret->_d->steps.empty();
+  if( noWayForMe )
   {
     return MerchantPtr();
   }

@@ -40,7 +40,6 @@
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 using namespace city;

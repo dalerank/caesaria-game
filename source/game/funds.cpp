@@ -25,8 +25,6 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
-using namespace constants;
-
 namespace econ
 {
 
@@ -124,9 +122,12 @@ int Treasury::profit() const
   return _d->money - balanceLastYear;
 }
 
-bool Treasury::haveMoneyForAction(unsigned int money)
+bool Treasury::haveMoneyForAction(unsigned int money, bool useDebt)
 {
-  return (_d->money - (int)money > _d->maxDebt);
+  if( useDebt )
+    return (_d->money - (int)money > _d->maxDebt);
+  else
+    return (_d->money - (int)money >= 0);
 }
 
 void Treasury::updateHistory( const DateTime& date )

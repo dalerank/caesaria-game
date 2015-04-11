@@ -207,6 +207,11 @@ std::string Path::extension() const
   return "";
 }
 
+bool Path::haveExtension() const
+{
+  return !extension().empty();
+}
+
 std::string Path::suffix() const
 {
   std::string ret = extension();

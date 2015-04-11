@@ -18,10 +18,15 @@
 #ifndef __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 #define __CAESARIA_NAMEDTYPE_INCLUDE_HPP__
 
-#define DEFINE_NAMEDTYPE(type,start) \
-  enum type { start=0 }; \
+#define BEGIN_NAMEDTYPE(type,start) enum type { start=0
+
+#define APPEND_NAMEDTYPE(name) ,name
+#define APPEND_NAMEDTYPE_ID(name,id) ,name=id
+
+#define END_NAMEDTYPE(type) \
+  }; \
   inline type& operator++(type& a) { a = type(a+1); return a; }
 
-#define REGISTER_NAMEDTYPE(type,name,id) static const type name(id);
+#define REGISTER_NAMEDTYPE(type,name,id) static const type name = type(id);
 
 #endif //__CAESARIA_NAMEDTYPE_INCLUDE_HPP__

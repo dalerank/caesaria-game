@@ -30,7 +30,6 @@
 #include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -48,7 +47,7 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
 
   _granary = ptr_cast<Granary>( tile.overlay() );
 
-  setBase( ptr_cast<Construction>( _granary ) );
+  setBase( _granary );
   _setWorkingVisible( true );
 
   PushButton* btnOrders;

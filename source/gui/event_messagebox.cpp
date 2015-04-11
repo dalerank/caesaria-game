@@ -18,7 +18,6 @@
 #include "good/helper.hpp"
 #include "game/datetimehelper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui

@@ -29,7 +29,6 @@
 
 using namespace gfx;
 using namespace events;
-using namespace constants;
 
 class WorkingBuilding::Impl
 {

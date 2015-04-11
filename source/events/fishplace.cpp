@@ -27,8 +27,6 @@
 #include "city/cityservice_fishplace.hpp"
 #include "city/statistic.hpp"
 
-using namespace constants;
-
 namespace events
 {
 

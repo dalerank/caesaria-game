@@ -40,7 +40,6 @@
 #include "gfx/helper.hpp"
 #include "gfx/cart_animation.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::supplier, CartSupplier)

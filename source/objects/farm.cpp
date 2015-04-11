@@ -324,7 +324,7 @@ FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  LocustList lc = city::statistic::findw<Locust>( _city(), constants::walker::locust, pos() );
+  LocustList lc = city::statistic::findw<Locust>( _city(), walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";

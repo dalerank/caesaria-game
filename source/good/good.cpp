@@ -22,12 +22,6 @@
 namespace good
 {
 
-inline Products& operator<<(Products& t, const Product& a)
-{
-  t.push_back( a );
-  return t;
-}
-
 struct Stage
 {
   Products foods;

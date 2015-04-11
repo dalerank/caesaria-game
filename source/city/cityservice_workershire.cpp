@@ -35,7 +35,6 @@
 #include "city/states.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace std;
 using namespace gfx;
 using namespace events;

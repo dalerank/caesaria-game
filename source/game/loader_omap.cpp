@@ -31,7 +31,6 @@
 #include "core/saveadapter.hpp"
 #include "vfs/archive_zip.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 #include <map>

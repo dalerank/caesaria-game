@@ -31,11 +31,7 @@ public:
   SmartList& operator<<( const SmartList<Src>& srcList )
   {
     foreach( it, srcList )
-    {
-      SmartPtr<T> ptr = ptr_cast<T>( *it );
-      if( ptr.isValid() )
-          this->push_back( ptr );
-    }
+      addIfValid( ptr_cast<T>(*it) );
 
     return *this;
   }
@@ -44,6 +40,16 @@ public:
   {
     this->push_back( a );
     return *this;
+  }
+
+  template< class Dst >
+  SmartList<Dst> select() const
+  {
+    SmartList<Dst> ret;
+    foreach( it, *this )
+      ret.addIfValid( ptr_cast<Dst>( *it ) );
+
+    return ret;
   }
 
   SmartList& addIfValid( SmartPtr< T > a )
@@ -66,7 +72,7 @@ public:
 
   void remove( const SmartPtr< T >& a )
   {
-    for( typename SmartList<T>::iterator it = this->begin(); it != this->end();)
+    for( typename SmartList<T>::iterator it = this->begin(); it != this->end(); )
     {
       if( a == *it ) { it = this->erase( it ); }
       else { ++it; }
@@ -84,17 +90,12 @@ public:
   }
 
   template< class W >
-  SmartList exclude() const
+  SmartList<T> exclude() const
   {
     SmartList<T> ret;
     foreach( it, *this )
-    {
-      SmartPtr<W> ptr = ptr_cast<W>( *it );
-      if( ptr.isNull() )
-      {
+      if( !is_kind_of<W>( *it ) )
         ret.push_back( *it );
-      }
-    }
 
     return ret;
   }

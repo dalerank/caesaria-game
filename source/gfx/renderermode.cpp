@@ -19,8 +19,6 @@
 #include "objects/constants.hpp"
 #include "layers/constants.hpp"
 
-using namespace constants;
-
 namespace gfx
 {
 

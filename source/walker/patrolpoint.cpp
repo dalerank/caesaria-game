@@ -21,7 +21,6 @@
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace {

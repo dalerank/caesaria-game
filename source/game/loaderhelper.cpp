@@ -25,7 +25,6 @@
 #include "gfx/tilesarray.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 std::string LoaderHelper::getDefaultCityName(unsigned int location)

@@ -28,7 +28,6 @@
 #include "gui/label.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events

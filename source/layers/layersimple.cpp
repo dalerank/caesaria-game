@@ -24,7 +24,6 @@
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

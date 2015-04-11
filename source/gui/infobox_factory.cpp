@@ -33,7 +33,6 @@
 #include "city/city.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -55,7 +54,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 {
   setupUI( ":/gui/infoboxfactory.gui" );
 
-  FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
+  FactoryPtr factory = tile.overlay().as<Factory>();
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );

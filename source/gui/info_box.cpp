@@ -29,7 +29,6 @@
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
