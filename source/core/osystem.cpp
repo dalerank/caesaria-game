@@ -44,7 +44,7 @@ void OSystem::error(const std::string& title, const std::string& text)
   {
     std::string command = dialogCommand;
     command += " --title \"" + title + "\" --msgbox \"" + text + "\"";
-    int error = ::system(command.c_str());
+    ::system(command.c_str());
   }
 
   // fail-safe method here, using stdio perhaps, depends on your application
@@ -57,8 +57,22 @@ void OSystem::openUrl(const std::string& url)
 {
 #ifdef CAESARIA_PLATFORM_LINUX
   std::string command = "xdg-open " + url;
-  int error = ::system( command.c_str() );
+  ::system( command.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
+#endif
+}
+
+void OSystem::openDir(const std::string& path)
+{
+  std::string result;
+#ifdef CAESARIA_PLATFORM_LINUX
+  result = "nautilus " + path + " &";
+  ::system( result.c_str() );
+#elif defined(CAESARIA_PLATFORM_WINDOWS)
+  ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  result = "open " + path + " &";
+  ::system( result.c_str() );
 #endif
 }

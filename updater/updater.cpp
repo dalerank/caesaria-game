@@ -464,7 +464,7 @@ vfs::Directory Updater::getTargetDir()
   }
 
   // Get the current path
-  vfs::Path targetPath = vfs::Directory::getCurrent();
+  vfs::Path targetPath = vfs::Directory::current();
 
   return targetPath;
 }
@@ -822,7 +822,7 @@ bool Updater::NewUpdaterAvailable()
 
   Logger::warning( "Looking for executable " + _executable.toString() + " in download queue.");
 
-  vfs::Path myPath = vfs::Directory::getApplicationDir()/_executable;
+  vfs::Path myPath = vfs::Directory::applicationDir()/_executable;
   ByteArray crcData = vfs::NFile::open( myPath ).readAll();
   unsigned int fileSize = vfs::NFile::size( myPath );
 
@@ -943,7 +943,7 @@ void Updater::RestartUpdater()
 void Updater::postUpdateCleanup()
 {
   vfs::Directory pdir =  getTargetDir();
-  vfs::Entries dir = pdir.getEntries();
+  vfs::Entries dir = pdir.entries();
   foreach( i, dir )
   {
     if( utils::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )

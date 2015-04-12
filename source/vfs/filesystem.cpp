@@ -703,7 +703,7 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
     }
   #endif //CAESARIA_PLATFORM_UNIX
 
-  Entries files = Directory( filename.directory() ).getEntries();
+  Entries files = Directory( filename.directory() ).entries();
   files.setSensType( sens );
   int index = files.findFile( filename );
   return index != -1;
