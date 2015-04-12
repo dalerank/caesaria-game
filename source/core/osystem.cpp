@@ -17,6 +17,7 @@
 
 #include "osystem.hpp"
 #include "platform.hpp"
+#include <ctime>
 
 #ifdef CAESARIA_PLATFORM_LINUX
 #include <cstdlib>
@@ -75,4 +76,12 @@ void OSystem::openDir(const std::string& path)
   result = "open " + path + " &";
   ::system( result.c_str() );
 #endif
+}
+
+int OSystem::gmtOffsetMs()
+{
+  std::time_t current_time;
+  std::time(&current_time);
+  struct std::tm *timeinfo = std::localtime(&current_time);
+  return timeinfo->tm_gmtoff;
 }
