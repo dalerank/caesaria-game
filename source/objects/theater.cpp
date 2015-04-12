@@ -57,7 +57,7 @@ void Theater::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 35 );
   }
   else
   {

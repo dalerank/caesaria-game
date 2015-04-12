@@ -101,7 +101,7 @@ void Amphitheater::deliverService()
 
   if( _animationRef().isRunning())
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 12 );
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {

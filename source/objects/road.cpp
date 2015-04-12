@@ -265,7 +265,7 @@ Plaza::Plaza()
   // or we will run into big troubles
 
   setType(object::plaza);
-  setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
+  setPicture( Picture::load( ResourceGroup::entertainment, 102) ); // 102 ~ 107
   setSize( Size( 1 ) );
 }
 
@@ -356,7 +356,7 @@ const Picture& Plaza::picture() const
 {
   return tile().masterTile()
            ? Construction::picture()
-           : Picture::load( ResourceGroup::entertaiment, 102);
+           : Picture::load( ResourceGroup::entertainment, 102);
 }
 
 void Plaza::updatePicture()
