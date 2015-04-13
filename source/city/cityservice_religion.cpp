@@ -239,7 +239,7 @@ void Religion::load(const VariantMap& stream)
 
 void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
 {
-  if( divn.isValid() )
+  if( !divn.isValid() )
   {
     Logger::warning( "!!! WARNING: Cant update relation for null god" );
     return;
