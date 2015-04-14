@@ -578,6 +578,8 @@ void StartMenu::initialize()
     dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(),  Rect( 0, 0, 400, 150 ),
                                                  "Information", "Is need autofit screen resolution?",
                                                  dialog::Dialog::btnOkCancel );
+    CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
+    CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
     CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
     dialog->show();
   }
