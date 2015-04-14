@@ -575,11 +575,9 @@ void StartMenu::initialize()
   bool screenFitted = SETTINGS_VALUE( screenFitted );
   if( !screenFitted )
   {
-    gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
+    dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(),  Rect( 0, 0, 400, 150 ),
                                                  "Information", "Is need autofit screen resolution?",
-                                                 gui::DialogBox::btnOk | gui::DialogBox::btnCancel );
-    CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
-    CONNECT(dialog, onCancel(), dialog, gui::DialogBox::deleteLater );
+                                                 dialog::Dialog::btnOkCancel );
     CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
     dialog->show();
   }
