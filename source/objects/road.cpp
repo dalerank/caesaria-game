@@ -78,7 +78,18 @@ bool Road::canBuild( const city::AreaInfo& areaInfo ) const
 
   OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
-  Picture pic = picture( areaInfo );
+  Picture pic;
+  if( overlay.is<Aqueduct>() )
+  {
+    TilesArray tiles = areaInfo.aroundTiles;
+    tiles.push_back( &tile() );
+    city::AreaInfo advInfo = { areaInfo.city, areaInfo.pos, tiles };
+    pic = overlay.as<Aqueduct>()->picture( advInfo );
+  }
+  else
+  {
+    pic = picture( areaInfo );
+  }
   const_cast<Road*>( this )->setPicture( pic );
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
